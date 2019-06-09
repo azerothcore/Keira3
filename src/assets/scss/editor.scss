@@ -1,0 +1,35 @@
+.wiki-link {
+  text-align: right;
+  color: #337ab7;
+
+  a:hover {
+    text-decoration: none;
+  }
+}
+
+.edit-form {
+  hr {
+    margin-top: 2px;
+    margin-bottom: 14px;
+  }
+
+  text-align: center;
+
+  .category-title {
+    text-align: left;
+    display: block;
+    font-size: 1.15rem;
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+
+  label {
+    font-size: 12px;
+    margin-bottom: 2px;
+  }
+
+  .ng-dirty {
+    border-color: #68ff5b;
+    box-shadow: 0 0 0 0.2rem rgba(40, 255, 0, 0.25);
+  }
+}

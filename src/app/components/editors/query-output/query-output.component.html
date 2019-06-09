@@ -1,0 +1,18 @@
+<ng-container *ngIf="editorService">
+  <div class="query-type-switch" [hidden]="editorService.isNew">
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" id="diffQuery" [(ngModel)]="selectedQuery" [value]="'diff'">
+      <label class="form-check-label" for="diffQuery">Diff-query</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" id="fullQuery" [(ngModel)]="selectedQuery" [value]="'full'">
+      <label class="form-check-label" for="fullQuery">Full-query</label>
+    </div>
+  </div>
+
+  <app-highlightjs-wrapper [code]="editorService.diffQuery" [hidden]="showFullQuery()"></app-highlightjs-wrapper>
+  <app-highlightjs-wrapper [code]="editorService.fullQuery" [hidden]="!showFullQuery()"></app-highlightjs-wrapper>
+
+  <button type="button" class="btn btn-secondary btn-sm" (click)="copy()">Copy</button>
+  <button type="button" class="btn btn-primary btn-sm" (click)="execute()">Execute</button>
+</ng-container>
