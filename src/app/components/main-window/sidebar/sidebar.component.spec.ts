@@ -1,13 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
+import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+import { instance, reset } from 'ts-mockito';
 
 import { SidebarComponent } from './sidebar.component';
-import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { ElectronService } from '../../../services/electron.service';
-import { instance, reset } from 'ts-mockito';
 import { MockedElectronService, MockedMysqlService } from '../../../test-utils/mocks';
 import { MysqlService } from '../../../services/mysql.service';
-import { RouterTestingModule } from '@angular/router/testing';
 
 describe('SidebarComponent', () => {
   let component: SidebarComponent;
