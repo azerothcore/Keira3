@@ -1,3 +1,57 @@
-<p>
-  creature-template-addon works!
-</p>
+<app-top-bar [handler]="handlerService"></app-top-bar>
+
+<div class="container-fluid">
+
+  <span *ngIf="editorService.loading">Loading...</span>
+
+  <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
+
+    <app-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></app-query-output>
+
+    <hr class="mt-2 mb-1">
+
+    <div class="wiki-link mb-2">
+      <a [href]="docUrl" target="_blank">
+        <i class="fas fa-link"></i> {{ editorService.entityTable }} documentation
+      </a>
+    </div>
+
+    <form
+      [formGroup]="editorService.form"
+      class="form-group edit-form"
+    >
+
+      <div class="row">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="entry">entry</label>
+          <input [formControlName]="'entry'" id="entry" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="path_id">path_id</label>
+          <input [formControlName]="'path_id'" id="path_id" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="mount">mount</label>
+          <input [formControlName]="'mount'" id="mount" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="bytes1">bytes1</label>
+          <input [formControlName]="'bytes1'" id="bytes1" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="bytes2">bytes2</label>
+          <input [formControlName]="'bytes2'" id="bytes2" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="emote">emote</label>
+          <input [formControlName]="'emote'" id="emote" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
+          <label class="control-label" for="auras">auras</label>
+          <input [formControlName]="'auras'" id="auras" class="form-control form-control-sm">
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>
