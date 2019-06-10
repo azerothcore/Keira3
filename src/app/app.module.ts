@@ -32,6 +32,7 @@ import { highlightOptions } from './highlight.config';
 import { TopBarComponent } from './components/main-window/top-bar/top-bar.component';
 import { QueryOutputComponent } from './components/editors/query-output/query-output.component';
 import { HighlightjsWrapperComponent } from './components/editors/hightlightjs-wrapper/highlightjs-wrapper.component';
+import { CreatureEquipTemplateComponent } from './components/editors/creature/creature-equip-template/creature-equip-template.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -54,6 +55,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     TopBarComponent,
     QueryOutputComponent,
     HighlightjsWrapperComponent,
+    CreatureEquipTemplateComponent,
   ],
   imports: [
     BrowserModule,
