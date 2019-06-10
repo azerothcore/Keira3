@@ -8,7 +8,9 @@ import { CreatureTemplateComponent } from '../components/editors/creature/creatu
 import { CreatureTemplateAddonComponent } from '../components/editors/creature/creature-template-addon/creature-template-addon.component';
 import { NpcVendorComponent } from '../components/editors/creature/npc-vendor/npc-vendor.component';
 import { CreatureEquipTemplateComponent } from '../components/editors/creature/creature-equip-template/creature-equip-template.component';
-import { CreatureOnkillReputationComponent } from '../components/editors/creature/creature-onkill-reputation/creature-onkill-reputation.component';
+import {
+  CreatureOnkillReputationComponent
+} from '../components/editors/creature/creature-onkill-reputation/creature-onkill-reputation.component';
 
 const routes: Routes = [
   {
