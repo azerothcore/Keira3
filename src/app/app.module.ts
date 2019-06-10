@@ -27,11 +27,11 @@ import { CreatureTemplateComponent } from './components/editors/creature/creatur
 import { CreatureTemplateAddonComponent } from './components/editors/creature/creature-template-addon/creature-template-addon.component';
 import { NpcVendorComponent } from './components/editors/creature/npc-vendor/npc-vendor.component';
 import { SelectCreatureComponent } from './components/editors/creature/select-creature/select-creature.component';
-import { CreateComponent } from './components/editors/create/create.component';
+import { CreateComponent } from './components/editors/shared/create/create.component';
 import { highlightOptions } from './highlight.config';
 import { TopBarComponent } from './components/main-window/top-bar/top-bar.component';
-import { QueryOutputComponent } from './components/editors/query-output/query-output.component';
-import { HighlightjsWrapperComponent } from './components/editors/hightlightjs-wrapper/highlightjs-wrapper.component';
+import { QueryOutputComponent } from './components/editors/shared/query-output/query-output.component';
+import { HighlightjsWrapperComponent } from './components/editors/shared/hightlightjs-wrapper/highlightjs-wrapper.component';
 import { CreatureEquipTemplateComponent } from './components/editors/creature/creature-equip-template/creature-equip-template.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {

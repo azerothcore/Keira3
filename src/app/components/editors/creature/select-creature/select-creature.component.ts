@@ -1,6 +1,6 @@
 import { Component, } from '@angular/core';
 
-import { SelectComponent } from '../../select.component';
+import { SelectComponent } from '../../shared/select.component';
 import { CreatureTemplate } from '../creature-template/creature-template.type';
 import { CreatureSelectService } from '../../../../services/select/creature-select.service';
 import { CreatureHandlerService } from '../../../../services/handlers/creature-handler.service';

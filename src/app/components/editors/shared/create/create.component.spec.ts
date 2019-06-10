@@ -1,31 +1,29 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 
-import { QueryOutputComponent } from './query-output.component';
-import { MockType } from '../../../test-utils/mocks';
+import { CreateComponent } from './create.component';
+import { MockType } from '../../../../test-utils/mocks';
 
-describe('QueryOutputComponent', () => {
-  let component: QueryOutputComponent<MockType>;
-  let fixture: ComponentFixture<QueryOutputComponent<MockType>>;
+describe('CreateComponent', () => {
+  let component: CreateComponent<MockType>;
+  let fixture: ComponentFixture<CreateComponent<MockType>>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        QueryOutputComponent,
+        CreateComponent,
       ],
       imports: [
         BrowserModule,
         FormsModule,
-      ],
-      schemas: [ NO_ERRORS_SCHEMA ],
+      ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(QueryOutputComponent);
+    fixture = TestBed.createComponent(CreateComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

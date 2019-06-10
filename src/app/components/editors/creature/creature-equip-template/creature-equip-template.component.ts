@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { SingleRowEditorComponent } from '../../single-row-editor.component';
+import { SingleRowEditorComponent } from '../../shared/single-row-editor.component';
 import { CreatureHandlerService } from '../../../../services/handlers/creature-handler.service';
 import { CreatureEquipTemplateService } from '../../../../services/editors/creature/creature-equip-template.service';
 import { CreatureEquipTemplate } from './creature-equip-template.type';
