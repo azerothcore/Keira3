@@ -20,13 +20,13 @@ We created Keira inspired by the old [indomit's Quice/Truice](https://github.com
 
 Keira3 is the direct successor of [Keira2](https://github.com/Helias/Keira2). We kept the cross-platform promise as well as adding the possibility to execute the generated queries and simplifying the application setup.
 
-## Development
-
-### AzerothCore Database
+## AzerothCore Database
 
 In order to use Keira3 you have to connect to an instance of the [AzerothCore](https://github.com/azerothcore/azerothcore-wotlk) Database.
 
 If you don't have any, you can easily create one following [this guide](http://www.azerothcore.org/wiki/database-only-quick-setup).
+
+## Development
 
 ### Dependencies
 
