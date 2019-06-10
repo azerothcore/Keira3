@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-import { TableRow } from '../../../types';
-import { QueryService } from '../../../services/query.service';
-import { HandlerService } from '../../../services/handlers/handler.service';
+import { TableRow } from '../../../../types';
+import { QueryService } from '../../../../services/query.service';
+import { HandlerService } from '../../../../services/handlers/handler.service';
 
 @Component({
   selector: 'app-create',

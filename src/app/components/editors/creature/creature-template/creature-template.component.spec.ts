@@ -3,7 +3,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { CreatureTemplateComponent } from './creature-template.component';
 import { TopBarComponent } from '../../../main-window/top-bar/top-bar.component';
-import { QueryOutputComponent } from '../../query-output/query-output.component';
+import { QueryOutputComponent } from '../../shared/query-output/query-output.component';
 import { CommonTestModule } from '../../../../test-utils/common-test.module';
 
 describe('CreatureTemplateComponent', () => {
