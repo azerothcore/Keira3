@@ -3,8 +3,10 @@ import { Injectable } from '@angular/core';
 import { SingleRowEditorService } from '../single-row-editor.service';
 import { CreatureHandlerService } from '../../handlers/creature-handler.service';
 import { QueryService } from '../../query.service';
-import { CREATURE_EQUIP_TEMPLATE_TABLE, CREATURE_EQUIP_TEMPLATE_ID } from '../../../constants';
-import { CreatureEquipTemplate } from '../../../components/editors/creature/creature-equip-template/creature-equip-template.type';
+import {
+  CREATURE_EQUIP_TEMPLATE_ID, CREATURE_EQUIP_TEMPLATE_TABLE,
+  CreatureEquipTemplate
+} from '../../../components/editors/creature/creature-equip-template/creature-equip-template.type';
 
 @Injectable({
   providedIn: 'root'

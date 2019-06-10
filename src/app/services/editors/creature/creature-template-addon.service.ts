@@ -2,9 +2,11 @@ import { Injectable } from '@angular/core';
 
 import { CreatureHandlerService } from '../../handlers/creature-handler.service';
 import { QueryService } from '../../query.service';
-import { CREATURE_TEMPLATE_ADDON_TABLE, CREATURE_TEMPLATE_ADDON_ID } from '../../../constants';
 import { SingleRowEditorService } from '../single-row-editor.service';
-import { CreatureTemplateAddon } from '../../../components/editors/creature/creature-template-addon/creature-template-addon.type';
+import {
+  CREATURE_TEMPLATE_ADDON_ID, CREATURE_TEMPLATE_ADDON_TABLE,
+  CreatureTemplateAddon
+} from '../../../components/editors/creature/creature-template-addon/creature-template-addon.type';
 
 @Injectable({
   providedIn: 'root'
