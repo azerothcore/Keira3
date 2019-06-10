@@ -97,6 +97,7 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
       this.updateFullQuery();
     }, (error) => {
       // TODO
+      // console.log(error);
     }, () => {
       this._loading = false;
     });

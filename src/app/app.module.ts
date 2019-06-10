@@ -33,6 +33,9 @@ import { TopBarComponent } from './components/main-window/top-bar/top-bar.compon
 import { QueryOutputComponent } from './components/editors/shared/query-output/query-output.component';
 import { HighlightjsWrapperComponent } from './components/editors/shared/hightlightjs-wrapper/highlightjs-wrapper.component';
 import { CreatureEquipTemplateComponent } from './components/editors/creature/creature-equip-template/creature-equip-template.component';
+import {
+  CreatureOnkillReputationComponent
+} from './components/editors/creature/creature-onkill-reputation/creature-onkill-reputation.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -56,6 +59,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     QueryOutputComponent,
     HighlightjsWrapperComponent,
     CreatureEquipTemplateComponent,
+    CreatureOnkillReputationComponent,
   ],
   imports: [
     BrowserModule,

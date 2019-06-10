@@ -10,3 +10,6 @@ export const CREATURE_EQUIP_TEMPLATE_ID = 'CreatureID';
 
 export const CREATURE_TEMPLATE_ADDON_TABLE = 'creature_template_addon';
 export const CREATURE_TEMPLATE_ADDON_ID = 'entry';
+
+export const CREATURE_ONKLL_REPUTATION_TABLE = 'creature_onkill_reputation';
+export const CREATURE_ONKLL_REPUTATION_ID = 'creature_id';

@@ -1,0 +1,69 @@
+<app-top-bar [handler]="handlerService"></app-top-bar>
+
+<div class="container-fluid">
+
+  <span *ngIf="editorService.loading">Loading...</span>
+
+  <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
+
+    <app-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></app-query-output>
+
+    <hr class="mt-2 mb-1">
+
+    <div class="wiki-link mb-2">
+      <a [href]="docUrl" target="_blank">
+        <i class="fas fa-link"></i> {{ editorService.entityTable }} documentation
+      </a>
+    </div>
+
+    <form
+      [formGroup]="editorService.form"
+      class="form-group edit-form"
+    >
+
+      <div class="row">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="creature_id">creature_id</label>
+          <input [formControlName]="'creature_id'" id="creature_id" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RewOnKillRepFaction1">RewOnKillRepFaction1</label>
+          <input [formControlName]="'RewOnKillRepFaction1'" id="RewOnKillRepFaction1" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RewOnKillRepFaction2">RewOnKillRepFaction2</label>
+          <input [formControlName]="'RewOnKillRepFaction2'" id="RewOnKillRepFaction2" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="MaxStanding1">MaxStanding1</label>
+          <input [formControlName]="'MaxStanding1'" id="MaxStanding1" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="IsTeamAward1">IsTeamAward1</label>
+          <input [formControlName]="'IsTeamAward1'" id="IsTeamAward1" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RewOnKillRepValue1">RewOnKillRepValue1</label>
+          <input [formControlName]="'RewOnKillRepValue1'" id="RewOnKillRepValue1" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="MaxStanding2">MaxStanding2</label>
+          <input [formControlName]="'MaxStanding2'" id="MaxStanding2" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="IsTeamAward2">IsTeamAward2</label>
+          <input [formControlName]="'IsTeamAward2'" id="IsTeamAward2" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RewOnKillRepValue2">RewOnKillRepValue2</label>
+          <input [formControlName]="'RewOnKillRepValue2'" id="RewOnKillRepValue2" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="TeamDependent">TeamDependent</label>
+          <input [formControlName]="'TeamDependent'" id="TeamDependent" type="number" class="form-control form-control-sm">
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>
