@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { CreatureTemplateService } from '../../../../services/editors/creature-template.service';
+import { CreatureTemplateService } from '../../../../services/editors/creature/creature-template.service';
 import { CreatureTemplate } from './creature-template.type';
 import { SingleRowEditorComponent } from '../../single-row-editor.component';
 import { CreatureHandlerService } from '../../../../services/handlers/creature-handler.service';
