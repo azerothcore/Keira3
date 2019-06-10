@@ -1,13 +1,11 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
-import { RouterTestingModule } from '@angular/router/testing';
 import { instance, reset } from 'ts-mockito';
 
 import { SelectCreatureComponent } from './select-creature.component';
 import { MockedQueryService } from '../../../../test-utils/mocks';
 import { QueryService } from '../../../../services/query.service';
+import { CommonTestModule } from '../../../../test-utils/common-test.module';
 
 describe('SelectCreatureComponent', () => {
   let component: SelectCreatureComponent;
@@ -17,10 +15,7 @@ describe('SelectCreatureComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ SelectCreatureComponent ],
       imports: [
-        BrowserModule,
-        FormsModule,
-        ReactiveFormsModule,
-        RouterTestingModule,
+        CommonTestModule,
       ],
       providers: [
         { provide: QueryService, useValue: instance(MockedQueryService) },

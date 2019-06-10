@@ -1,11 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { instance, reset } from 'ts-mockito';
 
 import { ConnectionWindowComponent } from './connection-window.component';
 import { ElectronService } from '../../services/electron.service';
 import { MockedElectronService } from '../../test-utils/mocks';
+import { CommonTestModule } from '../../test-utils/common-test.module';
 
 describe('ConnectionWindowComponent', () => {
   let component: ConnectionWindowComponent;
@@ -15,9 +14,7 @@ describe('ConnectionWindowComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ ConnectionWindowComponent ],
       imports: [
-        BrowserModule,
-        FormsModule,
-        ReactiveFormsModule,
+        CommonTestModule,
       ],
       providers: [
         { provide : ElectronService, useValue: instance(MockedElectronService) },
