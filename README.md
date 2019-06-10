@@ -1,5 +1,7 @@
 # Keira3
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/e9d97b0240fd452487bfd5d3e55da96f)](https://app.codacy.com/app/FrancescoBorzi/Keira3?utm_source=github.com&utm_medium=referral&utm_content=azerothcore/Keira3&utm_campaign=Badge_Grade_Dashboard)
+
 Cross-platform desktop application featuring a **Database Editor** for the [AzerothCore MMORPG framework](http://www.azerothcore.org).
 
 With Keira3 you don't have to know the SQL language in order to change contents: it will generate the SQL queries automatically for you. The SQL code will be displayed, so you can **learn**, and then you can **copy** or **execute** it directly to your database.
