@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 
 import { SingleRowEditorService } from '../single-row-editor.service';
-import { CreatureTemplate } from '../../../components/editors/creature/creature-template/creature-template.type';
-import { CREATURE_TEMPLATE_ID, CREATURE_TEMPLATE_NAME, CREATURE_TEMPLATE_TABLE } from '../../../constants';
+import {
+  CREATURE_TEMPLATE_ID,
+  CREATURE_TEMPLATE_NAME, CREATURE_TEMPLATE_TABLE,
+  CreatureTemplate
+} from '../../../components/editors/creature/creature-template/creature-template.type';
 import { QueryService } from '../../query.service';
 import { CreatureHandlerService } from '../../handlers/creature-handler.service';
 

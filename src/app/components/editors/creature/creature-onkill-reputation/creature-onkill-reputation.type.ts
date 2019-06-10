@@ -1,5 +1,8 @@
 import { TableRow } from '../../../../types';
 
+export const CREATURE_ONKLL_REPUTATION_TABLE = 'creature_onkill_reputation';
+export const CREATURE_ONKLL_REPUTATION_ID = 'creature_id';
+
 export class CreatureOnkillReputation extends TableRow {
   creature_id: number = 0;
   RewOnKillRepFaction1: number = 0;

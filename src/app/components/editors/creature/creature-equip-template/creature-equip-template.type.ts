@@ -1,5 +1,8 @@
 import { TableRow } from '../../../../types';
 
+export const CREATURE_EQUIP_TEMPLATE_TABLE = 'creature_equip_template';
+export const CREATURE_EQUIP_TEMPLATE_ID = 'CreatureID';
+
 export class CreatureEquipTemplate extends TableRow {
   CreatureID: number = 0;
   ID: number = 1;

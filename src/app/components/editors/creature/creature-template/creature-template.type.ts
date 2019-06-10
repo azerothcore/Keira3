@@ -1,5 +1,10 @@
 import { TableRow } from '../../../../types';
 
+export const CREATURE_TEMPLATE_TABLE = 'creature_template';
+export const CREATURE_TEMPLATE_ID = 'entry';
+export const CREATURE_TEMPLATE_NAME = 'name';
+export const CREATURE_TEMPLATE_CUSTOM_STARTING_ID = 9_000_000;
+
 export class CreatureTemplate extends TableRow {
   entry: number = 0;
   difficulty_entry_1: number = 0;

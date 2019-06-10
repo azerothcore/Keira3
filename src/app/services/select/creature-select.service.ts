@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 
 import { SelectService } from './select.service';
-import { CreatureTemplate } from '../../components/editors/creature/creature-template/creature-template.type';
+import { CREATURE_TEMPLATE_TABLE, CreatureTemplate } from '../../components/editors/creature/creature-template/creature-template.type';
 import { QueryService } from '../query.service';
 import { CreatureHandlerService } from '../handlers/creature-handler.service';
-import { CREATURE_TEMPLATE_TABLE } from '../../constants';
 
 @Injectable({
   providedIn: 'root'
