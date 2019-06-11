@@ -1,4 +1,6 @@
-import { Class, TableRow } from '../../types';
+import { distinctUntilChanged } from 'rxjs/operators';
+
+import { Class, MysqlResult, TableRow } from '../../types';
 import { QueryService } from '../query.service';
 import { EditorService } from './editor.service';
 import { HandlerService } from '../handlers/handler.service';
@@ -19,6 +21,21 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     this.initForm();
   }
 
+  protected initForm() {
+    super.initForm();
+
+    this._form.valueChanges.pipe(
+      distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
+    ).subscribe(() => {
+      if (!this._loading) {
+        if (this._form.dirty) {
+          this.updateDiffQuery();
+        }
+        this.updateFullQuery();
+      }
+    });
+  }
+
   protected updateDiffQuery(): void {
     this._diffQuery = this.queryService.getUpdateQuery<T>(
       this._entityTable,
@@ -36,43 +53,30 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     );
   }
 
-  reload(id: string|number) {
-    this._loading = true;
-    this._form.reset();
-    this._fullQuery = '';
-    this._diffQuery = '';
+  protected onReloadSuccessful(data: MysqlResult<T>, id: string|number) {
+    if (data.results.length > 0) {
+      // we are loading an existing entity
+      this._originalValue = data.results[0];
+      this._isNew = false;
 
-    this.queryService.selectAll<T>(this._entityTable, this._entityIdField, id).subscribe((data) => {
-
-      if (data.results.length > 0) {
-        // we are loading an existing entity
-        this._originalValue = data.results[0];
-        this._isNew = false;
-
-        if (this.isMainEntity) {
-          // we are loading an existing entity that has just been created
-          this.handlerService.isNew = false;
-          this.handlerService.selectedName = `${this._originalValue[this._entityNameField]}`;
-        }
-
-      } else {
-        // we are creating a new entity
-        this._originalValue = new this._entityClass();
-        this._originalValue[this._entityIdField] = id;
-        this._isNew = true;
+      if (this.isMainEntity) {
+        // we are loading an existing entity that has just been created
+        this.handlerService.isNew = false;
+        this.handlerService.selectedName = `${this._originalValue[this._entityNameField]}`;
       }
 
-      for (const field of this.fields) {
-        this._form.get(field).setValue(this._originalValue[field]);
-      }
+    } else {
+      // we are creating a new entity
+      this._originalValue = new this._entityClass();
+      this._originalValue[this._entityIdField] = id;
+      this._isNew = true;
+    }
 
-      this._loadedEntityId = this._originalValue[this._entityIdField];
-      this.updateFullQuery();
-    }, (error) => {
-      // TODO
-      // console.log(error);
-    }, () => {
-      this._loading = false;
-    });
+    for (const field of this.fields) {
+      this._form.get(field).setValue(this._originalValue[field]);
+    }
+
+    this._loadedEntityId = this._originalValue[this._entityIdField];
+    this.updateFullQuery();
   }
 }
