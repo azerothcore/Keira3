@@ -1,3 +1,6 @@
+import { FormControl, FormGroup } from '@angular/forms';
+import { distinctUntilChanged } from 'rxjs/operators';
+
 import { Class, TableRow } from '../../types';
 import { QueryService } from '../query.service';
 import { HandlerService } from '../handlers/handler.service';
@@ -9,6 +12,7 @@ export abstract class EditorService<T extends TableRow> {
   protected _diffQuery: string;
   protected _fullQuery: string;
   protected _isNew = false;
+  protected _form: FormGroup;
 
   get loadedEntityId(): string { return `${this._loadedEntityId}`; }
   get loading(): boolean { return this._loading; }
@@ -16,22 +20,47 @@ export abstract class EditorService<T extends TableRow> {
   get fullQuery(): string { return this._fullQuery; }
   get entityTable(): string { return this._entityTable; }
   get isNew(): boolean { return this._isNew; }
+  get form(): FormGroup { return this._form; }
 
   constructor(
     protected _entityClass: Class,
     protected _entityTable: string,
+    protected _entityIdField: string,
     protected handlerService: HandlerService<T>,
     protected queryService: QueryService,
   ) {
     this.fields = this.getClassAttributes(this._entityClass);
   }
 
+  protected abstract updateDiffQuery();
+  protected abstract updateFullQuery();
+  protected abstract reload(id: string|number);
+
   getClassAttributes(c: Class): string[] {
     const tmpInstance = new c();
     return Object.getOwnPropertyNames(tmpInstance);
   }
 
-  abstract reload(id: string);
+  protected initForm() {
+    this._form = new FormGroup({});
+
+    for (const field of this.fields) {
+      this._form.addControl(field, new FormControl());
+    }
+
+    this.form.get(this._entityIdField).disable();
+
+    this._form.valueChanges.pipe(
+      distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
+    ).subscribe(() => {
+      if (!this._loading) {
+        if (this._form.dirty) {
+          this.updateDiffQuery();
+        }
+        this.updateFullQuery();
+      }
+    });
+  }
 
   save(query: string) {
     this.queryService.query<T>(query).subscribe(() => {
@@ -44,5 +73,4 @@ export abstract class EditorService<T extends TableRow> {
       this._loading = false;
     });
   }
-
 }

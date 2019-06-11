@@ -1,6 +1,3 @@
-import { FormControl, FormGroup } from '@angular/forms';
-import { distinctUntilChanged } from 'rxjs/operators';
-
 import { Class, TableRow } from '../../types';
 import { QueryService } from '../query.service';
 import { EditorService } from './editor.service';
@@ -8,9 +5,6 @@ import { HandlerService } from '../handlers/handler.service';
 
 export abstract class SingleRowEditorService<T extends TableRow> extends EditorService<T> {
   private _originalValue: T;
-  private _form: FormGroup;
-
-  get form(): FormGroup { return this._form; }
 
   constructor(
     protected _entityClass: Class,
@@ -21,11 +15,11 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     protected handlerService: HandlerService<T>,
     protected queryService: QueryService,
   ) {
-    super(_entityClass, _entityTable, handlerService, queryService);
+    super(_entityClass, _entityTable, _entityIdField, handlerService, queryService);
     this.initForm();
   }
 
-  private updateDiffQuery() {
+  protected updateDiffQuery(): void {
     this._diffQuery = this.queryService.getUpdateQuery<T>(
       this._entityTable,
       this._entityIdField,
@@ -34,33 +28,12 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     );
   }
 
-  private updateFullQuery() {
+  protected updateFullQuery(): void {
     this._fullQuery = this.queryService.getFullDeleteInsertQuery<T>(
       this._entityTable,
       [this._form.getRawValue()],
       this._entityIdField,
     );
-  }
-
-  initForm() {
-    this._form = new FormGroup({});
-
-    for (const field of this.fields) {
-      this._form.addControl(field, new FormControl());
-    }
-
-    this.form.get(this._entityIdField).disable();
-
-    this._form.valueChanges.pipe(
-      distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
-    ).subscribe(() => {
-      if (!this._loading) {
-        if (this._form.dirty) {
-          this.updateDiffQuery();
-        }
-        this.updateFullQuery();
-      }
-    });
   }
 
   reload(id: string|number) {
