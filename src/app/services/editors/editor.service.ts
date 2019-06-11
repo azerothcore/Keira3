@@ -1,7 +1,6 @@
 import { FormControl, FormGroup } from '@angular/forms';
-import { distinctUntilChanged } from 'rxjs/operators';
 
-import { Class, TableRow } from '../../types';
+import { Class, MysqlResult, TableRow } from '../../types';
 import { QueryService } from '../query.service';
 import { HandlerService } from '../handlers/handler.service';
 
@@ -34,9 +33,9 @@ export abstract class EditorService<T extends TableRow> {
 
   protected abstract updateDiffQuery();
   protected abstract updateFullQuery();
-  protected abstract reload(id: string|number);
+  protected abstract onReloadSuccessful(data: MysqlResult<T>, id: string|number);
 
-  getClassAttributes(c: Class): string[] {
+  private getClassAttributes(c: Class): string[] {
     const tmpInstance = new c();
     return Object.getOwnPropertyNames(tmpInstance);
   }
@@ -48,17 +47,22 @@ export abstract class EditorService<T extends TableRow> {
       this._form.addControl(field, new FormControl());
     }
 
-    this.form.get(this._entityIdField).disable();
+    this._form.get(this._entityIdField).disable();
+  }
 
-    this._form.valueChanges.pipe(
-      distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
-    ).subscribe(() => {
-      if (!this._loading) {
-        if (this._form.dirty) {
-          this.updateDiffQuery();
-        }
-        this.updateFullQuery();
-      }
+  reload(id: string|number) {
+    this._loading = true;
+    this._form.reset();
+    this._fullQuery = '';
+    this._diffQuery = '';
+
+    this.queryService.selectAll<T>(this._entityTable, this._entityIdField, id).subscribe((data) => {
+      this.onReloadSuccessful(data, id);
+    }, (error) => {
+      // TODO
+      // console.log(error);
+    }, () => {
+      this._loading = false;
     });
   }
 
