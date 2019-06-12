@@ -2,9 +2,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { instance, reset } from 'ts-mockito';
 
 import { ConnectionWindowComponent } from './connection-window.component';
-import { ElectronService } from '../../services/electron.service';
-import { MockedElectronService } from '../../test-utils/mocks';
+import { MockedMysqlService } from '../../test-utils/mocks';
 import { CommonTestModule } from '../../test-utils/common-test.module';
+import { MysqlService } from '../../services/mysql.service';
 
 describe('ConnectionWindowComponent', () => {
   let component: ConnectionWindowComponent;
@@ -17,7 +17,7 @@ describe('ConnectionWindowComponent', () => {
         CommonTestModule,
       ],
       providers: [
-        { provide : ElectronService, useValue: instance(MockedElectronService) },
+        { provide : MysqlService, useValue: instance(MockedMysqlService) },
       ],
     })
       .compileComponents();
@@ -35,6 +35,6 @@ describe('ConnectionWindowComponent', () => {
 
   afterEach(() => {
     fixture.debugElement.nativeElement.remove();
-    reset(MockedElectronService);
+    reset(MockedMysqlService);
   });
 });

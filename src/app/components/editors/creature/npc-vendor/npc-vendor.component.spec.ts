@@ -1,6 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { anything, instance, reset, when } from 'ts-mockito';
+import { of } from 'rxjs';
 
 import { NpcVendorComponent } from './npc-vendor.component';
+import { MockedMysqlService } from '../../../../test-utils/mocks';
+import { MysqlService } from '../../../../services/mysql.service';
 
 describe('NpcVendorComponent', () => {
   let component: NpcVendorComponent;
@@ -8,12 +12,17 @@ describe('NpcVendorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NpcVendorComponent ]
+      declarations: [ NpcVendorComponent ],
+      providers: [
+        { provide : MysqlService, useValue: instance(MockedMysqlService) },
+      ],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
+    when(MockedMysqlService.query(anything(), anything())).thenReturn(of());
+
     fixture = TestBed.createComponent(NpcVendorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -21,5 +30,9 @@ describe('NpcVendorComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  afterEach(() => {
+    reset(MockedMysqlService);
   });
 });

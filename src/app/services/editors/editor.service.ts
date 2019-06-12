@@ -60,7 +60,7 @@ export abstract class EditorService<T extends TableRow> {
       this.onReloadSuccessful(data, id);
     }, (error) => {
       // TODO
-      // console.log(error);
+      console.log(error);
     }, () => {
       this._loading = false;
     });
