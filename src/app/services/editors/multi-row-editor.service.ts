@@ -6,7 +6,7 @@ import { HandlerService } from '../handlers/handler.service';
 import { QueryService } from '../query.service';
 
 export abstract class MultiRowEditorService<T extends TableRow> extends EditorService<T> {
-  private _originalRow: T[] = [];
+  private _originalRows: T[] = [];
   private _newRows: T[] = [];
   private _selectedRowIdx: number;
 
@@ -14,6 +14,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     protected _entityClass: Class,
     protected _entityTable: string,
     protected _entityIdField: string,
+    private _entitySecondIdField: string,
     protected handlerService: HandlerService<T>,
     protected queryService: QueryService,
   ) {
@@ -37,6 +38,35 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     });
   }
 
+  protected onReloadSuccessful(data: MysqlResult<T>, id: string|number) {
+    for (const row of data.results) {
+      this._originalRows.push({ ...row });
+      this._newRows.push({ ...row });
+    }
+    this._selectedRowIdx = null;
+    this._form.disable();
+    this._loadedEntityId = id;
+    this.updateFullQuery();
+  }
+
+  protected updateDiffQuery(): void {
+    this._diffQuery = this.queryService.getDiffDeleteInsertTwoKeysQuery<T>(
+      this._entityTable,
+      this._entityIdField,
+      this._entitySecondIdField,
+      this._originalRows,
+      this._newRows,
+    );
+  }
+
+  protected updateFullQuery(): void {
+    this._fullQuery = this.queryService.getFullDeleteInsertQuery<T>(
+      this._entityTable,
+      this._newRows,
+      this._entityIdField,
+    );
+  }
+
   onRowSelection(newIdx: number): void {
     if (newIdx === this._selectedRowIdx) {
       return;
@@ -51,16 +81,5 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     }
 
     this._loading = false;
-  }
-
-  protected onReloadSuccessful(data: MysqlResult<T>, id: string|number) {
-    for (const row of data.results) {
-      this._originalRow.push({ ...row });
-      this._newRows.push({ ...row });
-    }
-    this._selectedRowIdx = null;
-    this._form.disable();
-    this._loadedEntityId = id;
-    this.updateFullQuery();
   }
 }
