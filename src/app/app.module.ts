@@ -36,6 +36,7 @@ import { CreatureEquipTemplateComponent } from './components/editors/creature/cr
 import {
   CreatureOnkillReputationComponent
 } from './components/editors/creature/creature-onkill-reputation/creature-onkill-reputation.component';
+import { MysqlService } from './services/mysql.service';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -76,6 +77,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   ],
   providers: [
     ElectronService,
+    MysqlService,
     { provide: PERFECT_SCROLLBAR_CONFIG, useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG },
   ],
   bootstrap: [AppComponent]

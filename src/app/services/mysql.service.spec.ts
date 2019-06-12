@@ -8,6 +8,7 @@ import { MockedElectronService } from '../test-utils/mocks';
 describe('MysqlService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
+      MysqlService,
       { provide : ElectronService, useValue: instance(MockedElectronService) },
     ]
   }));
