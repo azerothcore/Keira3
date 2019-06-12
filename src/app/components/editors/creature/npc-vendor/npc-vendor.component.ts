@@ -14,7 +14,7 @@ export class NpcVendorComponent extends MultiRowEditorComponent<NpcVendor> {
 
   constructor(
     public editorService: NpcVendorService,
-    protected handlerService: CreatureHandlerService,
+    public handlerService: CreatureHandlerService,
   ) {
     super(editorService, handlerService);
   }
