@@ -28,7 +28,7 @@ import { CreatureTemplateAddonComponent } from './components/editors/creature/cr
 import { NpcVendorComponent } from './components/editors/creature/npc-vendor/npc-vendor.component';
 import { SelectCreatureComponent } from './components/editors/creature/select-creature/select-creature.component';
 import { CreateComponent } from './components/editors/shared/create/create.component';
-import { highlightOptions } from './highlight.config';
+import { highlightOptions } from './config/highlight.config';
 import { TopBarComponent } from './components/main-window/top-bar/top-bar.component';
 import { QueryOutputComponent } from './components/editors/shared/query-output/query-output.component';
 import { HighlightjsWrapperComponent } from './components/editors/shared/hightlightjs-wrapper/highlightjs-wrapper.component';
