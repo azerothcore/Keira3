@@ -8,7 +8,10 @@ import { QueryService } from '../query.service';
 export abstract class MultiRowEditorService<T extends TableRow> extends EditorService<T> {
   private _originalRows: T[] = [];
   private _newRows: T[] = [];
-  private _selectedRowIdx: number;
+  private _selectedRowId: string|number;
+
+  get newRows(): T[] { return this._newRows; }
+  get selectedRowId(): string|number { return this._selectedRowId; }
 
   constructor(
     protected _entityClass: Class,
@@ -22,6 +25,16 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     this.initForm();
   }
 
+  protected getRowIndex(id: string|number) {
+    for (let i = 0; i < this._newRows.length; i++) {
+      if (id === this._newRows[i][this._entitySecondIdField]) {
+        return i;
+      }
+    }
+
+    console.error(`getRowIndex() failed in finding row having ${this._entitySecondIdField} ${id}`);
+  }
+
   protected initForm() {
     super.initForm();
 
@@ -30,7 +43,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     ).subscribe(() => {
       if (!this._loading) {
         if (this._form.dirty) {
-          this._newRows[this._selectedRowIdx] = this._form.getRawValue();
+          this._newRows[this.getRowIndex(this._selectedRowId)] = this._form.getRawValue();
           this.updateDiffQuery();
         }
         this.updateFullQuery();
@@ -43,7 +56,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
       this._originalRows.push({ ...row });
       this._newRows.push({ ...row });
     }
-    this._selectedRowIdx = null;
+    this._selectedRowId = null;
     this._form.disable();
     this._loadedEntityId = id;
     this.updateFullQuery();
@@ -67,17 +80,24 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     );
   }
 
-  onRowSelection(newIdx: number): void {
-    if (newIdx === this._selectedRowIdx) {
+  onRowSelection({ selected }: { selected: T[]} ): void {
+    const newId = selected[0][this._entitySecondIdField];
+
+    if (newId === this._selectedRowId) {
       return;
     }
 
     this._loading = true;
-    this._selectedRowIdx = newIdx;
+    this._selectedRowId = newId;
+    this._form.enable();
     this._form.reset();
 
+    const index = this.getRowIndex(this._selectedRowId);
+
     for (const field of this.fields) {
-      this._form.get(field).setValue(this._newRows[newIdx][field]);
+      this._form.get(field).setValue(
+        this._newRows[index][field]
+      );
     }
 
     this._loading = false;
