@@ -11,6 +11,7 @@ import { CreatureEquipTemplateComponent } from '../components/editors/creature/c
 import {
   CreatureOnkillReputationComponent
 } from '../components/editors/creature/creature-onkill-reputation/creature-onkill-reputation.component';
+import { CreatureHandlerService } from '../services/handlers/creature-handler.service';
 
 const routes: Routes = [
   {
@@ -27,22 +28,27 @@ const routes: Routes = [
       {
         path: 'creature-template',
         component: CreatureTemplateComponent,
+        canActivate: [CreatureHandlerService],
       },
       {
         path: 'creature-template-addon',
         component: CreatureTemplateAddonComponent,
+        canActivate: [CreatureHandlerService],
       },
       {
         path: 'creature-onkill-reputation',
         component: CreatureOnkillReputationComponent,
+        canActivate: [CreatureHandlerService],
       },
       {
         path: 'creature-equip-template',
         component: CreatureEquipTemplateComponent,
+        canActivate: [CreatureHandlerService],
       },
       {
         path: 'npc-vendor',
         component: NpcVendorComponent,
+        canActivate: [CreatureHandlerService],
       },
     ]
   }
