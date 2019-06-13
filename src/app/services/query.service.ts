@@ -3,7 +3,7 @@ import * as squel from 'squel';
 
 import { MysqlService } from './mysql.service';
 import { MaxRow, MysqlResult, QueryForm, TableRow } from '../types';
-import { squelConfig } from '../squel.config';
+import { squelConfig } from '../config/squel.config';
 import { Observable } from 'rxjs';
 
 @Injectable({
