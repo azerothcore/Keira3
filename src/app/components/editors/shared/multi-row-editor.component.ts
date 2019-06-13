@@ -4,8 +4,12 @@ import { TableRow } from '../../../types';
 import { HandlerService } from '../../../services/handlers/handler.service';
 import { EditorComponent } from './editor.component';
 import { MultiRowEditorService } from '../../../services/editors/multi-row-editor.service';
+import { DTCFG } from '../../../config/datatable.config';
 
 export abstract class MultiRowEditorComponent<T extends TableRow> extends EditorComponent<T> implements OnInit {
+
+  public readonly DTCFG = DTCFG;
+
   constructor(
     public editorService: MultiRowEditorService<T>,
     protected handlerService: HandlerService<T>,
