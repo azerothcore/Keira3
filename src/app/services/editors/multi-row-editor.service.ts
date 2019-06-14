@@ -45,6 +45,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
         if (this._form.dirty) {
           this._newRows[this.getRowIndex(this._selectedRowId)] = this._form.getRawValue();
           this.updateDiffQuery();
+          this._newRows = [ ...this._newRows ];
         }
         this.updateFullQuery();
       }
