@@ -119,11 +119,19 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
 
     this._newRows.splice(this.getSelectedRowIndex(), 1);
     this._newRows = [ ...this._newRows ];
+
     this.updateDiffQuery();
     this.updateFullQuery();
   }
 
   addNewRow(): void {
-    // TODO
+    const newRow = new this._entityClass();
+    newRow[this._entityIdField] = Number.parseInt(this.loadedEntityId, 10);
+    this._newRows = [ ...this._newRows, { ...newRow }];
+
+    this.updateDiffQuery();
+    this.updateFullQuery();
+
+    this.onRowSelection({ selected: [newRow] });
   }
 }
