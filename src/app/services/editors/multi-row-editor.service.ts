@@ -11,6 +11,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   private _selectedRowId: string|number;
 
   get newRows(): T[] { return this._newRows; }
+  get selectedRowId(): string|number { return this._selectedRowId; }
 
   constructor(
     protected _entityClass: Class,
@@ -24,7 +25,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     this.initForm();
   }
 
-  protected getRowIndex(id: string|number) {
+  protected getRowIndex(id: string|number): number {
     for (let i = 0; i < this._newRows.length; i++) {
       if (id === this._newRows[i][this._entitySecondIdField]) {
         return i;
@@ -32,6 +33,10 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     }
 
     console.error(`getRowIndex() failed in finding row having ${this._entitySecondIdField} ${id}`);
+  }
+
+  protected getSelectedRowIndex(): number {
+    return this.getRowIndex(this._selectedRowId);
   }
 
   protected initForm() {
@@ -42,7 +47,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     ).subscribe(() => {
       if (!this._loading) {
         if (this._form.dirty) {
-          this._newRows[this.getRowIndex(this._selectedRowId)] = this._form.getRawValue();
+          this._newRows[this.getSelectedRowIndex()] = this._form.getRawValue();
           this.updateDiffQuery();
           this._newRows = [ ...this._newRows ];
         }
@@ -92,7 +97,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     this._form.enable();
     this._form.reset();
 
-    const index = this.getRowIndex(this._selectedRowId);
+    const index = this.getSelectedRowIndex();
 
     for (const field of this.fields) {
       this._form.get(field).setValue(
@@ -105,5 +110,20 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
 
   isRowSelected(row: T): boolean {
     return row[this._entitySecondIdField] === this._selectedRowId;
+  }
+
+  deleteSelectedRow(): void {
+    if (this._selectedRowId === null) {
+      return;
+    }
+
+    this._newRows.splice(this.getSelectedRowIndex(), 1);
+    this._newRows = [ ...this._newRows ];
+    this.updateDiffQuery();
+    this.updateFullQuery();
+  }
+
+  addNewRow(): void {
+    // TODO
   }
 }
