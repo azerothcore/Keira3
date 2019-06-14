@@ -27,6 +27,13 @@
       &.datatable-row-even {
         background-color: #ffffff;
       }
+      &:hover {
+        background-color: #eee;
+      }
+      &.active {
+        //background-color: blue;
+        //font-weight: 600;
+      }
       .datatable-body-cell {
         text-align: left;
         vertical-align: top;
@@ -34,9 +41,6 @@
         padding: 4px;
         word-wrap: break-word;
       }
-    }
-    .datatable-body-row:hover {
-      background-color: #eee;;
     }
     .datatable-body-row .datatable-body-cell:first-child {
       border-left: 0;
@@ -248,10 +252,6 @@ input[type=checkbox],
   .datatable-checkbox input[type=checkbox], .datatable-checkbox input[type=radio] {
     margin-top: 2px;
   }
-}
-
-datatable-body-row.datatable-body-row.active {
-  font-weight: 600;
 }
 
 datatable-scroller {

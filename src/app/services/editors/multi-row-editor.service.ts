@@ -11,7 +11,6 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   private _selectedRowId: string|number;
 
   get newRows(): T[] { return this._newRows; }
-  get selectedRowId(): string|number { return this._selectedRowId; }
 
   constructor(
     protected _entityClass: Class,
@@ -102,5 +101,9 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     }
 
     this._loading = false;
+  }
+
+  isRowSelected(row: T): boolean {
+    return row[this._entitySecondIdField] === this._selectedRowId;
   }
 }
