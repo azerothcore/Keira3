@@ -77,7 +77,7 @@
           (select)='editorService.onRowSelection($event)'>
           <ngx-datatable-column [width]="30" [sortable]="false">
             <ng-template let-row="row" ngx-datatable-cell-template>
-              <i [hidden]="!editorService.isRowSelected(row)"class="fas fa-chevron-right"></i>
+              <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column name="item" prop="item" [minWidth]="80"></ngx-datatable-column>
