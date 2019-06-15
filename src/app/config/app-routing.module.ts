@@ -12,6 +12,15 @@ import {
   CreatureOnkillReputationComponent
 } from '../components/editors/creature/creature-onkill-reputation/creature-onkill-reputation.component';
 import { CreatureHandlerService } from '../services/handlers/creature-handler.service';
+import { CreatureQuestitemComponent } from '../components/editors/creature/creature-questitem/creature-questitem.component';
+import { CreatureLootTemplateComponent } from '../components/editors/creature/creature-loot-template/creature-loot-template.component';
+import {
+  PickpocketingLootTemplateComponent
+} from '../components/editors/creature/pickpocketing-loot-template/pickpocketing-loot-template.component';
+import { SkinningLootTemplateComponent } from '../components/editors/creature/skinning-loot-template/skinning-loot-template.component';
+import { NpcTrainerComponent } from '../components/editors/creature/npc-trainer/npc-trainer.component';
+import { SpawnsComponent } from '../components/editors/creature/spawns/spawns.component';
+import { SpawnsAddonComponent } from '../components/editors/creature/spawns-addon/spawns-addon.component';
 
 const routes: Routes = [
   {
@@ -48,6 +57,41 @@ const routes: Routes = [
       {
         path: 'npc-vendor',
         component: NpcVendorComponent,
+        canActivate: [CreatureHandlerService],
+      },
+      {
+        path: 'creature-questitem',
+        component: CreatureQuestitemComponent,
+        canActivate: [CreatureHandlerService],
+      },
+      {
+        path: 'creature-loot-template',
+        component: CreatureLootTemplateComponent,
+        canActivate: [CreatureHandlerService],
+      },
+      {
+        path: 'pickpocketing-loot-template',
+        component: PickpocketingLootTemplateComponent,
+        canActivate: [CreatureHandlerService],
+      },
+      {
+        path: 'skinning-loot-template',
+        component: SkinningLootTemplateComponent,
+        canActivate: [CreatureHandlerService],
+      },
+      {
+        path: 'npc-trainer',
+        component: NpcTrainerComponent,
+        canActivate: [CreatureHandlerService],
+      },
+      {
+        path: 'spawns',
+        component: SpawnsComponent,
+        canActivate: [CreatureHandlerService],
+      },
+      {
+        path: 'spawns-addon',
+        component: SpawnsAddonComponent,
         canActivate: [CreatureHandlerService],
       },
     ]
