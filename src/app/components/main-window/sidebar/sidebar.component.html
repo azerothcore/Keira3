@@ -47,34 +47,69 @@
               <ul>
                 <li>
                   <a href="#" routerLinkActive="active" [routerLink]="'creature/select'">
-                    Select Creature Template
+                    Select Template
                   </a>
                 </li>
                 <ng-container *ngIf="creatureHandlerService.selected">
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template'">
-                      creature_template
+                      Template
                     </a>
                   </li>
                   <ng-container *ngIf="!creatureHandlerService.isNew">
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template-addon'">
-                        creature_template_addon
+                        Template Addon
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-onkill-reputation'">
-                        creature_onkill_reputation
+                        Onkill Reputation
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-equip-template'">
-                        creature_equip_template
+                        Equip Template
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/npc-vendor'">
-                        npc_vendor
+                        Vendor
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/npc-trainer'">
+                        Trainer
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-questitem'">
+                        Quest Item
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-loot-template'">
+                        Creature Loot
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/pickpocketing-loot-template'">
+                        Pickpocketing Loot
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/skinning-loot-template'">
+                        Skinning Loot
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/spawns'">
+                        Spawns
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/spawns-addon'">
+                        Spawns Addon
                       </a>
                     </li>
                   </ng-container>
