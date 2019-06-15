@@ -76,6 +76,8 @@ export abstract class EditorService<T extends TableRow> {
   }
 
   save(query: string) {
+    if (!query) { return; }
+
     this.queryService.query<T>(query).subscribe(() => {
       this._loading = false;
       this.reload(this.loadedEntityId);
