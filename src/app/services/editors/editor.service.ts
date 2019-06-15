@@ -1,9 +1,10 @@
 import { FormControl, FormGroup } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { MysqlError } from 'mysql';
 
 import { Class, MysqlResult, TableRow } from '../../types';
 import { QueryService } from '../query.service';
 import { HandlerService } from '../handlers/handler.service';
-import { Observable } from 'rxjs';
 
 export abstract class EditorService<T extends TableRow> {
   protected _loading = false;
@@ -13,6 +14,7 @@ export abstract class EditorService<T extends TableRow> {
   protected _fullQuery: string;
   protected _isNew = false;
   protected _form: FormGroup;
+  protected _error: MysqlError;
 
   get loadedEntityId(): string { return `${this._loadedEntityId}`; }
   get loading(): boolean { return this._loading; }
@@ -21,6 +23,7 @@ export abstract class EditorService<T extends TableRow> {
   get entityTable(): string { return this._entityTable; }
   get isNew(): boolean { return this._isNew; }
   get form(): FormGroup { return this._form; }
+  get error(): MysqlError { return this._error; }
 
   constructor(
     protected _entityClass: Class,
@@ -66,10 +69,10 @@ export abstract class EditorService<T extends TableRow> {
     this._diffQuery = '';
 
     this.selectQuery(id).subscribe((data) => {
+      this._error = null;
       this.onReloadSuccessful(data, id);
-    }, (error) => {
-      // TODO
-      console.log(error);
+    }, (error: MysqlError) => {
+      this._error = error;
     }, () => {
       this._loading = false;
     });
@@ -79,11 +82,11 @@ export abstract class EditorService<T extends TableRow> {
     if (!query) { return; }
 
     this.queryService.query<T>(query).subscribe(() => {
+      this._error = null;
       this._loading = false;
       this.reload(this.loadedEntityId);
-    }, (error) => {
-      // TODO
-      console.log(error);
+    }, (error: MysqlError) => {
+      this._error = error;
     }, () => {
       this._loading = false;
     });

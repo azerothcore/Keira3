@@ -15,4 +15,6 @@
 
   <button type="button" class="btn btn-secondary btn-sm" (click)="copy()">Copy</button>
   <button type="button" class="btn btn-primary btn-sm" (click)="execute()">Execute</button>
+
+  <app-query-error [error]="editorService.error"></app-query-error>
 </ng-container>

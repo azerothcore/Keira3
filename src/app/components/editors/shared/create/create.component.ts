@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { MysqlError } from 'mysql';
 
 import { TableRow } from '../../../../types';
 import { QueryService } from '../../../../services/query.service';
@@ -32,9 +33,8 @@ export class CreateComponent<T extends TableRow> implements OnInit {
     this._loading = true;
     this.queryService.selectAll<T>(this.entityTable, this.entityIdField, this.idModel).subscribe((data) => {
       this.isIdFree = data.results.length <= 0;
-    }, (error) => {
-      // TODO
-      console.log(error);
+    }, (error: MysqlError) => {
+      console.error(error);
     }, () => {
       this._loading = false;
     });
@@ -50,9 +50,8 @@ export class CreateComponent<T extends TableRow> implements OnInit {
       const currentMax = data.results[0].max;
       this.idModel = currentMax < this.customStartingId ? this.customStartingId : currentMax + 1;
       this.isIdFree = true;
-    }, (error) => {
-      // TODO
-      console.log(error);
+    }, (error: MysqlError) => {
+      console.error(error);
     }, () => {
       this._loading = false;
     });

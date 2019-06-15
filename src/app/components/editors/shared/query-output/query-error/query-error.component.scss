@@ -1,0 +1,13 @@
+.error-box {
+  table {
+    tr {
+      td:first-child {
+        font-weight: bold;
+        text-align: right;
+      }
+      td:last-child {
+        padding-left: 8px;
+      }
+    }
+  }
+}
