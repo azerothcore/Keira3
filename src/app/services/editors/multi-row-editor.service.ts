@@ -60,10 +60,13 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   }
 
   protected onReloadSuccessful(data: MysqlResult<T>, id: string|number) {
+    this._originalRows = [];
+    this._newRows = [];
     for (const row of data.results) {
       this._originalRows.push({ ...row });
       this._newRows.push({ ...row });
     }
+    this._newRows = [...this._newRows];
     this._selectedRowId = null;
     this._form.disable();
     this._loadedEntityId = id;
