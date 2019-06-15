@@ -37,13 +37,13 @@
             <span>Editors</span>
           </li>
 
-          <li class="sidebar-dropdown active">
-            <a>
+          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.creature === 'down' }">
+            <a (click)="toggleState('creature')">
               <i class="fa fa-pen"></i>
               <span>Creature</span>
             </a>
 
-            <div class="sidebar-submenu">
+            <div class="sidebar-submenu" [@slide]="menuStates.creature">
               <ul>
                 <li>
                   <a href="#" routerLinkActive="active" [routerLink]="'creature/select'">
