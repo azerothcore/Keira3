@@ -47,13 +47,13 @@
               <ul>
                 <li>
                   <a href="#" routerLinkActive="active" [routerLink]="'creature/select'">
-                    Select Template
+                    Select Creature Template
                   </a>
                 </li>
                 <ng-container *ngIf="creatureHandlerService.selected">
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template'">
-                      Template
+                      Creature Template
                     </a>
                   </li>
                   <ng-container *ngIf="!creatureHandlerService.isNew">
