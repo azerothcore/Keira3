@@ -9,9 +9,11 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   private _originalRows: T[] = [];
   private _newRows: T[] = [];
   private _selectedRowId: string|number;
+  private _nextRowId = 0;
 
   get newRows(): T[] { return this._newRows; }
   get selectedRowId(): string|number { return this._selectedRowId; }
+  get entitySecondIdField(): string { return this._entitySecondIdField; }
 
   constructor(
     protected _entityClass: Class,
@@ -25,7 +27,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     this.initForm();
   }
 
-  protected getRowIndex(id: string|number): number {
+  private getRowIndex(id: string|number): number {
     for (let i = 0; i < this._newRows.length; i++) {
       if (id === this._newRows[i][this._entitySecondIdField]) {
         return i;
@@ -35,7 +37,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     console.error(`getRowIndex() failed in finding row having ${this._entitySecondIdField} ${id}`);
   }
 
-  protected getSelectedRowIndex(): number {
+  private getSelectedRowIndex(): number {
     return this.getRowIndex(this._selectedRowId);
   }
 
@@ -46,12 +48,13 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
       distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
     ).subscribe(() => {
       if (!this._loading) {
-        if (this._form.dirty) {
+        if (this._form.dirty && this.isFormIdUnique()) {
           this._newRows[this.getSelectedRowIndex()] = this._form.getRawValue();
-          this.updateDiffQuery();
           this._newRows = [ ...this._newRows ];
+          this._selectedRowId = this.form.get(this._entitySecondIdField).value;
+          this.updateDiffQuery();
+          this.updateFullQuery();
         }
-        this.updateFullQuery();
       }
     });
   }
@@ -127,11 +130,25 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   addNewRow(): void {
     const newRow = new this._entityClass();
     newRow[this._entityIdField] = Number.parseInt(this.loadedEntityId, 10);
+    newRow[this._entitySecondIdField] = this._nextRowId++;
     this._newRows = [ ...this._newRows, { ...newRow }];
 
     this.updateDiffQuery();
     this.updateFullQuery();
 
     this.onRowSelection({ selected: [newRow] });
+  }
+
+  isFormIdUnique(): boolean {
+    for (const row of this._newRows) {
+      if (
+        row[this._entitySecondIdField] !== this._selectedRowId
+        && row[this._entitySecondIdField] === this._form.get(this._entitySecondIdField).value
+      ) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }
