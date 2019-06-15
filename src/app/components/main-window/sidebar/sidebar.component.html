@@ -46,24 +46,36 @@
             <div class="sidebar-submenu">
               <ul>
                 <li>
-                  <a href="#" [routerLink]="'creature/select'">Select Creature Template</a>
+                  <a href="#" routerLinkActive="active" [routerLink]="'creature/select'">
+                    Select Creature Template
+                  </a>
                 </li>
                 <ng-container *ngIf="creatureHandlerService.selected">
                   <li>
-                    <a href="#" [routerLink]="'creature/creature-template'">creature_template</a>
+                    <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template'">
+                      creature_template
+                    </a>
                   </li>
                   <ng-container *ngIf="!creatureHandlerService.isNew">
                     <li>
-                      <a href="#" [routerLink]="'creature/creature-template-addon'">creature_template_addon</a>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template-addon'">
+                        creature_template_addon
+                      </a>
                     </li>
                     <li>
-                      <a href="#" [routerLink]="'creature/creature-onkill-reputation'">creature_onkill_reputation</a>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-onkill-reputation'">
+                        creature_onkill_reputation
+                      </a>
                     </li>
                     <li>
-                      <a href="#" [routerLink]="'creature/creature-equip-template'">creature_equip_template</a>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-equip-template'">
+                        creature_equip_template
+                      </a>
                     </li>
                     <li>
-                      <a href="#" [routerLink]="'creature/npc-vendor'">npc_vendor</a>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/npc-vendor'">
+                        npc_vendor
+                      </a>
                     </li>
                   </ng-container>
                 </ng-container>

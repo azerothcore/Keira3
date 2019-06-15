@@ -267,7 +267,7 @@ $img-shadow-color:rgba(0, 0, 0, 0.5);
           }
 
           li {
-            padding-left: 25px;
+            padding-left: 8px;
             font-size: 13px;
 
             a {
@@ -289,6 +289,10 @@ $img-shadow-color:rgba(0, 0, 0, 0.5);
               .label {
                 float: right;
                 margin-top: 0px;
+              }
+              &.active {
+                font-weight: bold;
+                color: #fff;
               }
             }
           }
