@@ -7,8 +7,8 @@ import { SkinningLootTemplateService } from '../../../../services/editors/creatu
 
 @Component({
   selector: 'app-skinning-loot-template',
-  templateUrl: './skinning-loot-template.component.html',
-  styleUrls: ['./skinning-loot-template.component.scss']
+  templateUrl: '../../shared/loot-template/loot-template.component.html',
+  styleUrls: ['../../shared/loot-template/loot-template.component.scss']
 })
 export class SkinningLootTemplateComponent extends MultiRowEditorComponent<SkinningLootTemplate> {
 
