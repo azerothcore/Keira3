@@ -126,6 +126,8 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     this._newRows.splice(this.getSelectedRowIndex(), 1);
     this._newRows = [ ...this._newRows ];
 
+    this._selectedRowId = null;
+
     this.updateDiffQuery();
     this.updateFullQuery();
   }
