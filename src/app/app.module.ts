@@ -37,6 +37,13 @@ import {
   CreatureOnkillReputationComponent
 } from './components/editors/creature/creature-onkill-reputation/creature-onkill-reputation.component';
 import { MysqlService } from './services/mysql.service';
+import { CreatureQuestitemComponent } from './components/editors/creature/creature-questitem/creature-questitem.component';
+import { CreatureLootTemplateComponent } from './components/editors/creature/creature-loot-template/creature-loot-template.component';
+import { PickpocketingLootTemplateComponent } from './components/editors/creature/pickpocketing-loot-template/pickpocketing-loot-template.component';
+import { SkinningLootTemplateComponent } from './components/editors/creature/skinning-loot-template/skinning-loot-template.component';
+import { NpcTrainerComponent } from './components/editors/creature/npc-trainer/npc-trainer.component';
+import { SpawnsComponent } from './components/editors/creature/spawns/spawns.component';
+import { SpawnsAddonComponent } from './components/editors/creature/spawns-addon/spawns-addon.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -61,6 +68,13 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     HighlightjsWrapperComponent,
     CreatureEquipTemplateComponent,
     CreatureOnkillReputationComponent,
+    CreatureQuestitemComponent,
+    CreatureLootTemplateComponent,
+    PickpocketingLootTemplateComponent,
+    SkinningLootTemplateComponent,
+    NpcTrainerComponent,
+    SpawnsComponent,
+    SpawnsAddonComponent,
   ],
   imports: [
     BrowserModule,

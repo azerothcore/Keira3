@@ -41,6 +41,10 @@ export abstract class EditorService<T extends TableRow> {
     return Object.getOwnPropertyNames(tmpInstance);
   }
 
+  protected disableEntityIdField() {
+    this._form.get(this._entityIdField).disable();
+  }
+
   protected initForm() {
     this._form = new FormGroup({});
 
@@ -48,7 +52,7 @@ export abstract class EditorService<T extends TableRow> {
       this._form.addControl(field, new FormControl());
     }
 
-    this._form.get(this._entityIdField).disable();
+    this.disableEntityIdField();
   }
 
   protected selectQuery(id: string|number): Observable<MysqlResult<T>> {
