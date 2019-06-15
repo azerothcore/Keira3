@@ -7,8 +7,8 @@ import { PickpocketingLootTemplateService } from '../../../../services/editors/c
 
 @Component({
   selector: 'app-pickpocketing-loot-template',
-  templateUrl: './pickpocketing-loot-template.component.html',
-  styleUrls: ['./pickpocketing-loot-template.component.scss']
+  templateUrl: '../../shared/loot-template/loot-template.component.html',
+  styleUrls: ['../../shared/loot-template/loot-template.component.scss']
 })
 export class PickpocketingLootTemplateComponent extends MultiRowEditorComponent<PickpocketingLootTemplate> {
 

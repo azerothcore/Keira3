@@ -7,8 +7,8 @@ import { CreatureLootTemplateService } from '../../../../services/editors/creatu
 
 @Component({
   selector: 'app-creature-loot-template',
-  templateUrl: './creature-loot-template.component.html',
-  styleUrls: ['./creature-loot-template.component.scss']
+  templateUrl: '../../shared/loot-template/loot-template.component.html',
+  styleUrls: ['../../shared/loot-template/loot-template.component.scss']
 })
 export class CreatureLootTemplateComponent extends MultiRowEditorComponent<CreatureLootTemplate> {
 
