@@ -3,6 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Class, MysqlResult, TableRow } from '../../types';
 import { QueryService } from '../query.service';
 import { HandlerService } from '../handlers/handler.service';
+import { Observable } from 'rxjs';
 
 export abstract class EditorService<T extends TableRow> {
   protected _loading = false;
@@ -50,13 +51,17 @@ export abstract class EditorService<T extends TableRow> {
     this._form.get(this._entityIdField).disable();
   }
 
+  protected selectQuery(id: string|number): Observable<MysqlResult<T>> {
+    return this.queryService.selectAll<T>(this._entityTable, this._entityIdField, id);
+  }
+
   reload(id: string|number) {
     this._loading = true;
     this._form.reset();
     this._fullQuery = '';
     this._diffQuery = '';
 
-    this.queryService.selectAll<T>(this._entityTable, this._entityIdField, id).subscribe((data) => {
+    this.selectQuery(id).subscribe((data) => {
       this.onReloadSuccessful(data, id);
     }, (error) => {
       // TODO
