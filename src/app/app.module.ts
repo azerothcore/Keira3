@@ -46,6 +46,7 @@ import { SkinningLootTemplateComponent } from './components/editors/creature/ski
 import { NpcTrainerComponent } from './components/editors/creature/npc-trainer/npc-trainer.component';
 import { SpawnsComponent } from './components/editors/creature/spawns/spawns.component';
 import { SpawnsAddonComponent } from './components/editors/creature/spawns-addon/spawns-addon.component';
+import { QueryErrorComponent } from './components/editors/shared/query-output/query-error/query-error.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -77,6 +78,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     NpcTrainerComponent,
     SpawnsComponent,
     SpawnsAddonComponent,
+    QueryErrorComponent,
   ],
   imports: [
     BrowserModule,

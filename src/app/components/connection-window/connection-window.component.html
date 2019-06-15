@@ -49,25 +49,6 @@
       <button class="btn btn-success connect-button" (click)="onConnect()">Connect</button>
     </form>
 
-    <div *ngIf="error" class="alert alert-danger error-box">
-      <table>
-        <tr>
-          <td>Error:</td>
-          <td>{{ error.sqlMessage }}</td>
-        </tr>
-        <tr>
-          <td>Code:</td>
-          <td>{{ error.code }}</td>
-        </tr>
-        <tr>
-          <td>Errno:</td>
-          <td>{{ error.errno }}</td>
-        </tr>
-        <tr>
-          <td>SQL State:</td>
-          <td>{{ error.sqlState }}</td>
-        </tr>
-      </table>
-    </div>
+    <app-query-error [error]="error"></app-query-error>
   </div>
 </div>

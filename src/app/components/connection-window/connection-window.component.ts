@@ -31,7 +31,7 @@ export class ConnectionWindowComponent implements OnInit {
   onConnect() {
     this.mysqlService.connect(this.form.getRawValue()).subscribe(() => {
       this.error = null;
-    }, (error) => {
+    }, (error: MysqlError) => {
       this.error = error;
     });
   }
