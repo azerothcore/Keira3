@@ -5,6 +5,7 @@ import { ConnectionWindowComponent } from './connection-window.component';
 import { MockedMysqlService } from '../../test-utils/mocks';
 import { CommonTestModule } from '../../test-utils/common-test.module';
 import { MysqlService } from '../../services/mysql.service';
+import { QueryErrorComponent } from '../editors/shared/query-output/query-error/query-error.component';
 
 describe('ConnectionWindowComponent', () => {
   let component: ConnectionWindowComponent;
@@ -12,7 +13,10 @@ describe('ConnectionWindowComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ConnectionWindowComponent ],
+      declarations: [
+        ConnectionWindowComponent,
+        QueryErrorComponent,
+      ],
       imports: [
         CommonTestModule,
       ],

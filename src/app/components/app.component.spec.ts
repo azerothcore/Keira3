@@ -12,6 +12,7 @@ import { instance, reset } from 'ts-mockito';
 import { MockedElectronService, MockedMysqlService } from '../test-utils/mocks';
 import { MysqlService } from '../services/mysql.service';
 import { ConnectionWindowComponent } from './connection-window/connection-window.component';
+import { QueryErrorComponent } from './editors/shared/query-output/query-error/query-error.component';
 
 describe('AppComponent', () => {
   let component: AppComponent;
@@ -24,6 +25,7 @@ describe('AppComponent', () => {
         ConnectionWindowComponent,
         AppComponent,
         SidebarComponent,
+        QueryErrorComponent,
       ],
       imports: [
         FormsModule,
