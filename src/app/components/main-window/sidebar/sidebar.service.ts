@@ -7,8 +7,6 @@ export class SidebarService {
   toggled = false;
   _hasBackgroundImage = true;
 
-  constructor() { }
-
   getSidebarState() {
     return this.toggled;
   }

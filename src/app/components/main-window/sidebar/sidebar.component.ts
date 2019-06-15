@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { SidebarService } from './sidebar.service';
 
@@ -17,7 +17,11 @@ import { CreatureHandlerService } from '../../../services/handlers/creature-hand
     ])
   ]
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent {
+
+  menuStates: { [key: string]: 'down'|'up' } = {
+    creature: 'down',
+  };
 
   constructor(
     public sidebarService: SidebarService,
@@ -25,9 +29,6 @@ export class SidebarComponent implements OnInit {
     public creatureHandlerService: CreatureHandlerService,
   ) {
    }
-
-  ngOnInit() {
-  }
 
   getSideBarState() {
     return this.sidebarService.getSidebarState();
@@ -39,5 +40,9 @@ export class SidebarComponent implements OnInit {
 
   hasBackgroundImage() {
     return this.sidebarService.hasBackgroundImage;
+  }
+
+  toggleState(key: string) {
+    this.menuStates[key] = this.menuStates[key] === 'up' ? 'down' : 'up';
   }
 }
