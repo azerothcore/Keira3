@@ -1,28 +1,35 @@
 import { Injectable } from '@angular/core';
 
-import { MultiRowEditorService } from '../multi-row-editor.service';
 import { CreatureHandlerService } from '../../handlers/creature-handler.service';
 import { QueryService } from '../../query.service';
-import { LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2 } from '../../../components/editors/shared/loot-template/loot-template.type';
 import {
-  PICKPOCKETING_LOOT_TEMPLATE_TABLE,
-  PickpocketingLootTemplate,
+  PickpocketingLootTemplate
 } from '../../../components/editors/creature/pickpocketing-loot-template/pickpocketing-loot-template.type';
+import { LootEditorService } from '../loot-editor.service';
+import {
+  CREATURE_LOOT_TEMPLATE_TABLE,
+  CreatureLootTemplate
+} from '../../../components/editors/creature/creature-loot-template/creature-loot-template.type';
+import {
+  CREATURE_TEMPLATE_ID, CREATURE_TEMPLATE_PICKPOCKETING_LOOT_ID,
+  CREATURE_TEMPLATE_TABLE
+} from '../../../components/editors/creature/creature-template/creature-template.type';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PickpocketingLootTemplateService extends MultiRowEditorService<PickpocketingLootTemplate> {
+export class PickpocketingLootTemplateService extends LootEditorService<PickpocketingLootTemplate> {
 
   constructor(
     protected handlerService: CreatureHandlerService,
     protected queryService: QueryService,
   ) {
     super(
-      PickpocketingLootTemplate,
-      PICKPOCKETING_LOOT_TEMPLATE_TABLE,
-      LOOT_TEMPLATE_ID,
-      LOOT_TEMPLATE_ID_2,
+      CreatureLootTemplate,
+      CREATURE_LOOT_TEMPLATE_TABLE,
+      CREATURE_TEMPLATE_TABLE,
+      CREATURE_TEMPLATE_ID,
+      CREATURE_TEMPLATE_PICKPOCKETING_LOOT_ID,
       handlerService,
       queryService,
     );
