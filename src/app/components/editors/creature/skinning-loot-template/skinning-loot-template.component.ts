@@ -1,16 +1,16 @@
 import { Component } from '@angular/core';
 
-import { MultiRowEditorComponent } from '../../shared/multi-row-editor.component';
 import { CreatureHandlerService } from '../../../../services/handlers/creature-handler.service';
 import { SkinningLootTemplate } from './skinning-loot-template.type';
 import { SkinningLootTemplateService } from '../../../../services/editors/creature/skinning-loot-template.service';
+import { LootTemplateComponent } from '../../shared/loot-template/loot-template.component';
 
 @Component({
   selector: 'app-skinning-loot-template',
   templateUrl: '../../shared/loot-template/loot-template.component.html',
   styleUrls: ['../../shared/loot-template/loot-template.component.scss']
 })
-export class SkinningLootTemplateComponent extends MultiRowEditorComponent<SkinningLootTemplate> {
+export class SkinningLootTemplateComponent extends LootTemplateComponent<SkinningLootTemplate> {
 
   constructor(
     public editorService: SkinningLootTemplateService,
