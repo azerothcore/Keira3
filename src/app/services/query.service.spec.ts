@@ -1,10 +1,11 @@
-import { TestBed } from '@angular/core/testing';
+import { async, TestBed } from '@angular/core/testing';
 import { instance } from 'ts-mockito';
 
 import { QueryService } from './query.service';
 import { MysqlService } from './mysql.service';
 import { MockedMysqlService } from '../test-utils/mocks';
-import { TableRow } from '../types';
+import { MaxRow, MysqlResult, QueryForm, TableRow } from '../types';
+import { of } from 'rxjs';
 
 interface MockRow extends TableRow {
   entry: number;
@@ -22,7 +23,7 @@ interface MockTwoKeysRow extends TableRow {
   attribute2: number;
 }
 
-describe('QueryService', () => {
+fdescribe('QueryService', () => {
   let service: QueryService;
 
   beforeEach(() => TestBed.configureTestingModule({
@@ -34,6 +35,86 @@ describe('QueryService', () => {
   beforeEach(() => {
     service = TestBed.get(QueryService);
   });
+
+  it('query() should call mysqlService.query()', () => {
+    const querySpy = spyOn(TestBed.get(MysqlService), 'query');
+    const myQuery = 'SELECT azerothcore FROM projects;';
+
+    service.query(myQuery);
+
+    expect(querySpy).toHaveBeenCalledWith(myQuery, undefined);
+  });
+
+  describe('getSearchQuery()', () => {
+    const table = 'my_keira3';
+
+    it('should properly work when using fields', () => {
+      const queryForm: QueryForm = {
+        fields: {
+          myField1: 'myValue1',
+          myField2: 'myValue2',
+        },
+      };
+
+      expect(service.getSearchQuery(table, queryForm)).toEqual(
+        'SELECT * ' +
+        'FROM `my_keira3` WHERE (myField1 LIKE \'%myValue1%\') AND (myField2 LIKE \'%myValue2%\')'
+      );
+    });
+
+    it('should properly work when using fields and limit', () => {
+      const queryForm: QueryForm = {
+        fields: {
+          myField1: 'myValue1',
+          myField2: 'myValue2',
+        },
+        limit: '20',
+      };
+
+      expect(service.getSearchQuery(table, queryForm)).toEqual(
+        'SELECT * ' +
+        'FROM `my_keira3` WHERE (myField1 LIKE \'%myValue1%\') AND (myField2 LIKE \'%myValue2%\') LIMIT 20'
+      );
+    });
+
+    it('should properly work when using limit only', () => {
+      const queryForm: QueryForm = {
+        fields: {
+          param: null,
+        },
+        limit: '20',
+      };
+
+      expect(service.getSearchQuery(table, queryForm)).toEqual(
+        'SELECT * ' +
+        'FROM `my_keira3` LIMIT 20'
+      );
+    });
+  });
+
+  it('selectAll() should correctly work', async(() => {
+    const data: MysqlResult<TableRow> = { results: [{ key: 'value'}] };
+    const querySpy = spyOn(service, 'query').and.returnValue(of(data));
+
+    service.selectAll('my_ac', 'param', 'value').subscribe((res) => {
+      expect(res).toEqual(data);
+    });
+
+    expect(querySpy).toHaveBeenCalledWith('SELECT * ' +
+      'FROM `my_ac` WHERE (param = value)');
+  }));
+
+  it('getMaxId() should correctly work', async(() => {
+    const data: MysqlResult<MaxRow> = { results: [{ max: 123 }] };
+    const querySpy = spyOn(service, 'query').and.returnValue(of());
+
+    service.getMaxId('my_ac', 'param').subscribe((res) => {
+      expect(res).toEqual(data);
+    });
+
+    expect(querySpy).toHaveBeenCalledWith('SELECT MAX(param) AS max ' +
+      'FROM my_ac;');
+  }));
 
   describe('Query builders', () => {
     const tableName = 'my_table';
