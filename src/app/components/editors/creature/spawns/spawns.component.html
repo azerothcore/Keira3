@@ -1,3 +1,178 @@
-<p>
-  spawns works!
-</p>
+<app-top-bar [handler]="handlerService"></app-top-bar>
+
+<div class="container-fluid">
+
+  <span *ngIf="editorService.loading">Loading...</span>
+
+  <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
+
+    <app-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></app-query-output>
+
+    <hr class="mt-2 mb-1">
+
+    <div class="wiki-link mb-2">
+      <a [href]="docUrl" target="_blank">
+        <i class="fas fa-link"></i> {{ editorService.entityTable }} documentation
+      </a>
+    </div>
+
+    <form
+      [formGroup]="editorService.form"
+      class="form-group edit-form"
+    >
+
+      <div class="row">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="guid">guid</label>
+          <input [formControlName]="'guid'" id="guid" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="map">map</label>
+          <input [formControlName]="'map'" id="map" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="zoneId">zoneId</label>
+          <input [formControlName]="'zoneId'" id="zoneId" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="areaId">areaId</label>
+          <input [formControlName]="'areaId'" id="areaId" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="spawnMask">spawnMask</label>
+          <input [formControlName]="'spawnMask'" id="spawnMask" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="phaseMask">phaseMask</label>
+          <input [formControlName]="'phaseMask'" id="phaseMask" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="modelid">modelid</label>
+          <input [formControlName]="'modelid'" id="modelid" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="equipment_id">equipment_id</label>
+          <input [formControlName]="'equipment_id'" id="equipment_id" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="position_x">position_x</label>
+          <input [formControlName]="'position_x'" id="position_x" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="position_y">position_y</label>
+          <input [formControlName]="'position_y'" id="position_y" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="position_z">position_z</label>
+          <input [formControlName]="'position_z'" id="position_z" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="orientation">orientation</label>
+          <input [formControlName]="'orientation'" id="orientation" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="spawntimesecs">spawntimesecs</label>
+          <input [formControlName]="'spawntimesecs'" id="spawntimesecs" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="spawndist">spawndist</label>
+          <input [formControlName]="'spawndist'" id="spawndist" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="currentwaypoint">currentwaypoint</label>
+          <input [formControlName]="'currentwaypoint'" id="currentwaypoint" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="curhealth">curhealth</label>
+          <input [formControlName]="'curhealth'" id="curhealth" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="curmana">curmana</label>
+          <input [formControlName]="'curmana'" id="curmana" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="MovementType">MovementType</label>
+          <input [formControlName]="'MovementType'" id="MovementType" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="npcflag">npcflag</label>
+          <input [formControlName]="'npcflag'" id="npcflag" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="unit_flags">unit_flags</label>
+          <input [formControlName]="'unit_flags'" id="unit_flags" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="dynamicflags">dynamicflags</label>
+          <input [formControlName]="'dynamicflags'" id="dynamicflags" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="ScriptName">ScriptName</label>
+          <input [formControlName]="'ScriptName'" id="ScriptName" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
+          <i class="fas fa-exclamation-triangle"></i>
+          The <strong>{{ editorService.entitySecondIdField }}</strong> must be unique.
+        </div>
+
+      </div>
+
+    </form>
+
+    <div class="row">
+      <div class="col-12">
+
+        <button
+          class="btn btn-danger btn-sm mr-2"
+          (click)="editorService.deleteSelectedRow()"
+          [disabled]="editorService.selectedRowId === null"
+        >Delete selected row</button>
+
+        <button
+          class="btn btn-success btn-sm"
+          (click)="editorService.addNewRow()"
+        >Add new row</button>
+
+        <ngx-datatable
+          class="bootstrap table table-striped text-center datatable-select"
+          [rows]="editorService.newRows"
+          [headerHeight]="DTCFG.headerHeight"
+          [footerHeight]="DTCFG.footerHeight"
+          [columnMode]="DTCFG.columnMode"
+          [rowHeight]="DTCFG.rowHeight"
+          [selectionType]="DTCFG.selectionType"
+          (select)='editorService.onRowSelection($event)'>
+          <ngx-datatable-column [width]="30" [sortable]="false">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="guid" prop="guid" [minWidth]="80"></ngx-datatable-column>
+          <ngx-datatable-column name="M" prop="map"></ngx-datatable-column>
+          <ngx-datatable-column name="Z" prop="zoneId"></ngx-datatable-column>
+          <ngx-datatable-column name="A" prop="areaId"></ngx-datatable-column>
+          <ngx-datatable-column name="SM" prop="spawnMask" [minWidth]="80"></ngx-datatable-column>
+          <ngx-datatable-column name="PM" prop="phaseMask"></ngx-datatable-column>
+          <ngx-datatable-column name="Model" prop="modelid"></ngx-datatable-column>
+          <ngx-datatable-column name="Equip" prop="equipment_id"></ngx-datatable-column>
+          <ngx-datatable-column name="position_x" prop="position_x"></ngx-datatable-column>
+          <ngx-datatable-column name="position_y" prop="position_y" [minWidth]="80"></ngx-datatable-column>
+          <ngx-datatable-column name="position_z" prop="position_z"></ngx-datatable-column>
+          <ngx-datatable-column name="orientation" prop="orientation"></ngx-datatable-column>
+          <ngx-datatable-column name="Time" prop="spawntimesecs"></ngx-datatable-column>
+          <ngx-datatable-column name="Dist" prop="spawndist"></ngx-datatable-column>
+          <ngx-datatable-column name="CW" prop="currentwaypoint" [minWidth]="80"></ngx-datatable-column>
+          <ngx-datatable-column name="curhealth" prop="curhealth"></ngx-datatable-column>
+          <ngx-datatable-column name="curmana" prop="curmana"></ngx-datatable-column>
+          <ngx-datatable-column name="Movement" prop="MovementType"></ngx-datatable-column>
+          <ngx-datatable-column name="npcflag" prop="npcflag"></ngx-datatable-column>
+          <ngx-datatable-column name="unit_flags" prop="unit_flags"></ngx-datatable-column>
+          <ngx-datatable-column name="dynamicflags" prop="dynamicflags"></ngx-datatable-column>
+          <ngx-datatable-column name="ScriptName" prop="ScriptName"></ngx-datatable-column>
+        </ngx-datatable>
+
+      </div>
+    </div>
+  </div>
+</div>
