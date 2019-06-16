@@ -134,7 +134,9 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
 
   addNewRow(): void {
     const newRow = new this._entityClass();
-    newRow[this._entityIdField] = Number.parseInt(this.loadedEntityId, 10);
+    if (this._entityIdField) {
+      newRow[this._entityIdField] = Number.parseInt(this.loadedEntityId, 10);
+    }
     newRow[this._entitySecondIdField] = this._nextRowId++;
     this._newRows = [ ...this._newRows, { ...newRow }];
 
