@@ -14,6 +14,6 @@ install:
   - npm install
 script:
   - ng lint
-  - npm run test
+  - npm run test-ci
   - npm run e2e
   - npm run build
