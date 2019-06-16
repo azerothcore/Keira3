@@ -4,7 +4,6 @@ import { MultiRowEditorService } from '../multi-row-editor.service';
 import { CreatureHandlerService } from '../../handlers/creature-handler.service';
 import { QueryService } from '../../query.service';
 import {
-  SPAWNS_ADDON_ID,
   SPAWNS_ADDON_ID_2,
   SPAWNS_ADDON_TABLE,
   SpawnsAddon
@@ -22,7 +21,7 @@ export class SpawnsAddonService extends MultiRowEditorService<SpawnsAddon> {
     super(
       SpawnsAddon,
       SPAWNS_ADDON_TABLE,
-      SPAWNS_ADDON_ID,
+      null,
       SPAWNS_ADDON_ID_2,
       handlerService,
       queryService,
@@ -31,5 +30,28 @@ export class SpawnsAddonService extends MultiRowEditorService<SpawnsAddon> {
 
   disableEntityIdField() {}
 
-  // TODO: override selectQuery()
+  protected updateFullQuery(): void {
+    this._fullQuery = this.queryService.getFullDeleteInsertQuery<SpawnsAddon>(
+      this._entityTable,
+      this._newRows,
+      null,
+      SPAWNS_ADDON_ID_2,
+    );
+  }
+
+  protected updateDiffQuery(): void {
+    this._diffQuery = this.queryService.getDiffDeleteInsertTwoKeysQuery<SpawnsAddon>(
+      this._entityTable,
+      null,
+      SPAWNS_ADDON_ID_2,
+      this._originalRows,
+      this._newRows,
+    );
+  }
+
+  selectQuery(id: string|number) {
+    return this.queryService.query<SpawnsAddon>(
+      `SELECT a.* FROM creature AS c INNER JOIN creature_addon AS a ON c.guid = a.guid WHERE c.id = ${id}`
+    );
+  }
 }

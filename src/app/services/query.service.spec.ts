@@ -85,75 +85,144 @@ describe('QueryService', () => {
         expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, [], null)).toEqual('');
       });
 
-      it('should correctly work when all rows are deleted', () => {
-        expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, myRows, [])).toEqual(
-          'DELETE FROM `my_table` WHERE `pk1` = 1234;\n'
-        );
-      });
-
       it('should correctly work when there are no changes', () => {
         expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, myRows, myRows)).toEqual(
           '-- There are no changes'
         );
       });
 
-      it('should correctly work when adding new rows to an empty set', () => {
-        expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, [], myRows)).toEqual(
-          'DELETE' + ' FROM `my_table` WHERE (`pk1` = 1234) AND (`pk2` IN (1, 2, 3));\n' +
-          'INSERT' + ' INTO `my_table` (`pk1`, `pk2`, `name`, `attribute1`, `attribute2`) VALUES\n' +
-          '(1234, 1, \'Shin\', 28, 4),\n' +
-          '(1234, 2, \'Helias\', 12, 4),\n' +
-          '(1234, 3, \'Kalhac\', 12, 4);\n'
-        );
+      describe('using both keys', () => {
+        it('should correctly work when all rows are deleted', () => {
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, myRows, [])).toEqual(
+            'DELETE FROM `my_table` WHERE `pk1` = 1234;\n'
+          );
+        });
+
+        it('should correctly work when adding new rows to an empty set', () => {
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, [], myRows)).toEqual(
+            'DELETE' + ' FROM `my_table` WHERE (`pk1` = 1234) AND (`pk2` IN (1, 2, 3));\n' +
+            'INSERT' + ' INTO `my_table` (`pk1`, `pk2`, `name`, `attribute1`, `attribute2`) VALUES\n' +
+            '(1234, 1, \'Shin\', 28, 4),\n' +
+            '(1234, 2, \'Helias\', 12, 4),\n' +
+            '(1234, 3, \'Kalhac\', 12, 4);\n'
+          );
+        });
+
+        it('should correctly work when editing rows', () => {
+          const newRows = myRows.map(x => Object.assign({}, x));
+          // edit two existing rows
+          newRows[1].name = 'Helias2';
+          newRows[2].name = 'Kalhac2';
+
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, myRows, newRows)).toEqual(
+            'DELETE' + ' FROM `my_table` WHERE (`pk1` = 1234) AND (`pk2` IN (2, 3));\n' +
+            'INSERT' + ' INTO `my_table` (`pk1`, `pk2`, `name`, `attribute1`, `attribute2`) VALUES\n' +
+            '(1234, 2, \'Helias2\', 12, 4),\n' +
+            '(1234, 3, \'Kalhac2\', 12, 4);\n'
+          );
+        });
+
+        it('should correctly work when adding rows', () => {
+          const newRows = myRows.map(x => Object.assign({}, x));
+          // add two new rows
+          newRows.push({ pk1: 1234, pk2: 4, name: 'Yehonal', attribute1: 99, attribute2: 0 });
+          newRows.push({ pk1: 1234, pk2: 5, name: 'Barbz', attribute1: 68, attribute2: 1 });
+
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, myRows, newRows)).toEqual(
+            'DELETE' + ' FROM `my_table` WHERE (`pk1` = 1234) AND (`pk2` IN (4, 5));\n' +
+            'INSERT' + ' INTO `my_table` (`pk1`, `pk2`, `name`, `attribute1`, `attribute2`) VALUES\n' +
+            '(1234, 4, \'Yehonal\', 99, 0),\n' +
+            '(1234, 5, \'Barbz\', 68, 1);\n'
+          );
+        });
+
+        it('should correctly work when removing rows', () => {
+          const newRows = [ { ...myRows[0] }, { ...myRows[2] }]; // delete second row
+
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, myRows, newRows)).toEqual(
+            'DELETE' + ' FROM `my_table` WHERE (`pk1` = 1234) AND (`pk2` IN (2));\n'
+          );
+        });
+
+        it('should correctly work when removing, editing and adding rows all together', () => {
+          const newRows = [ { ...myRows[0] }, { ...myRows[2] }]; // delete second row
+          newRows[1].name = 'Kalhac2'; // edit row
+          newRows.push({ pk1: 1234, pk2: 4, name: 'Yehonal', attribute1: 99, attribute2: 0 }); // add a new row
+
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, myRows, newRows)).toEqual(
+            'DELETE' + ' FROM `my_table` WHERE (`pk1` = 1234) AND (`pk2` IN (2, 3, 4));\n' +
+            'INSERT' + ' INTO `my_table` (`pk1`, `pk2`, `name`, `attribute1`, `attribute2`) VALUES\n' +
+            '(1234, 3, \'Kalhac2\', 12, 4),\n' +
+            '(1234, 4, \'Yehonal\', 99, 0);\n'
+          );
+        });
       });
 
-      it('should correctly work when editing rows', () => {
-        const newRows = myRows.map(x => Object.assign({}, x));
-        // edit two existing rows
-        newRows[1].name = 'Helias2';
-        newRows[2].name = 'Kalhac2';
+      describe('using only the secondary key', () => {
+        it('should correctly work when all rows are deleted', () => {
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, null, primaryKey2, myRows, [])).toEqual(
+            'DELETE FROM `my_table` WHERE (`pk2` IN (1, 2, 3));\n'
+          );
+        });
 
-        expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, myRows, newRows)).toEqual(
-          'DELETE' + ' FROM `my_table` WHERE (`pk1` = 1234) AND (`pk2` IN (2, 3));\n' +
-          'INSERT' + ' INTO `my_table` (`pk1`, `pk2`, `name`, `attribute1`, `attribute2`) VALUES\n' +
-          '(1234, 2, \'Helias2\', 12, 4),\n' +
-          '(1234, 3, \'Kalhac2\', 12, 4);\n'
-        );
-      });
+        it('should correctly work when adding new rows to an empty set', () => {
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, null, primaryKey2, [], myRows)).toEqual(
+            'DELETE' + ' FROM `my_table` WHERE (`pk2` IN (1, 2, 3));\n' +
+            'INSERT' + ' INTO `my_table` (`pk1`, `pk2`, `name`, `attribute1`, `attribute2`) VALUES\n' +
+            '(1234, 1, \'Shin\', 28, 4),\n' +
+            '(1234, 2, \'Helias\', 12, 4),\n' +
+            '(1234, 3, \'Kalhac\', 12, 4);\n'
+          );
+        });
 
-      it('should correctly work when adding rows', () => {
-        const newRows = myRows.map(x => Object.assign({}, x));
-        // add two new rows
-        newRows.push({ pk1: 1234, pk2: 4, name: 'Yehonal', attribute1: 99, attribute2: 0 });
-        newRows.push({ pk1: 1234, pk2: 5, name: 'Barbz', attribute1: 68, attribute2: 1 });
+        it('should correctly work when editing rows', () => {
+          const newRows = myRows.map(x => Object.assign({}, x));
+          // edit two existing rows
+          newRows[1].name = 'Helias2';
+          newRows[2].name = 'Kalhac2';
 
-        expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, myRows, newRows)).toEqual(
-          'DELETE' + ' FROM `my_table` WHERE (`pk1` = 1234) AND (`pk2` IN (4, 5));\n' +
-          'INSERT' + ' INTO `my_table` (`pk1`, `pk2`, `name`, `attribute1`, `attribute2`) VALUES\n' +
-          '(1234, 4, \'Yehonal\', 99, 0),\n' +
-          '(1234, 5, \'Barbz\', 68, 1);\n'
-        );
-      });
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, null, primaryKey2, myRows, newRows)).toEqual(
+            'DELETE' + ' FROM `my_table` WHERE (`pk2` IN (2, 3));\n' +
+            'INSERT' + ' INTO `my_table` (`pk1`, `pk2`, `name`, `attribute1`, `attribute2`) VALUES\n' +
+            '(1234, 2, \'Helias2\', 12, 4),\n' +
+            '(1234, 3, \'Kalhac2\', 12, 4);\n'
+          );
+        });
 
-      it('should correctly work when removing rows', () => {
-        const newRows = [ { ...myRows[0] }, { ...myRows[2] }]; // delete second row
+        it('should correctly work when adding rows', () => {
+          const newRows = myRows.map(x => Object.assign({}, x));
+          // add two new rows
+          newRows.push({ pk1: 1234, pk2: 4, name: 'Yehonal', attribute1: 99, attribute2: 0 });
+          newRows.push({ pk1: 1234, pk2: 5, name: 'Barbz', attribute1: 68, attribute2: 1 });
 
-        expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, myRows, newRows)).toEqual(
-          'DELETE' + ' FROM `my_table` WHERE (`pk1` = 1234) AND (`pk2` IN (2));\n'
-        );
-      });
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, null, primaryKey2, myRows, newRows)).toEqual(
+            'DELETE' + ' FROM `my_table` WHERE (`pk2` IN (4, 5));\n' +
+            'INSERT' + ' INTO `my_table` (`pk1`, `pk2`, `name`, `attribute1`, `attribute2`) VALUES\n' +
+            '(1234, 4, \'Yehonal\', 99, 0),\n' +
+            '(1234, 5, \'Barbz\', 68, 1);\n'
+          );
+        });
 
-      it('should correctly work when removing, editing and adding rows all together', () => {
-        const newRows = [ { ...myRows[0] }, { ...myRows[2] }]; // delete second row
-        newRows[1].name = 'Kalhac2'; // edit row
-        newRows.push({ pk1: 1234, pk2: 4, name: 'Yehonal', attribute1: 99, attribute2: 0 }); // add a new row
+        it('should correctly work when removing rows', () => {
+          const newRows = [ { ...myRows[0] }, { ...myRows[2] }]; // delete second row
 
-        expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, myRows, newRows)).toEqual(
-          'DELETE' + ' FROM `my_table` WHERE (`pk1` = 1234) AND (`pk2` IN (2, 3, 4));\n' +
-          'INSERT' + ' INTO `my_table` (`pk1`, `pk2`, `name`, `attribute1`, `attribute2`) VALUES\n' +
-          '(1234, 3, \'Kalhac2\', 12, 4),\n' +
-          '(1234, 4, \'Yehonal\', 99, 0);\n'
-        );
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, null, primaryKey2, myRows, newRows)).toEqual(
+            'DELETE' + ' FROM `my_table` WHERE (`pk2` IN (2));\n'
+          );
+        });
+
+        it('should correctly work when removing, editing and adding rows all together', () => {
+          const newRows = [ { ...myRows[0] }, { ...myRows[2] }]; // delete second row
+          newRows[1].name = 'Kalhac2'; // edit row
+          newRows.push({ pk1: 1234, pk2: 4, name: 'Yehonal', attribute1: 99, attribute2: 0 }); // add a new row
+
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, null, primaryKey2, myRows, newRows)).toEqual(
+            'DELETE' + ' FROM `my_table` WHERE (`pk2` IN (2, 3, 4));\n' +
+            'INSERT' + ' INTO `my_table` (`pk1`, `pk2`, `name`, `attribute1`, `attribute2`) VALUES\n' +
+            '(1234, 3, \'Kalhac2\', 12, 4),\n' +
+            '(1234, 4, \'Yehonal\', 99, 0);\n'
+          );
+        });
       });
     });
 

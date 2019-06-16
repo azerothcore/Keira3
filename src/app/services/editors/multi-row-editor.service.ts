@@ -6,8 +6,8 @@ import { HandlerService } from '../handlers/handler.service';
 import { QueryService } from '../query.service';
 
 export abstract class MultiRowEditorService<T extends TableRow> extends EditorService<T> {
-  private _originalRows: T[] = [];
-  private _newRows: T[] = [];
+  protected _originalRows: T[] = [];
+  protected _newRows: T[] = [];
   private _selectedRowId: string|number;
   private _nextRowId = 0;
 

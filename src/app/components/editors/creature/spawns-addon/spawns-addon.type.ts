@@ -1,7 +1,6 @@
 import { TableRow } from '../../../../types';
 
 export const SPAWNS_ADDON_TABLE = 'creature_addon';
-export const SPAWNS_ADDON_ID = ''; // TODO: will be joined
 export const SPAWNS_ADDON_ID_2 = 'guid';
 
 export class SpawnsAddon extends TableRow {
