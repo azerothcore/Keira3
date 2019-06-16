@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import * as squel from 'squel';
+import { Observable } from 'rxjs';
+import { Squel, Delete, Insert } from 'squel';
 
 import { MysqlService } from './mysql.service';
 import { MaxRow, MysqlResult, QueryForm, TableRow } from '../types';
 import { squelConfig } from '../config/squel.config';
-import { Observable } from 'rxjs';
+
+declare const squel: Squel & {flavour: null};
 
 @Injectable({
   providedIn: 'root'
@@ -129,8 +131,8 @@ export class QueryService {
 
   private getFinalDiffDeleteInsertQuery<T extends TableRow>(
     addedOrEditedRows: T[],
-    deleteQuery: squel.Delete,
-    insertQuery: squel.Insert,
+    deleteQuery: Delete,
+    insertQuery: Insert,
   ): string {
     let query = deleteQuery.toString() + ';\n';
 
@@ -169,8 +171,8 @@ export class QueryService {
       return '-- There are no changes';
     }
 
-    const deleteQuery: squel.Delete = squel.delete(squelConfig).from(tableName);
-    const insertQuery: squel.Insert = squel.insert(squelConfig).into(tableName);
+    const deleteQuery: Delete = squel.delete(squelConfig).from(tableName);
+    const insertQuery: Insert = squel.insert(squelConfig).into(tableName);
 
     if (primaryKey1) {
       deleteQuery.where('`' + primaryKey1 + '` = ' + newRows[0][primaryKey1]);
@@ -201,8 +203,8 @@ export class QueryService {
       return '-- There are no changes';
     }
 
-    const deleteQuery: squel.Delete = squel.delete(squelConfig).from(tableName);
-    const insertQuery: squel.Insert = squel.insert(squelConfig).into(tableName);
+    const deleteQuery: Delete = squel.delete(squelConfig).from(tableName);
+    const insertQuery: Insert = squel.insert(squelConfig).into(tableName);
 
     deleteQuery.where('`' + primaryKey + '` IN ?', involvedRows);
     insertQuery.setFieldsRows(addedOrEditedRows);
@@ -232,8 +234,8 @@ export class QueryService {
       deleteCondition += '`' + primaryKey2 + '` IN (' + ids.join(', ') + ')';
     }
 
-    const deleteQuery: squel.Delete = squel.delete(squelConfig).from(tableName).where(deleteCondition);
-    const insertQuery: squel.Insert = squel.insert(squelConfig).into(tableName).setFieldsRows(rows);
+    const deleteQuery: Delete = squel.delete(squelConfig).from(tableName).where(deleteCondition);
+    const insertQuery: Insert = squel.insert(squelConfig).into(tableName).setFieldsRows(rows);
 
     let query: string = deleteQuery.toString() + ';\n';
     query += insertQuery.toString() + ';\n';
