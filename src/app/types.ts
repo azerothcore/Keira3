@@ -1,8 +1,8 @@
 import { FieldInfo } from 'mysql';
 
 export interface QueryForm {
-  limit: string;
-  fields: {
+  limit?: string;
+  fields?: {
     [key: string]: string;
   };
 }
