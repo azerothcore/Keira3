@@ -1,8 +1,8 @@
 import { TableRow } from '../../../../types';
 
 export const SPAWNS_TABLE = 'creature';
-export const SPAWNS_ID = 'guid';
-export const SPAWNS_ID_2 = 'id';
+export const SPAWNS_ID = 'id';
+export const SPAWNS_ID_2 = 'guid';
 
 export class Spawns extends TableRow {
   guid: number = 0;
