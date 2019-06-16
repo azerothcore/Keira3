@@ -1,6 +1,10 @@
 <div class="container">
+  <div class="mt-3 text-center">
+    <span class="lead font-weight-bold">Keira {{ KEIRA_VERSION }}</span>
+  </div>
+  <hr>
   <div class="form-wrapper" *ngIf="form">
-    <form [formGroup]="form">
+    <form [formGroup]="form" class="mb-4">
       <div class="form-group row">
         <label class="col-4 col-form-label" for="host">Host</label>
         <input

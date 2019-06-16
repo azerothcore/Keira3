@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MysqlError } from 'mysql';
+import { version } from '../../../../package.json';
 
 import { MysqlService } from '../../services/mysql.service';
 
@@ -11,6 +12,7 @@ import { MysqlService } from '../../services/mysql.service';
 })
 export class ConnectionWindowComponent implements OnInit {
 
+  public readonly KEIRA_VERSION = version;
   form: FormGroup;
   error: MysqlError;
 
