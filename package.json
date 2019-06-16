@@ -1,8 +1,9 @@
 {
-  "name": "Keira3",
+  "name": "keira3",
   "version": "3.0.0-alpha.0",
   "description": "Database Editor for AzerothCore",
   "homepage": "https://github.com/AzerothCore/Keira3",
+  "author": "Francesco Borzi'"
   "main": "main.js",
   "private": true,
   "scripts": {
@@ -26,6 +27,9 @@
     "test-ci": "npm run postinstall:web && ng test --watch=false",
     "e2e": "npm run build:prod && mocha --timeout 300000 --require ts-node/register e2e/**/*.spec.ts",
     "version": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md"
+  },
+  "dependencies": {
+    "mysql": "^2.17.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.800.3",
@@ -63,7 +67,6 @@
     "karma-jasmine": "^2.0.1",
     "karma-jasmine-html-reporter": "^1.4.2",
     "mocha": "6.0.2",
-    "mysql": "^2.16.0",
     "ngx-bootstrap": "^4.3.0",
     "ngx-clipboard": "^12.1.2",
     "ngx-highlightjs": "^3.0.3",
