@@ -27,7 +27,9 @@
             "styles": [
               "src/assets/scss/main.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/squel/dist/squel.min.js"
+            ]
           },
           "configurations": {
             "dev": {
@@ -93,7 +95,9 @@
             "polyfills": "src/polyfills-test.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
-            "scripts": [],
+            "scripts": [
+              "node_modules/squel/dist/squel.min.js"
+            ],
             "styles": [
               "src/assets/scss/main.scss"
             ],
