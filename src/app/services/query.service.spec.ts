@@ -320,7 +320,7 @@ describe('QueryService', () => {
         expect(service.getFullDeleteInsertQuery(tableName, null, primaryKey)).toEqual('');
       });
 
-      describe('one key', () => {
+      describe('using only the primary key', () => {
         it('should correctly work when adding a group of rows', () => {
           const rows: MockTwoKeysRow[] = [
             { pk1: 1234, pk2: 1, name: 'Shin', attribute1: 28, attribute2: 4 },
@@ -350,7 +350,7 @@ describe('QueryService', () => {
         });
       });
 
-      describe('two keys', () => {
+      describe('using both keys', () => {
         const primaryKey2 = 'pk2';
 
         it('should correctly work when adding a group of rows', () => {
@@ -382,6 +382,37 @@ describe('QueryService', () => {
         });
       });
 
+      describe('using only the secondary key', () => {
+        const primaryKey2 = 'pk2';
+
+        it('should correctly work when adding a group of rows', () => {
+          const rows: MockTwoKeysRow[] = [
+            { pk1: 1234, pk2: 1, name: 'Shin', attribute1: 28, attribute2: 4 },
+            { pk1: 1234, pk2: 2, name: 'Helias', attribute1: 12, attribute2: 4 },
+            { pk1: 1234, pk2: 3, name: 'Kalhac', attribute1: 12, attribute2: 4 },
+          ];
+
+          expect(service.getFullDeleteInsertQuery(tableName, rows, null, primaryKey2)).toEqual(
+            'DELETE' + ' FROM `my_table` WHERE (`pk2` IN (1, 2, 3));\n' +
+            'INSERT' + ' INTO `my_table` (`pk1`, `pk2`, `name`, `attribute1`, `attribute2`) VALUES\n' +
+            '(1234, 1, \'Shin\', 28, 4),\n' +
+            '(1234, 2, \'Helias\', 12, 4),\n' +
+            '(1234, 3, \'Kalhac\', 12, 4);\n'
+          );
+        });
+
+        it('should correctly work when adding a single row', () => {
+          const rows: MockTwoKeysRow[] = [
+            { pk1: 1234, pk2: 1, name: 'Shin', attribute1: 28, attribute2: 4 },
+          ];
+
+          expect(service.getFullDeleteInsertQuery(tableName, rows, null, primaryKey2)).toEqual(
+            'DELETE' + ' FROM `my_table` WHERE (`pk2` IN (1));\n' +
+            'INSERT' + ' INTO `my_table` (`pk1`, `pk2`, `name`, `attribute1`, `attribute2`) VALUES\n' +
+            '(1234, 1, \'Shin\', 28, 4);\n'
+          );
+        });
+      });
     });
   });
 });
