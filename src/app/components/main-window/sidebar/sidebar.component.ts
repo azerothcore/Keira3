@@ -42,6 +42,11 @@ export class SidebarComponent {
     return this.sidebarService.hasBackgroundImage;
   }
 
+  getStyle(): string {
+    return `background-image: url(assets/img/bg1.jpg);`;
+    // return this.hasBackgroundImage() ? `background-image: 'assets/img/bg1.jpg';` : '';
+  }
+
   toggleState(key: string) {
     this.menuStates[key] = this.menuStates[key] === 'up' ? 'down' : 'up';
   }
