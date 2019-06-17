@@ -1,4 +1,4 @@
-import { TableRow } from '../../../types';
+import { TableRow } from '../../../types/general';
 import { WIKI_BASE_URL } from '../../../constants';
 import { HandlerService } from '../../../services/handlers/handler.service';
 import { EditorService } from '../../../services/editors/editor.service';

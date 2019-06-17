@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { MultiRowEditorComponent } from '../../shared/multi-row-editor.component';
 import { CreatureHandlerService } from '../../../../services/handlers/creature-handler.service';
-import { NpcTrainer } from './npc-trainer.type';
+import { NpcTrainer } from '../../../../types/npc-trainer.type';
 import { NpcTrainerService } from '../../../../services/editors/creature/npc-trainer.service';
 
 @Component({

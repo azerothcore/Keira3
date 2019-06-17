@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HandlerService } from './handler.service';
-import { CreatureTemplate } from '../../components/editors/creature/creature-template/creature-template.type';
+import { CreatureTemplate } from '../../types/creature-template.type';
 import { Router } from '@angular/router';
 
 @Injectable({

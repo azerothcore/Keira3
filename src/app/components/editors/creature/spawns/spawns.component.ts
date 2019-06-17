@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { MultiRowEditorComponent } from '../../shared/multi-row-editor.component';
 import { CreatureHandlerService } from '../../../../services/handlers/creature-handler.service';
-import { Spawns } from './spawns.type';
+import { Spawns } from '../../../../types/spawns.type';
 import { SpawnsService } from '../../../../services/editors/creature/spawns.service';
 
 @Component({

@@ -1,4 +1,4 @@
-import { TableRow } from '../../../types';
+import { TableRow } from '../../../types/general';
 import { SelectService } from '../../../services/select/select.service';
 import { QueryService } from '../../../services/query.service';
 import { HandlerService } from '../../../services/handlers/handler.service';

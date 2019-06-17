@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 import { CreatureHandlerService } from '../../../../services/handlers/creature-handler.service';
-import { PickpocketingLootTemplate } from './pickpocketing-loot-template.type';
+import { PickpocketingLootTemplate } from '../../../../types/pickpocketing-loot-template.type';
 import { PickpocketingLootTemplateService } from '../../../../services/editors/creature/pickpocketing-loot-template.service';
 import { LootTemplateComponent } from '../../shared/loot-template/loot-template.component';
 

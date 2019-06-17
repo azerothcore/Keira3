@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 import { CreatureHandlerService } from '../../../../services/handlers/creature-handler.service';
-import { CreatureLootTemplate } from './creature-loot-template.type';
+import { CreatureLootTemplate } from '../../../../types/creature-loot-template.type';
 import { CreatureLootTemplateService } from '../../../../services/editors/creature/creature-loot-template.service';
 import { LootTemplateComponent } from '../../shared/loot-template/loot-template.component';
 

@@ -8,7 +8,7 @@ import {
   NPC_TRAINER_ID_2,
   NPC_TRAINER_TABLE,
   NpcTrainer,
-} from '../../../components/editors/creature/npc-trainer/npc-trainer.type';
+} from '../../../types/npc-trainer.type';
 
 @Injectable({
   providedIn: 'root'

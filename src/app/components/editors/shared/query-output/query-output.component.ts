@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ClipboardService } from 'ngx-clipboard';
 
 import { EditorService } from '../../../../services/editors/editor.service';
-import { TableRow } from '../../../../types';
+import { TableRow } from '../../../../types/general';
 
 @Component({
   selector: 'app-query-output',

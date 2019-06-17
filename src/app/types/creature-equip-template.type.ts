@@ -1,4 +1,4 @@
-import { TableRow } from '../../../../types';
+import { TableRow } from './general';
 
 export const CREATURE_EQUIP_TEMPLATE_TABLE = 'creature_equip_template';
 export const CREATURE_EQUIP_TEMPLATE_ID = 'CreatureID';

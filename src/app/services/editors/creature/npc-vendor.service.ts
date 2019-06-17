@@ -8,7 +8,7 @@ NPC_VENDOR_ID,
 NPC_VENDOR_ID_2,
 NPC_VENDOR_TABLE,
 NpcVendor
-} from '../../../components/editors/creature/npc-vendor/npc-vendor.type';
+} from '../../../types/npc-vendor.type';
 
 @Injectable({
   providedIn: 'root'

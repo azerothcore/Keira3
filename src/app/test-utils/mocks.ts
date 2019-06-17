@@ -3,7 +3,7 @@ import { mock, when } from 'ts-mockito';
 import { ElectronService } from '../services/electron.service';
 import { MysqlService } from '../services/mysql.service';
 import { QueryService } from '../services/query.service';
-import { TableRow } from '../types';
+import { TableRow } from '../types/general';
 
 export const MockedQueryService = mock(QueryService);
 export const MockedMysqlService = mock(MysqlService);

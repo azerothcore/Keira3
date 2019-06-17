@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { SingleRowEditorComponent } from '../../shared/single-row-editor.component';
 import { CreatureHandlerService } from '../../../../services/handlers/creature-handler.service';
-import { CreatureTemplateAddon } from './creature-template-addon.type';
+import { CreatureTemplateAddon } from '../../../../types/creature-template-addon.type';
 import { CreatureTemplateAddonService } from '../../../../services/editors/creature/creature-template-addon.service';
 
 @Component({

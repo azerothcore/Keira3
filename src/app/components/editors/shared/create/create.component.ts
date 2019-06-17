@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MysqlError } from 'mysql';
 
-import { TableRow } from '../../../../types';
+import { TableRow } from '../../../../types/general';
 import { QueryService } from '../../../../services/query.service';
 import { HandlerService } from '../../../../services/handlers/handler.service';
 

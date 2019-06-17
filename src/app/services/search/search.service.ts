@@ -1,6 +1,6 @@
 import { FormControl, FormGroup } from '@angular/forms';
 
-import { TableRow } from '../../types';
+import { TableRow } from '../../types/general';
 import { QueryService } from '../query.service';
 
 export abstract class SearchService<T extends TableRow> {

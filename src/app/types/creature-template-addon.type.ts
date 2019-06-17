@@ -1,4 +1,4 @@
-import { TableRow } from '../../../../types';
+import { TableRow } from './general';
 
 export const CREATURE_TEMPLATE_ADDON_TABLE = 'creature_template_addon';
 export const CREATURE_TEMPLATE_ADDON_ID = 'entry';

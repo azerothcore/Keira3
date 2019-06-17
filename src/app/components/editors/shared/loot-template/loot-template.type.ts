@@ -1,4 +1,4 @@
-import { TableRow } from '../../../../types';
+import { TableRow } from '../../../../types/general';
 
 export const LOOT_TEMPLATE_ID = 'Entry';
 export const LOOT_TEMPLATE_ID_2 = 'Item';

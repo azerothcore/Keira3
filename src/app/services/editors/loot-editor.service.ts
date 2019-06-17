@@ -1,6 +1,6 @@
 import { MultiRowEditorService } from './multi-row-editor.service';
 import { LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, LootTemplate } from '../../components/editors/shared/loot-template/loot-template.type';
-import { Class, MysqlResult } from '../../types';
+import { Class, MysqlResult } from '../../types/general';
 import { HandlerService } from '../handlers/handler.service';
 import { QueryService } from '../query.service';
 import { Observable } from 'rxjs';

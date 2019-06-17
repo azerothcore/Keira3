@@ -7,7 +7,7 @@ import {
   SPAWNS_ADDON_ID_2,
   SPAWNS_ADDON_TABLE,
   SpawnsAddon
-} from '../../../components/editors/creature/spawns-addon/spawns-addon.type';
+} from '../../../types/spawns-addon.type';
 
 @Injectable({
   providedIn: 'root'

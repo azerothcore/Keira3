@@ -4,7 +4,7 @@ import { instance } from 'ts-mockito';
 import { QueryService } from './query.service';
 import { MysqlService } from './mysql.service';
 import { MockedMysqlService } from '../test-utils/mocks';
-import { MaxRow, MysqlResult, QueryForm, TableRow } from '../types';
+import { MaxRow, MysqlResult, QueryForm, TableRow } from '../types/general';
 import { of } from 'rxjs';
 
 interface MockRow extends TableRow {

@@ -1,4 +1,4 @@
-import { TableRow } from '../../../../types';
+import { TableRow } from './general';
 
 export const CREATURE_ONKLL_REPUTATION_TABLE = 'creature_onkill_reputation';
 export const CREATURE_ONKLL_REPUTATION_ID = 'creature_id';
