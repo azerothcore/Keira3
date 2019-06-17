@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
 
 import { SelectService } from './select.service';
-import { CREATURE_TEMPLATE_TABLE, CreatureTemplate } from '../../types/creature-template.type';
+import {
+  CREATURE_TEMPLATE_ID,
+  CREATURE_TEMPLATE_NAME, CREATURE_TEMPLATE_SEARCH_FIELDS,
+  CREATURE_TEMPLATE_TABLE,
+  CreatureTemplate
+} from '../../types/creature-template.type';
 import { QueryService } from '../query.service';
 import { CreatureHandlerService } from '../handlers/creature-handler.service';
 
@@ -13,6 +18,13 @@ export class CreatureSelectService extends SelectService<CreatureTemplate> {
     protected queryService: QueryService,
     public handlerService: CreatureHandlerService,
   ) {
-    super(queryService, handlerService, CREATURE_TEMPLATE_TABLE, 'entry', 'name', ['entry', 'name', 'subname']);
+    super(
+      queryService,
+      handlerService,
+      CREATURE_TEMPLATE_TABLE,
+      CREATURE_TEMPLATE_ID,
+      CREATURE_TEMPLATE_NAME,
+      CREATURE_TEMPLATE_SEARCH_FIELDS,
+    );
   }
 }

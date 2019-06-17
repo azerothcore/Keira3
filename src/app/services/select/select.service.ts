@@ -1,5 +1,3 @@
-import { FormControl, FormGroup } from '@angular/forms';
-
 import { TableRow } from '../../types/general';
 import { QueryService } from '../query.service';
 import { HandlerService } from '../handlers/handler.service';
