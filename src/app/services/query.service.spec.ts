@@ -23,7 +23,7 @@ interface MockTwoKeysRow extends TableRow {
   attribute2: number;
 }
 
-fdescribe('QueryService', () => {
+describe('QueryService', () => {
   let service: QueryService;
 
   beforeEach(() => TestBed.configureTestingModule({
