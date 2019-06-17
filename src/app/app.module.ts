@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import {
   PERFECT_SCROLLBAR_CONFIG,
   PerfectScrollbarConfigInterface,
@@ -47,7 +48,8 @@ import { NpcTrainerComponent } from './components/editors/creature/npc-trainer/n
 import { SpawnsComponent } from './components/editors/creature/spawns/spawns.component';
 import { SpawnsAddonComponent } from './components/editors/creature/spawns-addon/spawns-addon.component';
 import { QueryErrorComponent } from './components/editors/shared/query-output/query-error/query-error.component';
-import { SelectorButtonComponent } from './components/editors/shared/selectors/selector-button/selector-button.component';
+import { ItemSelectorBtnComponent } from './components/editors/shared/selectors/item-selector/item-selector-btn.component';
+import { ItemSelectorModalComponent } from './components/editors/shared/selectors/item-selector/item-selector-modal.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -80,7 +82,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     SpawnsComponent,
     SpawnsAddonComponent,
     QueryErrorComponent,
-    SelectorButtonComponent,
+    ItemSelectorBtnComponent,
+    ItemSelectorModalComponent,
   ],
   imports: [
     BrowserModule,
@@ -90,6 +93,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     AppRoutingModule,
     BrowserAnimationsModule,
     BsDropdownModule.forRoot(),
+    ModalModule.forRoot(),
     PerfectScrollbarModule,
     HighlightModule.forRoot(highlightOptions),
     NgxDatatableModule,
