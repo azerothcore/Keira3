@@ -67,7 +67,7 @@
     "karma-jasmine": "^2.0.1",
     "karma-jasmine-html-reporter": "^1.4.2",
     "mocha": "6.0.2",
-    "ngx-bootstrap": "^4.3.0",
+    "ngx-bootstrap": "^5.0.0",
     "ngx-clipboard": "^12.1.2",
     "ngx-highlightjs": "^3.0.3",
     "ngx-perfect-scrollbar": "^7.2.1",
