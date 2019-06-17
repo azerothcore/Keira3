@@ -2,6 +2,7 @@ import { Component, } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap';
 
 import { BaseSelectorModalComponent } from '../base-selector/base-selector-modal.component';
+import { ItemSearchService } from '../../../../../services/search/item-search.service';
 
 @Component({
   selector: 'app-item-selector-modal',
@@ -12,6 +13,7 @@ export class ItemSelectorModalComponent extends BaseSelectorModalComponent {
 
   constructor(
     protected bsModalRef: BsModalRef,
+    public searchService: ItemSearchService,
   ) {
     super(bsModalRef);
   }
