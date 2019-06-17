@@ -7,6 +7,8 @@ export interface QueryForm {
   };
 }
 
+export type Class = new(...args: any[]) => any;
+
 export interface MysqlResult<T extends TableRow> {
   results?: T[];
   fields?: FieldInfo[];
@@ -20,4 +22,13 @@ export interface MaxRow extends TableRow {
   max: number;
 }
 
-export type Class = new(...args: any[]) => any;
+export interface VersionRow extends TableRow {
+  core_version: string;
+  core_revision: string;
+  db_version: string;
+  cache_id: number;
+}
+
+export interface VersionDbRow extends TableRow {
+  [key: string]: number;
+}
