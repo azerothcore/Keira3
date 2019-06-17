@@ -128,14 +128,8 @@
       </div>
     </perfect-scrollbar>
   </div>
-  <div class="sidebar-footer">
 
-    <button class="btn btn-secondary" (click)="toggleSidebar()">
-      <i class="fas fa-angle-double-left"></i>
+    <button class="btn btn-secondary btn-sm sidebar-button" (click)="toggleSidebar()">
+      <i class="fas {{ getSideBarState() ? 'fa-angle-double-right' : 'fa-angle-double-left' }}"></i>
     </button>
-
-    <button class="btn btn-secondary sidebar-button" (click)="toggleSidebar()" [ngClass]="{'sidebar-button-hidden' : !getSideBarState()}">
-      <i class="fas fa-angle-double-right"></i>
-    </button>
-  </div>
 </nav>
