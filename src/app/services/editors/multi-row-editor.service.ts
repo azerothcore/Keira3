@@ -1,6 +1,6 @@
 import { distinctUntilChanged } from 'rxjs/operators';
 
-import { Class, MysqlResult, TableRow } from '../../types';
+import { Class, MysqlResult, TableRow } from '../../types/general';
 import { EditorService } from './editor.service';
 import { HandlerService } from '../handlers/handler.service';
 import { QueryService } from '../query.service';

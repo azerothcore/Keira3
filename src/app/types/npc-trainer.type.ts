@@ -1,4 +1,4 @@
-import { TableRow } from '../../../../types';
+import { TableRow } from './general';
 
 export const NPC_TRAINER_TABLE = 'npc_trainer';
 export const NPC_TRAINER_ID = 'ID';

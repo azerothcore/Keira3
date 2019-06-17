@@ -1,6 +1,6 @@
 import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
 
-import { TableRow } from '../../types';
+import { TableRow } from '../../types/general';
 
 export abstract class HandlerService<T extends TableRow> implements CanActivate {
   private _selected: string;

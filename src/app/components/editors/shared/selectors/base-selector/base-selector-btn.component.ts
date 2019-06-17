@@ -2,7 +2,7 @@ import { Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 
-import { Class } from '../../../../../types';
+import { Class } from '../../../../../types/general';
 
 export abstract class BaseSelectorBtnComponent {
 

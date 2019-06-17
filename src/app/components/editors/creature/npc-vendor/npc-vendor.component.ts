@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { MultiRowEditorComponent } from '../../shared/multi-row-editor.component';
 import { NpcVendorService } from '../../../../services/editors/creature/npc-vendor.service';
 import { CreatureHandlerService } from '../../../../services/handlers/creature-handler.service';
-import { NpcVendor } from './npc-vendor.type';
+import { NpcVendor } from '../../../../types/npc-vendor.type';
 
 @Component({
   selector: 'app-npc-vendor',

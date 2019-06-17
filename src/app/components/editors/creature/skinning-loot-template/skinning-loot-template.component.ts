@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 import { CreatureHandlerService } from '../../../../services/handlers/creature-handler.service';
-import { SkinningLootTemplate } from './skinning-loot-template.type';
+import { SkinningLootTemplate } from '../../../../types/skinning-loot-template.type';
 import { SkinningLootTemplateService } from '../../../../services/editors/creature/skinning-loot-template.service';
 import { LootTemplateComponent } from '../../shared/loot-template/loot-template.component';
 

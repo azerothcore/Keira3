@@ -1,6 +1,6 @@
 import { OnInit } from '@angular/core';
 
-import { TableRow } from '../../../types';
+import { TableRow } from '../../../types/general';
 import { HandlerService } from '../../../services/handlers/handler.service';
 import { EditorComponent } from './editor.component';
 import { MultiRowEditorService } from '../../../services/editors/multi-row-editor.service';

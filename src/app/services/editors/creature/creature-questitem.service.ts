@@ -8,7 +8,7 @@ import {
   CREATURE_QUESTITEM_ID_2,
   CREATURE_QUESTITEM_TABLE,
   CreatureQuestitem,
-} from '../../../components/editors/creature/creature-questitem/creature-questitem.type';
+} from '../../../types/creature-questitem.type';
 
 @Injectable({
   providedIn: 'root'

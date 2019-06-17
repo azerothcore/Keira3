@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { Squel, Delete, Insert } from 'squel';
 
 import { MysqlService } from './mysql.service';
-import { MaxRow, MysqlResult, QueryForm, TableRow } from '../types';
+import { MaxRow, MysqlResult, QueryForm, TableRow } from '../types/general';
 import { squelConfig } from '../config/squel.config';
 
 declare const squel: Squel & {flavour: null};

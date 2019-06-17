@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { MultiRowEditorComponent } from '../../shared/multi-row-editor.component';
 import { CreatureHandlerService } from '../../../../services/handlers/creature-handler.service';
-import { CreatureQuestitem } from './creature-questitem.type';
+import { CreatureQuestitem } from '../../../../types/creature-questitem.type';
 import { CreatureQuestitemService } from '../../../../services/editors/creature/creature-questitem.service';
 
 @Component({

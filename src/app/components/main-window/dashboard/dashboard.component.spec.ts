@@ -6,7 +6,7 @@ import { of } from 'rxjs';
 import { DashboardComponent } from './dashboard.component';
 import { QueryService } from '../../../services/query.service';
 import { MockedQueryService } from '../../../test-utils/mocks';
-import { VersionDbRow, VersionRow } from '../../../types';
+import { VersionDbRow, VersionRow } from '../../../types/general';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;

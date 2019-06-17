@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { QueryService } from '../../../services/query.service';
-import { VersionDbRow, VersionRow } from '../../../types';
+import { VersionDbRow, VersionRow } from '../../../types/general';
 import { version } from '../../../../../package.json';
 
 @Component({

@@ -1,4 +1,4 @@
-import { TableRow } from '../../../../types';
+import { TableRow } from './general';
 
 export const SPAWNS_ADDON_TABLE = 'creature_addon';
 export const SPAWNS_ADDON_ID_2 = 'guid';

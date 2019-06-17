@@ -6,7 +6,7 @@ import { SingleRowEditorService } from '../single-row-editor.service';
 import {
   CREATURE_TEMPLATE_ADDON_ID, CREATURE_TEMPLATE_ADDON_TABLE,
   CreatureTemplateAddon
-} from '../../../components/editors/creature/creature-template-addon/creature-template-addon.type';
+} from '../../../types/creature-template-addon.type';
 
 @Injectable({
   providedIn: 'root'

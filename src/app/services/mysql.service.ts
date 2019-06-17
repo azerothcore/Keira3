@@ -4,7 +4,7 @@ import * as mysql from 'mysql';
 import { Connection, ConnectionConfig, FieldInfo, MysqlError } from 'mysql';
 
 import { ElectronService } from './electron.service';
-import { MysqlResult, TableRow } from '../types';
+import { MysqlResult, TableRow } from '../types/general';
 
 
 @Injectable()

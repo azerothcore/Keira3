@@ -5,7 +5,7 @@ import {
   CREATURE_TEMPLATE_ID,
   CREATURE_TEMPLATE_NAME, CREATURE_TEMPLATE_TABLE,
   CreatureTemplate
-} from '../../../components/editors/creature/creature-template/creature-template.type';
+} from '../../../types/creature-template.type';
 import { QueryService } from '../../query.service';
 import { CreatureHandlerService } from '../../handlers/creature-handler.service';
 

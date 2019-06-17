@@ -4,16 +4,16 @@ import { CreatureHandlerService } from '../../handlers/creature-handler.service'
 import { QueryService } from '../../query.service';
 import {
   PickpocketingLootTemplate
-} from '../../../components/editors/creature/pickpocketing-loot-template/pickpocketing-loot-template.type';
+} from '../../../types/pickpocketing-loot-template.type';
 import { LootEditorService } from '../loot-editor.service';
 import {
   CREATURE_LOOT_TEMPLATE_TABLE,
   CreatureLootTemplate
-} from '../../../components/editors/creature/creature-loot-template/creature-loot-template.type';
+} from '../../../types/creature-loot-template.type';
 import {
   CREATURE_TEMPLATE_ID, CREATURE_TEMPLATE_PICKPOCKETING_LOOT_ID,
   CREATURE_TEMPLATE_TABLE
-} from '../../../components/editors/creature/creature-template/creature-template.type';
+} from '../../../types/creature-template.type';
 
 @Injectable({
   providedIn: 'root'

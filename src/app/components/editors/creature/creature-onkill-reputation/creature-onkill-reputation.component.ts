@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { SingleRowEditorComponent } from '../../shared/single-row-editor.component';
 import { CreatureHandlerService } from '../../../../services/handlers/creature-handler.service';
-import { CreatureOnkillReputation } from './creature-onkill-reputation.type';
+import { CreatureOnkillReputation } from '../../../../types/creature-onkill-reputation.type';
 import { CreatureOnkillReputationService } from '../../../../services/editors/creature/creature-onkill-reputation.service';
 
 @Component({
