@@ -1,7 +1,7 @@
 import { Component, } from '@angular/core';
+import { BsModalRef } from 'ngx-bootstrap';
 
 import { BaseSelectorModalComponent } from '../base-selector/base-selector-modal.component';
-import { BsModalRef } from 'ngx-bootstrap';
 
 @Component({
   selector: 'app-item-selector-modal',

@@ -14,7 +14,7 @@ export abstract class BaseSelectorModalComponent {
   }
 
   onSelection() {
-    this.onValueSelected.next();
+    this.onValueSelected.next(this.value);
     this.bsModalRef.hide();
   }
 }
