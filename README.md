@@ -15,7 +15,7 @@ Keira3 is currently in a WIP state. All the news and releases will be announced 
 
 ## Support us
 
-You can support the Keira3 development by [donating with PayPal](https://www.paypal.com/donate/?token=1X08XHBNzJj9FK0UvHhg4cKvMNCidCt6MW10hZD3iXwv4Xnq2pT0gcXyuZpgLVEKpwBA0W&country.x=IT&locale.x=en_US&Z3JncnB0=).
+You can support the Keira3 development by [donating with PayPal](https://www.paypal.me/francesco92dev).
 
 ## Inspired by
 

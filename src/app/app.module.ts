@@ -15,7 +15,7 @@ import { HighlightModule } from 'ngx-highlightjs';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ClipboardModule } from 'ngx-clipboard';
 
-import { HomeComponent } from './components/main-window/home/home.component';
+import { DashboardComponent } from './components/main-window/dashboard/dashboard.component';
 import { AppRoutingModule } from './config/app-routing.module';
 import { ElectronService } from './services/electron.service';
 import { WebviewDirective } from './directives/webview.directive';
@@ -55,7 +55,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
+    DashboardComponent,
     WebviewDirective,
     SidebarComponent,
     MainWindowComponent,
