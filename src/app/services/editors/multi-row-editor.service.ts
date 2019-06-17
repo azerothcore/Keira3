@@ -127,6 +127,8 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     this._newRows = [ ...this._newRows ];
 
     this._selectedRowId = null;
+    this._form.reset();
+    this._form.disable();
 
     this.updateDiffQuery();
     this.updateFullQuery();
