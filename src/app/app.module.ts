@@ -47,6 +47,7 @@ import { NpcTrainerComponent } from './components/editors/creature/npc-trainer/n
 import { SpawnsComponent } from './components/editors/creature/spawns/spawns.component';
 import { SpawnsAddonComponent } from './components/editors/creature/spawns-addon/spawns-addon.component';
 import { QueryErrorComponent } from './components/editors/shared/query-output/query-error/query-error.component';
+import { SelectorButtonComponent } from './components/editors/shared/selectors/selector-button/selector-button.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -79,6 +80,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     SpawnsComponent,
     SpawnsAddonComponent,
     QueryErrorComponent,
+    SelectorButtonComponent,
   ],
   imports: [
     BrowserModule,
