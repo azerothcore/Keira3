@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap';
+import { UiSwitchModule } from 'ngx-ui-switch';
 
 import { FlagsSelectorModalComponent } from './flags-selector-modal.component';
 import { CommonTestModule } from '../../../../../test-utils/common-test.module';
@@ -14,6 +15,7 @@ describe('FlagsSelectorModalComponent', () => {
       declarations: [ FlagsSelectorModalComponent ],
       imports: [
         CommonTestModule,
+        UiSwitchModule,
       ],
       providers: [
         BsModalRef,
