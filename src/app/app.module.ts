@@ -52,6 +52,8 @@ import { ItemSelectorBtnComponent } from './components/editors/shared/selectors/
 import { ItemSelectorModalComponent } from './components/editors/shared/selectors/item-selector/item-selector-modal.component';
 import { FlagsSelectorModalComponent } from './components/editors/shared/selectors/flags-selector/flags-selector-modal.component';
 import { FlagsSelectorBtnComponent } from './components/editors/shared/selectors/flags-selector/flags-selector-btn.component';
+import { UiSwitchModule } from 'ngx-ui-switch';
+import { uiSwitchConfig } from './config/ui-switch.config';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -106,6 +108,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     HighlightModule.forRoot(highlightOptions),
     NgxDatatableModule,
     ClipboardModule,
+    UiSwitchModule.forRoot(uiSwitchConfig),
   ],
   providers: [
     ElectronService,

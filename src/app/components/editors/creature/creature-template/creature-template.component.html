@@ -87,7 +87,7 @@
           <label class="control-label" for="unit_flags2">unit_flags2</label>
           <app-flags-selector-btn
             [control]="editorService.form.get('unit_flags2')"
-            [config]="{ flags: UNIT_FLAGS_2 }"
+            [config]="{ flags: UNIT_FLAGS_2, name: 'unit_flags2' }"
           ></app-flags-selector-btn>
           <input [formControlName]="'unit_flags2'" id="unit_flags2" type="number" class="form-control form-control-sm">
         </div>
