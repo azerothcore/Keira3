@@ -32,6 +32,10 @@ export class FlagsService {
       }
     }
 
+    if (result === Math.pow(2, bits.length) - 1) {
+      return -1;
+    }
+
     return result;
   }
 
