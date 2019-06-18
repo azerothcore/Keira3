@@ -5,6 +5,7 @@ import { CreatureTemplate } from '../../../../types/creature-template.type';
 import { SingleRowEditorComponent } from '../../shared/single-row-editor.component';
 import { CreatureHandlerService } from '../../../../services/handlers/creature-handler.service';
 import { UNIT_FLAGS_2 } from '../../../../constants/flags/unit-flags2';
+import { INHABIT_TYPE } from '../../../../constants/flags/inhabit-type';
 
 @Component({
   selector: 'app-creature-template',
@@ -14,6 +15,7 @@ import { UNIT_FLAGS_2 } from '../../../../constants/flags/unit-flags2';
 export class CreatureTemplateComponent extends SingleRowEditorComponent<CreatureTemplate> {
 
   public readonly UNIT_FLAGS_2 = UNIT_FLAGS_2;
+  public readonly INHABIT_TYPE = INHABIT_TYPE;
 
   constructor(
     public editorService: CreatureTemplateService,
