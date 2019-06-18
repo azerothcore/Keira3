@@ -32,3 +32,8 @@ export interface VersionRow extends TableRow {
 export interface VersionDbRow extends TableRow {
   [key: string]: number;
 }
+
+export interface Flag {
+  bit: number; // the position (index) of the bit
+  name: string;
+}
