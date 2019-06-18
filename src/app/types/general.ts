@@ -37,3 +37,8 @@ export interface Flag {
   bit: number; // the position (index) of the bit
   name: string;
 }
+
+export interface Option {
+  value: number|string;
+  name: string;
+}

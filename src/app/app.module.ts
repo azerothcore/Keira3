@@ -54,6 +54,8 @@ import { FlagsSelectorModalComponent } from './components/editors/shared/selecto
 import { FlagsSelectorBtnComponent } from './components/editors/shared/selectors/flags-selector/flags-selector-btn.component';
 import { UiSwitchModule } from 'ngx-ui-switch';
 import { uiSwitchConfig } from './config/ui-switch.config';
+import { SingleValueSelectorBtnComponent } from './components/editors/shared/selectors/single-value-selector/single-value-selector-btn.component';
+import { SingleValueSelectorModalComponent } from './components/editors/shared/selectors/single-value-selector/single-value-selector-modal.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -63,6 +65,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   entryComponents: [
     ItemSelectorModalComponent,
     FlagsSelectorModalComponent,
+    SingleValueSelectorModalComponent,
   ],
   declarations: [
     AppComponent,
@@ -75,6 +78,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     ItemSelectorModalComponent,
     FlagsSelectorModalComponent,
     FlagsSelectorBtnComponent,
+    SingleValueSelectorModalComponent,
+    SingleValueSelectorBtnComponent,
     HighlightjsWrapperComponent,
     CreateComponent,
     TopBarComponent,
