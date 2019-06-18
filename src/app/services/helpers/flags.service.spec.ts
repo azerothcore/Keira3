@@ -35,7 +35,7 @@ describe('FlagsService', () => {
 
   describe('getValueFromBits', () => {
     for (const { id, bits, expected } of [
-      { id: 1, bits: [true],                            expected: 1, },
+      { id: 1, bits: [true, true, true],                expected: -1, },
       { id: 2, bits: [true, false],                     expected: 1, },
       { id: 3, bits: [false, true, false],              expected: 2, },
       { id: 4, bits: [false, true, true],               expected: toInt('110') },
