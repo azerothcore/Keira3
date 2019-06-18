@@ -1,4 +1,4 @@
-import { Component, } from '@angular/core';
+import { Component, OnInit, } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap';
 
 import { BaseSelectorModalComponent } from '../base-selector/base-selector-modal.component';
@@ -10,7 +10,7 @@ import { Option } from '../../../../../types/general';
   templateUrl: './single-value-selector-modal.component.html',
   styleUrls: ['./single-value-selector-modal.component.scss']
 })
-export class SingleValueSelectorModalComponent extends BaseSelectorModalComponent {
+export class SingleValueSelectorModalComponent extends BaseSelectorModalComponent implement OnInit {
 
   public readonly DTCFG = DTCFG;
   selected: Option[];
