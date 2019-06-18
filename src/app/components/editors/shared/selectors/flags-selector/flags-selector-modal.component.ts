@@ -11,7 +11,7 @@ import { FlagsService } from '../../../../../services/helpers/flags.service';
 })
 export class FlagsSelectorModalComponent extends BaseSelectorModalComponent implements OnInit {
 
-  public readonly Math = Math;
+  public readonly pow = Math.pow;
 
   flagValues: boolean[];
 
