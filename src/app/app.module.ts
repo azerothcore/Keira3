@@ -56,22 +56,28 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 };
 
 @NgModule({
+  entryComponents: [
+    ItemSelectorModalComponent,
+  ],
   declarations: [
     AppComponent,
     DashboardComponent,
     WebviewDirective,
     SidebarComponent,
     MainWindowComponent,
+    QueryErrorComponent,
+    ItemSelectorBtnComponent,
+    ItemSelectorModalComponent,
+    HighlightjsWrapperComponent,
+    CreateComponent,
+    TopBarComponent,
     ConnectionWindowComponent,
     /* Creature */
     CreatureTemplateComponent,
     CreatureTemplateAddonComponent,
     NpcVendorComponent,
     SelectCreatureComponent,
-    CreateComponent,
-    TopBarComponent,
     QueryOutputComponent,
-    HighlightjsWrapperComponent,
     CreatureEquipTemplateComponent,
     CreatureOnkillReputationComponent,
     CreatureQuestitemComponent,
@@ -81,9 +87,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     NpcTrainerComponent,
     SpawnsComponent,
     SpawnsAddonComponent,
-    QueryErrorComponent,
-    ItemSelectorBtnComponent,
-    ItemSelectorModalComponent,
   ],
   imports: [
     BrowserModule,

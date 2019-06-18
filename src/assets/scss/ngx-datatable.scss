@@ -265,3 +265,8 @@ label.datatable-checkbox {
 .datatable-select .datatable-row-wrapper {
   cursor: pointer;
 }
+
+.ngx-datatable.highlight-select .datatable-body .datatable-body-row.active {
+  background-color: lightgrey;
+  font-weight: 600;
+}
