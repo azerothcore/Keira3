@@ -20,7 +20,7 @@ You can support the Keira3 development by [donating with PayPal](https://www.pay
 
 ## Inspired by
 
-We created Keira inspired by the old [indomit's Quice/Truice](https://github.com/indomit/quice) database editor, and by the [Discover-'s SAI Editor](https://github.com/Discover-/SAI-Editor). Our primary goal was to provide an editor with the same features that was cross-platform, so we built it as a web app.
+We created Keira inspired by the old [indomit's Quice/Truice](https://github.com/indomit/quice) database editor, and by the [Discover-'s SAI Editor](https://github.com/jasperrietrae/SAI-Editor). Our primary goal was to provide an editor with the same features that was cross-platform, so we built it as a web app.
 
 Keira3 is the direct successor of [Keira2](https://github.com/Helias/Keira2). We kept the cross-platform promise as well as adding the possibility to execute the generated queries and simplifying the application setup.
 
