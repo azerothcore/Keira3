@@ -2,8 +2,10 @@ import { TestBed } from '@angular/core/testing';
 
 import { FlagsService } from './flags.service';
 
-fdescribe('FlagsService', () => {
+describe('FlagsService', () => {
   let service: FlagsService;
+
+  const toInt = (binary: string) => parseInt(binary, 2);
 
   beforeEach(() => TestBed.configureTestingModule({}));
 
@@ -15,8 +17,6 @@ fdescribe('FlagsService', () => {
     it('it should return all 1s when the value is -1', () => {
       expect(service.getBitsFromValue(-1, 3)).toEqual([true, true, true]);
     });
-
-    function toInt(binary: string) { return parseInt(binary, 2); }
 
     for (const { id, value, count, expected } of [
       { id: 1, value: 1, count: 1, expected: [true] },
@@ -34,6 +34,27 @@ fdescribe('FlagsService', () => {
   });
 
   describe('getValueFromBits', () => {
-    // TODO
+    for (const { id, bits, expected } of [
+      { id: 1, bits: [true], expected: 1, },
+      { id: 2, bits: [true, false], expected: 1, },
+      { id: 3, bits: [false, true, false], expected: 2, },
+      { id: 4, bits: [false, true, true], expected: toInt('110') },
+      { id: 5, bits: [false, true, true, false], expected: toInt('110') },
+      { id: 6, bits: [false, true, true, false, false], expected: toInt('0110') },
+      { id: 7, bits: [false, true, false, true, false], expected: toInt('01010') },
+    ]) {
+      it(`it should correctly work [${id}]`, () => {
+        expect(service.getValueFromBits(bits)).toEqual(expected);
+      });
+    }
+  });
+
+  describe('combining getValueFromBits and getBitsFromValue', () => {
+
+    for (const v of [1, 5, 23, 40, 123, 231, 563, 2356, 8345, 9003]) {
+      it(`value: ${v}`, () => {
+        expect(service.getValueFromBits(service.getBitsFromValue(v, 24))).toEqual(v);
+      });
+    }
   });
 });
