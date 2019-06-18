@@ -50,6 +50,7 @@ import { SpawnsAddonComponent } from './components/editors/creature/spawns-addon
 import { QueryErrorComponent } from './components/editors/shared/query-output/query-error/query-error.component';
 import { ItemSelectorBtnComponent } from './components/editors/shared/selectors/item-selector/item-selector-btn.component';
 import { ItemSelectorModalComponent } from './components/editors/shared/selectors/item-selector/item-selector-modal.component';
+import { FlagsSelectorModalComponent } from './components/editors/shared/selectors/flags-selector/flags-selector-modal.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -58,6 +59,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 @NgModule({
   entryComponents: [
     ItemSelectorModalComponent,
+    FlagsSelectorModalComponent,
   ],
   declarations: [
     AppComponent,
@@ -68,6 +70,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     QueryErrorComponent,
     ItemSelectorBtnComponent,
     ItemSelectorModalComponent,
+    FlagsSelectorModalComponent,
     HighlightjsWrapperComponent,
     CreateComponent,
     TopBarComponent,
