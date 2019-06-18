@@ -8,13 +8,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import {
-  PERFECT_SCROLLBAR_CONFIG,
-  PerfectScrollbarConfigInterface,
-  PerfectScrollbarModule
+PERFECT_SCROLLBAR_CONFIG,
+PerfectScrollbarConfigInterface,
+PerfectScrollbarModule
 } from 'ngx-perfect-scrollbar';
 import { HighlightModule } from 'ngx-highlightjs';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ClipboardModule } from 'ngx-clipboard';
+import { UiSwitchModule } from 'ngx-ui-switch';
 
 import { DashboardComponent } from './components/main-window/dashboard/dashboard.component';
 import { AppRoutingModule } from './config/app-routing.module';
@@ -35,13 +36,13 @@ import { QueryOutputComponent } from './components/editors/shared/query-output/q
 import { HighlightjsWrapperComponent } from './components/editors/shared/hightlightjs-wrapper/highlightjs-wrapper.component';
 import { CreatureEquipTemplateComponent } from './components/editors/creature/creature-equip-template/creature-equip-template.component';
 import {
-  CreatureOnkillReputationComponent
+CreatureOnkillReputationComponent
 } from './components/editors/creature/creature-onkill-reputation/creature-onkill-reputation.component';
 import { MysqlService } from './services/mysql.service';
 import { CreatureQuestitemComponent } from './components/editors/creature/creature-questitem/creature-questitem.component';
 import { CreatureLootTemplateComponent } from './components/editors/creature/creature-loot-template/creature-loot-template.component';
 import {
-  PickpocketingLootTemplateComponent
+PickpocketingLootTemplateComponent
 } from './components/editors/creature/pickpocketing-loot-template/pickpocketing-loot-template.component';
 import { SkinningLootTemplateComponent } from './components/editors/creature/skinning-loot-template/skinning-loot-template.component';
 import { NpcTrainerComponent } from './components/editors/creature/npc-trainer/npc-trainer.component';
@@ -52,10 +53,13 @@ import { ItemSelectorBtnComponent } from './components/editors/shared/selectors/
 import { ItemSelectorModalComponent } from './components/editors/shared/selectors/item-selector/item-selector-modal.component';
 import { FlagsSelectorModalComponent } from './components/editors/shared/selectors/flags-selector/flags-selector-modal.component';
 import { FlagsSelectorBtnComponent } from './components/editors/shared/selectors/flags-selector/flags-selector-btn.component';
-import { UiSwitchModule } from 'ngx-ui-switch';
 import { uiSwitchConfig } from './config/ui-switch.config';
-import { SingleValueSelectorBtnComponent } from './components/editors/shared/selectors/single-value-selector/single-value-selector-btn.component';
-import { SingleValueSelectorModalComponent } from './components/editors/shared/selectors/single-value-selector/single-value-selector-modal.component';
+import {
+  SingleValueSelectorBtnComponent
+} from './components/editors/shared/selectors/single-value-selector/single-value-selector-btn.component';
+import {
+  SingleValueSelectorModalComponent
+} from './components/editors/shared/selectors/single-value-selector/single-value-selector-modal.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
