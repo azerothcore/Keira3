@@ -7,6 +7,7 @@ import { Class } from '../../../../../types/general';
 export abstract class BaseSelectorBtnComponent {
 
   @Input() control: FormControl;
+  @Input() config;
   @Input() modalClass = 'modal-xl';
 
   private modalRef: BsModalRef;
@@ -19,9 +20,15 @@ export abstract class BaseSelectorBtnComponent {
   onClick() {
     this.modalRef = this.modalService.show(
       this.modalComponentClass,
-      Object.assign({}, { class: this.modalClass })
+      {
+        class: this.modalClass,
+        initialState: {
+          config: this.config,
+          value: this.control.value,
+        }
+      },
     );
-    this.modalRef.content.value = this.control.value;
+
     this.modalRef.content.onValueSelected.subscribe((newValue) => {
       this.control.markAsDirty();
       this.control.setValue(newValue);

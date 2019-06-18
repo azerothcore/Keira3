@@ -51,6 +51,7 @@ import { QueryErrorComponent } from './components/editors/shared/query-output/qu
 import { ItemSelectorBtnComponent } from './components/editors/shared/selectors/item-selector/item-selector-btn.component';
 import { ItemSelectorModalComponent } from './components/editors/shared/selectors/item-selector/item-selector-modal.component';
 import { FlagsSelectorModalComponent } from './components/editors/shared/selectors/flags-selector/flags-selector-modal.component';
+import { FlagsSelectorBtnComponent } from './components/editors/shared/selectors/flags-selector/flags-selector-btn.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -71,6 +72,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     ItemSelectorBtnComponent,
     ItemSelectorModalComponent,
     FlagsSelectorModalComponent,
+    FlagsSelectorBtnComponent,
     HighlightjsWrapperComponent,
     CreateComponent,
     TopBarComponent,

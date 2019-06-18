@@ -2,7 +2,34 @@
 
   <p class="lead text-center mb-1">Flags selector</p>
 
-  TODO
+  <table
+    *ngIf="config && config.flags && flagValues"
+    class="table table-striped table-bordered table-sm"
+  >
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>Bit (2^X)</th>
+      <th>Value</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let flag of config.flags">
+      <td>
+          <input
+            type="checkbox"
+            [id]="'bit-' + flag.bit"
+            [checked]="flagValues[flag.bit]"
+            (change)="toggleBit(flag.bit)"
+          >
+      </td>
+      <td>{{ flag.bit }}</td>
+      <td>TODO</td>
+      <td>{{ flag.name }}</td>
+    </tr>
+    </tbody>
+  </table>
 
 </div>
 

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Flag } from '../../types/general';
 
 @Injectable({
   providedIn: 'root'
@@ -32,5 +33,17 @@ export class FlagsService {
     }
 
     return result;
+  }
+
+  getBitsArray(flags: Flag[], value: number): boolean[] {
+    let max = 0;
+
+    for (const flag of flags) {
+      if (flag.bit > max) {
+        max = flag.bit;
+      }
+    }
+
+    return this.getBitsFromValue(value, max + 1);
   }
 }
