@@ -38,6 +38,10 @@
             <a href="#" [routerLink]="''">Dashboard</a>
           </li>
 
+          <li>
+            <a (click)="collapseAll()">Collapse All</a>
+          </li>
+
           <li class="header-menu">
             <span>Editors</span>
           </li>
@@ -120,6 +124,91 @@
                   </ng-container>
                 </ng-container>
 
+              </ul>
+            </div>
+          </li>
+
+          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.quest === 'down' }">
+            <a (click)="toggleState('quest')">
+              <i class="fa fa-pen"></i>
+              <span>Quest</span>
+            </a>
+
+            <div class="sidebar-submenu" [@slide]="menuStates.quest">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'coming-soon'">
+                    Coming soon...
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </li>
+
+          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.item === 'down' }">
+            <a (click)="toggleState('item')">
+              <i class="fa fa-pen"></i>
+              <span>Item</span>
+            </a>
+
+            <div class="sidebar-submenu" [@slide]="menuStates.item">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'coming-soon'">
+                    Coming soon...
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </li>
+
+          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.smartAi === 'down' }">
+            <a (click)="toggleState('smartAi')">
+              <i class="fa fa-pen"></i>
+              <span>SmartAI</span>
+            </a>
+
+            <div class="sidebar-submenu" [@slide]="menuStates.smartAi">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'coming-soon'">
+                    Coming soon...
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </li>
+
+          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.conditions === 'down' }">
+            <a (click)="toggleState('conditions')">
+              <i class="fa fa-pen"></i>
+              <span>Conditions</span>
+            </a>
+
+            <div class="sidebar-submenu" [@slide]="menuStates.conditions">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'coming-soon'">
+                    Coming soon...
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </li>
+
+          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.gossip === 'down' }">
+            <a (click)="toggleState('gossip')">
+              <i class="fa fa-pen"></i>
+              <span>Gossip</span>
+            </a>
+
+            <div class="sidebar-submenu" [@slide]="menuStates.gossip">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'coming-soon'">
+                    Coming soon...
+                  </a>
+                </li>
               </ul>
             </div>
           </li>

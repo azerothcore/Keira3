@@ -60,6 +60,7 @@ import {
 import {
   SingleValueSelectorModalComponent
 } from './components/editors/shared/selectors/single-value-selector/single-value-selector-modal.component';
+import { ComingSoonComponent } from './components/editors/coming-soon/coming-soon.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -103,6 +104,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     NpcTrainerComponent,
     SpawnsComponent,
     SpawnsAddonComponent,
+    ComingSoonComponent,
   ],
   imports: [
     BrowserModule,

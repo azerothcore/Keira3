@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+
 import { QueryService } from '../../../services/query.service';
 import { VersionDbRow, VersionRow } from '../../../types/general';
 import { version } from '../../../../../package.json';
+import { AC_FORUM_URL, PAYPAL_DONATE_URL, KEIRA3_REPO_URL, AC_DISCORD_URL } from '../../../constants/general';
 
 @Component({
   selector: 'app-home',
@@ -13,6 +15,10 @@ export class DashboardComponent implements OnInit {
   coreVersions: VersionRow;
   dbWorldVersion: string;
   public readonly KEIRA_VERSION = version;
+  public readonly PAYPAL_DONATE_URL = PAYPAL_DONATE_URL;
+  public readonly AC_FORUM_URL = AC_FORUM_URL;
+  public readonly AC_DISCORD_URL = AC_DISCORD_URL;
+  public readonly KEIRA3_REPO_URL = KEIRA3_REPO_URL;
 
   constructor(
     private queryService: QueryService,

@@ -21,6 +21,11 @@ export class SidebarComponent {
 
   menuStates: { [key: string]: 'down'|'up' } = {
     creature: 'down',
+    quest: 'up',
+    item: 'up',
+    smartAi: 'up',
+    conditions: 'up',
+    gossip: 'up',
   };
 
   constructor(
@@ -42,8 +47,16 @@ export class SidebarComponent {
     return this.sidebarService.hasBackgroundImage;
   }
 
-
   toggleState(key: string) {
     this.menuStates[key] = this.menuStates[key] === 'up' ? 'down' : 'up';
+  }
+
+  collapseAll() {
+    for (const key in this.menuStates) {
+      /* istanbul ignore else */
+      if (this.menuStates.hasOwnProperty(key)) {
+        this.menuStates[key] = 'up';
+      }
+    }
   }
 }
