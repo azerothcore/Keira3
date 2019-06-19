@@ -28,7 +28,6 @@ export class FlagsSelectorModalComponent extends BaseSelectorModalComponent impl
         this.config.flags,
         parseInt(`${this.value}`, 10),
       );
-      console.log(this.flagValues);
     }
   }
 
