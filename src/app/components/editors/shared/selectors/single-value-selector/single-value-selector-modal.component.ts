@@ -10,7 +10,7 @@ import { Option } from '../../../../../types/general';
   templateUrl: './single-value-selector-modal.component.html',
   styleUrls: ['./single-value-selector-modal.component.scss']
 })
-export class SingleValueSelectorModalComponent extends BaseSelectorModalComponent implement OnInit {
+export class SingleValueSelectorModalComponent extends BaseSelectorModalComponent implements OnInit {
 
   public readonly DTCFG = DTCFG;
   selected: Option[];
