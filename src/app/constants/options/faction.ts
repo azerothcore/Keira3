@@ -1,6 +1,6 @@
 import { Option } from '../../types/general';
 
-export const Factions: Option[] = [
+export const FACTIONS: Option[] = [
   { value: 1,    name: `PLAYER, Human` },
   { value: 2,    name: `PLAYER, Orc` },
   { value: 3,    name: `PLAYER, Dwarf` },

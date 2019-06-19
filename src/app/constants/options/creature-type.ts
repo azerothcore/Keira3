@@ -1,6 +1,6 @@
 import { Option } from '../../types/general';
 
-export const CreatureType: Option[] = [
+export const CREATURE_TYPE: Option[] = [
   { value: 1,  name: 'BEAST' },
   { value: 2,  name: 'DRAGONKIN' },
   { value: 3,  name: 'DEMON' },

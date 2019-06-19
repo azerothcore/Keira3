@@ -1,6 +1,6 @@
 import { Flag } from '../../types/general';
 
-export const MechanicImmuneMask: Flag[] = [
+export const MECHANIC_IMMUNE_MASK: Flag[] = [
   { bit: 0,  name: 'NONE' },
   { bit: 1,  name: 'CHARM' },
   { bit: 2,  name: 'DISORIENTED' },

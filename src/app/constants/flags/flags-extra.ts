@@ -1,6 +1,6 @@
 import { Flag } from '../../types/general';
 
-export const FlagsExtra: Flag[] = [
+export const FLAGS_EXTRA: Flag[] = [
   { bit: 0,  name: `INSTANCE_BIND - creature kill bind instance with killer and killer's group` },
   { bit: 1,  name: `CIVILIAN - not aggro (ignore faction/reputation hostility)` },
   { bit: 2,  name: `NO_PARRY - creature can't parry` },

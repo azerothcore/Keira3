@@ -1,6 +1,6 @@
 import { Option } from '../../types/general';
 
-export const LootMode: Option[] = [
+export const LOOT_MODE: Option[] = [
   { value: 0, name: 'Default' },
   { value: 1, name: 'HardMode1' },
   { value: 2, name: 'HardMode2' },
