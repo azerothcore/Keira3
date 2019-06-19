@@ -1,6 +1,6 @@
 import { Flag } from '../../types/general';
 
-export const UnitFlags: Flag[] = [
+export const UNIT_FLAGS: Flag[] = [
   { bit: 0,  name: 'SERVER_CONTROLLED' },
   { bit: 1,  name: 'NON_ATTACKABLE' },
   { bit: 2,  name: 'DISABLE_MOVE' },

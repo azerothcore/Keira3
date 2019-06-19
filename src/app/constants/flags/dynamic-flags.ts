@@ -1,6 +1,6 @@
 import { Flag } from '../../types/general';
 
-export const DynamicFlags: Flag[] = [
+export const DYNAMIC_FLAGS: Flag[] = [
   { bit: 0, name: 'NONE'},
   { bit: 1, name: 'LOOTABLE'},
   { bit: 2, name: 'TRACK_UNIT - Creature’s location will be seen as a small dot in the minimap'},

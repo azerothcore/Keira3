@@ -1,6 +1,6 @@
 import { Flag } from '../../types/general';
 
-export const NpcFlags: Flag[] = [
+export const NPC_FLAGS: Flag[] = [
    { bit: 0,  name: 'NONE' },
    { bit: 1,  name: 'GOSSIP - If creature has more gossip options, add this flag to bring up a menu.' },
    { bit: 2,  name: 'QUESTGIVER - Any creature giving or taking quests needs to have this flag.' },

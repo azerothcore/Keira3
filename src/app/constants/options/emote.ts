@@ -1,6 +1,6 @@
 import { Option } from '../../types/general';
 
-export const Emote: Option[] = [
+export const EMOTE: Option[] = [
   { value: 0,   name: 'ONESHOT_NONE' },
   { value: 1,   name: 'ONESHOT_TALK' },
   { value: 2,   name: 'ONESHOT_BOW' },
