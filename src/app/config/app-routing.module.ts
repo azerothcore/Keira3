@@ -21,11 +21,16 @@ import { SkinningLootTemplateComponent } from '../components/editors/creature/sk
 import { NpcTrainerComponent } from '../components/editors/creature/npc-trainer/npc-trainer.component';
 import { SpawnsComponent } from '../components/editors/creature/spawns/spawns.component';
 import { SpawnsAddonComponent } from '../components/editors/creature/spawns-addon/spawns-addon.component';
+import { ComingSoonComponent } from '../components/editors/coming-soon/coming-soon.component';
 
 const routes: Routes = [
   {
     path: '',
     component: DashboardComponent
+  },
+  {
+    path: 'coming-soon',
+    component: ComingSoonComponent
   },
   {
     path: 'creature',
