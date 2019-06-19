@@ -12,6 +12,8 @@ import { CREATURE_FAMILY } from '../../../../constants/options/creature-family';
 import { FACTIONS } from '../../../../constants/options/faction';
 import { CREATURE_TYPE } from '../../../../constants/options/creature-type';
 import { CREATURE_TYPE_FLAGS } from '../../../../constants/flags/creature-type-flags';
+import { RANK } from '../../../../constants/options/rank';
+import { UNIT_FLAGS } from '../../../../constants/flags/unit-flags';
 
 @Component({
   selector: 'app-creature-template',
@@ -20,6 +22,7 @@ import { CREATURE_TYPE_FLAGS } from '../../../../constants/flags/creature-type-f
 })
 export class CreatureTemplateComponent extends SingleRowEditorComponent<CreatureTemplate> {
 
+  public readonly UNIT_FLAGS = UNIT_FLAGS;
   public readonly UNIT_FLAGS_2 = UNIT_FLAGS_2;
   public readonly INHABIT_TYPE = INHABIT_TYPE;
   public readonly TRAINER_TYPE = TRAINER_TYPE;
@@ -28,6 +31,7 @@ export class CreatureTemplateComponent extends SingleRowEditorComponent<Creature
   public readonly FACTIONS = FACTIONS;
   public readonly CREATURE_TYPE = CREATURE_TYPE;
   public readonly CREATURE_TYPE_FLAGS = CREATURE_TYPE_FLAGS;
+  public readonly RANK = RANK;
 
   constructor(
     public editorService: CreatureTemplateService,
