@@ -53,6 +53,12 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="faction">faction</label>
+          <app-single-value-selector-btn
+            [control]="editorService.form.get('faction')"
+            [config]="{ options: FACTIONS, name: 'faction' }"
+            [modalClass]="'modal-sm'"
+          ></app-single-value-selector-btn>
+
           <input [formControlName]="'faction'" id="faction" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
