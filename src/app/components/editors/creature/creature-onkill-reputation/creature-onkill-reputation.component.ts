@@ -4,6 +4,7 @@ import { SingleRowEditorComponent } from '../../shared/single-row-editor.compone
 import { CreatureHandlerService } from '../../../../services/handlers/creature-handler.service';
 import { CreatureOnkillReputation } from '../../../../types/creature-onkill-reputation.type';
 import { CreatureOnkillReputationService } from '../../../../services/editors/creature/creature-onkill-reputation.service';
+import { FACTIONS } from '../../../../constants/options/faction';
 
 @Component({
   selector: 'app-creature-onkill-reputation',
@@ -11,6 +12,8 @@ import { CreatureOnkillReputationService } from '../../../../services/editors/cr
   styleUrls: ['./creature-onkill-reputation.component.scss']
 })
 export class CreatureOnkillReputationComponent extends SingleRowEditorComponent<CreatureOnkillReputation> {
+
+  public readonly FACTIONS = FACTIONS;
 
   constructor(
     public editorService: CreatureOnkillReputationService,

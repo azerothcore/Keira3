@@ -5,8 +5,12 @@ import { LootTemplate } from './loot-template.type';
 import { MultiRowEditorComponent } from '../multi-row-editor.component';
 import { HandlerService } from '../../../../services/handlers/handler.service';
 import { LootEditorService } from '../../../../services/editors/loot-editor.service';
+import { LOOT_MODE } from '../../../../constants/flags/loot-mode';
 
 export abstract class LootTemplateComponent<T extends LootTemplate> extends MultiRowEditorComponent<T> implements OnInit {
+
+  public readonly LOOT_MODE = LOOT_MODE;
+
   private _lootId: number;
   get lootId(): number { return this._lootId; }
 
