@@ -138,10 +138,18 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="mechanic_immune_mask">mechanic_immune_mask</label>
+          <app-flags-selector-btn
+            [control]="editorService.form.get('mechanic_immune_mask')"
+            [config]="{ flags: MECHANIC_IMMUNE_MASK, name: 'mechanic_immune_mask' }"
+          ></app-flags-selector-btn>
           <input [formControlName]="'mechanic_immune_mask'" id="mechanic_immune_mask" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="flags_extra">flags_extra</label>
+          <app-flags-selector-btn
+            [control]="editorService.form.get('flags_extra')"
+            [config]="{ flags: FLAGS_EXTRA, name: 'flags_extra' }"
+          ></app-flags-selector-btn>
           <input [formControlName]="'flags_extra'" id="flags_extra" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -348,6 +356,11 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="MovementType">MovementType</label>
+          <app-single-value-selector-btn
+            [control]="editorService.form.get('MovementType')"
+            [config]="{ options: TRAINER_TYPE, name: 'MovementType' }"
+            [modalClass]="'modal-sm'"
+          ></app-single-value-selector-btn>
           <input [formControlName]="'MovementType'" id="MovementType" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
