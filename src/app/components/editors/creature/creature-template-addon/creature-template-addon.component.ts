@@ -4,6 +4,7 @@ import { SingleRowEditorComponent } from '../../shared/single-row-editor.compone
 import { CreatureHandlerService } from '../../../../services/handlers/creature-handler.service';
 import { CreatureTemplateAddon } from '../../../../types/creature-template-addon.type';
 import { CreatureTemplateAddonService } from '../../../../services/editors/creature/creature-template-addon.service';
+import { EMOTE } from '../../../../constants/options/emote';
 
 @Component({
   selector: 'app-creature-template-addon',
@@ -11,6 +12,8 @@ import { CreatureTemplateAddonService } from '../../../../services/editors/creat
   styleUrls: ['./creature-template-addon.component.scss']
 })
 export class CreatureTemplateAddonComponent extends SingleRowEditorComponent<CreatureTemplateAddon> {
+
+  public readonly EMOTE = EMOTE;
 
   constructor(
     public editorService: CreatureTemplateAddonService,
