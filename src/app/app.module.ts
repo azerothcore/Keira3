@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import {
 PERFECT_SCROLLBAR_CONFIG,
 PerfectScrollbarConfigInterface,
@@ -115,6 +116,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     BrowserAnimationsModule,
     BsDropdownModule.forRoot(),
     ModalModule.forRoot(),
+    TooltipModule.forRoot(),
     PerfectScrollbarModule,
     HighlightModule.forRoot(highlightOptions),
     NgxDatatableModule,
