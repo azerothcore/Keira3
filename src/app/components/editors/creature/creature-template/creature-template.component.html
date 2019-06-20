@@ -358,8 +358,8 @@
           <label class="control-label" for="MovementType">MovementType</label>
           <app-single-value-selector-btn
             [control]="editorService.form.get('MovementType')"
-            [config]="{ options: TRAINER_TYPE, name: 'MovementType' }"
-            [modalClass]="'modal-sm'"
+            [config]="{ options: MOVEMENT_TYPE, name: 'MovementType' }"
+            [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
           <input [formControlName]="'MovementType'" id="MovementType" type="number" class="form-control form-control-sm">
         </div>

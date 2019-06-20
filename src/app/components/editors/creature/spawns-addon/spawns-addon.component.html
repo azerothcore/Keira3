@@ -44,6 +44,11 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="emote">emote</label>
+          <app-single-value-selector-btn
+            [control]="editorService.form.get('emote')"
+            [config]="{ options: EMOTE, name: 'emote' }"
+            [modalClass]="'modal-md'"
+          ></app-single-value-selector-btn>
           <input [formControlName]="'emote'" id="emote" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
