@@ -17,6 +17,9 @@ import { UNIT_FLAGS } from '../../../../constants/flags/unit-flags';
 import { DYNAMIC_FLAGS } from '../../../../constants/flags/dynamic-flags';
 import { CREATURE_CLASS } from '../../../../constants/options/creature-class';
 import { CREATURE_RACE } from '../../../../constants/options/creature-race';
+import { MOVEMENT_TYPE } from '../../../../constants/options/movement-type';
+import { FLAGS_EXTRA } from '../../../../constants/flags/flags-extra';
+import { MECHANIC_IMMUNE_MASK } from '../../../../constants/flags/mechanic-immune-mask';
 
 @Component({
   selector: 'app-creature-template',
@@ -38,6 +41,9 @@ export class CreatureTemplateComponent extends SingleRowEditorComponent<Creature
   public readonly DYNAMIC_FLAGS = DYNAMIC_FLAGS;
   public readonly CREATURE_CLASS = CREATURE_CLASS;
   public readonly CREATURE_RACE = CREATURE_RACE;
+  public readonly MOVEMENT_TYPE = MOVEMENT_TYPE;
+  public readonly FLAGS_EXTRA = FLAGS_EXTRA;
+  public readonly MECHANIC_IMMUNE_MASK = MECHANIC_IMMUNE_MASK;
 
   constructor(
     public editorService: CreatureTemplateService,
