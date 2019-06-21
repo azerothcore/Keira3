@@ -20,6 +20,7 @@ import { CREATURE_RACE } from '../../../../constants/options/creature-race';
 import { MOVEMENT_TYPE } from '../../../../constants/options/movement-type';
 import { FLAGS_EXTRA } from '../../../../constants/flags/flags-extra';
 import { MECHANIC_IMMUNE_MASK } from '../../../../constants/flags/mechanic-immune-mask';
+import { CREATURE_ICON } from '../../../../constants/options/creature-icon';
 
 @Component({
   selector: 'app-creature-template',
@@ -44,6 +45,7 @@ export class CreatureTemplateComponent extends SingleRowEditorComponent<Creature
   public readonly MOVEMENT_TYPE = MOVEMENT_TYPE;
   public readonly FLAGS_EXTRA = FLAGS_EXTRA;
   public readonly MECHANIC_IMMUNE_MASK = MECHANIC_IMMUNE_MASK;
+  public readonly CREATURE_ICON = CREATURE_ICON;
 
   constructor(
     public editorService: CreatureTemplateService,

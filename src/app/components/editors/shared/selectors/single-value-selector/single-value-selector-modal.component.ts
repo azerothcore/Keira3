@@ -13,7 +13,7 @@ import { Option } from '../../../../../types/general';
 export class SingleValueSelectorModalComponent extends BaseSelectorModalComponent implements OnInit {
 
   public readonly DTCFG = DTCFG;
-  selected: Option[];
+  selected: Option[] = [];
 
   constructor(
     protected bsModalRef: BsModalRef,
