@@ -46,30 +46,60 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="MaxStanding1">MaxStanding1</label>
+          <app-single-value-selector-btn
+            [control]="editorService.form.get('MaxStanding1')"
+            [config]="{ options: FACTION_RANK, name: 'MaxStanding1' }"
+            [modalClass]="'modal-md'"
+          ></app-single-value-selector-btn>
           <input [formControlName]="'MaxStanding1'" id="MaxStanding1" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="IsTeamAward1">IsTeamAward1</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Boolean (0 or 1) whether the player receives the reputation also the faction team or not.'"
+          ></i>
           <input [formControlName]="'IsTeamAward1'" id="IsTeamAward1" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="RewOnKillRepValue1">RewOnKillRepValue1</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'The reputation value that the player gains (or loses if negative) by killing the creature.'"
+          ></i>
           <input [formControlName]="'RewOnKillRepValue1'" id="RewOnKillRepValue1" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="MaxStanding2">MaxStanding2</label>
+          <app-single-value-selector-btn
+            [control]="editorService.form.get('MaxStanding2')"
+            [config]="{ options: FACTION_RANK, name: 'MaxStanding2' }"
+            [modalClass]="'modal-md'"
+          ></app-single-value-selector-btn>
           <input [formControlName]="'MaxStanding2'" id="MaxStanding2" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="IsTeamAward2">IsTeamAward2</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Boolean (0 or 1) whether the player receives the reputation also the faction team or not.'"
+          ></i>
           <input [formControlName]="'IsTeamAward2'" id="IsTeamAward2" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="RewOnKillRepValue2">RewOnKillRepValue2</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'The reputation value that the player gains (or loses if negative) by killing the creature.'"
+          ></i>
           <input [formControlName]="'RewOnKillRepValue2'" id="RewOnKillRepValue2" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="TeamDependent">TeamDependent</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="TEAM_DEPENDENT_TOOLTIP"
+          ></i>
           <input [formControlName]="'TeamDependent'" id="TeamDependent" type="number" class="form-control form-control-sm">
         </div>
       </div>
