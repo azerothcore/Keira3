@@ -49,6 +49,11 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="phaseMask">phaseMask</label>
+          <app-flags-selector-btn
+            [control]="editorService.form.get('phaseMask')"
+            [config]="{ flags: PHASE_MASK, name: 'phaseMask' }"
+            [modalClass]="'modal-lg'"
+          ></app-flags-selector-btn>
           <input [formControlName]="'phaseMask'" id="phaseMask" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
