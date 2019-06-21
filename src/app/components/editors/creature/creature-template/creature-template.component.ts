@@ -21,6 +21,9 @@ import { MOVEMENT_TYPE } from '../../../../constants/options/movement-type';
 import { FLAGS_EXTRA } from '../../../../constants/flags/flags-extra';
 import { MECHANIC_IMMUNE_MASK } from '../../../../constants/flags/mechanic-immune-mask';
 import { CREATURE_ICON } from '../../../../constants/options/creature-icon';
+import { EXPANSION } from '../../../../constants/options/expansion';
+import { UNIT_CLASS } from '../../../../constants/options/unit-class';
+import { DAMAGE_TYPE } from '../../../../constants/options/damage-type';
 
 @Component({
   selector: 'app-creature-template',
@@ -46,6 +49,22 @@ export class CreatureTemplateComponent extends SingleRowEditorComponent<Creature
   public readonly FLAGS_EXTRA = FLAGS_EXTRA;
   public readonly MECHANIC_IMMUNE_MASK = MECHANIC_IMMUNE_MASK;
   public readonly CREATURE_ICON = CREATURE_ICON;
+  public readonly EXPANSION = EXPANSION;
+  public readonly UNIT_CLASS = UNIT_CLASS;
+  public readonly DAMAGE_TYPE = DAMAGE_TYPE;
+
+  public readonly VEHICLE_ID_TOOLTIP = 'Entry of vehicle if creature is/has a vehicle entry. ' +
+    'This field determines how the player appears on the vehicle, how the vehicle moves, ' +
+    'and whether or not the vehicle action bar is shown. For example, a vehicleID of 292 will make the player invisible, ' +
+    'prevent the vehicle from strafing left/right (but will allow forwards/backwards), and will show the vehicle action bar spells ' +
+    '(which are defined in spell1-8). An npc_spellclick_spells entry must be made for this creature entry in order for this to work.';
+
+  public readonly MODEL_ID_TOOLTIP = 'A random graphical model that the client applies on this creature. ' +
+    'If you specify only one modelid and the rest will be equal to 0, model you have set won’t be chosen randomly. ' +
+    'From creature_model_info.modelid';
+
+  public readonly TRAINER_SPELL_TOOLTIP = 'If the NPC is a trainer that teaches professions (trainer_type = 2), ' +
+    'then the player must already know the spell ID specified here to be able to talk to this NPC.';
 
   constructor(
     public editorService: CreatureTemplateService,
