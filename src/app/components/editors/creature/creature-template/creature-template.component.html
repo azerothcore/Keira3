@@ -420,26 +420,50 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
           <label class="control-label" for="attackpower">attackpower</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Melee attack power used for spells'"
+          ></i>
           <input [formControlName]="'attackpower'" id="attackpower" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
           <label class="control-label" for="BaseAttackTime">BaseAttackTime</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Base time (milliseconds) that determines how long a creature must wait between melee attacks.'"
+          ></i>
           <input [formControlName]="'BaseAttackTime'" id="BaseAttackTime" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Base time (milliseconds) that determines how long a creature must wait between ranged attacks.'"
+          ></i>
           <label class="control-label" for="RangeAttackTime">RangeAttackTime</label>
           <input [formControlName]="'RangeAttackTime'" id="RangeAttackTime" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
           <label class="control-label" for="minrangedmg">minrangedmg</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Minimum ranged damage (affected by DamageModifier)'"
+          ></i>
           <input [formControlName]="'minrangedmg'" id="minrangedmg" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
           <label class="control-label" for="maxrangedmg">maxrangedmg</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Maximum ranged damage (affected by DamageModifier)'"
+          ></i>
           <input [formControlName]="'maxrangedmg'" id="maxrangedmg" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
           <label class="control-label" for="rangedattackpower">rangedattackpower</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Ranged attack power used for spells'"
+          ></i>
           <input [formControlName]="'rangedattackpower'" id="rangedattackpower" type="number" class="form-control form-control-sm">
         </div>
       </div>
@@ -449,10 +473,19 @@
       <div class="row">
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="AIName">AIName</label>
+          <app-single-value-selector-btn
+            [control]="editorService.form.get('AIName')"
+            [config]="{ options: CREATURE_AI_NAME, name: 'AIName' }"
+            [modalClass]="'modal-md'"
+          ></app-single-value-selector-btn>
           <input [formControlName]="'AIName'" id="AIName" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="ScriptName">ScriptName</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Overrides AIName. The name of the C++ script that this creature uses, if any.'"
+          ></i>
           <input [formControlName]="'ScriptName'" id="ScriptName" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -474,6 +507,10 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="movementId">movementId</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'It looks like this field is passed directly to the client and there is no info about it'"
+          ></i>
           <input [formControlName]="'movementId'" id="movementId" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -486,6 +523,10 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="HoverHeight">HoverHeight</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Distance above the ground that the creature will hover if it has MOVEMENTFLAG_DISABLE_GRAVITY enabled'"
+          ></i>
           <input [formControlName]="'HoverHeight'" id="HoverHeight" type="number" class="form-control form-control-sm">
         </div>
       </div>
@@ -495,10 +536,18 @@
       <div class="row">
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="scale">scale</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Size multiplier (how big the creature model appears). If 0, it uses the DBC default model size.'"
+          ></i>
           <input [formControlName]="'scale'" id="scale" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="DamageModifier">DamageModifier</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Damage multiplier, affects mindmg and maxdmg'"
+          ></i>
           <input [formControlName]="'DamageModifier'" id="DamageModifier" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -515,10 +564,18 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="speed_walk">speed_walk</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Controls how fast the creature can walk. For vehicles it increases the flying speed.'"
+          ></i>
           <input [formControlName]="'speed_walk'" id="speed_walk" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="speed_run">speed_run</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Controls how fast the creature can run. For vehicles it increases ground movement speed.'"
+          ></i>
           <input [formControlName]="'speed_run'" id="speed_run" type="number" class="form-control form-control-sm">
         </div>
       </div>
@@ -528,32 +585,58 @@
       <div class="row">
         <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
           <label class="control-label" for="resistance1">resistance1</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Holy resistance'"
+          ></i>
           <input [formControlName]="'resistance1'" id="resistance1" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
           <label class="control-label" for="resistance2">resistance2</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Fire resistance'"
+          ></i>
           <input [formControlName]="'resistance2'" id="resistance2" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
           <label class="control-label" for="resistance3">resistance3</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Nature resistance'"
+          ></i>
           <input [formControlName]="'resistance3'" id="resistance3" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
           <label class="control-label" for="resistance4">resistance4</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Frost resistance'"
+          ></i>
           <input [formControlName]="'resistance4'" id="resistance4" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
           <label class="control-label" for="resistance5">resistance5</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Shadow resistance'"
+          ></i>
           <input [formControlName]="'resistance5'" id="resistance5" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
           <label class="control-label" for="resistance6">resistance6</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Arcane resistance'"
+          ></i>
           <input [formControlName]="'resistance6'" id="resistance6" type="number" class="form-control form-control-sm">
         </div>
       </div>
       <hr>
 
-      <span class="category-title">Spells</span>
+      <span class="category-title">
+        Spells <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="SPELLS_TOOLTIP"></i>
+      </span>
       <div class="row">
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="spell1">spell1</label>

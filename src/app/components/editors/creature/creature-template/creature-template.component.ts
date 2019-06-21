@@ -24,6 +24,7 @@ import { CREATURE_ICON } from '../../../../constants/options/creature-icon';
 import { EXPANSION } from '../../../../constants/options/expansion';
 import { UNIT_CLASS } from '../../../../constants/options/unit-class';
 import { DAMAGE_TYPE } from '../../../../constants/options/damage-type';
+import { CREATURE_AI_NAME } from '../../../../constants/options/creature-ai-name';
 
 @Component({
   selector: 'app-creature-template',
@@ -52,6 +53,7 @@ export class CreatureTemplateComponent extends SingleRowEditorComponent<Creature
   public readonly EXPANSION = EXPANSION;
   public readonly UNIT_CLASS = UNIT_CLASS;
   public readonly DAMAGE_TYPE = DAMAGE_TYPE;
+  public readonly CREATURE_AI_NAME = CREATURE_AI_NAME;
 
   public readonly VEHICLE_ID_TOOLTIP = 'Entry of vehicle if creature is/has a vehicle entry. ' +
     'This field determines how the player appears on the vehicle, how the vehicle moves, ' +
@@ -65,6 +67,9 @@ export class CreatureTemplateComponent extends SingleRowEditorComponent<Creature
 
   public readonly TRAINER_SPELL_TOOLTIP = 'If the NPC is a trainer that teaches professions (trainer_type = 2), ' +
     'then the player must already know the spell ID specified here to be able to talk to this NPC.';
+
+  public readonly SPELLS_TOOLTIP = 'Spell ID that can be used for Mind Control of this creature. ' +
+    'For vehicle creatures: the spell on action bar with position X.';
 
   constructor(
     public editorService: CreatureTemplateService,
