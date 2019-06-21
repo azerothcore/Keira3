@@ -9,6 +9,7 @@ import { NPC_FLAGS } from '../../../../constants/flags/npc-flags';
 import { UNIT_FLAGS } from '../../../../constants/flags/unit-flags';
 import { DYNAMIC_FLAGS } from '../../../../constants/flags/dynamic-flags';
 import { SPAWN_MASK } from '../../../../constants/flags/spawn-mask';
+import { PHASE_MASK } from '../../../../constants/flags/phase-mask';
 
 @Component({
   selector: 'app-spawns',
@@ -22,6 +23,7 @@ export class SpawnsComponent extends MultiRowEditorComponent<Spawns> {
   public readonly NPC_FLAGS = NPC_FLAGS;
   public readonly DYNAMIC_FLAGS = DYNAMIC_FLAGS;
   public readonly SPAWN_MASK = SPAWN_MASK;
+  public readonly PHASE_MASK = PHASE_MASK;
 
   constructor(
     public editorService: SpawnsService,
