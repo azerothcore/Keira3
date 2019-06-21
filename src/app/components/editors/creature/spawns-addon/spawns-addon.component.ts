@@ -5,6 +5,8 @@ import { CreatureHandlerService } from '../../../../services/handlers/creature-h
 import { SpawnsAddon } from '../../../../types/spawns-addon.type';
 import { SpawnsAddonService } from '../../../../services/editors/creature/spawns-addon.service';
 import { EMOTE } from '../../../../constants/options/emote';
+import { CREATURE_ADDON_BYTES_1 } from '../../../../constants/options/creature-addon-bytes1';
+import { CREATURE_ADDON_BYTES_2 } from '../../../../constants/options/creature-addon-bytes2';
 
 @Component({
   selector: 'app-spawns-addon',
@@ -14,6 +16,8 @@ import { EMOTE } from '../../../../constants/options/emote';
 export class SpawnsAddonComponent extends MultiRowEditorComponent<SpawnsAddon> {
 
   public readonly EMOTE = EMOTE;
+  public readonly CREATURE_ADDON_BYTES_1 = CREATURE_ADDON_BYTES_1;
+  public readonly CREATURE_ADDON_BYTES_2 = CREATURE_ADDON_BYTES_2;
 
   constructor(
     public editorService: SpawnsAddonService,
