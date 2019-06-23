@@ -26,6 +26,7 @@ export class MysqlService {
     private electronService: ElectronService,
     private ngZone: NgZone,
   ) {
+    /* istanbul ignore next */
     if (this.electronService.isElectron()) {
       this.mysql = window.require('mysql');
     }
