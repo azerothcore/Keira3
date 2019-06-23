@@ -97,7 +97,7 @@
             "karmaConfig": "src/karma.conf.js",
             "codeCoverageExclude": [
               "src/app/services/electron.service.ts",
-              "src/test-utils/**/*",
+              "src/test-utils/**/*"
             ],
             "scripts": [
               "node_modules/squel/dist/squel.min.js"
