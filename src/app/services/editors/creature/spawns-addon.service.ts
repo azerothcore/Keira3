@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { MultiRowEditorService } from '../multi-row-editor.service';
+import { MultiRowExternalEditorService } from '../multi-row-external-editor.service';
 import { CreatureHandlerService } from '../../handlers/creature-handler.service';
 import { QueryService } from '../../query.service';
 import {
@@ -12,7 +12,7 @@ import {
 @Injectable({
   providedIn: 'root'
 })
-export class SpawnsAddonService extends MultiRowEditorService<SpawnsAddon> {
+export class SpawnsAddonService extends MultiRowExternalEditorService<SpawnsAddon> {
 
   constructor(
     protected handlerService: CreatureHandlerService,
@@ -21,31 +21,9 @@ export class SpawnsAddonService extends MultiRowEditorService<SpawnsAddon> {
     super(
       SpawnsAddon,
       SPAWNS_ADDON_TABLE,
-      null,
       SPAWNS_ADDON_ID_2,
       handlerService,
       queryService,
-    );
-  }
-
-  disableEntityIdField() {}
-
-  protected updateFullQuery(): void {
-    this._fullQuery = this.queryService.getFullDeleteInsertQuery<SpawnsAddon>(
-      this._entityTable,
-      this._newRows,
-      null,
-      SPAWNS_ADDON_ID_2,
-    );
-  }
-
-  protected updateDiffQuery(): void {
-    this._diffQuery = this.queryService.getDiffDeleteInsertTwoKeysQuery<SpawnsAddon>(
-      this._entityTable,
-      null,
-      SPAWNS_ADDON_ID_2,
-      this._originalRows,
-      this._newRows,
     );
   }
 

@@ -19,7 +19,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     protected _entityClass: Class,
     protected _entityTable: string,
     protected _entityIdField: string,
-    private _entitySecondIdField: string,
+    protected _entitySecondIdField: string,
     protected handlerService: HandlerService<T>,
     protected queryService: QueryService,
   ) {
