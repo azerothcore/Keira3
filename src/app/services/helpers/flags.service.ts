@@ -43,6 +43,7 @@ export class FlagsService {
     let max = 0;
 
     for (const flag of flags) {
+      /* istanbul ignore else */
       if (flag.bit > max) {
         max = flag.bit;
       }

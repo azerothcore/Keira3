@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { FlagsService } from './flags.service';
+import { Flag } from '../../types/general';
 
 describe('FlagsService', () => {
   let service: FlagsService;
@@ -55,5 +56,15 @@ describe('FlagsService', () => {
         expect(service.getValueFromBits(service.getBitsFromValue(v, 24))).toEqual(v);
       });
     }
+  });
+
+  it('getBitsArray() should correctly work', () => {
+    const mockResult = [true, false, true];
+    const value = 123;
+    const flags: Flag[] = [{ bit: 1, name: 'test' }];
+    const getBitsFromValueSpy = spyOn(service, 'getBitsFromValue').and.returnValue(mockResult);
+
+    expect(service.getBitsArray(flags, value)).toEqual(mockResult);
+    expect(getBitsFromValueSpy).toHaveBeenCalledWith(value, flags[0].bit + 1);
   });
 });
