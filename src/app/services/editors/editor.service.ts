@@ -81,9 +81,10 @@ export abstract class EditorService<T extends TableRow> {
   save(query: string) {
     if (!query) { return; }
 
+    this._loading = true;
+
     this.queryService.query<T>(query).subscribe(() => {
       this._error = null;
-      this._loading = false;
       this.reload(this.loadedEntityId);
     }, (error: MysqlError) => {
       this._error = error;
