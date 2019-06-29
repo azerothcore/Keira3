@@ -35,7 +35,7 @@ export class CreateComponent<T extends TableRow> implements OnInit {
       this.isIdFree = data.results.length <= 0;
     }, (error: MysqlError) => {
       console.error(error);
-    }, () => {
+    }).add(() => {
       this._loading = false;
     });
   }
@@ -52,7 +52,7 @@ export class CreateComponent<T extends TableRow> implements OnInit {
       this.isIdFree = true;
     }, (error: MysqlError) => {
       console.error(error);
-    }, () => {
+    }).add(() => {
       this._loading = false;
     });
   }
