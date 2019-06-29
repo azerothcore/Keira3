@@ -73,7 +73,7 @@ export abstract class EditorService<T extends TableRow> {
       this.onReloadSuccessful(data, id);
     }, (error: MysqlError) => {
       this._error = error;
-    }, () => {
+    }).add(() => {
       this._loading = false;
     });
   }
@@ -88,7 +88,7 @@ export abstract class EditorService<T extends TableRow> {
       this.reload(this.loadedEntityId);
     }, (error: MysqlError) => {
       this._error = error;
-    }, () => {
+    }).add(() => {
       this._loading = false;
     });
   }
