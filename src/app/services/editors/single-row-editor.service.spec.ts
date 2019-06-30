@@ -5,15 +5,12 @@ import Spy = jasmine.Spy;
 
 import { QueryService } from '../query.service';
 import { MockedQueryService } from '../../test-utils/mocks';
-import { CreatureTemplateService } from './creature/creature-template.service';
 import { SingleRowEditorService } from './single-row-editor.service';
-import { CREATURE_TEMPLATE_ID, CreatureTemplate } from '../../types/creature-template.type';
-import { MysqlResult } from '../../types/general';
-import { CreatureHandlerService } from '../handlers/creature-handler.service';
+import { MockEditorService, MockEntity, MockHandlerService } from '../../test-utils/mock-services';
 
 
-describe('SingleRowEditorService', () => {
-  let service: SingleRowEditorService<CreatureTemplate>;
+fdescribe('SingleRowEditorService', () => {
+  let service: SingleRowEditorService<MockEntity>;
 
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
@@ -25,7 +22,7 @@ describe('SingleRowEditorService', () => {
   }));
 
   beforeEach(() => {
-    service = TestBed.get(CreatureTemplateService);
+    service = TestBed.get(MockEditorService);
   });
 
 
@@ -41,7 +38,7 @@ describe('SingleRowEditorService', () => {
     it('when loading is true, should do nothing', () => {
       service['_loading'] = true;
 
-      service.form.get(CREATURE_TEMPLATE_ID).setValue(123);
+      service.form.get('id').setValue(123);
 
       expect(updateDiffQuerySpy).toHaveBeenCalledTimes(0);
       expect(updateFullQuerySpy).toHaveBeenCalledTimes(0);
@@ -50,7 +47,7 @@ describe('SingleRowEditorService', () => {
     it('when loading is false and the form is not dirty, should update only the full query', () => {
       service.form.markAsPristine();
 
-      service.form.get(CREATURE_TEMPLATE_ID).setValue(123);
+      service.form.get('id').setValue(123);
 
       expect(updateDiffQuerySpy).toHaveBeenCalledTimes(0);
       expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
@@ -59,7 +56,7 @@ describe('SingleRowEditorService', () => {
     it('when loading is false and the form dirty, should update both the queries', () => {
       service.form.markAsDirty();
 
-      service.form.get(CREATURE_TEMPLATE_ID).setValue(123);
+      service.form.get('id').setValue(123);
 
       expect(updateDiffQuerySpy).toHaveBeenCalledTimes(1);
       expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
@@ -68,8 +65,8 @@ describe('SingleRowEditorService', () => {
     it('modifying the form twice with the same value should not have effect', () => {
       service.form.markAsDirty();
 
-      service.form.get(CREATURE_TEMPLATE_ID).setValue(123);
-      service.form.get(CREATURE_TEMPLATE_ID).setValue(123);
+      service.form.get('id').setValue(123);
+      service.form.get('id').setValue(123);
 
       expect(updateDiffQuerySpy).toHaveBeenCalledTimes(1);
       expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
@@ -113,8 +110,8 @@ describe('SingleRowEditorService', () => {
     const id = 123456;
 
     it('should correctly work when loading an existing entity', () => {
-      const handlerService = TestBed.get(CreatureHandlerService);
-      const data = { results: [{ entry: 123, name: 'myName' }] } as MysqlResult<CreatureTemplate>;
+      const handlerService = TestBed.get(MockHandlerService);
+      const data = { results: [{ id: 123, guid: 12345, name: 'myName' }] };
 
       service['onReloadSuccessful'](data, id);
 
