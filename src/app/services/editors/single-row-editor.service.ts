@@ -72,9 +72,11 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
       this._isNew = true;
     }
 
+    this._loading = true;
     for (const field of this.fields) {
       this._form.get(field).setValue(this._originalValue[field]);
     }
+    this._loading = false;
 
     this._loadedEntityId = this._originalValue[this._entityIdField];
     this.updateFullQuery();
