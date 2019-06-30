@@ -8,6 +8,8 @@ import { MockedQueryService } from '../../test-utils/mocks';
 import { CreatureTemplateService } from './creature/creature-template.service';
 import { SingleRowEditorService } from './single-row-editor.service';
 import { CREATURE_TEMPLATE_ID, CreatureTemplate } from '../../types/creature-template.type';
+import { MysqlResult } from '../../types/general';
+import { CreatureHandlerService } from '../handlers/creature-handler.service';
 
 
 describe('SingleRowEditorService', () => {
@@ -105,5 +107,22 @@ describe('SingleRowEditorService', () => {
       service['_entityIdField'],
     );
     expect(service.fullQuery).toEqual(queryResult);
+  });
+
+  describe('onReloadSuccessful()', () => {
+    const id = 123456;
+
+    it('should correctly work when loading an existing entity', () => {
+      const handlerService = TestBed.get(CreatureHandlerService);
+      const data = { results: [{ entry: 123, name: 'myName' }] } as MysqlResult<CreatureTemplate>;
+
+      service['onReloadSuccessful'](data, id);
+
+      expect(service['_originalValue']).toEqual(data.results[0]);
+      expect(service.isNew).toBe(false);
+
+      expect(handlerService.isNew).toBe(false);
+      expect(handlerService.selectedName).toBe(`${service['_originalValue'][service['_entityNameField']]}`);
+    });
   });
 });
