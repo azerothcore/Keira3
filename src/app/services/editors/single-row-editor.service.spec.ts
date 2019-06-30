@@ -73,4 +73,37 @@ describe('SingleRowEditorService', () => {
       expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
     });
   });
+
+  it('updateDiffQuery() should correctly work', () => {
+    service['_diffQuery'] = '';
+    const queryResult = '-- Mock query result';
+    const getQuerySpy = spyOn(TestBed.get(QueryService), 'getUpdateQuery').and.returnValue(queryResult);
+
+    service['updateDiffQuery']();
+
+    expect(getQuerySpy).toHaveBeenCalledTimes(1);
+    expect(getQuerySpy).toHaveBeenCalledWith(
+      service.entityTable,
+      service['_entityIdField'],
+      service['originalValue'],
+      service.form.getRawValue(),
+    );
+    expect(service.diffQuery).toEqual(queryResult);
+  });
+
+  it('updateFullQuery() should correctly work', () => {
+    service['_fullQuery'] = '';
+    const queryResult = '-- Mock query result';
+    const getQuerySpy = spyOn(TestBed.get(QueryService), 'getFullDeleteInsertQuery').and.returnValue(queryResult);
+
+    service['updateFullQuery']();
+
+    expect(getQuerySpy).toHaveBeenCalledTimes(1);
+    expect(getQuerySpy).toHaveBeenCalledWith(
+      service.entityTable,
+      [service.form.getRawValue()],
+      service['_entityIdField'],
+    );
+    expect(service.fullQuery).toEqual(queryResult);
+  });
 });

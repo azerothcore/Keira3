@@ -4,13 +4,13 @@ import { instance } from 'ts-mockito';
 
 import { QueryService } from '../query.service';
 import { MockedQueryService } from '../../test-utils/mocks';
-import { MultiRowEditorService } from './multi-row-editor.service';
-import { SpawnsService } from './creature/spawns.service';
-import { Spawns } from '../../types/spawns.type';
+import { MultiRowExternalEditorService } from './multi-row-external-editor.service';
+import { SpawnsAddon } from '../../types/spawns-addon.type';
+import { SpawnsAddonService } from './creature/spawns-addon.service';
 
 
-describe('MultiRowEditorService', () => {
-  let service: MultiRowEditorService<Spawns>;
+describe('MultiRowExternalEditorService', () => {
+  let service: MultiRowExternalEditorService<SpawnsAddon>;
 
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
@@ -22,7 +22,7 @@ describe('MultiRowEditorService', () => {
   }));
 
   beforeEach(() => {
-    service = TestBed.get(SpawnsService);
+    service = TestBed.get(SpawnsAddonService);
   });
 
   it('should be created', () => {
@@ -39,7 +39,7 @@ describe('MultiRowEditorService', () => {
     expect(getQuerySpy).toHaveBeenCalledTimes(1);
     expect(getQuerySpy).toHaveBeenCalledWith(
       service.entityTable,
-      service['_entityIdField'],
+      null,
       service.entitySecondIdField,
       service['_originalRows'],
       service.newRows,
@@ -58,7 +58,8 @@ describe('MultiRowEditorService', () => {
     expect(getQuerySpy).toHaveBeenCalledWith(
       service.entityTable,
       service.newRows,
-      service['_entityIdField'],
+      null,
+      service.entitySecondIdField,
     );
     expect(service.fullQuery).toEqual(queryResult);
   });
