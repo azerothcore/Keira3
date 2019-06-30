@@ -9,7 +9,7 @@ import { SingleRowEditorService } from './single-row-editor.service';
 import { MockEditorService, MockEntity, MockHandlerService } from '../../test-utils/mock-services';
 
 
-fdescribe('SingleRowEditorService', () => {
+describe('SingleRowEditorService', () => {
   let service: SingleRowEditorService<MockEntity>;
 
   beforeEach(() => TestBed.configureTestingModule({
@@ -108,10 +108,17 @@ fdescribe('SingleRowEditorService', () => {
 
   describe('onReloadSuccessful()', () => {
     const id = 123456;
+    let updateFullQuerySpy: Spy;
 
-    it('should correctly work when loading an existing entity', () => {
+    beforeEach(() => {
+      updateFullQuerySpy = spyOn<any>(service, 'updateFullQuery');
+    });
+
+    it('should correctly work when loading an existing entity [as main entity]', () => {
       const handlerService = TestBed.get(MockHandlerService);
-      const data = { results: [{ id: 123, guid: 12345, name: 'myName' }] };
+      const entity: MockEntity = { id, guid: 12345, name: 'myName' };
+      const data = { results: [entity] };
+      handlerService.isNew = true;
 
       service['onReloadSuccessful'](data, id);
 
@@ -120,6 +127,41 @@ fdescribe('SingleRowEditorService', () => {
 
       expect(handlerService.isNew).toBe(false);
       expect(handlerService.selectedName).toBe(`${service['_originalValue'][service['_entityNameField']]}`);
+
+      expect(service.form.getRawValue()).toEqual(entity);
+      expect(service.loadedEntityId).toEqual(`${entity.id}`);
+      expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should correctly work when loading an existing entity [as non-main entity]', () => {
+      const handlerService = TestBed.get(MockHandlerService);
+      const entity: MockEntity = { id, guid: 12345, name: 'myName' };
+      const data = { results: [entity] };
+      handlerService.isNew = true;
+      service['isMainEntity'] = false;
+
+      service['onReloadSuccessful'](data, id);
+
+      expect(service['_originalValue']).toEqual(data.results[0]);
+      expect(service.isNew).toBe(false);
+
+      expect(handlerService.isNew).toBe(true);
+      expect(handlerService.selectedName).toBe(undefined);
+
+      expect(service.form.getRawValue()).toEqual(entity);
+      expect(service.loadedEntityId).toEqual(`${entity.id}`);
+      expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should correctly work when creating a new entity', () => {
+      const data = { results: [] };
+
+      service['onReloadSuccessful'](data, id);
+
+      expect(service.form.getRawValue()).toEqual({ id, guid: 0, name: '' });
+      expect(service.loadedEntityId).toEqual(`${id}`);
+      expect(service.isNew).toBe(true);
+      expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
     });
   });
 });
