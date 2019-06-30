@@ -5,12 +5,11 @@ import { instance } from 'ts-mockito';
 import { QueryService } from '../query.service';
 import { MockedQueryService } from '../../test-utils/mocks';
 import { MultiRowEditorService } from './multi-row-editor.service';
-import { SpawnsService } from './creature/spawns.service';
-import { Spawns } from '../../types/spawns.type';
+import { MockEntity, MockMultiRowEditorService } from '../../test-utils/mock-services';
 
 
 describe('MultiRowEditorService', () => {
-  let service: MultiRowEditorService<Spawns>;
+  let service: MultiRowEditorService<MockEntity>;
 
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
@@ -22,11 +21,7 @@ describe('MultiRowEditorService', () => {
   }));
 
   beforeEach(() => {
-    service = TestBed.get(SpawnsService);
-  });
-
-  it('should be created', () => {
-    expect(service).toBeTruthy();
+    service = TestBed.get(MockMultiRowEditorService);
   });
 
   it('updateDiffQuery() should correctly work', () => {

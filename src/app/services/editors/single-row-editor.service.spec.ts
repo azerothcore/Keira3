@@ -6,7 +6,7 @@ import Spy = jasmine.Spy;
 import { QueryService } from '../query.service';
 import { MockedQueryService } from '../../test-utils/mocks';
 import { SingleRowEditorService } from './single-row-editor.service';
-import { MockEditorService, MockEntity, MockHandlerService } from '../../test-utils/mock-services';
+import { MockSingleRowEditorService, MockEntity, MockHandlerService } from '../../test-utils/mock-services';
 
 
 describe('SingleRowEditorService', () => {
@@ -22,9 +22,8 @@ describe('SingleRowEditorService', () => {
   }));
 
   beforeEach(() => {
-    service = TestBed.get(MockEditorService);
+    service = TestBed.get(MockSingleRowEditorService);
   });
-
 
   describe('when the form value changes', () => {
     let updateDiffQuerySpy: Spy;

@@ -25,10 +25,6 @@ describe('MultiRowExternalEditorService', () => {
     service = TestBed.get(SpawnsAddonService);
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-
   it('updateDiffQuery() should correctly work', () => {
     service['_diffQuery'] = '';
     const queryResult = '-- Mock query result';

@@ -7,7 +7,7 @@ import Spy = jasmine.Spy;
 
 import { QueryService } from '../query.service';
 import { MockedQueryService } from '../../test-utils/mocks';
-import { MockEditorService, MockEntity } from '../../test-utils/mock-services';
+import { MockSingleRowEditorService, MockEntity } from '../../test-utils/mock-services';
 import { EditorService } from './editor.service';
 
 describe('EditorService', () => {
@@ -25,7 +25,7 @@ describe('EditorService', () => {
   }));
 
   beforeEach(() => {
-    service = TestBed.get(MockEditorService);
+    service = TestBed.get(MockSingleRowEditorService);
   });
 
   it('after creating, the fields should correctly set', () => {
@@ -47,7 +47,7 @@ describe('EditorService', () => {
     beforeEach(() => {
       selectAllSpy = spyOn(TestBed.get(QueryService), 'selectAll');
       formResetSpy = spyOn(service.form, 'reset');
-      onReloadSuccessfulSpy = spyOn(TestBed.get(MockEditorService), 'onReloadSuccessful');
+      onReloadSuccessfulSpy = spyOn(TestBed.get(MockSingleRowEditorService), 'onReloadSuccessful');
     });
 
     it('should behave correctly when the query succeeds', () => {
