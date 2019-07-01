@@ -7,6 +7,7 @@ import { QueryService } from '../query.service';
 import { MockedQueryService } from '../../test-utils/mocks';
 import { MultiRowEditorService } from './multi-row-editor.service';
 import { MOCK_ID, MOCK_ID_2, MOCK_NAME, MockEntity, MockMultiRowEditorService } from '../../test-utils/mock-services';
+import { MysqlResult } from '../../types/general';
 
 
 describe('MultiRowEditorService', () => {
@@ -138,6 +139,27 @@ describe('MultiRowEditorService', () => {
 
     expect(service['getSelectedRowIndex']()).toEqual(rowIndex);
     expect(getRowIndexSpy).toHaveBeenCalledWith(selectedRowId);
+  });
+
+  it('onReloadSuccessful() should correctly work', () => {
+    service['_selectedRowId'] = 111;
+    service['_loadedEntityId'] = 123456;
+    service.form.enable();
+    service['_originalRows'] = [{ [MOCK_ID]: 123, [MOCK_ID_2]: 3, [MOCK_NAME]: 'some previous value' }];
+    service['_newRows'] = [{ [MOCK_ID]: 123, [MOCK_ID_2]: 3, [MOCK_NAME]: '.....some previous value' }];
+    const rows = [{ [MOCK_ID]: 123, [MOCK_ID_2]: 1, [MOCK_NAME]: 'new value' }];
+    const data: MysqlResult<MockEntity> = { results: rows };
+    const id = 10;
+    const updateFullQuerySpy: Spy = spyOn<any>(service, 'updateFullQuery');
+
+    service['onReloadSuccessful'](data, id);
+
+    expect(service['_originalRows']).toEqual(rows);
+    expect(service['_newRows']).toEqual(rows);
+    expect(service.selectedRowId).toBeNull();
+    expect(service.form.disabled).toBe(true);
+    expect(service['_loadedEntityId']).toBe(id);
+    expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
   });
 
   it('TODO', () => {
