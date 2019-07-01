@@ -27,20 +27,6 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     this.initForm();
   }
 
-  private getRowIndex(id: string|number): number {
-    for (let i = 0; i < this._newRows.length; i++) {
-      if (id === this._newRows[i][this._entitySecondIdField]) {
-        return i;
-      }
-    }
-
-    console.error(`getRowIndex() failed in finding row having ${this._entitySecondIdField} ${id}`);
-  }
-
-  private getSelectedRowIndex(): number {
-    return this.getRowIndex(this._selectedRowId);
-  }
-
   protected initForm() {
     super.initForm();
 
@@ -57,6 +43,20 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
         }
       }
     });
+  }
+
+  private getRowIndex(id: string|number): number {
+    for (let i = 0; i < this._newRows.length; i++) {
+      if (id === this._newRows[i][this._entitySecondIdField]) {
+        return i;
+      }
+    }
+
+    console.error(`getRowIndex() failed in finding row having ${this._entitySecondIdField} ${id}`);
+  }
+
+  private getSelectedRowIndex(): number {
+    return this.getRowIndex(this._selectedRowId);
   }
 
   protected onReloadSuccessful(data: MysqlResult<T>, id: string|number) {
