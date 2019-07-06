@@ -37,6 +37,8 @@ If you don't have any, you can easily create one following [this guide](http://w
 
 ### Dependencies
 
+You need to first install [node](https://nodejs.org) in order to have `npm` available in your system.
+
 Install dependencies with npm :
 
 ``` bash
