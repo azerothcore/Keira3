@@ -241,7 +241,75 @@ describe('MultiRowEditorService', () => {
     });
   });
 
-  it('TODO', () => {
+  describe('addNewRow()', () => {
+    let onRowSelectionSpy: Spy;
+    let newRow: MockEntity;
 
+    const loadedEntityId = 123;
+    const nextRowId = 3;
+
+    beforeEach(() => {
+      updateDiffQuerySpy = spyOn<any>(service, 'updateDiffQuery');
+      updateFullQuerySpy = spyOn<any>(service, 'updateFullQuery');
+      onRowSelectionSpy = spyOn(service, 'onRowSelection');
+
+      service['_loadedEntityId'] = loadedEntityId;
+      service['_nextRowId'] = nextRowId;
+      service['_newRows'] = [];
+      newRow = new MockEntity();
+      newRow[MOCK_ID_2] = nextRowId;
+    });
+
+    it('it should correctly work [with main entityIdField]', () => {
+      newRow[MOCK_ID] = loadedEntityId;
+
+      service.addNewRow();
+
+      expect(updateDiffQuerySpy).toHaveBeenCalledTimes(1);
+      expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
+      expect(onRowSelectionSpy).toHaveBeenCalledTimes(1);
+      expect(onRowSelectionSpy).toHaveBeenCalledWith({ selected:  [newRow] });
+      expect(service.newRows).toEqual([{ ...newRow }]);
+      expect(service['_nextRowId']).toEqual(nextRowId + 1);
+    });
+
+    it('it should correctly work [without main entityIdField]', () => {
+      service['_entityIdField'] = null;
+
+      service.addNewRow();
+
+      expect(updateDiffQuerySpy).toHaveBeenCalledTimes(1);
+      expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
+      expect(onRowSelectionSpy).toHaveBeenCalledTimes(1);
+      expect(onRowSelectionSpy).toHaveBeenCalledWith({ selected:  [newRow] });
+      expect(service.newRows).toEqual([{ ...newRow }]);
+      expect(service['_nextRowId']).toEqual(nextRowId + 1);
+    });
+  });
+
+  describe('isFormIdUnique()', () => {
+    beforeEach(() => {
+      service['_newRows'] = [
+        { [MOCK_ID]: 123, [MOCK_ID_2]: 1, [MOCK_NAME]: '' },
+        { [MOCK_ID]: 123, [MOCK_ID_2]: 2, [MOCK_NAME]: '' },
+        { [MOCK_ID]: 123, [MOCK_ID_2]: 3, [MOCK_NAME]: '' },
+      ];
+    });
+
+    it('should return true when the form has a unique id', () => {
+      service.form.get(MOCK_ID_2).setValue(4);
+      expect(service.isFormIdUnique()).toBe(true);
+    });
+
+    it('should return false when the form has an already used id that is NOT the selected row', () => {
+      service.form.get(MOCK_ID_2).setValue(2);
+      expect(service.isFormIdUnique()).toBe(false);
+    });
+
+    it('should return true when the form has an already used id that is the selected row', () => {
+      service.form.get(MOCK_ID_2).setValue(2);
+      service['_selectedRowId'] = 2;
+      expect(service.isFormIdUnique()).toBe(true);
+    });
   });
 });
