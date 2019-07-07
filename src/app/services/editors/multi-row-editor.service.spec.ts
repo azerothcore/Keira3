@@ -162,6 +162,30 @@ describe('MultiRowEditorService', () => {
     expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
   });
 
+  describe('onRowSelection()', () => {
+    const rowId = 12345;
+    let selected;
+    let formResetSpy: Spy;
+    let formEnableSpy: Spy;
+
+    beforeEach(() => {
+      selected = [{ [service['_entitySecondIdField']]: rowId }];
+      formResetSpy = spyOn(service.form, 'reset');
+      formEnableSpy = spyOn(service.form, 'enable');
+    });
+
+    it('should do nothing if the same row is already selected', () => {
+      service['_selectedRowId'] = rowId;
+
+      service.onRowSelection({ selected });
+
+      expect(formResetSpy).toHaveBeenCalledTimes(0);
+      expect(formEnableSpy).toHaveBeenCalledTimes(0);
+    });
+  });
+
+
+
   it('TODO', () => {
 
   });
