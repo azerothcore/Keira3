@@ -1,12 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { anything, instance, reset, when } from 'ts-mockito';
+import { ModalModule } from 'ngx-bootstrap';
 import { of } from 'rxjs';
 
 import { CreatureEquipTemplateComponent } from './creature-equip-template.component';
 import { CommonTestModule } from '../../../../test-utils/common-test.module';
 import { MockedMysqlService } from '../../../../test-utils/mocks';
 import { MysqlService } from '../../../../services/mysql.service';
+import { CommonEditorTestModule } from '../../../../test-utils/common-editor-test-module';
 
 describe('CreatureEquipTemplateComponent', () => {
   let component: CreatureEquipTemplateComponent;
@@ -14,14 +15,17 @@ describe('CreatureEquipTemplateComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CreatureEquipTemplateComponent ],
+      declarations: [
+        CreatureEquipTemplateComponent,
+      ],
       imports: [
         CommonTestModule,
+        CommonEditorTestModule,
+        ModalModule.forRoot(),
       ],
       providers: [
         { provide : MysqlService, useValue: instance(MockedMysqlService) },
       ],
-      schemas: [ NO_ERRORS_SCHEMA ],
     })
     .compileComponents();
   }));

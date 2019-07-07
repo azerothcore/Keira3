@@ -1,14 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { anything, instance, when } from 'ts-mockito';
+import { of } from 'rxjs';
 
 import { SkinningLootTemplateComponent } from './skinning-loot-template.component';
-import { QueryOutputComponent } from '../../shared/query-output/query-output.component';
-import { TopBarComponent } from '../../../main-window/top-bar/top-bar.component';
 import { CommonTestModule } from '../../../../test-utils/common-test.module';
 import { MysqlService } from '../../../../services/mysql.service';
 import { MockedMysqlService } from '../../../../test-utils/mocks';
-import { of } from 'rxjs';
+import { CommonEditorTestModule } from '../../../../test-utils/common-editor-test-module';
 
 describe('SkinningLootTemplateComponent', () => {
   let component: SkinningLootTemplateComponent;
@@ -18,16 +16,14 @@ describe('SkinningLootTemplateComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         SkinningLootTemplateComponent,
-        QueryOutputComponent,
-        TopBarComponent,
       ],
       imports: [
         CommonTestModule,
+        CommonEditorTestModule,
       ],
       providers: [
         { provide : MysqlService, useValue: instance(MockedMysqlService) },
       ],
-      schemas: [ NO_ERRORS_SCHEMA ],
     })
     .compileComponents();
   }));
