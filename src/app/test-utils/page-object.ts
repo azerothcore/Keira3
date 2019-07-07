@@ -64,5 +64,9 @@ export abstract class PageObject<ComponentType> {
     }
     this.fixture.detectChanges();
   }
+
+  isHidden(element: HTMLElement) {
+    return element.hasAttribute('hidden');
+  }
 }
 
