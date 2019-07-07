@@ -40,10 +40,6 @@ export class CreateComponent<T extends TableRow> implements OnInit {
     });
   }
 
-  selectEntity() {
-    this.handlerService.select(true, `${this.idModel}`);
-  }
-
   getNextId(): void {
     this._loading = true;
     this.queryService.getMaxId(this.entityTable, this.entityIdField).subscribe((data) => {
