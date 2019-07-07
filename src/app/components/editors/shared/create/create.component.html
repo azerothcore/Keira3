@@ -13,12 +13,13 @@
       >
       <button
         class="btn btn-success btn-sm ml-2"
+        id="select-button"
         [disabled]="!isIdFree || !idModel"
         (click)="handlerService.select(true, idModel)"
       >Select</button>
     </div>
   </div>
-  <div class="col-12 mt-1" [hidden]="!idModel">
+  <div class="col-12 mt-1" [hidden]="!idModel" id="id-free-status">
     <small>
       <i class="fas" [ngClass]="{ 'fa-check-circle': isIdFree, 'fa-times-circle': !isIdFree}"></i>
       The {{ entityIdField }} is {{ isIdFree ? 'free' : 'already in use' }}
