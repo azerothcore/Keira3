@@ -1,17 +1,26 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { instance } from 'ts-mockito';
-import Spy = jasmine.Spy;
 
 import { QueryService } from '../query.service';
 import { MockedQueryService } from '../../test-utils/mocks';
 import { MultiRowEditorService } from './multi-row-editor.service';
 import { MOCK_ID, MOCK_ID_2, MOCK_NAME, MockEntity, MockMultiRowEditorService } from '../../test-utils/mock-services';
 import { MysqlResult } from '../../types/general';
+import Spy = jasmine.Spy;
 
 
-describe('MultiRowEditorService', () => {
+fdescribe('MultiRowEditorService', () => {
   let service: MultiRowEditorService<MockEntity>;
+
+  let updateDiffQuerySpy: Spy;
+  let updateFullQuerySpy: Spy;
+  let formResetSpy: Spy;
+  let formEnableSpy: Spy;
+  let formDisableSpy: Spy;
+
+  const queryResult = '-- Mock query result';
+  const rowId = 12345;
 
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
@@ -27,9 +36,6 @@ describe('MultiRowEditorService', () => {
   });
 
   describe('when the form value changes', () => {
-    let updateDiffQuerySpy: Spy;
-    let updateFullQuerySpy: Spy;
-
     beforeEach(() => {
       updateDiffQuerySpy = spyOn<any>(service, 'updateDiffQuery');
       updateFullQuerySpy = spyOn<any>(service, 'updateFullQuery');
@@ -75,7 +81,6 @@ describe('MultiRowEditorService', () => {
 
   it('updateDiffQuery() should correctly work', () => {
     service['_diffQuery'] = '';
-    const queryResult = '-- Mock query result';
     const getQuerySpy = spyOn(TestBed.get(QueryService), 'getDiffDeleteInsertTwoKeysQuery').and.returnValue(queryResult);
 
     service['updateDiffQuery']();
@@ -93,7 +98,6 @@ describe('MultiRowEditorService', () => {
 
   it('updateFullQuery() should correctly work', () => {
     service['_fullQuery'] = '';
-    const queryResult = '-- Mock query result';
     const getQuerySpy = spyOn(TestBed.get(QueryService), 'getFullDeleteInsertQuery').and.returnValue(queryResult);
 
     service['updateFullQuery']();
@@ -150,7 +154,7 @@ describe('MultiRowEditorService', () => {
     const rows = [{ [MOCK_ID]: 123, [MOCK_ID_2]: 1, [MOCK_NAME]: 'new value' }];
     const data: MysqlResult<MockEntity> = { results: rows };
     const id = 10;
-    const updateFullQuerySpy: Spy = spyOn<any>(service, 'updateFullQuery');
+    updateFullQuerySpy = spyOn<any>(service, 'updateFullQuery');
 
     service['onReloadSuccessful'](data, id);
 
@@ -163,10 +167,7 @@ describe('MultiRowEditorService', () => {
   });
 
   describe('onRowSelection()', () => {
-    const rowId = 12345;
     let selected;
-    let formResetSpy: Spy;
-    let formEnableSpy: Spy;
 
     beforeEach(() => {
       selected = [{ [service['_entitySecondIdField']]: rowId }];
@@ -182,9 +183,63 @@ describe('MultiRowEditorService', () => {
       expect(formResetSpy).toHaveBeenCalledTimes(0);
       expect(formEnableSpy).toHaveBeenCalledTimes(0);
     });
+
+
+    it('should do nothing if the same row is already selected', () => {
+      const rows = [{ [MOCK_ID]: 123, [MOCK_ID_2]: 3, [MOCK_NAME]: 'some name' }];
+      service['_newRows'] = rows;
+      spyOn<any>(service, 'getSelectedRowIndex').and.returnValue(0);
+
+      service.onRowSelection({ selected });
+
+      expect(service.form.get(MOCK_ID).value).toEqual(rows[0][MOCK_ID]);
+      expect(service.form.get(MOCK_ID_2).value).toEqual(rows[0][MOCK_ID_2]);
+      expect(service.form.get(MOCK_NAME).value).toEqual(rows[0][MOCK_NAME]);
+      expect(formResetSpy).toHaveBeenCalledTimes(1);
+      expect(formEnableSpy).toHaveBeenCalledTimes(1);
+      expect(service.loading).toBe(false);
+    });
   });
 
+  it('isRowSelected() should correctly work', () => {
+    service['_selectedRowId'] = rowId;
 
+    expect(service.isRowSelected({ [MOCK_ID]: 1, [MOCK_ID_2]: rowId, [MOCK_NAME]: '' })).toBe(true);
+    expect(service.isRowSelected({ [MOCK_ID]: 1, [MOCK_ID_2]: 11111, [MOCK_NAME]: '' })).toBe(false);
+  });
+
+  describe('deleteSelectedRow()', () => {
+    beforeEach(() => {
+      updateDiffQuerySpy = spyOn<any>(service, 'updateDiffQuery');
+      updateFullQuerySpy = spyOn<any>(service, 'updateFullQuery');
+      formResetSpy = spyOn(service.form, 'reset');
+      formDisableSpy = spyOn(service.form, 'disable');
+    });
+
+    it('should not do anything if there is no selected row', () => {
+      service['_selectedRowId'] = null;
+
+      service.deleteSelectedRow();
+
+      expect(updateDiffQuerySpy).toHaveBeenCalledTimes(0);
+      expect(updateFullQuerySpy).toHaveBeenCalledTimes(0);
+      expect(formResetSpy).toHaveBeenCalledTimes(0);
+      expect(formDisableSpy).toHaveBeenCalledTimes(0);
+    });
+
+    it('should correctly remove the selected row', () => {
+      service['_newRows'] = [{ [MOCK_ID]: 1, [MOCK_ID_2]: 11111, [MOCK_NAME]: '' }];
+      spyOn<any>(service, 'getSelectedRowIndex').and.returnValue(0);
+
+      service.deleteSelectedRow();
+
+      expect(updateDiffQuerySpy).toHaveBeenCalledTimes(1);
+      expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
+      expect(formResetSpy).toHaveBeenCalledTimes(1);
+      expect(formDisableSpy).toHaveBeenCalledTimes(1);
+      expect(service.newRows).toEqual([]);
+    });
+  });
 
   it('TODO', () => {
 
