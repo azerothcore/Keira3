@@ -24,7 +24,7 @@
     "electron:windows": "npm run build:prod && electron-builder build --windows",
     "electron:mac": "npm run build:prod && electron-builder build --mac",
     "test": "npm run postinstall:web && ng test",
-    "test-ci": "npm run postinstall:web && ng test --watch=false",
+    "test-ci": "npm run postinstall:web && ng test --watch=false --code-coverage && cat ./coverage/lcov.info | coveralls",
     "e2e": "npm run build:prod && mocha --timeout 300000 --require ts-node/register e2e/**/*.spec.ts",
     "version": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md"
   },
@@ -56,6 +56,7 @@
     "codelyzer": "^5.1.0",
     "conventional-changelog-cli": "2.0.11",
     "core-js": "^2.6.9",
+    "coveralls": "^3.0.4",
     "electron": "^5.0.4",
     "electron-builder": "^20.43.0",
     "electron-reload": "^1.4.0",
