@@ -40,16 +40,20 @@ export class CreateComponent<T extends TableRow> implements OnInit {
     });
   }
 
-  getNextId(): void {
+  private getNextId(): void {
     this._loading = true;
     this.queryService.getMaxId(this.entityTable, this.entityIdField).subscribe((data) => {
       const currentMax = data.results[0].max;
-      this.idModel = currentMax < this.customStartingId ? this.customStartingId : currentMax + 1;
+      this.idModel = this.calculateNextId(currentMax);
       this.isIdFree = true;
     }, (error: MysqlError) => {
       console.error(error);
     }).add(() => {
       this._loading = false;
     });
+  }
+
+  private calculateNextId(currentMax) {
+    return currentMax < this.customStartingId ? this.customStartingId : currentMax + 1;
   }
 }
