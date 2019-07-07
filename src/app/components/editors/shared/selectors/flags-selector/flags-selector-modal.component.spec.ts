@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap';
 import { UiSwitchModule } from 'ngx-ui-switch';
 
@@ -20,7 +19,6 @@ describe('FlagsSelectorModalComponent', () => {
       providers: [
         BsModalRef,
       ],
-      schemas: [ NO_ERRORS_SCHEMA ]
     })
     .compileComponents();
   }));

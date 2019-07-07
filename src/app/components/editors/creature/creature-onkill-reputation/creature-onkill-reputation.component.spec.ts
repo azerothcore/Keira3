@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { anything, instance, reset, when } from 'ts-mockito';
 import { of } from 'rxjs';
 
@@ -7,6 +6,7 @@ import { CreatureOnkillReputationComponent } from './creature-onkill-reputation.
 import { CommonTestModule } from '../../../../test-utils/common-test.module';
 import { MockedMysqlService } from '../../../../test-utils/mocks';
 import { MysqlService } from '../../../../services/mysql.service';
+import { CommonEditorTestModule } from '../../../../test-utils/common-editor-test-module';
 
 describe('CreatureOnkillReputationComponent', () => {
   let component: CreatureOnkillReputationComponent;
@@ -17,11 +17,11 @@ describe('CreatureOnkillReputationComponent', () => {
       declarations: [ CreatureOnkillReputationComponent ],
       imports: [
         CommonTestModule,
+        CommonEditorTestModule,
       ],
       providers: [
         { provide : MysqlService, useValue: instance(MockedMysqlService) },
       ],
-      schemas: [ NO_ERRORS_SCHEMA ],
     })
     .compileComponents();
   }));

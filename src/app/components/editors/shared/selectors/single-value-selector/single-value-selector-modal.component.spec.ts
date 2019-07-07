@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { BsModalRef } from 'ngx-bootstrap';
 
@@ -20,7 +19,6 @@ describe('SingleValueSelectorModalComponent', () => {
       providers: [
         BsModalRef,
       ],
-      schemas: [ NO_ERRORS_SCHEMA ]
     })
     .compileComponents();
   }));
