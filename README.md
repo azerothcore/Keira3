@@ -2,6 +2,7 @@
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e9d97b0240fd452487bfd5d3e55da96f)](https://app.codacy.com/app/FrancescoBorzi/Keira3?utm_source=github.com&utm_medium=referral&utm_content=azerothcore/Keira3&utm_campaign=Badge_Grade_Dashboard)
 [![Build Status](https://travis-ci.com/azerothcore/Keira3.svg?branch=master)](https://travis-ci.com/azerothcore/Keira3)
+[![Coverage Status](https://coveralls.io/repos/github/azerothcore/Keira3/badge.svg)](https://coveralls.io/github/azerothcore/Keira3)
 <a href="https://www.paypal.me/francesco92dev" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
 
 ![Keira3](https://user-images.githubusercontent.com/75517/59927799-8eba4a00-943d-11e9-876e-06f4b08e01a2.png)
