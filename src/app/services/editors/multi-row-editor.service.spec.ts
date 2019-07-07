@@ -10,7 +10,7 @@ import { MysqlResult } from '../../types/general';
 import Spy = jasmine.Spy;
 
 
-fdescribe('MultiRowEditorService', () => {
+describe('MultiRowEditorService', () => {
   let service: MultiRowEditorService<MockEntity>;
 
   let updateDiffQuerySpy: Spy;
