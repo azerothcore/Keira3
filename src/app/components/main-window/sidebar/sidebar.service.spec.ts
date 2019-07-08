@@ -5,8 +5,19 @@ import { SidebarService } from './sidebar.service';
 describe('SidebarService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
-  it('should be created', () => {
+  it('getters and setters should correctly work', () => {
     const service: SidebarService = TestBed.get(SidebarService);
-    expect(service).toBeTruthy();
+
+    service.setSidebarState(true);
+    expect(service.getSidebarState()).toBe(true);
+
+    service.setSidebarState(false);
+    expect(service.getSidebarState()).toBe(false);
+
+    service.hasBackgroundImage = true;
+    expect(service.hasBackgroundImage).toBe(true);
+
+    service.hasBackgroundImage = false;
+    expect(service.hasBackgroundImage).toBe(false);
   });
 });

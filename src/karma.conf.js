@@ -23,10 +23,10 @@ module.exports = function (config) {
       reports: [ 'html', 'lcovonly' ],
       fixWebpackSourcePaths: true,
       thresholds: {
-        statements: 90,
-        lines: 90,
-        branches: 70, // due to https://github.com/gotwarlost/istanbul/issues/690
-        functions: 80
+        statements: 95,
+        lines: 95,
+        branches: 75, // due to https://github.com/gotwarlost/istanbul/issues/690
+        functions: 90
       }
     },
     reporters: ['progress', 'kjhtml'],
