@@ -9,6 +9,8 @@ describe('SingleValueSelectorModalComponent', () => {
   let component: SingleValueSelectorModalComponent;
   let fixture: ComponentFixture<SingleValueSelectorModalComponent>;
 
+  const value = 'myValue';
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SingleValueSelectorModalComponent ],
@@ -20,7 +22,7 @@ describe('SingleValueSelectorModalComponent', () => {
         BsModalRef,
       ],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -29,7 +31,27 @@ describe('SingleValueSelectorModalComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should safely create without config', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should properly handle config (if any)', () => {
+    component.value = value;
+    component.config = {
+      options: [
+        { name: 'option1', value: 'some value' },
+        { name: 'option2', value },
+        { name: 'option3', value: 'some other value' },
+      ]
+    };
+
+    component.ngOnInit();
+
+    expect(component.selected).toEqual([{ name: 'option2', value }]);
+  });
+
+  it('onSelect() should properly set the value', () => {
+    component.onSelect({ selected: [ { value }]});
+    expect(component.value).toEqual(value);
   });
 });
