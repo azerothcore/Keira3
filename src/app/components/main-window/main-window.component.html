@@ -1,4 +1,4 @@
-<div class="page-wrapper" [ngClass]="{'toggled' : getSideBarState()}">
+<div class="page-wrapper" [ngClass]="{'toggled' : sidebarService.getSidebarState() }">
   <app-sidebar></app-sidebar>
   <main class="page-content">
     <router-outlet></router-outlet>
