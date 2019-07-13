@@ -35,11 +35,11 @@
     <ng-container *ngIf="coreVersions">
       <tr>
         <td>AC Core version:</td>
-        <td>{{ coreVersions.core_version }}</td>
+        <td id="core-version">{{ coreVersions.core_version }}</td>
       </tr>
       <tr>
         <td>AC commit hash:</td>
-        <td>
+        <td id="core-revision">
           <a [href]="getCommit(coreVersions.core_revision)" target="_blank">
             {{ coreVersions.core_revision }}
           </a>
@@ -50,12 +50,12 @@
       </tr>
       <tr>
         <td>AC DB release:</td>
-        <td>{{ coreVersions.db_version }}</td>
+        <td id="db-version">{{ coreVersions.db_version }}</td>
       </tr>
     </ng-container>
     <tr *ngIf="dbWorldVersion">
       <td>AC World DB version:</td>
-      <td>{{ dbWorldVersion }}</td>
+      <td id="db-world-version">{{ dbWorldVersion }}</td>
     </tr>
     </tbody>
   </table>
