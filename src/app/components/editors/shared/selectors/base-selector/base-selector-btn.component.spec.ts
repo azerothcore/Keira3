@@ -14,6 +14,7 @@ import { ItemSelectorModalComponent } from '../item-selector/item-selector-modal
 import { highlightOptions } from '../../../../../config/highlight.config';
 import { MysqlService } from '../../../../../services/mysql.service';
 import { MockedMysqlService } from '../../../../../test-utils/mocks';
+import { closeModalsAfterEach } from '../../../../../test-utils/test-helpers';
 
 @NgModule({
   declarations: [ ItemSelectorModalComponent ],
@@ -73,4 +74,6 @@ describe('BaseSelectorBtnComponent', () => {
     expect(setValueSpy).toHaveBeenCalledTimes(1);
     expect(setValueSpy).toHaveBeenCalledWith(value);
   });
+
+  closeModalsAfterEach();
 });

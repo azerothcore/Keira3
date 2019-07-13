@@ -34,11 +34,11 @@
       <div class="sidebar-menu">
         <ul>
 
-          <li>
+          <li id="dashboard-toggle">
             <a href="#" [routerLink]="''">Dashboard</a>
           </li>
 
-          <li>
+          <li id="collapse-all">
             <a (click)="collapseAll()">Collapse All</a>
           </li>
 
@@ -46,7 +46,7 @@
             <span>Editors</span>
           </li>
 
-          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.creature === 'down' }">
+          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.creature === 'down' }" id="creature-editor-toggle">
             <a (click)="toggleState('creature')">
               <i class="fa fa-pen"></i>
               <span>Creature</span>
