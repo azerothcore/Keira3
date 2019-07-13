@@ -11,6 +11,7 @@ import { BaseSelectorBtnComponent } from '../base-selector/base-selector-btn.com
 })
 export class FlagsSelectorBtnComponent extends BaseSelectorBtnComponent {
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     modalService: BsModalService,
   ) {

@@ -8,6 +8,7 @@ import { HandlerService } from '../handlers/handler.service';
 export abstract class SingleRowEditorService<T extends TableRow> extends EditorService<T> {
   private _originalValue: T;
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected _entityClass: Class,
     protected _entityTable: string,

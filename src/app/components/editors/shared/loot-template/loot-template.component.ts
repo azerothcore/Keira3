@@ -14,6 +14,7 @@ export abstract class LootTemplateComponent<T extends LootTemplate> extends Mult
   private _lootId: number;
   get lootId(): number { return this._lootId; }
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: LootEditorService<T>,
     protected handlerService: HandlerService<T>,

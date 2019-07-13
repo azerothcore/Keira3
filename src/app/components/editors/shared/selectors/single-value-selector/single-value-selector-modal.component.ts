@@ -15,6 +15,7 @@ export class SingleValueSelectorModalComponent extends BaseSelectorModalComponen
   public readonly DTCFG = DTCFG;
   selected: Option[] = [];
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected bsModalRef: BsModalRef,
   ) {

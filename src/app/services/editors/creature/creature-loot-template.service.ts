@@ -17,6 +17,7 @@ import {
 })
 export class CreatureLootTemplateService extends LootEditorService<CreatureLootTemplate> {
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: CreatureHandlerService,
     protected queryService: QueryService,

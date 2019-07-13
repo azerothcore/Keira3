@@ -24,6 +24,7 @@ export class CreatureTemplateAddonComponent extends SingleRowEditorComponent<Cre
   public readonly CREATURE_ADDON_BYTES_1 = CREATURE_ADDON_BYTES_1;
   public readonly CREATURE_ADDON_BYTES_2 = CREATURE_ADDON_BYTES_2;
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: CreatureTemplateAddonService,
     public handlerService: CreatureHandlerService,

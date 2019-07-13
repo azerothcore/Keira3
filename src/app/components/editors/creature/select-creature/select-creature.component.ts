@@ -17,6 +17,7 @@ import { QueryService } from '../../../../services/query.service';
   styleUrls: ['./select-creature.component.scss']
 })
 export class SelectCreatureComponent extends SelectComponent<CreatureTemplate> {
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public selectService: CreatureSelectService,
     public handlerService: CreatureHandlerService,

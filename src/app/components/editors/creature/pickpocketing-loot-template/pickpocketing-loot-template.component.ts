@@ -12,6 +12,7 @@ import { LootTemplateComponent } from '../../shared/loot-template/loot-template.
 })
 export class PickpocketingLootTemplateComponent extends LootTemplateComponent<PickpocketingLootTemplate> {
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: PickpocketingLootTemplateService,
     public handlerService: CreatureHandlerService,

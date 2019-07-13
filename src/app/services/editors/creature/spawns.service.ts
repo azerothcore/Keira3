@@ -10,6 +10,7 @@ import { QueryService } from '../../query.service';
 })
 export class SpawnsService extends MultiRowEditorService<Spawns> {
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: CreatureHandlerService,
     protected queryService: QueryService,

@@ -15,6 +15,7 @@ export class FlagsSelectorModalComponent extends BaseSelectorModalComponent impl
 
   flagValues: boolean[];
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     private flagsService: FlagsService,
     protected bsModalRef: BsModalRef,

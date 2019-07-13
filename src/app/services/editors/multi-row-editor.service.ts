@@ -15,6 +15,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   get selectedRowId(): string|number { return this._selectedRowId; }
   get entitySecondIdField(): string { return this._entitySecondIdField; }
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected _entityClass: Class,
     protected _entityTable: string,

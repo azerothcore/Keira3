@@ -14,6 +14,7 @@ import { CreatureHandlerService } from '../handlers/creature-handler.service';
   providedIn: 'root'
 })
 export class CreatureSelectService extends SelectService<CreatureTemplate> {
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected queryService: QueryService,
     public handlerService: CreatureHandlerService,

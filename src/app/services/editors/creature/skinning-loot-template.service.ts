@@ -21,6 +21,7 @@ import {
 })
 export class SkinningLootTemplateService extends LootEditorService<SkinningLootTemplate> {
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: CreatureHandlerService,
     protected queryService: QueryService,

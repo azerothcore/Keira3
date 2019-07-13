@@ -7,6 +7,7 @@ import { QueryService } from '../query.service';
 
 export abstract class MultiRowExternalEditorService<T extends TableRow> extends MultiRowEditorService<T> {
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected _entityClass: Class,
     protected _entityTable: string,

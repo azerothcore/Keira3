@@ -12,6 +12,7 @@ import { NpcVendor } from '../../../../types/npc-vendor.type';
 })
 export class NpcVendorComponent extends MultiRowEditorComponent<NpcVendor> {
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: NpcVendorService,
     public handlerService: CreatureHandlerService,
