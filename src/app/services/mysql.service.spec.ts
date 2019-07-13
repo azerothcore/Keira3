@@ -16,7 +16,7 @@ class MockConnection {
   connect() {}
 }
 
-fdescribe('MysqlService', () => {
+describe('MysqlService', () => {
   let service: MysqlService;
 
   const config: ConnectionConfig = { host: 'azerothcore.org' };
