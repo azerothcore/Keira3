@@ -1,11 +1,12 @@
 import { async, TestBed } from '@angular/core/testing';
 import { instance, reset } from 'ts-mockito';
-import { Connection, ConnectionConfig } from 'mysql';
+import { Connection, ConnectionConfig, MysqlError } from 'mysql';
+import { Subscriber } from 'rxjs';
+import Spy = jasmine.Spy;
 
 import { MysqlService } from './mysql.service';
 import { ElectronService } from './electron.service';
 import { MockedElectronService } from '../test-utils/mocks';
-import any = jasmine.any;
 
 class MockMySql {
   createConnection() {}
@@ -59,6 +60,7 @@ describe('MysqlService', () => {
 
     obs.subscribe(() => {
       expect(connectSpy).toHaveBeenCalledTimes(1);
+      expect(connectSpy).toHaveBeenCalledWith(service['connectCallback']);
     });
   }));
 
@@ -73,9 +75,82 @@ describe('MysqlService', () => {
 
     obs.subscribe(() => {
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy).toHaveBeenCalledWith(queryStr, [], any);
+      expect(querySpy).toHaveBeenCalledWith(queryStr, [], service['queryCallback']);
     });
   }));
+
+  describe('callbacks', () => {
+    let subscriber: Subscriber<any>;
+    let errorSpy: Spy;
+    let nextSpy: Spy;
+    let completeSpy: Spy;
+    let callback: Function;
+
+    const error = { code: 'some error', errno: 1234 } as MysqlError;
+
+    beforeEach(() => {
+      subscriber = new Subscriber();
+      errorSpy = spyOn(subscriber, 'error');
+      nextSpy = spyOn(subscriber, 'next');
+      completeSpy = spyOn(subscriber, 'complete');
+    });
+
+    describe('connect', () => {
+      beforeEach(() => {
+        callback = service['getConnectCallback'](subscriber);
+      });
+
+      it('should correctly work', () => {
+        service['_connectionEstablished'] = false;
+
+        callback();
+
+        expect(errorSpy).toHaveBeenCalledTimes(0);
+        expect(nextSpy).toHaveBeenCalledTimes(1);
+        expect(completeSpy).toHaveBeenCalledTimes(1);
+        expect(service['_connectionEstablished']).toBe(true);
+      });
+
+      it('should correctly handle errors', () => {
+        service['_connectionEstablished'] = true;
+
+        callback(error);
+
+        expect(errorSpy).toHaveBeenCalledTimes(1);
+        expect(errorSpy).toHaveBeenCalledWith(error);
+        expect(nextSpy).toHaveBeenCalledTimes(0);
+        expect(completeSpy).toHaveBeenCalledTimes(1);
+        expect(service['_connectionEstablished']).toBe(false);
+      });
+    });
+
+    describe('query', () => {
+      const results = 'some mock result';
+      const fields = 'some mock fields';
+
+      beforeEach(() => {
+        callback = service['getQueryCallback'](subscriber);
+      });
+
+      it('should correctly work', () => {
+        callback(null, results, fields);
+
+        expect(errorSpy).toHaveBeenCalledTimes(0);
+        expect(nextSpy).toHaveBeenCalledTimes(1);
+        expect(nextSpy).toHaveBeenCalledWith({ results, fields });
+        expect(completeSpy).toHaveBeenCalledTimes(1);
+      });
+
+      it('should correctly handle errors', () => {
+        callback(error, results, fields);
+
+        expect(errorSpy).toHaveBeenCalledTimes(1);
+        expect(errorSpy).toHaveBeenCalledWith(error);
+        expect(nextSpy).toHaveBeenCalledTimes(0);
+        expect(completeSpy).toHaveBeenCalledTimes(1);
+      });
+    });
+  });
 
   afterEach(() => {
     reset(MockedElectronService);
