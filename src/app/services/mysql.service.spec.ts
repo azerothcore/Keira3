@@ -5,6 +5,7 @@ import { Connection, ConnectionConfig } from 'mysql';
 import { MysqlService } from './mysql.service';
 import { ElectronService } from './electron.service';
 import { MockedElectronService } from '../test-utils/mocks';
+import any = jasmine.any;
 
 class MockMySql {
   createConnection() {}
@@ -15,7 +16,7 @@ class MockConnection {
   connect() {}
 }
 
-describe('MysqlService', () => {
+fdescribe('MysqlService', () => {
   let service: MysqlService;
 
   const config: ConnectionConfig = { host: 'azerothcore.org' };
@@ -47,12 +48,33 @@ describe('MysqlService', () => {
 
   it('connect(config) should properly work', async(() => {
     (service as any).mysql = new MockMySql();
-    const createConnectionSpy = spyOn((service as any).mysql, 'createConnection').and.returnValue(new MockConnection());
+    const mockConnection = new MockConnection();
+    const createConnectionSpy = spyOn((service as any).mysql, 'createConnection').and.returnValue(mockConnection);
+    const connectSpy = spyOn(mockConnection, 'connect');
 
-    service.connect(config);
+    const obs = service.connect(config);
 
     expect(createConnectionSpy).toHaveBeenCalledWith(config);
     expect(service.config).toEqual(config);
+
+    obs.subscribe(() => {
+      expect(connectSpy).toHaveBeenCalledTimes(1);
+    });
+  }));
+
+  it('query(queryString) should properly work', async(() => {
+    (service as any).mysql = new MockMySql();
+    const mockConnection = new MockConnection();
+    service['_connection'] = mockConnection as undefined as Connection;
+    const querySpy = spyOn(mockConnection, 'query');
+    const queryStr = '--some mock query';
+
+    const obs = service.query(queryStr, []);
+
+    obs.subscribe(() => {
+      expect(querySpy).toHaveBeenCalledTimes(1);
+      expect(querySpy).toHaveBeenCalledWith(queryStr, [], any);
+    });
   }));
 
   afterEach(() => {
