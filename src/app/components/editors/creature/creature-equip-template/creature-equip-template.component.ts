@@ -12,6 +12,7 @@ import { CreatureEquipTemplate } from '../../../../types/creature-equip-template
 })
 export class CreatureEquipTemplateComponent extends SingleRowEditorComponent<CreatureEquipTemplate> {
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: CreatureEquipTemplateService,
     public handlerService: CreatureHandlerService,

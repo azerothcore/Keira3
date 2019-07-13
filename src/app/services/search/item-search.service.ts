@@ -13,6 +13,7 @@ import {
 })
 export class ItemSearchService extends SearchService<ItemTemplate> {
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected queryService: QueryService,
   ) {

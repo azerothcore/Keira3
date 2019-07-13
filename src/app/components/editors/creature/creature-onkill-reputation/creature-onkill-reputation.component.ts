@@ -22,6 +22,7 @@ export class CreatureOnkillReputationComponent extends SingleRowEditorComponent<
     '(RewOnKillRepFaction1 and RewOnKillRepFaction2); 1 - Will give reputation to alliance players from RewOnKillRepFaction1 and ' +
     'horde players from RewOnKillRepFaction2';
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: CreatureOnkillReputationService,
     public handlerService: CreatureHandlerService,

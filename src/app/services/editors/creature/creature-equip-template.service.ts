@@ -13,6 +13,7 @@ import {
 })
 export class CreatureEquipTemplateService extends SingleRowEditorService<CreatureEquipTemplate> {
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: CreatureHandlerService,
     protected queryService: QueryService,

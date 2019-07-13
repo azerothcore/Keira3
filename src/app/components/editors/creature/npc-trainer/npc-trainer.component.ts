@@ -12,6 +12,7 @@ import { NpcTrainerService } from '../../../../services/editors/creature/npc-tra
 })
 export class NpcTrainerComponent extends MultiRowEditorComponent<NpcTrainer> {
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: NpcTrainerService,
     public handlerService: CreatureHandlerService,

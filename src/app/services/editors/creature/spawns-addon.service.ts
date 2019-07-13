@@ -14,6 +14,7 @@ import {
 })
 export class SpawnsAddonService extends MultiRowExternalEditorService<SpawnsAddon> {
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: CreatureHandlerService,
     protected queryService: QueryService,

@@ -12,6 +12,7 @@ import { SearchSelectorModalComponent } from '../base-selector/search-selector-m
 })
 export class ItemSelectorModalComponent extends SearchSelectorModalComponent {
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected bsModalRef: BsModalRef,
     public searchService: ItemSearchService,

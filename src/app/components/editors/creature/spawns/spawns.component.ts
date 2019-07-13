@@ -28,6 +28,7 @@ export class SpawnsComponent extends MultiRowEditorComponent<Spawns> {
   public readonly SPAWN_DIST_TOOLTIP = 'The maximum distance that the creature may spawn from its spawn point. ' +
     'Also controls how far away the creature can walk from its spawn point if its MovementType = 1.';
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: SpawnsService,
     public handlerService: CreatureHandlerService,

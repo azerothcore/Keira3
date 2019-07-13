@@ -10,6 +10,7 @@ export abstract class MultiRowEditorComponent<T extends TableRow> extends Editor
 
   public readonly DTCFG = DTCFG;
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: MultiRowEditorService<T>,
     protected handlerService: HandlerService<T>,

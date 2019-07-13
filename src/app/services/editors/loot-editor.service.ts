@@ -9,6 +9,7 @@ export abstract class LootEditorService<T extends LootTemplate> extends MultiRow
   get entityTemplateTable(): string { return this._entityTemplateTable; }
   get entityTemplateLootField(): string { return this._entityTemplateLootField; }
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected _entityClass: Class,
     protected _entityTable: string,

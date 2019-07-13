@@ -71,6 +71,7 @@ export class CreatureTemplateComponent extends SingleRowEditorComponent<Creature
   public readonly SPELLS_TOOLTIP = 'Spell ID that can be used for Mind Control of this creature. ' +
     'For vehicle creatures: the spell on action bar with position X.';
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: CreatureTemplateService,
     public handlerService: CreatureHandlerService,

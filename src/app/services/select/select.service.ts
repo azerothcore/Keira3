@@ -4,6 +4,7 @@ import { HandlerService } from '../handlers/handler.service';
 import { SearchService } from '../search/search.service';
 
 export abstract class SelectService<T extends TableRow> extends SearchService<T> {
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected queryService: QueryService,
     public handlerService: HandlerService<T>,

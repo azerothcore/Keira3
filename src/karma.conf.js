@@ -25,7 +25,7 @@ module.exports = function (config) {
       thresholds: {
         statements: 95,
         lines: 95,
-        branches: 75, // due to https://github.com/gotwarlost/istanbul/issues/690
+        branches: 90,
         functions: 90
       }
     },

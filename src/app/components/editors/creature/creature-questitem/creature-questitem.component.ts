@@ -12,6 +12,7 @@ import { CreatureQuestitemService } from '../../../../services/editors/creature/
 })
 export class CreatureQuestitemComponent extends MultiRowEditorComponent<CreatureQuestitem> {
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: CreatureQuestitemService,
     public handlerService: CreatureHandlerService,
