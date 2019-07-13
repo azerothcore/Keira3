@@ -42,41 +42,41 @@ export class MysqlService {
 
     this._connection = this.mysql.createConnection(this.config);
 
-    return new Observable(observer => {
-      this._connection.connect(this.getConnectCallback(observer));
+    return new Observable(subscriber => {
+      this._connection.connect(this.getConnectCallback(subscriber));
     });
   }
 
-  private getConnectCallback(observer) {
+  private getConnectCallback(subscriber) {
     return (err: MysqlError) => {
       this.ngZone.run(() => {
         if (err) {
           this._connectionEstablished = false;
-          observer.error(err);
+          subscriber.error(err);
         } else {
           this._connectionEstablished = true;
-          observer.next();
+          subscriber.next();
         }
-        observer.complete();
+        subscriber.complete();
       });
     };
   }
 
   query<T extends TableRow>(queryString: string, values?: string[]): Observable<MysqlResult<T>> {
-    return new Observable<MysqlResult<T>>(observer => {
-      this._connection.query(queryString, values, this.getQueryCallback<T>(observer));
+    return new Observable<MysqlResult<T>>(subscriber => {
+      this._connection.query(queryString, values, this.getQueryCallback<T>(subscriber));
     });
   }
 
-  private getQueryCallback<T extends TableRow>(observer) {
+  private getQueryCallback<T extends TableRow>(subscriber) {
     return (err: MysqlError, results?: T[], fields?: FieldInfo[]) => {
       this.ngZone.run(() => {
         if (err) {
-          observer.error(err);
+          subscriber.error(err);
         } else {
-          observer.next({results, fields});
+          subscriber.next({results, fields});
         }
-        observer.complete();
+        subscriber.complete();
       });
     };
   }
