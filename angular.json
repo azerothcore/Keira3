@@ -100,7 +100,8 @@
               "src/app/config/**/*",
               "src/app/constants/**/*",
               "src/app/types/**/*",
-              "src/app/test-utils/**/*"
+              "src/app/test-utils/**/*",
+              "src/app/test-utils/test-helpers.ts"
             ],
             "scripts": [
               "node_modules/squel/dist/squel.min.js"

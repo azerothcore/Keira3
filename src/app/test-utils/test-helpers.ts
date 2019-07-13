@@ -6,7 +6,7 @@ export function closeModalsAfterEach(upToLevel: number = 1) {
     const modalService: BsModalService = TestBed.get(BsModalService);
 
     for (let level = 1; level <= upToLevel; level++) {
-      modalService.hide(1);
+      modalService.hide(level);
     }
   });
 }

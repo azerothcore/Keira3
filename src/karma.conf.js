@@ -25,8 +25,8 @@ module.exports = function (config) {
       thresholds: {
         statements: 95,
         lines: 95,
-        branches: 90,
-        functions: 90
+        branches: 95,
+        functions: 95
       }
     },
     reporters: ['progress', 'kjhtml'],
