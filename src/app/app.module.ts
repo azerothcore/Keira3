@@ -26,14 +26,10 @@ import { MainWindowModule } from './components/main-window/main-window.module';
     AppComponent,
     ComingSoonComponent,
 
-    WebviewDirective,
-    MainWindowComponent,
-    QueryErrorComponent,
-    HighlightjsWrapperComponent,
     CreateComponent,
+
     TopBarComponent,
     ConnectionWindowComponent,
-    QueryOutputComponent,
   ],
   imports: [
     /* Misc */
