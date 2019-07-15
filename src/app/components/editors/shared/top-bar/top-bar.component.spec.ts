@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TopBarComponent } from './top-bar.component';
-import { MockType } from '../../../test-utils/mocks';
+import { MockType } from '../../../../test-utils/mocks';
 
 describe('TopBarComponent', () => {
   let component: TopBarComponent<MockType>;

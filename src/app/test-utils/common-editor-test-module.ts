@@ -3,7 +3,7 @@ import { HighlightModule } from 'ngx-highlightjs';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ModalModule, TooltipModule } from 'ngx-bootstrap';
 
-import { TopBarComponent } from '../components/main-window/top-bar/top-bar.component';
+import { TopBarComponent } from '../components/editors/shared/top-bar/top-bar.component';
 import { HighlightjsWrapperComponent } from '../components/editors/shared/hightlightjs-wrapper/highlightjs-wrapper.component';
 import { QueryErrorComponent } from '../components/editors/shared/query-output/query-error/query-error.component';
 import { QueryOutputComponent } from '../components/editors/shared/query-output/query-output.component';
