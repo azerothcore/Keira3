@@ -1,14 +1,7 @@
 import 'reflect-metadata';
 import '../polyfills';
 import { NgModule } from '@angular/core';
-import {
-PERFECT_SCROLLBAR_CONFIG,
-PerfectScrollbarConfigInterface,
-PerfectScrollbarModule
-} from 'ngx-perfect-scrollbar';
-import { ClipboardModule } from 'ngx-clipboard';
 
-import { DashboardComponent } from './components/main-window/dashboard/dashboard.component';
 import { AppRoutingModule } from './config/app-routing.module';
 import { ElectronService } from './services/electron.service';
 import { WebviewDirective } from './directives/webview.directive';
@@ -26,17 +19,15 @@ import { ComingSoonComponent } from './components/editors/coming-soon/coming-soo
 import { CreatureModule } from './components/editors/creature/creature.module';
 import { ConnectionWindowModule } from './components/connection-window/connection-window.module';
 import { DashboardModule } from './components/main-window/dashboard/dashboard.module';
+import { SidebarModule } from './components/main-window/sidebar/sidebar.module';
 
-const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
-  suppressScrollX: true
-};
 
 @NgModule({
   declarations: [
     AppComponent,
-    DashboardComponent,
+    ComingSoonComponent,
+
     WebviewDirective,
-    SidebarComponent,
     MainWindowComponent,
     QueryErrorComponent,
     HighlightjsWrapperComponent,
@@ -44,23 +35,20 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     TopBarComponent,
     ConnectionWindowComponent,
     QueryOutputComponent,
-    ComingSoonComponent,
   ],
   imports: [
     /* Misc */
     AppRoutingModule,
     ConnectionWindowModule,
     DashboardModule,
+    SidebarModule,
+
     /* Editors */
     CreatureModule,
-
-    PerfectScrollbarModule,
-    ClipboardModule,
   ],
   providers: [
     ElectronService,
     MysqlService,
-    { provide: PERFECT_SCROLLBAR_CONFIG, useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG },
   ],
   bootstrap: [AppComponent]
 })
