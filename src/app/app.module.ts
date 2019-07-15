@@ -51,12 +51,6 @@ import { SpawnsComponent } from './components/editors/creature/spawns/spawns.com
 import { SpawnsAddonComponent } from './components/editors/creature/spawns-addon/spawns-addon.component';
 import { QueryErrorComponent } from './components/editors/shared/query-output/query-error/query-error.component';
 import { uiSwitchConfig } from './config/ui-switch.config';
-import {
-  SingleValueSelectorBtnComponent
-} from './components/editors/shared/selectors/single-value-selector/single-value-selector-btn.component';
-import {
-  SingleValueSelectorModalComponent
-} from './components/editors/shared/selectors/single-value-selector/single-value-selector-modal.component';
 import { ComingSoonComponent } from './components/editors/coming-soon/coming-soon.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
@@ -64,9 +58,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 };
 
 @NgModule({
-  entryComponents: [
-    SingleValueSelectorModalComponent,
-  ],
   declarations: [
     AppComponent,
     DashboardComponent,
@@ -74,8 +65,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     SidebarComponent,
     MainWindowComponent,
     QueryErrorComponent,
-    SingleValueSelectorModalComponent,
-    SingleValueSelectorBtnComponent,
     HighlightjsWrapperComponent,
     CreateComponent,
     TopBarComponent,
