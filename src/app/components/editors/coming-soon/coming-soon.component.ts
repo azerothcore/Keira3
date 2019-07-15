@@ -12,5 +12,4 @@ export class ComingSoonComponent {
   public readonly AC_FORUM_URL = AC_FORUM_URL;
   public readonly AC_DISCORD_URL = AC_DISCORD_URL;
   public readonly KEIRA3_REPO_URL = KEIRA3_REPO_URL;
-
 }
