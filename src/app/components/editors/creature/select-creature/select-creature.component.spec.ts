@@ -1,16 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { anything, instance, reset, when } from 'ts-mockito';
-import { HighlightModule } from 'ngx-highlightjs';
 import { of } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { SelectCreatureComponent } from './select-creature.component';
 import { MockedQueryService } from '../../../../test-utils/mocks';
 import { QueryService } from '../../../../services/query.service';
-import { CommonTestModule } from '../../../../test-utils/common-test.module';
-import { CommonEditorTestModule } from '../../../../test-utils/common-editor-test-module';
-import { CreateComponent } from '../../shared/create/create.component';
-import { highlightOptions } from '../../../../config/highlight.config';
 import { CreatureSelectService } from '../../../../services/select/creature-select.service';
+import { SelectCreatureModule } from './select-creature.module';
 
 describe('SelectCreatureComponent', () => {
   let component: SelectCreatureComponent;
@@ -19,14 +16,9 @@ describe('SelectCreatureComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        SelectCreatureComponent,
-        CreateComponent,
-      ],
       imports: [
-        CommonTestModule,
-        CommonEditorTestModule,
-        HighlightModule.forRoot(highlightOptions),
+        SelectCreatureModule,
+        RouterTestingModule,
       ],
       providers: [
         { provide: QueryService, useValue: instance(MockedQueryService) },

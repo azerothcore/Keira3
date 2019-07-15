@@ -1,8 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
-import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { instance, reset } from 'ts-mockito';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { SidebarComponent } from './sidebar.component';
 import { ElectronService } from '../../../services/electron.service';
@@ -10,6 +8,7 @@ import { MockedElectronService, MockedMysqlService } from '../../../test-utils/m
 import { MysqlService } from '../../../services/mysql.service';
 import { PageObject } from '../../../test-utils/page-object';
 import { SidebarService } from './sidebar.service';
+import { SidebarModule } from './sidebar.module';
 
 class SidebarComponentPage extends PageObject<SidebarComponent> {
   get toggleSidebarBtn() { return this.query<HTMLButtonElement>('.sidebar-button'); }
@@ -25,13 +24,9 @@ describe('SidebarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        SidebarComponent,
-      ],
       imports: [
+        SidebarModule,
         RouterTestingModule,
-        BrowserAnimationsModule,
-        PerfectScrollbarModule,
       ],
       providers: [
         { provide : ElectronService, useValue: instance(MockedElectronService) },

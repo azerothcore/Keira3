@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { DashboardComponent } from '../components/main-window/dashboard/dashboard.component';
+import { DashboardComponent } from '../components/editors/dashboard/dashboard.component';
 
 import { SelectCreatureComponent } from '../components/editors/creature/select-creature/select-creature.component';
 import { CreatureTemplateComponent } from '../components/editors/creature/creature-template/creature-template.component';

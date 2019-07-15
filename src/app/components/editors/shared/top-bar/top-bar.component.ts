@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 
-import { HandlerService } from '../../../services/handlers/handler.service';
-import { TableRow } from '../../../types/general';
+import { HandlerService } from '../../../../services/handlers/handler.service';
+import { TableRow } from '../../../../types/general';
 
 @Component({
   selector: 'app-top-bar',

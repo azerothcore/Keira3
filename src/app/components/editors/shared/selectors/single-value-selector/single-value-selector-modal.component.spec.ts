@@ -1,9 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { BsModalRef } from 'ngx-bootstrap';
 
 import { SingleValueSelectorModalComponent } from './single-value-selector-modal.component';
-import { CommonTestModule } from '../../../../../test-utils/common-test.module';
+import { SingleValueSelectorModule } from './single-value-selector.module';
 
 describe('SingleValueSelectorModalComponent', () => {
   let component: SingleValueSelectorModalComponent;
@@ -13,11 +12,7 @@ describe('SingleValueSelectorModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SingleValueSelectorModalComponent ],
-      imports: [
-        CommonTestModule,
-        NgxDatatableModule,
-      ],
+      imports: [ SingleValueSelectorModule ],
       providers: [
         BsModalRef,
       ],
