@@ -11,6 +11,8 @@ import { SelectCreatureModule } from './select-creature/select-creature.module';
 import { SkinningLootTemplateModule } from './skinning-loot-template/skinning-loot-template.module';
 import { SpawnsModule } from './spawns/spawns.module';
 import { SpawnsAddonModule } from './spawns-addon/spawns-addon.module';
+import { NpcVendorModule } from './npc-vendor/npc-vendor.module';
+import { CreatureQuestitemModule } from './creature-questitem/creature-questitem.module';
 
 @NgModule({
   imports: [
@@ -19,7 +21,9 @@ import { SpawnsAddonModule } from './spawns-addon/spawns-addon.module';
     CreatureOnkillReputationModule,
     CreatureTemplateModule,
     CreatureTemplateAddonModule,
+    CreatureQuestitemModule,
     NpcTrainerModule,
+    NpcVendorModule,
     PickpocketingLootTemplateModule,
     SelectCreatureModule,
     SkinningLootTemplateModule,
@@ -32,7 +36,9 @@ import { SpawnsAddonModule } from './spawns-addon/spawns-addon.module';
     CreatureOnkillReputationModule,
     CreatureTemplateModule,
     CreatureTemplateAddonModule,
+    CreatureQuestitemModule,
     NpcTrainerModule,
+    NpcVendorModule,
     PickpocketingLootTemplateModule,
     SelectCreatureModule,
     SkinningLootTemplateModule,

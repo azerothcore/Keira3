@@ -21,6 +21,7 @@ import { highlightOptions } from '../../../../config/highlight.config';
   ],
   exports: [
     QueryOutputComponent,
+    QueryErrorComponent,
   ],
 })
 export class QueryOutputModule {}

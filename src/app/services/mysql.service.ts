@@ -7,7 +7,9 @@ import { ElectronService } from './electron.service';
 import { MysqlResult, TableRow } from '../types/general';
 
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class MysqlService {
   private mysql: typeof mysql;
   private _connection: Connection;
