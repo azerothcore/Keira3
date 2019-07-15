@@ -1,18 +1,15 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BsModalRef } from 'ngx-bootstrap';
 import { instance } from 'ts-mockito';
-import { HighlightModule } from 'ngx-highlightjs';
 
 import { ItemSelectorModalComponent } from '../item-selector/item-selector-modal.component';
 import { QueryService } from '../../../../../services/query.service';
 import { MockedQueryService } from '../../../../../test-utils/mocks';
-import { CommonTestModule } from '../../../../../test-utils/common-test.module';
-import { CommonEditorTestModule } from '../../../../../test-utils/common-editor-test-module';
-import { highlightOptions } from '../../../../../config/highlight.config';
 import { SearchService } from '../../../../../services/search/search.service';
 import { ItemTemplate } from '../../../../../types/item-template.type';
 import { ItemSearchService } from '../../../../../services/search/item-search.service';
 import { SearchSelectorModalComponent } from './search-selector-modal.component';
+import { ItemSelectorModule } from '../item-selector/item-selector.module';
 
 describe('SearchSelectorModalComponent', () => {
   let component: SearchSelectorModalComponent;
@@ -21,11 +18,8 @@ describe('SearchSelectorModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ItemSelectorModalComponent ],
       imports: [
-        CommonTestModule,
-        CommonEditorTestModule,
-        HighlightModule.forRoot(highlightOptions),
+        ItemSelectorModule,
       ],
       providers: [
         BsModalRef,

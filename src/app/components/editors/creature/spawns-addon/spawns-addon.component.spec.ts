@@ -1,12 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { anything, instance, when } from 'ts-mockito';
 import { of } from 'rxjs';
 
 import { SpawnsAddonComponent } from './spawns-addon.component';
-import { CommonTestModule } from '../../../../test-utils/common-test.module';
 import { MysqlService } from '../../../../services/mysql.service';
 import { MockedMysqlService } from '../../../../test-utils/mocks';
-import { CommonEditorTestModule } from '../../../../test-utils/common-editor-test-module';
+import { SpawnsAddonModule } from './spawns-addon.module';
 
 describe('SpawnsAddonComponent', () => {
   let component: SpawnsAddonComponent;
@@ -14,12 +14,9 @@ describe('SpawnsAddonComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        SpawnsAddonComponent,
-      ],
       imports: [
-        CommonTestModule,
-        CommonEditorTestModule,
+        SpawnsAddonModule,
+        RouterTestingModule,
       ],
       providers: [
         { provide : MysqlService, useValue: instance(MockedMysqlService) },

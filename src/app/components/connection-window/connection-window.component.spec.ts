@@ -6,10 +6,9 @@ import Spy = jasmine.Spy;
 
 import { ConnectionWindowComponent } from './connection-window.component';
 import { MockedMysqlService } from '../../test-utils/mocks';
-import { CommonTestModule } from '../../test-utils/common-test.module';
 import { MysqlService } from '../../services/mysql.service';
-import { QueryErrorComponent } from '../editors/shared/query-output/query-error/query-error.component';
 import { PageObject } from '../../test-utils/page-object';
+import { ConnectionWindowModule } from './connection-window.module';
 
 class ConnectionWindowComponentPage extends PageObject<ConnectionWindowComponent> {
   get hostInput() { return this.query<HTMLInputElement>('#host'); }
@@ -29,13 +28,7 @@ describe('ConnectionWindowComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        ConnectionWindowComponent,
-        QueryErrorComponent,
-      ],
-      imports: [
-        CommonTestModule,
-      ],
+      imports: [ ConnectionWindowModule ],
       providers: [
         { provide : MysqlService, useValue: instance(MockedMysqlService) },
       ],

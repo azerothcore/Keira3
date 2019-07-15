@@ -1,12 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { anything, instance, when } from 'ts-mockito';
 import { of } from 'rxjs';
 
 import { PickpocketingLootTemplateComponent } from './pickpocketing-loot-template.component';
-import { CommonTestModule } from '../../../../test-utils/common-test.module';
 import { MysqlService } from '../../../../services/mysql.service';
 import { MockedMysqlService } from '../../../../test-utils/mocks';
-import { CommonEditorTestModule } from '../../../../test-utils/common-editor-test-module';
+import { PickpocketingLootTemplateModule } from './pickpocketing-loot-template.module';
 
 describe('PickpocketingLootTemplateComponent', () => {
   let component: PickpocketingLootTemplateComponent;
@@ -14,12 +14,9 @@ describe('PickpocketingLootTemplateComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        PickpocketingLootTemplateComponent,
-      ],
       imports: [
-        CommonTestModule,
-        CommonEditorTestModule,
+        PickpocketingLootTemplateModule,
+        RouterTestingModule,
       ],
       providers: [
         { provide : MysqlService, useValue: instance(MockedMysqlService) },

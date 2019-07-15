@@ -1,14 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { instance, reset } from 'ts-mockito';
 
 import { MainWindowComponent } from './main-window.component';
-import { SidebarComponent } from './sidebar/sidebar.component';
 import { ElectronService } from '../../services/electron.service';
 import { MockedElectronService, MockedMysqlService } from '../../test-utils/mocks';
 import { MysqlService } from '../../services/mysql.service';
+import { MainWindowModule } from './main-window.module';
 
 describe('MainWindowComponent', () => {
   let component: MainWindowComponent;
@@ -16,14 +14,9 @@ describe('MainWindowComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        MainWindowComponent,
-        SidebarComponent,
-      ],
       imports: [
+        MainWindowModule,
         RouterTestingModule,
-        BrowserAnimationsModule,
-        PerfectScrollbarModule,
       ],
       providers: [
         { provide : ElectronService, useValue: instance(MockedElectronService) },

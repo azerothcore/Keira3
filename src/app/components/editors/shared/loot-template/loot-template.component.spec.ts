@@ -1,17 +1,18 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { anything, instance, when } from 'ts-mockito';
 import { of, throwError } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { CommonTestModule } from '../../../../test-utils/common-test.module';
 import { MysqlService } from '../../../../services/mysql.service';
 import { MockedMysqlService } from '../../../../test-utils/mocks';
-import { CommonEditorTestModule } from '../../../../test-utils/common-editor-test-module';
 import { LootTemplateComponent } from './loot-template.component';
 import { CreatureLootTemplate } from '../../../../types/creature-loot-template.type';
 import { CreatureLootTemplateComponent } from '../../creature/creature-loot-template/creature-loot-template.component';
 import { CreatureLootTemplateService } from '../../../../services/editors/creature/creature-loot-template.service';
 import { LootEditorService } from '../../../../services/editors/loot-editor.service';
+import { CreatureLootTemplateModule } from '../../creature/creature-loot-template/creature-loot-template.module';
+import { TooltipModule } from 'ngx-bootstrap';
 
 describe('LootTemplateComponent', () => {
   let component: LootTemplateComponent<CreatureLootTemplate>;
@@ -24,12 +25,10 @@ describe('LootTemplateComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        CreatureLootTemplateComponent,
-      ],
       imports: [
-        CommonTestModule,
-        CommonEditorTestModule,
+        CreatureLootTemplateModule,
+        RouterTestingModule,
+        TooltipModule.forRoot(),
       ],
       providers: [
         { provide : MysqlService, useValue: instance(MockedMysqlService) },

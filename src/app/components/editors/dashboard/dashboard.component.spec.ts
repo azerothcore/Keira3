@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ClipboardModule } from 'ngx-clipboard';
 import { anyString, instance, when } from 'ts-mockito';
 import { of, throwError } from 'rxjs';
 
@@ -8,6 +7,7 @@ import { QueryService } from '../../../services/query.service';
 import { MockedQueryService } from '../../../test-utils/mocks';
 import { VersionDbRow, VersionRow } from '../../../types/general';
 import { PageObject } from '../../../test-utils/page-object';
+import { DashboardModule } from './dashboard.module';
 
 class DashboardComponentPage extends PageObject<DashboardComponent> {
   get coreVersion() { return this.query<HTMLTableCellElement>('#core-version'); }
@@ -36,10 +36,7 @@ describe('DashboardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DashboardComponent ],
-      imports: [
-        ClipboardModule
-      ],
+      imports: [ DashboardModule ],
       providers: [
         { provide: QueryService, useValue: instance(MockedQueryService) },
       ]
