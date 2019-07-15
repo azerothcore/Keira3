@@ -69,7 +69,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 
 @NgModule({
   entryComponents: [
-    ItemSelectorModalComponent,
     FlagsSelectorModalComponent,
     SingleValueSelectorModalComponent,
   ],
@@ -80,8 +79,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     SidebarComponent,
     MainWindowComponent,
     QueryErrorComponent,
-    ItemSelectorBtnComponent,
-    ItemSelectorModalComponent,
     FlagsSelectorModalComponent,
     FlagsSelectorBtnComponent,
     SingleValueSelectorModalComponent,
