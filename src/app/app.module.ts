@@ -25,6 +25,7 @@ import { QueryErrorComponent } from './components/editors/shared/query-output/qu
 import { ComingSoonComponent } from './components/editors/coming-soon/coming-soon.component';
 import { CreatureModule } from './components/editors/creature/creature.module';
 import { ConnectionWindowModule } from './components/connection-window/connection-window.module';
+import { DashboardModule } from './components/main-window/dashboard/dashboard.module';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -46,8 +47,11 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     ComingSoonComponent,
   ],
   imports: [
+    /* Misc */
     AppRoutingModule,
     ConnectionWindowModule,
+    DashboardModule,
+    /* Editors */
     CreatureModule,
 
     PerfectScrollbarModule,
