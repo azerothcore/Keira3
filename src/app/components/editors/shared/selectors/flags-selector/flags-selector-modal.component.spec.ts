@@ -1,10 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BsModalRef } from 'ngx-bootstrap';
-import { UiSwitchModule } from 'ngx-ui-switch';
 
 import { FlagsSelectorModalComponent } from './flags-selector-modal.component';
-import { CommonTestModule } from '../../../../../test-utils/common-test.module';
 import { FlagsService } from '../../../../../services/helpers/flags.service';
+import { FlagsSelectorModule } from './flags-selector.module';
 
 describe('FlagsSelectorModalComponent', () => {
   let component: FlagsSelectorModalComponent;
@@ -13,11 +12,7 @@ describe('FlagsSelectorModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FlagsSelectorModalComponent ],
-      imports: [
-        CommonTestModule,
-        UiSwitchModule,
-      ],
+      imports: [ FlagsSelectorModule ],
       providers: [
         BsModalRef,
       ],

@@ -50,10 +50,6 @@ import { NpcTrainerComponent } from './components/editors/creature/npc-trainer/n
 import { SpawnsComponent } from './components/editors/creature/spawns/spawns.component';
 import { SpawnsAddonComponent } from './components/editors/creature/spawns-addon/spawns-addon.component';
 import { QueryErrorComponent } from './components/editors/shared/query-output/query-error/query-error.component';
-import { ItemSelectorBtnComponent } from './components/editors/shared/selectors/item-selector/item-selector-btn.component';
-import { ItemSelectorModalComponent } from './components/editors/shared/selectors/item-selector/item-selector-modal.component';
-import { FlagsSelectorModalComponent } from './components/editors/shared/selectors/flags-selector/flags-selector-modal.component';
-import { FlagsSelectorBtnComponent } from './components/editors/shared/selectors/flags-selector/flags-selector-btn.component';
 import { uiSwitchConfig } from './config/ui-switch.config';
 import {
   SingleValueSelectorBtnComponent
@@ -69,7 +65,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 
 @NgModule({
   entryComponents: [
-    FlagsSelectorModalComponent,
     SingleValueSelectorModalComponent,
   ],
   declarations: [
@@ -79,8 +74,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     SidebarComponent,
     MainWindowComponent,
     QueryErrorComponent,
-    FlagsSelectorModalComponent,
-    FlagsSelectorBtnComponent,
     SingleValueSelectorModalComponent,
     SingleValueSelectorBtnComponent,
     HighlightjsWrapperComponent,
