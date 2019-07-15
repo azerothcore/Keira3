@@ -1,12 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { anything, instance, when } from 'ts-mockito';
 import { of } from 'rxjs';
 
 import { NpcTrainerComponent } from './npc-trainer.component';
-import { CommonTestModule } from '../../../../test-utils/common-test.module';
 import { MysqlService } from '../../../../services/mysql.service';
 import { MockedMysqlService } from '../../../../test-utils/mocks';
-import { CommonEditorTestModule } from '../../../../test-utils/common-editor-test-module';
+import { NpcTrainerModule } from './npc-trainer.module';
+
 
 describe('NpcTrainerComponent', () => {
   let component: NpcTrainerComponent;
@@ -14,12 +15,9 @@ describe('NpcTrainerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        NpcTrainerComponent,
-      ],
       imports: [
-        CommonTestModule,
-        CommonEditorTestModule,
+        NpcTrainerModule,
+        RouterTestingModule
       ],
       providers: [
         { provide : MysqlService, useValue: instance(MockedMysqlService) },

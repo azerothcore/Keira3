@@ -3,10 +3,10 @@ import { anything, instance, reset, when } from 'ts-mockito';
 import { of } from 'rxjs';
 
 import { CreatureOnkillReputationComponent } from './creature-onkill-reputation.component';
-import { CommonTestModule } from '../../../../test-utils/common-test.module';
 import { MockedMysqlService } from '../../../../test-utils/mocks';
 import { MysqlService } from '../../../../services/mysql.service';
-import { CommonEditorTestModule } from '../../../../test-utils/common-editor-test-module';
+import { CreatureOnkillReputationModule } from './creature-onkill-reputation.module';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('CreatureOnkillReputationComponent', () => {
   let component: CreatureOnkillReputationComponent;
@@ -14,10 +14,9 @@ describe('CreatureOnkillReputationComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CreatureOnkillReputationComponent ],
       imports: [
-        CommonTestModule,
-        CommonEditorTestModule,
+        CreatureOnkillReputationModule,
+        RouterTestingModule,
       ],
       providers: [
         { provide : MysqlService, useValue: instance(MockedMysqlService) },

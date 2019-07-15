@@ -1,12 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { anything, instance, when } from 'ts-mockito';
 import { of } from 'rxjs';
 
 import { CreatureQuestitemComponent } from './creature-questitem.component';
-import { CommonTestModule } from '../../../../test-utils/common-test.module';
 import { MysqlService } from '../../../../services/mysql.service';
 import { MockedMysqlService } from '../../../../test-utils/mocks';
-import { CommonEditorTestModule } from '../../../../test-utils/common-editor-test-module';
+import { CreatureQuestitemModule } from './creature-questitem.module';
 
 describe('CreatureQuestitemComponent', () => {
   let component: CreatureQuestitemComponent;
@@ -14,12 +14,9 @@ describe('CreatureQuestitemComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        CreatureQuestitemComponent,
-      ],
       imports: [
-        CommonTestModule,
-        CommonEditorTestModule,
+        CreatureQuestitemModule,
+        RouterTestingModule,
       ],
       providers: [
         { provide : MysqlService, useValue: instance(MockedMysqlService) },
