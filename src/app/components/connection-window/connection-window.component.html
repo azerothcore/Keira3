@@ -2,11 +2,12 @@
   <div class="mt-3 text-center">
     <span class="lead font-weight-bold">Keira {{ KEIRA_VERSION }}</span>
   </div>
+
   <hr>
   <div class="form-wrapper" *ngIf="form">
     <form [formGroup]="form" class="mb-4">
       <div class="form-group row">
-        <label class="col-4 col-form-label" for="host">Host</label>
+        <label class="col-4 col-form-label" for="host">{{ 'connection-window.Host' | translate }}</label>
         <input
           [formControlName]="'host'"
           class="form-control col-7"
@@ -15,7 +16,7 @@
         >
       </div>
       <div class="form-group row">
-        <label class="col-4 col-form-label" for="port">Port</label>
+        <label class="col-4 col-form-label" for="port">{{ 'connection-window.Port' | translate }}</label>
         <input
           [formControlName]="'port'"
           class="form-control col-7"
@@ -24,7 +25,7 @@
         >
       </div>
       <div class="form-group row">
-        <label class="col-4 col-form-label" for="user">User</label>
+        <label class="col-4 col-form-label" for="user">{{ 'connection-window.User' | translate }}</label>
         <input
           [formControlName]="'user'"
           class="form-control col-7"
@@ -33,7 +34,7 @@
         >
       </div>
       <div class="form-group row">
-        <label class="col-4 col-form-label" for="password">Password</label>
+        <label class="col-4 col-form-label" for="password">{{ 'connection-window.Password' | translate }}</label>
         <input
           [formControlName]="'password'"
           type="password"
@@ -43,7 +44,7 @@
         >
       </div>
       <div class="form-group row">
-        <label class="col-4 col-form-label" for="database">Database</label>
+        <label class="col-4 col-form-label" for="database">{{ 'connection-window.Database' | translate }}</label>
         <input
           [formControlName]="'database'"
           class="form-control col-7"
@@ -51,7 +52,7 @@
           placeholder="Enter your AC world database name"
         >
       </div>
-      <button class="btn btn-success connect-button" (click)="onConnect()">Connect</button>
+      <button class="btn btn-success connect-button" (click)="onConnect()">{{ 'connection-window.Connect' | translate }}</button>
     </form>
 
     <app-query-error [error]="error"></app-query-error>

@@ -14,6 +14,8 @@ import { MysqlService } from '../services/mysql.service';
 import { ConnectionWindowComponent } from './connection-window/connection-window.component';
 import { QueryErrorComponent } from './editors/shared/query-output/query-error/query-error.component';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 describe('AppComponent', () => {
   let component: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
@@ -33,6 +35,7 @@ describe('AppComponent', () => {
         RouterTestingModule,
         BrowserAnimationsModule,
         PerfectScrollbarModule,
+        TranslateModule.forRoot(),
       ],
       providers: [
         { provide : ElectronService, useValue: instance(MockedElectronService) },

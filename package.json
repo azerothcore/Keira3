@@ -29,6 +29,8 @@
     "version": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md"
   },
   "dependencies": {
+    "@ngx-translate/core": "^11.0.1",
+    "@ngx-translate/http-loader": "^4.0.0",
     "mysql": "^2.17.1",
     "ngx-ui-switch": "^8.1.0"
   },

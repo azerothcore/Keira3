@@ -1,0 +1,10 @@
+{
+  "connection-window": {
+    "Host": "Host",
+    "Port": "Porta",
+    "User": "Utente",
+    "Password": "Password",
+    "Database": "Database",
+    "Connect": "Connetti"
+  }
+}

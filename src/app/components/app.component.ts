@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MysqlService } from '../services/mysql.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
@@ -8,5 +9,7 @@ import { MysqlService } from '../services/mysql.service';
 })
 export class AppComponent {
 
-  constructor(public mysqlService: MysqlService) {}
+  constructor(public mysqlService: MysqlService, private translate: TranslateService) {
+    translate.setDefaultLang(navigator.language);
+  }
 }
