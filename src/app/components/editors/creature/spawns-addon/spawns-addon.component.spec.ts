@@ -1,16 +1,17 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { anything, instance, when } from 'ts-mockito';
 import { of } from 'rxjs';
+import Spy = jasmine.Spy;
 
+import { QueryService } from '../../../../services/query.service';
 import { SpawnsAddonComponent } from './spawns-addon.component';
-import { MysqlService } from '../../../../services/mysql.service';
-import { MockedMysqlService } from '../../../../test-utils/mocks';
 import { SpawnsAddonModule } from './spawns-addon.module';
 
 describe('SpawnsAddonComponent', () => {
   let component: SpawnsAddonComponent;
   let fixture: ComponentFixture<SpawnsAddonComponent>;
+  let queryService: QueryService;
+  let querySpy: Spy;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -18,15 +19,13 @@ describe('SpawnsAddonComponent', () => {
         SpawnsAddonModule,
         RouterTestingModule,
       ],
-      providers: [
-        { provide : MysqlService, useValue: instance(MockedMysqlService) },
-      ],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    when(MockedMysqlService.query(anything(), anything())).thenReturn(of());
+    queryService = TestBed.get(QueryService);
+    querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     fixture = TestBed.createComponent(SpawnsAddonComponent);
     component = fixture.componentInstance;
