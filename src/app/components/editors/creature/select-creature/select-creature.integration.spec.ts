@@ -29,6 +29,7 @@ describe('SelectCreatureComponent', () => {
   let selectService: CreatureSelectService;
   let queryService: QueryService;
   let querySpy: Spy;
+  let page: SelectCreatureComponentPage;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -42,19 +43,29 @@ describe('SelectCreatureComponent', () => {
 
   beforeEach(() => {
     queryService = TestBed.get(QueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of());
+    querySpy = spyOn(queryService, 'query').and.returnValue(of(
+      { results: [{ max: 1 }] }
+    ));
 
     selectService = TestBed.get(CreatureSelectService);
     selectService.query = '--mock query';
 
     fixture = TestBed.createComponent(SelectCreatureComponent);
+    page = new SelectCreatureComponentPage(fixture);
     component = fixture.componentInstance;
+    fixture.autoDetectChanges(true);
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+  it('should correctly initialise', async(() => {
+    fixture.whenStable().then(() => {
+
+      expect(page.createInput.value).toEqual(`${component.customStartingId}`);
+
+      // TODO: to be continued...
+
+    });
+  }));
 
   // TODO: test datatable selection
 });
