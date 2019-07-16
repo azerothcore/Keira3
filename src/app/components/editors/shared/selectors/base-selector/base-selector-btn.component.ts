@@ -1,12 +1,12 @@
 import { Input } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { AbstractControl } from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 
 import { Class } from '../../../../../types/general';
 
 export abstract class BaseSelectorBtnComponent {
 
-  @Input() control: FormControl;
+  @Input() control: AbstractControl;
   @Input() config;
   @Input() modalClass = 'modal-xl';
 
