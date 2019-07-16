@@ -1,4 +1,4 @@
-import { mock, when } from 'ts-mockito';
+import { mock } from 'ts-mockito';
 
 import { ElectronService } from '../services/electron.service';
 import { MysqlService } from '../services/mysql.service';

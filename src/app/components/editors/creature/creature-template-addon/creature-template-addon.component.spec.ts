@@ -1,16 +1,17 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { anything, instance, reset, when } from 'ts-mockito';
 import { of } from 'rxjs';
+import Spy = jasmine.Spy;
 
+import { QueryService } from '../../../../services/query.service';
 import { CreatureTemplateAddonComponent } from './creature-template-addon.component';
-import { MockedMysqlService } from '../../../../test-utils/mocks';
-import { MysqlService } from '../../../../services/mysql.service';
 import { CreatureTemplateAddonModule } from './creature-template-addon.module';
 
 describe('CreatureTemplateAddonComponent', () => {
   let component: CreatureTemplateAddonComponent;
   let fixture: ComponentFixture<CreatureTemplateAddonComponent>;
+  let queryService: QueryService;
+  let querySpy: Spy;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -18,15 +19,13 @@ describe('CreatureTemplateAddonComponent', () => {
         CreatureTemplateAddonModule,
         RouterTestingModule,
       ],
-      providers: [
-        { provide : MysqlService, useValue: instance(MockedMysqlService) },
-      ],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    when(MockedMysqlService.query(anything(), anything())).thenReturn(of());
+    queryService = TestBed.get(QueryService);
+    querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     fixture = TestBed.createComponent(CreatureTemplateAddonComponent);
     component = fixture.componentInstance;
@@ -35,9 +34,5 @@ describe('CreatureTemplateAddonComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  afterEach(() => {
-    reset(MockedMysqlService);
   });
 });
