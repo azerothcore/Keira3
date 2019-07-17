@@ -68,5 +68,21 @@ export abstract class PageObject<ComponentType> {
   isHidden(element: HTMLElement) {
     return element.hasAttribute('hidden');
   }
+
+  /*** ngx-datatable utilities ***/
+  getDatatableHeaderByTitle(datatableSelector: string, text: string, assert = true): HTMLElement {
+    return this.query(`${datatableSelector} .datatable-header-cell[title="${text}"]`, assert);
+  }
+
+  getDatatableRow(datatableSelector: string, rowIndex: number, assert = true): HTMLElement {
+    return this.query(`${datatableSelector} .datatable-row-wrapper:nth-child(${rowIndex})`, assert);
+  }
+
+  getDatatableCell(datatableSelector: string, rowIndex: number, colIndex: number, assert = true): HTMLElement {
+    return this.query(
+      `${datatableSelector} .datatable-row-wrapper:nth-child(${rowIndex}) .datatable-body-cell:nth-child(${colIndex})`,
+      assert,
+    );
+  }
 }
 
