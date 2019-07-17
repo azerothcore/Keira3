@@ -5,7 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ConnectionWindowComponent } from './connection-window.component';
 import { QueryOutputModule } from '../editors/shared/query-output/query-output.module';
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
@@ -21,6 +21,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     BrowserModule,
     ReactiveFormsModule,
     QueryOutputModule,
+    HttpClientModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
