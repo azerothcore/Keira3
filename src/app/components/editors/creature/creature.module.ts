@@ -14,36 +14,24 @@ import { SpawnsAddonModule } from './spawns-addon/spawns-addon.module';
 import { NpcVendorModule } from './npc-vendor/npc-vendor.module';
 import { CreatureQuestitemModule } from './creature-questitem/creature-questitem.module';
 
+const modules = [
+  CreatureEquipTemplateModule,
+  CreatureLootTemplateModule,
+  CreatureOnkillReputationModule,
+  CreatureTemplateModule,
+  CreatureTemplateAddonModule,
+  CreatureQuestitemModule,
+  NpcTrainerModule,
+  NpcVendorModule,
+  PickpocketingLootTemplateModule,
+  SelectCreatureModule,
+  SkinningLootTemplateModule,
+  SpawnsModule,
+  SpawnsAddonModule,
+];
+
 @NgModule({
-  imports: [
-    CreatureEquipTemplateModule,
-    CreatureLootTemplateModule,
-    CreatureOnkillReputationModule,
-    CreatureTemplateModule,
-    CreatureTemplateAddonModule,
-    CreatureQuestitemModule,
-    NpcTrainerModule,
-    NpcVendorModule,
-    PickpocketingLootTemplateModule,
-    SelectCreatureModule,
-    SkinningLootTemplateModule,
-    SpawnsModule,
-    SpawnsAddonModule,
-  ],
-  exports: [
-    CreatureEquipTemplateModule,
-    CreatureLootTemplateModule,
-    CreatureOnkillReputationModule,
-    CreatureTemplateModule,
-    CreatureTemplateAddonModule,
-    CreatureQuestitemModule,
-    NpcTrainerModule,
-    NpcVendorModule,
-    PickpocketingLootTemplateModule,
-    SelectCreatureModule,
-    SkinningLootTemplateModule,
-    SpawnsModule,
-    SpawnsAddonModule,
-  ],
+  imports: [modules],
+  exports: [modules],
 })
 export class CreatureModule {}
