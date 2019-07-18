@@ -140,5 +140,45 @@ describe('SelectCreatureComponent', () => {
     });
   }));
 
+  for (const { id, entry, name, subname, limit, expectedQuery } of [
+    {
+      id: 1, entry: 1200, name: 'Helias', subname: 'Dev', limit: '100', expectedQuery:
+      'SELECT * FROM `creature_template` WHERE (entry LIKE \'%1200%\') AND (name LIKE \'%Helias%\') AND (subname LIKE \'%Dev%\') LIMIT 100'
+    },
+    {
+      id: 2, entry: '', name: 'Helias', subname: 'Dev', limit: '100', expectedQuery:
+        'SELECT * FROM `creature_template` WHERE (name LIKE \'%Helias%\') AND (subname LIKE \'%Dev%\') LIMIT 100'
+    },
+    {
+      id: 3, entry: '', name: 'Helias', subname: '', limit: '100', expectedQuery:
+        'SELECT * FROM `creature_template` WHERE (name LIKE \'%Helias%\') LIMIT 100'
+    },
+    {
+      id: 4, entry: '', name: '', subname: 'Developer', limit: '', expectedQuery:
+        'SELECT * FROM `creature_template` WHERE (subname LIKE \'%Developer%\')'
+    },
+  ]) {
+    it(`searching an existing entity should correctly work [${id}]`, () => {
+      querySpy.calls.reset();
+      if (entry) {
+        page.setInputValue(page.searchEntryInput, entry);
+      }
+      if (name) {
+        page.setInputValue(page.searchNameInput, name);
+      }
+      if (subname) {
+        page.setInputValue(page.searchSubnameInput, subname);
+      }
+      page.setInputValue(page.searchLimitInput, limit);
+
+      expect(page.queryWrapper.innerText).toContain(expectedQuery);
+
+      page.clickElement(page.searchBtn);
+
+      expect(querySpy).toHaveBeenCalledTimes(1);
+      expect(querySpy).toHaveBeenCalledWith(expectedQuery);
+    });
+  }
+
   // TODO: test datatable selection
 });
