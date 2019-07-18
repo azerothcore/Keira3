@@ -9,6 +9,7 @@ import { SelectCreatureComponent } from './select-creature.component';
 import { CreatureSelectService } from '../../../../services/select/creature-select.service';
 import { SelectCreatureModule } from './select-creature.module';
 import { PageObject } from '../../../../test-utils/page-object';
+import { CreatureTemplate } from '../../../../types/creature-template.type';
 
 class SelectCreatureComponentPage extends PageObject<SelectCreatureComponent> {
   get createInput() { return this.query<HTMLInputElement>('app-create input#id'); }
@@ -29,10 +30,8 @@ class SelectCreatureComponentPage extends PageObject<SelectCreatureComponent> {
     expect(this.topBar.innerText).toContain(`Creating new: ${id}`);
   }
 
-  expectTopBarEditing(id: string) {
-    const error = `Expect top bar editing entity ${id}`;
-    expect(this.topBar.innerText).toContain(id, error);
-    expect(this.topBar.innerText).toContain('Editing:', error);
+  expectTopBarEditing(id: number, name: string) {
+    expect(this.topBar.innerText).toContain(`Editing: ${name} (${id})`);
   }
 
   expectNewEntityFree() {
@@ -180,5 +179,29 @@ describe('SelectCreatureComponent', () => {
     });
   }
 
-  // TODO: test datatable selection
+  it('searching and selecting an existing entity from the datatable should correctly work', () => {
+    const results: Partial<CreatureTemplate>[] = [
+      { entry: 1, name: 'Shin',   subname: 'Developer',    minlevel: 1, maxlevel: 80, AIName: '', ScriptName: 'Shin.cpp'   },
+      { entry: 2, name: 'Helias', subname: 'Developer',    minlevel: 1, maxlevel: 80, AIName: '', ScriptName: 'Helias.cpp' },
+      { entry: 3, name: 'Kalhac', subname: 'Mathmatician', minlevel: 1, maxlevel: 80, AIName: '', ScriptName: 'Kalhac.cpp' },
+    ];
+    querySpy.calls.reset();
+    querySpy.and.returnValue(of({ results }));
+
+    page.clickElement(page.searchBtn);
+
+    const row0 = page.getDatatableRow(page.DT_SELECTOR, 0);
+    const row1 = page.getDatatableRow(page.DT_SELECTOR, 1);
+    const row2 = page.getDatatableRow(page.DT_SELECTOR, 2);
+
+    expect(row0.innerText).toContain(results[0].name);
+    expect(row1.innerText).toContain(results[1].name);
+    expect(row2.innerText).toContain(results[2].name);
+
+    page.clickElement(page.getDatatableCell(page.DT_SELECTOR, 1, 1));
+
+    expect(navigateSpy).toHaveBeenCalledTimes(1);
+    expect(navigateSpy).toHaveBeenCalledWith(['creature/creature-template']);
+    page.expectTopBarEditing(results[1].entry, results[1].name);
+  });
 });

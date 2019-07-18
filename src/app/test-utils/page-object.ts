@@ -1,6 +1,7 @@
 import { ComponentFixture } from '@angular/core/testing';
 
 export abstract class PageObject<ComponentType> {
+  public readonly DT_SELECTOR = 'ngx-datatable';
 
   constructor(
     protected fixture: ComponentFixture<ComponentType>,
@@ -75,12 +76,12 @@ export abstract class PageObject<ComponentType> {
   }
 
   getDatatableRow(datatableSelector: string, rowIndex: number, assert = true): HTMLElement {
-    return this.query(`${datatableSelector} .datatable-row-wrapper:nth-child(${rowIndex})`, assert);
+    return this.query(`${datatableSelector} .datatable-row-wrapper:nth-child(${rowIndex + 1})`, assert);
   }
 
   getDatatableCell(datatableSelector: string, rowIndex: number, colIndex: number, assert = true): HTMLElement {
     return this.query(
-      `${datatableSelector} .datatable-row-wrapper:nth-child(${rowIndex}) .datatable-body-cell:nth-child(${colIndex})`,
+      `${datatableSelector} .datatable-row-wrapper:nth-child(${rowIndex + 1}) .datatable-body-cell:nth-child(${colIndex + 1})`,
       assert,
     );
   }
