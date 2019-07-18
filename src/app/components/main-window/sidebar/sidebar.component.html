@@ -145,6 +145,23 @@
             </div>
           </li>
 
+          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.gameobject === 'down' }">
+            <a (click)="toggleState('gameobject')">
+              <i class="fa fa-pen"></i>
+              <span>GameObject</span>
+            </a>
+
+            <div class="sidebar-submenu" [@slide]="menuStates.gameobject">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'coming-soon'">
+                    Coming soon...
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </li>
+
           <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.item === 'down' }">
             <a (click)="toggleState('item')">
               <i class="fa fa-pen"></i>
