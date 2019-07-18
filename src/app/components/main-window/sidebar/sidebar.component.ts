@@ -22,6 +22,7 @@ export class SidebarComponent {
   menuStates: { [key: string]: 'down'|'up' } = {
     creature: 'down',
     quest: 'up',
+    gameobject: 'up',
     item: 'up',
     smartAi: 'up',
     conditions: 'up',
