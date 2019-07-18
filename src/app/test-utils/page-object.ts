@@ -1,6 +1,7 @@
 import { ComponentFixture } from '@angular/core/testing';
 
 export abstract class PageObject<ComponentType> {
+  public readonly DT_SELECTOR = 'ngx-datatable';
 
   constructor(
     protected fixture: ComponentFixture<ComponentType>,
@@ -67,6 +68,22 @@ export abstract class PageObject<ComponentType> {
 
   isHidden(element: HTMLElement) {
     return element.hasAttribute('hidden');
+  }
+
+  /*** ngx-datatable utilities ***/
+  getDatatableHeaderByTitle(datatableSelector: string, text: string, assert = true): HTMLElement {
+    return this.query(`${datatableSelector} .datatable-header-cell[title="${text}"]`, assert);
+  }
+
+  getDatatableRow(datatableSelector: string, rowIndex: number, assert = true): HTMLElement {
+    return this.query(`${datatableSelector} .datatable-row-wrapper:nth-child(${rowIndex + 1})`, assert);
+  }
+
+  getDatatableCell(datatableSelector: string, rowIndex: number, colIndex: number, assert = true): HTMLElement {
+    return this.query(
+      `${datatableSelector} .datatable-row-wrapper:nth-child(${rowIndex + 1}) .datatable-body-cell:nth-child(${colIndex + 1})`,
+      assert,
+    );
   }
 }
 
