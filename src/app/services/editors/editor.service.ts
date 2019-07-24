@@ -5,8 +5,9 @@ import { MysqlError } from 'mysql';
 import { Class, MysqlResult, TableRow } from '../../types/general';
 import { QueryService } from '../query.service';
 import { HandlerService } from '../handlers/handler.service';
+import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
 
-export abstract class EditorService<T extends TableRow> {
+export abstract class EditorService<T extends TableRow> extends SubscriptionHandler {
   protected _loading = false;
   protected _loadedEntityId: number | string;
   protected readonly fields: string[];
@@ -32,6 +33,7 @@ export abstract class EditorService<T extends TableRow> {
     protected handlerService: HandlerService<T>,
     protected queryService: QueryService,
   ) {
+    super();
     this.fields = this.getClassAttributes(this._entityClass);
   }
 

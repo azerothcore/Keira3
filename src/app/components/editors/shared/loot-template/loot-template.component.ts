@@ -23,20 +23,22 @@ export abstract class LootTemplateComponent<T extends LootTemplate> extends Mult
   }
 
   ngOnInit() {
-    this.editorService.getLootId().subscribe((data) => {
-      // always re-check the lootId
-      this._lootId = data.results[0].lootId;
+    this.subscriptions.push(
+      this.editorService.getLootId().subscribe((data) => {
+        // always re-check the lootId
+        this._lootId = data.results[0].lootId;
 
-      if (this._lootId !== 0) {
-        // the lootId is correctly set
+        if (this._lootId !== 0) {
+          // the lootId is correctly set
 
-        if (this.editorService.loadedEntityId !== `${this._lootId}`) {
-          // the rows haven't been loaded or the lootId has changed
-          this.editorService.reload(this._lootId);
+          if (this.editorService.loadedEntityId !== `${this._lootId}`) {
+            // the rows haven't been loaded or the lootId has changed
+            this.editorService.reload(this._lootId);
+          }
         }
-      }
-    }, (error: MysqlError) => {
-      console.error(error);
-    });
+      }, (error: MysqlError) => {
+        console.error(error);
+      })
+    );
   }
 }
