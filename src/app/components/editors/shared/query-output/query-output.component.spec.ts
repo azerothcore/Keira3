@@ -12,7 +12,7 @@ import { QueryErrorComponent } from './query-error/query-error.component';
 import { EditorService } from '../../../../services/editors/editor.service';
 import { PageObject } from '../../../../test-utils/page-object';
 
-class QueryOutputComponentPage extends PageObject<QueryOutputComponent<MockType>> {
+export class QueryOutputComponentPage extends PageObject<QueryOutputComponent<MockType>> {
   get diffQueryWrapper() { return this.query<HTMLElement>('app-highlightjs-wrapper#diff-query'); }
   get fullQueryWrapper() { return this.query<HTMLElement>('app-highlightjs-wrapper#full-query'); }
 
