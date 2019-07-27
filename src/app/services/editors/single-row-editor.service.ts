@@ -25,16 +25,18 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
   protected initForm() {
     super.initForm();
 
-    this._form.valueChanges.pipe(
-      distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
-    ).subscribe(() => {
-      if (!this._loading) {
-        if (this._form.dirty) {
-          this.updateDiffQuery();
+    this.subscriptions.push(
+      this._form.valueChanges.pipe(
+        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
+      ).subscribe(() => {
+        if (!this._loading) {
+          if (this._form.dirty) {
+            this.updateDiffQuery();
+          }
+          this.updateFullQuery();
         }
-        this.updateFullQuery();
-      }
-    });
+      })
+    );
   }
 
   protected updateDiffQuery(): void {
