@@ -49,7 +49,7 @@ class SelectCreatureComponentPage extends PageObject<SelectCreatureComponent> {
   }
 }
 
-describe('SelectCreatureComponent', () => {
+describe('SelectCreature integration tests', () => {
   let component: SelectCreatureComponent;
   let fixture: ComponentFixture<SelectCreatureComponent>;
   let selectService: CreatureSelectService;
