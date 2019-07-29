@@ -64,14 +64,14 @@ describe('MysqlService', () => {
     });
   }));
 
-  it('query(queryString) should properly work', async(() => {
+  it('dbQuery(queryString) should properly work', async(() => {
     (service as any).mysql = new MockMySql();
     const mockConnection = new MockConnection();
     service['_connection'] = mockConnection as undefined as Connection;
     const querySpy = spyOn(mockConnection, 'query');
     const queryStr = '--some mock query';
 
-    const obs = service.query(queryStr, []);
+    const obs = service.dbQuery(queryStr, []);
 
     obs.subscribe(() => {
       expect(querySpy).toHaveBeenCalledTimes(1);
