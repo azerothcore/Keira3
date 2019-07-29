@@ -1,11 +1,12 @@
 import { async, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
 import { instance } from 'ts-mockito';
 
 import { QueryService } from './query.service';
 import { MysqlService } from './mysql.service';
 import { MockedMysqlService } from '../test-utils/mocks';
 import { MaxRow, MysqlResult, QueryForm, TableRow } from '../types/general';
-import { of } from 'rxjs';
+import { ConfigService } from './config.service';
 
 interface MockRow extends TableRow {
   entry: number;
@@ -25,6 +26,7 @@ interface MockTwoKeysRow extends TableRow {
 
 describe('QueryService', () => {
   let service: QueryService;
+  let configService: ConfigService;
 
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
@@ -33,14 +35,32 @@ describe('QueryService', () => {
   }));
 
   beforeEach(() => {
+    configService = TestBed.get(ConfigService);
     service = TestBed.get(QueryService);
   });
 
-  it('query() should call mysqlService.query()', () => {
-    const querySpy = spyOn(TestBed.get(MysqlService), 'query');
+  it('query() should call mysqlService.dbQuery() and output query and results if debug mode is enabled', () => {
+    const logSpy = spyOn(console, 'log');
+    configService.debugMode = true;
+    const querySpy = spyOn(TestBed.get(MysqlService), 'dbQuery').and.returnValue(of('mock value'));
     const myQuery = 'SELECT azerothcore FROM projects;';
 
-    service.query(myQuery);
+    service.query(myQuery).subscribe(() => {
+      expect(logSpy).toHaveBeenCalledTimes(2);
+    });
+
+    expect(querySpy).toHaveBeenCalledWith(myQuery, undefined);
+  });
+
+  it('query() should call mysqlService.dbQuery() and not output anything if debug mode is disabled', () => {
+    const logSpy = spyOn(console, 'log');
+    configService.debugMode = false;
+    const querySpy = spyOn(TestBed.get(MysqlService), 'dbQuery').and.returnValue(of({}));
+    const myQuery = 'SELECT azerothcore FROM projects;';
+
+    service.query(myQuery).subscribe(() => {
+      expect(logSpy).toHaveBeenCalledTimes(0);
+    });
 
     expect(querySpy).toHaveBeenCalledWith(myQuery, undefined);
   });
