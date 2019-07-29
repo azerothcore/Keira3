@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { Squel, Delete, Insert } from 'squel';
 
 import { MysqlService } from './mysql.service';
 import { MaxRow, MysqlResult, QueryForm, TableRow } from '../types/general';
 import { squelConfig } from '../config/squel.config';
+import { ConfigService } from './config.service';
 
 declare const squel: Squel & {flavour: null};
 
@@ -15,11 +17,18 @@ export class QueryService {
 
   constructor(
     private mysqlService: MysqlService,
+    private configService: ConfigService,
   ) { }
 
   query<T extends TableRow>(queryString: string, values?: string[]): Observable<MysqlResult<T>> {
-    // console.log(queryString);
-    return this.mysqlService.dbQuery<T>(queryString, values);
+    return this.mysqlService.dbQuery<T>(queryString, values).pipe(
+      tap(val => {
+        if (this.configService.debugMode) {
+          console.log(`\n${queryString}`);
+          console.log(val);
+        }
+      })
+    );
   }
 
   getSearchQuery(table: string, queryForm: QueryForm) {
