@@ -4,6 +4,7 @@ import { Class, MysqlResult, TableRow } from '../../types/general';
 import { QueryService } from '../query.service';
 import { EditorService } from './editor.service';
 import { HandlerService } from '../handlers/handler.service';
+import { getNumberOrString } from '../../utils/helpers';
 
 export abstract class SingleRowEditorService<T extends TableRow> extends EditorService<T> {
   private _originalValue: T;
@@ -71,7 +72,7 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     } else {
       // we are creating a new entity
       this._originalValue = new this._entityClass();
-      this._originalValue[this._entityIdField] = id;
+      this._originalValue[this._entityIdField] = getNumberOrString(id);
       this._isNew = true;
     }
 
