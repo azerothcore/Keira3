@@ -5,6 +5,7 @@ import { VersionDbRow, VersionRow } from '../../../types/general';
 import { version } from '../../../../../package.json';
 import { AC_FORUM_URL, PAYPAL_DONATE_URL, KEIRA3_REPO_URL, AC_DISCORD_URL } from '../../../constants/general';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
+import { ConfigService } from '../../../services/config.service';
 
 @Component({
   selector: 'app-home',
@@ -23,6 +24,7 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
 
   constructor(
     private queryService: QueryService,
+    public configService: ConfigService,
   ) {
     super();
   }
