@@ -23,7 +23,7 @@ describe('CreatureTemplateAddon integration tests', () => {
   const id = 1234;
   const expectedFullCreateQuery = 'DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
     'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `auras`) VALUES\n' +
-    '(\'1234\', 0, 0, 0, 0, 0, \'\');';
+    '(1234, 0, 0, 0, 0, 0, \'\');';
 
   const originalEntity = new CreatureTemplateAddon();
   originalEntity.entry = id;
