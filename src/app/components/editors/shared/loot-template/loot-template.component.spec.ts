@@ -4,8 +4,7 @@ import { anything, instance, when } from 'ts-mockito';
 import { of, throwError } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { MysqlService } from '../../../../services/mysql.service';
-import { MockedMysqlService } from '../../../../test-utils/mocks';
+import { MockedQueryService } from '../../../../test-utils/mocks';
 import { LootTemplateComponent } from './loot-template.component';
 import { CreatureLootTemplate } from '../../../../types/creature-loot-template.type';
 import { CreatureLootTemplateComponent } from '../../creature/creature-loot-template/creature-loot-template.component';
@@ -13,6 +12,7 @@ import { CreatureLootTemplateService } from '../../../../services/editors/creatu
 import { LootEditorService } from '../../../../services/editors/loot-editor.service';
 import { CreatureLootTemplateModule } from '../../creature/creature-loot-template/creature-loot-template.module';
 import { TooltipModule } from 'ngx-bootstrap';
+import { QueryService } from '../../../../services/query.service';
 
 describe('LootTemplateComponent', () => {
   let component: LootTemplateComponent<CreatureLootTemplate>;
@@ -31,14 +31,14 @@ describe('LootTemplateComponent', () => {
         TooltipModule.forRoot(),
       ],
       providers: [
-        { provide : MysqlService, useValue: instance(MockedMysqlService) },
+        { provide : QueryService, useValue: instance(MockedQueryService) },
       ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    when(MockedMysqlService.query(anything(), anything())).thenReturn(of());
+    when(MockedQueryService.query(anything(), anything())).thenReturn(of());
     editorService = TestBed.get(CreatureLootTemplateService);
     reloadSpy = spyOn(editorService, 'reload');
     getLootIdSpy = spyOn(editorService, 'getLootId');
