@@ -36,8 +36,8 @@ describe('QueryService', () => {
     service = TestBed.get(QueryService);
   });
 
-  it('query() should call mysqlService.query()', () => {
-    const querySpy = spyOn(TestBed.get(MysqlService), 'query');
+  it('query() should call mysqlService.dbQuery()', () => {
+    const querySpy = spyOn(TestBed.get(MysqlService), 'dbQuery');
     const myQuery = 'SELECT azerothcore FROM projects;';
 
     service.query(myQuery);

@@ -19,7 +19,7 @@ export class QueryService {
 
   query<T extends TableRow>(queryString: string, values?: string[]): Observable<MysqlResult<T>> {
     // console.log(queryString);
-    return this.mysqlService.query<T>(queryString, values);
+    return this.mysqlService.dbQuery<T>(queryString, values);
   }
 
   getSearchQuery(table: string, queryForm: QueryForm) {

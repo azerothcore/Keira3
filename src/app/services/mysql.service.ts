@@ -64,7 +64,7 @@ export class MysqlService {
     };
   }
 
-  query<T extends TableRow>(queryString: string, values?: string[]): Observable<MysqlResult<T>> {
+  dbQuery<T extends TableRow>(queryString: string, values?: string[]): Observable<MysqlResult<T>> {
     return new Observable<MysqlResult<T>>(subscriber => {
       this._connection.query(queryString, values, this.getQueryCallback<T>(subscriber));
     });
