@@ -46,7 +46,7 @@ export abstract class PageObject<ComponentType> {
     return children;
   }
 
-  public setInputValue(inputElement: HTMLInputElement | HTMLSelectElement, value: string | number) {
+  public setInputValue(inputElement: HTMLInputElement | HTMLSelectElement, value: string|number) {
     inputElement.value = `${value}`;
     inputElement.dispatchEvent(new Event('input'));
     inputElement.dispatchEvent(new Event('change'));
