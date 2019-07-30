@@ -131,18 +131,23 @@ describe('CreatureTemplateAddon integration tests', () => {
       );
     });
 
-    xit('changing a value via SingleValueSelector should correctly work', () => {
+    it('changing a value via SingleValueSelector should correctly work', () => {
       const field = 'bytes1';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
 
-      page.clickSingleValueSelectorModalItem(3);
+      page.clickSingleValueSelectorModalItem(8);
       page.clickModalSelect();
-      fixture.detectChanges();
-      // page.expectModalHidden();
-      // TODO figure out why the model doesn't disappear
 
-      expect(page.getInput(field).value).toEqual('3');
+      expect(page.getInput(field).value).toEqual('8');
+      page.expectDiffQueryToContain(
+        'UPDATE `creature_template_addon` SET `bytes1` = 8 WHERE (`entry` = 1234);'
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
+        'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `auras`) VALUES\n' +
+        '(1234, 123, 0, 8, 2, 3, NULL);'
+      );
     });
   });
 });

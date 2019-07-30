@@ -1,7 +1,8 @@
-import { ComponentFixture } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PageObject } from './page-object';
 import { QueryOutputComponentPage } from '../components/editors/shared/query-output/query-output.component.spec';
+import { BsModalService } from 'ngx-bootstrap';
 
 export abstract class EditorPageObject<T> extends PageObject<T> {
   protected readonly queryPo: QueryOutputComponentPage;
@@ -40,6 +41,11 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
 
   clickModalSelect() {
     this.clickElement(this.queryOutisdeComponent('#modal-select-btn'));
+
+    // TODO: this shouldn't be necessary, but for some reasons the modal does not close so we manually close it
+    //  see: https://stackoverflow.com/questions/57279830/ngx-bootstrap-modal-does-not-hide-during-test
+    const modalService: BsModalService = TestBed.get(BsModalService);
+    modalService.hide(1);
   }
 
   clickModalCancel() {
