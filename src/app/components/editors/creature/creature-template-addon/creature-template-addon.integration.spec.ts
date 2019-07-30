@@ -66,24 +66,83 @@ describe('CreatureTemplateAddon integration tests', () => {
     beforeEach(() => setup(true));
 
     it('should correctly initialise', () => {
-      page.expectDiffQueryHidden();
+      page.expectQuerySwitchToBeHidden();
+      page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
+    });
+
+    it('changing a property and executing the query should correctly work', () => {
+      const expectedQuery = 'DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
+        'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `auras`) VALUES\n' +
+        '(1234, 3, 0, 0, 0, 0, \'\');';
+      querySpy.calls.reset();
+
+      page.setInputValue(page.getInput('path_id'), 3);
+      page.clickExecuteQuery();
+
+      page.expectFullQueryToContain(expectedQuery);
+      expect(querySpy).toHaveBeenCalledTimes(1);
+      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
   });
 
   describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    it('should create', () => {
+    it('should correctly initialise', () => {
+      page.expectDiffQueryToBeShown();
+      page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain('DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
         'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `auras`) VALUES\n' +
         '(1234, 123, 0, 1, 2, 3, NULL);');
+    });
 
+    it('changing a property and executing the query should correctly work', () => {
+      const expectedQuery = 'UPDATE `creature_template_addon` SET `path_id` = 3 WHERE (`entry` = 1234);';
+      querySpy.calls.reset();
+
+      page.setInputValue(page.getInput('path_id'), 3);
+      page.clickExecuteQuery();
+
+      page.expectDiffQueryToContain(expectedQuery);
+      expect(querySpy).toHaveBeenCalledTimes(1);
+      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+    });
+
+    it('changing values should correctly update the queries', () => {
       page.setInputValue(page.getInput('path_id'), '3');
+      page.expectDiffQueryToContain(
+        'UPDATE `creature_template_addon` SET `path_id` = 3 WHERE (`entry` = 1234);'
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
+        'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `auras`) VALUES\n' +
+        '(1234, 3, 0, 1, 2, 3, NULL);'
+      );
 
-      expect(component).toBeTruthy();
+      page.setInputValue(page.getInput('bytes1'), '2');
+      page.expectDiffQueryToContain(
+        'UPDATE `creature_template_addon` SET `path_id` = 3, `bytes1` = 2 WHERE (`entry` = 1234);'
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
+        'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `auras`) VALUES\n' +
+        '(1234, 3, 0, 2, 2, 3, NULL);\n'
+      );
+    });
+
+    xit('changing a value via SingleValueSelector should correctly work', () => {
+      const field = 'bytes1';
+      page.clickElement(page.getSelectorBtn(field));
+      page.expectModalDisplayed();
+
+      page.clickSingleValueSelectorModalItem(3);
+      page.clickModalSelect();
+      fixture.detectChanges();
+      // page.expectModalHidden();
+      // TODO figure out why the model doesn't disappear
+
+      expect(page.getInput(field).value).toEqual('3');
     });
   });
-
-  // page.setInputValue(page.getInput('path_id'), '3');
 });

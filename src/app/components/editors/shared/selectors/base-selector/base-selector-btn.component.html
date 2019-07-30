@@ -1,5 +1,6 @@
 <button
   *ngIf="control"
+  [id]="config.name + '-selector-btn'"
   class="btn btn-secondary btn-sm ml-1"
   (click)="onClick()"
   [disabled]="control.disabled"

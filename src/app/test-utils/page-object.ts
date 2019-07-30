@@ -70,6 +70,16 @@ export abstract class PageObject<ComponentType> {
     return element.hasAttribute('hidden');
   }
 
+  queryOutisdeComponent<T extends HTMLElement>(selector: string, assert = true): T {
+    const element: T = document.querySelector<T>(selector);
+
+    if (assert) {
+      expect(element).toBeTruthy(`Global element with selector "${selector}" was not found.`);
+    }
+
+    return element;
+  }
+
   /*** ngx-datatable utilities ***/
   getDatatableHeaderByTitle(datatableSelector: string, text: string, assert = true): HTMLElement {
     return this.query(`${datatableSelector} .datatable-header-cell[title="${text}"]`, assert);
