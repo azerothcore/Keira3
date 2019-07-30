@@ -23,13 +23,21 @@ export class QueryOutputComponentPage extends PageObject<QueryOutputComponent<Mo
   get executeBtn() { return this.query<HTMLButtonElement>('#execute-btn'); }
 
   expectDiffQueryToBeShown() {
-    expect(this.isHidden(this.diffQueryWrapper)).toBe(false);
-    expect(this.isHidden(this.fullQueryWrapper)).toBe(true);
+    expect(this.isHidden(this.diffQueryWrapper)).toBe(
+      false, 'Expected diff query wrapper NOT to be hidden'
+    );
+    expect(this.isHidden(this.fullQueryWrapper)).toBe(
+      true, 'Expected full query wrapper to be Hidden'
+    );
   }
 
   expectFullQueryToBeShown() {
-    expect(this.isHidden(this.diffQueryWrapper)).toBe(true);
-    expect(this.isHidden(this.fullQueryWrapper)).toBe(false);
+    expect(this.isHidden(this.diffQueryWrapper)).toBe(
+      true, 'Expected diff query wrapper to be hidden'
+    );
+    expect(this.isHidden(this.fullQueryWrapper)).toBe(
+      false, 'Expected full query wrapper NOT to be hidden'
+    );
   }
 }
 
