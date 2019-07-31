@@ -12,7 +12,7 @@ import { QueryErrorComponent } from './query-error/query-error.component';
 import { EditorService } from '../../../../services/editors/editor.service';
 import { PageObject } from '../../../../test-utils/page-object';
 
-class QueryOutputComponentPage extends PageObject<QueryOutputComponent<MockType>> {
+export class QueryOutputComponentPage extends PageObject<QueryOutputComponent<MockType>> {
   get diffQueryWrapper() { return this.query<HTMLElement>('app-highlightjs-wrapper#diff-query'); }
   get fullQueryWrapper() { return this.query<HTMLElement>('app-highlightjs-wrapper#full-query'); }
 
@@ -23,13 +23,21 @@ class QueryOutputComponentPage extends PageObject<QueryOutputComponent<MockType>
   get executeBtn() { return this.query<HTMLButtonElement>('#execute-btn'); }
 
   expectDiffQueryToBeShown() {
-    expect(this.isHidden(this.diffQueryWrapper)).toBe(false);
-    expect(this.isHidden(this.fullQueryWrapper)).toBe(true);
+    expect(this.isHidden(this.diffQueryWrapper)).toBe(
+      false, 'Expected diff query wrapper NOT to be hidden'
+    );
+    expect(this.isHidden(this.fullQueryWrapper)).toBe(
+      true, 'Expected full query wrapper to be Hidden'
+    );
   }
 
   expectFullQueryToBeShown() {
-    expect(this.isHidden(this.diffQueryWrapper)).toBe(true);
-    expect(this.isHidden(this.fullQueryWrapper)).toBe(false);
+    expect(this.isHidden(this.diffQueryWrapper)).toBe(
+      true, 'Expected diff query wrapper to be hidden'
+    );
+    expect(this.isHidden(this.fullQueryWrapper)).toBe(
+      false, 'Expected full query wrapper NOT to be hidden'
+    );
   }
 }
 
