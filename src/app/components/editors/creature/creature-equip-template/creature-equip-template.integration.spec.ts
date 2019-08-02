@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, discardPeriodicTasks, fakeAsync, flush, flushMicrotasks, TestBed, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
@@ -123,8 +123,30 @@ describe('CreatureEquipTemplate integration tests', () => {
       );
     });
 
-    xit('changing a value via ItemSelector should correctly work', () => {
-      // TODO
-    });
+    it('changing a value via ItemSelector should correctly work', async(() => {
+      const itemEntry = 1200;
+      querySpy.and.returnValue(of(
+        { results: [{ entry: itemEntry, name: 'Mock Item' }] }
+      ));
+      const field = 'ItemID1';
+      page.clickElement(page.getSelectorBtn(field));
+      page.expectModalDisplayed();
+
+      page.clickItemSearchBtn();
+
+      fixture.whenStable().then(() => {
+        page.clickRowOfDatatableInModal(0);
+        page.clickModalSelect();
+
+        page.expectDiffQueryToContain(
+          'UPDATE `creature_equip_template` SET `ItemID1` = 1200 WHERE (`CreatureID` = 1234);'
+        );
+        page.expectFullQueryToContain(
+          'DELETE FROM `creature_equip_template` WHERE (`CreatureID` = 1234);\n' +
+          'INSERT INTO `creature_equip_template` (`CreatureID`, `ID`, `ItemID1`, `ItemID2`, `ItemID3`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 1, 1200, 0, 0, 0);'
+        );
+      });
+    }));
   });
 });

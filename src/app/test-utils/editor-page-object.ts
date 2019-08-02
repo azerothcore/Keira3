@@ -33,7 +33,7 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
     return this.query<HTMLButtonElement>(`#${name}-selector-btn`);
   }
 
-  clickSingleValueSelectorModalItem(rowIndex: number) {
+  clickRowOfDatatableInModal(rowIndex: number) {
     const element = this.getDatatableCell(this.DT_SELECTOR, rowIndex, 0);
     expect(element).toBeTruthy(`Unable to find column 0 of row ${rowIndex} of ${this.DT_SELECTOR}`);
     this.clickElement(element);
@@ -59,6 +59,10 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
   expectModalHidden() {
     expect(this.queryOutisdeComponent('.modal-content', false))
       .toBeFalsy('Expected modal to be hidden');
+  }
+
+  clickItemSearchBtn() {
+    this.clickElement(this.queryOutisdeComponent('#item-search-btn'));
   }
 
   expectQuerySwitchToBeHidden() {

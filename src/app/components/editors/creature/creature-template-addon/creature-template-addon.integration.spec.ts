@@ -136,7 +136,7 @@ describe('CreatureTemplateAddon integration tests', () => {
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
 
-      page.clickSingleValueSelectorModalItem(8);
+      page.clickRowOfDatatableInModal(8);
       page.clickModalSelect();
 
       expect(page.getInput(field).value).toEqual('8');
