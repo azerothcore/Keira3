@@ -145,7 +145,21 @@ describe('CreatureTemplate integration tests', () => {
     });
 
     it('changing a value via FlagsSelector should correctly work', () => {
-      // TODO
+      const field = 'unit_flags';
+      page.clickElement(page.getSelectorBtn(field));
+      page.expectModalDisplayed();
+
+      page.toggleFlagInRow(2);
+      page.toggleFlagInRow(12);
+      page.clickModalSelect();
+
+      expect(page.getInput(field).value).toEqual('4100');
+      page.expectDiffQueryToContain(
+        'UPDATE `creature_template` SET `unit_flags` = 4100 WHERE (`entry` = 1234);'
+      );
+
+      // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
+      page.expectFullQueryToContain('4100');
     });
   });
 });

@@ -33,10 +33,32 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
     return this.query<HTMLButtonElement>(`#${name}-selector-btn`);
   }
 
+  getCellOfDatatableInModal(rowIndex: number, colIndex: number) {
+    const element = this.getDatatableCell(this.DT_SELECTOR, rowIndex, colIndex);
+    expect(element).toBeTruthy(`Unable to find column ${colIndex} of row ${rowIndex} of ${this.DT_SELECTOR}`);
+    return element;
+  }
+
   clickRowOfDatatableInModal(rowIndex: number) {
-    const element = this.getDatatableCell(this.DT_SELECTOR, rowIndex, 0);
-    expect(element).toBeTruthy(`Unable to find column 0 of row ${rowIndex} of ${this.DT_SELECTOR}`);
-    this.clickElement(element);
+    this.clickElement(this.getCellOfDatatableInModal(rowIndex, 0));
+  }
+
+  getCellOfTableInModal(rowIndex: number, colIndex: number): HTMLTableDataCellElement {
+    const tableSelector = '#flags-table';
+    const element = document.querySelector<HTMLTableDataCellElement>(
+      `${tableSelector} tr:nth-child(${rowIndex + 1}) td:nth-child(${colIndex + 1})`
+    );
+    console.log(`${tableSelector} tr:nth-child(${rowIndex + 1}) td:nth-child(${colIndex + 1})`);
+    expect(element).toBeTruthy(`Unable to find column ${colIndex} of row ${rowIndex} of ${tableSelector}`);
+    return element;
+  }
+
+  toggleFlagInRow(rowIndex: number) {
+    const cell = this.getCellOfTableInModal(rowIndex, 0);
+    const toggleSelector = 'ui-switch';
+    const toggleElement = cell.querySelector<HTMLElement>(toggleSelector);
+    expect(toggleElement).toBeTruthy(`Unable to find ${toggleSelector}`);
+    this.clickElement(toggleElement);
   }
 
   clickModalSelect() {
