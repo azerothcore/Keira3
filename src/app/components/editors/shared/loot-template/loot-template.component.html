@@ -29,7 +29,10 @@
       <div class="row">
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="Item">Item</label>
-          <app-item-selector-btn [control]="editorService.form.get('Item')"></app-item-selector-btn>
+          <app-item-selector-btn
+            [control]="editorService.form.get('Item')"
+            [config]="{  name: 'Item' }"
+          ></app-item-selector-btn>
           <input [formControlName]="'Item'" id="Item" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
