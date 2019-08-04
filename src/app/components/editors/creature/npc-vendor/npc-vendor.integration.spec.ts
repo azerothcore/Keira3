@@ -89,11 +89,11 @@ describe('NpcVendor integration tests', () => {
         '(1234, 0, 2, 0, 0, 0, 0);';
       querySpy.calls.reset();
 
-      page.clickElement(page.addNewRowBtn);
+      page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(1);
-      page.clickElement(page.addNewRowBtn);
+      page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(2);
-      page.clickElement(page.addNewRowBtn);
+      page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(3);
       page.clickExecuteQuery();
 
@@ -103,7 +103,7 @@ describe('NpcVendor integration tests', () => {
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {
-      page.clickElement(page.addNewRowBtn);
+      page.addNewRow();
       page.expectDiffQueryToContain(
         'DELETE FROM `npc_vendor` WHERE (`entry` = 1234) AND (`item` IN (0));\n' +
         'INSERT INTO `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `VerifiedBuild`) VALUES\n' +
@@ -214,6 +214,32 @@ describe('NpcVendor integration tests', () => {
         '(1234, 0, 0, 0, 0, 0, 0),\n' +
         '(1234, 1, 1, 0, 0, 0, 0),\n' +
         '(1234, 0, 2, 2, 0, 0, 0);'
+      );
+    });
+
+    it('combining add, edit and delete should correctly work', () => {
+      page.addNewRow();
+      expect(page.getEditorTableRowsCount()).toBe(4);
+
+      page.clickRowOfDatatable(1);
+      page.setInputValue(page.getInput('maxcount'), 10);
+      expect(page.getEditorTableRowsCount()).toBe(4);
+
+      page.deleteRow(2);
+      expect(page.getEditorTableRowsCount()).toBe(3);
+
+      page.expectDiffQueryToContain(
+        'DELETE FROM `npc_vendor` WHERE (`entry` = 1234) AND (`item` IN (1, 2, 3));\n' +
+        'INSERT INTO `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `VerifiedBuild`) VALUES\n' +
+        '(1234, 0, 1, 10, 0, 0, 0),\n' +
+        '(1234, 0, 3, 0, 0, 0, 0);'
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `npc_vendor` WHERE (`entry` = 1234);\n' +
+        'INSERT INTO `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `VerifiedBuild`) VALUES\n' +
+        '(1234, 0, 0, 0, 0, 0, 0),\n' +
+        '(1234, 0, 1, 10, 0, 0, 0),\n' +
+        '(1234, 0, 3, 0, 0, 0, 0);'
       );
     });
   });
