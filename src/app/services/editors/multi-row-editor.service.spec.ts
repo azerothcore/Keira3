@@ -270,7 +270,7 @@ describe('MultiRowEditorService', () => {
       expect(onRowSelectionSpy).toHaveBeenCalledTimes(1);
       expect(onRowSelectionSpy).toHaveBeenCalledWith({ selected:  [newRow] });
       expect(service.newRows).toEqual([{ ...newRow }]);
-      expect(service['_nextRowId']).toEqual(nextRowId + 1);
+      expect(service['_nextRowId']).toEqual(nextRowId);
     });
 
     it('it should correctly work [without main entityIdField]', () => {
@@ -283,7 +283,21 @@ describe('MultiRowEditorService', () => {
       expect(onRowSelectionSpy).toHaveBeenCalledTimes(1);
       expect(onRowSelectionSpy).toHaveBeenCalledWith({ selected:  [newRow] });
       expect(service.newRows).toEqual([{ ...newRow }]);
-      expect(service['_nextRowId']).toEqual(nextRowId + 1);
+      expect(service['_nextRowId']).toEqual(nextRowId);
+    });
+
+    it('it should correctly assign the new row id', () => {
+      newRow[MOCK_ID] = loadedEntityId;
+      service['_newRows'] = [
+        { ...newRow },
+        { ...newRow },
+      ];
+      service['_newRows'][0][MOCK_ID_2] = 3;
+      service['_newRows'][1][MOCK_ID_2] = 4;
+
+      service.addNewRow();
+
+      expect(service['_nextRowId']).toEqual(5);
     });
   });
 
