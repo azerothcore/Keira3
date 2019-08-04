@@ -78,7 +78,7 @@ describe('CreatureTemplateAddon integration tests', () => {
         '(1234, 3, 0, 0, 0, 0, \'\');';
       querySpy.calls.reset();
 
-      page.setInputValue(page.getInput('path_id'), 3);
+      page.setInputValueById('path_id', 3);
       page.clickExecuteQuery();
 
       page.expectFullQueryToContain(expectedQuery);
@@ -102,7 +102,7 @@ describe('CreatureTemplateAddon integration tests', () => {
       const expectedQuery = 'UPDATE `creature_template_addon` SET `path_id` = 3 WHERE (`entry` = 1234);';
       querySpy.calls.reset();
 
-      page.setInputValue(page.getInput('path_id'), 3);
+      page.setInputValueById('path_id', 3);
       page.clickExecuteQuery();
 
       page.expectDiffQueryToContain(expectedQuery);
@@ -111,7 +111,7 @@ describe('CreatureTemplateAddon integration tests', () => {
     });
 
     it('changing values should correctly update the queries', () => {
-      page.setInputValue(page.getInput('path_id'), '3');
+      page.setInputValueById('path_id', '3');
       page.expectDiffQueryToContain(
         'UPDATE `creature_template_addon` SET `path_id` = 3 WHERE (`entry` = 1234);'
       );
@@ -121,7 +121,7 @@ describe('CreatureTemplateAddon integration tests', () => {
         '(1234, 3, 0, 1, 2, 3, NULL);'
       );
 
-      page.setInputValue(page.getInput('bytes1'), '2');
+      page.setInputValueById('bytes1', '2');
       page.expectDiffQueryToContain(
         'UPDATE `creature_template_addon` SET `path_id` = 3, `bytes1` = 2 WHERE (`entry` = 1234);'
       );
@@ -140,7 +140,7 @@ describe('CreatureTemplateAddon integration tests', () => {
       page.clickRowOfDatatable(8);
       page.clickModalSelect();
 
-      expect(page.getInput(field).value).toEqual('8');
+      expect(page.getInputById(field).value).toEqual('8');
       page.expectDiffQueryToContain(
         'UPDATE `creature_template_addon` SET `bytes1` = 8 WHERE (`entry` = 1234);'
       );

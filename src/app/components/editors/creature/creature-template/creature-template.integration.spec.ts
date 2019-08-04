@@ -98,7 +98,7 @@ describe('CreatureTemplate integration tests', () => {
       ' 0, 0, 0, 0, 0, 0, \'\', 0, 3, 1, 1, 1, 1, 0, 0, 1, 0, 0, \'\', 0);';
       querySpy.calls.reset();
 
-      page.setInputValue(page.getInput('name'), 'Shin');
+      page.setInputValueById('name', 'Shin');
       page.clickExecuteQuery();
 
       page.expectFullQueryToContain(expectedQuery);
@@ -120,7 +120,7 @@ describe('CreatureTemplate integration tests', () => {
       const expectedQuery = 'UPDATE `creature_template` SET `difficulty_entry_1` = 2 WHERE (`entry` = 1234);';
       querySpy.calls.reset();
 
-      page.setInputValue(page.getInput('difficulty_entry_1'), 2);
+      page.setInputValueById('difficulty_entry_1', 2);
       page.clickExecuteQuery();
 
       page.expectDiffQueryToContain(expectedQuery);
@@ -131,13 +131,13 @@ describe('CreatureTemplate integration tests', () => {
     it('changing values should correctly update the queries', () => {
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
 
-      page.setInputValue(page.getInput('name'), 'Shin');
+      page.setInputValueById('name', 'Shin');
       page.expectDiffQueryToContain(
         'UPDATE `creature_template` SET `name` = \'Shin\' WHERE (`entry` = 1234);'
       );
       page.expectFullQueryToContain('Shin');
 
-      page.setInputValue(page.getInput('subname'), 'AC Developer');
+      page.setInputValueById('subname', 'AC Developer');
       page.expectDiffQueryToContain(
         'UPDATE `creature_template` SET `name` = \'Shin\', `subname` = \'AC Developer\' WHERE (`entry` = 1234);'
       );
@@ -154,7 +154,7 @@ describe('CreatureTemplate integration tests', () => {
       page.toggleFlagInRow(12);
       page.clickModalSelect();
 
-      expect(page.getInput(field).value).toEqual('4100');
+      expect(page.getInputById(field).value).toEqual('4100');
       page.expectDiffQueryToContain(
         'UPDATE `creature_template` SET `unit_flags` = 4100 WHERE (`entry` = 1234);'
       );

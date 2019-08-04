@@ -72,7 +72,7 @@ describe('CreatureEquipTemplate integration tests', () => {
         '(1234, 1, 0, 2, 0, 0);';
       querySpy.calls.reset();
 
-      page.setInputValue(page.getInput('ItemID2'), '2');
+      page.setInputValueById('ItemID2', '2');
       page.clickExecuteQuery();
 
       page.expectFullQueryToContain(expectedQuery);
@@ -94,7 +94,7 @@ describe('CreatureEquipTemplate integration tests', () => {
       const expectedQuery = 'UPDATE `creature_equip_template` SET `ItemID2` = 2 WHERE (`CreatureID` = 1234);';
       querySpy.calls.reset();
 
-      page.setInputValue(page.getInput('ItemID2'), 2);
+      page.setInputValueById('ItemID2', 2);
       page.clickExecuteQuery();
 
       page.expectDiffQueryToContain(expectedQuery);
@@ -103,7 +103,7 @@ describe('CreatureEquipTemplate integration tests', () => {
     });
 
     it('changing values should correctly update the queries', () => {
-      page.setInputValue(page.getInput('ItemID1'), '1');
+      page.setInputValueById('ItemID1', '1');
       page.expectDiffQueryToContain(
         'UPDATE `creature_equip_template` SET `ItemID1` = 1 WHERE (`CreatureID` = 1234);'
       );
@@ -113,7 +113,7 @@ describe('CreatureEquipTemplate integration tests', () => {
         '(1234, 1, 1, 0, 0, 0);'
       );
 
-      page.setInputValue(page.getInput('ItemID3'), '3');
+      page.setInputValueById('ItemID3', '3');
       page.expectDiffQueryToContain(
         'UPDATE `creature_equip_template` SET `ItemID1` = 1, `ItemID3` = 3 WHERE (`CreatureID` = 1234);'
       );
