@@ -12,7 +12,7 @@ import { MultiRowEditorPageObject } from '../../../../test-utils/multi-row-edito
 
 class NpcVendorPage extends MultiRowEditorPageObject<NpcVendorComponent> {}
 
-describe('NpcVendor integration tests', () => {
+fdescribe('NpcVendor integration tests', () => {
   let component: NpcVendorComponent;
   let fixture: ComponentFixture<NpcVendorComponent>;
   let queryService: QueryService;
@@ -78,6 +78,7 @@ describe('NpcVendor integration tests', () => {
       expect(page.getInput('incrtime').disabled).toBe(true);
       expect(page.getInput('ExtendedCost').disabled).toBe(true);
       expect(page.getSelectorBtn('item').disabled).toBe(true);
+      expect(page.getEditorTableRowsCount()).toBe(0);
     });
 
     it('adding new rows and executing the query should correctly work', () => {
@@ -89,8 +90,11 @@ describe('NpcVendor integration tests', () => {
       querySpy.calls.reset();
 
       page.clickElement(page.addNewRowBtn);
+      expect(page.getEditorTableRowsCount()).toBe(1);
       page.clickElement(page.addNewRowBtn);
+      expect(page.getEditorTableRowsCount()).toBe(2);
       page.clickElement(page.addNewRowBtn);
+      expect(page.getEditorTableRowsCount()).toBe(3);
       page.clickExecuteQuery();
 
       page.expectDiffQueryToContain(expectedQuery);
@@ -156,6 +160,7 @@ describe('NpcVendor integration tests', () => {
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(expectedFullCreateQuery);
+      expect(page.getEditorTableRowsCount()).toBe(3);
     });
   });
 });
