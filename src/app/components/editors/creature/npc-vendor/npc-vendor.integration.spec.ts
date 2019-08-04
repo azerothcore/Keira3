@@ -73,11 +73,11 @@ describe('NpcVendor integration tests', () => {
       expect(page.formError.hidden).toBe(true);
       expect(page.addNewRowBtn.disabled).toBe(false);
       expect(page.deleteSelectedRowBtn.disabled).toBe(true);
-      expect(page.getInput('slot').disabled).toBe(true);
-      expect(page.getInput('item').disabled).toBe(true);
-      expect(page.getInput('maxcount').disabled).toBe(true);
-      expect(page.getInput('incrtime').disabled).toBe(true);
-      expect(page.getInput('ExtendedCost').disabled).toBe(true);
+      expect(page.getInputById('slot').disabled).toBe(true);
+      expect(page.getInputById('item').disabled).toBe(true);
+      expect(page.getInputById('maxcount').disabled).toBe(true);
+      expect(page.getInputById('incrtime').disabled).toBe(true);
+      expect(page.getInputById('ExtendedCost').disabled).toBe(true);
       expect(page.getSelectorBtn('item').disabled).toBe(true);
       expect(page.getEditorTableRowsCount()).toBe(0);
     });
@@ -116,7 +116,7 @@ describe('NpcVendor integration tests', () => {
         '(1234, 0, 0, 0, 0, 0, 0);'
       );
 
-      page.setInputValue(page.getInput('slot'), '1');
+      page.setInputValueById('slot', '1');
       page.expectDiffQueryToContain(
         'DELETE FROM `npc_vendor` WHERE (`entry` = 1234) AND (`item` IN (0));\n' +
         'INSERT INTO `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `VerifiedBuild`) VALUES\n' +
@@ -128,7 +128,7 @@ describe('NpcVendor integration tests', () => {
         '(1234, 1, 0, 0, 0, 0, 0);'
       );
 
-      page.setInputValue(page.getInput('maxcount'), '2');
+      page.setInputValueById('maxcount', '2');
       page.expectDiffQueryToContain(
         'DELETE FROM `npc_vendor` WHERE (`entry` = 1234) AND (`item` IN (0));\n' +
         'INSERT INTO `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `VerifiedBuild`) VALUES\n' +
@@ -140,7 +140,7 @@ describe('NpcVendor integration tests', () => {
         '(1234, 1, 0, 2, 0, 0, 0);'
       );
 
-      page.setInputValue(page.getInput('item'), '123');
+      page.setInputValueById('item', '123');
       page.expectDiffQueryToContain(
         'DELETE FROM `npc_vendor` WHERE (`entry` = 1234) AND (`item` IN (123));\n' +
         'INSERT INTO `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `VerifiedBuild`) VALUES\n' +
@@ -199,10 +199,10 @@ describe('NpcVendor integration tests', () => {
 
     it('editing existing rows should correctly work', () => {
       page.clickRowOfDatatable(1);
-      page.setInputValue(page.getInput('slot'), 1);
+      page.setInputValueById('slot', 1);
 
       page.clickRowOfDatatable(2);
-      page.setInputValue(page.getInput('maxcount'), '2');
+      page.setInputValueById('maxcount', '2');
 
       page.expectDiffQueryToContain(
         'DELETE FROM `npc_vendor` WHERE (`entry` = 1234) AND (`item` IN (1, 2));\n' +
@@ -224,7 +224,7 @@ describe('NpcVendor integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(4);
 
       page.clickRowOfDatatable(1);
-      page.setInputValue(page.getInput('maxcount'), 10);
+      page.setInputValueById('maxcount', 10);
       expect(page.getEditorTableRowsCount()).toBe(4);
 
       page.deleteRow(2);
@@ -247,7 +247,7 @@ describe('NpcVendor integration tests', () => {
 
     it('using the same row id for multiple rows should correctly show an error', () => {
       page.clickRowOfDatatable(2);
-      page.setInputValue(page.getInput('item'), 0);
+      page.setInputValueById('item', 0);
 
       page.expectUniqueError();
     });
