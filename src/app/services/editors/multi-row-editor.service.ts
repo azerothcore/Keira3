@@ -96,7 +96,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   }
 
   protected getNextFreeRowId(): number {
-    while(this.isRowIdTaken(this._nextRowId)) {
+    while (this.isRowIdTaken(this._nextRowId)) {
       this._nextRowId++;
     }
 
