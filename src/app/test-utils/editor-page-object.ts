@@ -39,11 +39,11 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
     return element;
   }
 
-  clickRowOfDatatableInModal(rowIndex: number) {
+  clickRowOfDatatable(rowIndex: number) {
     this.clickElement(this.getCellOfDatatableInModal(rowIndex, 0));
   }
 
-  getCellOfTableInModal(rowIndex: number, colIndex: number): HTMLTableDataCellElement {
+  getCellOfTable(rowIndex: number, colIndex: number): HTMLTableDataCellElement {
     const tableSelector = '#flags-table';
     const element = document.querySelector<HTMLTableDataCellElement>(
       `${tableSelector} tr:nth-child(${rowIndex + 1}) td:nth-child(${colIndex + 1})`
@@ -54,7 +54,7 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
   }
 
   toggleFlagInRow(rowIndex: number) {
-    const cell = this.getCellOfTableInModal(rowIndex, 0);
+    const cell = this.getCellOfTable(rowIndex, 0);
     const toggleSelector = 'ui-switch';
     const toggleElement = cell.querySelector<HTMLElement>(toggleSelector);
     expect(toggleElement).toBeTruthy(`Unable to find ${toggleSelector}`);
@@ -105,6 +105,10 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
 
   expectDiffQueryToContain(expectedQuery: string) {
     expect(this.queryPo.diffQueryWrapper.innerText).toContain(expectedQuery);
+  }
+
+  expectFullQueryToBeEmpty() {
+    expect(this.queryPo.fullQueryWrapper.innerText).toEqual('');
   }
 
   expectDiffQueryToBeEmpty() {
