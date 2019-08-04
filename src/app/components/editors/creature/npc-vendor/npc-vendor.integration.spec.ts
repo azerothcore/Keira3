@@ -70,6 +70,7 @@ describe('NpcVendor integration tests', () => {
     it('should correctly initialise', () => {
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
+      expect(page.formError.hidden).toBe(true);
       expect(page.addNewRowBtn.disabled).toBe(false);
       expect(page.deleteSelectedRowBtn.disabled).toBe(true);
       expect(page.getInput('slot').disabled).toBe(true);
@@ -157,6 +158,7 @@ describe('NpcVendor integration tests', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', () => {
+      expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(expectedFullCreateQuery);
@@ -241,6 +243,13 @@ describe('NpcVendor integration tests', () => {
         '(1234, 0, 1, 10, 0, 0, 0),\n' +
         '(1234, 0, 3, 0, 0, 0, 0);'
       );
+    });
+
+    it('using the same row id for multiple rows should correctly show an error', () => {
+      page.clickRowOfDatatable(2);
+      page.setInputValue(page.getInput('item'), 0);
+
+      page.expectUniqueError();
     });
   });
 });
