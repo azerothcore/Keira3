@@ -107,6 +107,10 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
     expect(this.queryPo.diffQueryWrapper.innerText).toContain(expectedQuery);
   }
 
+  expectFullQueryToBeEmpty() {
+    expect(this.queryPo.fullQueryWrapper.innerText).toEqual('');
+  }
+
   expectDiffQueryToBeEmpty() {
     expect(this.queryPo.diffQueryWrapper.innerText).toEqual('');
   }
