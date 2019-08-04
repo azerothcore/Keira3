@@ -21,11 +21,6 @@ describe('NpcVendor integration tests', () => {
   let page: NpcVendorPage;
 
   const id = 1234;
-  const expectedFullCreateQuery = 'DELETE FROM `npc_vendor` WHERE (`entry` = 1234);\n' +
-    'INSERT INTO `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `VerifiedBuild`) VALUES\n' +
-    '(1234, 0, 0, 0, 0, 0, 0),\n' +
-    '(1234, 0, 1, 0, 0, 0, 0),\n' +
-    '(1234, 0, 2, 0, 0, 0, 0);';
 
   const originalRow0 = new NpcVendor();
   const originalRow1 = new NpcVendor();
@@ -161,7 +156,11 @@ describe('NpcVendor integration tests', () => {
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
-      page.expectFullQueryToContain(expectedFullCreateQuery);
+      page.expectFullQueryToContain('DELETE FROM `npc_vendor` WHERE (`entry` = 1234);\n' +
+        'INSERT INTO `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `VerifiedBuild`) VALUES\n' +
+        '(1234, 0, 0, 0, 0, 0, 0),\n' +
+        '(1234, 0, 1, 0, 0, 0, 0),\n' +
+        '(1234, 0, 2, 0, 0, 0, 0);');
       expect(page.getEditorTableRowsCount()).toBe(3);
     });
 
