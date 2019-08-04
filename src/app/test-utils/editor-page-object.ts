@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { BsModalService } from 'ngx-bootstrap';
 
 import { PageObject } from './page-object';
 import { QueryOutputComponentPage } from '../components/editors/shared/query-output/query-output.component.spec';
-import { BsModalService } from 'ngx-bootstrap';
 
 export abstract class EditorPageObject<T> extends PageObject<T> {
   protected readonly queryPo: QueryOutputComponentPage;
