@@ -10,4 +10,9 @@ export abstract class MultiRowEditorPageObject<T> extends EditorPageObject<T> {
   getEditorTableRowsCount() {
     return this.editorTable.querySelectorAll('datatable-row-wrapper').length;
   }
+
+  deleteRow(rowIndex: number) {
+    this.clickRowOfDatatable(rowIndex);
+    this.clickElement(this.deleteSelectedRowBtn);
+  }
 }

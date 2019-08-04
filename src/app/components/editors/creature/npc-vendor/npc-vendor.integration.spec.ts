@@ -12,7 +12,7 @@ import { MultiRowEditorPageObject } from '../../../../test-utils/multi-row-edito
 
 class NpcVendorPage extends MultiRowEditorPageObject<NpcVendorComponent> {}
 
-fdescribe('NpcVendor integration tests', () => {
+describe('NpcVendor integration tests', () => {
   let component: NpcVendorComponent;
   let fixture: ComponentFixture<NpcVendorComponent>;
   let queryService: QueryService;
@@ -156,11 +156,65 @@ fdescribe('NpcVendor integration tests', () => {
   describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    it('should correctly initialise', () => {
+    fit('should correctly initialise', () => {
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(expectedFullCreateQuery);
       expect(page.getEditorTableRowsCount()).toBe(3);
+    });
+
+    it('deleting rows should correctly work', () => {
+      page.deleteRow(1);
+      expect(page.getEditorTableRowsCount()).toBe(2);
+      page.expectDiffQueryToContain(
+        'DELETE FROM `npc_vendor` WHERE (`entry` = 1234) AND (`item` IN (1));'
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `npc_vendor` WHERE (`entry` = 1234);\n' +
+        'INSERT INTO `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `VerifiedBuild`) VALUES\n' +
+        '(1234, 0, 0, 0, 0, 0, 0),\n' +
+        '(1234, 0, 2, 0, 0, 0, 0);'
+      );
+
+      page.deleteRow(1);
+      expect(page.getEditorTableRowsCount()).toBe(1);
+      page.expectDiffQueryToContain(
+        'DELETE FROM `npc_vendor` WHERE (`entry` = 1234) AND (`item` IN (1, 2));'
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `npc_vendor` WHERE (`entry` = 1234);\n' +
+        'INSERT INTO `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `VerifiedBuild`) VALUES\n' +
+        '(1234, 0, 0, 0, 0, 0, 0);'
+      );
+
+      page.deleteRow(0);
+      expect(page.getEditorTableRowsCount()).toBe(0);
+      page.expectDiffQueryToContain(
+        'DELETE FROM `npc_vendor` WHERE `entry` = 1234;'
+      );
+      page.expectFullQueryToBeEmpty();
+    });
+
+    it('editing existing rows should correctly work', () => {
+      page.clickRowOfDatatable(1);
+      page.setInputValue(page.getInput('slot'), 1);
+
+      page.clickRowOfDatatable(2);
+      page.setInputValue(page.getInput('maxcount'), '2');
+
+      page.expectDiffQueryToContain(
+        'DELETE FROM `npc_vendor` WHERE (`entry` = 1234) AND (`item` IN (1, 2));\n' +
+        'INSERT INTO `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `VerifiedBuild`) VALUES\n' +
+        '(1234, 1, 1, 0, 0, 0, 0),\n' +
+        '(1234, 0, 2, 2, 0, 0, 0);'
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `npc_vendor` WHERE (`entry` = 1234);\n' +
+        'INSERT INTO `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `VerifiedBuild`) VALUES\n' +
+        '(1234, 0, 0, 0, 0, 0, 0),\n' +
+        '(1234, 1, 1, 0, 0, 0, 0),\n' +
+        '(1234, 0, 2, 2, 0, 0, 0);'
+      );
     });
   });
 });
