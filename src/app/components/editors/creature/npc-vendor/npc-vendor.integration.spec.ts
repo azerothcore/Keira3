@@ -156,7 +156,7 @@ describe('NpcVendor integration tests', () => {
   describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    fit('should correctly initialise', () => {
+    it('should correctly initialise', () => {
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(expectedFullCreateQuery);
