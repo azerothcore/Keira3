@@ -140,7 +140,7 @@ describe('CreatureEquipTemplate integration tests', () => {
       page.clickItemSearchBtn();
 
       fixture.whenStable().then(() => {
-        page.clickRowOfDatatableInModal(0);
+        page.clickRowOfDatatable(0);
         page.clickModalSelect();
 
         page.expectDiffQueryToContain(
