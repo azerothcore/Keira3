@@ -73,6 +73,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     this._selectedRowId = null;
     this._form.disable();
     this._loadedEntityId = id;
+    this._nextRowId = 0;
     this.updateFullQuery();
   }
 
@@ -92,6 +93,23 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
       this._newRows,
       this._entityIdField,
     );
+  }
+
+  protected getNextFreeRowId(): number {
+    while(this.isRowIdTaken(this._nextRowId)) {
+      this._nextRowId++;
+    }
+
+    return this._nextRowId;
+  }
+
+  protected isRowIdTaken(id: number) {
+    for (const row of this._newRows) {
+      if (row[this._entitySecondIdField] === id) {
+        return true;
+      }
+    }
+    return false;
   }
 
   onRowSelection({ selected }: { selected: T[]} ): void {
@@ -142,7 +160,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     if (this._entityIdField) {
       newRow[this._entityIdField] = Number.parseInt(this.loadedEntityId, 10);
     }
-    newRow[this._entitySecondIdField] = this._nextRowId++;
+    newRow[this._entitySecondIdField] = this.getNextFreeRowId();
     this._newRows = [ ...this._newRows, { ...newRow }];
 
     this.updateDiffQuery();
