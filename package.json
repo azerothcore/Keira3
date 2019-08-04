@@ -55,7 +55,6 @@
     "chai": "^4.2.0",
     "codelyzer": "^5.1.0",
     "conventional-changelog-cli": "2.0.23",
-    "core-js": "^3.1.4",
     "coveralls": "^3.0.5",
     "electron": "^6.0.0",
     "electron-builder": "^21.2.0",
