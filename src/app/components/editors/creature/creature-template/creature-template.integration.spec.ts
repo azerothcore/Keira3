@@ -54,6 +54,7 @@ describe('CreatureTemplate integration tests', () => {
   function setup(creatingNew: boolean) {
     handlerService = TestBed.get(CreatureHandlerService);
     handlerService['_selected'] = `${id}`;
+    handlerService.isNew = creatingNew;
 
     queryService = TestBed.get(QueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
