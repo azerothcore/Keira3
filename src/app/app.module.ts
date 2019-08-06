@@ -10,6 +10,7 @@ import { ConnectionWindowModule } from './components/connection-window/connectio
 import { DashboardModule } from './components/editors/dashboard/dashboard.module';
 import { MainWindowModule } from './components/main-window/main-window.module';
 import { ComingSoonModule } from './components/editors/coming-soon/coming-soon.module';
+import { QuestModule } from './components/editors/quest/quest.module';
 
 
 @NgModule({
@@ -24,6 +25,7 @@ import { ComingSoonModule } from './components/editors/coming-soon/coming-soon.m
     MainWindowModule,
     /* Editors */
     CreatureModule,
+    QuestModule,
   ],
   bootstrap: [ AppComponent ]
 })
