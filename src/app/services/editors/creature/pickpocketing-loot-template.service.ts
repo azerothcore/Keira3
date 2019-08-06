@@ -3,13 +3,11 @@ import { Injectable } from '@angular/core';
 import { CreatureHandlerService } from '../../handlers/creature-handler.service';
 import { QueryService } from '../../query.service';
 import {
+  PICKPOCKETING_LOOT_TEMPLATE_TABLE,
   PickpocketingLootTemplate
 } from '../../../types/pickpocketing-loot-template.type';
 import { LootEditorService } from '../loot-editor.service';
-import {
-  CREATURE_LOOT_TEMPLATE_TABLE,
-  CreatureLootTemplate
-} from '../../../types/creature-loot-template.type';
+import { CreatureLootTemplate } from '../../../types/creature-loot-template.type';
 import {
   CREATURE_TEMPLATE_ID, CREATURE_TEMPLATE_PICKPOCKETING_LOOT_ID,
   CREATURE_TEMPLATE_TABLE
@@ -27,7 +25,7 @@ export class PickpocketingLootTemplateService extends LootEditorService<Pickpock
   ) {
     super(
       CreatureLootTemplate,
-      CREATURE_LOOT_TEMPLATE_TABLE,
+      PICKPOCKETING_LOOT_TEMPLATE_TABLE,
       CREATURE_TEMPLATE_TABLE,
       CREATURE_TEMPLATE_ID,
       CREATURE_TEMPLATE_PICKPOCKETING_LOOT_ID,
