@@ -1,7 +1,7 @@
 import { TableRow } from './general';
 
-export const QUEST_REQUEST_ITEMS_TABLE = 'quest_offer_reward';
-export const QUEST_REQUEST_ITEMS_ID = 'ID';
+export const QUEST_OFFER_REWARD_TABLE = 'quest_offer_reward';
+export const QUEST_OFFER_REWARD_ID = 'ID';
 
 export class QuestOfferReward extends TableRow {
   ID: number = 0;
