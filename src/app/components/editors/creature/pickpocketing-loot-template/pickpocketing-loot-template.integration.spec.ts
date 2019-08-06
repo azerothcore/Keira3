@@ -3,29 +3,29 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { SkinningLootTemplateComponent } from './skinning-loot-template.component';
-import { SkinningLootTemplateModule } from './skinning-loot-template.module';
+import { PickpocketingLootTemplateComponent } from './pickpocketing-loot-template.component';
+import { PickpocketingLootTemplateModule } from './pickpocketing-loot-template.module';
 import { QueryService } from '../../../../services/query.service';
-import { SkinningLootTemplate } from '../../../../types/skinning-loot-template.type';
+import { PickpocketingLootTemplate } from '../../../../types/pickpocketing-loot-template.type';
 import { CreatureHandlerService } from '../../../../services/handlers/creature-handler.service';
 import { MultiRowEditorPageObject } from '../../../../test-utils/multi-row-editor-page-object';
-import { SkinningLootTemplateService } from '../../../../services/editors/creature/skinning-loot-template.service';
+import { PickpocketingLootTemplateService } from '../../../../services/editors/creature/pickpocketing-loot-template.service';
 
-class SkinningLootTemplatePage extends MultiRowEditorPageObject<SkinningLootTemplateComponent> {}
+class PickpocketingLootTemplatePage extends MultiRowEditorPageObject<PickpocketingLootTemplateComponent> {}
 
-describe('SkinningLootTemplate integration tests', () => {
-  let component: SkinningLootTemplateComponent;
-  let fixture: ComponentFixture<SkinningLootTemplateComponent>;
+describe('PickpocketingLootTemplate integration tests', () => {
+  let component: PickpocketingLootTemplateComponent;
+  let fixture: ComponentFixture<PickpocketingLootTemplateComponent>;
   let queryService: QueryService;
   let querySpy: Spy;
   let handlerService: CreatureHandlerService;
-  let page: SkinningLootTemplatePage;
+  let page: PickpocketingLootTemplatePage;
 
   const id = 1234;
 
-  const originalRow0 = new SkinningLootTemplate();
-  const originalRow1 = new SkinningLootTemplate();
-  const originalRow2 = new SkinningLootTemplate();
+  const originalRow0 = new PickpocketingLootTemplate();
+  const originalRow1 = new PickpocketingLootTemplate();
+  const originalRow2 = new PickpocketingLootTemplate();
   originalRow0.Entry = originalRow1.Entry = originalRow2.Entry = id;
   originalRow0.Item = 0;
   originalRow1.Item = 1;
@@ -34,7 +34,7 @@ describe('SkinningLootTemplate integration tests', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        SkinningLootTemplateModule,
+        PickpocketingLootTemplateModule,
         RouterTestingModule,
       ],
     })
@@ -42,7 +42,7 @@ describe('SkinningLootTemplate integration tests', () => {
   }));
 
   function setup(creatingNew: boolean, lootId = id) {
-    spyOn(TestBed.get(SkinningLootTemplateService), 'getLootId').and.returnValue(of(
+    spyOn(TestBed.get(PickpocketingLootTemplateService), 'getLootId').and.returnValue(of(
       { results: [{ lootId }] }
     ));
 
@@ -57,9 +57,9 @@ describe('SkinningLootTemplate integration tests', () => {
       { results: creatingNew ? [] : [originalRow0, originalRow1, originalRow2] }
     ));
 
-    fixture = TestBed.createComponent(SkinningLootTemplateComponent);
+    fixture = TestBed.createComponent(PickpocketingLootTemplateComponent);
     component = fixture.componentInstance;
-    page = new SkinningLootTemplatePage(fixture);
+    page = new PickpocketingLootTemplatePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
   }
@@ -86,8 +86,8 @@ describe('SkinningLootTemplate integration tests', () => {
     });
 
     it('adding new rows and executing the query should correctly work', () => {
-      const expectedQuery = 'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0, 1, 2));\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+      const expectedQuery = 'DELETE FROM `pickpocketing_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0, 1, 2));\n' +
+        'INSERT INTO `pickpocketing_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
         '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
         '(1234, 1, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
@@ -110,56 +110,56 @@ describe('SkinningLootTemplate integration tests', () => {
     it('adding a row and changing its values should correctly update the queries', () => {
       page.addNewRow();
       page.expectDiffQueryToContain(
-        'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+        'DELETE FROM `pickpocketing_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
+        'INSERT INTO `pickpocketing_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\');'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+        'DELETE FROM `pickpocketing_loot_template` WHERE (`Entry` = 1234);\n' +
+        'INSERT INTO `pickpocketing_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\');'
       );
 
       page.setInputValueById('Chance', '1');
       page.expectDiffQueryToContain(
-        'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+        'DELETE FROM `pickpocketing_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
+        'INSERT INTO `pickpocketing_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 1, 0, 1, 0, 1, 1, \'\');'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+        'DELETE FROM `pickpocketing_loot_template` WHERE (`Entry` = 1234);\n' +
+        'INSERT INTO `pickpocketing_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 1, 0, 1, 0, 1, 1, \'\');'
       );
 
       page.setInputValueById('QuestRequired', '2');
       page.expectDiffQueryToContain(
-        'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+        'DELETE FROM `pickpocketing_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
+        'INSERT INTO `pickpocketing_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 1, 2, 1, 0, 1, 1, \'\');'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+        'DELETE FROM `pickpocketing_loot_template` WHERE (`Entry` = 1234);\n' +
+        'INSERT INTO `pickpocketing_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 1, 2, 1, 0, 1, 1, \'\');'
       );
 
       page.setInputValueById('Item', '123');
       page.expectDiffQueryToContain(
-        'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (123));\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+        'DELETE FROM `pickpocketing_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (123));\n' +
+        'INSERT INTO `pickpocketing_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 123, 0, 1, 2, 1, 0, 1, 1, \'\');'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+        'DELETE FROM `pickpocketing_loot_template` WHERE (`Entry` = 1234);\n' +
+        'INSERT INTO `pickpocketing_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 123, 0, 1, 2, 1, 0, 1, 1, \'\');'
       );
@@ -174,8 +174,8 @@ describe('SkinningLootTemplate integration tests', () => {
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain('' +
-        'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+        'DELETE FROM `pickpocketing_loot_template` WHERE (`Entry` = 1234);\n' +
+        'INSERT INTO `pickpocketing_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
         '(1234, 1, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
@@ -187,11 +187,11 @@ describe('SkinningLootTemplate integration tests', () => {
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.expectDiffQueryToContain(
-        'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1));'
+        'DELETE FROM `pickpocketing_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1));'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+        'DELETE FROM `pickpocketing_loot_template` WHERE (`Entry` = 1234);\n' +
+        'INSERT INTO `pickpocketing_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
         '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
         '(1234, 2, 0, 100, 0, 1, 0, 1, 1, \'\');'
@@ -200,11 +200,11 @@ describe('SkinningLootTemplate integration tests', () => {
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
       page.expectDiffQueryToContain(
-        'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2));'
+        'DELETE FROM `pickpocketing_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2));'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+        'DELETE FROM `pickpocketing_loot_template` WHERE (`Entry` = 1234);\n' +
+        'INSERT INTO `pickpocketing_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
         '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\');'
       );
@@ -212,7 +212,7 @@ describe('SkinningLootTemplate integration tests', () => {
       page.deleteRow(0);
       expect(page.getEditorTableRowsCount()).toBe(0);
       page.expectDiffQueryToContain(
-        'DELETE FROM `skinning_loot_template` WHERE `Entry` = 1234;'
+        'DELETE FROM `pickpocketing_loot_template` WHERE `Entry` = 1234;'
       );
       page.expectFullQueryToBeEmpty();
     });
@@ -225,14 +225,14 @@ describe('SkinningLootTemplate integration tests', () => {
       page.setInputValueById('GroupId', 2);
 
       page.expectDiffQueryToContain(
-        'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (2));\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+        'DELETE FROM `pickpocketing_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (2));\n' +
+        'INSERT INTO `pickpocketing_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
         '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 2, 0, 100, 0, 1, 2, 1, 1, \'\');'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+        'DELETE FROM `pickpocketing_loot_template` WHERE (`Entry` = 1234);\n' +
+        'INSERT INTO `pickpocketing_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
         '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
         '(1234, 1, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
@@ -252,15 +252,15 @@ describe('SkinningLootTemplate integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(3);
 
       page.expectDiffQueryToContain(
-        'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2, 3));\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+        'DELETE FROM `pickpocketing_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2, 3));\n' +
+        'INSERT INTO `pickpocketing_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
         '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 1, 0, 10, 0, 1, 0, 1, 1, \'\'),\n' +
         '(1234, 3, 0, 100, 0, 1, 0, 1, 1, \'\');'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+        'DELETE FROM `pickpocketing_loot_template` WHERE (`Entry` = 1234);\n' +
+        'INSERT INTO `pickpocketing_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
         '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
         '(1234, 1, 0, 10, 0, 1, 0, 1, 1, \'\'),\n' +
@@ -280,7 +280,7 @@ describe('SkinningLootTemplate integration tests', () => {
     setup(true, 0);
 
     expect(page.query('.alert-info').innerText).toContain(
-      'You have to set the field `skinloot` of creature_template in order to enable this feature.'
+      'You have to set the field `pickpocketloot` of creature_template in order to enable this feature.'
     );
   });
 });
