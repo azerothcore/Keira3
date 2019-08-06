@@ -72,7 +72,8 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     } else {
       // we are creating a new entity
       this._originalValue = new this._entityClass();
-      this._originalValue[this._entityIdField] = getNumberOrString(id);
+      // TODO: get rid of this type hack, see: https://github.com/microsoft/TypeScript/issues/32704
+      (this._originalValue as any)[this._entityIdField] = getNumberOrString(id);
       this._isNew = true;
     }
 
