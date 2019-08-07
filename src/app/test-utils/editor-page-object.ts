@@ -52,7 +52,6 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
     const element = document.querySelector<HTMLTableDataCellElement>(
       `${tableSelector} tr:nth-child(${rowIndex + 1}) td:nth-child(${colIndex + 1})`
     );
-    console.log(`${tableSelector} tr:nth-child(${rowIndex + 1}) td:nth-child(${colIndex + 1})`);
     expect(element).toBeTruthy(`Unable to find column ${colIndex} of row ${rowIndex} of ${tableSelector}`);
     return element;
   }
