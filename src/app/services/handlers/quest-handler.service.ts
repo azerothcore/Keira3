@@ -2,18 +2,18 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { HandlerService } from './handler.service';
-import { CreatureTemplate } from '../../types/creature-template.type';
+import { QuestTemplate } from '../../types/quest-template.type';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
+export class QuestHandlerService extends HandlerService<QuestTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected router: Router,
   ) {
     super(
-      'creature/creature-template',
+      'quest/quest-template',
       router,
     );
   }
