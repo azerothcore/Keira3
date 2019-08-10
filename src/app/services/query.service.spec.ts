@@ -78,7 +78,22 @@ describe('QueryService', () => {
 
       expect(service.getSearchQuery(table, queryForm)).toEqual(
         'SELECT * ' +
-        'FROM `my_keira3` WHERE (myField1 LIKE \'%myValue1%\') AND (myField2 LIKE \'%myValue2%\')'
+        'FROM `my_keira3` WHERE (`myField1` LIKE \'%myValue1%\') AND (`myField2` LIKE \'%myValue2%\')'
+      );
+    });
+
+    it('should properly work when using fields that contain special characters', () => {
+      const queryForm: QueryForm = {
+        fields: {
+          myField1: `The People's Militia`,
+          myField2: `Mi illumino d'immenso`,
+        },
+      };
+
+      expect(service.getSearchQuery(table, queryForm)).toEqual(
+        'SELECT * ' +
+        'FROM `my_keira3` WHERE (`myField1` LIKE \'%The People\\\'s Militia%\') ' +
+        'AND (`myField2` LIKE \'%Mi illumino d\\\'immenso%\')'
       );
     });
 
@@ -93,7 +108,7 @@ describe('QueryService', () => {
 
       expect(service.getSearchQuery(table, queryForm)).toEqual(
         'SELECT * ' +
-        'FROM `my_keira3` WHERE (myField1 LIKE \'%myValue1%\') AND (myField2 LIKE \'%myValue2%\') LIMIT 20'
+        'FROM `my_keira3` WHERE (`myField1` LIKE \'%myValue1%\') AND (`myField2` LIKE \'%myValue2%\') LIMIT 20'
       );
     });
 

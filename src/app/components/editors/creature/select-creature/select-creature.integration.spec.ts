@@ -142,19 +142,20 @@ describe('SelectCreature integration tests', () => {
   for (const { id, entry, name, subname, limit, expectedQuery } of [
     {
       id: 1, entry: 1200, name: 'Helias', subname: 'Dev', limit: '100', expectedQuery:
-      'SELECT * FROM `creature_template` WHERE (entry LIKE \'%1200%\') AND (name LIKE \'%Helias%\') AND (subname LIKE \'%Dev%\') LIMIT 100'
+      'SELECT * FROM `creature_template` ' +
+        'WHERE (`entry` LIKE \'%1200%\') AND (`name` LIKE \'%Helias%\') AND (`subname` LIKE \'%Dev%\') LIMIT 100'
     },
     {
       id: 2, entry: '', name: 'Helias', subname: 'Dev', limit: '100', expectedQuery:
-        'SELECT * FROM `creature_template` WHERE (name LIKE \'%Helias%\') AND (subname LIKE \'%Dev%\') LIMIT 100'
+        'SELECT * FROM `creature_template` WHERE (`name` LIKE \'%Helias%\') AND (`subname` LIKE \'%Dev%\') LIMIT 100'
     },
     {
       id: 3, entry: '', name: 'Helias', subname: '', limit: '100', expectedQuery:
-        'SELECT * FROM `creature_template` WHERE (name LIKE \'%Helias%\') LIMIT 100'
+        'SELECT * FROM `creature_template` WHERE (`name` LIKE \'%Helias%\') LIMIT 100'
     },
     {
-      id: 4, entry: '', name: '', subname: 'Developer', limit: '', expectedQuery:
-        'SELECT * FROM `creature_template` WHERE (subname LIKE \'%Developer%\')'
+      id: 4, entry: '', name: '', subname: `it's a cool dev!`, limit: '', expectedQuery:
+        'SELECT * FROM `creature_template` WHERE (`subname` LIKE \'%it\\\'s a cool dev!%\')'
     },
   ]) {
     it(`searching an existing entity should correctly work [${id}]`, () => {
