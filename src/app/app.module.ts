@@ -11,7 +11,7 @@ import { DashboardModule } from './components/editors/dashboard/dashboard.module
 import { MainWindowModule } from './components/main-window/main-window.module';
 import { ComingSoonModule } from './components/editors/coming-soon/coming-soon.module';
 import { QuestModule } from './components/editors/quest/quest.module';
-import { GameObjectModule } from './components/editors/gameobject/gameobject.module';
+import { GameobjectModule } from './components/editors/gameobject/gameobject.module';
 
 
 @NgModule({
@@ -27,7 +27,7 @@ import { GameObjectModule } from './components/editors/gameobject/gameobject.mod
     /* Editors */
     CreatureModule,
     QuestModule,
-    GameObjectModule
+    GameobjectModule
   ],
   bootstrap: [ AppComponent ]
 })

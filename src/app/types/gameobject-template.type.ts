@@ -11,7 +11,7 @@ export const GAMEOBJECT_TEMPLATE_SEARCH_FIELDS = [
 
 export const GAMEOBJECT_TEMPLATE_LOOT_ID = 'data1';
 
-export class GameObjectTemplate extends TableRow {
+export class GameobjectTemplate extends TableRow {
   entry: number = 0;
   type: number = 0;
   displayId: number = 0;

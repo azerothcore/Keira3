@@ -8,4 +8,4 @@ const modules = [
   imports: [modules],
   exports: [modules],
 })
-export class GameObjectModule {}
+export class GameobjectModule {}

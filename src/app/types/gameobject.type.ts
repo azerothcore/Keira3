@@ -4,7 +4,7 @@ export const SPAWNS_TABLE = 'gameobject';
 export const SPAWNS_ID = 'id';
 export const SPAWNS_ID_2 = 'guid';
 
-export class GameObject extends TableRow {
+export class GameobjectSpawn extends TableRow {
   guid: number = 0;
   id: number = 0;
   map: number = 0;
