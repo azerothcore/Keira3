@@ -1,7 +1,11 @@
 import { NgModule } from '@angular/core';
 
-const modules = [
+import { SelectQuestModule } from './select-quest/select-quest.module';
+import { QuestTemplateModule } from './quest-template/quest-template.module';
 
+const modules = [
+  SelectQuestModule,
+  QuestTemplateModule,
 ];
 
 @NgModule({
