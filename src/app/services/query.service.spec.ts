@@ -82,6 +82,21 @@ describe('QueryService', () => {
       );
     });
 
+    it('should properly work when using fields that contain special characters', () => {
+      const queryForm: QueryForm = {
+        fields: {
+          myField1: `The People's Militia`,
+          myField2: `Mi illumino d'immenso`,
+        },
+      };
+
+      expect(service.getSearchQuery(table, queryForm)).toEqual(
+        'SELECT * ' +
+        'FROM `my_keira3` WHERE (`myField1` LIKE \'%The People\\\'s Militia%\') ' +
+        'AND (`myField2` LIKE \'%Mi illumino d\\\'immenso%\')'
+      );
+    });
+
     it('should properly work when using fields and limit', () => {
       const queryForm: QueryForm = {
         fields: {

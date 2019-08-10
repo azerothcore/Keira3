@@ -154,8 +154,8 @@ describe('SelectCreature integration tests', () => {
         'SELECT * FROM `creature_template` WHERE (`name` LIKE \'%Helias%\') LIMIT 100'
     },
     {
-      id: 4, entry: '', name: '', subname: 'Developer', limit: '', expectedQuery:
-        'SELECT * FROM `creature_template` WHERE (`subname` LIKE \'%Developer%\')'
+      id: 4, entry: '', name: '', subname: `it's a cool dev!`, limit: '', expectedQuery:
+        'SELECT * FROM `creature_template` WHERE (`subname` LIKE \'%it\\\'s a cool dev!%\')'
     },
   ]) {
     it(`searching an existing entity should correctly work [${id}]`, () => {
