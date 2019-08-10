@@ -20,6 +20,68 @@
       [formGroup]="editorService.form"
       class="form-group edit-form"
     >
+      <div class="row">
+
+        <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
+          <label class="control-label" for="LogTitle">LogTitle</label>
+          <input [formControlName]="'LogTitle'" id="LogTitle" class="form-control form-control-sm">
+        </div>
+
+      </div>
+
+      <span class="category-title">Texts</span>
+      <div class="row">
+
+        <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
+          <label class="control-label" for="QuestCompletionLog">QuestCompletionLog</label>
+          <textarea [formControlName]="'QuestCompletionLog'" id="QuestCompletionLog" class="form-control form-control-sm">
+          </textarea>
+        </div>
+
+        <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
+          <label class="control-label" for="QuestDescription">QuestDescription</label>
+          <textarea [formControlName]="'QuestDescription'" id="QuestDescription" class="form-control form-control-sm">
+          </textarea>
+        </div>
+
+        <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
+          <label class="control-label" for="AreaDescription">AreaDescription</label>
+          <textarea [formControlName]="'AreaDescription'" id="AreaDescription" class="form-control form-control-sm">
+          </textarea>
+        </div>
+
+        <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
+          <label class="control-label" for="LogDescription">LogDescription</label>
+          <textarea [formControlName]="'LogDescription'" id="LogDescription" class="form-control form-control-sm">
+          </textarea>
+        </div>
+
+      </div>
+
+      <span class="category-title">ObjectiveTexts</span>
+      <div class="row">
+
+        <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
+          <label class="control-label" for="ObjectiveText1">ObjectiveText1</label>
+          <input [formControlName]="'ObjectiveText1'" id="ObjectiveText1" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
+          <label class="control-label" for="ObjectiveText2">ObjectiveText2</label>
+          <input [formControlName]="'ObjectiveText2'" id="ObjectiveText2" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
+          <label class="control-label" for="ObjectiveText3">ObjectiveText3</label>
+          <input [formControlName]="'ObjectiveText3'" id="ObjectiveText3" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
+          <label class="control-label" for="ObjectiveText4">ObjectiveText4</label>
+          <input [formControlName]="'ObjectiveText4'" id="ObjectiveText4" class="form-control form-control-sm">
+        </div>
+
+      </div>
 
       <span class="category-title">Required Items</span>
       <div class="row">
