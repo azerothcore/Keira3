@@ -92,6 +92,10 @@
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="StartItem">StartItem</label>
+          <app-item-selector-btn
+            [control]="editorService.form.get('StartItem')"
+            [config]="{  name: 'StartItem' }"
+          ></app-item-selector-btn>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'Items given by the quest giver at beginning of the quest. They will be deleted when quest is abandoned.'"
@@ -240,6 +244,10 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="RequiredItemId1">RequiredItemId1</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RequiredItemId1')"
+                [config]="{  name: 'RequiredItemId1' }"
+              ></app-item-selector-btn>
               <input [formControlName]="'RequiredItemId1'" id="RequiredItemId1" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
@@ -253,6 +261,10 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="RequiredItemId2">RequiredItemId2</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RequiredItemId2')"
+                [config]="{  name: 'RequiredItemId2' }"
+              ></app-item-selector-btn>
               <input [formControlName]="'RequiredItemId2'" id="RequiredItemId2" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
@@ -266,6 +278,10 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="RequiredItemId3">RequiredItemId3</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RequiredItemId3')"
+                [config]="{  name: 'RequiredItemId3' }"
+              ></app-item-selector-btn>
               <input [formControlName]="'RequiredItemId3'" id="RequiredItemId3" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
@@ -279,6 +295,10 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="RequiredItemId4">RequiredItemId4</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RequiredItemId4')"
+                [config]="{  name: 'RequiredItemId4' }"
+              ></app-item-selector-btn>
               <input [formControlName]="'RequiredItemId4'" id="RequiredItemId4" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
@@ -292,6 +312,10 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="RequiredItemId5">RequiredItemId5</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RequiredItemId5')"
+                [config]="{  name: 'RequiredItemId5' }"
+              ></app-item-selector-btn>
               <input [formControlName]="'RequiredItemId5'" id="RequiredItemId5" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
@@ -305,6 +329,10 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="RequiredItemId6">RequiredItemId6</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RequiredItemId6')"
+                [config]="{  name: 'RequiredItemId6' }"
+              ></app-item-selector-btn>
               <input [formControlName]="'RequiredItemId6'" id="RequiredItemId6" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
@@ -418,6 +446,10 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="ItemDrop1">ItemDrop1</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('ItemDrop1')"
+                [config]="{  name: 'ItemDrop1' }"
+              ></app-item-selector-btn>
               <input [formControlName]="'ItemDrop1'" id="ItemDrop1" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
@@ -431,6 +463,10 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="ItemDrop2">ItemDrop2</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('ItemDrop2')"
+                [config]="{  name: 'ItemDrop2' }"
+              ></app-item-selector-btn>
               <input [formControlName]="'ItemDrop2'" id="ItemDrop2" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
@@ -444,6 +480,10 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="ItemDrop3">ItemDrop3</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('ItemDrop3')"
+                [config]="{  name: 'ItemDrop3' }"
+              ></app-item-selector-btn>
               <input [formControlName]="'ItemDrop3'" id="ItemDrop3" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
@@ -457,6 +497,10 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="ItemDrop4">ItemDrop4</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('ItemDrop4')"
+                [config]="{  name: 'ItemDrop4' }"
+              ></app-item-selector-btn>
               <input [formControlName]="'ItemDrop4'" id="ItemDrop4" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
@@ -567,6 +611,10 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="RewardItem1">RewardItem1</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RewardItem1')"
+                [config]="{  name: 'RewardItem1' }"
+              ></app-item-selector-btn>
               <input [formControlName]="'RewardItem1'" id="RewardItem1" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
@@ -580,6 +628,10 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="RewardItem2">RewardItem2</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RewardItem2')"
+                [config]="{  name: 'RewardItem2' }"
+              ></app-item-selector-btn>
               <input [formControlName]="'RewardItem2'" id="RewardItem2" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
@@ -593,6 +645,10 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="RewardItem3">RewardItem3</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RewardItem3')"
+                [config]="{  name: 'RewardItem3' }"
+              ></app-item-selector-btn>
               <input [formControlName]="'RewardItem3'" id="RewardItem3" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
@@ -606,6 +662,10 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="RewardItem4">RewardItem4</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RewardItem4')"
+                [config]="{  name: 'RewardItem4' }"
+              ></app-item-selector-btn>
               <input [formControlName]="'RewardItem4'" id="RewardItem4" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
@@ -624,6 +684,10 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="RewardChoiceItemID1">RewardChoiceItemID1</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RewardChoiceItemID1')"
+                [config]="{ name: 'RewardChoiceItemID1' }"
+              ></app-item-selector-btn>
               <input [formControlName]="'RewardChoiceItemID1'" id="RewardChoiceItemID1" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
@@ -637,6 +701,10 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="RewardChoiceItemID2">RewardChoiceItemID2</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RewardChoiceItemID2')"
+                [config]="{ name: 'RewardChoiceItemID2' }"
+              ></app-item-selector-btn>
               <input [formControlName]="'RewardChoiceItemID2'" id="RewardChoiceItemID2" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
@@ -650,6 +718,10 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="RewardChoiceItemID3">RewardChoiceItemID3</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RewardChoiceItemID3')"
+                [config]="{ name: 'RewardChoiceItemID3' }"
+              ></app-item-selector-btn>
               <input [formControlName]="'RewardChoiceItemID3'" id="RewardChoiceItemID3" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
@@ -663,6 +735,10 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="RewardChoiceItemID4">RewardChoiceItemID4</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RewardChoiceItemID4')"
+                [config]="{ name: 'RewardChoiceItemID4' }"
+              ></app-item-selector-btn>
               <input [formControlName]="'RewardChoiceItemID4'" id="RewardChoiceItemID4" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
@@ -676,6 +752,10 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="RewardChoiceItemID5">RewardChoiceItemID5</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RewardChoiceItemID5')"
+                [config]="{ name: 'RewardChoiceItemID5' }"
+              ></app-item-selector-btn>
               <input [formControlName]="'RewardChoiceItemID5'" id="RewardChoiceItemID5" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
@@ -689,6 +769,10 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="RewardChoiceItemID6">RewardChoiceItemID6</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RewardChoiceItemID6')"
+                [config]="{ name: 'RewardChoiceItemID6' }"
+              ></app-item-selector-btn>
               <input [formControlName]="'RewardChoiceItemID6'" id="RewardChoiceItemID6" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
