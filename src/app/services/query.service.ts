@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Squel, Delete, Insert } from 'squel';
+import { escape } from 'sqlstring';
 
 import { MysqlService } from './mysql.service';
 import { MaxRow, MysqlResult, QueryForm, TableRow } from '../types/general';
@@ -37,7 +38,9 @@ export class QueryService {
 
     for (const filter in filters) {
       if (filters.hasOwnProperty(filter) && !!filters[filter]) {
-        query.where(`\`${filter}\` LIKE '%${filters[filter]}%'`);
+        const value = escape(`%${filters[filter]}%`);
+
+        query.where(`\`${filter}\` LIKE ${value}`);
       }
     }
 
