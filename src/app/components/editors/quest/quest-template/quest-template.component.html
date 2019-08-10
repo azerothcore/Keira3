@@ -47,6 +47,10 @@
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="QuestLevel">QuestLevel</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Level of the quest. Players receive full experience amount only if their level is <= Level+5. If -1, the player level will be used as Quest Level for experience calculation.'"
+          ></i>
           <input [formControlName]="'QuestLevel'" id="QuestLevel" type="number" class="form-control form-control-sm">
         </div>
 
@@ -102,6 +106,10 @@
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="TimeAllowed">TimeAllowed</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Time (in seconds) that the player has to complete this quest'"
+          ></i>
           <input [formControlName]="'TimeAllowed'" id="TimeAllowed" type="number" class="form-control form-control-sm">
         </div>
 
@@ -196,7 +204,9 @@
 
       </div>
 
-      <span class="category-title">ObjectiveTexts</span>
+      <span class="category-title">
+        ObjectiveTexts <i class="fas fa-info-circle ml-1" [placement]="'auto'"  [tooltip]="'Non-standard objective texts displayed in the quest log'"></i>
+      </span>
       <div class="row">
 
         <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
@@ -221,7 +231,9 @@
 
       </div>
 
-      <span class="category-title">RequiredItems</span>
+      <span class="category-title">
+        RequiredItems <i class="fas fa-info-circle ml-1" [placement]="'auto'"  [tooltip]="'Items required to complete the quest'"></i>
+      </span>
       <div class="row">
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -304,7 +316,9 @@
 
       </div>
 
-      <span class="category-title">Required NPCs, GOs, Factions</span>
+      <span class="category-title">
+        Required Factions, NpcOrGo <i class="fas fa-info-circle ml-1" [placement]="'auto'"  [tooltip]="'If > 0: creature; if < 0: gameobject'"></i>
+      </span>
       <div class="row">
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -676,7 +690,9 @@
 
       </div>
 
-      <span class="category-title">RewardFactions</span>
+      <span class="category-title">
+        RewardFactions <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="'Faction ID for which the quest adds (or subtracts) reputation points.'"></i>
+      </span>
       <div class="row">
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -766,5 +782,6 @@
 
       </div>
     </form>
+
   </div>
 </div>
