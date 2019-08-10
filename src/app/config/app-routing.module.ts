@@ -22,6 +22,9 @@ import { NpcTrainerComponent } from '../components/editors/creature/npc-trainer/
 import { SpawnsComponent } from '../components/editors/creature/spawns/spawns.component';
 import { SpawnsAddonComponent } from '../components/editors/creature/spawns-addon/spawns-addon.component';
 import { ComingSoonComponent } from '../components/editors/coming-soon/coming-soon.component';
+import { QuestTemplateComponent } from '../components/editors/quest/quest-template/quest-template.component';
+import { QuestHandlerService } from '../services/handlers/quest-handler.service';
+import { SelectQuestComponent } from '../components/editors/quest/select-quest/select-quest.component';
 
 const routes: Routes = [
   {
@@ -100,7 +103,21 @@ const routes: Routes = [
         canActivate: [CreatureHandlerService],
       },
     ]
-  }
+  },
+  {
+    path: 'quest',
+    children: [
+      {
+        path: 'select',
+        component: SelectQuestComponent,
+      },
+      {
+        path: 'quest-template',
+        component: QuestTemplateComponent,
+        canActivate: [QuestHandlerService],
+      },
+    ]
+  },
 ];
 
 @NgModule({
