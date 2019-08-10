@@ -140,20 +140,20 @@ describe('SelectQuest integration tests', () => {
 
   for (const { testId, id, name, limit, expectedQuery } of [
     {
-      testId: 1, id: 1200, name: 'Helias', limit: '100', expectedQuery:
-        'SELECT * FROM `quest_template` WHERE (ID LIKE \'%1200%\') AND (LogTitle LIKE \'%Helias%\') LIMIT 100'
+      testId: 1, id: 1200, name: `The People's Militia`, limit: '100', expectedQuery:
+        'SELECT * FROM `quest_template` WHERE (`ID` LIKE \'%1200%\') AND (`LogTitle` LIKE \'%The People\\\'s Militia%\') LIMIT 100'
     },
     {
-      testId: 2, id: '', name: 'Helias', limit: '100', expectedQuery:
-        'SELECT * FROM `quest_template` WHERE (LogTitle LIKE \'%Helias%\') LIMIT 100'
+      testId: 2, id: '', name: `The People's Militia`, limit: '100', expectedQuery:
+        'SELECT * FROM `quest_template` WHERE (`LogTitle` LIKE \'%The People\\\'s Militia%\') LIMIT 100'
     },
     {
-      testId: 3, id: '', name: 'Helias', limit: '100', expectedQuery:
-        'SELECT * FROM `quest_template` WHERE (LogTitle LIKE \'%Helias%\') LIMIT 100'
+      testId: 3, id: '', name: `The People's Militia`, limit: '100', expectedQuery:
+        'SELECT * FROM `quest_template` WHERE (`LogTitle` LIKE \'%The People\\\'s Militia%\') LIMIT 100'
     },
     {
       testId: 4, id: 1200, name: '', limit: '', expectedQuery:
-        'SELECT * FROM `quest_template` WHERE (ID LIKE \'%1200%\')'
+        'SELECT * FROM `quest_template` WHERE (`ID` LIKE \'%1200%\')'
     },
   ]) {
     it(`searching an existing entity should correctly work [${testId}]`, () => {
