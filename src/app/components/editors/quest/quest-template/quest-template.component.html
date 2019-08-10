@@ -24,6 +24,10 @@
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="ID">ID</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'The unique ID of the quest'"
+          ></i>
           <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm">
         </div>
 
@@ -44,21 +48,37 @@
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="MinLevel">MinLevel</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Minimum level at which a player can get the quest.'"
+          ></i>
           <input [formControlName]="'MinLevel'" id="MinLevel" type="number" class="form-control form-control-sm">
         </div>
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="QuestSortID">QuestSortID</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Defines under which category the quest falls in the quest log. Value taken from (if > 0) AreaTable.dbc or (if < 0) QuestSort.dbc'"
+          ></i>
           <input [formControlName]="'QuestSortID'" id="QuestSortID" type="number" class="form-control form-control-sm">
         </div>
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="QuestInfoID">QuestInfoID</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'These values are ID taken from QuestInfo.dbc'"
+          ></i>
           <input [formControlName]="'QuestInfoID'" id="QuestInfoID" type="number" class="form-control form-control-sm">
         </div>
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="SuggestedGroupNum">SuggestedGroupNum</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Recommended number of players to do the quest together.'"
+          ></i>
           <input [formControlName]="'SuggestedGroupNum'" id="SuggestedGroupNum" type="number" class="form-control form-control-sm">
         </div>
 
