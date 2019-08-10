@@ -5,6 +5,7 @@ import { QuestTemplate } from '../../../../types/quest-template.type';
 import { QuestTemplateService } from '../../../../services/editors/quest/quest-template.service';
 import { QuestHandlerService } from '../../../../services/handlers/quest-handler.service';
 import { ALLOWABLE_RACES } from '../../../../constants/flags/allowable-races';
+import { FACTIONS } from '../../../../constants/options/faction';
 
 @Component({
   selector: 'app-quest-template',
@@ -13,6 +14,7 @@ import { ALLOWABLE_RACES } from '../../../../constants/flags/allowable-races';
 })
 export class QuestTemplateComponent extends SingleRowEditorComponent<QuestTemplate> {
 
+  public readonly FACTIONS = FACTIONS;
   public readonly ALLOWABLE_RACES = ALLOWABLE_RACES;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
