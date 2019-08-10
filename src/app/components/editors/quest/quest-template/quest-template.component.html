@@ -20,7 +20,896 @@
       [formGroup]="editorService.form"
       class="form-group edit-form"
     >
-      TODO: implement form
+      <div class="row">
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="ID">ID</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'The unique ID of the quest'"
+          ></i>
+          <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
+          <label class="control-label" for="LogTitle">LogTitle</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Title of the quest'"
+          ></i>
+          <input [formControlName]="'LogTitle'" id="LogTitle" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="QuestType">QuestType</label>
+          <app-single-value-selector-btn
+            [control]="editorService.form.get('QuestType')"
+            [config]="{ options: QUEST_TYPE, name: 'QuestType' }"
+            [modalClass]="'modal-md'"
+          ></app-single-value-selector-btn>
+          <input [formControlName]="'QuestType'" id="QuestType" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="QuestLevel">QuestLevel</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Level of the quest. Players receive full experience amount only if their level is <= Level+5. If -1, the player level will be used as Quest Level for experience calculation.'"
+          ></i>
+          <input [formControlName]="'QuestLevel'" id="QuestLevel" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="MinLevel">MinLevel</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Minimum level at which a player can get the quest.'"
+          ></i>
+          <input [formControlName]="'MinLevel'" id="MinLevel" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="QuestSortID">QuestSortID</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Defines under which category the quest falls in the quest log. Value taken from (if > 0) AreaTable.dbc or (if < 0) QuestSort.dbc'"
+          ></i>
+          <input [formControlName]="'QuestSortID'" id="QuestSortID" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="QuestInfoID">QuestInfoID</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'These values are ID taken from QuestInfo.dbc'"
+          ></i>
+          <input [formControlName]="'QuestInfoID'" id="QuestInfoID" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="SuggestedGroupNum">SuggestedGroupNum</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Recommended number of players to do the quest together.'"
+          ></i>
+          <input [formControlName]="'SuggestedGroupNum'" id="SuggestedGroupNum" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="StartItem">StartItem</label>
+          <app-item-selector-btn
+            [control]="editorService.form.get('StartItem')"
+            [config]="{  name: 'StartItem' }"
+          ></app-item-selector-btn>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Items given by the quest giver at beginning of the quest. They will be deleted when quest is abandoned.'"
+          ></i>
+          <input [formControlName]="'StartItem'" id="StartItem" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="Flags">Flags</label>
+          <app-flags-selector-btn
+            [control]="editorService.form.get('Flags')"
+            [config]="{ flags: QUEST_FLAGS, name: 'Flags' }"
+          ></app-flags-selector-btn>
+          <input [formControlName]="'Flags'" id="Flags" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="TimeAllowed">TimeAllowed</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Time (in seconds) that the player has to complete this quest'"
+          ></i>
+          <input [formControlName]="'TimeAllowed'" id="TimeAllowed" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="AllowableRaces">AllowableRaces</label>
+          <app-flags-selector-btn
+            [control]="editorService.form.get('AllowableRaces')"
+            [config]="{ flags: ALLOWABLE_RACES, name: 'AllowableRaces' }"
+          ></app-flags-selector-btn>
+          <input [formControlName]="'AllowableRaces'" id="AllowableRaces" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="Unknown0">Unknown0</label>
+          <input [formControlName]="'Unknown0'" id="Unknown0" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RequiredPlayerKills">RequiredPlayerKills</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'How many players you need to kill in order to complete the quest.'"
+          ></i>
+          <input [formControlName]="'RequiredPlayerKills'" id="RequiredPlayerKills" type="number" class="form-control form-control-sm">
+        </div>
+
+      </div>
+
+      <span class="category-title">Point Of Interest</span>
+      <div class="row">
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="POIContinent">POIContinent</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'MapId of the Point Of Interest that will be shown on the map when the quest is active'"
+          ></i>
+          <input [formControlName]="'POIContinent'" id="POIContinent" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="POIx">POIx</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'X coordinate of the Point Of Interest that will be shown on the map when the quest is active'"
+          ></i>
+          <input [formControlName]="'POIx'" id="POIx" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="POIy">POIy</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Y coordinate of the Point Of Interest that will be shown on the map when the quest is active'"
+          ></i>
+          <input [formControlName]="'POIy'" id="POIy" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="POIPriority">POIPriority</label>
+          <input [formControlName]="'POIPriority'" id="POIPriority" type="number" class="form-control form-control-sm">
+        </div>
+
+      </div>
+
+      <span class="category-title">Texts</span>
+      <div class="row">
+
+        <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
+          <label class="control-label" for="QuestCompletionLog">QuestCompletionLog</label>
+          <textarea [formControlName]="'QuestCompletionLog'" id="QuestCompletionLog" class="form-control form-control-sm">
+          </textarea>
+        </div>
+
+        <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
+          <label class="control-label" for="QuestDescription">QuestDescription</label>
+          <textarea [formControlName]="'QuestDescription'" id="QuestDescription" class="form-control form-control-sm">
+          </textarea>
+        </div>
+
+        <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
+          <label class="control-label" for="AreaDescription">AreaDescription</label>
+          <textarea [formControlName]="'AreaDescription'" id="AreaDescription" class="form-control form-control-sm">
+          </textarea>
+        </div>
+
+        <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
+          <label class="control-label" for="LogDescription">LogDescription</label>
+          <textarea [formControlName]="'LogDescription'" id="LogDescription" class="form-control form-control-sm">
+          </textarea>
+        </div>
+
+      </div>
+
+      <span class="category-title">
+        ObjectiveTexts <i class="fas fa-info-circle ml-1" [placement]="'auto'"  [tooltip]="'Non-standard objective texts displayed in the quest log'"></i>
+      </span>
+      <div class="row">
+
+        <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
+          <label class="control-label" for="ObjectiveText1">ObjectiveText1</label>
+          <input [formControlName]="'ObjectiveText1'" id="ObjectiveText1" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
+          <label class="control-label" for="ObjectiveText2">ObjectiveText2</label>
+          <input [formControlName]="'ObjectiveText2'" id="ObjectiveText2" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
+          <label class="control-label" for="ObjectiveText3">ObjectiveText3</label>
+          <input [formControlName]="'ObjectiveText3'" id="ObjectiveText3" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
+          <label class="control-label" for="ObjectiveText4">ObjectiveText4</label>
+          <input [formControlName]="'ObjectiveText4'" id="ObjectiveText4" class="form-control form-control-sm">
+        </div>
+
+      </div>
+
+      <span class="category-title">
+        RequiredItems <i class="fas fa-info-circle ml-1" [placement]="'auto'"  [tooltip]="'Items required to complete the quest'"></i>
+      </span>
+      <div class="row">
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RequiredItemId1">RequiredItemId1</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RequiredItemId1')"
+                [config]="{  name: 'RequiredItemId1' }"
+              ></app-item-selector-btn>
+              <input [formControlName]="'RequiredItemId1'" id="RequiredItemId1" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RequiredItemCount1">RequiredItemCount1</label>
+              <input [formControlName]="'RequiredItemCount1'" id="RequiredItemCount1" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RequiredItemId2">RequiredItemId2</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RequiredItemId2')"
+                [config]="{  name: 'RequiredItemId2' }"
+              ></app-item-selector-btn>
+              <input [formControlName]="'RequiredItemId2'" id="RequiredItemId2" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RequiredItemCount2">RequiredItemCount2</label>
+              <input [formControlName]="'RequiredItemCount2'" id="RequiredItemCount2" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RequiredItemId3">RequiredItemId3</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RequiredItemId3')"
+                [config]="{  name: 'RequiredItemId3' }"
+              ></app-item-selector-btn>
+              <input [formControlName]="'RequiredItemId3'" id="RequiredItemId3" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RequiredItemCount3">RequiredItemCount3</label>
+              <input [formControlName]="'RequiredItemCount3'" id="RequiredItemCount3" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RequiredItemId4">RequiredItemId4</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RequiredItemId4')"
+                [config]="{  name: 'RequiredItemId4' }"
+              ></app-item-selector-btn>
+              <input [formControlName]="'RequiredItemId4'" id="RequiredItemId4" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RequiredItemCount4">RequiredItemCount4</label>
+              <input [formControlName]="'RequiredItemCount4'" id="RequiredItemCount4" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RequiredItemId5">RequiredItemId5</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RequiredItemId5')"
+                [config]="{  name: 'RequiredItemId5' }"
+              ></app-item-selector-btn>
+              <input [formControlName]="'RequiredItemId5'" id="RequiredItemId5" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RequiredItemCount5">RequiredItemCount5</label>
+              <input [formControlName]="'RequiredItemCount5'" id="RequiredItemCount5" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RequiredItemId6">RequiredItemId6</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RequiredItemId6')"
+                [config]="{  name: 'RequiredItemId6' }"
+              ></app-item-selector-btn>
+              <input [formControlName]="'RequiredItemId6'" id="RequiredItemId6" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RequiredItemCount6">RequiredItemCount6</label>
+              <input [formControlName]="'RequiredItemCount6'" id="RequiredItemCount6" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <span class="category-title">
+        Required Factions, NpcOrGo <i class="fas fa-info-circle ml-1" [placement]="'auto'"  [tooltip]="'If > 0: creature; if < 0: gameobject'"></i>
+      </span>
+      <div class="row">
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RequiredNpcOrGo1">RequiredNpcOrGo1</label>
+              <input [formControlName]="'RequiredNpcOrGo1'" id="RequiredNpcOrGo1" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RequiredNpcOrGoCount1">RequiredNpcOrGoCount1</label>
+              <input [formControlName]="'RequiredNpcOrGoCount1'" id="RequiredNpcOrGoCount1" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RequiredNpcOrGo2">RequiredNpcOrGo2</label>
+              <input [formControlName]="'RequiredNpcOrGo2'" id="RequiredNpcOrGo2" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RequiredNpcOrGoCount2">RequiredNpcOrGoCount2</label>
+              <input [formControlName]="'RequiredNpcOrGoCount2'" id="RequiredNpcOrGoCount2" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RequiredNpcOrGo3">RequiredNpcOrGo3</label>
+              <input [formControlName]="'RequiredNpcOrGo3'" id="RequiredNpcOrGo3" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RequiredNpcOrGoCount3">RequiredNpcOrGoCount3</label>
+              <input [formControlName]="'RequiredNpcOrGoCount3'" id="RequiredNpcOrGoCount3" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RequiredNpcOrGo4">RequiredNpcOrGo4</label>
+              <input [formControlName]="'RequiredNpcOrGo4'" id="RequiredNpcOrGo4" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RequiredNpcOrGoCount4">RequiredNpcOrGoCount4</label>
+              <input [formControlName]="'RequiredNpcOrGoCount4'" id="RequiredNpcOrGoCount4" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RequiredFactionId1">RequiredFactionId1</label>
+              <app-single-value-selector-btn
+                [control]="editorService.form.get('RequiredFactionId1')"
+                [config]="{ options: FACTIONS, name: 'RequiredFactionId1' }"
+                [modalClass]="'modal-md'"
+              ></app-single-value-selector-btn>
+              <input [formControlName]="'RequiredFactionId1'" id="RequiredFactionId1" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RequiredFactionId2">RequiredFactionId2</label>
+              <app-single-value-selector-btn
+                [control]="editorService.form.get('RequiredFactionId2')"
+                [config]="{ options: FACTIONS, name: 'RequiredFactionId2' }"
+                [modalClass]="'modal-md'"
+              ></app-single-value-selector-btn>
+              <input [formControlName]="'RequiredFactionId2'" id="RequiredFactionId2" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RequiredFactionValue1">RequiredFactionValue1</label>
+              <input [formControlName]="'RequiredFactionValue1'" id="RequiredFactionValue1" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RequiredFactionValue2">RequiredFactionValue2</label>
+              <input [formControlName]="'RequiredFactionValue2'" id="RequiredFactionValue2" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <span class="category-title">ItemDrops</span>
+      <div class="row">
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="ItemDrop1">ItemDrop1</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('ItemDrop1')"
+                [config]="{  name: 'ItemDrop1' }"
+              ></app-item-selector-btn>
+              <input [formControlName]="'ItemDrop1'" id="ItemDrop1" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="ItemDropQuantity1">ItemDropQuantity1</label>
+              <input [formControlName]="'ItemDropQuantity1'" id="ItemDropQuantity1" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="ItemDrop2">ItemDrop2</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('ItemDrop2')"
+                [config]="{  name: 'ItemDrop2' }"
+              ></app-item-selector-btn>
+              <input [formControlName]="'ItemDrop2'" id="ItemDrop2" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="ItemDropQuantity2">ItemDropQuantity2</label>
+              <input [formControlName]="'ItemDropQuantity2'" id="ItemDropQuantity2" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="ItemDrop3">ItemDrop3</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('ItemDrop3')"
+                [config]="{  name: 'ItemDrop3' }"
+              ></app-item-selector-btn>
+              <input [formControlName]="'ItemDrop3'" id="ItemDrop3" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="ItemDropQuantity3">ItemDropQuantity3</label>
+              <input [formControlName]="'ItemDropQuantity3'" id="ItemDropQuantity3" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="ItemDrop4">ItemDrop4</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('ItemDrop4')"
+                [config]="{  name: 'ItemDrop4' }"
+              ></app-item-selector-btn>
+              <input [formControlName]="'ItemDrop4'" id="ItemDrop4" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="ItemDropQuantity4">ItemDropQuantity4</label>
+              <input [formControlName]="'ItemDropQuantity4'" id="ItemDropQuantity4" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <span class="category-title">Rewards</span>
+      <div class="row">
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RewardTitle">RewardTitle</label>
+          <input [formControlName]="'RewardTitle'" id="RewardTitle" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RewardTalents">RewardTalents</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Amount of bonus talent points received when completing the quest'"
+          ></i>
+          <input [formControlName]="'RewardTalents'" id="RewardTalents" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RewardArenaPoints">RewardArenaPoints</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Amount of arena points received when completing the quest'"
+          ></i>
+          <input [formControlName]="'RewardArenaPoints'" id="RewardArenaPoints" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RewardNextQuest">RewardNextQuest</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'The ID of the next quest that will be added automatically when completing the quest'"
+          ></i>
+          <input [formControlName]="'RewardNextQuest'" id="RewardNextQuest" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RewardXPDifficulty">RewardXPDifficulty</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'According to the Level, the basic experience with index RewardXPDifficulty is taken from QuestXP.dbc. Check the docs for more info.'"
+          ></i>
+          <input [formControlName]="'RewardXPDifficulty'" id="RewardXPDifficulty" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RewardMoney">RewardMoney</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'If value > 0: money earned by completing the quest; if value < 0: money required to complete the quest'"
+          ></i>
+          <input [formControlName]="'RewardMoney'" id="RewardMoney" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RewardBonusMoney">RewardBonusMoney</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'The money a character at level 80 would get when they complete this quest.'"
+          ></i>
+          <input [formControlName]="'RewardBonusMoney'" id="RewardBonusMoney" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RewardDisplaySpell">RewardDisplaySpell</label>
+          <input [formControlName]="'RewardDisplaySpell'" id="RewardDisplaySpell" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RewardSpell">RewardSpell</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Spell that is shown to be casted on quest completion in the quest log. Note that this spell will NOT be casted if RewardSpellCast is non-zero.'"
+          ></i>
+          <input [formControlName]="'RewardSpell'" id="RewardSpell" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RewardHonor">RewardHonor</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Number of honorable kill honor rewarded for completing this quest'"
+          ></i>
+          <input [formControlName]="'RewardHonor'" id="RewardHonor" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RewardKillHonor">RewardKillHonor</label>
+          <input [formControlName]="'RewardKillHonor'" id="RewardKillHonor" type="number" class="form-control form-control-sm">
+        </div>
+
+      </div>
+
+      <span class="category-title">RewardItems</span>
+      <div class="row">
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RewardItem1">RewardItem1</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RewardItem1')"
+                [config]="{  name: 'RewardItem1' }"
+              ></app-item-selector-btn>
+              <input [formControlName]="'RewardItem1'" id="RewardItem1" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RewardAmount1">RewardAmount1</label>
+              <input [formControlName]="'RewardAmount1'" id="RewardAmount1" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RewardItem2">RewardItem2</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RewardItem2')"
+                [config]="{  name: 'RewardItem2' }"
+              ></app-item-selector-btn>
+              <input [formControlName]="'RewardItem2'" id="RewardItem2" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RewardAmount2">RewardAmount2</label>
+              <input [formControlName]="'RewardAmount2'" id="RewardAmount2" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RewardItem3">RewardItem3</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RewardItem3')"
+                [config]="{  name: 'RewardItem3' }"
+              ></app-item-selector-btn>
+              <input [formControlName]="'RewardItem3'" id="RewardItem3" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RewardAmount3">RewardAmount3</label>
+              <input [formControlName]="'RewardAmount3'" id="RewardAmount3" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RewardItem4">RewardItem4</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RewardItem4')"
+                [config]="{  name: 'RewardItem4' }"
+              ></app-item-selector-btn>
+              <input [formControlName]="'RewardItem4'" id="RewardItem4" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RewardAmount4">RewardAmount4</label>
+              <input [formControlName]="'RewardAmount4'" id="RewardAmount4" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <span class="category-title">RewardChoiceItems</span>
+      <div class="row">
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RewardChoiceItemID1">RewardChoiceItemID1</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RewardChoiceItemID1')"
+                [config]="{ name: 'RewardChoiceItemID1' }"
+              ></app-item-selector-btn>
+              <input [formControlName]="'RewardChoiceItemID1'" id="RewardChoiceItemID1" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RewardChoiceItemQuantity1">RewardChoiceItemQuantity1</label>
+              <input [formControlName]="'RewardChoiceItemQuantity1'" id="RewardChoiceItemQuantity1" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RewardChoiceItemID2">RewardChoiceItemID2</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RewardChoiceItemID2')"
+                [config]="{ name: 'RewardChoiceItemID2' }"
+              ></app-item-selector-btn>
+              <input [formControlName]="'RewardChoiceItemID2'" id="RewardChoiceItemID2" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RewardChoiceItemQuantity2">RewardChoiceItemQuantity2</label>
+              <input [formControlName]="'RewardChoiceItemQuantity2'" id="RewardChoiceItemQuantity2" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RewardChoiceItemID3">RewardChoiceItemID3</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RewardChoiceItemID3')"
+                [config]="{ name: 'RewardChoiceItemID3' }"
+              ></app-item-selector-btn>
+              <input [formControlName]="'RewardChoiceItemID3'" id="RewardChoiceItemID3" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RewardChoiceItemQuantity3">RewardChoiceItemQuantity3</label>
+              <input [formControlName]="'RewardChoiceItemQuantity3'" id="RewardChoiceItemQuantity3" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RewardChoiceItemID4">RewardChoiceItemID4</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RewardChoiceItemID4')"
+                [config]="{ name: 'RewardChoiceItemID4' }"
+              ></app-item-selector-btn>
+              <input [formControlName]="'RewardChoiceItemID4'" id="RewardChoiceItemID4" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RewardChoiceItemQuantity4">RewardChoiceItemQuantity4</label>
+              <input [formControlName]="'RewardChoiceItemQuantity4'" id="RewardChoiceItemQuantity4" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RewardChoiceItemID5">RewardChoiceItemID5</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RewardChoiceItemID5')"
+                [config]="{ name: 'RewardChoiceItemID5' }"
+              ></app-item-selector-btn>
+              <input [formControlName]="'RewardChoiceItemID5'" id="RewardChoiceItemID5" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RewardChoiceItemQuantity5">RewardChoiceItemQuantity5</label>
+              <input [formControlName]="'RewardChoiceItemQuantity5'" id="RewardChoiceItemQuantity5" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RewardChoiceItemID6">RewardChoiceItemID6</label>
+              <app-item-selector-btn
+                [control]="editorService.form.get('RewardChoiceItemID6')"
+                [config]="{ name: 'RewardChoiceItemID6' }"
+              ></app-item-selector-btn>
+              <input [formControlName]="'RewardChoiceItemID6'" id="RewardChoiceItemID6" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RewardChoiceItemQuantity6">RewardChoiceItemQuantity6</label>
+              <input [formControlName]="'RewardChoiceItemQuantity6'" id="RewardChoiceItemQuantity6" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <span class="category-title">
+        RewardFactions <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="'Faction ID for which the quest adds (or subtracts) reputation points.'"></i>
+      </span>
+      <div class="row">
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RewardFactionID1">RewardFactionID1</label>
+              <app-single-value-selector-btn
+                [control]="editorService.form.get('RewardFactionID1')"
+                [config]="{ options: FACTIONS, name: 'RewardFactionID1' }"
+                [modalClass]="'modal-md'"
+              ></app-single-value-selector-btn>
+              <input [formControlName]="'RewardFactionID1'" id="RewardFactionID1" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RewardFactionValue1">RewardFactionValue1</label>
+              <input [formControlName]="'RewardFactionValue1'" id="RewardFactionValue1" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RewardFactionOverride1">RewardFactionOverride1</label>
+              <input [formControlName]="'RewardFactionOverride1'" id="RewardFactionOverride1" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RewardFactionID2">RewardFactionID2</label>
+              <app-single-value-selector-btn
+                [control]="editorService.form.get('RewardFactionID2')"
+                [config]="{ options: FACTIONS, name: 'RewardFactionID2' }"
+                [modalClass]="'modal-md'"
+              ></app-single-value-selector-btn>
+              <input [formControlName]="'RewardFactionID2'" id="RewardFactionID2" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RewardFactionValue2">RewardFactionValue2</label>
+              <input [formControlName]="'RewardFactionValue2'" id="RewardFactionValue2" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RewardFactionOverride2">RewardFactionOverride2</label>
+              <input [formControlName]="'RewardFactionOverride2'" id="RewardFactionOverride2" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RewardFactionID3">RewardFactionID3</label>
+              <app-single-value-selector-btn
+                [control]="editorService.form.get('RewardFactionID3')"
+                [config]="{ options: FACTIONS, name: 'RewardFactionID3' }"
+                [modalClass]="'modal-md'"
+              ></app-single-value-selector-btn>
+              <input [formControlName]="'RewardFactionID3'" id="RewardFactionID3" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RewardFactionValue3">RewardFactionValue3</label>
+              <input [formControlName]="'RewardFactionValue3'" id="RewardFactionValue3" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RewardFactionOverride3">RewardFactionOverride3</label>
+              <input [formControlName]="'RewardFactionOverride3'" id="RewardFactionOverride3" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RewardFactionID4">RewardFactionID4</label>
+              <app-single-value-selector-btn
+                [control]="editorService.form.get('RewardFactionID4')"
+                [config]="{ options: FACTIONS, name: 'RewardFactionID4' }"
+                [modalClass]="'modal-md'"
+              ></app-single-value-selector-btn>
+              <input [formControlName]="'RewardFactionID4'" id="RewardFactionID4" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RewardFactionValue4">RewardFactionValue4</label>
+              <input [formControlName]="'RewardFactionValue4'" id="RewardFactionValue4" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RewardFactionOverride4">RewardFactionOverride4</label>
+              <input [formControlName]="'RewardFactionOverride4'" id="RewardFactionOverride4" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="RewardFactionID5">RewardFactionID5</label>
+              <app-single-value-selector-btn
+                [control]="editorService.form.get('RewardFactionID5')"
+                [config]="{ options: FACTIONS, name: 'RewardFactionID5' }"
+                [modalClass]="'modal-md'"
+              ></app-single-value-selector-btn>
+              <input [formControlName]="'RewardFactionID5'" id="RewardFactionID5" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RewardFactionValue5">RewardFactionValue5</label>
+              <input [formControlName]="'RewardFactionValue5'" id="RewardFactionValue5" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="RewardFactionOverride5">RewardFactionOverride5</label>
+              <input [formControlName]="'RewardFactionOverride5'" id="RewardFactionOverride5" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+      </div>
     </form>
+
   </div>
 </div>
