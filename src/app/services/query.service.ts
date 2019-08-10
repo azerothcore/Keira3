@@ -37,7 +37,7 @@ export class QueryService {
 
     for (const filter in filters) {
       if (filters.hasOwnProperty(filter) && !!filters[filter]) {
-        query.where(`${filter} LIKE '%${filters[filter]}%'`);
+        query.where(`\`${filter}\` LIKE '%${filters[filter]}%'`);
       }
     }
 

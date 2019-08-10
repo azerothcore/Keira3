@@ -78,7 +78,7 @@ describe('QueryService', () => {
 
       expect(service.getSearchQuery(table, queryForm)).toEqual(
         'SELECT * ' +
-        'FROM `my_keira3` WHERE (myField1 LIKE \'%myValue1%\') AND (myField2 LIKE \'%myValue2%\')'
+        'FROM `my_keira3` WHERE (`myField1` LIKE \'%myValue1%\') AND (`myField2` LIKE \'%myValue2%\')'
       );
     });
 
@@ -93,7 +93,7 @@ describe('QueryService', () => {
 
       expect(service.getSearchQuery(table, queryForm)).toEqual(
         'SELECT * ' +
-        'FROM `my_keira3` WHERE (myField1 LIKE \'%myValue1%\') AND (myField2 LIKE \'%myValue2%\') LIMIT 20'
+        'FROM `my_keira3` WHERE (`myField1` LIKE \'%myValue1%\') AND (`myField2` LIKE \'%myValue2%\') LIMIT 20'
       );
     });
 
