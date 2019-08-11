@@ -8,7 +8,7 @@ import {
 } from '../../../types/gameobject-loot-template.type';
 import { LootEditorService } from '../loot-editor.service';
 import {
-  GAMEOBJECT_TEMPLATE_ID, GAMEOBJECT_TEMPLATE_LOOT_ID,
+  GAMEOBJECT_TEMPLATE_ID, GAMEOBJECT_TEMPLATE_LOOT_ID, GAMEOBJECT_TEMPLATE_TYPE,
   GAMEOBJECT_TEMPLATE_TABLE
 } from '../../../types/gameobject-template.type';
 
@@ -30,6 +30,7 @@ export class GameobjectLootTemplateService extends LootEditorService<GameobjectL
       GAMEOBJECT_TEMPLATE_LOOT_ID,
       handlerService,
       queryService,
+      // GAMEOBJECT_TEMPLATE_TYPE, // could be 3 OR 25
     );
   }
 }
