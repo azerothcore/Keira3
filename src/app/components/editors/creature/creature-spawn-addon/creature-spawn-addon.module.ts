@@ -6,12 +6,12 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { TopBarModule } from '../../shared/top-bar/top-bar.module';
 import { QueryOutputModule } from '../../shared/query-output/query-output.module';
-import { SpawnsAddonComponent } from './spawns-addon.component';
+import { CreatureSpawnAddonComponent } from './creature-spawn-addon.component';
 import { SingleValueSelectorModule } from '../../shared/selectors/single-value-selector/single-value-selector.module';
 
 @NgModule({
   declarations: [
-    SpawnsAddonComponent,
+    CreatureSpawnAddonComponent,
   ],
   imports: [
     BrowserModule,
@@ -23,7 +23,7 @@ import { SingleValueSelectorModule } from '../../shared/selectors/single-value-s
     SingleValueSelectorModule,
   ],
   exports: [
-    SpawnsAddonComponent,
+    CreatureSpawnAddonComponent,
   ],
 })
-export class SpawnsAddonModule {}
+export class CreatureSpawnAddonModule {}

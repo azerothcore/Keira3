@@ -4,15 +4,15 @@ import { MultiRowExternalEditorService } from '../multi-row-external-editor.serv
 import { CreatureHandlerService } from '../../handlers/creature-handler.service';
 import { QueryService } from '../../query.service';
 import {
-  SPAWNS_ADDON_ID_2,
-  SPAWNS_ADDON_TABLE,
-  SpawnsAddon
-} from '../../../types/spawns-addon.type';
+  CREATURE_SPAWN_ADDON_ID_2,
+  CREATURE_SPAWN_ADDON_TABLE,
+  CreatureSpawnAddon
+} from '../../../types/creature-spawn-addon.type';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SpawnsAddonService extends MultiRowExternalEditorService<SpawnsAddon> {
+export class CreatureSpawnAddonService extends MultiRowExternalEditorService<CreatureSpawnAddon> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
@@ -20,16 +20,16 @@ export class SpawnsAddonService extends MultiRowExternalEditorService<SpawnsAddo
     protected queryService: QueryService,
   ) {
     super(
-      SpawnsAddon,
-      SPAWNS_ADDON_TABLE,
-      SPAWNS_ADDON_ID_2,
+      CreatureSpawnAddon,
+      CREATURE_SPAWN_ADDON_TABLE,
+      CREATURE_SPAWN_ADDON_ID_2,
       handlerService,
       queryService,
     );
   }
 
   selectQuery(id: string|number) {
-    return this.queryService.query<SpawnsAddon>(
+    return this.queryService.query<CreatureSpawnAddon>(
       `SELECT a.* FROM creature AS c INNER JOIN creature_addon AS a ON c.guid = a.guid WHERE c.id = ${id}`
     );
   }

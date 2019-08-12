@@ -9,8 +9,8 @@ import { NpcTrainerModule } from './npc-trainer/npc-trainer.module';
 import { PickpocketingLootTemplateModule } from './pickpocketing-loot-template/pickpocketing-loot-template.module';
 import { SelectCreatureModule } from './select-creature/select-creature.module';
 import { SkinningLootTemplateModule } from './skinning-loot-template/skinning-loot-template.module';
-import { SpawnsModule } from './spawns/spawns.module';
-import { SpawnsAddonModule } from './spawns-addon/spawns-addon.module';
+import { CreatureSpawnModule } from './creature-spawn/creature-spawn.module';
+import { CreatureSpawnAddonModule } from './creature-spawn-addon/creature-spawn-addon.module';
 import { NpcVendorModule } from './npc-vendor/npc-vendor.module';
 import { CreatureQuestitemModule } from './creature-questitem/creature-questitem.module';
 
@@ -26,8 +26,8 @@ const modules = [
   PickpocketingLootTemplateModule,
   SelectCreatureModule,
   SkinningLootTemplateModule,
-  SpawnsModule,
-  SpawnsAddonModule,
+  CreatureSpawnModule,
+  CreatureSpawnAddonModule,
 ];
 
 @NgModule({

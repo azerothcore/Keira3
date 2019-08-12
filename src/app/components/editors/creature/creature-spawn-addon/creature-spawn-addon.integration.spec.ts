@@ -3,29 +3,29 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { SpawnsAddonComponent } from './spawns-addon.component';
-import { SpawnsAddonModule } from './spawns-addon.module';
+import { CreatureSpawnAddonComponent } from './creature-spawn-addon.component';
+import { CreatureSpawnAddonModule } from './creature-spawn-addon.module';
 import { QueryService } from '../../../../services/query.service';
-import { SpawnsAddon } from '../../../../types/spawns-addon.type';
+import { CreatureSpawnAddon } from '../../../../types/creature-spawn-addon.type';
 import { CreatureHandlerService } from '../../../../services/handlers/creature-handler.service';
 import { MultiRowEditorPageObject } from '../../../../test-utils/multi-row-editor-page-object';
-import { SpawnsAddonService } from '../../../../services/editors/creature/spawns-addon.service';
+import { CreatureSpawnAddonService } from '../../../../services/editors/creature/creature-spawn-addon.service';
 
-class SpawnsAddonPage extends MultiRowEditorPageObject<SpawnsAddonComponent> {}
+class CreatureSpawnAddonPage extends MultiRowEditorPageObject<CreatureSpawnAddonComponent> {}
 
-describe('SpawnsAddon integration tests', () => {
-  let component: SpawnsAddonComponent;
-  let fixture: ComponentFixture<SpawnsAddonComponent>;
+describe('CreatureSpawnAddon integration tests', () => {
+  let component: CreatureSpawnAddonComponent;
+  let fixture: ComponentFixture<CreatureSpawnAddonComponent>;
   let queryService: QueryService;
   let querySpy: Spy;
   let handlerService: CreatureHandlerService;
-  let page: SpawnsAddonPage;
+  let page: CreatureSpawnAddonPage;
 
   const id = 1234;
 
-  const originalRow0 = new SpawnsAddon();
-  const originalRow1 = new SpawnsAddon();
-  const originalRow2 = new SpawnsAddon();
+  const originalRow0 = new CreatureSpawnAddon();
+  const originalRow1 = new CreatureSpawnAddon();
+  const originalRow2 = new CreatureSpawnAddon();
   originalRow0.guid = 0;
   originalRow1.guid = 1;
   originalRow2.guid = 2;
@@ -33,7 +33,7 @@ describe('SpawnsAddon integration tests', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        SpawnsAddonModule,
+        CreatureSpawnAddonModule,
         RouterTestingModule,
       ],
     })
@@ -48,13 +48,13 @@ describe('SpawnsAddon integration tests', () => {
     queryService = TestBed.get(QueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
-    spyOn(TestBed.get(SpawnsAddonService), 'selectQuery').and.returnValue(of(
+    spyOn(TestBed.get(CreatureSpawnAddonService), 'selectQuery').and.returnValue(of(
       { results: creatingNew ? [] : [originalRow0, originalRow1, originalRow2] }
     ));
 
-    fixture = TestBed.createComponent(SpawnsAddonComponent);
+    fixture = TestBed.createComponent(CreatureSpawnAddonComponent);
     component = fixture.componentInstance;
-    page = new SpawnsAddonPage(fixture);
+    page = new CreatureSpawnAddonPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
   }
