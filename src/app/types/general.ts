@@ -42,3 +42,8 @@ export interface Option {
   value: number|string;
   name: string;
 }
+
+export interface FieldDefinition {
+  name: string;
+  tooltip: string;
+}
