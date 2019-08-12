@@ -12,7 +12,7 @@ import { GameobjectHandlerService } from '../../../../services/handlers/gameobje
 
 class GameobjectTemplatePage extends EditorPageObject<GameobjectTemplateComponent> {}
 
-describe('GameobjectTemplate integration tests', () => {
+fdescribe('GameobjectTemplate integration tests', () => {
   let component: GameobjectTemplateComponent;
   let fixture: ComponentFixture<GameobjectTemplateComponent>;
   let queryService: QueryService;
@@ -23,7 +23,7 @@ describe('GameobjectTemplate integration tests', () => {
   const id = 1234;
 
   const originalEntity = new GameobjectTemplate();
-  originalEntity.ID = id;
+  originalEntity.entry = id;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

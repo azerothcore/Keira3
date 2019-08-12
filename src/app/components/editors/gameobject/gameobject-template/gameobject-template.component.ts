@@ -4,7 +4,6 @@ import { SingleRowEditorComponent } from '../../shared/single-row-editor.compone
 import { GameobjectTemplate } from '../../../../types/gameobject-template.type';
 import { GameobjectTemplateService } from '../../../../services/editors/gameobject/gameobject-template.service';
 import { GameobjectHandlerService } from '../../../../services/handlers/gameobject-handler.service';
-import { FACTIONS } from '../../../../constants/options/faction';
 import { GAMEOBJECT_TYPE } from '../../../../constants/options/gameobject-type';
 import { GAMEOBJECT_ICON } from '../../../../constants/options/gameobject-icon';
 import { FieldDefinition } from '../../../../types/general';
@@ -17,7 +16,6 @@ import { FieldDefinition } from '../../../../types/general';
 })
 export class GameobjectTemplateComponent extends SingleRowEditorComponent<GameobjectTemplate> {
 
-  public readonly FACTIONS = FACTIONS;
   public readonly GAMEOBJECT_TYPE = GAMEOBJECT_TYPE;
   public readonly GAMEOBJECT_ICON = GAMEOBJECT_ICON;
 

@@ -7,8 +7,6 @@ import { TopBarModule } from '../../shared/top-bar/top-bar.module';
 import { QueryOutputModule } from '../../shared/query-output/query-output.module';
 import { GameobjectTemplateComponent } from './gameobject-template.component';
 import { SingleValueSelectorModule } from '../../shared/selectors/single-value-selector/single-value-selector.module';
-import { FlagsSelectorModule } from '../../shared/selectors/flags-selector/flags-selector.module';
-import { ItemSelectorModule } from '../../shared/selectors/item-selector/item-selector.module';
 
 @NgModule({
   declarations: [
@@ -21,8 +19,6 @@ import { ItemSelectorModule } from '../../shared/selectors/item-selector/item-se
     QueryOutputModule,
     TooltipModule.forRoot(),
     SingleValueSelectorModule,
-    FlagsSelectorModule,
-    ItemSelectorModule,
   ],
   exports: [
     GameobjectTemplateComponent,

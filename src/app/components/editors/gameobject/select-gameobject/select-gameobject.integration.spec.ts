@@ -8,7 +8,6 @@ import { QueryService } from '../../../../services/query.service';
 import { SelectGameobjectComponent } from './select-gameobject.component';
 import { GameobjectSelectService } from '../../../../services/select/gameobject-select.service';
 import { SelectGameobjectModule } from './select-gameobject.module';
-import { GameobjectTemplate } from '../../../../types/gameobject-template.type';
 import { SelectPageObject } from '../../../../test-utils/select-page-object';
 
 class SelectGameobjectComponentPage extends SelectPageObject<SelectGameobjectComponent> {
