@@ -36,7 +36,7 @@ export class GameobjectTemplateService extends SingleRowEditorService<Gameobject
   getFieldDefinition(type: number, dataIndex: number): FieldDefinition {
     return GO_DATA_FIELDS[type] && GO_DATA_FIELDS[type][dataIndex]
     ? GO_DATA_FIELDS[type][dataIndex]
-    : { name: 'Data' + dataIndex, tooltip: '' };
+    : { name: `Data${dataIndex}`, tooltip: null };
   }
 
 }

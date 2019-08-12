@@ -49,7 +49,7 @@
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'Graphic model id sent to the client from GameObjectDisplayInfo.dbc'"
           ></i>
-          <input [formControlName]="'displayId'" id="displayId" class="form-control form-control-sm">
+          <input [formControlName]="'displayId'" id="displayId" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="IconName">IconName</label>
@@ -87,7 +87,7 @@
       <span class="category-title">Gameobject Data</span>
 
       <div class="row">
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2" *ngFor="let item of [].constructor(23); let i = index">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2" *ngFor="let item of [].constructor(24); let i = index">
           <label class="control-label" for="Data{{i}}">{{ dataFieldDefinition(i).name }}</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
