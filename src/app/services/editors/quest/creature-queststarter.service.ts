@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 
 import { QuestHandlerService } from '../../handlers/quest-handler.service';
 import { QueryService } from '../../query.service';
-import { SingleRowEditorService } from '../single-row-editor.service';
+import { MultiRowEditorService } from '../multi-row-editor.service';
 import {
-  CREATURE_QUESTSTARTER_ID,
+  CREATURE_QUESTSTARTER_ID, CREATURE_QUESTSTARTER_ID_2,
   CREATURE_QUESTSTARTER_TABLE,
   CreatureQueststarter
 } from '../../../types/creature-queststarter.type';
@@ -12,7 +12,7 @@ import {
 @Injectable({
   providedIn: 'root'
 })
-export class CreatureQueststarterService extends SingleRowEditorService<CreatureQueststarter> {
+export class CreatureQueststarterService extends MultiRowEditorService<CreatureQueststarter> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
@@ -23,8 +23,7 @@ export class CreatureQueststarterService extends SingleRowEditorService<Creature
       CreatureQueststarter,
       CREATURE_QUESTSTARTER_TABLE,
       CREATURE_QUESTSTARTER_ID,
-      null,
-      false,
+      CREATURE_QUESTSTARTER_ID_2,
       handlerService,
       queryService,
     );

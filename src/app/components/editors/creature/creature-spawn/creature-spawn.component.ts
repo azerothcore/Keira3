@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 
 import { MultiRowEditorComponent } from '../../shared/multi-row-editor.component';
 import { CreatureHandlerService } from '../../../../services/handlers/creature-handler.service';
-import { Spawns } from '../../../../types/spawns.type';
-import { SpawnsService } from '../../../../services/editors/creature/spawns.service';
+import { CreatureSpawn } from '../../../../types/creature-spawn.type';
+import { CreatureSpawnService } from '../../../../services/editors/creature/creature-spawn.service';
 import { MOVEMENT_TYPE } from '../../../../constants/options/movement-type';
 import { NPC_FLAGS } from '../../../../constants/flags/npc-flags';
 import { UNIT_FLAGS } from '../../../../constants/flags/unit-flags';
@@ -12,11 +12,11 @@ import { SPAWN_MASK } from '../../../../constants/flags/spawn-mask';
 import { PHASE_MASK } from '../../../../constants/flags/phase-mask';
 
 @Component({
-  selector: 'app-spawns',
-  templateUrl: './spawns.component.html',
-  styleUrls: ['./spawns.component.scss']
+  selector: 'app-creature-spawn',
+  templateUrl: './creature-spawn.component.html',
+  styleUrls: ['./creature-spawn.component.scss']
 })
-export class SpawnsComponent extends MultiRowEditorComponent<Spawns> {
+export class CreatureSpawnComponent extends MultiRowEditorComponent<CreatureSpawn> {
 
   public readonly UNIT_FLAGS = UNIT_FLAGS;
   public readonly MOVEMENT_TYPE = MOVEMENT_TYPE;
@@ -30,7 +30,7 @@ export class SpawnsComponent extends MultiRowEditorComponent<Spawns> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    public editorService: SpawnsService,
+    public editorService: CreatureSpawnService,
     public handlerService: CreatureHandlerService,
   ) {
     super(editorService, handlerService);

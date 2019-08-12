@@ -3,9 +3,9 @@ import { Injectable } from '@angular/core';
 import { MultiRowEditorService } from '../multi-row-editor.service';
 import {
   GameobjectSpawn,
-  GAMEOBJECT_SPAWNS_ID,
-  GAMEOBJECT_SPAWNS_ID_2,
-  GAMEOBJECT_SPAWNS_TABLE
+  GAMEOBJECT_SPAWN_ID,
+  GAMEOBJECT_SPAWN_ID_2,
+  GAMEOBJECT_SPAWN_TABLE
 } from '../../../types/gameobject-spawn.type';
 import { CreatureHandlerService } from '../../handlers/creature-handler.service';
 import { QueryService } from '../../query.service';
@@ -22,9 +22,9 @@ export class GameobjectSpawnService extends MultiRowEditorService<GameobjectSpaw
   ) {
     super(
       GameobjectSpawn,
-      GAMEOBJECT_SPAWNS_TABLE,
-      GAMEOBJECT_SPAWNS_ID,
-      GAMEOBJECT_SPAWNS_ID_2,
+      GAMEOBJECT_SPAWN_TABLE,
+      GAMEOBJECT_SPAWN_ID,
+      GAMEOBJECT_SPAWN_ID_2,
       handlerService,
       queryService,
     );
