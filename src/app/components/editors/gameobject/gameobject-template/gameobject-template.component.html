@@ -32,7 +32,7 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="name">name</label>
-          <input [formControlName]="'name'" id="name" type="text" class="form-control form-control-sm">
+          <input [formControlName]="'name'" id="name" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="type">type</label>
@@ -49,7 +49,7 @@
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'Graphic model id sent to the client from GameObjectDisplayInfo.dbc'"
           ></i>
-          <input [formControlName]="'displayId'" id="displayId" type="text" class="form-control form-control-sm">
+          <input [formControlName]="'displayId'" id="displayId" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="IconName">IconName</label>
@@ -62,29 +62,29 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="size">size</label>
-          <input [formControlName]="'size'" id="size" type="text" class="form-control form-control-sm">
+          <input [formControlName]="'size'" id="size" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="AIName">AIName</label>
-          <input [formControlName]="'AIName'" id="AIName" type="text" class="form-control form-control-sm">
+          <input [formControlName]="'AIName'" id="AIName" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="ScriptName">ScriptName</label>
-          <input [formControlName]="'ScriptName'" id="ScriptName" type="text" class="form-control form-control-sm">
+          <input [formControlName]="'ScriptName'" id="ScriptName" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="castBarCaption">castBarCaption</label>
-          <input [formControlName]="'castBarCaption'" id="castBarCaption" type="text" class="form-control form-control-sm">
+          <input [formControlName]="'castBarCaption'" id="castBarCaption" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="unk1">unk1</label>
-          <input [formControlName]="'unk1'" id="unk1" type="text" class="form-control form-control-sm">
+          <input [formControlName]="'unk1'" id="unk1" class="form-control form-control-sm">
         </div>
       </div>
 
       <br>
 
-      <span class="category-title">GO Data</span>
+      <span class="category-title">Gameobject Data</span>
 
       <div class="row">
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2" *ngFor="let item of [].constructor(23); let i = index">
@@ -94,7 +94,7 @@
             [tooltip]="dataFieldDefinition(i).tooltip"
             *ngIf="!!dataFieldDefinition(i).tooltip"
           ></i>
-          <input [formControlName]="'Data'+i" id="Data{{i}}" type="text" class="form-control form-control-sm">
+          <input [formControlName]="'Data'+i" id="Data{{i}}" class="form-control form-control-sm">
         </div>
 
       </div>
