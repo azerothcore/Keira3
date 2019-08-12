@@ -2,11 +2,11 @@ import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { instance } from 'ts-mockito';
 
-import { SpawnsAddonService } from './spawns-addon.service';
+import { CreatureSpawnAddonService } from './creature-spawn-addon.service';
 import { QueryService } from '../../query.service';
 import { MockedQueryService } from '../../../test-utils/mocks';
 
-describe('SpawnsAddonService', () => {
+describe('CreatureSpawnAddonService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       RouterTestingModule,
@@ -17,7 +17,7 @@ describe('SpawnsAddonService', () => {
   }));
 
   it('selectQuery should correctly work', () => {
-    const service: SpawnsAddonService = TestBed.get(SpawnsAddonService);
+    const service: CreatureSpawnAddonService = TestBed.get(CreatureSpawnAddonService);
     const querySpy = spyOn(TestBed.get(QueryService), 'query');
     const id = 123;
 

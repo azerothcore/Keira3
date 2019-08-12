@@ -3,28 +3,28 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { SpawnsComponent } from './spawns.component';
-import { SpawnsModule } from './spawns.module';
+import { CreatureSpawnComponent } from './creature-spawn.component';
+import { CreatureSpawnModule } from './creature-spawn.module';
 import { QueryService } from '../../../../services/query.service';
-import { Spawns } from '../../../../types/spawns.type';
+import { CreatureSpawn } from '../../../../types/creature-spawn.type';
 import { CreatureHandlerService } from '../../../../services/handlers/creature-handler.service';
 import { MultiRowEditorPageObject } from '../../../../test-utils/multi-row-editor-page-object';
 
-class SpawnsPage extends MultiRowEditorPageObject<SpawnsComponent> {}
+class CreatureSpawnPage extends MultiRowEditorPageObject<CreatureSpawnComponent> {}
 
-describe('Spawns integration tests', () => {
-  let component: SpawnsComponent;
-  let fixture: ComponentFixture<SpawnsComponent>;
+describe('CreatureSpawn integration tests', () => {
+  let component: CreatureSpawnComponent;
+  let fixture: ComponentFixture<CreatureSpawnComponent>;
   let queryService: QueryService;
   let querySpy: Spy;
   let handlerService: CreatureHandlerService;
-  let page: SpawnsPage;
+  let page: CreatureSpawnPage;
 
   const id = 1234;
 
-  const originalRow0 = new Spawns();
-  const originalRow1 = new Spawns();
-  const originalRow2 = new Spawns();
+  const originalRow0 = new CreatureSpawn();
+  const originalRow1 = new CreatureSpawn();
+  const originalRow2 = new CreatureSpawn();
   originalRow0.id = originalRow1.id = originalRow2.id = id;
   originalRow0.guid = 0;
   originalRow1.guid = 1;
@@ -33,7 +33,7 @@ describe('Spawns integration tests', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        SpawnsModule,
+        CreatureSpawnModule,
         RouterTestingModule,
       ],
     })
@@ -52,9 +52,9 @@ describe('Spawns integration tests', () => {
       { results: creatingNew ? [] : [originalRow0, originalRow1, originalRow2] }
     ));
 
-    fixture = TestBed.createComponent(SpawnsComponent);
+    fixture = TestBed.createComponent(CreatureSpawnComponent);
     component = fixture.componentInstance;
-    page = new SpawnsPage(fixture);
+    page = new CreatureSpawnPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
   }

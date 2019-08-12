@@ -19,8 +19,8 @@ import {
 } from '../components/editors/creature/pickpocketing-loot-template/pickpocketing-loot-template.component';
 import { SkinningLootTemplateComponent } from '../components/editors/creature/skinning-loot-template/skinning-loot-template.component';
 import { NpcTrainerComponent } from '../components/editors/creature/npc-trainer/npc-trainer.component';
-import { SpawnsComponent } from '../components/editors/creature/spawns/spawns.component';
-import { SpawnsAddonComponent } from '../components/editors/creature/spawns-addon/spawns-addon.component';
+import { CreatureSpawnComponent } from '../components/editors/creature/creature-spawn/creature-spawn.component';
+import { CreatureSpawnAddonComponent } from '../components/editors/creature/creature-spawn-addon/creature-spawn-addon.component';
 import { ComingSoonComponent } from '../components/editors/coming-soon/coming-soon.component';
 import { QuestTemplateComponent } from '../components/editors/quest/quest-template/quest-template.component';
 import { QuestHandlerService } from '../services/handlers/quest-handler.service';
@@ -94,13 +94,13 @@ const routes: Routes = [
         canActivate: [CreatureHandlerService],
       },
       {
-        path: 'spawns',
-        component: SpawnsComponent,
+        path: 'creature-spawn',
+        component: CreatureSpawnComponent,
         canActivate: [CreatureHandlerService],
       },
       {
-        path: 'spawns-addon',
-        component: SpawnsAddonComponent,
+        path: 'creature-spawn-addon',
+        component: CreatureSpawnAddonComponent,
         canActivate: [CreatureHandlerService],
       },
     ]
