@@ -5,12 +5,12 @@ import { instance } from 'ts-mockito';
 import { QueryService } from '../query.service';
 import { MockedQueryService } from '../../test-utils/mocks';
 import { MultiRowExternalEditorService } from './multi-row-external-editor.service';
-import { SpawnsAddon } from '../../types/spawns-addon.type';
-import { SpawnsAddonService } from './creature/spawns-addon.service';
+import { CreatureSpawnAddon } from '../../types/creature-spawn-addon.type';
+import { CreatureSpawnAddonService } from './creature/creature-spawn-addon.service';
 
 
 describe('MultiRowExternalEditorService', () => {
-  let service: MultiRowExternalEditorService<SpawnsAddon>;
+  let service: MultiRowExternalEditorService<CreatureSpawnAddon>;
 
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
@@ -22,7 +22,7 @@ describe('MultiRowExternalEditorService', () => {
   }));
 
   beforeEach(() => {
-    service = TestBed.get(SpawnsAddonService);
+    service = TestBed.get(CreatureSpawnAddonService);
   });
 
   it('updateDiffQuery() should correctly work', () => {

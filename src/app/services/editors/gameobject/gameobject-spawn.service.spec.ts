@@ -6,7 +6,7 @@ import { GameobjectSpawnService } from './gameobject-spawn.service';
 import { QueryService } from '../../query.service';
 import { MockedQueryService } from '../../../test-utils/mocks';
 
-describe('SpawnsService', () => {
+describe('CreatureSpawnService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       RouterTestingModule,

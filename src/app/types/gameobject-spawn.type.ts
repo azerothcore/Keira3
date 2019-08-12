@@ -1,8 +1,8 @@
 import { TableRow } from './general';
 
-export const GAMEOBJECT_SPAWNS_TABLE = 'gameobject';
-export const GAMEOBJECT_SPAWNS_ID = 'id';
-export const GAMEOBJECT_SPAWNS_ID_2 = 'guid';
+export const GAMEOBJECT_SPAWN_TABLE = 'gameobject';
+export const GAMEOBJECT_SPAWN_ID = 'id';
+export const GAMEOBJECT_SPAWN_ID_2 = 'guid';
 
 export class GameobjectSpawn extends TableRow {
   guid: number = 0;

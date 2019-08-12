@@ -1,9 +1,9 @@
 import { TableRow } from './general';
 
-export const SPAWNS_ADDON_TABLE = 'creature_addon';
-export const SPAWNS_ADDON_ID_2 = 'guid';
+export const CREATURE_SPAWN_ADDON_TABLE = 'creature_addon';
+export const CREATURE_SPAWN_ADDON_ID_2 = 'guid';
 
-export class SpawnsAddon extends TableRow {
+export class CreatureSpawnAddon extends TableRow {
   guid: number = 0;
   path_id: number = 0;
   mount: number = 0;

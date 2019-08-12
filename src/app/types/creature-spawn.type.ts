@@ -1,10 +1,10 @@
 import { TableRow } from './general';
 
-export const SPAWNS_TABLE = 'creature';
-export const SPAWNS_ID = 'id';
-export const SPAWNS_ID_2 = 'guid';
+export const CREATURE_SPAWN_TABLE = 'creature';
+export const CREATURE_SPAWN_ID = 'id';
+export const CREATURE_SPAWN_ID_2 = 'guid';
 
-export class Spawns extends TableRow {
+export class CreatureSpawn extends TableRow {
   guid: number = 0;
   id: number = 0;
   map: number = 0;
