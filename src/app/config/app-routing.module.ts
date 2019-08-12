@@ -25,6 +25,9 @@ import { ComingSoonComponent } from '../components/editors/coming-soon/coming-so
 import { QuestTemplateComponent } from '../components/editors/quest/quest-template/quest-template.component';
 import { QuestHandlerService } from '../services/handlers/quest-handler.service';
 import { SelectQuestComponent } from '../components/editors/quest/select-quest/select-quest.component';
+import { GameobjectTemplateComponent } from '../components/editors/gameobject/gameobject-template/gameobject-template.component';
+import { GameobjectHandlerService } from '../services/handlers/gameobject-handler.service';
+import { SelectGameobjectComponent } from '../components/editors/gameobject/select-gameobject/select-gameobject.component';
 
 const routes: Routes = [
   {
@@ -115,6 +118,20 @@ const routes: Routes = [
         path: 'quest-template',
         component: QuestTemplateComponent,
         canActivate: [QuestHandlerService],
+      },
+    ]
+  },
+  {
+    path: 'gameobject',
+    children: [
+      {
+        path: 'select',
+        component: SelectGameobjectComponent,
+      },
+      {
+        path: 'gameobject-template',
+        component: GameobjectTemplateComponent,
+        canActivate: [GameobjectHandlerService],
       },
     ]
   },

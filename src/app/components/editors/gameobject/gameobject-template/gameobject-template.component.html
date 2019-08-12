@@ -1,0 +1,188 @@
+<app-top-bar [handler]="handlerService"></app-top-bar>
+
+<div class="container-fluid">
+
+  <span *ngIf="editorService.loading">Loading...</span>
+
+  <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
+
+    <app-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></app-query-output>
+
+    <hr class="mt-2 mb-1">
+
+    <div class="wiki-link mb-2">
+      <a [href]="docUrl" target="_blank">
+        <i class="fas fa-link"></i> {{ editorService.entityTable }} documentation
+      </a>
+    </div>
+
+    <form
+      [formGroup]="editorService.form"
+      class="form-group edit-form"
+    >
+
+      <div class="row">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="entry">entry</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'The unique ID of the gameobject'"
+          ></i>
+          <input [formControlName]="'entry'" id="entry" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="name">name</label>
+          <input [formControlName]="'name'" id="name" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="type">type</label>
+          <app-single-value-selector-btn
+            [control]="editorService.form.get('type')"
+            [config]="{ options: GAMEOBJECT_TYPE, name: 'type' }"
+            [modalClass]="'modal-md'"
+          ></app-single-value-selector-btn>
+          <input [formControlName]="'type'" id="type" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="displayId">displayId</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Graphic model id sent to the client from GameObjectDisplayInfo.dbc'"
+          ></i>
+          <input [formControlName]="'displayId'" id="displayId" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="IconName">IconName</label>
+          <app-single-value-selector-btn
+            [control]="editorService.form.get('IconName')"
+            [config]="{ options: GAMEOBJECT_ICON, name: 'IconName' }"
+            [modalClass]="'modal-xl'"
+          ></app-single-value-selector-btn>
+          <input [formControlName]="'IconName'" id="IconName" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="size">size</label>
+          <input [formControlName]="'size'" id="size" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="AIName">AIName</label>
+          <input [formControlName]="'AIName'" id="AIName" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="ScriptName">ScriptName</label>
+          <input [formControlName]="'ScriptName'" id="ScriptName" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="castBarCaption">castBarCaption</label>
+          <input [formControlName]="'castBarCaption'" id="castBarCaption" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="unk1">unk1</label>
+          <input [formControlName]="'unk1'" id="unk1" type="text" class="form-control form-control-sm">
+        </div>
+      </div>
+
+      <br>
+
+      <span class="category-title">GO Data</span>
+
+      <div class="row">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="Data1">{{ dataFieldDefinition(editorService.form.get('type').value, 0).name }}</label>
+          <input [formControlName]="'Data1'" id="Data1" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="Data2">Data2</label>
+          <input [formControlName]="'Data2'" id="Data2" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="Data3">Data3</label>
+          <input [formControlName]="'Data3'" id="Data3" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="Data4">Data4</label>
+          <input [formControlName]="'Data4'" id="Data4" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="Data5">Data5</label>
+          <input [formControlName]="'Data5'" id="Data5" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="Data6">Data6</label>
+          <input [formControlName]="'Data6'" id="Data6" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="Data7">Data7</label>
+          <input [formControlName]="'Data7'" id="Data7" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="Data8">Data8</label>
+          <input [formControlName]="'Data8'" id="Data8" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="Data9">Data9</label>
+          <input [formControlName]="'Data9'" id="Data9" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="Data10">Data10</label>
+          <input [formControlName]="'Data10'" id="Data10" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="Data11">Data11</label>
+          <input [formControlName]="'Data11'" id="Data11" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="Data12">Data12</label>
+          <input [formControlName]="'Data12'" id="Data12" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="Data13">Data13</label>
+          <input [formControlName]="'Data13'" id="Data13" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="Data14">Data14</label>
+          <input [formControlName]="'Data14'" id="Data14" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="Data15">Data15</label>
+          <input [formControlName]="'Data15'" id="Data15" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="Data16">Data16</label>
+          <input [formControlName]="'Data16'" id="Data16" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="Data17">Data17</label>
+          <input [formControlName]="'Data17'" id="Data17" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="Data18">Data18</label>
+          <input [formControlName]="'Data18'" id="Data18" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="Data19">Data19</label>
+          <input [formControlName]="'Data19'" id="Data19" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="Data20">Data20</label>
+          <input [formControlName]="'Data20'" id="Data20" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="Data21">Data21</label>
+          <input [formControlName]="'Data21'" id="Data21" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="Data22">Data22</label>
+          <input [formControlName]="'Data22'" id="Data22" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="Data23">Data23</label>
+          <input [formControlName]="'Data23'" id="Data23" type="text" class="form-control form-control-sm">
+        </div>
+        
+
+      </div>
+
+    </form>
+  </div>
+</div>

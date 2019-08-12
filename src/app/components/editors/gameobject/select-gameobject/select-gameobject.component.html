@@ -17,7 +17,7 @@
     <div class="row">
       <ng-container [formGroup]="selectService.fields">
         <div class="form-group col-2">
-          <input [formControlName]="'ID'" type="number" class="form-control form-control-sm" id="search-id" placeholder="ID">
+          <input [formControlName]="'entry'" type="number" class="form-control form-control-sm" id="search-id" placeholder="entry">
         </div>
         <div class="form-group col-3">
           <input [formControlName]="'name'" class="form-control form-control-sm" id="name" placeholder="Name">
@@ -52,13 +52,12 @@
       (select)='selectService.onSelect($event)'
       [count]="false"
     >
-      <ngx-datatable-column name="ID" prop="ID" [minWidth]="100">
+      <ngx-datatable-column name="Entry" prop="entry" [minWidth]="100">
         <ng-template let-row="row" ngx-datatable-cell-template>
-          {{ row.ID }}
+          {{ row.entry }}
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column name="Entry" prop="entry" [minWidth]="60"></ngx-datatable-column>
-      <ngx-datatable-column name="Name" prop="name" [minWidth]="60" [maxWidth]="60"></ngx-datatable-column>
+      <ngx-datatable-column name="Name" prop="name" [minWidth]="120" [maxWidth]="600"></ngx-datatable-column>
     </ngx-datatable>
 
   </div>
