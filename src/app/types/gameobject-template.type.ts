@@ -49,19 +49,3 @@ export class GameobjectTemplate extends TableRow {
   ScriptName: string = '';
   VerifiedBuild: number = 0;
 }
-
-export const gameobjectTypeData = [];
-gameobjectTypeData[0] =
-  [
-    { name: 'startOpen',              tooltip: 'Boolean flag'         },
-    { name: 'open',                   tooltip: 'LockId from Lock.dbc' },
-    { name: 'autoClose',              tooltip: 'Time in milliseconds' },
-    { name: 'noDamageImmune',         tooltip: 'Boolean flag'         },
-    { name: 'openTextID',             tooltip: 'Unknown Text ID'      },
-    { name: 'closeTextID',            tooltip: 'Unknown Text ID'      },
-    { name: 'Ignored by pathfinding', tooltip: null                   },
-    { name: 'Conditionid1',           tooltip: null                   },
-    { name: 'Door is opaque',         tooltip: null                   },
-    { name: 'Gigantic AOI',           tooltip: null                   },
-    { name: 'Infinite AOI',           tooltip: null                   }
-  ];

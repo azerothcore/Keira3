@@ -6,8 +6,9 @@ import {
   GAMEOBJECT_TEMPLATE_NAME,
   GAMEOBJECT_TEMPLATE_TABLE,
   GameobjectTemplate,
-  gameobjectTypeData,
 } from '../../../types/gameobject-template.type';
+import { FieldDefinition } from '../../../types/general';
+import { GO_DATA_FIELDS } from '../../../constants/gameobject-types';
 import { QueryService } from '../../query.service';
 import { GameobjectHandlerService } from '../../handlers/gameobject-handler.service';
 
@@ -15,8 +16,6 @@ import { GameobjectHandlerService } from '../../handlers/gameobject-handler.serv
   providedIn: 'root'
 })
 export class GameobjectTemplateService extends SingleRowEditorService<GameobjectTemplate> {
-
-  public gameobjectTypeData = gameobjectTypeData;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
@@ -34,10 +33,10 @@ export class GameobjectTemplateService extends SingleRowEditorService<Gameobject
     );
   }
 
-  getFieldDefinition(type: number, dataIndex: number): { name: string, tooltip: string } {
-    return this.gameobjectTypeData[type] && this.gameobjectTypeData[type][dataIndex]
-    ? this.gameobjectTypeData[type][dataIndex]
-    : {name: 'Data' + dataIndex, tooltip: '' };
+  getFieldDefinition(type: number, dataIndex: number): FieldDefinition {
+    return GO_DATA_FIELDS[type] && GO_DATA_FIELDS[type][dataIndex]
+    ? GO_DATA_FIELDS[type][dataIndex]
+    : { name: 'Data' + dataIndex, tooltip: '' };
   }
 
 }

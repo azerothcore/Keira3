@@ -7,6 +7,7 @@ import { GameobjectHandlerService } from '../../../../services/handlers/gameobje
 import { FACTIONS } from '../../../../constants/options/faction';
 import { GAMEOBJECT_TYPE } from '../../../../constants/options/gameobject-type';
 import { GAMEOBJECT_ICON } from '../../../../constants/options/gameobject-icon';
+import { FieldDefinition } from '../../../../types/general';
 
 
 @Component({
@@ -28,7 +29,7 @@ export class GameobjectTemplateComponent extends SingleRowEditorComponent<Gameob
     super(editorService, handlerService);
   }
 
-  dataFieldDefinition(type: number, dataIndex: number): { name: string, tooltip: string } {
-    return this.editorService.getFieldDefinition(type, dataIndex);
+  dataFieldDefinition(dataIndex: number): FieldDefinition {
+    return this.editorService.getFieldDefinition(this.editorService.form.get('type').value, dataIndex);
   }
 }
