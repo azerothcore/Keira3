@@ -25,6 +25,7 @@ import { ComingSoonComponent } from '../components/editors/coming-soon/coming-so
 import { QuestTemplateComponent } from '../components/editors/quest/quest-template/quest-template.component';
 import { QuestHandlerService } from '../services/handlers/quest-handler.service';
 import { SelectQuestComponent } from '../components/editors/quest/select-quest/select-quest.component';
+import { QuestTemplateAddonComponent } from '../components/editors/quest/quest-template-addon/quest-template-addon.component';
 
 const routes: Routes = [
   {
@@ -114,6 +115,11 @@ const routes: Routes = [
       {
         path: 'quest-template',
         component: QuestTemplateComponent,
+        canActivate: [QuestHandlerService],
+      },
+      {
+        path: 'quest-template-addon',
+        component: QuestTemplateAddonComponent,
         canActivate: [QuestHandlerService],
       },
     ]

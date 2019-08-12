@@ -8,8 +8,6 @@ import {
   CREATURE_QUESTENDER_TABLE,
   CreatureQuestender
 } from '../../../types/creature-questender.type';
-import { Class } from '../../../types/general';
-import { HandlerService } from '../../handlers/handler.service';
 
 @Injectable({
   providedIn: 'root'
