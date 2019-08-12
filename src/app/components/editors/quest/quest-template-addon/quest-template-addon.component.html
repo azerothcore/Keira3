@@ -1,0 +1,201 @@
+<app-top-bar [handler]="handlerService"></app-top-bar>
+
+<div class="container-fluid">
+
+  <span *ngIf="editorService.loading">Loading...</span>
+
+  <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
+
+    <app-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></app-query-output>
+
+    <hr class="mt-2 mb-1">
+
+    <div class="wiki-link">
+      <a [href]="docUrl" target="_blank">
+        <i class="fas fa-link"></i> {{ editorService.entityTable }} documentation
+      </a>
+    </div>
+
+    <form
+      [formGroup]="editorService.form"
+      class="form-group edit-form"
+    >
+
+      <span class="category-title">Addon Base</span>
+      <div class="row">
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="ID">ID</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'The unique ID of the quest'"
+          ></i>
+          <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="PrevQuestID">PrevQuestID</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'if > 0: previous quest id; if < 0 parent quest id'"
+          ></i>
+          <input [formControlName]="'PrevQuestID'" id="PrevQuestID" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="NextQuestID">NextQuestID</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Contains the next quest id, in case PrevQuestId of that other quest is not sufficient.'"
+          ></i>
+          <input [formControlName]="'NextQuestID'" id="NextQuestID" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="MaxLevel">MaxLevel</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Maximum player level at which a character can get the quest.'"
+          ></i>
+          <input [formControlName]="'MaxLevel'" id="MaxLevel" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="AllowableClasses">AllowableClasses</label>
+          <app-flags-selector-btn
+            [control]="editorService.form.get('AllowableClasses')"
+            [config]="{ flags: ALLOWABLE_CLASSES, name: 'AllowableClasses' }"
+          ></app-flags-selector-btn>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Use 0 to allow all classes'"
+          ></i>
+          <input [formControlName]="'AllowableClasses'" id="AllowableClasses" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="SourceSpellID">SourceSpellID</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'The spell ID cast on player upon starting the quest.'"
+          ></i>
+          <input [formControlName]="'SourceSpellID'" id="SourceSpellID" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="ExclusiveGroup">ExclusiveGroup</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'If > 0: group of quests of which only one may be chosen and completed; if < 0  group of quests of which all must be completed and rewarded to start next quest'"
+          ></i>
+          <input [formControlName]="'ExclusiveGroup'" id="ExclusiveGroup" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="ProvidedItemCount">ProvidedItemCount</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Number of items given to the player (inserted in the player’s bags) upon accepting the quest.'"
+          ></i>
+          <input [formControlName]="'ProvidedItemCount'" id="ProvidedItemCount" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="SpecialFlags">SpecialFlags</label>
+          <app-flags-selector-btn
+            [control]="editorService.form.get('SpecialFlags')"
+            [config]="{ flags: SPECIAL_FLAGS, name: 'SpecialFlags' }"
+          ></app-flags-selector-btn>
+          <input [formControlName]="'SpecialFlags'" id="SpecialFlags" type="number" class="form-control form-control-sm">
+        </div>
+
+      </div>
+
+      <span class="category-title">Addon Requirements</span>
+      <div class="row">
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RequiredSkillID">RequiredSkillID</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Skill required to know to accept the quest. Use 0 for no skill required.'"
+          ></i>
+          <input [formControlName]="'RequiredSkillID'" id="RequiredSkillID" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RequiredSkillPoints">RequiredSkillPoints</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Skill points required to have in order to accept the quest.'"
+          ></i>
+          <input [formControlName]="'RequiredSkillPoints'" id="RequiredSkillPoints" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RequiredMinRepFaction">RequiredMinRepFaction</label>
+          <app-single-value-selector-btn
+                [control]="editorService.form.get('RequiredMinRepFaction')"
+                [config]="{ options: FACTIONS, name: 'RequiredMinRepFaction' }"
+                [modalClass]="'modal-md'"
+              ></app-single-value-selector-btn>
+          <input [formControlName]="'RequiredMinRepFaction'" id="RequiredMinRepFaction" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RequiredMinRepValue">RequiredMinRepValue</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Players must have this reputation or higher in order to receive the quest.'"
+          ></i>
+          <input [formControlName]="'RequiredMinRepValue'" id="RequiredMinRepValue" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RequiredMaxRepFaction">RequiredMaxRepFaction</label>
+          <app-single-value-selector-btn
+                [control]="editorService.form.get('RequiredMaxRepFaction')"
+                [config]="{ options: FACTIONS, name: 'RequiredMaxRepFaction' }"
+                [modalClass]="'modal-md'"
+              ></app-single-value-selector-btn>
+          <input [formControlName]="'RequiredMaxRepFaction'" id="RequiredMaxRepFaction" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RequiredMaxRepValue">RequiredMaxRepValue</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'The maximum reputation value that the player can have with a faction and still get the quest.'"
+          ></i>
+          <input [formControlName]="'RequiredMaxRepValue'" id="RequiredMaxRepValue" type="number" class="form-control form-control-sm">
+        </div>
+
+      </div>
+
+      <span class="category-title">Addon Rewards</span>
+      <div class="row">
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RewardMailTemplateID">RewardMailTemplateID</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Corresponds to the loot template in quest_mail_loot_template; items will be sent by mail at quest completion'"
+          ></i>
+          <input [formControlName]="'RewardMailTemplateID'" id="RewardMailTemplateID" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RewardMailDelay">RewardMailDelay</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Delay (in seconds) after which the mail is sent to the character (defined in RewardMailTemplateId)'"
+          ></i>
+          <input [formControlName]="'RewardMailDelay'" id="RewardMailDelay" type="number" class="form-control form-control-sm">
+        </div>
+
+      </div>
+
+    </form>
+
+  </div>
+</div>
