@@ -12,7 +12,7 @@ import { GameobjectHandlerService } from '../../../../services/handlers/gameobje
 
 class GameobjectTemplatePage extends EditorPageObject<GameobjectTemplateComponent> {}
 
-fdescribe('GameobjectTemplate integration tests', () => {
+describe('GameobjectTemplate integration tests', () => {
   let component: GameobjectTemplateComponent;
   let fixture: ComponentFixture<GameobjectTemplateComponent>;
   let queryService: QueryService;

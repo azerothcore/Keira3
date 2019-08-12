@@ -39,7 +39,7 @@
           <app-single-value-selector-btn
             [control]="editorService.form.get('type')"
             [config]="{ options: GAMEOBJECT_TYPE, name: 'type' }"
-            [modalClass]="'modal-xl'"
+            [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
           <input [formControlName]="'type'" id="type" type="number" class="form-control form-control-sm">
         </div>
@@ -56,7 +56,7 @@
           <app-single-value-selector-btn
             [control]="editorService.form.get('IconName')"
             [config]="{ options: GAMEOBJECT_ICON, name: 'IconName' }"
-            [modalClass]="'modal-xl'"
+            [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
           <input [formControlName]="'IconName'" id="IconName" class="form-control form-control-sm">
         </div>
