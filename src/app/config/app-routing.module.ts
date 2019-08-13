@@ -26,6 +26,7 @@ import { QuestTemplateComponent } from '../components/editors/quest/quest-templa
 import { QuestHandlerService } from '../services/handlers/quest-handler.service';
 import { SelectQuestComponent } from '../components/editors/quest/select-quest/select-quest.component';
 import { QuestTemplateAddonComponent } from '../components/editors/quest/quest-template-addon/quest-template-addon.component';
+import { QuestOfferRewardComponent } from '../components/editors/quest/quest-offer-reward/quest-offer-reward.component';
 
 const routes: Routes = [
   {
@@ -120,6 +121,11 @@ const routes: Routes = [
       {
         path: 'quest-template-addon',
         component: QuestTemplateAddonComponent,
+        canActivate: [QuestHandlerService],
+      },
+      {
+        path: 'quest-offer-reward',
+        component: QuestOfferRewardComponent,
         canActivate: [QuestHandlerService],
       },
     ]

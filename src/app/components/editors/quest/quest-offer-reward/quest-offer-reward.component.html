@@ -1,0 +1,56 @@
+<app-top-bar [handler]="handlerService"></app-top-bar>
+
+<div class="container-fluid">
+
+  <span *ngIf="editorService.loading">Loading...</span>
+
+  <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
+
+    <app-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></app-query-output>
+
+    <hr class="mt-2 mb-1">
+
+    <div class="wiki-link">
+      <a [href]="docUrl" target="_blank">
+        <i class="fas fa-link"></i> {{ editorService.entityTable }} documentation
+      </a>
+    </div>
+
+    <form
+      [formGroup]="editorService.form"
+      class="form-group edit-form"
+    >
+      <br>
+      <div class="row">
+
+        <div
+          *ngFor="let i of [1,2,3,4]"
+          class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
+        >
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="Emote{{ i }}">Emote{{ i }}</label>
+              <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="'Emote (from Emotes.dbc) played by the NPC'"
+              ></i>
+              <input [formControlName]="'Emote' + i" id="Emote{{ i }}" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="EmoteDelay{{ i }}">EmoteDelay{{ i }}</label>
+              <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="'Emote delay in milliseconds'"
+              ></i>
+              <input [formControlName]="'EmoteDelay' + i" id="EmoteDelay{{ i }}" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </form>
+
+  </div>
+</div>
