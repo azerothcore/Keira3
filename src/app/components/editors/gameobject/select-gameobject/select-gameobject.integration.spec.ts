@@ -11,7 +11,7 @@ import { SelectGameobjectModule } from './select-gameobject.module';
 import { SelectPageObject } from '../../../../test-utils/select-page-object';
 
 class SelectGameobjectComponentPage extends SelectPageObject<SelectGameobjectComponent> {
-  ID_FIELD = 'ID';
+  ID_FIELD = 'entry';
 }
 
 describe('SelectGameobject integration tests', () => {
