@@ -3,6 +3,7 @@ import { BsModalService } from 'ngx-bootstrap';
 
 import { PageObject } from './page-object';
 import { QueryOutputComponentPage } from '../components/editors/shared/query-output/query-output.component.spec';
+import { TableRow } from '../types/general';
 
 export abstract class EditorPageObject<T> extends PageObject<T> {
   protected readonly queryPo: QueryOutputComponentPage;
@@ -15,6 +16,18 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
   ) {
     super(fixture, config);
     this.queryPo = new QueryOutputComponentPage(fixture as ComponentFixture<any>);
+  }
+
+  changeAllFields<E extends TableRow>(entity: E, excludedFields: string[] = [] ) {
+    let i = 0;
+    for (const field of Object.getOwnPropertyNames(entity)) {
+      if (!excludedFields.includes(field)) {
+        if (!this.getInputById(field).disabled) {
+          this.setInputValueById(field, i);
+          i++;
+        }
+      }
+    }
   }
 
   clickExecuteQuery() {

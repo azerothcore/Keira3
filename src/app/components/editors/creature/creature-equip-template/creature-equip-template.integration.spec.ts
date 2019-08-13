@@ -90,11 +90,11 @@ describe('CreatureEquipTemplate integration tests', () => {
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing a property and executing the query should correctly work', () => {
-      const expectedQuery = 'UPDATE `creature_equip_template` SET `ItemID2` = 2 WHERE (`CreatureID` = 1234);';
+    it('changing all properties and executing the query should correctly work', () => {
+      const expectedQuery = 'UPDATE `creature_equip_template` SET `ItemID2` = 1, `ItemID3` = 2 WHERE (`CreatureID` = 1234);';
       querySpy.calls.reset();
 
-      page.setInputValueById('ItemID2', 2);
+      page.changeAllFields(originalEntity, ['ID', 'VerifiedBuild']);
       page.clickExecuteQuery();
 
       page.expectDiffQueryToContain(expectedQuery);
