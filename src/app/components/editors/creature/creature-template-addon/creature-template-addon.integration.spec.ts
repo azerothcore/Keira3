@@ -98,11 +98,12 @@ describe('CreatureTemplateAddon integration tests', () => {
         '(1234, 123, 0, 1, 2, 3, NULL);');
     });
 
-    it('changing a property and executing the query should correctly work', () => {
-      const expectedQuery = 'UPDATE `creature_template_addon` SET `path_id` = 3 WHERE (`entry` = 1234);';
+    it('changing all properties and executing the query should correctly work', () => {
+      const expectedQuery = 'UPDATE `creature_template_addon` SET ' +
+        '`path_id` = 0, `mount` = 1, `bytes1` = 2, `bytes2` = 3, `emote` = 4, `auras` = \'5\' WHERE (`entry` = 1234);';
       querySpy.calls.reset();
 
-      page.setInputValueById('path_id', 3);
+      page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.clickExecuteQuery();
 
       page.expectDiffQueryToContain(expectedQuery);
