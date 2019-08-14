@@ -118,11 +118,15 @@ describe('QuestTemplateAddon integration tests', () => {
         '(1234, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);');
     });
 
-    it('changing a property and executing the query should correctly work', () => {
-      const expectedQuery = 'UPDATE `quest_template_addon` SET `PrevQuestID` = 11 WHERE (`ID` = 1234);';
+    it('changing all properties and executing the query should correctly work', () => {
+      const expectedQuery = 'UPDATE `quest_template_addon` SET ' +
+        '`MaxLevel` = 0, `AllowableClasses` = 1, `SourceSpellID` = 2, `PrevQuestID` = 3, `NextQuestID` = 4, `ExclusiveGroup` = 5, ' +
+        '`RewardMailTemplateID` = 6, `RewardMailDelay` = 7, `RequiredSkillID` = 8, `RequiredSkillPoints` = 9, ' +
+        '`RequiredMinRepFaction` = 10, `RequiredMaxRepFaction` = 11, `RequiredMinRepValue` = 12, `RequiredMaxRepValue` = 13, ' +
+        '`ProvidedItemCount` = 14, `SpecialFlags` = 15 WHERE (`ID` = 1234);';
       querySpy.calls.reset();
 
-      page.setInputValueById('PrevQuestID', 11);
+      page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.clickExecuteQuery();
 
       page.expectDiffQueryToContain(expectedQuery);
