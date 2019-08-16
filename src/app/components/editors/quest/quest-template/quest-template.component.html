@@ -224,24 +224,12 @@
       </span>
       <div class="row">
 
-        <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
-          <label class="control-label" for="ObjectiveText1">ObjectiveText1</label>
-          <input [formControlName]="'ObjectiveText1'" id="ObjectiveText1" class="form-control form-control-sm">
-        </div>
-
-        <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
-          <label class="control-label" for="ObjectiveText2">ObjectiveText2</label>
-          <input [formControlName]="'ObjectiveText2'" id="ObjectiveText2" class="form-control form-control-sm">
-        </div>
-
-        <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
-          <label class="control-label" for="ObjectiveText3">ObjectiveText3</label>
-          <input [formControlName]="'ObjectiveText3'" id="ObjectiveText3" class="form-control form-control-sm">
-        </div>
-
-        <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
-          <label class="control-label" for="ObjectiveText4">ObjectiveText4</label>
-          <input [formControlName]="'ObjectiveText4'" id="ObjectiveText4" class="form-control form-control-sm">
+        <div
+          *ngFor="let i of [1,2,3,4]"
+          class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3"
+        >
+          <label class="control-label" for="ObjectiveText{{ i }}">ObjectiveText{{ i }}</label>
+          <input [formControlName]="'ObjectiveText' + i" id="ObjectiveText{{ i }}" class="form-control form-control-sm">
         </div>
 
       </div>
@@ -251,104 +239,22 @@
       </span>
       <div class="row">
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div
+          *ngFor="let i of [1,2,3,4,5,6]"
+          class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
+        >
           <div class="row">
             <div class="col-12">
-              <label class="control-label" for="RequiredItemId1">RequiredItemId1</label>
+              <label class="control-label" for="RequiredItemId{{ i }}">RequiredItemId{{ i }}</label>
               <app-item-selector-btn
-                [control]="editorService.form.get('RequiredItemId1')"
-                [config]="{  name: 'RequiredItemId1' }"
+                [control]="editorService.form.get('RequiredItemId' + i)"
+                [config]="{  name: 'RequiredItemId' + i }"
               ></app-item-selector-btn>
-              <input [formControlName]="'RequiredItemId1'" id="RequiredItemId1" type="number" class="form-control form-control-sm">
+              <input [formControlName]="'RequiredItemId' + i" id="RequiredItemId{{ i }}" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
-              <label class="control-label" for="RequiredItemCount1">RequiredItemCount1</label>
-              <input [formControlName]="'RequiredItemCount1'" id="RequiredItemCount1" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RequiredItemId2">RequiredItemId2</label>
-              <app-item-selector-btn
-                [control]="editorService.form.get('RequiredItemId2')"
-                [config]="{  name: 'RequiredItemId2' }"
-              ></app-item-selector-btn>
-              <input [formControlName]="'RequiredItemId2'" id="RequiredItemId2" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RequiredItemCount2">RequiredItemCount2</label>
-              <input [formControlName]="'RequiredItemCount2'" id="RequiredItemCount2" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RequiredItemId3">RequiredItemId3</label>
-              <app-item-selector-btn
-                [control]="editorService.form.get('RequiredItemId3')"
-                [config]="{  name: 'RequiredItemId3' }"
-              ></app-item-selector-btn>
-              <input [formControlName]="'RequiredItemId3'" id="RequiredItemId3" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RequiredItemCount3">RequiredItemCount3</label>
-              <input [formControlName]="'RequiredItemCount3'" id="RequiredItemCount3" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RequiredItemId4">RequiredItemId4</label>
-              <app-item-selector-btn
-                [control]="editorService.form.get('RequiredItemId4')"
-                [config]="{  name: 'RequiredItemId4' }"
-              ></app-item-selector-btn>
-              <input [formControlName]="'RequiredItemId4'" id="RequiredItemId4" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RequiredItemCount4">RequiredItemCount4</label>
-              <input [formControlName]="'RequiredItemCount4'" id="RequiredItemCount4" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RequiredItemId5">RequiredItemId5</label>
-              <app-item-selector-btn
-                [control]="editorService.form.get('RequiredItemId5')"
-                [config]="{  name: 'RequiredItemId5' }"
-              ></app-item-selector-btn>
-              <input [formControlName]="'RequiredItemId5'" id="RequiredItemId5" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RequiredItemCount5">RequiredItemCount5</label>
-              <input [formControlName]="'RequiredItemCount5'" id="RequiredItemCount5" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RequiredItemId6">RequiredItemId6</label>
-              <app-item-selector-btn
-                [control]="editorService.form.get('RequiredItemId6')"
-                [config]="{  name: 'RequiredItemId6' }"
-              ></app-item-selector-btn>
-              <input [formControlName]="'RequiredItemId6'" id="RequiredItemId6" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RequiredItemCount6">RequiredItemCount6</label>
-              <input [formControlName]="'RequiredItemCount6'" id="RequiredItemCount6" type="number" class="form-control form-control-sm">
+              <label class="control-label" for="RequiredItemCount{{ i }}">RequiredItemCount{{ i }}</label>
+              <input [formControlName]="'RequiredItemCount' + i" id="RequiredItemCount{{ i }}" type="number" class="form-control form-control-sm">
             </div>
           </div>
         </div>
@@ -360,90 +266,50 @@
       </span>
       <div class="row">
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div
+          *ngFor="let i of [1,2,3,4]"
+          class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
+        >
           <div class="row">
             <div class="col-12">
-              <label class="control-label" for="RequiredNpcOrGo1">RequiredNpcOrGo1</label>
-              <input [formControlName]="'RequiredNpcOrGo1'" id="RequiredNpcOrGo1" type="number" class="form-control form-control-sm">
+              <label class="control-label" for="RequiredNpcOrGo{{ i }}">RequiredNpcOrGo{{ i }}</label>
+              <input [formControlName]="'RequiredNpcOrGo' + i" id="RequiredNpcOrGo{{ i }}" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
-              <label class="control-label" for="RequiredNpcOrGoCount1">RequiredNpcOrGoCount1</label>
-              <input [formControlName]="'RequiredNpcOrGoCount1'" id="RequiredNpcOrGoCount1" type="number" class="form-control form-control-sm">
+              <label class="control-label" for="RequiredNpcOrGoCount{{ i }}">RequiredNpcOrGoCount{{ i }}</label>
+              <input [formControlName]="'RequiredNpcOrGoCount' + i" id="RequiredNpcOrGoCount{{ i }}" type="number" class="form-control form-control-sm">
             </div>
           </div>
         </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div
+          *ngFor="let i of [1,2]"
+          class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
+        >
           <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RequiredNpcOrGo2">RequiredNpcOrGo2</label>
-              <input [formControlName]="'RequiredNpcOrGo2'" id="RequiredNpcOrGo2" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RequiredNpcOrGoCount2">RequiredNpcOrGoCount2</label>
-              <input [formControlName]="'RequiredNpcOrGoCount2'" id="RequiredNpcOrGoCount2" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RequiredNpcOrGo3">RequiredNpcOrGo3</label>
-              <input [formControlName]="'RequiredNpcOrGo3'" id="RequiredNpcOrGo3" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RequiredNpcOrGoCount3">RequiredNpcOrGoCount3</label>
-              <input [formControlName]="'RequiredNpcOrGoCount3'" id="RequiredNpcOrGoCount3" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RequiredNpcOrGo4">RequiredNpcOrGo4</label>
-              <input [formControlName]="'RequiredNpcOrGo4'" id="RequiredNpcOrGo4" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RequiredNpcOrGoCount4">RequiredNpcOrGoCount4</label>
-              <input [formControlName]="'RequiredNpcOrGoCount4'" id="RequiredNpcOrGoCount4" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RequiredFactionId1">RequiredFactionId1</label>
+            <div
+              *ngFor="let i of [1,2]"
+              class="col-12"
+            >
+              <label class="control-label" for="RequiredFactionId{{ i }}">RequiredFactionId{{ i }}</label>
               <app-single-value-selector-btn
-                [control]="editorService.form.get('RequiredFactionId1')"
-                [config]="{ options: FACTIONS, name: 'RequiredFactionId1' }"
+                [control]="editorService.form.get('RequiredFactionId' + i)"
+                [config]="{ options: FACTIONS, name: 'RequiredFactionId' + i }"
                 [modalClass]="'modal-md'"
               ></app-single-value-selector-btn>
-              <input [formControlName]="'RequiredFactionId1'" id="RequiredFactionId1" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RequiredFactionId2">RequiredFactionId2</label>
-              <app-single-value-selector-btn
-                [control]="editorService.form.get('RequiredFactionId2')"
-                [config]="{ options: FACTIONS, name: 'RequiredFactionId2' }"
-                [modalClass]="'modal-md'"
-              ></app-single-value-selector-btn>
-              <input [formControlName]="'RequiredFactionId2'" id="RequiredFactionId2" type="number" class="form-control form-control-sm">
+              <input [formControlName]="'RequiredFactionId' + i" id="RequiredFactionId{{ i }}" type="number" class="form-control form-control-sm">
             </div>
           </div>
         </div>
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RequiredFactionValue1">RequiredFactionValue1</label>
-              <input [formControlName]="'RequiredFactionValue1'" id="RequiredFactionValue1" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RequiredFactionValue2">RequiredFactionValue2</label>
-              <input [formControlName]="'RequiredFactionValue2'" id="RequiredFactionValue2" type="number" class="form-control form-control-sm">
+            <div
+              *ngFor="let i of [1,2]"
+              class="col-12"
+            >
+              <label class="control-label" for="RequiredFactionValue{{ i }}">RequiredFactionValue{{ i }}</label>
+              <input [formControlName]="'RequiredFactionValue' + i" id="RequiredFactionValue{{ i }}" type="number" class="form-control form-control-sm">
             </div>
           </div>
         </div>
@@ -453,70 +319,22 @@
       <span class="category-title">ItemDrops</span>
       <div class="row">
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div
+          *ngFor="let i of [1,2,3,4]"
+          class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
+        >
           <div class="row">
             <div class="col-12">
-              <label class="control-label" for="ItemDrop1">ItemDrop1</label>
+              <label class="control-label" for="ItemDrop{{ i }}">ItemDrop{{ i }}</label>
               <app-item-selector-btn
-                [control]="editorService.form.get('ItemDrop1')"
-                [config]="{  name: 'ItemDrop1' }"
+                [control]="editorService.form.get('ItemDrop' + i)"
+                [config]="{  name: 'ItemDrop' + i }"
               ></app-item-selector-btn>
-              <input [formControlName]="'ItemDrop1'" id="ItemDrop1" type="number" class="form-control form-control-sm">
+              <input [formControlName]="'ItemDrop' + i" id="ItemDrop{{ i }}" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
-              <label class="control-label" for="ItemDropQuantity1">ItemDropQuantity1</label>
-              <input [formControlName]="'ItemDropQuantity1'" id="ItemDropQuantity1" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="ItemDrop2">ItemDrop2</label>
-              <app-item-selector-btn
-                [control]="editorService.form.get('ItemDrop2')"
-                [config]="{  name: 'ItemDrop2' }"
-              ></app-item-selector-btn>
-              <input [formControlName]="'ItemDrop2'" id="ItemDrop2" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="ItemDropQuantity2">ItemDropQuantity2</label>
-              <input [formControlName]="'ItemDropQuantity2'" id="ItemDropQuantity2" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="ItemDrop3">ItemDrop3</label>
-              <app-item-selector-btn
-                [control]="editorService.form.get('ItemDrop3')"
-                [config]="{  name: 'ItemDrop3' }"
-              ></app-item-selector-btn>
-              <input [formControlName]="'ItemDrop3'" id="ItemDrop3" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="ItemDropQuantity3">ItemDropQuantity3</label>
-              <input [formControlName]="'ItemDropQuantity3'" id="ItemDropQuantity3" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="ItemDrop4">ItemDrop4</label>
-              <app-item-selector-btn
-                [control]="editorService.form.get('ItemDrop4')"
-                [config]="{  name: 'ItemDrop4' }"
-              ></app-item-selector-btn>
-              <input [formControlName]="'ItemDrop4'" id="ItemDrop4" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="ItemDropQuantity4">ItemDropQuantity4</label>
-              <input [formControlName]="'ItemDropQuantity4'" id="ItemDropQuantity4" type="number" class="form-control form-control-sm">
+              <label class="control-label" for="ItemDropQuantity{{ i }}">ItemDropQuantity{{ i }}</label>
+              <input [formControlName]="'ItemDropQuantity' + i" id="ItemDropQuantity{{ i }}" type="number" class="form-control form-control-sm">
             </div>
           </div>
         </div>
@@ -618,70 +436,22 @@
       <span class="category-title">RewardItems</span>
       <div class="row">
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div
+          *ngFor="let i of [1,2,3,4]"
+          class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
+        >
           <div class="row">
             <div class="col-12">
-              <label class="control-label" for="RewardItem1">RewardItem1</label>
+              <label class="control-label" for="RewardItem{{ i }}">RewardItem{{ i }}</label>
               <app-item-selector-btn
-                [control]="editorService.form.get('RewardItem1')"
-                [config]="{  name: 'RewardItem1' }"
+                [control]="editorService.form.get('RewardItem' + i)"
+                [config]="{  name: 'RewardItem' + i }"
               ></app-item-selector-btn>
-              <input [formControlName]="'RewardItem1'" id="RewardItem1" type="number" class="form-control form-control-sm">
+              <input [formControlName]="'RewardItem' + i" id="RewardItem{{ i }}" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
-              <label class="control-label" for="RewardAmount1">RewardAmount1</label>
-              <input [formControlName]="'RewardAmount1'" id="RewardAmount1" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RewardItem2">RewardItem2</label>
-              <app-item-selector-btn
-                [control]="editorService.form.get('RewardItem2')"
-                [config]="{  name: 'RewardItem2' }"
-              ></app-item-selector-btn>
-              <input [formControlName]="'RewardItem2'" id="RewardItem2" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RewardAmount2">RewardAmount2</label>
-              <input [formControlName]="'RewardAmount2'" id="RewardAmount2" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RewardItem3">RewardItem3</label>
-              <app-item-selector-btn
-                [control]="editorService.form.get('RewardItem3')"
-                [config]="{  name: 'RewardItem3' }"
-              ></app-item-selector-btn>
-              <input [formControlName]="'RewardItem3'" id="RewardItem3" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RewardAmount3">RewardAmount3</label>
-              <input [formControlName]="'RewardAmount3'" id="RewardAmount3" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RewardItem4">RewardItem4</label>
-              <app-item-selector-btn
-                [control]="editorService.form.get('RewardItem4')"
-                [config]="{  name: 'RewardItem4' }"
-              ></app-item-selector-btn>
-              <input [formControlName]="'RewardItem4'" id="RewardItem4" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RewardAmount4">RewardAmount4</label>
-              <input [formControlName]="'RewardAmount4'" id="RewardAmount4" type="number" class="form-control form-control-sm">
+              <label class="control-label" for="RewardAmount{{ i }}">RewardAmount{{ i }}</label>
+              <input [formControlName]="'RewardAmount' + i" id="RewardAmount{{ i }}" type="number" class="form-control form-control-sm">
             </div>
           </div>
         </div>
@@ -691,104 +461,22 @@
       <span class="category-title">RewardChoiceItems</span>
       <div class="row">
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div
+          *ngFor="let i of [1,2,3,4,5,6]"
+          class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
+        >
           <div class="row">
             <div class="col-12">
-              <label class="control-label" for="RewardChoiceItemID1">RewardChoiceItemID1</label>
+              <label class="control-label" for="RewardChoiceItemID{{ i }}">RewardChoiceItemID{{ i }}</label>
               <app-item-selector-btn
-                [control]="editorService.form.get('RewardChoiceItemID1')"
-                [config]="{ name: 'RewardChoiceItemID1' }"
+                [control]="editorService.form.get('RewardChoiceItemID' + i)"
+                [config]="{ name: 'RewardChoiceItemID' + i }"
               ></app-item-selector-btn>
-              <input [formControlName]="'RewardChoiceItemID1'" id="RewardChoiceItemID1" type="number" class="form-control form-control-sm">
+              <input [formControlName]="'RewardChoiceItemID' + i" id="RewardChoiceItemID{{ i }}" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
-              <label class="control-label" for="RewardChoiceItemQuantity1">RewardChoiceItemQuantity1</label>
-              <input [formControlName]="'RewardChoiceItemQuantity1'" id="RewardChoiceItemQuantity1" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RewardChoiceItemID2">RewardChoiceItemID2</label>
-              <app-item-selector-btn
-                [control]="editorService.form.get('RewardChoiceItemID2')"
-                [config]="{ name: 'RewardChoiceItemID2' }"
-              ></app-item-selector-btn>
-              <input [formControlName]="'RewardChoiceItemID2'" id="RewardChoiceItemID2" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RewardChoiceItemQuantity2">RewardChoiceItemQuantity2</label>
-              <input [formControlName]="'RewardChoiceItemQuantity2'" id="RewardChoiceItemQuantity2" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RewardChoiceItemID3">RewardChoiceItemID3</label>
-              <app-item-selector-btn
-                [control]="editorService.form.get('RewardChoiceItemID3')"
-                [config]="{ name: 'RewardChoiceItemID3' }"
-              ></app-item-selector-btn>
-              <input [formControlName]="'RewardChoiceItemID3'" id="RewardChoiceItemID3" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RewardChoiceItemQuantity3">RewardChoiceItemQuantity3</label>
-              <input [formControlName]="'RewardChoiceItemQuantity3'" id="RewardChoiceItemQuantity3" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RewardChoiceItemID4">RewardChoiceItemID4</label>
-              <app-item-selector-btn
-                [control]="editorService.form.get('RewardChoiceItemID4')"
-                [config]="{ name: 'RewardChoiceItemID4' }"
-              ></app-item-selector-btn>
-              <input [formControlName]="'RewardChoiceItemID4'" id="RewardChoiceItemID4" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RewardChoiceItemQuantity4">RewardChoiceItemQuantity4</label>
-              <input [formControlName]="'RewardChoiceItemQuantity4'" id="RewardChoiceItemQuantity4" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RewardChoiceItemID5">RewardChoiceItemID5</label>
-              <app-item-selector-btn
-                [control]="editorService.form.get('RewardChoiceItemID5')"
-                [config]="{ name: 'RewardChoiceItemID5' }"
-              ></app-item-selector-btn>
-              <input [formControlName]="'RewardChoiceItemID5'" id="RewardChoiceItemID5" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RewardChoiceItemQuantity5">RewardChoiceItemQuantity5</label>
-              <input [formControlName]="'RewardChoiceItemQuantity5'" id="RewardChoiceItemQuantity5" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RewardChoiceItemID6">RewardChoiceItemID6</label>
-              <app-item-selector-btn
-                [control]="editorService.form.get('RewardChoiceItemID6')"
-                [config]="{ name: 'RewardChoiceItemID6' }"
-              ></app-item-selector-btn>
-              <input [formControlName]="'RewardChoiceItemID6'" id="RewardChoiceItemID6" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RewardChoiceItemQuantity6">RewardChoiceItemQuantity6</label>
-              <input [formControlName]="'RewardChoiceItemQuantity6'" id="RewardChoiceItemQuantity6" type="number" class="form-control form-control-sm">
+              <label class="control-label" for="RewardChoiceItemQuantity{{ i }}">RewardChoiceItemQuantity{{ i }}</label>
+              <input [formControlName]="'RewardChoiceItemQuantity' + i" id="RewardChoiceItemQuantity{{ i }}" type="number" class="form-control form-control-sm">
             </div>
           </div>
         </div>
@@ -800,112 +488,27 @@
       </span>
       <div class="row">
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div
+          *ngFor="let i of [1,2,3,4,5]"
+          class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
+        >
           <div class="row">
             <div class="col-12">
-              <label class="control-label" for="RewardFactionID1">RewardFactionID1</label>
+              <label class="control-label" for="RewardFactionID{{ i }}">RewardFactionID{{ i }}</label>
               <app-single-value-selector-btn
-                [control]="editorService.form.get('RewardFactionID1')"
-                [config]="{ options: FACTIONS, name: 'RewardFactionID1' }"
+                [control]="editorService.form.get('RewardFactionID' + i)"
+                [config]="{ options: FACTIONS, name: 'RewardFactionID' + i }"
                 [modalClass]="'modal-md'"
               ></app-single-value-selector-btn>
-              <input [formControlName]="'RewardFactionID1'" id="RewardFactionID1" type="number" class="form-control form-control-sm">
+              <input [formControlName]="'RewardFactionID' + i" id="RewardFactionID{{ i }}" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
-              <label class="control-label" for="RewardFactionValue1">RewardFactionValue1</label>
-              <input [formControlName]="'RewardFactionValue1'" id="RewardFactionValue1" type="number" class="form-control form-control-sm">
+              <label class="control-label" for="RewardFactionValue{{ i }}">RewardFactionValue{{ i }}</label>
+              <input [formControlName]="'RewardFactionValue' + i" id="RewardFactionValue{{ i }}" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
-              <label class="control-label" for="RewardFactionOverride1">RewardFactionOverride1</label>
-              <input [formControlName]="'RewardFactionOverride1'" id="RewardFactionOverride1" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RewardFactionID2">RewardFactionID2</label>
-              <app-single-value-selector-btn
-                [control]="editorService.form.get('RewardFactionID2')"
-                [config]="{ options: FACTIONS, name: 'RewardFactionID2' }"
-                [modalClass]="'modal-md'"
-              ></app-single-value-selector-btn>
-              <input [formControlName]="'RewardFactionID2'" id="RewardFactionID2" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RewardFactionValue2">RewardFactionValue2</label>
-              <input [formControlName]="'RewardFactionValue2'" id="RewardFactionValue2" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RewardFactionOverride2">RewardFactionOverride2</label>
-              <input [formControlName]="'RewardFactionOverride2'" id="RewardFactionOverride2" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RewardFactionID3">RewardFactionID3</label>
-              <app-single-value-selector-btn
-                [control]="editorService.form.get('RewardFactionID3')"
-                [config]="{ options: FACTIONS, name: 'RewardFactionID3' }"
-                [modalClass]="'modal-md'"
-              ></app-single-value-selector-btn>
-              <input [formControlName]="'RewardFactionID3'" id="RewardFactionID3" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RewardFactionValue3">RewardFactionValue3</label>
-              <input [formControlName]="'RewardFactionValue3'" id="RewardFactionValue3" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RewardFactionOverride3">RewardFactionOverride3</label>
-              <input [formControlName]="'RewardFactionOverride3'" id="RewardFactionOverride3" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RewardFactionID4">RewardFactionID4</label>
-              <app-single-value-selector-btn
-                [control]="editorService.form.get('RewardFactionID4')"
-                [config]="{ options: FACTIONS, name: 'RewardFactionID4' }"
-                [modalClass]="'modal-md'"
-              ></app-single-value-selector-btn>
-              <input [formControlName]="'RewardFactionID4'" id="RewardFactionID4" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RewardFactionValue4">RewardFactionValue4</label>
-              <input [formControlName]="'RewardFactionValue4'" id="RewardFactionValue4" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RewardFactionOverride4">RewardFactionOverride4</label>
-              <input [formControlName]="'RewardFactionOverride4'" id="RewardFactionOverride4" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RewardFactionID5">RewardFactionID5</label>
-              <app-single-value-selector-btn
-                [control]="editorService.form.get('RewardFactionID5')"
-                [config]="{ options: FACTIONS, name: 'RewardFactionID5' }"
-                [modalClass]="'modal-md'"
-              ></app-single-value-selector-btn>
-              <input [formControlName]="'RewardFactionID5'" id="RewardFactionID5" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RewardFactionValue5">RewardFactionValue5</label>
-              <input [formControlName]="'RewardFactionValue5'" id="RewardFactionValue5" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RewardFactionOverride5">RewardFactionOverride5</label>
-              <input [formControlName]="'RewardFactionOverride5'" id="RewardFactionOverride5" type="number" class="form-control form-control-sm">
+              <label class="control-label" for="RewardFactionOverride{{ i }}">RewardFactionOverride{{ i }}</label>
+              <input [formControlName]="'RewardFactionOverride' + i" id="RewardFactionOverride{{ i }}" type="number" class="form-control form-control-sm">
             </div>
           </div>
         </div>
