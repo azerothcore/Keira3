@@ -22,6 +22,27 @@
     >
       <br>
       <div class="row">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="ID">ID</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'The unique ID of the quest'"
+          ></i>
+          <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-12 col-md-8 col-lg-9 col-xl-6">
+          <label class="control-label" for="RewardText">RewardText</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Quest gossip text shown when turning in a quest where no item delivery is involved.'"
+          ></i>
+          <input [formControlName]="'RewardText'" id="RewardText" class="form-control form-control-sm">
+        </div>
+
+      </div>
+
+      <div class="row">
 
         <div
           *ngFor="let i of [1,2,3,4]"
