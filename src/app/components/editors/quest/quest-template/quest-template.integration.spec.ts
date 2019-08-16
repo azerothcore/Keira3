@@ -108,11 +108,35 @@ describe('QuestTemplate integration tests', () => {
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing a property and executing the query should correctly work', () => {
-      const expectedQuery = 'UPDATE `quest_template` SET `MinLevel` = 2 WHERE (`ID` = 1234);';
+    it('changing all properties and executing the query should correctly work', () => {
+      const expectedQuery = 'UPDATE `quest_template` SET ' +
+        '`QuestLevel` = 1, `MinLevel` = 2, `QuestSortID` = 3, `QuestInfoID` = 4, `SuggestedGroupNum` = 5, ' +
+        '`RequiredFactionId1` = 6, `RequiredFactionId2` = 7, `RequiredFactionValue1` = 8, `RequiredFactionValue2` = 9, ' +
+        '`RewardNextQuest` = 10, `RewardXPDifficulty` = 11, `RewardMoney` = 12, `RewardBonusMoney` = 13, ' +
+        '`RewardDisplaySpell` = 14, `RewardSpell` = 15, `RewardHonor` = 16, `RewardKillHonor` = 17, `StartItem` = 18, ' +
+        '`Flags` = 19, `RequiredPlayerKills` = 20, `RewardItem1` = 21, `RewardAmount1` = 22, `RewardItem2` = 23, ' +
+        '`RewardAmount2` = 24, `RewardItem3` = 25, `RewardAmount3` = 26, `RewardItem4` = 27, `RewardAmount4` = 28, ' +
+        '`ItemDrop1` = 29, `ItemDropQuantity1` = 30, `ItemDrop2` = 31, `ItemDropQuantity2` = 32, `ItemDrop3` = 33, ' +
+        '`ItemDropQuantity3` = 34, `ItemDrop4` = 35, `ItemDropQuantity4` = 36, `RewardChoiceItemID1` = 37, ' +
+        '`RewardChoiceItemQuantity1` = 38, `RewardChoiceItemID2` = 39, `RewardChoiceItemQuantity2` = 40, `RewardChoiceItemID3` = 41, ' +
+        '`RewardChoiceItemQuantity3` = 42, `RewardChoiceItemID4` = 43, `RewardChoiceItemQuantity4` = 44, ' +
+        '`RewardChoiceItemID5` = 45, `RewardChoiceItemQuantity5` = 46, `RewardChoiceItemID6` = 47, ' +
+        '`RewardChoiceItemQuantity6` = 48, `POIContinent` = 49, `POIx` = 50, `POIy` = 51, `POIPriority` = 52, ' +
+        '`RewardTitle` = 53, `RewardTalents` = 54, `RewardArenaPoints` = 55, `RewardFactionID1` = 56, `RewardFactionValue1` = 57, ' +
+        '`RewardFactionOverride1` = 58, `RewardFactionID2` = 59, `RewardFactionValue2` = 60, `RewardFactionOverride2` = 61, ' +
+        '`RewardFactionID3` = 62, `RewardFactionValue3` = 63, `RewardFactionOverride3` = 64, `RewardFactionID4` = 65, ' +
+        '`RewardFactionValue4` = 66, `RewardFactionOverride4` = 67, `RewardFactionID5` = 68, `RewardFactionValue5` = 69, ' +
+        '`RewardFactionOverride5` = 70, `TimeAllowed` = 71, `AllowableRaces` = 72, `LogTitle` = \'73\', `LogDescription` = \'74\', ' +
+        '`QuestDescription` = \'75\', `AreaDescription` = \'76\', `QuestCompletionLog` = \'77\', `RequiredNpcOrGo1` = 78, ' +
+        '`RequiredNpcOrGo2` = 79, `RequiredNpcOrGo3` = 80, `RequiredNpcOrGo4` = 81, `RequiredNpcOrGoCount1` = 82, ' +
+        '`RequiredNpcOrGoCount2` = 83, `RequiredNpcOrGoCount3` = 84, `RequiredNpcOrGoCount4` = 85, `RequiredItemId1` = 86, ' +
+        '`RequiredItemId2` = 87, `RequiredItemId3` = 88, `RequiredItemId4` = 89, `RequiredItemId5` = 90, `RequiredItemId6` = 91, ' +
+        '`RequiredItemCount1` = 92, `RequiredItemCount2` = 93, `RequiredItemCount3` = 94, `RequiredItemCount4` = 95, ' +
+        '`RequiredItemCount5` = 96, `RequiredItemCount6` = 97, `Unknown0` = 98, `ObjectiveText1` = \'99\', `ObjectiveText2` = \'100\', ' +
+        '`ObjectiveText3` = \'101\', `ObjectiveText4` = \'102\' WHERE (`ID` = 1234);';
       querySpy.calls.reset();
 
-      page.setInputValueById('MinLevel', 2);
+      page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.clickExecuteQuery();
 
       page.expectDiffQueryToContain(expectedQuery);
