@@ -21,6 +21,13 @@ describe('GameobjectTemplate integration tests', () => {
   let page: GameobjectTemplatePage;
 
   const id = 1234;
+  const expectedFullCreateQuery = 'DELETE FROM `gameobject_template` WHERE (`entry` = 1234);' +
+  'INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, ' +
+  '`unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, ' +
+  '`Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, ' +
+  '`Data21`, `Data22`, `Data23`, `AIName`, `ScriptName`, `VerifiedBuild`) VALUES' +
+  '(1234, 6, 1, \'Elwynn Foresta\', \'1\', \'1\', \'1\', 1, 1, 1, 1, 1, 1, 1, 1, 1,' +
+  '1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, \'1\', \'1\', 12340);';
 
   const originalEntity = new GameobjectTemplate();
   originalEntity.entry = id;

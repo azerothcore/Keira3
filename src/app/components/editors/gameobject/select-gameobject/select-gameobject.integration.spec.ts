@@ -144,9 +144,9 @@ describe('SelectGameobject integration tests', () => {
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
     const results: Partial<GameobjectTemplate>[] = [
-      { id: 1, name: 'An awesome Gameobject 1', GameobjectType: 0, GameobjectLevel: 1, MinLevel: 10, GameobjectDescription: ''   },
-      { id: 2, name: 'An awesome Gameobject 2', GameobjectType: 0, GameobjectLevel: 2, MinLevel: 20, GameobjectDescription: ''   },
-      { id: 3, name: 'An awesome Gameobject 3', GameobjectType: 0, GameobjectLevel: 3, MinLevel: 30, GameobjectDescription: ''   },
+      { id: 1, name: 'An awesome Gameobject 1', GameobjectType: 0, GameobjectDisplayId: 1   },
+      { id: 2, name: 'An awesome Gameobject 2', GameobjectType: 0, GameobjectDisplayId: 2   },
+      { id: 3, name: 'An awesome Gameobject 3', GameobjectType: 0, GameobjectDisplayId: 3   },
     ];
     querySpy.calls.reset();
     querySpy.and.returnValue(of({ results }));
