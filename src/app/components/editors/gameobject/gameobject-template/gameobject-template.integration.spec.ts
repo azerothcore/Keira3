@@ -99,11 +99,17 @@ describe('GameobjectTemplate integration tests', () => {
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing a property and executing the query should correctly work', () => {
-      const expectedQuery = 'UPDATE `gameobject_template` SET `displayId` = 2 WHERE (`entry` = ' + id + ');';
+    it('changing all properties and executing the query should correctly work', () => {
+      const expectedQuery = 'UPDATE `gameobject_template` SET `displayId` = 1, `name` = \'2\', `IconName` = \'3\', ' +
+      '`castBarCaption` = \'4\', `unk1` = \'5\', `size` = 6, `Data0` = 7, `Data1` = 8, `Data2` = 9, `Data3` = 10, ' +
+      '`Data4` = 11, `Data5` = 12, `Data6` = 13, `Data7` = 14, `Data8` = 15, `Data9` = 16, `Data10` = 17, `Data11` = 18, ' +
+      '`Data12` = 19, `Data13` = 20, `Data14` = 21, `Data15` = 22, `Data16` = 23, `Data17` = 24, `Data18` = 25, ' +
+      '`Data19` = 26, `Data20` = 27, `Data21` = 28, `Data22` = 29, `Data23` = 30, `AIName` = \'31\', ' +
+      '`ScriptName` = \'32\' WHERE (`entry` = 1234);';
+
       querySpy.calls.reset();
 
-      page.setInputValueById('displayId', 2);
+      page.changeAllFields(originalEntity, ['entry', 'VerifiedBuild']);
       page.clickExecuteQuery();
 
       page.expectDiffQueryToContain(expectedQuery);
@@ -153,6 +159,3 @@ describe('GameobjectTemplate integration tests', () => {
   });
 
 });
-
-/* TODO: complete this integration */
-

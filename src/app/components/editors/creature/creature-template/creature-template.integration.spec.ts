@@ -20,8 +20,8 @@ describe('CreatureTemplate integration tests', () => {
   let handlerService: CreatureHandlerService;
   let page: CreatureTemplatePage;
 
-  const id = 123;
-  const expectedFullCreateQuery = 'DELETE FROM `creature_template` WHERE (`entry` = 123);\n' +
+  const id = 1234;
+  const expectedFullCreateQuery = 'DELETE FROM `creature_template` WHERE (`entry` = 1234);\n' +
     'INSERT INTO `creature_template` (`entry`, `difficulty_entry_1`, `difficulty_entry_2`, `difficulty_entry_3`,' +
     ' `KillCredit1`, `KillCredit2`, `modelid1`, `modelid2`, `modelid3`, `modelid4`, `name`, `subname`,' +
     ' `IconName`, `gossip_menu_id`, `minlevel`, `maxlevel`, `exp`, `faction`, `npcflag`, `speed_walk`,' +
@@ -34,8 +34,9 @@ describe('CreatureTemplate integration tests', () => {
     ' `VehicleId`, `mingold`, `maxgold`, `AIName`, `MovementType`, `InhabitType`, `HoverHeight`,' +
     ' `HealthModifier`, `ManaModifier`, `ArmorModifier`, `RacialLeader`, `movementId`, `RegenHealth`,' +
     ' `mechanic_immune_mask`, `flags_extra`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-    '(123, 5, 22, \'Elwynn Forest\', \'\', \'\', \'\', 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,' +
-    '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', \'\', 12340);';
+    '(1234, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', \'\', \'\', 0, 1, 1, 0, 0, 0, 1, 1.14286, 1, 0, 0, 0,' +
+    ' 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,' +
+    ' 0, 0, 0, 0, 0, 0, \'\', 0, 3, 1, 1, 1, 1, 0, 0, 1, 0, 0, \'\', 0);';
 
   const originalEntity = new CreatureTemplate();
   originalEntity.entry = id;
