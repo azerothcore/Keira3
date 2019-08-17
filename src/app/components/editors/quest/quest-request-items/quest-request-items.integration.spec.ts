@@ -13,7 +13,7 @@ import { QuestHandlerService } from '../../../../services/handlers/quest-handler
 
 class QuestRequestItemsPage extends EditorPageObject<QuestRequestItemsComponent> {}
 
-fdescribe('QuestRequestItems integration tests', () => {
+describe('QuestRequestItems integration tests', () => {
   let component: QuestRequestItemsComponent;
   let fixture: ComponentFixture<QuestRequestItemsComponent>;
   let queryService: QueryService;
