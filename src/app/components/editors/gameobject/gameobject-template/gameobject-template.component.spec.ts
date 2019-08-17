@@ -39,11 +39,14 @@ describe('GameobjectComponent', () => {
 
   it('should check the Data* field name on change the field "type"', () => {
     const mockValue: FieldDefinition = { name: 'Mock Value', tooltip: null };
+    const mockType = 'mockTypeValue';
+    const index = 3;
     gameobjectTemplateService = TestBed.get(GameobjectTemplateService);
-    getFieldSpy = spyOn(TestBed.get(gameobjectTemplateService), 'getFieldDefinition').and.returnValue(mockValue);
+    gameobjectTemplateService.form.get('type').setValue(mockType);
+    getFieldSpy = spyOn(gameobjectTemplateService, 'getFieldDefinition').and.returnValue(mockValue);
 
-    expect(component.dataFieldDefinition(0)).toEqual(mockValue);
+    expect(component.dataFieldDefinition(index)).toEqual(mockValue);
     expect(getFieldSpy).toHaveBeenCalledTimes(1);
-    expect(getFieldSpy).toHaveBeenCalledWith(0);
+    expect(getFieldSpy).toHaveBeenCalledWith(mockType, index);
   });
 });

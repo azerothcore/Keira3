@@ -23,7 +23,7 @@ describe('GameobjectTemplateService', () => {
     expect(gameobjectService.getFieldDefinition(0, 0)).toBe(GO_DATA_FIELDS[0][0]);
   });
 
-  it('should correclty return a default value when the definition is missing', () => {
+  it('should correctly return a default value when the definition is missing', () => {
     const gameobjectService: GameobjectTemplateService = TestBed.get(GameobjectTemplateService);
     expect(gameobjectService.getFieldDefinition(0, 25)).toEqual({ name: `Data25`, tooltip: null });
   });
