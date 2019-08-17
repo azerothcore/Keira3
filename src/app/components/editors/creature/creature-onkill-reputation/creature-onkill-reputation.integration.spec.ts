@@ -94,11 +94,13 @@ describe('CreatureOnkillReputation integration tests', () => {
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing a property and executing the query should correctly work', () => {
-      const expectedQuery = 'UPDATE `creature_onkill_reputation` SET `RewOnKillRepFaction1` = 2 WHERE (`creature_id` = 1234);';
+    it('changing all properties and executing the query should correctly work', () => {
+      const expectedQuery = 'UPDATE `creature_onkill_reputation` SET ' +
+        '`RewOnKillRepFaction2` = 1, `MaxStanding1` = 2, `IsTeamAward1` = 3, `RewOnKillRepValue1` = 4, ' +
+        '`MaxStanding2` = 5, `IsTeamAward2` = 6, `RewOnKillRepValue2` = 7, `TeamDependent` = 8 WHERE (`creature_id` = 1234);';
       querySpy.calls.reset();
 
-      page.setInputValueById('RewOnKillRepFaction1', 2);
+      page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.clickExecuteQuery();
 
       page.expectDiffQueryToContain(expectedQuery);

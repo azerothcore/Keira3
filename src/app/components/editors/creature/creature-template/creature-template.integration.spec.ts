@@ -116,11 +116,24 @@ describe('CreatureTemplate integration tests', () => {
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing a property and executing the query should correctly work', () => {
-      const expectedQuery = 'UPDATE `creature_template` SET `difficulty_entry_1` = 2 WHERE (`entry` = 1234);';
+    it('changing all properties and executing the query should correctly work', () => {
+      const expectedQuery = 'UPDATE `creature_template` SET ' +
+        '`difficulty_entry_2` = 1, `difficulty_entry_3` = 2, `KillCredit1` = 3, `KillCredit2` = 4, `modelid1` = 5, `modelid2` = 6, ' +
+        '`modelid3` = 7, `modelid4` = 8, `name` = \'9\', `subname` = \'10\', `IconName` = \'11\', `gossip_menu_id` = 12, ' +
+        '`minlevel` = 13, `maxlevel` = 14, `exp` = 15, `faction` = 16, `npcflag` = 17, `speed_walk` = 18, `speed_run` = 19, ' +
+        '`scale` = 20, `rank` = 21, `mindmg` = 22, `maxdmg` = 23, `dmgschool` = 24, `attackpower` = 25, `DamageModifier` = 26, ' +
+        '`BaseAttackTime` = 27, `RangeAttackTime` = 28, `unit_class` = 29, `unit_flags` = 30, `unit_flags2` = 31, ' +
+        '`dynamicflags` = 32, `family` = 33, `trainer_type` = 34, `trainer_spell` = 35, `trainer_class` = 36, `trainer_race` = 37, ' +
+        '`minrangedmg` = 38, `maxrangedmg` = 39, `rangedattackpower` = 40, `type` = 41, `type_flags` = 42, `lootid` = 43, ' +
+        '`pickpocketloot` = 44, `skinloot` = 45, `resistance1` = 46, `resistance2` = 47, `resistance3` = 48, `resistance4` = 49, ' +
+        '`resistance5` = 50, `resistance6` = 51, `spell1` = 52, `spell2` = 53, `spell3` = 54, `spell4` = 55, `spell5` = 56, ' +
+        '`spell6` = 57, `spell7` = 58, `spell8` = 59, `PetSpellDataId` = 60, `VehicleId` = 61, `mingold` = 62, `maxgold` = 63, ' +
+        '`AIName` = \'64\', `MovementType` = 65, `InhabitType` = 66, `HoverHeight` = 67, `HealthModifier` = 68, `ManaModifier` = 69, ' +
+        '`ArmorModifier` = 70, `RacialLeader` = 71, `movementId` = 72, `RegenHealth` = 73, `mechanic_immune_mask` = 74, ' +
+        '`flags_extra` = 75, `ScriptName` = \'76\' WHERE (`entry` = 1234);';
       querySpy.calls.reset();
 
-      page.setInputValueById('difficulty_entry_1', 2);
+      page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.clickExecuteQuery();
 
       page.expectDiffQueryToContain(expectedQuery);
