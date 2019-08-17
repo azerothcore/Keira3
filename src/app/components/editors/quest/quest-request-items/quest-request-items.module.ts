@@ -5,12 +5,13 @@ import { TooltipModule } from 'ngx-bootstrap';
 
 import { TopBarModule } from '../../shared/top-bar/top-bar.module';
 import { QueryOutputModule } from '../../shared/query-output/query-output.module';
-import { QuestOfferRewardComponent } from './quest-offer-reward.component';
+import { QuestRequestItemsComponent } from './quest-request-items.component';
 import { FlagsSelectorModule } from '../../shared/selectors/flags-selector/flags-selector.module';
+import { SingleValueSelectorModule } from '../../shared/selectors/single-value-selector/single-value-selector.module';
 
 @NgModule({
   declarations: [
-    QuestOfferRewardComponent,
+    QuestRequestItemsComponent,
   ],
   imports: [
     BrowserModule,
@@ -18,10 +19,9 @@ import { FlagsSelectorModule } from '../../shared/selectors/flags-selector/flags
     TopBarModule,
     QueryOutputModule,
     TooltipModule.forRoot(),
-    FlagsSelectorModule,
   ],
   exports: [
-    QuestOfferRewardComponent,
+    QuestRequestItemsComponent,
   ],
 })
-export class QuestOfferRewardModule {}
+export class QuestRequestItemsModule {}
