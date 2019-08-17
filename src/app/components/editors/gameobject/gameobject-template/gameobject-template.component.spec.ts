@@ -7,7 +7,7 @@ import { GameobjectTemplateComponent } from './gameobject-template.component';
 import { GameobjectTemplateModule } from './gameobject-template.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { GameobjectTemplateService } from '../../../../services/editors/gameobject/gameobject-template.service';
-import { GO_DATA_FIELDS } from '../../../../constants/gameobject-types';
+import { FieldDefinition } from '../../../../types/general';
 
 describe('GameobjectComponent', () => {
   let component: GameobjectTemplateComponent;
@@ -38,11 +38,12 @@ describe('GameobjectComponent', () => {
   });
 
   it('should check the Data* field name on change the field "type"', () => {
-
+    const mockValue: FieldDefinition = { name: 'Mock Value', tooltip: null };
     gameobjectTemplateService = TestBed.get(GameobjectTemplateService);
-    getFieldSpy = spyOn(TestBed.get(gameobjectTemplateService), 'getFieldDefinition').and.returnValue(of({}));
+    getFieldSpy = spyOn(TestBed.get(gameobjectTemplateService), 'getFieldDefinition').and.returnValue(mockValue);
 
-    expect(component.dataFieldDefinition(0)).toEqual(GO_DATA_FIELDS[0][0]);
+    expect(component.dataFieldDefinition(0)).toEqual(mockValue);
     expect(getFieldSpy).toHaveBeenCalledTimes(1);
+    expect(getFieldSpy).toHaveBeenCalledWith(0);
   });
 });
