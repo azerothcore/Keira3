@@ -5,8 +5,10 @@ import {
   GAMEOBJECT_TEMPLATE_ID,
   GAMEOBJECT_TEMPLATE_NAME,
   GAMEOBJECT_TEMPLATE_TABLE,
-  GameobjectTemplate
+  GameobjectTemplate,
 } from '../../../types/gameobject-template.type';
+import { FieldDefinition } from '../../../types/general';
+import { GO_DATA_FIELDS } from '../../../constants/gameobject-types';
 import { QueryService } from '../../query.service';
 import { GameobjectHandlerService } from '../../handlers/gameobject-handler.service';
 
@@ -30,4 +32,12 @@ export class GameobjectTemplateService extends SingleRowEditorService<Gameobject
       queryService,
     );
   }
+
+  getFieldDefinition(type: number, dataIndex: number): FieldDefinition {
+    return GO_DATA_FIELDS[type] && GO_DATA_FIELDS[type][dataIndex]
+    ? GO_DATA_FIELDS[type][dataIndex]
+    : { name: `Data${dataIndex}`, tooltip: null };
+  }
+
 }
+

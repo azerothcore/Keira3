@@ -1,7 +1,11 @@
 import { NgModule } from '@angular/core';
 
-const modules = [
+import { SelectGameobjectModule } from './select-gameobject/select-gameobject.module';
+import { GameobjectTemplateModule } from './gameobject-template/gameobject-template.module';
 
+const modules = [
+  SelectGameobjectModule,
+  GameobjectTemplateModule,
 ];
 
 @NgModule({

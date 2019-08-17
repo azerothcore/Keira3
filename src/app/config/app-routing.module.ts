@@ -27,6 +27,9 @@ import { QuestHandlerService } from '../services/handlers/quest-handler.service'
 import { SelectQuestComponent } from '../components/editors/quest/select-quest/select-quest.component';
 import { QuestTemplateAddonComponent } from '../components/editors/quest/quest-template-addon/quest-template-addon.component';
 import { QuestOfferRewardComponent } from '../components/editors/quest/quest-offer-reward/quest-offer-reward.component';
+import { GameobjectTemplateComponent } from '../components/editors/gameobject/gameobject-template/gameobject-template.component';
+import { GameobjectHandlerService } from '../services/handlers/gameobject-handler.service';
+import { SelectGameobjectComponent } from '../components/editors/gameobject/select-gameobject/select-gameobject.component';
 
 const routes: Routes = [
   {
@@ -127,6 +130,20 @@ const routes: Routes = [
         path: 'quest-offer-reward',
         component: QuestOfferRewardComponent,
         canActivate: [QuestHandlerService],
+      },
+    ]
+  },
+  {
+    path: 'gameobject',
+    children: [
+      {
+        path: 'select',
+        component: SelectGameobjectComponent,
+      },
+      {
+        path: 'gameobject-template',
+        component: GameobjectTemplateComponent,
+        canActivate: [GameobjectHandlerService],
       },
     ]
   },
