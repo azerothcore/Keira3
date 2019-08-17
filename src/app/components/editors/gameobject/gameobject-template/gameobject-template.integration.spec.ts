@@ -109,7 +109,7 @@ describe('GameobjectTemplate integration tests', () => {
 
       querySpy.calls.reset();
 
-      page.changeAllFields(originalEntity, ['entry', 'VerifiedBuild']);
+      page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.clickExecuteQuery();
 
       page.expectDiffQueryToContain(expectedQuery);
