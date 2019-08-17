@@ -132,6 +132,23 @@ describe('QuestRequestItems integration tests', () => {
       );
     });
 
-    // Note: no special selectors to test here
+    it('changing a value via SingleValueSelector should correctly work', () => {
+      const field = 'EmoteOnComplete';
+      page.clickElement(page.getSelectorBtn(field));
+      page.expectModalDisplayed();
+
+      page.clickRowOfDatatable(4);
+      page.clickModalSelect();
+
+      expect(page.getInputById(field).value).toEqual('4');
+      page.expectDiffQueryToContain(
+        'UPDATE `quest_request_items` SET `EmoteOnComplete` = 4 WHERE (`ID` = 1234);'
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `quest_request_items` WHERE (`ID` = 1234);\n' +
+        'INSERT INTO `quest_request_items` (`ID`, `EmoteOnComplete`, `EmoteOnIncomplete`, `CompletionText`, `VerifiedBuild`) VALUES\n' +
+        '(1234, 4, 3, \'4\', 0);\n'
+      );
+    });
   });
 });
