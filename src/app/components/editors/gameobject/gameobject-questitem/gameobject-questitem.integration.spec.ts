@@ -25,7 +25,7 @@ describe('GameobjectQuestitem integration tests', () => {
   const originalRow0 = new GameobjectQuestitem();
   const originalRow1 = new GameobjectQuestitem();
   const originalRow2 = new GameobjectQuestitem();
-  originalRow0.GameobjectEntry = originalRow1.GameobjectEntry = originalRow2.GameobjectEntry = id;
+  originalRow0.GameObjectEntry = originalRow1.GameObjectEntry = originalRow2.GameObjectEntry = id;
   originalRow0.ItemId = 0;
   originalRow1.ItemId = 1;
   originalRow2.ItemId = 2;
@@ -73,8 +73,8 @@ describe('GameobjectQuestitem integration tests', () => {
     });
 
     it('adding new rows and executing the query should correctly work', () => {
-      const expectedQuery = 'DELETE FROM `creature_questitem` WHERE (`GameobjectEntry` = 1234) AND (`ItemId` IN (0, 1, 2));\n' +
-        'INSERT INTO `creature_questitem` (`GameobjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
+      const expectedQuery = 'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234) AND (`ItemId` IN (0, 1, 2));\n' +
+        'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
         '(1234, 0, 0, 0),\n' +
         '(1234, 0, 1, 0),\n' +
         '(1234, 0, 2, 0);';
@@ -96,37 +96,37 @@ describe('GameobjectQuestitem integration tests', () => {
     it('adding a row and changing its values should correctly update the queries', () => {
       page.addNewRow();
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_questitem` WHERE (`GameobjectEntry` = 1234) AND (`ItemId` IN (0));\n' +
-        'INSERT INTO `creature_questitem` (`GameobjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
+        'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234) AND (`ItemId` IN (0));\n' +
+        'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
         '(1234, 0, 0, 0);'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature_questitem` WHERE (`GameobjectEntry` = 1234);\n' +
-        'INSERT INTO `creature_questitem` (`GameobjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
+        'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234);\n' +
+        'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
         '(1234, 0, 0, 0);'
       );
 
       page.setInputValueById('Idx', '1');
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_questitem` WHERE (`GameobjectEntry` = 1234) AND (`ItemId` IN (0));\n' +
-        'INSERT INTO `creature_questitem` (`GameobjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
+        'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234) AND (`ItemId` IN (0));\n' +
+        'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
         '(1234, 1, 0, 0);'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature_questitem` WHERE (`GameobjectEntry` = 1234);\n' +
-        'INSERT INTO `creature_questitem` (`GameobjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
+        'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234);\n' +
+        'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
         '(1234, 1, 0, 0);'
       );
 
       page.setInputValueById('ItemId', '123');
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_questitem` WHERE (`GameobjectEntry` = 1234) AND (`ItemId` IN (123));\n' +
-        'INSERT INTO `creature_questitem` (`GameobjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
+        'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234) AND (`ItemId` IN (123));\n' +
+        'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
         '(1234, 1, 123, 0);'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature_questitem` WHERE (`GameobjectEntry` = 1234);\n' +
-        'INSERT INTO `creature_questitem` (`GameobjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
+        'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234);\n' +
+        'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
         '(1234, 1, 123, 0);'
       );
     });
@@ -139,8 +139,8 @@ describe('GameobjectQuestitem integration tests', () => {
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
-      page.expectFullQueryToContain('DELETE FROM `creature_questitem` WHERE (`GameobjectEntry` = 1234);\n' +
-        'INSERT INTO `creature_questitem` (`GameobjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
+      page.expectFullQueryToContain('DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234);\n' +
+        'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
         '(1234, 0, 0, 0),\n' +
         '(1234, 0, 1, 0),\n' +
         '(1234, 0, 2, 0);');
@@ -151,11 +151,11 @@ describe('GameobjectQuestitem integration tests', () => {
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_questitem` WHERE (`GameobjectEntry` = 1234) AND (`ItemId` IN (1));'
+        'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234) AND (`ItemId` IN (1));'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature_questitem` WHERE (`GameobjectEntry` = 1234);\n' +
-        'INSERT INTO `creature_questitem` (`GameobjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
+        'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234);\n' +
+        'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
         '(1234, 0, 0, 0),\n' +
         '(1234, 0, 2, 0);'
       );
@@ -163,18 +163,18 @@ describe('GameobjectQuestitem integration tests', () => {
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_questitem` WHERE (`GameobjectEntry` = 1234) AND (`ItemId` IN (1, 2));'
+        'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234) AND (`ItemId` IN (1, 2));'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature_questitem` WHERE (`GameobjectEntry` = 1234);\n' +
-        'INSERT INTO `creature_questitem` (`GameobjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
+        'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234);\n' +
+        'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
         '(1234, 0, 0, 0);'
       );
 
       page.deleteRow(0);
       expect(page.getEditorTableRowsCount()).toBe(0);
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_questitem` WHERE `GameobjectEntry` = 1234;'
+        'DELETE FROM `gameobject_questitem` WHERE `GameObjectEntry` = 1234;'
       );
       page.expectFullQueryToBeEmpty();
     });
@@ -184,13 +184,13 @@ describe('GameobjectQuestitem integration tests', () => {
       page.setInputValueById('Idx', 1);
 
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_questitem` WHERE (`GameobjectEntry` = 1234) AND (`ItemId` IN (1));\n' +
-        'INSERT INTO `creature_questitem` (`GameobjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
+        'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234) AND (`ItemId` IN (1));\n' +
+        'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
         '(1234, 1, 1, 0);'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature_questitem` WHERE (`GameobjectEntry` = 1234);\n' +
-        'INSERT INTO `creature_questitem` (`GameobjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
+        'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234);\n' +
+        'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
         '(1234, 0, 0, 0),\n' +
         '(1234, 1, 1, 0),\n' +
         '(1234, 0, 2, 0);'
@@ -209,14 +209,14 @@ describe('GameobjectQuestitem integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(3);
 
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_questitem` WHERE (`GameobjectEntry` = 1234) AND (`ItemId` IN (1, 2, 3));\n' +
-        'INSERT INTO `creature_questitem` (`GameobjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
+        'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234) AND (`ItemId` IN (1, 2, 3));\n' +
+        'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
         '(1234, 10, 1, 0),\n' +
         '(1234, 0, 3, 0);'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature_questitem` WHERE (`GameobjectEntry` = 1234);\n' +
-        'INSERT INTO `creature_questitem` (`GameobjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
+        'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234);\n' +
+        'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
         '(1234, 0, 0, 0),\n' +
         '(1234, 10, 1, 0),\n' +
         '(1234, 0, 3, 0);'
