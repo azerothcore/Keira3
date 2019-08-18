@@ -37,6 +37,9 @@ import { SelectGameobjectComponent } from '../components/editors/gameobject/sele
 import { GameobjectQuestitemComponent } from '../components/editors/gameobject/gameobject-questitem/gameobject-questitem.component';
 import { GameobjectSpawnComponent } from '../components/editors/gameobject/gameobject-spawn/gameobject-spawn.component';
 import { CreatureQueststarterComponent } from '../components/editors/quest/creature-queststarter/creature-queststarter.component';
+import { CreatureQuestenderComponent } from '../components/editors/quest/creature-questender/creature-questender.component';
+import { GameobjectQueststarterComponent } from '../components/editors/quest/gameobject-queststarter/gameobject-queststarter.component';
+import { GameobjectQuestenderComponent } from '../components/editors/quest/gameobject-questender/gameobject-questender.component';
 
 const routes: Routes = [
   {
@@ -146,6 +149,21 @@ const routes: Routes = [
       {
         path: 'creature-queststarter',
         component: CreatureQueststarterComponent,
+        canActivate: [QuestHandlerService],
+      },
+      {
+        path: 'creature-questender',
+        component: CreatureQuestenderComponent,
+        canActivate: [QuestHandlerService],
+      },
+      {
+        path: 'gameobject-queststarter',
+        component: GameobjectQueststarterComponent,
+        canActivate: [QuestHandlerService],
+      },
+      {
+        path: 'gameobject-questender',
+        component: GameobjectQuestenderComponent,
         canActivate: [QuestHandlerService],
       },
     ]

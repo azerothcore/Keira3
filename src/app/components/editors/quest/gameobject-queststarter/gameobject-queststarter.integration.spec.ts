@@ -3,28 +3,28 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { CreatureQuestenderComponent } from './creature-questender.component';
-import { CreatureQuestenderModule } from './creature-questender.module';
+import { GameobjectQueststarterComponent } from './gameobject-queststarter.component';
+import { GameobjectQueststarterModule } from './gameobject-queststarter.module';
 import { QueryService } from '../../../../services/query.service';
-import { CreatureQuestender } from '../../../../types/creature-questender.type';
+import { GameobjectQueststarter } from '../../../../types/gameobject-queststarter.type';
 import { MultiRowEditorPageObject } from '../../../../test-utils/multi-row-editor-page-object';
 import { QuestHandlerService } from '../../../../services/handlers/quest-handler.service';
 
-class CreatureQuestenderPage extends MultiRowEditorPageObject<CreatureQuestenderComponent> {}
+class GameobjectQueststarterPage extends MultiRowEditorPageObject<GameobjectQueststarterComponent> {}
 
-describe('CreatureQuestender integration tests', () => {
-  let component: CreatureQuestenderComponent;
-  let fixture: ComponentFixture<CreatureQuestenderComponent>;
+describe('GameobjectQueststarter integration tests', () => {
+  let component: GameobjectQueststarterComponent;
+  let fixture: ComponentFixture<GameobjectQueststarterComponent>;
   let queryService: QueryService;
   let querySpy: Spy;
   let handlerService: QuestHandlerService;
-  let page: CreatureQuestenderPage;
+  let page: GameobjectQueststarterPage;
 
   const id = 1234;
 
-  const originalRow0 = new CreatureQuestender();
-  const originalRow1 = new CreatureQuestender();
-  const originalRow2 = new CreatureQuestender();
+  const originalRow0 = new GameobjectQueststarter();
+  const originalRow1 = new GameobjectQueststarter();
+  const originalRow2 = new GameobjectQueststarter();
   originalRow0.quest = originalRow1.quest = originalRow2.quest = id;
   originalRow0.id = 0;
   originalRow1.id = 1;
@@ -33,7 +33,7 @@ describe('CreatureQuestender integration tests', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        CreatureQuestenderModule,
+        GameobjectQueststarterModule,
         RouterTestingModule,
       ],
     })
@@ -52,9 +52,9 @@ describe('CreatureQuestender integration tests', () => {
       { results: creatingNew ? [] : [originalRow0, originalRow1, originalRow2] }
     ));
 
-    fixture = TestBed.createComponent(CreatureQuestenderComponent);
+    fixture = TestBed.createComponent(GameobjectQueststarterComponent);
     component = fixture.componentInstance;
-    page = new CreatureQuestenderPage(fixture);
+    page = new GameobjectQueststarterPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
   }
@@ -74,8 +74,8 @@ describe('CreatureQuestender integration tests', () => {
     });
 
     it('adding new rows and executing the query should correctly work', () => {
-      const expectedQuery = 'DELETE FROM `creature_questender` WHERE (`quest` = 1234) AND (`id` IN (0, 1, 2));\n' +
-        'INSERT INTO `creature_questender` (`id`, `quest`) VALUES\n' +
+      const expectedQuery = 'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (0, 1, 2));\n' +
+        'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
         '(0, 1234),\n' +
         '(1, 1234),\n' +
         '(2, 1234);\n';
@@ -97,25 +97,25 @@ describe('CreatureQuestender integration tests', () => {
     it('adding a row and changing its values should correctly update the queries', () => {
       page.addNewRow();
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_questender` WHERE (`quest` = 1234) AND (`id` IN (0));\n' +
-        'INSERT INTO `creature_questender` (`id`, `quest`) VALUES\n' +
+        'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (0));\n' +
+        'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
         '(0, 1234);'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature_questender` WHERE (`quest` = 1234);\n' +
-        'INSERT INTO `creature_questender` (`id`, `quest`) VALUES\n' +
+        'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234);\n' +
+        'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
         '(0, 1234);'
       );
 
       page.setInputValueById('id', '1');
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_questender` WHERE (`quest` = 1234) AND (`id` IN (1));\n' +
-        'INSERT INTO `creature_questender` (`id`, `quest`) VALUES\n' +
+        'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1));\n' +
+        'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
         '(1, 1234);\n'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature_questender` WHERE (`quest` = 1234);\n' +
-        'INSERT INTO `creature_questender` (`id`, `quest`) VALUES\n' +
+        'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234);\n' +
+        'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
         '(1, 1234);'
       );
     });
@@ -128,8 +128,8 @@ describe('CreatureQuestender integration tests', () => {
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
-      page.expectFullQueryToContain('DELETE FROM `creature_questender` WHERE (`quest` = 1234);\n' +
-        'INSERT INTO `creature_questender` (`id`, `quest`) VALUES\n' +
+      page.expectFullQueryToContain('DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234);\n' +
+        'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
         '(0, 1234),\n' +
         '(1, 1234),\n' +
         '(2, 1234);\n');
@@ -140,11 +140,11 @@ describe('CreatureQuestender integration tests', () => {
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_questender` WHERE (`quest` = 1234) AND (`id` IN (1));'
+        'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1));'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature_questender` WHERE (`quest` = 1234);\n' +
-        'INSERT INTO `creature_questender` (`id`, `quest`) VALUES\n' +
+        'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234);\n' +
+        'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
         '(0, 1234),\n' +
         '(2, 1234);'
       );
@@ -152,18 +152,18 @@ describe('CreatureQuestender integration tests', () => {
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_questender` WHERE (`quest` = 1234) AND (`id` IN (1, 2));'
+        'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1, 2));'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature_questender` WHERE (`quest` = 1234);\n' +
-        'INSERT INTO `creature_questender` (`id`, `quest`) VALUES\n' +
+        'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234);\n' +
+        'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
         '(0, 1234);'
       );
 
       page.deleteRow(0);
       expect(page.getEditorTableRowsCount()).toBe(0);
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_questender` WHERE `quest` = 1234;'
+        'DELETE FROM `gameobject_queststarter` WHERE `quest` = 1234;'
       );
       page.expectFullQueryToBeEmpty();
     });
@@ -173,13 +173,13 @@ describe('CreatureQuestender integration tests', () => {
       page.setInputValueById('id', 111);
 
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_questender` WHERE (`quest` = 1234) AND (`id` IN (1, 111));\n' +
-        'INSERT INTO `creature_questender` (`id`, `quest`) VALUES\n' +
+        'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1, 111));\n' +
+        'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
         '(111, 1234);\n'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature_questender` WHERE (`quest` = 1234);\n' +
-        'INSERT INTO `creature_questender` (`id`, `quest`) VALUES\n' +
+        'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234);\n' +
+        'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
         '(0, 1234),\n' +
         '(111, 1234),\n' +
         '(2, 1234);\n'
@@ -198,14 +198,14 @@ describe('CreatureQuestender integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(3);
 
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_questender` WHERE (`quest` = 1234) AND (`id` IN (1, 2, 10, 3));\n' +
-        'INSERT INTO `creature_questender` (`id`, `quest`) VALUES\n' +
+        'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1, 2, 10, 3));\n' +
+        'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
         '(10, 1234),\n' +
         '(3, 1234);\n'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature_questender` WHERE (`quest` = 1234);\n' +
-        'INSERT INTO `creature_questender` (`id`, `quest`) VALUES\n' +
+        'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234);\n' +
+        'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
         '(0, 1234),\n' +
         '(10, 1234),\n' +
         '(3, 1234);\n'

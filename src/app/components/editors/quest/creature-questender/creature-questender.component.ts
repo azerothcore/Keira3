@@ -2,19 +2,19 @@ import { Component } from '@angular/core';
 
 import { MultiRowEditorComponent } from '../../shared/multi-row-editor.component';
 import { QuestHandlerService } from '../../../../services/handlers/quest-handler.service';
-import { CreatureQueststarterService } from '../../../../services/editors/quest/creature-queststarter.service';
-import { CreatureQueststarter } from '../../../../types/creature-queststarter.type';
+import { CreatureQuestenderService } from '../../../../services/editors/quest/creature-questender.service';
+import { CreatureQuestender } from '../../../../types/creature-questender.type';
 
 @Component({
-  selector: 'app-creature-queststarter',
-  templateUrl: './creature-queststarter.component.html',
-  styleUrls: ['./creature-queststarter.component.scss']
+  selector: 'app-creature-questender',
+  templateUrl: './creature-questender.component.html',
+  styleUrls: ['./creature-questender.component.scss']
 })
-export class CreatureQueststarterComponent extends MultiRowEditorComponent<CreatureQueststarter> {
+export class CreatureQuestenderComponent extends MultiRowEditorComponent<CreatureQuestender> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    public editorService: CreatureQueststarterService,
+    public editorService: CreatureQuestenderService,
     public handlerService: QuestHandlerService,
   ) {
     super(editorService, handlerService);

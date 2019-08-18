@@ -5,13 +5,13 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { TopBarModule } from '../../shared/top-bar/top-bar.module';
 import { QueryOutputModule } from '../../shared/query-output/query-output.module';
-import { CreatureQuestenderComponent } from './creature-questender.component';
+import { GameobjectQueststarterComponent } from './gameobject-queststarter.component';
 import { TooltipModule } from 'ngx-bootstrap';
-import { CreatureSelectorModule } from '../../shared/selectors/creature-selector/creature-selector.module';
+import { GameobjectSelectorModule } from '../../shared/selectors/gameobject-selector/gameobject-selector.module';
 
 @NgModule({
   declarations: [
-    CreatureQuestenderComponent,
+    GameobjectQueststarterComponent,
   ],
   imports: [
     BrowserModule,
@@ -20,10 +20,10 @@ import { CreatureSelectorModule } from '../../shared/selectors/creature-selector
     QueryOutputModule,
     NgxDatatableModule,
     TooltipModule.forRoot(),
-    CreatureSelectorModule,
+    GameobjectSelectorModule,
   ],
   exports: [
-    CreatureQuestenderComponent,
+    GameobjectQueststarterComponent,
   ],
 })
-export class CreatureQuestenderModule {}
+export class GameobjectQueststarterModule {}
