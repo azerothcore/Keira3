@@ -195,7 +195,6 @@
               <i class="fa fa-pen"></i>
               <span>GameObject</span>
             </a>
-
             <div class="sidebar-submenu" [@slide]="menuStates.gameobject">
               <ul>
                 <li>
@@ -220,7 +219,21 @@
                     </a>
                   </li>
                   <ng-container *ngIf="!gameobjectHandlerService.isNew">
-<!--                    TODO: add the other editors here-->
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-template-addon'">
+                        Template Addon
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-questitem'">
+                        Quest Items
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-spawn'">
+                        Spawns
+                      </a>
+                    </li>
                   </ng-container>
                 </ng-container>
               </ul>

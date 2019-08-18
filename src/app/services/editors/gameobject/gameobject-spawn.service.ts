@@ -7,7 +7,7 @@ import {
   GAMEOBJECT_SPAWN_ID_2,
   GAMEOBJECT_SPAWN_TABLE
 } from '../../../types/gameobject-spawn.type';
-import { CreatureHandlerService } from '../../handlers/creature-handler.service';
+import { GameobjectHandlerService } from '../../handlers/gameobject-handler.service';
 import { QueryService } from '../../query.service';
 
 @Injectable({
@@ -17,7 +17,7 @@ export class GameobjectSpawnService extends MultiRowEditorService<GameobjectSpaw
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    protected handlerService: CreatureHandlerService,
+    protected handlerService: GameobjectHandlerService,
     protected queryService: QueryService,
   ) {
     super(
