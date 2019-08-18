@@ -142,6 +142,24 @@ describe('QuestOfferReward integration tests', () => {
       );
     });
 
-    // Note: no special selectors to test here
+    it('changing a value via SingleValueSelector should correctly work', () => {
+      const field = 'Emote1';
+      page.clickElement(page.getSelectorBtn(field));
+      page.expectModalDisplayed();
+
+      page.clickRowOfDatatable(4);
+      page.clickModalSelect();
+
+      expect(page.getInputById(field).value).toEqual('4');
+      page.expectDiffQueryToContain(
+        'UPDATE `quest_offer_reward` SET `Emote1` = 4 WHERE (`ID` = 1234);'
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `quest_offer_reward` WHERE (`ID` = 1234);\n' +
+        'INSERT INTO `quest_offer_reward` (`ID`, `Emote1`, `Emote2`, `Emote3`, `Emote4`, ' +
+        '`EmoteDelay1`, `EmoteDelay2`, `EmoteDelay3`, `EmoteDelay4`, `RewardText`, `VerifiedBuild`) VALUES\n' +
+        '(1234, 4, 3, 4, 5, 6, 7, 8, 9, \'10\', 0);'
+      );
+    });
   });
 });

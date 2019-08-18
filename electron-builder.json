@@ -33,8 +33,12 @@
   },
   "linux": {
     "icon": "dist",
+    "category": "Development",
     "target": [
-      "AppImage"
+      "AppImage",
+      "deb",
+      "snap",
+      "rpm"
     ]
   }
 }

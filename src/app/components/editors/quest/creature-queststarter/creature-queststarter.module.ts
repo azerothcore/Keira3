@@ -1,27 +1,27 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
-import { TooltipModule } from 'ngx-bootstrap';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { TopBarModule } from '../../shared/top-bar/top-bar.module';
 import { QueryOutputModule } from '../../shared/query-output/query-output.module';
-import { QuestRequestItemsComponent } from './quest-request-items.component';
-import { SingleValueSelectorModule } from '../../shared/selectors/single-value-selector/single-value-selector.module';
+import { CreatureQueststarterComponent } from './creature-queststarter.component';
+import { TooltipModule } from 'ngx-bootstrap';
 
 @NgModule({
   declarations: [
-    QuestRequestItemsComponent,
+    CreatureQueststarterComponent,
   ],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
     TopBarModule,
     QueryOutputModule,
+    NgxDatatableModule,
     TooltipModule.forRoot(),
-    SingleValueSelectorModule,
   ],
   exports: [
-    QuestRequestItemsComponent,
+    CreatureQueststarterComponent,
   ],
 })
-export class QuestRequestItemsModule {}
+export class CreatureQueststarterModule {}

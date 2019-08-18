@@ -36,6 +36,7 @@ import { GameobjectHandlerService } from '../services/handlers/gameobject-handle
 import { SelectGameobjectComponent } from '../components/editors/gameobject/select-gameobject/select-gameobject.component';
 import { GameobjectQuestitemComponent } from '../components/editors/gameobject/gameobject-questitem/gameobject-questitem.component';
 import { GameobjectSpawnComponent } from '../components/editors/gameobject/gameobject-spawn/gameobject-spawn.component';
+import { CreatureQueststarterComponent } from '../components/editors/quest/creature-queststarter/creature-queststarter.component';
 
 const routes: Routes = [
   {
@@ -140,6 +141,11 @@ const routes: Routes = [
       {
         path: 'quest-request-items',
         component: QuestRequestItemsComponent,
+        canActivate: [QuestHandlerService],
+      },
+      {
+        path: 'creature-queststarter',
+        component: CreatureQueststarterComponent,
         canActivate: [QuestHandlerService],
       },
     ]
