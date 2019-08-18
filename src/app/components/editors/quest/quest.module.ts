@@ -5,6 +5,7 @@ import { QuestTemplateModule } from './quest-template/quest-template.module';
 import { QuestTemplateAddonModule } from './quest-template-addon/quest-template-addon.module';
 import { QuestOfferRewardModule } from './quest-offer-reward/quest-offer-reward.module';
 import { QuestRequestItemsModule } from './quest-request-items/quest-request-items.module';
+import { CreatureQueststarterModule } from './creature-queststarter/creature-queststarter.module';
 
 const modules = [
   SelectQuestModule,
@@ -12,6 +13,7 @@ const modules = [
   QuestTemplateAddonModule,
   QuestOfferRewardModule,
   QuestRequestItemsModule,
+  CreatureQueststarterModule,
 ];
 
 @NgModule({
