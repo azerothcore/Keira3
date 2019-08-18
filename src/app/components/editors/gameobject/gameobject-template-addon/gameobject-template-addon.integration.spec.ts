@@ -92,7 +92,7 @@ describe('GameobjectTemplateAddon integration tests', () => {
     });
 
     it('changing all properties and executing the query should correctly work', () => {
-      const expectedQuery = 'UPDATE `gameobject_template_addon` SET `flags` = 1, `mingold` = 2, `maxgold` = 3 WHERE (`entry` = 1234);';
+      const expectedQuery = 'UPDATE `gameobject_template_addon` SET `flags` = 1, `mingold` = 2, `maxgold` = 3 WHERE (`entry` = ' + id +');';
 
       querySpy.calls.reset();
 
@@ -111,6 +111,27 @@ describe('GameobjectTemplateAddon integration tests', () => {
       );
       page.expectFullQueryToContain('35');
 
+    });
+
+    it('changing a value via FlagsSelector should correctly work', () => {
+      const field = 'flags';
+      page.clickElement(page.getSelectorBtn(field));
+      page.expectModalDisplayed();
+
+      page.toggleFlagInRow(1);
+      page.toggleFlagInRow(3);
+      page.clickModalSelect();
+
+      expect(page.getInputById(field).value).toEqual('260');
+      page.expectDiffQueryToContain(
+        'UPDATE `gameobject_template_addon` SET `flags` = 260 WHERE (`entry` = ' + id + ');'
+      );
+
+      page.expectFullQueryToContain(
+        'DELETE FROM `gameobject_template_addon` WHERE (`entry` = ' + id + ');\n' +
+        'INSERT INTO `gameobject_template_addon` (`entry`, `faction`, `flags`, `mingold`, `maxgold`) VALUES\n' +
+        '(' + id + ', 0, 260, 0, 0);'
+      );
     });
 
   });
