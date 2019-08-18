@@ -35,6 +35,7 @@ import {
 import { GameobjectHandlerService } from '../services/handlers/gameobject-handler.service';
 import { SelectGameobjectComponent } from '../components/editors/gameobject/select-gameobject/select-gameobject.component';
 import { GameobjectQuestitemComponent } from '../components/editors/gameobject/gameobject-questitem/gameobject-questitem.component';
+import { GameobjectSpawnComponent } from '../components/editors/gameobject/gameobject-spawn/gameobject-spawn.component';
 
 const routes: Routes = [
   {
@@ -163,6 +164,11 @@ const routes: Routes = [
       {
         path: 'gameobject-questitem',
         component: GameobjectQuestitemComponent,
+        canActivate: [GameobjectHandlerService],
+      },
+      {
+        path: 'gameobject-spawn',
+        component: GameobjectSpawnComponent,
         canActivate: [GameobjectHandlerService],
       },
     ]
