@@ -34,6 +34,7 @@ import {
 } from '../components/editors/gameobject/gameobject-template-addon/gameobject-template-addon.component';
 import { GameobjectHandlerService } from '../services/handlers/gameobject-handler.service';
 import { SelectGameobjectComponent } from '../components/editors/gameobject/select-gameobject/select-gameobject.component';
+import { GameobjectQuestitemComponent } from '../components/editors/gameobject/gameobject-questitem/gameobject-questitem.component';
 
 const routes: Routes = [
   {
@@ -157,6 +158,11 @@ const routes: Routes = [
       {
         path: 'gameobject-template-addon',
         component: GameobjectTemplateAddonComponent,
+        canActivate: [GameobjectHandlerService],
+      },
+      {
+        path: 'gameobject-questitem',
+        component: GameobjectQuestitemComponent,
         canActivate: [GameobjectHandlerService],
       },
     ]
