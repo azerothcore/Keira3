@@ -57,14 +57,6 @@
           <input [formControlName]="'phaseMask'" id="phaseMask" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-          <label class="control-label" for="modelid">modelid</label>
-          <input [formControlName]="'modelid'" id="modelid" type="number" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-          <label class="control-label" for="equipment_id">equipment_id</label>
-          <input [formControlName]="'equipment_id'" id="equipment_id" type="number" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="position_x">position_x</label>
           <input [formControlName]="'position_x'" id="position_x" type="number" class="form-control form-control-sm">
         </div>
@@ -85,61 +77,40 @@
           <input [formControlName]="'orientation'" id="orientation" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="rotation0">rotation0</label>
+          <input [formControlName]="'rotation0'" id="rotation0" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="rotation1">rotation1</label>
+          <input [formControlName]="'rotation1'" id="rotation1" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="rotation2">rotation2</label>
+          <input [formControlName]="'rotation2'" id="rotation2" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="rotation3">rotation3</label>
+          <input [formControlName]="'rotation3'" id="rotation3" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="spawntimesecs">spawntimesecs</label>
           <input [formControlName]="'spawntimesecs'" id="spawntimesecs" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-          <label class="control-label" for="spawndist">spawndist</label>
+          <label class="control-label" for="animprogress">animprogress</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="SPAWN_DIST_TOOLTIP"
+            [tooltip]="'Always 100 for chests.'"
           ></i>
-          <input [formControlName]="'spawndist'" id="spawndist" type="number" class="form-control form-control-sm">
+          <input [formControlName]="'animprogress'" id="animprogress" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-          <label class="control-label" for="currentwaypoint">currentwaypoint</label>
-          <input [formControlName]="'currentwaypoint'" id="currentwaypoint" type="number" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-          <label class="control-label" for="curhealth">curhealth</label>
-          <input [formControlName]="'curhealth'" id="curhealth" type="number" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-          <label class="control-label" for="curmana">curmana</label>
-          <input [formControlName]="'curmana'" id="curmana" type="number" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-          <label class="control-label" for="MovementType">MovementType</label>
-          <app-single-value-selector-btn
-            [control]="editorService.form.get('MovementType')"
-            [config]="{ options: MOVEMENT_TYPE, name: 'MovementType' }"
-            [modalClass]="'modal-md'"
-          ></app-single-value-selector-btn>
-          <input [formControlName]="'MovementType'" id="MovementType" type="number" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-          <label class="control-label" for="npcflag">npcflag</label>
-          <app-flags-selector-btn
-            [control]="editorService.form.get('npcflag')"
-            [config]="{ flags: NPC_FLAGS, name: 'npcflag' }"
-          ></app-flags-selector-btn>
-          <input [formControlName]="'npcflag'" id="npcflag" type="number" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-          <label class="control-label" for="unit_flags">unit_flags</label>
-          <app-flags-selector-btn
-            [control]="editorService.form.get('unit_flags')"
-            [config]="{ flags: UNIT_FLAGS, name: 'unit_flags' }"
-          ></app-flags-selector-btn>
-          <input [formControlName]="'unit_flags'" id="unit_flags" type="number" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-          <label class="control-label" for="dynamicflags">dynamicflags</label>
-          <app-flags-selector-btn
-            [control]="editorService.form.get('dynamicflags')"
-            [config]="{ flags: DYNAMIC_FLAGS, name: 'dynamicflags' }"
-          ></app-flags-selector-btn>
-          <input [formControlName]="'dynamicflags'" id="dynamicflags" type="number" class="form-control form-control-sm">
+          <label class="control-label" for="state">state</label>
+          <i
+          class="fas fa-info-circle ml-1" [placement]="'auto'"
+          [tooltip]="'For chests or doors. 1 = closed  0 = open'"
+        ></i>
+          <input [formControlName]="'state'" id="state" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="ScriptName">ScriptName</label>
@@ -196,19 +167,17 @@
           <ngx-datatable-column name="A" prop="areaId" [minWidth]="42"></ngx-datatable-column>
           <ngx-datatable-column name="SM" prop="spawnMask" [minWidth]="42"></ngx-datatable-column>
           <ngx-datatable-column name="PM" prop="phaseMask" [minWidth]="42"></ngx-datatable-column>
-          <ngx-datatable-column name="Model" prop="modelid" [minWidth]="42"></ngx-datatable-column>
-          <ngx-datatable-column name="Equip" prop="equipment_id" [minWidth]="42"></ngx-datatable-column>
           <ngx-datatable-column name="position_x" prop="position_x" [minWidth]="90"></ngx-datatable-column>
           <ngx-datatable-column name="position_y" prop="position_y" [minWidth]="90"></ngx-datatable-column>
           <ngx-datatable-column name="position_z" prop="position_z" [minWidth]="90"></ngx-datatable-column>
           <ngx-datatable-column name="orient." prop="orientation" [minWidth]="90"></ngx-datatable-column>
+          <ngx-datatable-column name="rot.0" prop="rotation0" [minWidth]="90"></ngx-datatable-column>
+          <ngx-datatable-column name="rot.1" prop="rotation1" [minWidth]="90"></ngx-datatable-column>
+          <ngx-datatable-column name="rot.2" prop="rotation2" [minWidth]="90"></ngx-datatable-column>
+          <ngx-datatable-column name="rot.3" prop="rotation3" [minWidth]="90"></ngx-datatable-column>
           <ngx-datatable-column name="Time" prop="spawntimesecs" [minWidth]="50"></ngx-datatable-column>
-          <ngx-datatable-column name="Dist" prop="spawndist" [minWidth]="42"></ngx-datatable-column>
-          <ngx-datatable-column name="CW" prop="currentwaypoint" [minWidth]="42"></ngx-datatable-column>
-          <ngx-datatable-column name="Movement" prop="MovementType" [minWidth]="42"></ngx-datatable-column>
-          <ngx-datatable-column name="npcFlags" prop="npcflag" [minWidth]="42"></ngx-datatable-column>
-          <ngx-datatable-column name="unitFlags" prop="unit_flags" [minWidth]="42"></ngx-datatable-column>
-          <ngx-datatable-column name="dynFlags" prop="dynamicflags" [minWidth]="42"></ngx-datatable-column>
+          <ngx-datatable-column name="anim" prop="animprogress" [minWidth]="90"></ngx-datatable-column>
+          <ngx-datatable-column name="state" prop="state" [minWidth]="90"></ngx-datatable-column>
           <ngx-datatable-column name="ScriptName" prop="ScriptName" [minWidth]="80"></ngx-datatable-column>
         </ngx-datatable>
 
