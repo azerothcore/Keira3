@@ -1,7 +1,5 @@
 import { Flag } from '../../types/general';
 
-// TODO: double check after this is resolved: https://github.com/azerothcore/azerothcore-wotlk/issues/1984
-
 export const CREATURE_TYPE_FLAGS: Flag[] = [
   { bit: 0,  name: 'TAMEABLE_PET - Makes the mob tameable (must also be a beast and have family set)' },
   { bit: 1,  name: 'GHOST_VISIBLE - Creature are also visible for not alive player.' },
