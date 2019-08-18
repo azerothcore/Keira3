@@ -8,6 +8,8 @@ export const ITEM_TEMPLATE_SEARCH_FIELDS = [
   ITEM_TEMPLATE_NAME,
 ];
 
+export const DISENCHANT_TEMPLATE_LOOT_ID = 'DisenchantID';
+
 export class ItemTemplate extends TableRow {
   entry: number = 0;
   class: number = 0;
