@@ -1,6 +1,6 @@
 import { TableRow } from './general';
 
-export const GAMEOBJECT_TEMPLATE_ADDON_TABLE = 'gameobjet_template_addon';
+export const GAMEOBJECT_TEMPLATE_ADDON_TABLE = 'gameobject_template_addon';
 export const GAMEOBJECT_TEMPLATE_ADDON_ID = 'entry';
 
 export class GameobjectTemplateAddon extends TableRow {

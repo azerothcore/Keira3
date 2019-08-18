@@ -1,0 +1,63 @@
+<app-top-bar [handler]="handlerService"></app-top-bar>
+
+<div class="container-fluid">
+
+  <span *ngIf="editorService.loading">Loading...</span>
+
+  <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
+
+    <app-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></app-query-output>
+
+    <hr class="mt-2 mb-1">
+
+    <div class="wiki-link mb-2">
+      <a [href]="docUrl" target="_blank">
+        <i class="fas fa-link"></i> {{ editorService.entityTable }} documentation
+      </a>
+    </div>
+
+    <form
+      [formGroup]="editorService.form"
+      class="form-group edit-form"
+    >
+
+      <div class="row">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="entry">entry</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'The unique ID of the gameobject'"
+          ></i>
+          <input [formControlName]="'entry'" id="entry" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="faction">faction</label>
+          <app-single-value-selector-btn
+            [control]="editorService.form.get('faction')"
+            [config]="{ options: FACTIONS, name: 'faction' }"
+            [modalClass]="'modal-md'"
+          ></app-single-value-selector-btn>
+          <input [formControlName]="'faction'" id="faction" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="flags">flags</label>
+          <app-flags-selector-btn
+            [control]="editorService.form.get('flags')"
+            [config]="{ flags: GAMEOBJECT_FLAGS, name: 'flags' }"
+            [modalClass]="'modal-lg'"
+          ></app-flags-selector-btn>
+          <input [formControlName]="'flags'" id="flags" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="mingold">mingold</label>
+          <input [formControlName]="'mingold'" id="mingold" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="maxgold">maxgold</label>
+          <input [formControlName]="'maxgold'" id="maxgold" type="number" class="form-control form-control-sm">
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>
