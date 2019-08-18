@@ -23,6 +23,10 @@
       <div class="row">
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
           <label class="control-label" for="id">id</label>
+          <app-creature-selector-btn
+            [control]="editorService.form.get('id')"
+            [config]="{  name: 'id' }"
+          ></app-creature-selector-btn>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'creature_template.entry'"
