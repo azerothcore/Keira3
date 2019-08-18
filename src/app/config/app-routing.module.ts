@@ -27,10 +27,13 @@ import { QuestHandlerService } from '../services/handlers/quest-handler.service'
 import { SelectQuestComponent } from '../components/editors/quest/select-quest/select-quest.component';
 import { QuestTemplateAddonComponent } from '../components/editors/quest/quest-template-addon/quest-template-addon.component';
 import { QuestOfferRewardComponent } from '../components/editors/quest/quest-offer-reward/quest-offer-reward.component';
+import { QuestRequestItemsComponent } from '../components/editors/quest/quest-request-items/quest-request-items.component';
 import { GameobjectTemplateComponent } from '../components/editors/gameobject/gameobject-template/gameobject-template.component';
+import {
+  GameobjectTemplateAddonComponent
+} from '../components/editors/gameobject/gameobject-template-addon/gameobject-template-addon.component';
 import { GameobjectHandlerService } from '../services/handlers/gameobject-handler.service';
 import { SelectGameobjectComponent } from '../components/editors/gameobject/select-gameobject/select-gameobject.component';
-import { QuestRequestItemsComponent } from '../components/editors/quest/quest-request-items/quest-request-items.component';
 
 const routes: Routes = [
   {
@@ -149,6 +152,11 @@ const routes: Routes = [
       {
         path: 'gameobject-template',
         component: GameobjectTemplateComponent,
+        canActivate: [GameobjectHandlerService],
+      },
+      {
+        path: 'gameobject-template-addon',
+        component: GameobjectTemplateAddonComponent,
         canActivate: [GameobjectHandlerService],
       },
     ]
