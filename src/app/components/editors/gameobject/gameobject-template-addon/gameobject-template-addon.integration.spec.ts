@@ -92,7 +92,8 @@ describe('GameobjectTemplateAddon integration tests', () => {
     });
 
     it('changing all properties and executing the query should correctly work', () => {
-      const expectedQuery = 'UPDATE `gameobject_template_addon` SET `flags` = 1, `mingold` = 2, `maxgold` = 3 WHERE (`entry` = ' + id +');';
+      const expectedQuery = 'UPDATE `gameobject_template_addon` SET ' +
+      '`flags` = 1, `mingold` = 2, `maxgold` = 3 WHERE (`entry` = ' + id + ');';
 
       querySpy.calls.reset();
 
