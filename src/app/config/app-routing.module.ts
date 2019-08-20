@@ -40,6 +40,9 @@ import { CreatureQueststarterComponent } from '../components/editors/quest/creat
 import { CreatureQuestenderComponent } from '../components/editors/quest/creature-questender/creature-questender.component';
 import { GameobjectQueststarterComponent } from '../components/editors/quest/gameobject-queststarter/gameobject-queststarter.component';
 import { GameobjectQuestenderComponent } from '../components/editors/quest/gameobject-questender/gameobject-questender.component';
+import {
+  GameobjectLootTemplateComponent
+} from '../components/editors/gameobject/gameobject-loot-template/gameobject-loot-template.component';
 
 const routes: Routes = [
   {
@@ -188,6 +191,11 @@ const routes: Routes = [
       {
         path: 'gameobject-questitem',
         component: GameobjectQuestitemComponent,
+        canActivate: [GameobjectHandlerService],
+      },
+      {
+        path: 'gameobject-loot-template',
+        component: GameobjectLootTemplateComponent,
         canActivate: [GameobjectHandlerService],
       },
       {

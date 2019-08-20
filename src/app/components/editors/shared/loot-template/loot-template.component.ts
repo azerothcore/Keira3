@@ -11,7 +11,7 @@ export abstract class LootTemplateComponent<T extends LootTemplate> extends Mult
 
   public readonly LOOT_MODE = LOOT_MODE;
 
-  private _lootId: number;
+  protected _lootId: number;
   get lootId(): number { return this._lootId; }
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
