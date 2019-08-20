@@ -61,7 +61,7 @@
     "codelyzer": "5.1.0",
     "conventional-changelog-cli": "2.0.23",
     "coveralls": "3.0.6",
-    "electron": "6.0.2",
+    "electron": "6.0.3",
     "electron-builder": "21.2.0",
     "electron-reload": "1.5.0",
     "highlight.js": "9.15.9",
