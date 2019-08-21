@@ -22,7 +22,7 @@ describe('GameobjectLootTemplate integration tests', () => {
   let page: GameobjectLootTemplatePage;
 
   const id = 1234; // Data1
-  // const type = 3; // could be 3 or 25
+  const _type = 3; // could be 3 or 25
 
   const originalRow0 = new GameobjectLootTemplate();
   const originalRow1 = new GameobjectLootTemplate();
@@ -42,9 +42,13 @@ describe('GameobjectLootTemplate integration tests', () => {
       .compileComponents();
   }));
 
-  function setup(creatingNew: boolean, lootId = id)  {
+  function setup(creatingNew: boolean, lootId = id, type = _type)  {
     spyOn(TestBed.get(GameobjectLootTemplateService), 'getLootId').and.returnValue(of(
       { results: [{ lootId }] }
+    ));
+
+    spyOn(TestBed.get(GameobjectLootTemplateService), 'getType').and.returnValue(of(
+      { results: [{ type }] }
     ));
 
     handlerService = TestBed.get(GameobjectHandlerService);
@@ -65,10 +69,10 @@ describe('GameobjectLootTemplate integration tests', () => {
     fixture.detectChanges();
   }
 
-  fdescribe('Creating new', () => {
+  describe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    fit('should correctly initialise', () => {
+    it('should correctly initialise', () => {
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.formError.hidden).toBe(true);
