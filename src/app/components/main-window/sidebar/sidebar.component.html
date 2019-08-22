@@ -235,14 +235,23 @@
               <i class="fa fa-pen"></i>
               <span>Item</span>
             </a>
-
             <div class="sidebar-submenu" [@slide]="menuStates.item">
               <ul>
                 <li>
-                  <a href="#" routerLinkActive="active" [routerLink]="'coming-soon'">
-                    Coming soon...
+                  <a href="#" routerLinkActive="active" [routerLink]="'item/select'">
+                    Select Item Template
                   </a>
                 </li>
+                <ng-container *ngIf="itemHandlerService.selected">
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'item/item-template'">
+                      Item Template
+                    </a>
+                  </li>
+                  <ng-container *ngIf="!itemHandlerService.isNew">
+<!--                    TODO: add the other editors here-->
+                  </ng-container>
+                </ng-container>
               </ul>
             </div>
           </li>

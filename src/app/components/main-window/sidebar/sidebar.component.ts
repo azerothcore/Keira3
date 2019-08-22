@@ -6,6 +6,7 @@ import { MysqlService } from '../../../services/mysql.service';
 import { CreatureHandlerService } from '../../../services/handlers/creature-handler.service';
 import { QuestHandlerService } from '../../../services/handlers/quest-handler.service';
 import { GameobjectHandlerService } from '../../../services/handlers/gameobject-handler.service';
+import { ItemHandlerService } from '../../../services/handlers/item-handler.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -37,6 +38,7 @@ export class SidebarComponent {
     public creatureHandlerService: CreatureHandlerService,
     public questHandlerService: QuestHandlerService,
     public gameobjectHandlerService: GameobjectHandlerService,
+    public itemHandlerService: ItemHandlerService,
   ) {
    }
 

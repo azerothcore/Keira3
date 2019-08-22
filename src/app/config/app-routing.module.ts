@@ -40,6 +40,9 @@ import { CreatureQueststarterComponent } from '../components/editors/quest/creat
 import { CreatureQuestenderComponent } from '../components/editors/quest/creature-questender/creature-questender.component';
 import { GameobjectQueststarterComponent } from '../components/editors/quest/gameobject-queststarter/gameobject-queststarter.component';
 import { GameobjectQuestenderComponent } from '../components/editors/quest/gameobject-questender/gameobject-questender.component';
+import { SelectItemComponent } from '../components/editors/item/select-item/select-item.component';
+import { ItemTemplateComponent } from '../components/editors/item/item-template/item-template.component';
+import { ItemHandlerService } from '../services/handlers/item-handler.service';
 
 const routes: Routes = [
   {
@@ -194,6 +197,20 @@ const routes: Routes = [
         path: 'gameobject-spawn',
         component: GameobjectSpawnComponent,
         canActivate: [GameobjectHandlerService],
+      },
+    ]
+  },
+  {
+    path: 'item',
+    children: [
+      {
+        path: 'select',
+        component: SelectItemComponent,
+      },
+      {
+        path: 'item-template',
+        component: ItemTemplateComponent,
+        canActivate: [ItemHandlerService],
       },
     ]
   },
