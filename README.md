@@ -19,7 +19,7 @@ Made with ❤ and [TypeScript](http://www.typescriptlang.org/), [Electron](https
 
 ## Work in progress
 
-Keira3 is currently in a WIP state. All the news and releases will be announced via [the forum](https://github.com/azerothcore/forum/issues/21).
+Keira3 is currently in a WIP state. You can download the latest pre-release [here](https://github.com/azerothcore/Keira3/releases) and follow the development status [here](https://github.com/azerothcore/Keira3/issues/66) (you can also check the [forum](https://github.com/azerothcore/forum/issues/21) and the [chat](https://discordapp.com/channels/217589275766685707/536630256048799744))
 
 ## Support us
 

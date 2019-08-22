@@ -43,6 +43,9 @@ import { GameobjectQuestenderComponent } from '../components/editors/quest/gameo
 import {
   GameobjectLootTemplateComponent
 } from '../components/editors/gameobject/gameobject-loot-template/gameobject-loot-template.component';
+import { SelectItemComponent } from '../components/editors/item/select-item/select-item.component';
+import { ItemTemplateComponent } from '../components/editors/item/item-template/item-template.component';
+import { ItemHandlerService } from '../services/handlers/item-handler.service';
 
 const routes: Routes = [
   {
@@ -202,6 +205,20 @@ const routes: Routes = [
         path: 'gameobject-spawn',
         component: GameobjectSpawnComponent,
         canActivate: [GameobjectHandlerService],
+      },
+    ]
+  },
+  {
+    path: 'item',
+    children: [
+      {
+        path: 'select',
+        component: SelectItemComponent,
+      },
+      {
+        path: 'item-template',
+        component: ItemTemplateComponent,
+        canActivate: [ItemHandlerService],
       },
     ]
   },
