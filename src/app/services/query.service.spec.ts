@@ -529,6 +529,36 @@ describe('QueryService', () => {
           );
         });
       });
+
+      describe('using no keys', () => {
+        it('should correctly work when adding a group of rows', () => {
+          const rows: MockTwoKeysRow[] = [
+            { pk1: 1234, pk2: 1, name: 'Shin', attribute1: 28, attribute2: 4 },
+            { pk1: 1234, pk2: 2, name: 'Helias', attribute1: 12, attribute2: 4 },
+            { pk1: 1234, pk2: 3, name: 'Kalhac', attribute1: 12, attribute2: 4 },
+          ];
+
+          expect(service.getFullDeleteInsertQuery(tableName, rows)).toEqual(
+            'DELETE' + ' FROM `my_table`;\n' +
+            'INSERT' + ' INTO `my_table` (`pk1`, `pk2`, `name`, `attribute1`, `attribute2`) VALUES\n' +
+            '(1234, 1, \'Shin\', 28, 4),\n' +
+            '(1234, 2, \'Helias\', 12, 4),\n' +
+            '(1234, 3, \'Kalhac\', 12, 4);\n'
+          );
+        });
+
+        it('should correctly work when adding a single row', () => {
+          const rows: MockTwoKeysRow[] = [
+            { pk1: 1234, pk2: 1, name: 'Shin', attribute1: 28, attribute2: 4 },
+          ];
+
+          expect(service.getFullDeleteInsertQuery(tableName, rows)).toEqual(
+            'DELETE' + ' FROM `my_table`;\n' +
+            'INSERT' + ' INTO `my_table` (`pk1`, `pk2`, `name`, `attribute1`, `attribute2`) VALUES\n' +
+            '(1234, 1, \'Shin\', 28, 4);\n'
+          );
+        });
+      });
     });
   });
 });
