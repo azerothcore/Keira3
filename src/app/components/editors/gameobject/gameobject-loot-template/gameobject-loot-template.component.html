@@ -1,0 +1,157 @@
+<app-top-bar [handler]="handlerService"></app-top-bar>
+
+<div class="container-fluid" *ngIf="lootId !== null">
+
+  <div *ngIf="lootId === 0 || (type !== 3 && type !== 25)" class="alert alert-info mt-2">
+    You have to set the field <strong>`Data1` (lootid)</strong> and <strong>`type` (3 or 25)</strong> of
+    <strong>{{ editorService.entityTemplateTable }}</strong> in order to enable this feature.
+  </div>
+
+  <span *ngIf="editorService.loading">Loading...</span>
+
+  <div *ngIf="(lootId > 0 && (type === 3 || type === 25)) && editorService.form && !!editorService.loadedEntityId && !editorService.loading">
+
+    <app-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></app-query-output>
+
+    <hr class="mt-2 mb-1">
+
+    <div class="wiki-link mb-2">
+      <a [href]="WIKI_BASE_URL + 'loot_template'" target="_blank">
+        <i class="fas fa-link"></i> *_loot_template documentation
+      </a>
+    </div>
+
+    <form
+      [formGroup]="editorService.form"
+      class="form-group edit-form"
+    >
+
+      <div class="row">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="Item">Item</label>
+          <app-item-selector-btn
+            [control]="editorService.form.get('Item')"
+            [config]="{  name: 'Item' }"
+          ></app-item-selector-btn>
+          <input [formControlName]="'Item'" id="Item" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="Reference">Reference</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Include a group of loots. Linked to referenced_loot_template.entry - future Keira3 releases will have an editor for this'"
+          ></i>
+          <input [formControlName]="'Reference'" id="Reference" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="Chance">Chance</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Item drop chance'"
+          ></i>
+          <input [formControlName]="'Chance'" id="Chance" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="QuestRequired">QuestRequired</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'The item should be shown only to characters having the appropriate quest.'"
+          ></i>
+          <input [formControlName]="'QuestRequired'" id="QuestRequired" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="LootMode">LootMode</label>
+          <app-flags-selector-btn
+            [control]="editorService.form.get('LootMode')"
+            [config]="{ flags: LOOT_MODE, name: 'LootMode' }"
+            [modalClass]="'modal-lg'"
+          ></app-flags-selector-btn>
+          <input [formControlName]="'LootMode'" id="LootMode" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="GroupId">GroupId</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Set of loot definitions, check the wiki for more details'"
+          ></i>
+          <input [formControlName]="'GroupId'" id="GroupId" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="MinCount">MinCount</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'The minimum number of copies of the item that can drop in a single loot'"
+          ></i>
+          <input [formControlName]="'MinCount'" id="MinCount" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="MaxCount">MaxCount</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'The maximum number of copies of the item that can drop in a single loot'"
+          ></i>
+          <input [formControlName]="'MaxCount'" id="MaxCount" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+          <label class="control-label" for="Comment">Comment</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'A comment that is ignored by the core'"
+          ></i>
+          <input [formControlName]="'Comment'" id="Comment" class="form-control form-control-sm">
+        </div>
+
+        <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
+          <i class="fas fa-exclamation-triangle"></i>
+          The <strong>{{ editorService.entitySecondIdField }}</strong> must be unique.
+        </div>
+
+      </div>
+
+    </form>
+
+    <div class="row">
+      <div class="col-12">
+
+        <button
+          id="delete-selected-row-btn"
+          class="btn btn-danger btn-sm mr-2"
+          (click)="editorService.deleteSelectedRow()"
+          [disabled]="editorService.selectedRowId === null"
+        >Delete selected row</button>
+
+        <button
+          id="add-new-row-btn"
+          class="btn btn-success btn-sm"
+          (click)="editorService.addNewRow()"
+        >Add new row</button>
+
+        <ngx-datatable
+          id="editor-table"
+          class="bootstrap table table-striped text-center datatable-select"
+          [rows]="editorService.newRows"
+          [headerHeight]="DTCFG.headerHeight"
+          [footerHeight]="DTCFG.footerHeight"
+          [columnMode]="DTCFG.columnMode"
+          [rowHeight]="DTCFG.rowHeight"
+          [selectionType]="DTCFG.selectionType"
+          (select)='editorService.onRowSelection($event)'>
+          <ngx-datatable-column [width]="30" [sortable]="false">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Item" prop="Item" [minWidth]="80"></ngx-datatable-column>
+          <ngx-datatable-column name="Reference" prop="Reference"></ngx-datatable-column>
+          <ngx-datatable-column name="Chance" prop="Chance"></ngx-datatable-column>
+          <ngx-datatable-column name="QuestRequired" prop="QuestRequired"></ngx-datatable-column>
+          <ngx-datatable-column name="LootMode" prop="LootMode"></ngx-datatable-column>
+          <ngx-datatable-column name="GroupId" prop="GroupId"></ngx-datatable-column>
+          <ngx-datatable-column name="MinCount" prop="MinCount"></ngx-datatable-column>
+          <ngx-datatable-column name="MaxCount" prop="MaxCount"></ngx-datatable-column>
+        </ngx-datatable>
+
+      </div>
+    </div>
+  </div>
+</div>
