@@ -9,7 +9,7 @@ export const GAMEOBJECT_TEMPLATE_SEARCH_FIELDS = [
   GAMEOBJECT_TEMPLATE_NAME
 ];
 
-export const GAMEOBJECT_TEMPLATE_LOOT_ID = 'data1';
+export const GAMEOBJECT_TEMPLATE_LOOT_ID = 'Data1';
 export const GAMEOBJECT_TEMPLATE_TYPE = 'type';
 
 export class GameobjectTemplate extends TableRow {

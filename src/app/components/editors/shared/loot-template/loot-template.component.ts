@@ -11,18 +11,10 @@ export abstract class LootTemplateComponent<T extends LootTemplate> extends Mult
 
   public readonly LOOT_MODE = LOOT_MODE;
 
-  private _lootId: number;
+  protected _lootId: number;
   get lootId(): number { return this._lootId; }
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: LootEditorService<T>,
-    protected handlerService: HandlerService<T>,
-  ) {
-    super(editorService, handlerService);
-  }
-
-  ngOnInit() {
+  protected checkTemplateLootId() {
     this.subscriptions.push(
       this.editorService.getLootId().subscribe((data) => {
         // always re-check the lootId
@@ -40,5 +32,17 @@ export abstract class LootTemplateComponent<T extends LootTemplate> extends Mult
         console.error(error);
       })
     );
+  }
+
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
+  constructor(
+    public editorService: LootEditorService<T>,
+    protected handlerService: HandlerService<T>,
+  ) {
+    super(editorService, handlerService);
+  }
+
+  ngOnInit() {
+    this.checkTemplateLootId();
   }
 }

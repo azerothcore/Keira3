@@ -11,6 +11,8 @@ import {
   GAMEOBJECT_TEMPLATE_ID, GAMEOBJECT_TEMPLATE_LOOT_ID, GAMEOBJECT_TEMPLATE_TYPE,
   GAMEOBJECT_TEMPLATE_TABLE
 } from '../../../types/gameobject-template.type';
+import { Observable } from 'rxjs';
+import { MysqlResult } from '../../../types/general';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +32,14 @@ export class GameobjectLootTemplateService extends LootEditorService<GameobjectL
       GAMEOBJECT_TEMPLATE_LOOT_ID,
       handlerService,
       queryService,
-      // GAMEOBJECT_TEMPLATE_TYPE, // could be 3 OR 25
+    );
+  }
+
+  getType(): Observable<MysqlResult<{ type: number }>> {
+    return this.queryService.query(
+      `SELECT ${GAMEOBJECT_TEMPLATE_TYPE} `
+      + `FROM ${GAMEOBJECT_TEMPLATE_TABLE} `
+      + `WHERE ${GAMEOBJECT_TEMPLATE_ID} = ${this.handlerService.selected}`
     );
   }
 }

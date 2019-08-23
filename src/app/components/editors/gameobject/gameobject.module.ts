@@ -5,6 +5,7 @@ import { GameobjectTemplateModule } from './gameobject-template/gameobject-templ
 import { GameobjectTemplateAddonModule } from './gameobject-template-addon/gameobject-template-addon.module';
 import { GameobjectQuestitemModule } from './gameobject-questitem/gameobject-questitem.module';
 import { GameobjectSpawnModule } from './gameobject-spawn/gameobject-spawn.module';
+import { GameobjectLootTemplateModule } from './gameobject-loot-template/gameobject-loot-template.module';
 
 const modules = [
   SelectGameobjectModule,
@@ -12,6 +13,7 @@ const modules = [
   GameobjectTemplateAddonModule,
   GameobjectQuestitemModule,
   GameobjectSpawnModule,
+  GameobjectLootTemplateModule,
 ];
 
 @NgModule({
