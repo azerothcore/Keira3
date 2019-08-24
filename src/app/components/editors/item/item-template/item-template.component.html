@@ -87,28 +87,65 @@
 
       </div>
 
-      <span class="category-title">
+      <div class="row">
+        <div class="col-12 col-lg-6">
+
+          <span class="category-title">
+        Damage <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      </span>
+          <div class="row">
+
+            <div
+              *ngFor="let i of [1,2]"
+              class="form-group col-12 col-sm-4 col-md-3 col-lg"
+            >
+              <div class="row">
+                <div class="col-12">
+                  <label class="control-label" for="dmg_min{{ i }}">min{{ i }}</label>
+                  <input [formControlName]="'dmg_min' + i" id="dmg_min{{ i }}" type="number" class="form-control form-control-sm">
+                </div>
+                <div class="col-12">
+                  <label class="control-label" for="dmg_max{{ i }}">max{{ i }}</label>
+                  <input [formControlName]="'dmg_max' + i" id="dmg_max{{ i }}" type="number" class="form-control form-control-sm">
+                </div>
+                <div class="col-12">
+                  <label class="control-label" for="dmg_type{{ i }}">type{{ i }}</label>
+                  <input [formControlName]="'dmg_type' + i" id="dmg_type{{ i }}" type="number" class="form-control form-control-sm">
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+        <div class="col-12 col-lg-6">
+
+          <span class="category-title">
         Socket <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
       </span>
-      <div class="row">
-
-        <div
-          *ngFor="let i of [1,2,3]"
-          class="form-group col-12 col-sm-4 col-md-3 col-lg-3 col-xl-2"
-        >
           <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="socketColor_{{ i }}">Color_{{ i }}</label>
-              <input [formControlName]="'socketColor_' + i" id="socketColor_{{ i }}" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="socketContent_{{ i }}">Content_{{ i }}</label>
-              <input [formControlName]="'socketContent_' + i" id="socketContent_{{ i }}" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
 
+            <div
+              *ngFor="let i of [1,2,3]"
+              class="form-group col-12 col-sm-4 col-md-3 col-lg"
+            >
+              <div class="row">
+                <div class="col-12">
+                  <label class="control-label" for="socketColor_{{ i }}">Color_{{ i }}</label>
+                  <input [formControlName]="'socketColor_' + i" id="socketColor_{{ i }}" type="number" class="form-control form-control-sm">
+                </div>
+                <div class="col-12">
+                  <label class="control-label" for="socketContent_{{ i }}">Content_{{ i }}</label>
+                  <input [formControlName]="'socketContent_' + i" id="socketContent_{{ i }}" type="number" class="form-control form-control-sm">
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
       </div>
+
 
     </form>
 
