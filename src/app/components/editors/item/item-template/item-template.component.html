@@ -355,9 +355,24 @@
       <span class="category-title">
         Stats <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
       </span>
-
       <div class="row">
-        <div class="form-group col-12 col-sm-4 col-md-3 col-lg-2 col-xl-1">
+        <div class="form-group col-12 col-sm-6 col-md-3 col-lg-3 col-xl-2">
+          <label class="control-label" for="ScalingStatDistribution">ScalingStatDistribution</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'ScalingStatDistribution'" id="ScalingStatDistribution" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="ScalingStatValue">ScalingStatValue</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'ScalingStatValue'" id="ScalingStatValue" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-4 col-md-3 col-lg-3 col-xl-2">
           <label class="control-label" for="StatsCount">count</label>
           <input [formControlName]="'StatsCount'" id="StatsCount" type="number" class="form-control form-control-sm">
         </div>
@@ -459,8 +474,26 @@
         <div class="col-12 col-lg-6">
 
           <span class="category-title">
-        Socket <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
-      </span>
+            Socket <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+          </span>
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg col-xl-5">
+              <label class="control-label" for="socketBonus">socketBonus</label>
+              <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="'TODO'"
+              ></i>
+              <input [formControlName]="'socketBonus'" id="socketBonus" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg col-xl-5">
+              <label class="control-label" for="GemProperties">GemProperties</label>
+              <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="'TODO'"
+              ></i>
+              <input [formControlName]="'GemProperties'" id="GemProperties" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
           <div class="row">
 
             <div
