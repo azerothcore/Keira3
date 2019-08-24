@@ -261,13 +261,13 @@
             </div>
           </li>
 
-          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.smartAi === 'down' }">
-            <a (click)="toggleState('smartAi')">
+          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.gossip === 'down' }">
+            <a (click)="toggleState('gossip')">
               <i class="fa fa-pen"></i>
-              <span>SmartAI</span>
+              <span>Gossip</span>
             </a>
 
-            <div class="sidebar-submenu" [@slide]="menuStates.smartAi">
+            <div class="sidebar-submenu" [@slide]="menuStates.gossip">
               <ul>
                 <li>
                   <a href="#" routerLinkActive="active" [routerLink]="'coming-soon'">
@@ -295,13 +295,13 @@
             </div>
           </li>
 
-          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.gossip === 'down' }">
-            <a (click)="toggleState('gossip')">
+          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.smartAi === 'down' }">
+            <a (click)="toggleState('smartAi')">
               <i class="fa fa-pen"></i>
-              <span>Gossip</span>
+              <span>SmartAI</span>
             </a>
 
-            <div class="sidebar-submenu" [@slide]="menuStates.gossip">
+            <div class="sidebar-submenu" [@slide]="menuStates.smartAi">
               <ul>
                 <li>
                   <a href="#" routerLinkActive="active" [routerLink]="'coming-soon'">
