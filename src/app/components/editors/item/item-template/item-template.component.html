@@ -21,6 +21,95 @@
       class="form-group edit-form"
     >
 
+      <span class="category-title">
+        Stats <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      </span>
+      <div class="row">
+
+        <div
+          *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]"
+          class="form-group col-12 col-sm-4 col-md-3 col-lg"
+        >
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="stat_type{{ i }}">type{{ i }}</label>
+              <input [formControlName]="'stat_type' + i" id="stat_type{{ i }}" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="stat_value{{ i }}">value{{ i }}</label>
+              <input [formControlName]="'stat_value' + i" id="stat_value{{ i }}" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <span class="category-title">
+        Spell <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      </span>
+      <div class="row">
+
+        <div
+          *ngFor="let i of [1,2,3,4,5]"
+          class="form-group col-12 col-sm-6 col-md-4 col-lg"
+        >
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="spellid_{{ i }}">id_{{ i }}</label>
+              <input [formControlName]="'spellid_' + i" id="spellid_{{ i }}" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="spelltrigger_{{ i }}">trigger_{{ i }}</label>
+              <input [formControlName]="'spelltrigger_' + i" id="spelltrigger_{{ i }}" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="spellcharges_{{ i }}">charges_{{ i }}</label>
+              <input [formControlName]="'spellcharges_' + i" id="spellcharges_{{ i }}" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="spellppmRate_{{ i }}">ppmRate_{{ i }}</label>
+              <input [formControlName]="'spellppmRate_' + i" id="spellppmRate_{{ i }}" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="spellcooldown_{{ i }}">cooldown_{{ i }}</label>
+              <input [formControlName]="'spellcooldown_' + i" id="spellcooldown_{{ i }}" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="spellcategory_{{ i }}">category_{{ i }}</label>
+              <input [formControlName]="'spellcategory_' + i" id="spellcategory_{{ i }}" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="spellcategorycooldown_{{ i }}">categorycooldown_{{ i }}</label>
+              <input [formControlName]="'spellcategorycooldown_' + i" id="spellcategorycooldown_{{ i }}" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <span class="category-title">
+        Socket <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      </span>
+      <div class="row">
+
+        <div
+          *ngFor="let i of [1,2,3]"
+          class="form-group col-12 col-sm-4 col-md-3 col-lg-3 col-xl-2"
+        >
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="socketColor_{{ i }}">Color_{{ i }}</label>
+              <input [formControlName]="'socketColor_' + i" id="socketColor_{{ i }}" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="socketContent_{{ i }}">Content_{{ i }}</label>
+              <input [formControlName]="'socketContent_' + i" id="socketContent_{{ i }}" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
     </form>
 
   </div>
