@@ -353,6 +353,121 @@
       </div>
 
       <span class="category-title">
+        Requirements
+      </span>
+      <div class="row">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="AllowableClass">AllowableClass</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'AllowableClass'" id="AllowableClass" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="AllowableRace">AllowableRace</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'AllowableRace'" id="AllowableRace" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="ItemLevel">ItemLevel</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'ItemLevel'" id="ItemLevel" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RequiredLevel">RequiredLevel</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'RequiredLevel'" id="RequiredLevel" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RequiredSkill">RequiredSkill</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'RequiredSkill'" id="RequiredSkill" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RequiredSkillRank">RequiredSkillRank</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'RequiredSkillRank'" id="RequiredSkillRank" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="requiredspell">requiredspell</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'requiredspell'" id="requiredspell" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="requiredhonorrank">requiredhonorrank</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'requiredhonorrank'" id="requiredhonorrank" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RequiredCityRank">RequiredCityRank</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'RequiredCityRank'" id="RequiredCityRank" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RequiredReputationFaction">RequiredReputationFaction</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'RequiredReputationFaction'" id="RequiredReputationFaction" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RequiredReputationRank">RequiredReputationRank</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'RequiredReputationRank'" id="RequiredReputationRank" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RequiredDisenchantSkill">RequiredDisenchantSkill</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'RequiredDisenchantSkill'" id="RequiredDisenchantSkill" type="number" class="form-control form-control-sm">
+        </div>
+      </div>
+
+      <span class="category-title">
+        Resistance <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      </span>
+      <div class="row">
+        <div
+          *ngFor="let resistance of ['holy', 'fire', 'nature', 'frost', 'shadow', 'arcane']"
+          class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
+        >
+          <label class="control-label" for="{{ resistance }}_res">{{ resistance }}_res</label>
+          <input [formControlName]="resistance + '_res'" id="{{ resistance }}_res" type="number" class="form-control form-control-sm">
+        </div>
+      </div>
+
+      <span class="category-title">
         Stats <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
       </span>
       <div class="row">
