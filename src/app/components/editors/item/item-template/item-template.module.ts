@@ -8,7 +8,6 @@ import { QueryOutputModule } from '../../shared/query-output/query-output.module
 import { ItemTemplateComponent } from './item-template.component';
 import { SingleValueSelectorModule } from '../../shared/selectors/single-value-selector/single-value-selector.module';
 import { FlagsSelectorModule } from '../../shared/selectors/flags-selector/flags-selector.module';
-import { ItemSelectorModule } from '../../shared/selectors/item-selector/item-selector.module';
 
 @NgModule({
   declarations: [
@@ -22,7 +21,6 @@ import { ItemSelectorModule } from '../../shared/selectors/item-selector/item-se
     TooltipModule.forRoot(),
     SingleValueSelectorModule,
     FlagsSelectorModule,
-    ItemSelectorModule,
   ],
   exports: [
     ItemTemplateComponent,
