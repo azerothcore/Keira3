@@ -88,7 +88,7 @@ ITEM_SUBCLASS[4] = [
   { value: 2,   name: 'Leather' },
   { value: 3,   name: 'Mail' },
   { value: 4,   name: 'Plate' },
-  { value: 5,   name: 'Buckler(OBSOLETE)' },
+  { value: 5,   name: 'Buckler (OBSOLETE)' },
   { value: 6,   name: 'Shield' },
   { value: 7,   name: 'Libram' },
   { value: 8,   name: 'Idol' },
@@ -101,55 +101,59 @@ ITEM_SUBCLASS[5] = [
 ];
 
 ITEM_SUBCLASS[6] = [
-  { value: 0,   name: 'Wand(OBSOLETE)' },
-  { value: 1,   name: 'Bolt(OBSOLETE)' },
+  { value: 0,   name: 'Wand (OBSOLETE)' },
+  { value: 1,   name: 'Bolt (OBSOLETE)' },
   { value: 2,   name: 'Arrow' },
   { value: 3,   name: 'Bullet' },
-  { value: 4,   name: 'Thrown(OBSOLETE)' },
+  { value: 4,   name: 'Thrown (OBSOLETE)' },
 ];
 
 ITEM_SUBCLASS[7] = [
-  { value: 0,   name: 'xxxx' },
-  { value: 1,   name: 'xxxx' },
-  { value: 2,   name: 'xxxx' },
-  { value: 3,   name: 'xxxx' },
-  { value: 4,   name: 'xxxx' },
-  { value: 5,   name: 'xxxx' },
-  { value: 6,   name: 'xxxx' },
-  { value: 7,   name: 'xxxx' },
-  { value: 8,   name: 'xxxx' },
+  { value: 0,   name: 'Trade Goods' },
+  { value: 1,   name: 'Parts' },
+  { value: 2,   name: 'Explosives' },
+  { value: 3,   name: 'Devices' },
+  { value: 4,   name: 'Jewelcrafting' },
+  { value: 5,   name: 'Cloth' },
+  { value: 6,   name: 'Leather' },
+  { value: 7,   name: 'Metal &amp; Stone' },
+  { value: 8,   name: 'Meat' },
+  { value: 9,   name: 'Herb' },
+  { value: 10,  name: 'Elemental' },
+  { value: 11,  name: 'Other' },
+  { value: 12,  name: 'Enchanting' },
+  { value: 13,  name: 'Materials' },
+  { value: 14,  name: 'Armor Enchantment' },
+  { value: 15,  name: 'Weapon Enchantment' },
 ];
 
 ITEM_SUBCLASS[8] = [
-  { value: 0,   name: 'Generic(OBSOLETE)' },
+  { value: 0,   name: 'Generic (OBSOLETE)' },
 ];
 
 ITEM_SUBCLASS[9] = [
-  { value: 0,   name: 'xxxx' },
-  { value: 1,   name: 'xxxx' },
-  { value: 2,   name: 'xxxx' },
-  { value: 3,   name: 'xxxx' },
-  { value: 4,   name: 'xxxx' },
-  { value: 5,   name: 'xxxx' },
-  { value: 6,   name: 'xxxx' },
-  { value: 7,   name: 'xxxx' },
-  { value: 8,   name: 'xxxx' },
+  { value: 0,   name: 'Book' },
+  { value: 1,   name: 'Leatherworking' },
+  { value: 2,   name: 'Tailoring' },
+  { value: 3,   name: 'Engineering' },
+  { value: 4,   name: 'Blacksmithing' },
+  { value: 5,   name: 'Cooking' },
+  { value: 6,   name: 'Alchemy' },
+  { value: 7,   name: 'First Aid' },
+  { value: 8,   name: 'Enchanting' },
+  { value: 9,   name: 'Fishing' },
+  { value: 10,  name: 'Jewelcrafting' },
 ];
 
 ITEM_SUBCLASS[10] = [
-  { value: 0,   name: 'Money(OBSOLETE)' },
+  { value: 0,   name: 'Money (OBSOLETE)' },
 ];
 
 ITEM_SUBCLASS[11] = [
-  { value: 0,   name: 'xxxx' },
-  { value: 1,   name: 'xxxx' },
-  { value: 2,   name: 'xxxx' },
-  { value: 3,   name: 'xxxx' },
-  { value: 4,   name: 'xxxx' },
-  { value: 5,   name: 'xxxx' },
-  { value: 6,   name: 'xxxx' },
-  { value: 7,   name: 'xxxx' },
-  { value: 8,   name: 'xxxx' },
+  { value: 0,   name: 'Quiver (OBSOLETE)' },
+  { value: 1,   name: 'Quiver (OBSOLETE)' },
+  { value: 2,   name: 'Quiver (Can hold arrows)' },
+  { value: 3,   name: 'Ammo Pouch (Can hold bullets)' },
 ];
 
 ITEM_SUBCLASS[12] = [
@@ -157,15 +161,8 @@ ITEM_SUBCLASS[12] = [
 ];
 
 ITEM_SUBCLASS[13] = [
-  { value: 0,   name: 'xxxx' },
-  { value: 1,   name: 'xxxx' },
-  { value: 2,   name: 'xxxx' },
-  { value: 3,   name: 'xxxx' },
-  { value: 4,   name: 'xxxx' },
-  { value: 5,   name: 'xxxx' },
-  { value: 6,   name: 'xxxx' },
-  { value: 7,   name: 'xxxx' },
-  { value: 8,   name: 'xxxx' },
+  { value: 0,   name: 'Key' },
+  { value: 1,   name: 'Lockpick' },
 ];
 
 ITEM_SUBCLASS[14] = [
@@ -173,25 +170,23 @@ ITEM_SUBCLASS[14] = [
 ];
 
 ITEM_SUBCLASS[15] = [
-  { value: 0,   name: 'xxxx' },
-  { value: 1,   name: 'xxxx' },
-  { value: 2,   name: 'xxxx' },
-  { value: 3,   name: 'xxxx' },
-  { value: 4,   name: 'xxxx' },
-  { value: 5,   name: 'xxxx' },
-  { value: 6,   name: 'xxxx' },
-  { value: 7,   name: 'xxxx' },
-  { value: 8,   name: 'xxxx' },
+  { value: 0,   name: 'Junk' },
+  { value: 1,   name: 'Reagent' },
+  { value: 2,   name: 'Pet' },
+  { value: 3,   name: 'Holiday' },
+  { value: 4,   name: 'Other' },
+  { value: 5,   name: 'Mount' },
 ];
 
 ITEM_SUBCLASS[16] = [
-  { value: 0,   name: 'xxxx' },
-  { value: 1,   name: 'xxxx' },
-  { value: 2,   name: 'xxxx' },
-  { value: 3,   name: 'xxxx' },
-  { value: 4,   name: 'xxxx' },
-  { value: 5,   name: 'xxxx' },
-  { value: 6,   name: 'xxxx' },
-  { value: 7,   name: 'xxxx' },
-  { value: 8,   name: 'xxxx' },
+  { value: 1,   name: 'Warrior' },
+  { value: 2,   name: 'Paladin' },
+  { value: 3,   name: 'Hunter' },
+  { value: 4,   name: 'Rogue' },
+  { value: 5,   name: 'Priest' },
+  { value: 6,   name: 'Death Knight' },
+  { value: 7,   name: 'Shaman' },
+  { value: 8,   name: 'Mage' },
+  { value: 9,   name: 'Warlock' },
+  { value: 11,  name: 'Druid' },
 ];
