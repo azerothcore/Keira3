@@ -18,6 +18,8 @@ export class GameobjectTemplateComponent extends SingleRowEditorComponent<Gameob
 
   public readonly GAMEOBJECT_TYPE = GAMEOBJECT_TYPE;
   public readonly GAMEOBJECT_ICON = GAMEOBJECT_ICON;
+  public readonly GAMEOBJECT_DATA_TOOLTIP = 'Data0-Data23 fields change their meanings according to the selected TYPE. ' +
+    'Keira3 will try to reflect their names and show tooltips accordingly whenever the gameobject TYPE is changed';
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

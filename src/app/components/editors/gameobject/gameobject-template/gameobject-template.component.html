@@ -84,7 +84,13 @@
 
       <br>
 
-      <span class="category-title">Gameobject Data</span>
+      <span class="category-title">
+        Gameobject Data
+        <i
+          class="fas fa-info-circle ml-1" [placement]="'auto'"
+          [tooltip]="GAMEOBJECT_DATA_TOOLTIP"
+        ></i>
+      </span>
 
       <div class="row">
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2" *ngFor="let item of [].constructor(24); let i = index">
