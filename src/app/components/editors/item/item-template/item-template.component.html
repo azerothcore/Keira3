@@ -397,49 +397,6 @@
 
       </div>
 
-      <span class="category-title">
-        Spell <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
-      </span>
-      <div class="row">
-
-        <div
-          *ngFor="let i of [1,2,3,4,5]"
-          class="form-group col-12 col-sm-6 col-md-4 col-lg"
-        >
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="spellid_{{ i }}">id_{{ i }}</label>
-              <input [formControlName]="'spellid_' + i" id="spellid_{{ i }}" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="spelltrigger_{{ i }}">trigger_{{ i }}</label>
-              <input [formControlName]="'spelltrigger_' + i" id="spelltrigger_{{ i }}" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="spellcharges_{{ i }}">charges_{{ i }}</label>
-              <input [formControlName]="'spellcharges_' + i" id="spellcharges_{{ i }}" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="spellppmRate_{{ i }}">ppmRate_{{ i }}</label>
-              <input [formControlName]="'spellppmRate_' + i" id="spellppmRate_{{ i }}" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="spellcooldown_{{ i }}">cooldown_{{ i }}</label>
-              <input [formControlName]="'spellcooldown_' + i" id="spellcooldown_{{ i }}" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="spellcategory_{{ i }}">category_{{ i }}</label>
-              <input [formControlName]="'spellcategory_' + i" id="spellcategory_{{ i }}" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="spellcategorycooldown_{{ i }}">categorycooldown_{{ i }}</label>
-              <input [formControlName]="'spellcategorycooldown_' + i" id="spellcategorycooldown_{{ i }}" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
-
-      </div>
-
       <div class="row">
         <div class="col-12 col-lg-6">
 
@@ -517,6 +474,119 @@
         </div>
       </div>
 
+      <span class="category-title">
+        Weapon
+      </span>
+      <div class="row">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="armor">armor</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'armor'" id="armor" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="delay">delay</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'delay'" id="delay" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="ammo_type">ammo_type</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'ammo_type'" id="ammo_type" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RangedModRange">RangedModRange</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'RangedModRange'" id="RangedModRange" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="itemset">itemset</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'itemset'" id="itemset" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="bonding">bonding</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'bonding'" id="bonding" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="block">block</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'block'" id="block" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="MaxDurability">MaxDurability</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'MaxDurability'" id="MaxDurability" type="number" class="form-control form-control-sm">
+        </div>
+
+      </div>
+
+      <span class="category-title">
+        Spell <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      </span>
+      <div class="row">
+
+        <div
+          *ngFor="let i of [1,2,3,4,5]"
+          class="form-group col-12 col-sm-6 col-md-4 col-lg"
+        >
+          <div class="row">
+            <div class="col-12">
+              <label class="control-label" for="spellid_{{ i }}">id_{{ i }}</label>
+              <input [formControlName]="'spellid_' + i" id="spellid_{{ i }}" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="spelltrigger_{{ i }}">trigger_{{ i }}</label>
+              <input [formControlName]="'spelltrigger_' + i" id="spelltrigger_{{ i }}" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="spellcharges_{{ i }}">charges_{{ i }}</label>
+              <input [formControlName]="'spellcharges_' + i" id="spellcharges_{{ i }}" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="spellppmRate_{{ i }}">ppmRate_{{ i }}</label>
+              <input [formControlName]="'spellppmRate_' + i" id="spellppmRate_{{ i }}" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="spellcooldown_{{ i }}">cooldown_{{ i }}</label>
+              <input [formControlName]="'spellcooldown_' + i" id="spellcooldown_{{ i }}" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="spellcategory_{{ i }}">category_{{ i }}</label>
+              <input [formControlName]="'spellcategory_' + i" id="spellcategory_{{ i }}" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="col-12">
+              <label class="control-label" for="spellcategorycooldown_{{ i }}">categorycooldown_{{ i }}</label>
+              <input [formControlName]="'spellcategorycooldown_' + i" id="spellcategorycooldown_{{ i }}" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+      </div>
 
     </form>
 
