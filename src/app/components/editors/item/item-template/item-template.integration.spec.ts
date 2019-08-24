@@ -9,6 +9,7 @@ import { QueryService } from '../../../../services/query.service';
 import { EditorPageObject } from '../../../../test-utils/editor-page-object';
 import { ItemTemplate } from '../../../../types/item-template.type';
 import { ItemHandlerService } from '../../../../services/handlers/item-handler.service';
+import { ITEM_SUBCLASS } from '../../../../constants/options/item-class';
 
 class ItemTemplatePage extends EditorPageObject<ItemTemplateComponent> {}
 
@@ -182,6 +183,33 @@ describe('ItemTemplate integration tests', () => {
     //   // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
     //   page.expectFullQueryToContain('4100');
     // });
+
+    describe('the subclass field', () => {
+      it('should show the selector button only if class has a valid value', () => {
+        page.setInputValueById('class', 100);
+        expect(page.getSelectorBtn('subclass', false)).toBeFalsy();
+
+        page.setInputValueById('class', 0);
+        expect(page.getSelectorBtn('subclass', false)).toBeTruthy();
+
+        page.setInputValueById('class', -1);
+        expect(page.getSelectorBtn('subclass', false)).toBeFalsy();
+
+        page.setInputValueById('class', 10);
+        expect(page.getSelectorBtn('subclass', false)).toBeTruthy();
+
+        page.setInputValueById('class', null);
+        expect(page.getSelectorBtn('subclass', false)).toBeFalsy();
+      });
+
+      it('should show its values according to the value of class', () => {
+        page.setInputValueById('class', 3);
+        page.clickElement(page.getSelectorBtn('subclass'));
+
+        expect(page.getCellOfDatatableInModal(2, 1).innerText).toContain(ITEM_SUBCLASS[3][2].name);
+        page.clickModalSelect();
+      });
+    });
   });
 });
 
