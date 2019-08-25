@@ -46,6 +46,7 @@ import {
 import { SelectItemComponent } from '../components/editors/item/select-item/select-item.component';
 import { ItemTemplateComponent } from '../components/editors/item/item-template/item-template.component';
 import { ItemHandlerService } from '../services/handlers/item-handler.service';
+import { ItemLootTemplateComponent } from '../components/editors/item/item-loot-template/item-loot-template.component';
 
 const routes: Routes = [
   {
@@ -218,6 +219,11 @@ const routes: Routes = [
       {
         path: 'item-template',
         component: ItemTemplateComponent,
+        canActivate: [ItemHandlerService],
+      },
+      {
+        path: 'item-loot-template',
+        component: ItemLootTemplateComponent,
         canActivate: [ItemHandlerService],
       },
     ]

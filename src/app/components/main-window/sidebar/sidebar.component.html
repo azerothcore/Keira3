@@ -254,7 +254,11 @@
                     </a>
                   </li>
                   <ng-container *ngIf="!itemHandlerService.isNew">
-<!--                    TODO: add the other editors here-->
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'item/item-loot-template'">
+                        Item Loot
+                      </a>
+                    </li>
                   </ng-container>
                 </ng-container>
               </ul>
