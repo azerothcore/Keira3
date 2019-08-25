@@ -165,24 +165,23 @@ describe('ItemTemplate integration tests', () => {
       page.expectFullQueryToContain('22');
     });
 
-    // TODO:
-    // xit('changing a value via FlagsSelector should correctly work', () => {
-    //   const field = 'Flags';
-    //   page.clickElement(page.getSelectorBtn(field));
-    //   page.expectModalDisplayed();
-    //
-    //   page.toggleFlagInRow(2);
-    //   page.toggleFlagInRow(12);
-    //   page.clickModalSelect();
-    //
-    //   expect(page.getInputById(field).value).toEqual('4100');
-    //   page.expectDiffQueryToContain(
-    //     'UPDATE `item_template` SET `Flags` = 4100 WHERE (`entry` = 1234);'
-    //   );
-    //
-    //   // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
-    //   page.expectFullQueryToContain('4100');
-    // });
+    it('changing a value via FlagsSelector should correctly work', () => {
+      const field = 'Flags';
+      page.clickElement(page.getSelectorBtn(field));
+      page.expectModalDisplayed();
+
+      page.toggleFlagInRow(2);
+      page.toggleFlagInRow(12);
+      page.clickModalSelect();
+
+      expect(page.getInputById(field).value).toEqual('4100');
+      page.expectDiffQueryToContain(
+        'UPDATE `item_template` SET `Flags` = 4100 WHERE (`entry` = 1234);'
+      );
+
+      // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
+      page.expectFullQueryToContain('4100');
+    });
 
     describe('the subclass field', () => {
       it('should show the selector button only if class has a valid value', () => {
