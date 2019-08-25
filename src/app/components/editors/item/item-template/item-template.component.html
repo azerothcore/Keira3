@@ -135,7 +135,7 @@
           <label class="control-label" for="BuyCount">BuyCount</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="'The size of the item stack when sold by vendors. If a vendor has limited copies of this item available, every time the vendor list is refreshed (See npc_vendor.incrtime), the number of copies increases by this number.'"
           ></i>
           <input [formControlName]="'BuyCount'" id="BuyCount" type="number" class="form-control form-control-sm">
         </div>
@@ -143,7 +143,7 @@
           <label class="control-label" for="BuyPrice">BuyPrice</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="'The price required to pay to buy this item from a vendor, in copper.'"
           ></i>
           <input [formControlName]="'BuyPrice'" id="BuyPrice" type="number" class="form-control form-control-sm">
         </div>
@@ -151,16 +151,17 @@
           <label class="control-label" for="SellPrice">SellPrice</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="'The price that the vendor will pay you for the item when you sell it, in copper. 0 if the item cannot be sold to a vendor.'"
           ></i>
           <input [formControlName]="'SellPrice'" id="SellPrice" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="InventoryType">InventoryType</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
-          ></i>
+          <app-single-value-selector-btn
+            [control]="editorService.form.get('InventoryType')"
+            [config]="{ options: INVENTORY_TYPE, name: 'InventoryType' }"
+            [modalClass]="'modal-md'"
+          ></app-single-value-selector-btn>
           <input [formControlName]="'InventoryType'" id="InventoryType" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -371,18 +372,20 @@
       <div class="row">
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="AllowableClass">AllowableClass</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
-          ></i>
+          <app-flags-selector-btn
+            [control]="editorService.form.get('AllowableClass')"
+            [config]="{ flags: ALLOWABLE_CLASSES, name: 'AllowableClass' }"
+            [modalClass]="'modal-lg'"
+          ></app-flags-selector-btn>
           <input [formControlName]="'AllowableClass'" id="AllowableClass" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="AllowableRace">AllowableRace</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
-          ></i>
+          <app-flags-selector-btn
+            [control]="editorService.form.get('AllowableRace')"
+            [config]="{ flags: ALLOWABLE_RACES, name: 'AllowableRace' }"
+            [modalClass]="'modal-lg'"
+          ></app-flags-selector-btn>
           <input [formControlName]="'AllowableRace'" id="AllowableRace" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
