@@ -115,10 +115,11 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="Flags">Flags</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
-          ></i>
+          <app-flags-selector-btn
+            [control]="editorService.form.get('Flags')"
+            [config]="{ flags: ITEM_FLAGS, name: 'Flags' }"
+            [modalClass]="'modal-lg'"
+          ></app-flags-selector-btn>
           <input [formControlName]="'Flags'" id="Flags" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">

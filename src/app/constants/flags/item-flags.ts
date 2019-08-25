@@ -1,13 +1,13 @@
 import { Flag } from '../../types/general';
 
 export const ITEM_FLAGS: Flag[] = [
-  { bit: 0,  name: 'CONJURED' },
-  { bit: 1,  name: 'NO_PICKUP' },
+  { bit: 0,  name: 'NO_PICKUP' },
+  { bit: 1,  name: 'CONJURED' },
   { bit: 2,  name: 'HAS_LOOT - Item can be right clicked to open its loot' },
   { bit: 3,  name: 'HEROIC_TOOLTIP - Makes green "Heroic" text appear on item' },
   { bit: 4,  name: 'DEPRECATED - Cannot equip or use' },
   { bit: 5,  name: 'NO_USER_DESTROY - Item can not be destroyed, except by using a spell' },
-  { bit: 6,  name: 'PLAYERCAST -(Item\'s spells are castable by players' },
+  { bit: 6,  name: 'PLAYERCAST - Item\'s spells are castable by players' },
   { bit: 7,  name: 'NO_EQUIP_COOLDOWN No default 30 seconds cooldown when equipped' },
   { bit: 8,  name: 'MULTI_LOOT_QUEST' },
   { bit: 9,  name: 'IS_WRAPPER - Item can wrap other items' },

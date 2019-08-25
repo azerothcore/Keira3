@@ -6,6 +6,7 @@ import { ItemTemplateService } from '../../../../services/editors/item/item-temp
 import { ItemHandlerService } from '../../../../services/handlers/item-handler.service';
 import { ITEM_CLASS, ITEM_SUBCLASS } from '../../../../constants/options/item-class';
 import { ITEM_QUALITY } from '../../../../constants/options/item-quality';
+import { ITEM_FLAGS } from '../../../../constants/flags/item-flags';
 
 @Component({
   selector: 'app-item-template',
@@ -17,6 +18,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   public readonly ITEM_CLASS = ITEM_CLASS;
   public readonly ITEM_SUBCLASS = ITEM_SUBCLASS;
   public readonly ITEM_QUALITY = ITEM_QUALITY;
+  public readonly ITEM_FLAGS = ITEM_FLAGS;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
