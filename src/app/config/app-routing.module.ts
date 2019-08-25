@@ -47,6 +47,9 @@ import { SelectItemComponent } from '../components/editors/item/select-item/sele
 import { ItemTemplateComponent } from '../components/editors/item/item-template/item-template.component';
 import { ItemHandlerService } from '../services/handlers/item-handler.service';
 import { ItemLootTemplateComponent } from '../components/editors/item/item-loot-template/item-loot-template.component';
+import { DisenchantLootTemplateComponent } from '../components/editors/item/disenchant-loot-template/disenchant-loot-template.component';
+import { ProspectingLootTemplateComponent } from '../components/editors/item/prospecting-loot-template/prospecting-loot-template.component';
+import { MillingLootTemplateComponent } from '../components/editors/item/milling-loot-template/milling-loot-template.component';
 
 const routes: Routes = [
   {
@@ -224,6 +227,21 @@ const routes: Routes = [
       {
         path: 'item-loot-template',
         component: ItemLootTemplateComponent,
+        canActivate: [ItemHandlerService],
+      },
+      {
+        path: 'disenchant-loot-template',
+        component: DisenchantLootTemplateComponent,
+        canActivate: [ItemHandlerService],
+      },
+      {
+        path: 'prospecting-loot-template',
+        component: ProspectingLootTemplateComponent,
+        canActivate: [ItemHandlerService],
+      },
+      {
+        path: 'milling-loot-template',
+        component: MillingLootTemplateComponent,
         canActivate: [ItemHandlerService],
       },
     ]
