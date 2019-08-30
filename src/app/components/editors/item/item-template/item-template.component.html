@@ -45,7 +45,7 @@
           <label class="control-label" for="description">description</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="'The description that appears in orange letters at the bottom of the item tooltip.'"
           ></i>
           <input [formControlName]="'description'" id="description" class="form-control form-control-sm">
         </div>
@@ -454,10 +454,11 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="RequiredReputationRank">RequiredReputationRank</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO - SELECTORS'"
-          ></i>
+          <app-single-value-selector-btn
+            [control]="editorService.form.get('RequiredReputationRank')"
+            [config]="{ options: FACTION_RANK, name: 'RequiredReputationRank' }"
+            [modalClass]="'modal-md'"
+          ></app-single-value-selector-btn>
           <input [formControlName]="'RequiredReputationRank'" id="RequiredReputationRank" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -645,7 +646,7 @@
           <label class="control-label" for="delay">delay</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="'The time in milliseconds between successive hits.'"
           ></i>
           <input [formControlName]="'delay'" id="delay" type="number" class="form-control form-control-sm">
         </div>
@@ -653,7 +654,7 @@
           <label class="control-label" for="ammo_type">ammo_type</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="'The type of ammunition the item uses. Arrows = 2; Bullets = 3'"
           ></i>
           <input [formControlName]="'ammo_type'" id="ammo_type" type="number" class="form-control form-control-sm">
         </div>
@@ -661,7 +662,7 @@
           <label class="control-label" for="RangedModRange">RangedModRange</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="'Range Modifier for bows/guns/crossbows: Default range is somewhere between 0.3 and 0.4 yards, all blizzard ranged weapons have RangedModRange100'"
           ></i>
           <input [formControlName]="'RangedModRange'" id="RangedModRange" type="number" class="form-control form-control-sm">
         </div>
@@ -677,7 +678,7 @@
           <label class="control-label" for="bonding">bonding</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="'TODO - SELECTORS'"
           ></i>
           <input [formControlName]="'bonding'" id="bonding" type="number" class="form-control form-control-sm">
         </div>
@@ -720,22 +721,42 @@
             </div>
             <div class="col-12">
               <label class="control-label" for="spellcharges_{{ i }}">charges_{{ i }}</label>
+              <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="'The number of times that the item can cast the spell. If 0, then infinite charges are possible. If negative, then after the number of charges is depleted, the item is deleted as well. If positive, then the item is not deleted after all the charges are spent.'"
+              ></i>
               <input [formControlName]="'spellcharges_' + i" id="spellcharges_{{ i }}" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
               <label class="control-label" for="spellppmRate_{{ i }}">ppmRate_{{ i }}</label>
+              <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="'The proc per minute rate controlling how often the spell is triggered (if #spelltrigger == 2).'"
+              ></i>
               <input [formControlName]="'spellppmRate_' + i" id="spellppmRate_{{ i }}" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
               <label class="control-label" for="spellcooldown_{{ i }}">cooldown_{{ i }}</label>
+              <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="'The cooldown in milliseconds for the specific spell controlling how often the spell can be used. Use -1 to use the default spell cooldown. Note: this is not the “internal cooldown” of procs commonly found on items such as trinkets with “Chance on hit” effects.'"
+              ></i>
               <input [formControlName]="'spellcooldown_' + i" id="spellcooldown_{{ i }}" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
               <label class="control-label" for="spellcategory_{{ i }}">category_{{ i }}</label>
+              <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="'The category that the spell is in.'"
+              ></i>
               <input [formControlName]="'spellcategory_' + i" id="spellcategory_{{ i }}" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
               <label class="control-label" for="spellcategorycooldown_{{ i }}">categorycooldown_{{ i }}</label>
+              <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="'The cooldown time in milliseconds that is applied to all other spells in the category that the triggered spell is also in. Use -1 to use the default spell cooldown.'"
+              ></i>
               <input [formControlName]="'spellcategorycooldown_' + i" id="spellcategorycooldown_{{ i }}" type="number" class="form-control form-control-sm">
             </div>
           </div>
