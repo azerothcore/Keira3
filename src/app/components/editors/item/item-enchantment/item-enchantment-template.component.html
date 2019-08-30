@@ -1,0 +1,81 @@
+<app-top-bar [handler]="handlerService"></app-top-bar>
+
+<div class="container-fluid">
+
+  <span *ngIf="editorService.loading">Loading...</span>
+
+  <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
+
+    <app-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></app-query-output>
+
+    <hr class="mt-2 mb-1">
+
+    <div class="wiki-link mb-2">
+      <a [href]="docUrl" target="_blank">
+        <i class="fas fa-link"></i> {{ editorService.entityTable }} documentation
+      </a>
+    </div>
+
+    <form
+      [formGroup]="editorService.form"
+      class="form-group edit-form"
+    >
+
+      <div class="row">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+          <label class="control-label" for="ench">ench</label>
+          <input [formControlName]="'ench'" id="ench" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+          <label class="control-label" for="chance">chance</label>
+          <input [formControlName]="'chance'" id="chance" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
+          <i class="fas fa-exclamation-triangle"></i>
+          The <strong>{{ editorService.entitySecondIdField }}</strong> must be unique.
+        </div>
+
+      </div>
+
+    </form>
+
+    <div class="row">
+      <div class="col-12">
+
+        <button
+          id="delete-selected-row-btn"
+          class="btn btn-danger btn-sm mr-2"
+          (click)="editorService.deleteSelectedRow()"
+          [disabled]="editorService.selectedRowId === null"
+        >Delete selected row</button>
+
+        <button
+          id="add-new-row-btn"
+          class="btn btn-success btn-sm"
+          (click)="editorService.addNewRow()"
+        >Add new row</button>
+
+        <ngx-datatable
+          id="editor-table"
+          class="bootstrap table table-striped text-center datatable-select"
+          [rows]="editorService.newRows"
+          [headerHeight]="DTCFG.headerHeight"
+          [footerHeight]="DTCFG.footerHeight"
+          [columnMode]="DTCFG.columnMode"
+          [rowHeight]="DTCFG.rowHeight"
+          [selectionType]="DTCFG.selectionType"
+          (select)='editorService.onRowSelection($event)'>
+          <ngx-datatable-column [width]="30" [sortable]="false">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="ench" prop="ench" [minWidth]="80"></ngx-datatable-column>
+          <ngx-datatable-column name="chance" prop="chance"></ngx-datatable-column>
+        </ngx-datatable>
+
+      </div>
+    </div>
+  </div>
+</div>

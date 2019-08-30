@@ -50,6 +50,7 @@ import { ItemLootTemplateComponent } from '../components/editors/item/item-loot-
 import { DisenchantLootTemplateComponent } from '../components/editors/item/disenchant-loot-template/disenchant-loot-template.component';
 import { ProspectingLootTemplateComponent } from '../components/editors/item/prospecting-loot-template/prospecting-loot-template.component';
 import { MillingLootTemplateComponent } from '../components/editors/item/milling-loot-template/milling-loot-template.component';
+import { ItemEnchantmentTemplateComponent } from '../components/editors/item/item-enchantment/item-enchantment-template.component';
 
 const routes: Routes = [
   {
@@ -222,6 +223,11 @@ const routes: Routes = [
       {
         path: 'item-template',
         component: ItemTemplateComponent,
+        canActivate: [ItemHandlerService],
+      },
+      {
+        path: 'item-enchantment-template',
+        component: ItemEnchantmentTemplateComponent,
         canActivate: [ItemHandlerService],
       },
       {
