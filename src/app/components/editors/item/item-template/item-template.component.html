@@ -54,7 +54,7 @@
           <label class="control-label" for="ScriptName">ScriptName</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="'The name of the script that the item should use'"
           ></i>
           <input [formControlName]="'ScriptName'" id="ScriptName" class="form-control form-control-sm">
         </div>
@@ -248,7 +248,7 @@
           <label class="control-label" for="RandomProperty">RandomProperty</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="'Points to item_enchantment_template.entry and ties in an item’s chance at having a random property attached to it when it shows up for the first time. Cannot be non-zero if also RandomSuffix is non-zero.'"
           ></i>
           <input [formControlName]="'RandomProperty'" id="RandomProperty" type="number" class="form-control form-control-sm">
         </div>
@@ -256,7 +256,7 @@
           <label class="control-label" for="RandomSuffix">RandomSuffix</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="'Points to item_enchantment_template.entry and ties in an item’s chance at having a random suffix attached to it when it shows up for the first time. Cannot be non-zero if also RandomProperty is non-zero.'"
           ></i>
           <input [formControlName]="'RandomSuffix'" id="RandomSuffix" type="number" class="form-control form-control-sm">
         </div>
@@ -264,7 +264,7 @@
           <label class="control-label" for="area">area</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="'The ID of the zone in which this item can be used.'"
           ></i>
           <input [formControlName]="'area'" id="area" type="number" class="form-control form-control-sm">
         </div>
@@ -272,7 +272,7 @@
           <label class="control-label" for="Map">Map</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="'The ID of the map in which this item can be used.'"
           ></i>
           <input [formControlName]="'Map'" id="Map" type="number" class="form-control form-control-sm">
         </div>
@@ -280,7 +280,7 @@
           <label class="control-label" for="BagFamily">BagFamily</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="'TODO - SELECTOR'"
           ></i>
           <input [formControlName]="'BagFamily'" id="BagFamily" type="number" class="form-control form-control-sm">
         </div>
@@ -288,39 +288,31 @@
           <label class="control-label" for="TotemCategory">TotemCategory</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="'TODO - SELECTOR'"
           ></i>
           <input [formControlName]="'TotemCategory'" id="TotemCategory" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="ArmorDamageModifier">ArmorDamageModifier</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
-          ></i>
           <input [formControlName]="'ArmorDamageModifier'" id="ArmorDamageModifier" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="duration">duration</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="'The duration of the item in seconds ingame time. Set ITEM_FLAGS_CU_DURATION_REAL_TIME in flagsCustom for real time. In that case the item duration will tick even if player is offline.'"
           ></i>
           <input [formControlName]="'duration'" id="duration" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="ItemLimitCategory">ItemLimitCategory</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
-          ></i>
           <input [formControlName]="'ItemLimitCategory'" id="ItemLimitCategory" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="HolidayId">HolidayId</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="'See the Holidays DBC file for the IDs of all of the holidays.'"
           ></i>
           <input [formControlName]="'HolidayId'" id="HolidayId" type="number" class="form-control form-control-sm">
         </div>
@@ -328,7 +320,7 @@
           <label class="control-label" for="DisenchantID">DisenchantID</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="'The disenchant loot template ID. Corresponds to disenchant_loot_template.entry'"
           ></i>
           <input [formControlName]="'DisenchantID'" id="DisenchantID" type="number" class="form-control form-control-sm">
         </div>
@@ -344,7 +336,7 @@
           <label class="control-label" for="minMoneyLoot">minMoneyLoot</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="'Minimum amount of money contained in the item, in copper.'"
           ></i>
           <input [formControlName]="'minMoneyLoot'" id="minMoneyLoot" type="number" class="form-control form-control-sm">
         </div>
@@ -352,7 +344,7 @@
           <label class="control-label" for="maxMoneyLoot">maxMoneyLoot</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="'Maximum amount of money contained in the item, in copper.'"
           ></i>
           <input [formControlName]="'maxMoneyLoot'" id="maxMoneyLoot" type="number" class="form-control form-control-sm">
         </div>
@@ -465,7 +457,7 @@
           <label class="control-label" for="RequiredDisenchantSkill">RequiredDisenchantSkill</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="'The required proficiency in disenchanting that the player needs to have to be able to disenchant this item.'"
           ></i>
           <input [formControlName]="'RequiredDisenchantSkill'" id="RequiredDisenchantSkill" type="number" class="form-control form-control-sm">
         </div>
@@ -602,7 +594,7 @@
               <label class="control-label" for="GemProperties">GemProperties</label>
               <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
-                [tooltip]="'TODO'"
+                [tooltip]="'Corresponds to the ID in GemProperties.dbc.'"
               ></i>
               <input [formControlName]="'GemProperties'" id="GemProperties" type="number" class="form-control form-control-sm">
             </div>
@@ -620,6 +612,10 @@
                 </div>
                 <div class="col-12">
                   <label class="control-label" for="socketContent_{{ i }}">Content_{{ i }}</label>
+                  <i
+                    class="fas fa-info-circle ml-1" [placement]="'auto'"
+                    [tooltip]="'The amount of Gems of SocketColor_' + i"
+                  ></i>
                   <input [formControlName]="'socketContent_' + i" id="socketContent_{{ i }}" type="number" class="form-control form-control-sm">
                 </div>
               </div>
@@ -670,7 +666,7 @@
           <label class="control-label" for="itemset">itemset</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="'The ID of the item set that this item belongs to. Item sets are defined in the ItemSet DBC file.'"
           ></i>
           <input [formControlName]="'itemset'" id="itemset" type="number" class="form-control form-control-sm">
         </div>
@@ -686,7 +682,7 @@
           <label class="control-label" for="block">block</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="'If the item is a shield, the block chance of the shield.'"
           ></i>
           <input [formControlName]="'block'" id="block" type="number" class="form-control form-control-sm">
         </div>
@@ -694,7 +690,7 @@
           <label class="control-label" for="MaxDurability">MaxDurability</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="'The maximum durability of this item.'"
           ></i>
           <input [formControlName]="'MaxDurability'" id="MaxDurability" type="number" class="form-control form-control-sm">
         </div>
