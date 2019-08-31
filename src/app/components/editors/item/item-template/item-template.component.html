@@ -422,7 +422,7 @@
           <label class="control-label" for="requiredspell">requiredspell</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO - SELECTORS'"
+            [tooltip]="'The required spell that the player needs to have to use this item.'"
           ></i>
           <input [formControlName]="'requiredspell'" id="requiredspell" type="number" class="form-control form-control-sm">
         </div>
@@ -542,9 +542,7 @@
       <div class="row">
         <div class="col-12 col-lg-6">
 
-          <span class="category-title">
-        Damage <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
-      </span>
+          <span class="category-title">Damage</span>
           <div class="row">
 
             <div
@@ -570,10 +568,11 @@
                 </div>
                 <div class="col-12">
                   <label class="control-label" for="dmg_type{{ i }}">type{{ i }}</label>
-                  <i
-                    class="fas fa-info-circle ml-1" [placement]="'auto'"
-                    [tooltip]="'TODO - SELECTORS'"
-                  ></i>
+                  <app-single-value-selector-btn
+                    [control]="editorService.form.get('dmg_type' + i)"
+                    [config]="{ options: DAMAGE_TYPE, name: 'dmg_type' + i }"
+                    [modalClass]="'modal-md'"
+                  ></app-single-value-selector-btn>
                   <input [formControlName]="'dmg_type' + i" id="dmg_type{{ i }}" type="number" class="form-control form-control-sm">
                 </div>
               </div>
@@ -585,15 +584,16 @@
         <div class="col-12 col-lg-6">
 
           <span class="category-title">
-            Socket <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+            Socket
           </span>
           <div class="row">
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg col-xl-5">
               <label class="control-label" for="socketBonus">socketBonus</label>
-              <i
-                class="fas fa-info-circle ml-1" [placement]="'auto'"
-                [tooltip]="'TODO'"
-              ></i>
+              <app-single-value-selector-btn
+                [control]="editorService.form.get('socketBonus')"
+                [config]="{ options: SOCKET_BONUS, name: 'socketBonus' }"
+                [modalClass]="'modal-md'"
+              ></app-single-value-selector-btn>
               <input [formControlName]="'socketBonus'" id="socketBonus" type="number" class="form-control form-control-sm">
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg col-xl-5">
