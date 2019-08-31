@@ -230,18 +230,20 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="Material">Material</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO - SELECTORS'"
-          ></i>
+          <app-single-value-selector-btn
+            [control]="editorService.form.get('Material')"
+            [config]="{ options: ITEM_MATERIAL, name: 'Material' }"
+            [modalClass]="'modal-md'"
+          ></app-single-value-selector-btn>
           <input [formControlName]="'Material'" id="Material" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="sheath">sheath</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO - SELECTORS'"
-          ></i>
+          <app-single-value-selector-btn
+            [control]="editorService.form.get('sheath')"
+            [config]="{ options: ITEM_SHEAT, name: 'sheath' }"
+            [modalClass]="'modal-md'"
+          ></app-single-value-selector-btn>
           <input [formControlName]="'sheath'" id="sheath" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -278,18 +280,20 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="BagFamily">BagFamily</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO - SELECTOR'"
-          ></i>
+          <app-flags-selector-btn
+            [control]="editorService.form.get('Flags')"
+            [config]="{ flags: BAG_FAMILY, name: 'BagFamily' }"
+            [modalClass]="'modal-md'"
+          ></app-flags-selector-btn>
           <input [formControlName]="'BagFamily'" id="BagFamily" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="TotemCategory">TotemCategory</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO - SELECTOR'"
-          ></i>
+          <app-single-value-selector-btn
+            [control]="editorService.form.get('TotemCategory')"
+            [config]="{ options: TOTEM_CATEGORY, name: 'TotemCategory' }"
+            [modalClass]="'modal-md'"
+          ></app-single-value-selector-btn>
           <input [formControlName]="'TotemCategory'" id="TotemCategory" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -326,10 +330,11 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="FoodType">FoodType</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
-          ></i>
+          <app-single-value-selector-btn
+            [control]="editorService.form.get('FoodType')"
+            [config]="{ options: FOOD_TYPE, name: 'FoodType' }"
+            [modalClass]="'modal-md'"
+          ></app-single-value-selector-btn>
           <input [formControlName]="'FoodType'" id="FoodType" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -350,10 +355,11 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="flagsCustom">flagsCustom</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
-          ></i>
+          <app-flags-selector-btn
+            [control]="editorService.form.get('flagsCustom')"
+            [config]="{ flags: ITEM_FLAGS_CUSTOM, name: 'flagsCustom' }"
+            [modalClass]="'modal-lg'"
+          ></app-flags-selector-btn>
           <input [formControlName]="'flagsCustom'" id="flagsCustom" type="number" class="form-control form-control-sm">
         </div>
       </div>
@@ -608,6 +614,11 @@
               <div class="row">
                 <div class="col-12">
                   <label class="control-label" for="socketColor_{{ i }}">Color_{{ i }}</label>
+                  <app-flags-selector-btn
+                    [control]="editorService.form.get('socketColor_' + i)"
+                    [config]="{ flags: SOCKET_COLOR, name: 'socketColor_' + i }"
+                    [modalClass]="'modal-md'"
+                  ></app-flags-selector-btn>
                   <input [formControlName]="'socketColor_' + i" id="socketColor_{{ i }}" type="number" class="form-control form-control-sm">
                 </div>
                 <div class="col-12">
@@ -672,10 +683,11 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="bonding">bonding</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO - SELECTORS'"
-          ></i>
+          <app-single-value-selector-btn
+            [control]="editorService.form.get('bonding')"
+            [config]="{ options: ITEM_BONDING, name: 'bonding' }"
+            [modalClass]="'modal-md'"
+          ></app-single-value-selector-btn>
           <input [formControlName]="'bonding'" id="bonding" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -698,7 +710,7 @@
       </div>
 
       <span class="category-title">
-        Spell <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+        Spell <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="'The spells that the item can cast or trigger'"></i>
       </span>
       <div class="row">
 
