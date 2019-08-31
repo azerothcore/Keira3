@@ -22,6 +22,8 @@ import { FOOD_TYPE } from '../../../../constants/options/foot-type';
 import { ITEM_FLAGS_CUSTOM } from '../../../../constants/flags/item-flags-custom';
 import { DAMAGE_TYPE } from '../../../../constants/options/damage-type';
 import { SOCKET_BONUS } from '../../../../constants/options/socket-bonus';
+import { FACTIONS } from '../../../../constants/options/faction';
+import { STAT_TYPE } from '../../../../constants/options/stat-type';
 
 @Component({
   selector: 'app-item-template',
@@ -49,6 +51,8 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   public readonly ITEM_FLAGS_CUSTOM = ITEM_FLAGS_CUSTOM;
   public readonly DAMAGE_TYPE = DAMAGE_TYPE;
   public readonly SOCKET_BONUS = SOCKET_BONUS;
+  public readonly FACTIONS = FACTIONS;
+  public readonly STAT_TYPE = STAT_TYPE;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

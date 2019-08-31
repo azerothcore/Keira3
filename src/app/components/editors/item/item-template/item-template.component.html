@@ -444,10 +444,11 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="RequiredReputationFaction">RequiredReputationFaction</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO - SELECTORS'"
-          ></i>
+          <app-single-value-selector-btn
+            [control]="editorService.form.get('RequiredReputationFaction')"
+            [config]="{ options: FACTIONS, name: 'RequiredReputationFaction' }"
+            [modalClass]="'modal-md'"
+          ></app-single-value-selector-btn>
           <input [formControlName]="'RequiredReputationFaction'" id="RequiredReputationFaction" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -483,7 +484,7 @@
       </div>
 
       <span class="category-title">
-        Stats <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+        Stats
       </span>
       <div class="row">
         <div class="form-group col-12 col-sm-6 col-md-3 col-lg-3 col-xl-2">
@@ -520,10 +521,11 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="stat_type{{ i }}">type{{ i }}</label>
-              <i
-                class="fas fa-info-circle ml-1" [placement]="'auto'"
-                [tooltip]="'TODO - SELECTORS'"
-              ></i>
+              <app-single-value-selector-btn
+                [control]="editorService.form.get('stat_type' + i)"
+                [config]="{ options: STAT_TYPE, name: 'stat_type' + i }"
+                [modalClass]="'modal-md'"
+              ></app-single-value-selector-btn>
               <input [formControlName]="'stat_type' + i" id="stat_type{{ i }}" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
