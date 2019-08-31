@@ -203,7 +203,7 @@ describe('QueryService', () => {
         expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, [], null)).toEqual('');
       });
 
-      fit('should return empty string if currentRows or newRows are null', () => {
+      it('should return empty string if currentRows or newRows are null', () => {
         expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, [], [])).toEqual(
           QUERY_NO_CHANGES
         );
