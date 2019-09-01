@@ -46,8 +46,8 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
     this.setInputValue(this.getInputById(inputId), value);
   }
 
-  getSelectorBtn(name: string) {
-    return this.query<HTMLButtonElement>(`#${name}-selector-btn`);
+  getSelectorBtn(name: string, assert = true) {
+    return this.query<HTMLButtonElement>(`#${name}-selector-btn`, assert);
   }
 
   getCellOfDatatableInModal(rowIndex: number, colIndex: number) {

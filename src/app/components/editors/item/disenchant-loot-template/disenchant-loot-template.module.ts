@@ -1,17 +1,18 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
-import { TooltipModule } from 'ngx-bootstrap';
 
 import { TopBarModule } from '../../shared/top-bar/top-bar.module';
 import { QueryOutputModule } from '../../shared/query-output/query-output.module';
-import { ItemTemplateComponent } from './item-template.component';
-import { SingleValueSelectorModule } from '../../shared/selectors/single-value-selector/single-value-selector.module';
+import { DisenchantLootTemplateComponent } from './disenchant-loot-template.component';
+import { ItemSelectorModule } from '../../shared/selectors/item-selector/item-selector.module';
+import { TooltipModule } from 'ngx-bootstrap';
 import { FlagsSelectorModule } from '../../shared/selectors/flags-selector/flags-selector.module';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 @NgModule({
   declarations: [
-    ItemTemplateComponent,
+    DisenchantLootTemplateComponent,
   ],
   imports: [
     BrowserModule,
@@ -19,11 +20,12 @@ import { FlagsSelectorModule } from '../../shared/selectors/flags-selector/flags
     TopBarModule,
     QueryOutputModule,
     TooltipModule.forRoot(),
-    SingleValueSelectorModule,
+    ItemSelectorModule,
     FlagsSelectorModule,
+    NgxDatatableModule,
   ],
   exports: [
-    ItemTemplateComponent,
+    DisenchantLootTemplateComponent,
   ],
 })
-export class ItemTemplateModule {}
+export class DisenchantLootTemplateModule {}
