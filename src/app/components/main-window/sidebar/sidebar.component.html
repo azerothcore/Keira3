@@ -254,7 +254,31 @@
                     </a>
                   </li>
                   <ng-container *ngIf="!itemHandlerService.isNew">
-<!--                    TODO: add the other editors here-->
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'item/item-enchantment-template'">
+                        Enchantment Template
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'item/item-loot-template'">
+                        Item Loot
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'item/disenchant-loot-template'">
+                        Disenchant Loot
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'item/prospecting-loot-template'">
+                        Prospecting Loot
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'item/milling-loot-template'">
+                        Milling Loot
+                      </a>
+                    </li>
                   </ng-container>
                 </ng-container>
               </ul>
