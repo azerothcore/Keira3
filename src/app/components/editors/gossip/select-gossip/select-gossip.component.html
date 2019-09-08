@@ -17,23 +17,20 @@
     <div class="row">
       <ng-container [formGroup]="selectService.fields">
         <div class="form-group col-2">
-          <input [formControlName]="'ID'" type="number" class="form-control form-control-sm" id="search-id" placeholder="ID">
+          <input [formControlName]="'MenuID'" type="number" class="form-control form-control-sm" id="search-id" placeholder="MenuID">
         </div>
         <div class="form-group col-3">
-          <input [formControlName]="'LogTitle'" class="form-control form-control-sm" id="name" placeholder="Gossip Title">
+          <input [formControlName]="'TextID'" type="number" class="form-control form-control-sm" id="name" placeholder="TextID">
+        </div>
+        <div class="col-2">
+          <button
+            class="btn btn-primary btn-sm"
+            id="search-btn"
+            [disabled]="selectService.queryForm.invalid"
+            (click)="selectService.onSearch()"
+          >Search</button>
         </div>
       </ng-container>
-      <div class="form-group col-2">
-        <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Limit">
-      </div>
-      <div class="col-2">
-        <button
-          class="btn btn-primary btn-sm"
-          id="search-btn"
-          [disabled]="selectService.queryForm.invalid"
-          (click)="selectService.onSearch()"
-        >Search</button>
-      </div>
     </div>
     <code [highlight]="selectService.query"></code>
   </form>
@@ -42,6 +39,7 @@
 
     <ngx-datatable
       class="bootstrap table table-striped text-center datatable-select"
+      style="max-width: 500px"
       [rows]="selectService.rows"
       [headerHeight]="DTCFG.headerHeight"
       [footerHeight]="DTCFG.footerHeight"
@@ -52,16 +50,12 @@
       (select)='selectService.onSelect($event)'
       [count]="false"
     >
-      <ngx-datatable-column name="ID" prop="ID" [minWidth]="100">
-        <ng-menu let-row="row" ngx-datatable-cell-menu>
-          {{ row.ID }}
-        </ng-menu>
+      <ngx-datatable-column name="MenuID" prop="MenuID" [minWidth]="80">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ row.MenuID }}
+        </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column name="Title" prop="LogTitle" [minWidth]="60"></ngx-datatable-column>
-      <ngx-datatable-column name="Type" prop="GossipType" [minWidth]="60" [maxWidth]="60"></ngx-datatable-column>
-      <ngx-datatable-column name="Level" prop="GossipLevel" [minWidth]="60" [maxWidth]="60"></ngx-datatable-column>
-      <ngx-datatable-column name="MinLevel" prop="MinLevel" [minWidth]="100" [maxWidth]="100"></ngx-datatable-column>
-      <ngx-datatable-column name="Description" prop="GossipDescription" [minWidth]="100"></ngx-datatable-column>
+      <ngx-datatable-column name="TextID" prop="TextID" [minWidth]="80"></ngx-datatable-column>
     </ngx-datatable>
 
   </div>
