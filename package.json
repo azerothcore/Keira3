@@ -49,7 +49,7 @@
     "@angular/platform-browser-dynamic": "8.2.5",
     "@angular/router": "8.2.5",
     "@fortawesome/fontawesome-free": "5.10.2",
-    "@swimlane/ngx-datatable": "15.0.2",
+    "@swimlane/ngx-datatable": "16.0.2",
     "@types/jasmine": "3.4.0",
     "@types/jasminewd2": "2.0.6",
     "@types/mocha": "5.2.7",
