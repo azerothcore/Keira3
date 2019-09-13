@@ -82,7 +82,7 @@
     "spectron": "8.0.0",
     "sqlstring": "2.3.1",
     "squel": "5.13.0",
-    "ts-mockito": "2.4.2",
+    "ts-mockito": "2.5.0",
     "ts-node": "8.3.0",
     "tslint": "5.20.0",
     "typescript": "3.5.3",
