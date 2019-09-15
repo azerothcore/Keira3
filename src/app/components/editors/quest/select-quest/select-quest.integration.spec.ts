@@ -115,11 +115,7 @@ describe('SelectQuest integration tests', () => {
         'SELECT * FROM `quest_template` WHERE (`LogTitle` LIKE \'%The People\\\'s Militia%\') LIMIT 100'
     },
     {
-      testId: 3, id: '', name: `The People's Militia`, limit: '100', expectedQuery:
-        'SELECT * FROM `quest_template` WHERE (`LogTitle` LIKE \'%The People\\\'s Militia%\') LIMIT 100'
-    },
-    {
-      testId: 4, id: 1200, name: '', limit: '', expectedQuery:
+      testId: 3, id: 1200, name: '', limit: '', expectedQuery:
         'SELECT * FROM `quest_template` WHERE (`ID` LIKE \'%1200%\')'
     },
   ]) {

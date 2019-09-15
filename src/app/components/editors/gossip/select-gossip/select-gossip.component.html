@@ -22,15 +22,18 @@
         <div class="form-group col-3">
           <input [formControlName]="'TextID'" type="number" class="form-control form-control-sm" id="name" placeholder="TextID">
         </div>
-        <div class="col-2">
-          <button
-            class="btn btn-primary btn-sm"
-            id="search-btn"
-            [disabled]="selectService.queryForm.invalid"
-            (click)="selectService.onSearch()"
-          >Search</button>
-        </div>
       </ng-container>
+      <div class="form-group col-2">
+        <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Limit">
+      </div>
+      <div class="col-2">
+        <button
+          class="btn btn-primary btn-sm"
+          id="search-btn"
+          [disabled]="selectService.queryForm.invalid"
+          (click)="selectService.onSearch()"
+        >Search</button>
+      </div>
     </div>
     <code [highlight]="selectService.query"></code>
   </form>
