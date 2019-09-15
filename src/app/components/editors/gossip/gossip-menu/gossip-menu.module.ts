@@ -6,6 +6,7 @@ import { TooltipModule } from 'ngx-bootstrap';
 import { TopBarModule } from '../../shared/top-bar/top-bar.module';
 import { QueryOutputModule } from '../../shared/query-output/query-output.module';
 import { GossipMenuComponent } from './gossip-menu.component';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { GossipMenuComponent } from './gossip-menu.component';
     TopBarModule,
     QueryOutputModule,
     TooltipModule.forRoot(),
+    NgxDatatableModule,
   ],
   exports: [
     GossipMenuComponent,
