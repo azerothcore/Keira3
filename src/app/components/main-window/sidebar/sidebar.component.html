@@ -290,14 +290,23 @@
               <i class="fa fa-pen"></i>
               <span>Gossip</span>
             </a>
-
             <div class="sidebar-submenu" [@slide]="menuStates.gossip">
               <ul>
                 <li>
-                  <a href="#" routerLinkActive="active" [routerLink]="'coming-soon'">
-                    Coming soon...
+                  <a href="#" routerLinkActive="active" [routerLink]="'gossip/select'">
+                    Select Gossip Menu
                   </a>
                 </li>
+                <ng-container *ngIf="gossipHandlerService.selected">
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'gossip/gossip-menu'">
+                      Gossip Menu
+                    </a>
+                  </li>
+                  <ng-container *ngIf="!gossipHandlerService.isNew">
+<!--                    TODO-->
+                  </ng-container>
+                </ng-container>
               </ul>
             </div>
           </li>

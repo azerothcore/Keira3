@@ -1,0 +1,65 @@
+<app-top-bar [handler]="handlerService"></app-top-bar>
+
+<div class="container-fluid p-3">
+
+  <app-create
+    [entityTable]="entityTable"
+    [entityIdField]="entityIdField"
+    [customStartingId]="customStartingId"
+    [handlerService]="handlerService"
+    [queryService]="queryService"
+  ></app-create>
+
+  <hr class="mt-2 mb-2">
+
+  <p>Or search and select an existing one:</p>
+  <form [formGroup]="selectService.queryForm">
+    <div class="row">
+      <ng-container [formGroup]="selectService.fields">
+        <div class="form-group col-2">
+          <input [formControlName]="'MenuID'" type="number" class="form-control form-control-sm" id="search-id" placeholder="MenuID">
+        </div>
+        <div class="form-group col-3">
+          <input [formControlName]="'TextID'" type="number" class="form-control form-control-sm" id="name" placeholder="TextID">
+        </div>
+      </ng-container>
+      <div class="form-group col-2">
+        <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Limit">
+      </div>
+      <div class="col-2">
+        <button
+          class="btn btn-primary btn-sm"
+          id="search-btn"
+          [disabled]="selectService.queryForm.invalid"
+          (click)="selectService.onSearch()"
+        >Search</button>
+      </div>
+    </div>
+    <code [highlight]="selectService.query"></code>
+  </form>
+
+  <div *ngIf="selectService.rows">
+
+    <ngx-datatable
+      class="bootstrap table table-striped text-center datatable-select"
+      style="max-width: 500px"
+      [rows]="selectService.rows"
+      [headerHeight]="DTCFG.headerHeight"
+      [footerHeight]="DTCFG.footerHeight"
+      [columnMode]="DTCFG.columnMode"
+      [rowHeight]="DTCFG.rowHeight"
+      [limit]="DTCFG.limit"
+      [selectionType]="DTCFG.selectionType"
+      (select)='selectService.onSelect($event)'
+      [count]="false"
+    >
+      <ngx-datatable-column name="MenuID" prop="MenuID" [minWidth]="80">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ row.MenuID }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="TextID" prop="TextID" [minWidth]="80"></ngx-datatable-column>
+    </ngx-datatable>
+
+  </div>
+</div>

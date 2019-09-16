@@ -24,7 +24,7 @@ export class GossipSelectService extends SelectService<GossipMenu> {
       handlerService,
       GOSSIP_MENU_TABLE,
       GOSSIP_MENU_ID,
-      GOSSIP_MENU_ID,
+      null,
       GOSSIP_MENU_SEARCH_FIELDS,
     );
   }

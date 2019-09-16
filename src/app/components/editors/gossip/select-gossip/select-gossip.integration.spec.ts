@@ -5,21 +5,21 @@ import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
 import { QueryService } from '../../../../services/query.service';
-import { SelectQuestComponent } from './select-quest.component';
-import { QuestSelectService } from '../../../../services/select/quest-select.service';
-import { SelectQuestModule } from './select-quest.module';
-import { QuestTemplate } from '../../../../types/quest-template.type';
+import { SelectGossipComponent } from './select-gossip.component';
+import { GossipSelectService } from '../../../../services/select/gossip-select.service';
+import { SelectGossipModule } from './select-gossip.module';
+import { GossipMenu } from '../../../../types/gossip-menu.type';
 import { SelectPageObject } from '../../../../test-utils/select-page-object';
 
-class SelectQuestComponentPage extends SelectPageObject<SelectQuestComponent> {
-  ID_FIELD = 'ID';
+class SelectGossipComponentPage extends SelectPageObject<SelectGossipComponent> {
+  ID_FIELD = 'MenuID';
 }
 
-describe('SelectQuest integration tests', () => {
-  let component: SelectQuestComponent;
-  let fixture: ComponentFixture<SelectQuestComponent>;
-  let selectService: QuestSelectService;
-  let page: SelectQuestComponentPage;
+describe('SelectGossip integration tests', () => {
+  let component: SelectGossipComponent;
+  let fixture: ComponentFixture<SelectGossipComponent>;
+  let selectService: GossipSelectService;
+  let page: SelectGossipComponentPage;
   let queryService: QueryService;
   let querySpy: Spy;
   let navigateSpy: Spy;
@@ -29,7 +29,7 @@ describe('SelectQuest integration tests', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        SelectQuestModule,
+        SelectGossipModule,
         RouterTestingModule,
       ],
     })
@@ -43,10 +43,10 @@ describe('SelectQuest integration tests', () => {
       { results: [{ max: 1 }] }
     ));
 
-    selectService = TestBed.get(QuestSelectService);
+    selectService = TestBed.get(GossipSelectService);
 
-    fixture = TestBed.createComponent(SelectQuestComponent);
-    page = new SelectQuestComponentPage(fixture);
+    fixture = TestBed.createComponent(SelectGossipComponent);
+    page = new SelectGossipComponentPage(fixture);
     component = fixture.componentInstance;
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
@@ -57,10 +57,10 @@ describe('SelectQuest integration tests', () => {
       expect(page.createInput.value).toEqual(`${component.customStartingId}`);
       page.expectNewEntityFree();
       expect(querySpy).toHaveBeenCalledWith(
-        'SELECT MAX(ID) AS max FROM quest_template;'
+        'SELECT MAX(MenuID) AS max FROM gossip_menu;'
       );
       expect(page.queryWrapper.innerText).toContain(
-        'SELECT * FROM `quest_template` LIMIT 100'
+        'SELECT * FROM `gossip_menu` LIMIT 100'
       );
     });
   }));
@@ -76,14 +76,14 @@ describe('SelectQuest integration tests', () => {
 
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy).toHaveBeenCalledWith(
-        `SELECT * FROM \`quest_template\` WHERE (ID = ${value})`
+        `SELECT * FROM \`gossip_menu\` WHERE (MenuID = ${value})`
       );
       page.expectNewEntityFree();
 
       page.clickElement(page.selectNewBtn);
 
       expect(navigateSpy).toHaveBeenCalledTimes(1);
-      expect(navigateSpy).toHaveBeenCalledWith(['quest/quest-template']);
+      expect(navigateSpy).toHaveBeenCalledWith(['gossip/gossip-menu']);
       page.expectTopBarCreatingNew(value);
     });
   }));
@@ -99,33 +99,34 @@ describe('SelectQuest integration tests', () => {
 
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy).toHaveBeenCalledWith(
-        `SELECT * FROM \`quest_template\` WHERE (ID = ${value})`
+        `SELECT * FROM \`gossip_menu\` WHERE (MenuID = ${value})`
       );
       page.expectEntityAlreadyInUse();
     });
   }));
 
-  for (const { testId, id, name, limit, expectedQuery } of [
+  for (const { testId, MenuID, TextID, limit, expectedQuery } of [
     {
-      testId: 1, id: 1200, name: `The People's Militia`, limit: '100', expectedQuery:
-        'SELECT * FROM `quest_template` WHERE (`ID` LIKE \'%1200%\') AND (`LogTitle` LIKE \'%The People\\\'s Militia%\') LIMIT 100'
+      testId: 1, MenuID: 1200, TextID: 123, limit: '100', expectedQuery:
+        'SELECT * FROM `gossip_menu` WHERE (`MenuID` LIKE \'%1200%\') AND (`TextID` LIKE \'%123%\') LIMIT 100'
     },
     {
-      testId: 2, id: '', name: `The People's Militia`, limit: '100', expectedQuery:
-        'SELECT * FROM `quest_template` WHERE (`LogTitle` LIKE \'%The People\\\'s Militia%\') LIMIT 100'
+      testId: 2, MenuID: '', TextID: 123, limit: '100', expectedQuery:
+        'SELECT * FROM `gossip_menu` WHERE (`TextID` LIKE \'%123%\') LIMIT 100'
     },
     {
-      testId: 3, id: 1200, name: '', limit: '', expectedQuery:
-        'SELECT * FROM `quest_template` WHERE (`ID` LIKE \'%1200%\')'
+      testId: 3, MenuID: 1200, TextID: '', limit: '', expectedQuery:
+        'SELECT * FROM `gossip_menu` WHERE (`MenuID` LIKE \'%1200%\')'
     },
   ]) {
     it(`searching an existing entity should correctly work [${testId}]`, () => {
       querySpy.calls.reset();
-      if (id) {
-        page.setInputValue(page.searchIdInput, id);
+      // Note: this is different than in other editors
+      if (MenuID) {
+        page.setInputValue(page.searchIdInput, MenuID);
       }
-      if (name) {
-        page.setInputValue(page.searchNameInput, name);
+      if (TextID) {
+        page.setInputValue(page.searchNameInput, TextID);
       }
       page.setInputValue(page.searchLimitInput, limit);
 
@@ -139,10 +140,10 @@ describe('SelectQuest integration tests', () => {
   }
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
-    const results: Partial<QuestTemplate>[] = [
-      { id: 1, LogTitle: 'An awesome Quest 1', QuestType: 0, QuestLevel: 1, MinLevel: 10, QuestDescription: ''   },
-      { id: 2, LogTitle: 'An awesome Quest 2', QuestType: 0, QuestLevel: 2, MinLevel: 20, QuestDescription: ''   },
-      { id: 3, LogTitle: 'An awesome Quest 3', QuestType: 0, QuestLevel: 3, MinLevel: 30, QuestDescription: ''   },
+    const results: GossipMenu[] = [
+      { MenuID: 1, TextID: 1 },
+      { MenuID: 1, TextID: 2 },
+      { MenuID: 1, TextID: 3 },
     ];
     querySpy.calls.reset();
     querySpy.and.returnValue(of({ results }));
@@ -153,14 +154,15 @@ describe('SelectQuest integration tests', () => {
     const row1 = page.getDatatableRow(page.DT_SELECTOR, 1);
     const row2 = page.getDatatableRow(page.DT_SELECTOR, 2);
 
-    expect(row0.innerText).toContain(results[0].LogTitle);
-    expect(row1.innerText).toContain(results[1].LogTitle);
-    expect(row2.innerText).toContain(results[2].LogTitle);
+    expect(row0.innerText).toContain(`${results[0].TextID}`);
+    expect(row1.innerText).toContain(`${results[1].TextID}`);
+    expect(row2.innerText).toContain(`${results[2].TextID}`);
 
     page.clickElement(page.getDatatableCell(page.DT_SELECTOR, 1, 1));
 
     expect(navigateSpy).toHaveBeenCalledTimes(1);
-    expect(navigateSpy).toHaveBeenCalledWith(['quest/quest-template']);
-    page.expectTopBarEditing(results[1].ID, results[1].LogTitle);
+    expect(navigateSpy).toHaveBeenCalledWith(['gossip/gossip-menu']);
+    // Note: this is different than in other editors
+    expect(page.topBar.innerText).toContain(`Editing: gossip_menu (${results[1].MenuID})`);
   });
 });
