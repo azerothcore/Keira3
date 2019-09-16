@@ -51,6 +51,9 @@ import { DisenchantLootTemplateComponent } from '../components/editors/item/dise
 import { ProspectingLootTemplateComponent } from '../components/editors/item/prospecting-loot-template/prospecting-loot-template.component';
 import { MillingLootTemplateComponent } from '../components/editors/item/milling-loot-template/milling-loot-template.component';
 import { ItemEnchantmentTemplateComponent } from '../components/editors/item/item-enchantment/item-enchantment-template.component';
+import { SelectGossipComponent } from '../components/editors/gossip/select-gossip/select-gossip.component';
+import { GossipHandlerService } from '../services/handlers/gossip-handler.service';
+import { GossipMenuComponent } from '../components/editors/gossip/gossip-menu/gossip-menu.component';
 
 const routes: Routes = [
   {
@@ -249,6 +252,20 @@ const routes: Routes = [
         path: 'milling-loot-template',
         component: MillingLootTemplateComponent,
         canActivate: [ItemHandlerService],
+      },
+    ]
+  },
+  {
+    path: 'gossip',
+    children: [
+      {
+        path: 'select',
+        component: SelectGossipComponent,
+      },
+      {
+        path: 'gossip-menu',
+        component: GossipMenuComponent,
+        canActivate: [GossipHandlerService],
       },
     ]
   },

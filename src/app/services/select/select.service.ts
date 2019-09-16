@@ -20,7 +20,7 @@ export abstract class SelectService<T extends TableRow> extends SearchService<T>
     this.handlerService.select(
       false,
       `${selected[0][this.entityIdField]}`,
-      `${selected[0][this.entityNameField]}`,
+      this.entityNameField ? `${selected[0][this.entityNameField]}` : this.entityTable,
     );
   }
 }

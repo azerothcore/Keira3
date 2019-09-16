@@ -13,6 +13,7 @@ import { ComingSoonModule } from './components/editors/coming-soon/coming-soon.m
 import { QuestModule } from './components/editors/quest/quest.module';
 import { GameobjectModule } from './components/editors/gameobject/gameobject.module';
 import { ItemModule } from './components/editors/item/item.module';
+import { GossipModule } from './components/editors/gossip/gossip.module';
 
 
 @NgModule({
@@ -30,6 +31,7 @@ import { ItemModule } from './components/editors/item/item.module';
     QuestModule,
     GameobjectModule,
     ItemModule,
+    GossipModule,
   ],
   bootstrap: [ AppComponent ]
 })
