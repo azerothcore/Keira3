@@ -1,0 +1,58 @@
+<div class="container-fluid p-3">
+
+  <form [formGroup]="selectService.queryForm">
+    <div class="row">
+      <ng-container [formGroup]="selectService.fields">
+        <div class="form-group col-2">
+          <input [formControlName]="'SourceTypeOrReferenceId'" type="number" class="form-control form-control-sm" id="SourceTypeOrReferenceId" placeholder="SourceTypeOrReferenceId">
+        </div>
+        <div class="form-group col-3">
+          <input [formControlName]="'SourceGroup'" type="number" class="form-control form-control-sm" id="SourceGroup" placeholder="SourceGroup">
+        </div>
+        <div class="form-group col-3">
+          <input [formControlName]="'SourceEntry'" type="number" class="form-control form-control-sm" id="SourceEntry" placeholder="SourceEntry">
+        </div>
+      </ng-container>
+      <div class="form-group col-2">
+        <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Limit">
+      </div>
+      <div class="col-2">
+        <button
+          class="btn btn-primary btn-sm"
+          id="search-btn"
+          [disabled]="selectService.queryForm.invalid"
+          (click)="selectService.onSearch()"
+        >Search</button>
+      </div>
+    </div>
+    <code [highlight]="selectService.query"></code>
+  </form>
+
+  <div *ngIf="selectService.rows">
+
+    <ngx-datatable
+      class="bootstrap table table-striped text-center datatable-select"
+      [rows]="selectService.rows"
+      [headerHeight]="DTCFG.headerHeight"
+      [footerHeight]="DTCFG.footerHeight"
+      [columnMode]="DTCFG.columnMode"
+      [rowHeight]="DTCFG.rowHeight"
+      [limit]="DTCFG.limit"
+      [selectionType]="DTCFG.selectionType"
+      (select)='onSelect($event)'
+      [count]="false"
+    >
+      <ngx-datatable-column name="Type" prop="SourceTypeOrReferenceId" [minWidth]="60"></ngx-datatable-column>
+      <ngx-datatable-column name="Group" prop="SourceGroup"></ngx-datatable-column>
+      <ngx-datatable-column name="Entry" prop="SourceEntry"></ngx-datatable-column>
+      <ngx-datatable-column name="Id" prop="SourceId"></ngx-datatable-column>
+      <ngx-datatable-column name="CondType" prop="ConditionTypeOrReference"></ngx-datatable-column>
+      <ngx-datatable-column name="CondTarget" prop="ConditionTarget"></ngx-datatable-column>
+      <ngx-datatable-column name="CondValue1" prop="ConditionValue1"></ngx-datatable-column>
+      <ngx-datatable-column name="CondValue2" prop="ConditionValue2"></ngx-datatable-column>
+      <ngx-datatable-column name="CondValue3" prop="ConditionValue3"></ngx-datatable-column>
+      <ngx-datatable-column name="NegativeCond" prop="NegativeCondition"></ngx-datatable-column>
+    </ngx-datatable>
+
+  </div>
+</div>

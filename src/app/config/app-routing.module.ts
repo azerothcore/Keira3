@@ -54,6 +54,7 @@ import { ItemEnchantmentTemplateComponent } from '../components/editors/item/ite
 import { SelectGossipComponent } from '../components/editors/gossip/select-gossip/select-gossip.component';
 import { GossipHandlerService } from '../services/handlers/gossip-handler.service';
 import { GossipMenuComponent } from '../components/editors/gossip/gossip-menu/gossip-menu.component';
+import { SelectConditionsComponent } from '../components/editors/conditions/select-conditions/select-conditions.component';
 
 const routes: Routes = [
   {
@@ -266,6 +267,15 @@ const routes: Routes = [
         path: 'gossip-menu',
         component: GossipMenuComponent,
         canActivate: [GossipHandlerService],
+      },
+    ]
+  },
+  {
+    path: 'conditions',
+    children: [
+      {
+        path: 'select',
+        component: SelectConditionsComponent,
       },
     ]
   },
