@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { Squel, Delete, Insert } from 'squel';
+import { Squel, Delete, Insert, Update, QueryBuilder } from 'squel';
 import { escape } from 'sqlstring';
 
 import { MysqlService } from './mysql.service';
@@ -71,17 +71,15 @@ export class QueryService {
 
   /* -------------------------------- Keira2 imports -------------------------------- */
 
-  // Tracks difference between two row objects and generate UPDATE query
-  getUpdateQuery<T extends TableRow>(
+  // UPDATE query without WHERE
+  private getUpdateQueryBase<T extends TableRow>(
     tableName: string,  // the name of the table (example: 'creature_template')
-    primaryKey: string, // the key that uniquely identifies the row in the table
     currentRow: T,      // object of the original row
     newRow: T,          // object of the new row
-  ): string {
+  ): Update {
     let diff = false;
     const query = squel.update(squelConfig)
-      .table(tableName)
-      .where('`' + primaryKey + '` = ' + currentRow[primaryKey]);
+      .table(tableName);
 
     for (const key in currentRow) {
       /* istanbul ignore else */
@@ -93,7 +91,24 @@ export class QueryService {
       }
     }
 
-    return diff ? `${query.toString()};` : '';
+    return diff ? query : null;
+  }
+
+  // Tracks difference between two row objects and generate UPDATE query
+  getUpdateQuery<T extends TableRow>(
+    tableName: string,  // the name of the table (example: 'creature_template')
+    primaryKey: string, // the key that uniquely identifies the row in the table
+    currentRow: T,      // object of the original row
+    newRow: T,          // object of the new row
+  ): string {
+    const query = this.getUpdateQueryBase(tableName, currentRow, newRow);
+
+    if (!query) {
+      return '';
+    }
+
+    query.where('`' + primaryKey + '` = ' + currentRow[primaryKey]);
+    return `${query.toString()};`;
   }
 
   private getRow<T extends TableRow>(
@@ -264,6 +279,28 @@ export class QueryService {
     return this.formatQuery(query);
   }
 
+  private addWhereConditionsToQuery<T extends TableRow>(
+    query: Delete | Update, // squel query object
+    row: T,                 // the row, it MUST contain ALL the primaryKeys
+    primaryKeys: string[],  // array of the primary keys
+  ) {
+    for (const key of primaryKeys) {
+      query.where('`' + key + '` = ' + row[key]);
+    }
+  }
+
+  // Generates the full UPDATE query of ONE row using more than 2 keys
+  getUpdateMultipleKeysQuery<T extends TableRow>(
+    tableName: string,     // the name of the table (example: 'conditions')
+    currentRow: T,        // the original row, it MUST contain ALL the primaryKeys
+    newRow: T,             // the original row, it MUST contain ALL the primaryKeys
+    primaryKeys: string[], // array of the primary keys
+  ) {
+    const updateQuery: Update = this.getUpdateQueryBase(tableName, currentRow, newRow);
+    this.addWhereConditionsToQuery(updateQuery, currentRow, primaryKeys);
+    return updateQuery.toString();
+  }
+
   // Generates the DELETE query of ONE row using more than 2 keys
   getDeleteMultipleKeysQuery<T extends TableRow>(
     tableName: string,     // the name of the table (example: 'conditions')
@@ -271,23 +308,19 @@ export class QueryService {
     primaryKeys: string[], // array of the primary keys (example: ['SourceTypeOrReferenceId', 'SourceGroup', 'SourceEntry'])
   ) {
     const deleteQuery: Delete = squel.delete(squelConfig).from(tableName);
-
-    for (const key of primaryKeys) {
-      deleteQuery.where('`' + key + '` = ' + row[key]);
-    }
-
+    this.addWhereConditionsToQuery(deleteQuery, row, primaryKeys);
     return deleteQuery.toString();
   }
 
   // Generates the full DELETE/INSERT query of ONE row using more than 2 keys
   getFullDeleteInsertMultipleKeysQuery<T extends TableRow>(
     tableName: string,     // the name of the table (example: 'conditions')
-    originalRow: T,        // the original row, it MUST contain ALL the primaryKeys
+    currentRow: T,        // the original row, it MUST contain ALL the primaryKeys
     newRow: T,             // the original row, it MUST contain ALL the primaryKeys
     primaryKeys: string[], // array of the primary keys
   ) {
     const insertQuery: Insert = squel.insert(squelConfig).into(tableName).setFieldsRows([newRow]);
-    let query: string = this.getDeleteMultipleKeysQuery(tableName, originalRow, primaryKeys) + ';\n';
+    let query: string = this.getDeleteMultipleKeysQuery(tableName, currentRow, primaryKeys) + ';\n';
     query += insertQuery.toString() + ';\n';
     return this.formatQuery(query);
   }
