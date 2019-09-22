@@ -1,24 +1,34 @@
 <div class="container-fluid p-3">
 
   <form [formGroup]="selectService.queryForm">
-    <div class="row">
-      <ng-container [formGroup]="selectService.fields">
-        <div class="form-group col-2">
+    <ng-container [formGroup]="selectService.fields">
+      <div class="form-group row">
+        <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="SourceTypeOrReferenceId">Source Type:</label>
+        <div class="col-sm-8 col-md-9 col-lg-10">
           <select [formControlName]="'SourceTypeOrReferenceId'" class="form-control form-control-sm" id="SourceTypeOrReferenceId">
             <option *ngFor="let key of CONDITION_SOURCE_TYPES_KEYS" [value]="key" [label]="CONDITION_SOURCE_TYPES[key]"></option>
           </select>
         </div>
-        <div class="form-group col-3">
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="SourceGroup">Source Group:</label>
+        <div class="col-sm-8 col-md-9 col-lg-10">
           <input [formControlName]="'SourceGroup'" type="number" class="form-control form-control-sm" id="SourceGroup" placeholder="SourceGroup">
         </div>
-        <div class="form-group col-3">
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="SourceEntry">Source Entry:</label>
+        <div class="col-sm-8 col-md-9 col-lg-10">
           <input [formControlName]="'SourceEntry'" type="number" class="form-control form-control-sm" id="SourceEntry" placeholder="SourceEntry">
         </div>
-      </ng-container>
-      <div class="form-group col-2">
+      </div>
+    </ng-container>
+    <div class="form-group row">
+      <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="limit">Limit:</label>
+      <div class="col-sm-4 col-md-3 col-lg-2">
         <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Limit">
       </div>
-      <div class="col-2">
+      <div class="col-sm-4 col-md-3 col-lg-2 mt-1 mt-sm-0">
         <button
           class="btn btn-primary btn-sm"
           id="search-btn"
