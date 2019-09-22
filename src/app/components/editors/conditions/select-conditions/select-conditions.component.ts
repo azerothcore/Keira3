@@ -5,6 +5,7 @@ import { DTCFG } from '../../../../config/datatable.config';
 import { ConditionsSearchService } from '../../../../services/search/conditions-search.service';
 import { CONDITION_SOURCE_TYPES, CONDITION_SOURCE_TYPES_KEYS } from '../../../../types/conditions.type';
 import { WIKI_BASE_URL } from '../../../../constants/general';
+import { ConditionsHandlerService } from '../../../../services/handlers/conditions-handler.service';
 
 @Component({
   selector: 'app-select-creature',
@@ -19,13 +20,18 @@ export class SelectConditionsComponent {
 
   constructor(
     public selectService: ConditionsSearchService,
+    private handlerService: ConditionsHandlerService,
   ) {}
 
   onSelect(event) {
-    console.log(event);
+    this.handlerService.selected = event.selected[0];
+    this.handlerService.isNew = false;
+    console.log(this.handlerService.selected);
   }
 
   onCreateNew() {
-
+    this.handlerService.selected = this.selectService.fields.getRawValue();
+    this.handlerService.isNew = true;
+    console.log(this.handlerService.selected);
   }
 }

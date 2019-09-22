@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ConditionsService } from './conditions.service';
+import { ConditionsHandlerService } from './conditions-handler.service';
 
 describe('ConditionsService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: ConditionsService = TestBed.get(ConditionsService);
+    const service: ConditionsHandlerService = TestBed.get(ConditionsHandlerService);
     expect(service).toBeTruthy();
   });
 });
