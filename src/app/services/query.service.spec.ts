@@ -568,5 +568,35 @@ describe('QueryService', () => {
         });
       });
     });
+
+    describe('getDeleteMultipleKeysQuery', () => {
+      for (const {id, row, keys, query} of [
+        { id: 0, row: {}, keys: [], query: 'DELETE FROM `my_table`' },
+        { id: 1, row: { k1: 1 }, keys: ['k1'], query: 'DELETE FROM `my_table` WHERE (`k1` = 1)' },
+        { id: 2, row: { k1: 1, k2: 2 }, keys: ['k1', 'k2'], query: 'DELETE FROM `my_table` WHERE (`k1` = 1) AND (`k2` = 2)' },
+        { id: 3, row: { k1: 1, k2: 2, k3: 3 }, keys: ['k1', 'k2', 'k3'], query: 'DELETE FROM `my_table` WHERE (`k1` = 1) AND (`k2` = 2) AND (`k3` = 3)' },
+      ]) {
+        it(`should correctly generate the query [${id}]`, () => {
+          expect(service.getDeleteMultipleKeysQuery(tableName, row, keys)).toEqual(query);
+        });
+      }
+    });
+
+    describe('getFullDeleteInsertMultipleKeysQuery', () => {
+      for (const {id, originalRow, newRow, keys, query} of [
+        { id: 1, originalRow: { k1: 1, n1: 33 }, newRow: { k1: 1, n1: 22 }, keys: ['k1'],
+          query: 'DELETE FROM `my_table` WHERE (`k1` = 1);\n' +
+            'INSERT INTO `my_table` (`k1`, `n1`) VALUES\n' +
+            '(1, 22);\n' },
+        { id: 2, originalRow: { k1: 1, n1: 33 }, newRow: { k1: 2, n1: 22 }, keys: ['k1'],
+          query: 'DELETE FROM `my_table` WHERE (`k1` = 1);\n' +
+            'INSERT INTO `my_table` (`k1`, `n1`) VALUES\n' +
+            '(2, 22);\n' },
+      ]) {
+        it(`should correctly generate the query [${id}]`, () => {
+          expect(service.getFullDeleteInsertMultipleKeysQuery(tableName, originalRow, newRow, keys)).toEqual(query);
+        });
+      }
+    });
   });
 });

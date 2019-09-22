@@ -155,6 +155,10 @@ export class QueryService {
       query += insertQuery.toString() + ';\n';
     }
 
+    return this.formatQuery(query);
+  }
+
+  private formatQuery(query: string): string {
     query = query.replace(') VALUES (', ') VALUES\n(');
     query = query.replace(/\), \(/g, '),\n(');
     return query;
@@ -257,9 +261,34 @@ export class QueryService {
 
     let query: string = deleteQuery.toString() + ';\n';
     query += insertQuery.toString() + ';\n';
-    query = query.replace(') VALUES (', ') VALUES\n(');
-    query = query.replace(/\), \(/g, '),\n(');
+    return this.formatQuery(query);
+  }
 
-    return query;
+  // Generates the DELETE query of ONE row using more than 2 keys
+  getDeleteMultipleKeysQuery<T extends TableRow>(
+    tableName: string,     // the name of the table (example: 'conditions')
+    row: T,                // the row, it MUST contain ALL the primaryKeys
+    primaryKeys: string[], // array of the primary keys (example: ['SourceTypeOrReferenceId', 'SourceGroup', 'SourceEntry'])
+  ) {
+    const deleteQuery: Delete = squel.delete(squelConfig).from(tableName);
+
+    for (const key of primaryKeys) {
+      deleteQuery.where('`' + key + '` = ' + row[key]);
+    }
+
+    return deleteQuery.toString();
+  }
+
+  // Generates the full DELETE/INSERT query of ONE row using more than 2 keys
+  getFullDeleteInsertMultipleKeysQuery<T extends TableRow>(
+    tableName: string,     // the name of the table (example: 'conditions')
+    originalRow: T,        // the original row, it MUST contain ALL the primaryKeys
+    newRow: T,             // the original row, it MUST contain ALL the primaryKeys
+    primaryKeys: string[], // array of the primary keys
+  ) {
+    const insertQuery: Insert = squel.insert(squelConfig).into(tableName).setFieldsRows([newRow]);
+    let query: string = this.getDeleteMultipleKeysQuery(tableName, originalRow, primaryKeys) + ';\n';
+    query += insertQuery.toString() + ';\n';
+    return this.formatQuery(query);
   }
 }
