@@ -52,4 +52,4 @@ export enum CONDITION_SOURCE_TYPES {
   SOURCE_TYPE_NPC_VENDOR,
   SOURCE_TYPE_SPELL_PROC,
 }
-export const CONDITION_SOURCE_TYPES_KEYS = Object.keys(this.CONDITION_SOURCE_TYPES).filter(k => !isNaN(Number(k)));
+export const CONDITION_SOURCE_TYPES_KEYS = Object.keys(CONDITION_SOURCE_TYPES).filter(k => !isNaN(Number(k)));
