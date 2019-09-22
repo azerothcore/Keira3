@@ -1,5 +1,11 @@
 <div class="container-fluid p-3">
 
+  <div class="wiki-link mb-2">
+    <a [href]="WIKI_BASE_URL + 'conditions'" target="_blank">
+      <i class="fas fa-link"></i> conditions documentation
+    </a>
+  </div>
+
   <form [formGroup]="selectService.queryForm">
     <ng-container [formGroup]="selectService.fields">
       <div class="form-group row">
