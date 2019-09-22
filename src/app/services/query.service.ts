@@ -297,6 +297,9 @@ export class QueryService {
     primaryKeys: string[], // array of the primary keys
   ) {
     const updateQuery: Update = this.getUpdateQueryBase(tableName, currentRow, newRow);
+    if (!updateQuery) {
+      return '';
+    }
     this.addWhereConditionsToQuery(updateQuery, currentRow, primaryKeys);
     return updateQuery.toString();
   }

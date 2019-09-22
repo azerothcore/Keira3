@@ -570,18 +570,18 @@ fdescribe('QueryService', () => {
     });
 
     describe('getUpdateMultipleKeysQuery', () => {
-      for (const {id, currentRow,newRow, keys, query} of [
-        { id: 0, currentRow: {}, newRow: {}, keys: [],
-          query: 'DELETE FROM `my_table`' },
-        // { id: 1, currentRow: {}, newRow: { k1: 1 }, keys: ['k1'],
-        //   query: 'DELETE FROM `my_table` WHERE (`k1` = 1)' },
-        // { id: 2, currentRow: {}, newRow: { k1: 1, k2: 2 }, keys: ['k1', 'k2'],
-        //   query: 'DELETE FROM `my_table` WHERE (`k1` = 1) AND (`k2` = 2)' },
-        // { id: 3, currentRow: {}, newRow: { k1: 1, k2: 2, k3: 3 }, keys: ['k1', 'k2', 'k3'],
-        //   query: 'DELETE FROM `my_table` WHERE (`k1` = 1) AND (`k2` = 2) AND (`k3` = 3)' },
+      for (const {id, currentRow, newRow, keys, query} of [
+        { id: 0, currentRow: {}, newRow: {}, keys: [], query: '' },
+        { id: 1, currentRow: { k1: 1 }, newRow: { k1: 1 }, keys: ['k1'], query: '' },
+        { id: 2, currentRow: { k1: 1, k2: 2 }, newRow: { k1: 11, k2: 2 }, keys: ['k1', 'k2'],
+          query: 'UPDATE `my_table` SET `k1` = 11 WHERE (`k1` = 1) AND (`k2` = 2)' },
+        { id: 3, currentRow: { k1: 1, k2: 2, k3: 3, n1: 1 }, newRow: { k1: 1, k2: 2, k3: 3, n1: 11 }, keys: ['k1', 'k2', 'k3'],
+          query: 'UPDATE `my_table` SET `n1` = 11 WHERE (`k1` = 1) AND (`k2` = 2) AND (`k3` = 3)' },
+        { id: 4, currentRow: { k1: 1, k2: 2, k3: 3, n1: 1 }, newRow: { k1: 1, k2: 2, k3: 33, n1: 11 }, keys: ['k1', 'k2', 'k3'],
+          query: 'UPDATE `my_table` SET `k3` = 33, `n1` = 11 WHERE (`k1` = 1) AND (`k2` = 2) AND (`k3` = 3)' },
       ]) {
         it(`should correctly generate the query [${id}]`, () => {
-          // expect(service.getUpdateMultipleKeysQuery(tableName, currentRow, newRow, keys)).toEqual(query);
+          expect(service.getUpdateMultipleKeysQuery(tableName, currentRow, newRow, keys)).toEqual(query);
         });
       }
     });
