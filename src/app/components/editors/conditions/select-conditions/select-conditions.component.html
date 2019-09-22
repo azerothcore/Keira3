@@ -4,7 +4,9 @@
     <div class="row">
       <ng-container [formGroup]="selectService.fields">
         <div class="form-group col-2">
-          <input [formControlName]="'SourceTypeOrReferenceId'" type="number" class="form-control form-control-sm" id="SourceTypeOrReferenceId" placeholder="SourceTypeOrReferenceId">
+          <select [formControlName]="'SourceTypeOrReferenceId'" class="form-control form-control-sm" id="SourceTypeOrReferenceId">
+            <option *ngFor="let key of CONDITION_SOURCE_TYPES_KEYS" [value]="key" [label]="CONDITION_SOURCE_TYPES[key]"></option>
+          </select>
         </div>
         <div class="form-group col-3">
           <input [formControlName]="'SourceGroup'" type="number" class="form-control form-control-sm" id="SourceGroup" placeholder="SourceGroup">
