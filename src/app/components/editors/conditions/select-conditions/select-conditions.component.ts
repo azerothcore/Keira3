@@ -17,13 +17,15 @@ export class SelectConditionsComponent {
   public readonly CONDITION_SOURCE_TYPES = CONDITION_SOURCE_TYPES;
   public readonly CONDITION_SOURCE_TYPES_KEYS = CONDITION_SOURCE_TYPES_KEYS;
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public selectService: ConditionsSearchService,
-  ) {
-  }
+  ) {}
 
   onSelect(event) {
     console.log(event);
+  }
+
+  onCreateNew() {
+
   }
 }
