@@ -66,14 +66,19 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
       if (this.isMainEntity) {
         // we are loading an existing entity that has just been created
         this.handlerService.isNew = false;
-        this.handlerService.selectedName = `${this._originalValue[this._entityNameField]}`;
+
+        if (this._entityNameField) {
+          this.handlerService.selectedName = `${this._originalValue[this._entityNameField]}`;
+        }
       }
 
     } else {
       // we are creating a new entity
       this._originalValue = new this._entityClass();
-      // TODO: get rid of this type hack, see: https://github.com/microsoft/TypeScript/issues/32704
-      (this._originalValue as any)[this._entityIdField] = getNumberOrString(id);
+      if (this._entityIdField) {
+        // TODO: get rid of this type hack, see: https://github.com/microsoft/TypeScript/issues/32704
+        (this._originalValue as any)[this._entityIdField] = getNumberOrString(id);
+      }
       this._isNew = true;
     }
 
@@ -83,7 +88,9 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     }
     this._loading = false;
 
-    this._loadedEntityId = this._originalValue[this._entityIdField];
+    if (this._entityIdField) {
+      this._loadedEntityId = this._originalValue[this._entityIdField];
+    }
     this.updateFullQuery();
   }
 }

@@ -24,7 +24,7 @@ interface MockTwoKeysRow extends TableRow {
   attribute2: number;
 }
 
-fdescribe('QueryService', () => {
+describe('QueryService', () => {
   let service: QueryService;
   let configService: ConfigService;
 
@@ -139,6 +139,19 @@ fdescribe('QueryService', () => {
 
     expect(querySpy).toHaveBeenCalledWith('SELECT * ' +
       'FROM `my_ac` WHERE (param = value)');
+  }));
+
+  it('selectAllMultipleKeys() should correctly work', async(() => {
+    const data: MysqlResult<TableRow> = { results: [{ key: 'value'}] };
+    const querySpy = spyOn(service, 'query').and.returnValue(of(data));
+    const row = { k1: 1, k2: 2};
+
+    service.selectAllMultipleKeys('my_ac', row).subscribe((res) => {
+      expect(res).toEqual(data);
+    });
+
+    expect(querySpy).toHaveBeenCalledWith('SELECT * ' +
+      'FROM `my_ac` WHERE (k1 = 1) AND (k2 = 2)');
   }));
 
   it('getMaxId() should correctly work', async(() => {

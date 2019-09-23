@@ -63,13 +63,27 @@ export class QueryService {
     );
   }
 
+  selectAllMultipleKeys<T extends TableRow>(
+    table: string,
+    row: Partial<T>,
+  ): Observable<MysqlResult<T>> {
+    const query = squel.select(squelConfig).from(table);
+
+    for (const key in row) {
+      /* istanbul ignore else */
+      if (row.hasOwnProperty(key)) {
+        query.where(`${key} = ${row[key]}`);
+      }
+    }
+
+    return this.query<T>(query.toString());
+  }
+
   getMaxId(table: string, idField: string): Observable<MysqlResult<MaxRow>> {
     return this.query<MaxRow>(
       `SELECT MAX(${idField}) AS max FROM ${table};`
     );
   }
-
-  /* -------------------------------- Keira2 imports -------------------------------- */
 
   // UPDATE query without WHERE
   private getUpdateQueryBase<T extends TableRow>(

@@ -1,60 +1,32 @@
-import { FormControl, FormGroup } from '@angular/forms';
-import { MysqlError } from 'mysql';
+import { MysqlResult, TableRow } from '../../types/general';
+import { SingleRowEditorService } from './single-row-editor.service';
+import { Observable } from 'rxjs';
 
-import { Class, TableRow } from '../../types/general';
-import { QueryService } from '../query.service';
-import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
-import { distinctUntilChanged } from 'rxjs/operators';
+export abstract class SingleRowComplexKeyEditorService<T extends TableRow> extends SingleRowEditorService<T> {
 
-export abstract class SingleRowComplexKeyEditorService<T extends TableRow> extends SubscriptionHandler {
-  protected _loading = false;
-  protected readonly fields: string[];
-  protected _fullQuery: string;
-  protected _form: FormGroup;
-  protected _error: MysqlError;
-  private _originalValue: T;
+  protected disableEntityIdField() {}
 
-  get loading(): boolean { return this._loading; }
-  get fullQuery(): string { return this._fullQuery; }
-  get entityTable(): string { return this._entityTable; }
-  get form(): FormGroup { return this._form; }
-  get error(): MysqlError { return this._error; }
+  protected selectQuery(id: string|number): Observable<MysqlResult<T>> {
+    // TODO
+    return this.queryService.selectAll<T>(this._entityTable, this._entityIdField, id);
+  }
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected _entityClass: Class,
-    protected _entityTable: string,
-    protected _entityIdFields: string[],
-    protected queryService: QueryService,
-  ) {
-    super();
-    this.fields = this.getClassAttributes(this._entityClass);
-
-    this.subscriptions.push(
-      this._form.valueChanges.pipe(
-        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
-      ).subscribe(() => {
-        if (!this._loading) {
-          this.updateFullQuery();
-        }
-      })
+  protected updateDiffQuery(): void {
+    // TODO
+    this._diffQuery = this.queryService.getUpdateQuery<T>(
+      this._entityTable,
+      this._entityIdField,
+      this._originalValue,
+      this._form.getRawValue(),
     );
   }
 
-  private getClassAttributes(c: Class): string[] {
-    const tmpInstance = new c();
-    return Object.getOwnPropertyNames(tmpInstance);
-  }
-
-  protected initForm() {
-    this._form = new FormGroup({});
-
-    for (const field of this.fields) {
-      this._form.addControl(field, new FormControl());
-    }
-  }
-
-  protected updateFullQuery() {
+  protected updateFullQuery(): void {
     // TODO
+    this._fullQuery = this.queryService.getFullDeleteInsertQuery<T>(
+      this._entityTable,
+      [this._form.getRawValue()],
+      this._entityIdField,
+    );
   }
 }
