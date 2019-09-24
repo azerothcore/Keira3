@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 
 import { Conditions, CONDITIONS_ID_FIELDS } from '../../types/conditions.type';
 import { HandlerService } from './handler.service';
+import { getPartial } from '../../utils/helpers';
 
 @Injectable({
   providedIn: 'root'
@@ -23,12 +24,6 @@ export class ConditionsHandlerService extends HandlerService<Conditions> {
   }
 
   private getIdObject(input: Partial<Conditions> | Conditions): Partial<Conditions> {
-    const output: Partial<Conditions> = {};
-
-    for (const key of CONDITIONS_ID_FIELDS) {
-      output[key] = input[key];
-    }
-
-    return output;
+    return getPartial<Conditions>(input, CONDITIONS_ID_FIELDS);
   }
 }
