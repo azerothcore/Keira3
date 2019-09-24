@@ -5,6 +5,7 @@ import { SingleRowEditorService } from './single-row-editor.service';
 import { HandlerService } from '../handlers/handler.service';
 import { QueryService } from '../query.service';
 import { getPartial } from '../../utils/helpers';
+import { MysqlError } from 'mysql';
 
 export abstract class SingleRowComplexKeyEditorService<T extends TableRow> extends SingleRowEditorService<T> {
 
@@ -56,13 +57,10 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
     );
   }
 
-  // TODO: update handler selection on save
-
-
-  protected reloadEntity(id: string) {
+  protected reloadEntity() {
     this.selectQuery().subscribe((data) => {
       this._error = null;
-      this.onReloadSuccessful(data, id);
+      this.onReloadSuccessful(data);
     }, (error: MysqlError) => {
       this._error = error;
     }).add(() => {
@@ -70,39 +68,18 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
     });
   }
 
-  protected reset() {
-    this._form.reset();
-    this._fullQuery = '';
-    this._diffQuery = '';
-  }
-
-  reload(id: string) {
+  reload() {
     this._loading = true;
     this.reset();
-    this.reloadEntity(id);
+    this.reloadEntity();
   }
 
   protected reloadCallback() {
-    this.reload(this.loadedEntityId);
-  }
-
-  save(query: string) {
-    if (!query) { return; }
-
-    this._loading = true;
-
-    this.queryService.query<T>(query).subscribe(() => {
-      this._error = null;
-      this.reloadCallback();
-    }, (error: MysqlError) => {
-      this._error = error;
-    }).add(() => {
-      this._loading = false;
-    });
+    this.reload();
   }
 
   /*
-   *  ****** onReloadSuccessful() and helpers ******
+   *  ****** OVERRIDES of onReloadSuccessful() and some of its helpers ******
    */
   protected onCreatingNewEntity() {
     this._originalValue = new this._entityClass();
@@ -117,7 +94,9 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
   }
 
   protected setLoadedEntity() {
-    this._loadedEntityId = JSON.stringify(getPartial<T>(this._originalValue, this.entityIdFields));
+    const loadedEntity = getPartial<T>(this._originalValue, this.entityIdFields);
+    this._loadedEntityId = JSON.stringify(loadedEntity);
+    this.handlerService.select(this._isNew, getPartial<T>(this._originalValue, this.entityIdFields));
   }
 
   protected onReloadSuccessful(data: MysqlResult<T>) {

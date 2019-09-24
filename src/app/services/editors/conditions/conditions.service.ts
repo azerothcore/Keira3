@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 
 import { CONDITIONS_TABLE, CONDITIONS_ID_FIELDS } from './../../../types/conditions.type';
-import { CreatureHandlerService } from '../../handlers/creature-handler.service';
 import { QueryService } from '../../query.service';
 import { SingleRowComplexKeyEditorService } from '../single-row-complex-key-editor.service';
 import { Conditions } from '../../../types/conditions.type';
+import { ConditionsHandlerService } from '../../handlers/conditions-handler.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,7 @@ export class ConditionsService extends SingleRowComplexKeyEditorService<Conditio
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    protected handlerService: CreatureHandlerService,
+    protected handlerService: ConditionsHandlerService,
     protected queryService: QueryService,
   ) {
     super(

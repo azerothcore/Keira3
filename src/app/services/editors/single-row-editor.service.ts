@@ -58,7 +58,7 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
   }
 
   /*
-   *  ****** onReloadSuccessful() and helpers ******
+   *  ****** onReloadSuccessful() and its helpers ******
    */
   protected onLoadedExistingEntity(entity: T) {
     this._originalValue = entity;
