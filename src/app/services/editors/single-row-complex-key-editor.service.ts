@@ -36,7 +36,7 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
   protected disableEntityIdField() {}
 
   protected selectQuery(): Observable<MysqlResult<T>> {
-    return this.queryService.selectAllMultipleKeys<T>(this._entityTable, this._originalValue);
+    return this.queryService.selectAllMultipleKeys<T>(this._entityTable, JSON.parse(this.handlerService.selected));
   }
 
   protected updateDiffQuery(): void {
