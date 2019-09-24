@@ -57,6 +57,9 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     );
   }
 
+  /*
+   *  ****** onReloadSuccessful() and helpers ******
+   */
   protected onLoadedExistingEntity(entity: T) {
     this._originalValue = entity;
     this._isNew = false;
@@ -71,9 +74,6 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     }
   }
 
-  /*
-   *  ****** onReloadSuccessful() and helpers ******
-   */
   protected onCreatingNewEntity(id: string|number) {
     // we are creating a new entity
     this._originalValue = new this._entityClass();
