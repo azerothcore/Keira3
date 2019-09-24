@@ -64,12 +64,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     return this.queryService.selectAll<T>(this._entityTable, this._entityIdField, id);
   }
 
-  reload(id: string|number) {
-    this._loading = true;
-    this._form.reset();
-    this._fullQuery = '';
-    this._diffQuery = '';
-
+  private reloadEntity(id: string|number) {
     this.selectQuery(id).subscribe((data) => {
       this._error = null;
       this.onReloadSuccessful(data, id);
@@ -78,6 +73,14 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     }).add(() => {
       this._loading = false;
     });
+  }
+
+  reload(id: string|number) {
+    this._loading = true;
+    this._form.reset();
+    this._fullQuery = '';
+    this._diffQuery = '';
+    this.reloadEntity(id);
   }
 
   save(query: string) {

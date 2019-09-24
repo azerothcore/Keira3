@@ -14,7 +14,7 @@ export abstract class HandlerService<T extends TableRow> implements CanActivate 
     protected router: Router,
   ) {}
 
-  select(isNew: boolean, id: string|number| Partial<T>, name?: string) {
+  select(isNew: boolean, id: string|number|Partial<T>, name?: string) {
     this.isNew = isNew;
 
     if (typeof id === 'object') {

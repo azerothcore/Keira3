@@ -8,6 +8,7 @@ import { QuestHandlerService } from '../../../services/handlers/quest-handler.se
 import { GameobjectHandlerService } from '../../../services/handlers/gameobject-handler.service';
 import { ItemHandlerService } from '../../../services/handlers/item-handler.service';
 import { GossipHandlerService } from '../../../services/handlers/gossip-handler.service';
+import { ConditionsHandlerService } from '../../../services/handlers/conditions-handler.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -41,6 +42,7 @@ export class SidebarComponent {
     public gameobjectHandlerService: GameobjectHandlerService,
     public itemHandlerService: ItemHandlerService,
     public gossipHandlerService: GossipHandlerService,
+    public conditionsHandlerService: ConditionsHandlerService,
   ) {
    }
 

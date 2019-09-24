@@ -54,4 +54,6 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
       this.entityIdFields,
     );
   }
+
+  // TODO: update handler selection on save
 }

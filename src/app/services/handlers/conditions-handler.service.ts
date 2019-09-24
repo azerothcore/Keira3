@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Conditions } from '../../types/conditions.type';
+import { Conditions, CONDITIONS_ID_FIELDS } from '../../types/conditions.type';
 import { HandlerService } from './handler.service';
 
 @Injectable({
@@ -16,5 +16,19 @@ export class ConditionsHandlerService extends HandlerService<Conditions> {
       'conditions/conditions',
       router,
     );
+  }
+
+  select(isNew: boolean, id: Partial<Conditions>) {
+    super.select(isNew, this.getIdObject(id));
+  }
+
+  private getIdObject(input: Partial<Conditions> | Conditions): Partial<Conditions> {
+    const output: Partial<Conditions> = {};
+
+    for (const key of CONDITIONS_ID_FIELDS) {
+      output[key] = input[key];
+    }
+
+    return output;
   }
 }

@@ -329,6 +329,13 @@
                     Select Conditions
                   </a>
                 </li>
+                <ng-container *ngIf="conditionsHandlerService.selected">
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'conditions/conditions'">
+                      Conditions
+                    </a>
+                  </li>
+                </ng-container>
               </ul>
             </div>
           </li>

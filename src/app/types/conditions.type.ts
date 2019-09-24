@@ -1,6 +1,18 @@
 import { TableRow } from './general';
 
 export const CONDITIONS_TABLE = 'conditions';
+export const CONDITIONS_ID_FIELDS = [
+  'SourceTypeOrReferenceId',
+  'SourceGroup',
+  'SourceEntry',
+  'SourceId',
+  'ElseGroup',
+  'ConditionTypeOrReference',
+  'ConditionTarget',
+  'ConditionValue1',
+  'ConditionValue2',
+  'ConditionValue3',
+];
 export const CONDITIONS_SEARCH_FIELDS = [
   'SourceTypeOrReferenceId',
   'SourceGroup',

@@ -1,3 +1,4 @@
+import { Conditions, CONDITIONS_ID_FIELDS } from './../../../../types/conditions.type';
 import { Component, } from '@angular/core';
 
 import { QueryService } from '../../../../services/query.service';
@@ -24,14 +25,12 @@ export class SelectConditionsComponent {
   ) {}
 
   onSelect(event) {
-    this.handlerService.selected = event.selected[0];
-    this.handlerService.isNew = false;
+    this.handlerService.select(false, event.selected[0]);
     console.log(this.handlerService.selected);
   }
 
   onCreateNew() {
-    this.handlerService.selected = this.selectService.fields.getRawValue();
-    this.handlerService.isNew = true;
+    this.handlerService.select(true, this.selectService.fields.getRawValue());
     console.log(this.handlerService.selected);
   }
 }
