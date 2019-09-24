@@ -49,9 +49,10 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
   }
 
   protected updateFullQuery(): void {
+    const originalValue = this.isNew ? this._form.getRawValue() : this._originalValue;
     this._fullQuery = this.queryService.getFullDeleteInsertMultipleKeysQuery<T>(
       this._entityTable,
-      this._originalValue,
+      originalValue,
       this._form.getRawValue(),
       this.entityIdFields,
     );
