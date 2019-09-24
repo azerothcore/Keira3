@@ -4,6 +4,7 @@ import { MysqlResult, TableRow, Class } from '../../types/general';
 import { SingleRowEditorService } from './single-row-editor.service';
 import { HandlerService } from '../handlers/handler.service';
 import { QueryService } from '../query.service';
+import { getPartial } from '../../utils/helpers';
 
 export abstract class SingleRowComplexKeyEditorService<T extends TableRow> extends SingleRowEditorService<T> {
 
@@ -99,4 +100,36 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
       this._loading = false;
     });
   }
+
+  /*
+   *  ****** onReloadSuccessful() and helpers ******
+   */
+  protected onCreatingNewEntity() {
+    this._originalValue = new this._entityClass();
+    const selected: Partial<T> = JSON.parse(this.handlerService.selected);
+
+    for (const key of this.entityIdFields) {
+      // TODO: get rid of this type hack, see: https://github.com/microsoft/TypeScript/issues/32704
+      (this._originalValue as any)[key] = selected[key];
+    }
+
+    this._isNew = true;
+  }
+
+  protected setLoadedEntity() {
+    this._loadedEntityId = JSON.stringify(getPartial<T>(this._originalValue, this.entityIdFields));
+  }
+
+  protected onReloadSuccessful(data: MysqlResult<T>) {
+    if (data.results.length > 0) {
+      // we are loading an existing entity
+      this.onLoadedExistingEntity(data.results[0]);
+    } else {
+      this.onCreatingNewEntity();
+    }
+    this.updateFormAfterReload();
+    this.setLoadedEntity();
+    this.updateFullQuery();
+  }
+  /* ****** */
 }

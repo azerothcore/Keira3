@@ -75,7 +75,6 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
   }
 
   protected onCreatingNewEntity(id: string|number) {
-    // we are creating a new entity
     this._originalValue = new this._entityClass();
 
     // TODO: get rid of this type hack, see: https://github.com/microsoft/TypeScript/issues/32704
@@ -88,20 +87,23 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     this._loadedEntityId = this._originalValue[this._entityIdField];
   }
 
-  protected onReloadSuccessful(data: MysqlResult<T>, id: string|number) {
-    if (data.results.length > 0) {
-      // we are loading an existing entity
-      this.onLoadedExistingEntity(data.results[0]);
-    } else {
-      this.onCreatingNewEntity(id);
-    }
-
+  protected updateFormAfterReload() {
     this._loading = true;
     for (const field of this.fields) {
       this._form.get(field).setValue(this._originalValue[field]);
     }
     this._loading = false;
+  }
 
+  protected onReloadSuccessful(data: MysqlResult<T>, id: string|number) {
+    if (data.results.length > 0) {
+      // we are loading an existing entity
+      this.onLoadedExistingEntity(data.results[0]);
+    } else {
+      // we are creating a new entity
+      this.onCreatingNewEntity(id);
+    }
+    this.updateFormAfterReload();
     this.setLoadedEntity();
     this.updateFullQuery();
   }
