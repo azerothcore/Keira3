@@ -56,4 +56,47 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
   }
 
   // TODO: update handler selection on save
+
+
+  protected reloadEntity(id: string) {
+    this.selectQuery().subscribe((data) => {
+      this._error = null;
+      this.onReloadSuccessful(data, id);
+    }, (error: MysqlError) => {
+      this._error = error;
+    }).add(() => {
+      this._loading = false;
+    });
+  }
+
+  protected reset() {
+    this._form.reset();
+    this._fullQuery = '';
+    this._diffQuery = '';
+  }
+
+  reload(id: string) {
+    this._loading = true;
+    this.reset();
+    this.reloadEntity(id);
+  }
+
+  protected reloadCallback() {
+    this.reload(this.loadedEntityId);
+  }
+
+  save(query: string) {
+    if (!query) { return; }
+
+    this._loading = true;
+
+    this.queryService.query<T>(query).subscribe(() => {
+      this._error = null;
+      this.reloadCallback();
+    }, (error: MysqlError) => {
+      this._error = error;
+    }).add(() => {
+      this._loading = false;
+    });
+  }
 }

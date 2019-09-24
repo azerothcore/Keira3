@@ -57,29 +57,43 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     );
   }
 
+  protected onLoadedExistingEntity(entity: T) {
+    this._originalValue = entity;
+    this._isNew = false;
+
+    if (this.isMainEntity) {
+      // we are loading an existing entity that has just been created
+      this.handlerService.isNew = false;
+
+      if (this._entityNameField) {
+        this.handlerService.selectedName = `${this._originalValue[this._entityNameField]}`;
+      }
+    }
+  }
+
+  /*
+   *  ****** onReloadSuccessful() and helpers ******
+   */
+  protected onCreatingNewEntity(id: string|number) {
+    // we are creating a new entity
+    this._originalValue = new this._entityClass();
+
+    // TODO: get rid of this type hack, see: https://github.com/microsoft/TypeScript/issues/32704
+    (this._originalValue as any)[this._entityIdField] = getNumberOrString(id);
+
+    this._isNew = true;
+  }
+
+  protected setLoadedEntity() {
+    this._loadedEntityId = this._originalValue[this._entityIdField];
+  }
+
   protected onReloadSuccessful(data: MysqlResult<T>, id: string|number) {
     if (data.results.length > 0) {
       // we are loading an existing entity
-      this._originalValue = data.results[0];
-      this._isNew = false;
-
-      if (this.isMainEntity) {
-        // we are loading an existing entity that has just been created
-        this.handlerService.isNew = false;
-
-        if (this._entityNameField) {
-          this.handlerService.selectedName = `${this._originalValue[this._entityNameField]}`;
-        }
-      }
-
+      this.onLoadedExistingEntity(data.results[0]);
     } else {
-      // we are creating a new entity
-      this._originalValue = new this._entityClass();
-      if (this._entityIdField) {
-        // TODO: get rid of this type hack, see: https://github.com/microsoft/TypeScript/issues/32704
-        (this._originalValue as any)[this._entityIdField] = getNumberOrString(id);
-      }
-      this._isNew = true;
+      this.onCreatingNewEntity(id);
     }
 
     this._loading = true;
@@ -88,9 +102,8 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     }
     this._loading = false;
 
-    if (this._entityIdField) {
-      this._loadedEntityId = this._originalValue[this._entityIdField];
-    }
+    this.setLoadedEntity();
     this.updateFullQuery();
   }
+  /* ****** */
 }
