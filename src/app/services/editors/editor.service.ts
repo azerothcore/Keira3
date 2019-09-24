@@ -87,7 +87,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     this.reloadEntity(id);
   }
 
-  protected reloadCallback() {
+  protected reloadAfterSave() {
     this.reload(this.loadedEntityId);
   }
 
@@ -98,7 +98,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
 
     this.queryService.query<T>(query).subscribe(() => {
       this._error = null;
-      this.reloadCallback();
+      this.reloadAfterSave();
     }, (error: MysqlError) => {
       this._error = error;
     }).add(() => {

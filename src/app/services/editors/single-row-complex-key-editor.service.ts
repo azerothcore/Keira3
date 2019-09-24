@@ -74,7 +74,9 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
     this.reloadEntity();
   }
 
-  protected reloadCallback() {
+  protected reloadAfterSave() {
+    this._isNew = false;
+    this.handlerService.select(false, getPartial<T>(this._form.getRawValue(), this.entityIdFields));
     this.reload();
   }
 
@@ -86,8 +88,10 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
     const selected: Partial<T> = JSON.parse(this.handlerService.selected);
 
     for (const key of this.entityIdFields) {
-      // TODO: get rid of this type hack, see: https://github.com/microsoft/TypeScript/issues/32704
-      (this._originalValue as any)[key] = selected[key];
+      if (selected[key]) {
+        // TODO: get rid of this type hack, see: https://github.com/microsoft/TypeScript/issues/32704
+        (this._originalValue as any)[key] = selected[key];
+      }
     }
 
     this._isNew = true;
@@ -96,14 +100,15 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
   protected setLoadedEntity() {
     const loadedEntity = getPartial<T>(this._originalValue, this.entityIdFields);
     this._loadedEntityId = JSON.stringify(loadedEntity);
-    this.handlerService.select(this._isNew, getPartial<T>(this._originalValue, this.entityIdFields));
+    this.handlerService.select(this.handlerService.isNew, getPartial<T>(this._originalValue, this.entityIdFields));
   }
 
   protected onReloadSuccessful(data: MysqlResult<T>) {
-    if (data.results.length > 0) {
+    if (!this.handlerService.isNew) {
       // we are loading an existing entity
       this.onLoadedExistingEntity(data.results[0]);
     } else {
+      // we are creating a new entity
       this.onCreatingNewEntity();
     }
     this.updateFormAfterReload();
