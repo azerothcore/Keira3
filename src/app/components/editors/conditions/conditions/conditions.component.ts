@@ -11,11 +11,22 @@ import { ConditionsService } from '../../../../services/editors/conditions/condi
 })
 export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
 
+  // TODO: this is temporary, remove it later
+  public keys = [];
+
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: ConditionsService,
     public handlerService: ConditionsHandlerService,
   ) {
     super(editorService, handlerService);
+
+    // TODO: this is temporary, remove it later
+    const tmpObj = new Conditions();
+    for (const key in tmpObj) {
+      if (tmpObj.hasOwnProperty(key)) {
+        this.keys.push(key);
+      }
+    }
   }
 }
