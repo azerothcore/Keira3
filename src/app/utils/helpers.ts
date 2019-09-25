@@ -14,3 +14,7 @@ export function getPartial<T>(input: T | Partial<T>, fields: string[]): Partial<
 
     return output;
 }
+
+export function getEnumKeys(enumInput: { [s: number]: string }): number[] {
+  return Object.keys(enumInput).filter(k => !isNaN(Number(k))).map(k => +k);
+}
