@@ -129,8 +129,8 @@ describe('GossipMenu integration tests', () => {
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain('DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234);\n' +
         'INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 0, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0),\n' + 
-        '(1234, 1, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0),\n' + 
+        '(1234, 0, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0),\n' +
+        '(1234, 1, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0),\n' +
         '(1234, 2, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0);');
       expect(page.getEditorTableRowsCount()).toBe(3);
     });
@@ -142,9 +142,9 @@ describe('GossipMenu integration tests', () => {
         'DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234) AND (`OptionID` IN (1));'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234);\n' + 
-        'INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES\n' + 
-        '(1234, 0, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0),\n' + 
+        'DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234);\n' +
+        'INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES\n' +
+        '(1234, 0, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0),\n' +
         '(1234, 2, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0);\n'
       );
 
@@ -172,13 +172,13 @@ describe('GossipMenu integration tests', () => {
       page.setInputValueById('OptionID', 123);
 
       page.expectDiffQueryToContain(
-        'DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234) AND (`OptionID` IN (1, 123));\n' + 
-        'INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES\n' + 
+        'DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234) AND (`OptionID` IN (1, 123));\n' +
+        'INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES\n' +
         '(1234, 123, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0);'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234);\n' + 
-        'INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES\n' + 
+        'DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234);\n' +
+        'INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES\n' +
         '(1234, 0, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0),\n' +
         '(1234, 123, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0),\n' +
         '(1234, 2, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0);\n'
@@ -198,12 +198,12 @@ describe('GossipMenu integration tests', () => {
 
       page.expectDiffQueryToContain(
         'DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234) AND (`OptionID` IN (1, 2, 10, 3));\n' +
-      	'INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES\n' +
-      	'(1234, 10, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0),\n' +
-      	'(1234, 3, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0);'
+        'INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES\n' +
+        '(1234, 10, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0),\n' +
+        '(1234, 3, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0);'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234);\n' + 
+        'DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234);\n' +
         'INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES\n' +
         '(1234, 0, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0),\n' +
         '(1234, 10, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0),\n' +
