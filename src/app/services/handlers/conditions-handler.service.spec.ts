@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { ConditionsHandlerService } from './Conditions-handler.service';
+import { ConditionsHandlerService } from './conditions-handler.service';
 
 describe('ConditionsHandlerService', () => {
   beforeEach(() => TestBed.configureTestingModule({
