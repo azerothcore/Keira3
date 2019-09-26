@@ -1,0 +1,183 @@
+<app-top-bar [handler]="handlerService"></app-top-bar>
+
+<div class="container-fluid">
+
+  <span *ngIf="editorService.loading">Loading...</span>
+
+  <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
+
+    <app-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></app-query-output>
+
+    <hr class="mt-2 mb-1">
+
+    <div class="wiki-link">
+      <a [href]="docUrl" target="_blank">
+        <i class="fas fa-link"></i> {{ editorService.entityTable }} documentation
+      </a>
+    </div>
+
+    <form
+      [formGroup]="editorService.form"
+      class="form-group edit-form"
+    >
+
+      <div class="row">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="OptionID">OptionID</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Must be unique for a given menu_id starting from 0 (zero).'"
+          ></i>
+          <input [formControlName]="'OptionID'" id="OptionID" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="OptionIcon">OptionIcon</label>
+          <app-single-value-selector-btn
+            [control]="editorService.form.get('OptionIcon')"
+            [config]="{ options: OPTION_ICON, name: 'OptionIcon' }"
+            [modalClass]="'modal-md'"
+          ></app-single-value-selector-btn>
+          <input [formControlName]="'OptionIcon'" id="OptionIcon" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="OptionText">OptionText</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Text displayed in the player selectable option. Examples would be: “Learn Dual Spec“. Only if OptionBroadcastTextID contains a valid broadcast_text.ID'"
+          ></i>
+          <input [formControlName]="'OptionText'" id="OptionText" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="OptionBroadcastTextID">OptionBroadcastTextID</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'The ID of the same text in broadcast_text.ID.'"
+          ></i>
+          <input [formControlName]="'OptionBroadcastTextID'" id="OptionBroadcastTextID" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="OptionType">OptionType</label>
+          <app-single-value-selector-btn
+            [control]="editorService.form.get('OptionType')"
+            [config]="{ options: OPTION_TYPE, name: 'OptionType' }"
+            [modalClass]="'modal-xl'"
+          ></app-single-value-selector-btn>
+          <input [formControlName]="'OptionType'" id="OptionType" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="OptionNpcFlag">OptionNpcFlag</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Reference to creature_template.npcflag, this is the npcflag that the NPC must have'"
+          ></i>
+          <input [formControlName]="'OptionNpcFlag'" id="OptionNpcFlag" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="ActionMenuID">ActionMenuID</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'If you want to create a sub-menu, this is the ID (gossip_menu.entry / gossip_menu_option.menu_id) to link to to create that sub-menu.'"
+          ></i>
+          <input [formControlName]="'ActionMenuID'" id="ActionMenuID" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="ActionPoiID">ActionPoiID</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'If you want a POI (point of interest) to display on the minimap (like how a city guard places a marker when you ask directions), this is the `entry` from Points_of_interest.entry'"
+          ></i>
+          <input [formControlName]="'ActionPoiID'" id="ActionPoiID" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="BoxCoded">BoxCoded</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'If you want a box to display where you have to enter a code, this is the field you use.'"
+          ></i>
+          <input [formControlName]="'BoxCoded'" id="BoxCoded" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="BoxMoney">BoxMoney</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'The amount of money the player has to pay for the selected option, the value must be in copper. 10g = 100000 (10g 00s 00c)'"
+          ></i>
+          <input [formControlName]="'BoxMoney'" id="BoxMoney" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="BoxText">BoxText</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'This is the text of the window that appears that has “Yes” or “No” as clickable buttons. This is useful if you want a Yes/No confirmation window before the script executes'"
+          ></i>
+          <input [formControlName]="'BoxText'" id="BoxText" type="text" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="BoxBroadcastTextID">BoxBroadcastTextID</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'The ID of the same text in broadcast_text.ID.'"
+          ></i>
+          <input [formControlName]="'BoxBroadcastTextID'" id="BoxBroadcastTextID" type="text" class="form-control form-control-sm">
+        </div>
+
+        <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
+          <i class="fas fa-exclamation-triangle"></i>
+          The <strong>{{ editorService.entitySecondIdField }}</strong> must be unique.
+        </div>
+
+      </div>
+
+    </form>
+
+    <div class="row">
+      <div class="col-12">
+
+        <button
+          id="delete-selected-row-btn"
+          class="btn btn-danger btn-sm mr-2"
+          (click)="editorService.deleteSelectedRow()"
+          [disabled]="editorService.selectedRowId === null"
+        >Delete selected row</button>
+
+        <button
+          id="add-new-row-btn"
+          class="btn btn-success btn-sm"
+          (click)="editorService.addNewRow()"
+        >Add new row</button>
+
+        <ngx-datatable
+          id="editor-table"
+          class="bootstrap table table-striped text-center datatable-select"
+          [rows]="editorService.newRows"
+          [headerHeight]="DTCFG.headerHeight"
+          [footerHeight]="DTCFG.footerHeight"
+          [columnMode]="DTCFG.columnMode"
+          [rowHeight]="DTCFG.rowHeight"
+          [selectionType]="DTCFG.selectionType"
+          (select)='editorService.onRowSelection($event)'>
+          <ngx-datatable-column [width]="30" [sortable]="false">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="OptionID"               prop="OptionID"              [minWidth]="35"></ngx-datatable-column>
+          <ngx-datatable-column name="OptionIcon"             prop="OptionIcon"            [minWidth]="35"></ngx-datatable-column>
+          <ngx-datatable-column name="OptionText"             prop="OptionText"            [minWidth]="50"></ngx-datatable-column>
+          <ngx-datatable-column name="OptionBroadcastTextID"  prop="OptionBroadcastTextID" [minWidth]="50"></ngx-datatable-column>
+          <ngx-datatable-column name="OptionType"             prop="OptionType"            [minWidth]="35"></ngx-datatable-column>
+          <ngx-datatable-column name="OptionNpcFlag"          prop="OptionNpcFlag"         [minWidth]="50"></ngx-datatable-column>
+          <ngx-datatable-column name="ActionMenuID"           prop="ActionMenuID"          [minWidth]="50"></ngx-datatable-column>
+          <ngx-datatable-column name="ActionPoiID"            prop="ActionPoiID"           [minWidth]="50"></ngx-datatable-column>
+          <ngx-datatable-column name="BoxCoded"               prop="BoxCoded"              [minWidth]="50"></ngx-datatable-column>
+          <ngx-datatable-column name="BoxMoney"               prop="BoxMoney"              [minWidth]="35"></ngx-datatable-column>
+          <ngx-datatable-column name="BoxText"                prop="BoxText"               [minWidth]="50"></ngx-datatable-column>
+          <!-- <ngx-datatable-column name="BoxBroadcastTextID"     prop="BoxBroadcastTextID"    [minWidth]="70"></ngx-datatable-column> -->
+        </ngx-datatable>
+
+      </div>
+    </div>
+
+  </div>
+</div>
