@@ -1,0 +1,28 @@
+import { CONDITION_SOURCE_TYPES as ST } from '../../../../types/conditions.type';
+
+// const tooltip = [];
+// tooltip[ST.SOURCE_TYPE_NONE] = 'xxxxxx';
+// tooltip[ST.SOURCE_TYPE_CREATURE_LOOT_TEMPLATE] = 'xxxxxx';
+// tooltip[ST.SOURCE_TYPE_DISENCHANT_LOOT_TEMPLATE] = 'xxxxxx';
+// tooltip[ST.SOURCE_TYPE_FISHING_LOOT_TEMPLATE] = 'xxxxxx';
+// tooltip[ST.SOURCE_TYPE_GAMEOBJECT_LOOT_TEMPLATE] = 'xxxxxx';
+// tooltip[ST.SOURCE_TYPE_ITEM_LOOT_TEMPLATE] = 'xxxxxx';
+// tooltip[ST.SOURCE_TYPE_MAIL_LOOT_TEMPLATE] = 'xxxxxx';
+// tooltip[ST.SOURCE_TYPE_MILLING_LOOT_TEMPLATE] = 'xxxxxx';
+// tooltip[ST.SOURCE_TYPE_PICKPOCKETING_LOOT_TEMPLATE] = 'xxxxxx';
+// tooltip[ST.SOURCE_TYPE_PROSPECTING_LOOT_TEMPLATE] = 'xxxxxx';
+// tooltip[ST.SOURCE_TYPE_REFERENCE_LOOT_TEMPLATE] = 'xxxxxx';
+// tooltip[ST.SOURCE_TYPE_SKINNING_LOOT_TEMPLATE] = 'xxxxxx';
+// tooltip[ST.SOURCE_TYPE_SPELL_LOOT_TEMPLATE] = 'xxxxxx';
+// tooltip[ST.SOURCE_TYPE_SPELL_IMPLICIT_TARGET] = 'xxxxxx';
+// tooltip[ST.SOURCE_TYPE_GOSSIP_MENU] = 'xxxxxx';
+// tooltip[ST.SOURCE_TYPE_GOSSIP_MENU_OPTION] = 'xxxxxx';
+// tooltip[ST.SOURCE_TYPE_CREATURE_TEMPLATE_VEHICLE] = 'xxxxxx';
+// tooltip[ST.SOURCE_TYPE_SPELL] = 'xxxxxx';
+// tooltip[ST.SOURCE_TYPE_SPELL_CLICK_EVENT] = 'xxxxxx';
+// tooltip[ST.SOURCE_TYPE_QUEST_AVAILABLE] = 'xxxxxx';
+// tooltip[ST.SOURCE_TYPE_VEHICLE_SPELL] = 'xxxxxx';
+// tooltip[ST.UNUSED] = 'xxxxxx';
+// tooltip[ST.SOURCE_TYPE_SMART_EVENT] = 'xxxxxx';
+// tooltip[ST.SOURCE_TYPE_NPC_VENDOR] = 'xxxxxx';
+// tooltip[ST.SOURCE_TYPE_SPELL_PROC] = 'xxxxxx';
