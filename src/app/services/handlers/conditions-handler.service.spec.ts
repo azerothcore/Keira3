@@ -3,6 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { ConditionsHandlerService } from './conditions-handler.service';
 import { Conditions } from '../../types/conditions.type';
+import { Router } from '@angular/router';
 
 describe('ConditionsHandlerService', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -43,6 +44,8 @@ describe('ConditionsHandlerService', () => {
 
     const res = service['getIdObject'](input);
     expect(res).toEqual(output);
+
+    spyOn(TestBed.get(Router), 'navigate');
 
     service.select(true, input);
     expect(service.selected).toBe(JSON.stringify(res));
