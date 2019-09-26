@@ -19,6 +19,7 @@
       class="form-group edit-form"
     >
 
+      <span class="category-title">Condition source</span>
       <div class="form-group row">
         <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="SourceTypeOrReferenceId">Source Type:</label>
         <div class="col-sm-8 col-md-9 col-lg-10">
@@ -28,6 +29,56 @@
         </div>
       </div>
 
+      <div class="row">
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="SourceGroup">SourceGroup</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'SourceGroup'" id="SourceGroup" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="SourceEntry">SourceEntry</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'SourceEntry'" id="SourceEntry" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="SourceId">SourceId</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'SourceId'" id="SourceId" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="ElseGroup">ElseGroup</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'ElseGroup'" id="ElseGroup" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="ConditionTarget">ConditionTarget</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'ConditionTarget'" id="ConditionTarget" type="number" class="form-control form-control-sm">
+        </div>
+
+      </div>
+
+      <span class="category-title">Condition type & values</span>
       <div class="form-group row">
         <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="ConditionTypeOrReference">Condition Type:</label>
         <div class="col-sm-8 col-md-9 col-lg-10">
@@ -39,17 +90,84 @@
 
       <div class="row">
 
-        <div
-        *ngFor="let key of keys"
-          class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
-        >
-          <label class="control-label" for="{{ key }}">{{ key }}</label>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="ConditionValue1">ConditionValue1</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'TODO'"
           ></i>
-          <input [formControlName]="key" id="{{ key }}" type="number" class="form-control form-control-sm">
+          <input [formControlName]="'ConditionValue1'" id="ConditionValue1" type="number" class="form-control form-control-sm">
         </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="ConditionValue2">ConditionValue2</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'ConditionValue2'" id="ConditionValue2" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="ConditionValue3">ConditionValue3</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'ConditionValue3'" id="ConditionValue3" type="number" class="form-control form-control-sm">
+        </div>
+
+      </div>
+
+      <span class="category-title">Other condition properties</span>
+
+      <div class="row">
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="NegativeCondition">NegativeCondition</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'NegativeCondition'" id="NegativeCondition" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="ErrorType">ErrorType</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'ErrorType'" id="ErrorType" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="ErrorTextId">ErrorTextId</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'ErrorTextId'" id="ErrorTextId" type="number" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="ScriptName">ScriptName</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'ScriptName'" id="ScriptName" class="form-control form-control-sm">
+        </div>
+
+        <div class="form-group col-12 col-sm-6">
+          <label class="control-label" for="Comment">Comment</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'Comment'" id="Comment" class="form-control form-control-sm">
+        </div>
+
       </div>
 
     </form>
