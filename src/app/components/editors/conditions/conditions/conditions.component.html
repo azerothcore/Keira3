@@ -35,7 +35,7 @@
           <label class="control-label" for="SourceGroup">SourceGroup</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="SOURCE_GROUP_TOOLTIPS[editorService.form.get('SourceTypeOrReferenceId').value]"
           ></i>
           <input [formControlName]="'SourceGroup'" id="SourceGroup" type="number" class="form-control form-control-sm">
         </div>

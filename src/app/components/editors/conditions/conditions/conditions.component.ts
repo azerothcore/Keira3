@@ -10,6 +10,7 @@ import {
   Conditions
 } from '../../../../types/conditions.type';
 import { ConditionsService } from '../../../../services/editors/conditions/conditions.service';
+import { SOURCE_GROUP_TOOLTIPS } from './conditions-constants';
 
 @Component({
   selector: 'app-conditions',
@@ -22,6 +23,8 @@ export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
   public readonly CONDITION_SOURCE_TYPES_KEYS = CONDITION_SOURCE_TYPES_KEYS;
   public readonly CONDITION_TYPES = CONDITION_TYPES;
   public readonly CONDITION_TYPES_KEYS = CONDITION_TYPES_KEYS;
+
+  public readonly SOURCE_GROUP_TOOLTIPS = SOURCE_GROUP_TOOLTIPS;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

@@ -1,7 +1,7 @@
 import { CONDITION_SOURCE_TYPES as ST } from '../../../../types/conditions.type';
 
-// const tooltip = [];
-// tooltip[ST.SOURCE_TYPE_NONE] = 'xxxxxx';
+// export const tooltip = [];
+// tooltip[ST.SOURCE_TYPE_NONE] = '';
 // tooltip[ST.SOURCE_TYPE_CREATURE_LOOT_TEMPLATE] = 'xxxxxx';
 // tooltip[ST.SOURCE_TYPE_DISENCHANT_LOOT_TEMPLATE] = 'xxxxxx';
 // tooltip[ST.SOURCE_TYPE_FISHING_LOOT_TEMPLATE] = 'xxxxxx';
@@ -22,7 +22,35 @@ import { CONDITION_SOURCE_TYPES as ST } from '../../../../types/conditions.type'
 // tooltip[ST.SOURCE_TYPE_SPELL_CLICK_EVENT] = 'xxxxxx';
 // tooltip[ST.SOURCE_TYPE_QUEST_AVAILABLE] = 'xxxxxx';
 // tooltip[ST.SOURCE_TYPE_VEHICLE_SPELL] = 'xxxxxx';
-// tooltip[ST.UNUSED] = 'xxxxxx';
+// tooltip[ST.UNUSED] = '';
 // tooltip[ST.SOURCE_TYPE_SMART_EVENT] = 'xxxxxx';
 // tooltip[ST.SOURCE_TYPE_NPC_VENDOR] = 'xxxxxx';
 // tooltip[ST.SOURCE_TYPE_SPELL_PROC] = 'xxxxxx';
+
+export const SOURCE_GROUP_TOOLTIPS = [];
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_NONE] = '';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_CREATURE_LOOT_TEMPLATE] = 'creature_loot_template or reference_loot_template Entry';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_DISENCHANT_LOOT_TEMPLATE] = 'disenchant_loot_template or reference_loot_template Entry';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_FISHING_LOOT_TEMPLATE] = 'fishing_loot_template or reference_loot_template Entry';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_GAMEOBJECT_LOOT_TEMPLATE] = 'gameobject_loot_template or reference_loot_template Entry';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_ITEM_LOOT_TEMPLATE] = 'item_loot_template or reference_loot_template Entry';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_MAIL_LOOT_TEMPLATE] = 'mail_loot_template or reference_loot_template Entry';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_MILLING_LOOT_TEMPLATE] = 'milling_loot_template or reference_loot_template Entry';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_PICKPOCKETING_LOOT_TEMPLATE] = 'pickpocketing_loot_template or reference_loot_template Entry';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_PROSPECTING_LOOT_TEMPLATE] = 'prospecting_loot_template or reference_loot_template Entry';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_REFERENCE_LOOT_TEMPLATE] = 'reference_loot_template Entry';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_SKINNING_LOOT_TEMPLATE] = 'skinning_loot_template or reference_loot_template Entry';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_SPELL_LOOT_TEMPLATE] = 'spell_loot_template or reference_loot_template Entry';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_SPELL_IMPLICIT_TARGET] = 'Mask of effects to be affected by condition: 1 = EFFECT_0, 2 = EFFECT_1, 4 = EFFECT_2';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_GOSSIP_MENU] = 'gossip_menu.MenuID';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_GOSSIP_MENU_OPTION] = 'gossip_menu_option.MenuId';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_CREATURE_TEMPLATE_VEHICLE] = 'Always 0';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_SPELL] = 'Always 0';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_SPELL_CLICK_EVENT] = 'npc_spellclick_spells.npc_entry';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_QUEST_AVAILABLE] = 'Always 0';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_VEHICLE_SPELL] = 'creature_template Entry';
+SOURCE_GROUP_TOOLTIPS[ST.UNUSED] = '';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_SMART_EVENT] = 'ID (smart_scripts.id) + 1';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_NPC_VENDOR] = 'npc_vendor Entry';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_SPELL_PROC] = 'Always 0';
+
