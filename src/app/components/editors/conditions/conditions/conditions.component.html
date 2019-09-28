@@ -35,7 +35,7 @@
           <label class="control-label" for="SourceGroup">SourceGroup</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="SOURCE_GROUP_TOOLTIPS[editorService.form.get('SourceTypeOrReferenceId').value]"
+            [tooltip]="SOURCE_GROUP_TOOLTIPS[selectedSourceType]"
           ></i>
           <input [formControlName]="'SourceGroup'" id="SourceGroup" type="number" class="form-control form-control-sm">
         </div>
@@ -44,7 +44,7 @@
           <label class="control-label" for="SourceEntry">SourceEntry</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="SOURCE_ENTRY_TOOLTIPS[selectedSourceType]"
           ></i>
           <input [formControlName]="'SourceEntry'" id="SourceEntry" type="number" class="form-control form-control-sm">
         </div>
@@ -53,7 +53,7 @@
           <label class="control-label" for="SourceId">SourceId</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="selectedSourceType === CONDITION_SOURCE_TYPES.SOURCE_TYPE_SMART_EVENT ? 'smart_scripts.source_type' : 'Always 0'"
           ></i>
           <input [formControlName]="'SourceId'" id="SourceId" type="number" class="form-control form-control-sm">
         </div>

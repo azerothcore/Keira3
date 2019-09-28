@@ -10,7 +10,7 @@ import {
   Conditions
 } from '../../../../types/conditions.type';
 import { ConditionsService } from '../../../../services/editors/conditions/conditions.service';
-import { SOURCE_GROUP_TOOLTIPS } from './conditions-constants';
+import { SOURCE_ENTRY_TOOLTIPS, SOURCE_GROUP_TOOLTIPS } from './conditions-constants';
 
 @Component({
   selector: 'app-conditions',
@@ -25,6 +25,11 @@ export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
   public readonly CONDITION_TYPES_KEYS = CONDITION_TYPES_KEYS;
 
   public readonly SOURCE_GROUP_TOOLTIPS = SOURCE_GROUP_TOOLTIPS;
+  public readonly SOURCE_ENTRY_TOOLTIPS = SOURCE_ENTRY_TOOLTIPS;
+
+  get selectedSourceType(): number {
+   return this.editorService.form.get('SourceTypeOrReferenceId').value;
+  }
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
