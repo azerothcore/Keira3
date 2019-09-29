@@ -4,6 +4,7 @@ import { BsModalRef } from 'ngx-bootstrap';
 import { FlagsSelectorModalComponent } from './flags-selector-modal.component';
 import { FlagsService } from '../../../../../services/helpers/flags.service';
 import { FlagsSelectorModule } from './flags-selector.module';
+import { Flag } from '../../../../../types/general';
 
 describe('FlagsSelectorModalComponent', () => {
   let component: FlagsSelectorModalComponent;
@@ -34,7 +35,7 @@ describe('FlagsSelectorModalComponent', () => {
 
   it('should properly handle config (if any)', () => {
     const bits = [false, true, false];
-    const flags = 'mock flags';
+    const flags: Flag[] = [{ bit: 1, name: 'my-flag' }];
     const value = 123;
     component.value = value;
     component.config = { flags };
