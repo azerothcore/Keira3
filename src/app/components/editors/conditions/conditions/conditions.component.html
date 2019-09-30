@@ -71,7 +71,7 @@
           <label class="control-label" for="ConditionTarget">ConditionTarget</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="CONDITION_TARGET_TOOLTIPS[selectedSourceType]"
           ></i>
           <input [formControlName]="'ConditionTarget'" id="ConditionTarget" type="number" class="form-control form-control-sm">
         </div>
