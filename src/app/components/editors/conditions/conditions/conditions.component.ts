@@ -10,7 +10,12 @@ import {
   Conditions
 } from '../../../../types/conditions.type';
 import { ConditionsService } from '../../../../services/editors/conditions/conditions.service';
-import { CONDITION_TARGET_TOOLTIPS, SOURCE_ENTRY_TOOLTIPS, SOURCE_GROUP_TOOLTIPS } from './conditions-constants';
+import {
+  CONDITION_TARGET_TOOLTIPS,
+  CONDITION_VALUE_1_TOOLTIPS, CONDITION_VALUE_2_TOOLTIPS, CONDITION_VALUE_3_TOOLTIPS,
+  SOURCE_ENTRY_TOOLTIPS,
+  SOURCE_GROUP_TOOLTIPS
+} from './conditions-constants';
 
 @Component({
   selector: 'app-conditions',
@@ -27,6 +32,9 @@ export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
   public readonly SOURCE_GROUP_TOOLTIPS = SOURCE_GROUP_TOOLTIPS;
   public readonly SOURCE_ENTRY_TOOLTIPS = SOURCE_ENTRY_TOOLTIPS;
   public readonly CONDITION_TARGET_TOOLTIPS = CONDITION_TARGET_TOOLTIPS;
+  public readonly CONDITION_VALUE_1_TOOLTIPS = CONDITION_VALUE_1_TOOLTIPS;
+  public readonly CONDITION_VALUE_2_TOOLTIPS = CONDITION_VALUE_2_TOOLTIPS;
+  public readonly CONDITION_VALUE_3_TOOLTIPS = CONDITION_VALUE_3_TOOLTIPS;
 
   get selectedSourceType(): number {
    return this.editorService.form.get('SourceTypeOrReferenceId').value;
