@@ -6,13 +6,16 @@ export function getNumberOrString(value: string|number): string|number {
 }
 
 export function getPartial<T>(input: T | Partial<T>, fields: string[]): Partial<T> {
-  const output: Partial<T> = {};
+  const output: Partial<T> = Object.keys(input)
+  .filter(key => fields.includes(key))
+  .reduce((obj, key) => {
+    obj[key] = input[key];
+    return obj;
+  }, {});
 
-    for (const key of fields) {
-      Object.assign(output, { [key]: input[key] });
-    }
+  console.log(output);
 
-    return output;
+  return output;
 }
 
 export function getEnumKeys(enumInput: { [s: number]: string }): number[] {
