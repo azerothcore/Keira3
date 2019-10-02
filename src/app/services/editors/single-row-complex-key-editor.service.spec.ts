@@ -126,9 +126,6 @@ describe('SingleRowComplexKeyEditorService', () => {
 
       expect(service['_originalValue']['id']).toBe(1);
       expect(service['_isNew']).toBe(true);
-
-      service['_entityIdFields'] = [];
-      service['onCreatingNewEntity']();
     });
 
     it('setLoadedEntity()', () => {
