@@ -9,12 +9,12 @@ export function getPartial<T>(input: T | Partial<T>, fields: string[]): Partial<
   const output: Partial<T> = {};
 
     for (const key of fields) {
-      output[key] = input[key];
+      Object.assign(output, { [key]: input[key] });
     }
 
     return output;
 }
 
 export function getEnumKeys(enumInput: { [s: number]: string }): number[] {
-  return Object.keys(enumInput).filter(k => !isNaN(Number(k))).map(k => +k);
+  return Object.keys(enumInput).filter((k) => !isNaN(Number(k))).map((k) => +k);
 }
