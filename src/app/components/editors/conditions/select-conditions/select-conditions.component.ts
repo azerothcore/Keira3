@@ -1,7 +1,5 @@
-import { Conditions, CONDITIONS_ID_FIELDS } from './../../../../types/conditions.type';
 import { Component, } from '@angular/core';
 
-import { QueryService } from '../../../../services/query.service';
 import { DTCFG } from '../../../../config/datatable.config';
 import { ConditionsSearchService } from '../../../../services/search/conditions-search.service';
 import { CONDITION_SOURCE_TYPES, CONDITION_SOURCE_TYPES_KEYS } from '../../../../types/conditions.type';

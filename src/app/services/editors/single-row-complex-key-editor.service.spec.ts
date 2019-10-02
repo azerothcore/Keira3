@@ -112,8 +112,6 @@ describe('SingleRowComplexKeyEditorService', () => {
 
       service['onCreatingNewEntity']();
 
-      console.log(service['_originalValue']);
-
       expect(service['_originalValue']['id']).toBe(1);
       expect(service['_isNew']).toBe(true);
     });
