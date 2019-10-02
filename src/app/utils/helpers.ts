@@ -6,14 +6,13 @@ export function getNumberOrString(value: string|number): string|number {
 }
 
 export function getPartial<T>(input: T | Partial<T>, fields: string[]): Partial<T> {
-  const output: Partial<T> = Object.keys(input)
-  .filter(key => fields.includes(key))
-  .reduce((obj, key) => {
-    obj[key] = input[key];
-    return obj;
-  }, {});
+  const output: Partial<T> = {};
 
-  console.log(output);
+  for (const key of fields) {
+    if (input.hasOwnProperty(key)) {
+      output[key] = input[key];
+    }
+  }
 
   return output;
 }
