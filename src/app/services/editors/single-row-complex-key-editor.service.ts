@@ -13,6 +13,7 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
     return JSON.parse(this._entityIdField);
   }
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected _entityClass: Class,
     protected _entityTable: string,

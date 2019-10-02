@@ -66,6 +66,18 @@ describe('SingleRowComplexKeyEditorService', () => {
       expect(getFullDeleteInsertMultipleKeysQuerySpy).toHaveBeenCalled();
     });
 
+    it('updateFullQuery() when isNew is true', () => {
+      const getFullDeleteInsertMultipleKeysQuerySpy = spyOn(TestBed.get(QueryService), 'getFullDeleteInsertMultipleKeysQuery');
+      const handlerService = TestBed.get(MockHandlerService);
+      handlerService._selected = JSON.stringify({ 'id': 1, 'guid': 2 });
+      service['_entityIdFields'] = ['id', 'guid'];
+
+      service['onCreatingNewEntity']();
+      service['updateFullQuery']();
+
+      expect(getFullDeleteInsertMultipleKeysQuerySpy).toHaveBeenCalled();
+    });
+
     it('reload()', () => {
       const resetSpy = spyOn<any>(service, 'reset');
       const reloadEntitySpy = spyOn<any>(service, 'reloadEntity');
@@ -107,13 +119,16 @@ describe('SingleRowComplexKeyEditorService', () => {
 
     it('onCreatingNewEntity()', () => {
       const handlerService = TestBed.get(MockHandlerService);
+      const entityIdFieldsSpy = spyOnProperty(service, 'entityIdFields', 'get').and.returnValue(['id', 'guid', 'test']);
       handlerService._selected = JSON.stringify({ 'id': 1, 'guid': 2 });
-      service['_entityIdFields'] = ['id', 'guid'];
 
       service['onCreatingNewEntity']();
 
       expect(service['_originalValue']['id']).toBe(1);
       expect(service['_isNew']).toBe(true);
+
+      service['_entityIdFields'] = [];
+      service['onCreatingNewEntity']();
     });
 
     it('setLoadedEntity()', () => {
