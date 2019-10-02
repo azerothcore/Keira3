@@ -9,9 +9,7 @@ export function getPartial<T>(input: T | Partial<T>, fields: string[]): Partial<
   const output: Partial<T> = {};
 
   for (const key of fields) {
-    if (input.hasOwnProperty(key)) {
-      output[key] = input[key];
-    }
+    output[`${key}`] = input[`${key}`];
   }
 
   return output;
