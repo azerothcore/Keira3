@@ -1,17 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { MysqlError } from 'mysql';
 
 import { GameobjectHandlerService } from '../../../../services/handlers/gameobject-handler.service';
 import { GameobjectLootTemplate } from '../../../../types/gameobject-loot-template.type';
 import { GameobjectLootTemplateService } from '../../../../services/editors/gameobject/gameobject-loot-template.service';
 import { LootTemplateComponent } from '../../shared/loot-template/loot-template.component';
-import { MysqlError } from 'mysql';
 
 @Component({
   selector: 'app-gameobject-loot-template',
   templateUrl: './gameobject-loot-template.component.html',
   styleUrls: ['./gameobject-loot-template.component.scss']
 })
-export class GameobjectLootTemplateComponent extends LootTemplateComponent<GameobjectLootTemplate> {
+export class GameobjectLootTemplateComponent extends LootTemplateComponent<GameobjectLootTemplate> implements OnInit {
 
   private _type: number;
   get type(): number { return this._type; }
