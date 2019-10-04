@@ -6,8 +6,11 @@
     "baseUrl": "",
     "types": []
   },
-  "exclude": [
-    "**/*.spec.ts",
-    "app/test-utils/**/*"
+  "files": [
+    "main.ts",
+    "polyfills.ts"
+  ],
+  "include": [
+    "**/*.d.ts"
   ]
 }
