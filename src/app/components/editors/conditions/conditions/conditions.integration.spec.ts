@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
@@ -12,13 +13,14 @@ import { ConditionsHandlerService } from '../../../../services/handlers/conditio
 
 class ConditionsPage extends EditorPageObject<ConditionsComponent> {}
 
-fdescribe('Conditions integration tests', () => {
+describe('Conditions integration tests', () => {
   let component: ConditionsComponent;
   let fixture: ComponentFixture<ConditionsComponent>;
   let queryService: QueryService;
   let querySpy: Spy;
   let handlerService: ConditionsHandlerService;
   let page: ConditionsPage;
+  let navigateSpy: Spy;
 
   const sourceTypeOrReferenceId = 1;
   const sourceGroup = 2;
@@ -37,9 +39,9 @@ fdescribe('Conditions integration tests', () => {
     SourceTypeOrReferenceId: sourceTypeOrReferenceId
   };
 
-  const expectedFullCreateQuery = 'DELETE FROM `conditions` WHERE (`SourceTypeOrReferenceId` = ' + sourceTypeOrReferenceId + ') AND (`SourceGroup` = ' + sourceGroup + ') AND (`SourceEntry` = ' + sourceEntry + ') AND (`SourceId` = 0) AND (`ElseGroup` = 0) AND (`ConditionTypeOrReference` = 6) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0);\n' +
+  const expectedFullCreateQuery = 'DELETE FROM `conditions` WHERE (`SourceTypeOrReferenceId` = ' + sourceTypeOrReferenceId + ') AND (`SourceGroup` = ' + sourceGroup + ') AND (`SourceEntry` = ' + sourceEntry + ') AND (`SourceId` = 0) AND (`ElseGroup` = 0) AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0);\n' +
     'INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES\n' +
-    '(1, 2, 3, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, \'\', NULL)';
+    '(1, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', \'\');';
 
   const originalEntity = new Conditions();
   originalEntity.SourceTypeOrReferenceId = sourceTypeOrReferenceId;
@@ -57,6 +59,7 @@ fdescribe('Conditions integration tests', () => {
   }));
 
   function setup(creatingNew: boolean) {
+    navigateSpy = spyOn(TestBed.get(Router), 'navigate');
     handlerService = TestBed.get(ConditionsHandlerService);
     handlerService['_selected'] = JSON.stringify(id);
     handlerService.isNew = creatingNew;
@@ -64,7 +67,7 @@ fdescribe('Conditions integration tests', () => {
     queryService = TestBed.get(QueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(
+    spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(of(
       { results: creatingNew ? [] : [originalEntity] }
     ));
 
@@ -84,20 +87,81 @@ fdescribe('Conditions integration tests', () => {
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    // fit('changing a property and executing the query should correctly work', () => {
-    //   const expectedQuery = 'DELETE FROM `creature_equip_template` WHERE (`CreatureID` = 1234);\n' +
-    //     'INSERT INTO `creature_equip_template` (`CreatureID`, `ID`, `ItemID1`, `ItemID2`, `ItemID3`, `VerifiedBuild`) VALUES\n' +
-    //     '(1234, 1, 0, 2, 0, 0);';
-    //   querySpy.calls.reset();
+    it('changing a property and executing the query should correctly work', () => {
+      const expectedQuery = 'DELETE FROM `conditions` WHERE (`SourceTypeOrReferenceId` = 2) AND (`SourceGroup` = 3) AND ' +
+      '(`SourceEntry` = ' + sourceEntry + ') AND (`SourceId` = 0) AND (`ElseGroup` = 0) AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0);\n' +
+      'INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES\n' +
+      '(2, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', \'\');';
+      querySpy.calls.reset();
 
-    //   page.setInputValueById('SourceTypeOrReferenceId', '1: 1');
-    //   page.setInputValueById('SourceGroup', 1);
-    //   page.clickExecuteQuery();
+      page.setInputValueById('SourceTypeOrReferenceId', '2: 2');
+      page.setInputValueById('SourceGroup', 3);
+      page.clickExecuteQuery();
 
-    //   page.expectFullQueryToContain(expectedQuery);
-    //   expect(querySpy).toHaveBeenCalledTimes(1);
-    //   expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-    // });
+      page.expectFullQueryToContain(expectedQuery);
+      expect(querySpy).toHaveBeenCalledTimes(1);
+      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+    });
+
+  });
+
+
+  describe('Editing existing', () => {
+    beforeEach(() => setup(false));
+
+    it('should correctly initialise', () => {
+      page.expectDiffQueryToBeShown();
+      page.expectDiffQueryToBeEmpty();
+      page.expectFullQueryToContain(expectedFullCreateQuery);
+    });
+
+    it('changing all properties and executing the query should correctly work', () => {
+      const expectedQuery = 'UPDATE `conditions` SET `ErrorType` = 1, `ErrorTextId` = 2, `ScriptName` = \'3\', `Comment` = \'4\''
+      + ' WHERE (`SourceTypeOrReferenceId` = ' + sourceTypeOrReferenceId + ') AND (`SourceGroup` = ' + sourceGroup + ') AND (`SourceEntry` = ' + sourceEntry + ') '
+      + 'AND (`SourceId` = 0) AND (`ElseGroup` = 0) AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0)';
+      querySpy.calls.reset();
+
+      page.changeAllFields(originalEntity, [
+        'SourceTypeOrReferenceId',
+        'SourceGroup',
+        'SourceEntry',
+        'SourceId',
+        'ElseGroup',
+        'ConditionTypeOrReference',
+        'ConditionTarget',
+        'ConditionValue1',
+        'ConditionValue2',
+        'ConditionValue3',
+      ]);
+      page.clickExecuteQuery();
+
+      page.expectDiffQueryToContain(expectedQuery);
+      expect(querySpy).toHaveBeenCalledTimes(1);
+      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+    });
+
+    it('changing values should correctly update the queries', () => {
+
+      page.setInputValueById('SourceGroup', '1');
+      page.expectDiffQueryToContain(
+        'UPDATE `conditions` SET `SourceGroup` = 1 WHERE (`SourceTypeOrReferenceId` = ' + sourceTypeOrReferenceId + ') AND (`SourceGroup` = ' + sourceGroup + ') AND (`SourceEntry` = ' + sourceEntry + ') AND (`SourceId` = 0) AND (`ElseGroup` = 0) AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0)'
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `conditions` WHERE (`SourceTypeOrReferenceId` = ' + sourceTypeOrReferenceId + ') AND (`SourceGroup` = ' + sourceGroup + ') AND (`SourceEntry` = ' + sourceEntry + ') AND (`SourceId` = 0) AND (`ElseGroup` = 0) AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0);\n' +
+        'INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES\n' +
+        '(1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', \'\');'
+      );
+
+      page.setInputValueById('SourceEntry', '4');
+      page.expectDiffQueryToContain(
+        'UPDATE `conditions` SET `SourceGroup` = 1, `SourceEntry` = 4 WHERE (`SourceTypeOrReferenceId` = ' + sourceTypeOrReferenceId + ') AND (`SourceGroup` = ' + sourceGroup + ') AND (`SourceEntry` = ' + sourceEntry + ') AND (`SourceId` = 0) AND (`ElseGroup` = 0) AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0)'
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `conditions` WHERE (`SourceTypeOrReferenceId` = ' + sourceTypeOrReferenceId + ') AND (`SourceGroup` = ' + sourceGroup + ') AND (`SourceEntry` = ' + sourceEntry + ') AND (`SourceId` = 0) AND (`ElseGroup` = 0) AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0);\n' +
+        'INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES\n' +
+        '(1, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', \'\');'
+      );
+    });
 
   });
 
