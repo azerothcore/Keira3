@@ -64,12 +64,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     return this.queryService.selectAll<T>(this._entityTable, this._entityIdField, id);
   }
 
-  reload(id: string|number) {
-    this._loading = true;
-    this._form.reset();
-    this._fullQuery = '';
-    this._diffQuery = '';
-
+  protected reloadEntity(id: string|number) {
     this.selectQuery(id).subscribe((data) => {
       this._error = null;
       this.onReloadSuccessful(data, id);
@@ -80,6 +75,22 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     });
   }
 
+  protected reset() {
+    this._form.reset();
+    this._fullQuery = '';
+    this._diffQuery = '';
+  }
+
+  reload(id: string|number) {
+    this._loading = true;
+    this.reset();
+    this.reloadEntity(id);
+  }
+
+  protected reloadAfterSave() {
+    this.reload(this.loadedEntityId);
+  }
+
   save(query: string) {
     if (!query) { return; }
 
@@ -87,7 +98,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
 
     this.queryService.query<T>(query).subscribe(() => {
       this._error = null;
-      this.reload(this.loadedEntityId);
+      this.reloadAfterSave();
     }, (error: MysqlError) => {
       this._error = error;
     }).add(() => {

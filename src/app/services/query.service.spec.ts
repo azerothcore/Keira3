@@ -141,6 +141,19 @@ describe('QueryService', () => {
       'FROM `my_ac` WHERE (param = value)');
   }));
 
+  it('selectAllMultipleKeys() should correctly work', async(() => {
+    const data: MysqlResult<TableRow> = { results: [{ key: 'value'}] };
+    const querySpy = spyOn(service, 'query').and.returnValue(of(data));
+    const row = { k1: 1, k2: 2};
+
+    service.selectAllMultipleKeys('my_ac', row).subscribe((res) => {
+      expect(res).toEqual(data);
+    });
+
+    expect(querySpy).toHaveBeenCalledWith('SELECT * ' +
+      'FROM `my_ac` WHERE (k1 = 1) AND (k2 = 2)');
+  }));
+
   it('getMaxId() should correctly work', async(() => {
     const data: MysqlResult<MaxRow> = { results: [{ max: 123 }] };
     const querySpy = spyOn(service, 'query').and.returnValue(of());
@@ -567,6 +580,53 @@ describe('QueryService', () => {
           );
         });
       });
+    });
+
+    describe('getUpdateMultipleKeysQuery', () => {
+      for (const {id, currentRow, newRow, keys, query} of [
+        { id: 0, currentRow: {}, newRow: {}, keys: [], query: '' },
+        { id: 1, currentRow: { k1: 1 }, newRow: { k1: 1 }, keys: ['k1'], query: '' },
+        { id: 2, currentRow: { k1: 1, k2: 2 }, newRow: { k1: 11, k2: 2 }, keys: ['k1', 'k2'],
+          query: 'UPDATE `my_table` SET `k1` = 11 WHERE (`k1` = 1) AND (`k2` = 2)' },
+        { id: 3, currentRow: { k1: 1, k2: 2, k3: 3, n1: 1 }, newRow: { k1: 1, k2: 2, k3: 3, n1: 11 }, keys: ['k1', 'k2', 'k3'],
+          query: 'UPDATE `my_table` SET `n1` = 11 WHERE (`k1` = 1) AND (`k2` = 2) AND (`k3` = 3)' },
+        { id: 4, currentRow: { k1: 1, k2: 2, k3: 3, n1: 1 }, newRow: { k1: 1, k2: 2, k3: 33, n1: 11 }, keys: ['k1', 'k2', 'k3'],
+          query: 'UPDATE `my_table` SET `k3` = 33, `n1` = 11 WHERE (`k1` = 1) AND (`k2` = 2) AND (`k3` = 3)' },
+      ]) {
+        it(`should correctly generate the query [${id}]`, () => {
+          expect(service.getUpdateMultipleKeysQuery(tableName, currentRow, newRow, keys)).toEqual(query);
+        });
+      }
+    });
+
+    describe('getDeleteMultipleKeysQuery', () => {
+      for (const {id, row, keys, query} of [
+        { id: 0, row: {}, keys: [], query: 'DELETE FROM `my_table`' },
+        { id: 1, row: { k1: 1 }, keys: ['k1'], query: 'DELETE FROM `my_table` WHERE (`k1` = 1)' },
+        { id: 2, row: { k1: 1, k2: 2 }, keys: ['k1', 'k2'], query: 'DELETE FROM `my_table` WHERE (`k1` = 1) AND (`k2` = 2)' },
+        { id: 3, row: { k1: 1, k2: 2, k3: 3 }, keys: ['k1', 'k2', 'k3'], query: 'DELETE FROM `my_table` WHERE (`k1` = 1) AND (`k2` = 2) AND (`k3` = 3)' },
+      ]) {
+        it(`should correctly generate the query [${id}]`, () => {
+          expect(service.getDeleteMultipleKeysQuery(tableName, row, keys)).toEqual(query);
+        });
+      }
+    });
+
+    describe('getFullDeleteInsertMultipleKeysQuery', () => {
+      for (const {id, currentRow, newRow, keys, query} of [
+        { id: 1, currentRow: { k1: 1, n1: 33 }, newRow: { k1: 1, n1: 22 }, keys: ['k1'],
+          query: 'DELETE FROM `my_table` WHERE (`k1` = 1);\n' +
+            'INSERT INTO `my_table` (`k1`, `n1`) VALUES\n' +
+            '(1, 22);\n' },
+        { id: 2, currentRow: { k1: 1, n1: 33 }, newRow: { k1: 2, n1: 22 }, keys: ['k1'],
+          query: 'DELETE FROM `my_table` WHERE (`k1` = 1);\n' +
+            'INSERT INTO `my_table` (`k1`, `n1`) VALUES\n' +
+            '(2, 22);\n' },
+      ]) {
+        it(`should correctly generate the query [${id}]`, () => {
+          expect(service.getFullDeleteInsertMultipleKeysQuery(tableName, currentRow, newRow, keys)).toEqual(query);
+        });
+      }
     });
   });
 });

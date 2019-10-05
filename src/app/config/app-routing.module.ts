@@ -1,3 +1,4 @@
+import { ConditionsComponent } from './../components/editors/conditions/conditions/conditions.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
@@ -55,6 +56,8 @@ import { SelectGossipComponent } from '../components/editors/gossip/select-gossi
 import { GossipHandlerService } from '../services/handlers/gossip-handler.service';
 import { GossipMenuComponent } from '../components/editors/gossip/gossip-menu/gossip-menu.component';
 import { GossipMenuOptionComponent } from '../components/editors/gossip/gossip-menu-option/gossip-menu-option.component';
+import { SelectConditionsComponent } from '../components/editors/conditions/select-conditions/select-conditions.component';
+import { ConditionsHandlerService } from '../services/handlers/conditions-handler.service';
 
 const routes: Routes = [
   {
@@ -272,6 +275,20 @@ const routes: Routes = [
         path: 'gossip-menu-option',
         component: GossipMenuOptionComponent,
         canActivate: [GossipHandlerService],
+      },
+    ]
+  },
+  {
+    path: 'conditions',
+    children: [
+      {
+        path: 'select',
+        component: SelectConditionsComponent,
+      },
+      {
+        path: 'conditions',
+        component: ConditionsComponent,
+        canActivate: [ConditionsHandlerService],
       },
     ]
   },
