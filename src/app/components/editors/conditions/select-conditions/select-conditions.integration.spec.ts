@@ -22,10 +22,6 @@ class SelectConditionsComponentPage extends PageObject<SelectConditionsComponent
   get createBtn() { return this.query<HTMLButtonElement>('#create-new-btn'); }
 
   get topBar() { return this.query<HTMLElement>('app-top-bar'); }
-
-  expectTopBarEditing(id: number, name: string) {
-    expect(this.topBar.innerText).toContain(`Editing: ${name} (${id})`);
-  }
 }
 
 describe('SelectConditions integration tests', () => {
