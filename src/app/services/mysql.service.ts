@@ -74,6 +74,7 @@ export class MysqlService {
     return (err: MysqlError, results?: T[], fields?: FieldInfo[]) => {
       this.ngZone.run(() => {
         if (err) {
+          console.log(`Error when executing query: \n\n${err.sql}`);
           subscriber.error(err);
         } else {
           subscriber.next({results, fields});

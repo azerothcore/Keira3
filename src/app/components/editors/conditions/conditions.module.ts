@@ -1,7 +1,11 @@
 import { NgModule } from '@angular/core';
 
-const modules = [
+import { SelectConditionsModule } from './select-conditions/select-conditions.module';
+import { ConditionsEditorModule } from './conditions/conditions-editor.module';
 
+const modules = [
+  SelectConditionsModule,
+  ConditionsEditorModule,
 ];
 
 @NgModule({
