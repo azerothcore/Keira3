@@ -115,24 +115,14 @@ describe('Conditions integration tests', () => {
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing all properties and executing the query should correctly work', () => {
-      const expectedQuery = 'UPDATE `conditions` SET `ErrorType` = 1, `ErrorTextId` = 2, `ScriptName` = \'3\', `Comment` = \'4\''
-      + ' WHERE (`SourceTypeOrReferenceId` = ' + sourceTypeOrReferenceId + ') AND (`SourceGroup` = ' + sourceGroup + ') AND (`SourceEntry` = ' + sourceEntry + ') '
-      + 'AND (`SourceId` = 0) AND (`ElseGroup` = 0) AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0)';
+    fit('changing all properties and executing the query should correctly work', () => {
+      const expectedQuery = 'UPDATE `conditions` SET `SourceTypeOrReferenceId` = \'\', `SourceGroup` = 1, `SourceEntry` = 2, `SourceId` = 3, `ElseGroup` = 4, `ConditionTypeOrReference` = \'\', '
+      + '`ConditionTarget` = 6, `ConditionValue1` = 7, `ConditionValue2` = 8, `ConditionValue3` = 9, `NegativeCondition` = 10, `ErrorType` = 11, `ErrorTextId` = 12, `ScriptName` = \'13\', '
+      + '`Comment` = \'14\' WHERE (`SourceTypeOrReferenceId` = 1) AND (`SourceGroup` = 2) AND (`SourceEntry` = 3) AND (`SourceId` = 0) AND (`ElseGroup` = 0) '
+      + 'AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0)';
       querySpy.calls.reset();
 
-      page.changeAllFields(originalEntity, [
-        'SourceTypeOrReferenceId',
-        'SourceGroup',
-        'SourceEntry',
-        'SourceId',
-        'ElseGroup',
-        'ConditionTypeOrReference',
-        'ConditionTarget',
-        'ConditionValue1',
-        'ConditionValue2',
-        'ConditionValue3',
-      ]);
+      page.changeAllFields(originalEntity, []);
       page.clickExecuteQuery();
 
       page.expectDiffQueryToContain(expectedQuery);
