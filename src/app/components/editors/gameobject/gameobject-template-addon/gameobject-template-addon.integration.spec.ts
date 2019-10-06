@@ -119,19 +119,19 @@ describe('GameobjectTemplateAddon integration tests', () => {
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
 
-      page.toggleFlagInRow(1);
-      page.toggleFlagInRow(3);
+      page.toggleFlagInRow(1); // +2^1
+      page.toggleFlagInRow(3); // +2^3
       page.clickModalSelect();
 
-      expect(page.getInputById(field).value).toEqual('260');
+      expect(page.getInputById(field).value).toEqual('10');
       page.expectDiffQueryToContain(
-        'UPDATE `gameobject_template_addon` SET `flags` = 260 WHERE (`entry` = ' + id + ');'
+        'UPDATE `gameobject_template_addon` SET `flags` = 10 WHERE (`entry` = ' + id + ');'
       );
 
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject_template_addon` WHERE (`entry` = ' + id + ');\n' +
         'INSERT INTO `gameobject_template_addon` (`entry`, `faction`, `flags`, `mingold`, `maxgold`) VALUES\n' +
-        '(' + id + ', 0, 260, 0, 0);'
+        '(' + id + ', 0, 10, 0, 0);'
       );
     });
 
