@@ -269,6 +269,8 @@ export class QueryService {
     rows: T[],                  // array of the new rows
     primaryKey: string = null,  // first primary key (example: 'Entry'), it will be used to generate the DELETE statement for ALL rows
     primaryKey2: string = null, // the second primary key, it will be used to generate the DELETE statement for SPECIFIC rows
+    grouped: boolean = false,   // whether the primaryKey2 is different for each row (e.g. primaryKey2='Item' in `creature_loot_template`)
+                                // or is the same for all rows (e.g. primaryKey='entryorguid', primaryKey2='source_type' in `smart_scripts`)
   ) {
     if (!rows || rows.length === 0) { return ''; }
 
@@ -281,8 +283,12 @@ export class QueryService {
       deleteCondition += ` AND `;
     }
     if (primaryKey2) {
-      const ids = rows.map(row => row[primaryKey2]);
-      deleteCondition += '`' + primaryKey2 + '` IN (' + ids.join(', ') + ')';
+      if (grouped) {
+        deleteCondition += '`' + primaryKey2 + '` = ' + rows[0][primaryKey2];
+      } else {
+        const ids = rows.map(row => row[primaryKey2]);
+        deleteCondition += '`' + primaryKey2 + '` IN (' + ids.join(', ') + ')';
+      }
     }
 
     const deleteQuery: Delete = squel.delete(squelConfig).from(tableName).where(deleteCondition);
