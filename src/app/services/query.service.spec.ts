@@ -487,7 +487,7 @@ describe('QueryService', () => {
         });
       });
 
-      describe('using both keys', () => {
+      describe('using both keys [non-grouped]', () => {
         const primaryKey2 = 'pk2';
 
         it('should correctly work when adding a group of rows', () => {
@@ -513,6 +513,38 @@ describe('QueryService', () => {
 
           expect(service.getFullDeleteInsertQuery(tableName, rows, primaryKey, primaryKey2)).toEqual(
             'DELETE' + ' FROM `my_table` WHERE (`pk1` = 1234 AND `pk2` IN (1));\n' +
+            'INSERT' + ' INTO `my_table` (`pk1`, `pk2`, `name`, `attribute1`, `attribute2`) VALUES\n' +
+            '(1234, 1, \'Shin\', 28, 4);\n'
+          );
+        });
+      });
+
+      describe('using both keys [grouped]', () => {
+        const primaryKey2 = 'pk2';
+
+        it('should correctly work when adding a group of rows', () => {
+          const rows: MockTwoKeysRow[] = [
+            { pk1: 1234, pk2: 1, name: 'Shin', attribute1: 28, attribute2: 4 },
+            { pk1: 1234, pk2: 1, name: 'Helias', attribute1: 12, attribute2: 4 },
+            { pk1: 1234, pk2: 1, name: 'Kalhac', attribute1: 12, attribute2: 4 },
+          ];
+
+          expect(service.getFullDeleteInsertQuery(tableName, rows, primaryKey, primaryKey2, true)).toEqual(
+            'DELETE' + ' FROM `my_table` WHERE (`pk1` = 1234 AND `pk2` = 1);\n' +
+            'INSERT' + ' INTO `my_table` (`pk1`, `pk2`, `name`, `attribute1`, `attribute2`) VALUES\n' +
+            '(1234, 1, \'Shin\', 28, 4),\n' +
+            '(1234, 1, \'Helias\', 12, 4),\n' +
+            '(1234, 1, \'Kalhac\', 12, 4);\n'
+          );
+        });
+
+        it('should correctly work when adding a single row', () => {
+          const rows: MockTwoKeysRow[] = [
+            { pk1: 1234, pk2: 1, name: 'Shin', attribute1: 28, attribute2: 4 },
+          ];
+
+          expect(service.getFullDeleteInsertQuery(tableName, rows, primaryKey, primaryKey2, true)).toEqual(
+            'DELETE' + ' FROM `my_table` WHERE (`pk1` = 1234 AND `pk2` = 1);\n' +
             'INSERT' + ' INTO `my_table` (`pk1`, `pk2`, `name`, `attribute1`, `attribute2`) VALUES\n' +
             '(1234, 1, \'Shin\', 28, 4);\n'
           );
