@@ -59,7 +59,7 @@
     "bootstrap": "4.3.1",
     "chai": "4.2.0",
     "codelyzer": "5.1.2",
-    "conventional-changelog-cli": "2.0.23",
+    "conventional-changelog-cli": "2.0.25",
     "coveralls": "3.0.6",
     "electron": "6.0.12",
     "electron-builder": "21.2.0",
