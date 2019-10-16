@@ -37,9 +37,9 @@
     "ngx-ui-switch": "8.2.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "0.803.9",
+    "@angular-devkit/build-angular": "0.803.10",
     "@angular/animations": "8.2.11",
-    "@angular/cli": "8.3.9",
+    "@angular/cli": "8.3.10",
     "@angular/common": "8.2.11",
     "@angular/compiler": "8.2.11",
     "@angular/compiler-cli": "8.2.11",
