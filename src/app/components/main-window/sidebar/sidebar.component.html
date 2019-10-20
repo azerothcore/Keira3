@@ -352,6 +352,24 @@
                     Coming soon...
                   </a>
                 </li>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'smart-ai/search-existing'">
+                    Search by existing SAI
+                  </a>
+                </li>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'smart-ai/search-entity'">
+                    Search by entity
+                  </a>
+                </li>
+<!--                TODO: handler-->
+                <ng-container *ngIf="true">
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'smart-ai/editor'">
+                      SmartAI editor
+                    </a>
+                  </li>
+                </ng-container>
               </ul>
             </div>
           </li>
