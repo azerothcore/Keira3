@@ -58,6 +58,9 @@ import { GossipMenuComponent } from '../components/editors/gossip/gossip-menu/go
 import { GossipMenuOptionComponent } from '../components/editors/gossip/gossip-menu-option/gossip-menu-option.component';
 import { SelectConditionsComponent } from '../components/editors/conditions/select-conditions/select-conditions.component';
 import { ConditionsHandlerService } from '../services/handlers/conditions-handler.service';
+import { SaiSearchExistingComponent } from '../components/editors/smart-scripts/sai-search-existing/sai-search-existing.component';
+import { SaiSearchEntityComponent } from '../components/editors/smart-scripts/sai-search-entity/sai-search-entity.component';
+import { SaiEditorComponent } from '../components/editors/smart-scripts/sai-editor/sai-editor.component';
 
 const routes: Routes = [
   {
@@ -289,6 +292,24 @@ const routes: Routes = [
         path: 'conditions',
         component: ConditionsComponent,
         canActivate: [ConditionsHandlerService],
+      },
+    ]
+  },
+  {
+    path: 'smart-ai',
+    children: [
+      {
+        path: 'search-existing',
+        component: SaiSearchExistingComponent,
+      },
+      {
+        path: 'search-entity',
+        component: SaiSearchEntityComponent,
+      },
+      {
+        path: 'editor',
+        component: SaiEditorComponent,
+        canActivate: [], // TODO: add handler
       },
     ]
   },
