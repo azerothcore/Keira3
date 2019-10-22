@@ -58,7 +58,7 @@
     "@types/sqlstring": "2.2.1",
     "bootstrap": "4.3.1",
     "chai": "4.2.0",
-    "codelyzer": "5.1.2",
+    "codelyzer": "5.2.0",
     "conventional-changelog-cli": "2.0.25",
     "coveralls": "3.0.7",
     "electron": "6.1.0",
