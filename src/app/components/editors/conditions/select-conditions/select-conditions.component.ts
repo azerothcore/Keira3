@@ -24,11 +24,9 @@ export class SelectConditionsComponent {
 
   onSelect(event) {
     this.handlerService.select(false, event.selected[0]);
-    console.log(this.handlerService.selected);
   }
 
   onCreateNew() {
     this.handlerService.select(true, this.selectService.fields.getRawValue());
-    console.log(this.handlerService.selected);
   }
 }

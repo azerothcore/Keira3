@@ -4,6 +4,7 @@ export const SAI_ID_FIELDS = [
   'entryorguid',
   'source_type',
 ];
+export const SAI_SEARCH_FIELDS = SAI_ID_FIELDS;
 
 export class SmartScripts extends TableRow {
   entryorguid: number = 0;
