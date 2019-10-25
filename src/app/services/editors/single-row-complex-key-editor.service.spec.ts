@@ -11,8 +11,7 @@ import { of, throwError } from 'rxjs';
 import { MysqlError } from 'mysql';
 import { getPartial } from '../../utils/helpers';
 
-// TODO: revert this
-xdescribe('SingleRowComplexKeyEditorService', () => {
+describe('SingleRowComplexKeyEditorService', () => {
   let service: SingleRowComplexKeyEditorService<MockEntity>;
 
   beforeEach(() => TestBed.configureTestingModule({
