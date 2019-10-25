@@ -61,6 +61,7 @@ import { ConditionsHandlerService } from '../services/handlers/conditions-handle
 import { SaiSearchExistingComponent } from '../components/editors/smart-scripts/sai-search-existing/sai-search-existing.component';
 import { SaiSearchEntityComponent } from '../components/editors/smart-scripts/sai-search-entity/sai-search-entity.component';
 import { SaiEditorComponent } from '../components/editors/smart-scripts/sai-editor/sai-editor.component';
+import { SaiHandlerService } from '../services/handlers/sai-handler.service';
 
 const routes: Routes = [
   {
@@ -309,7 +310,7 @@ const routes: Routes = [
       {
         path: 'editor',
         component: SaiEditorComponent,
-        canActivate: [], // TODO: add handler
+        canActivate: [SaiHandlerService],
       },
     ]
   },

@@ -1,5 +1,10 @@
 import { TableRow } from './general';
 
+export const SAI_ID_FIELDS = [
+  'entryorguid',
+  'source_type',
+];
+
 export class SmartScripts extends TableRow {
   entryorguid: number = 0;
   source_type: number = 0;
