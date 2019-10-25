@@ -2,13 +2,12 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Conditions, CONDITIONS_ID_FIELDS } from '../../types/conditions.type';
-import { HandlerService } from './handler.service';
-import { getPartial } from '../../utils/helpers';
+import { ComplexKeyHandlerService } from './complex-key.handler.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ConditionsHandlerService extends HandlerService<Conditions> {
+export class ConditionsHandlerService extends ComplexKeyHandlerService<Conditions> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected router: Router,
@@ -16,14 +15,7 @@ export class ConditionsHandlerService extends HandlerService<Conditions> {
     super(
       'conditions/conditions',
       router,
+      CONDITIONS_ID_FIELDS,
     );
-  }
-
-  select(isNew: boolean, id: Partial<Conditions>) {
-    super.select(isNew, this.getIdObject(id));
-  }
-
-  private getIdObject(input: Partial<Conditions> | Conditions): Partial<Conditions> {
-    return getPartial<Conditions>(input, CONDITIONS_ID_FIELDS);
   }
 }

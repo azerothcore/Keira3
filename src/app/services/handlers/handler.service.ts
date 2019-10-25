@@ -10,7 +10,7 @@ export abstract class HandlerService<T extends TableRow> implements CanActivate 
   get selected(): string { return this._selected; }
 
   constructor(
-    private mainEditorRoutePath: string,
+    protected mainEditorRoutePath: string,
     protected router: Router,
   ) {}
 
