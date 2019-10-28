@@ -9,6 +9,7 @@ import { GameobjectHandlerService } from '../../../services/handlers/gameobject-
 import { ItemHandlerService } from '../../../services/handlers/item-handler.service';
 import { GossipHandlerService } from '../../../services/handlers/gossip-handler.service';
 import { ConditionsHandlerService } from '../../../services/handlers/conditions-handler.service';
+import { SaiHandlerService } from '../../../services/handlers/sai-handler.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -43,6 +44,7 @@ export class SidebarComponent {
     public itemHandlerService: ItemHandlerService,
     public gossipHandlerService: GossipHandlerService,
     public conditionsHandlerService: ConditionsHandlerService,
+    public saiHandlerService: SaiHandlerService,
   ) {
    }
 

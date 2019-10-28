@@ -362,8 +362,7 @@
                     Search by entity
                   </a>
                 </li>
-<!--                TODO: handler-->
-                <ng-container *ngIf="true">
+                <ng-container *ngIf="saiHandlerService.selected">
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'smart-ai/editor'">
                       SmartAI editor

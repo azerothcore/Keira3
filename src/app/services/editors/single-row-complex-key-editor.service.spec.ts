@@ -11,7 +11,6 @@ import { of, throwError } from 'rxjs';
 import { MysqlError } from 'mysql';
 import { getPartial } from '../../utils/helpers';
 
-
 describe('SingleRowComplexKeyEditorService', () => {
   let service: SingleRowComplexKeyEditorService<MockEntity>;
 

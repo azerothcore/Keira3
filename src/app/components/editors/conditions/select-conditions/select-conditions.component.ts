@@ -1,34 +1,23 @@
 import { Component, } from '@angular/core';
 
-import { DTCFG } from '../../../../config/datatable.config';
 import { ConditionsSearchService } from '../../../../services/search/conditions-search.service';
-import { CONDITION_SOURCE_TYPES, CONDITION_SOURCE_TYPES_KEYS } from '../../../../types/conditions.type';
-import { WIKI_BASE_URL } from '../../../../constants/general';
+import { CONDITION_SOURCE_TYPES, CONDITION_SOURCE_TYPES_KEYS, Conditions } from '../../../../types/conditions.type';
 import { ConditionsHandlerService } from '../../../../services/handlers/conditions-handler.service';
+import { SelectComplexKeyComponent } from '../../shared/select-complex-key.component';
 
 @Component({
   selector: 'app-select-creature',
   templateUrl: './select-conditions.component.html',
   styleUrls: ['./select-conditions.component.scss']
 })
-export class SelectConditionsComponent {
-  public readonly DTCFG = DTCFG;
-  public readonly WIKI_BASE_URL = WIKI_BASE_URL;
+export class SelectConditionsComponent extends SelectComplexKeyComponent<Conditions> {
   public readonly CONDITION_SOURCE_TYPES = CONDITION_SOURCE_TYPES;
   public readonly CONDITION_SOURCE_TYPES_KEYS = CONDITION_SOURCE_TYPES_KEYS;
 
   constructor(
     public selectService: ConditionsSearchService,
-    private handlerService: ConditionsHandlerService,
-  ) {}
-
-  onSelect(event) {
-    this.handlerService.select(false, event.selected[0]);
-    console.log(this.handlerService.selected);
-  }
-
-  onCreateNew() {
-    this.handlerService.select(true, this.selectService.fields.getRawValue());
-    console.log(this.handlerService.selected);
+    protected handlerService: ConditionsHandlerService,
+  ) {
+    super(selectService, handlerService);
   }
 }
