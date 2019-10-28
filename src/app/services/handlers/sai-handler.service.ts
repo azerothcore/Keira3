@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Conditions, CONDITIONS_ID_FIELDS } from '../../types/conditions.type';
 import { ComplexKeyHandlerService } from './complex-key.handler.service';
+import { SAI_ID_FIELDS, SmartScripts } from '../../types/smart-scripts.type';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ConditionsHandlerService extends ComplexKeyHandlerService<Conditions> {
+export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected router: Router,
   ) {
     super(
-      'conditions/conditions',
+      'smart-ai/editor',
       router,
-      CONDITIONS_ID_FIELDS,
+      SAI_ID_FIELDS,
     );
   }
 }
