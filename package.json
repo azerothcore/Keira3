@@ -62,7 +62,7 @@
     "conventional-changelog-cli": "2.0.25",
     "coveralls": "3.0.7",
     "electron": "7.0.0",
-    "electron-builder": "21.2.0",
+    "electron-builder": "22.1.0",
     "electron-reload": "1.5.0",
     "highlight.js": "9.15.10",
     "jasmine-core": "3.5.0",
