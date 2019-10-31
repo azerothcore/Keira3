@@ -7,6 +7,6 @@
   <p>isNew: <strong>{{ handler.isNew }}</strong></p>
 
   <code>
-    {{ handler.selected.toString() }}
+    {{ handler.selected ? handler.selected.toString() : 'no selection' }}
   </code>
 </div>
