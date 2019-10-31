@@ -35,12 +35,6 @@
           [disabled]="selectService.queryForm.invalid"
           (click)="selectService.onSearch()"
         >Search existing</button>
-        <button
-          class="btn btn-success btn-sm mt-1 mt-sm-0"
-          id="create-new-btn"
-          [disabled]="selectService.queryForm.invalid"
-          (click)="onCreateNew()"
-        >Create new</button>
       </div>
     </div>
     <code [highlight]="selectService.query"></code>
