@@ -1,1 +1,12 @@
-<p>TODO sai-editor</p>
+<div class="container">
+
+  <p>TODO sai-editor</p>
+
+  <h4>Selected:</h4>
+
+  <p>isNew: <strong>{{ handler.isNew }}</strong></p>
+
+  <code>
+    {{ handler.selected ? handler.selected.toString() : 'no selection' }}
+  </code>
+</div>

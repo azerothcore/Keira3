@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { SaiHandlerService } from '../../../../services/handlers/sai-handler.service';
 
 @Component({
   selector: 'app-sai-editor',
   templateUrl: './sai-editor.component.html',
   styleUrls: ['./sai-editor.component.scss']
 })
-export class SaiEditorComponent implements OnInit {
+export class SaiEditorComponent {
 
-  constructor() { }
-
-  ngOnInit() {
-  }
+  constructor(
+    public handler: SaiHandlerService,
+  ) { }
 
 }
