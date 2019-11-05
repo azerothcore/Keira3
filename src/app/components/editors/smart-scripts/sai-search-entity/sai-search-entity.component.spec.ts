@@ -1,9 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { RouterTestingModule, SpyNgModuleFactoryLoader } from '@angular/router/testing';
 
 import { SaiSearchEntityComponent } from './sai-search-entity.component';
 import { SaiSearchEntityModule } from './sai-search-entity.module';
 import { PageObject } from '../../../../test-utils/page-object';
+import { SaiHandlerService } from '../../../../services/handlers/sai-handler.service';
+import Spy = jasmine.Spy;
+import { SAI_SEARCH_TYPES } from '../../../../types/smart-scripts.type';
 
 class SaiSearchEntityComponentPage extends PageObject<SaiSearchEntityComponent> {
   get sourceTypeSelect() { return this.query<HTMLInputElement>('select#source_type'); }
@@ -32,7 +35,23 @@ describe('SaiSearchEntityComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('getter() should correctly works', () => {
+    expect(component.typeCreatureSelected).toBe(component.sourceTypeControl.value === SAI_SEARCH_TYPES.SAI_TYPE_CREATURE);
+    expect(component.typeGameobjectSelected).toBe(component.sourceTypeControl.value === SAI_SEARCH_TYPES.SAI_TYPE_GAMEOBJECT);
   });
+
+  it('onSelectedTypeChange() should correctly works', () => {
+    component.onSelectedTypeChange();
+
+    expect(component.entryOrGuidControl.value).toEqual('');
+  });
+
+  it('onEdit() should correctly works', () => {
+    const selectFromEntitySpy: Spy = spyOn(TestBed.get(SaiHandlerService), 'selectFromEntity');
+
+    component.onEdit();
+
+    expect(selectFromEntitySpy).toHaveBeenCalledTimes(1);
+  });
+
 });
