@@ -1,8 +1,9 @@
 import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
 
 import { TableRow } from '../../types/general';
+import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
 
-export abstract class HandlerService<T extends TableRow> implements CanActivate {
+export abstract class HandlerService<T extends TableRow> extends SubscriptionHandler implements CanActivate {
   protected _selected: string;
   selectedName: string;
   isNew = false;
@@ -12,7 +13,9 @@ export abstract class HandlerService<T extends TableRow> implements CanActivate 
   constructor(
     protected mainEditorRoutePath: string,
     protected router: Router,
-  ) {}
+  ) {
+    super();
+  }
 
   select(isNew: boolean, id: string|number|Partial<T>, name?: string) {
     this.isNew = isNew;
