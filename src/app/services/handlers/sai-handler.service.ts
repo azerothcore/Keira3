@@ -23,10 +23,12 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
 
   selectFromEntity(sourceType: number, entryOrGuid: number) {
     // we are selecting an entity, so we don't know if the SAI exists or not
-    this.queryService.query(
-      `SELECT * FROM smart_scripts WHERE source_type = ${sourceType} AND entryorguid = ${entryOrGuid}`
-    ).subscribe((data) => {
-      this.select(data.results.length === 0, { source_type: sourceType, entryorguid: entryOrGuid });
-    });
+    this.subscriptions.push(
+      this.queryService.query(
+        `SELECT * FROM smart_scripts WHERE source_type = ${sourceType} AND entryorguid = ${entryOrGuid}`
+      ).subscribe((data) => {
+        this.select(data.results.length === 0, { source_type: sourceType, entryorguid: entryOrGuid });
+      })
+    );
   }
 }
