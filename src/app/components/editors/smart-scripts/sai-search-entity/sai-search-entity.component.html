@@ -1,1 +1,60 @@
-<p>TODO sai-search-entity</p>
+<div class="container-fluid p-3">
+
+  <form [formGroup]="form" class="form-group edit-form">
+
+    <div class="row">
+
+      <div class="form-group col-12">
+        <label class="control-label" for="source_type">1) Select a Source Type</label>
+        <select
+          [formControlName]="'source_type'"
+          class="form-control form-control-sm"
+          id="source_type"
+          (change)="onSelectedTypeChange()"
+        >
+          <option *ngFor="let key of SAI_SEARCH_TYPES_KEYS" [ngValue]="key" [label]="SAI_SEARCH_TYPES[key]"></option>
+        </select>
+      </div>
+
+    </div>
+
+    <ng-container *ngIf="sourceTypeControl.valid">
+
+      <div class="row mt-3">
+        <div class="form-group col-12">
+          <label class="control-label" for="entryorguid">
+            <ng-container
+              *ngIf="typeCreatureSelected || typeGameobjectSelected; else idBlock"
+            >2) Select an Entry(+) or manually insert a GUID(-) </ng-container>
+            <ng-template #idBlock>Insert an ID</ng-template>
+          </label>
+          <app-creature-selector-btn
+            *ngIf="typeCreatureSelected"
+            [control]="entryOrGuidControl"
+            [config]="{  name: 'entryorguid' }"
+          ></app-creature-selector-btn>
+          <app-gameobject-selector-btn
+            *ngIf="typeGameobjectSelected"
+            [control]="entryOrGuidControl"
+            [config]="{  name: 'entryorguid' }"
+          ></app-gameobject-selector-btn>
+          <input [formControlName]="'entryorguid'" id="entryorguid" type="number" class="form-control form-control-sm">
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-12">
+          <button
+            class="btn btn-success"
+            [disabled]="entryOrGuidControl.invalid"
+            (click)="onEdit()"
+            id="edit-btn"
+          >Edit SmartAI</button>
+        </div>
+      </div>
+
+    </ng-container>
+
+  </form>
+
+</div>

@@ -8,6 +8,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TopBarModule } from '../../shared/top-bar/top-bar.module';
 import { QueryOutputModule } from '../../shared/query-output/query-output.module';
 import { highlightOptions } from '../../../../config/highlight.config';
+import { CreatureSelectorModule } from '../../shared/selectors/creature-selector/creature-selector.module';
+import { GameobjectSelectorModule } from '../../shared/selectors/gameobject-selector/gameobject-selector.module';
 
 @NgModule({
   declarations: [SaiSearchEntityComponent],
@@ -18,6 +20,8 @@ import { highlightOptions } from '../../../../config/highlight.config';
     QueryOutputModule,
     HighlightModule.forRoot(highlightOptions),
     NgxDatatableModule,
+    CreatureSelectorModule,
+    GameobjectSelectorModule,
   ],
   exports: [SaiSearchEntityComponent],
 })
