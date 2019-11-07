@@ -24,6 +24,15 @@ interface MockTwoKeysRow extends TableRow {
   attribute2: number;
 }
 
+interface MockTwoKeysComplexRow extends TableRow {
+  pk11: number;
+  pk12: number;
+  pk2: number;
+  name: string;
+  attribute1: number;
+  attribute2: number;
+}
+
 describe('QueryService', () => {
   let service: QueryService;
   let configService: ConfigService;
@@ -358,6 +367,80 @@ describe('QueryService', () => {
             'INSERT' + ' INTO `my_table` (`pk1`, `pk2`, `name`, `attribute1`, `attribute2`) VALUES\n' +
             '(1234, 3, \'Kalhac2\', 12, 4),\n' +
             '(1234, 4, \'Yehonal\', 99, 0);\n'
+          );
+        });
+      });
+
+      describe('using both keys and having primaryKey1 as complex', () => {
+        const primaryComplexKey1 = ['pk11', 'pk12'];
+        const myComplexRows: MockTwoKeysComplexRow[] = [
+          { pk11: 1234, pk12: 5678, pk2: 1, name: 'Shin', attribute1: 28, attribute2: 4 },
+          { pk11: 1234, pk12: 5678, pk2: 2, name: 'Helias', attribute1: 12, attribute2: 4 },
+          { pk11: 1234, pk12: 5678, pk2: 3, name: 'Kalhac', attribute1: 12, attribute2: 4 },
+        ];
+
+        it('should correctly work when all rows are deleted', () => {
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryComplexKey1, primaryKey2, myComplexRows, [])).toEqual(
+            'DELETE FROM `my_table` WHERE (`pk11` = 1234) AND (`pk12` = 5678)'
+          );
+        });
+
+        it('should correctly work when adding new rows to an empty set', () => {
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryComplexKey1, primaryKey2, [], myComplexRows)).toEqual(
+            'DELETE' + ' FROM `my_table` WHERE (`pk11` = 1234) AND (`pk12` = 5678) AND (`pk2` IN (1, 2, 3));\n' +
+            'INSERT' + ' INTO `my_table` (`pk11`, `pk12`, `pk2`, `name`, `attribute1`, `attribute2`) VALUES\n' +
+            '(1234, 5678, 1, \'Shin\', 28, 4),\n' +
+            '(1234, 5678, 2, \'Helias\', 12, 4),\n' +
+            '(1234, 5678, 3, \'Kalhac\', 12, 4);\n'
+          );
+        });
+
+        it('should correctly work when editing rows', () => {
+          const newRows = myComplexRows.map(x => Object.assign({}, x));
+          // edit two existing rows
+          newRows[1].name = 'Helias2';
+          newRows[2].name = 'Kalhac2';
+
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryComplexKey1, primaryKey2, myComplexRows, newRows)).toEqual(
+            'DELETE' + ' FROM `my_table` WHERE (`pk11` = 1234) AND (`pk12` = 5678) AND (`pk2` IN (2, 3));\n' +
+            'INSERT' + ' INTO `my_table` (`pk11`, `pk12`, `pk2`, `name`, `attribute1`, `attribute2`) VALUES\n' +
+            '(1234, 5678, 2, \'Helias2\', 12, 4),\n' +
+            '(1234, 5678, 3, \'Kalhac2\', 12, 4);\n'
+          );
+        });
+
+        it('should correctly work when adding rows', () => {
+          const newRows = myComplexRows.map(x => Object.assign({}, x));
+          // add two new rows
+          newRows.push({ pk11: 1234, pk12: 5678, pk2: 4, name: 'Yehonal', attribute1: 99, attribute2: 0 });
+          newRows.push({ pk11: 1234, pk12: 5678, pk2: 5, name: 'Barbz', attribute1: 68, attribute2: 1 });
+
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryComplexKey1, primaryKey2, myComplexRows, newRows)).toEqual(
+            'DELETE' + ' FROM `my_table` WHERE (`pk11` = 1234) AND (`pk12` = 5678) AND (`pk2` IN (4, 5));\n' +
+            'INSERT' + ' INTO `my_table` (`pk11`, `pk12`, `pk2`, `name`, `attribute1`, `attribute2`) VALUES\n' +
+            '(1234, 5678, 4, \'Yehonal\', 99, 0),\n' +
+            '(1234, 5678, 5, \'Barbz\', 68, 1);\n'
+          );
+        });
+
+        it('should correctly work when removing rows', () => {
+          const newRows = [ { ...myComplexRows[0] }, { ...myComplexRows[2] }]; // delete second row
+
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryComplexKey1, primaryKey2, myComplexRows, newRows)).toEqual(
+            'DELETE' + ' FROM `my_table` WHERE (`pk11` = 1234) AND (`pk12` = 5678) AND (`pk2` IN (2));\n'
+          );
+        });
+
+        it('should correctly work when removing, editing and adding rows all together', () => {
+          const newRows = [ { ...myComplexRows[0] }, { ...myComplexRows[2] }]; // delete second row
+          newRows[1].name = 'Kalhac2'; // edit row
+          newRows.push({ pk11: 1234, pk12: 5678, pk2: 4, name: 'Yehonal', attribute1: 99, attribute2: 0 }); // add a new row
+
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryComplexKey1, primaryKey2, myComplexRows, newRows)).toEqual(
+            'DELETE' + ' FROM `my_table` WHERE (`pk11` = 1234) AND (`pk12` = 5678) AND (`pk2` IN (2, 3, 4));\n' +
+            'INSERT' + ' INTO `my_table` (`pk11`, `pk12`, `pk2`, `name`, `attribute1`, `attribute2`) VALUES\n' +
+            '(1234, 5678, 3, \'Kalhac2\', 12, 4),\n' +
+            '(1234, 5678, 4, \'Yehonal\', 99, 0);\n'
           );
         });
       });

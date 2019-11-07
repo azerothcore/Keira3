@@ -195,11 +195,11 @@ export class QueryService {
 
   // Tracks difference between two groups of rows (with TWO keys) and generate DELETE/INSERT query
   getDiffDeleteInsertTwoKeysQuery<T extends TableRow>(
-    tableName: string,        // the name of the table (example: 'creature_loot_template')
-    primaryKey1: string|null, // first  primary key (example: 'Entry')
-    primaryKey2: string,      // second primary key (example: 'Item')
-    currentRows: T[],         // object of the original rows
-    newRows: T[],             // array of the new rows
+    tableName: string,            // the name of the table (example: 'creature_loot_template')
+    primaryKey1: string|string[], // first  primary key (example: 'Entry' or ['source_type', 'entryorguid'])
+    primaryKey2: string,          // second primary key (example: 'Item')
+    currentRows: T[],             // object of the original rows
+    newRows: T[],                 // array of the new rows
   ): string {
 
     if (!newRows || !currentRows) { return ''; }
@@ -207,9 +207,16 @@ export class QueryService {
       return this.QUERY_NO_CHANGES;
     }
 
+    const deleteQuery: Delete = squel.delete(squelConfig).from(tableName);
+
     if (primaryKey1 && newRows.length === 0) {
       // all rows have been deleted
-      return `DELETE FROM \`${tableName}\` WHERE \`${primaryKey1}\` = ${currentRows[0][primaryKey1]};\n`;
+      if (Array.isArray(primaryKey1)) {
+        this.addWhereConditionsToQuery(deleteQuery, currentRows[0], primaryKey1);
+        return deleteQuery.toString();
+      } else {
+        return `DELETE FROM \`${tableName}\` WHERE \`${primaryKey1}\` = ${currentRows[0][primaryKey1]};\n`;
+      }
     }
 
     const involvedRows: (string|number)[] = []; // -> needed for DELETE query
@@ -221,12 +228,14 @@ export class QueryService {
     if ( involvedRows.length === 0 ) {
       return this.QUERY_NO_CHANGES;
     }
-
-    const deleteQuery: Delete = squel.delete(squelConfig).from(tableName);
     const insertQuery: Insert = squel.insert(squelConfig).into(tableName);
 
     if (primaryKey1) {
-      deleteQuery.where('`' + primaryKey1 + '` = ' + newRows[0][primaryKey1]);
+      if (Array.isArray(primaryKey1)) {
+        this.addWhereConditionsToQuery(deleteQuery, newRows[0], primaryKey1);
+      } else {
+        deleteQuery.where('`' + primaryKey1 + '` = ' + newRows[0][primaryKey1]);
+      }
     }
     deleteQuery.where('`' + primaryKey2 + '` IN ?', involvedRows);
 
