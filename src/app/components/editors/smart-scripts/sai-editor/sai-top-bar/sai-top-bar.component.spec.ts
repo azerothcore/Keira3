@@ -1,13 +1,13 @@
 import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { of } from 'rxjs';
+import Spy = jasmine.Spy;
 
 import { SaiTopBarComponent } from './sai-top-bar.component';
 import { SaiHandlerService } from '../../../../../services/handlers/sai-handler.service';
 import { PageObject } from '../../../../../test-utils/page-object';
 import { SAI_SEARCH_TYPES } from '../../../../../types/smart-scripts.type';
 import { QueryService } from '../../../../../services/query.service';
-import { of } from 'rxjs';
-import Spy = jasmine.Spy;
 
 class SaiTopBarComponentPage extends PageObject<SaiTopBarComponent> {
   get mainText() { return this.query<HTMLSpanElement>('.main-text'); }
