@@ -1,3 +1,19 @@
+.top-bar {
+  background-color: #000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  height: 24px;
+  padding: 1px;
+
+  .main-text {
+    display: block;
+    text-align: center;
+
+    font-size: 13px;
+    font-weight: bold;
+  }
+}
+
 .wiki-link {
   text-align: right;
   color: #337ab7;
