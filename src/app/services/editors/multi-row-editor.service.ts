@@ -155,7 +155,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     this.updateFullQuery();
   }
 
-  private addIdToNewRow(newRow): void {
+  protected addIdToNewRow(newRow): void {
     newRow[this._entityIdField] = Number.parseInt(this.loadedEntityId, 10);
   }
 
