@@ -1,12 +1,37 @@
-<div class="container">
+<div class="container-fluid">
 
-  <p>TODO sai-editor</p>
+  <span *ngIf="editorService.loading">Loading...</span>
 
-  <h4>Selected:</h4>
+  <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
 
-  <p>isNew: <strong>{{ handler.isNew }}</strong></p>
+    <app-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></app-query-output>
 
-  <code>
-    {{ handler.selected ? handler.selected.toString() : 'no selection' }}
-  </code>
+    <hr class="mt-2 mb-1">
+
+    <div class="wiki-link">
+      <a [href]="docUrl" target="_blank">
+        <i class="fas fa-link"></i> {{ editorService.entityTable }} documentation
+      </a>
+    </div>
+
+    <form
+      [formGroup]="editorService.form"
+      class="form-group edit-form"
+    >
+
+      <div class="row">
+
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="entryorguid">entryorguid</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'TODO'"
+          ></i>
+          <input [formControlName]="'entryorguid'" id="entryorguid" type="number" class="form-control form-control-sm">
+        </div>
+
+      </div>
+
+    </form>
+  </div>
 </div>
