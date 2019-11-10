@@ -7,6 +7,7 @@ export const SAI_ID_FIELDS = [
   'entryorguid',
   'source_type',
 ];
+export const SAI_ID_2 = 'id';
 export const SAI_SEARCH_FIELDS = SAI_ID_FIELDS;
 
 export enum SAI_SEARCH_TYPES {
