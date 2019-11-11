@@ -6,9 +6,13 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { SaiEditorComponent } from './sai-editor.component';
 import { QueryOutputModule } from '../../shared/query-output/query-output.module';
+import { SaiTopBarComponent } from './sai-top-bar/sai-top-bar.component';
 
 @NgModule({
-  declarations: [SaiEditorComponent],
+  declarations: [
+    SaiEditorComponent,
+    SaiTopBarComponent,
+  ],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
