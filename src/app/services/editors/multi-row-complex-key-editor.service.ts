@@ -1,7 +1,9 @@
-import { Class, TableRow } from '../../types/general';
+import { Class, MysqlResult, TableRow } from '../../types/general';
 import { HandlerService } from '../handlers/handler.service';
 import { QueryService } from '../query.service';
 import { MultiRowEditorService } from './multi-row-editor.service';
+import { Observable } from 'rxjs';
+import { MysqlError } from 'mysql';
 
 export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extends MultiRowEditorService<T> {
 
@@ -44,5 +46,41 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
 
   protected addIdToNewRow(newRow): void {
     newRow[this._entityIdField] = Number.parseInt(this.loadedEntityId, 10);
+  }
+
+  reload() {
+    this._loading = true;
+    this.reset();
+    this.reloadEntity();
+  }
+
+  protected selectQuery(): Observable<MysqlResult<T>> {
+    return this.queryService.selectAllMultipleKeys<T>(this._entityTable, JSON.parse(this.handlerService.selected));
+  }
+
+  protected reloadEntity() {
+    this.selectQuery().subscribe((data) => {
+      this._error = null;
+      this.onReloadSuccessful(data);
+    }, (error: MysqlError) => {
+      this._error = error;
+    }).add(() => {
+      this._loading = false;
+    });
+  }
+
+  protected onReloadSuccessful(data: MysqlResult<T>) {
+    this._originalRows = [];
+    this._newRows = [];
+    for (const row of data.results) {
+      this._originalRows.push({ ...row });
+      this._newRows.push({ ...row });
+    }
+    this._newRows = [...this._newRows];
+    this._selectedRowId = null;
+    this._form.disable();
+    this._loadedEntityId = JSON.parse(this.handlerService.selected);
+    this._nextRowId = 0;
+    this.updateFullQuery();
   }
 }

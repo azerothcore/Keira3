@@ -8,8 +8,8 @@ import { QueryService } from '../query.service';
 export abstract class MultiRowEditorService<T extends TableRow> extends EditorService<T> {
   protected _originalRows: T[] = [];
   protected _newRows: T[] = [];
-  private _selectedRowId: string|number;
-  private _nextRowId = 0;
+  protected _selectedRowId: string|number;
+  protected _nextRowId = 0;
 
   get newRows(): T[] { return this._newRows; }
   get selectedRowId(): string|number { return this._selectedRowId; }
