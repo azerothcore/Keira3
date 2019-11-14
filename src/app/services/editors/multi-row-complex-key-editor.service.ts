@@ -59,14 +59,16 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
   }
 
   protected reloadEntity() {
-    this.selectQuery().subscribe((data) => {
-      this._error = null;
-      this.onReloadSuccessful(data);
-    }, (error: MysqlError) => {
-      this._error = error;
-    }).add(() => {
-      this._loading = false;
-    });
+    this.subscriptions.push(
+      this.selectQuery().subscribe((data) => {
+        this._error = null;
+        this.onReloadSuccessful(data);
+      }, (error: MysqlError) => {
+        this._error = error;
+      }).add(() => {
+        this._loading = false;
+      })
+    );
   }
 
   protected onReloadSuccessful(data: MysqlResult<T>) {

@@ -80,12 +80,12 @@ describe('SAI Editor Service', () => {
 
     const onReloadSuccessfulSpy: Spy = spyOn<any>(service, 'onReloadSuccessful');
     const error = { code: 'mock error', errno: 1234 } as MysqlError;
-    const selectQuerySpy: Spy = spyOn<any>(service, 'selectQuery').and.returnValue(of());
+    const selectQuerySpy: Spy = spyOn<any>(service, 'selectQuery').and.returnValue(of({ mock: 'data' }));
 
     service['reloadEntity']();
 
     expect(selectQuerySpy).toHaveBeenCalled();
-    expect(service.error).not.toBeDefined();
+    expect(service.error).toBe(null);
     expect(service.loading).toBe(false);
 
     selectQuerySpy.and.returnValue(throwError(error));

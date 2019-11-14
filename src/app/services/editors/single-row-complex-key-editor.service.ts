@@ -60,14 +60,16 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
   }
 
   protected reloadEntity() {
-    this.selectQuery().subscribe((data) => {
-      this._error = null;
-      this.onReloadSuccessful(data);
-    }, (error: MysqlError) => {
-      this._error = error;
-    }).add(() => {
-      this._loading = false;
-    });
+    this.subscriptions.push(
+      this.selectQuery().subscribe((data) => {
+        this._error = null;
+        this.onReloadSuccessful(data);
+      }, (error: MysqlError) => {
+        this._error = error;
+      }).add(() => {
+        this._loading = false;
+      })
+    );
   }
 
   reload() {

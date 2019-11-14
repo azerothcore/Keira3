@@ -12,6 +12,7 @@ import { SaiEditorService } from '../../../../services/editors/sai/sai-editor.se
 })
 export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> {
 
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: SaiEditorService,
     protected handlerService: SaiHandlerService,
