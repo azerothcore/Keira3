@@ -9,7 +9,7 @@ import { SubscriptionHandler } from '../../utils/subscription-handler/subscripti
 
 export abstract class EditorService<T extends TableRow> extends SubscriptionHandler {
   protected _loading = false;
-  protected _loadedEntityId: string | number;
+  protected _loadedEntityId: string | number | Partial<T>;
   protected readonly fields: string[];
   protected _diffQuery: string;
   protected _fullQuery: string;
@@ -65,14 +65,16 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   }
 
   protected reloadEntity(id: string|number) {
-    this.selectQuery(id).subscribe((data) => {
-      this._error = null;
-      this.onReloadSuccessful(data, id);
-    }, (error: MysqlError) => {
-      this._error = error;
-    }).add(() => {
-      this._loading = false;
-    });
+    this.subscriptions.push(
+      this.selectQuery(id).subscribe((data) => {
+        this._error = null;
+        this.onReloadSuccessful(data, id);
+      }, (error: MysqlError) => {
+        this._error = error;
+      }).add(() => {
+        this._loading = false;
+      })
+    );
   }
 
   protected reset() {
@@ -96,13 +98,16 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
 
     this._loading = true;
 
-    this.queryService.query<T>(query).subscribe(() => {
-      this._error = null;
-      this.reloadAfterSave();
-    }, (error: MysqlError) => {
-      this._error = error;
-    }).add(() => {
-      this._loading = false;
-    });
+    this.subscriptions.push(
+      this.queryService.query<T>(query).subscribe(() => {
+        this._error = null;
+        this.reloadAfterSave();
+      }, (error: MysqlError) => {
+        this._error = error;
+      }).add(() => {
+        this._loading = false;
+      })
+    );
+
   }
 }
