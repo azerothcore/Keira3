@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { instance } from 'ts-mockito';
-import Spy = jasmine.Spy;
 
 import { SaiEditorService } from './sai-editor.service';
 import { QueryService } from '../../query.service';

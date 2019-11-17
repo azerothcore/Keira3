@@ -11,7 +11,7 @@ import { of, throwError } from 'rxjs';
 import { MysqlResult } from '../../types/general';
 import { MysqlError } from 'mysql';
 
-describe('SAI Editor Service', () => {
+describe('MultiRowComplexKeyEditorService', () => {
   let service: MultiRowComplexKeyEditorService<MockEntity>;
 
   beforeEach(() => TestBed.configureTestingModule({
@@ -41,16 +41,14 @@ describe('SAI Editor Service', () => {
   });
 
   it('addToNewRow should correctly work', () => {
-
-    const newRow = [];
-    const idx = '1';
-    const mockVal = '2';
-    service['_entityIdField'] = idx;
-    service['_loadedEntityId'] = mockVal;
+    const newRow = new MockEntity();
+    const mockKeyObj: Partial<MockEntity> = { id: 123, guid: 1000 };
+    service['_loadedEntityId'] = mockKeyObj;
 
     service['addIdToNewRow'](newRow);
 
-    expect(newRow[idx]).toBe(Number.parseInt(mockVal, 10));
+    expect(newRow.id).toEqual(mockKeyObj.id);
+    expect(newRow.guid).toEqual(mockKeyObj.guid);
   });
 
   it('reload should correctly work', () => {

@@ -9,7 +9,7 @@ import { SubscriptionHandler } from '../../utils/subscription-handler/subscripti
 
 export abstract class EditorService<T extends TableRow> extends SubscriptionHandler {
   protected _loading = false;
-  protected _loadedEntityId: string | number;
+  protected _loadedEntityId: string | number | Partial<T>;
   protected readonly fields: string[];
   protected _diffQuery: string;
   protected _fullQuery: string;

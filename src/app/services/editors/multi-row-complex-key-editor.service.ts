@@ -45,7 +45,14 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
   protected abstract updateFullQuery(): void;
 
   protected addIdToNewRow(newRow): void {
-    newRow[this._entityIdField] = Number.parseInt(this.loadedEntityId, 10);
+    const obj = this._loadedEntityId as Partial<T>;
+
+    for (const key in obj) {
+      /* istanbul ignore else */
+      if (obj.hasOwnProperty(key)) {
+        newRow[key] = obj[key];
+      }
+    }
   }
 
   reload() {
