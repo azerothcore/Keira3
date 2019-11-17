@@ -7,6 +7,7 @@ import { QueryService } from '../services/query.service';
 import { TableRow } from '../types/general';
 import { MultiRowEditorService } from '../services/editors/multi-row-editor.service';
 import { SingleRowComplexKeyEditorService } from '../services/editors/single-row-complex-key-editor.service';
+import { MultiRowComplexKeyEditorService } from '../services/editors/multi-row-complex-key-editor.service';
 
 export const MOCK_TABLE = 'mock_table';
 export const MOCK_ID = 'id';
@@ -93,4 +94,27 @@ export class MockMultiRowEditorService extends MultiRowEditorService<MockEntity>
       queryService,
     );
   }
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class MockMultiRowComplexKeyEditorService extends MultiRowComplexKeyEditorService<MockEntity> {
+
+  constructor(
+    protected handlerService: MockHandlerService,
+    protected queryService: QueryService,
+  ) {
+    super(
+      MockEntity,
+      MOCK_TABLE,
+      [MOCK_ID, MOCK_ID_2],
+      MOCK_ID_2,
+      handlerService,
+      queryService,
+    );
+  }
+
+  protected updateFullQuery(): void {}
+
 }

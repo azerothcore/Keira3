@@ -8,8 +8,8 @@ import { QueryService } from '../query.service';
 export abstract class MultiRowEditorService<T extends TableRow> extends EditorService<T> {
   protected _originalRows: T[] = [];
   protected _newRows: T[] = [];
-  private _selectedRowId: string|number;
-  private _nextRowId = 0;
+  protected _selectedRowId: string|number;
+  protected _nextRowId = 0;
 
   get newRows(): T[] { return this._newRows; }
   get selectedRowId(): string|number { return this._selectedRowId; }
@@ -155,10 +155,14 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     this.updateFullQuery();
   }
 
+  protected addIdToNewRow(newRow): void {
+    newRow[this._entityIdField] = Number.parseInt(this.loadedEntityId, 10);
+  }
+
   addNewRow(): void {
     const newRow = new this._entityClass();
     if (this._entityIdField) {
-      newRow[this._entityIdField] = Number.parseInt(this.loadedEntityId, 10);
+      this.addIdToNewRow(newRow);
     }
     newRow[this._entitySecondIdField] = this.getNextFreeRowId();
     this._newRows = [ ...this._newRows, { ...newRow }];
