@@ -1,0 +1,49 @@
+.sai-category {
+  border: 1px solid #e7e7e7;
+  border-left: none;
+
+  .sai-category-title {
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
+
+  .sai-category-subtitle {
+    margin-bottom: 14px;
+  }
+
+  .form-group {
+    margin-bottom: 10px;
+    text-align: left;
+  }
+
+  select.form-control-sm {
+    padding: 0.1rem 0.2rem;
+    height: 24px;
+    font-size: 0.7rem;
+  }
+
+  input.form-control-sm {
+    height: 22px;
+    font-size: 0.8rem;
+  }
+
+  &.comment {
+    padding-top: 12px;
+    padding-bottom: 4px;
+    border-top: none;
+
+    .form-group {
+      text-align: right;
+    }
+
+    label {
+      padding-top: 4px;
+    }
+
+    input {
+      height: 28px;
+    }
+  }
+}
