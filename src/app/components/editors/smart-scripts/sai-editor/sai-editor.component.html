@@ -8,8 +8,6 @@
 
     <app-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></app-query-output>
 
-    <hr class="mt-2 mb-1">
-
     <div class="wiki-link">
       <a [href]="docUrl" target="_blank">
         <i class="fas fa-link"></i> {{ editorService.entityTable }} documentation
