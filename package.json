@@ -60,7 +60,7 @@
     "chai": "4.2.0",
     "codelyzer": "5.2.0",
     "conventional-changelog-cli": "2.0.28",
-    "coveralls": "3.0.8",
+    "coveralls": "3.0.9",
     "electron": "7.1.2",
     "electron-builder": "22.1.0",
     "electron-reload": "1.5.0",
