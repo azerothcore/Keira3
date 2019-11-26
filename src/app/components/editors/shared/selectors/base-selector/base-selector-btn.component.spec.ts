@@ -25,7 +25,7 @@ import { closeModalsAfterEach } from '../../../../../test-utils/test-helpers';
     FormsModule,
     ReactiveFormsModule,
     NgxDatatableModule,
-    HighlightModule.forRoot(highlightOptions),
+    HighlightModule,
   ],
   providers: [
     { provide : MysqlService, useValue: instance(MockedMysqlService) },

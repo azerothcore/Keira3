@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import '../polyfills';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 
 import { AppRoutingModule } from './config/app-routing.module';
 import { AppComponent } from './components/app.component';
@@ -16,6 +17,7 @@ import { ItemModule } from './components/editors/item/item.module';
 import { GossipModule } from './components/editors/gossip/gossip.module';
 import { ConditionsModule } from './components/editors/conditions/conditions.module';
 import { SmartScriptsModule } from './components/editors/smart-scripts/smart-scripts.module';
+import { highlightOptions } from './config/highlight.config';
 
 
 @NgModule({
@@ -37,6 +39,12 @@ import { SmartScriptsModule } from './components/editors/smart-scripts/smart-scr
     ConditionsModule,
     SmartScriptsModule,
   ],
-  bootstrap: [ AppComponent ]
+  bootstrap: [ AppComponent ],
+  providers: [
+    {
+      provide: HIGHLIGHT_OPTIONS,
+      useValue: highlightOptions,
+    }
+  ],
 })
 export class AppModule { }

@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { HighlightModule } from 'ngx-highlightjs';
 
 import { HighlightjsWrapperComponent } from './highlightjs-wrapper.component';
-import { highlightOptions } from '../../../../config/highlight.config';
 
 
 describe('HighlightjsWrapperComponent', () => {
@@ -19,7 +18,7 @@ describe('HighlightjsWrapperComponent', () => {
       imports: [
         BrowserModule,
         FormsModule,
-        HighlightModule.forRoot(highlightOptions),
+        HighlightModule,
       ],
     })
     .compileComponents();

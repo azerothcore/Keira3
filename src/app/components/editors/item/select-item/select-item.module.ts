@@ -8,7 +8,6 @@ import { TopBarModule } from '../../shared/top-bar/top-bar.module';
 import { QueryOutputModule } from '../../shared/query-output/query-output.module';
 import { SelectItemComponent } from './select-item.component';
 import { CreateModule } from '../../shared/create/create.module';
-import { highlightOptions } from '../../../../config/highlight.config';
 
 @NgModule({
   declarations: [
@@ -20,7 +19,7 @@ import { highlightOptions } from '../../../../config/highlight.config';
     TopBarModule,
     QueryOutputModule,
     CreateModule,
-    HighlightModule.forRoot(highlightOptions),
+    HighlightModule,
     NgxDatatableModule,
   ],
   exports: [

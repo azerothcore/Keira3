@@ -7,7 +7,6 @@ import { HighlightModule } from 'ngx-highlightjs';
 import { SaiSearchExistingComponent } from './sai-search-existing.component';
 import { TopBarModule } from '../../shared/top-bar/top-bar.module';
 import { QueryOutputModule } from '../../shared/query-output/query-output.module';
-import { highlightOptions } from '../../../../config/highlight.config';
 
 @NgModule({
   declarations: [SaiSearchExistingComponent],
@@ -16,7 +15,7 @@ import { highlightOptions } from '../../../../config/highlight.config';
     ReactiveFormsModule,
     TopBarModule,
     QueryOutputModule,
-    HighlightModule.forRoot(highlightOptions),
+    HighlightModule,
     NgxDatatableModule,
   ],
   exports: [SaiSearchExistingComponent],
