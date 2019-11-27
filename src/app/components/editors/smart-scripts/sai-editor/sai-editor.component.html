@@ -37,7 +37,7 @@
 
             <div class="form-group col">
               <select [formControlName]="'event_type'" id="event_type" class="form-control form-control-sm">
-                <option value="123">TESTING_A_VERY_LONG_VALUE</option>
+                <option *ngFor="let key of SAI_EVENTS_KEYS" [ngValue]="key" [label]="SAI_EVENTS[key]"></option>
               </select>
             </div>
           </div>
@@ -49,7 +49,7 @@
 
             <div class="form-group col">
               <select [formControlName]="'action_type'" id="action_type" class="form-control form-control-sm">
-                <option value="123">TESTING_A_VERY_LONG_VALUE</option>
+                <option *ngFor="let key of SAI_ACTIONS_KEYS" [ngValue]="key" [label]="SAI_ACTIONS[key]"></option>
               </select>
             </div>
           </div>
@@ -61,7 +61,7 @@
 
             <div class="form-group col">
               <select [formControlName]="'target_type'" id="target_type" class="form-control form-control-sm">
-                <option value="123">TESTING_A_VERY_LONG_VALUE</option>
+                <option *ngFor="let key of SAI_TARGETS_KEYS" [ngValue]="key" [label]="SAI_TARGETS[key]"></option>
               </select>
             </div>
           </div>
@@ -372,13 +372,13 @@
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="id" prop="id"></ngx-datatable-column>
-          <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="link" prop="link"></ngx-datatable-column>
           <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="event" prop="event_type"></ngx-datatable-column>
+          <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="action" prop="action_type"></ngx-datatable-column>
+          <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="target" prop="target_type"></ngx-datatable-column>
+          <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="link" prop="link"></ngx-datatable-column>
           <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="phase" prop="event_phase_mask"></ngx-datatable-column>
           <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="chance" prop="event_chance"></ngx-datatable-column>
           <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="flags" prop="event_flags"></ngx-datatable-column>
-          <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="target" prop="target_type"></ngx-datatable-column>
-          <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="action" prop="action_type"></ngx-datatable-column>
           <ngx-datatable-column [minWidth]="300" name="comment" prop="comment"></ngx-datatable-column>
         </ngx-datatable>
 
