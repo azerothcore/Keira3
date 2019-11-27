@@ -22,13 +22,7 @@
       <div class="row">
 
         <div class="col-sm-6 col-lg-3 sai-category">
-          <p class="sai-category-title">General</p>
-          <p class="sai-category-subtitle">
-            TODO <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
-          ></i>
-          </p>
+          <p class="sai-category-title" style="margin-bottom: 38px;">General</p>
 
           <div class="form-row">
             <div class="form-group col-3">
@@ -111,9 +105,9 @@
         <div class="col-sm-6 col-lg-3 sai-category">
           <p class="sai-category-title">Event</p>
           <p class="sai-category-subtitle">
-            TODO <i
+            {{ SAI_EVENTS[editorService.form.get('event_type').value] }} <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="SAI_EVENT_TOOLTIPS[editorService.form.get('event_type').value]"
           ></i>
           </p>
 
@@ -162,9 +156,9 @@
         <div class="col-sm-6 col-lg-3 sai-category">
           <p class="sai-category-title">Action</p>
           <p class="sai-category-subtitle">
-            TODO <i
+            {{ SAI_ACTIONS[editorService.form.get('action_type').value] }} <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="SAI_ACTION_TOOLTIPS[editorService.form.get('action_type').value]"
           ></i>
           </p>
 
@@ -233,9 +227,9 @@
         <div class="col-sm-6 col-lg-3 sai-category">
           <p class="sai-category-title">Target</p>
           <p class="sai-category-subtitle">
-            TODO <i
+            {{ SAI_TARGETS[editorService.form.get('target_type').value] }} <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'TODO'"
+            [tooltip]="SAI_TARGET_TOOLTIPS[editorService.form.get('target_type').value]"
           ></i>
           </p>
 
