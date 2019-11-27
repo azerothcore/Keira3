@@ -256,11 +256,11 @@ export enum SAI_ACTIONS {
   // GO_SET_GO_STATE                    = 118, //  NOT SUPPORTED YET
   // SET_CAN_FLY                        = 119, //  NOT SUPPORTED YET
   // REMOVE_AURAS_BY_TYPE               = 120, //  NOT SUPPORTED YET
-  SET_SIGHT_DIST                     = 121, // sightDistance
-  FLEE                               = 122, // fleeTime
-  ADD_THREAT                         = 123, // +threat,-threat
-  LOAD_EQUIPMENT                     = 124, // id
-  TRIGGER_RANDOM_TIMED_EVENT         = 125, // id min range,id max range
+  SET_SIGHT_DIST                     = 121,
+  FLEE                               = 122,
+  ADD_THREAT                         = 123,
+  LOAD_EQUIPMENT                     = 124,
+  TRIGGER_RANDOM_TIMED_EVENT         = 125,
   REMOVE_ALL_GAMEOBJECTS             = 126,
   // REMOVE_MOVEMENT                    = 127, // NOT SUPPORTED YET
   // PLAY_ANIMKIT                       = 128, // don't use on 3.3.5a
