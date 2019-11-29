@@ -105,7 +105,6 @@ describe('SingleRowComplexKeyEditorService', () => {
       const selectQuerySpy = spyOn<any>(service, 'selectQuery');
       const error = { code: 'mock error', errno: 1234 } as MysqlError;
       selectQuerySpy.and.returnValue(of({ results: [{ [MOCK_NAME]: 'mockName' }] }));
-      service['handlerService'].isNew = false;
 
       service['reloadEntity']();
 
