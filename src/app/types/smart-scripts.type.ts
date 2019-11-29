@@ -622,8 +622,6 @@ export const TARGET_PARAM4_TEXTS = [];
 // TODO: add missing values
 
 
-// TODO: add missing values
-
 export const EVENT_PARAM1_TOOLTIPS = [];
 // TODO: add missing values
 
