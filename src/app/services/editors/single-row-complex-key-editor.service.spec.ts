@@ -1,14 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { Router } from '@angular/router';
+import { of, throwError } from 'rxjs';
+import { MysqlError } from 'mysql';
 import { instance } from 'ts-mockito';
-import Spy = jasmine.Spy;
 
 import { QueryService } from '../query.service';
 import { MockedQueryService } from '../../test-utils/mocks';
 import { SingleRowComplexKeyEditorService } from './single-row-complex-key-editor.service';
-import { MockSingleRowComplexKeyEditorService, MockEntity, MockHandlerService } from '../../test-utils/mock-services';
-import { of, throwError } from 'rxjs';
-import { MysqlError } from 'mysql';
+import { MockSingleRowComplexKeyEditorService, MockEntity, MockHandlerService, MOCK_NAME } from '../../test-utils/mock-services';
+
 import { getPartial } from '../../utils/helpers';
 
 describe('SingleRowComplexKeyEditorService', () => {
@@ -25,6 +26,7 @@ describe('SingleRowComplexKeyEditorService', () => {
 
   beforeEach(() => {
     service = TestBed.get(MockSingleRowComplexKeyEditorService);
+    spyOn(TestBed.get(Router), 'navigate');
   });
 
   describe('check methods of class', () => {
@@ -102,7 +104,8 @@ describe('SingleRowComplexKeyEditorService', () => {
     it('reloadEntity()', () => {
       const selectQuerySpy = spyOn<any>(service, 'selectQuery');
       const error = { code: 'mock error', errno: 1234 } as MysqlError;
-      selectQuerySpy.and.returnValue(of({ mock: 'data' }));
+      selectQuerySpy.and.returnValue(of({ results: [{ [MOCK_NAME]: 'mockName' }] }));
+      service['handlerService'].isNew = false;
 
       service['reloadEntity']();
 
