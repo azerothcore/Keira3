@@ -575,3 +575,97 @@ SAI_TARGET_TOOLTIPS[SAI_TARGETS.THREAT_LIST] = 'Targets the entire threatlist of
 SAI_TARGET_TOOLTIPS[SAI_TARGETS.CLOSEST_ENEMY] = 'Takes the closest unfriendly unit (both creatures and players) within a given distance. If second parameter is set to 1, it will only target nearby friendly players';
 SAI_TARGET_TOOLTIPS[SAI_TARGETS.CLOSEST_FRIENDLY] = 'Takes the closest friendly unit (both creatures and players) within a given distance. If second parameter is set to 1, it will only target nearby friendly players';
 SAI_TARGET_TOOLTIPS[SAI_TARGETS.FARTHEST] = 'Farthest unit on the threat list';
+
+export const EVENT_PARAM1_TEXTS = [];
+// TODO: add missing values
+
+export const EVENT_PARAM2_TEXTS = [];
+// TODO: add missing values
+
+export const EVENT_PARAM3_TEXTS = [];
+// TODO: add missing values
+
+export const EVENT_PARAM4_TEXTS = [];
+// TODO: add missing values
+
+export const EVENT_PARAM5_TEXTS = [];
+// TODO: add missing values
+
+export const ACTION_PARAM1_TEXTS = [];
+// TODO: add missing values
+
+export const ACTION_PARAM2_TEXTS = [];
+// TODO: add missing values
+
+export const ACTION_PARAM3_TEXTS = [];
+// TODO: add missing values
+
+export const ACTION_PARAM4_TEXTS = [];
+// TODO: add missing values
+
+export const ACTION_PARAM5_TEXTS = [];
+// TODO: add missing values
+
+export const ACTION_PARAM6_TEXTS = [];
+// TODO: add missing values
+
+export const TARGET_PARAM1_TEXTS = [];
+// TODO: add missing values
+
+export const TARGET_PARAM2_TEXTS = [];
+// TODO: add missing values
+
+export const TARGET_PARAM3_TEXTS = [];
+// TODO: add missing values
+
+export const TARGET_PARAM4_TEXTS = [];
+// TODO: add missing values
+
+
+// TODO: add missing values
+
+export const EVENT_PARAM1_TOOLTIPS = [];
+// TODO: add missing values
+
+export const EVENT_PARAM2_TOOLTIPS = [];
+// TODO: add missing values
+
+export const EVENT_PARAM3_TOOLTIPS = [];
+// TODO: add missing values
+
+export const EVENT_PARAM4_TOOLTIPS = [];
+// TODO: add missing values
+
+export const EVENT_PARAM5_TOOLTIPS = [];
+// TODO: add missing values
+
+export const ACTION_PARAM1_TOOLTIPS = [];
+// TODO: add missing values
+
+export const ACTION_PARAM2_TOOLTIPS = [];
+// TODO: add missing values
+
+export const ACTION_PARAM3_TOOLTIPS = [];
+// TODO: add missing values
+
+export const ACTION_PARAM4_TOOLTIPS = [];
+// TODO: add missing values
+
+export const ACTION_PARAM5_TOOLTIPS = [];
+// TODO: add missing values
+
+export const ACTION_PARAM6_TOOLTIPS = [];
+// TODO: add missing values
+
+export const TARGET_PARAM1_TOOLTIPS = [];
+// TODO: add missing values
+
+export const TARGET_PARAM2_TOOLTIPS = [];
+// TODO: add missing values
+
+export const TARGET_PARAM3_TOOLTIPS = [];
+// TODO: add missing values
+
+export const TARGET_PARAM4_TOOLTIPS = [];
+// TODO: add missing values
+
