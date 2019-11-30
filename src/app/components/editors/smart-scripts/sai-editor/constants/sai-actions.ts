@@ -416,34 +416,160 @@ SAI_ACTION_PARAM1_TEXTS[SAI_ACTIONS.START_CLOSEST_WAYPOINT] = 'Waypoint 1';
 // TODO: add missing values
 
 export const SAI_ACTION_PARAM2_TEXTS = [];
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.TALK] = 'Duration';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.MORPH_TO_ENTRY_OR_MODEL] = 'Creature model';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.SOUND] = 'Only to self (0/1)';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.RANDOM_EMOTE] = 'Emote id 2';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.CAST] = 'Cast Flags';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.SUMMON_CREATURE] = 'Summon type';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.THREAT_SINGLE_PCT] = 'Threat decrease in pct';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.THREAT_ALL_PCT] = 'Threat decrease in pct';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.SET_UNIT_FLAG] = 'Type (0 / 1)';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.REMOVE_UNIT_FLAG] = 'Type (0 / 1)';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.INC_EVENT_PHASE] = 'Decrement';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.COMBAT_STOP] = 'Spell id';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.REMOVEAURASFROMSPELL] = 'Charges';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.FOLLOW] = 'Angle';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.RANDOM_PHASE] = 'Phasemask 2';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.RANDOM_PHASE_RANGE] = 'Phasemask 2';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.SET_INST_DATA] = 'Data';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.SET_INST_DATA64] = 'Data';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.UPDATE_TEMPLATE] = 'Team';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.CALL_FOR_HELP] = 'Say text (0/1)';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.SET_INVINCIBILITY_HP_LEVEL] = 'Pct value';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.MOUNT_TO_ENTRY_OR_MODEL] = 'Creature model';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.SET_DATA] = 'Data';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.SUMMON_GO] = 'Duration (ms)';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.WP_START] = 'Waypoint entry';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.WP_STOP] = 'Quest id';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.ADD_ITEM] = 'Count';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.REMOVE_ITEM] = 'Count';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.SET_COUNTER] = 'Decimal';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.CREATE_TIMED_EVENT] = 'InitialMin';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.EQUIP] = 'Slotmask';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.SET_RANGED_MOVEMENT] = 'Attack angle';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] = 'Timer type (0/1/2)';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.INVOKER_CAST] = 'Cast Flags';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.CROSS_CAST] = 'Cast Flags';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.CALL_RANDOM_TIMED_ACTIONLIST] = 'Script entry 2';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.CALL_RANDOM_RANGE_TIMED_ACTIONLIST] = 'Script entry 2';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1] = 'Type (0/2/3)';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.REMOVE_UNIT_FIELD_BYTES_1] = 'Type (0/2/3)';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.INTERRUPT_SPELL] = 'Spell id (0 any)';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.JUMP_TO_POS] = 'Speed Z';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.SEND_GOSSIP_MENU] = 'Npc text id';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.SUMMON_CREATURE_GROUP] = 'Attack invoker (0 / 1)';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.SET_POWER] = 'Power value';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.ADD_POWER] = 'Power value';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.REMOVE_POWER] = 'Power value';
+SAI_ACTION_PARAM2_TEXTS[SAI_ACTIONS.START_CLOSEST_WAYPOINT] = 'Waypoint 2';
 // TODO: add missing values
 
 export const SAI_ACTION_PARAM3_TEXTS = [];
+SAI_ACTION_PARAM3_TEXTS[SAI_ACTIONS.RANDOM_EMOTE] = 'Emote id 3';
+SAI_ACTION_PARAM3_TEXTS[SAI_ACTIONS.SUMMON_CREATURE] = 'Duration (milliseconds)';
+SAI_ACTION_PARAM3_TEXTS[SAI_ACTIONS.FOLLOW] = 'End creature entry';
+SAI_ACTION_PARAM3_TEXTS[SAI_ACTIONS.RANDOM_PHASE] = 'Phasemask 3';
+SAI_ACTION_PARAM3_TEXTS[SAI_ACTIONS.WP_START] = 'Repeat path (0/1)';
+SAI_ACTION_PARAM3_TEXTS[SAI_ACTIONS.WP_STOP] = 'Fail quest (0/1)';
+SAI_ACTION_PARAM3_TEXTS[SAI_ACTIONS.CREATE_TIMED_EVENT] = 'InitialMax';
+SAI_ACTION_PARAM3_TEXTS[SAI_ACTIONS.EQUIP] = 'Item entry 1';
+SAI_ACTION_PARAM3_TEXTS[SAI_ACTIONS.CROSS_CAST] = 'Target type of caster';
+SAI_ACTION_PARAM3_TEXTS[SAI_ACTIONS.CALL_RANDOM_TIMED_ACTIONLIST] = 'Script entry 3';
+SAI_ACTION_PARAM3_TEXTS[SAI_ACTIONS.INTERRUPT_SPELL] = 'Instant (0/1)';
+SAI_ACTION_PARAM3_TEXTS[SAI_ACTIONS.START_CLOSEST_WAYPOINT] = 'Waypoint 3';
 // TODO: add missing values
 
 export const SAI_ACTION_PARAM4_TEXTS = [];
+SAI_ACTION_PARAM4_TEXTS[SAI_ACTIONS.RANDOM_EMOTE]  = 'Emote id 4';
+SAI_ACTION_PARAM4_TEXTS[SAI_ACTIONS.SUMMON_CREATURE] = 'Attack invoker (0/1)';
+SAI_ACTION_PARAM4_TEXTS[SAI_ACTIONS.FOLLOW] = 'Credit creature entry';
+SAI_ACTION_PARAM4_TEXTS[SAI_ACTIONS.RANDOM_PHASE] = 'Phasemask 4';
+SAI_ACTION_PARAM4_TEXTS[SAI_ACTIONS.WP_START] = 'Quest id';
+SAI_ACTION_PARAM4_TEXTS[SAI_ACTIONS.CREATE_TIMED_EVENT] = 'RepeatMin';
+SAI_ACTION_PARAM4_TEXTS[SAI_ACTIONS.EQUIP] = 'Item entry 2';
+SAI_ACTION_PARAM4_TEXTS[SAI_ACTIONS.CROSS_CAST] = 'Target parameter 1 of caster';
+SAI_ACTION_PARAM4_TEXTS[SAI_ACTIONS.CALL_RANDOM_TIMED_ACTIONLIST] = 'Script entry 4';
+SAI_ACTION_PARAM4_TEXTS[SAI_ACTIONS.START_CLOSEST_WAYPOINT] = 'Waypoint 4';
 // TODO: add missing values
 
 export const SAI_ACTION_PARAM5_TEXTS = [];
+SAI_ACTION_PARAM5_TEXTS[SAI_ACTIONS.RANDOM_EMOTE] = 'Emote id 5';
+SAI_ACTION_PARAM5_TEXTS[SAI_ACTIONS.FOLLOW] = 'Credit type (0 / 1)';
+SAI_ACTION_PARAM5_TEXTS[SAI_ACTIONS.RANDOM_PHASE] = 'Phasemask 5';
+SAI_ACTION_PARAM5_TEXTS[SAI_ACTIONS.WP_START] = 'Despawn time after path';
+SAI_ACTION_PARAM5_TEXTS[SAI_ACTIONS.CREATE_TIMED_EVENT] = 'RepeatMax';
+SAI_ACTION_PARAM5_TEXTS[SAI_ACTIONS.EQUIP] = 'Item entry 3';
+SAI_ACTION_PARAM5_TEXTS[SAI_ACTIONS.CROSS_CAST] = 'Target parameter 2 of caster';
+SAI_ACTION_PARAM5_TEXTS[SAI_ACTIONS.CALL_RANDOM_TIMED_ACTIONLIST] = 'Script entry 5';
+SAI_ACTION_PARAM5_TEXTS[SAI_ACTIONS.START_CLOSEST_WAYPOINT] = 'Waypoint 5';
 // TODO: add missing values
 
 export const SAI_ACTION_PARAM6_TEXTS = [];
+SAI_ACTION_PARAM6_TEXTS[SAI_ACTIONS.RANDOM_EMOTE] = 'Emote id 6';
+SAI_ACTION_PARAM6_TEXTS[SAI_ACTIONS.RANDOM_PHASE] = 'Phasemask 6';
+SAI_ACTION_PARAM6_TEXTS[SAI_ACTIONS.WP_START] = 'Reactstate';
+SAI_ACTION_PARAM6_TEXTS[SAI_ACTIONS.CREATE_TIMED_EVENT] = 'Chance';
+SAI_ACTION_PARAM6_TEXTS[SAI_ACTIONS.CROSS_CAST] = 'Target parameter 3 of caster';
+SAI_ACTION_PARAM6_TEXTS[SAI_ACTIONS.CALL_RANDOM_TIMED_ACTIONLIST] = 'Script entry 6';
+SAI_ACTION_PARAM6_TEXTS[SAI_ACTIONS.START_CLOSEST_WAYPOINT] = 'Waypoint 6';
 // TODO: add missing values
 
 export const SAI_ACTION_PARAM1_TOOLTIPS = [];
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.TALK]   = 'creature_text.groupid';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.AUTO_ATTACK]  = 'If set to 0 it means the creature will stop attacking its current target. Otherwise it starts / continues to attack its target.';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.ALLOW_COMBAT_MOVEMENT]  = 'If set to 0 it means the creature is no longer able to move AT ALL during combat. If set to 1 it means it\'s allowed to normally walk during combat.';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.FLEE_FOR_ASSIST]  = 'Determines whether or not the creature should say something along the lines of "<name> starts fleeing ..." when it flees. If 0, it won\'t say anything (unless set manually). If above 0 it will say the automatic text.';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.REMOVEAURASFROMSPELL]  = 'Amount of charges of said aura to be removed. If 0, the whole aura is removed.';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.UPDATE_TEMPLATE]  = 'The creature entry we want to become (creature_template.entry)';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.CALL_FOR_HELP]  = 'Radius to call for help within';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.WP_START]  = 'If set to 0, the creature will follow the path walking at a normal speed. If set to anything above 0 it will be running at a higher speed.';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.WP_STOP]  = 'Time in milliseconds after which the creature despawns when the path was stopped.';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.MOVE_TO_POS]  = 'If set to a value, SMART_EVENT_MOVEMENTINFORM will be called with this number when the unit finished moving to this position.';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.EQUIP]  = 'Entry of creature_equip_template. If left at 0, either parameter 3, 4 or 5 (or all, or just two) must be filled in with item entries to equip.';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SUMMON_CREATURE_GROUP] = 'Group id column in the creature_summon_groups table (world database).';
 // TODO: add missing values
 
 export const SAI_ACTION_PARAM2_TOOLTIPS = [];
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.TALK] = 'Duration to wait before SMART_EVENT_TEXT_OVER event is triggered';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SOUND] = 'If 0, everybody within the visibility range will hear the sound';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SET_UNIT_FLAG] = 'Determines which unit flag to target; if 0, it targets the default unit flags which is creature_template.unit_flags. If set to 1 or higher, it targets creature_template.unit_flags2 (notice the \'2\') which has different values.';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.REMOVE_UNIT_FLAG] = 'Determines which unit flag to target; if 0, it targets the default unit flags which is creature_template.unit_flags. If set to 1 or higher, it targets creature_template.unit_flags2 (notice the \'2\') which has different values.';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.UPDATE_TEMPLATE] = 'Identifier of which faction the creature should become. If set to 0, it will set the creature\'s faction to creature_template.faction_a. If anything other than 1 it will be set to creature_template.faction_h.';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.CALL_FOR_HELP] = 'Indicator whether or not we should automatically make the creature emote "NAME calls for help!" (which is usually blizzlike).';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.WP_START] = 'Entry of the `waypoints` (world database) table to follow.';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.WP_STOP] = 'Quest entry to count as \'failed\' (based on third parameter). Does not have to be set if third parameter is set to 0.';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.EQUIP] = 'Slotmask we show. Default is 0 and means all items are shown. If you only want to show one specific item (or two instead of all three), this field should be used as a bitmask starting at 1. Possible bits are 1, 2 and 4.';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] = 'The timer update type. If set to 0, the script will only occur out of combat. If set to 1, it will only occur during combat and if set to 2 it will always occur.';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1] = 'If set to 0, it targets the stand states (stand/sit/sleep/etc.). If set to 1, it targets something talent-related for pets (don\'t use). If set to 2, it targets the stand flags (creep/untrackable/etc.) and if set to 3 it targets the stand misc. flags (hover/always-stand/etc.).';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.REMOVE_UNIT_FIELD_BYTES_1] = 'If set to 0, it targets the stand states (stand/sit/sleep/etc.). If set to 1, it targets something talent-related for pets (don\'t use). If set to 2, it targets the stand flags (creep/untrackable/etc.) and if set to 3 it targets the stand misc. flags (hover/always-stand/etc.).';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.INTERRUPT_SPELL] = 'If left at 0, the core will interrupt the currently being cast spell (based on the with-delay and instant parameters, of course)';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SEND_GOSSIP_MENU] = 'Uses the `id` value from the `npc_text` table in the world database';
 // TODO: add missing values
 
 export const SAI_ACTION_PARAM3_TOOLTIPS = [];
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.SUMMON_CREATURE] = 'Duration the creature will be summoned (in milliseconds).';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.FOLLOW] = 'Default is 0. If it\'s not 0 it means the follow will finish ONLY once the creature is within interaction distance (5 yards) of the given entry.';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.WP_START] = 'Repeat the path when the it\'s finished.';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.WP_STOP] = 'If set to 1, we will mark the quest in parameter 2 to failed for our player targets.';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.EQUIP] = 'Item entry one (main hand slot) (only has use if the first parameter is 0)';
 // TODO: add missing values
 
 export const SAI_ACTION_PARAM4_TOOLTIPS = [];
+SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.SUMMON_CREATURE] = 'Identicator whether or not the summoned creature should attack the action invoker (SMART_TARGET_ACTION_INVOKER) when it\'s summoned. 0 means it won\'t, 1 means it will attack.';
+SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.FOLLOW] = 'The creature id that will be given as a quest credit when the follow has finished for whatever reason.';
+SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.WP_START] = 'Quest entry to give credit for once the path has finished. Will use the target type and take all player entities from this list.';
+SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.CREATE_TIMED_EVENT] = 'Only set this if the event repeats.';
+SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.EQUIP] = 'Item entry two (off hand slot) (only has use if the first parameter is 0)';
 // TODO: add missing values
 
 export const SAI_ACTION_PARAM5_TOOLTIPS = [];
+SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.FOLLOW] = 'Requires the 4th parameter to be set and valid; determines whether the entry in parameter 4 is a monster kill or event happening. If you\'re not sure what they mean, read the quest_template wiki.';
+SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.WP_START] = 'Time in milliseconds to wait after the path ended before we despawn.';
+SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.CREATE_TIMED_EVENT] = 'Only set this if the event repeats.';
+SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.EQUIP] = 'Item entry three (gun/bow/etc. slot) (only has use if the first parameter is 0)';
 // TODO: add missing values
 
 export const SAI_ACTION_PARAM6_TOOLTIPS = [];
+SAI_ACTION_PARAM6_TOOLTIPS[SAI_ACTIONS.WP_START] = 'Reactstate that is set when the waypoint starts.';
 // TODO: add missing values
