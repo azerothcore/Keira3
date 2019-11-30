@@ -105,15 +105,20 @@
         <div class="col-sm-6 col-lg-3 sai-category">
           <p class="sai-category-title">Event</p>
           <p class="sai-category-subtitle">
-            {{ SAI_EVENTS[editorService.form.get('event_type').value] }} <i
+            {{ SAI_EVENTS[selectedEvent] }} <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="SAI_EVENT_TOOLTIPS[editorService.form.get('event_type').value]"
+            [tooltip]="SAI_EVENT_TOOLTIPS[selectedEvent]"
           ></i>
           </p>
 
           <div class="form-row">
             <div class="form-group col-6">
-              <label class="control-label" for="event_param1">param1</label>
+              <label class="control-label">
+                param1 <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="EVENT_PARAM1_TOOLTIPS[selectedEvent]"
+              ></i>
+              </label>
             </div>
 
             <div class="form-group col-6">
@@ -123,7 +128,12 @@
 
           <div class="form-row">
             <div class="form-group col-6">
-              <label class="control-label" for="event_param2">param2</label>
+              <label class="control-label">
+                param2 <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="EVENT_PARAM2_TOOLTIPS[selectedEvent]"
+              ></i>
+              </label>
             </div>
 
             <div class="form-group col-6">
@@ -133,7 +143,12 @@
 
           <div class="form-row">
             <div class="form-group col-6">
-              <label class="control-label" for="event_param3">param3</label>
+              <label class="control-label">
+                param3 <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="EVENT_PARAM3_TOOLTIPS[selectedEvent]"
+              ></i>
+              </label>
             </div>
 
             <div class="form-group col-6">
@@ -143,7 +158,12 @@
 
           <div class="form-row">
             <div class="form-group col-6">
-              <label class="control-label" for="event_param4">param4</label>
+              <label class="control-label">
+                param4 <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="EVENT_PARAM4_TOOLTIPS[selectedEvent]"
+              ></i>
+              </label>
             </div>
 
             <div class="form-group col-6">
@@ -156,15 +176,20 @@
         <div class="col-sm-6 col-lg-3 sai-category">
           <p class="sai-category-title">Action</p>
           <p class="sai-category-subtitle">
-            {{ SAI_ACTIONS[editorService.form.get('action_type').value] }} <i
+            {{ SAI_ACTIONS[selectedAction] }} <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="SAI_ACTION_TOOLTIPS[editorService.form.get('action_type').value]"
+            [tooltip]="SAI_ACTION_TOOLTIPS[selectedAction]"
           ></i>
           </p>
 
           <div class="form-row">
             <div class="form-group col-6">
-              <label class="control-label" for="action_param1">param1</label>
+              <label class="control-label">
+                param1 <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="ACTION_PARAM1_TOOLTIPS[selectedAction]"
+              ></i>
+              </label>
             </div>
 
             <div class="form-group col-6">
@@ -174,7 +199,12 @@
 
           <div class="form-row">
             <div class="form-group col-6">
-              <label class="control-label" for="action_param2">param2</label>
+              <label class="control-label">
+                param2 <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="ACTION_PARAM2_TOOLTIPS[selectedAction]"
+              ></i>
+              </label>
             </div>
 
             <div class="form-group col-6">
@@ -184,7 +214,12 @@
 
           <div class="form-row">
             <div class="form-group col-6">
-              <label class="control-label" for="action_param3">param3</label>
+              <label class="control-label">
+                param3 <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="ACTION_PARAM3_TOOLTIPS[selectedAction]"
+              ></i>
+              </label>
             </div>
 
             <div class="form-group col-6">
@@ -194,7 +229,12 @@
 
           <div class="form-row">
             <div class="form-group col-6">
-              <label class="control-label" for="action_param4">param4</label>
+              <label class="control-label">
+                param4 <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="ACTION_PARAM4_TOOLTIPS[selectedAction]"
+              ></i>
+              </label>
             </div>
 
             <div class="form-group col-6">
@@ -204,7 +244,12 @@
 
           <div class="form-row">
             <div class="form-group col-6">
-              <label class="control-label" for="action_param5">param5</label>
+              <label class="control-label">
+                param5 <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="ACTION_PARAM5_TOOLTIPS[selectedAction]"
+              ></i>
+              </label>
             </div>
 
             <div class="form-group col-6">
@@ -214,7 +259,12 @@
 
           <div class="form-row">
             <div class="form-group col-6">
-              <label class="control-label" for="action_param6">param6</label>
+              <label class="control-label">
+                param6 <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="ACTION_PARAM6_TOOLTIPS[selectedAction]"
+              ></i>
+              </label>
             </div>
 
             <div class="form-group col-6">
@@ -227,16 +277,21 @@
         <div class="col-sm-6 col-lg-3 sai-category">
           <p class="sai-category-title">Target</p>
           <p class="sai-category-subtitle">
-            {{ SAI_TARGETS[editorService.form.get('target_type').value] }} <i
+            {{ SAI_TARGETS[selectedTarget] }} <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="SAI_TARGET_TOOLTIPS[editorService.form.get('target_type').value]"
+            [tooltip]="SAI_TARGET_TOOLTIPS[selectedTarget]"
           ></i>
           </p>
 
 
           <div class="form-row">
             <div class="form-group col-6">
-              <label class="control-label" for="target_param1">param1</label>
+              <label class="control-label">
+                param1 <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="TARGET_PARAM1_TOOLTIPS[selectedTarget]"
+              ></i>
+              </label>
             </div>
 
             <div class="form-group col-6">
@@ -246,7 +301,12 @@
 
           <div class="form-row">
             <div class="form-group col-6">
-              <label class="control-label" for="target_param2">param2</label>
+              <label class="control-label">
+                param2 <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="TARGET_PARAM2_TOOLTIPS[selectedTarget]"
+              ></i>
+              </label>
             </div>
 
             <div class="form-group col-6">
@@ -256,7 +316,12 @@
 
           <div class="form-row">
             <div class="form-group col-6">
-              <label class="control-label" for="target_param3">param3</label>
+              <label class="control-label">
+                param3 <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="TARGET_PARAM3_TOOLTIPS[selectedTarget]"
+              ></i>
+              </label>
             </div>
 
             <div class="form-group col-6">
@@ -266,7 +331,12 @@
 
           <div class="form-row">
             <div class="form-group col-6">
-              <label class="control-label" for="target_param4">param4</label>
+              <label class="control-label">
+                param4 <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="TARGET_PARAM4_TOOLTIPS[selectedTarget]"
+              ></i>
+              </label>
             </div>
 
             <div class="form-group col-6">
@@ -276,7 +346,7 @@
 
           <div class="form-row">
             <div class="form-group col-6">
-              <label class="control-label" for="target_x">TargetX</label>
+              <label class="control-label">TargetX</label>
             </div>
 
             <div class="form-group col-6">
@@ -286,7 +356,7 @@
 
           <div class="form-row">
             <div class="form-group col-6">
-              <label class="control-label" for="target_y">TargetY</label>
+              <label class="control-label">TargetY</label>
             </div>
 
             <div class="form-group col-6">
@@ -296,7 +366,7 @@
 
           <div class="form-row">
             <div class="form-group col-6">
-              <label class="control-label" for="target_z">TargetZ</label>
+              <label class="control-label">TargetZ</label>
             </div>
 
             <div class="form-group col-6">
@@ -306,7 +376,7 @@
 
           <div class="form-row">
             <div class="form-group col-6">
-              <label class="control-label" for="target_o">TargetO</label>
+              <label class="control-label">TargetO</label>
             </div>
 
             <div class="form-group col-6">
