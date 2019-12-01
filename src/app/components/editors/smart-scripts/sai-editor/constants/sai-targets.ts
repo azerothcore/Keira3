@@ -65,16 +65,16 @@ SAI_TARGET_TOOLTIPS[SAI_TARGETS.CLOSEST_ENEMY] = 'Takes the closest unfriendly u
 SAI_TARGET_TOOLTIPS[SAI_TARGETS.CLOSEST_FRIENDLY] = 'Takes the closest friendly unit (both creatures and players) within a given distance. If second parameter is set to 1, it will only target nearby friendly players';
 SAI_TARGET_TOOLTIPS[SAI_TARGETS.FARTHEST] = 'Farthest unit on the threat list';
 
-export const SAI_TARGET_PARAM1_TEXTS = [];
+export const SAI_TARGET_PARAM1_NAMES = [];
 // TODO: add missing values
 
-export const SAI_TARGET_PARAM2_TEXTS = [];
+export const SAI_TARGET_PARAM2_NAMES = [];
 // TODO: add missing values
 
-export const SAI_TARGET_PARAM3_TEXTS = [];
+export const SAI_TARGET_PARAM3_NAMES = [];
 // TODO: add missing values
 
-export const SAI_TARGET_PARAM4_TEXTS = [];
+export const SAI_TARGET_PARAM4_NAMES = [];
 // TODO: add missing values
 
 export const SAI_TARGET_PARAM1_TOOLTIPS = [];
