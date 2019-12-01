@@ -95,5 +95,9 @@ export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> {
   ) {
     super(editorService, handlerService);
   }
+
+  getName(defaultParamName: string, value: string | undefined) {
+    return value ? value : defaultParamName;
+  }
 }
 

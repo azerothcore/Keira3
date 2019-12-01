@@ -80,9 +80,20 @@ export enum SAI_EVENTS {
   DISTANCE_GAMEOBJECT = 76,
   COUNTER_SET = 77,
 }
-
 export const SAI_EVENTS_KEYS = getEnumKeys(SAI_EVENTS);
 export const SAI_EVENT_TOOLTIPS = [];
+export const SAI_EVENT_PARAM1_NAMES = [];
+export const SAI_EVENT_PARAM2_NAMES = [];
+export const SAI_EVENT_PARAM3_NAMES = [];
+export const SAI_EVENT_PARAM4_NAMES = [];
+export const SAI_EVENT_PARAM1_TOOLTIPS = [];
+export const SAI_EVENT_PARAM2_TOOLTIPS = [];
+export const SAI_EVENT_PARAM3_TOOLTIPS = [];
+export const SAI_EVENT_PARAM4_TOOLTIPS = [];
+
+/*** Keira2 imports ***/
+// TODO: check the values below and move them above
+
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.UPDATE_IC] = 'While in combat. Parameters represent a timer: 1000,2000,4000,4000 will call this event_type randomly between 1 and 2 seconds and repeat this every 4 seconds';
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.UPDATE_OOC] = 'While out of combat. Parameters represent a timer: 1000,2000,4000,4000 will call this event_type randomly between 1 and 2 seconds and repeat this every 4 seconds';
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.HEALTH_PCT] = 'At health percentage. First and second parameters function as min-max health percentage values, so if they are  50,80, the event will be called when the source is between 50% and 80% health. The last two parameters are repeat timers in milliseconds.';
@@ -160,9 +171,7 @@ SAI_EVENT_TOOLTIPS[SAI_EVENTS.FRIENDLY_HEALTH_PCT] = 'When a friendly unit withi
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] = 'Event triggered when a creature with a specific guid or entry coems within a given distance (in yards) of the source.';
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Event triggered when a gameobject with a specific guid or entry coems within a given distance (in yards) of the source.';
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.COUNTER_SET] = 'If the value of specified counterID (param1) is equal to a specified value';
-// TODO: add missing values
 
-export const SAI_EVENT_PARAM1_NAMES = [];
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.UPDATE_IC] = 'InitialMin';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.UPDATE_OOC] = 'InitialMin';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.HEALTH_PCT] = 'Min health pct';
@@ -212,9 +221,7 @@ SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.ACTION_DONE] = 'Action id';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.FRIENDLY_HEALTH_PCT] = 'Health pct min';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.DISTANCE_CREATURE] = 'Guid';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Guid';
-// TODO: add missing values
 
-export const SAI_EVENT_PARAM2_NAMES = [];
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.UPDATE_IC] = 'InitialMax';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.UPDATE_OOC] = 'InitialMax';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.HEALTH_PCT] = 'Max health pct';
@@ -255,9 +262,7 @@ SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.IS_BEHIND_TARGET] = 'CooldownMax';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.FRIENDLY_HEALTH_PCT] = 'Health pct max';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.DISTANCE_CREATURE] = 'Entry';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Entry';
-// TODO: add missing values
 
-export const SAI_EVENT_PARAM3_NAMES = [];
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.UPDATE_IC] = 'RepeatMin';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.UPDATE_OOC] = 'RepeatMin';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.HEALTH_PCT] = 'RepeatMin';
@@ -288,9 +293,7 @@ SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.UPDATE] = 'RepeatMin';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.FRIENDLY_HEALTH_PCT] = 'RepeatMin';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.DISTANCE_CREATURE] = 'Distance';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Distance';
-// TODO: add missing values
 
-export const SAI_EVENT_PARAM4_NAMES = [];
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.UPDATE_IC] = 'RepeatMax';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.UPDATE_OOC] = 'RepeatMax';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.HEALTH_PCT] = 'RepeatMax';
@@ -315,9 +318,7 @@ SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.UPDATE] = 'RepeatMax';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.FRIENDLY_HEALTH_PCT] = 'RepeatMax';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.DISTANCE_CREATURE] = 'RepeatTimer';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'RepeatTimer';
-// TODO: add missing values
 
-export const SAI_EVENT_PARAM1_TOOLTIPS = [];
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.UPDATE_IC] = 'Timer min';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.UPDATE_OOC] = 'Timer min';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.HEALTH_PCT] = 'Timer min';
@@ -346,9 +347,7 @@ SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.GOSSIP_SELECT] = 'This is the gossip_menu.e
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.GO_STATE_CHANGED] = 'The new state of the gameobject after this event';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] = 'Guid of the creature we want to check for. Can be left on 0 if the entry is given.';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Guid of the gameobject we want to check for. Can be left on 0 if the entry is given.';
-// TODO: add missing values
 
-export const SAI_EVENT_PARAM2_TOOLTIPS = [];
 SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.UPDATE_IC] = 'Timer max';
 SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.UPDATE_OOC] = 'Timer max';
 SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.HEALTH_PCT] = 'Timer max';
@@ -361,9 +360,7 @@ SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.RECEIVE_HEAL] = 'Maximum allowed value of t
 SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.GOSSIP_SELECT] = 'This is the gossip_menu_option.id identifier';
 SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] = 'Entry of the creature we want to check for. Can be left on 0 if the guid is given.';
 SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Entry of the gameobject we want to check for. Can be left on 0 if the guid is given.';
-// TODO: add missing values
 
-export const SAI_EVENT_PARAM3_TOOLTIPS = [];
 SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.UPDATE_IC] = 'Repeat timer min';
 SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.UPDATE_OOC] = 'Repeat timer min';
 SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.HEALTH_PCT] = 'Repeat timer min';
@@ -373,9 +370,7 @@ SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.RANGE] = 'Timer min';
 SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.VICTIM_CASTING] = 'Spell id the target must be casting. If left at 0, it detects ANY spell.';
 SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] = 'Min distance to the creature that\'ll make the event trigger';
 SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Min distance to the gameobject that\'ll make the event trigger';
-// TODO: add missing values
 
-export const SAI_EVENT_PARAM4_TOOLTIPS = [];
 SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.UPDATE_IC] = 'Repeat timer max';
 SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.UPDATE_OOC] = 'Repeat timer max';
 SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.HEALTH_PCT] = 'Repeat timer max';
@@ -384,5 +379,5 @@ SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.KILL] = 'Entry of the creature that has to 
 SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.RANGE] = 'Timer max';
 SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] = 'Timer to check for distance. It\'s not a good idea to leave this at 0, having a handful of events doing that can slow down your core big time.';
 SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Timer to check for distance. It\'s not a good idea to leave this at 0, having a handful of events doing that can slow down your core big time.';
-// TODO: add missing values
+
 
