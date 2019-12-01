@@ -81,20 +81,6 @@ export enum SAI_EVENTS {
   COUNTER_SET = 77,
 }
 
-// 12
-// 14
-// 16
-// 18
-// 23
-// 24
-// 26
-// 31
-// 32
-// 33
-// 38
-// 53
-// 60
-
 export const SAI_EVENTS_KEYS = getEnumKeys(SAI_EVENTS);
 export const SAI_EVENT_TOOLTIPS = [];
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.UPDATE_IC] = 'While in combat. Parameters represent a timer: 1000,2000,4000,4000 will call this event_type randomly between 1 and 2 seconds and repeat this every 4 seconds';
@@ -332,14 +318,71 @@ SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'RepeatTimer';
 // TODO: add missing values
 
 export const SAI_EVENT_PARAM1_TOOLTIPS = [];
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.UPDATE_IC] = 'Timer min';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.UPDATE_OOC] = 'Timer min';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.HEALTH_PCT] = 'Timer min';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.MANA_PCT] = 'Timer min';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.SPELLHIT] = 'Spell id that will limit this event to only be triggered if the spell that hit us has this id. If left at 0, it works for EVERY spell.';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.RANGE] = 'Minimum distance to target for the event to be triggered';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.OOC_LOS] = 'If 0, we allow only non-hostile units to trigger this event for us. If set to 1, we only allow hostile units to triger this event.';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.RESPAWN] = 'The condition type for this event to trigger. This is used to determine whether we should check if the mapid (parameter 2) or the zoneid (parameter 3) should be checked for correctness.';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.FRIENDLY_HEALTH] = 'Health the friendly unit must be at. Warning: this is NOT health percentage!';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.FRIENDLY_MISSING_BUFF] = 'Spell id for the event to trigger. If the spellid is negative it means the event is reversed and triggered only when the aura is actually active on the friendly unit.';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.SUMMONED_UNIT] = 'Creature entry that must be summoned in order for this event to trigger. If left at 0 it will be triggered by any creature entry.';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.ACCEPTED_QUEST] = 'Quest id to trigger this event; if the parameter is 0 it means it will be triggered by ANY quest.';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.REWARD_QUEST] = 'Quest id to trigger this event; if the parameter is 0 it means it will be triggered by ANY quest.';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.HAS_AURA] = 'Spell id for the event to trigger. If the spellid is negative it means the event is reversed and triggered only when the aura is not present on the creature.';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.TARGET_BUFFED] = 'Spell id for the event to trigger. If the spellid is negative it means the event is reversed and triggered only when the aura is not present on the creature.';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.IC_LOS] = 'If 0, we allow only non-hostile units to trigger this event for us. If set to 1, we only allow hostile units to triger this event.';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.DAMAGED] = 'Minimum amount of damage required to trigger this event';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.DAMAGED_TARGET] = 'Minimum amount of damage required to trigger this event';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.SUMMON_DESPAWNED] = 'Creature entry to act as a condition. If left at 0, this event is triggered for any summon that despawn. If an entry is given, it is only triggered when that specific entry despawns.';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.DATA_SET] = 'First parameter of SMART_ACTION_SET_DATA';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.AREATRIGGER_ONTRIGGER] = 'Entry of the areatrigger to make this event happen. If left at 0 it will trigger for any areatrigger.';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.TEXT_OVER] = 'The creature_text.groupid value to trigger this event for';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.RECEIVE_HEAL] = 'Minimum required value the heal effect must be in order to trigger this event';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.TIMED_EVENT_TRIGGERED] = 'First parameter of SMART_ACTION_CREATE_TIMED_EVENT';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.GOSSIP_SELECT] = 'This is the gossip_menu.entry identifier';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.GO_STATE_CHANGED] = 'The new state of the gameobject after this event';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] = 'Guid of the creature we want to check for. Can be left on 0 if the entry is given.';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Guid of the gameobject we want to check for. Can be left on 0 if the entry is given.';
 // TODO: add missing values
 
 export const SAI_EVENT_PARAM2_TOOLTIPS = [];
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.UPDATE_IC] = 'Timer max';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.UPDATE_OOC] = 'Timer max';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.HEALTH_PCT] = 'Timer max';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.MANA_PCT] = 'Timer max';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.RANGE] = 'Maximum distance to target for the event to be triggered';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.DAMAGED] = 'Maximum allowed damage to make this event be able to trigger';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.DAMAGED_TARGET] = 'Maximum allowed damage to make this event be able to trigger';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.DATA_SET] = 'Second parameter of SMART_ACTION_SET_DATA';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.RECEIVE_HEAL] = 'Maximum allowed value of the heal effect to allow this event to trigger';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.GOSSIP_SELECT] = 'This is the gossip_menu_option.id identifier';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] = 'Entry of the creature we want to check for. Can be left on 0 if the guid is given.';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Entry of the gameobject we want to check for. Can be left on 0 if the guid is given.';
 // TODO: add missing values
 
 export const SAI_EVENT_PARAM3_TOOLTIPS = [];
+SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.UPDATE_IC] = 'Repeat timer min';
+SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.UPDATE_OOC] = 'Repeat timer min';
+SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.HEALTH_PCT] = 'Repeat timer min';
+SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.MANA_PCT] = 'Repeat timer min';
+SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.KILL] = 'Indicator if killed unit must be player only; if 0, the 4th parameter must be set to the creature id.';
+SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.RANGE] = 'Timer min';
+SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.VICTIM_CASTING] = 'Spell id the target must be casting. If left at 0, it detects ANY spell.';
+SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] = 'Min distance to the creature that\'ll make the event trigger';
+SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Min distance to the gameobject that\'ll make the event trigger';
 // TODO: add missing values
 
 export const SAI_EVENT_PARAM4_TOOLTIPS = [];
+SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.UPDATE_IC] = 'Repeat timer max';
+SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.UPDATE_OOC] = 'Repeat timer max';
+SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.HEALTH_PCT] = 'Repeat timer max';
+SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.MANA_PCT] = 'Repeat timer max';
+SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.KILL] = 'Entry of the creature that has to be killed for this event to trigger. Only has effect if third parameter is set to 0.';
+SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.RANGE] = 'Timer max';
+SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] = 'Timer to check for distance. It\'s not a good idea to leave this at 0, having a handful of events doing that can slow down your core big time.';
+SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Timer to check for distance. It\'s not a good idea to leave this at 0, having a handful of events doing that can slow down your core big time.';
 // TODO: add missing values
 
