@@ -30,7 +30,11 @@ describe('SaiEditorComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('getName() should correctly work', () => {
+    const value = 'testValue';
+    const def = 'defaultValue';
+
+    expect(component.getName(def, value)).toEqual(value);
+    expect(component.getName(def, undefined)).toEqual(def);
   });
 });
