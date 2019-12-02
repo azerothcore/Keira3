@@ -34,8 +34,19 @@ export enum SAI_TARGETS {
 }
 
 export const SAI_TARGETS_KEYS = getEnumKeys(SAI_TARGETS);
-
 export const SAI_TARGET_TOOLTIPS = [];
+export const SAI_TARGET_PARAM1_NAMES = [];
+export const SAI_TARGET_PARAM2_NAMES = [];
+export const SAI_TARGET_PARAM3_NAMES = [];
+export const SAI_TARGET_PARAM4_NAMES = [];
+export const SAI_TARGET_PARAM1_TOOLTIPS = [];
+export const SAI_TARGET_PARAM2_TOOLTIPS = [];
+export const SAI_TARGET_PARAM3_TOOLTIPS = [];
+export const SAI_TARGET_PARAM4_TOOLTIPS = [];
+
+/*** Keira2 imports ***/
+// TODO: check the values below and move them above
+
 SAI_TARGET_TOOLTIPS[SAI_TARGETS.NONE] = 'No specified target. Only use this if you\'re sure the action type does not use targets at all (and event then it could not be safe. It\'s usually smart to default to SMART_TARGET_SELF (1)).';
 SAI_TARGET_TOOLTIPS[SAI_TARGETS.SELF] = 'Targets the creature/gameobject/areatrigger itself';
 SAI_TARGET_TOOLTIPS[SAI_TARGETS.VICTIM] = 'Targets the current victim of the creature';
@@ -65,7 +76,6 @@ SAI_TARGET_TOOLTIPS[SAI_TARGETS.CLOSEST_ENEMY] = 'Takes the closest unfriendly u
 SAI_TARGET_TOOLTIPS[SAI_TARGETS.CLOSEST_FRIENDLY] = 'Takes the closest friendly unit (both creatures and players) within a given distance. If second parameter is set to 1, it will only target nearby friendly players';
 SAI_TARGET_TOOLTIPS[SAI_TARGETS.FARTHEST] = 'Farthest unit on the threat list';
 
-export const SAI_TARGET_PARAM1_NAMES = [];
 SAI_TARGET_PARAM1_NAMES[SAI_TARGETS.CREATURE_RANGE]  = 'Creature entry (0 any)';
 SAI_TARGET_PARAM1_NAMES[SAI_TARGETS.CREATURE_GUID] = 'Creature guid';
 SAI_TARGET_PARAM1_NAMES[SAI_TARGETS.CREATURE_DISTANCE] = 'Creature entry (0 any)';
@@ -79,9 +89,7 @@ SAI_TARGET_PARAM1_NAMES[SAI_TARGETS.CLOSEST_GAMEOBJECT] = 'Gameobject entry (0 a
 SAI_TARGET_PARAM1_NAMES[SAI_TARGETS.CLOSEST_PLAYER] = 'Maximum distance';
 SAI_TARGET_PARAM1_NAMES[SAI_TARGETS.CLOSEST_ENEMY] = 'Maximum distance';
 SAI_TARGET_PARAM1_NAMES[SAI_TARGETS.CLOSEST_FRIENDLY] = 'Maximum distance';
-// TODO: add missing values
 
-export const SAI_TARGET_PARAM2_NAMES = [];
 SAI_TARGET_PARAM2_NAMES[SAI_TARGETS.CREATURE_RANGE]  = 'Minimum distance';
 SAI_TARGET_PARAM2_NAMES[SAI_TARGETS.CREATURE_GUID] = 'Creature entry';
 SAI_TARGET_PARAM2_NAMES[SAI_TARGETS.CREATURE_DISTANCE] = 'Maximum distance';
@@ -93,32 +101,16 @@ SAI_TARGET_PARAM2_NAMES[SAI_TARGETS.CLOSEST_CREATURE] = 'Maximum distance';
 SAI_TARGET_PARAM2_NAMES[SAI_TARGETS.CLOSEST_GAMEOBJECT] = 'Maximum distance';
 SAI_TARGET_PARAM2_NAMES[SAI_TARGETS.CLOSEST_ENEMY] = 'Player only (0/1)';
 SAI_TARGET_PARAM2_NAMES[SAI_TARGETS.CLOSEST_FRIENDLY] = 'Player only (0/1)';
-// TODO: add missing values
 
-export const SAI_TARGET_PARAM3_NAMES = [];
 SAI_TARGET_PARAM3_NAMES[SAI_TARGETS.CREATURE_RANGE]  = 'Maximum distance';
 SAI_TARGET_PARAM3_NAMES[SAI_TARGETS.GAMEOBJECT_RANGE] = 'Maximum distance';
 SAI_TARGET_PARAM3_NAMES[SAI_TARGETS.CLOSEST_CREATURE] = 'Must be dead (0/1)';
-// TODO: add missing values
 
-export const SAI_TARGET_PARAM4_NAMES = [];
-// TODO: add missing values
-
-export const SAI_TARGET_PARAM1_TOOLTIPS = [];
 SAI_TARGET_PARAM1_TOOLTIPS[SAI_TARGETS.CREATURE_RANGE]  = 'If left at 0, it will target all creatures within the given distance';
 SAI_TARGET_PARAM1_TOOLTIPS[SAI_TARGETS.CREATURE_DISTANCE] = 'If left at 0, it will target all creatures within the given distance';
 SAI_TARGET_PARAM1_TOOLTIPS[SAI_TARGETS.GAMEOBJECT_RANGE] = 'If left at 0, it will target all gameobjects within the given distance';
 SAI_TARGET_PARAM1_TOOLTIPS[SAI_TARGETS.GAMEOBJECT_DISTANCE] = 'If left at 0, it will target all gameobjects within the given distance';
 SAI_TARGET_PARAM1_TOOLTIPS[SAI_TARGETS.CLOSEST_CREATURE] = 'If left at 0, it will target the closest creature of ANY entry';
 SAI_TARGET_PARAM1_TOOLTIPS[SAI_TARGETS.CLOSEST_GAMEOBJECT] = 'If left at 0, it will target the closest creature of ANY entry';
-// TODO: add missing values
 
-export const SAI_TARGET_PARAM2_TOOLTIPS = [];
-// TODO: add missing values
-
-export const SAI_TARGET_PARAM3_TOOLTIPS = [];
 SAI_TARGET_PARAM3_TOOLTIPS[SAI_TARGETS.CLOSEST_CREATURE] = 'If set to 0 it will only target alive creatures; if set to 1 it will target only alive creatures';
-// TODO: add missing values
-
-export const SAI_TARGET_PARAM4_TOOLTIPS = [];
-// TODO: add missing values
