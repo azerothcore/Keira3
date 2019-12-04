@@ -239,6 +239,9 @@ SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_UNIT_FLAG] = 'Set the unit flags of the targ
 
 // SMART_ACTION_REMOVE_UNIT_FLAG
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.REMOVE_UNIT_FLAG] = 'Removes unit flags from the target (using creature_template.unit_flags and creature_template.unit_flags2)';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.REMOVE_UNIT_FLAG] = 'Unit flags';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.REMOVE_UNIT_FLAG] = 'Type (0 / 1)';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.REMOVE_UNIT_FLAG] = 'Determines which unit flag to target; if 0, it targets the default unit flags which is creature_template.unit_flags. If set to 1 or higher, it targets creature_template.unit_flags2 (notice the \'2\') which has different values.';
 
 // SMART_ACTION_AUTO_ATTACK
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.AUTO_ATTACK] = 'Start or stop attacking our target (start or stop is determined by first parameter).';
@@ -298,6 +301,10 @@ SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA64] = 'Sets a certain instance data
 
 // SMART_ACTION_UPDATE_TEMPLATE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.UPDATE_TEMPLATE] = 'Updates the creature\'s entry to a new one, making it become a completely different unit.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.UPDATE_TEMPLATE] = 'Creature entry';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.UPDATE_TEMPLATE] = 'Team';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.UPDATE_TEMPLATE]  = 'The creature entry we want to become (creature_template.entry)';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.UPDATE_TEMPLATE] = 'Identifier of which faction the creature should become. If set to 0, it will set the creature\'s faction to creature_template.faction_a. If anything other than 1 it will be set to creature_template.faction_h.';
 
 // SMART_ACTION_DIE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.DIE] = 'Instantly kills the target';
@@ -307,6 +314,10 @@ SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_IN_COMBAT_WITH_ZONE] = 'Sets the creature in
 
 // SMART_ACTION_CALL_FOR_HELP
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CALL_FOR_HELP] = 'Makes the creature cry/call for help which makes nearby creatures that are not yet in combat and are able to assist this creature, run to this creature and attack its attackers.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_FOR_HELP] = 'Radius';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.CALL_FOR_HELP] = 'Say text (0/1)';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.CALL_FOR_HELP]  = 'Radius to call for help within';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.CALL_FOR_HELP] = 'Indicator whether or not we should automatically make the creature emote "NAME calls for help!" (which is usually blizzlike).';
 
 // SMART_ACTION_SET_SHEATH
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_SHEATH] = 'Set the sheathe state of the creature. The sheath state determines which weapon will be displayed on the model.';
@@ -466,6 +477,9 @@ SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_RANGED_MOVEMENT] = 'Sets the creature\'s att
 
 // SMART_ACTION_CALL_TIMED_ACTIONLIST
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] = 'Calls a script for the source with a given entry.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] = 'Script entry';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] = 'Timer type (0/1/2)';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] = 'The timer update type. If set to 0, the script will only occur out of combat. If set to 1, it will only occur during combat and if set to 2 it will always occur.';
 
 // SMART_ACTION_SET_NPC_FLAG
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_NPC_FLAG] = 'Set the npc flags of the target (using creature_template.npcflag)';
@@ -496,12 +510,22 @@ SAI_ACTION_TOOLTIPS[SAI_ACTIONS.RANDOM_MOVE] = 'Move randomly around within a gi
 
 // SMART_ACTION_SET_UNIT_FIELD_BYTES_1
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1] = 'Set the unit field bytes 1 flags of the target to a specific value';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1] = 'Unit field bytes 1';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1] = 'Type (0/2/3)';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1] = 'If set to 0, it targets the stand states (stand/sit/sleep/etc.). If set to 1, it targets something talent-related for pets (don\'t use). If set to 2, it targets the stand flags (creep/untrackable/etc.) and if set to 3 it targets the stand misc. flags (hover/always-stand/etc.).';
 
 // SMART_ACTION_REMOVE_UNIT_FIELD_BYTES_1
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.REMOVE_UNIT_FIELD_BYTES_1] = 'Removes specific unit field bytes 1 flags of the target';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.REMOVE_UNIT_FIELD_BYTES_1] = 'Unit field bytes 1';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.REMOVE_UNIT_FIELD_BYTES_1] = 'Type (0/2/3)';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.REMOVE_UNIT_FIELD_BYTES_1] = 'If set to 0, it targets the stand states (stand/sit/sleep/etc.). If set to 1, it targets something talent-related for pets (don\'t use). If set to 2, it targets the stand flags (creep/untrackable/etc.) and if set to 3 it targets the stand misc. flags (hover/always-stand/etc.).';
 
 // SMART_ACTION_INTERRUPT_SPELL
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.INTERRUPT_SPELL] = 'Interrupt a given spell id (or any, if the second parameter is 0).';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.INTERRUPT_SPELL] = 'With delay (0/1)';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.INTERRUPT_SPELL] = 'Spell id (0 any)';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.INTERRUPT_SPELL] = 'Instant (0/1)';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.INTERRUPT_SPELL] = 'If left at 0, the core will interrupt the currently being cast spell (based on the with-delay and instant parameters, of course)';
 
 // SMART_ACTION_SEND_GO_CUSTOM_ANIM
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SEND_GO_CUSTOM_ANIM] = 'Sends a custom gameobject animation from the target';
@@ -520,6 +544,9 @@ SAI_ACTION_TOOLTIPS[SAI_ACTIONS.JUMP_TO_POS] = 'Jump to a given position with a 
 
 // SMART_ACTION_SEND_GOSSIP_MENU
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SEND_GOSSIP_MENU] = 'Sends a specific gossip menu to a player which will then be opened for this player';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SEND_GOSSIP_MENU] = 'Gossip menu id';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SEND_GOSSIP_MENU] = 'Npc text id';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SEND_GOSSIP_MENU] = 'Uses the `id` value from the `npc_text` table in the world database';
 
 // SMART_ACTION_GO_SET_LOOT_STATE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.GO_SET_LOOT_STATE] = 'Sets the gameobject\'s loot state to a given value';
@@ -659,7 +686,6 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_AREAEXPLOREDOREVENTHAPPENS] = 'Quest id
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.RESERVED_16] = ''; // TODO
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_EMOTE_STATE] = 'Emote id';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_UNIT_FLAG] = 'Unit flags';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.REMOVE_UNIT_FLAG] = 'Unit flags';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.AUTO_ATTACK] = 'Start or stop (0 / 1)';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ALLOW_COMBAT_MOVEMENT] = 'Allow or disallow (0 / 1)';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_EVENT_PHASE] = 'Phasemask';
@@ -675,10 +701,8 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.RESET_GOBJECT] = ''; // TODO
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_KILLEDMONSTER] = 'Creature entry';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_INST_DATA] = 'Field';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_INST_DATA64] = 'Field';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.UPDATE_TEMPLATE] = 'Creature entry';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.DIE] = ''; // TODO
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_IN_COMBAT_WITH_ZONE] = ''; // TODO
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_FOR_HELP] = 'Radius';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_SHEATH] = 'Sheath state';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.FORCE_DESPAWN] = 'Time to despawn (ms)';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_INVINCIBILITY_HP_LEVEL] = 'Flat value';
@@ -715,7 +739,6 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.OVERRIDE_SCRIPT_BASE_OBJECT] = ''; // TODO
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.RESET_SCRIPT_BASE_OBJECT] = ''; // TODO
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_SCRIPT_RESET] = ''; // TODO
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_RANGED_MOVEMENT] = 'Attack distance';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] = 'Script entry';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_NPC_FLAG] = 'Npc flags';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ADD_NPC_FLAG] = 'Npc flags';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.REMOVE_NPC_FLAG] = 'Npc flags';
@@ -725,15 +748,11 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CROSS_CAST] = 'Spell ID';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_RANDOM_TIMED_ACTIONLIST] = 'Script entry 1';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_RANDOM_RANGE_TIMED_ACTIONLIST] = 'Script entry 1';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.RANDOM_MOVE] = 'Maximum distance';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1] = 'Unit field bytes 1';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.REMOVE_UNIT_FIELD_BYTES_1] = 'Unit field bytes 1';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.INTERRUPT_SPELL] = 'With delay (0/1)';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SEND_GO_CUSTOM_ANIM] = 'Animation (0-255)';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_DYNAMIC_FLAG] = 'Dynamic flags';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ADD_DYNAMIC_FLAG] = 'Dynamic flags';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.REMOVE_DYNAMIC_FLAG] = 'Dynamic flags';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.JUMP_TO_POS] = 'Speed XY';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SEND_GOSSIP_MENU] = 'Gossip menu id';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.GO_SET_LOOT_STATE] = 'Gameobject state';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SEND_TARGET_TO_TARGET] = 'Target id';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_HOME_POS] = ''; // TODO
@@ -758,7 +777,6 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.CAST] = 'Cast Flags';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.THREAT_SINGLE_PCT] = 'Threat decrease in pct';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.THREAT_ALL_PCT] = 'Threat decrease in pct';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_UNIT_FLAG] = 'Type (0 / 1)';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.REMOVE_UNIT_FLAG] = 'Type (0 / 1)';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.INC_EVENT_PHASE] = 'Decrement';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.COMBAT_STOP] = 'Spell id';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.REMOVEAURASFROMSPELL] = 'Charges';
@@ -766,8 +784,6 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.RANDOM_PHASE] = 'Phasemask 2';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.RANDOM_PHASE_RANGE] = 'Phasemask 2';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_INST_DATA] = 'Data';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_INST_DATA64] = 'Data';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.UPDATE_TEMPLATE] = 'Team';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.CALL_FOR_HELP] = 'Say text (0/1)';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_INVINCIBILITY_HP_LEVEL] = 'Pct value';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.MOUNT_TO_ENTRY_OR_MODEL] = 'Creature model';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_DATA] = 'Data';
@@ -776,16 +792,11 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.ADD_ITEM] = 'Count';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.REMOVE_ITEM] = 'Count';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_COUNTER] = 'Decimal';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_RANGED_MOVEMENT] = 'Attack angle';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] = 'Timer type (0/1/2)';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.INVOKER_CAST] = 'Cast Flags';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.CROSS_CAST] = 'Cast Flags';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.CALL_RANDOM_TIMED_ACTIONLIST] = 'Script entry 2';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.CALL_RANDOM_RANGE_TIMED_ACTIONLIST] = 'Script entry 2';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1] = 'Type (0/2/3)';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.REMOVE_UNIT_FIELD_BYTES_1] = 'Type (0/2/3)';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.INTERRUPT_SPELL] = 'Spell id (0 any)';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.JUMP_TO_POS] = 'Speed Z';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SEND_GOSSIP_MENU] = 'Npc text id';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SUMMON_CREATURE_GROUP] = 'Attack invoker (0 / 1)';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_POWER] = 'Power value';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.ADD_POWER] = 'Power value';
@@ -796,7 +807,6 @@ SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.RANDOM_EMOTE] = 'Emote id 3';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.RANDOM_PHASE] = 'Phasemask 3';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.CROSS_CAST] = 'Target type of caster';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.CALL_RANDOM_TIMED_ACTIONLIST] = 'Script entry 3';
-SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.INTERRUPT_SPELL] = 'Instant (0/1)';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.START_CLOSEST_WAYPOINT] = 'Waypoint 3';
 
 SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.RANDOM_EMOTE]  = 'Emote id 4';
@@ -822,19 +832,9 @@ SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.AUTO_ATTACK]  = 'If set to 0 it means the
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.ALLOW_COMBAT_MOVEMENT]  = 'If set to 0 it means the creature is no longer able to move AT ALL during combat. If set to 1 it means it\'s allowed to normally walk during combat.';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.FLEE_FOR_ASSIST]  = 'Determines whether or not the creature should say something along the lines of "<name> starts fleeing ..." when it flees. If 0, it won\'t say anything (unless set manually). If above 0 it will say the automatic text.';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.REMOVEAURASFROMSPELL]  = 'Amount of charges of said aura to be removed. If 0, the whole aura is removed.';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.UPDATE_TEMPLATE]  = 'The creature entry we want to become (creature_template.entry)';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.CALL_FOR_HELP]  = 'Radius to call for help within';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.MOVE_TO_POS]  = 'If set to a value, SMART_EVENT_MOVEMENTINFORM will be called with this number when the unit finished moving to this position.';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SUMMON_CREATURE_GROUP] = 'Group id column in the creature_summon_groups table (world database).';
 
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.TALK] = 'Duration to wait before SMART_EVENT_TEXT_OVER event is triggered';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SOUND] = 'If 0, everybody within the visibility range will hear the sound';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SET_UNIT_FLAG] = 'Determines which unit flag to target; if 0, it targets the default unit flags which is creature_template.unit_flags. If set to 1 or higher, it targets creature_template.unit_flags2 (notice the \'2\') which has different values.';
-SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.REMOVE_UNIT_FLAG] = 'Determines which unit flag to target; if 0, it targets the default unit flags which is creature_template.unit_flags. If set to 1 or higher, it targets creature_template.unit_flags2 (notice the \'2\') which has different values.';
-SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.UPDATE_TEMPLATE] = 'Identifier of which faction the creature should become. If set to 0, it will set the creature\'s faction to creature_template.faction_a. If anything other than 1 it will be set to creature_template.faction_h.';
-SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.CALL_FOR_HELP] = 'Indicator whether or not we should automatically make the creature emote "NAME calls for help!" (which is usually blizzlike).';
-SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] = 'The timer update type. If set to 0, the script will only occur out of combat. If set to 1, it will only occur during combat and if set to 2 it will always occur.';
-SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1] = 'If set to 0, it targets the stand states (stand/sit/sleep/etc.). If set to 1, it targets something talent-related for pets (don\'t use). If set to 2, it targets the stand flags (creep/untrackable/etc.) and if set to 3 it targets the stand misc. flags (hover/always-stand/etc.).';
-SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.REMOVE_UNIT_FIELD_BYTES_1] = 'If set to 0, it targets the stand states (stand/sit/sleep/etc.). If set to 1, it targets something talent-related for pets (don\'t use). If set to 2, it targets the stand flags (creep/untrackable/etc.) and if set to 3 it targets the stand misc. flags (hover/always-stand/etc.).';
-SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.INTERRUPT_SPELL] = 'If left at 0, the core will interrupt the currently being cast spell (based on the with-delay and instant parameters, of course)';
-SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SEND_GOSSIP_MENU] = 'Uses the `id` value from the `npc_text` table in the world database';
