@@ -17,7 +17,7 @@ export enum SAI_ACTIONS {
   THREAT_SINGLE_PCT = 13,
   THREAT_ALL_PCT = 14,
   CALL_AREAEXPLOREDOREVENTHAPPENS = 15,
-  RESERVED_16 = 16,
+  // RESERVED_16 = 16,
   SET_EMOTE_STATE = 17,
   SET_UNIT_FLAG = 18,
   REMOVE_UNIT_FLAG = 19,
@@ -186,6 +186,7 @@ SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.TALK] = 'Duration to wait before SMART_EV
 
 // SMART_ACTION_SET_FACTION
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_FACTION] = 'Set faction of target';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_FACTION] = 'FactionId';
 
 // SMART_ACTION_MORPH_TO_ENTRY_OR_MODEL
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.MORPH_TO_ENTRY_OR_MODEL] = 'Morph the creature to an entry or modelid. If both parameters are 0, this will demorph the creature';
@@ -197,18 +198,23 @@ SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SOUND] = 'Play a sound id';
 
 // SMART_ACTION_PLAY_EMOTE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.PLAY_EMOTE] = 'Play en emote';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.PLAY_EMOTE] = 'Emote id';
 
 // SMART_ACTION_FAIL_QUEST
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.FAIL_QUEST] = 'Set a certain quest of our (player) target to \'fail\', making them have to re-take it';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.FAIL_QUEST] = 'Quest id';
 
 // SMART_ACTION_OFFER_QUEST
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.OFFER_QUEST] = 'Add a quest to our (player) target\'s quest list';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.OFFER_QUEST] = 'Quest id';
 
 // SMART_ACTION_SET_REACT_STATE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_REACT_STATE] = 'Set our reactstate (0 = passive, 1 = defensive, 2 = aggressive)';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_REACT_STATE] = 'React state';
 
 // SMART_ACTION_ACTIVATE_GOBJECT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ACTIVATE_GOBJECT] = 'Activate a gameobject (targets our target_type, so it must be a gameobject)';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ACTIVATE_GOBJECT] = '';
 
 // SMART_ACTION_RANDOM_EMOTE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.RANDOM_EMOTE] = 'Play a random emote. Out of a total of 6 parameters it will pick one and ignore all fields with the value 0';
@@ -245,12 +251,12 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.THREAT_ALL_PCT] = 'Threat decrease in pct';
 
 // SMART_ACTION_CALL_AREAEXPLOREDOREVENTHAPPENS
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CALL_AREAEXPLOREDOREVENTHAPPENS] = 'Complete a quest requirement (by entry) of our current (player) target';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_AREAEXPLOREDOREVENTHAPPENS] = 'Quest id';
 
-// SMART_ACTION_RESERVED_16
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.RESERVED_16] = 'Unused action type';
 
 // SMART_ACTION_SET_EMOTE_STATE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_EMOTE_STATE] = 'Set emote state';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_EMOTE_STATE] = 'Emote id';
 
 // SMART_ACTION_SET_UNIT_FLAG
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_UNIT_FLAG] = 'Set the unit flags of the target (using creature_template.unit_flags and creature_template.unit_flags2)';
@@ -276,6 +282,7 @@ SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.ALLOW_COMBAT_MOVEMENT]  = 'If set to 0 it
 
 // SMART_ACTION_SET_EVENT_PHASE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_EVENT_PHASE] = 'Set the creature\'s event phasemask to a new value (warning: this is NOT the creature\'s actual phase!)';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_EVENT_PHASE] = 'Phasemask';
 
 // SMART_ACTION_INC_EVENT_PHASE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.INC_EVENT_PHASE] = 'Increment or decrement the creature\'s event phasemask (warning: this is NOT the creature\'s actual phase!)';
@@ -284,6 +291,7 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.INC_EVENT_PHASE] = 'Decrement';
 
 // SMART_ACTION_EVADE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.EVADE] = 'Makes the creature evade and therefore make it stop attacking and leave combat.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.EVADE] = '';
 
 // SMART_ACTION_FLEE_FOR_ASSIST
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.FLEE_FOR_ASSIST] = 'Makes the creature flee for assistance of nearby friendly units';
@@ -292,6 +300,7 @@ SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.FLEE_FOR_ASSIST]  = 'Determines whether o
 
 // SMART_ACTION_CALL_GROUPEVENTHAPPENS
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CALL_GROUPEVENTHAPPENS] = 'Complete a quest requirement (by entry) of our current (player) target.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_GROUPEVENTHAPPENS] = 'Quest id';
 
 // SMART_ACTION_COMBAT_STOP
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.COMBAT_STOP] = 'Complete a quest requirement (by entry) of our current (player) target. Completes a killed monster credit as well as gives credit for a spellcast.';
@@ -331,9 +340,11 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.RANDOM_PHASE_RANGE] = 'Phasemask 2';
 
 // SMART_ACTION_RESET_GOBJECT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.RESET_GOBJECT] = 'Reset a gameobject, usually used to open/close a door (calls GameObject::ResetDoorOrButton).';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.RESET_GOBJECT] = '';
 
 // SMART_ACTION_CALL_KILLEDMONSTER
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CALL_KILLEDMONSTER] = 'Gives a kill credit to our (player) target. The entry is the same entry as quest_template.RequiredNpcOrGo(1/2/3/4).';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_KILLEDMONSTER] = 'Creature entry';
 
 // SMART_ACTION_SET_INST_DATA
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA] = 'Sets a certain instance data field to a specific value. This will be received and can be handled inside the InstanceScript of the instance we are sending this to (InstanceScripts are always written in C++).';
@@ -354,9 +365,11 @@ SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.UPDATE_TEMPLATE] = 'Identifier of which f
 
 // SMART_ACTION_DIE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.DIE] = 'Instantly kills the target';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.DIE] = '';
 
 // SMART_ACTION_SET_IN_COMBAT_WITH_ZONE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_IN_COMBAT_WITH_ZONE] = 'Sets the creature in combat with its zone. Useful for bosses inside instances so all players will be set in combat until the fight ends.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_IN_COMBAT_WITH_ZONE] = '';
 
 // SMART_ACTION_CALL_FOR_HELP
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CALL_FOR_HELP] = 'Makes the creature cry/call for help which makes nearby creatures that are not yet in combat and are able to assist this creature, run to this creature and attack its attackers.';
@@ -367,9 +380,11 @@ SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.CALL_FOR_HELP] = 'Indicator whether or no
 
 // SMART_ACTION_SET_SHEATH
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_SHEATH] = 'Set the sheathe state of the creature. The sheath state determines which weapon will be displayed on the model.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_SHEATH] = 'Sheath state';
 
 // SMART_ACTION_FORCE_DESPAWN
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.FORCE_DESPAWN] = 'Despawns the creature/gameobject within a given time (in milliseconds).';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.FORCE_DESPAWN] = 'Time to despawn (ms)';
 
 // SMART_ACTION_SET_INVINCIBILITY_HP_LEVEL
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_INVINCIBILITY_HP_LEVEL] = 'Sets the creature\'s invincibility health to a flat value or percentage. Either one of the parameters must be set (so not both), and you can not reverse this effect (both parameters at 0 will result in an error).';
@@ -383,6 +398,7 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.MOUNT_TO_ENTRY_OR_MODEL] = 'Creature model';
 
 // SMART_ACTION_SET_INGAME_PHASE_MASK
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_INGAME_PHASE_MASK] = 'Sets the ACTUAL phasemask of the creature. This is not the event phasemask, but the actual phasemask. Sets the phasemask column in the creature table in the world database.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_INGAME_PHASE_MASK] = 'Phasemask';
 
 // SMART_ACTION_SET_DATA
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_DATA] = 'Calls SMART_EVENT_DATA_SET with given field and data, making it possible to communicate between different entries.';
@@ -391,15 +407,19 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_DATA] = 'Data';
 
 // SMART_ACTION_MOVE_FORWARD
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.MOVE_FORWARD] = 'Move a set amount of yards forward from the current position';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.MOVE_FORWARD] = 'Distance in yards';
 
 // SMART_ACTION_SET_VISIBILITY
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_VISIBILITY] = 'Sets the visibility of the creature or gameobject';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_VISIBILITY] = 'Visible (0/1)';
 
 // SMART_ACTION_SET_ACTIVE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_ACTIVE] = 'Sets whether or not the creature or gameobject is counted as \'active\'. When it\'s set to be \'active\', it means the grid this entity is spawned in is no longer able to become inactive.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_ACTIVE] = 'Active (0/1)';
 
 // SMART_ACTION_ATTACK_START
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ATTACK_START] = 'Makes the creature start attacking the first unit it finds on the target list.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ATTACK_START] = '';
 
 // SMART_ACTION_SUMMON_GO
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SUMMON_GO] = 'Summon a gameobject entry';
@@ -408,9 +428,11 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SUMMON_GO] = 'Duration (ms)';
 
 // SMART_ACTION_KILL_UNIT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.KILL_UNIT] = 'Kills the unit target instantly';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.KILL_UNIT] = '';
 
 // SMART_ACTION_ACTIVATE_TAXI
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ACTIVATE_TAXI] = 'Activates a taxipath of the given id for our (player) target.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ACTIVATE_TAXI] = 'Taxi id';
 
 // SMART_ACTION_WP_START
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.WP_START] = 'Starts a waypoint using the `waypoints` table in the world database.';
@@ -429,6 +451,7 @@ SAI_ACTION_PARAM6_TOOLTIPS[SAI_ACTIONS.WP_START] = 'Reactstate that is set when 
 
 // SMART_ACTION_WP_PAUSE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.WP_PAUSE] = 'Pauses the waypoint path the creature is currently following for a specific time (milliseconds).';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.WP_PAUSE] = 'Time (ms)';
 
 // SMART_ACTION_WP_STOP
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.WP_STOP] = 'Stops the waypoint path the creature is currently following. Also allows you to specify a despawn time from that point on as well as which quest id should be counted as \'fail\' (or not, based on the third parameter).';
@@ -451,18 +474,23 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.REMOVE_ITEM] = 'Count';
 
 // SMART_ACTION_INSTALL_AI_TEMPLATE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.INSTALL_AI_TEMPLATE] = 'Installs a SmartAI template which are basically pre-defined scripts for scripts that are used in a lot of cases. Thing of casters with specific spells, passive, turrets, etc.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.INSTALL_AI_TEMPLATE] = 'Template entry';
 
 // SMART_ACTION_SET_RUN
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_RUN] = 'Sets running flag on or off.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_RUN] = 'Off/on (0/1)';
 
 // SMART_ACTION_SET_FLY
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_FLY] = 'Sets flying flag on or off.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_FLY] = 'Off/on (0/1)';
 
 // SMART_ACTION_SET_SWIM
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_SWIM] = 'Sets swimming flag on or off.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_SWIM] = 'Off/on (0/1)';
 
 // SMART_ACTION_TELEPORT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.TELEPORT] = 'Teleport target to a specific map using coordinates in the target X/Y/Z/O fields. Note: May NOT use SMART_TARGET_POSITION (8)!';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.TELEPORT] = 'Map id';
 
 // SMART_ACTION_SET_COUNTER
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_COUNTER] = 'Stores a decimal variable (number) under a variable id to store information for the creature during runtime.';
@@ -471,12 +499,15 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_COUNTER] = 'Decimal';
 
 // SMART_ACTION_STORE_TARGET_LIST
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.STORE_TARGET_LIST] = 'Stores a list of targets under a variable id so it can later be read again.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.STORE_TARGET_LIST] = 'Variable id';
 
 // SMART_ACTION_WP_RESUME
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.WP_RESUME] = 'Resume the waypoint path the creature was previously following.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.WP_RESUME] = '';
 
 // SMART_ACTION_SET_ORIENTATION
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_ORIENTATION] = 'Sets the orientation of the creature to a given value. Must use SMART_TARGET_POSITION. If you, however, want the creature to face its spawn/home position, you can just use SMART_TARGET_SELF and leave all parameters at 0.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_ORIENTATION] = '';
 
 // SMART_ACTION_CREATE_TIMED_EVENT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CREATE_TIMED_EVENT] = 'Calls SMART_EVENT_UPDATE after a specific time with given parameters.';
@@ -491,12 +522,14 @@ SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.CREATE_TIMED_EVENT] = 'Only set this if t
 
 // SMART_ACTION_PLAYMOVIE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.PLAYMOVIE] = 'Plays a movie of a given entry.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.PLAYMOVIE] = 'Movie entry';
 
 // SMART_ACTION_MOVE_TO_POS
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.MOVE_TO_POS] = 'Move to a given position using the target co-ordinate fields (target_x/target_y/target_z/target_o) with SMART_TARGET_POSITION. First parameter is an id which can be read using SMART_EVENT_MOVEMENTINFORM. Explanation in tooltip.';
 
 // SMART_ACTION_RESPAWN_TARGET
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.RESPAWN_TARGET] = 'Respawns the target. Only works for gameobject target. Action does not actually respawn the target, it just sets the respawn time of the target, but this is how gameobject respawning is handled.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.RESPAWN_TARGET] = 'Respawn time (seconds)';
 
 // SMART_ACTION_EQUIP
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.EQUIP] = 'Set the creature\'s equipment template to a certain entry. If no entry (first parameter) is set, it will set the three item entries which are ordered by slot (param3 is main-hand, param4 is off-hand, param5 is gun/bow/etc). The slotmask (param2) value is 0 by default and goes by bits, so if it\'s \'2\' it will only show the off-hand weapon (bits are 1, 2 and 4). Having 0 defaults to 7, so all slots.';
@@ -513,24 +546,31 @@ SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.EQUIP] = 'Item entry three (gun/bow/etc. 
 
 // SMART_ACTION_CLOSE_GOSSIP
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CLOSE_GOSSIP] = 'Closes the currently opened gossip to our player target.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CLOSE_GOSSIP] = '';
 
 // SMART_ACTION_TRIGGER_TIMED_EVENT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.TRIGGER_TIMED_EVENT] = 'Calls SMART_EVENT_TIMED_EVENT_TRIGGERED with a given id.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.TRIGGER_TIMED_EVENT] = 'Event id';
 
 // SMART_ACTION_REMOVE_TIMED_EVENT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.REMOVE_TIMED_EVENT] = 'Interrupts the timed event called from SMART_ACTION_TRIGGER_TIMED_EVENT. 0 is NOT a proper value!';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.REMOVE_TIMED_EVENT] = '';
 
 // SMART_ACTION_ADD_AURA
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ADD_AURA] = 'Adds an aura to our target.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ADD_AURA] = 'Spell id';
 
 // SMART_ACTION_OVERRIDE_SCRIPT_BASE_OBJECT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.OVERRIDE_SCRIPT_BASE_OBJECT] = 'Overrides the current creature\'s/gameobject\'s script to a new source using the targettype. If more than one target is specified, the first on the list will be used.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.OVERRIDE_SCRIPT_BASE_OBJECT] = '';
 
 // SMART_ACTION_RESET_SCRIPT_BASE_OBJECT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.RESET_SCRIPT_BASE_OBJECT] = 'Resets the script of the source to its original state. Only useful after SMART_ACTION_OVERRIDE_SCRIPT_BASE_OBJECT was called (because we store the original guid when doing this).';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.RESET_SCRIPT_BASE_OBJECT] = '';
 
 // SMART_ACTION_CALL_SCRIPT_RESET
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CALL_SCRIPT_RESET] = 'Calls SMART_EVENT_RESET (only calls this, doesn\'t actually reset the creature/gameobject).';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_SCRIPT_RESET] = '';
 
 // SMART_ACTION_SET_RANGED_MOVEMENT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_RANGED_MOVEMENT] = 'Sets the creature\'s attack distance and angle to chase its target with. The distance (first parameter) is the minimum distance it will keep away from its target during combat.';
@@ -545,15 +585,19 @@ SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] = 'The timer updat
 
 // SMART_ACTION_SET_NPC_FLAG
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_NPC_FLAG] = 'Set the npc flags of the target (using creature_template.npcflag)';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_NPC_FLAG] = 'Npc flags';
 
 // SMART_ACTION_ADD_NPC_FLAG
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ADD_NPC_FLAG] = 'Adds npc flags of the target (using creature_template.npcflag)';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ADD_NPC_FLAG] = 'Npc flags';
 
 // SMART_ACTION_REMOVE_NPC_FLAG
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.REMOVE_NPC_FLAG] = 'Removes npc flags of the target (using creature_template.npcflag)';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.REMOVE_NPC_FLAG] = 'Npc flags';
 
 // SMART_ACTION_SIMPLE_TALK
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SIMPLE_TALK] = 'Functions the same as SMART_ACTION_TALK, except that it makes the player target say it. Does NOT trigger SMART_EVENT_TEXT_OVER.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SIMPLE_TALK] = 'Groupid';
 
 // SMART_ACTION_INVOKER_CAST
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.INVOKER_CAST] = 'Make our action invoker type cast a spell to our target type';
@@ -585,6 +629,7 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.CALL_RANDOM_RANGE_TIMED_ACTIONLIST] = 'Scrip
 
 // SMART_ACTION_RANDOM_MOVE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.RANDOM_MOVE] = 'Move randomly around within a given distance';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.RANDOM_MOVE] = 'Maximum distance';
 
 // SMART_ACTION_SET_UNIT_FIELD_BYTES_1
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1] = 'Set the unit field bytes 1 flags of the target to a specific value';
@@ -607,15 +652,19 @@ SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.INTERRUPT_SPELL] = 'If left at 0, the cor
 
 // SMART_ACTION_SEND_GO_CUSTOM_ANIM
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SEND_GO_CUSTOM_ANIM] = 'Sends a custom gameobject animation from the target';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SEND_GO_CUSTOM_ANIM] = 'Animation (0-255)';
 
 // SMART_ACTION_SET_DYNAMIC_FLAG
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_DYNAMIC_FLAG] = 'Sets the dynamic flags of the target to a specific value';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_DYNAMIC_FLAG] = 'Dynamic flags';
 
 // SMART_ACTION_ADD_DYNAMIC_FLAG
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ADD_DYNAMIC_FLAG] = 'Adds dynamic flags to the current value of the target';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ADD_DYNAMIC_FLAG] = 'Dynamic flags';
 
 // SMART_ACTION_REMOVE_DYNAMIC_FLAG
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.REMOVE_DYNAMIC_FLAG] = 'Removes specific dynamic flags of the target\'s current dynamic flags';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.REMOVE_DYNAMIC_FLAG] = 'Dynamic flags';
 
 // SMART_ACTION_JUMP_TO_POS
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.JUMP_TO_POS] = 'Jump to a given position with a given speed. Must use SMART_TARGET_POSITION with this action_type.';
@@ -630,27 +679,35 @@ SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SEND_GOSSIP_MENU] = 'Uses the `id` value 
 
 // SMART_ACTION_GO_SET_LOOT_STATE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.GO_SET_LOOT_STATE] = 'Sets the gameobject\'s loot state to a given value';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.GO_SET_LOOT_STATE] = 'Gameobject state';
 
 // SMART_ACTION_SEND_TARGET_TO_TARGET
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SEND_TARGET_TO_TARGET] = 'Sends a stored target id to our given target type. The id comes from SMART_ACTION_STORE_TARGET and can be used with SMART_TARGET_STORED';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SEND_TARGET_TO_TARGET] = 'Target id';
 
 // SMART_ACTION_SET_HOME_POS
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_HOME_POS] = 'Sets the home position of the source to a new position. The home position is the position the creature runs to when evading/reseting/etc. Uses the target type to determine the new home position.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_HOME_POS] = '';
 
 // SMART_ACTION_SET_HEALTH_REGEN
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_HEALTH_REGEN] = 'Turns the health regeneration of the creature on or off';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_HEALTH_REGEN] = 'Off/on (0/1)';
 
 // SMART_ACTION_SET_ROOT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_ROOT] = 'Roots or unroots the creature (or player target)';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_ROOT] = 'Unroot/root (0/1)';
 
 // SMART_ACTION_SET_GO_FLAG
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_GO_FLAG] = 'Sets the gameobject\'s flags to a specific value';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_GO_FLAG] = 'Gameobject flags';
 
 // SMART_ACTION_ADD_GO_FLAG
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ADD_GO_FLAG] = 'Adds specific flags to the gameobject\'s flags field';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ADD_GO_FLAG] = 'Gameobject flags';
 
 // SMART_ACTION_REMOVE_GO_FLAG
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.REMOVE_GO_FLAG] = 'Removes specific flags from the gameobject\'s flags field';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.REMOVE_GO_FLAG] = 'Gameobject flags';
 
 // SMART_ACTION_SUMMON_CREATURE_GROUP
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SUMMON_CREATURE_GROUP] = 'Summon a set of creatures in once using the creature_summon_groups table in the world database.';
@@ -675,9 +732,11 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.REMOVE_POWER] = 'Power value';
 
 // SMART_ACTION_GAME_EVENT_STOP
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.GAME_EVENT_STOP] = 'Stops a game event with specified id (game_event.eventEntry)';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.GAME_EVENT_STOP] = 'Id of the event';
 
 // SMART_ACTION_GAME_EVENT_START
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.GAME_EVENT_START] = 'Starts a game event with specified id (game_event.eventEntry)';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.GAME_EVENT_START] = 'Id of the event';
 
 // SMART_ACTION_START_CLOSEST_WAYPOINT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.START_CLOSEST_WAYPOINT] = 'Starts moving by the closest waypoint it can find. Parameters allow to give up to 6 waypoint id\'s and it will start the closest.';
@@ -767,68 +826,3 @@ SAI_ACTION_TOOLTIPS[SAI_ACTIONS.MUSIC] = 'MUSIC';
 
 // SMART_ACTION_RANDOM_MUSIC
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.RANDOM_MUSIC] = 'RANDOM_MUSIC';
-
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_FACTION] = 'FactionId';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.PLAY_EMOTE] = 'Emote id';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.FAIL_QUEST] = 'Quest id';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.OFFER_QUEST] = 'Quest id';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_REACT_STATE] = 'React state';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ACTIVATE_GOBJECT] = '';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_AREAEXPLOREDOREVENTHAPPENS] = 'Quest id';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.RESERVED_16] = '';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_EMOTE_STATE] = 'Emote id';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_EVENT_PHASE] = 'Phasemask';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.EVADE] = '';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_GROUPEVENTHAPPENS] = 'Quest id';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.RESET_GOBJECT] = '';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_KILLEDMONSTER] = 'Creature entry';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.DIE] = '';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_IN_COMBAT_WITH_ZONE] = '';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_SHEATH] = 'Sheath state';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.FORCE_DESPAWN] = 'Time to despawn (ms)';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_INGAME_PHASE_MASK] = 'Phasemask';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.MOVE_FORWARD] = 'Distance in yards';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_VISIBILITY] = 'Visible (0/1)';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_ACTIVE] = 'Active (0/1)';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ATTACK_START] = '';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.KILL_UNIT] = '';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ACTIVATE_TAXI] = 'Taxi id';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.WP_PAUSE] = 'Time (ms)';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.INSTALL_AI_TEMPLATE] = 'Template entry';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_RUN] = 'Off/on (0/1)';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_FLY] = 'Off/on (0/1)';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_SWIM] = 'Off/on (0/1)';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.TELEPORT] = 'Map id';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.STORE_TARGET_LIST] = 'Variable id';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.WP_RESUME] = '';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_ORIENTATION] = '';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.PLAYMOVIE] = 'Movie entry';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.RESPAWN_TARGET] = 'Respawn time (seconds)';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CLOSE_GOSSIP] = '';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.TRIGGER_TIMED_EVENT] = 'Event id';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.REMOVE_TIMED_EVENT] = '';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ADD_AURA] = 'Spell id';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.OVERRIDE_SCRIPT_BASE_OBJECT] = '';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.RESET_SCRIPT_BASE_OBJECT] = '';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_SCRIPT_RESET] = '';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_NPC_FLAG] = 'Npc flags';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ADD_NPC_FLAG] = 'Npc flags';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.REMOVE_NPC_FLAG] = 'Npc flags';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SIMPLE_TALK] = 'Groupid';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.RANDOM_MOVE] = 'Maximum distance';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SEND_GO_CUSTOM_ANIM] = 'Animation (0-255)';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_DYNAMIC_FLAG] = 'Dynamic flags';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ADD_DYNAMIC_FLAG] = 'Dynamic flags';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.REMOVE_DYNAMIC_FLAG] = 'Dynamic flags';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.GO_SET_LOOT_STATE] = 'Gameobject state';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SEND_TARGET_TO_TARGET] = 'Target id';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_HOME_POS] = '';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_HEALTH_REGEN] = 'Off/on (0/1)';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_ROOT] = 'Unroot/root (0/1)';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_GO_FLAG] = 'Gameobject flags';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ADD_GO_FLAG] = 'Gameobject flags';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.REMOVE_GO_FLAG] = 'Gameobject flags';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.GAME_EVENT_STOP] = 'Id of the event';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.GAME_EVENT_START] = 'Id of the event';
-
-
