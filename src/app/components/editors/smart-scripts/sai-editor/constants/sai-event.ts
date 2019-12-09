@@ -138,35 +138,35 @@ SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.MANA_PCT] = 'Repeat timer max';
 // SMART_EVENT_AGGRO
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.AGGRO] = 'When the creature enters combat';
 
-/*** Keira2 imports ***/
-// TODO: check the values below and move them above
-
 // SMART_EVENT_KILL
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.KILL] = 'When the creature killed something';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.KILL] = 'Cooldown min';
-SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.KILL] = 'Cooldown max';
-SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.KILL] = 'Player only (0/1)';
-SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.KILL] = 'Entry (if param3 is 0)';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.KILL] = 'On creature kill';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.KILL] = 'CooldownMin';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.KILL] = 'CooldownMax';
+SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.KILL] = 'Player only';
+SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.KILL] = 'Entry';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.KILL] = '0 or 1';
 SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.KILL] = 'Indicator if killed unit must be player only; if 0, the 4th parameter must be set to the creature id.';
 SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.KILL] = 'Entry of the creature that has to be killed for this event to trigger. Only has effect if third parameter is set to 0.';
 
 // SMART_EVENT_DEATH
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.DEATH] = 'When the creature just died';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.DEATH] = 'On creature death';
 
 // SMART_EVENT_EVADE
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.EVADE] = 'When the creature evades out of combat';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.EVADE] = 'On Creature Evade Attack';
 
 // SMART_EVENT_SPELLHIT
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.SPELLHIT] = 'On creature struck by a spell id';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.SPELLHIT] = 'Spell id (0 any)';
-SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.SPELLHIT] = 'Spell school (0 any)';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.SPELLHIT] = 'On Creature/Gameobject Spell Hit';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.SPELLHIT] = 'Spell ID';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.SPELLHIT] = 'Spell school';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.SPELLHIT] = 'CooldownMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.SPELLHIT] = 'CooldownMax';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.SPELLHIT] = 'Use 0 for any';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.SPELLHIT] = 'Use 0 for any';
 
 // SMART_EVENT_RANGE
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.RANGE] = 'When the creature is within a certain range of our target type';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.RANGE] = 'Min distance to target';
-SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.RANGE] = 'Max distance to target';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.RANGE] = 'MinDist';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.RANGE] = 'MaxDist';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.RANGE] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.RANGE] = 'RepeatMax';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.RANGE] = 'Minimum distance to target for the event to be triggered';
@@ -175,16 +175,19 @@ SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.RANGE] = 'Timer min';
 SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.RANGE] = 'Timer max';
 
 // SMART_EVENT_OOC_LOS
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.OOC_LOS] = 'When the creature detects movement of an unit that is within line of sight while the creature is out of combat. This should be used when attempting to trigger an action when a player or so moves within a distance of some place/trigger.';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.OOC_LOS] = 'Ignore hostile targets (0/1)';
-SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.OOC_LOS] = 'Max distance to target';
-SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.OOC_LOS] = 'Cooldown min';
-SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.OOC_LOS] = 'Cooldown max';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.OOC_LOS] = 'If 0, we allow only non-hostile units to trigger this event for us. If set to 1, we only allow hostile units to triger this event.';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.OOC_LOS] = 'On Target In Distance Out of Combat: when the creature detects movement of an unit that is within line of sight while the creature is out of combat. This should be used when attempting to trigger an action when a player or so moves within a distance of some place/trigger.';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.OOC_LOS] = 'NoHostile';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.OOC_LOS] = 'MaxRange';
+SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.OOC_LOS] = 'CooldownMin';
+SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.OOC_LOS] = 'CooldownMax';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.OOC_LOS] = 'If 0, only non-hostile units can trigger this event. If 1, only hostile units can trigger this event';
+
+/*** Keira2 imports ***/
+// TODO: check the values below and move them above
 
 // SMART_EVENT_RESPAWN
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.RESPAWN] = 'When the creature or gameobject respawns or spawns';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.RESPAWN] = 'Respawn condition';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.RESPAWN] = 'Type';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.RESPAWN] = 'Map id condition';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.RESPAWN] = 'Zone id condition';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.RESPAWN] = 'The condition type for this event to trigger. This is used to determine whether we should check if the mapid (parameter 2) or the zoneid (parameter 3) should be checked for correctness.';
@@ -281,8 +284,8 @@ SAI_EVENT_TOOLTIPS[SAI_EVENTS.RESET] = 'When the creature resets (evades, respaw
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.IC_LOS] = 'When the creature detects movement of an unit that is within line of sight while the creature is in combat. This should be used when attempting to trigger an action when a player or so moves within a distance of some place/trigger.';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.IC_LOS] = 'Ignore hostile targets (0/1)';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.IC_LOS] = 'Max distance to target';
-SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.IC_LOS] = 'Cooldown min';
-SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.IC_LOS] = 'Cooldown max';
+SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.IC_LOS] = 'CooldownMin';
+SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.IC_LOS] = 'CooldownMax';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.IC_LOS] = 'If 0, we allow only non-hostile units to trigger this event for us. If set to 1, we only allow hostile units to triger this event.';
 
 // SMART_EVENT_PASSENGER_BOARDED
