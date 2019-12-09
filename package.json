@@ -34,7 +34,8 @@
   },
   "dependencies": {
     "mysql": "2.17.1",
-    "ngx-ui-switch": "8.2.0"
+    "ngx-ui-switch": "8.2.0",
+    "serialize-javascript": "^2.1.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "0.803.20",
