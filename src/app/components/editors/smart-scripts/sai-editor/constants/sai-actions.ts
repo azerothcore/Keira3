@@ -394,26 +394,28 @@ SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_SHEATH] = 'Set the sheathe state of the crea
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_SHEATH] = 'SheathState';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_SHEATH] = '0-unarmed, 1-melee, 2-ranged';
 
-/*** Keira2 imports ***/
-// TODO: check the values below and move them above
-
 // SMART_ACTION_FORCE_DESPAWN
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.FORCE_DESPAWN] = 'Despawns the creature/gameobject within a given time (in milliseconds).';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.FORCE_DESPAWN] = 'Time to despawn (ms)';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.FORCE_DESPAWN] = 'DespawnTime';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.FORCE_DESPAWN] = 'Milliseconds';
 
 // SMART_ACTION_SET_INVINCIBILITY_HP_LEVEL
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_INVINCIBILITY_HP_LEVEL] = 'Sets the creature\'s invincibility health to a flat value or percentage. Either one of the parameters must be set (so not both), and you can not reverse this effect (both parameters at 0 will result in an error).';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_INVINCIBILITY_HP_LEVEL] = 'Sets the creature\'s invincibility health to a flat value or percentage. ' +
+  'Either one of the parameters must be set (so not both), and you can not reverse this effect (both parameters at 0 will result in an error).';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_INVINCIBILITY_HP_LEVEL] = 'Flat value';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_INVINCIBILITY_HP_LEVEL] = 'Pct value';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_INVINCIBILITY_HP_LEVEL] = '% value';
 
 // SMART_ACTION_MOUNT_TO_ENTRY_OR_MODEL
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.MOUNT_TO_ENTRY_OR_MODEL] = 'Sets the mount model to the model given in the second parameter (or takes the model of the entry given in the first parameter). Only one parameter may be used at the same time.';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.MOUNT_TO_ENTRY_OR_MODEL] = 'Sets the mount model to the model given in the second parameter (or takes the model of the entry given in the first parameter). ' +
+  'Only one parameter may be used at the same time.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.MOUNT_TO_ENTRY_OR_MODEL] = 'CreatureId';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.MOUNT_TO_ENTRY_OR_MODEL] = 'Creature model';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.MOUNT_TO_ENTRY_OR_MODEL] = 'ModelId';
 
 // SMART_ACTION_SET_INGAME_PHASE_MASK
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_INGAME_PHASE_MASK] = 'Sets the ACTUAL phasemask of the creature. This is not the event phasemask, but the actual phasemask. Sets the phasemask column in the creature table in the world database.';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_INGAME_PHASE_MASK] = 'Sets the ACTUAL phasemask of the creature. This is not the event phasemask, but the actual phasemask. ' +
+  'Sets the phasemask column in the creature table in the world database.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_INGAME_PHASE_MASK] = 'Phasemask';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_INGAME_PHASE_MASK] = 'creature.Phasemask';
 
 // SMART_ACTION_SET_DATA
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_DATA] = 'Calls SMART_EVENT_DATA_SET with given field and data, making it possible to communicate between different entries.';
@@ -422,24 +424,34 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_DATA] = 'Data';
 
 // SMART_ACTION_MOVE_FORWARD
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.MOVE_FORWARD] = 'Move a set amount of yards forward from the current position';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.MOVE_FORWARD] = 'Distance in yards';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.MOVE_FORWARD] = 'Distance';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.MOVE_FORWARD] = 'Distance in yards';
 
 // SMART_ACTION_SET_VISIBILITY
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_VISIBILITY] = 'Sets the visibility of the creature or gameobject';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_VISIBILITY] = 'Visible (0/1)';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_VISIBILITY] = 'Visible';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_VISIBILITY] = 'Makes creature Visible = 1 or Invisible = 0';
 
 // SMART_ACTION_SET_ACTIVE
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_ACTIVE] = 'Sets whether or not the creature or gameobject is counted as \'active\'. When it\'s set to be \'active\', it means the grid this entity is spawned in is no longer able to become inactive.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_ACTIVE] = 'Active (0/1)';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_ACTIVE] = 'If a creature or GO is set active it will stay active even if no player is near. ' +
+  'WARNING: keeping them active needs additional resources (CPU/RAM), the grid where the creature or object is located cannot be unloaded and other objects/creatures nearby also stay active';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_ACTIVE] = 'Active';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_ACTIVE] = 'Can be 0 or 1';
 
 // SMART_ACTION_ATTACK_START
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ATTACK_START] = 'Makes the creature start attacking the first unit it finds on the target list.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ATTACK_START] = '';
 
 // SMART_ACTION_SUMMON_GO
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SUMMON_GO] = 'Summon a gameobject entry';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SUMMON_GO] = 'Gameobject entry';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SUMMON_GO] = 'Duration (ms)';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SUMMON_GO] = 'Summon a gameobject entry. Use the Target to set the spawn position. ' +
+  'If an entity is specified as target and also coordinates are set (target x,y,z), those coordinates are handled as offset from the target\'s position;';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SUMMON_GO] = 'GameobjectId';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SUMMON_GO] = 'DespawnTime';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.SUMMON_GO] = 'SummonTarget';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SUMMON_GO] = 'Despawn time in seconds';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.SUMMON_GO] = 'If SummonTarget is 1, the target will summon the Gobject at the position of the actor';
+
+/*** Keira2 imports ***/
+// TODO: check the values below and move them above
 
 // SMART_ACTION_KILL_UNIT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.KILL_UNIT] = 'Kills the unit target instantly';
