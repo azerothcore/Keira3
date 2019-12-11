@@ -204,9 +204,6 @@ SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SOUND]  = '0 = sends sound to everyone in
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.PLAY_EMOTE] = 'Play en emote';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.PLAY_EMOTE] = 'EmoteId';
 
-/*** Keira2 imports ***/
-// TODO: check the values below and move them above
-
 // SMART_ACTION_FAIL_QUEST
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.FAIL_QUEST] = 'Set a certain quest of our (player) target to \'fail\', making them have to re-take it';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.FAIL_QUEST] = 'QuestId';
@@ -216,50 +213,55 @@ SAI_ACTION_TOOLTIPS[SAI_ACTIONS.OFFER_QUEST] = 'Add a quest to our (player) targ
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.OFFER_QUEST] = 'QuestId';
 
 // SMART_ACTION_SET_REACT_STATE
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_REACT_STATE] = 'Set our reactstate (0 = passive, 1 = defensive, 2 = aggressive)';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_REACT_STATE] = 'React state';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_REACT_STATE] = 'ReactState. Can be Passive (0), Defensive (1), Aggressive (2).';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_REACT_STATE] = 'ReactState';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_REACT_STATE] = '0 = Passive; 1 = Defensive; 2 = Aggressive';
 
 // SMART_ACTION_ACTIVATE_GOBJECT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ACTIVATE_GOBJECT] = 'Activate a gameobject (targets our target_type, so it must be a gameobject)';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ACTIVATE_GOBJECT] = '';
 
 // SMART_ACTION_RANDOM_EMOTE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.RANDOM_EMOTE] = 'Play a random emote. Out of a total of 6 parameters it will pick one and ignore all fields with the value 0';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.RANDOM_EMOTE] = 'EmoteId 1';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.RANDOM_EMOTE] = 'EmoteId 2';
-SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.RANDOM_EMOTE] = 'EmoteId 3';
-SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.RANDOM_EMOTE] = 'EmoteId 4';
-SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.RANDOM_EMOTE] = 'EmoteId 5';
-SAI_ACTION_PARAM6_NAMES[SAI_ACTIONS.RANDOM_EMOTE] = 'EmoteId 6';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.RANDOM_EMOTE] = 'EmoteId1';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.RANDOM_EMOTE] = 'EmoteId2';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.RANDOM_EMOTE] = 'EmoteId3';
+SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.RANDOM_EMOTE] = 'EmoteId4';
+SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.RANDOM_EMOTE] = 'EmoteId5';
+SAI_ACTION_PARAM6_NAMES[SAI_ACTIONS.RANDOM_EMOTE] = 'EmoteId6';
 
 // SMART_ACTION_CAST
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CAST] = 'Cast a spell to our target type';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CAST] = 'SpellId';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.CAST] = 'CastFlags';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.CAST] = 'LimitTargets';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.CAST] = 'http://www.azerothcore.org/wiki/smart_scripts#cast-flags'; // TODO
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.CAST] = '0 = all targets';
 
 // SMART_ACTION_SUMMON_CREATURE
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SUMMON_CREATURE] = 'Summons a creature of a certain entry for a given time (or permanent, depending on the summon type which is set in the second parameter).';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SUMMON_CREATURE] = 'Creature entry';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SUMMON_CREATURE] = 'Summon type';
-SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.SUMMON_CREATURE] = 'Duration (milliseconds)';
-SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.SUMMON_CREATURE] = 'Attack invoker (0/1)';
-SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.SUMMON_CREATURE] = 'Duration the creature will be summoned (in milliseconds).';
-SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.SUMMON_CREATURE] = 'Identicator whether or not the summoned creature should attack the action invoker (SMART_TARGET_ACTION_INVOKER) when it\'s summoned. 0 means it won\'t, 1 means it will attack.';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SUMMON_CREATURE] = 'Summons a creature for a given time (or permanent, depending on the summon type which is set in the second parameter)';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SUMMON_CREATURE] = 'CreatureId';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SUMMON_CREATURE] = 'SummonType';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.SUMMON_CREATURE] = 'Duration';
+SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.SUMMON_CREATURE] = 'AttackInvoker';
+SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.SUMMON_CREATURE] = 'AttackScriptOwner';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.SUMMON_CREATURE] = 'Duration (milliseconds)';
+SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.SUMMON_CREATURE] = 'Whether or not the summoned creature should attack the action invoker (SMART_TARGET_ACTION_INVOKER) when it\'s summoned. ' +
+  '0 = it will not attack, 1 = it will attack.';
+SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.SUMMON_CREATURE] = '0 = it will not attack, 1 = it will attack';
 
 // SMART_ACTION_THREAT_SINGLE_PCT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.THREAT_SINGLE_PCT] = 'Add or remove a certain percentage of threat from our current threat. Only one of the parameters (so either 1 or 2) may be used at the same time';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.THREAT_SINGLE_PCT] = 'Threat increase in pct';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.THREAT_SINGLE_PCT] = 'Threat decrease in pct';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.THREAT_SINGLE_PCT] = 'ThreatIncrease%';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.THREAT_SINGLE_PCT] = 'ThreatDecrease%';
 
 // SMART_ACTION_THREAT_ALL_PCT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.THREAT_ALL_PCT] = 'Add or remove a certain percentage of threat from our current threat. Only one of the parameters (so either 1 or 2) may be used at the same time';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.THREAT_ALL_PCT] = 'Threat increase in pct';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.THREAT_ALL_PCT] = 'Threat decrease in pct';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.THREAT_ALL_PCT] = 'ThreatIncrease%';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.THREAT_ALL_PCT] = 'ThreatDecrease%';
 
 // SMART_ACTION_CALL_AREAEXPLOREDOREVENTHAPPENS
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CALL_AREAEXPLOREDOREVENTHAPPENS] = 'Complete a quest requirement (by entry) of our current (player) target';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_AREAEXPLOREDOREVENTHAPPENS] = 'QuestId';
-
 
 // SMART_ACTION_SET_EMOTE_STATE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_EMOTE_STATE] = 'Set emote state';
@@ -268,28 +270,29 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_EMOTE_STATE] = 'EmoteId';
 // SMART_ACTION_SET_UNIT_FLAG
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_UNIT_FLAG] = 'Set the unit flags of the target (using creature_template.unit_flags and creature_template.unit_flags2)';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_UNIT_FLAG] = 'UnitFlags';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_UNIT_FLAG] = 'Type (0 / 1)';
-SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SET_UNIT_FLAG] = 'Determines which unit flag to target; if 0, it targets the default unit flags which is creature_template.unit_flags. If set to 1 or higher, it targets creature_template.unit_flags2 (notice the \'2\') which has different values.';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_UNIT_FLAG] = 'Type';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SET_UNIT_FLAG] = 'Determines which unit flag to target: 0 = targets the default unit flags which is creature_template.unit_flags; 1 = targets creature_template.unit_flags2';
 
 // SMART_ACTION_REMOVE_UNIT_FLAG
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.REMOVE_UNIT_FLAG] = 'Removes unit flags from the target (using creature_template.unit_flags and creature_template.unit_flags2)';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.REMOVE_UNIT_FLAG] = 'UnitFlags';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.REMOVE_UNIT_FLAG] = 'Type (0 / 1)';
-SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.REMOVE_UNIT_FLAG] = 'Determines which unit flag to target; if 0, it targets the default unit flags which is creature_template.unit_flags. If set to 1 or higher, it targets creature_template.unit_flags2 (notice the \'2\') which has different values.';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.REMOVE_UNIT_FLAG] = 'Type';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.REMOVE_UNIT_FLAG] = SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SET_UNIT_FLAG];
 
 // SMART_ACTION_AUTO_ATTACK
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.AUTO_ATTACK] = 'Start or stop attacking our target (start or stop is determined by first parameter).';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.AUTO_ATTACK] = 'Start or stop (0 / 1)';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.AUTO_ATTACK]  = 'If set to 0 it means the creature will stop attacking its current target. Otherwise it starts / continues to attack its target.';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.AUTO_ATTACK] = 'Stop or Continue Automatic Attack.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.AUTO_ATTACK] = 'StartOrStop';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.AUTO_ATTACK]  = '0 = the creature will stop attacking its current target. 1 = starts/continues to attack its target';
 
 // SMART_ACTION_ALLOW_COMBAT_MOVEMENT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ALLOW_COMBAT_MOVEMENT] = 'Allow or disallow moving while the creature is in combat';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ALLOW_COMBAT_MOVEMENT] = 'Allow or disallow (0 / 1)';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.ALLOW_COMBAT_MOVEMENT]  = 'If set to 0 it means the creature is no longer able to move AT ALL during combat. If set to 1 it means it\'s allowed to normally walk during combat.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ALLOW_COMBAT_MOVEMENT] = 'Allow';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.ALLOW_COMBAT_MOVEMENT]  = '0 = the creature is no longer able to move AT ALL during combat; 1 = it\'s allowed to normally walk during combat';
 
 // SMART_ACTION_SET_EVENT_PHASE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_EVENT_PHASE] = 'Set the creature\'s event phasemask to a new value (warning: this is NOT the creature\'s actual phase!)';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_EVENT_PHASE] = 'Phasemask';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_EVENT_PHASE] = 'Event phase 0-12 (the actual values, no bit mask!)';
 
 // SMART_ACTION_INC_EVENT_PHASE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.INC_EVENT_PHASE] = 'Increment or decrement the creature\'s event phasemask (warning: this is NOT the creature\'s actual phase!)';
@@ -298,12 +301,11 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.INC_EVENT_PHASE] = 'Decrement';
 
 // SMART_ACTION_EVADE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.EVADE] = 'Makes the creature evade and therefore make it stop attacking and leave combat.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.EVADE] = '';
 
 // SMART_ACTION_FLEE_FOR_ASSIST
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.FLEE_FOR_ASSIST] = 'Makes the creature flee for assistance of nearby friendly units';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.FLEE_FOR_ASSIST] = 'Say flee text (0 / 1)';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.FLEE_FOR_ASSIST]  = 'Determines whether or not the creature should say something along the lines of "NAME starts fleeing ..." when it flees. If 0, it won\'t say anything (unless set manually). If above 0 it will say the automatic text.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.FLEE_FOR_ASSIST] = 'SayFleeText';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.FLEE_FOR_ASSIST]  = '0 or 1 - determines whether or not the creature should say something along the lines of "NAME starts fleeing ..." when it flees';
 
 // SMART_ACTION_CALL_GROUPEVENTHAPPENS
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CALL_GROUPEVENTHAPPENS] = 'Complete a quest requirement (by entry) of our current (player) target.';
@@ -318,18 +320,20 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.COMBAT_STOP] = 'SpellId';
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.REMOVEAURASFROMSPELL] = 'Remove an aura/spell from our target';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.REMOVEAURASFROMSPELL] = 'SpellId';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.REMOVEAURASFROMSPELL] = 'Charges';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.REMOVEAURASFROMSPELL]  = 'Amount of charges of said aura to be removed. If 0, the whole aura is removed.';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.REMOVEAURASFROMSPELL] = 'If 0, removes all auras';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.REMOVEAURASFROMSPELL] = 'Amount of charges of said aura to be removed. If 0, the whole aura is removed.';
 
 // SMART_ACTION_FOLLOW
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.FOLLOW] = 'Makes the creature follow the target at a certain distance and with a certain angle.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.FOLLOW] = 'Distance';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.FOLLOW] = 'Angle';
-SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.FOLLOW] = 'End creature entry';
-SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.FOLLOW] = 'Credit creature entry';
-SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.FOLLOW] = 'Credit type (0 / 1)';
-SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.FOLLOW] = 'Default is 0. If it\'s not 0 it means the follow will finish ONLY once the creature is within interaction distance (5 yards) of the given entry.';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.FOLLOW] = 'EndCreatureId';
+SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.FOLLOW] = 'CreditCreatureId';
+SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.FOLLOW] = 'CreditType';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.FOLLOW] = 'Default is 0. When not 0, the follow will finish ONLY once the creature is within interaction distance (5 yards) of the given entry.';
 SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.FOLLOW] = 'The creature id that will be given as a quest credit when the follow has finished for whatever reason.';
-SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.FOLLOW] = 'Requires the 4th parameter to be set and valid; determines whether the entry in parameter 4 is a monster kill or event happening. If you\'re not sure what they mean, read the quest_template wiki.';
+SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.FOLLOW] = 'Requires the 4th parameter to be set and valid; ' +
+  'determines whether the entry in parameter 4 is a monster kill or event happening. If you\'re not sure what they mean, read the `quest_template` wiki.';
 
 // SMART_ACTION_RANDOM_PHASE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.RANDOM_PHASE] = 'Set the creature\'s event phase (note: this is NOT the creature\'s actual phase!)';
@@ -342,52 +346,56 @@ SAI_ACTION_PARAM6_NAMES[SAI_ACTIONS.RANDOM_PHASE] = 'Phasemask 6';
 
 // SMART_ACTION_RANDOM_PHASE_RANGE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.RANDOM_PHASE_RANGE] = 'Set the creature\'s event phase randomly between two values (this is NOT the creature\'s actual phase!)';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.RANDOM_PHASE_RANGE] = 'Phasemask 1';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.RANDOM_PHASE_RANGE] = 'Phasemask 2';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.RANDOM_PHASE_RANGE] = 'PhasemaskMin';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.RANDOM_PHASE_RANGE] = 'PhasemaskMax';
 
 // SMART_ACTION_RESET_GOBJECT
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.RESET_GOBJECT] = 'Reset a gameobject, usually used to open/close a door (calls GameObject::ResetDoorOrButton).';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.RESET_GOBJECT] = '';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.RESET_GOBJECT] = 'Reset a gameobject, usually used to open/close a door (calls GameObject::ResetDoorOrButton)';
 
 // SMART_ACTION_CALL_KILLEDMONSTER
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CALL_KILLEDMONSTER] = 'Gives a kill credit to our (player) target. The entry is the same entry as quest_template.RequiredNpcOrGo(1/2/3/4).';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_KILLEDMONSTER] = 'Creature entry';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_KILLEDMONSTER] = 'CreatureId';
 
 // SMART_ACTION_SET_INST_DATA
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA] = 'Sets a certain instance data field to a specific value. This will be received and can be handled inside the InstanceScript of the instance we are sending this to (InstanceScripts are always written in C++).';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA] = 'Sets a certain instance data field to a specific value. ' +
+  'This will be received and can be handled inside the InstanceScript of the instance we are sending this to (InstanceScripts are always written in C++).';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_INST_DATA] = 'Field';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_INST_DATA] = 'Data';
 
 // SMART_ACTION_SET_INST_DATA64
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA64] = 'Sets a certain instance data field to a specific value. This will be received and can be handled inside the InstanceScript of the instance we are sending this to (InstanceScripts are always written in C++).';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA64] = 'Sets a certain instance data field to a specific value. ' +
+  'This will be received and can be handled inside the InstanceScript of the instance we are sending this to (InstanceScripts are always written in C++).';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_INST_DATA64] = 'Field';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_INST_DATA64] = 'Data';
 
 // SMART_ACTION_UPDATE_TEMPLATE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.UPDATE_TEMPLATE] = 'Updates the creature\'s entry to a new one, making it become a completely different unit.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.UPDATE_TEMPLATE] = 'Creature entry';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.UPDATE_TEMPLATE] = 'Team';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.UPDATE_TEMPLATE] = 'CreatureId';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.UPDATE_TEMPLATE] = 'UpdateLevel';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.UPDATE_TEMPLATE]  = 'The creature entry we want to become (creature_template.entry)';
-SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.UPDATE_TEMPLATE] = 'Identifier of which faction the creature should become. If set to 0, it will set the creature\'s faction to creature_template.faction_a. If anything other than 1 it will be set to creature_template.faction_h.';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.UPDATE_TEMPLATE] = ''; // TODO
 
 // SMART_ACTION_DIE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.DIE] = 'Instantly kills the target';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.DIE] = '';
 
 // SMART_ACTION_SET_IN_COMBAT_WITH_ZONE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_IN_COMBAT_WITH_ZONE] = 'Sets the creature in combat with its zone. Useful for bosses inside instances so all players will be set in combat until the fight ends.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_IN_COMBAT_WITH_ZONE] = '';
 
 // SMART_ACTION_CALL_FOR_HELP
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CALL_FOR_HELP] = 'Makes the creature cry/call for help which makes nearby creatures that are not yet in combat and are able to assist this creature, run to this creature and attack its attackers.';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CALL_FOR_HELP] = 'Makes the creature cry/call for help, ' +
+  'which makes nearby creatures that are not yet in combat and are able to assist this creature, run to this creature and attack its attackers.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_FOR_HELP] = 'Radius';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.CALL_FOR_HELP] = 'Say text (0/1)';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.CALL_FOR_HELP]  = 'Radius to call for help within';
-SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.CALL_FOR_HELP] = 'Indicator whether or not we should automatically make the creature emote "NAME calls for help!" (which is usually blizzlike).';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.CALL_FOR_HELP] = 'SayText';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.CALL_FOR_HELP]  = 'Radius in yards that other creatures must be to acknowledge the cry for help';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.CALL_FOR_HELP] = '0 or 1: whether or not we should automatically make the creature emote "NAME calls for help!"';
 
 // SMART_ACTION_SET_SHEATH
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_SHEATH] = 'Set the sheathe state of the creature. The sheath state determines which weapon will be displayed on the model.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_SHEATH] = 'Sheath state';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_SHEATH] = 'SheathState';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_SHEATH] = '0-unarmed, 1-melee, 2-ranged';
+
+/*** Keira2 imports ***/
+// TODO: check the values below and move them above
 
 // SMART_ACTION_FORCE_DESPAWN
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.FORCE_DESPAWN] = 'Despawns the creature/gameobject within a given time (in milliseconds).';
@@ -400,7 +408,7 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_INVINCIBILITY_HP_LEVEL] = 'Pct value';
 
 // SMART_ACTION_MOUNT_TO_ENTRY_OR_MODEL
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.MOUNT_TO_ENTRY_OR_MODEL] = 'Sets the mount model to the model given in the second parameter (or takes the model of the entry given in the first parameter). Only one parameter may be used at the same time.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.MOUNT_TO_ENTRY_OR_MODEL] = 'Creature entry';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.MOUNT_TO_ENTRY_OR_MODEL] = 'CreatureId';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.MOUNT_TO_ENTRY_OR_MODEL] = 'Creature model';
 
 // SMART_ACTION_SET_INGAME_PHASE_MASK
