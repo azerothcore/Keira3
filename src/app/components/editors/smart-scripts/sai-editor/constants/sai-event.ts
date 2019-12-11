@@ -182,20 +182,17 @@ SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.OOC_LOS] = 'CooldownMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.OOC_LOS] = 'CooldownMax';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.OOC_LOS] = 'If 0, only non-hostile units can trigger this event. If 1, only hostile units can trigger this event';
 
-/*** Keira2 imports ***/
-// TODO: check the values below and move them above
-
 // SMART_EVENT_RESPAWN
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.RESPAWN] = 'When the creature or gameobject respawns or spawns';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.RESPAWN] = 'On Creature/Gameobject Respawn';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.RESPAWN] = 'Type';
-SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.RESPAWN] = 'Map id condition';
-SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.RESPAWN] = 'Zone id condition';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.RESPAWN] = 'The condition type for this event to trigger. This is used to determine whether we should check if the mapid (parameter 2) or the zoneid (parameter 3) should be checked for correctness.';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.RESPAWN] = 'MapId';
+SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.RESPAWN] = 'ZoneId';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.RESPAWN] = 'None = 0, Map = 1, Area = 2. Whether the MapId (parameter 2) or the ZoneId (parameter 3) should be checked';
 
 // SMART_EVENT_TARGET_HEALTH_PCT
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.TARGET_HEALTH_PCT] = 'When the target of the creature is at a certain health percentage';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.TARGET_HEALTH_PCT] = 'Health pct min';
-SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.TARGET_HEALTH_PCT] = 'Health pct max';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.TARGET_HEALTH_PCT] = 'HealthMin%';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.TARGET_HEALTH_PCT] = 'HealthMax%';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.TARGET_HEALTH_PCT] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.TARGET_HEALTH_PCT] = 'RepeatMax';
 
@@ -203,16 +200,16 @@ SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.TARGET_HEALTH_PCT] = 'RepeatMax';
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.VICTIM_CASTING] = 'When the target of the creature is casting a spell. Leaving the third parameter at 0 will mean any spell the target casts will trigger this event.';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.VICTIM_CASTING] = 'RepeatMin';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.VICTIM_CASTING] = 'RepeatMax';
-SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.VICTIM_CASTING] = 'Spell id';
-SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.VICTIM_CASTING] = 'Spell id the target must be casting. If left at 0, it detects ANY spell.';
+SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.VICTIM_CASTING] = 'SpellId';
+SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.VICTIM_CASTING] = 'Spell id the target must be casting to trigger the event. If left at 0, it detects ANY spell.';
 
 // SMART_EVENT_FRIENDLY_HEALTH
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.FRIENDLY_HEALTH] = 'When a friendly unit within a certain range reaches a certain amount of health (NOT PERCENTAGE!). If you are looking for percentage, use event type 74.';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.FRIENDLY_HEALTH] = 'Health deficit (flat)';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.FRIENDLY_HEALTH] = 'When a friendly unit within a certain range reaches a certain amount of health (NOT PERCENTAGE). If you are looking for percentage, use event type 74.';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.FRIENDLY_HEALTH] = 'HPDeficit';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.FRIENDLY_HEALTH] = 'Radius';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.FRIENDLY_HEALTH] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.FRIENDLY_HEALTH] = 'RepeatMax';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.FRIENDLY_HEALTH] = 'Health the friendly unit must be at. Warning: this is NOT health percentage!';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.FRIENDLY_HEALTH] = 'Amount of Health the friendly unit must be at (NOT percentage)';
 
 // SMART_EVENT_FRIENDLY_IS_CC
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.FRIENDLY_IS_CC] = 'When a friendly unit within a certain range is under the effect of a crowd control spell';
@@ -221,35 +218,35 @@ SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.FRIENDLY_IS_CC] = 'RepeatMin';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.FRIENDLY_IS_CC] = 'RepeatMax';
 
 // SMART_EVENT_FRIENDLY_MISSING_BUFF
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.FRIENDLY_MISSING_BUFF] = 'When a friendly unit within a certain range is missing or having an aura/spell on them. If the first parameter is the spellid in a negative format, it will mean the event is triggered when a friendly unit within a certain range HAS a buff.';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.FRIENDLY_MISSING_BUFF] = 'Spellid';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.FRIENDLY_MISSING_BUFF] = 'When a friendly unit within a certain range is missing or having an aura/spell on them. If the first parameter is the SpellId in a negative format, it will mean the event is triggered when a friendly unit within a certain range HAS a buff.';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.FRIENDLY_MISSING_BUFF] = 'SpellId';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.FRIENDLY_MISSING_BUFF] = 'Radius';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.FRIENDLY_MISSING_BUFF] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.FRIENDLY_MISSING_BUFF] = 'RepeatMax';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.FRIENDLY_MISSING_BUFF] = 'Spell id for the event to trigger. If the spellid is negative it means the event is reversed and triggered only when the aura is actually active on the friendly unit.';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.FRIENDLY_MISSING_BUFF] = 'Spell id for the event to trigger. If the SpellId is negative it means the event is reversed and triggered only when the aura is actually active on the friendly unit.';
 
 // SMART_EVENT_SUMMONED_UNIT
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.SUMMONED_UNIT] = 'When we summoned a creature with a certain entry. First parameter is the creature entry and if it\'s left at 0 it means we trigger this for any creature.';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.SUMMONED_UNIT] = 'Creature id (0 any)';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.SUMMONED_UNIT] = 'CreatureId';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.SUMMONED_UNIT] = 'RepeatMin';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.SUMMONED_UNIT] = 'RepeatMax';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.SUMMONED_UNIT] = 'Creature entry that must be summoned in order for this event to trigger. If left at 0 it will be triggered by any creature entry.';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.SUMMONED_UNIT] = 'Creature entry that must be summoned in order for this event to trigger. If left at 0 it will be triggered by ANY creature entry.';
 
 // SMART_EVENT_TARGET_MANA_PCT
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.TARGET_MANA_PCT] = 'When the target of the creature is at a certain mana percentage';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.TARGET_MANA_PCT] = 'Mana pct min';
-SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.TARGET_MANA_PCT] = 'Mana pct max';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.TARGET_MANA_PCT] = 'ManaMin%';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.TARGET_MANA_PCT] = 'ManaMax%';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.TARGET_MANA_PCT] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.TARGET_MANA_PCT] = 'RepeatMax';
 
 // SMART_EVENT_ACCEPTED_QUEST
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.ACCEPTED_QUEST] = 'When the creature successfully offered a quest to a player';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.ACCEPTED_QUEST] = 'Quest id (0 any)';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.ACCEPTED_QUEST] = 'QuestId';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.ACCEPTED_QUEST] = 'Quest id to trigger this event; if the parameter is 0 it means it will be triggered by ANY quest.';
 
 // SMART_EVENT_REWARD_QUEST
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.REWARD_QUEST] = 'When the creature successfully rewarded a quest of a player';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.REWARD_QUEST] = 'Quest id (0 any)';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.REWARD_QUEST] = 'QuestId';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.REWARD_QUEST] = 'Quest id to trigger this event; if the parameter is 0 it means it will be triggered by ANY quest.';
 
 // SMART_EVENT_REACHED_HOME
@@ -257,42 +254,46 @@ SAI_EVENT_TOOLTIPS[SAI_EVENTS.REACHED_HOME] = 'When the creature reached its hom
 
 // SMART_EVENT_RECEIVE_EMOTE
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.RECEIVE_EMOTE] = 'When the creature receives an emote';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.RECEIVE_EMOTE] = 'Emote id';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.RECEIVE_EMOTE] = 'EmoteId';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.RECEIVE_EMOTE] = 'RepeatMin';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.RECEIVE_EMOTE] = 'RepeatMax';
 
 // SMART_EVENT_HAS_AURA
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.HAS_AURA] = 'When the creature is missing or having an aura/spell on them. If the first parameter is the spellid in a negative format, it will mean the event is triggered when a friendly unit within a certain range is MISSING a buff.';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.HAS_AURA] = 'Spell id';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.HAS_AURA] = 'When the creature is missing or having an aura/spell on them. If the first parameter is the SpellId in a negative format, it will mean the event is triggered when a friendly unit within a certain range is MISSING a buff.';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.HAS_AURA] = 'SpellId';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.HAS_AURA] = 'Stacks';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.HAS_AURA] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.HAS_AURA] = 'RepeatMax';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.HAS_AURA] = 'Spell id for the event to trigger. If the spellid is negative it means the event is reversed and triggered only when the aura is not present on the creature.';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.HAS_AURA] = 'Spell id for the event to trigger. If the SpellId is negative it means the event is reversed and triggered only when the aura is NOT present on the creature.';
 
 // SMART_EVENT_TARGET_BUFFED
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.TARGET_BUFFED] = 'When the creature\'s target is missing or having an aura/spell on them. If the first parameter is the spellid in a negative format, it will mean the event is triggered when a friendly unit within a certain range is MISSING a buff.';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.TARGET_BUFFED] = 'Spell id';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.TARGET_BUFFED] = 'When the creature\'s target is missing or having an aura/spell on them. If the first parameter is the SpellId in a negative format, it will mean the event is triggered when a friendly unit within a certain range is MISSING a buff.';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.TARGET_BUFFED] = 'SpellId';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.TARGET_BUFFED] = 'Stacks';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.TARGET_BUFFED] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.TARGET_BUFFED] = 'RepeatMax';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.TARGET_BUFFED] = 'Spell id for the event to trigger. If the spellid is negative it means the event is reversed and triggered only when the aura is not present on the creature.';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.TARGET_BUFFED] = 'Spell id for the event to trigger. If the SpellId is negative it means the event is reversed and triggered only when the aura is not present on the creature.';
 
 // SMART_EVENT_RESET
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.RESET] = 'When the creature resets (evades, respawns, spawns or resets out of combat)';
 
 // SMART_EVENT_IC_LOS
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.IC_LOS] = 'When the creature detects movement of an unit that is within line of sight while the creature is in combat. This should be used when attempting to trigger an action when a player or so moves within a distance of some place/trigger.';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.IC_LOS] = 'Ignore hostile targets (0/1)';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.IC_LOS] = 'When the creature detects movement of a unit that is within line of sight while the creature is in combat. This should be used when attempting to trigger an action when a player or so moves within a distance of some place/trigger.';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.IC_LOS] = 'NoHostile';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.IC_LOS] = 'Max distance to target';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.IC_LOS] = 'CooldownMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.IC_LOS] = 'CooldownMax';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.IC_LOS] = 'If 0, we allow only non-hostile units to trigger this event for us. If set to 1, we only allow hostile units to triger this event.';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.IC_LOS] = 'If 0, only allow non-hostile units to trigger this event. If 1, only allow hostile units to trigger this event.';
 
 // SMART_EVENT_PASSENGER_BOARDED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.PASSENGER_BOARDED] = 'When a passenger is boarded';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.PASSENGER_BOARDED] = 'CooldownMin';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.PASSENGER_BOARDED] = 'CooldownMax';
 
 // SMART_EVENT_PASSENGER_REMOVED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.PASSENGER_REMOVED] = 'When a passenger is removed';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.PASSENGER_REMOVED] = 'CooldownMin';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.PASSENGER_REMOVED] = 'CooldownMax';
 
 // SMART_EVENT_CHARMED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.CHARMED] = 'On creature charmed';
@@ -301,17 +302,17 @@ SAI_EVENT_TOOLTIPS[SAI_EVENTS.CHARMED] = 'On creature charmed';
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.CHARMED_TARGET] = 'On target charmed';
 
 // SMART_EVENT_SPELLHIT_TARGET
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.SPELLHIT_TARGET] = 'On target spellhit by a spell';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.SPELLHIT_TARGET] = 'Spell id';
-SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.SPELLHIT_TARGET] = 'Spell school';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.SPELLHIT_TARGET] = 'On Target Spell Hit';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.SPELLHIT_TARGET] = 'SpellId';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.SPELLHIT_TARGET] = 'SpellSchool';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.SPELLHIT_TARGET] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.SPELLHIT_TARGET] = 'RepeatMax';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.SPELLHIT] = 'Spell id that will limit this event to only be triggered if the spell that hit us has this id. If left at 0, it works for EVERY spell.';
 
 // SMART_EVENT_DAMAGED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.DAMAGED] = 'On creature damaged for a certain amount';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.DAMAGED] = 'Minimum damage';
-SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.DAMAGED] = 'Maximum damage';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.DAMAGED] = 'MinDamage';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.DAMAGED] = 'MaxDamage';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.DAMAGED] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.DAMAGED] = 'RepeatMax';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.DAMAGED] = 'Minimum amount of damage required to trigger this event';
@@ -319,8 +320,8 @@ SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.DAMAGED] = 'Maximum allowed damage to make 
 
 // SMART_EVENT_DAMAGED_TARGET
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.DAMAGED_TARGET] = 'On target damaged for a certain amount';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.DAMAGED_TARGET] = 'Minimum damage';
-SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.DAMAGED_TARGET] = 'Maximum damage';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.DAMAGED_TARGET] = 'MinDamage';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.DAMAGED_TARGET] = 'MaxDamage';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.DAMAGED_TARGET] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.DAMAGED_TARGET] = 'RepeatMax';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.DAMAGED_TARGET] = 'Minimum amount of damage required to trigger this event';
@@ -328,15 +329,16 @@ SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.DAMAGED_TARGET] = 'Maximum allowed damage t
 
 // SMART_EVENT_MOVEMENTINFORM
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.MOVEMENTINFORM] = 'On movement inform. Useful when for example you want your creature to do something after it moving to a certain spot by using SMART_ACTION_MOVE_TO.';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.MOVEMENTINFORM] = 'Movement type (0 any)';
-SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.MOVEMENTINFORM] = 'Point id';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.MOVEMENTINFORM] = 'MovementType';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.MOVEMENTINFORM] = 'PointId';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.MOVEMENTINFORM] = 'Use 0 for ANY movement types. ESCORT_MOTION_TYPE = 17, POINT_MOTION_TYPE = 8';
 
 // SMART_EVENT_SUMMON_DESPAWNED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.SUMMON_DESPAWNED] = 'On summoned unit despawned';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.SUMMON_DESPAWNED] = 'Creature entry (0 any)';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.SUMMON_DESPAWNED] = 'CreatureId';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.SUMMON_DESPAWNED] = 'CooldownMin';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.SUMMON_DESPAWNED] = 'CooldownMax';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.SUMMON_DESPAWNED] = 'Creature entry to act as a condition. If left at 0, this event is triggered for any summon that despawn. If an entry is given, it is only triggered when that specific entry despawns.';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.SUMMON_DESPAWNED] = 'Creature entry to act as a condition. If left at 0, this event is triggered for any summon that despawns. If an entry is given, it is only triggered when that specific entry despawns.';
 
 // SMART_EVENT_CORPSE_REMOVED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.CORPSE_REMOVED] = 'On creature corpse removal';
@@ -355,13 +357,18 @@ SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.DATA_SET] = 'Second parameter of SMART_ACTI
 
 // SMART_EVENT_WAYPOINT_START
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.WAYPOINT_START] = 'On waypoint started';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.WAYPOINT_START] = 'Point id (0 any)';
-SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.WAYPOINT_START] = 'Path id (0 any)';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.WAYPOINT_START] = 'PointId';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.WAYPOINT_START] = 'PathId';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.WAYPOINT_START] = 'Use 0 for ANY point';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.WAYPOINT_START] = 'Use 0 for ANY path';
+
 
 // SMART_EVENT_WAYPOINT_REACHED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.WAYPOINT_REACHED] = 'On waypoint reached';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.WAYPOINT_REACHED] = 'Point id (0 any)';
-SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.WAYPOINT_REACHED] = 'Path id (0 any)';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.WAYPOINT_REACHED] = 'PointId';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.WAYPOINT_REACHED] = 'PathId';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.WAYPOINT_REACHED] = 'Use 0 for ANY point';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.WAYPOINT_REACHED] = 'Use 0 for ANY path';
 
 // SMART_EVENT_TRANSPORT_ADDPLAYER
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.TRANSPORT_ADDPLAYER] = 'TRANSPORT_ADDPLAYER'; // TODO
@@ -380,8 +387,8 @@ SAI_EVENT_TOOLTIPS[SAI_EVENTS.INSTANCE_PLAYER_ENTER] = 'INSTANCE_PLAYER_ENTER'; 
 
 // SMART_EVENT_AREATRIGGER_ONTRIGGER
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.AREATRIGGER_ONTRIGGER] = 'On areatrigger reached by a player';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.AREATRIGGER_ONTRIGGER] = 'Areatrigger id (0 any)';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.AREATRIGGER_ONTRIGGER] = 'Entry of the areatrigger to make this event happen. If left at 0 it will trigger for any areatrigger.';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.AREATRIGGER_ONTRIGGER] = 'AreatriggerId';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.AREATRIGGER_ONTRIGGER] = 'Entry of the areatrigger to make this event happen. If left at 0, it will trigger for ANY areatrigger';
 
 // SMART_EVENT_QUEST_ACCEPTED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.QUEST_ACCEPTED] = 'On target quest accepted';
@@ -397,6 +404,9 @@ SAI_EVENT_TOOLTIPS[SAI_EVENTS.QUEST_REWARDED] = 'On target quest rewarded';
 
 // SMART_EVENT_QUEST_FAIL
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.QUEST_FAIL] = 'On target quest failed';
+
+/*** Keira2 imports ***/
+// TODO: check the values below and move them above
 
 // SMART_EVENT_TEXT_OVER
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.TEXT_OVER] = 'When a creature says something it shows a balloon for a few seconds. This event is triggered after the balloon fades and thus the text \'finishes\'.';
@@ -418,23 +428,23 @@ SAI_EVENT_TOOLTIPS[SAI_EVENTS.JUST_SUMMONED] = 'Called when the creature or game
 
 // SMART_EVENT_WAYPOINT_PAUSED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.WAYPOINT_PAUSED] = 'On waypoint paused';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.WAYPOINT_PAUSED] = 'Point id (0 any)';
-SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.WAYPOINT_PAUSED] = 'Path id (0 any)';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.WAYPOINT_PAUSED] = 'PointId';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.WAYPOINT_PAUSED] = 'PathId';
 
 // SMART_EVENT_WAYPOINT_RESUMED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.WAYPOINT_RESUMED] = 'On waypoint resumed';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.WAYPOINT_RESUMED] = 'Point id (0 any)';
-SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.WAYPOINT_RESUMED] = 'Path id (0 any)';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.WAYPOINT_RESUMED] = 'PointId';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.WAYPOINT_RESUMED] = 'PathId';
 
 // SMART_EVENT_WAYPOINT_STOPPED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.WAYPOINT_STOPPED] = 'On waypoint stopped';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.WAYPOINT_STOPPED] = 'Point id (0 any)';
-SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.WAYPOINT_STOPPED] = 'Path id (0 any)';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.WAYPOINT_STOPPED] = 'PointId';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.WAYPOINT_STOPPED] = 'PathId';
 
 // SMART_EVENT_WAYPOINT_ENDED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.WAYPOINT_ENDED] = 'On waypoint ended';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.WAYPOINT_ENDED] = 'Point id (0 any)';
-SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.WAYPOINT_ENDED] = 'Path id (0 any)';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.WAYPOINT_ENDED] = 'PointId';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.WAYPOINT_ENDED] = 'PathId';
 
 // SMART_EVENT_TIMED_EVENT_TRIGGERED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.TIMED_EVENT_TRIGGERED] = 'Called when a timed event called by the action CREATE_TIMED_EVENT is triggered';
