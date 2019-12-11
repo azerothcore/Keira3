@@ -115,8 +115,8 @@ SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.UPDATE_OOC] = 'Repeat timer max';
 
 // SMART_EVENT_HEALTH_PCT
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.HEALTH_PCT] = 'At health percentage. First and second parameters function as min-max health percentage values, so if they are  50,80, the event will be called when the source is between 50% and 80% health. The last two parameters are repeat timers in milliseconds.';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.HEALTH_PCT] = 'Min health %';
-SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.HEALTH_PCT] = 'Max health %';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.HEALTH_PCT] = 'MinHealth%';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.HEALTH_PCT] = 'MaxHealth%';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.HEALTH_PCT] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.HEALTH_PCT] = 'RepeatMax';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.HEALTH_PCT] = 'Timer min';
@@ -126,8 +126,8 @@ SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.HEALTH_PCT] = 'Repeat timer max';
 
 // SMART_EVENT_MANA_PCT
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.MANA_PCT] = 'At mana percentage. First and second parameters function as min-max mana percentage values, so if they are  50,80, the event will be called when the source is between 50% and 80% mana. The last two parameters are repeat timers in milliseconds.';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.MANA_PCT] = 'Min mana pct';
-SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.MANA_PCT] = 'Max mana pct';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.MANA_PCT] = 'MinMana%';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.MANA_PCT] = 'MaxMana%';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.MANA_PCT] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.MANA_PCT] = 'RepeatMax';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.MANA_PCT] = 'Timer min';
@@ -191,8 +191,8 @@ SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.RESPAWN] = 'None = 0, Map = 1, Area = 2. Wh
 
 // SMART_EVENT_TARGET_HEALTH_PCT
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.TARGET_HEALTH_PCT] = 'When the target of the creature is at a certain health percentage';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.TARGET_HEALTH_PCT] = 'HealthMin%';
-SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.TARGET_HEALTH_PCT] = 'HealthMax%';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.TARGET_HEALTH_PCT] = 'MinHealth%';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.TARGET_HEALTH_PCT] = 'MaxHealth%';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.TARGET_HEALTH_PCT] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.TARGET_HEALTH_PCT] = 'RepeatMax';
 
@@ -392,32 +392,37 @@ SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.AREATRIGGER_ONTRIGGER] = 'Entry of the area
 
 // SMART_EVENT_QUEST_ACCEPTED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.QUEST_ACCEPTED] = 'On target quest accepted';
+// TODO
 
 // SMART_EVENT_QUEST_OBJ_COPLETETION
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.QUEST_OBJ_COPLETETION] = 'On target quest objective completed';
+// TODO
 
 // SMART_EVENT_QUEST_COMPLETION
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.QUEST_COMPLETION] = 'On target quest completed';
+// TODO
 
 // SMART_EVENT_QUEST_REWARDED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.QUEST_REWARDED] = 'On target quest rewarded';
+// TODO
 
 // SMART_EVENT_QUEST_FAIL
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.QUEST_FAIL] = 'On target quest failed';
-
-/*** Keira2 imports ***/
-// TODO: check the values below and move them above
+// TODO
 
 // SMART_EVENT_TEXT_OVER
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.TEXT_OVER] = 'When a creature says something it shows a balloon for a few seconds. This event is triggered after the balloon fades and thus the text \'finishes\'.';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.TEXT_OVER] = 'Group id (creature_text)';
-SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.TEXT_OVER] = 'Creature entry (0 any)';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.TEXT_OVER] = 'The creature_text.groupid value to trigger this event for';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.TEXT_OVER] = 'When a creature says something it shows a balloon for a few seconds. ' +
+  'This event is triggered after the balloon fades and thus the text "finishes". ' +
+  'Event Triggered After SMART_ACTION_TALK';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.TEXT_OVER] = 'GroupID';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.TEXT_OVER] = 'CreatureId';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.TEXT_OVER] = 'The creature_text.GroupID value to trigger this event for';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.TEXT_OVER] = 'Use 0 for ANY creature';
 
 // SMART_EVENT_RECEIVE_HEAL
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.RECEIVE_HEAL] = 'On creature received a certain heal amount';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.RECEIVE_HEAL] = 'Minimum heal';
-SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.RECEIVE_HEAL] = 'Maximum heal';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.RECEIVE_HEAL] = 'MinHeal';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.RECEIVE_HEAL] = 'MaxHeal';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.RECEIVE_HEAL] = 'CooldownMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.RECEIVE_HEAL] = 'CooldownMax';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.RECEIVE_HEAL] = 'Minimum required value the heal effect must be in order to trigger this event';
@@ -427,28 +432,36 @@ SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.RECEIVE_HEAL] = 'Maximum allowed value of t
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.JUST_SUMMONED] = 'Called when the creature or gameobject has just been summoned';
 
 // SMART_EVENT_WAYPOINT_PAUSED
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.WAYPOINT_PAUSED] = 'On waypoint paused';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.WAYPOINT_PAUSED] = 'On Creature Paused at Waypoint ID';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.WAYPOINT_PAUSED] = 'PointId';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.WAYPOINT_PAUSED] = 'PathId';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.WAYPOINT_PAUSED] = 'Use 0 for ANY point';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.WAYPOINT_PAUSED] = 'Use 0 for ANY path';
 
 // SMART_EVENT_WAYPOINT_RESUMED
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.WAYPOINT_RESUMED] = 'On waypoint resumed';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.WAYPOINT_RESUMED] = 'On Creature Resumed after Waypoint ID';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.WAYPOINT_RESUMED] = 'PointId';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.WAYPOINT_RESUMED] = 'PathId';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.WAYPOINT_RESUMED] = 'Use 0 for ANY point';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.WAYPOINT_RESUMED] = 'Use 0 for ANY path';
 
 // SMART_EVENT_WAYPOINT_STOPPED
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.WAYPOINT_STOPPED] = 'On waypoint stopped';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.WAYPOINT_STOPPED] = 'On Creature Stopped On Waypoint ID';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.WAYPOINT_STOPPED] = 'PointId';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.WAYPOINT_STOPPED] = 'PathId';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.WAYPOINT_STOPPED] = 'Use 0 for ANY point';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.WAYPOINT_STOPPED] = 'Use 0 for ANY path';
 
 // SMART_EVENT_WAYPOINT_ENDED
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.WAYPOINT_ENDED] = 'On waypoint ended';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.WAYPOINT_ENDED] = 'On Creature Waypoint Path Ended';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.WAYPOINT_ENDED] = 'PointId';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.WAYPOINT_ENDED] = 'PathId';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.WAYPOINT_ENDED] = 'Use 0 for ANY point';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.WAYPOINT_ENDED] = 'Use 0 for ANY path';
 
 // SMART_EVENT_TIMED_EVENT_TRIGGERED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.TIMED_EVENT_TRIGGERED] = 'Called when a timed event called by the action CREATE_TIMED_EVENT is triggered';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.TIMED_EVENT_TRIGGERED] = 'Event id';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.TIMED_EVENT_TRIGGERED] = 'EventId';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.TIMED_EVENT_TRIGGERED] = 'First parameter of SMART_ACTION_CREATE_TIMED_EVENT';
 
 // SMART_EVENT_UPDATE
@@ -459,20 +472,23 @@ SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.UPDATE] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.UPDATE] = 'RepeatMax';
 
 // SMART_EVENT_LINK
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.LINK] = 'On link';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.LINK] = 'Used to link together multiple events as a chain of events.';
 
 // SMART_EVENT_GOSSIP_SELECT
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.GOSSIP_SELECT] = 'Called on gossip option selected. Imagine you have four gossip items under the menu id 5 and their id\'s are 0, 1 and 2. If you now call this event with first parameter \'5\' and second parameter \'1\', it will be called when the second gossip option is selected. Tables gossip_menu_option and gossip_menu.';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.GOSSIP_SELECT] = 'Gossip menu id';
-SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.GOSSIP_SELECT] = 'Gossip item id';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.GOSSIP_SELECT] = 'This is the gossip_menu.entry identifier';
-SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.GOSSIP_SELECT] = 'This is the gossip_menu_option.id identifier';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.GOSSIP_SELECT] = 'Called on gossip option selected. ' +
+  'Imagine you have four gossip items under the menu id 5 and their id\'s are 0, 1 and 2. ' +
+  'If you now call this event with first parameter \'5\' and second parameter \'1\', it will be called when the second gossip option is selected. ' +
+  'Tables `gossip_menu_option` and `gossip_menu.`';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.GOSSIP_SELECT] = 'Gossip MenuID';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.GOSSIP_SELECT] = 'Gossip OptionID';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.GOSSIP_SELECT] = 'This is gossip_menu_option.MenuID';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.GOSSIP_SELECT] = 'gossip_menu_option.OptionID';
 
 // SMART_EVENT_JUST_CREATED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.JUST_CREATED] = 'On gameobject just created (so when it spawns for the first time)';
 
 // SMART_EVENT_GOSSIP_HELLO
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.GOSSIP_HELLO] = 'On gossip menu opened. Also called for gameobjects that just got \'opened\' by a player.';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.GOSSIP_HELLO] = 'On Right-Click Creature/Gameobject that have gossip enabled.';
 
 // SMART_EVENT_FOLLOW_COMPLETED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.FOLLOW_COMPLETED] = 'On follow completed/finished';
@@ -483,57 +499,63 @@ SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.IS_BEHIND_TARGET] = 'CooldownMin';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.IS_BEHIND_TARGET] = 'CooldownMax';
 
 // SMART_EVENT_GAME_EVENT_START
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.GAME_EVENT_START] = 'On game event entry just started';
-
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.GAME_EVENT_START] = 'On game event just started';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.GAME_EVENT_START] = 'EventID';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.GAME_EVENT_START] = 'game_event.eventEntryThis is game_event.eventEntry';
 
 // SMART_EVENT_GAME_EVENT_END
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.GAME_EVENT_END] = 'On game event entry just ended';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.GAME_EVENT_END] = 'Game event entry';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.GAME_EVENT_END] = 'On game event just ended';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.GAME_EVENT_END] = 'EventID';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.GAME_EVENT_END] = 'This is game_event.eventEntry';
 
 // SMART_EVENT_GO_STATE_CHANGED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.GO_STATE_CHANGED] = 'On gameobject state changed.';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.GO_STATE_CHANGED] = 'Gameobject state';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.GO_STATE_CHANGED] = 'The new state of the gameobject after this event';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.GO_STATE_CHANGED] = 'State';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.GO_STATE_CHANGED] = '0 = Active; 1 = Ready; 2 = Active alternative';
 
 // SMART_EVENT_GO_EVENT_INFORM
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.GO_EVENT_INFORM] = 'Called when the gameobject becomes the target of an event happening. This is called in cases like a building is damaged/destroyed/rebuild, a goober is used, etc.';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.GO_EVENT_INFORM] = 'Event id';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.GO_EVENT_INFORM] = 'EventId';
 
 // SMART_EVENT_ACTION_DONE
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.ACTION_DONE] = 'Called on a certain action id \'done\'. Those can only be called from core scripts (SmartAI::DoAction).';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.ACTION_DONE] = 'Action id';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.ACTION_DONE] = 'ActionId';
 
 // SMART_EVENT_ON_SPELLCLICK
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.ON_SPELLCLICK] = 'On unit spellclick. For more information on what spellclicks are, take a look at the wiki and search for the table \'npc_spellclick_spells\' (world database).';
 
 // SMART_EVENT_FRIENDLY_HEALTH_PCT
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.FRIENDLY_HEALTH_PCT] = 'When a friendly unit within a certain range reaches a certain health percentage (so NOT flat health!). If you are looking for a flat modifier, use event type 14.';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.FRIENDLY_HEALTH_PCT] = 'Health pct min';
-SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.FRIENDLY_HEALTH_PCT] = 'Health pct max';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.FRIENDLY_HEALTH_PCT] = 'MinHealth%';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.FRIENDLY_HEALTH_PCT] = 'MaxHealth%';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.FRIENDLY_HEALTH_PCT] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.FRIENDLY_HEALTH_PCT] = 'RepeatMax';
 
 // SMART_EVENT_DISTANCE_CREATURE
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] = 'Event triggered when a creature with a specific guid or entry coems within a given distance (in yards) of the source.';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] = 'On creature guid OR any instance of creature entry is within distance.';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.DISTANCE_CREATURE] = 'Guid';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.DISTANCE_CREATURE] = 'Entry';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.DISTANCE_CREATURE] = 'Distance';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.DISTANCE_CREATURE] = 'RepeatTimer';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] = 'Guid of the creature we want to check for. Can be left on 0 if the entry is given.';
-SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] = 'Entry of the creature we want to check for. Can be left on 0 if the guid is given.';
-SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] = 'Min distance to the creature that\'ll make the event trigger';
-SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] = 'Timer to check for distance. It\'s not a good idea to leave this at 0, having a handful of events doing that can slow down your core big time.';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] = 'Guid of the creature we want to check for. Can be left on 0 if the Entry is given.';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] = 'Entry of the creature we want to check for. Can be left on 0 if the Guid is given.';
+SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] = 'Min distance (in yards) to the creature that will trigger the event';
+SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] = 'Timer to check for distance. It\'s not a good idea to leave this at 0, having a handful of events doing that can slow down your core';
 
 // SMART_EVENT_DISTANCE_GAMEOBJECT
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Event triggered when a gameobject with a specific guid or entry coems within a given distance (in yards) of the source.';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'On gameobject guid OR any instance of gameobject entry is within distance.';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Guid';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Entry';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Distance';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'RepeatTimer';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Guid of the gameobject we want to check for. Can be left on 0 if the entry is given.';
 SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Entry of the gameobject we want to check for. Can be left on 0 if the guid is given.';
-SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Min distance to the gameobject that\'ll make the event trigger';
-SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Timer to check for distance. It\'s not a good idea to leave this at 0, having a handful of events doing that can slow down your core big time.';
+SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Min distance (in yards) to the gameobject that will trigger the event';
+SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Timer to check for distance. It\'s not a good idea to leave this at 0, having a handful of events doing that can slow down your core';
 
 // SMART_EVENT_COUNTER_SET
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.COUNTER_SET] = 'If the value of specified counterID (param1) is equal to a specified value';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.COUNTER_SET] = 'If the value of specified CounterID is equal to a specified Value';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.COUNTER_SET] = 'CounterID';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.COUNTER_SET] = 'Value';
+SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.COUNTER_SET] = 'CooldownMin';
+SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.COUNTER_SET] = 'CooldownMax';
