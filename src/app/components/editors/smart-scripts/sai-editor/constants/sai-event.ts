@@ -278,9 +278,10 @@ SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.TARGET_BUFFED] = 'Spell id for the event to
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.RESET] = 'When the creature resets (evades, respawns, spawns or resets out of combat)';
 
 // SMART_EVENT_IC_LOS
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.IC_LOS] = 'When the creature detects movement of a unit that is within line of sight while the creature is in combat. This should be used when attempting to trigger an action when a player or so moves within a distance of some place/trigger.';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.IC_LOS] = 'When the creature detects movement of a unit that is within line of sight while the creature is in combat. ' +
+  'This should be used when attempting to trigger an action when a player or so moves within a distance of some place/trigger.';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.IC_LOS] = 'NoHostile';
-SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.IC_LOS] = 'Max distance to target';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.IC_LOS] = 'MaxDistance';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.IC_LOS] = 'CooldownMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.IC_LOS] = 'CooldownMax';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.IC_LOS] = 'If 0, only allow non-hostile units to trigger this event. If 1, only allow hostile units to trigger this event.';
