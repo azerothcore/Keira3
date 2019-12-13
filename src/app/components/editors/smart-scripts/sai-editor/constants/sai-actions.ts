@@ -171,6 +171,10 @@ export const SAI_ACTION_PARAM4_TOOLTIPS = [];
 export const SAI_ACTION_PARAM5_TOOLTIPS = [];
 export const SAI_ACTION_PARAM6_TOOLTIPS = [];
 
+// Common tooltips
+const BOOLEAN_VALUE_TOOLTIP = '0 or 1';
+const TIME_IN_MILLISECONDS = 'Time in milliseconds';
+
 // SMART_ACTION_NONE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.NONE] = 'No action type is specified. Do not use because it will cause errors on start-up.';
 
@@ -450,12 +454,8 @@ SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.SUMMON_GO] = 'SummonTarget';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SUMMON_GO] = 'Despawn time in seconds';
 SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.SUMMON_GO] = 'If SummonTarget is 1, the target will summon the Gobject at the position of the actor';
 
-/*** Keira2 imports ***/
-// TODO: check the values below and move them above
-
 // SMART_ACTION_KILL_UNIT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.KILL_UNIT] = 'Kills the unit target instantly';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.KILL_UNIT] = '';
 
 // SMART_ACTION_ACTIVATE_TAXI
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ACTIVATE_TAXI] = 'Activates a taxipath of the given id for our (player) target.';
@@ -463,78 +463,84 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ACTIVATE_TAXI] = 'TaxiId';
 
 // SMART_ACTION_WP_START
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.WP_START] = 'Starts a waypoint using the `waypoints` table in the world database.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.WP_START] = 'Walk/run (0/1)';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.WP_START] = 'Waypoint entry';
-SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.WP_START] = 'Repeat path (0/1)';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.WP_START] = 'Run';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.WP_START] = 'Waypoint';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.WP_START] = 'Repeat';
 SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.WP_START] = 'QuestId';
-SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.WP_START] = 'Despawn time after path';
-SAI_ACTION_PARAM6_NAMES[SAI_ACTIONS.WP_START] = 'Reactstate';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.WP_START]  = 'If set to 0, the creature will follow the path walking at a normal speed. If set to anything above 0 it will be running at a higher speed.';
-SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.WP_START] = 'Entry of the `waypoints` (world database) table to follow.';
-SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.WP_START] = 'Repeat the path when the it\'s finished.';
-SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.WP_START] = 'Quest entry to give credit for once the path has finished. Will use the target type and take all player entities from this list.';
-SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.WP_START] = 'Time in milliseconds to wait after the path ended before we despawn.';
-SAI_ACTION_PARAM6_TOOLTIPS[SAI_ACTIONS.WP_START] = 'Reactstate that is set when the waypoint starts.';
+SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.WP_START] = 'DespawnTime';
+SAI_ACTION_PARAM6_NAMES[SAI_ACTIONS.WP_START] = 'ReactState';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.WP_START]  = '0 = the creature will follow the path walking at a normal speed; 1 = it will be running at a higher speed';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.WP_START] = 'waypoints.entry';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.WP_START] = 'Repeat the path when the it\'s finished';
+SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.WP_START] = 'Quest entry to give credit for once the path has finished. Will use the target type and take all player entities from this list';
+SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.WP_START] = 'Time in milliseconds to wait after the path ended before we despawn';
+SAI_ACTION_PARAM6_TOOLTIPS[SAI_ACTIONS.WP_START] = 'ReactState that is set when the waypoint starts';
 
 // SMART_ACTION_WP_PAUSE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.WP_PAUSE] = 'Pauses the waypoint path the creature is currently following for a specific time (milliseconds).';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.WP_PAUSE] = 'Time (ms)';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.WP_PAUSE] = 'Time';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.WP_PAUSE] = TIME_IN_MILLISECONDS;
 
 // SMART_ACTION_WP_STOP
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.WP_STOP] = 'Stops the waypoint path the creature is currently following. Also allows you to specify a despawn time from that point on as well as which quest id should be counted as \'fail\' (or not, based on the third parameter).';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.WP_STOP] = 'Despawn time (ms)';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.WP_STOP] = 'DespawnTime';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.WP_STOP] = 'QuestId';
-SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.WP_STOP] = 'Fail quest (0/1)';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.WP_STOP]  = 'Time in milliseconds after which the creature despawns when the path was stopped.';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.WP_STOP] = 'FailQuest';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.WP_STOP]  = 'Time in milliseconds after which the creature despawns when the path was stopped';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.WP_STOP] = 'Quest entry to count as \'failed\' (based on third parameter). Does not have to be set if third parameter is set to 0.';
 SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.WP_STOP] = 'If set to 1, we will mark the quest in parameter 2 to failed for our player targets.';
 
 // SMART_ACTION_ADD_ITEM
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ADD_ITEM] = 'Adds a certain item entry a specific amount of times to our player target.';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ADD_ITEM] = 'Adds item(s) to our player target.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ADD_ITEM] = 'ItemId';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.ADD_ITEM] = 'Count';
 
 // SMART_ACTION_REMOVE_ITEM
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.REMOVE_ITEM] = 'Removes a certain item entry a specific amount of times to our player target.';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.REMOVE_ITEM] = 'Removes item(s) from our player target.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.REMOVE_ITEM] = 'ItemId';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.REMOVE_ITEM] = 'Count';
 
 // SMART_ACTION_INSTALL_AI_TEMPLATE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.INSTALL_AI_TEMPLATE] = 'Installs a SmartAI template which are basically pre-defined scripts for scripts that are used in a lot of cases. Thing of casters with specific spells, passive, turrets, etc.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.INSTALL_AI_TEMPLATE] = 'Template entry';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.INSTALL_AI_TEMPLATE] = 'TemplateId';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.INSTALL_AI_TEMPLATE] = 'http://www.azerothcore.org/wiki/smart_scripts#predefined-sai-templates';
+// TODO
 
 // SMART_ACTION_SET_RUN
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_RUN] = 'Sets running flag on or off.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_RUN] = 'Off/on (0/1)';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_RUN] = 'On';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_RUN] = '0 = off; 1 = on';
 
 // SMART_ACTION_SET_FLY
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_FLY] = 'Sets flying flag on or off.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_FLY] = 'Off/on (0/1)';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_FLY] = SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_RUN];
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_FLY] = SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_RUN];
 
 // SMART_ACTION_SET_SWIM
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_SWIM] = 'Sets swimming flag on or off.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_SWIM] = 'Off/on (0/1)';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_SWIM] = SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_RUN];
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_SWIM] = SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_RUN];
 
 // SMART_ACTION_TELEPORT
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.TELEPORT] = 'Teleport target to a specific map using coordinates in the target X/Y/Z/O fields. Note: May NOT use SMART_TARGET_POSITION (8)!';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.TELEPORT] = 'Teleports the target to a specific map using coordinates in the target X/Y/Z/O fields. Note: May NOT use SMART_TARGET_POSITION (8)!';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.TELEPORT] = 'MapId';
 
 // SMART_ACTION_SET_COUNTER
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_COUNTER] = 'Stores a decimal variable (number) under a variable id to store information for the creature during runtime.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_COUNTER] = 'Variable id';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_COUNTER] = 'Decimal';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_COUNTER] = 'CounterId';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_COUNTER] = 'Value';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.SET_COUNTER] = 'Reset';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.SET_COUNTER] = 'can be 0 or 1';
 
 // SMART_ACTION_STORE_TARGET_LIST
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.STORE_TARGET_LIST] = 'Stores a list of targets under a variable id so it can later be read again.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.STORE_TARGET_LIST] = 'Variable id';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.STORE_TARGET_LIST] = 'VarId';
 
 // SMART_ACTION_WP_RESUME
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.WP_RESUME] = 'Resume the waypoint path the creature was previously following.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.WP_RESUME] = '';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.WP_RESUME] = 'Resumes the waypoint path the creature was previously following.';
 
 // SMART_ACTION_SET_ORIENTATION
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_ORIENTATION] = 'Sets the orientation of the creature to a given value. Must use SMART_TARGET_POSITION. If you, however, want the creature to face its spawn/home position, you can just use SMART_TARGET_SELF and leave all parameters at 0.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_ORIENTATION] = '';
 
 // SMART_ACTION_CREATE_TIMED_EVENT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CREATE_TIMED_EVENT] = 'Calls SMART_EVENT_UPDATE after a specific time with given parameters.';
@@ -544,23 +550,30 @@ SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.CREATE_TIMED_EVENT] = 'InitialMax';
 SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.CREATE_TIMED_EVENT] = 'RepeatMin';
 SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.CREATE_TIMED_EVENT] = 'RepeatMax';
 SAI_ACTION_PARAM6_NAMES[SAI_ACTIONS.CREATE_TIMED_EVENT] = 'Chance';
-SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.CREATE_TIMED_EVENT] = 'Only set this if the event repeats.';
-SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.CREATE_TIMED_EVENT] = 'Only set this if the event repeats.';
+SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.CREATE_TIMED_EVENT] = 'Set this ONLY if the event repeats';
+SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.CREATE_TIMED_EVENT] = SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.CREATE_TIMED_EVENT];
 
 // SMART_ACTION_PLAYMOVIE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.PLAYMOVIE] = 'Plays a movie of a given entry.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.PLAYMOVIE] = 'Movie entry';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.PLAYMOVIE] = 'MovieEntry';
 
 // SMART_ACTION_MOVE_TO_POS
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.MOVE_TO_POS] = 'Move to a given position using the target co-ordinate fields (target_x/target_y/target_z/target_o) with SMART_TARGET_POSITION. First parameter is an id which can be read using SMART_EVENT_MOVEMENTINFORM. Explanation in tooltip.';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.MOVE_TO_POS] = 'PointId is called by SMART_EVENT_MOVEMENTINFORM. Continue this action with the TARGET_TYPE column. Use any target_type, and use target_x, target_y, target_z as the coordinates; if an entity is specified as target and also coordinates are set (target x,y,z) those coordinates are handled as offset from the target\'s position';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.MOVE_TO_POS] = 'PointId';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.MOVE_TO_POS] = 'isTransport';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.MOVE_TO_POS] = 'isControlled';
+SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.MOVE_TO_POS] = 'ContactDistance';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.MOVE_TO_POS] = BOOLEAN_VALUE_TOOLTIP;
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.MOVE_TO_POS] = BOOLEAN_VALUE_TOOLTIP;
 
 // SMART_ACTION_RESPAWN_TARGET
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.RESPAWN_TARGET] = 'Respawns the target. Only works for gameobject target. Action does not actually respawn the target, it just sets the respawn time of the target, but this is how gameobject respawning is handled.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.RESPAWN_TARGET] = 'Respawn time (seconds)';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.RESPAWN_TARGET] = 'RespawnTime';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.RESPAWN_TARGET] = TIME_IN_MILLISECONDS;
 
 // SMART_ACTION_EQUIP
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.EQUIP] = 'Set the creature\'s equipment template to a certain entry. If no entry (first parameter) is set, it will set the three item entries which are ordered by slot (param3 is main-hand, param4 is off-hand, param5 is gun/bow/etc). The slotmask (param2) value is 0 by default and goes by bits, so if it\'s \'2\' it will only show the off-hand weapon (bits are 1, 2 and 4). Having 0 defaults to 7, so all slots.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.EQUIP] = 'Equip template entry';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.EQUIP] = 'EquipTemplateId';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.EQUIP] = 'Slotmask';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.EQUIP] = 'ItemId 1';
 SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.EQUIP] = 'ItemId 2';
@@ -573,7 +586,6 @@ SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.EQUIP] = 'ItemId three (gun/bow/etc. slot
 
 // SMART_ACTION_CLOSE_GOSSIP
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CLOSE_GOSSIP] = 'Closes the currently opened gossip to our player target.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CLOSE_GOSSIP] = '';
 
 // SMART_ACTION_TRIGGER_TIMED_EVENT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.TRIGGER_TIMED_EVENT] = 'Calls SMART_EVENT_TIMED_EVENT_TRIGGERED with a given id.';
@@ -581,23 +593,20 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.TRIGGER_TIMED_EVENT] = 'EventId';
 
 // SMART_ACTION_REMOVE_TIMED_EVENT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.REMOVE_TIMED_EVENT] = 'Interrupts the timed event called from SMART_ACTION_TRIGGER_TIMED_EVENT. 0 is NOT a proper value!';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.REMOVE_TIMED_EVENT] = '';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.REMOVE_TIMED_EVENT] = 'EventId';
 
 // SMART_ACTION_ADD_AURA
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ADD_AURA] = 'Adds an aura to our target.';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ADD_AURA] = 'Adds aura to player(s). Use target_type 17 to make AoE aura.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ADD_AURA] = 'SpellId';
 
 // SMART_ACTION_OVERRIDE_SCRIPT_BASE_OBJECT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.OVERRIDE_SCRIPT_BASE_OBJECT] = 'Overrides the current creature\'s/gameobject\'s script to a new source using the targettype. If more than one target is specified, the first on the list will be used.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.OVERRIDE_SCRIPT_BASE_OBJECT] = '';
 
 // SMART_ACTION_RESET_SCRIPT_BASE_OBJECT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.RESET_SCRIPT_BASE_OBJECT] = 'Resets the script of the source to its original state. Only useful after SMART_ACTION_OVERRIDE_SCRIPT_BASE_OBJECT was called (because we store the original guid when doing this).';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.RESET_SCRIPT_BASE_OBJECT] = '';
 
 // SMART_ACTION_CALL_SCRIPT_RESET
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CALL_SCRIPT_RESET] = 'Calls SMART_EVENT_RESET (only calls this, doesn\'t actually reset the creature/gameobject).';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_SCRIPT_RESET] = '';
 
 // SMART_ACTION_SET_RANGED_MOVEMENT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_RANGED_MOVEMENT] = 'Sets the creature\'s attack distance and angle to chase its target with. The distance (first parameter) is the minimum distance it will keep away from its target during combat.';
@@ -607,7 +616,8 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_RANGED_MOVEMENT] = 'AttackAngle';
 // SMART_ACTION_CALL_TIMED_ACTIONLIST
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] = 'Calls a script for the source with a given entry.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] = 'ScriptEntry';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] = 'Timer type (0/1/2)';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] = 'TimerType';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] = 'EntryOrGuid * 100 (entryorguid with 00 added after the entry, or 01, 02, 03 etc. for multiple action lists)';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] = 'The timer update type. If set to 0, the script will only occur out of combat. If set to 1, it will only occur during combat and if set to 2 it will always occur.';
 
 // SMART_ACTION_SET_NPC_FLAG
@@ -621,6 +631,10 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ADD_NPC_FLAG] = 'NpcFlags';
 // SMART_ACTION_REMOVE_NPC_FLAG
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.REMOVE_NPC_FLAG] = 'Removes npc flags of the target (using creature_template.npcflag)';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.REMOVE_NPC_FLAG] = 'NpcFlags';
+// TODO: flag selector?
+
+/*** Keira2 imports ***/
+// TODO: check the values below and move them above
 
 // SMART_ACTION_SIMPLE_TALK
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SIMPLE_TALK] = 'Functions the same as SMART_ACTION_TALK, except that it makes the player target say it. Does NOT trigger SMART_EVENT_TEXT_OVER.';
