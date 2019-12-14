@@ -755,20 +755,27 @@ SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.GO_SET_LOOT_STATE] = '0 - Not ready, 1 - 
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SEND_TARGET_TO_TARGET] = 'Sends a stored target id to our given target type. The id comes from SMART_ACTION_STORE_TARGET and can be used with SMART_TARGET_STORED';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SEND_TARGET_TO_TARGET] = 'TargetId';
 
-/*** Keira2 imports ***/
-// TODO: check the values below and move them above
-
 // SMART_ACTION_SET_HOME_POS
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_HOME_POS] = 'Sets the home position of the source to a new position. The home position is the position the creature runs to when evading/reseting/etc. Uses the target type to determine the new home position.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_HOME_POS] = '';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_HOME_POS] = 'Sets the home position of the source to a new position. ' +
+  'The home position is the position the creature runs to when evading/resetting/etc. Uses the target type to determine the new home position.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_HOME_POS] = 'FromDB';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_HOME_POS] = '0: if the target is a creature, set it\'s current position as it\'s new home position; ' +
+  'if the target is SMART_TARGET_POSITION, use this position as new home position for the actor\n' +
+  '1: if the target is a creature, reset it\'s home position to the one from the DB; ' +
+  'if the target is SMART_TARGET_POSITION, reset the actor\'s home position to the one from the DB (the actual values of the target position are ignored)';
 
 // SMART_ACTION_SET_HEALTH_REGEN
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_HEALTH_REGEN] = 'Turns the health regeneration of the creature on or off';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_HEALTH_REGEN] = 'Off/on (0/1)';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_HEALTH_REGEN] = 'On';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_HEALTH_REGEN] = BOOLEAN_VALUE_TOOLTIP;
 
 // SMART_ACTION_SET_ROOT
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_ROOT] = 'Roots or unroots the creature (or player target)';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_ROOT] = 'Unroot/root (0/1)';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_ROOT] = 'Roots or unroots the creature (or player target).';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_ROOT] = 'Root';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_ROOT] = BOOLEAN_VALUE_TOOLTIP;
+
+/*** Keira2 imports ***/
+// TODO: check the values below and move them above
 
 // SMART_ACTION_SET_GO_FLAG
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_GO_FLAG] = 'Sets the gameobject\'s flags to a specific value';
