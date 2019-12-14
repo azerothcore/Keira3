@@ -107,6 +107,7 @@
           <p class="sai-category-subtitle">
             {{ SAI_EVENTS[selectedEvent] }} <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [hidden]="!SAI_EVENT_TOOLTIPS[selectedEvent]"
             [tooltip]="SAI_EVENT_TOOLTIPS[selectedEvent]"
           ></i>
           </p>
@@ -116,6 +117,7 @@
               <label class="control-label">
                 {{ getName('param1', EVENT_PARAM1_NAMES[selectedEvent]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [hidden]="!EVENT_PARAM1_TOOLTIPS[selectedEvent]"
                 [tooltip]="EVENT_PARAM1_TOOLTIPS[selectedEvent]"
               ></i>
               </label>
@@ -131,6 +133,7 @@
               <label class="control-label">
                 {{ getName('param2', EVENT_PARAM2_NAMES[selectedEvent]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [hidden]="!EVENT_PARAM2_TOOLTIPS[selectedEvent]"
                 [tooltip]="EVENT_PARAM2_TOOLTIPS[selectedEvent]"
               ></i>
               </label>
@@ -146,6 +149,7 @@
               <label class="control-label">
                 {{ getName('param3', EVENT_PARAM3_NAMES[selectedEvent]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [hidden]="!EVENT_PARAM3_TOOLTIPS[selectedEvent]"
                 [tooltip]="EVENT_PARAM3_TOOLTIPS[selectedEvent]"
               ></i>
               </label>
@@ -161,6 +165,7 @@
               <label class="control-label">
                 {{ getName('param4', EVENT_PARAM4_NAMES[selectedEvent]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [hidden]="!EVENT_PARAM4_TOOLTIPS[selectedEvent]"
                 [tooltip]="EVENT_PARAM4_TOOLTIPS[selectedEvent]"
               ></i>
               </label>
@@ -178,6 +183,7 @@
           <p class="sai-category-subtitle">
             {{ SAI_ACTIONS[selectedAction] }} <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [hidden]="!SAI_ACTION_TOOLTIPS[selectedAction]"
             [tooltip]="SAI_ACTION_TOOLTIPS[selectedAction]"
           ></i>
           </p>
@@ -187,6 +193,7 @@
               <label class="control-label">
                 {{ getName('param1', ACTION_PARAM1_NAMES[selectedAction]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [hidden]="!ACTION_PARAM1_TOOLTIPS[selectedAction]"
                 [tooltip]="ACTION_PARAM1_TOOLTIPS[selectedAction]"
               ></i>
               </label>
@@ -202,6 +209,7 @@
               <label class="control-label">
                 {{ getName('param2', ACTION_PARAM2_NAMES[selectedAction]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [hidden]="!ACTION_PARAM2_TOOLTIPS[selectedAction]"
                 [tooltip]="ACTION_PARAM2_TOOLTIPS[selectedAction]"
               ></i>
               </label>
@@ -217,6 +225,7 @@
               <label class="control-label">
                 {{ getName('param3', ACTION_PARAM3_NAMES[selectedAction]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [hidden]="!ACTION_PARAM3_TOOLTIPS[selectedAction]"
                 [tooltip]="ACTION_PARAM3_TOOLTIPS[selectedAction]"
               ></i>
               </label>
@@ -232,6 +241,7 @@
               <label class="control-label">
                 {{ getName('param4', ACTION_PARAM4_NAMES[selectedAction]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [hidden]="!ACTION_PARAM4_TOOLTIPS[selectedAction]"
                 [tooltip]="ACTION_PARAM4_TOOLTIPS[selectedAction]"
               ></i>
               </label>
@@ -247,6 +257,7 @@
               <label class="control-label">
                 {{ getName('param5', ACTION_PARAM5_NAMES[selectedAction]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [hidden]="!ACTION_PARAM5_TOOLTIPS[selectedAction]"
                 [tooltip]="ACTION_PARAM5_TOOLTIPS[selectedAction]"
               ></i>
               </label>
@@ -262,6 +273,7 @@
               <label class="control-label">
                 {{ getName('param6', ACTION_PARAM6_NAMES[selectedAction]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [hidden]="!ACTION_PARAM6_TOOLTIPS[selectedAction]"
                 [tooltip]="ACTION_PARAM6_TOOLTIPS[selectedAction]"
               ></i>
               </label>
@@ -279,6 +291,7 @@
           <p class="sai-category-subtitle">
             {{ SAI_TARGETS[selectedTarget] }} <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [hidden]="!SAI_TARGET_TOOLTIPS[selectedTarget]"
             [tooltip]="SAI_TARGET_TOOLTIPS[selectedTarget]"
           ></i>
           </p>
@@ -289,6 +302,7 @@
               <label class="control-label">
                 {{ getName('param1', TARGET_PARAM1_NAMES[selectedTarget]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [hidden]="!TARGET_PARAM1_TOOLTIPS[selectedTarget]"
                 [tooltip]="TARGET_PARAM1_TOOLTIPS[selectedTarget]"
               ></i>
               </label>
@@ -304,6 +318,7 @@
               <label class="control-label">
                 {{ getName('param2', TARGET_PARAM2_NAMES[selectedTarget]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [hidden]="!TARGET_PARAM2_TOOLTIPS[selectedTarget]"
                 [tooltip]="TARGET_PARAM2_TOOLTIPS[selectedTarget]"
               ></i>
               </label>
@@ -319,6 +334,7 @@
               <label class="control-label">
                 {{ getName('param3', TARGET_PARAM3_NAMES[selectedTarget]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [hidden]="!TARGET_PARAM3_TOOLTIPS[selectedTarget]"
                 [tooltip]="TARGET_PARAM3_TOOLTIPS[selectedTarget]"
               ></i>
               </label>
@@ -334,6 +350,7 @@
               <label class="control-label">
                 {{ getName('param4', TARGET_PARAM4_NAMES[selectedTarget]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [hidden]="!TARGET_PARAM4_TOOLTIPS[selectedTarget]"
                 [tooltip]="TARGET_PARAM4_TOOLTIPS[selectedTarget]"
               ></i>
               </label>
