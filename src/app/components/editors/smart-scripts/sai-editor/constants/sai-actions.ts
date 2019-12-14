@@ -221,7 +221,7 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.OFFER_QUEST] = 'QuestId';
 // SMART_ACTION_SET_REACT_STATE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_REACT_STATE] = 'ReactState. Can be Passive (0), Defensive (1), Aggressive (2).';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_REACT_STATE] = 'ReactState';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_REACT_STATE] = '0 = Passive; 1 = Defensive; 2 = Aggressive';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_REACT_STATE] = '0 = Passive; 1 = Defensive; 2 = Aggressive';
 
 // SMART_ACTION_ACTIVATE_GOBJECT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ACTIVATE_GOBJECT] = 'Activate a gameobject (targets our target_type, so it must be a gameobject)';
