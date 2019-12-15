@@ -10,10 +10,9 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { SaiEditorModule } from '../../shared/sai-editor/sai-editor.module';
 import { SaiFullEditorComponent } from './sai-full-editor.component';
-import { SaiTopBarComponent } from '../sai-full-editor/sai-top-bar/sai-top-bar.component';
 
 @NgModule({
-  declarations: [SaiFullEditorComponent, SaiTopBarComponent],
+  declarations: [SaiFullEditorComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -22,7 +21,7 @@ import { SaiTopBarComponent } from '../sai-full-editor/sai-top-bar/sai-top-bar.c
     HighlightModule.forRoot(highlightOptions),
     TooltipModule.forRoot(),
     NgxDatatableModule,
-    SaiEditorModule
+    SaiEditorModule,
   ],
   exports: [SaiFullEditorComponent],
 })

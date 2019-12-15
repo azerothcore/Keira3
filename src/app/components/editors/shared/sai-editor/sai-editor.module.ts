@@ -3,13 +3,15 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { TooltipModule } from 'ngx-bootstrap';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { QueryOutputModule } from '../../shared/query-output/query-output.module';
 
+import { QueryOutputModule } from '../query-output/query-output.module';
 import { SaiEditorComponent } from './sai-editor.component';
+import { SaiTopBarComponent } from './sai-top-bar/sai-top-bar.component';
 
 @NgModule({
   declarations: [
-    SaiEditorComponent
+    SaiEditorComponent,
+    SaiTopBarComponent,
   ],
   imports: [
     BrowserModule,
@@ -18,6 +20,6 @@ import { SaiEditorComponent } from './sai-editor.component';
     TooltipModule.forRoot(),
     NgxDatatableModule,
   ],
-  exports: [SaiEditorComponent],
+  exports: [SaiEditorComponent, SaiTopBarComponent],
 })
 export class SaiEditorModule { }

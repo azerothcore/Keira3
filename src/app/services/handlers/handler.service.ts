@@ -17,7 +17,7 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
     super();
   }
 
-  select(isNew: boolean, id: string|number|Partial<T>, name?: string) {
+  select(isNew: boolean, id: string|number|Partial<T>, name?: string, navigate = true) {
     this.isNew = isNew;
 
     if (typeof id === 'object') {

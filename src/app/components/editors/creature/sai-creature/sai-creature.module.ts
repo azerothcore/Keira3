@@ -8,12 +8,12 @@ import { TopBarModule } from '../../shared/top-bar/top-bar.module';
 import { QueryOutputModule } from '../../shared/query-output/query-output.module';
 import { FlagsSelectorModule } from '../../shared/selectors/flags-selector/flags-selector.module';
 import { SingleValueSelectorModule } from '../../shared/selectors/single-value-selector/single-value-selector.module';
-import { CreatureSmartaiComponent } from './creature-smartai.component';
+import { SaiCreatureComponent } from './sai-creature.component';
 import { SaiEditorModule } from '../../shared/sai-editor/sai-editor.module';
 
 @NgModule({
   declarations: [
-    CreatureSmartaiComponent
+    SaiCreatureComponent
   ],
   imports: [
     BrowserModule,
@@ -27,7 +27,7 @@ import { SaiEditorModule } from '../../shared/sai-editor/sai-editor.module';
     SaiEditorModule
   ],
   exports: [
-    CreatureSmartaiComponent,
+    SaiCreatureComponent,
   ],
 })
-export class CreatureSmartaiModule {}
+export class SaiCreatureModule {}

@@ -13,7 +13,7 @@ import { CreatureSpawnModule } from './creature-spawn/creature-spawn.module';
 import { CreatureSpawnAddonModule } from './creature-spawn-addon/creature-spawn-addon.module';
 import { NpcVendorModule } from './npc-vendor/npc-vendor.module';
 import { CreatureQuestitemModule } from './creature-questitem/creature-questitem.module';
-import { CreatureSmartaiModule } from './creature-smartai/creature-smartai.module';
+import { SaiCreatureModule } from './sai-creature/sai-creature.module';
 
 const modules = [
   CreatureEquipTemplateModule,
@@ -29,7 +29,7 @@ const modules = [
   SkinningLootTemplateModule,
   CreatureSpawnModule,
   CreatureSpawnAddonModule,
-  CreatureSmartaiModule
+  SaiCreatureModule
 ];
 
 @NgModule({

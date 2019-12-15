@@ -61,7 +61,7 @@ import { ConditionsHandlerService } from '../services/handlers/conditions-handle
 import { SaiSearchExistingComponent } from '../components/editors/smart-scripts/sai-search-existing/sai-search-existing.component';
 import { SaiSearchEntityComponent } from '../components/editors/smart-scripts/sai-search-entity/sai-search-entity.component';
 import { SaiHandlerService } from '../services/handlers/sai-handler.service';
-import { CreatureSmartaiComponent } from '../components/editors/creature/creature-smartai/creature-smartai.component';
+import { SaiCreatureComponent } from '../components/editors/creature/sai-creature/sai-creature.component';
 import { SaiFullEditorComponent } from '../components/editors/smart-scripts/sai-full-editor/sai-full-editor.component';
 
 const routes: Routes = [
@@ -141,8 +141,8 @@ const routes: Routes = [
         canActivate: [CreatureHandlerService],
       },
       {
-        path: 'creature-smartai',
-        component: CreatureSmartaiComponent,
+        path: 'sai-creature',
+        component: SaiCreatureComponent,
         canActivate: [CreatureHandlerService],
       },
     ]

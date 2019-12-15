@@ -1,7 +1,6 @@
 import { Injectable, Optional } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { SAI_ID_FIELDS, SmartScripts } from '../../types/smart-scripts.type';
 import { QueryService } from '../query.service';
 import { SaiHandlerService } from './sai-handler.service';
 
@@ -18,8 +17,7 @@ export class SaiCreatureHandlerService extends SaiHandlerService {
     super(
       router,
       queryService,
-      'creature/creature-smartai'
+      'creature/sai-creature'
     );
   }
-
 }
