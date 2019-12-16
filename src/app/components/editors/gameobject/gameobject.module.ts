@@ -6,6 +6,7 @@ import { GameobjectTemplateAddonModule } from './gameobject-template-addon/gameo
 import { GameobjectQuestitemModule } from './gameobject-questitem/gameobject-questitem.module';
 import { GameobjectSpawnModule } from './gameobject-spawn/gameobject-spawn.module';
 import { GameobjectLootTemplateModule } from './gameobject-loot-template/gameobject-loot-template.module';
+import { SaiGameobjectModule } from './sai-gameobject/sai-gameobject.module';
 
 const modules = [
   SelectGameobjectModule,
@@ -14,6 +15,7 @@ const modules = [
   GameobjectQuestitemModule,
   GameobjectSpawnModule,
   GameobjectLootTemplateModule,
+  SaiGameobjectModule
 ];
 
 @NgModule({

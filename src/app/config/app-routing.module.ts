@@ -63,6 +63,7 @@ import { SaiSearchEntityComponent } from '../components/editors/smart-scripts/sa
 import { SaiHandlerService } from '../services/handlers/sai-handler.service';
 import { SaiCreatureComponent } from '../components/editors/creature/sai-creature/sai-creature.component';
 import { SaiFullEditorComponent } from '../components/editors/smart-scripts/sai-full-editor/sai-full-editor.component';
+import { SaiGameobjectComponent } from '../components/editors/gameobject/sai-gameobject/sai-gameobject.component';
 
 const routes: Routes = [
   {
@@ -226,6 +227,11 @@ const routes: Routes = [
       {
         path: 'gameobject-spawn',
         component: GameobjectSpawnComponent,
+        canActivate: [GameobjectHandlerService],
+      },
+      {
+        path: 'sai-gameobject',
+        component: SaiGameobjectComponent,
         canActivate: [GameobjectHandlerService],
       },
     ]
