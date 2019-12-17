@@ -60,8 +60,10 @@ import { SelectConditionsComponent } from '../components/editors/conditions/sele
 import { ConditionsHandlerService } from '../services/handlers/conditions-handler.service';
 import { SaiSearchExistingComponent } from '../components/editors/smart-scripts/sai-search-existing/sai-search-existing.component';
 import { SaiSearchEntityComponent } from '../components/editors/smart-scripts/sai-search-entity/sai-search-entity.component';
-import { SaiEditorComponent } from '../components/editors/smart-scripts/sai-editor/sai-editor.component';
 import { SaiHandlerService } from '../services/handlers/sai-handler.service';
+import { SaiCreatureComponent } from '../components/editors/creature/sai-creature/sai-creature.component';
+import { SaiFullEditorComponent } from '../components/editors/smart-scripts/sai-full-editor/sai-full-editor.component';
+import { SaiGameobjectComponent } from '../components/editors/gameobject/sai-gameobject/sai-gameobject.component';
 
 const routes: Routes = [
   {
@@ -137,6 +139,11 @@ const routes: Routes = [
       {
         path: 'creature-spawn-addon',
         component: CreatureSpawnAddonComponent,
+        canActivate: [CreatureHandlerService],
+      },
+      {
+        path: 'sai-creature',
+        component: SaiCreatureComponent,
         canActivate: [CreatureHandlerService],
       },
     ]
@@ -220,6 +227,11 @@ const routes: Routes = [
       {
         path: 'gameobject-spawn',
         component: GameobjectSpawnComponent,
+        canActivate: [GameobjectHandlerService],
+      },
+      {
+        path: 'sai-gameobject',
+        component: SaiGameobjectComponent,
         canActivate: [GameobjectHandlerService],
       },
     ]
@@ -309,7 +321,7 @@ const routes: Routes = [
       },
       {
         path: 'editor',
-        component: SaiEditorComponent,
+        component: SaiFullEditorComponent,
         canActivate: [SaiHandlerService],
       },
     ]
