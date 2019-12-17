@@ -17,7 +17,7 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
     super();
   }
 
-  select(isNew: boolean, id: string|number|Partial<T>, name?: string) {
+  select(isNew: boolean, id: string|number|Partial<T>, name?: string, navigate = true) {
     this.isNew = isNew;
 
     if (typeof id === 'object') {
@@ -28,7 +28,9 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
 
     this.selectedName = name;
 
-    this.router.navigate([this.mainEditorRoutePath]);
+    if (navigate) {
+      this.router.navigate([this.mainEditorRoutePath]);
+    }
   }
 
   canActivate(route: ActivatedRouteSnapshot): boolean {

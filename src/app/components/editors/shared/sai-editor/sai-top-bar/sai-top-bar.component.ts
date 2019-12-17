@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 import { SaiHandlerService } from '../../../../../services/handlers/sai-handler.service';
 import { SAI_SEARCH_TYPES, SmartScripts } from '../../../../../types/smart-scripts.type';
@@ -11,6 +11,8 @@ import { SubscriptionHandler } from '../../../../../utils/subscription-handler/s
 })
 export class SaiTopBarComponent extends SubscriptionHandler implements OnInit {
 
+  @Input() public handler: SaiHandlerService;
+
   private _selectedText: string;
 
   get selectedText() {
@@ -18,7 +20,6 @@ export class SaiTopBarComponent extends SubscriptionHandler implements OnInit {
   }
 
   constructor(
-    public handler: SaiHandlerService,
     public queryService: QueryService,
   ) {
     super();

@@ -17,8 +17,8 @@ export abstract class ComplexKeyHandlerService<T extends TableRow> extends Handl
     );
   }
 
-  select(isNew: boolean, id: Partial<T>) {
-    super.select(isNew, this.getIdObject(id));
+  select(isNew: boolean, id: Partial<T>, name = null, navigate = true) {
+    super.select(isNew, this.getIdObject(id), name, navigate);
   }
 
   private getIdObject(input: Partial<T> | T): Partial<T> {
