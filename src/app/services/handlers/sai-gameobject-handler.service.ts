@@ -1,4 +1,4 @@
-import { Injectable, Optional } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { QueryService } from '../query.service';
@@ -12,12 +12,10 @@ export class SaiGameobjectHandlerService extends SaiHandlerService {
   constructor(
     protected router: Router,
     protected queryService: QueryService,
-    @Optional() protected route: string,
   ) {
     super(
       router,
       queryService,
-      'gameobject/sai-gameobject'
     );
   }
 }

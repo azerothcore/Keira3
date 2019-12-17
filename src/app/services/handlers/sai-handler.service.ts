@@ -1,4 +1,4 @@
-import { Injectable, Optional } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { ComplexKeyHandlerService } from './complex-key.handler.service';
@@ -13,10 +13,9 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
   constructor(
     protected router: Router,
     protected queryService: QueryService,
-    @Optional() protected route: string,
   ) {
     super(
-      route ? route : 'smart-ai/editor',
+      'smart-ai/editor',
       router,
       SAI_ID_FIELDS,
     );

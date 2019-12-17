@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { HandlerService } from './handler.service';
 import { CreatureTemplate } from '../../types/creature-template.type';
 import { SaiCreatureHandlerService } from './sai-creature-handler.service';
-import { SmartScripts } from '../../types/smart-scripts.type';
 
 @Injectable({
   providedIn: 'root'
