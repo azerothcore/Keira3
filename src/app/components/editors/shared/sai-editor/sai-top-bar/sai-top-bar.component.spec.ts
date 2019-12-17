@@ -22,7 +22,7 @@ class TestHostComponent {
   constructor(public handlerService: SaiHandlerService) {}
 }
 
-fdescribe('SaiTopBarComponent', () => {
+describe('SaiTopBarComponent', () => {
   let host: TestHostComponent;
   let component: SaiTopBarComponent;
   let fixture: ComponentFixture<TestHostComponent>;
