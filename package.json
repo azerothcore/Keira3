@@ -55,7 +55,7 @@
     "@types/jasminewd2": "2.0.8",
     "@types/mocha": "5.2.7",
     "@types/mysql": "2.15.8",
-    "@types/node": "12.12.17",
+    "@types/node": "12.12.19",
     "@types/sqlstring": "2.2.1",
     "bootstrap": "4.4.1",
     "chai": "4.2.0",
