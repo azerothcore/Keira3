@@ -28,7 +28,9 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
 
     this.selectedName = name;
 
-    this.router.navigate([this.mainEditorRoutePath]);
+    if (navigate) {
+      this.router.navigate([this.mainEditorRoutePath]);
+    }
   }
 
   canActivate(route: ActivatedRouteSnapshot): boolean {

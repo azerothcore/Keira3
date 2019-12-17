@@ -8,14 +8,24 @@ import { SaiHandlerService } from '../../../../../services/handlers/sai-handler.
 import { PageObject } from '../../../../../test-utils/page-object';
 import { SAI_SEARCH_TYPES } from '../../../../../types/smart-scripts.type';
 import { QueryService } from '../../../../../services/query.service';
+import { Component, ViewChild } from '@angular/core';
 
-class SaiTopBarComponentPage extends PageObject<SaiTopBarComponent> {
+class SaiTopBarComponentPage extends PageObject<TestHostComponent> {
   get mainText() { return this.query<HTMLSpanElement>('.main-text'); }
 }
 
-describe('SaiTopBarComponent', () => {
+@Component({
+  template: '<app-sai-top-bar [handler]="handlerService"><</app-sai-top-bar>'
+})
+class TestHostComponent {
+  @ViewChild(SaiTopBarComponent, { static: true }) child: SaiTopBarComponent;
+  constructor(public handlerService: SaiHandlerService) {}
+}
+
+fdescribe('SaiTopBarComponent', () => {
+  let host: TestHostComponent;
   let component: SaiTopBarComponent;
-  let fixture: ComponentFixture<SaiTopBarComponent>;
+  let fixture: ComponentFixture<TestHostComponent>;
   let handler: SaiHandlerService;
   let page: SaiTopBarComponentPage;
   let querySpy: Spy;
@@ -25,7 +35,7 @@ describe('SaiTopBarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SaiTopBarComponent ],
+      declarations: [ TestHostComponent, SaiTopBarComponent ],
       imports: [
         RouterTestingModule,
       ]
@@ -38,8 +48,9 @@ describe('SaiTopBarComponent', () => {
     handler['_selected'] = JSON.stringify({ source_type: SAI_SEARCH_TYPES.SAI_TYPE_GAMEOBJECT, entryorguid });
     querySpy = spyOn(TestBed.get(QueryService), 'query');
 
-    fixture = TestBed.createComponent(SaiTopBarComponent);
-    component = fixture.componentInstance;
+    fixture = TestBed.createComponent(TestHostComponent);
+    host = fixture.componentInstance;
+    component = host.child;
     page = new SaiTopBarComponentPage(fixture);
   });
 
