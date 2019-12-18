@@ -74,7 +74,6 @@ export class SidebarComponent {
   }
 
   logout() {
-    localStorage.removeItem('config');
     window.location.reload();
   }
 }

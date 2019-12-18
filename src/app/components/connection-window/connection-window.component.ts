@@ -42,10 +42,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
         password: atob(this.configStorage.password),
         database: this.configStorage.database
       });
-
-      this.onConnect();
     }
-
   }
 
   onConnect() {
