@@ -5,6 +5,7 @@ import { version } from '../../../../package.json';
 
 import { MysqlService } from '../../services/mysql.service';
 import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
+import { Config } from '../../types/config.type.js';
 
 @Component({
   selector: 'app-connection-window',
@@ -14,6 +15,7 @@ import { SubscriptionHandler } from '../../utils/subscription-handler/subscripti
 export class ConnectionWindowComponent extends SubscriptionHandler implements OnInit {
 
   public readonly KEIRA_VERSION = version;
+  private configStorage: Config = JSON.parse(localStorage.getItem('config'));
   form: FormGroup;
   error: MysqlError;
 
@@ -31,15 +33,32 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
       'password': new FormControl('root'),
       'database': new FormControl('acore_world'),
     });
+
+    if (this.configStorage != null) {
+      this.form.setValue({
+        host: this.configStorage.host,
+        port: this.configStorage.port,
+        user: this.configStorage.user,
+        password: atob(this.configStorage.password),
+        database: this.configStorage.database
+      });
+
+      this.onConnect();
+    }
+
   }
 
   onConnect() {
+    this.configStorage = this.form.getRawValue();
+    this.configStorage.password = btoa(this.configStorage.password);
+    localStorage.setItem('config', JSON.stringify(this.configStorage));
+
     this.subscriptions.push(
       this.mysqlService.connect(this.form.getRawValue()).subscribe(() => {
         this.error = null;
       }, (error: MysqlError) => {
         this.error = error;
       })
-  );
+    );
   }
 }
