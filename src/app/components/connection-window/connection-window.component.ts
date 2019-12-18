@@ -6,6 +6,7 @@ import { version } from '../../../../package.json';
 import { MysqlService } from '../../services/mysql.service';
 import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
 import { Config } from '../../types/config.type.js';
+import { LocalstorageService } from '../../services/localstorage.service';
 
 @Component({
   selector: 'app-connection-window',
@@ -21,6 +22,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
 
   constructor(
     private mysqlService: MysqlService,
+    private localstorageService: LocalstorageService,
   ) {
     super();
   }
@@ -48,7 +50,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
   onConnect() {
     this.configStorage = this.form.getRawValue();
     this.configStorage.password = btoa(this.configStorage.password);
-    localStorage.setItem('config', JSON.stringify(this.configStorage));
+    this.localstorageService.setItem('config', JSON.stringify(this.configStorage));
 
     this.subscriptions.push(
       this.mysqlService.connect(this.form.getRawValue()).subscribe(() => {

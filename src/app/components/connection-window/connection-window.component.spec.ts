@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
 import { instance, reset } from 'ts-mockito';
 import { MysqlError } from 'mysql';
 import { of, throwError } from 'rxjs';
@@ -46,8 +46,11 @@ describe('ConnectionWindowComponent', () => {
     fixture.detectChanges();
   });
 
-  it('clicking on the connect button without altering the default values should correctly work', () => {
+  it('clicking on the connect button without altering the default values should correctly work', fakeAsync(() => {
+    component['localstorageService'].clear();
     component.error = { code: 'some previous error', errno: 1234 } as MysqlError;
+
+    tick(2000);
 
     page.clickElement(page.connectBtn);
 
@@ -61,7 +64,7 @@ describe('ConnectionWindowComponent', () => {
     });
     expect(component.error).toBeNull();
     expect(page.errorElement.innerHTML).not.toContain('error-box');
-  });
+  }));
 
   it('filling the form and clicking on the connect button should correctly work', () => {
     const host = '192.168.1.100';
