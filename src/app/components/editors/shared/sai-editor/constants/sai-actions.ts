@@ -135,7 +135,6 @@ export enum SAI_ACTIONS {
   // SPAWN_SPAWNGROUP                   = 131, // NOT SUPPORTED YET
   // DESPAWN_SPAWNGROUP                 = 132, // NOT SUPPORTED YET
   // RESPAWN_BY_SPAWNID                 = 133, // NOT SUPPORTED YET
-  // INVOKER_CAST                       = 134, // name conflicts
 
   // AC-only SmartActions:
   MOVE_TO_POS_TARGET = 201,
