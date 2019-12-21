@@ -33,6 +33,17 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
       'entryorguid',
       true,
     );
+
+    if (this.handlerService.templateQuery) {
+      this._fullQuery = `${this.handlerService.templateQuery}\n\n${this._fullQuery}`;
+    }
   }
 
+  protected updateDiffQuery(): void {
+    super.updateDiffQuery();
+
+    if (this.handlerService.templateQuery) {
+      this._diffQuery = `${this.handlerService.templateQuery}\n\n${this._diffQuery}`;
+    }
+  }
 }
