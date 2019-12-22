@@ -1,0 +1,15 @@
+<div class="alert-box">
+  <div class="modal-header">
+      <h4 class="modal-title">Confirm</h4>
+      <button type="button" class="close" aria-label="Close" (click)="bsModalRef.hide()">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+  <div class="modal-body">
+      Are you sure want to delete this node?
+  </div>
+  <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="onConfirm()">Yes</button>
+      <button type="button" class="btn btn-secondary" (click)="onCancel()">No</button>        
+  </div>
+</div>

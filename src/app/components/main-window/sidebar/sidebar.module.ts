@@ -10,10 +10,12 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 
 import { SidebarComponent } from './sidebar.component';
 import { LogoutBtnComponent } from './logout-btn.component';
+import { ModalConfirmComponent } from '../../editors/shared/modal-confirm/modal-confirm.component';
+import { ModalConfirmModule } from '../../editors/shared/modal-confirm/modal-confirm.module';
 
 @NgModule({
   entryComponents: [
-    LogoutBtnComponent,
+    ModalConfirmComponent
   ],
   declarations: [
     SidebarComponent,
@@ -24,6 +26,7 @@ import { LogoutBtnComponent } from './logout-btn.component';
     BrowserAnimationsModule,
     PerfectScrollbarModule,
     ModalModule.forRoot(),
+    ModalConfirmModule
   ],
   exports: [
     SidebarComponent,

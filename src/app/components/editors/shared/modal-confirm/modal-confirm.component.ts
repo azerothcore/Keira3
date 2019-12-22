@@ -1,43 +1,30 @@
-import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal';
+import { OnInit, Component } from '@angular/core';
+import { Subject } from 'rxjs';
 
-export abstract class ModalConfirmComponent {
+@Component({
+  selector: 'app-modal-confirm',
+  templateUrl: './modal-confirm.component.html',
+})
+export class ModalConfirmComponent implements OnInit {
 
-  protected result: boolean;
+    public onClose: Subject <boolean>;
+    title = 'test';
+    content = 'test content';
 
-  constructor(
-    protected modalService: BsModalService,
-    protected bsModalRef: BsModalRef,
-    public title: string,
-    public content: string
-  ) {}
+    constructor(private _bsModalRef: BsModalRef) {}
 
-  template = `
-  <div class="modal-header">
-    <h4 class="modal-title pull-left">{{ title }}</h4>
-    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    {{ content }}
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-primary" (click)="confirm()">Yes</button>
-    <button type="button" class="btn btn-secondary" (click)="decline()">No</button>
-  </div>
-`;
+    public ngOnInit(): void {
+        this.onClose = new Subject();
+    }
 
-  openModal() {
-    this.bsModalRef = this.modalService.show(this.template, { class: 'modal-sm' });
-  }
+    public onConfirm(): void {
+        this.onClose.next(true);
+        this._bsModalRef.hide();
+    }
 
-  confirm(): void {
-    this.result = true;
-    this.bsModalRef.hide();
-  }
-
-  decline(): void {
-    this.result = false;
-    this.bsModalRef.hide();
-  }
+    public onCancel(): void {
+        this.onClose.next(false);
+        this._bsModalRef.hide();
+    }
 }

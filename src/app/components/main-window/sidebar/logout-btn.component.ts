@@ -1,35 +1,31 @@
 import { Component } from '@angular/core';
 
-import { LocationService } from '../../../services/location.service';
 import { ModalConfirmComponent } from '../../editors/shared/modal-confirm/modal-confirm.component';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
+import { LocationService } from '../../../services/location.service';
 
 @Component({
   selector: 'app-logout-btn',
   templateUrl: './logout-btn.component.html',
 })
-export class LogoutBtnComponent extends ModalConfirmComponent {
+export class LogoutBtnComponent {
 
+  public modalRef: BsModalRef;
   constructor(
-    protected modalService: BsModalService,
-    protected bsModalRef: BsModalRef,
-    private locationService: LocationService,
-  ) {
-    super(
-      modalService,
-      bsModalRef,
-      'Logout',
-      'Are you sure you want to log out?'
-    );
+      private modalService: BsModalService,
+      private locationService: LocationService
+  ) { }
+
+  openModalConfirm() {
+    this.modalRef = this.modalService.show(ModalConfirmComponent);
+    this.modalRef.content.onClose.subscribe(result => {
+        console.log('results', result);
+        if (result) { this.logout(); }
+    });
   }
 
   logout() {
     this.locationService.reload();
-  }
-
-  confirm() {
-    this.logout();
-    this.bsModalRef.hide();
   }
 
 }
