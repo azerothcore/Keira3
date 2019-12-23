@@ -9,8 +9,8 @@ import { Subject } from 'rxjs';
 export class ModalConfirmComponent implements OnInit {
 
     public onClose: Subject <boolean>;
-    title = 'test';
-    content = 'test content';
+    title: string;
+    content: string;
 
     constructor(private _bsModalRef: BsModalRef) {}
 

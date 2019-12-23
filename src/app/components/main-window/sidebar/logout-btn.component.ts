@@ -17,10 +17,15 @@ export class LogoutBtnComponent {
   ) { }
 
   openModalConfirm() {
-    this.modalRef = this.modalService.show(ModalConfirmComponent);
+    const initialState = {
+      title: 'Logout',
+      content: 'Are you sure yopu want to logout?'
+    };
+    this.modalRef = this.modalService.show(ModalConfirmComponent, { initialState });
     this.modalRef.content.onClose.subscribe(result => {
-        console.log('results', result);
-        if (result) { this.logout(); }
+      if (result) {
+        this.logout();
+      }
     });
   }
 
