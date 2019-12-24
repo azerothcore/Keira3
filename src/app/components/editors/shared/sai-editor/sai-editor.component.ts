@@ -31,6 +31,8 @@ import {
   SAI_TARGET_PARAM4_NAMES,
   SAI_TARGET_PARAM4_TOOLTIPS, SAI_TARGET_TOOLTIPS, SAI_TARGETS, SAI_TARGETS_KEYS
 } from './constants/sai-targets';
+import { EVENT_PHASE_MASK } from '../../../../constants/flags/event-phase-mask';
+import { SMART_EVENT_FLAGS } from '../../../../constants/flags/smart-event-flags';
 
 @Component({
   selector: 'app-sai-editor',
@@ -39,6 +41,8 @@ import {
 })
 export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> {
 
+  public readonly EVENT_PHASE_MASK        = EVENT_PHASE_MASK;
+  public readonly SMART_EVENT_FLAGS       = SMART_EVENT_FLAGS;
   public readonly SAI_EVENTS              = SAI_EVENTS;
   public readonly SAI_EVENTS_KEYS         = SAI_EVENTS_KEYS;
   public readonly SAI_ACTIONS             = SAI_ACTIONS;
