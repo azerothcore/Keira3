@@ -13,6 +13,8 @@ import { MockedElectronService, MockedMysqlService } from '../test-utils/mocks';
 import { MysqlService } from '../services/mysql.service';
 import { ConnectionWindowComponent } from './connection-window/connection-window.component';
 import { QueryErrorComponent } from './editors/shared/query-output/query-error/query-error.component';
+import { ModalConfirmModule } from './editors/shared/modal-confirm/modal-confirm.module';
+import { LogoutBtnComponent } from './main-window/sidebar/logout-btn.component';
 
 describe('AppComponent', () => {
   let component: AppComponent;
@@ -26,6 +28,7 @@ describe('AppComponent', () => {
         AppComponent,
         SidebarComponent,
         QueryErrorComponent,
+        LogoutBtnComponent,
       ],
       imports: [
         FormsModule,
@@ -33,6 +36,7 @@ describe('AppComponent', () => {
         RouterTestingModule,
         BrowserAnimationsModule,
         PerfectScrollbarModule,
+        ModalConfirmModule,
       ],
       providers: [
         { provide : ElectronService, useValue: instance(MockedElectronService) },

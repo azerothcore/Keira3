@@ -6,7 +6,7 @@ import { version } from '../../../../package.json';
 import { MysqlService } from '../../services/mysql.service';
 import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
 import { Config } from '../../types/config.type.js';
-import { LocalstorageService } from '../../services/localstorage.service';
+import { LocalStorageService } from '../../services/localstorage.service';
 
 @Component({
   selector: 'app-connection-window',
@@ -16,18 +16,19 @@ import { LocalstorageService } from '../../services/localstorage.service';
 export class ConnectionWindowComponent extends SubscriptionHandler implements OnInit {
 
   public readonly KEIRA_VERSION = version;
-  private configStorage: Config = JSON.parse(localStorage.getItem('config'));
+  private configStorage: Config;
   form: FormGroup;
   error: MysqlError;
 
   constructor(
     private mysqlService: MysqlService,
-    private localstorageService: LocalstorageService,
+    private localstorageService: LocalStorageService,
   ) {
     super();
   }
 
   ngOnInit() {
+
     this.form = new FormGroup({
       'host': new FormControl('127.0.0.1'),
       'port': new FormControl('3306'),
@@ -36,13 +37,15 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
       'database': new FormControl('acore_world'),
     });
 
-    if (this.configStorage != null) {
+    this.configStorage = JSON.parse(localStorage.getItem('config'));
+
+    if (!!this.configStorage) {
       this.form.setValue({
         host: this.configStorage.host,
         port: this.configStorage.port,
         user: this.configStorage.user,
         password: atob(this.configStorage.password),
-        database: this.configStorage.database
+        database: this.configStorage.database,
       });
     }
   }

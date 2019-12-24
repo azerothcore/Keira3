@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
-import { LocalstorageService } from './localstorage.service';
+import { LocalStorageService } from './localstorage.service';
 
-describe('LocalstorageService', () => {
+describe('LocalStorageService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({});
 
@@ -10,7 +10,7 @@ describe('LocalstorageService', () => {
   });
 
   it('setitem should correctly work', () => {
-    const service: LocalstorageService = TestBed.get(LocalstorageService);
+    const service: LocalStorageService = TestBed.get(LocalStorageService);
 
     expect(localStorage.getItem('a')).not.toBe('b');
 
@@ -20,7 +20,7 @@ describe('LocalstorageService', () => {
   });
 
   it('clear should correctly work', () => {
-    const service: LocalstorageService = TestBed.get(LocalstorageService);
+    const service: LocalStorageService = TestBed.get(LocalStorageService);
 
     localStorage.setItem('a', 'b');
     expect(localStorage.getItem('a')).toBe('b');
