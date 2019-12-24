@@ -33,5 +33,5 @@ export const PHASE_MASK: Flag[] = [
   { bit: 29, name: 'Phase 29' },
   { bit: 30, name: 'Phase 30' },
   { bit: 31, name: 'Phase 31' },
-  { bit: 32, name: 'Phase 12' },
+  { bit: 32, name: 'Phase 32' },
 ];
