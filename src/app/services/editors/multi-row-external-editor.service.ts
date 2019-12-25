@@ -2,6 +2,7 @@ import { MultiRowEditorService } from './multi-row-editor.service';
 import { Class, TableRow } from '../../types/general';
 import { HandlerService } from '../handlers/handler.service';
 import { QueryService } from '../query.service';
+import { ToastrService } from 'ngx-toastr';
 
 // Used where none of the editor table's fields matches with the main entity ID. For example creature_addon (CreatureSpawnAddonService)
 
@@ -14,6 +15,7 @@ export abstract class MultiRowExternalEditorService<T extends TableRow> extends 
     protected _entitySecondIdField: string,
     protected handlerService: HandlerService<T>,
     protected queryService: QueryService,
+    protected toastr: ToastrService,
   ) {
     super(
       _entityClass,
@@ -22,6 +24,7 @@ export abstract class MultiRowExternalEditorService<T extends TableRow> extends 
       _entitySecondIdField,
       handlerService,
       queryService,
+      toastr,
     );
   }
 

@@ -5,6 +5,7 @@ import { QueryService } from '../query.service';
 import { EditorService } from './editor.service';
 import { HandlerService } from '../handlers/handler.service';
 import { getNumberOrString } from '../../utils/helpers';
+import { ToastrService } from 'ngx-toastr';
 
 export abstract class SingleRowEditorService<T extends TableRow> extends EditorService<T> {
   protected _originalValue: T;
@@ -18,8 +19,9 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     protected isMainEntity: boolean,
     protected handlerService: HandlerService<T>,
     protected queryService: QueryService,
+    protected toastr: ToastrService,
   ) {
-    super(_entityClass, _entityTable, _entityIdField, handlerService, queryService);
+    super(_entityClass, _entityTable, _entityIdField, handlerService, queryService, toastr);
     this.initForm();
   }
 

@@ -8,6 +8,7 @@ import {
 } from '../../../types/creature-template.type';
 import { QueryService } from '../../query.service';
 import { CreatureHandlerService } from '../../handlers/creature-handler.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,7 @@ export class CreatureTemplateService extends SingleRowEditorService<CreatureTemp
   constructor(
     protected handlerService: CreatureHandlerService,
     protected queryService: QueryService,
+    protected toastr: ToastrService,
   ) {
     super(
       CreatureTemplate,
@@ -27,6 +29,7 @@ export class CreatureTemplateService extends SingleRowEditorService<CreatureTemp
       true,
       handlerService,
       queryService,
+      toastr,
     );
   }
 }

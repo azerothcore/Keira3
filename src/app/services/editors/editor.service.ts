@@ -1,6 +1,7 @@
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { MysqlError } from 'mysql';
+import { ToastrService } from 'ngx-toastr';
 
 import { Class, MysqlResult, TableRow } from '../../types/general';
 import { QueryService } from '../query.service';
@@ -32,6 +33,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     protected _entityIdField: string,
     protected handlerService: HandlerService<T>,
     protected queryService: QueryService,
+    protected toastr: ToastrService,
   ) {
     super();
     this.fields = this.getClassAttributes(this._entityClass);
@@ -102,8 +104,10 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
       this.queryService.query<T>(query).subscribe(() => {
         this._error = null;
         this.reloadAfterSave();
+        this.toastr.success('Query executed successfully!', 'Success!');
       }, (error: MysqlError) => {
         this._error = error;
+        this.toastr.error('Error during the execution of the query!', 'Error!');
       }).add(() => {
         this._loading = false;
       })
