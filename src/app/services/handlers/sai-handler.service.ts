@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { ComplexKeyHandlerService } from './complex-key.handler.service';
-import { SAI_ID_FIELDS, SAI_SEARCH_TYPES, SmartScripts } from '../../types/smart-scripts.type';
+import { SAI_ID_FIELDS, SAI_TYPES, SmartScripts } from '../../types/smart-scripts.type';
 import { QueryService } from '../query.service';
 
 @Injectable({
@@ -53,13 +53,13 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
 
     switch (selected.source_type) {
 
-      case SAI_SEARCH_TYPES.SAI_TYPE_CREATURE:
+      case SAI_TYPES.SAI_TYPE_CREATURE:
         return `UPDATE \`creature_template\` SET \`AIName\` = 'SmartAI' WHERE \`entry\` = ${selected.entryorguid};`;
 
-      case SAI_SEARCH_TYPES.SAI_TYPE_GAMEOBJECT:
+      case SAI_TYPES.SAI_TYPE_GAMEOBJECT:
         return `UPDATE \`gameobject_template\` SET \`AIName\` = 'SmartGameObjectAI' WHERE \`entry\` = ${selected.entryorguid};`;
 
-      case SAI_SEARCH_TYPES.SAI_TYPE_AREATRIGGER:
+      case SAI_TYPES.SAI_TYPE_AREATRIGGER:
         return `DELETE FROM \`areatrigger_scripts\` WHERE \`entry\` = ${selected.entryorguid};\n` +
           `INSERT INTO \`areatrigger_scripts\` (\`entry\`, \`ScriptName\`) VALUES (${selected.entryorguid}, 'SmartTrigger');`;
 

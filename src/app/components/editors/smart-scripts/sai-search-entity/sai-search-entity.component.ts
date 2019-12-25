@@ -2,7 +2,7 @@ import { Component, } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { SaiHandlerService } from '../../../../services/handlers/sai-handler.service';
-import { SAI_SEARCH_TYPES, SAI_SEARCH_TYPES_KEYS } from '../../../../types/smart-scripts.type';
+import { SAI_TYPES, SAI_TYPES_KEYS } from '../../../../types/smart-scripts.type';
 
 @Component({
   selector: 'app-sai-search-entity',
@@ -11,8 +11,8 @@ import { SAI_SEARCH_TYPES, SAI_SEARCH_TYPES_KEYS } from '../../../../types/smart
 })
 export class SaiSearchEntityComponent {
 
-  public readonly SAI_SEARCH_TYPES = SAI_SEARCH_TYPES;
-  public readonly SAI_SEARCH_TYPES_KEYS = SAI_SEARCH_TYPES_KEYS;
+  public readonly SAI_SEARCH_TYPES = SAI_TYPES;
+  public readonly SAI_SEARCH_TYPES_KEYS = SAI_TYPES_KEYS;
 
   public readonly form = new FormGroup({
     'source_type': new FormControl(null, [Validators.required]),
@@ -20,11 +20,11 @@ export class SaiSearchEntityComponent {
   });
 
   get typeCreatureSelected(): boolean {
-    return this.sourceTypeControl.value === SAI_SEARCH_TYPES.SAI_TYPE_CREATURE;
+    return this.sourceTypeControl.value === SAI_TYPES.SAI_TYPE_CREATURE;
   }
 
   get typeGameobjectSelected(): boolean {
-    return this.sourceTypeControl.value === SAI_SEARCH_TYPES.SAI_TYPE_GAMEOBJECT;
+    return this.sourceTypeControl.value === SAI_TYPES.SAI_TYPE_GAMEOBJECT;
   }
 
   get sourceTypeControl(): AbstractControl {
