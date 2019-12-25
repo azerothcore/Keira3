@@ -72,7 +72,7 @@ describe('ConnectionWindowComponent', () => {
       'host': '127.0.0.1',
       'port': '3306',
       'user': 'Helias',
-      'password': btoa('root'),
+      'keira3String': btoa('root'),
       'database': 'shin_world',
     };
 

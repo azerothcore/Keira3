@@ -44,15 +44,21 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
         host: this.configStorage.host,
         port: this.configStorage.port,
         user: this.configStorage.user,
-        password: atob(this.configStorage.password),
+        password: atob(this.configStorage.keira3String),
         database: this.configStorage.database,
       });
     }
   }
 
   onConnect() {
-    this.configStorage = this.form.getRawValue();
-    this.configStorage.password = btoa(this.configStorage.password);
+    const tmpValues = this.form.getRawValue();
+    this.configStorage = {
+      host: tmpValues.host,
+      port: tmpValues.port,
+      user: tmpValues.user,
+      keira3String: btoa(tmpValues.password),
+      database: tmpValues.database,
+    };
     this.localstorageService.setItem('config', JSON.stringify(this.configStorage));
 
     this.subscriptions.push(

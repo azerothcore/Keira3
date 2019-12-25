@@ -2,6 +2,6 @@ export class Config {
   host: string;
   port: string;
   user: string;
-  password: string;
+  keira3String: string;
   database: string;
 }
