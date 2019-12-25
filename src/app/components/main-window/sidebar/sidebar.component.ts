@@ -10,6 +10,7 @@ import { ItemHandlerService } from '../../../services/handlers/item-handler.serv
 import { GossipHandlerService } from '../../../services/handlers/gossip-handler.service';
 import { ConditionsHandlerService } from '../../../services/handlers/conditions-handler.service';
 import { SaiHandlerService } from '../../../services/handlers/sai-handler.service';
+import { LocationService } from '../../../services/location.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -45,6 +46,7 @@ export class SidebarComponent {
     public gossipHandlerService: GossipHandlerService,
     public conditionsHandlerService: ConditionsHandlerService,
     public saiHandlerService: SaiHandlerService,
+    private locationService: LocationService,
   ) {
    }
 
@@ -71,5 +73,9 @@ export class SidebarComponent {
         this.menuStates[key] = 'up';
       }
     }
+  }
+
+  logout() {
+    this.locationService.reload();
   }
 }

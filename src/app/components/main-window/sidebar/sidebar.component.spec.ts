@@ -9,6 +9,7 @@ import { MysqlService } from '../../../services/mysql.service';
 import { PageObject } from '../../../test-utils/page-object';
 import { SidebarService } from './sidebar.service';
 import { SidebarModule } from './sidebar.module';
+import { LocationService } from '../../../services/location.service';
 
 class SidebarComponentPage extends PageObject<SidebarComponent> {
   get toggleSidebarBtn() { return this.query<HTMLButtonElement>('.sidebar-button'); }
@@ -77,6 +78,14 @@ describe('SidebarComponent', () => {
         expect(component.menuStates[key]).toEqual('up');
       }
     }
+  });
+
+  it('reload the app on logout', () => {
+    const reloadSpy = spyOn(TestBed.get(LocationService), 'reload');
+
+    component.logout();
+
+    expect(reloadSpy).toHaveBeenCalledTimes(1);
   });
 
   afterEach(() => {

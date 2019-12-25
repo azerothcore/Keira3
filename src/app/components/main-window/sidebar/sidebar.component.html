@@ -28,6 +28,9 @@
             <i class="fa fa-circle connection-status" [ngClass]="mysqlService.getConnectionState()"></i>
             <span>{{ mysqlService.getConnectionState() | titlecase }}</span>
           </span>
+          <span>
+            <app-logout-btn></app-logout-btn>
+          </span>
         </div>
       </div>
 
