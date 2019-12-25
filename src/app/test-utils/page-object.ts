@@ -1,5 +1,4 @@
 import { ComponentFixture } from '@angular/core/testing';
-import { LocalStorageService } from '../services/localstorage.service';
 
 export abstract class PageObject<ComponentType> {
   public readonly DT_SELECTOR = 'ngx-datatable';

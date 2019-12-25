@@ -3,29 +3,52 @@ import { TestBed } from '@angular/core/testing';
 import { LocalStorageService } from './localstorage.service';
 
 describe('LocalStorageService', () => {
+  let service: LocalStorageService;
+
   beforeEach(() => {
     TestBed.configureTestingModule({});
 
-    localStorage.clear();
+    service = TestBed.get(LocalStorageService);
+    service.clear();
   });
 
-  it('setitem should correctly work', () => {
-    const service: LocalStorageService = TestBed.get(LocalStorageService);
-
-    expect(localStorage.getItem('a')).not.toBe('b');
+  it('setItem should correctly work', () => {
+    expect(service.getItem('a')).not.toBe('b');
 
     service.setItem('a', 'b');
 
-    expect(localStorage.getItem('a')).toBe('b');
+    expect(service.getItem('a')).toBe('b');
   });
 
-  it('clear should correctly work', () => {
-    const service: LocalStorageService = TestBed.get(LocalStorageService);
+  it('getItem should correctly work', () => {
+    service.setItem('a', 'b');
+    expect(service.getItem('a')).toBe('b');
+  });
 
-    localStorage.setItem('a', 'b');
-    expect(localStorage.getItem('a')).toBe('b');
+  it('removeItem should correctly work', () => {
+    service.setItem('a', 'b');
+    expect(service.getItem('a')).toBe('b');
+
+    service.removeItem('a');
+    expect(service.getItem('a')).not.toBe('b');
+    expect(service.getItem('a')).toBeNull();
+  });
+
+  it('key() should correctly work', () => {
+    service.clear();
+
+    service.setItem('a', 'b');
+
+    expect(service.key(0)).toBe('a');
+    expect(service.key(1)).toBeNull();
+  });
+
+
+  it('clear should correctly work', () => {
+    service.setItem('a', 'b');
+    expect(service.getItem('a')).toBe('b');
 
     service.clear();
-    expect(localStorage.getItem('a')).not.toBe('b');
+    expect(service.getItem('a')).not.toBe('b');
   });
 });
