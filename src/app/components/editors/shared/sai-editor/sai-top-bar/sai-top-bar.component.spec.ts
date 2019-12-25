@@ -6,7 +6,7 @@ import Spy = jasmine.Spy;
 import { SaiTopBarComponent } from './sai-top-bar.component';
 import { SaiHandlerService } from '../../../../../services/handlers/sai-handler.service';
 import { PageObject } from '../../../../../test-utils/page-object';
-import { SAI_SEARCH_TYPES } from '../../../../../types/smart-scripts.type';
+import { SAI_TYPES } from '../../../../../types/smart-scripts.type';
 import { QueryService } from '../../../../../services/query.service';
 import { Component, ViewChild } from '@angular/core';
 
@@ -45,7 +45,7 @@ describe('SaiTopBarComponent', () => {
 
   beforeEach(() => {
     handler = TestBed.get(SaiHandlerService);
-    handler['_selected'] = JSON.stringify({ source_type: SAI_SEARCH_TYPES.SAI_TYPE_GAMEOBJECT, entryorguid });
+    handler['_selected'] = JSON.stringify({ source_type: SAI_TYPES.SAI_TYPE_GAMEOBJECT, entryorguid });
     querySpy = spyOn(TestBed.get(QueryService), 'query');
 
     fixture = TestBed.createComponent(TestHostComponent);
@@ -65,12 +65,12 @@ describe('SaiTopBarComponent', () => {
   });
 
   for (const { testId, type, positive, expected } of [
-    { testId: 1, type: SAI_SEARCH_TYPES.SAI_TYPE_AREATRIGGER, positive: true, expected: `Areatrigger ID ${entryorguid}` },
-    { testId: 2, type: SAI_SEARCH_TYPES.SAI_TYPE_TIMED_ACTIONLIST, positive: true, expected: `Timed Actionlist ID ${entryorguid}` },
-    { testId: 3, type: SAI_SEARCH_TYPES.SAI_TYPE_GAMEOBJECT, positive: true, expected: `Gameobject ID ${entryorguid}` },
-    { testId: 4, type: SAI_SEARCH_TYPES.SAI_TYPE_GAMEOBJECT, positive: false, expected: `Gameobject GUID ${entryorguid}` },
-    { testId: 5, type: SAI_SEARCH_TYPES.SAI_TYPE_CREATURE, positive: true, expected: `Creature ID ${entryorguid}` },
-    { testId: 6, type: SAI_SEARCH_TYPES.SAI_TYPE_CREATURE, positive: false, expected: `Creature GUID ${entryorguid}` },
+    { testId: 1, type: SAI_TYPES.SAI_TYPE_AREATRIGGER, positive: true, expected: `Areatrigger ID ${entryorguid}` },
+    { testId: 2, type: SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST, positive: true, expected: `Timed Actionlist ID ${entryorguid}` },
+    { testId: 3, type: SAI_TYPES.SAI_TYPE_GAMEOBJECT, positive: true, expected: `Gameobject ID ${entryorguid}` },
+    { testId: 4, type: SAI_TYPES.SAI_TYPE_GAMEOBJECT, positive: false, expected: `Gameobject GUID ${entryorguid}` },
+    { testId: 5, type: SAI_TYPES.SAI_TYPE_CREATURE, positive: true, expected: `Creature ID ${entryorguid}` },
+    { testId: 6, type: SAI_TYPES.SAI_TYPE_CREATURE, positive: false, expected: `Creature GUID ${entryorguid}` },
   ]) {
     it(`should correctly handle different types [${testId}]`, () => {
       querySpy.and.returnValue(of({ results: [{ name }] }));
@@ -83,7 +83,7 @@ describe('SaiTopBarComponent', () => {
 
   describe('after fetching the creature name', () => {
     beforeEach(() => {
-      handler['_selected'] = JSON.stringify({ source_type: SAI_SEARCH_TYPES.SAI_TYPE_CREATURE, entryorguid });
+      handler['_selected'] = JSON.stringify({ source_type: SAI_TYPES.SAI_TYPE_CREATURE, entryorguid });
     });
 
     it('should correctly show the name', fakeAsync(() => {

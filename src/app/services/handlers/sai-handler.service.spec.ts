@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SaiHandlerService } from './sai-handler.service';
 import { QueryService } from '../query.service';
 import { of } from 'rxjs';
-import { SAI_SEARCH_TYPES } from '../../types/smart-scripts.type';
+import { SAI_TYPES } from '../../types/smart-scripts.type';
 import { Router } from '@angular/router';
 
 describe('SaiHandlerService', () => {
@@ -41,28 +41,28 @@ describe('SaiHandlerService', () => {
 
   for (const { sourceType, id, expectedQuery } of [
     {
-      sourceType: SAI_SEARCH_TYPES.SAI_TYPE_CREATURE,
+      sourceType: SAI_TYPES.SAI_TYPE_CREATURE,
       id: entry,
       expectedQuery: `UPDATE \`creature_template\` SET \`AIName\` = 'SmartAI' WHERE \`entry\` = ${entry};`,
     },
     {
-      sourceType: SAI_SEARCH_TYPES.SAI_TYPE_GAMEOBJECT,
+      sourceType: SAI_TYPES.SAI_TYPE_GAMEOBJECT,
       id: entry,
       expectedQuery: `UPDATE \`gameobject_template\` SET \`AIName\` = 'SmartGameObjectAI' WHERE \`entry\` = ${entry};`,
     },
     {
-      sourceType: SAI_SEARCH_TYPES.SAI_TYPE_AREATRIGGER,
+      sourceType: SAI_TYPES.SAI_TYPE_AREATRIGGER,
       id: entry,
       expectedQuery: `DELETE FROM \`areatrigger_scripts\` WHERE \`entry\` = ${entry};\n` +
         `INSERT INTO \`areatrigger_scripts\` (\`entry\`, \`ScriptName\`) VALUES (${entry}, 'SmartTrigger');`,
     },
     {
-      sourceType: SAI_SEARCH_TYPES.SAI_TYPE_TIMED_ACTIONLIST,
+      sourceType: SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST,
       id: entry,
       expectedQuery: null,
     },
     {
-      sourceType: SAI_SEARCH_TYPES.SAI_TYPE_CREATURE,
+      sourceType: SAI_TYPES.SAI_TYPE_CREATURE,
       id: -entry,
       expectedQuery: null,
     },

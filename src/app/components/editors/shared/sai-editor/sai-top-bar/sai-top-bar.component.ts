@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 
 import { SaiHandlerService } from '../../../../../services/handlers/sai-handler.service';
-import { SAI_SEARCH_TYPES, SmartScripts } from '../../../../../types/smart-scripts.type';
+import { SAI_TYPES, SmartScripts } from '../../../../../types/smart-scripts.type';
 import { QueryService } from '../../../../../services/query.service';
 import { SubscriptionHandler } from '../../../../../utils/subscription-handler/subscription-handler';
 
@@ -30,20 +30,20 @@ export class SaiTopBarComponent extends SubscriptionHandler implements OnInit {
 
     switch (selected.source_type) {
 
-      case SAI_SEARCH_TYPES.SAI_TYPE_CREATURE:
+      case SAI_TYPES.SAI_TYPE_CREATURE:
         this._selectedText = `Creature ${this.getGuidOrIdText(selected.entryorguid)}`;
         this.appendCreatureName(selected.entryorguid);
         break;
 
-      case SAI_SEARCH_TYPES.SAI_TYPE_GAMEOBJECT:
+      case SAI_TYPES.SAI_TYPE_GAMEOBJECT:
         this._selectedText = `Gameobject ${this.getGuidOrIdText(selected.entryorguid)}`;
         break;
 
-      case SAI_SEARCH_TYPES.SAI_TYPE_AREATRIGGER:
+      case SAI_TYPES.SAI_TYPE_AREATRIGGER:
         this._selectedText = `Areatrigger ID ${selected.entryorguid}`;
         break;
 
-      case SAI_SEARCH_TYPES.SAI_TYPE_TIMED_ACTIONLIST:
+      case SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST:
         this._selectedText = `Timed Actionlist ID ${selected.entryorguid}`;
         break;
 
