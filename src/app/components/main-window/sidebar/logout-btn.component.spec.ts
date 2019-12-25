@@ -50,6 +50,6 @@ describe('LogoutBtnComponent', () => {
   it('logout() should correctly work', () => {
     const locationServiceSpy: Spy = spyOn(TestBed.get(LocationService), 'reload');
     component.logout();
-    expect(locationServiceSpy).toHaveBeenCalled();
+    expect(locationServiceSpy).toHaveBeenCalledTimes(1);
   });
 });

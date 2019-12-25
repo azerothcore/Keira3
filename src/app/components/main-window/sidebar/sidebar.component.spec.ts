@@ -83,8 +83,8 @@ describe('SidebarComponent', () => {
   it('reload the app on logout', () => {
     const reloadSpy = spyOn(TestBed.get(LocationService), 'reload');
 
-    expect(reloadSpy).not.toHaveBeenCalled();
     component.logout();
+
     expect(reloadSpy).toHaveBeenCalledTimes(1);
   });
 

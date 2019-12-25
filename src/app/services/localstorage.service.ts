@@ -5,24 +5,30 @@ import { Injectable } from '@angular/core';
 })
 export class LocalStorageService implements Storage {
 
-  readonly length: number;
+  private storage = localStorage;
+  [name: string]: any;
+
+  get length(): number {
+    return this.storage.length;
+  }
+
   key(index: number): string | null {
-    return localStorage.key(index);
+    return this.storage.key(index);
   }
 
   setItem(key: string, value: string) {
-    localStorage.setItem(key, value);
+    this.storage.setItem(key, value);
   }
 
   getItem(key: string) {
-    return localStorage.getItem(key);
+    return this.storage.getItem(key);
   }
 
   removeItem(key: string) {
-    localStorage.removeItem(key);
+    this.storage.removeItem(key);
   }
 
   clear() {
-    localStorage.clear();
+    this.storage.clear();
   }
 }
