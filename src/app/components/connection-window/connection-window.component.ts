@@ -5,7 +5,7 @@ import { version } from '../../../../package.json';
 
 import { MysqlService } from '../../services/mysql.service';
 import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
-import { Config } from '../../types/config.type.js';
+import { Config } from '../../types/config.type';
 import { LocalStorageService } from '../../services/localstorage.service';
 
 @Component({
