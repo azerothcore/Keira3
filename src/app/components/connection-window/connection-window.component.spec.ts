@@ -51,7 +51,7 @@ describe('ConnectionWindowComponent', () => {
     TestBed.get(LocalStorageService).clear();
     component.error = { code: 'some previous error', errno: 1234 } as MysqlError;
 
-    tick(2000);
+    tick();
 
     page.clickElement(page.connectBtn);
 
@@ -81,7 +81,7 @@ describe('ConnectionWindowComponent', () => {
 
     component.error = { code: 'some previous error', errno: 1234 } as MysqlError;
 
-    tick(2000);
+    tick();
 
     page.clickElement(page.connectBtn);
 
