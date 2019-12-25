@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 
-import { ModalConfirmComponent } from '../../editors/shared/modal-confirm/modal-confirm.component';
+import { ModalConfirmComponent } from '../../../editors/shared/modal-confirm/modal-confirm.component';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
-import { LocationService } from '../../../services/location.service';
-import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
+import { LocationService } from '../../../../services/location.service';
+import { SubscriptionHandler } from '../../../../utils/subscription-handler/subscription-handler';
 
 @Component({
   selector: 'app-logout-btn',

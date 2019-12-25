@@ -9,7 +9,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 };
 
 import { SidebarComponent } from './sidebar.component';
-import { LogoutBtnComponent } from './logout-btn.component';
+import { LogoutBtnComponent } from './logout-btn/logout-btn.component';
 import { ModalConfirmComponent } from '../../editors/shared/modal-confirm/modal-confirm.component';
 import { ModalConfirmModule } from '../../editors/shared/modal-confirm/modal-confirm.module';
 

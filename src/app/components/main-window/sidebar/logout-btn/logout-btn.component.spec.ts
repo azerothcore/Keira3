@@ -2,10 +2,10 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import Spy = jasmine.Spy;
 
 import { LogoutBtnComponent } from './logout-btn.component';
-import { LocationService } from '../../../services/location.service';
+import { LocationService } from '../../../../services/location.service';
 import { ModalModule, BsModalService } from 'ngx-bootstrap';
 import { NgModule } from '@angular/core';
-import { ModalConfirmComponent } from '../../editors/shared/modal-confirm/modal-confirm.component';
+import { ModalConfirmComponent } from '../../../editors/shared/modal-confirm/modal-confirm.component';
 
 @NgModule({
   declarations: [ ModalConfirmComponent ],

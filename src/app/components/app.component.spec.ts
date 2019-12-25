@@ -14,7 +14,7 @@ import { MysqlService } from '../services/mysql.service';
 import { ConnectionWindowComponent } from './connection-window/connection-window.component';
 import { QueryErrorComponent } from './editors/shared/query-output/query-error/query-error.component';
 import { ModalConfirmModule } from './editors/shared/modal-confirm/modal-confirm.module';
-import { LogoutBtnComponent } from './main-window/sidebar/logout-btn.component';
+import { LogoutBtnComponent } from './main-window/sidebar/logout-btn/logout-btn.component';
 
 describe('AppComponent', () => {
   let component: AppComponent;
