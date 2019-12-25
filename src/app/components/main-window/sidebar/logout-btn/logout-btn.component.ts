@@ -8,6 +8,7 @@ import { SubscriptionHandler } from '../../../../utils/subscription-handler/subs
 @Component({
   selector: 'app-logout-btn',
   templateUrl: './logout-btn.component.html',
+  styleUrls: ['./logout-btn.component.scss'],
 })
 export class LogoutBtnComponent extends SubscriptionHandler {
 
