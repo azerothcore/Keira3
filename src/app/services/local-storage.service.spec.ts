@@ -43,29 +43,29 @@ describe('LocalStorageService', () => {
 
     it('clear', inject([LocalStorageService], (service: LocalStorageService) => {
       service.clear();
-      expect(spyClear).toHaveBeenCalled();
+      expect(spyClear).toHaveBeenCalledTimes(1);
     }));
 
     it('getItem', inject([LocalStorageService], (service: LocalStorageService) => {
       spyGetItem.and.returnValue(value);
       expect(service.getItem(key)).toEqual(value);
-      expect(spyGetItem).toHaveBeenCalled();
+      expect(spyGetItem).toHaveBeenCalledTimes(1);
     }));
 
     it('key', inject([LocalStorageService], (service: LocalStorageService) => {
       spyKey.and.returnValue(value);
       expect(service.key(1)).toEqual(value);
-      expect(spyKey).toHaveBeenCalled();
+      expect(spyKey).toHaveBeenCalledTimes(1);
     }));
 
     it('removeItem', inject([LocalStorageService], (service: LocalStorageService) => {
       service.removeItem(key);
-      expect(spyRemoveItem).toHaveBeenCalled();
+      expect(spyRemoveItem).toHaveBeenCalledTimes(1);
     }));
 
     it('setItem', inject([LocalStorageService], (service: LocalStorageService) => {
       service.setItem(key, value);
-      expect(spySetItem).toHaveBeenCalled();
+      expect(spySetItem).toHaveBeenCalledTimes(1);
     }));
   });
 });
