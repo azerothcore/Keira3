@@ -9,7 +9,7 @@ import { MockedMysqlService } from '../../test-utils/mocks';
 import { MysqlService } from '../../services/mysql.service';
 import { PageObject } from '../../test-utils/page-object';
 import { ConnectionWindowModule } from './connection-window.module';
-import { LocalStorageService } from '../../services/localstorage.service';
+import { LocalStorageService } from '../../services/local-storage.service';
 
 class ConnectionWindowComponentPage extends PageObject<ConnectionWindowComponent> {
   get hostInput() { return this.query<HTMLInputElement>('#host'); }

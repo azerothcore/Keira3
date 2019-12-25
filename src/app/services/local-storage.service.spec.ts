@@ -1,7 +1,7 @@
 import { TestBed, inject } from '@angular/core/testing';
 
 import Spy = jasmine.Spy;
-import { LocalStorageService } from './localstorage.service';
+import { LocalStorageService } from './local-storage.service';
 
 describe('LocalStorageService', () => {
 
