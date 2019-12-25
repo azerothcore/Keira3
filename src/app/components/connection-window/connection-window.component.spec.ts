@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
 import { instance, reset } from 'ts-mockito';
 import { MysqlError } from 'mysql';
 import { of, throwError } from 'rxjs';
@@ -9,6 +9,7 @@ import { MockedMysqlService } from '../../test-utils/mocks';
 import { MysqlService } from '../../services/mysql.service';
 import { PageObject } from '../../test-utils/page-object';
 import { ConnectionWindowModule } from './connection-window.module';
+import { LocalStorageService } from '../../services/local-storage.service';
 
 class ConnectionWindowComponentPage extends PageObject<ConnectionWindowComponent> {
   get hostInput() { return this.query<HTMLInputElement>('#host'); }
@@ -46,8 +47,11 @@ describe('ConnectionWindowComponent', () => {
     fixture.detectChanges();
   });
 
-  it('clicking on the connect button without altering the default values should correctly work', () => {
+  it('clicking on the connect button without altering the default values should correctly work', fakeAsync(() => {
+    TestBed.get(LocalStorageService).clear();
     component.error = { code: 'some previous error', errno: 1234 } as MysqlError;
+
+    tick();
 
     page.clickElement(page.connectBtn);
 
@@ -61,7 +65,38 @@ describe('ConnectionWindowComponent', () => {
     });
     expect(component.error).toBeNull();
     expect(page.errorElement.innerHTML).not.toContain('error-box');
-  });
+  }));
+
+  it('clicking on the connect button altering the default values using localStorage should correctly work', fakeAsync(() => {
+    const mockLocalStorage = {
+      'host': '127.0.0.1',
+      'port': '3306',
+      'user': 'Helias',
+      'keira3String': btoa('root'),
+      'database': 'shin_world',
+    };
+
+    TestBed.get(LocalStorageService).setItem('config', JSON.stringify(mockLocalStorage));
+    component.ngOnInit();
+
+    component.error = { code: 'some previous error', errno: 1234 } as MysqlError;
+
+    tick();
+
+    page.clickElement(page.connectBtn);
+
+    expect(connectSpy).toHaveBeenCalledTimes(1);
+    expect(connectSpy).toHaveBeenCalledWith({
+      'host': '127.0.0.1',
+      'port': '3306',
+      'user': 'Helias',
+      'password': 'root',
+      'database': 'shin_world',
+    });
+
+    expect(component.error).toBeNull();
+    expect(page.errorElement.innerHTML).not.toContain('error-box');
+  }));
 
   it('filling the form and clicking on the connect button should correctly work', () => {
     const host = '192.168.1.100';
