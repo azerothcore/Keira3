@@ -86,10 +86,12 @@ export const SAI_EVENT_PARAM1_NAMES: string[] = [];
 export const SAI_EVENT_PARAM2_NAMES: string[] = [];
 export const SAI_EVENT_PARAM3_NAMES: string[] = [];
 export const SAI_EVENT_PARAM4_NAMES: string[] = [];
+export const SAI_EVENT_PARAM5_NAMES: string[] = [];
 export const SAI_EVENT_PARAM1_TOOLTIPS: string[] = [];
 export const SAI_EVENT_PARAM2_TOOLTIPS: string[] = [];
 export const SAI_EVENT_PARAM3_TOOLTIPS: string[] = [];
 export const SAI_EVENT_PARAM4_TOOLTIPS: string[] = [];
+export const SAI_EVENT_PARAM5_TOOLTIPS: string[] = [];
 
 // SMART_EVENT_UPDATE_IC
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.UPDATE_IC] = 'While in combat. Parameters represent a timer: 1000,2000,4000,4000 will call this event_type randomly between 1 and 2 seconds and repeat this every 4 seconds';
@@ -180,7 +182,9 @@ SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.OOC_LOS] = 'NoHostile';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.OOC_LOS] = 'MaxRange';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.OOC_LOS] = 'CooldownMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.OOC_LOS] = 'CooldownMax';
+SAI_EVENT_PARAM5_NAMES[SAI_EVENTS.OOC_LOS] = 'PlayerOnly';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.OOC_LOS] = 'If 0, only non-hostile units can trigger this event. If 1, only hostile units can trigger this event';
+SAI_EVENT_PARAM5_TOOLTIPS[SAI_EVENTS.OOC_LOS] = '0 or 1';
 
 // SMART_EVENT_RESPAWN
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.RESPAWN] = 'On Creature/Gameobject Respawn';
@@ -284,7 +288,9 @@ SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.IC_LOS] = 'NoHostile';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.IC_LOS] = 'MaxDistance';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.IC_LOS] = 'CooldownMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.IC_LOS] = 'CooldownMax';
+SAI_EVENT_PARAM5_NAMES[SAI_EVENTS.IC_LOS] = 'PlayerOnly';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.IC_LOS] = 'If 0, only allow non-hostile units to trigger this event. If 1, only allow hostile units to trigger this event.';
+SAI_EVENT_PARAM5_TOOLTIPS[SAI_EVENTS.IC_LOS] = '0 or 1';
 
 // SMART_EVENT_PASSENGER_BOARDED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.PASSENGER_BOARDED] = 'When a passenger is boarded';
