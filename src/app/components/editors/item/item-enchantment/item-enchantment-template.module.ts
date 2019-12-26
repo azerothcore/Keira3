@@ -19,7 +19,7 @@ import { ItemEnchantmentTemplateComponent } from './item-enchantment-template.co
     TopBarModule,
     QueryOutputModule,
     NgxDatatableModule,
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot(toastrConfig),
   ],
   exports: [
     ItemEnchantmentTemplateComponent,

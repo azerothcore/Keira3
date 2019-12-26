@@ -22,7 +22,7 @@ import { GameobjectSelectorModule } from '../../shared/selectors/gameobject-sele
     QueryOutputModule,
     NgxDatatableModule,
     TooltipModule.forRoot(),
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot(toastrConfig),
     GameobjectSelectorModule,
   ],
   exports: [

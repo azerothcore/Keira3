@@ -22,7 +22,7 @@ import { ItemSelectorModule } from '../../shared/selectors/item-selector/item-se
     TopBarModule,
     QueryOutputModule,
     TooltipModule.forRoot(),
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot(toastrConfig),
     SingleValueSelectorModule,
     FlagsSelectorModule,
     ItemSelectorModule,

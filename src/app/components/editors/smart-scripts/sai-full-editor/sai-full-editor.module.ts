@@ -22,7 +22,7 @@ import { SaiFullEditorComponent } from './sai-full-editor.component';
     QueryOutputModule,
     HighlightModule.forRoot(highlightOptions),
     TooltipModule.forRoot(),
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot(toastrConfig),
     NgxDatatableModule,
     SaiEditorModule,
   ],

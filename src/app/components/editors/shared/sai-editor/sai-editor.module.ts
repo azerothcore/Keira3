@@ -22,7 +22,7 @@ import { FlagsSelectorModule } from '../selectors/flags-selector/flags-selector.
     QueryOutputModule,
     FlagsSelectorModule,
     TooltipModule.forRoot(),
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot(toastrConfig),
     NgxDatatableModule,
   ],
   exports: [SaiEditorComponent, SaiTopBarComponent],

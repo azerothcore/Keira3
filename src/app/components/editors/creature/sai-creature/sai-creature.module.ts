@@ -23,7 +23,7 @@ import { SaiEditorModule } from '../../shared/sai-editor/sai-editor.module';
     TopBarModule,
     QueryOutputModule,
     TooltipModule.forRoot(),
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot(toastrConfig),
     NgxDatatableModule,
     FlagsSelectorModule,
     SingleValueSelectorModule,

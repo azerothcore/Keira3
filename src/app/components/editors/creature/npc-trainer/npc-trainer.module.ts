@@ -20,7 +20,7 @@ import { NpcTrainerComponent } from './npc-trainer.component';
     TopBarModule,
     QueryOutputModule,
     TooltipModule.forRoot(),
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot(toastrConfig),
     NgxDatatableModule,
   ],
   exports: [

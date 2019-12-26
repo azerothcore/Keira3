@@ -20,7 +20,7 @@ import { SingleValueSelectorModule } from '../../shared/selectors/single-value-s
     TopBarModule,
     QueryOutputModule,
     TooltipModule.forRoot(),
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot(toastrConfig),
     SingleValueSelectorModule,
   ],
   exports: [

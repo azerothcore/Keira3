@@ -21,7 +21,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
     TopBarModule,
     QueryOutputModule,
     TooltipModule.forRoot(),
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot(toastrConfig),
     NgxDatatableModule,
     SingleValueSelectorModule,
   ],

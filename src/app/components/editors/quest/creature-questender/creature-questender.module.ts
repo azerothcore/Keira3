@@ -22,7 +22,7 @@ import { CreatureSelectorModule } from '../../shared/selectors/creature-selector
     QueryOutputModule,
     NgxDatatableModule,
     TooltipModule.forRoot(),
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot(toastrConfig),
     CreatureSelectorModule,
   ],
   exports: [

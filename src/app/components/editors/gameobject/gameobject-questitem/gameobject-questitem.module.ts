@@ -21,7 +21,7 @@ import { ItemSelectorModule } from '../../shared/selectors/item-selector/item-se
     QueryOutputModule,
     NgxDatatableModule,
     ItemSelectorModule,
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot(toastrConfig),
   ],
   exports: [
     GameobjectQuestitemComponent,

@@ -17,7 +17,7 @@ import { ConditionsComponent } from './conditions.component';
     ReactiveFormsModule,
     QueryOutputModule,
     TooltipModule.forRoot(),
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot(toastrConfig),
   ],
   exports: [
     ConditionsComponent,

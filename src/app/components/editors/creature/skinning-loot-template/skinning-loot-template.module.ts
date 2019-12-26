@@ -22,7 +22,7 @@ import { FlagsSelectorModule } from '../../shared/selectors/flags-selector/flags
     TopBarModule,
     QueryOutputModule,
     TooltipModule.forRoot(),
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot(toastrConfig),
     NgxDatatableModule,
     ItemSelectorModule,
     FlagsSelectorModule,

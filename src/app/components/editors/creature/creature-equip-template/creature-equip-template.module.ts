@@ -19,7 +19,7 @@ import { ItemSelectorModule } from '../../shared/selectors/item-selector/item-se
     TopBarModule,
     QueryOutputModule,
     ItemSelectorModule,
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot(toastrConfig),
   ],
   exports: [
     CreatureEquipTemplateComponent,
