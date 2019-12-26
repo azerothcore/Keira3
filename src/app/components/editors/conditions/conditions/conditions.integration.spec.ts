@@ -94,7 +94,7 @@ describe('Conditions integration tests', () => {
       '(2, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', \'\');';
       querySpy.calls.reset();
 
-      page.setInputValueById('SourceTypeOrReferenceId', '2: 2');
+      page.setSelectValueById('SourceTypeOrReferenceId', 2);
       page.setInputValueById('SourceGroup', 3);
       page.clickExecuteQuery();
 
