@@ -1,15 +1,17 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { instance } from 'ts-mockito';
+import { ToastrService } from 'ngx-toastr';
+import { of, throwError } from 'rxjs';
+import { MysqlError } from 'mysql';
+
 import Spy = jasmine.Spy;
 
 import { MultiRowComplexKeyEditorService } from './multi-row-complex-key-editor.service';
 import { QueryService } from '../query.service';
-import { MockedQueryService } from '../../test-utils/mocks';
+import { MockedQueryService, MockedToastrService } from '../../test-utils/mocks';
 import { MockEntity, MockMultiRowComplexKeyEditorService, MockHandlerService } from '../../test-utils/mock-services';
-import { of, throwError } from 'rxjs';
 import { MysqlResult } from '../../types/general';
-import { MysqlError } from 'mysql';
 
 describe('MultiRowComplexKeyEditorService', () => {
   let service: MultiRowComplexKeyEditorService<MockEntity>;
@@ -19,7 +21,9 @@ describe('MultiRowComplexKeyEditorService', () => {
       RouterTestingModule,
     ],
     providers: [
-      { provide: QueryService, useValue: instance(MockedQueryService) }
+      { provide: QueryService, useValue: instance(MockedQueryService) },
+      { provide: ToastrService, useValue: instance(MockedToastrService) },
+
     ],
   }));
 

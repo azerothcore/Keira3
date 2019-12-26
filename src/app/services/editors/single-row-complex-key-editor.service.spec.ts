@@ -4,13 +4,15 @@ import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { MysqlError } from 'mysql';
 import { instance } from 'ts-mockito';
+import { ToastrService } from 'ngx-toastr';
 
 import { QueryService } from '../query.service';
-import { MockedQueryService } from '../../test-utils/mocks';
+import { MockedQueryService, MockedToastrService } from '../../test-utils/mocks';
 import { SingleRowComplexKeyEditorService } from './single-row-complex-key-editor.service';
 import { MockSingleRowComplexKeyEditorService, MockEntity, MockHandlerService, MOCK_NAME } from '../../test-utils/mock-services';
 
 import { getPartial } from '../../utils/helpers';
+
 
 describe('SingleRowComplexKeyEditorService', () => {
   let service: SingleRowComplexKeyEditorService<MockEntity>;
@@ -21,6 +23,8 @@ describe('SingleRowComplexKeyEditorService', () => {
     ],
     providers: [
       { provide: QueryService, useValue: instance(MockedQueryService) },
+      { provide: ToastrService, useValue: instance(MockedToastrService) },
+
     ],
   }));
 
