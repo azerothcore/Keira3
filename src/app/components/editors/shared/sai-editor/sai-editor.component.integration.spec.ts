@@ -12,7 +12,7 @@ import { QueryService } from '../../../../services/query.service';
 
 class SaiEditorPage extends MultiRowEditorPageObject<SaiEditorComponent> {}
 
-fdescribe('SaiEditorComponent Integration', () => {
+describe('SaiEditorComponent integration tests', () => {
   let component: SaiEditorComponent;
   let fixture: ComponentFixture<SaiEditorComponent>;
   let handlerService: SaiHandlerService;
@@ -28,9 +28,9 @@ fdescribe('SaiEditorComponent Integration', () => {
   const originalRow2 = new SmartScripts();
   originalRow0.source_type = originalRow1.source_type = originalRow2.source_type = sourceType;
   originalRow0.entryorguid = originalRow1.entryorguid = originalRow2.entryorguid = id;
-  originalRow0.guid = 0;
-  originalRow1.guid = 1;
-  originalRow2.guid = 2;
+  originalRow0.id = 0;
+  originalRow1.id = 1;
+  originalRow2.id = 2;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -65,7 +65,7 @@ fdescribe('SaiEditorComponent Integration', () => {
   describe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    fit('should correctly initialise', () => {
+    it('should correctly initialise', () => {
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.addNewRowBtn.disabled).toBe(false);
@@ -100,15 +100,16 @@ fdescribe('SaiEditorComponent Integration', () => {
       expect(page.getEditorTableRowsCount()).toBe(0);
     });
 
-    xit('adding new rows and executing the query should correctly work', () => {
-      const expectedQuery = 'DELETE FROM `creature` WHERE (`id` = 1234) AND (`guid` IN (0, 1, 2));\n' +
-        'INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-        '`modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-        '`spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-        '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-        '(0, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0),\n' +
-        '(1, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0),\n' +
-        '(2, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0);';
+    it('adding new rows and executing the query should correctly work', () => {
+      const expectedQuery = 'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (0, 1, 2));\n' +
+        'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
+        '`event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
+        '`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, ' +
+        '`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, ' +
+        '`target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES\n' +
+        '(1234, 0, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\'),\n' +
+        '(1234, 0, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\'),\n' +
+        '(1234, 0, 2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\');';
       querySpy.calls.reset();
 
       page.addNewRow();
@@ -124,77 +125,85 @@ fdescribe('SaiEditorComponent Integration', () => {
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
 
-    xit('adding a row and changing its values should correctly update the queries', () => {
+    it('adding a row and changing its values should correctly update the queries', () => {
       page.addNewRow();
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature` WHERE (`id` = 1234) AND (`guid` IN (0));\n' +
-        'INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-        '`modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-        '`spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-        '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-        '(0, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0);'
+        'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (0));\n' +
+        'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, ' +
+        '`event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
+        '`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, ' +
+        '`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, ' +
+        '`target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES\n' +
+        '(1234, 0, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\');'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature` WHERE (`id` = 1234);\n' +
-        'INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-        '`modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-        '`spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-        '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-        '(0, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0);'
+        'DELETE FROM `smart_scripts` WHERE (`source_type` = 0 AND `entryorguid` = 1234);\n' +
+        'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, ' +
+        '`event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
+        '`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, ' +
+        '`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, ' +
+        '`target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES\n' +
+        '(1234, 0, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\');'
       );
 
-      page.setInputValueById('map', '1');
+      page.setInputValueById('event_chance', 1);
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature` WHERE (`id` = 1234) AND (`guid` IN (0));\n' +
-        'INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-        '`modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-        '`spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-        '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-        '(0, 1234, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0);'
+        'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (0));\n' +
+        'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
+        '`event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
+        '`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, ' +
+        '`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, ' +
+        '`target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES\n' +
+        '(1234, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\');\n'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature` WHERE (`id` = 1234);\n' +
-        'INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-        '`modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-        '`spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-        '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-        '(0, 1234, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0);'
+        'DELETE FROM `smart_scripts` WHERE (`source_type` = 0 AND `entryorguid` = 1234);\n' +
+        'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
+        '`event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
+        '`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, ' +
+        '`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, ' +
+        '`target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES\n' +
+        '(1234, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\');\n'
       );
 
-      page.setInputValueById('zoneId', '2');
+      page.setInputValueById('event_param1', '2');
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature` WHERE (`id` = 1234) AND (`guid` IN (0));\n' +
-        'INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-        '`modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-        '`spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-        '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-        '(0, 1234, 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0);'
+        'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (0));\n' +
+        'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
+        '`event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
+        '`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, ' +
+        '`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, ' +
+        '`target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES\n' +
+        '(1234, 0, 0, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\');\n'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature` WHERE (`id` = 1234);\n' +
-        'INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-        '`modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-        '`spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-        '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-        '(0, 1234, 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0);'
+        'DELETE FROM `smart_scripts` WHERE (`source_type` = 0 AND `entryorguid` = 1234);\n' +
+        'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
+        '`event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
+        '`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, ' +
+        '`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, ' +
+        '`target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES\n' +
+        '(1234, 0, 0, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\');\n'
       );
 
-      page.setInputValueById('guid', '123');
+      page.setInputValueById('action_param2', '123');
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature` WHERE (`id` = 1234) AND (`guid` IN (123));\n' +
-        'INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-        '`modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-        '`spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-        '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-        '(123, 1234, 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0);'
+        'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (0));\n' +
+        'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
+        '`event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
+        '`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, ' +
+        '`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, ' +
+        '`target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES\n' +
+        '(1234, 0, 0, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 0, 0, 123, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\');\n'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature` WHERE (`id` = 1234);\n' +
-        'INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-        '`modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-        '`spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-        '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-        '(123, 1234, 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0);'
+        'DELETE FROM `smart_scripts` WHERE (`source_type` = 0 AND `entryorguid` = 1234);\n' +
+        'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
+        '`event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
+        '`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, ' +
+        '`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, ' +
+        '`target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES\n' +
+        '(1234, 0, 0, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 0, 0, 123, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\');\n'
       );
     });
   });
@@ -202,123 +211,122 @@ fdescribe('SaiEditorComponent Integration', () => {
   describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    xit('should correctly initialise', () => {
-      expect(page.formError.hidden).toBe(true);
+    it('should correctly initialise', () => {
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
-      page.expectFullQueryToContain('DELETE FROM `creature` WHERE (`id` = 1234);\n' +
-        'INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-        '`modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-        '`spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-        '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-        '(0, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0),\n' +
-        '(1, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0),\n' +
-        '(2, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0);');
+      page.expectFullQueryToContain('DELETE FROM `smart_scripts` WHERE (`source_type` = 0 AND `entryorguid` = 1234);\n' +
+        'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
+        '`event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
+        '`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, ' +
+        '`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, ' +
+        '`target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES\n' +
+        '(1234, 0, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\'),\n' +
+        '(1234, 0, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\'),\n' +
+        '(1234, 0, 2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\');\n');
       expect(page.getEditorTableRowsCount()).toBe(3);
     });
 
-    xit('deleting rows should correctly work', () => {
+    it('deleting rows should correctly work', () => {
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature` WHERE (`id` = 1234) AND (`guid` IN (1));'
+        'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (1));'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature` WHERE (`id` = 1234);\n' +
-        'INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-        '`modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-        '`spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-        '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-        '(0, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0),\n' +
-        '(2, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0);\n'
+        'DELETE FROM `smart_scripts` WHERE (`source_type` = 0 AND `entryorguid` = 1234);\n' +
+        'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
+        '`event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
+        '`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, ' +
+        '`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, ' +
+        '`target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES\n' +
+        '(1234, 0, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\'),\n' +
+        '(1234, 0, 2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\');\n'
       );
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature` WHERE (`id` = 1234) AND (`guid` IN (1, 2));\n'
+        'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (1, 2));'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature` WHERE (`id` = 1234);\n' +
-        'INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-        '`modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-        '`spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-        '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-        '(0, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0);'
+        'DELETE FROM `smart_scripts` WHERE (`source_type` = 0 AND `entryorguid` = 1234);\n' +
+        'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
+        '`event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
+        '`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, ' +
+        '`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, ' +
+        '`target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES\n' +
+        '(1234, 0, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\');\n'
       );
 
       page.deleteRow(0);
       expect(page.getEditorTableRowsCount()).toBe(0);
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature` WHERE `id` = 1234;'
+        'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0)'
       );
       page.expectFullQueryToBeEmpty();
     });
 
-    xit('editing existing rows should correctly work', () => {
+    it('editing existing rows should correctly work', () => {
       page.clickRowOfDatatable(1);
-      page.setInputValueById('map', 1);
+      page.setInputValueById('target_param1', 1);
 
       page.clickRowOfDatatable(2);
-      page.setInputValueById('zoneId', 2);
+      page.setInputValueById('target_x', 2);
 
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature` WHERE (`id` = 1234) AND (`guid` IN (1, 2));\n' +
-        'INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-        '`modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-        '`spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-        '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-        '(1, 1234, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0),\n' +
-        '(2, 1234, 0, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0);'
+        'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (1, 2));\n' +
+        'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
+        '`event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
+        '`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, ' +
+        '`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, ' +
+        '`target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES\n' +
+        '(1234, 0, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, \'\'),\n' +
+        '(1234, 0, 2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, \'\');\n'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature` WHERE (`id` = 1234);\n' +
-        'INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-        '`modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-        '`spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-        '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-        '(0, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0),\n' +
-        '(1, 1234, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0),\n' +
-        '(2, 1234, 0, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0);'
+        'DELETE FROM `smart_scripts` WHERE (`source_type` = 0 AND `entryorguid` = 1234);\n' +
+        'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
+        '`event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
+        '`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, ' +
+        '`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, ' +
+        '`target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES\n' +
+        '(1234, 0, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\'),\n' +
+        '(1234, 0, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, \'\'),\n' +
+        '(1234, 0, 2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, \'\');\n'
       );
     });
 
-    xit('combining add, edit and delete should correctly work', () => {
+    it('combining add, edit and delete should correctly work', () => {
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
 
       page.clickRowOfDatatable(1);
-      page.setInputValueById('zoneId', 10);
+      page.setInputValueById('event_param2', 10);
       expect(page.getEditorTableRowsCount()).toBe(4);
 
       page.deleteRow(2);
       expect(page.getEditorTableRowsCount()).toBe(3);
 
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature` WHERE (`id` = 1234) AND (`guid` IN (1, 2, 3));\n' +
-        'INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-        '`modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-        '`spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-        '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-        '(1, 1234, 0, 10, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0),\n' +
-        '(3, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0);'
+        'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (1, 2, 3));\n' +
+        'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
+        '`event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
+        '`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, ' +
+        '`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, ' +
+        '`target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES\n' +
+        '(1234, 0, 1, 0, 0, 0, 100, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\'),\n' +
+        '(1234, 0, 3, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\');\n'
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature` WHERE (`id` = 1234);\n' +
-        'INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-        '`modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-        '`spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-        '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-        '(0, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0),\n' +
-        '(1, 1234, 0, 10, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0),\n' +
-        '(3, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0);');
-    });
-
-    xit('using the same row id for multiple rows should correctly show an error', () => {
-      page.clickRowOfDatatable(2);
-      page.setInputValueById('guid', 0);
-
-      page.expectUniqueError();
+        'DELETE FROM `smart_scripts` WHERE (`source_type` = 0 AND `entryorguid` = 1234);\n' +
+        'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
+        '`event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
+        '`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, ' +
+        '`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, ' +
+        '`target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES\n' +
+        '(1234, 0, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\'),\n' +
+        '(1234, 0, 1, 0, 0, 0, 100, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\'),\n' +
+        '(1234, 0, 3, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\');\n');
     });
   });
 });
