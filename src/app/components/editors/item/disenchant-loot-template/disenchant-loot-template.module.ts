@@ -8,6 +8,7 @@ import { DisenchantLootTemplateComponent } from './disenchant-loot-template.comp
 import { ItemSelectorModule } from '../../shared/selectors/item-selector/item-selector.module';
 import { TooltipModule } from 'ngx-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
+import { toastrConfig } from '../../../../config/toastr.config';
 import { FlagsSelectorModule } from '../../shared/selectors/flags-selector/flags-selector.module';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
@@ -21,7 +22,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
     TopBarModule,
     QueryOutputModule,
     TooltipModule.forRoot(),
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot(toastrConfig),
     ItemSelectorModule,
     FlagsSelectorModule,
     NgxDatatableModule,

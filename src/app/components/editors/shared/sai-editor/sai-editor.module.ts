@@ -3,6 +3,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { TooltipModule } from 'ngx-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
+import { toastrConfig } from '../../../../config/toastr.config';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { QueryOutputModule } from '../query-output/query-output.module';
@@ -21,7 +22,7 @@ import { FlagsSelectorModule } from '../selectors/flags-selector/flags-selector.
     QueryOutputModule,
     FlagsSelectorModule,
     TooltipModule.forRoot(),
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot(toastrConfig),
     NgxDatatableModule,
   ],
   exports: [SaiEditorComponent, SaiTopBarComponent],

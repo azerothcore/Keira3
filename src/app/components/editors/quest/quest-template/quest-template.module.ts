@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TooltipModule } from 'ngx-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
+import { toastrConfig } from '../../../../config/toastr.config';
 
 import { TopBarModule } from '../../shared/top-bar/top-bar.module';
 import { QueryOutputModule } from '../../shared/query-output/query-output.module';
@@ -21,7 +22,7 @@ import { ItemSelectorModule } from '../../shared/selectors/item-selector/item-se
     TopBarModule,
     QueryOutputModule,
     TooltipModule.forRoot(),
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot(toastrConfig),
     SingleValueSelectorModule,
     FlagsSelectorModule,
     ItemSelectorModule,
