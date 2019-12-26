@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TooltipModule } from 'ngx-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
+import { toastrConfig } from '../../../../config/toastr.config';
 
 import { SingleValueSelectorModule } from '../../shared/selectors/single-value-selector/single-value-selector.module';
 import { TopBarModule } from '../../shared/top-bar/top-bar.module';

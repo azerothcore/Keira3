@@ -7,6 +7,7 @@ import { QueryOutputModule } from '../../shared/query-output/query-output.module
 import { highlightOptions } from '../../../../config/highlight.config';
 import { TooltipModule } from 'ngx-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
+import { toastrConfig } from '../../../../config/toastr.config';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { SaiEditorModule } from '../../shared/sai-editor/sai-editor.module';

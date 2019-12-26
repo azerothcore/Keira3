@@ -8,6 +8,7 @@ import { QueryOutputModule } from '../../shared/query-output/query-output.module
 import { GameobjectQueststarterComponent } from './gameobject-queststarter.component';
 import { TooltipModule } from 'ngx-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
+import { toastrConfig } from '../../../../config/toastr.config';
 import { GameobjectSelectorModule } from '../../shared/selectors/gameobject-selector/gameobject-selector.module';
 
 @NgModule({

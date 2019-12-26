@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ToastrModule } from 'ngx-toastr';
+import { toastrConfig } from '../../../../config/toastr.config';
 
 import { TopBarModule } from '../../shared/top-bar/top-bar.module';
 import { QueryOutputModule } from '../../shared/query-output/query-output.module';

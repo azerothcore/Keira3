@@ -8,6 +8,7 @@ import { QueryOutputModule } from '../../shared/query-output/query-output.module
 import { CreatureQuestenderComponent } from './creature-questender.component';
 import { TooltipModule } from 'ngx-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
+import { toastrConfig } from '../../../../config/toastr.config';
 import { CreatureSelectorModule } from '../../shared/selectors/creature-selector/creature-selector.module';
 
 @NgModule({
