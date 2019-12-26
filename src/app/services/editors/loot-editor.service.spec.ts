@@ -1,14 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { instance } from 'ts-mockito';
+import { ToastrService } from 'ngx-toastr';
+import { of } from 'rxjs';
+
 
 import { QueryService } from '../query.service';
-import { MockedQueryService } from '../../test-utils/mocks';
+import { MockedQueryService, MockedToastrService } from '../../test-utils/mocks';
 import { LootEditorService } from './loot-editor.service';
 import { CreatureLootTemplate } from '../../types/creature-loot-template.type';
 import { CreatureLootTemplateService } from './creature/creature-loot-template.service';
 import { MysqlResult } from '../../types/general';
-import { of } from 'rxjs';
 
 
 describe('LootEditorService', () => {
@@ -20,6 +22,8 @@ describe('LootEditorService', () => {
     ],
     providers: [
       { provide: QueryService, useValue: instance(MockedQueryService) },
+      { provide: ToastrService, useValue: instance(MockedToastrService) },
+
     ],
   }));
 

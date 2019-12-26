@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 import { QuestHandlerService } from '../../handlers/quest-handler.service';
 import { QueryService } from '../../query.service';
@@ -18,6 +19,7 @@ export class CreatureQueststarterService extends MultiRowEditorService<CreatureQ
   constructor(
     protected handlerService: QuestHandlerService,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super(
       CreatureQueststarter,
@@ -26,6 +28,7 @@ export class CreatureQueststarterService extends MultiRowEditorService<CreatureQ
       CREATURE_QUESTSTARTER_ID_2,
       handlerService,
       queryService,
+      toastrService,
     );
   }
 }

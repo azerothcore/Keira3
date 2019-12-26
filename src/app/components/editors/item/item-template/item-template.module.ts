@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TooltipModule } from 'ngx-bootstrap';
+import { ToastrModule } from 'ngx-toastr';
 
 import { TopBarModule } from '../../shared/top-bar/top-bar.module';
 import { QueryOutputModule } from '../../shared/query-output/query-output.module';
@@ -19,6 +20,7 @@ import { FlagsSelectorModule } from '../../shared/selectors/flags-selector/flags
     TopBarModule,
     QueryOutputModule,
     TooltipModule.forRoot(),
+    ToastrModule.forRoot(),
     SingleValueSelectorModule,
     FlagsSelectorModule,
   ],

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 import { MultiRowEditorService } from '../multi-row-editor.service';
 import { CreatureHandlerService } from '../../handlers/creature-handler.service';
@@ -19,6 +20,7 @@ export class NpcTrainerService extends MultiRowEditorService<NpcTrainer> {
   constructor(
     protected handlerService: CreatureHandlerService,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super(
       NpcTrainer,
@@ -27,6 +29,7 @@ export class NpcTrainerService extends MultiRowEditorService<NpcTrainer> {
       NPC_TRAINER_ID_2,
       handlerService,
       queryService,
+      toastrService,
     );
   }
 }

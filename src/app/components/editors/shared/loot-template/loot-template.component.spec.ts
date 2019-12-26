@@ -12,6 +12,7 @@ import { CreatureLootTemplateService } from '../../../../services/editors/creatu
 import { LootEditorService } from '../../../../services/editors/loot-editor.service';
 import { CreatureLootTemplateModule } from '../../creature/creature-loot-template/creature-loot-template.module';
 import { TooltipModule } from 'ngx-bootstrap';
+import { ToastrModule } from 'ngx-toastr';
 import { QueryService } from '../../../../services/query.service';
 
 describe('LootTemplateComponent', () => {
@@ -29,6 +30,7 @@ describe('LootTemplateComponent', () => {
         CreatureLootTemplateModule,
         RouterTestingModule,
         TooltipModule.forRoot(),
+        ToastrModule.forRoot(),
       ],
       providers: [
         { provide : QueryService, useValue: instance(MockedQueryService) },

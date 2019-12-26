@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 import { GameobjectHandlerService } from '../../handlers/gameobject-handler.service';
 import { QueryService } from '../../query.service';
@@ -19,6 +20,7 @@ export class GameobjectQuestitemService extends MultiRowEditorService<Gameobject
   constructor(
     protected handlerService: GameobjectHandlerService,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super(
       GameobjectQuestitem,
@@ -26,7 +28,8 @@ export class GameobjectQuestitemService extends MultiRowEditorService<Gameobject
       GAMEOBJECT_QUESTITEM_ID,
       GAMEOBJECT_QUESTITEM_ID_2,
       handlerService,
-      queryService
+      queryService,
+      toastrService,
     );
   }
 }

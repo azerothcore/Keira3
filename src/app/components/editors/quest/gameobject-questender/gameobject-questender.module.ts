@@ -7,6 +7,7 @@ import { TopBarModule } from '../../shared/top-bar/top-bar.module';
 import { QueryOutputModule } from '../../shared/query-output/query-output.module';
 import { GameobjectQuestenderComponent } from './gameobject-questender.component';
 import { TooltipModule } from 'ngx-bootstrap';
+import { ToastrModule } from 'ngx-toastr';
 import { GameobjectSelectorModule } from '../../shared/selectors/gameobject-selector/gameobject-selector.module';
 
 @NgModule({
@@ -20,6 +21,7 @@ import { GameobjectSelectorModule } from '../../shared/selectors/gameobject-sele
     QueryOutputModule,
     NgxDatatableModule,
     TooltipModule.forRoot(),
+    ToastrModule.forRoot(),
     GameobjectSelectorModule,
   ],
   exports: [

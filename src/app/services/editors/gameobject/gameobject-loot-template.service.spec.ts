@@ -1,10 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { instance } from 'ts-mockito';
+import { ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
 
 import { QueryService } from '../../query.service';
-import { MockedQueryService } from '../../../test-utils/mocks';
+import { MockedQueryService, MockedToastrService } from '../../../test-utils/mocks';
 import { MysqlResult } from '../../../types/general';
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
 import { GAMEOBJECT_TEMPLATE_TYPE } from '../../../types/gameobject-template.type';
@@ -18,6 +19,7 @@ describe('GameobjectLootTemplateService', () => {
     ],
     providers: [
       { provide: QueryService, useValue: instance(MockedQueryService) },
+      { provide: ToastrService, useValue: instance(MockedToastrService) },
     ],
   }));
 

@@ -1,4 +1,4 @@
-import { ConditionsComponent } from './../components/editors/conditions/conditions/conditions.component';
+import { ConditionsComponent } from '../components/editors/conditions/conditions/conditions.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
@@ -22,7 +22,6 @@ import { SkinningLootTemplateComponent } from '../components/editors/creature/sk
 import { NpcTrainerComponent } from '../components/editors/creature/npc-trainer/npc-trainer.component';
 import { CreatureSpawnComponent } from '../components/editors/creature/creature-spawn/creature-spawn.component';
 import { CreatureSpawnAddonComponent } from '../components/editors/creature/creature-spawn-addon/creature-spawn-addon.component';
-import { ComingSoonComponent } from '../components/editors/coming-soon/coming-soon.component';
 import { QuestTemplateComponent } from '../components/editors/quest/quest-template/quest-template.component';
 import { QuestHandlerService } from '../services/handlers/quest-handler.service';
 import { SelectQuestComponent } from '../components/editors/quest/select-quest/select-quest.component';
@@ -69,10 +68,6 @@ const routes: Routes = [
   {
     path: '',
     component: DashboardComponent
-  },
-  {
-    path: 'coming-soon',
-    component: ComingSoonComponent
   },
   {
     path: 'creature',

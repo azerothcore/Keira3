@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 import { QuestHandlerService } from '../../handlers/quest-handler.service';
 import { QueryService } from '../../query.service';
@@ -18,6 +19,7 @@ export class QuestRequestItemsService extends SingleRowEditorService<QuestReques
   constructor(
     protected handlerService: QuestHandlerService,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super(
       QuestRequestItems,
@@ -27,6 +29,7 @@ export class QuestRequestItemsService extends SingleRowEditorService<QuestReques
       false,
       handlerService,
       queryService,
+      toastrService,
     );
   }
 }

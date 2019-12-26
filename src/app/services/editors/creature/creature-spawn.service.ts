@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 import { MultiRowEditorService } from '../multi-row-editor.service';
 import { CreatureSpawn, CREATURE_SPAWN_ID, CREATURE_SPAWN_ID_2, CREATURE_SPAWN_TABLE } from '../../../types/creature-spawn.type';
@@ -14,6 +15,7 @@ export class CreatureSpawnService extends MultiRowEditorService<CreatureSpawn> {
   constructor(
     protected handlerService: CreatureHandlerService,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super(
       CreatureSpawn,
@@ -22,6 +24,7 @@ export class CreatureSpawnService extends MultiRowEditorService<CreatureSpawn> {
       CREATURE_SPAWN_ID_2,
       handlerService,
       queryService,
+      toastrService,
     );
   }
 }

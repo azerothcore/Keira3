@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 import { CreatureHandlerService } from '../../handlers/creature-handler.service';
 import { QueryService } from '../../query.service';
@@ -25,6 +26,7 @@ export class SkinningLootTemplateService extends LootEditorService<SkinningLootT
   constructor(
     protected handlerService: CreatureHandlerService,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super(
       CreatureLootTemplate,
@@ -34,6 +36,7 @@ export class SkinningLootTemplateService extends LootEditorService<SkinningLootT
       CREATURE_TEMPLATE_SKINNING_LOOT_ID,
       handlerService,
       queryService,
+      toastrService,
     );
   }
 }

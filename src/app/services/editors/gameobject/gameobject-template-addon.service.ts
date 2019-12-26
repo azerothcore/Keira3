@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 import { SingleRowEditorService } from '../single-row-editor.service';
 import {
@@ -18,6 +19,7 @@ export class GameobjectTemplateAddonService extends SingleRowEditorService<Gameo
   constructor(
     protected handlerService: GameobjectHandlerService,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super(
       GameobjectTemplateAddon,
@@ -27,6 +29,7 @@ export class GameobjectTemplateAddonService extends SingleRowEditorService<Gameo
       true,
       handlerService,
       queryService,
+      toastrService,
     );
   }
 

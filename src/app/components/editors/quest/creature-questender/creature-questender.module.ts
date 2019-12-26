@@ -7,6 +7,7 @@ import { TopBarModule } from '../../shared/top-bar/top-bar.module';
 import { QueryOutputModule } from '../../shared/query-output/query-output.module';
 import { CreatureQuestenderComponent } from './creature-questender.component';
 import { TooltipModule } from 'ngx-bootstrap';
+import { ToastrModule } from 'ngx-toastr';
 import { CreatureSelectorModule } from '../../shared/selectors/creature-selector/creature-selector.module';
 
 @NgModule({
@@ -20,6 +21,7 @@ import { CreatureSelectorModule } from '../../shared/selectors/creature-selector
     QueryOutputModule,
     NgxDatatableModule,
     TooltipModule.forRoot(),
+    ToastrModule.forRoot(),
     CreatureSelectorModule,
   ],
   exports: [

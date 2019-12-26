@@ -1,13 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { instance } from 'ts-mockito';
+import { ToastrService } from 'ngx-toastr';
+import Spy = jasmine.Spy;
+
 
 import { QueryService } from '../query.service';
-import { MockedQueryService } from '../../test-utils/mocks';
+import { MockedQueryService, MockedToastrService } from '../../test-utils/mocks';
 import { MultiRowEditorService } from './multi-row-editor.service';
 import { MOCK_ID, MOCK_ID_2, MOCK_NAME, MockEntity, MockMultiRowEditorService } from '../../test-utils/mock-services';
 import { MysqlResult } from '../../types/general';
-import Spy = jasmine.Spy;
 
 
 describe('MultiRowEditorService', () => {
@@ -28,6 +30,8 @@ describe('MultiRowEditorService', () => {
     ],
     providers: [
       { provide: QueryService, useValue: instance(MockedQueryService) },
+      { provide: ToastrService, useValue: instance(MockedToastrService) },
+
     ],
   }));
 

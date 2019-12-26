@@ -5,6 +5,7 @@ import { of, throwError } from 'rxjs';
 import Spy = jasmine.Spy;
 
 import { TooltipModule } from 'ngx-bootstrap';
+import { ToastrModule } from 'ngx-toastr';
 import { QueryService } from '../../../../services/query.service';
 import { MockedQueryService } from '../../../../test-utils/mocks';
 import { GameobjectLootTemplateComponent } from '../../gameobject/gameobject-loot-template/gameobject-loot-template.component';
@@ -28,6 +29,7 @@ describe('GameobjectTemplateComponent', () => {
         GameobjectLootTemplateModule,
         RouterTestingModule,
         TooltipModule.forRoot(),
+        ToastrModule.forRoot(),
       ],
       providers: [
         { provide : QueryService, useValue: instance(MockedQueryService) },

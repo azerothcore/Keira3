@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 import { MultiRowComplexKeyEditorService } from '../multi-row-complex-key-editor.service';
 import { SAI_ID_2, SAI_ID_FIELDS, SAI_TABLE, SmartScripts } from '../../../types/smart-scripts.type';
@@ -14,6 +15,7 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
   constructor(
     protected handlerService: SaiHandlerService,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super(
       SmartScripts,
@@ -22,6 +24,7 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
       SAI_ID_2,
       handlerService,
       queryService,
+      toastrService,
     );
   }
 
