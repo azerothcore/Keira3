@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 import { SingleRowEditorService } from '../single-row-editor.service';
 import {
@@ -21,6 +22,7 @@ export class GameobjectTemplateService extends SingleRowEditorService<Gameobject
   constructor(
     protected handlerService: GameobjectHandlerService,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super(
       GameobjectTemplate,
@@ -30,6 +32,7 @@ export class GameobjectTemplateService extends SingleRowEditorService<Gameobject
       true,
       handlerService,
       queryService,
+      toastrService,
     );
   }
 

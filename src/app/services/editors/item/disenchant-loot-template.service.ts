@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 import { ItemHandlerService } from '../../handlers/item-handler.service';
 import { QueryService } from '../../query.service';
@@ -18,6 +19,7 @@ export class DisenchantLootTemplateService extends LootEditorService<DisenchantL
   constructor(
     protected handlerService: ItemHandlerService,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super(
       DisenchantLootTemplate,
@@ -27,6 +29,7 @@ export class DisenchantLootTemplateService extends LootEditorService<DisenchantL
       DISENCHANT_TEMPLATE_LOOT_ID,
       handlerService,
       queryService,
+      toastrService,
     );
   }
 }

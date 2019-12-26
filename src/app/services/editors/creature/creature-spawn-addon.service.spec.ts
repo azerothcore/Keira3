@@ -1,10 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { instance } from 'ts-mockito';
+import { ToastrService } from 'ngx-toastr';
 
 import { CreatureSpawnAddonService } from './creature-spawn-addon.service';
 import { QueryService } from '../../query.service';
-import { MockedQueryService } from '../../../test-utils/mocks';
+import { MockedQueryService, MockedToastrService } from '../../../test-utils/mocks';
 
 describe('CreatureSpawnAddonService', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -13,6 +14,7 @@ describe('CreatureSpawnAddonService', () => {
     ],
     providers: [
       { provide: QueryService, useValue: instance(MockedQueryService) },
+      { provide: ToastrService, useValue: instance(MockedToastrService) },
     ],
   }));
 

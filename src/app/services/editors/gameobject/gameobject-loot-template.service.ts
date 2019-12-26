@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 import { GameobjectHandlerService } from '../../handlers/gameobject-handler.service';
 import { QueryService } from '../../query.service';
@@ -23,6 +24,7 @@ export class GameobjectLootTemplateService extends LootEditorService<GameobjectL
   constructor(
     protected handlerService: GameobjectHandlerService,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super(
       GameobjectLootTemplate,
@@ -32,6 +34,7 @@ export class GameobjectLootTemplateService extends LootEditorService<GameobjectL
       GAMEOBJECT_TEMPLATE_LOOT_ID,
       handlerService,
       queryService,
+      toastrService,
     );
   }
 

@@ -1,3 +1,6 @@
+
+import { ToastrService } from 'ngx-toastr';
+
 import { MultiRowEditorService } from './multi-row-editor.service';
 import { Class, TableRow } from '../../types/general';
 import { HandlerService } from '../handlers/handler.service';
@@ -14,6 +17,7 @@ export abstract class MultiRowExternalEditorService<T extends TableRow> extends 
     protected _entitySecondIdField: string,
     protected handlerService: HandlerService<T>,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super(
       _entityClass,
@@ -22,6 +26,7 @@ export abstract class MultiRowExternalEditorService<T extends TableRow> extends 
       _entitySecondIdField,
       handlerService,
       queryService,
+      toastrService,
     );
   }
 

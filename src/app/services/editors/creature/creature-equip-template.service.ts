@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 import { SingleRowEditorService } from '../single-row-editor.service';
 import { CreatureHandlerService } from '../../handlers/creature-handler.service';
@@ -17,6 +18,7 @@ export class CreatureEquipTemplateService extends SingleRowEditorService<Creatur
   constructor(
     protected handlerService: CreatureHandlerService,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super(
       CreatureEquipTemplate,
@@ -26,6 +28,7 @@ export class CreatureEquipTemplateService extends SingleRowEditorService<Creatur
       false,
       handlerService,
       queryService,
+      toastrService,
     );
   }
 }

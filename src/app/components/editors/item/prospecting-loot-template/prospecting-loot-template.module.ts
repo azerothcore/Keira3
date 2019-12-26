@@ -7,6 +7,7 @@ import { QueryOutputModule } from '../../shared/query-output/query-output.module
 import { ProspectingLootTemplateComponent } from './prospecting-loot-template.component';
 import { ItemSelectorModule } from '../../shared/selectors/item-selector/item-selector.module';
 import { TooltipModule } from 'ngx-bootstrap';
+import { ToastrModule } from 'ngx-toastr';
 import { FlagsSelectorModule } from '../../shared/selectors/flags-selector/flags-selector.module';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
@@ -20,6 +21,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
     TopBarModule,
     QueryOutputModule,
     TooltipModule.forRoot(),
+    ToastrModule.forRoot(),
     ItemSelectorModule,
     FlagsSelectorModule,
     NgxDatatableModule,

@@ -1,4 +1,5 @@
 import { distinctUntilChanged } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 import { Class, MysqlResult, TableRow } from '../../types/general';
 import { QueryService } from '../query.service';
@@ -18,8 +19,16 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     protected isMainEntity: boolean,
     protected handlerService: HandlerService<T>,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
-    super(_entityClass, _entityTable, _entityIdField, handlerService, queryService);
+    super(
+      _entityClass,
+      _entityTable,
+      _entityIdField,
+      handlerService,
+      queryService,
+      toastrService,
+    );
     this.initForm();
   }
 

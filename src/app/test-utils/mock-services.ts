@@ -8,6 +8,7 @@ import { TableRow } from '../types/general';
 import { MultiRowEditorService } from '../services/editors/multi-row-editor.service';
 import { SingleRowComplexKeyEditorService } from '../services/editors/single-row-complex-key-editor.service';
 import { MultiRowComplexKeyEditorService } from '../services/editors/multi-row-complex-key-editor.service';
+import { ToastrService } from 'ngx-toastr';
 
 export const MOCK_TABLE = 'mock_table';
 export const MOCK_ID = 'id';
@@ -42,6 +43,7 @@ export class MockSingleRowEditorService extends SingleRowEditorService<MockEntit
   constructor(
     protected handlerService: MockHandlerService,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super(
       MockEntity,
@@ -51,6 +53,7 @@ export class MockSingleRowEditorService extends SingleRowEditorService<MockEntit
       true,
       handlerService,
       queryService,
+      toastrService,
     );
   }
 }
@@ -63,6 +66,7 @@ export class MockSingleRowComplexKeyEditorService extends SingleRowComplexKeyEdi
   constructor(
     protected handlerService: MockHandlerService,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super(
       MockEntity,
@@ -72,6 +76,7 @@ export class MockSingleRowComplexKeyEditorService extends SingleRowComplexKeyEdi
       true,
       handlerService,
       queryService,
+      toastrService,
     );
   }
 }
@@ -84,6 +89,7 @@ export class MockMultiRowEditorService extends MultiRowEditorService<MockEntity>
   constructor(
     protected handlerService: MockHandlerService,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super(
       MockEntity,
@@ -92,6 +98,7 @@ export class MockMultiRowEditorService extends MultiRowEditorService<MockEntity>
       MOCK_ID_2,
       handlerService,
       queryService,
+      toastrService,
     );
   }
 }
@@ -104,6 +111,7 @@ export class MockMultiRowComplexKeyEditorService extends MultiRowComplexKeyEdito
   constructor(
     protected handlerService: MockHandlerService,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super(
       MockEntity,
@@ -112,6 +120,7 @@ export class MockMultiRowComplexKeyEditorService extends MultiRowComplexKeyEdito
       MOCK_ID_2,
       handlerService,
       queryService,
+      toastrService,
     );
   }
 

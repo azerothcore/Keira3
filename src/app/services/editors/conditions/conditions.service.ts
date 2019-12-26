@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 import { CONDITIONS_TABLE, CONDITIONS_ID_FIELDS } from './../../../types/conditions.type';
 import { QueryService } from '../../query.service';
@@ -15,6 +16,7 @@ export class ConditionsService extends SingleRowComplexKeyEditorService<Conditio
   constructor(
     protected handlerService: ConditionsHandlerService,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super(
       Conditions,
@@ -24,6 +26,7 @@ export class ConditionsService extends SingleRowComplexKeyEditorService<Conditio
       true,
       handlerService,
       queryService,
+      toastrService,
     );
   }
 }

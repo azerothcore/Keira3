@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 import { MultiRowEditorService } from '../multi-row-editor.service';
 import { QueryService } from '../../query.service';
@@ -15,6 +16,7 @@ export class ItemLootTemplateService extends MultiRowEditorService<ItemLootTempl
   constructor(
     protected handlerService: ItemHandlerService,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super(
       ItemLootTemplate,
@@ -23,6 +25,7 @@ export class ItemLootTemplateService extends MultiRowEditorService<ItemLootTempl
       LOOT_TEMPLATE_ID_2,
       handlerService,
       queryService,
+      toastrService,
     );
   }
 }

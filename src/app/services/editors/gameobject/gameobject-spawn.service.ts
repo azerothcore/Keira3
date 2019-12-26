@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 import { MultiRowEditorService } from '../multi-row-editor.service';
 import {
@@ -19,6 +20,7 @@ export class GameobjectSpawnService extends MultiRowEditorService<GameobjectSpaw
   constructor(
     protected handlerService: GameobjectHandlerService,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super(
       GameobjectSpawn,
@@ -27,6 +29,7 @@ export class GameobjectSpawnService extends MultiRowEditorService<GameobjectSpaw
       GAMEOBJECT_SPAWN_ID_2,
       handlerService,
       queryService,
+      toastrService,
     );
   }
 }
