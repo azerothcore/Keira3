@@ -136,7 +136,7 @@
 
           <div class="form-row">
             <div class="form-group col-7">
-              <label class="control-label">
+              <label class="control-label" id="label-event-param1">
                 {{ getName('param1', EVENT_PARAM1_NAMES[selectedEvent]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
                 [hidden]="!EVENT_PARAM1_TOOLTIPS[selectedEvent]"
@@ -152,7 +152,7 @@
 
           <div class="form-row">
             <div class="form-group col-7">
-              <label class="control-label">
+              <label class="control-label" id="label-event-param2">
                 {{ getName('param2', EVENT_PARAM2_NAMES[selectedEvent]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
                 [hidden]="!EVENT_PARAM2_TOOLTIPS[selectedEvent]"
@@ -168,7 +168,7 @@
 
           <div class="form-row">
             <div class="form-group col-7">
-              <label class="control-label">
+              <label class="control-label" id="label-event-param3">
                 {{ getName('param3', EVENT_PARAM3_NAMES[selectedEvent]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
                 [hidden]="!EVENT_PARAM3_TOOLTIPS[selectedEvent]"
@@ -184,7 +184,7 @@
 
           <div class="form-row">
             <div class="form-group col-7">
-              <label class="control-label">
+              <label class="control-label" id="label-event-param4">
                 {{ getName('param4', EVENT_PARAM4_NAMES[selectedEvent]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
                 [hidden]="!EVENT_PARAM4_TOOLTIPS[selectedEvent]"
@@ -200,7 +200,7 @@
 
           <div class="form-row">
             <div class="form-group col-7">
-              <label class="control-label">
+              <label class="control-label" id="label-event-param5">
                 {{ getName('param5', EVENT_PARAM5_NAMES[selectedEvent]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
                 [hidden]="!EVENT_PARAM5_TOOLTIPS[selectedEvent]"
@@ -228,7 +228,7 @@
 
           <div class="form-row">
             <div class="form-group col-7">
-              <label class="control-label">
+              <label class="control-label" id="label-action-param1">
                 {{ getName('param1', ACTION_PARAM1_NAMES[selectedAction]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
                 [hidden]="!ACTION_PARAM1_TOOLTIPS[selectedAction]"
@@ -244,7 +244,7 @@
 
           <div class="form-row">
             <div class="form-group col-7">
-              <label class="control-label">
+              <label class="control-label" id="label-action-param2">
                 {{ getName('param2', ACTION_PARAM2_NAMES[selectedAction]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
                 [hidden]="!ACTION_PARAM2_TOOLTIPS[selectedAction]"
@@ -260,7 +260,7 @@
 
           <div class="form-row">
             <div class="form-group col-7">
-              <label class="control-label">
+              <label class="control-label" id="label-action-param3">
                 {{ getName('param3', ACTION_PARAM3_NAMES[selectedAction]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
                 [hidden]="!ACTION_PARAM3_TOOLTIPS[selectedAction]"
@@ -276,7 +276,7 @@
 
           <div class="form-row">
             <div class="form-group col-7">
-              <label class="control-label">
+              <label class="control-label" id="label-action-param4">
                 {{ getName('param4', ACTION_PARAM4_NAMES[selectedAction]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
                 [hidden]="!ACTION_PARAM4_TOOLTIPS[selectedAction]"
@@ -292,7 +292,7 @@
 
           <div class="form-row">
             <div class="form-group col-7">
-              <label class="control-label">
+              <label class="control-label" id="label-action-param5">
                 {{ getName('param5', ACTION_PARAM5_NAMES[selectedAction]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
                 [hidden]="!ACTION_PARAM5_TOOLTIPS[selectedAction]"
@@ -308,7 +308,7 @@
 
           <div class="form-row">
             <div class="form-group col-7">
-              <label class="control-label">
+              <label class="control-label" id="label-action-param6">
                 {{ getName('param6', ACTION_PARAM6_NAMES[selectedAction]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
                 [hidden]="!ACTION_PARAM6_TOOLTIPS[selectedAction]"
@@ -337,7 +337,7 @@
 
           <div class="form-row">
             <div class="form-group col-7">
-              <label class="control-label">
+              <label class="control-label" id="label-target-param1">
                 {{ getName('param1', TARGET_PARAM1_NAMES[selectedTarget]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
                 [hidden]="!TARGET_PARAM1_TOOLTIPS[selectedTarget]"
@@ -353,7 +353,7 @@
 
           <div class="form-row">
             <div class="form-group col-7">
-              <label class="control-label">
+              <label class="control-label" id="label-target-param2">
                 {{ getName('param2', TARGET_PARAM2_NAMES[selectedTarget]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
                 [hidden]="!TARGET_PARAM2_TOOLTIPS[selectedTarget]"
@@ -369,7 +369,7 @@
 
           <div class="form-row">
             <div class="form-group col-7">
-              <label class="control-label">
+              <label class="control-label" id="label-target-param3">
                 {{ getName('param3', TARGET_PARAM3_NAMES[selectedTarget]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
                 [hidden]="!TARGET_PARAM3_TOOLTIPS[selectedTarget]"
@@ -385,7 +385,7 @@
 
           <div class="form-row">
             <div class="form-group col-7">
-              <label class="control-label">
+              <label class="control-label" id="label-target-param4">
                 {{ getName('param4', TARGET_PARAM4_NAMES[selectedTarget]) }} <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
                 [hidden]="!TARGET_PARAM4_TOOLTIPS[selectedTarget]"
