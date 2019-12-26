@@ -6,6 +6,7 @@ import { TopBarModule } from '../../shared/top-bar/top-bar.module';
 import { QueryOutputModule } from '../../shared/query-output/query-output.module';
 import { highlightOptions } from '../../../../config/highlight.config';
 import { TooltipModule } from 'ngx-bootstrap';
+import { ToastrModule } from 'ngx-toastr';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { SaiEditorModule } from '../../shared/sai-editor/sai-editor.module';
@@ -20,6 +21,7 @@ import { SaiFullEditorComponent } from './sai-full-editor.component';
     QueryOutputModule,
     HighlightModule.forRoot(highlightOptions),
     TooltipModule.forRoot(),
+    ToastrModule.forRoot(),
     NgxDatatableModule,
     SaiEditorModule,
   ],
