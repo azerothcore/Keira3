@@ -30,7 +30,7 @@ describe('LootTemplateComponent', () => {
         CreatureLootTemplateModule,
         RouterTestingModule,
         TooltipModule.forRoot(),
-    ToastrModule.forRoot(),
+        ToastrModule.forRoot(),
       ],
       providers: [
         { provide : QueryService, useValue: instance(MockedQueryService) },

@@ -18,6 +18,6 @@ export class SaiGameobjectEditorService extends SaiEditorService {
       handlerService,
       queryService,
       toastrService,
-      );
+    );
   }
 }
