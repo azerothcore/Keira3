@@ -51,7 +51,7 @@ fdescribe('SaiEditorComponent Integration', () => {
     queryService = TestBed.get(QueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(
+    spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(of(
       { results: creatingNew ? [] : [originalRow0, originalRow1, originalRow2] }
     ));
 
