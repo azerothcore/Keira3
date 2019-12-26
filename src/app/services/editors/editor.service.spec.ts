@@ -91,10 +91,15 @@ describe('EditorService', () => {
   describe('save', () => {
     let querySpy: Spy;
     let reloadSpy: Spy;
+    let toastrSucessSpy: Spy;
+    let toastrErrorSpy: Spy;
 
     const query = '-- Mock Query';
 
     beforeEach(() => {
+      const toastrService = TestBed.get(ToastrService);
+      toastrSucessSpy = spyOn(toastrService, 'success');
+      toastrErrorSpy = spyOn(toastrService, 'error');
       querySpy = spyOn(TestBed.get(QueryService), 'query');
       reloadSpy = spyOn(service, 'reload');
     });
@@ -104,6 +109,8 @@ describe('EditorService', () => {
 
       expect(querySpy).toHaveBeenCalledTimes(0);
       expect(reloadSpy).toHaveBeenCalledTimes(0);
+      expect(toastrSucessSpy).toHaveBeenCalledTimes(0);
+      expect(toastrErrorSpy).toHaveBeenCalledTimes(0);
       expect(service.loading).toBe(false);
     });
 
@@ -115,6 +122,8 @@ describe('EditorService', () => {
 
       expect(querySpy).toHaveBeenCalledWith(query);
       expect(reloadSpy).toHaveBeenCalledWith(service.loadedEntityId);
+      expect(toastrSucessSpy).toHaveBeenCalledTimes(1);
+      expect(toastrErrorSpy).toHaveBeenCalledTimes(0);
       expect(service.loading).toBe(false);
       expect(service.error).toBe(null);
     });
@@ -126,6 +135,8 @@ describe('EditorService', () => {
 
       expect(querySpy).toHaveBeenCalledWith(query);
       expect(reloadSpy).toHaveBeenCalledTimes(0);
+      expect(toastrSucessSpy).toHaveBeenCalledTimes(0);
+      expect(toastrErrorSpy).toHaveBeenCalledTimes(1);
       expect(service.loading).toBe(false);
       expect(service.error).toEqual(error);
     });

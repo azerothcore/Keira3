@@ -104,10 +104,10 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
       this.queryService.query<T>(query).subscribe(() => {
         this._error = null;
         this.reloadAfterSave();
-        this.toastrService.success('Query executed successfully!', 'Success!');
+        this.toastrService.success('Query executed successfully', 'Success');
       }, (error: MysqlError) => {
         this._error = error;
-        this.toastrService.error('Error during the execution of the query!', 'Error!');
+        this.toastrService.error('Error when executing the query!', 'Query error');
       }).add(() => {
         this._loading = false;
       })
