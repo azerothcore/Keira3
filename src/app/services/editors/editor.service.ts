@@ -1,7 +1,6 @@
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { MysqlError } from 'mysql';
-import { ToastrService } from 'ngx-toastr';
 
 import { Class, MysqlResult, TableRow } from '../../types/general';
 import { QueryService } from '../query.service';
@@ -33,7 +32,6 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     protected _entityIdField: string,
     protected handlerService: HandlerService<T>,
     protected queryService: QueryService,
-    protected toastr: ToastrService,
   ) {
     super();
     this.fields = this.getClassAttributes(this._entityClass);

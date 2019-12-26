@@ -4,7 +4,6 @@ import { Class, MysqlResult, TableRow } from '../../types/general';
 import { EditorService } from './editor.service';
 import { HandlerService } from '../handlers/handler.service';
 import { QueryService } from '../query.service';
-import { ToastrService } from 'ngx-toastr';
 
 export abstract class MultiRowEditorService<T extends TableRow> extends EditorService<T> {
   protected _originalRows: T[] = [];
@@ -24,9 +23,8 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     protected _entitySecondIdField: string,
     protected handlerService: HandlerService<T>,
     protected queryService: QueryService,
-    protected toastr: ToastrService,
   ) {
-    super(_entityClass, _entityTable, _entityIdField, handlerService, queryService, toastr);
+    super(_entityClass, _entityTable, _entityIdField, handlerService, queryService);
     this.initForm();
   }
 
