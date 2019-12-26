@@ -328,5 +328,40 @@ describe('SaiEditorComponent integration tests', () => {
         '(1234, 0, 1, 0, 0, 0, 100, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\'),\n' +
         '(1234, 0, 3, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\');\n');
     });
+
+    it('changing a value via FlagsSelector should correctly work', () => {
+      const field = 'event_flags';
+      page.clickRowOfDatatable(0);
+      page.clickElement(page.getSelectorBtn(field));
+      page.expectModalDisplayed();
+
+      page.toggleFlagInRow(1); // +2^1
+      page.toggleFlagInRow(3); // +2^3
+      page.clickModalSelect();
+
+      expect(page.getInputById(field).value).toEqual('10');
+      page.expectDiffQueryToContain(
+        'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (0));\n' +
+        'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
+        '`event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
+        '`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, ' +
+        '`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, ' +
+        '`target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES\n' +
+        '(1234, 0, 0, 0, 0, 0, 100, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\');'
+      );
+
+      page.expectFullQueryToContain(
+        'DELETE FROM `smart_scripts` WHERE (`source_type` = 0 AND `entryorguid` = 1234);\n' +
+        'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
+        '`event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
+        '`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, ' +
+        '`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, ' +
+        '`target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES\n' +
+        '(1234, 0, 0, 0, 0, 0, 100, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\'),\n' +
+        '(1234, 0, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\'),\n' +
+        '(1234, 0, 2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\');\n'
+      );
+    });
+
   });
 });
