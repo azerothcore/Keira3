@@ -3,7 +3,6 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Squel, Delete, Insert, Update, QueryBuilder } from 'squel';
 import { escape } from 'sqlstring';
-import { ToastrService } from 'ngx-toastr';
 
 import { MysqlService } from './mysql.service';
 import { MaxRow, MysqlResult, QueryForm, TableRow } from '../types/general';
@@ -22,7 +21,6 @@ export class QueryService {
   constructor(
     private mysqlService: MysqlService,
     private configService: ConfigService,
-    public toastr: ToastrService,
   ) { }
 
   query<T extends TableRow>(queryString: string, values?: string[]): Observable<MysqlResult<T>> {
