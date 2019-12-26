@@ -6,6 +6,7 @@ import { LocationService } from '../../../../services/location.service';
 import { ModalModule, BsModalService } from 'ngx-bootstrap';
 import { NgModule } from '@angular/core';
 import { ModalConfirmComponent } from '../../../editors/shared/modal-confirm/modal-confirm.component';
+import { closeModalsAfterEach } from '../../../../test-utils/test-helpers';
 
 @NgModule({
   declarations: [ ModalConfirmComponent ],
@@ -52,4 +53,6 @@ describe('LogoutBtnComponent', () => {
     component.logout();
     expect(locationServiceSpy).toHaveBeenCalledTimes(1);
   });
+
+  closeModalsAfterEach();
 });
