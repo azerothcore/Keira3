@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 import { MultiRowEditorService } from '../multi-row-editor.service';
 import { CreatureHandlerService } from '../../handlers/creature-handler.service';
@@ -19,6 +20,7 @@ export class GossipMenuOptionService extends MultiRowEditorService<GossipMenuOpt
   constructor(
     protected handlerService: CreatureHandlerService,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super(
       GossipMenuOption,
@@ -27,6 +29,7 @@ export class GossipMenuOptionService extends MultiRowEditorService<GossipMenuOpt
       GOSSIP_MENU_OPTION_ID_2,
       handlerService,
       queryService,
+      toastrService,
     );
   }
 }

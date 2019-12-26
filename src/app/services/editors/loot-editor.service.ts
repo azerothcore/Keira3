@@ -1,9 +1,11 @@
+import { Observable } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
+
 import { MultiRowEditorService } from './multi-row-editor.service';
 import { LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, LootTemplate } from '../../components/editors/shared/loot-template/loot-template.type';
 import { Class, MysqlResult } from '../../types/general';
 import { HandlerService } from '../handlers/handler.service';
 import { QueryService } from '../query.service';
-import { Observable } from 'rxjs';
 
 export abstract class LootEditorService<T extends LootTemplate> extends MultiRowEditorService<T> {
   get entityTemplateTable(): string { return this._entityTemplateTable; }
@@ -18,8 +20,17 @@ export abstract class LootEditorService<T extends LootTemplate> extends MultiRow
     protected _entityTemplateLootField: string, // e.g. lootid
     protected handlerService: HandlerService<T>,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
-    super(_entityClass, _entityTable, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, handlerService, queryService);
+    super(
+      _entityClass,
+      _entityTable,
+      LOOT_TEMPLATE_ID,
+      LOOT_TEMPLATE_ID_2,
+      handlerService,
+      queryService,
+      toastrService,
+    );
   }
 
   getLootId(): Observable<MysqlResult<{ lootId: number }>> {

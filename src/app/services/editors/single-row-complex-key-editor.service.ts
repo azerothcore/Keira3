@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 import { MysqlResult, TableRow, Class } from '../../types/general';
 import { SingleRowEditorService } from './single-row-editor.service';
@@ -22,6 +23,7 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
     protected isMainEntity: boolean,
     protected handlerService: HandlerService<T>,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super(
       _entityClass,
@@ -31,6 +33,7 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
       isMainEntity,
       handlerService,
       queryService,
+      toastrService,
     );
   }
 

@@ -6,6 +6,7 @@ import { Class, MysqlResult, TableRow } from '../../types/general';
 import { QueryService } from '../query.service';
 import { HandlerService } from '../handlers/handler.service';
 import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
+import { ToastrService } from 'ngx-toastr';
 
 export abstract class EditorService<T extends TableRow> extends SubscriptionHandler {
   protected _loading = false;
@@ -32,6 +33,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     protected _entityIdField: string,
     protected handlerService: HandlerService<T>,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super();
     this.fields = this.getClassAttributes(this._entityClass);
@@ -102,10 +104,10 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
       this.queryService.query<T>(query).subscribe(() => {
         this._error = null;
         this.reloadAfterSave();
-        this.toastr.success('Query executed successfully!', 'Success!');
+        this.toastrService.success('Query executed successfully!', 'Success!');
       }, (error: MysqlError) => {
         this._error = error;
-        this.toastr.error('Error during the execution of the query!', 'Error!');
+        this.toastrService.error('Error during the execution of the query!', 'Error!');
       }).add(() => {
         this._loading = false;
       })

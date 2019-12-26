@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 import { CreatureHandlerService } from '../../handlers/creature-handler.service';
 import { QueryService } from '../../query.service';
@@ -22,6 +23,7 @@ export class PickpocketingLootTemplateService extends LootEditorService<Pickpock
   constructor(
     protected handlerService: CreatureHandlerService,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super(
       CreatureLootTemplate,
@@ -31,6 +33,7 @@ export class PickpocketingLootTemplateService extends LootEditorService<Pickpock
       CREATURE_TEMPLATE_PICKPOCKETING_LOOT_ID,
       handlerService,
       queryService,
+      toastrService,
     );
   }
 }

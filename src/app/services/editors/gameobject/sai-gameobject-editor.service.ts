@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 import { SaiEditorService } from '../sai/sai-editor.service';
 import { QueryService } from '../../query.service';
@@ -11,7 +12,12 @@ export class SaiGameobjectEditorService extends SaiEditorService {
   constructor(
     protected handlerService: SaiGameobjectHandlerService,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
-    super(handlerService, queryService);
+    super(
+      handlerService,
+      queryService,
+      toastrService,
+      );
   }
 }

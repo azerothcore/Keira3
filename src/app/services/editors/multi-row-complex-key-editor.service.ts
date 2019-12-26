@@ -1,9 +1,11 @@
+import { Observable } from 'rxjs';
+import { MysqlError } from 'mysql';
+import { ToastrService } from 'ngx-toastr';
+
 import { Class, MysqlResult, TableRow } from '../../types/general';
 import { HandlerService } from '../handlers/handler.service';
 import { QueryService } from '../query.service';
 import { MultiRowEditorService } from './multi-row-editor.service';
-import { Observable } from 'rxjs';
-import { MysqlError } from 'mysql';
 
 export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extends MultiRowEditorService<T> {
 
@@ -19,6 +21,7 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
     protected _entitySecondIdField: string,
     protected handlerService: HandlerService<T>,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super(
       _entityClass,
@@ -27,6 +30,7 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
       _entitySecondIdField,
       handlerService,
       queryService,
+      toastrService,
     );
   }
 

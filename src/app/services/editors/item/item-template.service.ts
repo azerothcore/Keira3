@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 import { SingleRowEditorService } from '../single-row-editor.service';
 import {
@@ -19,6 +20,7 @@ export class ItemTemplateService extends SingleRowEditorService<ItemTemplate> {
   constructor(
     protected handlerService: ItemHandlerService,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super(
       ItemTemplate,
@@ -28,6 +30,7 @@ export class ItemTemplateService extends SingleRowEditorService<ItemTemplate> {
       true,
       handlerService,
       queryService,
+      toastrService,
     );
   }
 }

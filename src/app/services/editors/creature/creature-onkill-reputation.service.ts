@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 import { SingleRowEditorService } from '../single-row-editor.service';
 import {
@@ -17,6 +18,7 @@ export class CreatureOnkillReputationService extends SingleRowEditorService<Crea
   constructor(
     protected handlerService: CreatureHandlerService,
     protected queryService: QueryService,
+    protected toastrService: ToastrService,
   ) {
     super(
       CreatureOnkillReputation,
@@ -26,6 +28,7 @@ export class CreatureOnkillReputationService extends SingleRowEditorService<Crea
       false,
       handlerService,
       queryService,
+      toastrService,
     );
   }
 }
