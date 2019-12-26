@@ -10,7 +10,23 @@ import { MultiRowEditorPageObject } from '../../../../test-utils/multi-row-edito
 import { SAI_TYPES, SmartScripts } from '../../../../types/smart-scripts.type';
 import { QueryService } from '../../../../services/query.service';
 
-class SaiEditorPage extends MultiRowEditorPageObject<SaiEditorComponent> {}
+class SaiEditorPage extends MultiRowEditorPageObject<SaiEditorComponent> {
+  get event1Name() { return this.query<HTMLLabelElement>('label#label-event-param1'); }
+  get event2Name() { return this.query<HTMLLabelElement>('label#label-event-param2'); }
+  get event3Name() { return this.query<HTMLLabelElement>('label#label-event-param3'); }
+  get event4Name() { return this.query<HTMLLabelElement>('label#label-event-param4'); }
+  get event5Name() { return this.query<HTMLLabelElement>('label#label-event-param5'); }
+  get action1Name() { return this.query<HTMLLabelElement>('label#label-action-param1'); }
+  get action2Name() { return this.query<HTMLLabelElement>('label#label-action-param2'); }
+  get action3Name() { return this.query<HTMLLabelElement>('label#label-action-param3'); }
+  get action4Name() { return this.query<HTMLLabelElement>('label#label-action-param4'); }
+  get action5Name() { return this.query<HTMLLabelElement>('label#label-action-param5'); }
+  get action6Name() { return this.query<HTMLLabelElement>('label#label-action-param6'); }
+  get target1Name() { return this.query<HTMLLabelElement>('label#label-target-param1'); }
+  get target2Name() { return this.query<HTMLLabelElement>('label#label-target-param2'); }
+  get target3Name() { return this.query<HTMLLabelElement>('label#label-target-param3'); }
+  get target4Name() { return this.query<HTMLLabelElement>('label#label-target-param4'); }
+}
 
 describe('SaiEditorComponent integration tests', () => {
   let component: SaiEditorComponent;
@@ -42,11 +58,15 @@ describe('SaiEditorComponent integration tests', () => {
       .compileComponents();
   }));
 
-  function setup(creatingNew: boolean) {
+  function setup(creatingNew: boolean, hasTemplateQuery = false) {
     const selected = { source_type: sourceType, entryorguid: id };
     handlerService = TestBed.get(SaiHandlerService);
     handlerService['_selected'] = JSON.stringify(selected);
     handlerService.isNew = creatingNew;
+
+    if (hasTemplateQuery) {
+      handlerService['_templateQuery'] = '-- Mock template query';
+    }
 
     queryService = TestBed.get(QueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
@@ -363,5 +383,87 @@ describe('SaiEditorComponent integration tests', () => {
       );
     });
 
+  });
+
+  describe('Template query', () => {
+    beforeEach(() => setup(false, true));
+
+    it('should correctly initialise', () => {
+      page.expectDiffQueryToBeShown();
+      page.expectDiffQueryToBeEmpty();
+      page.expectFullQueryToContain(
+        '-- Mock template query\n\n' +
+        'DELETE FROM `smart_scripts` WHERE (`source_type` = 0 AND `entryorguid` = 1234);\n' +
+        'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
+        '`event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
+        '`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, ' +
+        '`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, ' +
+        '`target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES\n' +
+        '(1234, 0, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\'),\n' +
+        '(1234, 0, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\'),\n' +
+        '(1234, 0, 2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\');\n');
+      expect(page.getEditorTableRowsCount()).toBe(3);
+    });
+  });
+
+  describe('Dynamic param names', () => {
+    beforeEach(() => {
+      setup(true);
+      page.addNewRow();
+    });
+
+    it('event param names should correctly work', () => {
+      page.setSelectValueById('event_type', 1);
+
+      expect(page.event1Name.innerText).toContain('InitialMin');
+      expect(page.event2Name.innerText).toContain('InitialMax');
+      expect(page.event3Name.innerText).toContain('RepeatMin');
+      expect(page.event4Name.innerText).toContain('RepeatMax');
+      expect(page.event5Name.innerText).toContain('param5');
+
+      page.setSelectValueById('event_type', 10);
+
+      expect(page.event1Name.innerText).toContain('NoHostile');
+      expect(page.event2Name.innerText).toContain('MaxRange');
+      expect(page.event3Name.innerText).toContain('CooldownMin');
+      expect(page.event4Name.innerText).toContain('CooldownMax');
+      expect(page.event5Name.innerText).toContain('PlayerOnly');
+    });
+
+    it('action param names should correctly work', () => {
+      page.setSelectValueById('action_type', 1);
+
+      expect(page.action1Name.innerText).toContain('GroupId');
+      expect(page.action2Name.innerText).toContain('Duration');
+      expect(page.action3Name.innerText).toContain('Target');
+      expect(page.action4Name.innerText).toContain('param4');
+      expect(page.action5Name.innerText).toContain('param5');
+      expect(page.action6Name.innerText).toContain('param6');
+
+      page.setSelectValueById('action_type', 10);
+
+      expect(page.action1Name.innerText).toContain('EmoteId1');
+      expect(page.action2Name.innerText).toContain('EmoteId2');
+      expect(page.action3Name.innerText).toContain('EmoteId3');
+      expect(page.action4Name.innerText).toContain('EmoteId4');
+      expect(page.action5Name.innerText).toContain('EmoteId5');
+      expect(page.action6Name.innerText).toContain('EmoteId6');
+    });
+
+    it('target param names should correctly work', () => {
+      page.setSelectValueById('target_type', 1);
+
+      expect(page.target1Name.innerText).toContain('param1');
+      expect(page.target2Name.innerText).toContain('param2');
+      expect(page.target3Name.innerText).toContain('param3');
+      expect(page.target4Name.innerText).toContain('param4');
+
+      page.setSelectValueById('target_type', 9);
+
+      expect(page.target1Name.innerText).toContain('CreatureId');
+      expect(page.target2Name.innerText).toContain('MinDistance');
+      expect(page.target3Name.innerText).toContain('MaxDistance');
+      expect(page.target4Name.innerText).toContain('AliveState');
+    });
   });
 });
