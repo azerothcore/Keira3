@@ -46,6 +46,10 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
     this.setInputValue(this.getInputById(inputId), value);
   }
 
+  setSelectValueById(inputId: string, value: number) {
+    this.setInputValueById(inputId, `${value}: ${value}`);
+  }
+
   getSelectorBtn(name: string, assert = true) {
     return this.query<HTMLButtonElement>(`#${name}-selector-btn`, assert);
   }
