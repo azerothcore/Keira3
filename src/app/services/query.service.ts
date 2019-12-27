@@ -34,7 +34,7 @@ export class QueryService {
     );
   }
 
-  getSearchQuery(table: string, queryForm: QueryForm, selectFields: string[] = null, groupFields: string[] = null) {
+  getSearchQuery(table: string, queryForm: QueryForm, selectFields: string[] = null, groupFields: string[] = null): string {
     const query = squel.select(squelConfig).from(table);
 
     if (selectFields) {
