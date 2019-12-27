@@ -349,7 +349,7 @@ describe('SaiEditorComponent integration tests', () => {
         '(1234, 0, 3, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\');\n');
     });
 
-    it('changing a value via FlagsSelector should correctly work', () => {
+    it('changing a value via FlagsSelector should correctly work', async () => {
       const field = 'event_flags';
       page.clickRowOfDatatable(0);
       page.clickElement(page.getSelectorBtn(field));
@@ -358,6 +358,8 @@ describe('SaiEditorComponent integration tests', () => {
       page.toggleFlagInRow(1); // +2^1
       page.toggleFlagInRow(3); // +2^3
       page.clickModalSelect();
+      await fixture.whenStable();
+      await fixture.whenRenderingDone();
 
       expect(page.getInputById(field).value).toEqual('10');
       page.expectDiffQueryToContain(
