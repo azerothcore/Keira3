@@ -133,13 +133,15 @@ describe('CreatureTemplateAddon integration tests', () => {
       );
     });
 
-    it('changing a value via SingleValueSelector should correctly work', () => {
+    it('changing a value via SingleValueSelector should correctly work', async () => {
       const field = 'bytes1';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
 
       page.clickRowOfDatatable(8);
       page.clickModalSelect();
+      await fixture.whenStable();
+      await fixture.whenRenderingDone();
 
       expect(page.getInputById(field).value).toEqual('8');
       page.expectDiffQueryToContain(

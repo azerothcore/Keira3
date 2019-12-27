@@ -114,7 +114,7 @@ describe('GameobjectTemplateAddon integration tests', () => {
 
     });
 
-    it('changing a value via FlagsSelector should correctly work', () => {
+    it('changing a value via FlagsSelector should correctly work', async () => {
       const field = 'flags';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
@@ -122,6 +122,8 @@ describe('GameobjectTemplateAddon integration tests', () => {
       page.toggleFlagInRow(1); // +2^1
       page.toggleFlagInRow(3); // +2^3
       page.clickModalSelect();
+      await fixture.whenStable();
+      await fixture.whenRenderingDone();
 
       expect(page.getInputById(field).value).toEqual('10');
       page.expectDiffQueryToContain(
