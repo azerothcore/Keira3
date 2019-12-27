@@ -12,6 +12,8 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
     'limit': new FormControl(100),
     'fields': this.fields,
   });
+  selectFields: string[] = null;
+  groupFields: string[] = null;
 
   constructor(
     protected queryService: QueryService,
@@ -24,12 +26,22 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
       this.fields.addControl(field, new FormControl());
     }
 
-    this.query = this.queryService.getSearchQuery(this.entityTable, this.queryForm.getRawValue());
+    this.query = this.queryService.getSearchQuery(
+      this.entityTable,
+      this.queryForm.getRawValue(),
+      this.selectFields,
+      this.groupFields,
+    );
 
     this.subscriptions.push(
       this.queryForm.valueChanges.subscribe(() => {
         if (this.queryForm.valid) {
-          this.query = this.queryService.getSearchQuery(this.entityTable, this.queryForm.getRawValue());
+          this.query = this.queryService.getSearchQuery(
+            this.entityTable,
+            this.queryForm.getRawValue(),
+            this.selectFields,
+            this.groupFields,
+          );
         }
       })
     );

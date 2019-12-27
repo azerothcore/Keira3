@@ -136,6 +136,26 @@ describe('QueryService', () => {
         'FROM `my_keira3` LIMIT 20'
       );
     });
+
+    it('should properly work when using fields, limit, selectFields and groupField', () => {
+      const queryForm: QueryForm = {
+        fields: {
+          myField1: 'myValue1',
+          myField2: 'myValue2',
+        },
+        limit: '20',
+      };
+
+      const selectFields = ['sel1', 'sel2'];
+      const groupFields = ['sel1', 'sel2', 'sel3'];
+
+      expect(service.getSearchQuery(table, queryForm, selectFields, groupFields)).toEqual(
+        'SELECT `sel1`, `sel2` ' +
+        'FROM `my_keira3` WHERE (`myField1` LIKE \'%myValue1%\') AND (`myField2` LIKE \'%myValue2%\') ' +
+        'GROUP BY sel1, sel2, sel3 LIMIT 20'
+      );
+    });
+
   });
 
   it('selectAll() should correctly work', async(() => {

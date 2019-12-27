@@ -35,7 +35,7 @@ describe('SearchService', () => {
     it('should update the query if the form is valid', () => {
       service.queryForm.get('limit').setValue(123);
 
-      expect(spy).toHaveBeenCalledWith(service['entityTable'], service.queryForm.getRawValue());
+      expect(spy).toHaveBeenCalledWith(service['entityTable'], service.queryForm.getRawValue(), null, null);
       expect(service.query).toEqual(newQuery);
     });
 
