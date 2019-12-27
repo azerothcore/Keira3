@@ -66,19 +66,19 @@ describe('SaiSearchExisting integration tests', () => {
   for (const { testId, entryorguid, source_type, limit, expectedQuery } of [
     {
       testId: 1, entryorguid: 1, source_type: 2, limit: '100', expectedQuery:
-        'SELECT * FROM `smart_scripts` WHERE (`entryorguid` LIKE \'%1%\') AND (`source_type` LIKE \'%2%\') LIMIT 100'
+        'SELECT `entryorguid`, `source_type` FROM `smart_scripts` WHERE (`entryorguid` LIKE \'%1%\') AND (`source_type` LIKE \'%2%\') GROUP BY entryorguid, source_type LIMIT 100'
     },
     {
       testId: 2, entryorguid: '', source_type: 2, limit: '100', expectedQuery:
-        'SELECT * FROM `smart_scripts` WHERE (`source_type` LIKE \'%2%\') LIMIT 100'
+        'SELECT `entryorguid`, `source_type` FROM `smart_scripts` WHERE (`source_type` LIKE \'%2%\') GROUP BY entryorguid, source_type LIMIT 100'
     },
     {
       testId: 3, entryorguid: 123, source_type: '', limit: '100', expectedQuery:
-        'SELECT * FROM `smart_scripts` WHERE (`entryorguid` LIKE \'%123%\') LIMIT 100'
+        'SELECT `entryorguid`, `source_type` FROM `smart_scripts` WHERE (`entryorguid` LIKE \'%123%\') GROUP BY entryorguid, source_type LIMIT 100'
     },
     {
       testId: 4, entryorguid: 123, source_type: '', limit: '', expectedQuery:
-        'SELECT * FROM `smart_scripts` WHERE (`entryorguid` LIKE \'%123%\')'
+        'SELECT `entryorguid`, `source_type` FROM `smart_scripts` WHERE (`entryorguid` LIKE \'%123%\') GROUP BY entryorguid, source_type'
     },
   ]) {
     it(`searching an existing entity should correctly work [${testId}]`, () => {

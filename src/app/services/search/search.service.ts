@@ -26,7 +26,12 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
       this.fields.addControl(field, new FormControl());
     }
 
-    this.query = this.queryService.getSearchQuery(this.entityTable, this.queryForm.getRawValue());
+    this.query = this.queryService.getSearchQuery(
+      this.entityTable,
+      this.queryForm.getRawValue(),
+      this.selectFields,
+      this.groupFields,
+    );
 
     this.subscriptions.push(
       this.queryForm.valueChanges.subscribe(() => {
