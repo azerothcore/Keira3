@@ -134,13 +134,15 @@ describe('GameobjectTemplate integration tests', () => {
       page.expectFullQueryToContain('35');
     });
 
-    it('changing a value via SingleValueSelector should correctly work', () => {
+    it('changing a value via SingleValueSelector should correctly work', async () => {
       const field = 'type';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
 
       page.clickRowOfDatatable(7);
       page.clickModalSelect();
+      await fixture.whenStable();
+      await fixture.whenRenderingDone();
 
       expect(page.getInputById(field).value).toEqual('7');
       page.expectDiffQueryToContain(

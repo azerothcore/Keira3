@@ -161,7 +161,7 @@ describe('QuestTemplate integration tests', () => {
       page.expectFullQueryToContain('22');
     });
 
-    it('changing a value via FlagsSelector should correctly work', () => {
+    it('changing a value via FlagsSelector should correctly work', async () => {
       const field = 'Flags';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
@@ -169,6 +169,8 @@ describe('QuestTemplate integration tests', () => {
       page.toggleFlagInRow(2);
       page.toggleFlagInRow(12);
       page.clickModalSelect();
+      await fixture.whenStable();
+      await fixture.whenRenderingDone();
 
       expect(page.getInputById(field).value).toEqual('4100');
       page.expectDiffQueryToContain(

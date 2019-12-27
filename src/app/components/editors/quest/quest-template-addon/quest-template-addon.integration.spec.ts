@@ -162,7 +162,7 @@ describe('QuestTemplateAddon integration tests', () => {
       );
     });
 
-    it('changing a value via FlagsSelector should correctly work', () => {
+    it('changing a value via FlagsSelector should correctly work', async () => {
       const field = 'SpecialFlags';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
@@ -170,6 +170,8 @@ describe('QuestTemplateAddon integration tests', () => {
       page.toggleFlagInRow(1);
       page.toggleFlagInRow(3);
       page.clickModalSelect();
+      await fixture.whenStable();
+      await fixture.whenRenderingDone();
 
       expect(page.getInputById(field).value).toEqual('10');
       page.expectDiffQueryToContain(

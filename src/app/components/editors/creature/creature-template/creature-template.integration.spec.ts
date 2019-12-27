@@ -158,7 +158,7 @@ describe('CreatureTemplate integration tests', () => {
       page.expectFullQueryToContain('AC Developer');
     });
 
-    it('changing a value via FlagsSelector should correctly work', () => {
+    it('changing a value via FlagsSelector should correctly work', async () => {
       const field = 'unit_flags';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
@@ -166,6 +166,8 @@ describe('CreatureTemplate integration tests', () => {
       page.toggleFlagInRow(2);
       page.toggleFlagInRow(12);
       page.clickModalSelect();
+      await fixture.whenStable();
+      await fixture.whenRenderingDone();
 
       expect(page.getInputById(field).value).toEqual('4100');
       page.expectDiffQueryToContain(
