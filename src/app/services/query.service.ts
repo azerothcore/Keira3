@@ -34,8 +34,13 @@ export class QueryService {
     );
   }
 
-  getSearchQuery(table: string, queryForm: QueryForm) {
+  getSearchQuery(table: string, queryForm: QueryForm, selectFields: string[] = null, groupFields: string[] = null) {
     const query = squel.select(squelConfig).from(table);
+
+    if (selectFields) {
+      query.fields(selectFields);
+    }
+
     const filters = queryForm.fields;
 
     for (const filter in filters) {
@@ -43,6 +48,12 @@ export class QueryService {
         const value = escape(`%${filters[filter]}%`);
 
         query.where(`\`${filter}\` LIKE ${value}`);
+      }
+    }
+
+    if (groupFields) {
+      for (const groupField of groupFields) {
+        query.group(groupField);
       }
     }
 
