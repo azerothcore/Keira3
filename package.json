@@ -74,7 +74,7 @@
     "karma-coverage-istanbul-reporter": "2.1.1",
     "karma-jasmine": "2.0.1",
     "karma-jasmine-html-reporter": "1.5.1",
-    "mocha": "6.2.2",
+    "mocha": "7.0.0",
     "ngx-bootstrap": "5.2.0",
     "ngx-clipboard": "12.3.0",
     "ngx-highlightjs": "3.0.3",
