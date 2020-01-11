@@ -22,6 +22,19 @@
     >
 
       <br>
+
+      <div class="item-preview">
+        <b [ngClass]="'q' + editorService.form.get('Quality').value">{{ editorService.form.get('name').value }}</b><br>
+        <span class="item-level">Item Level {{ editorService.form.get('ItemLevel').value }}</span>
+        <div *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]" class="capitalize">
+          <span *ngIf="editorService.form.get('stat_value' + i).value != 0"> {{ editorService.form.get('stat_value' + i).value > 0 ? '+' + editorService.form.get('stat_value' + i).value : '-' + editorService.form.get('stat_value' + i).value  }} {{ getStatType(editorService.form.get('stat_type' + i).value) }} </span>
+        </div>
+        <span>Required Level {{ editorService.form.get('RequiredLevel').value }}</span>
+      </div>
+
+      <br>
+      <br>
+
       <div class="row">
         <div class="form-group col-12 col-sm-4 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="entry">entry</label>

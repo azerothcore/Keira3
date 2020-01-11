@@ -54,6 +54,19 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   public readonly FACTIONS = FACTIONS;
   public readonly STAT_TYPE = STAT_TYPE;
 
+  getStatType(val: number) {
+    const stat = this.STAT_TYPE.find(st => st.value === val).name;
+    return stat.toLowerCase().replace(/_/g, ' ');
+  }
+
+  getPrice(val: number) {
+    if (val <= 99) {
+      return 'copper ' + val;
+    } else if (val > 99 && val <= 9999) {
+      return 'silver' 'copper ' + val;
+    }
+  }
+
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: ItemTemplateService,
