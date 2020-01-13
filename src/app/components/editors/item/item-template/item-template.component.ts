@@ -54,17 +54,97 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   public readonly FACTIONS = FACTIONS;
   public readonly STAT_TYPE = STAT_TYPE;
 
-  getStatType(val: number) {
-    const stat = this.STAT_TYPE.find(st => st.value === val).name;
-    return stat.toLowerCase().replace(/_/g, ' ');
+  public bottomTextPreview: string = '';
+
+  public readonly statType = [ // ITEM_MOD_*
+    'Mana',
+    'Health',
+    null,
+    'Agility',
+    'Strength',
+    'Intellect',
+    'Spirit',
+    'Stamina',
+    null, null, null, null,
+    'Increases defense rating by %d.',
+    'Increases your dodge rating by %d.',
+    'Increases your parry rating by %d.',
+    'Increases your shield block rating by %d.',
+    'Improves melee hit rating by %d.',
+    'Improves ranged hit rating by %d.',
+    'Improves spell hit rating by %d.',
+    'Improves melee critical strike rating by %d.',
+    'Improves ranged critical strike rating by %d.',
+    'Improves spell critical strike rating by %d.',
+    'Improves melee hit avoidance rating by %d.',
+    'Improves ranged hit avoidance rating by %d.',
+    'Improves spell hit avoidance rating by %d.',
+    'Improves melee critical avoidance rating by %d.',
+    'Improves ranged critical avoidance rating by %d.',
+    'Improves spell critical avoidance rating by %d.',
+    'Improves melee haste rating by %d.',
+    'Improves ranged haste rating by %d.',
+    'Improves spell haste rating by %d.',
+    'Improves hit rating by %d.',
+    'Improves critical strike rating by %d.',
+    'Improves hit avoidance rating by %d.',
+    'Improves critical avoidance rating by %d.',
+    'Increases your resilience rating by %d.',
+    'Increases your haste rating by %d.',
+    'Increases expertise rating by %d.',
+    'Increases attack power by %d.',
+    'Increases ranged attack power by %d.',
+    'Increases attack power by %d in Cat, Bear, Dire Bear, and Moonkin forms only.',
+    'Increases damage done by magical spells and effects by up to %d.',
+    'Increases healing done by magical spells and effects by up to %d.',
+    'Restores %d mana per 5 sec.',
+    'Increases your armor penetration rating by %d.',
+    'Increases spell power by %d.',
+    'Restores %d health per 5 sec.',
+    'Increases spell penetration by %d.',
+    'Increases the block value of your shield by %d.',
+    'Unknown Bonus #%d (%d)',
+  ];
+
+  getStatType(type: number, val: number): string {
+    if (this.statType[type] == null || val === 0) {
+      return '';
+    }
+
+    if (type <= 7) {
+      const stat = this.STAT_TYPE.find(st => st.value === type).name;
+      return '<span style="text-transform: capitalize;">' +
+             (val > 0 ? '+' + val : '-' + val) + ' ' + stat.toLowerCase().replace(/_/g, ' ') +
+             '</span>';
+    }
+
+    this.bottomTextPreview = (this.bottomTextPreview !== null ? this.bottomTextPreview : '') +
+                             '<span style="color: #1eff00">' + this.statType[type].replace(/%d/g, val.toString()) + '</span><br>';
+
+    return '';
   }
 
   getPrice(val: number) {
-    if (val <= 99) {
-      return 'copper ' + val;
+    const COPPER = ' <img src="../../../../../assets/img/money/copper.gif"> &nbsp;';
+    const SILVER = ' <img src="../../../../../assets/img/money/silver.gif"> &nbsp;';
+    const GOLD   = ' <img src="../../../../../assets/img/money/gold.gif"> &nbsp;';
+
+    if (val <= 99 && val > 0) {
+      return this.parsePrice(val.toString(), COPPER);
     } else if (val > 99 && val <= 9999) {
-      return 'silver' 'copper ' + val;
+
+      return this.parsePrice(val.toString().substr(0, 2), SILVER) +
+             this.parsePrice(val.toString().substr(2, 2), COPPER);
+    } else if (val > 9999) {
+
+      return this.parsePrice(val.toString().substr(0, 2), GOLD) +
+             this.parsePrice(val.toString().substr(2, 2), SILVER) +
+             this.parsePrice(val.toString().substr(4, 2), COPPER);
     }
+  }
+
+  parsePrice(price: string, type: string): string {
+    return price !== '00' ? price + type : '';
   }
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

@@ -10,6 +10,7 @@ import { QueryOutputModule } from '../../shared/query-output/query-output.module
 import { ItemTemplateComponent } from './item-template.component';
 import { SingleValueSelectorModule } from '../../shared/selectors/single-value-selector/single-value-selector.module';
 import { FlagsSelectorModule } from '../../shared/selectors/flags-selector/flags-selector.module';
+import { SafeHtmlPipeModule } from '../../../../utils/safeHTMLPipe/safe-html-pipe.module';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { FlagsSelectorModule } from '../../shared/selectors/flags-selector/flags
     ToastrModule.forRoot(toastrConfig),
     SingleValueSelectorModule,
     FlagsSelectorModule,
+    SafeHtmlPipeModule,
   ],
   exports: [
     ItemTemplateComponent,

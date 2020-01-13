@@ -25,11 +25,14 @@
 
       <div class="item-preview">
         <b [ngClass]="'q' + editorService.form.get('Quality').value">{{ editorService.form.get('name').value }}</b><br>
-        <span class="item-level">Item Level {{ editorService.form.get('ItemLevel').value }}</span>
-        <div *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]" class="capitalize">
-          <span *ngIf="editorService.form.get('stat_value' + i).value != 0"> {{ editorService.form.get('stat_value' + i).value > 0 ? '+' + editorService.form.get('stat_value' + i).value : '-' + editorService.form.get('stat_value' + i).value  }} {{ getStatType(editorService.form.get('stat_type' + i).value) }} </span>
+        <div *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]">
+          <span *ngIf="editorService.form.get('stat_value' + i).value != 0" [innerHTML]="getStatType(editorService.form.get('stat_type' + i).value, editorService.form.get('stat_value' + i).value) | safeHTML"></span>
         </div>
-        <span>Required Level {{ editorService.form.get('RequiredLevel').value }}</span>
+        <span>Required Level {{ editorService.form.get('RequiredLevel').value }}<br></span>
+        <span *ngIf="editorService.form.get('ItemLevel').value > 0">Item Level {{ editorService.form.get('ItemLevel').value }}<br></span>
+        <span *ngIf="editorService.form.get('description').value != ''" class="item-description">{{ editorService.form.get('description').value }}<br></span>
+        <span *ngIf="editorService.form.get('SellPrice').value > 0">Sell Price: <span [innerHTML]="getPrice(editorService.form.get('SellPrice').value)"></span><br></span>
+        <span [innerHTML]="bottomTextPreview | safeHTML"></span>
       </div>
 
       <br>
