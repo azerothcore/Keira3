@@ -33,8 +33,6 @@ import {
 } from './constants/sai-targets';
 import { EVENT_PHASE_MASK } from '../../../../constants/flags/event-phase-mask';
 import { SMART_EVENT_FLAGS } from '../../../../constants/flags/smart-event-flags';
-import { merge, BehaviorSubject } from 'rxjs';
-import { distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-sai-editor',
