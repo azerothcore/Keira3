@@ -26,6 +26,7 @@ class SaiEditorPage extends MultiRowEditorPageObject<SaiEditorComponent> {
   get target2Name() { return this.query<HTMLLabelElement>('label#label-target-param2'); }
   get target3Name() { return this.query<HTMLLabelElement>('label#label-target-param3'); }
   get target4Name() { return this.query<HTMLLabelElement>('label#label-target-param4'); }
+  get errors() { return this.query<HTMLElement>('#errors'); }
 }
 
 describe('SaiEditorComponent integration tests', () => {
@@ -383,6 +384,91 @@ describe('SaiEditorComponent integration tests', () => {
         '(1234, 0, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\'),\n' +
         '(1234, 0, 2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\');\n'
       );
+    });
+
+    it('shows error on wrong linked event', () => {
+
+      const mockRows: SmartScripts[] = [
+        {
+          entryorguid: 0,
+          source_type: 0,
+          id: 0,
+          link: 1,
+          event_type: 0,
+          event_phase_mask: 0,
+          event_chance: 100,
+          event_flags: 0,
+          event_param1: 0,
+          event_param2: 0,
+          event_param3: 0,
+          event_param4: 0,
+          event_param5: 0,
+          action_type: 0,
+          action_param1: 0,
+          action_param2: 0,
+          action_param3: 0,
+          action_param4: 0,
+          action_param5: 0,
+          action_param6: 0,
+          target_type: 0,
+          target_param1: 0,
+          target_param2: 0,
+          target_param3: 0,
+          target_param4: 0,
+          target_x: 0,
+          target_y: 0,
+          target_z: 0,
+          target_o: 0,
+          comment: '',
+        },
+        {
+          entryorguid: 0,
+          source_type: 0,
+          id: 1,
+          link: 0,
+          event_type: 61,
+          event_phase_mask: 0,
+          event_chance: 100,
+          event_flags: 0,
+          event_param1: 0,
+          event_param2: 0,
+          event_param3: 0,
+          event_param4: 0,
+          event_param5: 0,
+          action_type: 0,
+          action_param1: 0,
+          action_param2: 0,
+          action_param3: 0,
+          action_param4: 0,
+          action_param5: 0,
+          action_param6: 0,
+          target_type: 0,
+          target_param1: 0,
+          target_param2: 0,
+          target_param3: 0,
+          target_param4: 0,
+          target_x: 0,
+          target_y: 0,
+          target_z: 0,
+          target_o: 0,
+          comment: '',
+        }
+      ];
+
+      component.editorService['_newRows'] = mockRows;
+      expect(page.errors.innerText).not.toContain('ERROR');
+
+      mockRows[1].event_type = 0;
+      component.editorService['checkRowsCorrectness']();
+      fixture.detectChanges();
+
+      expect(page.errors.innerText).toContain('ERROR: the SAI (id: ');
+
+      mockRows[1].link = 3;
+      component.editorService['checkRowsCorrectness']();
+      fixture.detectChanges();
+
+      expect(page.errors.innerText).toContain('ERROR: non-existing links:');
     });
 
   });
