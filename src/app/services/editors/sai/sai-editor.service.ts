@@ -55,7 +55,6 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
 
   protected checkRowsCorrectness() {
     this._errors = [];
-    console.log('check');
 
     const links = new Set();
     for (const row of this.newRows) {
@@ -80,8 +79,6 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
     if (links.size !== 0) {
       this._errors.push('ERROR: non-existing links: ' + Array.from(links).join(' '));
     }
-
-    console.log(this._errors)
 
   }
 }
