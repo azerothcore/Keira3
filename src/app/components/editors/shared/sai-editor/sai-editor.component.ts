@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { SaiHandlerService } from '../../../../services/handlers/sai-handler.service';
 import { MultiRowEditorComponent } from '../../shared/multi-row-editor.component';
@@ -39,7 +39,7 @@ import { SMART_EVENT_FLAGS } from '../../../../constants/flags/smart-event-flags
   templateUrl: './sai-editor.component.html',
   styleUrls: ['./sai-editor.component.scss']
 })
-export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> {
+export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> implements OnInit {
 
   public readonly EVENT_PHASE_MASK        = EVENT_PHASE_MASK;
   public readonly SMART_EVENT_FLAGS       = SMART_EVENT_FLAGS;
