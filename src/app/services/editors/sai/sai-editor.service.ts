@@ -11,6 +11,9 @@ import { QueryService } from '../../query.service';
 })
 export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScripts> {
 
+  protected _errorLinkedEvent = false;
+  get errorLinkedEvent() { return this._errorLinkedEvent; }
+
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: SaiHandlerService,
@@ -48,5 +51,37 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
     if (this.handlerService.templateQuery) {
       this._diffQuery = `${this.handlerService.templateQuery}\n\n${this._diffQuery}`;
     }
+  }
+
+  protected checkRowsCorrectness() {
+    this._errors = [];
+    console.log('check');
+
+    const links = new Set();
+    for (const row of this.newRows) {
+      if (row.link !== 0) {
+        links.add(row.link);
+      }
+    }
+
+    if (links.size === 0) {
+      return;
+    }
+
+    for (const row of this.newRows) {
+      if (links.has(row.id) && row.event_type !== 61) {
+        this._errorLinkedEvent = true;
+        this._errors.push('ERROR: the SAI (id: ' + row.id + ') is being linked by another event so it must have Event type "61 - LINK"');
+      }
+
+      links.delete(row.id);
+    }
+
+    if (links.size !== 0) {
+      this._errors.push('ERROR: non-existing links: ' + Array.from(links).join(' '));
+    }
+
+    console.log(this._errors)
+
   }
 }
