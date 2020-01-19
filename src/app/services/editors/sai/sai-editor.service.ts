@@ -53,7 +53,7 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
     }
   }
 
-  protected checkRowsCorrectness() {
+  protected checkRowsCorrectness(): void {
     this._errors = [];
 
     const links = new Set();
@@ -70,14 +70,14 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
     for (const row of this.newRows) {
       if (links.has(row.id) && row.event_type !== 61) {
         this._errorLinkedEvent = true;
-        this._errors.push('ERROR: the SAI (id: ' + row.id + ') is being linked by another event so it must have Event type "61 - LINK"');
+        this._errors.push(`ERROR: the SAI (id: ${row.id}) is being linked by another event so it must have Event type "61 - LINK"`);
       }
 
       links.delete(row.id);
     }
 
     if (links.size !== 0) {
-      this._errors.push('ERROR: non-existing links: ' + Array.from(links).join(' '));
+      this._errors.push(`ERROR: non-existing links: ${Array.from(links).join(' ')}`);
     }
 
   }

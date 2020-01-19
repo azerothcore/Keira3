@@ -35,96 +35,46 @@ describe('SAI Editor Service', () => {
 
   it('checks linked event', () => {
 
-    const mockRows: SmartScripts[] = [
+    const mockRows: Partial<SmartScripts>[] = [
       {
         entryorguid: 0,
         source_type: 0,
         id: 0,
         link: 1,
-        event_type: 0,
-        event_phase_mask: 0,
-        event_chance: 100,
-        event_flags: 0,
-        event_param1: 0,
-        event_param2: 0,
-        event_param3: 0,
-        event_param4: 0,
-        event_param5: 0,
-        action_type: 0,
-        action_param1: 0,
-        action_param2: 0,
-        action_param3: 0,
-        action_param4: 0,
-        action_param5: 0,
-        action_param6: 0,
-        target_type: 0,
-        target_param1: 0,
-        target_param2: 0,
-        target_param3: 0,
-        target_param4: 0,
-        target_x: 0,
-        target_y: 0,
-        target_z: 0,
-        target_o: 0,
-        comment: '',
+        event_type: 0
       },
       {
         entryorguid: 0,
         source_type: 0,
         id: 1,
         link: 0,
-        event_type: 61,
-        event_phase_mask: 0,
-        event_chance: 100,
-        event_flags: 0,
-        event_param1: 0,
-        event_param2: 0,
-        event_param3: 0,
-        event_param4: 0,
-        event_param5: 0,
-        action_type: 0,
-        action_param1: 0,
-        action_param2: 0,
-        action_param3: 0,
-        action_param4: 0,
-        action_param5: 0,
-        action_param6: 0,
-        target_type: 0,
-        target_param1: 0,
-        target_param2: 0,
-        target_param3: 0,
-        target_param4: 0,
-        target_x: 0,
-        target_y: 0,
-        target_z: 0,
-        target_o: 0,
-        comment: '',
+        event_type: 61
       }
     ];
 
-    service['_newRows'] = mockRows;
-    expect(service.errors.length === 0).toBe(true);
+    service['_newRows'] = mockRows as SmartScripts[];
+    expect(service.errors.length).toBe(0);
     expect(service.errorLinkedEvent).toBe(false);
 
     service['checkRowsCorrectness']();
-    expect(service.errors.length === 0).toBe(true);
+    expect(service.errors.length).toBe(0);
     expect(service.errorLinkedEvent).toBe(false);
 
     mockRows[1].event_type = 0;
     service['checkRowsCorrectness']();
-    expect(service.errors.length === 1).toBe(true);
-    expect(service.errors[0]).toContain('ERROR: the SAI (id: ');
+    expect(service.errors.length).toBe(1);
+    expect(service.errors[0]).toContain(`ERROR: the SAI (id: `);
     expect(service.errorLinkedEvent).toBe(true);
 
     mockRows[1].link = 3;
     service['checkRowsCorrectness']();
-    expect(service.errors.length === 2).toBe(true);
-    expect(service.errors[1]).toContain('ERROR: non-existing links:');
+    expect(service.errors.length).toBe(2);
+    expect(service.errors[1]).toContain(`ERROR: non-existing links:`);
 
     mockRows[0].link = 0;
     mockRows[1].link = 0;
     service['checkRowsCorrectness']();
-    expect(service.errors.length === 0).toBe(true);
+    expect(service.errors.length).toBe(0);
   });
 
 

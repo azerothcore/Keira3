@@ -11,12 +11,12 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   protected _newRows: T[] = [];
   protected _selectedRowId: string|number;
   protected _nextRowId = 0;
-  protected _errors = [];
+  protected _errors: string[] = [];
 
   get newRows(): T[] { return this._newRows; }
   get selectedRowId(): string|number { return this._selectedRowId; }
   get entitySecondIdField(): string { return this._entitySecondIdField; }
-  get errors() { return this._errors; }
+  get errors(): string[] { return this._errors; }
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
@@ -60,7 +60,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     );
   }
 
-  protected checkRowsCorrectness() {}
+  protected checkRowsCorrectness(): void {}
 
   private getRowIndex(id: string|number): number {
     for (let i = 0; i < this._newRows.length; i++) {
