@@ -1,68 +1,68 @@
-import { ConditionsComponent } from '../components/editors/conditions/conditions/conditions.component';
+import { ConditionsComponent } from '../features/conditions/edit-conditions/conditions.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { DashboardComponent } from '../components/editors/dashboard/dashboard.component';
+import { DashboardComponent } from '../features/dashboard/dashboard.component';
 
-import { SelectCreatureComponent } from '../components/editors/creature/select-creature/select-creature.component';
-import { CreatureTemplateComponent } from '../components/editors/creature/creature-template/creature-template.component';
-import { CreatureTemplateAddonComponent } from '../components/editors/creature/creature-template-addon/creature-template-addon.component';
-import { NpcVendorComponent } from '../components/editors/creature/npc-vendor/npc-vendor.component';
-import { CreatureEquipTemplateComponent } from '../components/editors/creature/creature-equip-template/creature-equip-template.component';
+import { SelectCreatureComponent } from '../features/creature/select-creature/select-creature.component';
+import { CreatureTemplateComponent } from '../features/creature/creature-template/creature-template.component';
+import { CreatureTemplateAddonComponent } from '../features/creature/creature-template-addon/creature-template-addon.component';
+import { NpcVendorComponent } from '../features/creature/npc-vendor/npc-vendor.component';
+import { CreatureEquipTemplateComponent } from '../features/creature/creature-equip-template/creature-equip-template.component';
 import {
   CreatureOnkillReputationComponent
-} from '../components/editors/creature/creature-onkill-reputation/creature-onkill-reputation.component';
-import { CreatureHandlerService } from '../services/handlers/creature-handler.service';
-import { CreatureQuestitemComponent } from '../components/editors/creature/creature-questitem/creature-questitem.component';
-import { CreatureLootTemplateComponent } from '../components/editors/creature/creature-loot-template/creature-loot-template.component';
+} from '../features/creature/creature-onkill-reputation/creature-onkill-reputation.component';
+import { CreatureHandlerService } from '../features/creature/creature-handler.service';
+import { CreatureQuestitemComponent } from '../features/creature/creature-questitem/creature-questitem.component';
+import { CreatureLootTemplateComponent } from '../features/creature/creature-loot-template/creature-loot-template.component';
 import {
   PickpocketingLootTemplateComponent
-} from '../components/editors/creature/pickpocketing-loot-template/pickpocketing-loot-template.component';
-import { SkinningLootTemplateComponent } from '../components/editors/creature/skinning-loot-template/skinning-loot-template.component';
-import { NpcTrainerComponent } from '../components/editors/creature/npc-trainer/npc-trainer.component';
-import { CreatureSpawnComponent } from '../components/editors/creature/creature-spawn/creature-spawn.component';
-import { CreatureSpawnAddonComponent } from '../components/editors/creature/creature-spawn-addon/creature-spawn-addon.component';
-import { QuestTemplateComponent } from '../components/editors/quest/quest-template/quest-template.component';
-import { QuestHandlerService } from '../services/handlers/quest-handler.service';
-import { SelectQuestComponent } from '../components/editors/quest/select-quest/select-quest.component';
-import { QuestTemplateAddonComponent } from '../components/editors/quest/quest-template-addon/quest-template-addon.component';
-import { QuestOfferRewardComponent } from '../components/editors/quest/quest-offer-reward/quest-offer-reward.component';
-import { QuestRequestItemsComponent } from '../components/editors/quest/quest-request-items/quest-request-items.component';
-import { GameobjectTemplateComponent } from '../components/editors/gameobject/gameobject-template/gameobject-template.component';
+} from '../features/creature/pickpocketing-loot-template/pickpocketing-loot-template.component';
+import { SkinningLootTemplateComponent } from '../features/creature/skinning-loot-template/skinning-loot-template.component';
+import { NpcTrainerComponent } from '../features/creature/npc-trainer/npc-trainer.component';
+import { CreatureSpawnComponent } from '../features/creature/creature-spawn/creature-spawn.component';
+import { CreatureSpawnAddonComponent } from '../features/creature/creature-spawn-addon/creature-spawn-addon.component';
+import { QuestTemplateComponent } from '../features/quest/quest-template/quest-template.component';
+import { QuestHandlerService } from '../features/quest/quest-handler.service';
+import { SelectQuestComponent } from '../features/quest/select-quest/select-quest.component';
+import { QuestTemplateAddonComponent } from '../features/quest/quest-template-addon/quest-template-addon.component';
+import { QuestOfferRewardComponent } from '../features/quest/quest-offer-reward/quest-offer-reward.component';
+import { QuestRequestItemsComponent } from '../features/quest/quest-request-items/quest-request-items.component';
+import { GameobjectTemplateComponent } from '../features/gameobject/gameobject-template/gameobject-template.component';
 import {
   GameobjectTemplateAddonComponent
-} from '../components/editors/gameobject/gameobject-template-addon/gameobject-template-addon.component';
-import { GameobjectHandlerService } from '../services/handlers/gameobject-handler.service';
-import { SelectGameobjectComponent } from '../components/editors/gameobject/select-gameobject/select-gameobject.component';
-import { GameobjectQuestitemComponent } from '../components/editors/gameobject/gameobject-questitem/gameobject-questitem.component';
-import { GameobjectSpawnComponent } from '../components/editors/gameobject/gameobject-spawn/gameobject-spawn.component';
-import { CreatureQueststarterComponent } from '../components/editors/quest/creature-queststarter/creature-queststarter.component';
-import { CreatureQuestenderComponent } from '../components/editors/quest/creature-questender/creature-questender.component';
-import { GameobjectQueststarterComponent } from '../components/editors/quest/gameobject-queststarter/gameobject-queststarter.component';
-import { GameobjectQuestenderComponent } from '../components/editors/quest/gameobject-questender/gameobject-questender.component';
+} from '../features/gameobject/gameobject-template-addon/gameobject-template-addon.component';
+import { GameobjectHandlerService } from '../features/gameobject/gameobject-handler.service';
+import { SelectGameobjectComponent } from '../features/gameobject/select-gameobject/select-gameobject.component';
+import { GameobjectQuestitemComponent } from '../features/gameobject/gameobject-questitem/gameobject-questitem.component';
+import { GameobjectSpawnComponent } from '../features/gameobject/gameobject-spawn/gameobject-spawn.component';
+import { CreatureQueststarterComponent } from '../features/quest/creature-queststarter/creature-queststarter.component';
+import { CreatureQuestenderComponent } from '../features/quest/creature-questender/creature-questender.component';
+import { GameobjectQueststarterComponent } from '../features/quest/gameobject-queststarter/gameobject-queststarter.component';
+import { GameobjectQuestenderComponent } from '../features/quest/gameobject-questender/gameobject-questender.component';
 import {
   GameobjectLootTemplateComponent
-} from '../components/editors/gameobject/gameobject-loot-template/gameobject-loot-template.component';
-import { SelectItemComponent } from '../components/editors/item/select-item/select-item.component';
-import { ItemTemplateComponent } from '../components/editors/item/item-template/item-template.component';
-import { ItemHandlerService } from '../services/handlers/item-handler.service';
-import { ItemLootTemplateComponent } from '../components/editors/item/item-loot-template/item-loot-template.component';
-import { DisenchantLootTemplateComponent } from '../components/editors/item/disenchant-loot-template/disenchant-loot-template.component';
-import { ProspectingLootTemplateComponent } from '../components/editors/item/prospecting-loot-template/prospecting-loot-template.component';
-import { MillingLootTemplateComponent } from '../components/editors/item/milling-loot-template/milling-loot-template.component';
-import { ItemEnchantmentTemplateComponent } from '../components/editors/item/item-enchantment/item-enchantment-template.component';
-import { SelectGossipComponent } from '../components/editors/gossip/select-gossip/select-gossip.component';
-import { GossipHandlerService } from '../services/handlers/gossip-handler.service';
-import { GossipMenuComponent } from '../components/editors/gossip/gossip-menu/gossip-menu.component';
-import { GossipMenuOptionComponent } from '../components/editors/gossip/gossip-menu-option/gossip-menu-option.component';
-import { SelectConditionsComponent } from '../components/editors/conditions/select-conditions/select-conditions.component';
-import { ConditionsHandlerService } from '../services/handlers/conditions-handler.service';
-import { SaiSearchExistingComponent } from '../components/editors/smart-scripts/sai-search-existing/sai-search-existing.component';
-import { SaiSearchEntityComponent } from '../components/editors/smart-scripts/sai-search-entity/sai-search-entity.component';
-import { SaiHandlerService } from '../services/handlers/sai-handler.service';
-import { SaiCreatureComponent } from '../components/editors/creature/sai-creature/sai-creature.component';
-import { SaiFullEditorComponent } from '../components/editors/smart-scripts/sai-full-editor/sai-full-editor.component';
-import { SaiGameobjectComponent } from '../components/editors/gameobject/sai-gameobject/sai-gameobject.component';
+} from '../features/gameobject/gameobject-loot-template/gameobject-loot-template.component';
+import { SelectItemComponent } from '../features/item/select-item/select-item.component';
+import { ItemTemplateComponent } from '../features/item/item-template/item-template.component';
+import { ItemHandlerService } from '../features/item/item-handler.service';
+import { ItemLootTemplateComponent } from '../features/item/item-loot-template/item-loot-template.component';
+import { DisenchantLootTemplateComponent } from '../features/item/disenchant-loot-template/disenchant-loot-template.component';
+import { ProspectingLootTemplateComponent } from '../features/item/prospecting-loot-template/prospecting-loot-template.component';
+import { MillingLootTemplateComponent } from '../features/item/milling-loot-template/milling-loot-template.component';
+import { ItemEnchantmentTemplateComponent } from '../features/item/item-enchantment/item-enchantment-template.component';
+import { SelectGossipComponent } from '../features/gossip/select-gossip/select-gossip.component';
+import { GossipHandlerService } from '../features/gossip/gossip-handler.service';
+import { GossipMenuComponent } from '../features/gossip/gossip-menu/gossip-menu.component';
+import { GossipMenuOptionComponent } from '../features/gossip/gossip-menu-option/gossip-menu-option.component';
+import { SelectConditionsComponent } from '../features/conditions/select-conditions/select-conditions.component';
+import { ConditionsHandlerService } from '../features/conditions/conditions-handler.service';
+import { SaiSearchExistingComponent } from '../features/smart-scripts/sai-search-existing/sai-search-existing.component';
+import { SaiSearchEntityComponent } from '../features/smart-scripts/sai-search-entity/sai-search-entity.component';
+import { SaiHandlerService } from '../shared/modules/sai-editor/sai-handler.service';
+import { SaiCreatureComponent } from '../features/creature/sai-creature/sai-creature.component';
+import { SaiFullEditorComponent } from '../features/smart-scripts/sai-full-editor/sai-full-editor.component';
+import { SaiGameobjectComponent } from '../features/gameobject/sai-gameobject/sai-gameobject.component';
 
 const routes: Routes = [
   {
@@ -290,14 +290,14 @@ const routes: Routes = [
     ]
   },
   {
-    path: 'conditions',
+    path: 'edit-conditions',
     children: [
       {
         path: 'select',
         component: SelectConditionsComponent,
       },
       {
-        path: 'conditions',
+        path: 'edit-conditions',
         component: ConditionsComponent,
         canActivate: [ConditionsHandlerService],
       },
@@ -315,7 +315,7 @@ const routes: Routes = [
         component: SaiSearchEntityComponent,
       },
       {
-        path: 'editor',
+        path: 'editors',
         component: SaiFullEditorComponent,
         canActivate: [SaiHandlerService],
       },
