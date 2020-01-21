@@ -9,7 +9,7 @@ import { QueryService } from '@keira-shared/services/query.service';
 import { GameobjectLootTemplate } from '@keira-types/gameobject-loot-template.type';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
-import { GameobjectLootTemplateService } from '../gameobject-loot-template.service';
+import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
 
 class GameobjectLootTemplatePage extends MultiRowEditorPageObject<GameobjectLootTemplateComponent> {}
 

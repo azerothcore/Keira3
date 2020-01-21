@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
-import { GameobjectHandlerService } from './gameobject-handler.service';
-import { QueryService } from '@keira-shared/services/query.service';
 import { MultiRowEditorService } from '@keira-abstract/service/editors/multi-row-editor.service';
 import {
-  GAMEOBJECT_QUESTITEM_ID,
-  GAMEOBJECT_QUESTITEM_ID_2,
-  GAMEOBJECT_QUESTITEM_TABLE,
-  GameobjectQuestitem
-} from '@keira-types/gameobject-questitem.type';
+  GameobjectSpawn,
+  GAMEOBJECT_SPAWN_ID,
+  GAMEOBJECT_SPAWN_ID_2,
+  GAMEOBJECT_SPAWN_TABLE
+} from '@keira-types/gameobject-spawn.type';
+import { GameobjectHandlerService } from '../gameobject-handler.service';
+import { QueryService } from '@keira-shared/services/query.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class GameobjectQuestitemService extends MultiRowEditorService<GameobjectQuestitem> {
+export class GameobjectSpawnService extends MultiRowEditorService<GameobjectSpawn> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
@@ -23,10 +23,10 @@ export class GameobjectQuestitemService extends MultiRowEditorService<Gameobject
     protected toastrService: ToastrService,
   ) {
     super(
-      GameobjectQuestitem,
-      GAMEOBJECT_QUESTITEM_TABLE,
-      GAMEOBJECT_QUESTITEM_ID,
-      GAMEOBJECT_QUESTITEM_ID_2,
+      GameobjectSpawn,
+      GAMEOBJECT_SPAWN_TABLE,
+      GAMEOBJECT_SPAWN_ID,
+      GAMEOBJECT_SPAWN_ID_2,
       handlerService,
       queryService,
       toastrService,

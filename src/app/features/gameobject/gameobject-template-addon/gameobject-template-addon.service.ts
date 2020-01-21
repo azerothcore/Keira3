@@ -8,7 +8,7 @@ import {
   GameobjectTemplateAddon,
 } from '@keira-types/gameobject-template-addon.type';
 import { QueryService } from '@keira-shared/services/query.service';
-import { GameobjectHandlerService } from './gameobject-handler.service';
+import { GameobjectHandlerService } from '../gameobject-handler.service';
 
 @Injectable({
   providedIn: 'root'

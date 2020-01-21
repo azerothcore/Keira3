@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
-import { GameobjectHandlerService } from './gameobject-handler.service';
+import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { QueryService } from '@keira-shared/services/query.service';
 import {
   GAMEOBJECT_LOOT_TEMPLATE_TABLE,
