@@ -10,6 +10,7 @@ import { ConditionsSearchService } from '@keira-shared/modules/search/conditions
 import { SelectConditionsModule } from './select-conditions.module';
 import { PageObject } from '@keira-testing/page-object';
 import { Conditions } from '@keira-types/conditions.type';
+import { ConditionsHandlerService } from '../conditions-handler.service';
 
 class SelectConditionsComponentPage extends PageObject<SelectConditionsComponent> {
   get queryWrapper() { return this.query<HTMLElement>('code.hljs'); }
@@ -38,6 +39,9 @@ describe('SelectConditions integration tests', () => {
       imports: [
         SelectConditionsModule,
         RouterTestingModule,
+      ],
+      providers: [
+        ConditionsHandlerService,
       ],
     })
       .compileComponents();

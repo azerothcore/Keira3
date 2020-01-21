@@ -10,9 +10,7 @@ import {
 import { QueryService } from '@keira-shared/services/query.service';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class GameobjectTemplateAddonService extends SingleRowEditorService<GameobjectTemplateAddon> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

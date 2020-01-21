@@ -5,14 +5,19 @@ import { instance } from 'ts-mockito';
 import { SelectCreatureService } from './select-creature.service';
 import { QueryService } from '@keira-shared/services/query.service';
 import { MockedQueryService } from '@keira-testing/mocks';
+import { CreatureHandlerService } from '../creature-handler.service';
+import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
-describe('CreatureSelectService', () => {
+describe('SelectCreatureService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       RouterTestingModule,
     ],
     providers: [
       { provide: QueryService, useValue: instance(MockedQueryService) },
+      CreatureHandlerService,
+      SaiCreatureHandlerService,
+      SelectCreatureService,
     ],
   }));
 

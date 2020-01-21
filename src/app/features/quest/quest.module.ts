@@ -9,6 +9,7 @@ import { CreatureQueststarterModule } from './creature-queststarter/creature-que
 import { CreatureQuestenderModule } from './creature-questender/creature-questender.module';
 import { GameobjectQuestenderModule } from './gameobject-questender/gameobject-questender.module';
 import { GameobjectQueststarterModule } from './gameobject-queststarter/gameobject-queststarter.module';
+import { QuestHandlerService } from './quest-handler.service';
 
 const modules = [
   SelectQuestModule,
@@ -25,5 +26,8 @@ const modules = [
 @NgModule({
   imports: [modules],
   exports: [modules],
+  providers: [
+    QuestHandlerService,
+  ],
 })
 export class QuestModule {}

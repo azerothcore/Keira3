@@ -54,6 +54,9 @@ describe('QuestTemplate integration tests', () => {
         QuestTemplateModule,
         RouterTestingModule,
       ],
+      providers: [
+        QuestHandlerService,
+      ]
     })
       .compileComponents();
   }));

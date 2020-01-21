@@ -13,9 +13,7 @@ import {
   CREATURE_TEMPLATE_TABLE
 } from '@keira-types/creature-template.type';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CreatureLootTemplateService extends LootEditorService<CreatureLootTemplate> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

@@ -36,6 +36,9 @@ describe('CreatureQueststarter integration tests', () => {
         CreatureQueststarterModule,
         RouterTestingModule,
       ],
+      providers: [
+        QuestHandlerService,
+      ]
     })
       .compileComponents();
   }));

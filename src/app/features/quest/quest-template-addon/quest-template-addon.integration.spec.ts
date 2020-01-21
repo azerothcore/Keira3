@@ -53,6 +53,9 @@ describe('QuestTemplateAddon integration tests', () => {
         QuestTemplateAddonModule,
         RouterTestingModule,
       ],
+      providers: [
+        QuestHandlerService,
+      ]
     })
       .compileComponents();
   }));

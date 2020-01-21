@@ -7,6 +7,7 @@ import { toastrConfig } from '@keira-config/toastr.config';
 
 import { QueryOutputModule } from '@keira-shared/modules/query-output/query-output.module';
 import { ConditionsComponent } from './conditions.component';
+import { ConditionsService } from './conditions.service';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,9 @@ import { ConditionsComponent } from './conditions.component';
   ],
   exports: [
     ConditionsComponent,
+  ],
+  providers: [
+    ConditionsService,
   ],
 })
 export class ConditionsEditorModule {}

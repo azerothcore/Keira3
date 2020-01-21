@@ -15,9 +15,7 @@ import {
 import { Observable } from 'rxjs';
 import { MysqlResult } from '@keira-types/general';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class GameobjectLootTemplateService extends LootEditorService<GameobjectLootTemplate> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

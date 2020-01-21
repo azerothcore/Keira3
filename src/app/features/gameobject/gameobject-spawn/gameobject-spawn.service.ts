@@ -11,9 +11,7 @@ import {
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { QueryService } from '@keira-shared/services/query.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class GameobjectSpawnService extends MultiRowEditorService<GameobjectSpawn> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

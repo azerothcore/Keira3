@@ -10,6 +10,7 @@ import { PickpocketingLootTemplate } from '@keira-types/pickpocketing-loot-templ
 import { CreatureHandlerService } from '../creature-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { PickpocketingLootTemplateService } from './pickpocketing-loot-template.service';
+import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 class PickpocketingLootTemplatePage extends MultiRowEditorPageObject<PickpocketingLootTemplateComponent> {}
 
@@ -36,6 +37,10 @@ describe('PickpocketingLootTemplate integration tests', () => {
       imports: [
         PickpocketingLootTemplateModule,
         RouterTestingModule,
+      ],
+      providers: [
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
       ],
     })
       .compileComponents();

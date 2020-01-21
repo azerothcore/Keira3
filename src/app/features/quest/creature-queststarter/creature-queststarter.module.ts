@@ -10,6 +10,7 @@ import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
 import { QueryOutputModule } from '@keira-shared/modules/query-output/query-output.module';
 import { CreatureQueststarterComponent } from './creature-queststarter.component';
 import { CreatureSelectorModule } from '@keira-shared/modules/selectors/creature-selector/creature-selector.module';
+import { CreatureQueststarterService } from './creature-queststarter.service';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,9 @@ import { CreatureSelectorModule } from '@keira-shared/modules/selectors/creature
   ],
   exports: [
     CreatureQueststarterComponent,
+  ],
+  providers: [
+    CreatureQueststarterService,
   ],
 })
 export class CreatureQueststarterModule {}

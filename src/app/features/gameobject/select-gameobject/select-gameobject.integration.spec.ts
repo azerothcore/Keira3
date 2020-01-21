@@ -10,6 +10,8 @@ import { SelectGameobjectService } from './select-gameobject.service';
 import { SelectGameobjectModule } from './select-gameobject.module';
 import { SelectPageObject } from '@keira-testing/select-page-object';
 import { GameobjectTemplate } from '@keira-types/gameobject-template.type';
+import { GameobjectHandlerService } from '../gameobject-handler.service';
+import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
 class SelectGameobjectComponentPage extends SelectPageObject<SelectGameobjectComponent> {
   ID_FIELD = 'entry';
@@ -32,6 +34,10 @@ describe('SelectGameobject integration tests', () => {
         SelectGameobjectModule,
         RouterTestingModule,
       ],
+      providers: [
+        GameobjectHandlerService,
+        SaiGameobjectHandlerService,
+      ]
     })
       .compileComponents();
   }));

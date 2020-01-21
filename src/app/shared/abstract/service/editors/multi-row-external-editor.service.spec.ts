@@ -9,6 +9,8 @@ import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { MultiRowExternalEditorService } from './multi-row-external-editor.service';
 import { CreatureSpawnAddon } from '@keira-types/creature-spawn-addon.type';
 import { CreatureSpawnAddonService } from '../../../../features/creature/creature-spawn-addon/creature-spawn-addon.service';
+import { CreatureHandlerService } from '../../../../features/creature/creature-handler.service';
+import { SaiCreatureHandlerService } from '../../../../features/creature/sai-creature-handler.service';
 
 
 describe('MultiRowExternalEditorService', () => {
@@ -21,7 +23,9 @@ describe('MultiRowExternalEditorService', () => {
     providers: [
       { provide: QueryService, useValue: instance(MockedQueryService) },
       { provide: ToastrService, useValue: instance(MockedToastrService) },
-
+      CreatureHandlerService,
+      SaiCreatureHandlerService,
+      CreatureSpawnAddonService,
     ],
   }));
 

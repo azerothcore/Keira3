@@ -9,6 +9,7 @@ import { QueryService } from '@keira-shared/services/query.service';
 import { GameobjectSpawn } from '@keira-types/gameobject-spawn.type';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
+import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
 class GameobjectSpawnPage extends MultiRowEditorPageObject<GameobjectSpawnComponent> {}
 
@@ -36,6 +37,10 @@ describe('GameobjectSpawn integration tests', () => {
         GameobjectSpawnModule,
         RouterTestingModule,
       ],
+      providers: [
+        GameobjectHandlerService,
+        SaiGameobjectHandlerService,
+      ]
     })
       .compileComponents();
   }));

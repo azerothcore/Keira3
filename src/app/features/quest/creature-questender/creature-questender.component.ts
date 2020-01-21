@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
 import { QuestHandlerService } from '../quest-handler.service';
-import { CreatureQuestenderService } from '../creature-questender.service';
+import { CreatureQuestenderService } from './creature-questender.service';
 import { CreatureQuestender } from '@keira-types/creature-questender.type';
 
 @Component({

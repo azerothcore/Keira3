@@ -11,6 +11,7 @@ import { QueryOutputModule } from '@keira-shared/modules/query-output/query-outp
 import { GameobjectSpawnComponent } from './gameobject-spawn.component';
 import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selector/flags-selector.module';
 import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
+import { GameobjectSpawnService } from './gameobject-spawn.service';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,9 @@ import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/singl
   ],
   exports: [
     GameobjectSpawnComponent,
+  ],
+  providers: [
+    GameobjectSpawnService,
   ],
 })
 export class GameobjectSpawnModule {}

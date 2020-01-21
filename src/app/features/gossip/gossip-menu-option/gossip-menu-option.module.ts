@@ -10,6 +10,7 @@ import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
 import { QueryOutputModule } from '@keira-shared/modules/query-output/query-output.module';
 import { GossipMenuOptionComponent } from './gossip-menu-option.component';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { GossipMenuOptionService } from './gossip-menu-option.service';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,9 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
   ],
   exports: [
     GossipMenuOptionComponent,
+  ],
+  providers: [
+    GossipMenuOptionService,
   ],
 })
 export class GossipMenuOptionModule {}

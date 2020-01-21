@@ -10,9 +10,7 @@ import {
 import { QueryService } from '@keira-shared/services/query.service';
 import { CreatureHandlerService } from '../creature-handler.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CreatureTemplateService extends SingleRowEditorService<CreatureTemplate> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

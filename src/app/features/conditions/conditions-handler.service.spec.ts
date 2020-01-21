@@ -9,7 +9,10 @@ describe('ConditionsHandlerService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       RouterTestingModule,
-    ]
+    ],
+    providers: [
+      ConditionsHandlerService
+    ],
   }));
 
   it('should run getIdObject() correctly', () => {

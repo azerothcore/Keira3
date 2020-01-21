@@ -9,6 +9,7 @@ import { QueryOutputModule } from '@keira-shared/modules/query-output/query-outp
 import { SelectGameobjectComponent } from './select-gameobject.component';
 import { CreateModule } from '@keira-shared/modules/create/create.module';
 import { highlightOptions } from '@keira-config/highlight.config';
+import { SelectGameobjectService } from './select-gameobject.service';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,9 @@ import { highlightOptions } from '@keira-config/highlight.config';
   ],
   exports: [
     SelectGameobjectComponent,
+  ],
+  providers: [
+    SelectGameobjectService,
   ],
 })
 export class SelectGameobjectModule {}

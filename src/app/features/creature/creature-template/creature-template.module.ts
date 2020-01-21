@@ -10,6 +10,7 @@ import { QueryOutputModule } from '@keira-shared/modules/query-output/query-outp
 import { CreatureTemplateComponent } from './creature-template.component';
 import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
 import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selector/flags-selector.module';
+import { CreatureTemplateService } from './creature-template.service';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,9 @@ import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selec
   ],
   exports: [
     CreatureTemplateComponent,
+  ],
+  providers: [
+    CreatureTemplateService,
   ],
 })
 export class CreatureTemplateModule {}

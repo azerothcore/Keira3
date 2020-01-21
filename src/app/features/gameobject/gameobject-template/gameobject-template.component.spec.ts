@@ -8,6 +8,8 @@ import { GameobjectTemplateModule } from './gameobject-template.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { GameobjectTemplateService } from './gameobject-template.service';
 import { FieldDefinition } from '@keira-types/general';
+import { GameobjectHandlerService } from '../gameobject-handler.service';
+import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
 describe('GameobjectComponent', () => {
   let component: GameobjectTemplateComponent;
@@ -24,6 +26,10 @@ describe('GameobjectComponent', () => {
         GameobjectTemplateModule,
         RouterTestingModule,
       ],
+      providers: [
+        GameobjectHandlerService,
+        SaiGameobjectHandlerService,
+      ]
     })
     .compileComponents();
   }));

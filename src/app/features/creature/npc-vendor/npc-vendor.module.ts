@@ -10,6 +10,7 @@ import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
 import { QueryOutputModule } from '@keira-shared/modules/query-output/query-output.module';
 import { NpcVendorComponent } from './npc-vendor.component';
 import { ItemSelectorModule } from '@keira-shared/modules/selectors/item-selector/item-selector.module';
+import { NpcVendorService } from './npc-vendor.service';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,9 @@ import { ItemSelectorModule } from '@keira-shared/modules/selectors/item-selecto
   ],
   exports: [
     NpcVendorComponent,
+  ],
+  providers: [
+    NpcVendorService,
   ],
 })
 export class NpcVendorModule {}

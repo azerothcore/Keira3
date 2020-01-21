@@ -11,6 +11,8 @@ import { MockedQueryService } from '@keira-testing/mocks';
 import { GameobjectLootTemplateComponent } from './gameobject-loot-template.component';
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
 import { GameobjectLootTemplateModule } from './gameobject-loot-template.module';
+import { GameobjectHandlerService } from '../gameobject-handler.service';
+import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
 describe('GameobjectTemplateComponent', () => {
   let component: GameobjectLootTemplateComponent;
@@ -33,6 +35,8 @@ describe('GameobjectTemplateComponent', () => {
       ],
       providers: [
         { provide : QueryService, useValue: instance(MockedQueryService) },
+        GameobjectHandlerService,
+        SaiGameobjectHandlerService,
       ]
     })
     .compileComponents();

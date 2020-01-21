@@ -11,6 +11,7 @@ import { QuestTemplateComponent } from './quest-template.component';
 import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
 import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selector/flags-selector.module';
 import { ItemSelectorModule } from '@keira-shared/modules/selectors/item-selector/item-selector.module';
+import { QuestTemplateService } from './quest-template.service';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,9 @@ import { ItemSelectorModule } from '@keira-shared/modules/selectors/item-selecto
   ],
   exports: [
     QuestTemplateComponent,
+  ],
+  providers: [
+    QuestTemplateService,
   ],
 })
 export class QuestTemplateModule {}

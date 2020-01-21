@@ -36,6 +36,9 @@ describe('MillingLootTemplate integration tests', () => {
         MillingLootTemplateModule,
         RouterTestingModule,
       ],
+      providers: [
+        ItemHandlerService,
+      ],
     })
       .compileComponents();
   }));

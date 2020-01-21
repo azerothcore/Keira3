@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureQuestitem } from '@keira-types/creature-questitem.type';
-import { CreatureQuestitemService } from '../creature-onkill-reputation/creature-questitem.service';
+import { CreatureQuestitemService } from './creature-questitem.service';
 
 @Component({
   selector: 'app-creature-questitem',

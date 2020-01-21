@@ -9,6 +9,7 @@ import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
 import { QueryOutputModule } from '@keira-shared/modules/query-output/query-output.module';
 import { CreatureTemplateAddonComponent } from './creature-template-addon.component';
 import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
+import { CreatureTemplateAddonService } from './creature-template-addon.service';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,9 @@ import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/singl
   ],
   exports: [
     CreatureTemplateAddonComponent
+  ],
+  providers: [
+    CreatureTemplateAddonService,
   ],
 })
 export class CreatureTemplateAddonModule {}
