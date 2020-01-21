@@ -8,6 +8,7 @@ import { GameobjectSpawnModule } from './gameobject-spawn/gameobject-spawn.modul
 import { GameobjectLootTemplateModule } from './gameobject-loot-template/gameobject-loot-template.module';
 import { SaiGameobjectModule } from './sai-gameobject/sai-gameobject.module';
 import { GameobjectHandlerService } from './gameobject-handler.service';
+import { SaiGameobjectHandlerService } from './sai-gameobject-handler.service';
 
 const modules = [
   SelectGameobjectModule,
@@ -24,6 +25,7 @@ const modules = [
   exports: [modules],
   providers: [
     GameobjectHandlerService,
+    SaiGameobjectHandlerService,
   ],
 })
 export class GameobjectModule {}

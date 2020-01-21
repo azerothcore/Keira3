@@ -5,15 +5,18 @@ import { instance } from 'ts-mockito';
 import { SelectGossipService } from './select-gossip.service';
 import { QueryService } from '@keira-shared/services/query.service';
 import { MockedQueryService } from '@keira-testing/mocks';
+import { GossipHandlerService } from '../gossip-handler.service';
 
-describe('GossipSelectService', () => {
+describe('SelectGossipService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       RouterTestingModule,
     ],
     providers: [
       { provide: QueryService, useValue: instance(MockedQueryService) },
-    ],
+      GossipHandlerService,
+      SelectGossipService,
+    ]
   }));
 
   it('should be created', () => {

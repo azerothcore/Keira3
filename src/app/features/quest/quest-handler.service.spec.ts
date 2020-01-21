@@ -7,6 +7,9 @@ describe('QuestHandlerService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       RouterTestingModule,
+    ],
+    providers: [
+      QuestHandlerService,
     ]
   }));
 

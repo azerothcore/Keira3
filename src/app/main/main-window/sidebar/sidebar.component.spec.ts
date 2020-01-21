@@ -10,6 +10,14 @@ import { PageObject } from '@keira-testing/page-object';
 import { SidebarService } from './sidebar.service';
 import { SidebarModule } from './sidebar.module';
 import { LocationService } from '@keira-shared/services/location.service';
+import { CreatureHandlerService } from '../../../features/creature/creature-handler.service';
+import { SaiCreatureHandlerService } from '../../../features/creature/sai-creature-handler.service';
+import { QuestHandlerService } from '../../../features/quest/quest-handler.service';
+import { ItemHandlerService } from '../../../features/item/item-handler.service';
+import { GameobjectHandlerService } from '../../../features/gameobject/gameobject-handler.service';
+import { SaiGameobjectHandlerService } from '../../../features/gameobject/sai-gameobject-handler.service';
+import { GossipHandlerService } from '../../../features/gossip/gossip-handler.service';
+import { ConditionsHandlerService } from '../../../features/conditions/conditions-handler.service';
 
 class SidebarComponentPage extends PageObject<SidebarComponent> {
   get toggleSidebarBtn() { return this.query<HTMLButtonElement>('.sidebar-button'); }
@@ -32,6 +40,14 @@ describe('SidebarComponent', () => {
       providers: [
         { provide : ElectronService, useValue: instance(MockedElectronService) },
         { provide : MysqlService, useValue: instance(MockedMysqlService) },
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        QuestHandlerService,
+        ItemHandlerService,
+        GameobjectHandlerService,
+        SaiGameobjectHandlerService,
+        GossipHandlerService,
+        ConditionsHandlerService,
       ]
     })
     .compileComponents();

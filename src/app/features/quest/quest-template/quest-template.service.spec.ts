@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { QuestTemplateService } from './quest-template.service';
 import { QueryService } from '@keira-shared/services/query.service';
 import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { QuestHandlerService } from '../quest-handler.service';
 
 describe('QuestTemplateService', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -15,7 +16,9 @@ describe('QuestTemplateService', () => {
     providers: [
       { provide: QueryService, useValue: instance(MockedQueryService) },
       { provide: ToastrService, useValue: instance(MockedToastrService) },
-    ],
+      QuestHandlerService,
+      QuestTemplateService,
+    ]
   }));
 
   it('should be created', () => {

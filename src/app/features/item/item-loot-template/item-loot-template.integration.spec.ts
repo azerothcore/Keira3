@@ -36,6 +36,9 @@ describe('ItemLootTemplate integration tests', () => {
         ItemLootTemplateModule,
         RouterTestingModule,
       ],
+      providers: [
+        ItemHandlerService,
+      ]
     })
       .compileComponents();
   }));

@@ -38,6 +38,9 @@ describe('QuestRequestItems integration tests', () => {
         QuestRequestItemsModule,
         RouterTestingModule,
       ],
+      providers: [
+        QuestHandlerService,
+      ]
     })
       .compileComponents();
   }));

@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { GossipMenuOptionService } from './gossip-menu-option.service';
 import { QueryService } from '@keira-shared/services/query.service';
 import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { GossipHandlerService } from '../gossip-handler.service';
 
 describe('GossipMenuOptionService', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -15,7 +16,9 @@ describe('GossipMenuOptionService', () => {
     providers: [
       { provide: QueryService, useValue: instance(MockedQueryService) },
       { provide: ToastrService, useValue: instance(MockedToastrService) },
-    ],
+      GossipHandlerService,
+      GossipMenuOptionService,
+    ]
   }));
 
   it('should be created', () => {

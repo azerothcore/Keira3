@@ -10,6 +10,7 @@ import { CreatureLootTemplate } from '@keira-types/creature-loot-template.type';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { CreatureLootTemplateService } from './creature-loot-template.service';
+import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 class CreatureLootTemplatePage extends MultiRowEditorPageObject<CreatureLootTemplateComponent> {}
 
@@ -36,6 +37,10 @@ describe('CreatureLootTemplate integration tests', () => {
       imports: [
         CreatureLootTemplateModule,
         RouterTestingModule,
+      ],
+      providers: [
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
       ],
     })
       .compileComponents();

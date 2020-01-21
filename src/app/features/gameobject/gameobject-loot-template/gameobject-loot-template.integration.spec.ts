@@ -10,6 +10,7 @@ import { GameobjectLootTemplate } from '@keira-types/gameobject-loot-template.ty
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
+import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
 class GameobjectLootTemplatePage extends MultiRowEditorPageObject<GameobjectLootTemplateComponent> {}
 
@@ -38,6 +39,10 @@ describe('GameobjectLootTemplate integration tests', () => {
         GameobjectLootTemplateModule,
         RouterTestingModule,
       ],
+      providers: [
+        GameobjectHandlerService,
+        SaiGameobjectHandlerService,
+      ]
     })
       .compileComponents();
   }));

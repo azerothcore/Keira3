@@ -37,6 +37,9 @@ describe('SkinningLootTemplate integration tests', () => {
         SkinningLootTemplateModule,
         RouterTestingModule,
       ],
+      providers: [
+        CreatureHandlerService,
+      ],
     })
       .compileComponents();
   }));

@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { QueryService } from '@keira-shared/services/query.service';
 import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { MillingLootTemplateService } from './milling-loot-template.service';
+import { ItemHandlerService } from '../item-handler.service';
 
 describe('MillingLootTemplateService', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -15,7 +16,9 @@ describe('MillingLootTemplateService', () => {
     providers: [
       { provide: QueryService, useValue: instance(MockedQueryService) },
       { provide: ToastrService, useValue: instance(MockedToastrService) },
-    ],
+      ItemHandlerService,
+      MillingLootTemplateService,
+    ]
   }));
 
   it('should be created', () => {

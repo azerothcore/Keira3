@@ -13,7 +13,6 @@ import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/singl
 import { SaiCreatureComponent } from './sai-creature.component';
 import { SaiEditorModule } from '@keira-shared/modules/sai-editor/sai-editor.module';
 import { SaiCreatureEditorService } from './sai-creature-editor.service';
-import { SaiCreatureHandlerService } from './sai-creature-handler.service';
 
 @NgModule({
   declarations: [
@@ -36,7 +35,6 @@ import { SaiCreatureHandlerService } from './sai-creature-handler.service';
   ],
   providers: [
     SaiCreatureEditorService,
-    SaiCreatureHandlerService,
   ],
 })
 export class SaiCreatureModule {}

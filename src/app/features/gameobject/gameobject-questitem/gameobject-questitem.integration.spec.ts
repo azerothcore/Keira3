@@ -9,6 +9,7 @@ import { QueryService } from '@keira-shared/services/query.service';
 import { GameobjectQuestitem } from '@keira-types/gameobject-questitem.type';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
+import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
 class GameobjectQuestitemPage extends MultiRowEditorPageObject<GameobjectQuestitemComponent> {}
 
@@ -36,6 +37,10 @@ describe('GameobjectQuestitem integration tests', () => {
         GameobjectQuestitemModule,
         RouterTestingModule,
       ],
+      providers: [
+        GameobjectHandlerService,
+        SaiGameobjectHandlerService,
+      ]
     })
       .compileComponents();
   }));

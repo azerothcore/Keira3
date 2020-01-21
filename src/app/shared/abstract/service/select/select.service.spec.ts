@@ -7,6 +7,7 @@ import { QueryService } from '../../../services/query.service';
 import { MockedQueryService } from '@keira-testing/mocks';
 import { SelectService } from './select.service';
 import { CreatureHandlerService } from '../../../../features/creature/creature-handler.service';
+import { SaiCreatureHandlerService } from '../../../../features/creature/sai-creature-handler.service';
 
 describe('SelectService', () => {
 
@@ -16,6 +17,9 @@ describe('SelectService', () => {
     ],
     providers: [
       { provide: QueryService, useValue: instance(MockedQueryService) },
+      SelectCreatureService,
+      CreatureHandlerService,
+      SaiCreatureHandlerService,
     ],
   }));
 

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 
 import { HandlerService } from '@keira-abstract/service/handlers/handler.service';
 import { GameobjectTemplate } from '@keira-types/gameobject-template.type';
-import { SaiGameobjectHandlerService } from './sai-gameobject/sai-gameobject-handler.service';
+import { SaiGameobjectHandlerService } from './sai-gameobject-handler.service';
 
 @Injectable()
 export class GameobjectHandlerService extends HandlerService<GameobjectTemplate> {

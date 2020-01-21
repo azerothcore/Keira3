@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { QueryService } from '@keira-shared/services/query.service';
 import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { ConditionsService } from './conditions.service';
+import { ConditionsHandlerService } from '../conditions-handler.service';
 
 describe('ConditionsService', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -15,6 +16,8 @@ describe('ConditionsService', () => {
     providers: [
       { provide: QueryService, useValue: instance(MockedQueryService) },
       { provide: ToastrService, useValue: instance(MockedToastrService) },
+      ConditionsHandlerService,
+      ConditionsService,
     ],
   }));
 

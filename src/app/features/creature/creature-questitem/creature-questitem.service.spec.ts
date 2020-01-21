@@ -6,6 +6,8 @@ import { ToastrService } from 'ngx-toastr';
 import { CreatureQuestitemService } from './creature-questitem.service';
 import { QueryService } from '@keira-shared/services/query.service';
 import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { CreatureHandlerService } from '../creature-handler.service';
+import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 describe('CreatureQuestitemService', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -15,6 +17,9 @@ describe('CreatureQuestitemService', () => {
     providers: [
       { provide: QueryService, useValue: instance(MockedQueryService) },
       { provide: ToastrService, useValue: instance(MockedToastrService) },
+      CreatureHandlerService,
+      SaiCreatureHandlerService,
+      CreatureQuestitemService,
     ],
   }));
 

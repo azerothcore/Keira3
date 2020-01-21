@@ -36,6 +36,9 @@ describe('ProspectingLootTemplate integration tests', () => {
         ProspectingLootTemplateModule,
         RouterTestingModule,
       ],
+      providers: [
+        ItemHandlerService,
+      ]
     })
       .compileComponents();
   }));

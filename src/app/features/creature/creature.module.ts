@@ -15,6 +15,7 @@ import { NpcVendorModule } from './npc-vendor/npc-vendor.module';
 import { CreatureQuestitemModule } from './creature-questitem/creature-questitem.module';
 import { SaiCreatureModule } from './sai-creature/sai-creature.module';
 import { CreatureHandlerService } from './creature-handler.service';
+import { SaiCreatureHandlerService } from './sai-creature-handler.service';
 
 const modules = [
   CreatureEquipTemplateModule,
@@ -38,6 +39,7 @@ const modules = [
   exports: [modules],
   providers: [
     CreatureHandlerService,
+    SaiCreatureHandlerService,
   ],
 })
 export class CreatureModule {}

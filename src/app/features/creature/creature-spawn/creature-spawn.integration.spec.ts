@@ -9,6 +9,7 @@ import { QueryService } from '@keira-shared/services/query.service';
 import { CreatureSpawn } from '@keira-types/creature-spawn.type';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
+import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 class CreatureSpawnPage extends MultiRowEditorPageObject<CreatureSpawnComponent> {}
 
@@ -35,6 +36,10 @@ describe('CreatureSpawn integration tests', () => {
       imports: [
         CreatureSpawnModule,
         RouterTestingModule,
+      ],
+      providers: [
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
       ],
     })
       .compileComponents();

@@ -57,6 +57,9 @@ describe('ItemTemplate integration tests', () => {
         ItemTemplateModule,
         RouterTestingModule,
       ],
+      providers: [
+        ItemHandlerService,
+      ]
     })
       .compileComponents();
   }));

@@ -5,6 +5,7 @@ import { CreatureHandlerService } from '../../../../features/creature/creature-h
 import { HandlerService } from './handler.service';
 import { CreatureTemplate } from '@keira-types/creature-template.type';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
+import { SaiCreatureHandlerService } from '../../../../features/creature/sai-creature-handler.service';
 
 describe('HandlerService', () => {
 
@@ -13,7 +14,11 @@ describe('HandlerService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       RouterTestingModule,
-    ]
+    ],
+    providers: [
+      CreatureHandlerService,
+      SaiCreatureHandlerService,
+    ],
   }));
 
   beforeEach(() => {

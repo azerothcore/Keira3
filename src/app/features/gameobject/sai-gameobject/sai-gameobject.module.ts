@@ -13,7 +13,6 @@ import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/singl
 import { SaiGameobjectComponent } from './sai-gameobject.component';
 import { SaiEditorModule } from '@keira-shared/modules/sai-editor/sai-editor.module';
 import { SaiGameobjectEditorService } from './sai-gameobject-editor.service';
-import { SaiGameobjectHandlerService } from './sai-gameobject-handler.service';
 
 @NgModule({
   declarations: [
@@ -36,7 +35,6 @@ import { SaiGameobjectHandlerService } from './sai-gameobject-handler.service';
   ],
   providers: [
     SaiGameobjectEditorService,
-    SaiGameobjectHandlerService,
   ],
 })
 export class SaiGameobjectModule {}

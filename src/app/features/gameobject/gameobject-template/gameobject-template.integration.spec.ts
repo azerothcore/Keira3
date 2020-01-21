@@ -9,6 +9,7 @@ import { QueryService } from '@keira-shared/services/query.service';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { GameobjectTemplate } from '@keira-types/gameobject-template.type';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
+import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
 class GameobjectTemplatePage extends EditorPageObject<GameobjectTemplateComponent> {}
 
@@ -38,6 +39,10 @@ describe('GameobjectTemplate integration tests', () => {
         GameobjectTemplateModule,
         RouterTestingModule,
       ],
+      providers: [
+        GameobjectHandlerService,
+        SaiGameobjectHandlerService,
+      ]
     })
       .compileComponents();
   }));

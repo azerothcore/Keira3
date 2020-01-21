@@ -37,6 +37,9 @@ describe('DisenchantLootTemplate integration tests', () => {
         DisenchantLootTemplateModule,
         RouterTestingModule,
       ],
+      providers: [
+        ItemHandlerService,
+      ]
     })
       .compileComponents();
   }));

@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ItemLootTemplateService } from './item-loot-template.service';
 import { QueryService } from '@keira-shared/services/query.service';
 import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { ItemHandlerService } from '../item-handler.service';
 
 describe('ItemLootTemplateService', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -15,7 +16,9 @@ describe('ItemLootTemplateService', () => {
     providers: [
       { provide: QueryService, useValue: instance(MockedQueryService) },
       { provide: ToastrService, useValue: instance(MockedToastrService) },
-    ],
+      ItemHandlerService,
+      ItemLootTemplateService,
+    ]
   }));
 
   it('should be created', () => {

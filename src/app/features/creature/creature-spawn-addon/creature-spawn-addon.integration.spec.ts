@@ -10,6 +10,7 @@ import { CreatureSpawnAddon } from '@keira-types/creature-spawn-addon.type';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { CreatureSpawnAddonService } from './creature-spawn-addon.service';
+import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 class CreatureSpawnAddonPage extends MultiRowEditorPageObject<CreatureSpawnAddonComponent> {}
 
@@ -35,6 +36,10 @@ describe('CreatureSpawnAddon integration tests', () => {
       imports: [
         CreatureSpawnAddonModule,
         RouterTestingModule,
+      ],
+      providers: [
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
       ],
     })
       .compileComponents();

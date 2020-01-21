@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 
 import { HandlerService } from '@keira-abstract/service/handlers/handler.service';
 import { CreatureTemplate } from '@keira-types/creature-template.type';
-import { SaiCreatureHandlerService } from './sai-creature/sai-creature-handler.service';
+import { SaiCreatureHandlerService } from './sai-creature-handler.service';
 
 @Injectable()
 export class CreatureHandlerService extends HandlerService<CreatureTemplate> {

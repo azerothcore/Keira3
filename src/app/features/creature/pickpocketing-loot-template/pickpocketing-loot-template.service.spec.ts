@@ -6,6 +6,8 @@ import { ToastrService } from 'ngx-toastr';
 import { PickpocketingLootTemplateService } from './pickpocketing-loot-template.service';
 import { QueryService } from '@keira-shared/services/query.service';
 import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { CreatureHandlerService } from '../creature-handler.service';
+import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 describe('PickpocketingLootTemplateService', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -15,6 +17,9 @@ describe('PickpocketingLootTemplateService', () => {
     providers: [
       { provide: QueryService, useValue: instance(MockedQueryService) },
       { provide: ToastrService, useValue: instance(MockedToastrService) },
+      CreatureHandlerService,
+      SaiCreatureHandlerService,
+      PickpocketingLootTemplateService,
     ],
   }));
 

@@ -10,6 +10,7 @@ import { SelectItemService } from './select-item.service';
 import { SelectItemModule } from './select-item.module';
 import { ItemTemplate } from '@keira-types/item-template.type';
 import { SelectPageObject } from '@keira-testing/select-page-object';
+import { ItemHandlerService } from '../item-handler.service';
 
 class SelectItemComponentPage extends SelectPageObject<SelectItemComponent> {
   ID_FIELD = 'entry';
@@ -32,6 +33,9 @@ describe('SelectItem integration tests', () => {
         SelectItemModule,
         RouterTestingModule,
       ],
+      providers: [
+        ItemHandlerService,
+      ]
     })
       .compileComponents();
   }));

@@ -7,6 +7,9 @@ describe('GossipHandlerService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       RouterTestingModule,
+    ],
+    providers: [
+      GossipHandlerService,
     ]
   }));
 
