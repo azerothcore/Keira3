@@ -5,9 +5,9 @@ import Spy = jasmine.Spy;
 
 import { QuestTemplateComponent } from './quest-template.component';
 import { QuestTemplateModule } from './quest-template.module';
-import { QueryService } from '../../../shared/services/query.service';
-import { EditorPageObject } from '../../../shared/testing/editor-page-object';
-import { QuestTemplate } from '../../../shared/types/quest-template.type';
+import { QueryService } from '@keira-shared/services/query.service';
+import { EditorPageObject } from '@keira-testing/editor-page-object';
+import { QuestTemplate } from '@keira-types/quest-template.type';
 import { QuestHandlerService } from '../quest-handler.service';
 
 class QuestTemplatePage extends EditorPageObject<QuestTemplateComponent> {}

@@ -5,7 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 
 import { DisenchantLootTemplateService } from './disenchant-loot-template.service';
 import { QueryService } from '../../shared/services/query.service';
-import { MockedQueryService, MockedToastrService } from '../../shared/testing/mocks';
+import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
 
 describe('DisenchantLootTemplateService', () => {
   beforeEach(() => TestBed.configureTestingModule({

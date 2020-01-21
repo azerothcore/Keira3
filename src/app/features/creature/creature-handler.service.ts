@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { HandlerService } from '../../shared/abstract/service/handlers/handler.service';
-import { CreatureTemplate } from '../../shared/types/creature-template.type';
+import { HandlerService } from '@keira-abstract/service/handlers/handler.service';
+import { CreatureTemplate } from '@keira-types/creature-template.type';
 import { SaiCreatureHandlerService } from './sai-creature/sai-creature-handler.service';
 
 @Injectable({

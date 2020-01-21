@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
 import { CreatureHandlerService } from '../creature-handler.service';
-import { QueryService } from '../../../shared/services/query.service';
-import { SingleRowEditorService } from '../../../shared/abstract/service/editors/single-row-editor.service';
+import { QueryService } from '@keira-shared/services/query.service';
+import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
 import {
   CREATURE_TEMPLATE_ADDON_ID, CREATURE_TEMPLATE_ADDON_TABLE,
   CreatureTemplateAddon
-} from '../../../shared/types/creature-template-addon.type';
+} from '@keira-types/creature-template-addon.type';
 
 @Injectable({
   providedIn: 'root'

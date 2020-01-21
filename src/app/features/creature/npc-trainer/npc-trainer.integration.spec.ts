@@ -5,10 +5,10 @@ import Spy = jasmine.Spy;
 
 import { NpcTrainerComponent } from './npc-trainer.component';
 import { NpcTrainerModule } from './npc-trainer.module';
-import { QueryService } from '../../../shared/services/query.service';
-import { NpcTrainer } from '../../../shared/types/npc-trainer.type';
+import { QueryService } from '@keira-shared/services/query.service';
+import { NpcTrainer } from '@keira-types/npc-trainer.type';
 import { CreatureHandlerService } from '../creature-handler.service';
-import { MultiRowEditorPageObject } from '../../../shared/testing/multi-row-editor-page-object';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 
 class NpcTrainerPage extends MultiRowEditorPageObject<NpcTrainerComponent> {}
 

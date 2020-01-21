@@ -2,7 +2,7 @@
 import { ToastrService } from 'ngx-toastr';
 
 import { MultiRowEditorService } from './multi-row-editor.service';
-import { Class, TableRow } from '../../../types/general';
+import { Class, TableRow } from '@keira-types/general';
 import { HandlerService } from '../handlers/handler.service';
 import { QueryService } from '../../../services/query.service';
 

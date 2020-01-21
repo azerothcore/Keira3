@@ -4,9 +4,9 @@ import { instance } from 'ts-mockito';
 
 import { ItemSelectorModalComponent } from '../item-selector/item-selector-modal.component';
 import { QueryService } from '../../../services/query.service';
-import { MockedQueryService } from '../../../testing/mocks';
+import { MockedQueryService } from '@keira-testing/mocks';
 import { SearchService } from '../../search/search.service';
-import { ItemTemplate } from '../../../types/item-template.type';
+import { ItemTemplate } from '@keira-types/item-template.type';
 import { ItemSearchService } from '../../search/item-search.service';
 import { SearchSelectorModalComponent } from './search-selector-modal.component';
 import { ItemSelectorModule } from '../item-selector/item-selector.module';

@@ -5,10 +5,10 @@ import Spy = jasmine.Spy;
 
 import { CreatureSpawnComponent } from './creature-spawn.component';
 import { CreatureSpawnModule } from './creature-spawn.module';
-import { QueryService } from '../../../shared/services/query.service';
-import { CreatureSpawn } from '../../../shared/types/creature-spawn.type';
+import { QueryService } from '@keira-shared/services/query.service';
+import { CreatureSpawn } from '@keira-types/creature-spawn.type';
 import { CreatureHandlerService } from '../creature-handler.service';
-import { MultiRowEditorPageObject } from '../../../shared/testing/multi-row-editor-page-object';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 
 class CreatureSpawnPage extends MultiRowEditorPageObject<CreatureSpawnComponent> {}
 

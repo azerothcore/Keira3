@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 
-import { SingleRowEditorComponent } from '../../../shared/abstract/components/editors/single-row-editor.component';
+import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureEquipTemplateService } from './creature-equip-template.service';
-import { CreatureEquipTemplate } from '../../../shared/types/creature-equip-template.type';
+import { CreatureEquipTemplate } from '@keira-types/creature-equip-template.type';
 
 @Component({
   selector: 'app-creature-equip-template',

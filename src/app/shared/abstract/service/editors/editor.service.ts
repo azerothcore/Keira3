@@ -2,7 +2,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { MysqlError } from 'mysql';
 
-import { Class, MysqlResult, TableRow } from '../../../types/general';
+import { Class, MysqlResult, TableRow } from '@keira-types/general';
 import { QueryService } from '../../../services/query.service';
 import { HandlerService } from '../handlers/handler.service';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';

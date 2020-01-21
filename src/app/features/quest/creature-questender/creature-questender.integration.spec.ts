@@ -5,9 +5,9 @@ import Spy = jasmine.Spy;
 
 import { CreatureQuestenderComponent } from './creature-questender.component';
 import { CreatureQuestenderModule } from './creature-questender.module';
-import { QueryService } from '../../../shared/services/query.service';
-import { CreatureQuestender } from '../../../shared/types/creature-questender.type';
-import { MultiRowEditorPageObject } from '../../../shared/testing/multi-row-editor-page-object';
+import { QueryService } from '@keira-shared/services/query.service';
+import { CreatureQuestender } from '@keira-types/creature-questender.type';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { QuestHandlerService } from '../quest-handler.service';
 
 class CreatureQuestenderPage extends MultiRowEditorPageObject<CreatureQuestenderComponent> {}

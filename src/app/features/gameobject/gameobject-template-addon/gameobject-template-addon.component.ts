@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 
-import { SingleRowEditorComponent } from '../../../shared/abstract/components/editors/single-row-editor.component';
-import { GameobjectTemplateAddon } from '../../../shared/types/gameobject-template-addon.type';
+import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
+import { GameobjectTemplateAddon } from '@keira-types/gameobject-template-addon.type';
 import { GameobjectTemplateAddonService } from '../gameobject-template-addon.service';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
-import { GAMEOBJECT_FLAGS } from '../../../shared/constants/flags/gameobject-flags';
-import { FACTIONS } from '../../../shared/constants/options/faction';
+import { GAMEOBJECT_FLAGS } from '@keira-constants/flags/gameobject-flags';
+import { FACTIONS } from '@keira-constants/options/faction';
 
 @Component({
   selector: 'app-gameobject-template-addon',

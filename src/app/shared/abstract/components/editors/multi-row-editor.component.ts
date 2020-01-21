@@ -1,4 +1,4 @@
-import { TableRow } from '../../../types/general';
+import { TableRow } from '@keira-types/general';
 import { HandlerService } from '../../service/handlers/handler.service';
 import { EditorComponent } from './editor.component';
 import { MultiRowEditorService } from '../../service/editors/multi-row-editor.service';

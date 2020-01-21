@@ -4,12 +4,12 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { QueryService } from '../../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 import { SelectGameobjectComponent } from './select-gameobject.component';
 import { SelectGameobjectService } from './select-gameobject.service';
 import { SelectGameobjectModule } from './select-gameobject.module';
-import { SelectPageObject } from '../../../shared/testing/select-page-object';
-import { GameobjectTemplate } from '../../../shared/types/gameobject-template.type';
+import { SelectPageObject } from '@keira-testing/select-page-object';
+import { GameobjectTemplate } from '@keira-types/gameobject-template.type';
 
 class SelectGameobjectComponentPage extends SelectPageObject<SelectGameobjectComponent> {
   ID_FIELD = 'entry';

@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
-import { SingleRowEditorService } from '../../shared/abstract/service/editors/single-row-editor.service';
+import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
 import {
   GAMEOBJECT_TEMPLATE_ID,
   GAMEOBJECT_TEMPLATE_NAME,
   GAMEOBJECT_TEMPLATE_TABLE,
   GameobjectTemplate,
-} from '../../shared/types/gameobject-template.type';
-import { FieldDefinition } from '../../shared/types/general';
-import { GO_DATA_FIELDS } from '../../shared/constants/gameobject-types';
+} from '@keira-types/gameobject-template.type';
+import { FieldDefinition } from '@keira-types/general';
+import { GO_DATA_FIELDS } from '@keira-constants/gameobject-types';
 import { QueryService } from '../../shared/services/query.service';
 import { GameobjectHandlerService } from './gameobject-handler.service';
 

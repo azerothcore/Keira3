@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
-import { SingleRowEditorService } from '../../shared/abstract/service/editors/single-row-editor.service';
+import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
 import {
   ITEM_TEMPLATE_ID,
   ITEM_TEMPLATE_NAME,
   ITEM_TEMPLATE_TABLE,
   ItemTemplate
-} from '../../shared/types/item-template.type';
+} from '@keira-types/item-template.type';
 import { QueryService } from '../../shared/services/query.service';
 import { ItemHandlerService } from './item-handler.service';
 

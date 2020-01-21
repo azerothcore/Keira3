@@ -6,11 +6,11 @@ import { of } from 'rxjs';
 
 
 import { QueryService } from '../../../services/query.service';
-import { MockedQueryService, MockedToastrService } from '../../../testing/mocks';
+import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { LootEditorService } from './loot-editor.service';
-import { CreatureLootTemplate } from '../../../types/creature-loot-template.type';
+import { CreatureLootTemplate } from '@keira-types/creature-loot-template.type';
 import { CreatureLootTemplateService } from '../../../../features/creature/creature-loot-template/creature-loot-template.service';
-import { MysqlResult } from '../../../types/general';
+import { MysqlResult } from '@keira-types/general';
 
 
 describe('LootEditorService', () => {

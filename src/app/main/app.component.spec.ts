@@ -9,7 +9,7 @@ import { SidebarComponent } from './main-window/sidebar/sidebar.component';
 import { MainWindowComponent } from './main-window/main-window.component';
 import { ElectronService } from '../shared/services/electron.service';
 import { instance, reset } from 'ts-mockito';
-import { MockedElectronService, MockedMysqlService } from '../shared/testing/mocks';
+import { MockedElectronService, MockedMysqlService } from '@keira-testing/mocks';
 import { MysqlService } from '../shared/services/mysql.service';
 import { ConnectionWindowComponent } from './connection-window/connection-window.component';
 import { QueryErrorComponent } from '../shared/modules/query-output/query-error/query-error.component';

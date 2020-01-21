@@ -5,7 +5,7 @@ import { version } from '../../../../package.json';
 
 import { MysqlService } from '../../shared/services/mysql.service';
 import { SubscriptionHandler } from '../../shared/utils/subscription-handler/subscription-handler';
-import { Config } from '../../shared/types/config.type';
+import { Config } from '@keira-types/config.type';
 import { LocalStorageService } from '../../shared/services/local-storage.service';
 
 @Component({

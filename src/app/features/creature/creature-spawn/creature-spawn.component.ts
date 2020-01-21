@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 
-import { MultiRowEditorComponent } from '../../../shared/abstract/components/editors/multi-row-editor.component';
+import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
 import { CreatureHandlerService } from '../creature-handler.service';
-import { CreatureSpawn } from '../../../shared/types/creature-spawn.type';
+import { CreatureSpawn } from '@keira-types/creature-spawn.type';
 import { CreatureSpawnService } from './creature-spawn.service';
-import { MOVEMENT_TYPE } from '../../../shared/constants/options/movement-type';
-import { NPC_FLAGS } from '../../../shared/constants/flags/npc-flags';
-import { UNIT_FLAGS } from '../../../shared/constants/flags/unit-flags';
-import { DYNAMIC_FLAGS } from '../../../shared/constants/flags/dynamic-flags';
-import { SPAWN_MASK } from '../../../shared/constants/flags/spawn-mask';
-import { PHASE_MASK } from '../../../shared/constants/flags/phase-mask';
+import { MOVEMENT_TYPE } from '@keira-constants/options/movement-type';
+import { NPC_FLAGS } from '@keira-constants/flags/npc-flags';
+import { UNIT_FLAGS } from '@keira-constants/flags/unit-flags';
+import { DYNAMIC_FLAGS } from '@keira-constants/flags/dynamic-flags';
+import { SPAWN_MASK } from '@keira-constants/flags/spawn-mask';
+import { PHASE_MASK } from '@keira-constants/flags/phase-mask';
 
 @Component({
   selector: 'app-creature-spawn',

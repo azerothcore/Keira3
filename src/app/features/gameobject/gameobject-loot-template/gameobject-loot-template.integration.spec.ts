@@ -5,10 +5,10 @@ import Spy = jasmine.Spy;
 
 import { GameobjectLootTemplateComponent } from './gameobject-loot-template.component';
 import { GameobjectLootTemplateModule } from './gameobject-loot-template.module';
-import { QueryService } from '../../../shared/services/query.service';
-import { GameobjectLootTemplate } from '../../../shared/types/gameobject-loot-template.type';
+import { QueryService } from '@keira-shared/services/query.service';
+import { GameobjectLootTemplate } from '@keira-types/gameobject-loot-template.type';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
-import { MultiRowEditorPageObject } from '../../../shared/testing/multi-row-editor-page-object';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { GameobjectLootTemplateService } from '../gameobject-loot-template.service';
 
 class GameobjectLootTemplatePage extends MultiRowEditorPageObject<GameobjectLootTemplateComponent> {}

@@ -2,12 +2,12 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { QueryService } from '../../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 import { GameobjectTemplateComponent } from './gameobject-template.component';
 import { GameobjectTemplateModule } from './gameobject-template.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { GameobjectTemplateService } from '../gameobject-template.service';
-import { FieldDefinition } from '../../../shared/types/general';
+import { FieldDefinition } from '@keira-types/general';
 
 describe('GameobjectComponent', () => {
   let component: GameobjectTemplateComponent;

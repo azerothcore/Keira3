@@ -5,10 +5,10 @@ import Spy = jasmine.Spy;
 
 import { CreatureQuestitemComponent } from './creature-questitem.component';
 import { CreatureQuestitemModule } from './creature-questitem.module';
-import { QueryService } from '../../../shared/services/query.service';
-import { CreatureQuestitem } from '../../../shared/types/creature-questitem.type';
+import { QueryService } from '@keira-shared/services/query.service';
+import { CreatureQuestitem } from '@keira-types/creature-questitem.type';
 import { CreatureHandlerService } from '../creature-handler.service';
-import { MultiRowEditorPageObject } from '../../../shared/testing/multi-row-editor-page-object';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 
 class CreatureQuestitemPage extends MultiRowEditorPageObject<CreatureQuestitemComponent> {}
 

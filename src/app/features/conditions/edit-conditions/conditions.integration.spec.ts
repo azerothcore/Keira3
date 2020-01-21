@@ -6,9 +6,9 @@ import Spy = jasmine.Spy;
 
 import { ConditionsComponent } from './conditions.component';
 import { ConditionsEditorModule } from './conditions-editor.module';
-import { QueryService } from '../../../shared/services/query.service';
-import { EditorPageObject } from '../../../shared/testing/editor-page-object';
-import { Conditions } from '../../../shared/types/conditions.type';
+import { QueryService } from '@keira-shared/services/query.service';
+import { EditorPageObject } from '@keira-testing/editor-page-object';
+import { Conditions } from '@keira-types/conditions.type';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 
 class ConditionsPage extends EditorPageObject<ConditionsComponent> {}

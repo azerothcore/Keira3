@@ -5,10 +5,10 @@ import Spy = jasmine.Spy;
 
 import { GossipMenuComponent } from './gossip-menu.component';
 import { GossipMenuModule } from './gossip-menu.module';
-import { QueryService } from '../../../shared/services/query.service';
-import { GossipMenu } from '../../../shared/types/gossip-menu.type';
+import { QueryService } from '@keira-shared/services/query.service';
+import { GossipMenu } from '@keira-types/gossip-menu.type';
 import { GossipHandlerService } from '../gossip-handler.service';
-import { MultiRowEditorPageObject } from '../../../shared/testing/multi-row-editor-page-object';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 
 class GossipMenuPage extends MultiRowEditorPageObject<GossipMenuComponent> {}
 

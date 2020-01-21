@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 
-import { SingleRowEditorComponent } from '../../../shared/abstract/components/editors/single-row-editor.component';
-import { QuestTemplateAddon } from '../../../shared/types/quest-template-addon.type';
+import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
+import { QuestTemplateAddon } from '@keira-types/quest-template-addon.type';
 import { QuestTemplateAddonService } from '../quest-template-addon.service';
 import { QuestHandlerService } from '../quest-handler.service';
-import { ALLOWABLE_CLASSES } from '../../../shared/constants/flags/allowable-classes';
-import { FACTIONS } from '../../../shared/constants/options/faction';
-import { SPECIAL_FLAGS } from '../../../shared/constants/flags/special-flags';
+import { ALLOWABLE_CLASSES } from '@keira-constants/flags/allowable-classes';
+import { FACTIONS } from '@keira-constants/options/faction';
+import { SPECIAL_FLAGS } from '@keira-constants/flags/special-flags';
 
 @Component({
   selector: 'app-quest-template-addon',

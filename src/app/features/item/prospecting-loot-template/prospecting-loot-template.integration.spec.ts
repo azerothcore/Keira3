@@ -5,10 +5,10 @@ import Spy = jasmine.Spy;
 
 import { ProspectingLootTemplateComponent } from './prospecting-loot-template.component';
 import { ProspectingLootTemplateModule } from './prospecting-loot-template.module';
-import { QueryService } from '../../../shared/services/query.service';
-import { ProspectingLootTemplate } from '../../../shared/types/prospecting-loot-template.type';
+import { QueryService } from '@keira-shared/services/query.service';
+import { ProspectingLootTemplate } from '@keira-types/prospecting-loot-template.type';
 import { ItemHandlerService } from '../item-handler.service';
-import { MultiRowEditorPageObject } from '../../../shared/testing/multi-row-editor-page-object';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 
 class ProspectingLootTemplatePage extends MultiRowEditorPageObject<ProspectingLootTemplateComponent> {}
 

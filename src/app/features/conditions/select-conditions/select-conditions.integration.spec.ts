@@ -4,12 +4,12 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { QueryService } from '../../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 import { SelectConditionsComponent } from './select-conditions.component';
-import { ConditionsSearchService } from '../../../shared/modules/search/conditions-search.service';
+import { ConditionsSearchService } from '@keira-shared/modules/search/conditions-search.service';
 import { SelectConditionsModule } from './select-conditions.module';
-import { PageObject } from '../../../shared/testing/page-object';
-import { Conditions } from '../../../shared/types/conditions.type';
+import { PageObject } from '@keira-testing/page-object';
+import { Conditions } from '@keira-types/conditions.type';
 
 class SelectConditionsComponentPage extends PageObject<SelectConditionsComponent> {
   get queryWrapper() { return this.query<HTMLElement>('code.hljs'); }

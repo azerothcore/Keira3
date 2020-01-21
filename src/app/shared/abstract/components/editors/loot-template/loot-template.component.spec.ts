@@ -4,9 +4,9 @@ import { anything, instance, when } from 'ts-mockito';
 import { of, throwError } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { MockedQueryService } from '../../../../testing/mocks';
+import { MockedQueryService } from '@keira-testing/mocks';
 import { LootTemplateComponent } from './loot-template.component';
-import { CreatureLootTemplate } from '../../../../types/creature-loot-template.type';
+import { CreatureLootTemplate } from '@keira-types/creature-loot-template.type';
 import { CreatureLootTemplateComponent } from '../../../../../features/creature/creature-loot-template/creature-loot-template.component';
 import { CreatureLootTemplateService } from '../../../../../features/creature/creature-loot-template/creature-loot-template.service';
 import { LootEditorService } from '../../../service/editors/loot-editor.service';

@@ -4,7 +4,7 @@ import { instance } from 'ts-mockito';
 
 import { CreatureSelectorModalComponent } from './creature-selector-modal.component';
 import { QueryService } from '../../../services/query.service';
-import { MockedQueryService } from '../../../testing/mocks';
+import { MockedQueryService } from '@keira-testing/mocks';
 import { CreatureSearchService } from '../../search/creature-search.service';
 import { CreatureSelectorModule } from './creature-selector.module';
 

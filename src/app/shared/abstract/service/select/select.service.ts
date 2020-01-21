@@ -1,4 +1,4 @@
-import { TableRow } from '../../../types/general';
+import { TableRow } from '@keira-types/general';
 import { QueryService } from '../../../services/query.service';
 import { HandlerService } from '../handlers/handler.service';
 import { SearchService } from '../../../modules/search/search.service';

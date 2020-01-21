@@ -5,9 +5,9 @@ import Spy = jasmine.Spy;
 
 import { CreatureEquipTemplateComponent } from './creature-equip-template.component';
 import { CreatureEquipTemplateModule } from './creature-equip-template.module';
-import { QueryService } from '../../../shared/services/query.service';
-import { EditorPageObject } from '../../../shared/testing/editor-page-object';
-import { CreatureEquipTemplate } from '../../../shared/types/creature-equip-template.type';
+import { QueryService } from '@keira-shared/services/query.service';
+import { EditorPageObject } from '@keira-testing/editor-page-object';
+import { CreatureEquipTemplate } from '@keira-types/creature-equip-template.type';
 import { CreatureHandlerService } from '../creature-handler.service';
 
 class CreatureEquipTemplatePage extends EditorPageObject<CreatureEquipTemplateComponent> {}

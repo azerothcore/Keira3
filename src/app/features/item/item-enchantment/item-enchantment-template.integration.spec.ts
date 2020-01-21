@@ -5,10 +5,10 @@ import Spy = jasmine.Spy;
 
 import { ItemEnchantmentTemplateComponent } from './item-enchantment-template.component';
 import { ItemEnchantmentTemplateModule } from './item-enchantment-template.module';
-import { QueryService } from '../../../shared/services/query.service';
-import { ItemEnchantmentTemplate } from '../../../shared/types/item-enchantment-template.type';
+import { QueryService } from '@keira-shared/services/query.service';
+import { ItemEnchantmentTemplate } from '@keira-types/item-enchantment-template.type';
 import { ItemHandlerService } from '../item-handler.service';
-import { MultiRowEditorPageObject } from '../../../shared/testing/multi-row-editor-page-object';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 
 class ItemEnchantmentTemplatePage extends MultiRowEditorPageObject<ItemEnchantmentTemplateComponent> {}
 

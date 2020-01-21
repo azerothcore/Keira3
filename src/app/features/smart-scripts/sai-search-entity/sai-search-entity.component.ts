@@ -1,8 +1,8 @@
 import { Component, } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { SaiHandlerService } from '../../../shared/modules/sai-editor/sai-handler.service';
-import { SAI_TYPES, SAI_TYPES_KEYS } from '../../../shared/types/smart-scripts.type';
+import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
+import { SAI_TYPES, SAI_TYPES_KEYS } from '@keira-types/smart-scripts.type';
 
 @Component({
   selector: 'app-sai-search-entity',

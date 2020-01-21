@@ -2,16 +2,16 @@ import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
 import { CreatureHandlerService } from '../creature-handler.service';
-import { QueryService } from '../../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 import {
   CREATURE_LOOT_TEMPLATE_TABLE,
   CreatureLootTemplate,
-} from '../../../shared/types/creature-loot-template.type';
-import { LootEditorService } from '../../../shared/abstract/service/editors/loot-editor.service';
+} from '@keira-types/creature-loot-template.type';
+import { LootEditorService } from '@keira-abstract/service/editors/loot-editor.service';
 import {
   CREATURE_TEMPLATE_ID, CREATURE_TEMPLATE_LOOT_ID,
   CREATURE_TEMPLATE_TABLE
-} from '../../../shared/types/creature-template.type';
+} from '@keira-types/creature-template.type';
 
 @Injectable({
   providedIn: 'root'

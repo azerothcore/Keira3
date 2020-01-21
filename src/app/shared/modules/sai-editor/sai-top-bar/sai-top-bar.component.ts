@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 
 import { SaiHandlerService } from '../sai-handler.service';
-import { SAI_TYPES, SmartScripts } from '../../../types/smart-scripts.type';
+import { SAI_TYPES, SmartScripts } from '@keira-types/smart-scripts.type';
 import { QueryService } from '../../../services/query.service';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
 

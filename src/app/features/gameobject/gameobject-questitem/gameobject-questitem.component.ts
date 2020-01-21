@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 
-import { MultiRowEditorComponent } from '../../../shared/abstract/components/editors/multi-row-editor.component';
+import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
-import { GameobjectQuestitem } from '../../../shared/types/gameobject-questitem.type';
+import { GameobjectQuestitem } from '@keira-types/gameobject-questitem.type';
 import { GameobjectQuestitemService } from '../gameobject-questitem.service';
 
 @Component({

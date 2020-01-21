@@ -5,10 +5,10 @@ import Spy = jasmine.Spy;
 
 import { GameobjectSpawnComponent } from './gameobject-spawn.component';
 import { GameobjectSpawnModule } from './gameobject-spawn.module';
-import { QueryService } from '../../../shared/services/query.service';
-import { GameobjectSpawn } from '../../../shared/types/gameobject-spawn.type';
+import { QueryService } from '@keira-shared/services/query.service';
+import { GameobjectSpawn } from '@keira-types/gameobject-spawn.type';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
-import { MultiRowEditorPageObject } from '../../../shared/testing/multi-row-editor-page-object';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 
 class GameobjectSpawnPage extends MultiRowEditorPageObject<GameobjectSpawnComponent> {}
 

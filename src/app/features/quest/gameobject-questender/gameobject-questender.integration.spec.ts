@@ -5,9 +5,9 @@ import Spy = jasmine.Spy;
 
 import { GameobjectQuestenderComponent } from './gameobject-questender.component';
 import { GameobjectQuestenderModule } from './gameobject-questender.module';
-import { QueryService } from '../../../shared/services/query.service';
-import { GameobjectQuestender } from '../../../shared/types/gameobject-questender.type';
-import { MultiRowEditorPageObject } from '../../../shared/testing/multi-row-editor-page-object';
+import { QueryService } from '@keira-shared/services/query.service';
+import { GameobjectQuestender } from '@keira-types/gameobject-questender.type';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { QuestHandlerService } from '../quest-handler.service';
 
 class GameobjectQuestenderPage extends MultiRowEditorPageObject<GameobjectQuestenderComponent> {}
