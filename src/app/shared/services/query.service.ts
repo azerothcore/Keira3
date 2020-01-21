@@ -331,7 +331,7 @@ export class QueryService {
 
   // Generates the full UPDATE query of ONE row using more than 2 keys
   getUpdateMultipleKeysQuery<T extends TableRow>(
-    tableName: string,     // the name of the table (example: 'edit-conditions')
+    tableName: string,     // the name of the table (example: 'conditions')
     currentRow: T,        // the original row, it MUST contain ALL the primaryKeys
     newRow: T,             // the original row, it MUST contain ALL the primaryKeys
     primaryKeys: string[], // array of the primary keys
@@ -346,7 +346,7 @@ export class QueryService {
 
   // Generates the DELETE query of ONE row using more than 2 keys
   getDeleteMultipleKeysQuery<T extends TableRow>(
-    tableName: string,     // the name of the table (example: 'edit-conditions')
+    tableName: string,     // the name of the table (example: 'conditions')
     row: T,                // the row, it MUST contain ALL the primaryKeys
     primaryKeys: string[], // array of the primary keys (example: ['SourceTypeOrReferenceId', 'SourceGroup', 'SourceEntry'])
   ) {
@@ -357,7 +357,7 @@ export class QueryService {
 
   // Generates the full DELETE/INSERT query of ONE row using more than 2 keys
   getFullDeleteInsertMultipleKeysQuery<T extends TableRow>(
-    tableName: string,     // the name of the table (example: 'edit-conditions')
+    tableName: string,     // the name of the table (example: 'conditions')
     currentRow: T,        // the original row, it MUST contain ALL the primaryKeys
     newRow: T,             // the original row, it MUST contain ALL the primaryKeys
     primaryKeys: string[], // array of the primary keys

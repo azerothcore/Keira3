@@ -1,4 +1,3 @@
-import { ConditionsComponent } from '../features/conditions/edit-conditions/conditions.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
@@ -63,6 +62,7 @@ import { SaiHandlerService } from '../shared/modules/sai-editor/sai-handler.serv
 import { SaiCreatureComponent } from '../features/creature/sai-creature/sai-creature.component';
 import { SaiFullEditorComponent } from '../features/smart-scripts/sai-full-editor/sai-full-editor.component';
 import { SaiGameobjectComponent } from '../features/gameobject/sai-gameobject/sai-gameobject.component';
+import { ConditionsComponent } from '../features/conditions/edit-conditions/conditions.component';
 
 const routes: Routes = [
   {
@@ -290,14 +290,14 @@ const routes: Routes = [
     ]
   },
   {
-    path: 'edit-conditions',
+    path: 'conditions',
     children: [
       {
         path: 'select',
         component: SelectConditionsComponent,
       },
       {
-        path: 'edit-conditions',
+        path: 'conditions',
         component: ConditionsComponent,
         canActivate: [ConditionsHandlerService],
       },

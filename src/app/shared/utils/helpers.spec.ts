@@ -16,7 +16,7 @@ describe('Helpers', () => {
     }
   });
 
-  describe('getPartial(value, edit-conditions)', () => {
+  describe('getPartial(value, conditions)', () => {
 
     it('should correctly work', () => {
       const fields = ['a' , 'b', 'c'];

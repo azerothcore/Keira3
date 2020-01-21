@@ -334,7 +334,7 @@
           </li>
 
           <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.conditions === 'down' }">
-            <a (click)="toggleState('edit-conditions')">
+            <a (click)="toggleState('conditions')">
               <i class="fa fa-pen"></i>
               <span>Conditions</span>
             </a>
@@ -342,13 +342,13 @@
             <div class="sidebar-submenu" [@slide]="menuStates.conditions">
               <ul>
                 <li>
-                  <a href="#" routerLinkActive="active" [routerLink]="'edit-conditions/select'">
+                  <a href="#" routerLinkActive="active" [routerLink]="'conditions/select'">
                     Select Conditions
                   </a>
                 </li>
                 <ng-container *ngIf="conditionsHandlerService.selected">
                   <li>
-                    <a href="#" routerLinkActive="active" [routerLink]="'edit-conditions/edit-conditions'">
+                    <a href="#" routerLinkActive="active" [routerLink]="'conditions/conditions'">
                       Conditions
                     </a>
                   </li>
