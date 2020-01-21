@@ -96,12 +96,12 @@
             "tsConfig": "src/tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
             "codeCoverageExclude": [
-              "src/app/services/electron.service.ts",
               "src/app/config/**/*",
               "src/app/constants/**/*",
-              "src/app/types/**/*",
-              "src/app/test-utils/**/*",
-              "src/app/test-utils/test-helpers.ts"
+              "src/app/shared/services/electron.service.ts",
+              "src/app/shared/types/**/*",
+              "src/app/shared/testing/**/*",
+              "src/app/shared/testing/test-helpers.ts"
             ],
             "scripts": [
               "node_modules/squel/dist/squel.min.js"

@@ -1,0 +1,397 @@
+<nav
+  id="sidebar"
+  class="sidebar"
+  [ngClass]="{'sidebar-bg' : hasBackgroundImage()}"
+  style="background-image: url(assets/img/bg1.jpg);"
+>
+  <div class="sidebar-content">
+    <perfect-scrollbar>
+      <div class="sidebar-header">
+        <a href="#">Keira3 Database Editor</a>
+      </div>
+
+      <div class="sidebar-profile">
+        <div class="user-pic">
+          <img class="img-responsive img-rounded" src="assets/img/ac.png" alt="User picture">
+        </div>
+        <div class="user-info" *ngIf="mysqlService.config">
+          <span class="db-user">
+            <strong>{{ mysqlService.config.user }}</strong>
+          </span>
+          <span class="db-host">
+            <strong>{{ mysqlService.config.host }}<span class="port">:{{ mysqlService.config.port }}</span></strong>
+          </span>
+          <span class="db-name">
+            <strong><i>{{ mysqlService.config.database }}</i></strong>
+          </span>
+          <span class="user-status">
+            <i class="fa fa-circle connection-status" [ngClass]="mysqlService.getConnectionState()"></i>
+            <span>{{ mysqlService.getConnectionState() | titlecase }}</span>
+          </span>
+          <span>
+            <app-logout-btn></app-logout-btn>
+          </span>
+        </div>
+      </div>
+
+      <div class="crdts">
+        <!-- We have worked hard to create Keira3 for free, please do not remove the credits -->
+        CREATED BY <a href="https://github.com/FrancescoBorzi" target="_blank">SHIN</a> && <a href="https://github.com/Helias" target="_blank">HELIAS</a>
+      </div>
+
+      <div class="sidebar-menu">
+        <ul>
+
+          <li>
+            <a id="dashboard-toggle" href="#" [routerLink]="''">Dashboard</a>
+          </li>
+
+          <li>
+            <a id="collapse-all" (click)="collapseAll()">Collapse All</a>
+          </li>
+
+          <li class="header-menu">
+            <span>Editors</span>
+          </li>
+
+          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.creature === 'down' }">
+            <a id="creature-editor-toggle" (click)="toggleState('creature')">
+              <i class="fa fa-pen"></i>
+              <span>Creature</span>
+            </a>
+
+            <div class="sidebar-submenu" [@slide]="menuStates.creature">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'creature/select'">
+                    Select Creature Template
+                  </a>
+                </li>
+                <ng-container *ngIf="creatureHandlerService.selected">
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template'">
+                      Creature Template
+                    </a>
+                  </li>
+                  <ng-container *ngIf="!creatureHandlerService.isNew">
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template-addon'">
+                        Template Addon
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-onkill-reputation'">
+                        Onkill Reputation
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-equip-template'">
+                        Equip Template
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/npc-vendor'">
+                        Vendor
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/npc-trainer'">
+                        Trainer
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-questitem'">
+                        Quest Item
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-loot-template'">
+                        Creature Loot
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/pickpocketing-loot-template'">
+                        Pickpocketing Loot
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/skinning-loot-template'">
+                        Skinning Loot
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-spawn'">
+                        Spawn
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-spawn-addon'">
+                        Spawn Addon
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/sai-creature'">
+                        SmartAI
+                      </a>
+                    </li>
+                  </ng-container>
+                </ng-container>
+
+              </ul>
+            </div>
+          </li>
+
+          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.quest === 'down' }">
+            <a (click)="toggleState('quest')">
+              <i class="fa fa-pen"></i>
+              <span>Quest</span>
+            </a>
+
+            <div class="sidebar-submenu" [@slide]="menuStates.quest">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'quest/select'">
+                    Select Quest Template
+                  </a>
+                </li>
+                <ng-container *ngIf="questHandlerService.selected">
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-template'">
+                      Quest Template
+                    </a>
+                  </li>
+                  <ng-container *ngIf="!questHandlerService.isNew">
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-template-addon'">
+                        Quest Template Addon
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-offer-reward'">
+                        Quest Offer Reward
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-request-items'">
+                        Quest Request Items
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'quest/creature-queststarter'">
+                        Creature Queststarter
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'quest/creature-questender'">
+                        Creature Questender
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'quest/gameobject-queststarter'">
+                        Gameobject Queststarter
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'quest/gameobject-questender'">
+                        Gameobject Questender
+                      </a>
+                    </li>
+                  </ng-container>
+                </ng-container>
+
+              </ul>
+            </div>
+          </li>
+
+          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.gameobject === 'down' }">
+            <a (click)="toggleState('gameobject')">
+              <i class="fa fa-pen"></i>
+              <span>GameObject</span>
+            </a>
+            <div class="sidebar-submenu" [@slide]="menuStates.gameobject">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'gameobject/select'">
+                    Select Gameobject Template
+                  </a>
+                </li>
+                <ng-container *ngIf="gameobjectHandlerService.selected">
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-template'">
+                      Gameobject Template
+                    </a>
+                  </li>
+                  <ng-container *ngIf="!gameobjectHandlerService.isNew">
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-template-addon'">
+                        Template Addon
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-questitem'">
+                        Quest Items
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-loot-template'">
+                        Gameobject Loot
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-spawn'">
+                        Spawns
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'gameobject/sai-gameobject'">
+                        SmartAI
+                      </a>
+                    </li>
+                  </ng-container>
+                </ng-container>
+              </ul>
+            </div>
+          </li>
+
+          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.item === 'down' }">
+            <a (click)="toggleState('item')">
+              <i class="fa fa-pen"></i>
+              <span>Item</span>
+            </a>
+            <div class="sidebar-submenu" [@slide]="menuStates.item">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'item/select'">
+                    Select Item Template
+                  </a>
+                </li>
+                <ng-container *ngIf="itemHandlerService.selected">
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'item/item-template'">
+                      Item Template
+                    </a>
+                  </li>
+                  <ng-container *ngIf="!itemHandlerService.isNew">
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'item/item-enchantment-template'">
+                        Enchantment Template
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'item/item-loot-template'">
+                        Item Loot
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'item/disenchant-loot-template'">
+                        Disenchant Loot
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'item/prospecting-loot-template'">
+                        Prospecting Loot
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'item/milling-loot-template'">
+                        Milling Loot
+                      </a>
+                    </li>
+                  </ng-container>
+                </ng-container>
+              </ul>
+            </div>
+          </li>
+
+          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.gossip === 'down' }">
+            <a (click)="toggleState('gossip')">
+              <i class="fa fa-pen"></i>
+              <span>Gossip</span>
+            </a>
+            <div class="sidebar-submenu" [@slide]="menuStates.gossip">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'gossip/select'">
+                    Select Gossip Menu
+                  </a>
+                </li>
+                <ng-container *ngIf="gossipHandlerService.selected">
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'gossip/gossip-menu'">
+                      Gossip Menu
+                    </a>
+                  </li>
+                  <ng-container *ngIf="!gossipHandlerService.isNew">
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'gossip/gossip-menu-option'">
+                        Gossip Menu Option
+                      </a>
+                    </li>
+                  </ng-container>
+                </ng-container>
+              </ul>
+            </div>
+          </li>
+
+          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.conditions === 'down' }">
+            <a (click)="toggleState('conditions')">
+              <i class="fa fa-pen"></i>
+              <span>Conditions</span>
+            </a>
+
+            <div class="sidebar-submenu" [@slide]="menuStates.conditions">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'conditions/select'">
+                    Select Conditions
+                  </a>
+                </li>
+                <ng-container *ngIf="conditionsHandlerService.selected">
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'conditions/conditions'">
+                      Conditions
+                    </a>
+                  </li>
+                </ng-container>
+              </ul>
+            </div>
+          </li>
+
+          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.smartAi === 'down' }">
+            <a (click)="toggleState('smartAi')">
+              <i class="fa fa-pen"></i>
+              <span>SmartAI</span>
+            </a>
+
+            <div class="sidebar-submenu" [@slide]="menuStates.smartAi">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'smart-ai/search-existing'">
+                    Search by existing SAI
+                  </a>
+                </li>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'smart-ai/search-entity'">
+                    Search by entity
+                  </a>
+                </li>
+                <ng-container *ngIf="saiHandlerService.selected">
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'smart-ai/editors'">
+                      SmartAI editor
+                    </a>
+                  </li>
+                </ng-container>
+              </ul>
+            </div>
+          </li>
+
+        </ul>
+      </div>
+    </perfect-scrollbar>
+  </div>
+
+  <button class="btn btn-secondary btn-sm sidebar-button" (click)="toggleSidebar()">
+    <i class="fas {{ getSideBarState() ? 'fa-angle-double-right' : 'fa-angle-double-left' }}"></i>
+  </button>
+</nav>
