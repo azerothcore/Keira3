@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { MultiRowEditorComponent } from '@keira-shared/abstract/components/editors/multi-row-editor.component';
+import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
 import { NpcVendorService } from './npc-vendor.service';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { NpcVendor } from '@keira-types/npc-vendor.type';

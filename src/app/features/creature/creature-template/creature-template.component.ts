@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { CreatureTemplateService } from './creature-template.service';
 import { CreatureTemplate } from '@keira-types/creature-template.type';
-import { SingleRowEditorComponent } from '@keira-shared/abstract/components/editors/single-row-editor.component';
+import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { UNIT_FLAGS_2 } from '@keira-constants/flags/unit-flags2';
 import { INHABIT_TYPE } from '@keira-constants/flags/inhabit-type';

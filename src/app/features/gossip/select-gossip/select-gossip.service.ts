@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { SelectService } from '@keira-shared/abstract/service/select/select.service';
+import { SelectService } from '@keira-abstract/service/select/select.service';
 import {
   GOSSIP_MENU_ID,
   GOSSIP_MENU_SEARCH_FIELDS,

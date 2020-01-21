@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { SingleRowEditorComponent } from '@keira-shared/abstract/components/editors/single-row-editor.component';
+import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 import {
   CONDITION_SOURCE_TYPES,

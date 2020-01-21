@@ -1,6 +1,6 @@
 import { Component, } from '@angular/core';
 
-import { SelectComponent } from '@keira-shared/abstract/components/editors/select.component';
+import { SelectComponent } from '@keira-abstract/components/editors/select.component';
 import {
   CREATURE_TEMPLATE_CUSTOM_STARTING_ID,
   CREATURE_TEMPLATE_ID,

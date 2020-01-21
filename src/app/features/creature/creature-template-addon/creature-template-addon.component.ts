@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { SingleRowEditorComponent } from '@keira-shared/abstract/components/editors/single-row-editor.component';
+import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateAddon } from '@keira-types/creature-template-addon.type';
 import { CreatureTemplateAddonService } from './creature-template-addon.service';

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { SelectService } from '@keira-shared/abstract/service/select/select.service';
+import { SelectService } from '@keira-abstract/service/select/select.service';
 import {
   GAMEOBJECT_TEMPLATE_ID,
   GAMEOBJECT_TEMPLATE_NAME, GAMEOBJECT_TEMPLATE_SEARCH_FIELDS,

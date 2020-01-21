@@ -3,7 +3,7 @@ import { ToastrService } from 'ngx-toastr';
 
 import { CreatureHandlerService } from '../creature-handler.service';
 import { QueryService } from '@keira-shared/services/query.service';
-import { SingleRowEditorService } from '@keira-shared/abstract/service/editors/single-row-editor.service';
+import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
 import {
   CREATURE_TEMPLATE_ADDON_ID, CREATURE_TEMPLATE_ADDON_TABLE,
   CreatureTemplateAddon

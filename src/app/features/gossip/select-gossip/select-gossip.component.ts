@@ -1,6 +1,6 @@
 import { Component, } from '@angular/core';
 
-import { SelectComponent } from '@keira-shared/abstract/components/editors/select.component';
+import { SelectComponent } from '@keira-abstract/components/editors/select.component';
 import {
   GOSSIP_MENU_CUSTOM_STARTING_ID,
   GOSSIP_MENU_ID,

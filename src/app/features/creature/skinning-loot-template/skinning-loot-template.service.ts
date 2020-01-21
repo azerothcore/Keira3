@@ -7,7 +7,7 @@ import {
   SKINNING_LOOT_TEMPLATE_TABLE,
   SkinningLootTemplate
 } from '@keira-types/skinning-loot-template.type';
-import { LootEditorService } from '@keira-shared/abstract/service/editors/loot-editor.service';
+import { LootEditorService } from '@keira-abstract/service/editors/loot-editor.service';
 import {
     CreatureLootTemplate
 } from '@keira-types/creature-loot-template.type';

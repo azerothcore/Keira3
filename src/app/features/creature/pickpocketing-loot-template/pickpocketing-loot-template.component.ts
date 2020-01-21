@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { PickpocketingLootTemplate } from '@keira-types/pickpocketing-loot-template.type';
 import { PickpocketingLootTemplateService } from './pickpocketing-loot-template.service';
-import { LootTemplateComponent } from '@keira-shared/abstract/components/editors/loot-template/loot-template.component';
+import { LootTemplateComponent } from '@keira-abstract/components/editors/loot-template/loot-template.component';
 
 @Component({
   selector: 'app-pickpocketing-loot-template',

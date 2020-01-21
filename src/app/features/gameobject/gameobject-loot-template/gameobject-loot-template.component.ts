@@ -4,7 +4,7 @@ import { MysqlError } from 'mysql';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectLootTemplate } from '@keira-types/gameobject-loot-template.type';
 import { GameobjectLootTemplateService } from '../gameobject-loot-template.service';
-import { LootTemplateComponent } from '@keira-shared/abstract/components/editors/loot-template/loot-template.component';
+import { LootTemplateComponent } from '@keira-abstract/components/editors/loot-template/loot-template.component';
 
 @Component({
   selector: 'app-gameobject-loot-template',

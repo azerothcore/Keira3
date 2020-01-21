@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { MultiRowEditorComponent } from '@keira-shared/abstract/components/editors/multi-row-editor.component';
+import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
 import { GossipMenuOption } from '@keira-types/gossip-menu-option.type';
 import { GossipMenuOptionService } from '../gossip-menu-option.service';
 import { GossipHandlerService } from '../gossip-handler.service';

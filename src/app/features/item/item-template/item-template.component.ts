@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { SingleRowEditorComponent } from '@keira-shared/abstract/components/editors/single-row-editor.component';
+import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
 import { ItemTemplate } from '@keira-types/item-template.type';
 import { ItemTemplateService } from '../item-template.service';
 import { ItemHandlerService } from '../item-handler.service';

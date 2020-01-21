@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { MultiRowEditorComponent } from '@keira-shared/abstract/components/editors/multi-row-editor.component';
+import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureSpawnAddon } from '@keira-types/creature-spawn-addon.type';
 import { CreatureSpawnAddonService } from './creature-spawn-addon.service';

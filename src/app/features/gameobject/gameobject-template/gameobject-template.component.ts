@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { SingleRowEditorComponent } from '@keira-shared/abstract/components/editors/single-row-editor.component';
+import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
 import { GameobjectTemplate } from '@keira-types/gameobject-template.type';
 import { GameobjectTemplateService } from '../gameobject-template.service';
 import { GameobjectHandlerService } from '../gameobject-handler.service';

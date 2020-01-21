@@ -7,7 +7,7 @@ import {
   CREATURE_LOOT_TEMPLATE_TABLE,
   CreatureLootTemplate,
 } from '@keira-types/creature-loot-template.type';
-import { LootEditorService } from '@keira-shared/abstract/service/editors/loot-editor.service';
+import { LootEditorService } from '@keira-abstract/service/editors/loot-editor.service';
 import {
   CREATURE_TEMPLATE_ID, CREATURE_TEMPLATE_LOOT_ID,
   CREATURE_TEMPLATE_TABLE

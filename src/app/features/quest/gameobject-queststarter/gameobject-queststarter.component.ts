@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { MultiRowEditorComponent } from '@keira-shared/abstract/components/editors/multi-row-editor.component';
+import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
 import { QuestHandlerService } from '../quest-handler.service';
 import { GameobjectQueststarterService } from '../gameobject-queststarter.service';
 import { GameobjectQueststarter } from '@keira-types/gameobject-queststarter.type';
