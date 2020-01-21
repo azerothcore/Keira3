@@ -8,8 +8,8 @@ import {
   GAMEOBJECT_SPAWN_ID_2,
   GAMEOBJECT_SPAWN_TABLE
 } from '@keira-types/gameobject-spawn.type';
-import { GameobjectHandlerService } from './gameobject-handler.service';
-import { QueryService } from '../../shared/services/query.service';
+import { GameobjectHandlerService } from '../gameobject-handler.service';
+import { QueryService } from '@keira-shared/services/query.service';
 
 @Injectable({
   providedIn: 'root'

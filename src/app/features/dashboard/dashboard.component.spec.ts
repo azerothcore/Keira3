@@ -3,7 +3,7 @@ import { anyString, instance, when } from 'ts-mockito';
 import { of, throwError } from 'rxjs';
 
 import { DashboardComponent } from './dashboard.component';
-import { QueryService } from '../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 import { MockedQueryService } from '@keira-testing/mocks';
 import { VersionDbRow, VersionRow } from '@keira-types/general';
 import { PageObject } from '@keira-testing/page-object';

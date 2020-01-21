@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
-import { toastrConfig } from '../../../config/toastr.config';
+import { toastrConfig } from '@keira-config/toastr.config';
 
 import { CreatureEquipTemplateComponent } from './creature-equip-template.component';
 import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';

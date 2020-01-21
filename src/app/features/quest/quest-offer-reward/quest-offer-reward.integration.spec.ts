@@ -7,7 +7,6 @@ import { QueryService } from '@keira-shared/services/query.service';
 import { QuestOfferRewardComponent } from './quest-offer-reward.component';
 import { QuestOfferRewardModule } from './quest-offer-reward.module';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
-import { CreatureHandlerService } from '../../creature/creature-handler.service';
 import { QuestOfferReward } from '@keira-types/quest-offer-reward.type';
 import { QuestHandlerService } from '../quest-handler.service';
 
@@ -18,7 +17,7 @@ describe('QuestOfferReward integration tests', () => {
   let fixture: ComponentFixture<QuestOfferRewardComponent>;
   let queryService: QueryService;
   let querySpy: Spy;
-  let handlerService: CreatureHandlerService;
+  let handlerService: QuestHandlerService;
   let page: QuestOfferRewardPage;
 
   const id = 1234;

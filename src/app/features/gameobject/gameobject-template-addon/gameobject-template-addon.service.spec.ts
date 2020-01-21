@@ -3,11 +3,12 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { instance } from 'ts-mockito';
 import { ToastrService } from 'ngx-toastr';
 
-import { QueryService } from '../../shared/services/query.service';
+import { GameobjectTemplateAddonService } from './gameobject-template-addon.service';
+import { QueryService } from '@keira-shared/services/query.service';
 import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
-import { GameobjectQuestitemService } from './gameobject-questitem.service';
 
-describe('QuestRequestItemsService', () => {
+describe('GameobjectTemplateAddonService', () => {
+
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       RouterTestingModule,
@@ -19,7 +20,7 @@ describe('QuestRequestItemsService', () => {
   }));
 
   it('should be created', () => {
-    const service: GameobjectQuestitemService = TestBed.get(GameobjectQuestitemService);
+    const service: GameobjectTemplateAddonService = TestBed.get(GameobjectTemplateAddonService);
     expect(service).toBeTruthy();
   });
 });

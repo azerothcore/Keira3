@@ -4,7 +4,7 @@ import { instance } from 'ts-mockito';
 import { ToastrService } from 'ngx-toastr';
 
 import { GameobjectTemplateService } from './gameobject-template.service';
-import { QueryService } from '../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { GO_DATA_FIELDS } from '@keira-constants/gameobject-types';
 

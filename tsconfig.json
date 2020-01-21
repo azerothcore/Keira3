@@ -20,6 +20,7 @@
     ],
     "baseUrl": "src",
     "paths": {
+      "@keira-config/*": [ "app/config/*" ],
       "@keira-shared/*": [ "app/shared/*" ],
       "@keira-abstract/*": [ "app/shared/abstract/*" ],
       "@keira-constants/*": [ "app/shared/constants/*" ],

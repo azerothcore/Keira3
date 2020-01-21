@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TooltipModule } from 'ngx-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
-import { toastrConfig } from '../../../config/toastr.config';
+import { toastrConfig } from '@keira-config/toastr.config';
 
 import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
 import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';

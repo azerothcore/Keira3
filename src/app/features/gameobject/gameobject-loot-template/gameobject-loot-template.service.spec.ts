@@ -4,7 +4,7 @@ import { instance } from 'ts-mockito';
 import { ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
 
-import { QueryService } from '../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { MysqlResult } from '@keira-types/general';
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';

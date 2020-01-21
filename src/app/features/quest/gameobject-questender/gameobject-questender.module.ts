@@ -8,7 +8,7 @@ import { QueryOutputModule } from '@keira-shared/modules/query-output/query-outp
 import { GameobjectQuestenderComponent } from './gameobject-questender.component';
 import { TooltipModule } from 'ngx-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
-import { toastrConfig } from '../../../config/toastr.config';
+import { toastrConfig } from '@keira-config/toastr.config';
 import { GameobjectSelectorModule } from '@keira-shared/modules/selectors/gameobject-selector/gameobject-selector.module';
 
 @NgModule({
