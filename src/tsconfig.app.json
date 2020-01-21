@@ -8,6 +8,6 @@
   },
   "exclude": [
     "**/*.spec.ts",
-    "app/test-utils/**/*"
+    "app/shared/testing/**/*"
   ]
 }
