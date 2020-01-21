@@ -5,7 +5,7 @@ import { MultiRowEditorComponent } from '../../abstract/components/editors/multi
 import {
   SmartScripts
 } from '../../types/smart-scripts.type';
-import { SaiEditorService } from '../../../features/smart-scripts/sai-editor.service';
+import { SaiEditorService } from './sai-editor.service';
 import {
   SAI_EVENT_PARAM1_NAMES,
   SAI_EVENT_PARAM1_TOOLTIPS, SAI_EVENT_PARAM2_NAMES,

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
-import { SaiEditorService } from '../smart-scripts/sai-editor.service';
+import { SaiEditorService } from '@keira-shared/modules/sai-editor/sai-editor.service';
 import { QueryService } from '@keira-shared/services/query.service';
 import { SaiGameobjectHandlerService } from './sai-gameobject-handler.service';
 

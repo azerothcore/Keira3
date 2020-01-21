@@ -6,7 +6,7 @@ import { ClipboardService } from 'ngx-clipboard';
 
 import { QueryOutputComponent } from './query-output.component';
 import { MockType } from '../../testing/mocks';
-import { highlightOptions } from '../../../config/highlight.config';
+import { highlightOptions } from '@keira-config/highlight.config';
 import { HighlightjsWrapperComponent } from './hightlightjs-wrapper/highlightjs-wrapper.component';
 import { QueryErrorComponent } from './query-error/query-error.component';
 import { EditorService } from '../../abstract/service/editors/editor.service';

@@ -5,7 +5,7 @@ import { UiSwitchModule } from 'ngx-ui-switch';
 
 import { FlagsSelectorModalComponent } from './flags-selector-modal.component';
 import { FlagsSelectorBtnComponent } from './flags-selector-btn.component';
-import { uiSwitchConfig } from '../../../../config/ui-switch.config';
+import { uiSwitchConfig } from '@keira-config/ui-switch.config';
 
 @NgModule({
   entryComponents: [

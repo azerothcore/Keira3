@@ -7,7 +7,6 @@ import { QueryService } from '@keira-shared/services/query.service';
 import { QuestRequestItemsComponent } from './quest-request-items.component';
 import { QuestRequestItemsModule } from './quest-request-items.module';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
-import { CreatureHandlerService } from '../../creature/creature-handler.service';
 import { QuestRequestItems } from '@keira-types/quest-request-items.type';
 import { QuestHandlerService } from '../quest-handler.service';
 
@@ -18,7 +17,7 @@ describe('QuestRequestItems integration tests', () => {
   let fixture: ComponentFixture<QuestRequestItemsComponent>;
   let queryService: QueryService;
   let querySpy: Spy;
-  let handlerService: CreatureHandlerService;
+  let handlerService: QuestHandlerService;
   let page: QuestRequestItemsPage;
 
   const id = 1234;

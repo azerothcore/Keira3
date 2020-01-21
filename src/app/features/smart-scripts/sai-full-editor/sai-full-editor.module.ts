@@ -4,10 +4,10 @@ import { HighlightModule } from 'ngx-highlightjs';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
 import { QueryOutputModule } from '@keira-shared/modules/query-output/query-output.module';
-import { highlightOptions } from '../../../config/highlight.config';
+import { highlightOptions } from '@keira-config/highlight.config';
 import { TooltipModule } from 'ngx-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
-import { toastrConfig } from '../../../config/toastr.config';
+import { toastrConfig } from '@keira-config/toastr.config';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { SaiEditorModule } from '@keira-shared/modules/sai-editor/sai-editor.module';
