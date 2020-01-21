@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { FlagsService } from './flags.service';
-import { Flag } from '../../../types/general';
+import { Flag } from '@keira-types/general';
 
 describe('FlagsService', () => {
   let service: FlagsService;

@@ -7,7 +7,7 @@ import {
   ITEM_TEMPLATE_NAME,
   ITEM_TEMPLATE_TABLE,
   ItemTemplate
-} from '../../shared/types/item-template.type';
+} from '@keira-types/item-template.type';
 import { QueryService } from '../../shared/services/query.service';
 import { ItemHandlerService } from './item-handler.service';
 

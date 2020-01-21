@@ -8,7 +8,7 @@ import {
   GAMEOBJECT_QUESTSTARTER_ID, GAMEOBJECT_QUESTSTARTER_ID_2,
   GAMEOBJECT_QUESTSTARTER_TABLE,
   GameobjectQueststarter
-} from '../../shared/types/gameobject-queststarter.type';
+} from '@keira-types/gameobject-queststarter.type';
 
 @Injectable({
   providedIn: 'root'

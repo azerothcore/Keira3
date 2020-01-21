@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { HandlerService } from '../../shared/abstract/service/handlers/handler.service';
-import { GossipMenu } from '../../shared/types/gossip-menu.type';
+import { GossipMenu } from '@keira-types/gossip-menu.type';
 
 @Injectable({
   providedIn: 'root'

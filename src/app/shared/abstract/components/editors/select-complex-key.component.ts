@@ -1,8 +1,8 @@
 import { SearchService } from '../../../modules/search/search.service';
 import { ComplexKeyHandlerService } from '../../service/handlers/complex-key.handler.service';
-import { TableRow } from '../../../types/general';
+import { TableRow } from '@keira-types/general';
 import { DTCFG } from '../../../../config/datatable.config';
-import { WIKI_BASE_URL } from '../../../constants/general';
+import { WIKI_BASE_URL } from '@keira-constants/general';
 
 export abstract class SelectComplexKeyComponent<T extends TableRow> {
   public readonly DTCFG = DTCFG;

@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
-import { SingleRowEditorService } from '../../../shared/abstract/service/editors/single-row-editor.service';
+import { SingleRowEditorService } from '@keira-shared/abstract/service/editors/single-row-editor.service';
 import { CreatureHandlerService } from '../creature-handler.service';
-import { QueryService } from '../../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 import {
   CREATURE_EQUIP_TEMPLATE_ID, CREATURE_EQUIP_TEMPLATE_TABLE,
   CreatureEquipTemplate
-} from '../../../shared/types/creature-equip-template.type';
+} from '@keira-types/creature-equip-template.type';
 
 @Injectable({
   providedIn: 'root'

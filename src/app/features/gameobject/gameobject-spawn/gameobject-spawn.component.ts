@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 
-import { MultiRowEditorComponent } from '../../../shared/abstract/components/editors/multi-row-editor.component';
+import { MultiRowEditorComponent } from '@keira-shared/abstract/components/editors/multi-row-editor.component';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
-import { GameobjectSpawn } from '../../../shared/types/gameobject-spawn.type';
+import { GameobjectSpawn } from '@keira-types/gameobject-spawn.type';
 import { GameobjectSpawnService } from '../gameobject-spawn.service';
-import { SPAWN_MASK } from '../../../shared/constants/flags/spawn-mask';
-import { PHASE_MASK } from '../../../shared/constants/flags/phase-mask';
+import { SPAWN_MASK } from '@keira-constants/flags/spawn-mask';
+import { PHASE_MASK } from '@keira-constants/flags/phase-mask';
 
 @Component({
   selector: 'app-gameobject-spawn',

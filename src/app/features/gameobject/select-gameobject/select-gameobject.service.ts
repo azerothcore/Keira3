@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 
-import { SelectService } from '../../../shared/abstract/service/select/select.service';
+import { SelectService } from '@keira-shared/abstract/service/select/select.service';
 import {
   GAMEOBJECT_TEMPLATE_ID,
   GAMEOBJECT_TEMPLATE_NAME, GAMEOBJECT_TEMPLATE_SEARCH_FIELDS,
   GAMEOBJECT_TEMPLATE_TABLE,
   GameobjectTemplate
-} from '../../../shared/types/gameobject-template.type';
-import { QueryService } from '../../../shared/services/query.service';
+} from '@keira-types/gameobject-template.type';
+import { QueryService } from '@keira-shared/services/query.service';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 
 @Injectable({

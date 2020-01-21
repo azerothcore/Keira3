@@ -8,7 +8,7 @@ import {
   QUEST_REQUEST_ITEMS_ID,
   QUEST_REQUEST_ITEMS_TABLE,
   QuestRequestItems
-} from '../../shared/types/quest-request-items.type';
+} from '@keira-types/quest-request-items.type';
 
 @Injectable({
   providedIn: 'root'

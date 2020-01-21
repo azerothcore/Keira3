@@ -1,15 +1,15 @@
 import { Component, } from '@angular/core';
 
-import { SelectComponent } from '../../../shared/abstract/components/editors/select.component';
+import { SelectComponent } from '@keira-shared/abstract/components/editors/select.component';
 import {
   GOSSIP_MENU_CUSTOM_STARTING_ID,
   GOSSIP_MENU_ID,
   GOSSIP_MENU_TABLE,
   GossipMenu
-} from '../../../shared/types/gossip-menu.type';
+} from '@keira-types/gossip-menu.type';
 import { SelectGossipService } from './select-gossip.service';
 import { GossipHandlerService } from '../gossip-handler.service';
-import { QueryService } from '../../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 
 @Component({
   selector: 'app-select-gossip',

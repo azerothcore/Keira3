@@ -5,10 +5,10 @@ import Spy = jasmine.Spy;
 
 import { PickpocketingLootTemplateComponent } from './pickpocketing-loot-template.component';
 import { PickpocketingLootTemplateModule } from './pickpocketing-loot-template.module';
-import { QueryService } from '../../../shared/services/query.service';
-import { PickpocketingLootTemplate } from '../../../shared/types/pickpocketing-loot-template.type';
+import { QueryService } from '@keira-shared/services/query.service';
+import { PickpocketingLootTemplate } from '@keira-types/pickpocketing-loot-template.type';
 import { CreatureHandlerService } from '../creature-handler.service';
-import { MultiRowEditorPageObject } from '../../../shared/testing/multi-row-editor-page-object';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { PickpocketingLootTemplateService } from './pickpocketing-loot-template.service';
 
 class PickpocketingLootTemplatePage extends MultiRowEditorPageObject<PickpocketingLootTemplateComponent> {}

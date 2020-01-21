@@ -5,9 +5,9 @@ import Spy = jasmine.Spy;
 
 import { GameobjectTemplateAddonComponent } from './gameobject-template-addon.component';
 import { GameobjectTemplateAddonModule } from './gameobject-template-addon.module';
-import { QueryService } from '../../../shared/services/query.service';
-import { EditorPageObject } from '../../../shared/testing/editor-page-object';
-import { GameobjectTemplateAddon } from '../../../shared/types/gameobject-template-addon.type';
+import { QueryService } from '@keira-shared/services/query.service';
+import { EditorPageObject } from '@keira-testing/editor-page-object';
+import { GameobjectTemplateAddon } from '@keira-types/gameobject-template-addon.type';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 
 class GameobjectTemplateAddonPage extends EditorPageObject<GameobjectTemplateAddonComponent> {}

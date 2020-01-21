@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 
-import { ModalConfirmComponent } from '../../../../shared/modules/modal-confirm/modal-confirm.component';
+import { ModalConfirmComponent } from '@keira-shared/modules/modal-confirm/modal-confirm.component';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
-import { LocationService } from '../../../../shared/services/location.service';
-import { SubscriptionHandler } from '../../../../shared/utils/subscription-handler/subscription-handler';
+import { LocationService } from '@keira-shared/services/location.service';
+import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
 
 @Component({
   selector: 'app-logout-btn',

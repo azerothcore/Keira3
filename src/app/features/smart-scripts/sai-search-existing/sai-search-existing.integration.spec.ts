@@ -4,12 +4,12 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { QueryService } from '../../../shared/services/query.service';
-import { PageObject } from '../../../shared/testing/page-object';
+import { QueryService } from '@keira-shared/services/query.service';
+import { PageObject } from '@keira-testing/page-object';
 import { SaiSearchExistingComponent } from './sai-search-existing.component';
-import { SaiSearchService } from '../../../shared/modules/search/sai-search.service';
+import { SaiSearchService } from '@keira-shared/modules/search/sai-search.service';
 import { SaiSearchExistingModule } from './sai-search-existing.module';
-import { SmartScripts } from '../../../shared/types/smart-scripts.type';
+import { SmartScripts } from '@keira-types/smart-scripts.type';
 
 class SaiSearchExistingComponentPage extends PageObject<SaiSearchExistingComponent> {
   get queryWrapper() { return this.query<HTMLElement>('code.hljs'); }

@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
-import { MultiRowEditorService } from '../../../shared/abstract/service/editors/multi-row-editor.service';
+import { MultiRowEditorService } from '@keira-shared/abstract/service/editors/multi-row-editor.service';
 import { CreatureHandlerService } from '../creature-handler.service';
-import { QueryService } from '../../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 import {
   CREATURE_QUESTITEM_ID,
   CREATURE_QUESTITEM_ID_2,
   CREATURE_QUESTITEM_TABLE,
   CreatureQuestitem,
-} from '../../../shared/types/creature-questitem.type';
+} from '@keira-types/creature-questitem.type';
 
 @Injectable({
   providedIn: 'root'

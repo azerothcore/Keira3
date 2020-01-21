@@ -4,9 +4,9 @@ import { of, throwError } from 'rxjs';
 
 import { DashboardComponent } from './dashboard.component';
 import { QueryService } from '../../shared/services/query.service';
-import { MockedQueryService } from '../../shared/testing/mocks';
-import { VersionDbRow, VersionRow } from '../../shared/types/general';
-import { PageObject } from '../../shared/testing/page-object';
+import { MockedQueryService } from '@keira-testing/mocks';
+import { VersionDbRow, VersionRow } from '@keira-types/general';
+import { PageObject } from '@keira-testing/page-object';
 import { DashboardModule } from './dashboard.module';
 
 class DashboardComponentPage extends PageObject<DashboardComponent> {

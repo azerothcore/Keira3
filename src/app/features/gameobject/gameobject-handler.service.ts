@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { HandlerService } from '../../shared/abstract/service/handlers/handler.service';
-import { GameobjectTemplate } from '../../shared/types/gameobject-template.type';
+import { GameobjectTemplate } from '@keira-types/gameobject-template.type';
 import { SaiGameobjectHandlerService } from './sai-gameobject-handler.service';
 
 @Injectable({

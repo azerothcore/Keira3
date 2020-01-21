@@ -9,7 +9,7 @@ import {
   GOSSIP_MENU_OPTION_ID_2,
   GOSSIP_MENU_OPTION_TABLE,
   GossipMenuOption,
-} from '../../shared/types/gossip-menu-option.type';
+} from '@keira-types/gossip-menu-option.type';
 
 @Injectable({
   providedIn: 'root'

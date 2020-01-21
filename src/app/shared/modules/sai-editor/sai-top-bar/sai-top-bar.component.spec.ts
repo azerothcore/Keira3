@@ -5,8 +5,8 @@ import Spy = jasmine.Spy;
 
 import { SaiTopBarComponent } from './sai-top-bar.component';
 import { SaiHandlerService } from '../sai-handler.service';
-import { PageObject } from '../../../testing/page-object';
-import { SAI_TYPES } from '../../../types/smart-scripts.type';
+import { PageObject } from '@keira-testing/page-object';
+import { SAI_TYPES } from '@keira-types/smart-scripts.type';
 import { QueryService } from '../../../services/query.service';
 import { Component, ViewChild } from '@angular/core';
 

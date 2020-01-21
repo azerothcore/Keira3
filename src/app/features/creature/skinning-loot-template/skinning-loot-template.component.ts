@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 
 import { CreatureHandlerService } from '../creature-handler.service';
-import { SkinningLootTemplate } from '../../../shared/types/skinning-loot-template.type';
+import { SkinningLootTemplate } from '@keira-types/skinning-loot-template.type';
 import { SkinningLootTemplateService } from './skinning-loot-template.service';
-import { LootTemplateComponent } from '../../../shared/abstract/components/editors/loot-template/loot-template.component';
+import { LootTemplateComponent } from '@keira-shared/abstract/components/editors/loot-template/loot-template.component';
 
 @Component({
   selector: 'app-skinning-loot-template',

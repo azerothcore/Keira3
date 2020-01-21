@@ -4,12 +4,12 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { QueryService } from '../../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 import { SelectItemComponent } from './select-item.component';
 import { SelectItemService } from './select-item.service';
 import { SelectItemModule } from './select-item.module';
-import { ItemTemplate } from '../../../shared/types/item-template.type';
-import { SelectPageObject } from '../../../shared/testing/select-page-object';
+import { ItemTemplate } from '@keira-types/item-template.type';
+import { SelectPageObject } from '@keira-testing/select-page-object';
 
 class SelectItemComponentPage extends SelectPageObject<SelectItemComponent> {
   ID_FIELD = 'entry';

@@ -13,8 +13,8 @@ import { ItemSelectorBtnComponent } from '../item-selector/item-selector-btn.com
 import { ItemSelectorModalComponent } from '../item-selector/item-selector-modal.component';
 import { highlightOptions } from '../../../../config/highlight.config';
 import { MysqlService } from '../../../services/mysql.service';
-import { MockedMysqlService } from '../../../testing/mocks';
-import { closeModalsAfterEach } from '../../../testing/test-helpers';
+import { MockedMysqlService } from '@keira-testing/mocks';
+import { closeModalsAfterEach } from '@keira-testing/test-helpers';
 
 @NgModule({
   declarations: [ ItemSelectorModalComponent ],

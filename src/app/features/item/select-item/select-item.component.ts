@@ -1,15 +1,15 @@
 import { Component, } from '@angular/core';
 
-import { SelectComponent } from '../../../shared/abstract/components/editors/select.component';
+import { SelectComponent } from '@keira-shared/abstract/components/editors/select.component';
 import {
   ITEM_TEMPLATE_CUSTOM_STARTING_ID,
   ITEM_TEMPLATE_ID,
   ITEM_TEMPLATE_TABLE,
   ItemTemplate
-} from '../../../shared/types/item-template.type';
+} from '@keira-types/item-template.type';
 import { SelectItemService } from './select-item.service';
 import { ItemHandlerService } from '../item-handler.service';
-import { QueryService } from '../../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 
 @Component({
   selector: 'app-select-item',

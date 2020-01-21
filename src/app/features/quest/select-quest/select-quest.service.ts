@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 
-import { SelectService } from '../../../shared/abstract/service/select/select.service';
+import { SelectService } from '@keira-shared/abstract/service/select/select.service';
 import {
   QUEST_TEMPLATE_ID,
   QUEST_TEMPLATE_NAME, QUEST_TEMPLATE_SEARCH_FIELDS,
   QUEST_TEMPLATE_TABLE,
   QuestTemplate
-} from '../../../shared/types/quest-template.type';
-import { QueryService } from '../../../shared/services/query.service';
+} from '@keira-types/quest-template.type';
+import { QueryService } from '@keira-shared/services/query.service';
 import { QuestHandlerService } from '../quest-handler.service';
 
 @Injectable({

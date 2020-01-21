@@ -5,10 +5,10 @@ import Spy = jasmine.Spy;
 
 import { MillingLootTemplateComponent } from './milling-loot-template.component';
 import { MillingLootTemplateModule } from './milling-loot-template.module';
-import { QueryService } from '../../../shared/services/query.service';
-import { MillingLootTemplate } from '../../../shared/types/milling-loot-template.type';
+import { QueryService } from '@keira-shared/services/query.service';
+import { MillingLootTemplate } from '@keira-types/milling-loot-template.type';
 import { ItemHandlerService } from '../item-handler.service';
-import { MultiRowEditorPageObject } from '../../../shared/testing/multi-row-editor-page-object';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 
 class MillingLootTemplatePage extends MultiRowEditorPageObject<MillingLootTemplateComponent> {}
 

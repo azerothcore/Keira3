@@ -3,8 +3,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { instance } from 'ts-mockito';
 
 import { SelectItemService } from './select-item.service';
-import { QueryService } from '../../../shared/services/query.service';
-import { MockedQueryService } from '../../../shared/testing/mocks';
+import { QueryService } from '@keira-shared/services/query.service';
+import { MockedQueryService } from '@keira-testing/mocks';
 
 describe('ItemSelectService', () => {
   beforeEach(() => TestBed.configureTestingModule({

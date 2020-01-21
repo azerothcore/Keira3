@@ -6,10 +6,10 @@ import Spy = jasmine.Spy;
 
 
 import { QueryService } from '../../../services/query.service';
-import { MockedQueryService, MockedToastrService } from '../../../testing/mocks';
+import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { MultiRowEditorService } from './multi-row-editor.service';
-import { MOCK_ID, MOCK_ID_2, MOCK_NAME, MockEntity, MockMultiRowEditorService } from '../../../testing/mock-services';
-import { MysqlResult } from '../../../types/general';
+import { MOCK_ID, MOCK_ID_2, MOCK_NAME, MockEntity, MockMultiRowEditorService } from '@keira-testing/mock-services';
+import { MysqlResult } from '@keira-types/general';
 
 
 describe('MultiRowEditorService', () => {

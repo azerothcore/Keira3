@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
-import { MysqlResult, TableRow, Class } from '../../../types/general';
+import { MysqlResult, TableRow, Class } from '@keira-types/general';
 import { SingleRowEditorService } from './single-row-editor.service';
 import { HandlerService } from '../handlers/handler.service';
 import { QueryService } from '../../../services/query.service';

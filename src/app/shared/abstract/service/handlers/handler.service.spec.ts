@@ -3,7 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { CreatureHandlerService } from '../../../../features/creature/creature-handler.service';
 import { HandlerService } from './handler.service';
-import { CreatureTemplate } from '../../../types/creature-template.type';
+import { CreatureTemplate } from '@keira-types/creature-template.type';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
 
 describe('HandlerService', () => {

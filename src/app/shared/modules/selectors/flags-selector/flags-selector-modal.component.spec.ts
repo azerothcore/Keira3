@@ -4,7 +4,7 @@ import { BsModalRef } from 'ngx-bootstrap';
 import { FlagsSelectorModalComponent } from './flags-selector-modal.component';
 import { FlagsService } from './flags.service';
 import { FlagsSelectorModule } from './flags-selector.module';
-import { Flag } from '../../../types/general';
+import { Flag } from '@keira-types/general';
 
 describe('FlagsSelectorModalComponent', () => {
   let component: FlagsSelectorModalComponent;

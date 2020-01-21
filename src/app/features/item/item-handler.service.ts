@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { HandlerService } from '../../shared/abstract/service/handlers/handler.service';
-import { ItemTemplate } from '../../shared/types/item-template.type';
+import { ItemTemplate } from '@keira-types/item-template.type';
 
 @Injectable({
   providedIn: 'root'

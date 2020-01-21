@@ -4,12 +4,12 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { QueryService } from '../../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 import { SelectCreatureComponent } from './select-creature.component';
 import { SelectCreatureService } from './select-creature.service';
 import { SelectCreatureModule } from './select-creature.module';
-import { CreatureTemplate } from '../../../shared/types/creature-template.type';
-import { SelectPageObject } from '../../../shared/testing/select-page-object';
+import { CreatureTemplate } from '@keira-types/creature-template.type';
+import { SelectPageObject } from '@keira-testing/select-page-object';
 
 class SelectCreatureComponentPage extends SelectPageObject<SelectCreatureComponent> {
   ID_FIELD = 'entry';

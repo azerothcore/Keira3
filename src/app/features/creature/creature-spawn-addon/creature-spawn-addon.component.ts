@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 
-import { MultiRowEditorComponent } from '../../../shared/abstract/components/editors/multi-row-editor.component';
+import { MultiRowEditorComponent } from '@keira-shared/abstract/components/editors/multi-row-editor.component';
 import { CreatureHandlerService } from '../creature-handler.service';
-import { CreatureSpawnAddon } from '../../../shared/types/creature-spawn-addon.type';
+import { CreatureSpawnAddon } from '@keira-types/creature-spawn-addon.type';
 import { CreatureSpawnAddonService } from './creature-spawn-addon.service';
-import { EMOTE } from '../../../shared/constants/options/emote';
-import { CREATURE_ADDON_BYTES_1 } from '../../../shared/constants/options/creature-addon-bytes1';
-import { CREATURE_ADDON_BYTES_2 } from '../../../shared/constants/options/creature-addon-bytes2';
+import { EMOTE } from '@keira-constants/options/emote';
+import { CREATURE_ADDON_BYTES_1 } from '@keira-constants/options/creature-addon-bytes1';
+import { CREATURE_ADDON_BYTES_2 } from '@keira-constants/options/creature-addon-bytes2';
 
 @Component({
   selector: 'app-creature-spawn-addon',

@@ -8,7 +8,7 @@ import {
   GAMEOBJECT_QUESTENDER_ID, GAMEOBJECT_QUESTENDER_ID_2,
   GAMEOBJECT_QUESTENDER_TABLE,
   GameobjectQuestender
-} from '../../shared/types/gameobject-questender.type';
+} from '@keira-types/gameobject-questender.type';
 
 @Injectable({
   providedIn: 'root'

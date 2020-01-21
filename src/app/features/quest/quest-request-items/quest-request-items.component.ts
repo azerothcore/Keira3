@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 
-import { SingleRowEditorComponent } from '../../../shared/abstract/components/editors/single-row-editor.component';
-import { QuestRequestItems } from '../../../shared/types/quest-request-items.type';
+import { SingleRowEditorComponent } from '@keira-shared/abstract/components/editors/single-row-editor.component';
+import { QuestRequestItems } from '@keira-types/quest-request-items.type';
 import { QuestRequestItemsService } from '../quest-request-items.service';
 import { QuestHandlerService } from '../quest-handler.service';
-import { EMOTE } from '../../../shared/constants/options/emote';
+import { EMOTE } from '@keira-constants/options/emote';
 
 @Component({
   selector: 'app-quest-request-items',

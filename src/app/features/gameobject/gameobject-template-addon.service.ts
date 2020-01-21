@@ -6,7 +6,7 @@ import {
   GAMEOBJECT_TEMPLATE_ADDON_ID,
   GAMEOBJECT_TEMPLATE_ADDON_TABLE,
   GameobjectTemplateAddon,
-} from '../../shared/types/gameobject-template-addon.type';
+} from '@keira-types/gameobject-template-addon.type';
 import { QueryService } from '../../shared/services/query.service';
 import { GameobjectHandlerService } from './gameobject-handler.service';
 

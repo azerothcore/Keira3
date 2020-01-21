@@ -5,10 +5,10 @@ import Spy = jasmine.Spy;
 
 import { GameobjectQuestitemComponent } from './gameobject-questitem.component';
 import { GameobjectQuestitemModule } from './gameobject-questitem.module';
-import { QueryService } from '../../../shared/services/query.service';
-import { GameobjectQuestitem } from '../../../shared/types/gameobject-questitem.type';
+import { QueryService } from '@keira-shared/services/query.service';
+import { GameobjectQuestitem } from '@keira-types/gameobject-questitem.type';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
-import { MultiRowEditorPageObject } from '../../../shared/testing/multi-row-editor-page-object';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 
 class GameobjectQuestitemPage extends MultiRowEditorPageObject<GameobjectQuestitemComponent> {}
 

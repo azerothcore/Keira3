@@ -3,8 +3,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { instance } from 'ts-mockito';
 import { ToastrService } from 'ngx-toastr';
 
-import { QueryService } from '../../../shared/services/query.service';
-import { MockedQueryService, MockedToastrService } from '../../../shared/testing/mocks';
+import { QueryService } from '@keira-shared/services/query.service';
+import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { ConditionsService } from './conditions.service';
 
 describe('ConditionsService', () => {

@@ -5,10 +5,10 @@ import Spy = jasmine.Spy;
 
 import { ItemLootTemplateComponent } from './item-loot-template.component';
 import { ItemLootTemplateModule } from './item-loot-template.module';
-import { QueryService } from '../../../shared/services/query.service';
-import { ItemLootTemplate } from '../../../shared/types/item-loot-template.type';
+import { QueryService } from '@keira-shared/services/query.service';
+import { ItemLootTemplate } from '@keira-types/item-loot-template.type';
 import { ItemHandlerService } from '../item-handler.service';
-import { MultiRowEditorPageObject } from '../../../shared/testing/multi-row-editor-page-object';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 
 class ItemLootTemplatePage extends MultiRowEditorPageObject<ItemLootTemplateComponent> {}
 

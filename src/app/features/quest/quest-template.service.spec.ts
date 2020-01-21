@@ -5,7 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 
 import { QuestTemplateService } from './quest-template.service';
 import { QueryService } from '../../shared/services/query.service';
-import { MockedQueryService, MockedToastrService } from '../../shared/testing/mocks';
+import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
 
 describe('QuestTemplateService', () => {
   beforeEach(() => TestBed.configureTestingModule({

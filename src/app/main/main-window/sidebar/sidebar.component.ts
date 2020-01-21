@@ -2,15 +2,15 @@ import { Component } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { SidebarService } from './sidebar.service';
 
-import { MysqlService } from '../../../shared/services/mysql.service';
+import { MysqlService } from '@keira-shared/services/mysql.service';
 import { CreatureHandlerService } from '../../../features/creature/creature-handler.service';
 import { QuestHandlerService } from '../../../features/quest/quest-handler.service';
 import { GameobjectHandlerService } from '../../../features/gameobject/gameobject-handler.service';
 import { ItemHandlerService } from '../../../features/item/item-handler.service';
 import { GossipHandlerService } from '../../../features/gossip/gossip-handler.service';
 import { ConditionsHandlerService } from '../../../features/conditions/conditions-handler.service';
-import { SaiHandlerService } from '../../../shared/modules/sai-editor/sai-handler.service';
-import { LocationService } from '../../../shared/services/location.service';
+import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
+import { LocationService } from '@keira-shared/services/location.service';
 
 @Component({
   selector: 'app-sidebar',

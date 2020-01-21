@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 
-import { MultiRowEditorComponent } from '../../../shared/abstract/components/editors/multi-row-editor.component';
+import { MultiRowEditorComponent } from '@keira-shared/abstract/components/editors/multi-row-editor.component';
 import { CreatureHandlerService } from '../creature-handler.service';
-import { CreatureQuestitem } from '../../../shared/types/creature-questitem.type';
+import { CreatureQuestitem } from '@keira-types/creature-questitem.type';
 import { CreatureQuestitemService } from '../creature-onkill-reputation/creature-questitem.service';
 
 @Component({

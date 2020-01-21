@@ -8,7 +8,7 @@ import {
   QUEST_OFFER_REWARD_ID,
   QUEST_OFFER_REWARD_TABLE,
   QuestOfferReward
-} from '../../shared/types/quest-offer-reward.type';
+} from '@keira-types/quest-offer-reward.type';
 
 @Injectable({
   providedIn: 'root'

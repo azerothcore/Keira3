@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
-import { MultiRowEditorService } from '../../../shared/abstract/service/editors/multi-row-editor.service';
+import { MultiRowEditorService } from '@keira-shared/abstract/service/editors/multi-row-editor.service';
 import { CreatureHandlerService } from '../creature-handler.service';
-import { QueryService } from '../../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 import {
 NPC_VENDOR_ID,
 NPC_VENDOR_ID_2,
 NPC_VENDOR_TABLE,
 NpcVendor
-} from '../../../shared/types/npc-vendor.type';
+} from '@keira-types/npc-vendor.type';
 
 @Injectable({
   providedIn: 'root'

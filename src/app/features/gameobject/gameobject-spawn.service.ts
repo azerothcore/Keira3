@@ -7,7 +7,7 @@ import {
   GAMEOBJECT_SPAWN_ID,
   GAMEOBJECT_SPAWN_ID_2,
   GAMEOBJECT_SPAWN_TABLE
-} from '../../shared/types/gameobject-spawn.type';
+} from '@keira-types/gameobject-spawn.type';
 import { GameobjectHandlerService } from './gameobject-handler.service';
 import { QueryService } from '../../shared/services/query.service';
 

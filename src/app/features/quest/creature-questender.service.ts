@@ -8,7 +8,7 @@ import {
   CREATURE_QUESTENDER_ID, CREATURE_QUESTENDER_ID_2,
   CREATURE_QUESTENDER_TABLE,
   CreatureQuestender
-} from '../../shared/types/creature-questender.type';
+} from '@keira-types/creature-questender.type';
 
 @Injectable({
   providedIn: 'root'

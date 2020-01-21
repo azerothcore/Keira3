@@ -5,10 +5,10 @@ import Spy = jasmine.Spy;
 
 import { SkinningLootTemplateComponent } from './skinning-loot-template.component';
 import { SkinningLootTemplateModule } from './skinning-loot-template.module';
-import { QueryService } from '../../../shared/services/query.service';
-import { SkinningLootTemplate } from '../../../shared/types/skinning-loot-template.type';
+import { QueryService } from '@keira-shared/services/query.service';
+import { SkinningLootTemplate } from '@keira-types/skinning-loot-template.type';
 import { CreatureHandlerService } from '../creature-handler.service';
-import { MultiRowEditorPageObject } from '../../../shared/testing/multi-row-editor-page-object';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { SkinningLootTemplateService } from './skinning-loot-template.service';
 
 class SkinningLootTemplatePage extends MultiRowEditorPageObject<SkinningLootTemplateComponent> {}

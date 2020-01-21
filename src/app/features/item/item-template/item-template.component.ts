@@ -1,29 +1,29 @@
 import { Component } from '@angular/core';
 
-import { SingleRowEditorComponent } from '../../../shared/abstract/components/editors/single-row-editor.component';
-import { ItemTemplate } from '../../../shared/types/item-template.type';
+import { SingleRowEditorComponent } from '@keira-shared/abstract/components/editors/single-row-editor.component';
+import { ItemTemplate } from '@keira-types/item-template.type';
 import { ItemTemplateService } from '../item-template.service';
 import { ItemHandlerService } from '../item-handler.service';
-import { ITEM_CLASS, ITEM_SUBCLASS } from '../../../shared/constants/options/item-class';
-import { ITEM_QUALITY } from '../../../shared/constants/options/item-quality';
-import { ITEM_FLAGS } from '../../../shared/constants/flags/item-flags';
-import { ITEM_FLAGS_EXTRA } from '../../../shared/constants/flags/item-flags-extra';
-import { INVENTORY_TYPE } from '../../../shared/constants/options/inventory-type';
-import { ALLOWABLE_CLASSES } from '../../../shared/constants/flags/allowable-classes';
-import { ALLOWABLE_RACES } from '../../../shared/constants/flags/allowable-races';
-import { FACTION_RANK } from '../../../shared/constants/options/faction-rank';
-import { BAG_FAMILY } from '../../../shared/constants/flags/bag-family';
-import { SOCKET_COLOR } from '../../../shared/constants/flags/socket-color';
-import { ITEM_BONDING } from '../../../shared/constants/options/item-bonding';
-import { ITEM_MATERIAL } from '../../../shared/constants/options/item-material';
-import { ITEM_SHEAT } from '../../../shared/constants/options/item-sheath';
-import { TOTEM_CATEGORY } from '../../../shared/constants/options/totem-category';
-import { FOOD_TYPE } from '../../../shared/constants/options/foot-type';
-import { ITEM_FLAGS_CUSTOM } from '../../../shared/constants/flags/item-flags-custom';
-import { DAMAGE_TYPE } from '../../../shared/constants/options/damage-type';
-import { SOCKET_BONUS } from '../../../shared/constants/options/socket-bonus';
-import { FACTIONS } from '../../../shared/constants/options/faction';
-import { STAT_TYPE } from '../../../shared/constants/options/stat-type';
+import { ITEM_CLASS, ITEM_SUBCLASS } from '@keira-constants/options/item-class';
+import { ITEM_QUALITY } from '@keira-constants/options/item-quality';
+import { ITEM_FLAGS } from '@keira-constants/flags/item-flags';
+import { ITEM_FLAGS_EXTRA } from '@keira-constants/flags/item-flags-extra';
+import { INVENTORY_TYPE } from '@keira-constants/options/inventory-type';
+import { ALLOWABLE_CLASSES } from '@keira-constants/flags/allowable-classes';
+import { ALLOWABLE_RACES } from '@keira-constants/flags/allowable-races';
+import { FACTION_RANK } from '@keira-constants/options/faction-rank';
+import { BAG_FAMILY } from '@keira-constants/flags/bag-family';
+import { SOCKET_COLOR } from '@keira-constants/flags/socket-color';
+import { ITEM_BONDING } from '@keira-constants/options/item-bonding';
+import { ITEM_MATERIAL } from '@keira-constants/options/item-material';
+import { ITEM_SHEAT } from '@keira-constants/options/item-sheath';
+import { TOTEM_CATEGORY } from '@keira-constants/options/totem-category';
+import { FOOD_TYPE } from '@keira-constants/options/foot-type';
+import { ITEM_FLAGS_CUSTOM } from '@keira-constants/flags/item-flags-custom';
+import { DAMAGE_TYPE } from '@keira-constants/options/damage-type';
+import { SOCKET_BONUS } from '@keira-constants/options/socket-bonus';
+import { FACTIONS } from '@keira-constants/options/faction';
+import { STAT_TYPE } from '@keira-constants/options/stat-type';
 
 @Component({
   selector: 'app-item-template',

@@ -8,8 +8,8 @@ import Spy = jasmine.Spy;
 
 
 import { QueryService } from '../../../services/query.service';
-import { MockedQueryService, MockedToastrService } from '../../../testing/mocks';
-import { MockSingleRowEditorService, MockEntity } from '../../../testing/mock-services';
+import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { MockSingleRowEditorService, MockEntity } from '@keira-testing/mock-services';
 import { EditorService } from './editor.service';
 
 describe('EditorService', () => {

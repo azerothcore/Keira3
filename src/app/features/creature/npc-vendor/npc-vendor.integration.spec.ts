@@ -5,10 +5,10 @@ import Spy = jasmine.Spy;
 
 import { NpcVendorComponent } from './npc-vendor.component';
 import { NpcVendorModule } from './npc-vendor.module';
-import { QueryService } from '../../../shared/services/query.service';
-import { NpcVendor } from '../../../shared/types/npc-vendor.type';
+import { QueryService } from '@keira-shared/services/query.service';
+import { NpcVendor } from '@keira-types/npc-vendor.type';
 import { CreatureHandlerService } from '../creature-handler.service';
-import { MultiRowEditorPageObject } from '../../../shared/testing/multi-row-editor-page-object';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 
 class NpcVendorPage extends MultiRowEditorPageObject<NpcVendorComponent> {}
 

@@ -8,7 +8,7 @@ import {
   QUEST_TEMPLATE_ADDON_ID,
   QUEST_TEMPLATE_ADDON_TABLE,
   QuestTemplateAddon
-} from '../../shared/types/quest-template-addon.type';
+} from '@keira-types/quest-template-addon.type';
 
 @Injectable({
   providedIn: 'root'

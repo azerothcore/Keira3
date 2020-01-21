@@ -4,7 +4,7 @@ import { instance, reset } from 'ts-mockito';
 
 import { MainWindowComponent } from './main-window.component';
 import { ElectronService } from '../../shared/services/electron.service';
-import { MockedElectronService, MockedMysqlService } from '../../shared/testing/mocks';
+import { MockedElectronService, MockedMysqlService } from '@keira-testing/mocks';
 import { MysqlService } from '../../shared/services/mysql.service';
 import { MainWindowModule } from './main-window.module';
 

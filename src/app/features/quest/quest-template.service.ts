@@ -7,7 +7,7 @@ import {
   QUEST_TEMPLATE_NAME,
   QUEST_TEMPLATE_TABLE,
   QuestTemplate
-} from '../../shared/types/quest-template.type';
+} from '@keira-types/quest-template.type';
 import { QueryService } from '../../shared/services/query.service';
 import { QuestHandlerService } from './quest-handler.service';
 

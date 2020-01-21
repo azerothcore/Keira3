@@ -5,9 +5,9 @@ import { ToastrService } from 'ngx-toastr';
 
 import { SaiEditorService } from './sai-editor.service';
 import { QueryService } from '../../shared/services/query.service';
-import { MockedQueryService, MockedToastrService } from '../../shared/testing/mocks';
+import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { SaiHandlerService } from '../../shared/modules/sai-editor/sai-handler.service';
-import { SmartScripts } from '../../shared/types/smart-scripts.type';
+import { SmartScripts } from '@keira-types/smart-scripts.type';
 
 describe('SAI Editor Service', () => {
   let service: SaiEditorService;

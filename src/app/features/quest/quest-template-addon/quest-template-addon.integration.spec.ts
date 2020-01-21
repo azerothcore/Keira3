@@ -3,12 +3,12 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { QueryService } from '../../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 import { QuestTemplateAddonComponent } from './quest-template-addon.component';
 import { QuestTemplateAddonModule } from './quest-template-addon.module';
-import { EditorPageObject } from '../../../shared/testing/editor-page-object';
+import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { CreatureHandlerService } from '../../creature/creature-handler.service';
-import { QuestTemplateAddon } from '../../../shared/types/quest-template-addon.type';
+import { QuestTemplateAddon } from '@keira-types/quest-template-addon.type';
 import { QuestHandlerService } from '../quest-handler.service';
 
 class QuestTemplateAddonPage extends EditorPageObject<QuestTemplateAddonComponent> {}

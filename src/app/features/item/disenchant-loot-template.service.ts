@@ -6,9 +6,9 @@ import { QueryService } from '../../shared/services/query.service';
 import {
   DISENCHANT_LOOT_TEMPLATE_TABLE,
   DisenchantLootTemplate,
-} from '../../shared/types/disenchant-loot-template.type';
+} from '@keira-types/disenchant-loot-template.type';
 import { LootEditorService } from '../../shared/abstract/service/editors/loot-editor.service';
-import { DISENCHANT_TEMPLATE_LOOT_ID, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_TABLE } from '../../shared/types/item-template.type';
+import { DISENCHANT_TEMPLATE_LOOT_ID, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_TABLE } from '@keira-types/item-template.type';
 
 @Injectable({
   providedIn: 'root'

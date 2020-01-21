@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
-import { MultiRowEditorService } from '../../../shared/abstract/service/editors/multi-row-editor.service';
-import { CreatureSpawn, CREATURE_SPAWN_ID, CREATURE_SPAWN_ID_2, CREATURE_SPAWN_TABLE } from '../../../shared/types/creature-spawn.type';
+import { MultiRowEditorService } from '@keira-shared/abstract/service/editors/multi-row-editor.service';
+import { CreatureSpawn, CREATURE_SPAWN_ID, CREATURE_SPAWN_ID_2, CREATURE_SPAWN_TABLE } from '@keira-types/creature-spawn.type';
 import { CreatureHandlerService } from '../creature-handler.service';
-import { QueryService } from '../../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 
 @Injectable({
   providedIn: 'root'

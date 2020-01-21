@@ -1,7 +1,7 @@
 import Spy = jasmine.Spy;
 
 import { EditorComponent } from './editor.component';
-import { MockEntity } from '../../../testing/mock-services';
+import { MockEntity } from '@keira-testing/mock-services';
 import { EditorService } from '../../service/editors/editor.service';
 import { HandlerService } from '../../service/handlers/handler.service';
 

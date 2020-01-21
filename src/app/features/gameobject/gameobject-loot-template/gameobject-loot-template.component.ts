@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { MysqlError } from 'mysql';
 
 import { GameobjectHandlerService } from '../gameobject-handler.service';
-import { GameobjectLootTemplate } from '../../../shared/types/gameobject-loot-template.type';
+import { GameobjectLootTemplate } from '@keira-types/gameobject-loot-template.type';
 import { GameobjectLootTemplateService } from '../gameobject-loot-template.service';
-import { LootTemplateComponent } from '../../../shared/abstract/components/editors/loot-template/loot-template.component';
+import { LootTemplateComponent } from '@keira-shared/abstract/components/editors/loot-template/loot-template.component';
 
 @Component({
   selector: 'app-gameobject-loot-template',

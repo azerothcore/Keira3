@@ -9,7 +9,7 @@ import {
   GAMEOBJECT_QUESTITEM_ID_2,
   GAMEOBJECT_QUESTITEM_TABLE,
   GameobjectQuestitem
-} from '../../shared/types/gameobject-questitem.type';
+} from '@keira-types/gameobject-questitem.type';
 
 @Injectable({
   providedIn: 'root'

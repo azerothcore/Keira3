@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 
-import { SingleRowEditorComponent } from '../../../shared/abstract/components/editors/single-row-editor.component';
-import { GameobjectTemplate } from '../../../shared/types/gameobject-template.type';
+import { SingleRowEditorComponent } from '@keira-shared/abstract/components/editors/single-row-editor.component';
+import { GameobjectTemplate } from '@keira-types/gameobject-template.type';
 import { GameobjectTemplateService } from '../gameobject-template.service';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
-import { GAMEOBJECT_TYPE } from '../../../shared/constants/options/gameobject-type';
-import { GAMEOBJECT_ICON } from '../../../shared/constants/options/gameobject-icon';
-import { FieldDefinition } from '../../../shared/types/general';
+import { GAMEOBJECT_TYPE } from '@keira-constants/options/gameobject-type';
+import { GAMEOBJECT_ICON } from '@keira-constants/options/gameobject-icon';
+import { FieldDefinition } from '@keira-types/general';
 
 
 @Component({

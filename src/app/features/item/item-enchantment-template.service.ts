@@ -7,7 +7,7 @@ import {
   ITEM_ENCHANTMENT_TEMPLATE_ID, ITEM_ENCHANTMENT_TEMPLATE_ID_2,
   ITEM_ENCHANTMENT_TEMPLATE_TABLE,
   ItemEnchantmentTemplate
-} from '../../shared/types/item-enchantment-template.type';
+} from '@keira-types/item-enchantment-template.type';
 import { ItemHandlerService } from './item-handler.service';
 
 @Injectable({
