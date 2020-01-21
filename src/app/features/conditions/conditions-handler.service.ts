@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Conditions, CONDITIONS_ID_FIELDS } from '@keira-types/conditions.type';
-import { ComplexKeyHandlerService } from '../../shared/abstract/service/handlers/complex-key.handler.service';
+import { ComplexKeyHandlerService } from '@keira-abstract/service/handlers/complex-key.handler.service';
 
 @Injectable({
   providedIn: 'root'

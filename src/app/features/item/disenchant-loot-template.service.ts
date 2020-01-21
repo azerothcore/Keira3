@@ -7,7 +7,7 @@ import {
   DISENCHANT_LOOT_TEMPLATE_TABLE,
   DisenchantLootTemplate,
 } from '@keira-types/disenchant-loot-template.type';
-import { LootEditorService } from '../../shared/abstract/service/editors/loot-editor.service';
+import { LootEditorService } from '@keira-abstract/service/editors/loot-editor.service';
 import { DISENCHANT_TEMPLATE_LOOT_ID, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_TABLE } from '@keira-types/item-template.type';
 
 @Injectable({

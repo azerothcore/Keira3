@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { HandlerService } from '../../shared/abstract/service/handlers/handler.service';
+import { HandlerService } from '@keira-abstract/service/handlers/handler.service';
 import { ItemTemplate } from '@keira-types/item-template.type';
 
 @Injectable({

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
-import { SingleRowEditorService } from '../../shared/abstract/service/editors/single-row-editor.service';
+import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
 import {
   ITEM_TEMPLATE_ID,
   ITEM_TEMPLATE_NAME,

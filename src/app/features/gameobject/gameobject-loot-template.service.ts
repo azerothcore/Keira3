@@ -7,7 +7,7 @@ import {
   GAMEOBJECT_LOOT_TEMPLATE_TABLE,
   GameobjectLootTemplate
 } from '@keira-types/gameobject-loot-template.type';
-import { LootEditorService } from '../../shared/abstract/service/editors/loot-editor.service';
+import { LootEditorService } from '@keira-abstract/service/editors/loot-editor.service';
 import {
   GAMEOBJECT_TEMPLATE_ID, GAMEOBJECT_TEMPLATE_LOOT_ID, GAMEOBJECT_TEMPLATE_TYPE,
   GAMEOBJECT_TEMPLATE_TABLE

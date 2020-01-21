@@ -21,6 +21,7 @@
     "baseUrl": "src",
     "paths": {
       "@keira-shared/*": [ "app/shared/*" ],
+      "@keira-abstract/*": [ "app/shared/abstract/*" ],
       "@keira-constants/*": [ "app/shared/constants/*" ],
       "@keira-types/*": [ "app/shared/types/*" ],
       "@keira-testing/*": [ "app/shared/testing/*" ]

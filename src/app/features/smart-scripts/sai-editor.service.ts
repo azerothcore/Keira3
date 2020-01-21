@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
-import { MultiRowComplexKeyEditorService } from '../../shared/abstract/service/editors/multi-row-complex-key-editor.service';
+import { MultiRowComplexKeyEditorService } from '@keira-abstract/service/editors/multi-row-complex-key-editor.service';
 import { SAI_ID_2, SAI_ID_FIELDS, SAI_TABLE, SmartScripts } from '@keira-types/smart-scripts.type';
 import { SaiHandlerService } from '../../shared/modules/sai-editor/sai-handler.service';
 import { QueryService } from '../../shared/services/query.service';

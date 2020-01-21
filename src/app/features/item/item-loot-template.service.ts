@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
-import { MultiRowEditorService } from '../../shared/abstract/service/editors/multi-row-editor.service';
+import { MultiRowEditorService } from '@keira-abstract/service/editors/multi-row-editor.service';
 import { QueryService } from '../../shared/services/query.service';
 import { ITEM_LOOT_TEMPLATE_TABLE, ItemLootTemplate } from '@keira-types/item-loot-template.type';
 import { ItemHandlerService } from './item-handler.service';
