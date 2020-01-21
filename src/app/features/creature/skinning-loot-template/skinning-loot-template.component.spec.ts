@@ -10,6 +10,7 @@ import { SkinningLootTemplate } from '@keira-types/skinning-loot-template.type';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { SkinningLootTemplateService } from './skinning-loot-template.service';
+import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 class SkinningLootTemplatePage extends MultiRowEditorPageObject<SkinningLootTemplateComponent> {}
 
@@ -39,6 +40,7 @@ describe('SkinningLootTemplate integration tests', () => {
       ],
       providers: [
         CreatureHandlerService,
+        SaiCreatureHandlerService,
       ],
     })
       .compileComponents();
