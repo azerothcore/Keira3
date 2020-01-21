@@ -10,9 +10,7 @@ import {
 import { QueryService } from '@keira-shared/services/query.service';
 import { ItemHandlerService } from '../item-handler.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class SelectItemService extends SelectService<ItemTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

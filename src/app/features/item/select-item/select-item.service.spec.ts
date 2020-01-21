@@ -5,15 +5,18 @@ import { instance } from 'ts-mockito';
 import { SelectItemService } from './select-item.service';
 import { QueryService } from '@keira-shared/services/query.service';
 import { MockedQueryService } from '@keira-testing/mocks';
+import { ItemHandlerService } from '../item-handler.service';
 
-describe('ItemSelectService', () => {
+describe('SelectItemService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       RouterTestingModule,
     ],
     providers: [
       { provide: QueryService, useValue: instance(MockedQueryService) },
-    ],
+      ItemHandlerService,
+      SelectItemService,
+    ]
   }));
 
   it('should be created', () => {

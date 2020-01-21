@@ -6,6 +6,8 @@ import { ToastrService } from 'ngx-toastr';
 import { GameobjectTemplateAddonService } from './gameobject-template-addon.service';
 import { QueryService } from '@keira-shared/services/query.service';
 import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { GameobjectHandlerService } from '../gameobject-handler.service';
+import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
 describe('GameobjectTemplateAddonService', () => {
 
@@ -16,7 +18,10 @@ describe('GameobjectTemplateAddonService', () => {
     providers: [
       { provide: QueryService, useValue: instance(MockedQueryService) },
       { provide: ToastrService, useValue: instance(MockedToastrService) },
-    ],
+      GameobjectHandlerService,
+      SaiGameobjectHandlerService,
+      GameobjectTemplateAddonService
+    ]
   }));
 
   it('should be created', () => {

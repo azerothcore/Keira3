@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { ItemHandlerService } from '../item-handler.service';
 import { DisenchantLootTemplate } from '@keira-types/disenchant-loot-template.type';
-import { DisenchantLootTemplateService } from '../disenchant-loot-template.service';
+import { DisenchantLootTemplateService } from './disenchant-loot-template.service';
 import { LootTemplateComponent } from '@keira-abstract/components/editors/loot-template/loot-template.component';
 
 @Component({

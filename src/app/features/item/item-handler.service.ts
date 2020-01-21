@@ -4,9 +4,7 @@ import { Router } from '@angular/router';
 import { HandlerService } from '@keira-abstract/service/handlers/handler.service';
 import { ItemTemplate } from '@keira-types/item-template.type';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ItemHandlerService extends HandlerService<ItemTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

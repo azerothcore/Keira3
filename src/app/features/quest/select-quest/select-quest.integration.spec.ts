@@ -10,6 +10,7 @@ import { SelectQuestService } from './select-quest.service';
 import { SelectQuestModule } from './select-quest.module';
 import { QuestTemplate } from '@keira-types/quest-template.type';
 import { SelectPageObject } from '@keira-testing/select-page-object';
+import { QuestHandlerService } from '../quest-handler.service';
 
 class SelectQuestComponentPage extends SelectPageObject<SelectQuestComponent> {
   ID_FIELD = 'ID';
@@ -32,6 +33,9 @@ describe('SelectQuest integration tests', () => {
         SelectQuestModule,
         RouterTestingModule,
       ],
+      providers: [
+        QuestHandlerService,
+      ]
     })
       .compileComponents();
   }));

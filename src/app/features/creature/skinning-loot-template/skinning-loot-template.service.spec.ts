@@ -7,6 +7,8 @@ import { ToastrService } from 'ngx-toastr';
 import { SkinningLootTemplateService } from './skinning-loot-template.service';
 import { QueryService } from '@keira-shared/services/query.service';
 import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { CreatureHandlerService } from '../creature-handler.service';
+import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 describe('SkinningLootTemplateService', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -16,6 +18,9 @@ describe('SkinningLootTemplateService', () => {
     providers: [
       { provide: QueryService, useValue: instance(MockedQueryService) },
       { provide: ToastrService, useValue: instance(MockedToastrService) },
+      CreatureHandlerService,
+      SaiCreatureHandlerService,
+      SkinningLootTemplateService,
     ],
   }));
 

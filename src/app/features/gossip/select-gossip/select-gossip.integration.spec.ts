@@ -10,6 +10,7 @@ import { SelectGossipService } from './select-gossip.service';
 import { SelectGossipModule } from './select-gossip.module';
 import { GossipMenu } from '@keira-types/gossip-menu.type';
 import { SelectPageObject } from '@keira-testing/select-page-object';
+import { GossipHandlerService } from '../gossip-handler.service';
 
 class SelectGossipComponentPage extends SelectPageObject<SelectGossipComponent> {
   ID_FIELD = 'MenuID';
@@ -32,6 +33,9 @@ describe('SelectGossip integration tests', () => {
         SelectGossipModule,
         RouterTestingModule,
       ],
+      providers: [
+        GossipHandlerService,
+      ]
     })
       .compileComponents();
   }));

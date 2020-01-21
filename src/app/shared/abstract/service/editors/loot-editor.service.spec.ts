@@ -11,6 +11,8 @@ import { LootEditorService } from './loot-editor.service';
 import { CreatureLootTemplate } from '@keira-types/creature-loot-template.type';
 import { CreatureLootTemplateService } from '../../../../features/creature/creature-loot-template/creature-loot-template.service';
 import { MysqlResult } from '@keira-types/general';
+import { CreatureHandlerService } from '../../../../features/creature/creature-handler.service';
+import { SaiCreatureHandlerService } from '../../../../features/creature/sai-creature-handler.service';
 
 
 describe('LootEditorService', () => {
@@ -23,7 +25,9 @@ describe('LootEditorService', () => {
     providers: [
       { provide: QueryService, useValue: instance(MockedQueryService) },
       { provide: ToastrService, useValue: instance(MockedToastrService) },
-
+      CreatureHandlerService,
+      SaiCreatureHandlerService,
+      CreatureLootTemplateService,
     ],
   }));
 

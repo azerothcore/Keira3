@@ -9,6 +9,7 @@ import { QueryService } from '@keira-shared/services/query.service';
 import { CreatureQuestitem } from '@keira-types/creature-questitem.type';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
+import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 class CreatureQuestitemPage extends MultiRowEditorPageObject<CreatureQuestitemComponent> {}
 
@@ -35,6 +36,10 @@ describe('CreatureQuestitem integration tests', () => {
       imports: [
         CreatureQuestitemModule,
         RouterTestingModule,
+      ],
+      providers: [
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
       ],
     })
       .compileComponents();

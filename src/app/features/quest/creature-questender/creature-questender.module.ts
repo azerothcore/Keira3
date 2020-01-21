@@ -10,6 +10,7 @@ import { TooltipModule } from 'ngx-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
 import { toastrConfig } from '@keira-config/toastr.config';
 import { CreatureSelectorModule } from '@keira-shared/modules/selectors/creature-selector/creature-selector.module';
+import { CreatureQuestenderService } from './creature-questender.service';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,9 @@ import { CreatureSelectorModule } from '@keira-shared/modules/selectors/creature
   ],
   exports: [
     CreatureQuestenderComponent,
+  ],
+  providers: [
+    CreatureQuestenderService,
   ],
 })
 export class CreatureQuestenderModule {}

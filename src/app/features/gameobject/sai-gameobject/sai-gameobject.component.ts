@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { SaiEditorComponent } from '@keira-shared/modules/sai-editor/sai-editor.component';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
-import { SaiGameobjectEditorService } from '../sai-gameobject-editor.service';
+import { SaiGameobjectEditorService } from './sai-gameobject-editor.service';
 
 @Component({
   selector: 'app-sai-gameobject',

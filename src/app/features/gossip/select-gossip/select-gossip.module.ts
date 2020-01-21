@@ -9,6 +9,7 @@ import { QueryOutputModule } from '@keira-shared/modules/query-output/query-outp
 import { SelectGossipComponent } from './select-gossip.component';
 import { CreateModule } from '@keira-shared/modules/create/create.module';
 import { highlightOptions } from '@keira-config/highlight.config';
+import { SelectGossipService } from './select-gossip.service';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,9 @@ import { highlightOptions } from '@keira-config/highlight.config';
   ],
   exports: [
     SelectGossipComponent,
+  ],
+  providers: [
+    SelectGossipService,
   ],
 })
 export class SelectGossipModule {}

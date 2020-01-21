@@ -36,6 +36,9 @@ describe('GameobjectQueststarter integration tests', () => {
         GameobjectQueststarterModule,
         RouterTestingModule,
       ],
+      providers: [
+        QuestHandlerService,
+      ]
     })
       .compileComponents();
   }));

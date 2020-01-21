@@ -11,6 +11,7 @@ import { QueryOutputModule } from '@keira-shared/modules/query-output/query-outp
 import { SkinningLootTemplateComponent } from './skinning-loot-template.component';
 import { ItemSelectorModule } from '@keira-shared/modules/selectors/item-selector/item-selector.module';
 import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selector/flags-selector.module';
+import { SkinningLootTemplateService } from './skinning-loot-template.service';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,9 @@ import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selec
   ],
   exports: [
     SkinningLootTemplateComponent,
+  ],
+  providers: [
+    SkinningLootTemplateService,
   ],
 })
 export class SkinningLootTemplateModule {}

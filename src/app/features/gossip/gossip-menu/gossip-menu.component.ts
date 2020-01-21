@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
 import { GossipMenu } from '@keira-types/gossip-menu.type';
-import { GossipMenuService } from '../gossip-menu.service';
+import { GossipMenuService } from './gossip-menu.service';
 import { GossipHandlerService } from '../gossip-handler.service';
 
 @Component({

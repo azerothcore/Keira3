@@ -9,6 +9,8 @@ import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { MysqlResult } from '@keira-types/general';
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
 import { GAMEOBJECT_TEMPLATE_TYPE } from '@keira-types/gameobject-template.type';
+import { GameobjectHandlerService } from '../gameobject-handler.service';
+import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
 describe('GameobjectLootTemplateService', () => {
   let service: GameobjectLootTemplateService;
@@ -20,7 +22,10 @@ describe('GameobjectLootTemplateService', () => {
     providers: [
       { provide: QueryService, useValue: instance(MockedQueryService) },
       { provide: ToastrService, useValue: instance(MockedToastrService) },
-    ],
+      GameobjectHandlerService,
+      SaiGameobjectHandlerService,
+      GameobjectLootTemplateService,
+    ]
   }));
 
   beforeEach(() => {

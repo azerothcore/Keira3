@@ -10,9 +10,7 @@ import {
   CreatureSpawnAddon
 } from '@keira-types/creature-spawn-addon.type';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CreatureSpawnAddonService extends MultiRowExternalEditorService<CreatureSpawnAddon> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

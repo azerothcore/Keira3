@@ -36,6 +36,9 @@ describe('GossipMenu integration tests', () => {
         GossipMenuOptionModule,
         RouterTestingModule,
       ],
+      providers: [
+        GossipHandlerService,
+      ]
     })
       .compileComponents();
   }));

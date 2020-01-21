@@ -14,6 +14,8 @@ import { CreatureLootTemplateModule } from '../../../../../features/creature/cre
 import { TooltipModule } from 'ngx-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
 import { QueryService } from '../../../../services/query.service';
+import { CreatureHandlerService } from '../../../../../features/creature/creature-handler.service';
+import { SaiCreatureHandlerService } from '../../../../../features/creature/sai-creature-handler.service';
 
 describe('LootTemplateComponent', () => {
   let component: LootTemplateComponent<CreatureLootTemplate>;
@@ -34,6 +36,8 @@ describe('LootTemplateComponent', () => {
       ],
       providers: [
         { provide : QueryService, useValue: instance(MockedQueryService) },
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
       ]
     })
     .compileComponents();

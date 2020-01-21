@@ -7,6 +7,9 @@ describe('ItemHandlerService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       RouterTestingModule,
+    ],
+    providers: [
+      ItemHandlerService,
     ]
   }));
 

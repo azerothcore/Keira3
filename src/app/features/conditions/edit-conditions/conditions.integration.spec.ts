@@ -54,6 +54,9 @@ describe('Conditions integration tests', () => {
         ConditionsEditorModule,
         RouterTestingModule,
       ],
+      providers: [
+        ConditionsHandlerService,
+      ],
     })
       .compileComponents();
   }));

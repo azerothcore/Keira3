@@ -7,6 +7,8 @@ import { GameobjectTemplateService } from './gameobject-template.service';
 import { QueryService } from '@keira-shared/services/query.service';
 import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { GO_DATA_FIELDS } from '@keira-constants/gameobject-types';
+import { GameobjectHandlerService } from '../gameobject-handler.service';
+import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
 describe('GameobjectTemplateService', () => {
 
@@ -17,7 +19,10 @@ describe('GameobjectTemplateService', () => {
     providers: [
       { provide: QueryService, useValue: instance(MockedQueryService) },
       { provide: ToastrService, useValue: instance(MockedToastrService) },
-    ],
+      GameobjectHandlerService,
+      SaiGameobjectHandlerService,
+      GameobjectTemplateService,
+    ]
   }));
 
   it('should correctly return the definition according to the type', () => {

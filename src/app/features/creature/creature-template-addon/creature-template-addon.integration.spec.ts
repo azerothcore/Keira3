@@ -9,6 +9,7 @@ import { CreatureTemplateAddonModule } from './creature-template-addon.module';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateAddon } from '@keira-types/creature-template-addon.type';
+import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 class CreatureTemplateAddonPage extends EditorPageObject<CreatureTemplateAddonComponent> {}
 
@@ -39,6 +40,10 @@ describe('CreatureTemplateAddon integration tests', () => {
       imports: [
         CreatureTemplateAddonModule,
         RouterTestingModule,
+      ],
+      providers: [
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
       ],
     })
       .compileComponents();

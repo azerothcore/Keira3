@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
 import { ItemTemplate } from '@keira-types/item-template.type';
-import { ItemTemplateService } from '../item-template.service';
+import { ItemTemplateService } from './item-template.service';
 import { ItemHandlerService } from '../item-handler.service';
 import { ITEM_CLASS, ITEM_SUBCLASS } from '@keira-constants/options/item-class';
 import { ITEM_QUALITY } from '@keira-constants/options/item-quality';

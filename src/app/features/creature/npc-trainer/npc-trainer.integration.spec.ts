@@ -9,6 +9,7 @@ import { QueryService } from '@keira-shared/services/query.service';
 import { NpcTrainer } from '@keira-types/npc-trainer.type';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
+import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 class NpcTrainerPage extends MultiRowEditorPageObject<NpcTrainerComponent> {}
 
@@ -35,6 +36,10 @@ describe('NpcTrainer integration tests', () => {
       imports: [
         NpcTrainerModule,
         RouterTestingModule,
+      ],
+      providers: [
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
       ],
     })
       .compileComponents();

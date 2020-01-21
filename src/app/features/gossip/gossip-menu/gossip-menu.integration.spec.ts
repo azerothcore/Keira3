@@ -9,7 +9,6 @@ import { QueryService } from '@keira-shared/services/query.service';
 import { GossipMenu } from '@keira-types/gossip-menu.type';
 import { GossipHandlerService } from '../gossip-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
-
 class GossipMenuPage extends MultiRowEditorPageObject<GossipMenuComponent> {}
 
 describe('GossipMenu integration tests', () => {
@@ -36,6 +35,9 @@ describe('GossipMenu integration tests', () => {
         GossipMenuModule,
         RouterTestingModule,
       ],
+      providers: [
+        GossipHandlerService,
+      ]
     })
       .compileComponents();
   }));

@@ -9,9 +9,7 @@ import {
   CreatureEquipTemplate
 } from '@keira-types/creature-equip-template.type';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CreatureEquipTemplateService extends SingleRowEditorService<CreatureEquipTemplate> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

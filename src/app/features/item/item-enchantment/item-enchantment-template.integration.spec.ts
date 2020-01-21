@@ -36,6 +36,9 @@ describe('ItemEnchantmentTemplate integration tests', () => {
         ItemEnchantmentTemplateModule,
         RouterTestingModule,
       ],
+      providers: [
+        ItemHandlerService,
+      ]
     })
       .compileComponents();
   }));

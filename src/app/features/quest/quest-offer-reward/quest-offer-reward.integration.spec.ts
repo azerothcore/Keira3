@@ -44,6 +44,9 @@ describe('QuestOfferReward integration tests', () => {
         QuestOfferRewardModule,
         RouterTestingModule,
       ],
+      providers: [
+        QuestHandlerService,
+      ]
     })
       .compileComponents();
   }));

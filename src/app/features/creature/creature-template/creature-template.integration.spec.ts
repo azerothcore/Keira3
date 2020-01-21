@@ -9,6 +9,7 @@ import { QueryService } from '@keira-shared/services/query.service';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { CreatureTemplate } from '@keira-types/creature-template.type';
 import { CreatureHandlerService } from '../creature-handler.service';
+import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 class CreatureTemplatePage extends EditorPageObject<CreatureTemplateComponent> {}
 
@@ -46,6 +47,10 @@ describe('CreatureTemplate integration tests', () => {
       imports: [
         CreatureTemplateModule,
         RouterTestingModule,
+      ],
+      providers: [
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
       ],
     })
       .compileComponents();

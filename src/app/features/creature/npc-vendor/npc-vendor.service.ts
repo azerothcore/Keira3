@@ -11,9 +11,7 @@ NPC_VENDOR_TABLE,
 NpcVendor
 } from '@keira-types/npc-vendor.type';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class NpcVendorService extends MultiRowEditorService<NpcVendor> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

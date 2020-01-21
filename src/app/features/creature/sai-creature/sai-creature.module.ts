@@ -12,6 +12,7 @@ import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selec
 import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
 import { SaiCreatureComponent } from './sai-creature.component';
 import { SaiEditorModule } from '@keira-shared/modules/sai-editor/sai-editor.module';
+import { SaiCreatureEditorService } from './sai-creature-editor.service';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,9 @@ import { SaiEditorModule } from '@keira-shared/modules/sai-editor/sai-editor.mod
   ],
   exports: [
     SaiCreatureComponent,
+  ],
+  providers: [
+    SaiCreatureEditorService,
   ],
 })
 export class SaiCreatureModule {}

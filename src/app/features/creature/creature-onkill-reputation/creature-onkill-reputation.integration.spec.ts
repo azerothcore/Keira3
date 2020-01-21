@@ -9,6 +9,7 @@ import { QueryService } from '@keira-shared/services/query.service';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { CreatureOnkillReputation } from '@keira-types/creature-onkill-reputation.type';
 import { CreatureHandlerService } from '../creature-handler.service';
+import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 class CreatureOnkillReputationPage extends EditorPageObject<CreatureOnkillReputationComponent> {}
 
@@ -35,6 +36,10 @@ describe('CreatureOnkillReputation integration tests', () => {
       imports: [
         CreatureOnkillReputationModule,
         RouterTestingModule,
+      ],
+      providers: [
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
       ],
     })
       .compileComponents();

@@ -5,9 +5,7 @@ import { HandlerService } from '@keira-abstract/service/handlers/handler.service
 import { GameobjectTemplate } from '@keira-types/gameobject-template.type';
 import { SaiGameobjectHandlerService } from './sai-gameobject-handler.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class GameobjectHandlerService extends HandlerService<GameobjectTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

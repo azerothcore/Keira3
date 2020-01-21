@@ -10,6 +10,8 @@ import { SelectCreatureService } from './select-creature.service';
 import { SelectCreatureModule } from './select-creature.module';
 import { CreatureTemplate } from '@keira-types/creature-template.type';
 import { SelectPageObject } from '@keira-testing/select-page-object';
+import { CreatureHandlerService } from '../creature-handler.service';
+import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 class SelectCreatureComponentPage extends SelectPageObject<SelectCreatureComponent> {
   ID_FIELD = 'entry';
@@ -33,6 +35,10 @@ describe('SelectCreature integration tests', () => {
         SelectCreatureModule,
         RouterTestingModule,
       ],
+      providers: [
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+      ]
     })
     .compileComponents();
   }));
