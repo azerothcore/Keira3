@@ -10,7 +10,7 @@ import {
 } from '@keira-types/gameobject-template.type';
 import { FieldDefinition } from '@keira-types/general';
 import { GO_DATA_FIELDS } from '@keira-constants/gameobject-types';
-import { QueryService } from '../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 import { GameobjectHandlerService } from './gameobject-handler.service';
 
 @Injectable({

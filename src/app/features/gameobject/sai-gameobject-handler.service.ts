@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { QueryService } from '../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 import { SaiHandlerService } from '../../shared/modules/sai-editor/sai-handler.service';
 
 @Injectable({

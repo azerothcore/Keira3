@@ -4,7 +4,7 @@ import { instance } from 'ts-mockito';
 import { ToastrService } from 'ngx-toastr';
 
 import { SaiEditorService } from './sai-editor.service';
-import { QueryService } from '../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { SaiHandlerService } from '../../shared/modules/sai-editor/sai-handler.service';
 import { SmartScripts } from '@keira-types/smart-scripts.type';

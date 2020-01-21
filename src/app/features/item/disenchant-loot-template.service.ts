@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
 import { ItemHandlerService } from './item-handler.service';
-import { QueryService } from '../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 import {
   DISENCHANT_LOOT_TEMPLATE_TABLE,
   DisenchantLootTemplate,

@@ -3,7 +3,7 @@ import { ToastrService } from 'ngx-toastr';
 
 import { MultiRowEditorService } from '@keira-abstract/service/editors/multi-row-editor.service';
 import { CreatureHandlerService } from '../creature/creature-handler.service';
-import { QueryService } from '../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 import {
   GOSSIP_MENU_OPTION_ID,
   GOSSIP_MENU_OPTION_ID_2,

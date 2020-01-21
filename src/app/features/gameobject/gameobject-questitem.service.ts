@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
 import { GameobjectHandlerService } from './gameobject-handler.service';
-import { QueryService } from '../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 import { MultiRowEditorService } from '@keira-abstract/service/editors/multi-row-editor.service';
 import {
   GAMEOBJECT_QUESTITEM_ID,
