@@ -10,6 +10,7 @@ import { TooltipModule } from 'ngx-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
 import { toastrConfig } from '@keira-config/toastr.config';
 import { GameobjectSelectorModule } from '@keira-shared/modules/selectors/gameobject-selector/gameobject-selector.module';
+import { GameobjectQuestenderService } from './gameobject-questender.service';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,9 @@ import { GameobjectSelectorModule } from '@keira-shared/modules/selectors/gameob
   ],
   exports: [
     GameobjectQuestenderComponent,
+  ],
+  providers: [
+    GameobjectQuestenderService,
   ],
 })
 export class GameobjectQuestenderModule {}

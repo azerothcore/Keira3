@@ -9,6 +9,7 @@ import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
 import { QueryOutputModule } from '@keira-shared/modules/query-output/query-output.module';
 import { QuestRequestItemsComponent } from './quest-request-items.component';
 import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
+import { QuestRequestItemsService } from './quest-request-items.service';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,9 @@ import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/singl
   ],
   exports: [
     QuestRequestItemsComponent,
+  ],
+  providers: [
+    QuestRequestItemsService,
   ],
 })
 export class QuestRequestItemsModule {}

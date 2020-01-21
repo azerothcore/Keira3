@@ -1,19 +1,17 @@
 import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
-import { QuestHandlerService } from './quest-handler.service';
+import { QuestHandlerService } from '../quest-handler.service';
 import { QueryService } from '@keira-shared/services/query.service';
 import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
 import {
-  QUEST_OFFER_REWARD_ID,
-  QUEST_OFFER_REWARD_TABLE,
-  QuestOfferReward
-} from '@keira-types/quest-offer-reward.type';
+  QUEST_REQUEST_ITEMS_ID,
+  QUEST_REQUEST_ITEMS_TABLE,
+  QuestRequestItems
+} from '@keira-types/quest-request-items.type';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class QuestOfferRewardService extends SingleRowEditorService<QuestOfferReward> {
+@Injectable()
+export class QuestRequestItemsService extends SingleRowEditorService<QuestRequestItems> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
@@ -22,9 +20,9 @@ export class QuestOfferRewardService extends SingleRowEditorService<QuestOfferRe
     protected toastrService: ToastrService,
   ) {
     super(
-      QuestOfferReward,
-      QUEST_OFFER_REWARD_TABLE,
-      QUEST_OFFER_REWARD_ID,
+      QuestRequestItems,
+      QUEST_REQUEST_ITEMS_TABLE,
+      QUEST_REQUEST_ITEMS_ID,
       null,
       false,
       handlerService,

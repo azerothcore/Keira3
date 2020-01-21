@@ -9,9 +9,7 @@ import {
 import { CreatureHandlerService } from '../creature-handler.service';
 import { QueryService } from '@keira-shared/services/query.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CreatureOnkillReputationService extends SingleRowEditorService<CreatureOnkillReputation> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

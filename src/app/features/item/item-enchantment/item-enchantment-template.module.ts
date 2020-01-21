@@ -8,6 +8,7 @@ import { toastrConfig } from '@keira-config/toastr.config';
 import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
 import { QueryOutputModule } from '@keira-shared/modules/query-output/query-output.module';
 import { ItemEnchantmentTemplateComponent } from './item-enchantment-template.component';
+import { ItemEnchantmentTemplateService } from './item-enchantment-template.service';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,9 @@ import { ItemEnchantmentTemplateComponent } from './item-enchantment-template.co
   ],
   exports: [
     ItemEnchantmentTemplateComponent,
+  ],
+  providers: [
+    ItemEnchantmentTemplateService,
   ],
 })
 export class ItemEnchantmentTemplateModule {}

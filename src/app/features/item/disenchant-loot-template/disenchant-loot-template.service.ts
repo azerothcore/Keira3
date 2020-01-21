@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
-import { ItemHandlerService } from './item-handler.service';
+import { ItemHandlerService } from '../item-handler.service';
 import { QueryService } from '@keira-shared/services/query.service';
 import {
   DISENCHANT_LOOT_TEMPLATE_TABLE,
@@ -10,9 +10,7 @@ import {
 import { LootEditorService } from '@keira-abstract/service/editors/loot-editor.service';
 import { DISENCHANT_TEMPLATE_LOOT_ID, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_TABLE } from '@keira-types/item-template.type';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class DisenchantLootTemplateService extends LootEditorService<DisenchantLootTemplate> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

@@ -7,9 +7,7 @@ import { SingleRowComplexKeyEditorService } from '@keira-abstract/service/editor
 import { Conditions } from '@keira-types/conditions.type';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ConditionsService extends SingleRowComplexKeyEditorService<Conditions> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

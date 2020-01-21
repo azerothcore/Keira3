@@ -11,6 +11,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { toastrConfig } from '@keira-config/toastr.config';
 import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selector/flags-selector.module';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,9 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
   ],
   exports: [
     GameobjectLootTemplateComponent,
+  ],
+  providers: [
+    GameobjectLootTemplateService,
   ],
 })
 export class GameobjectLootTemplateModule {}

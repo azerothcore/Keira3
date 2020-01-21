@@ -6,9 +6,7 @@ import { CreatureSpawn, CREATURE_SPAWN_ID, CREATURE_SPAWN_ID_2, CREATURE_SPAWN_T
 import { CreatureHandlerService } from '../creature-handler.service';
 import { QueryService } from '@keira-shared/services/query.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CreatureSpawnService extends MultiRowEditorService<CreatureSpawn> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

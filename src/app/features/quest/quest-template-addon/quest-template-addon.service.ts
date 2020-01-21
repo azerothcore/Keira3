@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
-import { QuestHandlerService } from './quest-handler.service';
+import { QuestHandlerService } from '../quest-handler.service';
 import { QueryService } from '@keira-shared/services/query.service';
 import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
 import {
@@ -10,9 +10,7 @@ import {
   QuestTemplateAddon
 } from '@keira-types/quest-template-addon.type';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class QuestTemplateAddonService extends SingleRowEditorService<QuestTemplateAddon> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

@@ -1,19 +1,17 @@
 import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
-import { QuestHandlerService } from './quest-handler.service';
+import { QuestHandlerService } from '../quest-handler.service';
 import { QueryService } from '@keira-shared/services/query.service';
 import { MultiRowEditorService } from '@keira-abstract/service/editors/multi-row-editor.service';
 import {
-  CREATURE_QUESTENDER_ID, CREATURE_QUESTENDER_ID_2,
-  CREATURE_QUESTENDER_TABLE,
-  CreatureQuestender
-} from '@keira-types/creature-questender.type';
+  GAMEOBJECT_QUESTENDER_ID, GAMEOBJECT_QUESTENDER_ID_2,
+  GAMEOBJECT_QUESTENDER_TABLE,
+  GameobjectQuestender
+} from '@keira-types/gameobject-questender.type';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class CreatureQuestenderService extends MultiRowEditorService<CreatureQuestender> {
+@Injectable()
+export class GameobjectQuestenderService extends MultiRowEditorService<GameobjectQuestender> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
@@ -22,10 +20,10 @@ export class CreatureQuestenderService extends MultiRowEditorService<CreatureQue
     protected toastrService: ToastrService,
   ) {
     super(
-      CreatureQuestender,
-      CREATURE_QUESTENDER_TABLE,
-      CREATURE_QUESTENDER_ID,
-      CREATURE_QUESTENDER_ID_2,
+      GameobjectQuestender,
+      GAMEOBJECT_QUESTENDER_TABLE,
+      GAMEOBJECT_QUESTENDER_ID,
+      GAMEOBJECT_QUESTENDER_ID_2,
       handlerService,
       queryService,
       toastrService,

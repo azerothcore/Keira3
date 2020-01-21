@@ -10,9 +10,7 @@ import {
 import { QueryService } from '@keira-shared/services/query.service';
 import { GossipHandlerService } from '../gossip-handler.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class SelectGossipService extends SelectService<GossipMenu> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

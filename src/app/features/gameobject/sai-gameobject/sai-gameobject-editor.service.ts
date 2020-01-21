@@ -5,9 +5,7 @@ import { SaiEditorService } from '@keira-shared/modules/sai-editor/sai-editor.se
 import { QueryService } from '@keira-shared/services/query.service';
 import { SaiGameobjectHandlerService } from './sai-gameobject-handler.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class SaiGameobjectEditorService extends SaiEditorService {
   constructor(
     protected handlerService: SaiGameobjectHandlerService,

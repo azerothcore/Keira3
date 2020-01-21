@@ -9,7 +9,7 @@ import { QueryService } from '@keira-shared/services/query.service';
 import { DisenchantLootTemplate } from '@keira-types/disenchant-loot-template.type';
 import { ItemHandlerService } from '../item-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
-import { DisenchantLootTemplateService } from '../disenchant-loot-template.service';
+import { DisenchantLootTemplateService } from './disenchant-loot-template.service';
 
 class DisenchantLootTemplatePage extends MultiRowEditorPageObject<DisenchantLootTemplateComponent> {}
 

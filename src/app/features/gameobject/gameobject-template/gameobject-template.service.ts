@@ -13,9 +13,7 @@ import { GO_DATA_FIELDS } from '@keira-constants/gameobject-types';
 import { QueryService } from '@keira-shared/services/query.service';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class GameobjectTemplateService extends SingleRowEditorService<GameobjectTemplate> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

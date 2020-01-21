@@ -9,9 +9,7 @@ import {
   CreatureTemplateAddon
 } from '@keira-types/creature-template-addon.type';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CreatureTemplateAddonService extends SingleRowEditorService<CreatureTemplateAddon> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

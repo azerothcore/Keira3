@@ -11,9 +11,7 @@ import {
   NpcTrainer,
 } from '@keira-types/npc-trainer.type';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class NpcTrainerService extends MultiRowEditorService<NpcTrainer> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

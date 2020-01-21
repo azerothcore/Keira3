@@ -10,6 +10,7 @@ import { QueryOutputModule } from '@keira-shared/modules/query-output/query-outp
 import { GameobjectTemplateAddonComponent } from './gameobject-template-addon.component';
 import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
 import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selector/flags-selector.module';
+import { GameobjectTemplateAddonService } from './gameobject-template-addon.service';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,9 @@ import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selec
   ],
   exports: [
     GameobjectTemplateAddonComponent,
+  ],
+  providers: [
+    GameobjectTemplateAddonService,
   ],
 })
 export class GameobjectTemplateAddonModule {}

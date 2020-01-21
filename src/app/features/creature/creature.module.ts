@@ -14,6 +14,7 @@ import { CreatureSpawnAddonModule } from './creature-spawn-addon/creature-spawn-
 import { NpcVendorModule } from './npc-vendor/npc-vendor.module';
 import { CreatureQuestitemModule } from './creature-questitem/creature-questitem.module';
 import { SaiCreatureModule } from './sai-creature/sai-creature.module';
+import { CreatureHandlerService } from './creature-handler.service';
 
 const modules = [
   CreatureEquipTemplateModule,
@@ -29,11 +30,14 @@ const modules = [
   SkinningLootTemplateModule,
   CreatureSpawnModule,
   CreatureSpawnAddonModule,
-  SaiCreatureModule
+  SaiCreatureModule,
 ];
 
 @NgModule({
   imports: [modules],
   exports: [modules],
+  providers: [
+    CreatureHandlerService,
+  ],
 })
 export class CreatureModule {}

@@ -10,9 +10,7 @@ import {
 import { QueryService } from '@keira-shared/services/query.service';
 import { QuestHandlerService } from '../quest-handler.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class SelectQuestService extends SelectService<QuestTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

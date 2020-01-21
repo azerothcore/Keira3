@@ -9,6 +9,7 @@ import { QueryOutputModule } from '@keira-shared/modules/query-output/query-outp
 import { SelectCreatureComponent } from './select-creature.component';
 import { CreateModule } from '@keira-shared/modules/create/create.module';
 import { highlightOptions } from '@keira-config/highlight.config';
+import { SelectCreatureService } from './select-creature.service';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,9 @@ import { highlightOptions } from '@keira-config/highlight.config';
   ],
   exports: [
     SelectCreatureComponent,
+  ],
+  providers: [
+    SelectCreatureService,
   ],
 })
 export class SelectCreatureModule {}

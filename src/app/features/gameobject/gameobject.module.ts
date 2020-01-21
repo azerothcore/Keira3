@@ -7,6 +7,7 @@ import { GameobjectQuestitemModule } from './gameobject-questitem/gameobject-que
 import { GameobjectSpawnModule } from './gameobject-spawn/gameobject-spawn.module';
 import { GameobjectLootTemplateModule } from './gameobject-loot-template/gameobject-loot-template.module';
 import { SaiGameobjectModule } from './sai-gameobject/sai-gameobject.module';
+import { GameobjectHandlerService } from './gameobject-handler.service';
 
 const modules = [
   SelectGameobjectModule,
@@ -21,5 +22,8 @@ const modules = [
 @NgModule({
   imports: [modules],
   exports: [modules],
+  providers: [
+    GameobjectHandlerService,
+  ],
 })
 export class GameobjectModule {}

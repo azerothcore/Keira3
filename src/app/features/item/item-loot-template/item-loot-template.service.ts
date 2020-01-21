@@ -3,17 +3,12 @@ import { ToastrService } from 'ngx-toastr';
 
 import { MultiRowEditorService } from '@keira-abstract/service/editors/multi-row-editor.service';
 import { QueryService } from '@keira-shared/services/query.service';
-import {
-  ITEM_ENCHANTMENT_TEMPLATE_ID, ITEM_ENCHANTMENT_TEMPLATE_ID_2,
-  ITEM_ENCHANTMENT_TEMPLATE_TABLE,
-  ItemEnchantmentTemplate
-} from '@keira-types/item-enchantment-template.type';
-import { ItemHandlerService } from './item-handler.service';
+import { ITEM_LOOT_TEMPLATE_TABLE, ItemLootTemplate } from '@keira-types/item-loot-template.type';
+import { ItemHandlerService } from '../item-handler.service';
+import { LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2 } from '@keira-types/loot-template.type';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class ItemEnchantmentTemplateService extends MultiRowEditorService<ItemEnchantmentTemplate> {
+@Injectable()
+export class ItemLootTemplateService extends MultiRowEditorService<ItemLootTemplate> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
@@ -22,10 +17,10 @@ export class ItemEnchantmentTemplateService extends MultiRowEditorService<ItemEn
     protected toastrService: ToastrService,
   ) {
     super(
-      ItemEnchantmentTemplate,
-      ITEM_ENCHANTMENT_TEMPLATE_TABLE,
-      ITEM_ENCHANTMENT_TEMPLATE_ID,
-      ITEM_ENCHANTMENT_TEMPLATE_ID_2,
+      ItemLootTemplate,
+      ITEM_LOOT_TEMPLATE_TABLE,
+      LOOT_TEMPLATE_ID,
+      LOOT_TEMPLATE_ID_2,
       handlerService,
       queryService,
       toastrService,

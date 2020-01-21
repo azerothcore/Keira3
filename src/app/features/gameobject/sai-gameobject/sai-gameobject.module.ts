@@ -12,6 +12,8 @@ import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selec
 import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
 import { SaiGameobjectComponent } from './sai-gameobject.component';
 import { SaiEditorModule } from '@keira-shared/modules/sai-editor/sai-editor.module';
+import { SaiGameobjectEditorService } from './sai-gameobject-editor.service';
+import { SaiGameobjectHandlerService } from './sai-gameobject-handler.service';
 
 @NgModule({
   declarations: [
@@ -31,6 +33,10 @@ import { SaiEditorModule } from '@keira-shared/modules/sai-editor/sai-editor.mod
   ],
   exports: [
     SaiGameobjectComponent,
+  ],
+  providers: [
+    SaiGameobjectEditorService,
+    SaiGameobjectHandlerService,
   ],
 })
 export class SaiGameobjectModule {}

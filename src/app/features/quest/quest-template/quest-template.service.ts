@@ -3,30 +3,28 @@ import { ToastrService } from 'ngx-toastr';
 
 import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
 import {
-  ITEM_TEMPLATE_ID,
-  ITEM_TEMPLATE_NAME,
-  ITEM_TEMPLATE_TABLE,
-  ItemTemplate
-} from '@keira-types/item-template.type';
+  QUEST_TEMPLATE_ID,
+  QUEST_TEMPLATE_NAME,
+  QUEST_TEMPLATE_TABLE,
+  QuestTemplate
+} from '@keira-types/quest-template.type';
 import { QueryService } from '@keira-shared/services/query.service';
-import { ItemHandlerService } from './item-handler.service';
+import { QuestHandlerService } from '../quest-handler.service';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class ItemTemplateService extends SingleRowEditorService<ItemTemplate> {
+@Injectable()
+export class QuestTemplateService extends SingleRowEditorService<QuestTemplate> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    protected handlerService: ItemHandlerService,
+    protected handlerService: QuestHandlerService,
     protected queryService: QueryService,
     protected toastrService: ToastrService,
   ) {
     super(
-      ItemTemplate,
-      ITEM_TEMPLATE_TABLE,
-      ITEM_TEMPLATE_ID,
-      ITEM_TEMPLATE_NAME,
+      QuestTemplate,
+      QUEST_TEMPLATE_TABLE,
+      QUEST_TEMPLATE_ID,
+      QUEST_TEMPLATE_NAME,
       true,
       handlerService,
       queryService,

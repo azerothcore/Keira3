@@ -9,6 +9,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
 import { QueryOutputModule } from '@keira-shared/modules/query-output/query-output.module';
 import { NpcTrainerComponent } from './npc-trainer.component';
+import { NpcTrainerService } from './npc-trainer.service';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,10 @@ import { NpcTrainerComponent } from './npc-trainer.component';
     NgxDatatableModule,
   ],
   exports: [
-    NpcTrainerComponent
+    NpcTrainerComponent,
+  ],
+  providers: [
+    NpcTrainerService,
   ],
 })
 export class NpcTrainerModule {}

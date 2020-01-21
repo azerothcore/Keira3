@@ -11,9 +11,7 @@ import {
   GameobjectQuestitem
 } from '@keira-types/gameobject-questitem.type';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class GameobjectQuestitemService extends MultiRowEditorService<GameobjectQuestitem> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

@@ -9,6 +9,7 @@ import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
 import { QueryOutputModule } from '@keira-shared/modules/query-output/query-output.module';
 import { CreatureOnkillReputationComponent } from './creature-onkill-reputation.component';
 import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
+import { CreatureOnkillReputationService } from './creature-onkill-reputation.service';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,9 @@ import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/singl
   ],
   exports: [
     CreatureOnkillReputationComponent,
+  ],
+  providers: [
+    CreatureOnkillReputationService,
   ],
 })
 export class CreatureOnkillReputationModule {}

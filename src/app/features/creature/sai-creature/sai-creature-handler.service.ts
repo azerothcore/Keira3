@@ -4,9 +4,7 @@ import { Router } from '@angular/router';
 import { QueryService } from '@keira-shared/services/query.service';
 import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class SaiCreatureHandlerService extends SaiHandlerService {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
