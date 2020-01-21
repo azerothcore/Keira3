@@ -7,7 +7,6 @@ import { QueryService } from '@keira-shared/services/query.service';
 import { QuestTemplateAddonComponent } from './quest-template-addon.component';
 import { QuestTemplateAddonModule } from './quest-template-addon.module';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
-import { CreatureHandlerService } from '../../creature/creature-handler.service';
 import { QuestTemplateAddon } from '@keira-types/quest-template-addon.type';
 import { QuestHandlerService } from '../quest-handler.service';
 
@@ -18,7 +17,7 @@ describe('QuestTemplateAddon integration tests', () => {
   let fixture: ComponentFixture<QuestTemplateAddonComponent>;
   let queryService: QueryService;
   let querySpy: Spy;
-  let handlerService: CreatureHandlerService;
+  let handlerService: QuestHandlerService;
   let page: QuestTemplateAddonPage;
 
   const id = 1234;

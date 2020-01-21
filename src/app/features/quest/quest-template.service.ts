@@ -8,7 +8,7 @@ import {
   QUEST_TEMPLATE_TABLE,
   QuestTemplate
 } from '@keira-types/quest-template.type';
-import { QueryService } from '../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 import { QuestHandlerService } from './quest-handler.service';
 
 @Injectable({

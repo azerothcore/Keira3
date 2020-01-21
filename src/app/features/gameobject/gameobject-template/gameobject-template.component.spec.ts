@@ -6,7 +6,7 @@ import { QueryService } from '@keira-shared/services/query.service';
 import { GameobjectTemplateComponent } from './gameobject-template.component';
 import { GameobjectTemplateModule } from './gameobject-template.module';
 import { RouterTestingModule } from '@angular/router/testing';
-import { GameobjectTemplateService } from '../gameobject-template.service';
+import { GameobjectTemplateService } from './gameobject-template.service';
 import { FieldDefinition } from '@keira-types/general';
 
 describe('GameobjectComponent', () => {

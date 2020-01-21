@@ -2,7 +2,7 @@ import { TableRow } from '@keira-types/general';
 import { HandlerService } from '../../service/handlers/handler.service';
 import { EditorComponent } from './editor.component';
 import { MultiRowEditorService } from '../../service/editors/multi-row-editor.service';
-import { DTCFG } from '../../../../config/datatable.config';
+import { DTCFG } from '@keira-config/datatable.config';
 
 export abstract class MultiRowEditorComponent<T extends TableRow> extends EditorComponent<T> {
 

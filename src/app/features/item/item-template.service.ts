@@ -8,7 +8,7 @@ import {
   ITEM_TEMPLATE_TABLE,
   ItemTemplate
 } from '@keira-types/item-template.type';
-import { QueryService } from '../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 import { ItemHandlerService } from './item-handler.service';
 
 @Injectable({

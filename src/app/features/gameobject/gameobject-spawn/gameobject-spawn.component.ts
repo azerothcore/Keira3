@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectSpawn } from '@keira-types/gameobject-spawn.type';
-import { GameobjectSpawnService } from '../gameobject-spawn.service';
+import { GameobjectSpawnService } from './gameobject-spawn.service';
 import { SPAWN_MASK } from '@keira-constants/flags/spawn-mask';
 import { PHASE_MASK } from '@keira-constants/flags/phase-mask';
 

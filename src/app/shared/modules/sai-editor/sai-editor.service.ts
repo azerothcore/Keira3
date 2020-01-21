@@ -3,8 +3,8 @@ import { ToastrService } from 'ngx-toastr';
 
 import { MultiRowComplexKeyEditorService } from '@keira-abstract/service/editors/multi-row-complex-key-editor.service';
 import { SAI_ID_2, SAI_ID_FIELDS, SAI_TABLE, SmartScripts } from '@keira-types/smart-scripts.type';
-import { SaiHandlerService } from '../../shared/modules/sai-editor/sai-handler.service';
-import { QueryService } from '../../shared/services/query.service';
+import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
+import { QueryService } from '@keira-shared/services/query.service';
 
 @Injectable({
   providedIn: 'root'

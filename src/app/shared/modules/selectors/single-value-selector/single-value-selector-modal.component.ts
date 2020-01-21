@@ -2,7 +2,7 @@ import { Component, OnInit, } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap';
 
 import { BaseSelectorModalComponent } from '../base-selector/base-selector-modal.component';
-import { DTCFG } from '../../../../config/datatable.config';
+import { DTCFG } from '@keira-config/datatable.config';
 import { Option } from '@keira-types/general';
 
 @Component({

@@ -7,7 +7,7 @@ import { HighlightModule } from 'ngx-highlightjs';
 import { SaiSearchExistingComponent } from './sai-search-existing.component';
 import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
 import { QueryOutputModule } from '@keira-shared/modules/query-output/query-output.module';
-import { highlightOptions } from '../../../config/highlight.config';
+import { highlightOptions } from '@keira-config/highlight.config';
 
 @NgModule({
   declarations: [SaiSearchExistingComponent],
