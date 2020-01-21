@@ -3,13 +3,13 @@ import { instance, reset } from 'ts-mockito';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { SidebarComponent } from './sidebar.component';
-import { ElectronService } from '../../../shared/services/electron.service';
-import { MockedElectronService, MockedMysqlService } from '../../../shared/testing/mocks';
-import { MysqlService } from '../../../shared/services/mysql.service';
-import { PageObject } from '../../../shared/testing/page-object';
+import { ElectronService } from '@keira-shared/services/electron.service';
+import { MockedElectronService, MockedMysqlService } from '@keira-testing/mocks';
+import { MysqlService } from '@keira-shared/services/mysql.service';
+import { PageObject } from '@keira-testing/page-object';
 import { SidebarService } from './sidebar.service';
 import { SidebarModule } from './sidebar.module';
-import { LocationService } from '../../../shared/services/location.service';
+import { LocationService } from '@keira-shared/services/location.service';
 
 class SidebarComponentPage extends PageObject<SidebarComponent> {
   get toggleSidebarBtn() { return this.query<HTMLButtonElement>('.sidebar-button'); }

@@ -4,7 +4,7 @@ import { instance } from 'ts-mockito';
 
 import { GameobjectSelectorModalComponent } from './gameobject-selector-modal.component';
 import { QueryService } from '../../../services/query.service';
-import { MockedQueryService } from '../../../testing/mocks';
+import { MockedQueryService } from '@keira-testing/mocks';
 import { GameobjectSearchService } from '../../search/gameobject-search.service';
 import { GameobjectSelectorModule } from './gameobject-selector.module';
 

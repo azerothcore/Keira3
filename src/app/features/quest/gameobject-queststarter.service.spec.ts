@@ -4,7 +4,7 @@ import { instance } from 'ts-mockito';
 import { ToastrService } from 'ngx-toastr';
 
 import { QueryService } from '../../shared/services/query.service';
-import { MockedQueryService, MockedToastrService } from '../../shared/testing/mocks';
+import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { GameobjectQueststarterService } from './gameobject-queststarter.service';
 
 describe('GameobjectQueststarterService', () => {

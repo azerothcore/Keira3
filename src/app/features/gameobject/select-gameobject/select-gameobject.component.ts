@@ -1,15 +1,15 @@
 import { Component, } from '@angular/core';
 
-import { SelectComponent } from '../../../shared/abstract/components/editors/select.component';
+import { SelectComponent } from '@keira-abstract/components/editors/select.component';
 import {
   GAMEOBJECT_TEMPLATE_CUSTOM_STARTING_ID,
   GAMEOBJECT_TEMPLATE_ID,
   GAMEOBJECT_TEMPLATE_TABLE,
   GameobjectTemplate
-} from '../../../shared/types/gameobject-template.type';
+} from '@keira-types/gameobject-template.type';
 import { SelectGameobjectService } from './select-gameobject.service';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
-import { QueryService } from '../../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 
 @Component({
   selector: 'app-select-gameobject',

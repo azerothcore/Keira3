@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 import { QueryService } from '../../shared/services/query.service';
-import { VersionDbRow, VersionRow } from '../../shared/types/general';
+import { VersionDbRow, VersionRow } from '@keira-types/general';
 import { version } from '../../../../package.json';
-import { AC_FORUM_URL, PAYPAL_DONATE_URL, KEIRA3_REPO_URL, AC_DISCORD_URL } from '../../shared/constants/general';
+import { AC_FORUM_URL, PAYPAL_DONATE_URL, KEIRA3_REPO_URL, AC_DISCORD_URL } from '@keira-constants/general';
 import { SubscriptionHandler } from '../../shared/utils/subscription-handler/subscription-handler';
 import { ConfigService } from '../../shared/services/config.service';
 

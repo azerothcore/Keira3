@@ -2,7 +2,7 @@ import { Component, } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap';
 
 import { GameobjectSearchService } from '../../search/gameobject-search.service';
-import { GAMEOBJECT_TEMPLATE_ID } from '../../../types/gameobject-template.type';
+import { GAMEOBJECT_TEMPLATE_ID } from '@keira-types/gameobject-template.type';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 
 @Component({

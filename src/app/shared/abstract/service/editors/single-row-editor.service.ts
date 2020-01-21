@@ -1,7 +1,7 @@
 import { distinctUntilChanged } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 
-import { Class, MysqlResult, TableRow } from '../../../types/general';
+import { Class, MysqlResult, TableRow } from '@keira-types/general';
 import { QueryService } from '../../../services/query.service';
 import { EditorService } from './editor.service';
 import { HandlerService } from '../handlers/handler.service';

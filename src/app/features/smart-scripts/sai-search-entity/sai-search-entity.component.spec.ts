@@ -3,8 +3,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { SaiSearchEntityComponent } from './sai-search-entity.component';
 import { SaiSearchEntityModule } from './sai-search-entity.module';
-import { PageObject } from '../../../shared/testing/page-object';
-import { SaiHandlerService } from '../../../shared/modules/sai-editor/sai-handler.service';
+import { PageObject } from '@keira-testing/page-object';
+import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
 
 class SaiSearchEntityComponentPage extends PageObject<SaiSearchEntityComponent> {
   get sourceTypeSelect() { return this.query<HTMLSelectElement>('select#source_type'); }

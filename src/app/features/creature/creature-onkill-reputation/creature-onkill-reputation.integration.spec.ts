@@ -5,9 +5,9 @@ import Spy = jasmine.Spy;
 
 import { CreatureOnkillReputationComponent } from './creature-onkill-reputation.component';
 import { CreatureOnkillReputationModule } from './creature-onkill-reputation.module';
-import { QueryService } from '../../../shared/services/query.service';
-import { EditorPageObject } from '../../../shared/testing/editor-page-object';
-import { CreatureOnkillReputation } from '../../../shared/types/creature-onkill-reputation.type';
+import { QueryService } from '@keira-shared/services/query.service';
+import { EditorPageObject } from '@keira-testing/editor-page-object';
+import { CreatureOnkillReputation } from '@keira-types/creature-onkill-reputation.type';
 import { CreatureHandlerService } from '../creature-handler.service';
 
 class CreatureOnkillReputationPage extends EditorPageObject<CreatureOnkillReputationComponent> {}

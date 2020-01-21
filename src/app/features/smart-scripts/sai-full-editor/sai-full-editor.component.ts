@@ -1,5 +1,5 @@
 import { Component, } from '@angular/core';
-import { SaiEditorComponent } from '../../../shared/modules/sai-editor/sai-editor.component';
+import { SaiEditorComponent } from '@keira-shared/modules/sai-editor/sai-editor.component';
 
 @Component({
   selector: 'app-sai-full-editor',

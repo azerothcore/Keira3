@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 
-import { SingleRowEditorComponent } from '../../../shared/abstract/components/editors/single-row-editor.component';
+import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
 import { CreatureHandlerService } from '../creature-handler.service';
-import { CreatureOnkillReputation } from '../../../shared/types/creature-onkill-reputation.type';
+import { CreatureOnkillReputation } from '@keira-types/creature-onkill-reputation.type';
 import { CreatureOnkillReputationService } from './creature-onkill-reputation.service';
-import { FACTIONS } from '../../../shared/constants/options/faction';
-import { FACTION_RANK } from '../../../shared/constants/options/faction-rank';
+import { FACTIONS } from '@keira-constants/options/faction';
+import { FACTION_RANK } from '@keira-constants/options/faction-rank';
 
 
 @Component({

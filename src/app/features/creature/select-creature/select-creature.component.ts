@@ -1,15 +1,15 @@
 import { Component, } from '@angular/core';
 
-import { SelectComponent } from '../../../shared/abstract/components/editors/select.component';
+import { SelectComponent } from '@keira-abstract/components/editors/select.component';
 import {
   CREATURE_TEMPLATE_CUSTOM_STARTING_ID,
   CREATURE_TEMPLATE_ID,
   CREATURE_TEMPLATE_TABLE,
   CreatureTemplate
-} from '../../../shared/types/creature-template.type';
+} from '@keira-types/creature-template.type';
 import { SelectCreatureService } from './select-creature.service';
 import { CreatureHandlerService } from '../creature-handler.service';
-import { QueryService } from '../../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 
 @Component({
   selector: 'app-select-creature',

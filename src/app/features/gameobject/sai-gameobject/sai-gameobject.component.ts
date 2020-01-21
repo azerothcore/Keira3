@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { SaiEditorComponent } from '../../../shared/modules/sai-editor/sai-editor.component';
+import { SaiEditorComponent } from '@keira-shared/modules/sai-editor/sai-editor.component';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { SaiGameobjectEditorService } from '../sai-gameobject-editor.service';
 

@@ -4,8 +4,8 @@ import { instance } from 'ts-mockito';
 import { ToastrService } from 'ngx-toastr';
 
 import { PickpocketingLootTemplateService } from './pickpocketing-loot-template.service';
-import { QueryService } from '../../../shared/services/query.service';
-import { MockedQueryService, MockedToastrService } from '../../../shared/testing/mocks';
+import { QueryService } from '@keira-shared/services/query.service';
+import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
 
 describe('PickpocketingLootTemplateService', () => {
   beforeEach(() => TestBed.configureTestingModule({

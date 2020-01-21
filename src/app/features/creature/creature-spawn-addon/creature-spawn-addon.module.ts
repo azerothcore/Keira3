@@ -6,10 +6,10 @@ import { ToastrModule } from 'ngx-toastr';
 import { toastrConfig } from '../../../config/toastr.config';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
-import { TopBarModule } from '../../../shared/modules/top-bar/top-bar.module';
-import { QueryOutputModule } from '../../../shared/modules/query-output/query-output.module';
+import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
+import { QueryOutputModule } from '@keira-shared/modules/query-output/query-output.module';
 import { CreatureSpawnAddonComponent } from './creature-spawn-addon.component';
-import { SingleValueSelectorModule } from '../../../shared/modules/selectors/single-value-selector/single-value-selector.module';
+import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
 
 @NgModule({
   declarations: [

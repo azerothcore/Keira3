@@ -6,8 +6,8 @@ import Spy = jasmine.Spy;
 
 import { TooltipModule } from 'ngx-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
-import { QueryService } from '../../../shared/services/query.service';
-import { MockedQueryService } from '../../../shared/testing/mocks';
+import { QueryService } from '@keira-shared/services/query.service';
+import { MockedQueryService } from '@keira-testing/mocks';
 import { GameobjectLootTemplateComponent } from './gameobject-loot-template.component';
 import { GameobjectLootTemplateService } from '../gameobject-loot-template.service';
 import { GameobjectLootTemplateModule } from './gameobject-loot-template.module';

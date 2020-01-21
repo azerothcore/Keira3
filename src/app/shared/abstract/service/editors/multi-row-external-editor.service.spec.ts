@@ -5,9 +5,9 @@ import { ToastrService } from 'ngx-toastr';
 
 
 import { QueryService } from '../../../services/query.service';
-import { MockedQueryService, MockedToastrService } from '../../../testing/mocks';
+import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { MultiRowExternalEditorService } from './multi-row-external-editor.service';
-import { CreatureSpawnAddon } from '../../../types/creature-spawn-addon.type';
+import { CreatureSpawnAddon } from '@keira-types/creature-spawn-addon.type';
 import { CreatureSpawnAddonService } from '../../../../features/creature/creature-spawn-addon/creature-spawn-addon.service';
 
 

@@ -9,9 +9,9 @@ import Spy = jasmine.Spy;
 
 import { MultiRowComplexKeyEditorService } from './multi-row-complex-key-editor.service';
 import { QueryService } from '../../../services/query.service';
-import { MockedQueryService, MockedToastrService } from '../../../testing/mocks';
-import { MockEntity, MockMultiRowComplexKeyEditorService, MockHandlerService } from '../../../testing/mock-services';
-import { MysqlResult } from '../../../types/general';
+import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { MockEntity, MockMultiRowComplexKeyEditorService, MockHandlerService } from '@keira-testing/mock-services';
+import { MysqlResult } from '@keira-types/general';
 
 describe('MultiRowComplexKeyEditorService', () => {
   let service: MultiRowComplexKeyEditorService<MockEntity>;

@@ -1,7 +1,7 @@
 import { OnInit } from '@angular/core';
 
-import { TableRow } from '../../../types/general';
-import { WIKI_BASE_URL } from '../../../constants/general';
+import { TableRow } from '@keira-types/general';
+import { WIKI_BASE_URL } from '@keira-constants/general';
 import { HandlerService } from '../../service/handlers/handler.service';
 import { EditorService } from '../../service/editors/editor.service';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';

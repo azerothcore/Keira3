@@ -4,7 +4,7 @@ import { instance } from 'ts-mockito';
 
 import { SelectCreatureService } from '../../../../features/creature/select-creature/select-creature.service';
 import { QueryService } from '../../../services/query.service';
-import { MockedQueryService } from '../../../testing/mocks';
+import { MockedQueryService } from '@keira-testing/mocks';
 import { SelectService } from './select.service';
 import { CreatureHandlerService } from '../../../../features/creature/creature-handler.service';
 

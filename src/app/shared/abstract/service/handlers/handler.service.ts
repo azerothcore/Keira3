@@ -1,6 +1,6 @@
 import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
 
-import { TableRow } from '../../../types/general';
+import { TableRow } from '@keira-types/general';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
 
 export abstract class HandlerService<T extends TableRow> extends SubscriptionHandler implements CanActivate {

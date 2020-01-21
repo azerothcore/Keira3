@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 
 import { CreatureHandlerService } from '../creature-handler.service';
-import { CreatureLootTemplate } from '../../../shared/types/creature-loot-template.type';
+import { CreatureLootTemplate } from '@keira-types/creature-loot-template.type';
 import { CreatureLootTemplateService } from './creature-loot-template.service';
-import { LootTemplateComponent } from '../../../shared/abstract/components/editors/loot-template/loot-template.component';
+import { LootTemplateComponent } from '@keira-abstract/components/editors/loot-template/loot-template.component';
 
 @Component({
   selector: 'app-creature-loot-template',

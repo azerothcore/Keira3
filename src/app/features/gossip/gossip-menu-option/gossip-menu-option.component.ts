@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 
-import { MultiRowEditorComponent } from '../../../shared/abstract/components/editors/multi-row-editor.component';
-import { GossipMenuOption } from '../../../shared/types/gossip-menu-option.type';
+import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
+import { GossipMenuOption } from '@keira-types/gossip-menu-option.type';
 import { GossipMenuOptionService } from '../gossip-menu-option.service';
 import { GossipHandlerService } from '../gossip-handler.service';
-import { OPTION_ICON } from '../../../shared/constants/options/gossip-option-icon';
-import { OPTION_TYPE } from '../../../shared/constants/options/gossip-option-type';
+import { OPTION_ICON } from '@keira-constants/options/gossip-option-icon';
+import { OPTION_TYPE } from '@keira-constants/options/gossip-option-type';
 
 @Component({
   selector: 'app-gossip-menu-option',

@@ -5,10 +5,10 @@ import { ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
 
 import { QueryService } from '../../shared/services/query.service';
-import { MockedQueryService, MockedToastrService } from '../../shared/testing/mocks';
-import { MysqlResult } from '../../shared/types/general';
+import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { MysqlResult } from '@keira-types/general';
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
-import { GAMEOBJECT_TEMPLATE_TYPE } from '../../shared/types/gameobject-template.type';
+import { GAMEOBJECT_TEMPLATE_TYPE } from '@keira-types/gameobject-template.type';
 
 describe('GameobjectLootTemplateService', () => {
   let service: GameobjectLootTemplateService;

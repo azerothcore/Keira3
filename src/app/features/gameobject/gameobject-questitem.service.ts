@@ -3,13 +3,13 @@ import { ToastrService } from 'ngx-toastr';
 
 import { GameobjectHandlerService } from './gameobject-handler.service';
 import { QueryService } from '../../shared/services/query.service';
-import { MultiRowEditorService } from '../../shared/abstract/service/editors/multi-row-editor.service';
+import { MultiRowEditorService } from '@keira-abstract/service/editors/multi-row-editor.service';
 import {
   GAMEOBJECT_QUESTITEM_ID,
   GAMEOBJECT_QUESTITEM_ID_2,
   GAMEOBJECT_QUESTITEM_TABLE,
   GameobjectQuestitem
-} from '../../shared/types/gameobject-questitem.type';
+} from '@keira-types/gameobject-questitem.type';
 
 @Injectable({
   providedIn: 'root'

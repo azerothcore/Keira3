@@ -5,9 +5,9 @@ import { of, throwError } from 'rxjs';
 import Spy = jasmine.Spy;
 
 import { ConnectionWindowComponent } from './connection-window.component';
-import { MockedMysqlService } from '../../shared/testing/mocks';
+import { MockedMysqlService } from '@keira-testing/mocks';
 import { MysqlService } from '../../shared/services/mysql.service';
-import { PageObject } from '../../shared/testing/page-object';
+import { PageObject } from '@keira-testing/page-object';
 import { ConnectionWindowModule } from './connection-window.module';
 import { LocalStorageService } from '../../shared/services/local-storage.service';
 

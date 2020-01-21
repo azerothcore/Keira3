@@ -5,10 +5,10 @@ import Spy = jasmine.Spy;
 
 import { DisenchantLootTemplateComponent } from './disenchant-loot-template.component';
 import { DisenchantLootTemplateModule } from './disenchant-loot-template.module';
-import { QueryService } from '../../../shared/services/query.service';
-import { DisenchantLootTemplate } from '../../../shared/types/disenchant-loot-template.type';
+import { QueryService } from '@keira-shared/services/query.service';
+import { DisenchantLootTemplate } from '@keira-types/disenchant-loot-template.type';
 import { ItemHandlerService } from '../item-handler.service';
-import { MultiRowEditorPageObject } from '../../../shared/testing/multi-row-editor-page-object';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { DisenchantLootTemplateService } from '../disenchant-loot-template.service';
 
 class DisenchantLootTemplatePage extends MultiRowEditorPageObject<DisenchantLootTemplateComponent> {}

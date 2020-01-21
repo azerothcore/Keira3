@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Flag } from '../../../types/general';
+import { Flag } from '@keira-types/general';
 
 @Injectable({
   providedIn: 'root'

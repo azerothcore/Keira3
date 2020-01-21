@@ -3,12 +3,12 @@ import { ToastrService } from 'ngx-toastr';
 
 import { QuestHandlerService } from './quest-handler.service';
 import { QueryService } from '../../shared/services/query.service';
-import { SingleRowEditorService } from '../../shared/abstract/service/editors/single-row-editor.service';
+import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
 import {
   QUEST_REQUEST_ITEMS_ID,
   QUEST_REQUEST_ITEMS_TABLE,
   QuestRequestItems
-} from '../../shared/types/quest-request-items.type';
+} from '@keira-types/quest-request-items.type';
 
 @Injectable({
   providedIn: 'root'

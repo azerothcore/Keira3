@@ -1,9 +1,9 @@
 import { Component, } from '@angular/core';
 
-import { ConditionsSearchService } from '../../../shared/modules/search/conditions-search.service';
-import { CONDITION_SOURCE_TYPES, CONDITION_SOURCE_TYPES_KEYS, Conditions } from '../../../shared/types/conditions.type';
+import { ConditionsSearchService } from '@keira-shared/modules/search/conditions-search.service';
+import { CONDITION_SOURCE_TYPES, CONDITION_SOURCE_TYPES_KEYS, Conditions } from '@keira-types/conditions.type';
 import { ConditionsHandlerService } from '../conditions-handler.service';
-import { SelectComplexKeyComponent } from '../../../shared/abstract/components/editors/select-complex-key.component';
+import { SelectComplexKeyComponent } from '@keira-abstract/components/editors/select-complex-key.component';
 
 @Component({
   selector: 'app-select-creature',

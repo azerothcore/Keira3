@@ -4,12 +4,12 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { QueryService } from '../../../shared/services/query.service';
+import { QueryService } from '@keira-shared/services/query.service';
 import { SelectGossipComponent } from './select-gossip.component';
 import { SelectGossipService } from './select-gossip.service';
 import { SelectGossipModule } from './select-gossip.module';
-import { GossipMenu } from '../../../shared/types/gossip-menu.type';
-import { SelectPageObject } from '../../../shared/testing/select-page-object';
+import { GossipMenu } from '@keira-types/gossip-menu.type';
+import { SelectPageObject } from '@keira-testing/select-page-object';
 
 class SelectGossipComponentPage extends SelectPageObject<SelectGossipComponent> {
   ID_FIELD = 'MenuID';

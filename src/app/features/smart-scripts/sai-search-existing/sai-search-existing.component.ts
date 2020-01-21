@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 
-import { SelectComplexKeyComponent } from '../../../shared/abstract/components/editors/select-complex-key.component';
-import { SAI_TYPES, SAI_TYPES_KEYS, SmartScripts } from '../../../shared/types/smart-scripts.type';
-import { SaiHandlerService } from '../../../shared/modules/sai-editor/sai-handler.service';
-import { SaiSearchService } from '../../../shared/modules/search/sai-search.service';
+import { SelectComplexKeyComponent } from '@keira-abstract/components/editors/select-complex-key.component';
+import { SAI_TYPES, SAI_TYPES_KEYS, SmartScripts } from '@keira-types/smart-scripts.type';
+import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
+import { SaiSearchService } from '@keira-shared/modules/search/sai-search.service';
 
 @Component({
   selector: 'app-sai-search-existing',

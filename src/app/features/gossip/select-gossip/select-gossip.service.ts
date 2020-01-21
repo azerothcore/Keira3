@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 
-import { SelectService } from '../../../shared/abstract/service/select/select.service';
+import { SelectService } from '@keira-abstract/service/select/select.service';
 import {
   GOSSIP_MENU_ID,
   GOSSIP_MENU_SEARCH_FIELDS,
   GOSSIP_MENU_TABLE,
   GossipMenu
-} from '../../../shared/types/gossip-menu.type';
-import { QueryService } from '../../../shared/services/query.service';
+} from '@keira-types/gossip-menu.type';
+import { QueryService } from '@keira-shared/services/query.service';
 import { GossipHandlerService } from '../gossip-handler.service';
 
 @Injectable({

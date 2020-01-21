@@ -6,9 +6,9 @@ import { ToastrService } from 'ngx-toastr';
 import Spy = jasmine.Spy;
 
 import { QueryService } from '../../../services/query.service';
-import { MockedQueryService, MockedToastrService } from '../../../testing/mocks';
+import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { SingleRowEditorService } from './single-row-editor.service';
-import { MockSingleRowEditorService, MockEntity, MockHandlerService } from '../../../testing/mock-services';
+import { MockSingleRowEditorService, MockEntity, MockHandlerService } from '@keira-testing/mock-services';
 
 
 describe('SingleRowEditorService', () => {

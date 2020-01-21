@@ -5,11 +5,11 @@ import Spy = jasmine.Spy;
 
 import { ItemTemplateComponent } from './item-template.component';
 import { ItemTemplateModule } from './item-template.module';
-import { QueryService } from '../../../shared/services/query.service';
-import { EditorPageObject } from '../../../shared/testing/editor-page-object';
-import { ItemTemplate } from '../../../shared/types/item-template.type';
+import { QueryService } from '@keira-shared/services/query.service';
+import { EditorPageObject } from '@keira-testing/editor-page-object';
+import { ItemTemplate } from '@keira-types/item-template.type';
 import { ItemHandlerService } from '../item-handler.service';
-import { ITEM_SUBCLASS } from '../../../shared/constants/options/item-class';
+import { ITEM_SUBCLASS } from '@keira-constants/options/item-class';
 
 class ItemTemplatePage extends EditorPageObject<ItemTemplateComponent> {}
 

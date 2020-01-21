@@ -5,7 +5,7 @@ import { TooltipModule } from 'ngx-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
 import { toastrConfig } from '../../../config/toastr.config';
 
-import { QueryOutputModule } from '../../../shared/modules/query-output/query-output.module';
+import { QueryOutputModule } from '@keira-shared/modules/query-output/query-output.module';
 import { ConditionsComponent } from './conditions.component';
 
 @NgModule({

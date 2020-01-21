@@ -1,11 +1,11 @@
 import { OnInit } from '@angular/core';
 import { MysqlError } from 'mysql';
 
-import { LootTemplate } from '../../../../types/loot-template.type';
+import { LootTemplate } from '@keira-types/loot-template.type';
 import { MultiRowEditorComponent } from '../multi-row-editor.component';
 import { HandlerService } from '../../../service/handlers/handler.service';
 import { LootEditorService } from '../../../service/editors/loot-editor.service';
-import { LOOT_MODE } from '../../../../constants/flags/loot-mode';
+import { LOOT_MODE } from '@keira-constants/flags/loot-mode';
 
 export abstract class LootTemplateComponent<T extends LootTemplate> extends MultiRowEditorComponent<T> implements OnInit {
 

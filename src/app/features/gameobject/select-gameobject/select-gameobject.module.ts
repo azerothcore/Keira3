@@ -4,10 +4,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { HighlightModule } from 'ngx-highlightjs';
 
-import { TopBarModule } from '../../../shared/modules/top-bar/top-bar.module';
-import { QueryOutputModule } from '../../../shared/modules/query-output/query-output.module';
+import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
+import { QueryOutputModule } from '@keira-shared/modules/query-output/query-output.module';
 import { SelectGameobjectComponent } from './select-gameobject.component';
-import { CreateModule } from '../../../shared/modules/create/create.module';
+import { CreateModule } from '@keira-shared/modules/create/create.module';
 import { highlightOptions } from '../../../config/highlight.config';
 
 @NgModule({
