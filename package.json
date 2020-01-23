@@ -33,7 +33,7 @@
     "version": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md"
   },
   "dependencies": {
-    "mysql": "2.18.0",
+    "mysql": "2.18.1",
     "ngx-toastr": "11.3.2",
     "ngx-ui-switch": "8.3.0",
     "serialize-javascript": "2.1.2"
