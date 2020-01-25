@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import { Squel, Delete, Insert, Update, QueryBuilder } from 'squel';
+import { Observable, of } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { Squel, Delete, Insert, Update } from 'squel';
 import { escape } from 'sqlstring';
 
 import { MysqlService } from './mysql.service';
-import { MaxRow, MysqlResult, QueryForm, TableRow } from '../types/general';
+import { MaxRow, MysqlResult, QueryForm, TableRow, ValueRow } from '../types/general';
 import { squelConfig } from '../../config/squel.config';
 import { ConfigService } from './config.service';
 
@@ -367,4 +367,39 @@ export class QueryService {
     query += insertQuery.toString() + ';\n';
     return this.formatQuery(query);
   }
+
+  // Input query format must be: SELECT something AS v FROM ...
+  queryValue(query: string): Observable<string> {
+    return this.query(query).pipe(
+      map((data: MysqlResult<ValueRow>) => (data.results.length > 0) ? data.results[0].v : null),
+    );
+  }
+
+  getCreatureNameById(id: string|number): Observable<string> {
+    return this.queryValue(`SELECT name AS v FROM creature_template WHERE entry = ${id}`);
+  }
+
+  getCreatureNameByGuid(guid: string|number): Observable<string> {
+    return this.queryValue(`SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id WHERE c.guid = ${guid}`);
+  }
+
+  getGameObjectNameById(id: string|number): Observable<string> {
+    return this.queryValue(`SELECT name AS v FROM gameobject_template WHERE entry = ${id}`);
+  }
+
+  getGameObjectNameByGuid(guid: string|number): Observable<string> {
+    return this.queryValue(`SELECT name AS v FROM gameobject_template AS gt INNER JOIN gameobject AS g ON gt.entry = g.id WHERE g.guid = ${guid}`);
+  }
+
+  getQuestTitleById(id: string): Observable<string> {
+    return this.queryValue(`SELECT name AS v FROM quest_template WHERE entry = ${id}`);
+  }
+
+  // getQuestTitleByCriteriaFunc1(): Observable<string> {
+  //   return of('[TODO: getQuestTitleByCriteriaFunc1]');
+  // }
+  //
+  // getQuestTitleByCriteriaFunc2(): Observable<string> {
+  //   return of('[TODO: getQuestTitleByCriteriaFunc2]');
+  // }
 }
