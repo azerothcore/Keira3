@@ -399,11 +399,32 @@ export class QueryService {
     return this.queryValue(`SELECT name AS v FROM item_template WHERE entry = ${id}`);
   }
 
-  // getQuestTitleByCriteriaFunc1(): Observable<string> {
-  //   return of('[TODO: getQuestTitleByCriteriaFunc1]');
-  // }
-  //
-  // getQuestTitleByCriteriaFunc2(): Observable<string> {
-  //   return of('[TODO: getQuestTitleByCriteriaFunc2]');
-  // }
+  // Note: at least one param should be defined
+  getQuestTitleByCriteria(
+    requiredNpcOrGo1: string|number|null,
+    requiredNpcOrGo2: string|number|null,
+    requiredNpcOrGo3: string|number|null,
+    requiredNpcOrGo4: string|number|null,
+    requiredSpellCast1: string|number|null = null,
+  ): Promise<string> {
+    const query = squel.select(squelConfig).fields({ LogTitle: 'v' }).from('quest_template');
+
+    if (!!requiredNpcOrGo1) {
+      query.where(`RequiredNpcOrGo1 = ${requiredNpcOrGo1}`);
+    }
+    if (!!requiredNpcOrGo1) {
+      query.where(`RequiredNpcOrGo2 = ${requiredNpcOrGo2}`);
+    }
+    if (!!requiredNpcOrGo1) {
+      query.where(`RequiredNpcOrGo3 = ${requiredNpcOrGo3}`);
+    }
+    if (!!requiredNpcOrGo1) {
+      query.where(`RequiredNpcOrGo4 = ${requiredNpcOrGo4}`);
+    }
+    if (!!requiredNpcOrGo1) {
+      query.where(`RequiredSpellCast1 = ${requiredSpellCast1}`);
+    }
+
+    return this.queryValue(query.toString());
+  }
 }

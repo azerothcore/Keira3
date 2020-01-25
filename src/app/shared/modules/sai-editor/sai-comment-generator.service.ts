@@ -88,6 +88,8 @@ export class SaiCommentGeneratorService {
     }
   }
 
+  // SAI comment generator
+  // partially based on https://github.com/jasperrietrae/SAI-Editor/blob/master/SAI-Editor/Classes/CommentGenerator.cs
   async generateComment(
     rows: SmartScripts[], // the set of smart_scripts rows
     smartScript: SmartScripts, // the specific row that we are generating the comment for
@@ -171,21 +173,20 @@ export class SaiCommentGeneratorService {
     if (fullLine.indexOf('_questNameActionParamOne_') > -1) {
       fullLine = fullLine.replace('_questNameActionParamOne_', await this.queryService.getQuestTitleById(smartScript.action_param1));
     }
-    // TODO: getQuestTitleByCriteriaFunc
-    // if (fullLine.indexOf('_questNameCastCreatureOrGo_') > -1) {
-    //   fullLine = fullLine.replace('_questNameCastCreatureOrGo_', this.queryService.getQuestTitleByCriteriaFunc1(
-    //     smartScript.action_param1,
-    //     smartScript.action_param1,
-    //     smartScript.action_param1,
-    //     smartScript.action_param1,
-    //     smartScript.action_param2,
-    //   ));
-    // }
-    // if (fullLine.indexOf('_questNameKillCredit_') > -1) {
-    //   fullLine = fullLine.replace('_questNameKillCredit_', this.queryService.getQuestTitleByCriteriaFunc2
-    //   (smartScript.action_param1, smartScript.action_param1, smartScript.action_param1, smartScript.action_param1)
-    //   );
-    // }
+    if (fullLine.indexOf('_questNameCastCreatureOrGo_') > -1) {
+      fullLine = fullLine.replace('_questNameCastCreatureOrGo_', await this.queryService.getQuestTitleByCriteria(
+        smartScript.action_param1,
+        smartScript.action_param1,
+        smartScript.action_param1,
+        smartScript.action_param1,
+        smartScript.action_param2,
+      ));
+    }
+    if (fullLine.indexOf('_questNameKillCredit_') > -1) {
+      fullLine = fullLine.replace('_questNameKillCredit_', await this.queryService.getQuestTitleByCriteria
+      (smartScript.action_param1, smartScript.action_param1, smartScript.action_param1, smartScript.action_param1)
+      );
+    }
     // TODO: spells
     // if (fullLine.indexOf('_spellNameActionParamOne_') > -1) {
     //   fullLine = fullLine.replace('_spellNameActionParamOne_', this.queryService.getSpellNameById(smartScript.action_param1));
