@@ -6,12 +6,8 @@ import { SAI_ACTION_COMMENTS, SAI_EVENT_COMMENTS } from '@keira-shared/modules/s
 import { QueryService } from '@keira-shared/services/query.service';
 import { SAI_TARGETS } from '@keira-shared/modules/sai-editor/constants/sai-targets';
 import {
-  DYNAMIC_FLAGS, EVENT_FLAGS,
-  GO_FLAGS,
-  NPC_FLAGS, phaseMask,
-  templates,
-  UNIT_FLAGS, unitBytes1Flags,
-  unitFieldBytes1Type, unitStandFlags, unitStandStateType
+  DYNAMIC_FLAGS, EVENT_FLAGS, GO_FLAGS, NPC_FLAGS, phaseMask, templates, UNIT_FLAGS, unitBytes1Flags, unitFieldBytes1Type, unitStandFlags,
+  unitStandStateType
 } from '@keira-shared/modules/sai-editor/constants/sai-constants';
 
 @Injectable({
@@ -175,13 +171,7 @@ export class SaiCommentGeneratorService {
     if (fullLine.indexOf('_questNameActionParamOne_') > -1) {
       fullLine = fullLine.replace('_questNameActionParamOne_', await this.queryService.getQuestTitleById(smartScript.action_param1));
     }
-    // TODO: spells
-    // if (fullLine.indexOf('_spellNameActionParamOne_') > -1) {
-    //   fullLine = fullLine.replace('_spellNameActionParamOne_', this.queryService.getSpellNameById(smartScript.action_param1));
-    // }
-    // if (fullLine.indexOf('_spellNameActionParamTwo_') > -1) {
-    //   fullLine = fullLine.replace('_spellNameActionParamTwo_', this.queryService.getSpellNameById(smartScript.action_param2));
-    // }
+    // TODO: getQuestTitleByCriteriaFunc
     // if (fullLine.indexOf('_questNameCastCreatureOrGo_') > -1) {
     //   fullLine = fullLine.replace('_questNameCastCreatureOrGo_', this.queryService.getQuestTitleByCriteriaFunc1(
     //     smartScript.action_param1,
@@ -195,6 +185,13 @@ export class SaiCommentGeneratorService {
     //   fullLine = fullLine.replace('_questNameKillCredit_', this.queryService.getQuestTitleByCriteriaFunc2
     //   (smartScript.action_param1, smartScript.action_param1, smartScript.action_param1, smartScript.action_param1)
     //   );
+    // }
+    // TODO: spells
+    // if (fullLine.indexOf('_spellNameActionParamOne_') > -1) {
+    //   fullLine = fullLine.replace('_spellNameActionParamOne_', this.queryService.getSpellNameById(smartScript.action_param1));
+    // }
+    // if (fullLine.indexOf('_spellNameActionParamTwo_') > -1) {
+    //   fullLine = fullLine.replace('_spellNameActionParamTwo_', this.queryService.getSpellNameById(smartScript.action_param2));
     // }
 
     if (fullLine.indexOf('_reactStateParamOne_') > -1) {
