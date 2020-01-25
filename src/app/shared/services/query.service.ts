@@ -369,30 +369,34 @@ export class QueryService {
   }
 
   // Input query format must be: SELECT something AS v FROM ...
-  queryValue(query: string): Observable<string> {
+  queryValue(query: string): Promise<string> {
     return this.query(query).pipe(
       map((data: MysqlResult<ValueRow>) => (data.results.length > 0) ? data.results[0].v : null),
-    );
+    ).toPromise();
   }
 
-  getCreatureNameById(id: string|number): Observable<string> {
+  getCreatureNameById(id: string|number): Promise<string> {
     return this.queryValue(`SELECT name AS v FROM creature_template WHERE entry = ${id}`);
   }
 
-  getCreatureNameByGuid(guid: string|number): Observable<string> {
+  getCreatureNameByGuid(guid: string|number): Promise<string> {
     return this.queryValue(`SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id WHERE c.guid = ${guid}`);
   }
 
-  getGameObjectNameById(id: string|number): Observable<string> {
+  getGameObjectNameById(id: string|number): Promise<string> {
     return this.queryValue(`SELECT name AS v FROM gameobject_template WHERE entry = ${id}`);
   }
 
-  getGameObjectNameByGuid(guid: string|number): Observable<string> {
+  getGameObjectNameByGuid(guid: string|number): Promise<string> {
     return this.queryValue(`SELECT name AS v FROM gameobject_template AS gt INNER JOIN gameobject AS g ON gt.entry = g.id WHERE g.guid = ${guid}`);
   }
 
-  getQuestTitleById(id: string): Observable<string> {
+  getQuestTitleById(id: string|number): Promise<string> {
     return this.queryValue(`SELECT name AS v FROM quest_template WHERE entry = ${id}`);
+  }
+
+  getItemNameById(id: string|number): Promise<string> {
+    return this.queryValue(`SELECT name AS v FROM item_template WHERE entry = ${id}`);
   }
 
   // getQuestTitleByCriteriaFunc1(): Observable<string> {
