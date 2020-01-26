@@ -29,6 +29,19 @@ fdescribe('SaiCommentGeneratorService', () => {
       spyOn(queryService, 'getItemNameById').and.returnValue(of(mockItemNameById).toPromise());
     });
 
+    it('should correctly handle linked events', async () => {
+      const name = 'Event SAI_EVENTS.ACCEPTED_QUEST';
+      const rows: SmartScripts[] = [
+        createSai({ id: 1, event_type: SAI_EVENTS.ACCEPTED_QUEST, link: 2 }),
+        createSai({ id: 2, event_type: SAI_EVENTS.LINK, link: 3 }),
+        createSai({ id: 3, event_type: SAI_EVENTS.LINK }),
+      ];
+      const expected = `MockEntity - On Quest 'mockQuestTitleById' Taken - No Action Type`;
+      const service: SaiCommentGeneratorService = TestBed.get(SaiCommentGeneratorService);
+
+      expect(await service.generateComment(rows, rows[2], mockName)).toEqual(expected);
+    });
+
     const cases: { name: string, input: Partial<SmartScripts>, expected: string }[] = [
       {
         name: 'Empty Creature',
