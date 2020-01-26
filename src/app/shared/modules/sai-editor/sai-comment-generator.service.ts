@@ -101,10 +101,6 @@ export class SaiCommentGeneratorService {
     switch (smartScript.source_type) {
 
       case SAI_TYPES.SAI_TYPE_CREATURE:
-        fullLine += name + ' - ';
-        fullLine += SAI_EVENT_COMMENTS[smartScript.event_type];
-        break;
-
       case SAI_TYPES.SAI_TYPE_GAMEOBJECT:
         fullLine += name + ' - ';
         fullLine += SAI_EVENT_COMMENTS[smartScript.event_type];
