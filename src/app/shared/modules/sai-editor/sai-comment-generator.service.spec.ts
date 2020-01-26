@@ -22,12 +22,12 @@ fdescribe('SaiCommentGeneratorService', () => {
 
     beforeEach(() => {
       const queryService = TestBed.get(QueryService);
-      spyOn(queryService, 'getCreatureNameById').and.returnValue(of(mockCreatureNameById).toPromise());
-      spyOn(queryService, 'getCreatureNameByGuid').and.returnValue(of(mockCreatureNameByGuid).toPromise());
-      spyOn(queryService, 'getGameObjectNameById').and.returnValue(of(mockGameobjectNameById).toPromise());
-      spyOn(queryService, 'getGameObjectNameByGuid').and.returnValue(of(mockGameobjectNameByGuid).toPromise());
-      spyOn(queryService, 'getQuestTitleById').and.returnValue(of(mockQuestTitleById).toPromise());
-      spyOn(queryService, 'getItemNameById').and.returnValue(of(mockItemNameById).toPromise());
+      spyOn(queryService, 'getCreatureNameById').and.callFake(i => of(mockCreatureNameById + i).toPromise());
+      spyOn(queryService, 'getCreatureNameByGuid').and.callFake(i => of(mockCreatureNameByGuid + i).toPromise());
+      spyOn(queryService, 'getGameObjectNameById').and.callFake(i => of(mockGameobjectNameById + i).toPromise());
+      spyOn(queryService, 'getGameObjectNameByGuid').and.callFake(i => of(mockGameobjectNameByGuid + i).toPromise());
+      spyOn(queryService, 'getQuestTitleById').and.callFake(i => of(mockQuestTitleById + i).toPromise());
+      spyOn(queryService, 'getItemNameById').and.callFake(i => of(mockItemNameById + i).toPromise());
     });
 
     it('should correctly handle linked events', async () => {
@@ -109,6 +109,19 @@ fdescribe('SaiCommentGeneratorService', () => {
         },
         expected: `MockEntity - In Combat - Pick Closest Waypoint 11 22 33 44 55 66`,
       },
+      // {
+      //   name: 'SAI_ACTIONS.FAIL_QUEST',
+      //   input: {
+      //     action_type: SAI_ACTIONS.FAIL_QUEST,
+      //     action_param1: 11,
+      //     action_param2: 22,
+      //     action_param3: 33,
+      //     action_param4: 44,
+      //     action_param5: 55,
+      //     action_param6: 66,
+      //   },
+      //   expected: `MockEntity - In Combat - Pick Closest Waypoint 11 22 33 44 55 66`,
+      // },
     ];
 
     for (const { name, input, expected } of cases) {
