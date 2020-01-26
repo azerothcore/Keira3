@@ -786,7 +786,7 @@ describe('QueryService', () => {
     });
   });
 
-  fdescribe('get helpers', () => {
+  describe('get helpers', () => {
     const result = of('mock result').toPromise();
     const id = '123';
     const guid = id;
@@ -834,6 +834,20 @@ describe('QueryService', () => {
       expect(service.getItemNameById(id)).toEqual(result);
       expect(service.queryValue).toHaveBeenCalledWith(
         `SELECT name AS v FROM item_template WHERE entry = ${id}`
+      );
+    });
+
+    it('getQuestTitleByCriteria (case 1)', () => {
+      expect(service.getQuestTitleByCriteria(null, 2, 3, 4, 5)).toEqual(result);
+      expect(service.queryValue).toHaveBeenCalledWith(
+        'SELECT `LogTitle` AS "v" FROM `quest_template` WHERE (RequiredNpcOrGo2 = 2) AND (RequiredNpcOrGo3 = 3) AND (RequiredNpcOrGo4 = 4) AND (RequiredSpellCast1 = 5)'
+      );
+    });
+
+    it('getQuestTitleByCriteria (case 2)', () => {
+      expect(service.getQuestTitleByCriteria(1, null, null, null)).toEqual(result);
+      expect(service.queryValue).toHaveBeenCalledWith(
+        'SELECT `LogTitle` AS "v" FROM `quest_template` WHERE (RequiredNpcOrGo1 = 1)'
       );
     });
   });

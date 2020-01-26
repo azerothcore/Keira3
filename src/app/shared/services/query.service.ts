@@ -412,16 +412,16 @@ export class QueryService {
     if (!!requiredNpcOrGo1) {
       query.where(`RequiredNpcOrGo1 = ${requiredNpcOrGo1}`);
     }
-    if (!!requiredNpcOrGo1) {
+    if (!!requiredNpcOrGo2) {
       query.where(`RequiredNpcOrGo2 = ${requiredNpcOrGo2}`);
     }
-    if (!!requiredNpcOrGo1) {
+    if (!!requiredNpcOrGo3) {
       query.where(`RequiredNpcOrGo3 = ${requiredNpcOrGo3}`);
     }
-    if (!!requiredNpcOrGo1) {
+    if (!!requiredNpcOrGo4) {
       query.where(`RequiredNpcOrGo4 = ${requiredNpcOrGo4}`);
     }
-    if (!!requiredNpcOrGo1) {
+    if (!!requiredSpellCast1) {
       query.where(`RequiredSpellCast1 = ${requiredSpellCast1}`);
     }
 
