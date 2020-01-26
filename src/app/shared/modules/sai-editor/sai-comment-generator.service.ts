@@ -20,7 +20,7 @@ export class SaiCommentGeneratorService {
   ) {}
 
   private getStringByTargetType(smartScript: SmartScripts): string {
-    switch (smartScript.target_type) {
+    switch (Number(smartScript.target_type)) {
       case SAI_TARGETS.SELF:
         return 'Self';
       case SAI_TARGETS.VICTIM:
@@ -95,7 +95,7 @@ export class SaiCommentGeneratorService {
   ): Promise<string> {
     let eventLine = '';
 
-    switch (smartScript.source_type) {
+    switch (Number(smartScript.source_type)) {
 
       case SAI_TYPES.SAI_TYPE_CREATURE:
       case SAI_TYPES.SAI_TYPE_GAMEOBJECT:
@@ -106,7 +106,7 @@ export class SaiCommentGeneratorService {
       case SAI_TYPES.SAI_TYPE_AREATRIGGER:
         eventLine += 'Areatrigger - ';
 
-        switch (smartScript.event_type) {
+        switch (Number(smartScript.event_type)) {
           case SAI_EVENTS.AREATRIGGER_ONTRIGGER:
           case SAI_EVENTS.LINK:
             eventLine += 'On Trigger';
@@ -356,7 +356,7 @@ export class SaiCommentGeneratorService {
 
     if (actionLine.indexOf('_sheathActionParamOne_') > -1) {
 
-      switch (smartScript.action_param1) {
+      switch (Number(smartScript.action_param1)) {
         case 0:
           actionLine = actionLine.replace('_sheathActionParamOne_', 'Unarmed');
           break;
@@ -421,7 +421,7 @@ export class SaiCommentGeneratorService {
 
     if (actionLine.indexOf('_updateAiTemplateActionParamOne_') > -1) {
 
-      switch (smartScript.action_param1) {
+      switch (Number(smartScript.action_param1)) {
         case templates.BASIC:
           actionLine = actionLine.replace('_updateAiTemplateActionParamOne_', 'Basic');
           break;
@@ -467,7 +467,7 @@ export class SaiCommentGeneratorService {
 
     if (actionLine.indexOf('_goStateActionParamOne_') > -1) {
 
-      switch (smartScript.action_param1) {
+      switch (Number(smartScript.action_param1)) {
         case 0:
           actionLine = actionLine.replace('_goStateActionParamOne_', 'Not Ready');
           break;
@@ -537,9 +537,9 @@ export class SaiCommentGeneratorService {
 
     if (actionLine.indexOf('_getBytes1Flags_') > -1) {
 
-      switch (smartScript.action_param2) {
+      switch (Number(smartScript.action_param2)) {
         case unitFieldBytes1Type.STAND_STAND_STATE_TYPE:
-          switch (smartScript.action_param1) {
+          switch (Number(smartScript.action_param1)) {
             case unitStandStateType.STAND:
               actionLine = actionLine.replace('_getBytes1Flags_', 'Standstate Stand Up');
               break;
