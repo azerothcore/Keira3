@@ -86,6 +86,15 @@ fdescribe('SaiCommentGeneratorService', () => {
         },
         expected: `MockEntity - On Quest 'mockQuestTitleById' Taken - No Action Type`,
       },
+      {
+        name: 'Event SAI_EVENTS.MANA_PCT check event param 1 and 2',
+        input: {
+          event_type: SAI_EVENTS.MANA_PCT,
+          event_param1: 10,
+          event_param2: 20,
+        },
+        expected: `MockEntity - Between 10-20% Mana - No Action Type`,
+      },
     ];
 
     for (const { name, input, expected } of cases) {
