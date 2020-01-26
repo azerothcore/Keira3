@@ -93,26 +93,26 @@ export class SaiCommentGeneratorService {
     name: string,
     smartScriptLink: SmartScripts,
   ): Promise<string> {
-    let fullLine = '';
+    let eventLine = '';
 
     switch (smartScript.source_type) {
 
       case SAI_TYPES.SAI_TYPE_CREATURE:
       case SAI_TYPES.SAI_TYPE_GAMEOBJECT:
-        fullLine += name + ' - ';
-        fullLine += SAI_EVENT_COMMENTS[smartScript.event_type];
+        eventLine += name + ' - ';
+        eventLine += SAI_EVENT_COMMENTS[smartScript.event_type];
         break;
 
       case SAI_TYPES.SAI_TYPE_AREATRIGGER:
-        fullLine += 'Areatrigger - ';
+        eventLine += 'Areatrigger - ';
 
         switch (smartScript.event_type) {
           case SAI_EVENTS.AREATRIGGER_ONTRIGGER:
           case SAI_EVENTS.LINK:
-            fullLine += 'On Trigger';
+            eventLine += 'On Trigger';
             break;
           default:
-            fullLine += 'INCORRECT EVENT TYPE';
+            eventLine += 'INCORRECT EVENT TYPE';
             break;
         }
 
@@ -123,57 +123,57 @@ export class SaiCommentGeneratorService {
         break;
     }
 
-    if ((fullLine.indexOf('_previousLineComment_') > -1) && (smartScriptLink != null)) {
+    if ((eventLine.indexOf('_previousLineComment_') > -1) && (smartScriptLink != null)) {
 
-      fullLine = fullLine.replace('_previousLineComment_', SAI_EVENT_COMMENTS[smartScriptLink.event_type]);
+      eventLine = eventLine.replace('_previousLineComment_', SAI_EVENT_COMMENTS[smartScriptLink.event_type]);
       smartScript.event_param1 = smartScriptLink.event_param1;
       smartScript.event_param2 = smartScriptLink.event_param2;
       smartScript.event_param3 = smartScriptLink.event_param3;
       smartScript.event_param4 = smartScriptLink.event_param4;
     }
 
-    fullLine = fullLine.replace('_previousLineComment_', 'MISSING LINK');
+    eventLine = eventLine.replace('_previousLineComment_', 'MISSING LINK');
 
-    fullLine = fullLine.replace('_eventParamOne_',   `${smartScript.event_param1}`);
-    fullLine = fullLine.replace('_eventParamTwo_',   `${smartScript.event_param2}`);
-    fullLine = fullLine.replace('_eventParamThree_', `${smartScript.event_param3}`);
-    fullLine = fullLine.replace('_eventParamFour_',  `${smartScript.event_param4}`);
+    eventLine = eventLine.replace('_eventParamOne_',   `${smartScript.event_param1}`);
+    eventLine = eventLine.replace('_eventParamTwo_',   `${smartScript.event_param2}`);
+    eventLine = eventLine.replace('_eventParamThree_', `${smartScript.event_param3}`);
+    eventLine = eventLine.replace('_eventParamFour_',  `${smartScript.event_param4}`);
 
-    if (fullLine.indexOf('_questNameEventParamOne_') > -1) {
-      fullLine = fullLine.replace('_questNameEventParamOne_', await this.queryService.getQuestTitleById(smartScript.event_param1));
+    if (eventLine.indexOf('_questNameEventParamOne_') > -1) {
+      eventLine = eventLine.replace('_questNameEventParamOne_', await this.queryService.getQuestTitleById(smartScript.event_param1));
     }
     // TODO: spells
-    // if (fullLine.indexOf('_spellNameEventParamOne_') > -1) {
-    //   fullLine = fullLine.replace('_spellNameEventParamOne_', this.queryService.getSpellNameById(smartScript.event_param1));
+    // if (actionLine.indexOf('_spellNameEventParamOne_') > -1) {
+    //   actionLine = actionLine.replace('_spellNameEventParamOne_', this.queryService.getSpellNameById(smartScript.event_param1));
     // }
-    // if (fullLine.indexOf('_targetCastingSpellName_') > -1) {
-    //   fullLine = fullLine.replace('_targetCastingSpellName_', this.queryService.getSpellNameById(smartScript.event_param3));
+    // if (actionLine.indexOf('_targetCastingSpellName_') > -1) {
+    //   actionLine = actionLine.replace('_targetCastingSpellName_', this.queryService.getSpellNameById(smartScript.event_param3));
     // }
-    // if (fullLine.indexOf('_hasAuraEventParamOne_') > -1) {
-    //   fullLine = fullLine.replace('_hasAuraEventParamOne_',   this.queryService.getSpellNameById(smartScript.event_param1));
+    // if (actionLine.indexOf('_hasAuraEventParamOne_') > -1) {
+    //   actionLine = actionLine.replace('_hasAuraEventParamOne_',   this.queryService.getSpellNameById(smartScript.event_param1));
     // }
 
-    return fullLine;
+    return eventLine;
   }
 
   private async generateActionComment(
     smartScript: SmartScripts,
     smartScriptLink: SmartScripts,
   ): Promise<string> {
-    let fullLine = SAI_ACTION_COMMENTS[smartScript.action_type];
+    let actionLine = SAI_ACTION_COMMENTS[smartScript.action_type];
 
-    fullLine = fullLine.replace('_actionParamOne_',   `${smartScript.action_param1}`);
-    fullLine = fullLine.replace('_actionParamTwo_',   `${smartScript.action_param2}`);
-    fullLine = fullLine.replace('_actionParamThree_', `${smartScript.action_param3}`);
-    fullLine = fullLine.replace('_actionParamFour_',  `${smartScript.action_param4}`);
-    fullLine = fullLine.replace('_actionParamFive_',  `${smartScript.action_param5}`);
-    fullLine = fullLine.replace('_actionParamSix_',   `${smartScript.action_param6}`);
+    actionLine = actionLine.replace('_actionParamOne_',   `${smartScript.action_param1}`);
+    actionLine = actionLine.replace('_actionParamTwo_',   `${smartScript.action_param2}`);
+    actionLine = actionLine.replace('_actionParamThree_', `${smartScript.action_param3}`);
+    actionLine = actionLine.replace('_actionParamFour_',  `${smartScript.action_param4}`);
+    actionLine = actionLine.replace('_actionParamFive_',  `${smartScript.action_param5}`);
+    actionLine = actionLine.replace('_actionParamSix_',   `${smartScript.action_param6}`);
 
-    if (fullLine.indexOf('_questNameActionParamOne_') > -1) {
-      fullLine = fullLine.replace('_questNameActionParamOne_', await this.queryService.getQuestTitleById(smartScript.action_param1));
+    if (actionLine.indexOf('_questNameActionParamOne_') > -1) {
+      actionLine = actionLine.replace('_questNameActionParamOne_', await this.queryService.getQuestTitleById(smartScript.action_param1));
     }
-    if (fullLine.indexOf('_questNameCastCreatureOrGo_') > -1) {
-      fullLine = fullLine.replace('_questNameCastCreatureOrGo_', await this.queryService.getQuestTitleByCriteria(
+    if (actionLine.indexOf('_questNameCastCreatureOrGo_') > -1) {
+      actionLine = actionLine.replace('_questNameCastCreatureOrGo_', await this.queryService.getQuestTitleByCriteria(
         smartScript.action_param1,
         smartScript.action_param1,
         smartScript.action_param1,
@@ -181,38 +181,38 @@ export class SaiCommentGeneratorService {
         smartScript.action_param2,
       ));
     }
-    if (fullLine.indexOf('_questNameKillCredit_') > -1) {
-      fullLine = fullLine.replace('_questNameKillCredit_', await this.queryService.getQuestTitleByCriteria
+    if (actionLine.indexOf('_questNameKillCredit_') > -1) {
+      actionLine = actionLine.replace('_questNameKillCredit_', await this.queryService.getQuestTitleByCriteria
         (smartScript.action_param1, smartScript.action_param1, smartScript.action_param1, smartScript.action_param1)
       );
     }
     // TODO: spells
-    // if (fullLine.indexOf('_spellNameActionParamOne_') > -1) {
-    //   fullLine = fullLine.replace('_spellNameActionParamOne_', this.queryService.getSpellNameById(smartScript.action_param1));
+    // if (actionLine.indexOf('_spellNameActionParamOne_') > -1) {
+    //   actionLine = actionLine.replace('_spellNameActionParamOne_', this.queryService.getSpellNameById(smartScript.action_param1));
     // }
-    // if (fullLine.indexOf('_spellNameActionParamTwo_') > -1) {
-    //   fullLine = fullLine.replace('_spellNameActionParamTwo_', this.queryService.getSpellNameById(smartScript.action_param2));
+    // if (actionLine.indexOf('_spellNameActionParamTwo_') > -1) {
+    //   actionLine = actionLine.replace('_spellNameActionParamTwo_', this.queryService.getSpellNameById(smartScript.action_param2));
     // }
 
-    if (fullLine.indexOf('_reactStateParamOne_') > -1) {
+    if (actionLine.indexOf('_reactStateParamOne_') > -1) {
 
       switch (Number(smartScript.action_param1)) {
         case 0:
-          fullLine = fullLine.replace('_reactStateParamOne_', 'Passive');
+          actionLine = actionLine.replace('_reactStateParamOne_', 'Passive');
           break;
         case 1:
-          fullLine = fullLine.replace('_reactStateParamOne_', 'Defensive');
+          actionLine = actionLine.replace('_reactStateParamOne_', 'Defensive');
           break;
         case 2:
-          fullLine = fullLine.replace('_reactStateParamOne_', 'Aggressive');
+          actionLine = actionLine.replace('_reactStateParamOne_', 'Aggressive');
           break;
         default:
-          fullLine = fullLine.replace('_reactStateParamOne_', '[Unknown Reactstate]');
+          actionLine = actionLine.replace('_reactStateParamOne_', '[Unknown Reactstate]');
           break;
       }
     }
 
-    if (fullLine.indexOf('_actionRandomParameters_') > -1) {
+    if (actionLine.indexOf('_actionRandomParameters_') > -1) {
 
       let randomEmotes = smartScript.action_param1 + ', ' + smartScript.action_param2;
 
@@ -232,14 +232,17 @@ export class SaiCommentGeneratorService {
         randomEmotes += ', ' + smartScript.action_param6;
       }
 
-      fullLine = fullLine.replace('_actionRandomParameters_', randomEmotes);
+      actionLine = actionLine.replace('_actionRandomParameters_', randomEmotes);
     }
 
-    if (fullLine.indexOf('_creatureNameActionParamOne_') > -1) {
-      fullLine = fullLine.replace('_creatureNameActionParamOne_', await this.queryService.getCreatureNameById(smartScript.action_param1));
+    if (actionLine.indexOf('_creatureNameActionParamOne_') > -1) {
+      actionLine = actionLine.replace(
+        '_creatureNameActionParamOne_',
+        await this.queryService.getCreatureNameById(smartScript.action_param1),
+      );
     }
 
-    if (fullLine.indexOf('_getUnitFlags_') > -1) {
+    if (actionLine.indexOf('_getUnitFlags_') > -1) {
 
       let commentUnitFlag = '';
       const unitFlags = smartScript.action_param1;
@@ -273,13 +276,13 @@ export class SaiCommentGeneratorService {
         // ! Trim last ' & ' from the comment..
         commentUnitFlag = commentUnitFlag.substring(0, commentUnitFlag.length - 3);
 
-        fullLine = fullLine.replace('_getUnitFlags_', 's_getUnitFlags_');
+        actionLine = actionLine.replace('_getUnitFlags_', 's_getUnitFlags_');
       }
 
-      fullLine = fullLine.replace('_getUnitFlags_', ' ' + commentUnitFlag);
+      actionLine = actionLine.replace('_getUnitFlags_', ' ' + commentUnitFlag);
     }
 
-    if (fullLine.indexOf('_getNpcFlags_') > -1) {
+    if (actionLine.indexOf('_getNpcFlags_') > -1) {
       let commentNpcFlag = '';
       const npcFlags = smartScript.action_param1;
 
@@ -315,175 +318,175 @@ export class SaiCommentGeneratorService {
         // ! Trim last ' & ' from the comment..
         commentNpcFlag = commentNpcFlag.substring(0, commentNpcFlag.length - 3);
 
-        fullLine = fullLine.replace('_getNpcFlags_', 's_getNpcFlags_');
+        actionLine = actionLine.replace('_getNpcFlags_', 's_getNpcFlags_');
       }
 
-      fullLine = fullLine.replace('_getNpcFlags_', ' ' + commentNpcFlag);
+      actionLine = actionLine.replace('_getNpcFlags_', ' ' + commentNpcFlag);
     }
 
-    if (fullLine.indexOf('_startOrStopActionParamOne_') > -1) {
+    if (actionLine.indexOf('_startOrStopActionParamOne_') > -1) {
 
       if (`${smartScript.action_param1}` === '0') {
-        fullLine = fullLine.replace('_startOrStopActionParamOne_', 'Stop');
+        actionLine = actionLine.replace('_startOrStopActionParamOne_', 'Stop');
       } else { // ! Even if above 1 or below 0 we start attacking/allow-combat-movement
-        fullLine = fullLine.replace('_startOrStopActionParamOne_', 'Start');
+        actionLine = actionLine.replace('_startOrStopActionParamOne_', 'Start');
       }
     }
 
-    if (fullLine.indexOf('_enableDisableActionParamOne_') > -1) {
+    if (actionLine.indexOf('_enableDisableActionParamOne_') > -1) {
 
       if (`${smartScript.action_param1}` === '0') {
-        fullLine = fullLine.replace('_enableDisableActionParamOne_', 'Disable');
+        actionLine = actionLine.replace('_enableDisableActionParamOne_', 'Disable');
       } else { // ! Even if above 1 or below 0 we start attacking/allow-combat-movement
-        fullLine = fullLine.replace('_enableDisableActionParamOne_', 'Enable');
+        actionLine = actionLine.replace('_enableDisableActionParamOne_', 'Enable');
       }
     }
 
-    if (fullLine.indexOf('_incrementOrDecrementActionParamOne_') > -1) {
+    if (actionLine.indexOf('_incrementOrDecrementActionParamOne_') > -1) {
 
       if (`${smartScript.action_param1}` === '1') {
-        fullLine = fullLine.replace('_incrementOrDecrementActionParamOne_', 'Increment');
+        actionLine = actionLine.replace('_incrementOrDecrementActionParamOne_', 'Increment');
       } else if (`${smartScript.action_param2}` === '1') {
-        fullLine = fullLine.replace('_incrementOrDecrementActionParamOne_', 'Decrement');
+        actionLine = actionLine.replace('_incrementOrDecrementActionParamOne_', 'Decrement');
       } else {
-        fullLine = fullLine.replace('_incrementOrDecrementActionParamOne_', 'Increment or Decrement');
+        actionLine = actionLine.replace('_incrementOrDecrementActionParamOne_', 'Increment or Decrement');
       }
       // else //? What to do?
     }
 
-    if (fullLine.indexOf('_sheathActionParamOne_') > -1) {
+    if (actionLine.indexOf('_sheathActionParamOne_') > -1) {
 
       switch (smartScript.action_param1) {
         case 0:
-          fullLine = fullLine.replace('_sheathActionParamOne_', 'Unarmed');
+          actionLine = actionLine.replace('_sheathActionParamOne_', 'Unarmed');
           break;
         case 1:
-          fullLine = fullLine.replace('_sheathActionParamOne_', 'Melee');
+          actionLine = actionLine.replace('_sheathActionParamOne_', 'Melee');
           break;
         case 2:
-          fullLine = fullLine.replace('_sheathActionParamOne_', 'Ranged');
+          actionLine = actionLine.replace('_sheathActionParamOne_', 'Ranged');
           break;
         default:
-          fullLine = fullLine.replace('_sheathActionParamOne_', '[Unknown Sheath]');
+          actionLine = actionLine.replace('_sheathActionParamOne_', '[Unknown Sheath]');
           break;
       }
     }
 
-    if (fullLine.indexOf('_forceDespawnActionParamOne_') > -1) {
+    if (actionLine.indexOf('_forceDespawnActionParamOne_') > -1) {
 
       if (smartScript.action_param1 > 2) {
-        fullLine = fullLine.replace('_forceDespawnActionParamOne_', 'In ' + smartScript.action_param1 + ' ms');
+        actionLine = actionLine.replace('_forceDespawnActionParamOne_', 'In ' + smartScript.action_param1 + ' ms');
       } else {
-        fullLine = fullLine.replace('_forceDespawnActionParamOne_', 'Instant');
+        actionLine = actionLine.replace('_forceDespawnActionParamOne_', 'Instant');
       }
     }
 
-    if (fullLine.indexOf('_invincibilityHpActionParamsOneTwo_') > -1) {
+    if (actionLine.indexOf('_invincibilityHpActionParamsOneTwo_') > -1) {
 
       if (smartScript.action_param1 > 0) {
-        fullLine = fullLine.replace('_invincibilityHpActionParamsOneTwo_', 'Set Invincibility Hp ' + smartScript.action_param1);
+        actionLine = actionLine.replace('_invincibilityHpActionParamsOneTwo_', 'Set Invincibility Hp ' + smartScript.action_param1);
       } else if (smartScript.action_param2 > 0) {
-        fullLine = fullLine.replace('_invincibilityHpActionParamsOneTwo_', 'Set Invincibility Hp ' + smartScript.action_param2 + '%');
+        actionLine = actionLine.replace('_invincibilityHpActionParamsOneTwo_', 'Set Invincibility Hp ' + smartScript.action_param2 + '%');
       } else if (smartScript.action_param1 === 0 && smartScript.action_param2 === 0) {
-        fullLine = fullLine.replace('_invincibilityHpActionParamsOneTwo_', 'Reset Invincibility Hp');
+        actionLine = actionLine.replace('_invincibilityHpActionParamsOneTwo_', 'Reset Invincibility Hp');
       } else {
-        fullLine = fullLine.replace('_invincibilityHpActionParamsOneTwo_', '[Unsupported parameters]');
+        actionLine = actionLine.replace('_invincibilityHpActionParamsOneTwo_', '[Unsupported parameters]');
       }
     }
 
-    if (fullLine.indexOf('_onOffActionParamOne_') > -1) {
+    if (actionLine.indexOf('_onOffActionParamOne_') > -1) {
 
       if (smartScript.action_param1 === 1) {
-        fullLine = fullLine.replace('_onOffActionParamOne_', 'On');
+        actionLine = actionLine.replace('_onOffActionParamOne_', 'On');
       } else {
-        fullLine = fullLine.replace('_onOffActionParamOne_', 'Off');
+        actionLine = actionLine.replace('_onOffActionParamOne_', 'Off');
       }
     }
 
-    if (fullLine.indexOf('_gameobjectNameActionParamOne_') > -1) {
-      fullLine = fullLine.replace('_gameobjectNameActionParamOne_', `'${await this.queryService.getGameObjectNameById(smartScript.action_param1)}'`);
+    if (actionLine.indexOf('_gameobjectNameActionParamOne_') > -1) {
+      actionLine = actionLine.replace('_gameobjectNameActionParamOne_', `'${await this.queryService.getGameObjectNameById(smartScript.action_param1)}'`);
     }
 
-    if (fullLine.indexOf('_addItemBasedOnActionParams_') > -1) {
-      fullLine = fullLine.replace('_addItemBasedOnActionParams_',
+    if (actionLine.indexOf('_addItemBasedOnActionParams_') > -1) {
+      actionLine = actionLine.replace('_addItemBasedOnActionParams_',
         `'${await this.queryService.getItemNameById(smartScript.action_param1)}'`,
       );
 
       if (smartScript.action_param2 > 1) {
-        fullLine += ' ' + smartScript.action_param2 + ' Times';
+        actionLine += ' ' + smartScript.action_param2 + ' Times';
       } else {
-        fullLine += ' 1 Time';
+        actionLine += ' 1 Time';
       }
     }
 
-    if (fullLine.indexOf('_updateAiTemplateActionParamOne_') > -1) {
+    if (actionLine.indexOf('_updateAiTemplateActionParamOne_') > -1) {
 
       switch (smartScript.action_param1) {
         case templates.BASIC:
-          fullLine = fullLine.replace('_updateAiTemplateActionParamOne_', 'Basic');
+          actionLine = actionLine.replace('_updateAiTemplateActionParamOne_', 'Basic');
           break;
         case templates.CASTER:
-          fullLine = fullLine.replace('_updateAiTemplateActionParamOne_', 'Caster');
+          actionLine = actionLine.replace('_updateAiTemplateActionParamOne_', 'Caster');
           break;
         case templates.TURRET:
-          fullLine = fullLine.replace('_updateAiTemplateActionParamOne_', 'Turret');
+          actionLine = actionLine.replace('_updateAiTemplateActionParamOne_', 'Turret');
           break;
         case templates.PASSIVE:
-          fullLine = fullLine.replace('_updateAiTemplateActionParamOne_', 'Passive');
+          actionLine = actionLine.replace('_updateAiTemplateActionParamOne_', 'Passive');
           break;
         case templates.CAGED_GO_PART:
-          fullLine = fullLine.replace('_updateAiTemplateActionParamOne_', 'Caged Gameobject Part');
+          actionLine = actionLine.replace('_updateAiTemplateActionParamOne_', 'Caged Gameobject Part');
           break;
         case templates.CAGED_NPC_PART:
-          fullLine = fullLine.replace('_updateAiTemplateActionParamOne_', 'Caged Creature Part');
+          actionLine = actionLine.replace('_updateAiTemplateActionParamOne_', 'Caged Creature Part');
           break;
         default:
-          fullLine = fullLine.replace('_updateAiTemplateActionParamOne_', '<_updateAiTemplateActionParamOne_ Unknown ai template]');
+          actionLine = actionLine.replace('_updateAiTemplateActionParamOne_', '<_updateAiTemplateActionParamOne_ Unknown ai template]');
           break;
       }
     }
 
-    if (fullLine.indexOf('_setOrientationTargetType_') > -1) {
+    if (actionLine.indexOf('_setOrientationTargetType_') > -1) {
 
       switch (Number(smartScript.target_type)) {
         case SAI_TARGETS.SELF:
-          fullLine = fullLine.replace('_setOrientationTargetType_', 'Home Position');
+          actionLine = actionLine.replace('_setOrientationTargetType_', 'Home Position');
           break;
         case SAI_TARGETS.POSITION:
-          fullLine = fullLine.replace('_setOrientationTargetType_', `${smartScript.target_o}`);
+          actionLine = actionLine.replace('_setOrientationTargetType_', `${smartScript.target_o}`);
           break;
         default:
-          fullLine = fullLine.replace('_setOrientationTargetType_', this.getStringByTargetType(smartScript));
+          actionLine = actionLine.replace('_setOrientationTargetType_', this.getStringByTargetType(smartScript));
           break;
       }
     }
 
-    if (fullLine.indexOf('_getTargetType_') > -1) {
-      fullLine = fullLine.replace('_getTargetType_', this.getStringByTargetType(smartScript));
+    if (actionLine.indexOf('_getTargetType_') > -1) {
+      actionLine = actionLine.replace('_getTargetType_', this.getStringByTargetType(smartScript));
     }
 
-    if (fullLine.indexOf('_goStateActionParamOne_') > -1) {
+    if (actionLine.indexOf('_goStateActionParamOne_') > -1) {
 
       switch (smartScript.action_param1) {
         case 0:
-          fullLine = fullLine.replace('_goStateActionParamOne_', 'Not Ready');
+          actionLine = actionLine.replace('_goStateActionParamOne_', 'Not Ready');
           break;
         case 1:
-          fullLine = fullLine.replace('_goStateActionParamOne_', 'Ready');
+          actionLine = actionLine.replace('_goStateActionParamOne_', 'Ready');
           break;
         case 2:
-          fullLine = fullLine.replace('_goStateActionParamOne_', 'Activated');
+          actionLine = actionLine.replace('_goStateActionParamOne_', 'Activated');
           break;
         case 3:
-          fullLine = fullLine.replace('_goStateActionParamOne_', 'Deactivated');
+          actionLine = actionLine.replace('_goStateActionParamOne_', 'Deactivated');
           break;
         default:
-          fullLine = fullLine.replace('_goStateActionParamOne_', '[Unknown Gameobject State]');
+          actionLine = actionLine.replace('_goStateActionParamOne_', '[Unknown Gameobject State]');
           break;
       }
     }
 
-    if (fullLine.indexOf('_getGoFlags_') > -1) {
+    if (actionLine.indexOf('_getGoFlags_') > -1) {
       let commentGoFlag = '';
       const goFlags = smartScript.action_param1;
 
@@ -501,13 +504,13 @@ export class SaiCommentGeneratorService {
         // ! Trim last ' & ' from the comment..
         commentGoFlag = commentGoFlag.substring(0, commentGoFlag.length - 3);
 
-        fullLine = fullLine.replace('_getGoFlags_', 's_getGoFlags_');
+        actionLine = actionLine.replace('_getGoFlags_', 's_getGoFlags_');
       }
 
-      fullLine = fullLine.replace('_getGoFlags_', ' ' + commentGoFlag);
+      actionLine = actionLine.replace('_getGoFlags_', ' ' + commentGoFlag);
     }
 
-    if (fullLine.indexOf('_getDynamicFlags_') > -1) {
+    if (actionLine.indexOf('_getDynamicFlags_') > -1) {
 
       let commentDynamicFlag = '';
       const dynamicFlags = smartScript.action_param1;
@@ -526,55 +529,55 @@ export class SaiCommentGeneratorService {
         // ! Trim last ' & ' from the comment..
         commentDynamicFlag = commentDynamicFlag.substring(0, commentDynamicFlag.length - 3);
 
-        fullLine = fullLine.replace('_getDynamicFlags_', 's_getDynamicFlags_');
+        actionLine = actionLine.replace('_getDynamicFlags_', 's_getDynamicFlags_');
       }
 
-      fullLine = fullLine.replace('_getDynamicFlags_', ' ' + commentDynamicFlag);
+      actionLine = actionLine.replace('_getDynamicFlags_', ' ' + commentDynamicFlag);
     }
 
-    if (fullLine.indexOf('_getBytes1Flags_') > -1) {
+    if (actionLine.indexOf('_getBytes1Flags_') > -1) {
 
       switch (smartScript.action_param2) {
         case unitFieldBytes1Type.STAND_STAND_STATE_TYPE:
           switch (smartScript.action_param1) {
             case unitStandStateType.STAND:
-              fullLine = fullLine.replace('_getBytes1Flags_', 'Standstate Stand Up');
+              actionLine = actionLine.replace('_getBytes1Flags_', 'Standstate Stand Up');
               break;
             case unitStandStateType.SIT:
-              fullLine = fullLine.replace('_getBytes1Flags_', 'Standstate Sit Down');
+              actionLine = actionLine.replace('_getBytes1Flags_', 'Standstate Sit Down');
               break;
             case unitStandStateType.SIT_CHAIR:
-              fullLine = fullLine.replace('_getBytes1Flags_', 'Standstate Sit Down Chair');
+              actionLine = actionLine.replace('_getBytes1Flags_', 'Standstate Sit Down Chair');
               break;
             case unitStandStateType.SLEEP:
-              fullLine = fullLine.replace('_getBytes1Flags_', 'Standstate Sleep');
+              actionLine = actionLine.replace('_getBytes1Flags_', 'Standstate Sleep');
               break;
             case unitStandStateType.SIT_LOW_CHAIR:
-              fullLine = fullLine.replace('_getBytes1Flags_', 'Standstate Sit Low Chair');
+              actionLine = actionLine.replace('_getBytes1Flags_', 'Standstate Sit Low Chair');
               break;
             case unitStandStateType.SIT_MEDIUM_CHAIR:
-              fullLine = fullLine.replace('_getBytes1Flags_', 'Standstate Sit Medium Chair');
+              actionLine = actionLine.replace('_getBytes1Flags_', 'Standstate Sit Medium Chair');
               break;
             case unitStandStateType.SIT_HIGH_CHAIR:
-              fullLine = fullLine.replace('_getBytes1Flags_', 'Standstate Sit High Chair');
+              actionLine = actionLine.replace('_getBytes1Flags_', 'Standstate Sit High Chair');
               break;
             case unitStandStateType.DEAD:
-              fullLine = fullLine.replace('_getBytes1Flags_', 'Standstate Dead');
+              actionLine = actionLine.replace('_getBytes1Flags_', 'Standstate Dead');
               break;
             case unitStandStateType.KNEEL:
-              fullLine = fullLine.replace('_getBytes1Flags_', 'Standstate Kneel');
+              actionLine = actionLine.replace('_getBytes1Flags_', 'Standstate Kneel');
               break;
             case unitStandStateType.SUBMERGED:
-              fullLine = fullLine.replace('_getBytes1Flags_', 'Standstate Submerged');
+              actionLine = actionLine.replace('_getBytes1Flags_', 'Standstate Submerged');
               break;
             default:
-              fullLine = fullLine.replace('_getBytes1Flags_', '[Unknown bytes1 (unitStandStateType.)]');
+              actionLine = actionLine.replace('_getBytes1Flags_', '[Unknown bytes1 (unitStandStateType.)]');
               break;
           }
           break;
 
         case unitFieldBytes1Type.PET_TALENTS_TYPE:
-          fullLine = fullLine.replace('_getBytes1Flags_', '[Unknown bytes1 type]');
+          actionLine = actionLine.replace('_getBytes1Flags_', '[Unknown bytes1 type]');
           break;
 
         case unitFieldBytes1Type.STAND_FLAGS_TYPE:
@@ -582,16 +585,16 @@ export class SaiCommentGeneratorService {
             case unitStandFlags.UNK1:
             case unitStandFlags.UNK4:
             case unitStandFlags.UNK5:
-              fullLine = fullLine.replace('_getBytes1Flags_', '[Unknown]');
+              actionLine = actionLine.replace('_getBytes1Flags_', '[Unknown]');
               break;
             case unitStandFlags.CREEP:
-              fullLine = fullLine.replace('_getBytes1Flags_', 'Creep');
+              actionLine = actionLine.replace('_getBytes1Flags_', 'Creep');
               break;
             case unitStandFlags.UNTRACKABLE:
-              fullLine = fullLine.replace('_getBytes1Flags_', 'Untrackable');
+              actionLine = actionLine.replace('_getBytes1Flags_', 'Untrackable');
               break;
             default:
-              fullLine = fullLine.replace('_getBytes1Flags_', '[Unknown bytes1 (UnitStandFlags)]');
+              actionLine = actionLine.replace('_getBytes1Flags_', '[Unknown bytes1 (UnitStandFlags)]');
               break;
           }
           break;
@@ -600,16 +603,16 @@ export class SaiCommentGeneratorService {
 
           switch (Number(smartScript.action_param1)) {
             case unitBytes1Flags.UNK_3:
-              fullLine = fullLine.replace('_getBytes1Flags_', '[Unknown]');
+              actionLine = actionLine.replace('_getBytes1Flags_', '[Unknown]');
               break;
             case unitBytes1Flags.HOVER:
-              fullLine = fullLine.replace('_getBytes1Flags_', 'Hover');
+              actionLine = actionLine.replace('_getBytes1Flags_', 'Hover');
               break;
             case unitBytes1Flags.ALWAYS_STAND:
-              fullLine = fullLine.replace('_getBytes1Flags_', 'Always Stand');
+              actionLine = actionLine.replace('_getBytes1Flags_', 'Always Stand');
               break;
             default:
-              fullLine = fullLine.replace('_getBytes1Flags_', '[Unknown bytes1 (UnitBytes1_Flags)]');
+              actionLine = actionLine.replace('_getBytes1Flags_', '[Unknown bytes1 (UnitBytes1_Flags)]');
               break;
           }
           break;
@@ -619,68 +622,68 @@ export class SaiCommentGeneratorService {
       }
     }
 
-    if (fullLine.indexOf('_powerTypeActionParamOne_') > -1) {
+    if (actionLine.indexOf('_powerTypeActionParamOne_') > -1) {
       switch (Number(smartScript.action_param1)) {
         case 0:
-          fullLine = fullLine.replace('_powerTypeActionParamOne_', 'Mana');
+          actionLine = actionLine.replace('_powerTypeActionParamOne_', 'Mana');
           break;
         case 1:
-          fullLine = fullLine.replace('_powerTypeActionParamOne_', 'Rage');
+          actionLine = actionLine.replace('_powerTypeActionParamOne_', 'Rage');
           break;
         case 2:
-          fullLine = fullLine.replace('_powerTypeActionParamOne_', 'Focus');
+          actionLine = actionLine.replace('_powerTypeActionParamOne_', 'Focus');
           break;
         case 3:
-          fullLine = fullLine.replace('_powerTypeActionParamOne_', 'Energy');
+          actionLine = actionLine.replace('_powerTypeActionParamOne_', 'Energy');
           break;
         case 4:
-          fullLine = fullLine.replace('_powerTypeActionParamOne_', 'Happiness');
+          actionLine = actionLine.replace('_powerTypeActionParamOne_', 'Happiness');
           break;
         case 5:
-          fullLine = fullLine.replace('_powerTypeActionParamOne_', 'Rune');
+          actionLine = actionLine.replace('_powerTypeActionParamOne_', 'Rune');
           break;
         case 6:
-          fullLine = fullLine.replace('_powerTypeActionParamOne_', 'Runic Power');
+          actionLine = actionLine.replace('_powerTypeActionParamOne_', 'Runic Power');
           break;
         default:
-          fullLine = fullLine.replace('_powerTypeActionParamOne_', '[Unknown Powertype]');
+          actionLine = actionLine.replace('_powerTypeActionParamOne_', '[Unknown Powertype]');
           break;
       }
     }
 
-    if (fullLine.indexOf('_morphToEntryOrModelActionParams_') > -1) {
+    if (actionLine.indexOf('_morphToEntryOrModelActionParams_') > -1) {
 
       if (smartScript.action_param1 > 0) {
-        fullLine = fullLine.replace(
+        actionLine = actionLine.replace(
           '_morphToEntryOrModelActionParams_',
           'Morph To Creature ' + await this.queryService.getCreatureNameById(smartScript.action_param1),
         );
       } else if (smartScript.action_param2 > 0) {
-        fullLine = fullLine.replace('_morphToEntryOrModelActionParams_', 'Morph To Model ' + smartScript.action_param2);
+        actionLine = actionLine.replace('_morphToEntryOrModelActionParams_', 'Morph To Model ' + smartScript.action_param2);
       } else {
-        fullLine = fullLine.replace('_morphToEntryOrModelActionParams_', 'Demorph');
+        actionLine = actionLine.replace('_morphToEntryOrModelActionParams_', 'Demorph');
       }
     }
 
-    if (fullLine.indexOf('_mountToEntryOrModelActionParams_') > -1) {
+    if (actionLine.indexOf('_mountToEntryOrModelActionParams_') > -1) {
       if (smartScript.action_param1 > 0) {
-        fullLine = fullLine.replace(
+        actionLine = actionLine.replace(
           '_mountToEntryOrModelActionParams_',
           'Mount To Creature ' + await this.queryService.getCreatureNameById(smartScript.action_param1),
         );
       } else if (smartScript.action_param2 > 0) {
-        fullLine = fullLine.replace('_mountToEntryOrModelActionParams_', 'Mount To Model ' + smartScript.action_param2);
+        actionLine = actionLine.replace('_mountToEntryOrModelActionParams_', 'Mount To Model ' + smartScript.action_param2);
       } else {
-        fullLine = fullLine.replace('_mountToEntryOrModelActionParams_', 'Dismount');
+        actionLine = actionLine.replace('_mountToEntryOrModelActionParams_', 'Dismount');
       }
     }
 
-    if (fullLine.indexOf('_startOrStopBasedOnTargetType_') > -1) {
+    if (actionLine.indexOf('_startOrStopBasedOnTargetType_') > -1) {
       if (smartScript.target_type === 0) {
-        fullLine = fullLine.replace('_startOrStopBasedOnTargetType_', 'Stop');
-        fullLine = fullLine.replace('_getTargetType_', '');
+        actionLine = actionLine.replace('_startOrStopBasedOnTargetType_', 'Stop');
+        actionLine = actionLine.replace('_getTargetType_', '');
       } else {
-        fullLine = fullLine.replace('_startOrStopBasedOnTargetType_', 'Start');
+        actionLine = actionLine.replace('_startOrStopBasedOnTargetType_', 'Start');
       }
     }
 
@@ -707,13 +710,13 @@ export class SaiCommentGeneratorService {
       }
 
       arrayOfSplitPhases.reverse(); // Reverse them so they are ascending
-      fullLine += ' (Phase';
+      actionLine += ' (Phase';
 
       if (arrayOfSplitPhases.length > 1) {
-        fullLine += 's';
+        actionLine += 's';
       }
 
-      fullLine += ' ' + arrayOfSplitPhases.join(' & ') + ')';
+      actionLine += ' ' + arrayOfSplitPhases.join(' & ') + ')';
     }
 
     const event_flags = smartScriptLink != null ? smartScriptLink.event_flags : smartScript.event_flags;
@@ -721,44 +724,44 @@ export class SaiCommentGeneratorService {
     if (event_flags !== EVENT_FLAGS.NONE) {
 
       if (((event_flags & EVENT_FLAGS.NOT_REPEATABLE) !== 0)) {
-        fullLine += ' (No Repeat)';
+        actionLine += ' (No Repeat)';
       }
 
       if (((event_flags & EVENT_FLAGS.NORMAL_DUNGEON) !== 0) &&
         ((event_flags & EVENT_FLAGS.HEROIC_DUNGEON) !== 0) &&
         ((event_flags & EVENT_FLAGS.NORMAL_RAID) !== 0)    &&
         ((event_flags & EVENT_FLAGS.HEROIC_RAID) !== 0)) {
-        fullLine += ' (Dungeon & Raid)';
+        actionLine += ' (Dungeon & Raid)';
       } else {
         if (((event_flags & EVENT_FLAGS.NORMAL_DUNGEON) !== 0) &&
           ((event_flags & EVENT_FLAGS.HEROIC_DUNGEON) !== 0)) {
-          fullLine += ' (Dungeon)';
+          actionLine += ' (Dungeon)';
         } else {
           if (((event_flags & EVENT_FLAGS.NORMAL_DUNGEON) !== 0)) {
-            fullLine += ' (Normal Dungeon)';
+            actionLine += ' (Normal Dungeon)';
           } else if (((event_flags & EVENT_FLAGS.HEROIC_DUNGEON) !== 0)) {
-            fullLine += ' (Heroic Dungeon)';
+            actionLine += ' (Heroic Dungeon)';
           }
         }
       }
 
       if (((event_flags & EVENT_FLAGS.NORMAL_RAID) !== 0) &&
         ((event_flags & EVENT_FLAGS.HEROIC_RAID) !== 0)) {
-        fullLine += ' (Raid)';
+        actionLine += ' (Raid)';
       } else {
         if (((event_flags & EVENT_FLAGS.NORMAL_RAID) !== 0)) {
-          fullLine += ' (Normal Raid)';
+          actionLine += ' (Normal Raid)';
         } else if (((event_flags & EVENT_FLAGS.HEROIC_RAID) !== 0)) {
-          fullLine += ' (Heroic Raid)';
+          actionLine += ' (Heroic Raid)';
         }
       }
 
       if (((event_flags & EVENT_FLAGS.DEBUG_ONLY) !== 0)) {
-        fullLine += ' (Debug)';
+        actionLine += ' (Debug)';
       }
     }
 
-    return fullLine;
+    return actionLine;
   }
 
   // SAI comment generator
