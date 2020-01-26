@@ -143,14 +143,14 @@ export class SaiCommentGeneratorService {
       eventLine = eventLine.replace('_questNameEventParamOne_', await this.queryService.getQuestTitleById(smartScript.event_param1));
     }
     // TODO: spells
-    // if (actionLine.indexOf('_spellNameEventParamOne_') > -1) {
-    //   actionLine = actionLine.replace('_spellNameEventParamOne_', this.queryService.getSpellNameById(smartScript.event_param1));
+    // if (eventLine.indexOf('_spellNameEventParamOne_') > -1) {
+    //   eventLine = eventLine.replace('_spellNameEventParamOne_', this.queryService.getSpellNameById(smartScript.event_param1));
     // }
-    // if (actionLine.indexOf('_targetCastingSpellName_') > -1) {
-    //   actionLine = actionLine.replace('_targetCastingSpellName_', this.queryService.getSpellNameById(smartScript.event_param3));
+    // if (eventLine.indexOf('_targetCastingSpellName_') > -1) {
+    //   eventLine = eventLine.replace('_targetCastingSpellName_', this.queryService.getSpellNameById(smartScript.event_param3));
     // }
-    // if (actionLine.indexOf('_hasAuraEventParamOne_') > -1) {
-    //   actionLine = actionLine.replace('_hasAuraEventParamOne_',   this.queryService.getSpellNameById(smartScript.event_param1));
+    // if (eventLine.indexOf('_hasAuraEventParamOne_') > -1) {
+    //   eventLine = eventLine.replace('_hasAuraEventParamOne_',   this.queryService.getSpellNameById(smartScript.event_param1));
     // }
 
     return eventLine;
