@@ -5,6 +5,7 @@ import { SaiCommentGeneratorService } from './sai-comment-generator.service';
 import { SAI_TYPES, SmartScripts } from '@keira-types/smart-scripts.type';
 import { SAI_EVENTS } from '@keira-shared/modules/sai-editor/constants/sai-event';
 import { QueryService } from '@keira-shared/services/query.service';
+import { SAI_ACTIONS } from '@keira-shared/modules/sai-editor/constants/sai-actions';
 
 fdescribe('SaiCommentGeneratorService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
@@ -80,20 +81,33 @@ fdescribe('SaiCommentGeneratorService', () => {
         expected: ' - No Action Type',
       },
       {
-        name: 'Event SAI_EVENTS.ACCEPTED_QUEST',
+        name: 'SAI_EVENTS.ACCEPTED_QUEST',
         input: {
           event_type: SAI_EVENTS.ACCEPTED_QUEST,
         },
         expected: `MockEntity - On Quest 'mockQuestTitleById' Taken - No Action Type`,
       },
       {
-        name: 'Event SAI_EVENTS.MANA_PCT check event param 1 and 2',
+        name: 'SAI_EVENTS.MANA_PCT check event param 1 and 2',
         input: {
           event_type: SAI_EVENTS.MANA_PCT,
           event_param1: 10,
           event_param2: 20,
         },
         expected: `MockEntity - Between 10-20% Mana - No Action Type`,
+      },
+      {
+        name: 'SAI_ACTIONS.START_CLOSEST_WAYPOINT check action params 1,2,3,4,5,6',
+        input: {
+          action_type: SAI_ACTIONS.START_CLOSEST_WAYPOINT,
+          action_param1: 11,
+          action_param2: 22,
+          action_param3: 33,
+          action_param4: 44,
+          action_param5: 55,
+          action_param6: 66,
+        },
+        expected: `MockEntity - In Combat - Pick Closest Waypoint 11 22 33 44 55 66`,
       },
     ];
 
