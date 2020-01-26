@@ -88,14 +88,11 @@ export class SaiCommentGeneratorService {
     }
   }
 
-  // SAI comment generator
-  // partially based on https://github.com/jasperrietrae/SAI-Editor/blob/master/SAI-Editor/Classes/CommentGenerator.cs
-  async generateComment(
-    rows: SmartScripts[], // the set of smart_scripts rows
-    smartScript: SmartScripts, // the specific row that we are generating the comment for
-    name: string, // the name of the creature or gameobject
+  private async generateEventComment(
+    smartScript: SmartScripts,
+    name: string,
+    smartScriptLink: SmartScripts,
   ): Promise<string> {
-    const smartScriptLink = this.getPreviousScriptLink(rows, smartScript);
     let fullLine = '';
 
     switch (smartScript.source_type) {
@@ -156,8 +153,14 @@ export class SaiCommentGeneratorService {
     //   fullLine = fullLine.replace('_hasAuraEventParamOne_',   this.queryService.getSpellNameById(smartScript.event_param1));
     // }
 
-    // ! Action type
-    fullLine += ' - ' + SAI_ACTION_COMMENTS[smartScript.action_type];
+    return fullLine;
+  }
+
+  private async generateActionComment(
+    smartScript: SmartScripts,
+    smartScriptLink: SmartScripts,
+  ): Promise<string> {
+    let fullLine = SAI_ACTION_COMMENTS[smartScript.action_type];
 
     fullLine = fullLine.replace('_actionParamOne_',   `${smartScript.action_param1}`);
     fullLine = fullLine.replace('_actionParamTwo_',   `${smartScript.action_param2}`);
@@ -180,7 +183,7 @@ export class SaiCommentGeneratorService {
     }
     if (fullLine.indexOf('_questNameKillCredit_') > -1) {
       fullLine = fullLine.replace('_questNameKillCredit_', await this.queryService.getQuestTitleByCriteria
-      (smartScript.action_param1, smartScript.action_param1, smartScript.action_param1, smartScript.action_param1)
+        (smartScript.action_param1, smartScript.action_param1, smartScript.action_param1, smartScript.action_param1)
       );
     }
     // TODO: spells
@@ -756,5 +759,16 @@ export class SaiCommentGeneratorService {
     }
 
     return fullLine;
+  }
+
+  // SAI comment generator
+  // partially based on https://github.com/jasperrietrae/SAI-Editor/blob/master/SAI-Editor/Classes/CommentGenerator.cs
+  async generateComment(
+    rows: SmartScripts[], // the set of smart_scripts rows
+    smartScript: SmartScripts, // the specific row that we are generating the comment for
+    name: string, // the name of the creature or gameobject
+  ): Promise<string> {
+    const smartScriptLink = this.getPreviousScriptLink(rows, smartScript);
+    return `${await this.generateEventComment(smartScript, name, smartScriptLink)} - ${await this.generateActionComment(smartScript, smartScriptLink)}`;
   }
 }

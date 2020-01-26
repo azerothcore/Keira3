@@ -6,7 +6,7 @@ import { SAI_TYPES, SmartScripts } from '@keira-types/smart-scripts.type';
 import { SAI_EVENTS } from '@keira-shared/modules/sai-editor/constants/sai-event';
 import { QueryService } from '@keira-shared/services/query.service';
 
-describe('SaiCommentGeneratorService', () => {
+fdescribe('SaiCommentGeneratorService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   describe('Comment generation should correctly work', () => {
