@@ -764,4 +764,77 @@ describe('QueryService', () => {
       }
     });
   });
+
+  describe('queryValue()', () => {
+    it('should correctly work', async () => {
+      const value = 'mock result value';
+      spyOn(service, 'query').and.returnValue(of({ results: [ { v: value }] }));
+      const query = 'SELECT something AS v FROM my_table WHERE index = 123';
+
+      expect(await service.queryValue(query)).toEqual(value);
+      expect(service.query).toHaveBeenCalledTimes(1);
+      expect(service.query).toHaveBeenCalledWith(query);
+    });
+
+    it('should be safe in case of no results', async () => {
+      spyOn(service, 'query').and.returnValue(of({ results: [] }));
+      const query = 'SELECT something AS v FROM my_table WHERE index = 123';
+
+      expect(await service.queryValue(query)).toEqual(null);
+      expect(service.query).toHaveBeenCalledTimes(1);
+      expect(service.query).toHaveBeenCalledWith(query);
+    });
+  });
+
+  fdescribe('get helpers', () => {
+    const result = of('mock result').toPromise();
+    const id = '123';
+    const guid = id;
+
+    beforeEach(() => {
+      spyOn(service, 'queryValue').and.returnValue(result);
+    });
+
+    it('getCreatureNameById', () => {
+      expect(service.getCreatureNameById(id)).toEqual(result);
+      expect(service.queryValue).toHaveBeenCalledWith(
+        `SELECT name AS v FROM creature_template WHERE entry = ${id}`
+      );
+    });
+
+    it('getCreatureNameByGuid', () => {
+      expect(service.getCreatureNameByGuid(guid)).toEqual(result);
+      expect(service.queryValue).toHaveBeenCalledWith(
+        `SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id WHERE c.guid = ${guid}`
+      );
+    });
+
+    it('getGameObjectNameById', () => {
+      expect(service.getGameObjectNameById(id)).toEqual(result);
+      expect(service.queryValue).toHaveBeenCalledWith(
+        `SELECT name AS v FROM gameobject_template WHERE entry = ${id}`
+      );
+    });
+
+    it('getGameObjectNameByGuid', () => {
+      expect(service.getGameObjectNameByGuid(guid)).toEqual(result);
+      expect(service.queryValue).toHaveBeenCalledWith(
+        `SELECT name AS v FROM gameobject_template AS gt INNER JOIN gameobject AS g ON gt.entry = g.id WHERE g.guid = ${guid}`
+      );
+    });
+
+    it('getQuestTitleById', () => {
+      expect(service.getQuestTitleById(id)).toEqual(result);
+      expect(service.queryValue).toHaveBeenCalledWith(
+        `SELECT name AS v FROM quest_template WHERE entry = ${id}`
+      );
+    });
+
+    it('getItemNameById', () => {
+      expect(service.getItemNameById(id)).toEqual(result);
+      expect(service.queryValue).toHaveBeenCalledWith(
+        `SELECT name AS v FROM item_template WHERE entry = ${id}`
+      );
+    });
+  });
 });

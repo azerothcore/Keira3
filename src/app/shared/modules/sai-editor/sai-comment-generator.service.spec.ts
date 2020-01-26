@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
 
 import { SaiCommentGeneratorService } from './sai-comment-generator.service';
 import { SAI_TYPES, SmartScripts } from '@keira-types/smart-scripts.type';
 import { SAI_EVENTS } from '@keira-shared/modules/sai-editor/constants/sai-event';
 import { QueryService } from '@keira-shared/services/query.service';
-import { of } from 'rxjs';
 
-fdescribe('SaiCommentGeneratorService', () => {
+describe('SaiCommentGeneratorService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   describe('Comment generation should correctly work', () => {
@@ -30,7 +30,6 @@ fdescribe('SaiCommentGeneratorService', () => {
     });
 
     it('should correctly handle linked events', async () => {
-      const name = 'Event SAI_EVENTS.ACCEPTED_QUEST';
       const rows: SmartScripts[] = [
         createSai({ id: 1, event_type: SAI_EVENTS.ACCEPTED_QUEST, link: 2 }),
         createSai({ id: 2, event_type: SAI_EVENTS.LINK, link: 3 }),
