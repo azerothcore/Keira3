@@ -36,7 +36,7 @@ fdescribe('SaiCommentGeneratorService', () => {
         createSai({ id: 2, event_type: SAI_EVENTS.LINK, link: 3 }),
         createSai({ id: 3, event_type: SAI_EVENTS.LINK }),
       ];
-      const expected = `MockEntity - On Quest 'mockQuestTitleById' Taken - No Action Type`;
+      const expected = `MockEntity - On Quest 'mockQuestTitleById0' Taken - No Action Type`;
       const service: SaiCommentGeneratorService = TestBed.get(SaiCommentGeneratorService);
 
       expect(await service.generateComment(rows, rows[2], mockName)).toEqual(expected);
@@ -85,7 +85,7 @@ fdescribe('SaiCommentGeneratorService', () => {
         input: {
           event_type: SAI_EVENTS.ACCEPTED_QUEST,
         },
-        expected: `MockEntity - On Quest 'mockQuestTitleById' Taken - No Action Type`,
+        expected: `MockEntity - On Quest 'mockQuestTitleById0' Taken - No Action Type`,
       },
       {
         name: 'SAI_EVENTS.MANA_PCT check event param 1 and 2',
