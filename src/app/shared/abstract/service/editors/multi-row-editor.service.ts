@@ -146,8 +146,12 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
       );
     }
 
+    this.onRowSelected();
+
     this._loading = false;
   }
+
+  protected onRowSelected() {}
 
   isRowSelected(row: T): boolean {
     return row[this._entitySecondIdField] === this._selectedRowId;
