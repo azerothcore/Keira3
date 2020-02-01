@@ -84,10 +84,13 @@ describe('SaiEditorComponent integration tests', () => {
     fixture.detectChanges();
   }
 
-  it('should disable and reset event_type when source_type is TimedActionlists', () => {
+  it('should correctly work when TimedActionlists', () => {
     setup(true, false, SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST);
-    page.eventType.value = '1: 1';
 
+    expect(page.event1Name.innerText).toEqual('minTimer');
+    expect(page.event2Name.innerText).toBe('maxTimer');
+
+    page.eventType.value = '1: 1';
     page.addNewRow();
 
     expect(page.eventType.disabled).toBe(true);
