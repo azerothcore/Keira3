@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
 import { MultiRowComplexKeyEditorService } from '@keira-abstract/service/editors/multi-row-complex-key-editor.service';
-import { SAI_ID_2, SAI_ID_FIELDS, SAI_TABLE, SmartScripts } from '@keira-types/smart-scripts.type';
+import { SAI_ID_2, SAI_ID_FIELDS, SAI_TABLE, SAI_TYPES, SmartScripts } from '@keira-types/smart-scripts.type';
 import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
 import { QueryService } from '@keira-shared/services/query.service';
 
@@ -80,5 +80,13 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
       this._errors.push(`ERROR: non-existing links: ${Array.from(links).join(' ')}`);
     }
 
+  }
+
+  protected onRowSelected() {
+    if (this.handlerService.parsedSelected.source_type === SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST) {
+      this._form.controls.event_type.disable();
+      this._form.controls.event_type.setValue(0);
+      return true;
+    }
   }
 }
