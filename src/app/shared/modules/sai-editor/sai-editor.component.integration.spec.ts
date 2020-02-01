@@ -27,6 +27,7 @@ class SaiEditorPage extends MultiRowEditorPageObject<SaiEditorComponent> {
   get target3Name() { return this.query<HTMLLabelElement>('label#label-target-param3'); }
   get target4Name() { return this.query<HTMLLabelElement>('label#label-target-param4'); }
   get errors() { return this.query<HTMLElement>('#errors'); }
+  get eventType() { return this.getInputById('event_type'); }
 }
 
 describe('SaiEditorComponent integration tests', () => {
@@ -59,8 +60,8 @@ describe('SaiEditorComponent integration tests', () => {
       .compileComponents();
   }));
 
-  function setup(creatingNew: boolean, hasTemplateQuery = false) {
-    const selected = { source_type: sourceType, entryorguid: id };
+  function setup(creatingNew: boolean, hasTemplateQuery = false, st = sourceType) {
+    const selected = { source_type: st, entryorguid: id };
     handlerService = TestBed.get(SaiHandlerService);
     handlerService['_selected'] = JSON.stringify(selected);
     handlerService.isNew = creatingNew;
@@ -82,6 +83,16 @@ describe('SaiEditorComponent integration tests', () => {
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
   }
+
+  it('should disable and reset event_type when source_type is TimedActionlists', () => {
+    setup(true, false, SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST);
+    page.eventType.value = '1: 1';
+
+    page.addNewRow();
+
+    expect(page.eventType.disabled).toBe(true);
+    expect(page.eventType.value).toBe('0: 0');
+  });
 
   describe('Creating new', () => {
     beforeEach(() => setup(true));
