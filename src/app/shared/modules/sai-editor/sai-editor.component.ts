@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { SaiHandlerService } from './sai-handler.service';
 import { MultiRowEditorComponent } from '../../abstract/components/editors/multi-row-editor.component';
 import {
+  SAI_TYPES,
   SmartScripts
 } from '../../types/smart-scripts.type';
 import { SaiEditorService } from './sai-editor.service';
@@ -93,6 +94,10 @@ export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> im
 
   get selectedTarget(): number {
     return this.editorService.form.get('target_type').value;
+  }
+
+  get isTimedActionlists(): boolean {
+    return this.handlerService.parsedSelected.source_type === SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST;
   }
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
