@@ -85,4 +85,52 @@ describe('SaiHandlerService', () => {
 
     expect(spy).toHaveBeenCalledTimes(0);
   });
+
+  it('getName() should work correctly', fakeAsync(() => {
+    const service: SaiHandlerService = TestBed.get(SaiHandlerService);
+    const spy = spyOn(TestBed.get(Router), 'navigate');
+    const queryService = TestBed.get(QueryService);
+    const querySpy = spyOn(queryService, 'query');
+    const mockName = 'Mock Name';
+
+    for (const test of [
+      {
+        source_type: SAI_TYPES.SAI_TYPE_CREATURE,  entryorguid: -123, name: mockName,
+        returnValue: { results: [ { name: mockName } ] },
+        expected: mockName,
+      },
+      {
+        source_type: SAI_TYPES.SAI_TYPE_CREATURE,  entryorguid: 123, name: mockName,
+        returnValue: { results: [] },
+        expected: null,
+      },
+      {
+        source_type: SAI_TYPES.SAI_TYPE_GAMEOBJECT,  entryorguid: -123, name: mockName,
+        returnValue: { results: [ { name: mockName } ] },
+        expected: mockName,
+      },
+      {
+        source_type: SAI_TYPES.SAI_TYPE_GAMEOBJECT,  entryorguid: 123, name: mockName,
+        returnValue: { results: [ { name: mockName } ] },
+        expected: mockName,
+      },
+    ]) {
+      service.select(false, { source_type: test.source_type, entryorguid: test.entryorguid }, test.name, false);
+
+      querySpy.and.returnValue(of(test.returnValue));
+      service.getName().subscribe((name) => {
+        expect(name).toEqual(test.expected);
+      });
+    }
+
+    service.select(false, { source_type: null, entryorguid: -123 }, mockName, false);
+
+    querySpy.and.returnValue(of());
+    expect(service.getName()).toBeUndefined();
+
+    tick();
+
+    expect(spy).toHaveBeenCalledTimes(0);
+  }));
+
 });
