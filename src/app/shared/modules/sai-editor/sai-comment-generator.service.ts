@@ -19,7 +19,7 @@ export class SaiCommentGeneratorService {
     private queryService: QueryService,
   ) {}
 
-  private getStringByTargetType(smartScript: SmartScripts): string {
+  private async getStringByTargetType(smartScript: SmartScripts): Promise<string> {
     switch (Number(smartScript.target_type)) {
       case SAI_TARGETS.SELF:
         return 'Self';
@@ -40,15 +40,15 @@ export class SaiCommentGeneratorService {
       case SAI_TARGETS.CREATURE_RANGE:
       case SAI_TARGETS.CREATURE_DISTANCE:
       case SAI_TARGETS.CLOSEST_CREATURE:
-        return `Closest Creature '${this.queryService.getCreatureNameById(smartScript.target_param1)}'`;
+        return `Closest Creature '${await this.queryService.getCreatureNameById(smartScript.target_param1)}'`;
       case SAI_TARGETS.CREATURE_GUID:
-        return `Closest Creature '${this.queryService.getCreatureNameByGuid(smartScript.target_param1)}'`;
+        return `Closest Creature '${await this.queryService.getCreatureNameByGuid(smartScript.target_param1)}'`;
       case SAI_TARGETS.GAMEOBJECT_RANGE:
       case SAI_TARGETS.GAMEOBJECT_DISTANCE:
       case SAI_TARGETS.CLOSEST_GAMEOBJECT:
-        return `Closest Creature '${this.queryService.getGameObjectNameById(smartScript.target_param1)}'`;
+        return `Closest Creature '${await this.queryService.getGameObjectNameById(smartScript.target_param1)}'`;
       case SAI_TARGETS.GAMEOBJECT_GUID:
-        return `Closest Creature '${this.queryService.getGameObjectNameByGuid(smartScript.target_param1)}'`;
+        return `Closest Creature '${await this.queryService.getGameObjectNameByGuid(smartScript.target_param1)}'`;
       case SAI_TARGETS.INVOKER_PARTY:
         return 'Invoker\'s Party';
       case SAI_TARGETS.PLAYER_RANGE:
@@ -172,15 +172,6 @@ export class SaiCommentGeneratorService {
     if (actionLine.indexOf('_questNameActionParamOne_') > -1) {
       actionLine = actionLine.replace('_questNameActionParamOne_', await this.queryService.getQuestTitleById(smartScript.action_param1));
     }
-    if (actionLine.indexOf('_questNameCastCreatureOrGo_') > -1) {
-      actionLine = actionLine.replace('_questNameCastCreatureOrGo_', await this.queryService.getQuestTitleByCriteria(
-        smartScript.action_param1,
-        smartScript.action_param1,
-        smartScript.action_param1,
-        smartScript.action_param1,
-        smartScript.action_param2,
-      ));
-    }
     if (actionLine.indexOf('_questNameKillCredit_') > -1) {
       actionLine = actionLine.replace('_questNameKillCredit_', await this.queryService.getQuestTitleByCriteria
         (smartScript.action_param1, smartScript.action_param1, smartScript.action_param1, smartScript.action_param1)
@@ -286,7 +277,6 @@ export class SaiCommentGeneratorService {
       let commentNpcFlag = '';
       const npcFlags = smartScript.action_param1;
 
-      if ((npcFlags & NPC_FLAGS.NONE) !== 0)               { commentNpcFlag += 'None & '; }
       if ((npcFlags & NPC_FLAGS.GOSSIP) !== 0)             { commentNpcFlag += 'Gossip & '; }
       if ((npcFlags & NPC_FLAGS.QUESTGIVER) !== 0)         { commentNpcFlag += 'Questgiver & '; }
       if ((npcFlags & NPC_FLAGS.UNK1) !== 0)               { commentNpcFlag += 'Unknown 1 & '; }
@@ -441,7 +431,7 @@ export class SaiCommentGeneratorService {
           actionLine = actionLine.replace('_updateAiTemplateActionParamOne_', 'Caged Creature Part');
           break;
         default:
-          actionLine = actionLine.replace('_updateAiTemplateActionParamOne_', '<_updateAiTemplateActionParamOne_ Unknown ai template]');
+          actionLine = actionLine.replace('_updateAiTemplateActionParamOne_', '[_updateAiTemplateActionParamOne_ Unknown ai template]');
           break;
       }
     }
@@ -456,13 +446,22 @@ export class SaiCommentGeneratorService {
           actionLine = actionLine.replace('_setOrientationTargetType_', `${smartScript.target_o}`);
           break;
         default:
-          actionLine = actionLine.replace('_setOrientationTargetType_', this.getStringByTargetType(smartScript));
+          actionLine = actionLine.replace('_setOrientationTargetType_', await this.getStringByTargetType(smartScript));
           break;
       }
     }
 
+    if (actionLine.indexOf('_startOrStopBasedOnTargetType_') > -1) {
+      if (smartScript.target_type === 0) {
+        actionLine = actionLine.replace('_startOrStopBasedOnTargetType_', 'Stop');
+        actionLine = actionLine.replace('_getTargetType_', '');
+      } else {
+        actionLine = actionLine.replace('_startOrStopBasedOnTargetType_', 'Start');
+      }
+    }
+
     if (actionLine.indexOf('_getTargetType_') > -1) {
-      actionLine = actionLine.replace('_getTargetType_', this.getStringByTargetType(smartScript));
+      actionLine = actionLine.replace('_getTargetType_', await this.getStringByTargetType(smartScript));
     }
 
     if (actionLine.indexOf('_goStateActionParamOne_') > -1) {
@@ -515,7 +514,6 @@ export class SaiCommentGeneratorService {
       let commentDynamicFlag = '';
       const dynamicFlags = smartScript.action_param1;
 
-      if ((dynamicFlags & DYNAMIC_FLAGS.NONE) !== 0)                      { commentDynamicFlag += 'None & '; }
       if ((dynamicFlags & DYNAMIC_FLAGS.LOOTABLE) !== 0)                  { commentDynamicFlag += 'Lootable & '; }
       if ((dynamicFlags & DYNAMIC_FLAGS.TRACK_UNIT) !== 0)                { commentDynamicFlag += 'Track Units & '; }
       if ((dynamicFlags & DYNAMIC_FLAGS.TAPPED) !== 0)                    { commentDynamicFlag += 'Tapped & '; }
@@ -675,15 +673,6 @@ export class SaiCommentGeneratorService {
         actionLine = actionLine.replace('_mountToEntryOrModelActionParams_', 'Mount To Model ' + smartScript.action_param2);
       } else {
         actionLine = actionLine.replace('_mountToEntryOrModelActionParams_', 'Dismount');
-      }
-    }
-
-    if (actionLine.indexOf('_startOrStopBasedOnTargetType_') > -1) {
-      if (smartScript.target_type === 0) {
-        actionLine = actionLine.replace('_startOrStopBasedOnTargetType_', 'Stop');
-        actionLine = actionLine.replace('_getTargetType_', '');
-      } else {
-        actionLine = actionLine.replace('_startOrStopBasedOnTargetType_', 'Start');
       }
     }
 
