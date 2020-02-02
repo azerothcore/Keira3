@@ -100,7 +100,15 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
 
   async generateComments() {
     for (const row of this._newRows) {
-      row.comment = await this.saiCommentGeneratorService.generateComment(this._newRows, row, this.handlerService.selectedName);
+      row.comment = await this.saiCommentGeneratorService.generateComment(
+        this._newRows,
+        row,
+        await this.handlerService.getName().toPromise(),
+      );
+
+      if (this.isRowSelected(row)) {
+        this._form.controls.comment.setValue(row.comment);
+      }
     }
   }
 }
