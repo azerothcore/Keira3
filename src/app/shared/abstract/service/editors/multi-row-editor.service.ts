@@ -203,4 +203,8 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
 
     return true;
   }
+
+  refreshDatatable() {
+    this._newRows = [ ...this._newRows ];
+  }
 }

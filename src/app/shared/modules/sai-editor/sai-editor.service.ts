@@ -110,5 +110,6 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
         this._form.controls.comment.setValue(row.comment);
       }
     }
+    this.refreshDatatable();
   }
 }
