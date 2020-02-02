@@ -4,6 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { SaiEditorService } from '@keira-shared/modules/sai-editor/sai-editor.service';
 import { QueryService } from '@keira-shared/services/query.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
+import { SaiCommentGeneratorService } from '@keira-shared/modules/sai-editor/sai-comment-generator.service';
 
 @Injectable()
 export class SaiCreatureEditorService extends SaiEditorService {
@@ -11,11 +12,13 @@ export class SaiCreatureEditorService extends SaiEditorService {
     protected handlerService: SaiCreatureHandlerService,
     protected queryService: QueryService,
     protected toastrService: ToastrService,
+    protected saiCommentGeneratorService: SaiCommentGeneratorService,
   ) {
     super(
       handlerService,
       queryService,
       toastrService,
+      saiCommentGeneratorService,
     );
   }
 }
