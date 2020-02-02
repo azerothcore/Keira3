@@ -9,6 +9,8 @@ import { SaiHandlerService } from './sai-handler.service';
 import { MultiRowEditorPageObject } from '../../testing/multi-row-editor-page-object';
 import { SAI_TYPES, SmartScripts } from '../../types/smart-scripts.type';
 import { QueryService } from '../../services/query.service';
+import { SAI_EVENTS } from '@keira-shared/modules/sai-editor/constants/sai-event';
+import { SAI_ACTIONS } from '@keira-shared/modules/sai-editor/constants/sai-actions';
 
 class SaiEditorPage extends MultiRowEditorPageObject<SaiEditorComponent> {
   get event1Name() { return this.query<HTMLLabelElement>('label#label-event-param1'); }
@@ -27,6 +29,8 @@ class SaiEditorPage extends MultiRowEditorPageObject<SaiEditorComponent> {
   get target3Name() { return this.query<HTMLLabelElement>('label#label-target-param3'); }
   get target4Name() { return this.query<HTMLLabelElement>('label#label-target-param4'); }
   get errors() { return this.query<HTMLElement>('#errors'); }
+  get eventType() { return this.getInputById('event_type'); }
+  get generateCommentsBtn() { return this.query<HTMLButtonElement>('#generate-comments-btn'); }
 }
 
 describe('SaiEditorComponent integration tests', () => {
@@ -59,8 +63,8 @@ describe('SaiEditorComponent integration tests', () => {
       .compileComponents();
   }));
 
-  function setup(creatingNew: boolean, hasTemplateQuery = false) {
-    const selected = { source_type: sourceType, entryorguid: id };
+  function setup(creatingNew: boolean, hasTemplateQuery = false, st = sourceType) {
+    const selected = { source_type: st, entryorguid: id };
     handlerService = TestBed.get(SaiHandlerService);
     handlerService['_selected'] = JSON.stringify(selected);
     handlerService.isNew = creatingNew;
@@ -82,6 +86,19 @@ describe('SaiEditorComponent integration tests', () => {
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
   }
+
+  it('should correctly work when TimedActionlists', () => {
+    setup(true, false, SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST);
+
+    expect(page.event1Name.innerText).toEqual('minTimer');
+    expect(page.event2Name.innerText).toBe('maxTimer');
+
+    page.eventType.value = '1: 1';
+    page.addNewRow();
+
+    expect(page.eventType.disabled).toBe(true);
+    expect(page.eventType.value).toBe('0: 0');
+  });
 
   describe('Creating new', () => {
     beforeEach(() => setup(true));
@@ -226,6 +243,32 @@ describe('SaiEditorComponent integration tests', () => {
         '`target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES\n' +
         '(1234, 0, 0, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 0, 0, 123, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\');\n'
       );
+    });
+
+    it('generating comments should correctly work', async() => {
+      const saiColIndex = 9;
+      const name = 'Shin';
+      spyOn(handlerService, 'getName').and.returnValue(of(name));
+      page.addNewRow();
+      page.addNewRow();
+      page.addNewRow();
+      component.editorService['_newRows'][0].event_type = SAI_EVENTS.AGGRO;
+      component.editorService['_newRows'][0].action_type = SAI_ACTIONS.KILL_UNIT;
+      component.editorService['_newRows'][1].event_type = SAI_EVENTS.DEATH;
+      component.editorService['_newRows'][1].action_type = SAI_ACTIONS.ATTACK_START;
+      component.editorService['_newRows'][2].event_type = SAI_EVENTS.EVADE;
+      component.editorService['_newRows'][2].action_type = SAI_ACTIONS.FLEE_FOR_ASSIST;
+
+      page.clickElement(page.generateCommentsBtn);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(page.getDatatableCell(page.EDITOR_DT_SELECTOR, 0, saiColIndex).innerText)
+        .toEqual(`${name} - On Aggro - Kill Target`);
+      expect(page.getDatatableCell(page.EDITOR_DT_SELECTOR, 1, saiColIndex).innerText)
+        .toEqual(`${name} - On Just Died - Start Attacking`);
+      expect(page.getDatatableCell(page.EDITOR_DT_SELECTOR, 2, saiColIndex).innerText)
+        .toEqual(`${name} - On Evade - Flee For Assist`);
     });
   });
 

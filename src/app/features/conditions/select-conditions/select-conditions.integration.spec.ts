@@ -145,15 +145,15 @@ describe('SelectConditions integration tests', () => {
 
     page.clickElement(page.searchBtn);
 
-    const row0 = page.getDatatableRow(page.DT_SELECTOR, 0);
-    const row1 = page.getDatatableRow(page.DT_SELECTOR, 1);
-    const row2 = page.getDatatableRow(page.DT_SELECTOR, 2);
+    const row0 = page.getDatatableRowExternal(page.DT_SELECTOR, 0);
+    const row1 = page.getDatatableRowExternal(page.DT_SELECTOR, 1);
+    const row2 = page.getDatatableRowExternal(page.DT_SELECTOR, 2);
 
     expect(row0.innerText).toContain(results[0].SourceGroup.toString());
     expect(row1.innerText).toContain(results[1].SourceGroup.toString());
     expect(row2.innerText).toContain(results[2].SourceGroup.toString());
 
-    page.clickElement(page.getDatatableCell(page.DT_SELECTOR, 1, 1));
+    page.clickElement(page.getDatatableCellExternal(page.DT_SELECTOR, 1, 1));
 
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith(['conditions/conditions']);

@@ -10,6 +10,10 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
 
   get selected(): string { return this._selected; }
 
+  get parsedSelected(): Partial<T> {
+    return JSON.parse(this.selected);
+  }
+
   constructor(
     protected mainEditorRoutePath: string,
     protected router: Router,

@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
 import { MultiRowComplexKeyEditorService } from '@keira-abstract/service/editors/multi-row-complex-key-editor.service';
-import { SAI_ID_2, SAI_ID_FIELDS, SAI_TABLE, SmartScripts } from '@keira-types/smart-scripts.type';
+import { SAI_ID_2, SAI_ID_FIELDS, SAI_TABLE, SAI_TYPES, SmartScripts } from '@keira-types/smart-scripts.type';
 import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
 import { QueryService } from '@keira-shared/services/query.service';
+import { SaiCommentGeneratorService } from '@keira-shared/modules/sai-editor/sai-comment-generator.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,7 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
     protected handlerService: SaiHandlerService,
     protected queryService: QueryService,
     protected toastrService: ToastrService,
+    protected saiCommentGeneratorService: SaiCommentGeneratorService,
   ) {
     super(
       SmartScripts,
@@ -80,5 +82,34 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
       this._errors.push(`ERROR: non-existing links: ${Array.from(links).join(' ')}`);
     }
 
+  }
+
+  protected onRowSelected() {
+    if (this.handlerService.parsedSelected.source_type === SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST) {
+      this._form.controls.event_type.disable();
+      this._form.controls.event_param3.disable();
+      this._form.controls.event_param4.disable();
+      this._form.controls.event_param5.disable();
+      this._form.controls.event_type.setValue(0);
+      this._form.controls.event_param3.setValue(0);
+      this._form.controls.event_param4.setValue(0);
+      this._form.controls.event_param5.setValue(0);
+      return true;
+    }
+  }
+
+  async generateComments() {
+    for (const row of this._newRows) {
+      row.comment = await this.saiCommentGeneratorService.generateComment(
+        this._newRows,
+        row,
+        await this.handlerService.getName().toPromise(),
+      );
+
+      if (this.isRowSelected(row)) {
+        this._form.controls.comment.setValue(row.comment);
+      }
+    }
+    this.refreshDatatable();
   }
 }

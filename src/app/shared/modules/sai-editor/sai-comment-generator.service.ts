@@ -101,6 +101,11 @@ export class SaiCommentGeneratorService {
       case SAI_TYPES.SAI_TYPE_GAMEOBJECT:
         eventLine += name + ' - ';
         eventLine += SAI_EVENT_COMMENTS[smartScript.event_type];
+        if (!eventLine) {
+          const error = `Missing comment for event_type ${smartScript.event_type}`;
+          console.error(error);
+          return error;
+        }
         break;
 
       case SAI_TYPES.SAI_TYPE_AREATRIGGER:
@@ -161,6 +166,12 @@ export class SaiCommentGeneratorService {
     smartScriptLink: SmartScripts,
   ): Promise<string> {
     let actionLine = SAI_ACTION_COMMENTS[smartScript.action_type];
+
+    if (!actionLine) {
+      const error = `Missing comment for action_type ${smartScript.action_type}`;
+      console.error(error);
+      return error;
+    }
 
     actionLine = actionLine.replace('_actionParamOne_',   `${smartScript.action_param1}`);
     actionLine = actionLine.replace('_actionParamTwo_',   `${smartScript.action_param2}`);
