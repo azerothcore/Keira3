@@ -82,7 +82,12 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
         query = `SELECT name FROM creature_template WHERE entry = ${sai.entryorguid}`;
       }
     } else if (sai.source_type ===  SAI_TYPES.SAI_TYPE_GAMEOBJECT) {
-      // TODO
+      if (sai.entryorguid < 0) {
+        query =
+          `SELECT ct.name FROM gameobject_template AS ct INNER JOIN gameobject AS c ON c.id = ct.entry WHERE c.guid = ${-sai.entryorguid}`;
+      } else {
+        query = `SELECT name FROM gameobject_template WHERE entry = ${sai.entryorguid}`;
+      }
     } else {
       return;
     }

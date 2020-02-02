@@ -37,6 +37,7 @@ export class SaiTopBarComponent extends SubscriptionHandler implements OnInit {
 
       case SAI_TYPES.SAI_TYPE_GAMEOBJECT:
         this._selectedText = `Gameobject ${this.getGuidOrIdText(selected.entryorguid)}`;
+        this._selectedText = `${this._selectedText} (${await this.handler.getName().toPromise()})`;
         break;
 
       case SAI_TYPES.SAI_TYPE_AREATRIGGER:
