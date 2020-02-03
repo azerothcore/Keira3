@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { ComplexKeyHandlerService } from '../../abstract/service/handlers/complex-key.handler.service';
 import { SAI_ID_FIELDS, SAI_TYPES, SmartScripts } from '../../types/smart-scripts.type';
 import { QueryService } from '../../services/query.service';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -66,5 +68,39 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
       default:
         return null;
     }
+  }
+
+  getName(): Observable<string> {
+    const sai = this.parsedSelected;
+    let query: string;
+
+    if (sai.source_type ===  SAI_TYPES.SAI_TYPE_CREATURE) {
+      if (sai.entryorguid < 0) {
+        query =
+          `SELECT ct.name FROM creature_template AS ct INNER JOIN creature AS c ON c.id = ct.entry WHERE c.guid = ${-sai.entryorguid}`;
+      } else {
+        query = `SELECT name FROM creature_template WHERE entry = ${sai.entryorguid}`;
+      }
+    } else if (sai.source_type ===  SAI_TYPES.SAI_TYPE_GAMEOBJECT) {
+      if (sai.entryorguid < 0) {
+        query =
+          `SELECT ct.name FROM gameobject_template AS ct INNER JOIN gameobject AS c ON c.id = ct.entry WHERE c.guid = ${-sai.entryorguid}`;
+      } else {
+        query = `SELECT name FROM gameobject_template WHERE entry = ${sai.entryorguid}`;
+      }
+    } else {
+      return;
+    }
+
+    return this.queryService.query<{ name: string }>(query).pipe(
+      map((data) => {
+        if (data.results.length > 0) {
+          return `${data.results[0].name}`;
+        } else {
+          console.error(`Unable to find name for source_type = ${sai.source_type}, entryorguid = ${sai.entryorguid}`);
+          return null;
+        }
+      })
+    );
   }
 }

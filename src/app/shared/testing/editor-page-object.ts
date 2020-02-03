@@ -55,7 +55,7 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
   }
 
   getCellOfDatatableInModal(rowIndex: number, colIndex: number) {
-    const element = this.getDatatableCell(this.DT_SELECTOR, rowIndex, colIndex);
+    const element = this.getDatatableCellExternal(this.DT_SELECTOR, rowIndex, colIndex);
     expect(element).toBeTruthy(`Unable to find column ${colIndex} of row ${rowIndex} of ${this.DT_SELECTOR}`);
     return element;
   }
@@ -64,8 +64,7 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
     this.clickElement(this.getCellOfDatatableInModal(rowIndex, 0));
   }
 
-  getCellOfTable(rowIndex: number, colIndex: number): HTMLTableDataCellElement {
-    const tableSelector = '#flags-table';
+  getCellOfTableExternal(tableSelector: string, rowIndex: number, colIndex: number): HTMLTableDataCellElement {
     const element = document.querySelector<HTMLTableDataCellElement>(
       `${tableSelector} tr:nth-child(${rowIndex + 1}) td:nth-child(${colIndex + 1})`
     );
@@ -74,7 +73,7 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
   }
 
   toggleFlagInRow(rowIndex: number) {
-    const cell = this.getCellOfTable(rowIndex, 0);
+    const cell = this.getCellOfTableExternal('#flags-table', rowIndex, 0);
     const toggleSelector = 'ui-switch';
     const toggleElement = cell.querySelector<HTMLElement>(toggleSelector);
     expect(toggleElement).toBeTruthy(`Unable to find ${toggleSelector}`);
@@ -133,20 +132,5 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
 
   expectDiffQueryToBeEmpty() {
     expect(this.queryPo.diffQueryWrapper.innerText).toEqual('');
-  }
-
-  /*** ngx-datatable utilities ***/
-  getDatatableHeaderByTitle(datatableSelector: string, text: string): HTMLElement {
-    return document.querySelector(`${datatableSelector} .datatable-header-cell[title="${text}"]`);
-  }
-
-  getDatatableRow(datatableSelector: string, rowIndex: number): HTMLElement {
-    return document.querySelector(`${datatableSelector} .datatable-row-wrapper:nth-child(${rowIndex + 1})`);
-  }
-
-  getDatatableCell(datatableSelector: string, rowIndex: number, colIndex: number): HTMLElement {
-    return document.querySelector(
-      `${datatableSelector} .datatable-row-wrapper:nth-child(${rowIndex + 1}) .datatable-body-cell:nth-child(${colIndex + 1})`
-    );
   }
 }

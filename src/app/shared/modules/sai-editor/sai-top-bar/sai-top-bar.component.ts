@@ -25,18 +25,19 @@ export class SaiTopBarComponent extends SubscriptionHandler implements OnInit {
     super();
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     const selected: Partial<SmartScripts> = JSON.parse(this.handler.selected);
 
     switch (selected.source_type) {
 
       case SAI_TYPES.SAI_TYPE_CREATURE:
         this._selectedText = `Creature ${this.getGuidOrIdText(selected.entryorguid)}`;
-        this.appendCreatureName(selected.entryorguid);
+        this._selectedText = `${this._selectedText} (${await this.handler.getName().toPromise()})`;
         break;
 
       case SAI_TYPES.SAI_TYPE_GAMEOBJECT:
         this._selectedText = `Gameobject ${this.getGuidOrIdText(selected.entryorguid)}`;
+        this._selectedText = `${this._selectedText} (${await this.handler.getName().toPromise()})`;
         break;
 
       case SAI_TYPES.SAI_TYPE_AREATRIGGER:
@@ -56,25 +57,5 @@ export class SaiTopBarComponent extends SubscriptionHandler implements OnInit {
     } else {
       return `ID ${entryorguid}`;
     }
-  }
-
-  private appendCreatureName(entryorguid: number): void {
-    let query: string;
-
-    if (entryorguid < 0) {
-      query = `SELECT ct.name FROM creature_template AS ct INNER JOIN creature AS c ON c.id = ct.entry WHERE c.guid = ${-entryorguid}`;
-    } else {
-      query = `SELECT name FROM creature_template WHERE entry = ${entryorguid}`;
-    }
-
-    this.subscriptions.push(
-      this.queryService.query<{ name: string }>(query).subscribe((data) => {
-        if (data.results.length > 0) {
-          this._selectedText = `${this._selectedText} (${data.results[0].name})`;
-        } else {
-          console.error(`Unable to find creature having entryorguid = ${entryorguid}`);
-        }
-      })
-    );
   }
 }

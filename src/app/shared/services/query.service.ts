@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import { Squel, Delete, Insert, Update, QueryBuilder } from 'squel';
+import { Observable, of } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { Squel, Delete, Insert, Update } from 'squel';
 import { escape } from 'sqlstring';
 
 import { MysqlService } from './mysql.service';
-import { MaxRow, MysqlResult, QueryForm, TableRow } from '../types/general';
+import { MaxRow, MysqlResult, QueryForm, TableRow, ValueRow } from '../types/general';
 import { squelConfig } from '../../config/squel.config';
 import { ConfigService } from './config.service';
 
@@ -366,5 +366,65 @@ export class QueryService {
     let query: string = this.getDeleteMultipleKeysQuery(tableName, currentRow, primaryKeys) + ';\n';
     query += insertQuery.toString() + ';\n';
     return this.formatQuery(query);
+  }
+
+  // Input query format must be: SELECT something AS v FROM ...
+  queryValue(query: string): Promise<string> {
+    return this.query(query).pipe(
+      map((data: MysqlResult<ValueRow>) => (data.results.length > 0) ? data.results[0].v : null),
+    ).toPromise();
+  }
+
+  getCreatureNameById(id: string|number): Promise<string> {
+    return this.queryValue(`SELECT name AS v FROM creature_template WHERE entry = ${id}`);
+  }
+
+  getCreatureNameByGuid(guid: string|number): Promise<string> {
+    return this.queryValue(`SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id WHERE c.guid = ${guid}`);
+  }
+
+  getGameObjectNameById(id: string|number): Promise<string> {
+    return this.queryValue(`SELECT name AS v FROM gameobject_template WHERE entry = ${id}`);
+  }
+
+  getGameObjectNameByGuid(guid: string|number): Promise<string> {
+    return this.queryValue(`SELECT name AS v FROM gameobject_template AS gt INNER JOIN gameobject AS g ON gt.entry = g.id WHERE g.guid = ${guid}`);
+  }
+
+  getQuestTitleById(id: string|number): Promise<string> {
+    return this.queryValue(`SELECT name AS v FROM quest_template WHERE entry = ${id}`);
+  }
+
+  getItemNameById(id: string|number): Promise<string> {
+    return this.queryValue(`SELECT name AS v FROM item_template WHERE entry = ${id}`);
+  }
+
+  // Note: at least one param should be defined
+  getQuestTitleByCriteria(
+    requiredNpcOrGo1: string|number|null,
+    requiredNpcOrGo2: string|number|null,
+    requiredNpcOrGo3: string|number|null,
+    requiredNpcOrGo4: string|number|null,
+    requiredSpellCast1: string|number|null = null,
+  ): Promise<string> {
+    const query = squel.select(squelConfig).fields({ LogTitle: 'v' }).from('quest_template');
+
+    if (!!requiredNpcOrGo1) {
+      query.where(`RequiredNpcOrGo1 = ${requiredNpcOrGo1}`);
+    }
+    if (!!requiredNpcOrGo2) {
+      query.where(`RequiredNpcOrGo2 = ${requiredNpcOrGo2}`);
+    }
+    if (!!requiredNpcOrGo3) {
+      query.where(`RequiredNpcOrGo3 = ${requiredNpcOrGo3}`);
+    }
+    if (!!requiredNpcOrGo4) {
+      query.where(`RequiredNpcOrGo4 = ${requiredNpcOrGo4}`);
+    }
+    if (!!requiredSpellCast1) {
+      query.where(`RequiredSpellCast1 = ${requiredSpellCast1}`);
+    }
+
+    return this.queryValue(query.toString());
   }
 }
