@@ -1,6 +1,5 @@
-import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
 import { SaiTopBarComponent } from './sai-top-bar.component';
@@ -9,6 +8,7 @@ import { PageObject } from '@keira-testing/page-object';
 import { SAI_TYPES } from '@keira-types/smart-scripts.type';
 import { QueryService } from '../../../services/query.service';
 import { Component, ViewChild } from '@angular/core';
+import { of } from 'rxjs';
 
 class SaiTopBarComponentPage extends PageObject<TestHostComponent> {
   get mainText() { return this.query<HTMLSpanElement>('.main-text'); }
@@ -73,37 +73,11 @@ describe('SaiTopBarComponent', () => {
     { testId: 6, type: SAI_TYPES.SAI_TYPE_CREATURE, positive: false, expected: `Creature GUID ${entryorguid}` },
   ]) {
     it(`should correctly handle different types [${testId}]`, () => {
-      querySpy.and.returnValue(of({ results: [{ name }] }));
       handler['_selected'] = JSON.stringify({ source_type: type, entryorguid: positive ? entryorguid : -entryorguid });
+      spyOn(handler, 'getName').and.returnValue(of(name));
       fixture.detectChanges();
 
       expect(page.mainText.innerText).toContain(expected);
     });
   }
-
-  describe('after fetching the creature name', () => {
-    beforeEach(() => {
-      handler['_selected'] = JSON.stringify({ source_type: SAI_TYPES.SAI_TYPE_CREATURE, entryorguid });
-    });
-
-    it('should correctly show the name', fakeAsync(() => {
-      querySpy.and.returnValue(of({ results: [{ name }] }));
-
-      fixture.detectChanges();
-      tick();
-
-      expect(page.mainText.innerText).toContain(name);
-    }));
-
-    it('should output a console error if the creature cannot be found', fakeAsync(() => {
-      spyOn(console, 'error');
-      querySpy.and.returnValue(of({ results: [] }));
-
-      fixture.detectChanges();
-      tick();
-
-      expect(console.error).toHaveBeenCalledTimes(1);
-      expect(console.error).toHaveBeenCalledWith(`Unable to find creature having entryorguid = ${entryorguid}`);
-    }));
-  });
 });

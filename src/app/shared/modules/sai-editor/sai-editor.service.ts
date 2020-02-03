@@ -5,6 +5,7 @@ import { MultiRowComplexKeyEditorService } from '@keira-abstract/service/editors
 import { SAI_ID_2, SAI_ID_FIELDS, SAI_TABLE, SAI_TYPES, SmartScripts } from '@keira-types/smart-scripts.type';
 import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
 import { QueryService } from '@keira-shared/services/query.service';
+import { SaiCommentGeneratorService } from '@keira-shared/modules/sai-editor/sai-comment-generator.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,7 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
     protected handlerService: SaiHandlerService,
     protected queryService: QueryService,
     protected toastrService: ToastrService,
+    protected saiCommentGeneratorService: SaiCommentGeneratorService,
   ) {
     super(
       SmartScripts,
@@ -94,5 +96,20 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
       this._form.controls.event_param5.setValue(0);
       return true;
     }
+  }
+
+  async generateComments() {
+    for (const row of this._newRows) {
+      row.comment = await this.saiCommentGeneratorService.generateComment(
+        this._newRows,
+        row,
+        await this.handlerService.getName().toPromise(),
+      );
+
+      if (this.isRowSelected(row)) {
+        this._form.controls.comment.setValue(row.comment);
+      }
+    }
+    this.refreshDatatable();
   }
 }

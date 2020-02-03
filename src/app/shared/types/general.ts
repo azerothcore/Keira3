@@ -18,6 +18,10 @@ export class TableRow {
   [key: string]: string|number;
 }
 
+export class ValueRow extends TableRow {
+  v: string;
+}
+
 export interface MaxRow extends TableRow {
   max: number;
 }
