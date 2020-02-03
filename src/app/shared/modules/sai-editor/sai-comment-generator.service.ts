@@ -100,12 +100,13 @@ export class SaiCommentGeneratorService {
       case SAI_TYPES.SAI_TYPE_CREATURE:
       case SAI_TYPES.SAI_TYPE_GAMEOBJECT:
         eventLine += name + ' - ';
-        eventLine += SAI_EVENT_COMMENTS[smartScript.event_type];
-        if (!eventLine) {
+        const comment = SAI_EVENT_COMMENTS[smartScript.event_type];
+        if (!comment) {
           const error = `Missing comment for event_type ${smartScript.event_type}`;
           console.error(error);
           return error;
         }
+        eventLine += comment;
         break;
 
       case SAI_TYPES.SAI_TYPE_AREATRIGGER:

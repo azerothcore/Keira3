@@ -51,6 +51,20 @@ describe('SaiCommentGeneratorService', () => {
 
     const cases: { name: string, input: Partial<SmartScripts>, expected: string }[] = [
       {
+        name: 'Non-existing event type',
+        input: {
+          event_type: 99999,
+        },
+        expected: 'Missing comment for event_type 99999 - No Action Type',
+      },
+      {
+        name: 'Non-existing action type',
+        input: {
+          action_type: 99999,
+        },
+        expected: 'MockEntity - In Combat - Missing comment for action_type 99999',
+      },
+      {
         name: 'Empty Creature',
         input: {
           source_type: SAI_TYPES.SAI_TYPE_CREATURE,
