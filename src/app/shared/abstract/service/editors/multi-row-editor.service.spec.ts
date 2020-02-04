@@ -189,7 +189,7 @@ describe('MultiRowEditorService', () => {
     });
 
 
-    it('should do nothing if the same row is already selected', () => {
+    it('should correctly work', () => {
       const rows = [{ [MOCK_ID]: 123, [MOCK_ID_2]: 3, [MOCK_NAME]: 'some name' }];
       service['_newRows'] = rows;
       spyOn<any>(service, 'getSelectedRowIndex').and.returnValue(0);

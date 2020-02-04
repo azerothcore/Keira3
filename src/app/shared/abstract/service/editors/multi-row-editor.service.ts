@@ -141,9 +141,13 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     const index = this.getSelectedRowIndex();
 
     for (const field of this.fields) {
-      this._form.get(field).setValue(
-        this._newRows[index][field]
-      );
+      const control = this._form.get(field);
+      /* istanbul ignore else */
+      if (control) {
+        control.setValue(
+          this._newRows[index][field]
+        );
+      }
     }
 
     this.onRowSelected();
