@@ -99,7 +99,11 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
   protected updateFormAfterReload() {
     this._loading = true;
     for (const field of this.fields) {
-      this._form.get(field).setValue(this._originalValue[field]);
+      const control = this._form.get(field);
+      console.log(control);
+      if (control) {
+        control.setValue(this._originalValue[field]);
+      }
     }
     this._loading = false;
   }
