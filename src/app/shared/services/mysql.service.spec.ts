@@ -65,35 +65,51 @@ fdescribe('MysqlService', () => {
     });
   }));
 
-  it('dbQuery(queryString) should properly work', async(() => {
-    (service as any).mysql = new MockMySql();
-    const mockConnection = new MockConnection();
-    service['_connection'] = mockConnection as undefined as Connection;
-    const querySpy = spyOn(mockConnection, 'query');
-    const queryStr = '--some mock query';
+  describe('dbQuery(queryString)', () => {
+    it('should properly work', async(() => {
+      (service as any).mysql = new MockMySql();
+      const mockConnection = new MockConnection();
+      service['_connection'] = mockConnection as undefined as Connection;
+      const querySpy = spyOn(mockConnection, 'query');
+      const queryStr = '--some mock query';
 
-    const obs = service.dbQuery(queryStr, []);
+      const obs = service.dbQuery(queryStr, []);
 
-    obs.subscribe(() => {
-      expect(querySpy).toHaveBeenCalledTimes(1);
-      // @ts-ignore
-      expect(querySpy).toHaveBeenCalledWith(queryStr, [], service['queryCallback']);
-    });
-  }));
+      obs.subscribe(() => {
+        expect(querySpy).toHaveBeenCalledTimes(1);
+        // @ts-ignore
+        expect(querySpy).toHaveBeenCalledWith(queryStr, [], service['queryCallback']);
+      });
+    }));
 
-  it('dbQuery(queryString) should give error if _connection is not defined', async(() => {
-    (service as any).mysql = new MockMySql();
-    service['_connection'] = undefined;
-    spyOn(console, 'error');
-    const queryStr = '--some mock query';
+    it('should give error if _connection is not defined', async(() => {
+      (service as any).mysql = new MockMySql();
+      service['_connection'] = undefined;
+      spyOn(console, 'error');
+      const queryStr = '--some mock query';
 
-    const obs = service.dbQuery(queryStr, []);
+      const obs = service.dbQuery(queryStr, []);
 
-    obs.subscribe(() => {
-      expect(console.error).toHaveBeenCalledTimes(1);
-      expect(console.error).toHaveBeenCalledWith(`_connection was not defined when trying to run query: ${queryStr}`);
-    });
-  }));
+      obs.subscribe(() => {
+        expect(console.error).toHaveBeenCalledTimes(1);
+        expect(console.error).toHaveBeenCalledWith(`_connection was not defined when trying to run query: ${queryStr}`);
+      });
+    }));
+
+    it('should give error if reconnection is in progress', async(() => {
+      (service as any).mysql = new MockMySql();
+      service['_reconnecting'] = true;
+      spyOn(console, 'error');
+      const queryStr = '--some mock query';
+
+      const obs = service.dbQuery(queryStr);
+
+      obs.subscribe(() => {
+        expect(console.error).toHaveBeenCalledTimes(1);
+        expect(console.error).toHaveBeenCalledWith(`Reconnection in progress while trying to run query: ${queryStr}`);
+      });
+    }));
+  });
 
   describe('callbacks', () => {
     let subscriber: Subscriber<any>;
@@ -167,6 +183,26 @@ fdescribe('MysqlService', () => {
         expect(nextSpy).toHaveBeenCalledTimes(0);
         expect(completeSpy).toHaveBeenCalledTimes(1);
       });
+    });
+  });
+
+  describe('handleConnectionError', () => {
+    it('should call reconnect if the error is PROTOCOL_CONNECTION_LOST', () => {
+      const error = { code: 'PROTOCOL_CONNECTION_LOST' };
+      spyOn<any>(service, 'reconnect');
+
+      service['handleConnectionError'](error);
+
+      expect(service['reconnect']).toHaveBeenCalledTimes(1)
+    });
+
+    it('should NOT call reconnect if the error is something else', () => {
+      const error = { code: 'SOME_OTHER_ERROR' };
+      spyOn<any>(service, 'reconnect');
+
+      service['handleConnectionError'](error);
+
+      expect(service['reconnect']).toHaveBeenCalledTimes(0);
     });
   });
 
