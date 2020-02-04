@@ -17,7 +17,7 @@ class MockConnection {
   connect() {}
 }
 
-fdescribe('MysqlService', () => {
+describe('MysqlService', () => {
   let service: MysqlService;
 
   const config: ConnectionConfig = { host: 'azerothcore.org' };
@@ -193,7 +193,7 @@ fdescribe('MysqlService', () => {
 
       service['handleConnectionError'](error);
 
-      expect(service['reconnect']).toHaveBeenCalledTimes(1)
+      expect(service['reconnect']).toHaveBeenCalledTimes(1);
     });
 
     it('should NOT call reconnect if the error is something else', () => {
@@ -226,6 +226,37 @@ fdescribe('MysqlService', () => {
 
     expect(service['_connection']).toEqual(mockConnection as unknown as Connection);
   }));
+
+  describe('reconnectCallback(err)', () => {
+    it('should call reconnect() in case of error', () => {
+      service['_reconnecting'] = true;
+      spyOn(service['_connectionLostSubject'], 'next');
+      spyOn<any>(service, 'reconnect');
+      service['_connection'] = { on: jasmine.createSpy() } as any;
+
+      service['reconnectCallback']({ code: 'mock-error'} as unknown as MysqlError);
+
+      expect(service['reconnect']).toHaveBeenCalledTimes(1);
+      expect(service['_reconnecting']).toBe(true);
+      expect(service['_connectionLostSubject'].next).toHaveBeenCalledTimes(0);
+      expect(service['_connection'].on).toHaveBeenCalledTimes(0);
+    });
+
+    it('should correctly work otherwise', () => {
+      service['_reconnecting'] = true;
+      spyOn(service['_connectionLostSubject'], 'next');
+      spyOn<any>(service, 'reconnect');
+      service['_connection'] = { on: jasmine.createSpy() } as any;
+
+      service['reconnectCallback'](null);
+
+      expect(service['reconnect']).toHaveBeenCalledTimes(0);
+      expect(service['_reconnecting']).toBe(false);
+      expect(service['_connectionLostSubject'].next).toHaveBeenCalledTimes(1);
+      expect(service['_connectionLostSubject'].next).toHaveBeenCalledWith(true);
+      expect(service['_connection'].on).toHaveBeenCalledTimes(1);
+    });
+  });
 
   afterEach(() => {
     reset(MockedElectronService);
