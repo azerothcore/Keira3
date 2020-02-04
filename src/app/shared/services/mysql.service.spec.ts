@@ -81,6 +81,20 @@ describe('MysqlService', () => {
     });
   }));
 
+  it('dbQuery(queryString) should give error if _connection is not defined', async(() => {
+    (service as any).mysql = new MockMySql();
+    service['_connection'] = undefined;
+    spyOn(console, 'error');
+    const queryStr = '--some mock query';
+
+    const obs = service.dbQuery(queryStr, []);
+
+    obs.subscribe(() => {
+      expect(console.error).toHaveBeenCalledTimes(1);
+      expect(console.error).toHaveBeenCalledWith(`_connection was not defined when trying to run query: ${queryStr}`);
+    });
+  }));
+
   describe('callbacks', () => {
     let subscriber: Subscriber<any>;
     let errorSpy: Spy;
