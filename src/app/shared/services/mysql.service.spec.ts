@@ -1,4 +1,4 @@
-import { async, TestBed } from '@angular/core/testing';
+import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { instance, reset } from 'ts-mockito';
 import { Connection, ConnectionConfig, MysqlError } from 'mysql';
 import { Subscriber } from 'rxjs';
@@ -186,7 +186,7 @@ fdescribe('MysqlService', () => {
     });
   });
 
-  describe('handleConnectionError', () => {
+  describe('handleConnectionError(error)', () => {
     it('should call reconnect if the error is PROTOCOL_CONNECTION_LOST', () => {
       const error = { code: 'PROTOCOL_CONNECTION_LOST' };
       spyOn<any>(service, 'reconnect');
@@ -205,6 +205,27 @@ fdescribe('MysqlService', () => {
       expect(service['reconnect']).toHaveBeenCalledTimes(0);
     });
   });
+
+  it('reconnect() should correctly work ', fakeAsync(() => {
+    service['_reconnecting'] = false;
+    spyOn(service['_connectionLostSubject'], 'next');
+    spyOn(console, 'log');
+    (service as any).mysql = new MockMySql();
+    const mockConnection = new MockConnection();
+    spyOn((service as any).mysql, 'createConnection').and.returnValue(mockConnection);
+
+    service['reconnect']();
+
+    expect(service['_reconnecting']).toBe(true);
+    expect(service['_connectionLostSubject'].next).toHaveBeenCalledTimes(1);
+    expect(service['_connectionLostSubject'].next).toHaveBeenCalledWith(false);
+    expect(console.log).toHaveBeenCalledTimes(1);
+    expect(console.log).toHaveBeenCalledWith(`DB connection lost. Reconnecting in 500 ms...`);
+
+    tick(500);
+
+    expect(service['_connection']).toEqual(mockConnection as unknown as Connection);
+  }));
 
   afterEach(() => {
     reset(MockedElectronService);
