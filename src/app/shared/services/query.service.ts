@@ -392,7 +392,7 @@ export class QueryService {
   }
 
   getQuestTitleById(id: string|number): Promise<string> {
-    return this.queryValue(`SELECT name AS v FROM quest_template WHERE entry = ${id}`);
+    return this.queryValue(`SELECT LogTitle AS v FROM quest_template WHERE entry = ${id}`);
   }
 
   getItemNameById(id: string|number): Promise<string> {
