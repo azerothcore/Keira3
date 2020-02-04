@@ -66,7 +66,11 @@ export class MysqlService {
 
   dbQuery<T extends TableRow>(queryString: string, values?: string[]): Observable<MysqlResult<T>> {
     return new Observable<MysqlResult<T>>(subscriber => {
-      this._connection.query(queryString, values, this.getQueryCallback<T>(subscriber));
+      if (this._connection) {
+        this._connection.query(queryString, values, this.getQueryCallback<T>(subscriber));
+      } else {
+        console.error(`_connection was not defined when trying to run query: ${queryString}`);
+      }
     });
   }
 
