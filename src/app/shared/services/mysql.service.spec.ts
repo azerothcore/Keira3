@@ -118,6 +118,7 @@ fdescribe('MysqlService', () => {
 
       it('should correctly work', () => {
         service['_connectionEstablished'] = false;
+        service['_connection'] = { on: jasmine.createSpy() } as any;
 
         callback();
 
@@ -125,6 +126,7 @@ fdescribe('MysqlService', () => {
         expect(nextSpy).toHaveBeenCalledTimes(1);
         expect(completeSpy).toHaveBeenCalledTimes(1);
         expect(service['_connectionEstablished']).toBe(true);
+        expect(service['_connection'].on).toHaveBeenCalledTimes(1);
       });
 
       it('should correctly handle errors', () => {
