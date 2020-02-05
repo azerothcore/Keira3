@@ -99,7 +99,19 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
   protected updateFormAfterReload() {
     this._loading = true;
     for (const field of this.fields) {
-      this._form.get(field).setValue(this._originalValue[field]);
+      const control = this._form.controls[field];
+      /* istanbul ignore else */
+      if (control) {
+        control.setValue(this._originalValue[field]);
+      } else {
+        console.error(`Control '${field}' does not exist!`);
+        console.log(`----------- DEBUG CONTROL KEYS:`);
+        for (const k in this._form.controls) {
+          if (this._form.controls.hasOwnProperty(k)) {
+            console.log(k);
+          }
+        }
+      }
     }
     this._loading = false;
   }

@@ -63,7 +63,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="AllowableClasses">AllowableClasses</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('AllowableClasses')"
+            [control]="editorService.form.controls['AllowableClasses']"
             [config]="{ flags: ALLOWABLE_CLASSES, name: 'AllowableClasses' }"
           ></app-flags-selector-btn>
           <i
@@ -103,7 +103,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="SpecialFlags">SpecialFlags</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('SpecialFlags')"
+            [control]="editorService.form.controls['SpecialFlags']"
             [config]="{ flags: SPECIAL_FLAGS, name: 'SpecialFlags' }"
           ></app-flags-selector-btn>
           <input [formControlName]="'SpecialFlags'" id="SpecialFlags" type="number" class="form-control form-control-sm">
@@ -135,7 +135,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="RequiredMinRepFaction">RequiredMinRepFaction</label>
           <app-single-value-selector-btn
-                [control]="editorService.form.get('RequiredMinRepFaction')"
+                [control]="editorService.form.controls['RequiredMinRepFaction']"
                 [config]="{ options: FACTIONS, name: 'RequiredMinRepFaction' }"
                 [modalClass]="'modal-md'"
               ></app-single-value-selector-btn>
@@ -154,7 +154,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="RequiredMaxRepFaction">RequiredMaxRepFaction</label>
           <app-single-value-selector-btn
-                [control]="editorService.form.get('RequiredMaxRepFaction')"
+                [control]="editorService.form.controls['RequiredMaxRepFaction']"
                 [config]="{ options: FACTIONS, name: 'RequiredMaxRepFaction' }"
                 [modalClass]="'modal-md'"
               ></app-single-value-selector-btn>
