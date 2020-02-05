@@ -17,7 +17,7 @@ module.exports = function (config) {
       jasmine: {
         random: true,
         failFast: true,
-        timeoutInterval: 10_000,
+        timeoutInterval: 10000,
       }
     },
     coverageIstanbulReporter: {
