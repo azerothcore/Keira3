@@ -48,7 +48,7 @@ describe('GameobjectComponent', () => {
     const mockType = 'mockTypeValue';
     const index = 3;
     gameobjectTemplateService = TestBed.get(GameobjectTemplateService);
-    gameobjectTemplateService.form.get('type').setValue(mockType);
+    gameobjectTemplateService.form.controls['type'].setValue(mockType);
     getFieldSpy = spyOn(gameobjectTemplateService, 'getFieldDefinition').and.returnValue(mockValue);
 
     expect(component.dataFieldDefinition(index)).toEqual(mockValue);

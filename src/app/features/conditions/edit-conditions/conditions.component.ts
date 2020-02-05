@@ -37,7 +37,7 @@ export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
   public readonly CONDITION_VALUE_3_TOOLTIPS = CONDITION_VALUE_3_TOOLTIPS;
 
   get selectedSourceType(): number {
-   return this.editorService.form.get('SourceTypeOrReferenceId').value;
+   return this.editorService.form.controls['SourceTypeOrReferenceId'].value;
   }
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

@@ -33,7 +33,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="faction">faction</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('faction')"
+            [control]="editorService.form.controls['faction']"
             [config]="{ options: FACTIONS, name: 'faction' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
@@ -42,7 +42,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="flags">flags</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('flags')"
+            [control]="editorService.form.controls['flags']"
             [config]="{ flags: GAMEOBJECT_FLAGS, name: 'flags' }"
             [modalClass]="'modal-lg'"
           ></app-flags-selector-btn>

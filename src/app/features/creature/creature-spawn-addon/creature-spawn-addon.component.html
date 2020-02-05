@@ -49,7 +49,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="bytes1">bytes1</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('bytes1')"
+            [control]="editorService.form.controls['bytes1']"
             [config]="{ options: CREATURE_ADDON_BYTES_1, name: 'bytes1' }"
             [modalClass]="'modal-xl'"
           ></app-single-value-selector-btn>
@@ -58,7 +58,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="bytes2">bytes2</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('bytes2')"
+            [control]="editorService.form.controls['bytes2']"
             [config]="{ options: CREATURE_ADDON_BYTES_2, name: 'bytes2' }"
             [modalClass]="'modal-lg'"
           ></app-single-value-selector-btn>
@@ -67,7 +67,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="emote">emote</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('emote')"
+            [control]="editorService.form.controls['emote']"
             [config]="{ options: EMOTE, name: 'emote' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
