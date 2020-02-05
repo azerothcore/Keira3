@@ -41,50 +41,38 @@ describe('SingleRowEditorService', () => {
     it('when loading is true, should do nothing', () => {
       service['_loading'] = true;
 
-      const control = service.form.get('id');
-      if (control) { // for some reasons this prevents the test to fail on travis
-        control.setValue(123);
+      service.form.get('id').setValue(123);
 
-        expect(updateDiffQuerySpy).toHaveBeenCalledTimes(0);
-        expect(updateFullQuerySpy).toHaveBeenCalledTimes(0);
-      }
+      expect(updateDiffQuerySpy).toHaveBeenCalledTimes(0);
+      expect(updateFullQuerySpy).toHaveBeenCalledTimes(0);
     });
 
     it('when loading is false and the form is not dirty, should update only the full query', () => {
       service.form.markAsPristine();
 
-      const control = service.form.get('id');
-      if (control) { // for some reasons this prevents the test to fail on travis
-        control.setValue(123);
+      service.form.get('id').setValue(123);
 
-        expect(updateDiffQuerySpy).toHaveBeenCalledTimes(0);
-        expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
-      }
+      expect(updateDiffQuerySpy).toHaveBeenCalledTimes(0);
+      expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
     });
 
     it('when loading is false and the form dirty, should update both the queries', () => {
       service.form.markAsDirty();
 
-      const control = service.form.get('id');
-      if (control) { // for some reasons this prevents the test to fail on travis
-        control.setValue(123);
+      service.form.get('id').setValue(123);
 
-        expect(updateDiffQuerySpy).toHaveBeenCalledTimes(1);
-        expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
-      }
+      expect(updateDiffQuerySpy).toHaveBeenCalledTimes(1);
+      expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
     });
 
     it('modifying the form twice with the same value should not have effect', () => {
       service.form.markAsDirty();
 
-      const control = service.form.get('id');
-      if (control) { // for some reasons this prevents the test to fail on travis
-        control.setValue(123);
-        control.setValue(123);
+      service.form.get('id').setValue(123);
+      service.form.get('id').setValue(123);
 
-        expect(updateDiffQuerySpy).toHaveBeenCalledTimes(1);
-        expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
-      }
+      expect(updateDiffQuerySpy).toHaveBeenCalledTimes(1);
+      expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
     });
   });
 
