@@ -33,16 +33,16 @@ describe('SearchService', () => {
     });
 
     it('should update the query if the form is valid', () => {
-      service.queryForm.get('limit').setValue(123);
+      service.queryForm.controls['limit'].setValue(123);
 
       expect(spy).toHaveBeenCalledWith(service['entityTable'], service.queryForm.getRawValue(), null, null);
       expect(service.query).toEqual(newQuery);
     });
 
     it('should not update the query if the form is invalid', () => {
-      service.queryForm.get('fields').setErrors({ error: 'some error'} );
+      service.queryForm.controls['fields'].setErrors({ error: 'some error'} );
 
-      service.queryForm.get('limit').setValue(123);
+      service.queryForm.controls['limit'].setValue(123);
 
       expect(spy).toHaveBeenCalledTimes(0);
       expect(service.query).toBeNull();

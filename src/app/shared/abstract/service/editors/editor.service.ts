@@ -49,7 +49,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   }
 
   protected disableEntityIdField() {
-    this._form.get(this._entityIdField).disable();
+    this._form.controls[this._entityIdField].disable();
   }
 
   protected initForm() {
