@@ -29,7 +29,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="ItemID1">ItemID1</label>
           <app-item-selector-btn
-            [control]="editorService.form.get('ItemID1')"
+            [control]="editorService.form.controls['ItemID1']"
             [config]="{  name: 'ItemID1' }"
           ></app-item-selector-btn>
           <input [formControlName]="'ItemID1'" id="ItemID1" type="number" class="form-control form-control-sm">
@@ -37,7 +37,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="ItemID2">ItemID2</label>
           <app-item-selector-btn
-            [control]="editorService.form.get('ItemID2')"
+            [control]="editorService.form.controls['ItemID2']"
             [config]="{  name: 'ItemID2' }"
           ></app-item-selector-btn>
           <input [formControlName]="'ItemID2'" id="ItemID2" type="number" class="form-control form-control-sm">
@@ -45,7 +45,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="ItemID3">ItemID3</label>
           <app-item-selector-btn
-            [control]="editorService.form.get('ItemID3')"
+            [control]="editorService.form.controls['ItemID3']"
             [config]="{  name: 'ItemID3' }"
           ></app-item-selector-btn>
           <input [formControlName]="'ItemID3'" id="ItemID3" type="number" class="form-control form-control-sm">

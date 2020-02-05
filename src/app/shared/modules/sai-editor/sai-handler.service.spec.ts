@@ -6,11 +6,16 @@ import { QueryService } from '../../services/query.service';
 import { of } from 'rxjs';
 import { SAI_TYPES } from '../../types/smart-scripts.type';
 import { Router } from '@angular/router';
+import { instance } from 'ts-mockito';
+import { MockedQueryService } from '@keira-testing/mocks';
 
 describe('SaiHandlerService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       RouterTestingModule,
+    ],
+    providers: [
+      { provide: QueryService, useValue: instance(MockedQueryService) },
     ]
   }));
 

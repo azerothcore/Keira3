@@ -15,10 +15,13 @@ import { ConnectionWindowComponent } from './connection-window/connection-window
 import { QueryErrorComponent } from '../shared/modules/query-output/query-error/query-error.component';
 import { ModalConfirmModule } from '../shared/modules/modal-confirm/modal-confirm.module';
 import { LogoutBtnComponent } from './main-window/sidebar/logout-btn/logout-btn.component';
+import { ToastrModule, ToastrService } from 'ngx-toastr';
+import { Subject } from 'rxjs';
 
 describe('AppComponent', () => {
   let component: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
+  let subject: Subject<boolean>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -37,6 +40,7 @@ describe('AppComponent', () => {
         BrowserAnimationsModule,
         PerfectScrollbarModule,
         ModalConfirmModule,
+        ToastrModule.forRoot(),
       ],
       providers: [
         { provide : ElectronService, useValue: instance(MockedElectronService) },
@@ -48,11 +52,35 @@ describe('AppComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
+
+    subject = new Subject<boolean>();
+    TestBed.get(MysqlService)['connectionLost$'] = subject.asObservable();
+
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should correctly react on connectionLost$ [connection lost]', () => {
+    const toastrService: ToastrService = TestBed.get(ToastrService);
+    spyOnAllFunctions(toastrService);
+
+    subject.next(false);
+    subject.next(false);
+    subject.next(false);
+
+    expect(toastrService.success).toHaveBeenCalledTimes(0);
+    expect(toastrService.error).toHaveBeenCalledTimes(1);
+    expect(toastrService.error).toHaveBeenCalledWith('Database connection lost');
+  });
+
+  it('should correctly react on connectionLost$ [reconnected]', () => {
+    const toastrService: ToastrService = TestBed.get(ToastrService);
+    spyOnAllFunctions(toastrService);
+
+    subject.next(true);
+
+    expect(toastrService.error).toHaveBeenCalledTimes(0);
+    expect(toastrService.success).toHaveBeenCalledTimes(1);
+    expect(toastrService.success).toHaveBeenCalledWith('Database reconnected');
   });
 
   afterEach(() => {

@@ -85,15 +85,15 @@ export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> im
   public readonly TARGET_PARAM4_TOOLTIPS  = SAI_TARGET_PARAM4_TOOLTIPS;
 
   get selectedEvent(): number {
-    return this.editorService.form.get('event_type').value;
+    return this.editorService.form.controls['event_type'].value;
   }
 
   get selectedAction(): number {
-    return this.editorService.form.get('action_type').value;
+    return this.editorService.form.controls['action_type'].value;
   }
 
   get selectedTarget(): number {
-    return this.editorService.form.get('target_type').value;
+    return this.editorService.form.controls['target_type'].value;
   }
 
   get isTimedActionlists(): boolean {

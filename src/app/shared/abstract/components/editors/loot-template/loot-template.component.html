@@ -30,7 +30,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="Item">Item</label>
           <app-item-selector-btn
-            [control]="editorService.form.get('Item')"
+            [control]="editorService.form.controls['Item']"
             [config]="{  name: 'Item' }"
           ></app-item-selector-btn>
           <input [formControlName]="'Item'" id="Item" type="number" class="form-control form-control-sm">
@@ -62,7 +62,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="LootMode">LootMode</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('LootMode')"
+            [control]="editorService.form.controls['LootMode']"
             [config]="{ flags: LOOT_MODE, name: 'LootMode' }"
             [modalClass]="'modal-lg'"
           ></app-flags-selector-btn>

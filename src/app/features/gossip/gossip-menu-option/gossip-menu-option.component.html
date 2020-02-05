@@ -34,7 +34,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
           <label class="control-label" for="OptionIcon">OptionIcon</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('OptionIcon')"
+            [control]="editorService.form.controls['OptionIcon']"
             [config]="{ options: OPTION_ICON, name: 'OptionIcon' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
@@ -59,7 +59,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
           <label class="control-label" for="OptionType">OptionType</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('OptionType')"
+            [control]="editorService.form.controls['OptionType']"
             [config]="{ options: OPTION_TYPE, name: 'OptionType' }"
             [modalClass]="'modal-xl'"
           ></app-single-value-selector-btn>
