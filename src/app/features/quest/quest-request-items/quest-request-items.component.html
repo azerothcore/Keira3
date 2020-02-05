@@ -43,7 +43,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
           <label class="control-label" for="EmoteOnComplete">EmoteOnComplete</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('EmoteOnComplete')"
+            [control]="editorService.form.controls['EmoteOnComplete']"
             [config]="{ options: EMOTE, name: 'EmoteOnComplete' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
@@ -57,7 +57,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
           <label class="control-label" for="EmoteOnIncomplete">EmoteOnIncomplete</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('EmoteOnIncomplete')"
+            [control]="editorService.form.controls['EmoteOnIncomplete']"
             [config]="{ options: EMOTE, name: 'EmoteOnIncomplete' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>

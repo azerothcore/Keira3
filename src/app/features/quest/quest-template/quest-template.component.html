@@ -45,7 +45,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="QuestType">QuestType</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('QuestType')"
+            [control]="editorService.form.controls['QuestType']"
             [config]="{ options: QUEST_TYPE, name: 'QuestType' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
@@ -100,7 +100,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="StartItem">StartItem</label>
           <app-item-selector-btn
-            [control]="editorService.form.get('StartItem')"
+            [control]="editorService.form.controls['StartItem']"
             [config]="{  name: 'StartItem' }"
           ></app-item-selector-btn>
           <i
@@ -113,7 +113,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="Flags">Flags</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('Flags')"
+            [control]="editorService.form.controls['Flags']"
             [config]="{ flags: QUEST_FLAGS, name: 'Flags' }"
           ></app-flags-selector-btn>
           <input [formControlName]="'Flags'" id="Flags" type="number" class="form-control form-control-sm">
@@ -131,7 +131,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="AllowableRaces">AllowableRaces</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('AllowableRaces')"
+            [control]="editorService.form.controls['AllowableRaces']"
             [config]="{ flags: ALLOWABLE_RACES, name: 'AllowableRaces' }"
           ></app-flags-selector-btn>
           <input [formControlName]="'AllowableRaces'" id="AllowableRaces" type="number" class="form-control form-control-sm">

@@ -65,7 +65,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="class">class</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('class')"
+            [control]="editorService.form.controls['class']"
             [config]="{ options: ITEM_CLASS, name: 'class' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
@@ -74,12 +74,12 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="subclass">subclass</label>
           <app-single-value-selector-btn
-            *ngIf="editorService.form.get('class')
-            && editorService.form.get('class').value !== null
-            && editorService.form.get('class').value >= 0
-            && editorService.form.get('class').value < ITEM_SUBCLASS.length"
-            [control]="editorService.form.get('subclass')"
-            [config]="{ options: ITEM_SUBCLASS[editorService.form.get('class').value], name: 'subclass' }"
+            *ngIf="editorService.form.controls['class']
+            && editorService.form.controls['class'].value !== null
+            && editorService.form.controls['class'].value >= 0
+            && editorService.form.controls['class'].value < ITEM_SUBCLASS.length"
+            [control]="editorService.form.controls['subclass']"
+            [config]="{ options: ITEM_SUBCLASS[editorService.form.controls['class'].value], name: 'subclass' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
           <i
@@ -107,7 +107,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="Quality">Quality</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('Quality')"
+            [control]="editorService.form.controls['Quality']"
             [config]="{ options: ITEM_QUALITY, name: 'Quality' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
@@ -116,7 +116,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="Flags">Flags</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('Flags')"
+            [control]="editorService.form.controls['Flags']"
             [config]="{ flags: ITEM_FLAGS, name: 'Flags' }"
             [modalClass]="'modal-lg'"
           ></app-flags-selector-btn>
@@ -125,7 +125,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="FlagsExtra">FlagsExtra</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('FlagsExtra')"
+            [control]="editorService.form.controls['FlagsExtra']"
             [config]="{ flags: ITEM_FLAGS_EXTRA, name: 'FlagsExtra' }"
             [modalClass]="'modal-lg'"
           ></app-flags-selector-btn>
@@ -158,7 +158,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="InventoryType">InventoryType</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('InventoryType')"
+            [control]="editorService.form.controls['InventoryType']"
             [config]="{ options: INVENTORY_TYPE, name: 'InventoryType' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
@@ -231,7 +231,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="Material">Material</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('Material')"
+            [control]="editorService.form.controls['Material']"
             [config]="{ options: ITEM_MATERIAL, name: 'Material' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
@@ -240,7 +240,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="sheath">sheath</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('sheath')"
+            [control]="editorService.form.controls['sheath']"
             [config]="{ options: ITEM_SHEAT, name: 'sheath' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
@@ -281,7 +281,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="BagFamily">BagFamily</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('BagFamily')"
+            [control]="editorService.form.controls['BagFamily']"
             [config]="{ flags: BAG_FAMILY, name: 'BagFamily' }"
             [modalClass]="'modal-md'"
           ></app-flags-selector-btn>
@@ -290,7 +290,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="TotemCategory">TotemCategory</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('TotemCategory')"
+            [control]="editorService.form.controls['TotemCategory']"
             [config]="{ options: TOTEM_CATEGORY, name: 'TotemCategory' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
@@ -331,7 +331,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="FoodType">FoodType</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('FoodType')"
+            [control]="editorService.form.controls['FoodType']"
             [config]="{ options: FOOD_TYPE, name: 'FoodType' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
@@ -356,7 +356,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="flagsCustom">flagsCustom</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('flagsCustom')"
+            [control]="editorService.form.controls['flagsCustom']"
             [config]="{ flags: ITEM_FLAGS_CUSTOM, name: 'flagsCustom' }"
             [modalClass]="'modal-lg'"
           ></app-flags-selector-btn>
@@ -371,7 +371,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="AllowableClass">AllowableClass</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('AllowableClass')"
+            [control]="editorService.form.controls['AllowableClass']"
             [config]="{ flags: ALLOWABLE_CLASSES, name: 'AllowableClass' }"
             [modalClass]="'modal-lg'"
           ></app-flags-selector-btn>
@@ -380,7 +380,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="AllowableRace">AllowableRace</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('AllowableRace')"
+            [control]="editorService.form.controls['AllowableRace']"
             [config]="{ flags: ALLOWABLE_RACES, name: 'AllowableRace' }"
             [modalClass]="'modal-lg'"
           ></app-flags-selector-btn>
@@ -445,7 +445,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="RequiredReputationFaction">RequiredReputationFaction</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('RequiredReputationFaction')"
+            [control]="editorService.form.controls['RequiredReputationFaction']"
             [config]="{ options: FACTIONS, name: 'RequiredReputationFaction' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
@@ -454,7 +454,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="RequiredReputationRank">RequiredReputationRank</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('RequiredReputationRank')"
+            [control]="editorService.form.controls['RequiredReputationRank']"
             [config]="{ options: FACTION_RANK, name: 'RequiredReputationRank' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
@@ -592,7 +592,7 @@
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg col-xl-5">
               <label class="control-label" for="socketBonus">socketBonus</label>
               <app-single-value-selector-btn
-                [control]="editorService.form.get('socketBonus')"
+                [control]="editorService.form.controls['socketBonus']"
                 [config]="{ options: SOCKET_BONUS, name: 'socketBonus' }"
                 [modalClass]="'modal-md'"
               ></app-single-value-selector-btn>
@@ -686,7 +686,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="bonding">bonding</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('bonding')"
+            [control]="editorService.form.controls['bonding']"
             [config]="{ options: ITEM_BONDING, name: 'bonding' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>

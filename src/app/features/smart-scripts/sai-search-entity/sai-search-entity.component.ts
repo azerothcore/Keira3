@@ -28,11 +28,11 @@ export class SaiSearchEntityComponent {
   }
 
   get sourceTypeControl(): AbstractControl {
-    return this.form.get('source_type');
+    return this.form.controls['source_type'];
   }
 
   get entryOrGuidControl(): AbstractControl {
-    return this.form.get('entryorguid');
+    return this.form.controls['entryorguid'];
   }
 
   constructor(
