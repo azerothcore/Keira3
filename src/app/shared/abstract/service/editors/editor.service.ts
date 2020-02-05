@@ -37,6 +37,11 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   ) {
     super();
     this.fields = this.getClassAttributes(this._entityClass);
+
+    console.log(`----------- DEBUG FIELDS:`);
+    for (const field of this.fields) {
+      console.log(field);
+    }
   }
 
   protected abstract updateDiffQuery();
@@ -57,6 +62,13 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
 
     for (const field of this.fields) {
       this._form.addControl(field, new FormControl());
+    }
+
+    console.log(`----------- DEBUG CONTROL KEYS:`);
+    for (const k in this._form.controls) {
+      if (this._form.controls.hasOwnProperty(k)) {
+        console.log(k);
+      }
     }
 
     this.disableEntityIdField();
