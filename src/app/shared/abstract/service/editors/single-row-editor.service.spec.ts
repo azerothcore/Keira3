@@ -11,7 +11,7 @@ import { SingleRowEditorService } from './single-row-editor.service';
 import { MockSingleRowEditorService, MockEntity, MockHandlerService } from '@keira-testing/mock-services';
 
 
-describe('SingleRowEditorService', () => {
+fdescribe('SingleRowEditorService', () => {
   let service: SingleRowEditorService<MockEntity>;
 
   beforeEach(() => TestBed.configureTestingModule({
@@ -47,7 +47,7 @@ describe('SingleRowEditorService', () => {
       expect(updateFullQuerySpy).toHaveBeenCalledTimes(0);
     });
 
-    fit('when loading is false and the form is not dirty, should update only the full query', () => {
+    it('when loading is false and the form is not dirty, should update only the full query', () => {
       service.form.markAsPristine();
 
       service.form.get('id').setValue(123);
