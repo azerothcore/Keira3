@@ -11,7 +11,7 @@ import { SingleRowEditorService } from './single-row-editor.service';
 import { MockSingleRowEditorService, MockEntity, MockHandlerService } from '@keira-testing/mock-services';
 
 
-fdescribe('SingleRowEditorService', () => {
+describe('SingleRowEditorService', () => {
   let service: SingleRowEditorService<MockEntity>;
 
   beforeEach(() => TestBed.configureTestingModule({
