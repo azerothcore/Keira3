@@ -47,7 +47,7 @@ describe('SingleRowEditorService', () => {
       expect(updateFullQuerySpy).toHaveBeenCalledTimes(0);
     });
 
-    it('when loading is false and the form is not dirty, should update only the full query', () => {
+    fit('when loading is false and the form is not dirty, should update only the full query', () => {
       service.form.markAsPristine();
 
       service.form.get('id').setValue(123);
