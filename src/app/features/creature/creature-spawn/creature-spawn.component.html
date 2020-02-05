@@ -41,7 +41,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="spawnMask">spawnMask</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('spawnMask')"
+            [control]="editorService.form.controls['spawnMask']"
             [config]="{ flags: SPAWN_MASK, name: 'spawnMask' }"
             [modalClass]="'modal-lg'"
           ></app-flags-selector-btn>
@@ -50,7 +50,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="phaseMask">phaseMask</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('phaseMask')"
+            [control]="editorService.form.controls['phaseMask']"
             [config]="{ flags: PHASE_MASK, name: 'phaseMask' }"
             [modalClass]="'modal-lg'"
           ></app-flags-selector-btn>
@@ -111,7 +111,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="MovementType">MovementType</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('MovementType')"
+            [control]="editorService.form.controls['MovementType']"
             [config]="{ options: MOVEMENT_TYPE, name: 'MovementType' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
@@ -120,7 +120,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="npcflag">npcflag</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('npcflag')"
+            [control]="editorService.form.controls['npcflag']"
             [config]="{ flags: NPC_FLAGS, name: 'npcflag' }"
           ></app-flags-selector-btn>
           <input [formControlName]="'npcflag'" id="npcflag" type="number" class="form-control form-control-sm">
@@ -128,7 +128,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="unit_flags">unit_flags</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('unit_flags')"
+            [control]="editorService.form.controls['unit_flags']"
             [config]="{ flags: UNIT_FLAGS, name: 'unit_flags' }"
           ></app-flags-selector-btn>
           <input [formControlName]="'unit_flags'" id="unit_flags" type="number" class="form-control form-control-sm">
@@ -136,7 +136,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="dynamicflags">dynamicflags</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('dynamicflags')"
+            [control]="editorService.form.controls['dynamicflags']"
             [config]="{ flags: DYNAMIC_FLAGS, name: 'dynamicflags' }"
           ></app-flags-selector-btn>
           <input [formControlName]="'dynamicflags'" id="dynamicflags" type="number" class="form-control form-control-sm">

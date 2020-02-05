@@ -29,7 +29,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="RewOnKillRepFaction1">RewOnKillRepFaction1</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('RewOnKillRepFaction1')"
+            [control]="editorService.form.controls['RewOnKillRepFaction1']"
             [config]="{ options: FACTIONS, name: 'RewOnKillRepFaction1' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
@@ -38,7 +38,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="RewOnKillRepFaction2">RewOnKillRepFaction2</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('RewOnKillRepFaction2')"
+            [control]="editorService.form.controls['RewOnKillRepFaction2']"
             [config]="{ options: FACTIONS, name: 'RewOnKillRepFaction2' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
@@ -47,7 +47,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="MaxStanding1">MaxStanding1</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('MaxStanding1')"
+            [control]="editorService.form.controls['MaxStanding1']"
             [config]="{ options: FACTION_RANK, name: 'MaxStanding1' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
@@ -72,7 +72,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="MaxStanding2">MaxStanding2</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('MaxStanding2')"
+            [control]="editorService.form.controls['MaxStanding2']"
             [config]="{ options: FACTION_RANK, name: 'MaxStanding2' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>

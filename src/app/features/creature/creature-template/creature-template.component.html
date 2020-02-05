@@ -46,7 +46,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="IconName">IconName</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('IconName')"
+            [control]="editorService.form.controls['IconName']"
             [config]="{ options: CREATURE_ICON, name: 'IconName' }"
             [modalClass]="'modal-xl'"
           ></app-single-value-selector-btn>
@@ -71,7 +71,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="exp">exp</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('exp')"
+            [control]="editorService.form.controls['exp']"
             [config]="{ options: EXPANSION, name: 'exp' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
@@ -80,7 +80,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="faction">faction</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('faction')"
+            [control]="editorService.form.controls['faction']"
             [config]="{ options: FACTIONS, name: 'faction' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
@@ -89,7 +89,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="npcflag">npcflag</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('npcflag')"
+            [control]="editorService.form.controls['npcflag']"
             [config]="{ flags: NPC_FLAGS, name: 'npcflag' }"
           ></app-flags-selector-btn>
           <input [formControlName]="'npcflag'" id="npcflag" type="number" class="form-control form-control-sm">
@@ -97,7 +97,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="rank">rank</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('rank')"
+            [control]="editorService.form.controls['rank']"
             [config]="{ options: RANK, name: 'rank' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
@@ -111,7 +111,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="family">family</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('family')"
+            [control]="editorService.form.controls['family']"
             [config]="{ options: CREATURE_FAMILY, name: 'family' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
@@ -120,7 +120,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="type">type</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('type')"
+            [control]="editorService.form.controls['type']"
             [config]="{ options: CREATURE_TYPE, name: 'type' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
@@ -129,7 +129,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="type_flags">type_flags</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('type_flags')"
+            [control]="editorService.form.controls['type_flags']"
             [config]="{ flags: CREATURE_TYPE_FLAGS, name: 'type_flags' }"
           ></app-flags-selector-btn>
           <input [formControlName]="'type_flags'" id="type_flags" type="number" class="form-control form-control-sm">
@@ -137,7 +137,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="unit_class">unit_class</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('unit_class')"
+            [control]="editorService.form.controls['unit_class']"
             [config]="{ options: UNIT_CLASS, name: 'unit_class' }"
             [modalClass]="'modal-lg'"
           ></app-single-value-selector-btn>
@@ -146,7 +146,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="unit_flags">unit_flags</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('unit_flags')"
+            [control]="editorService.form.controls['unit_flags']"
             [config]="{ flags: UNIT_FLAGS, name: 'unit_flags' }"
           ></app-flags-selector-btn>
           <input [formControlName]="'unit_flags'" id="unit_flags" type="number" class="form-control form-control-sm">
@@ -154,7 +154,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="unit_flags2">unit_flags2</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('unit_flags2')"
+            [control]="editorService.form.controls['unit_flags2']"
             [config]="{ flags: UNIT_FLAGS_2, name: 'unit_flags2' }"
           ></app-flags-selector-btn>
           <input [formControlName]="'unit_flags2'" id="unit_flags2" type="number" class="form-control form-control-sm">
@@ -162,7 +162,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="dynamicflags">dynamicflags</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('dynamicflags')"
+            [control]="editorService.form.controls['dynamicflags']"
             [config]="{ flags: DYNAMIC_FLAGS, name: 'dynamicflags' }"
           ></app-flags-selector-btn>
           <input [formControlName]="'dynamicflags'" id="dynamicflags" type="number" class="form-control form-control-sm">
@@ -178,7 +178,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="mechanic_immune_mask">mechanic_immune_mask</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('mechanic_immune_mask')"
+            [control]="editorService.form.controls['mechanic_immune_mask']"
             [config]="{ flags: MECHANIC_IMMUNE_MASK, name: 'mechanic_immune_mask' }"
           ></app-flags-selector-btn>
           <input [formControlName]="'mechanic_immune_mask'" id="mechanic_immune_mask" type="number" class="form-control form-control-sm">
@@ -186,7 +186,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="flags_extra">flags_extra</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('flags_extra')"
+            [control]="editorService.form.controls['flags_extra']"
             [config]="{ flags: FLAGS_EXTRA, name: 'flags_extra' }"
           ></app-flags-selector-btn>
           <input [formControlName]="'flags_extra'" id="flags_extra" type="number" class="form-control form-control-sm">
@@ -293,7 +293,7 @@
             <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="control-label" for="trainer_type">trainer_type</label>
               <app-single-value-selector-btn
-                [control]="editorService.form.get('trainer_type')"
+                [control]="editorService.form.controls['trainer_type']"
                 [config]="{ options: TRAINER_TYPE, name: 'trainer_type' }"
                 [modalClass]="'modal-md'"
               ></app-single-value-selector-btn>
@@ -310,7 +310,7 @@
             <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="control-label" for="trainer_class">trainer_class</label>
               <app-single-value-selector-btn
-                [control]="editorService.form.get('trainer_class')"
+                [control]="editorService.form.controls['trainer_class']"
                 [config]="{ options: CREATURE_CLASS, name: 'trainer_class' }"
                 [modalClass]="'modal-md'"
               ></app-single-value-selector-btn>
@@ -319,7 +319,7 @@
             <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="control-label" for="trainer_race">trainer_race</label>
               <app-single-value-selector-btn
-                [control]="editorService.form.get('trainer_race')"
+                [control]="editorService.form.controls['trainer_race']"
                 [config]="{ options: CREATURE_RACE, name: 'trainer_race' }"
                 [modalClass]="'modal-md'"
               ></app-single-value-selector-btn>
@@ -414,7 +414,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
           <label class="control-label" for="dmgschool">dmgschool</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('dmgschool')"
+            [control]="editorService.form.controls['dmgschool']"
             [config]="{ options: DAMAGE_TYPE, name: 'dmgschool' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
@@ -476,7 +476,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="AIName">AIName</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('AIName')"
+            [control]="editorService.form.controls['AIName']"
             [config]="{ options: CREATURE_AI_NAME, name: 'AIName' }"
             [modalClass]="'modal-lg'"
           ></app-single-value-selector-btn>
@@ -501,7 +501,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="MovementType">MovementType</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('MovementType')"
+            [control]="editorService.form.controls['MovementType']"
             [config]="{ options: MOVEMENT_TYPE, name: 'MovementType' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
@@ -518,7 +518,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="InhabitType">InhabitType</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('InhabitType')"
+            [control]="editorService.form.controls['InhabitType']"
             [config]="{ flags: INHABIT_TYPE, name: 'InhabitType' }"
           ></app-flags-selector-btn>
           <input [formControlName]="'InhabitType'" id="InhabitType" type="number" class="form-control form-control-sm">

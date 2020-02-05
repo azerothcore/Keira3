@@ -24,7 +24,6 @@ describe('SingleRowComplexKeyEditorService', () => {
     providers: [
       { provide: QueryService, useValue: instance(MockedQueryService) },
       { provide: ToastrService, useValue: instance(MockedToastrService) },
-
     ],
   }));
 
@@ -124,7 +123,7 @@ describe('SingleRowComplexKeyEditorService', () => {
 
     it('onCreatingNewEntity()', () => {
       const handlerService = TestBed.get(MockHandlerService);
-      const entityIdFieldsSpy = spyOnProperty(service, 'entityIdFields', 'get').and.returnValue(['id', 'guid', 'test']);
+      spyOnProperty(service, 'entityIdFields', 'get').and.returnValue(['id', 'guid', 'test']);
       handlerService._selected = JSON.stringify({ 'id': 1, 'guid': 2 });
 
       service['onCreatingNewEntity']();

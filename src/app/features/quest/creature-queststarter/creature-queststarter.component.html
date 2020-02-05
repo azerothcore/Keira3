@@ -24,7 +24,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
           <label class="control-label" for="id">id</label>
           <app-creature-selector-btn
-            [control]="editorService.form.get('id')"
+            [control]="editorService.form.controls['id']"
             [config]="{  name: 'id' }"
           ></app-creature-selector-btn>
           <i

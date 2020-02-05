@@ -41,7 +41,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="spawnMask">spawnMask</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('spawnMask')"
+            [control]="editorService.form.controls['spawnMask']"
             [config]="{ flags: SPAWN_MASK, name: 'spawnMask' }"
             [modalClass]="'modal-lg'"
           ></app-flags-selector-btn>
@@ -50,7 +50,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="phaseMask">phaseMask</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('phaseMask')"
+            [control]="editorService.form.controls['phaseMask']"
             [config]="{ flags: PHASE_MASK, name: 'phaseMask' }"
             [modalClass]="'modal-lg'"
           ></app-flags-selector-btn>

@@ -45,7 +45,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="QuestType">QuestType</label>
           <app-single-value-selector-btn
-            [control]="editorService.form.get('QuestType')"
+            [control]="editorService.form.controls['QuestType']"
             [config]="{ options: QUEST_TYPE, name: 'QuestType' }"
             [modalClass]="'modal-md'"
           ></app-single-value-selector-btn>
@@ -100,7 +100,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="StartItem">StartItem</label>
           <app-item-selector-btn
-            [control]="editorService.form.get('StartItem')"
+            [control]="editorService.form.controls['StartItem']"
             [config]="{  name: 'StartItem' }"
           ></app-item-selector-btn>
           <i
@@ -113,7 +113,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="Flags">Flags</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('Flags')"
+            [control]="editorService.form.controls['Flags']"
             [config]="{ flags: QUEST_FLAGS, name: 'Flags' }"
           ></app-flags-selector-btn>
           <input [formControlName]="'Flags'" id="Flags" type="number" class="form-control form-control-sm">
@@ -131,7 +131,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="AllowableRaces">AllowableRaces</label>
           <app-flags-selector-btn
-            [control]="editorService.form.get('AllowableRaces')"
+            [control]="editorService.form.controls['AllowableRaces']"
             [config]="{ flags: ALLOWABLE_RACES, name: 'AllowableRaces' }"
           ></app-flags-selector-btn>
           <input [formControlName]="'AllowableRaces'" id="AllowableRaces" type="number" class="form-control form-control-sm">
@@ -247,7 +247,7 @@
             <div class="col-12">
               <label class="control-label" for="RequiredItemId{{ i }}">RequiredItemId{{ i }}</label>
               <app-item-selector-btn
-                [control]="editorService.form.get('RequiredItemId' + i)"
+                [control]="editorService.form.controls['RequiredItemId' + i]"
                 [config]="{  name: 'RequiredItemId' + i }"
               ></app-item-selector-btn>
               <input [formControlName]="'RequiredItemId' + i" id="RequiredItemId{{ i }}" type="number" class="form-control form-control-sm">
@@ -293,7 +293,7 @@
             >
               <label class="control-label" for="RequiredFactionId{{ i }}">RequiredFactionId{{ i }}</label>
               <app-single-value-selector-btn
-                [control]="editorService.form.get('RequiredFactionId' + i)"
+                [control]="editorService.form.controls['RequiredFactionId' + i]"
                 [config]="{ options: FACTIONS, name: 'RequiredFactionId' + i }"
                 [modalClass]="'modal-md'"
               ></app-single-value-selector-btn>
@@ -327,7 +327,7 @@
             <div class="col-12">
               <label class="control-label" for="ItemDrop{{ i }}">ItemDrop{{ i }}</label>
               <app-item-selector-btn
-                [control]="editorService.form.get('ItemDrop' + i)"
+                [control]="editorService.form.controls['ItemDrop' + i]"
                 [config]="{  name: 'ItemDrop' + i }"
               ></app-item-selector-btn>
               <input [formControlName]="'ItemDrop' + i" id="ItemDrop{{ i }}" type="number" class="form-control form-control-sm">
@@ -444,7 +444,7 @@
             <div class="col-12">
               <label class="control-label" for="RewardItem{{ i }}">RewardItem{{ i }}</label>
               <app-item-selector-btn
-                [control]="editorService.form.get('RewardItem' + i)"
+                [control]="editorService.form.controls['RewardItem' + i]"
                 [config]="{  name: 'RewardItem' + i }"
               ></app-item-selector-btn>
               <input [formControlName]="'RewardItem' + i" id="RewardItem{{ i }}" type="number" class="form-control form-control-sm">
@@ -469,7 +469,7 @@
             <div class="col-12">
               <label class="control-label" for="RewardChoiceItemID{{ i }}">RewardChoiceItemID{{ i }}</label>
               <app-item-selector-btn
-                [control]="editorService.form.get('RewardChoiceItemID' + i)"
+                [control]="editorService.form.controls['RewardChoiceItemID' + i]"
                 [config]="{ name: 'RewardChoiceItemID' + i }"
               ></app-item-selector-btn>
               <input [formControlName]="'RewardChoiceItemID' + i" id="RewardChoiceItemID{{ i }}" type="number" class="form-control form-control-sm">
@@ -496,7 +496,7 @@
             <div class="col-12">
               <label class="control-label" for="RewardFactionID{{ i }}">RewardFactionID{{ i }}</label>
               <app-single-value-selector-btn
-                [control]="editorService.form.get('RewardFactionID' + i)"
+                [control]="editorService.form.controls['RewardFactionID' + i]"
                 [config]="{ options: FACTIONS, name: 'RewardFactionID' + i }"
                 [modalClass]="'modal-md'"
               ></app-single-value-selector-btn>
