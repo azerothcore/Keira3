@@ -105,6 +105,12 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
         control.setValue(this._originalValue[field]);
       } else {
         console.error(`Control '${field}' does not exist!`);
+        console.log(`----------- DEBUG CONTROL KEYS:`);
+        for (const k in this._form.controls) {
+          if (this._form.controls.hasOwnProperty(k)) {
+            console.log(k);
+          }
+        }
       }
     }
     this._loading = false;
