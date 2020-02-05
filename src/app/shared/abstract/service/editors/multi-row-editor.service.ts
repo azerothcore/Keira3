@@ -147,6 +147,8 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
         control.setValue(
           this._newRows[index][field]
         );
+      } else {
+        console.error(`Control '${field}' does not exist!`);
       }
     }
 

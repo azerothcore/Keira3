@@ -100,8 +100,11 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     this._loading = true;
     for (const field of this.fields) {
       const control = this._form.get(field);
+      /* istanbul ignore else */
       if (control) {
         control.setValue(this._originalValue[field]);
+      } else {
+        console.error(`Control '${field}' does not exist!`);
       }
     }
     this._loading = false;

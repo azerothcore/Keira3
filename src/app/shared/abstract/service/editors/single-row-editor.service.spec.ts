@@ -167,10 +167,4 @@ fdescribe('SingleRowEditorService', () => {
       expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
     });
   });
-
-  it('updateFormAfterReload() safety check', () => {
-    spyOn(service['_form'], 'get').and.returnValue(null);
-    service['updateFormAfterReload']();
-    expect(service['_loading']).toBe(false);
-  });
 });
