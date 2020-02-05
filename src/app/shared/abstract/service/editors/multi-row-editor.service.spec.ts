@@ -315,28 +315,19 @@ describe('MultiRowEditorService', () => {
     });
 
     it('should return true when the form has a unique id', () => {
-      const control = service.form.get(MOCK_ID_2);
-      if (control) { // for some reasons this prevents the test to fail on travis
-        control.setValue(4);
-        expect(service.isFormIdUnique()).toBe(true);
-      }
+      service.form.get(MOCK_ID_2).setValue(4);
+      expect(service.isFormIdUnique()).toBe(true);
     });
 
     it('should return false when the form has an already used id that is NOT the selected row', () => {
-      const control = service.form.get(MOCK_ID_2);
-      if (control) { // for some reasons this prevents the test to fail on travis
-        control.setValue(2);
-        expect(service.isFormIdUnique()).toBe(false);
-      }
+      service.form.get(MOCK_ID_2).setValue(2);
+      expect(service.isFormIdUnique()).toBe(false);
     });
 
     it('should return true when the form has an already used id that is the selected row', () => {
-      const control = service.form.get(MOCK_ID_2);
-      if (control) { // for some reasons this prevents the test to fail on travis
-        control.setValue(2);
-        service['_selectedRowId'] = 2;
-        expect(service.isFormIdUnique()).toBe(true);
-      }
+      service.form.get(MOCK_ID_2).setValue(2);
+      service['_selectedRowId'] = 2;
+      expect(service.isFormIdUnique()).toBe(true);
     });
   });
 });
