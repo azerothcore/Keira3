@@ -522,7 +522,7 @@
             <div class="col-12">
               <label class="control-label" for="stat_type{{ i }}">type{{ i }}</label>
               <app-single-value-selector-btn
-                [control]="editorService.form.get('stat_type' + i)"
+                [control]="editorService.form.controls['stat_type' + i]"
                 [config]="{ options: STAT_TYPE, name: 'stat_type' + i }"
                 [modalClass]="'modal-md'"
               ></app-single-value-selector-btn>
@@ -571,7 +571,7 @@
                 <div class="col-12">
                   <label class="control-label" for="dmg_type{{ i }}">type{{ i }}</label>
                   <app-single-value-selector-btn
-                    [control]="editorService.form.get('dmg_type' + i)"
+                    [control]="editorService.form.controls['dmg_type' + i]"
                     [config]="{ options: DAMAGE_TYPE, name: 'dmg_type' + i }"
                     [modalClass]="'modal-md'"
                   ></app-single-value-selector-btn>
@@ -617,7 +617,7 @@
                 <div class="col-12">
                   <label class="control-label" for="socketColor_{{ i }}">Color_{{ i }}</label>
                   <app-flags-selector-btn
-                    [control]="editorService.form.get('socketColor_' + i)"
+                    [control]="editorService.form.controls['socketColor_' + i]"
                     [config]="{ flags: SOCKET_COLOR, name: 'socketColor_' + i }"
                     [modalClass]="'modal-md'"
                   ></app-flags-selector-btn>

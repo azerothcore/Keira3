@@ -52,7 +52,7 @@
             <div class="col-12">
               <label class="control-label" for="Emote{{ i }}">Emote{{ i }}</label>
               <app-single-value-selector-btn
-                [control]="editorService.form.get('Emote' + i)"
+                [control]="editorService.form.controls['Emote' + i]"
                 [config]="{ options: EMOTE, name: 'Emote' + i }"
                 [modalClass]="'modal-md'"
               ></app-single-value-selector-btn>

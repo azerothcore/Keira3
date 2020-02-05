@@ -196,9 +196,9 @@ describe('MultiRowEditorService', () => {
 
       service.onRowSelection({ selected });
 
-      expect(service.form.get(MOCK_ID).value).toEqual(rows[0][MOCK_ID]);
-      expect(service.form.get(MOCK_ID_2).value).toEqual(rows[0][MOCK_ID_2]);
-      expect(service.form.get(MOCK_NAME).value).toEqual(rows[0][MOCK_NAME]);
+      expect(service.form.controls[MOCK_ID].value).toEqual(rows[0][MOCK_ID]);
+      expect(service.form.controls[MOCK_ID_2].value).toEqual(rows[0][MOCK_ID_2]);
+      expect(service.form.controls[MOCK_NAME].value).toEqual(rows[0][MOCK_NAME]);
       expect(formResetSpy).toHaveBeenCalledTimes(1);
       expect(formEnableSpy).toHaveBeenCalledTimes(1);
       expect(service.loading).toBe(false);
@@ -315,17 +315,17 @@ describe('MultiRowEditorService', () => {
     });
 
     it('should return true when the form has a unique id', () => {
-      service.form.get(MOCK_ID_2).setValue(4);
+      service.form.controls[MOCK_ID_2].setValue(4);
       expect(service.isFormIdUnique()).toBe(true);
     });
 
     it('should return false when the form has an already used id that is NOT the selected row', () => {
-      service.form.get(MOCK_ID_2).setValue(2);
+      service.form.controls[MOCK_ID_2].setValue(2);
       expect(service.isFormIdUnique()).toBe(false);
     });
 
     it('should return true when the form has an already used id that is the selected row', () => {
-      service.form.get(MOCK_ID_2).setValue(2);
+      service.form.controls[MOCK_ID_2].setValue(2);
       service['_selectedRowId'] = 2;
       expect(service.isFormIdUnique()).toBe(true);
     });

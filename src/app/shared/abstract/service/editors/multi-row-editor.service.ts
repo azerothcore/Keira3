@@ -50,7 +50,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
           if (this._form.dirty && this.isFormIdUnique()) {
             this._newRows[this.getSelectedRowIndex()] = this._form.getRawValue();
             this._newRows = [ ...this._newRows ];
-            this._selectedRowId = this.form.get(this._entitySecondIdField).value;
+            this._selectedRowId = this.form.controls[this._entitySecondIdField].value;
             this.checkRowsCorrectness();
             this.updateDiffQuery();
             this.updateFullQuery();
@@ -207,7 +207,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     for (const row of this._newRows) {
       if (
         row[this._entitySecondIdField] !== this._selectedRowId
-        && row[this._entitySecondIdField] === this._form.get(this._entitySecondIdField).value
+        && row[this._entitySecondIdField] === this._form.controls[this._entitySecondIdField].value
       ) {
         return false;
       }
