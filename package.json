@@ -39,9 +39,9 @@
     "serialize-javascript": "2.1.2"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "0.803.24",
+    "@angular-devkit/build-angular": "0.803.25",
     "@angular/animations": "8.2.14",
-    "@angular/cli": "8.3.24",
+    "@angular/cli": "8.3.25",
     "@angular/common": "8.2.14",
     "@angular/compiler": "8.2.14",
     "@angular/compiler-cli": "8.2.14",
