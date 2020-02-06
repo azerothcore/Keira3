@@ -826,7 +826,7 @@ describe('QueryService', () => {
     it('getQuestTitleById', () => {
       expect(service.getQuestTitleById(id)).toEqual(result);
       expect(service.queryValue).toHaveBeenCalledWith(
-        `SELECT LogTitle AS v FROM quest_template WHERE entry = ${id}`
+        `SELECT LogTitle AS v FROM quest_template WHERE ID = ${id}`
       );
     });
 
