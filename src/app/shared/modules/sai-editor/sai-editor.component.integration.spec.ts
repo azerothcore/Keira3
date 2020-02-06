@@ -269,6 +269,10 @@ describe('SaiEditorComponent integration tests', () => {
         .toEqual(`${name} - On Just Died - Start Attacking`);
       expect(page.getDatatableCell(page.EDITOR_DT_SELECTOR, 2, saiColIndex).innerText)
         .toEqual(`${name} - On Evade - Flee For Assist`);
+
+      page.expectAllQueriesToContain(`${name} - On Aggro - Kill Target`);
+      page.expectAllQueriesToContain(`${name} - On Just Died - Start Attacking`);
+      page.expectAllQueriesToContain(`${name} - On Evade - Flee For Assist`);
     });
   });
 
