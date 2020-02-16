@@ -36,7 +36,7 @@
     "mysql": "2.18.1",
     "ngx-toastr": "11.3.3",
     "ngx-ui-switch": "8.3.0",
-    "serialize-javascript": "2.1.2"
+    "serialize-javascript": "3.0.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "0.803.25",
