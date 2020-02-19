@@ -39,7 +39,7 @@
     "serialize-javascript": "3.0.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "0.803.25",
+    "@angular-devkit/build-angular": "0.900.3",
     "@angular/animations": "8.2.14",
     "@angular/cli": "8.3.25",
     "@angular/common": "8.2.14",
