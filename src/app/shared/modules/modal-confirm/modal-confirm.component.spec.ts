@@ -34,7 +34,7 @@ describe('ModalConfirmComponent', () => {
     fixture.detectChanges();
     page = new ModalConfirmComponentPage(fixture);
 
-    hideSpy = spyOn(TestBed.get(BsModalRef), 'hide');
+    hideSpy = spyOn(TestBed.inject(BsModalRef), 'hide');
   });
 
   it('onConfirm() should correctly hide the modal', () => {

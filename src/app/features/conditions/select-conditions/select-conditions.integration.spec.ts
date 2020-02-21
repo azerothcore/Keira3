@@ -48,13 +48,13 @@ describe('SelectConditions integration tests', () => {
   }));
 
   beforeEach(() => {
-    navigateSpy = spyOn(TestBed.get(Router), 'navigate');
-    queryService = TestBed.get(QueryService);
+    navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    queryService = TestBed.inject(QueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of(
       { results: [{ max: 1 }] }
     ));
 
-    selectService = TestBed.get(ConditionsSearchService);
+    selectService = TestBed.inject(ConditionsSearchService);
 
     fixture = TestBed.createComponent(SelectConditionsComponent);
     page = new SelectConditionsComponentPage(fixture);

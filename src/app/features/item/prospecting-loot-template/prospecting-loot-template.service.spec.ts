@@ -22,7 +22,7 @@ describe('ProspectingLootTemplateService', () => {
   }));
 
   it('should be created', () => {
-    const service: ProspectingLootTemplateService = TestBed.get(ProspectingLootTemplateService);
+    const service: ProspectingLootTemplateService = TestBed.inject(ProspectingLootTemplateService);
     expect(service).toBeTruthy();
   });
 });

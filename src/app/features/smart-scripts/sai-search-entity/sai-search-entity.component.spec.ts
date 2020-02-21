@@ -93,7 +93,7 @@ describe('SaiSearchEntityComponent', () => {
 
   it('clicking the edit button should correctly trigger the service', () => {
     const entry = 123;
-    const selectFromEntitySpy = spyOn(TestBed.get(SaiHandlerService), 'selectFromEntity');
+    const selectFromEntitySpy = spyOn(TestBed.inject(SaiHandlerService), 'selectFromEntity');
 
     page.setInputValue(page.sourceTypeSelect, page.sourceTypeSelect.options[0].value);
     page.setInputValue(page.entryOrGuidInput, entry);

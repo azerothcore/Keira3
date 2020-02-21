@@ -85,7 +85,7 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
 
     // TODO: this shouldn't be necessary, but for some reasons the modal does not close so we manually close it
     //  see: https://stackoverflow.com/questions/57279830/ngx-bootstrap-modal-does-not-hide-during-test
-    const modalService: BsModalService = TestBed.get(BsModalService);
+    const modalService: BsModalService = TestBed.inject(BsModalService);
     modalService.hide(1);
   }
 

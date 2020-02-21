@@ -32,13 +32,13 @@ describe('LootEditorService', () => {
   }));
 
   beforeEach(() => {
-    service = TestBed.get(CreatureLootTemplateService);
+    service = TestBed.inject(CreatureLootTemplateService);
   });
 
   it('getLootId() should correctly work', () => {
     const lootId = 1200;
     const mockData: MysqlResult<{ lootId: number }> = { results: [{ lootId }] };
-    const querySpy = spyOn(TestBed.get(QueryService), 'query').and.returnValue(of(mockData));
+    const querySpy = spyOn(TestBed.inject(QueryService), 'query').and.returnValue(of(mockData));
 
     service.getLootId().subscribe((data) => {
       expect(data).toEqual(mockData);

@@ -27,7 +27,7 @@ describe('SaiCommentGeneratorService', () => {
     const mockQuestTitleByCriteria = 'mockQuestTitleByCriteria';
 
     beforeEach(() => {
-      const queryService = TestBed.get(QueryService);
+      const queryService = TestBed.inject(QueryService);
       spyOn(queryService, 'getCreatureNameById').and.callFake(i => of(mockCreatureNameById + i).toPromise());
       spyOn(queryService, 'getCreatureNameByGuid').and.callFake(i => of(mockCreatureNameByGuid + i).toPromise());
       spyOn(queryService, 'getGameObjectNameById').and.callFake(i => of(mockGameobjectNameById + i).toPromise());
@@ -44,7 +44,7 @@ describe('SaiCommentGeneratorService', () => {
         createSai({ id: 3, event_type: SAI_EVENTS.LINK }),
       ];
       const expected = `MockEntity - On Quest 'mockQuestTitleById0' Taken - No Action Type`;
-      const service: SaiCommentGeneratorService = TestBed.get(SaiCommentGeneratorService);
+      const service: SaiCommentGeneratorService = TestBed.inject(SaiCommentGeneratorService);
 
       expect(await service.generateComment(rows, rows[2], mockName)).toEqual(expected);
     });
@@ -1709,7 +1709,7 @@ describe('SaiCommentGeneratorService', () => {
 
     for (const { name, input, expected } of cases) {
       it(`Case: ${name}`, async () => {
-        const service: SaiCommentGeneratorService = TestBed.get(SaiCommentGeneratorService);
+        const service: SaiCommentGeneratorService = TestBed.inject(SaiCommentGeneratorService);
         const sai = createSai(input);
         expect(await service.generateComment([sai], sai, mockName)).toEqual(expected);
       });

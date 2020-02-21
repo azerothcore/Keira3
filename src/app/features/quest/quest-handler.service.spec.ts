@@ -14,7 +14,7 @@ describe('QuestHandlerService', () => {
   }));
 
   it('should be created', () => {
-    const service: QuestHandlerService = TestBed.get(QuestHandlerService);
+    const service: QuestHandlerService = TestBed.inject(QuestHandlerService);
     expect(service).toBeTruthy();
   });
 });

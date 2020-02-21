@@ -24,7 +24,7 @@ describe('GameobjectQuestitemService', () => {
   }));
 
   it('should be created', () => {
-    const service: GameobjectQuestitemService = TestBed.get(GameobjectQuestitemService);
+    const service: GameobjectQuestitemService = TestBed.inject(GameobjectQuestitemService);
     expect(service).toBeTruthy();
   });
 });

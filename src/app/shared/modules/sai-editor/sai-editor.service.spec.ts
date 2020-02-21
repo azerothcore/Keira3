@@ -27,9 +27,9 @@ describe('SAI Editor Service', () => {
   }));
 
   beforeEach(() => {
-    service = TestBed.get(SaiEditorService);
-    handlerService = TestBed.get(SaiHandlerService);
-    queryService = TestBed.get(QueryService);
+    service = TestBed.inject(SaiEditorService);
+    handlerService = TestBed.inject(SaiHandlerService);
+    queryService = TestBed.inject(QueryService);
   });
 
 

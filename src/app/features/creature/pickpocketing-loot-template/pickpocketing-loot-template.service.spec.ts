@@ -24,7 +24,7 @@ describe('PickpocketingLootTemplateService', () => {
   }));
 
   it('should be created', () => {
-    const service: PickpocketingLootTemplateService = TestBed.get(PickpocketingLootTemplateService);
+    const service: PickpocketingLootTemplateService = TestBed.inject(PickpocketingLootTemplateService);
     expect(service).toBeTruthy();
   });
 });

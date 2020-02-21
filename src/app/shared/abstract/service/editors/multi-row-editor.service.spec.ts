@@ -36,7 +36,7 @@ describe('MultiRowEditorService', () => {
   }));
 
   beforeEach(() => {
-    service = TestBed.get(MockMultiRowEditorService);
+    service = TestBed.inject(MockMultiRowEditorService);
   });
 
   describe('when the form value changes', () => {
@@ -85,7 +85,7 @@ describe('MultiRowEditorService', () => {
 
   it('updateDiffQuery() should correctly work', () => {
     service['_diffQuery'] = '';
-    const getQuerySpy = spyOn(TestBed.get(QueryService), 'getDiffDeleteInsertTwoKeysQuery').and.returnValue(queryResult);
+    const getQuerySpy = spyOn(TestBed.inject(QueryService), 'getDiffDeleteInsertTwoKeysQuery').and.returnValue(queryResult);
 
     service['updateDiffQuery']();
 
@@ -102,7 +102,7 @@ describe('MultiRowEditorService', () => {
 
   it('updateFullQuery() should correctly work', () => {
     service['_fullQuery'] = '';
-    const getQuerySpy = spyOn(TestBed.get(QueryService), 'getFullDeleteInsertQuery').and.returnValue(queryResult);
+    const getQuerySpy = spyOn(TestBed.inject(QueryService), 'getFullDeleteInsertQuery').and.returnValue(queryResult);
 
     service['updateFullQuery']();
 

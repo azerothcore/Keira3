@@ -61,11 +61,11 @@ describe('QuestTemplateAddon integration tests', () => {
   }));
 
   function setup(creatingNew: boolean) {
-    handlerService = TestBed.get(QuestHandlerService);
+    handlerService = TestBed.inject(QuestHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.get(QueryService);
+    queryService = TestBed.inject(QueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(

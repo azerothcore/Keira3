@@ -46,14 +46,14 @@ describe('QueryService', () => {
   }));
 
   beforeEach(() => {
-    configService = TestBed.get(ConfigService);
-    service = TestBed.get(QueryService);
+    configService = TestBed.inject(ConfigService);
+    service = TestBed.inject(QueryService);
   });
 
   it('query() should call mysqlService.dbQuery() and output query and results if debug mode is enabled', () => {
     const logSpy = spyOn(console, 'log');
     configService.debugMode = true;
-    const querySpy = spyOn(TestBed.get(MysqlService), 'dbQuery').and.returnValue(of('mock value'));
+    const querySpy = spyOn(TestBed.inject(MysqlService), 'dbQuery').and.returnValue(of('mock value'));
     const myQuery = 'SELECT azerothcore FROM projects;';
 
     service.query(myQuery).subscribe(() => {
@@ -66,7 +66,7 @@ describe('QueryService', () => {
   it('query() should call mysqlService.dbQuery() and not output anything if debug mode is disabled', () => {
     const logSpy = spyOn(console, 'log');
     configService.debugMode = false;
-    const querySpy = spyOn(TestBed.get(MysqlService), 'dbQuery').and.returnValue(of({}));
+    const querySpy = spyOn(TestBed.inject(MysqlService), 'dbQuery').and.returnValue(of({}));
     const myQuery = 'SELECT azerothcore FROM projects;';
 
     service.query(myQuery).subscribe(() => {

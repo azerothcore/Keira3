@@ -24,7 +24,7 @@ describe('CreatureOnkillReputationService', () => {
   }));
 
   it('should be created', () => {
-    const service: CreatureOnkillReputationService = TestBed.get(CreatureOnkillReputationService);
+    const service: CreatureOnkillReputationService = TestBed.inject(CreatureOnkillReputationService);
     expect(service).toBeTruthy();
   });
 });

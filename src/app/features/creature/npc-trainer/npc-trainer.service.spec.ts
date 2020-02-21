@@ -24,7 +24,7 @@ describe('NpcTrainerService', () => {
   }));
 
   it('should be created', () => {
-    const service: NpcTrainerService = TestBed.get(NpcTrainerService);
+    const service: NpcTrainerService = TestBed.inject(NpcTrainerService);
     expect(service).toBeTruthy();
   });
 });

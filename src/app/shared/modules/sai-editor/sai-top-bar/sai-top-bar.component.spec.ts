@@ -44,9 +44,9 @@ describe('SaiTopBarComponent', () => {
   }));
 
   beforeEach(() => {
-    handler = TestBed.get(SaiHandlerService);
+    handler = TestBed.inject(SaiHandlerService);
     handler['_selected'] = JSON.stringify({ source_type: SAI_TYPES.SAI_TYPE_GAMEOBJECT, entryorguid });
-    querySpy = spyOn(TestBed.get(QueryService), 'query').and.returnValue(of({ results: [] }));
+    querySpy = spyOn(TestBed.inject(QueryService), 'query').and.returnValue(of({ results: [] }));
 
     fixture = TestBed.createComponent(TestHostComponent);
     host = fixture.componentInstance;

@@ -16,7 +16,7 @@ describe('CreatureHandlerService', () => {
   }));
 
   it('should be created', () => {
-    const service: CreatureHandlerService = TestBed.get(CreatureHandlerService);
+    const service: CreatureHandlerService = TestBed.inject(CreatureHandlerService);
     expect(service).toBeTruthy();
   });
 });

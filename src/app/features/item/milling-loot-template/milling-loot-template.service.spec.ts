@@ -22,7 +22,7 @@ describe('MillingLootTemplateService', () => {
   }));
 
   it('should be created', () => {
-    const service: MillingLootTemplateService = TestBed.get(MillingLootTemplateService);
+    const service: MillingLootTemplateService = TestBed.inject(MillingLootTemplateService);
     expect(service).toBeTruthy();
   });
 });

@@ -25,7 +25,7 @@ describe('CreatureSelectorModalComponent', () => {
   }));
 
   beforeEach(() => {
-    searchService = TestBed.get(CreatureSearchService);
+    searchService = TestBed.inject(CreatureSearchService);
     searchService.query = '--mock query';
 
     fixture = TestBed.createComponent(CreatureSelectorModalComponent);

@@ -24,8 +24,8 @@ describe('SaiHandlerService', () => {
     { testId: 2, sourceType: 2, entryOrGuid: 222, isNew: false },
   ]) {
     it(`selectFromEntity() should correctly work [${testId}]`, fakeAsync(() => {
-      const service: SaiHandlerService = TestBed.get(SaiHandlerService);
-      const queryService: QueryService = TestBed.get(QueryService);
+      const service: SaiHandlerService = TestBed.inject(SaiHandlerService);
+      const queryService: QueryService = TestBed.inject(QueryService);
       const mockResults = isNew ? [] : ['some result'];
       spyOn(queryService, 'query').and.returnValue(of({ results: mockResults } as any));
       spyOn(service, 'select');
@@ -73,8 +73,8 @@ describe('SaiHandlerService', () => {
     },
   ]) {
     it(`when selecting, the templateQuery should be updated [${sourceType}]`, () => {
-      const service: SaiHandlerService = TestBed.get(SaiHandlerService);
-      spyOn(TestBed.get(Router), 'navigate');
+      const service: SaiHandlerService = TestBed.inject(SaiHandlerService);
+      spyOn(TestBed.inject(Router), 'navigate');
 
       service.select(false, { source_type: sourceType, entryorguid: id });
 
@@ -83,8 +83,8 @@ describe('SaiHandlerService', () => {
   }
 
   it('navigation should not be triggered when navigate is false', () => {
-    const service: SaiHandlerService = TestBed.get(SaiHandlerService);
-    const spy = spyOn(TestBed.get(Router), 'navigate');
+    const service: SaiHandlerService = TestBed.inject(SaiHandlerService);
+    const spy = spyOn(TestBed.inject(Router), 'navigate');
 
     service.select(false, { source_type: 1, entryorguid: 123 }, 'Mock Name', false);
 
@@ -92,9 +92,9 @@ describe('SaiHandlerService', () => {
   });
 
   it('getName() should work correctly', fakeAsync(() => {
-    const service: SaiHandlerService = TestBed.get(SaiHandlerService);
-    const spy = spyOn(TestBed.get(Router), 'navigate');
-    const queryService = TestBed.get(QueryService);
+    const service: SaiHandlerService = TestBed.inject(SaiHandlerService);
+    const spy = spyOn(TestBed.inject(Router), 'navigate');
+    const queryService = TestBed.inject(QueryService);
     const querySpy = spyOn(queryService, 'query');
     const mockName = 'Mock Name';
 

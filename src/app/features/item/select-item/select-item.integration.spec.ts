@@ -41,13 +41,13 @@ describe('SelectItem integration tests', () => {
   }));
 
   beforeEach(() => {
-    navigateSpy = spyOn(TestBed.get(Router), 'navigate');
-    queryService = TestBed.get(QueryService);
+    navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    queryService = TestBed.inject(QueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of(
       { results: [{ max: 1 }] }
     ));
 
-    selectService = TestBed.get(SelectItemService);
+    selectService = TestBed.inject(SelectItemService);
 
     fixture = TestBed.createComponent(SelectItemComponent);
     page = new SelectItemComponentPage(fixture);

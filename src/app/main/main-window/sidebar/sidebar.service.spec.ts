@@ -6,7 +6,7 @@ describe('SidebarService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('getters and setters should correctly work', () => {
-    const service: SidebarService = TestBed.get(SidebarService);
+    const service: SidebarService = TestBed.inject(SidebarService);
 
     service.setSidebarState(true);
     expect(service.getSidebarState()).toBe(true);

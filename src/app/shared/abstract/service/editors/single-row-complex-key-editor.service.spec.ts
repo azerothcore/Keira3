@@ -28,8 +28,8 @@ describe('SingleRowComplexKeyEditorService', () => {
   }));
 
   beforeEach(() => {
-    service = TestBed.get(MockSingleRowComplexKeyEditorService);
-    spyOn(TestBed.get(Router), 'navigate');
+    service = TestBed.inject(MockSingleRowComplexKeyEditorService);
+    spyOn(TestBed.inject(Router), 'navigate');
   });
 
   describe('check methods of class', () => {
@@ -39,9 +39,9 @@ describe('SingleRowComplexKeyEditorService', () => {
     });
 
     it('selecteQuery()', () => {
-      const handlerService = TestBed.get(MockHandlerService);
+      const handlerService = TestBed.inject(MockHandlerService);
       handlerService._selected = '{}';
-      const selectAllMultipleKeysSpy = spyOn(TestBed.get(QueryService), 'selectAllMultipleKeys');
+      const selectAllMultipleKeysSpy = spyOn(TestBed.inject(QueryService), 'selectAllMultipleKeys');
 
       service['selectQuery']();
 
@@ -49,7 +49,7 @@ describe('SingleRowComplexKeyEditorService', () => {
     });
 
     it('updateDiffQuery()', () => {
-      const getUpdateMultipleKeysQuerySpy = spyOn(TestBed.get(QueryService), 'getUpdateMultipleKeysQuery');
+      const getUpdateMultipleKeysQuerySpy = spyOn(TestBed.inject(QueryService), 'getUpdateMultipleKeysQuery');
 
       service['updateDiffQuery']();
 
@@ -63,7 +63,7 @@ describe('SingleRowComplexKeyEditorService', () => {
     });
 
     it('updateFullQuery()', () => {
-      const getFullDeleteInsertMultipleKeysQuerySpy = spyOn(TestBed.get(QueryService), 'getFullDeleteInsertMultipleKeysQuery');
+      const getFullDeleteInsertMultipleKeysQuerySpy = spyOn(TestBed.inject(QueryService), 'getFullDeleteInsertMultipleKeysQuery');
 
       service['updateFullQuery']();
 
@@ -71,8 +71,8 @@ describe('SingleRowComplexKeyEditorService', () => {
     });
 
     it('updateFullQuery() when isNew is true', () => {
-      const getFullDeleteInsertMultipleKeysQuerySpy = spyOn(TestBed.get(QueryService), 'getFullDeleteInsertMultipleKeysQuery');
-      const handlerService = TestBed.get(MockHandlerService);
+      const getFullDeleteInsertMultipleKeysQuerySpy = spyOn(TestBed.inject(QueryService), 'getFullDeleteInsertMultipleKeysQuery');
+      const handlerService = TestBed.inject(MockHandlerService);
       handlerService._selected = JSON.stringify({ 'id': 1, 'guid': 2 });
       service['_entityIdFields'] = ['id', 'guid'];
 
@@ -94,7 +94,7 @@ describe('SingleRowComplexKeyEditorService', () => {
     });
 
     it('reloadAfterSave()', () => {
-      const selectSpy = spyOn(TestBed.get(MockHandlerService), 'select');
+      const selectSpy = spyOn(TestBed.inject(MockHandlerService), 'select');
       const reloadSpy = spyOn(service, 'reload');
 
       service['reloadAfterSave']();
@@ -122,7 +122,7 @@ describe('SingleRowComplexKeyEditorService', () => {
     });
 
     it('onCreatingNewEntity()', () => {
-      const handlerService = TestBed.get(MockHandlerService);
+      const handlerService = TestBed.inject(MockHandlerService);
       spyOnProperty(service, 'entityIdFields', 'get').and.returnValue(['id', 'guid', 'test']);
       handlerService._selected = JSON.stringify({ 'id': 1, 'guid': 2 });
 
@@ -133,7 +133,7 @@ describe('SingleRowComplexKeyEditorService', () => {
     });
 
     it('setLoadedEntity()', () => {
-      const selectSpy = spyOn(TestBed.get(MockHandlerService), 'select');
+      const selectSpy = spyOn(TestBed.inject(MockHandlerService), 'select');
 
       service['_originalValue'] = new MockEntity();
       service['_originalValue'].id = 1;
@@ -163,7 +163,7 @@ describe('SingleRowComplexKeyEditorService', () => {
       expect(updateFullQuerySpy).toHaveBeenCalled();
       expect(onLoadedExistingEntitySpy).toHaveBeenCalled();
 
-      const handlerService = TestBed.get(MockHandlerService);
+      const handlerService = TestBed.inject(MockHandlerService);
       handlerService.isNew = true;
 
       service['onReloadSuccessful'](data);

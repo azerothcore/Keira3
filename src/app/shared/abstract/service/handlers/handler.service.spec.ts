@@ -22,7 +22,7 @@ describe('HandlerService', () => {
   }));
 
   beforeEach(() => {
-    service = TestBed.get(CreatureHandlerService);
+    service = TestBed.inject(CreatureHandlerService);
   });
 
   it('initial state (no selection) should behave correctly', () => {
@@ -33,7 +33,7 @@ describe('HandlerService', () => {
   });
 
   it('selection should behave correctly', () => {
-    const navigateSpy = spyOn(TestBed.get(Router), 'navigate');
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     const id = 'myId';
     const name = 'myName';
     const isNew = true;

@@ -22,7 +22,7 @@ describe('SelectGameobjectService', () => {
   }));
 
   it('should be created', () => {
-    const service: SelectGameobjectService = TestBed.get(SelectGameobjectService);
+    const service: SelectGameobjectService = TestBed.inject(SelectGameobjectService);
     expect(service).toBeTruthy();
   });
 });

@@ -54,13 +54,13 @@ describe('AppComponent', () => {
     component = fixture.componentInstance;
 
     subject = new Subject<boolean>();
-    TestBed.get(MysqlService)['connectionLost$'] = subject.asObservable();
+    TestBed.inject(MysqlService)['connectionLost$'] = subject.asObservable();
 
     fixture.detectChanges();
   });
 
   it('should correctly react on connectionLost$ [connection lost]', () => {
-    const toastrService: ToastrService = TestBed.get(ToastrService);
+    const toastrService: ToastrService = TestBed.inject(ToastrService);
     spyOnAllFunctions(toastrService);
 
     subject.next(false);
@@ -73,7 +73,7 @@ describe('AppComponent', () => {
   });
 
   it('should correctly react on connectionLost$ [reconnected]', () => {
-    const toastrService: ToastrService = TestBed.get(ToastrService);
+    const toastrService: ToastrService = TestBed.inject(ToastrService);
     spyOnAllFunctions(toastrService);
 
     subject.next(true);

@@ -34,14 +34,14 @@ describe('BaseSelectorModalComponent', () => {
   }));
 
   beforeEach(() => {
-    searchService = TestBed.get(ItemSearchService);
+    searchService = TestBed.inject(ItemSearchService);
     searchService.query = '--mock query';
 
     fixture = TestBed.createComponent(ItemSelectorModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
 
-    hideSpy = spyOn(TestBed.get(BsModalRef), 'hide');
+    hideSpy = spyOn(TestBed.inject(BsModalRef), 'hide');
   });
 
   it('onCancel() should correctly hide the modal', () => {

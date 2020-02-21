@@ -58,7 +58,7 @@ describe('BaseSelectorBtnComponent', () => {
   });
 
   it('onClick() should create a modal that correctly reacts to changes', () => {
-    const showSpy = spyOn(TestBed.get(BsModalService), 'show').and.callThrough();
+    const showSpy = spyOn(TestBed.inject(BsModalService), 'show').and.callThrough();
 
     component.onClick();
 

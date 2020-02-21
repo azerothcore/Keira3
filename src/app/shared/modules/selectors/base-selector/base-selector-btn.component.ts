@@ -6,6 +6,7 @@ import { Class } from '@keira-types/general';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
 
 @Directive()
+// tslint:disable-next-line:directive-class-suffix
 export abstract class BaseSelectorBtnComponent extends SubscriptionHandler {
 
   @Input() control: AbstractControl;

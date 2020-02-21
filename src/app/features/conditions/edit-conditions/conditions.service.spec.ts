@@ -22,7 +22,7 @@ describe('ConditionsService', () => {
   }));
 
   it('should be created', () => {
-    const service: ConditionsService = TestBed.get(ConditionsService);
+    const service: ConditionsService = TestBed.inject(ConditionsService);
     expect(service).toBeTruthy();
   });
 });

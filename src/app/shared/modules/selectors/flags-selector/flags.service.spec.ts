@@ -11,7 +11,7 @@ describe('FlagsService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   beforeEach(() => {
-    service = TestBed.get(FlagsService);
+    service = TestBed.inject(FlagsService);
   });
 
   describe('getBitsFromValue', () => {
