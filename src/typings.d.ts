@@ -4,6 +4,7 @@ interface NodeModule {
   id: string;
 }
 
+/*global globalThis*/
 declare var window: Window & typeof globalThis;
 interface Window {
   process: any;
