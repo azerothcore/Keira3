@@ -38,7 +38,7 @@ describe('ConnectionWindowComponent', () => {
   }));
 
   beforeEach(() => {
-    connectSpy = spyOn(TestBed.get(MysqlService), 'connect').and.returnValue(of({}));
+    connectSpy = spyOn(TestBed.inject(MysqlService), 'connect').and.returnValue(of({}));
 
     fixture = TestBed.createComponent(ConnectionWindowComponent);
     page = new ConnectionWindowComponentPage(fixture);
@@ -48,7 +48,7 @@ describe('ConnectionWindowComponent', () => {
   });
 
   it('clicking on the connect button without altering the default values should correctly work', fakeAsync(() => {
-    TestBed.get(LocalStorageService).clear();
+    TestBed.inject(LocalStorageService).clear();
     component.error = { code: 'some previous error', errno: 1234 } as MysqlError;
 
     tick();
@@ -76,7 +76,7 @@ describe('ConnectionWindowComponent', () => {
       'database': 'shin_world',
     };
 
-    TestBed.get(LocalStorageService).setItem('config', JSON.stringify(mockLocalStorage));
+    TestBed.inject(LocalStorageService).setItem('config', JSON.stringify(mockLocalStorage));
     component.ngOnInit();
 
     component.error = { code: 'some previous error', errno: 1234 } as MysqlError;

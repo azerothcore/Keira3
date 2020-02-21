@@ -22,7 +22,7 @@ describe('QuestTemplateService', () => {
   }));
 
   it('should be created', () => {
-    const service: QuestTemplateService = TestBed.get(QuestTemplateService);
+    const service: QuestTemplateService = TestBed.inject(QuestTemplateService);
     expect(service).toBeTruthy();
   });
 });

@@ -29,7 +29,7 @@ describe('EditorService', () => {
   }));
 
   beforeEach(() => {
-    service = TestBed.get(MockSingleRowEditorService);
+    service = TestBed.inject(MockSingleRowEditorService);
   });
 
   it('after creating, the fields should correctly set', () => {
@@ -49,9 +49,10 @@ describe('EditorService', () => {
     const data = 'mock data result';
 
     beforeEach(() => {
-      selectAllSpy = spyOn(TestBed.get(QueryService), 'selectAll');
+      selectAllSpy = spyOn(TestBed.inject(QueryService), 'selectAll');
       formResetSpy = spyOn(service.form, 'reset');
-      onReloadSuccessfulSpy = spyOn(TestBed.get(MockSingleRowEditorService), 'onReloadSuccessful');
+      // @ts-ignore
+      onReloadSuccessfulSpy = spyOn(TestBed.inject(MockSingleRowEditorService), 'onReloadSuccessful');
     });
 
     it('should behave correctly when the query succeeds', () => {
@@ -97,10 +98,10 @@ describe('EditorService', () => {
     const query = '-- Mock Query';
 
     beforeEach(() => {
-      const toastrService = TestBed.get(ToastrService);
+      const toastrService = TestBed.inject(ToastrService);
       toastrSucessSpy = spyOn(toastrService, 'success');
       toastrErrorSpy = spyOn(toastrService, 'error');
-      querySpy = spyOn(TestBed.get(QueryService), 'query');
+      querySpy = spyOn(TestBed.inject(QueryService), 'query');
       reloadSpy = spyOn(service, 'reload');
     });
 

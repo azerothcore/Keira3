@@ -29,13 +29,13 @@ describe('GameobjectLootTemplateService', () => {
   }));
 
   beforeEach(() => {
-    service = TestBed.get(GameobjectLootTemplateService);
+    service = TestBed.inject(GameobjectLootTemplateService);
   });
 
   it('getType() should correctly work', () => {
     const type = 3;
     const mockData: MysqlResult<{ type: number }> = { results: [{ type }] };
-    const querySpy = spyOn(TestBed.get(QueryService), 'query').and.returnValue(of(mockData));
+    const querySpy = spyOn(TestBed.inject(QueryService), 'query').and.returnValue(of(mockData));
 
     service.getType().subscribe((data) => {
       expect(data).toEqual(mockData);

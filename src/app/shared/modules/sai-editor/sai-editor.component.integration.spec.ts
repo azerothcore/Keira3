@@ -65,7 +65,7 @@ describe('SaiEditorComponent integration tests', () => {
 
   function setup(creatingNew: boolean, hasTemplateQuery = false, st = sourceType) {
     const selected = { source_type: st, entryorguid: id };
-    handlerService = TestBed.get(SaiHandlerService);
+    handlerService = TestBed.inject(SaiHandlerService);
     handlerService['_selected'] = JSON.stringify(selected);
     handlerService.isNew = creatingNew;
 
@@ -73,7 +73,7 @@ describe('SaiEditorComponent integration tests', () => {
       handlerService['_templateQuery'] = '-- Mock template query';
     }
 
-    queryService = TestBed.get(QueryService);
+    queryService = TestBed.inject(QueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(of(

@@ -22,7 +22,7 @@ describe('GossipMenuOptionService', () => {
   }));
 
   it('should be created', () => {
-    const service: GossipMenuOptionService = TestBed.get(GossipMenuOptionService);
+    const service: GossipMenuOptionService = TestBed.inject(GossipMenuOptionService);
     expect(service).toBeTruthy();
   });
 });

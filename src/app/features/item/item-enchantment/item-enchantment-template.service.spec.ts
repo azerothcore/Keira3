@@ -22,7 +22,7 @@ describe('ItemEnchantmentTemplateService', () => {
   }));
 
   it('should be created', () => {
-    const service: ItemEnchantmentTemplateService = TestBed.get(ItemEnchantmentTemplateService);
+    const service: ItemEnchantmentTemplateService = TestBed.inject(ItemEnchantmentTemplateService);
     expect(service).toBeTruthy();
   });
 });

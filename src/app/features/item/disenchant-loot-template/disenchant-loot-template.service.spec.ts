@@ -22,7 +22,7 @@ describe('DisenchantLootTemplateService', () => {
   }));
 
   it('should be created', () => {
-    const service: DisenchantLootTemplateService = TestBed.get(DisenchantLootTemplateService);
+    const service: DisenchantLootTemplateService = TestBed.inject(DisenchantLootTemplateService);
     expect(service).toBeTruthy();
   });
 });

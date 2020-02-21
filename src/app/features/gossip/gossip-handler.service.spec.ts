@@ -14,7 +14,7 @@ describe('GossipHandlerService', () => {
   }));
 
   it('should be created', () => {
-    const service: GossipHandlerService = TestBed.get(GossipHandlerService);
+    const service: GossipHandlerService = TestBed.inject(GossipHandlerService);
     expect(service).toBeTruthy();
   });
 });

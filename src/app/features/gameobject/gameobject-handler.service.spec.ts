@@ -16,7 +16,7 @@ describe('GameobjectHandlerService', () => {
   }));
 
   it('should be created', () => {
-    const service: GameobjectHandlerService = TestBed.get(GameobjectHandlerService);
+    const service: GameobjectHandlerService = TestBed.inject(GameobjectHandlerService);
     expect(service).toBeTruthy();
   });
 });

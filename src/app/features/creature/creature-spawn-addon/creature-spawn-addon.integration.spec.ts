@@ -46,14 +46,14 @@ describe('CreatureSpawnAddon integration tests', () => {
   }));
 
   function setup(creatingNew: boolean) {
-    handlerService = TestBed.get(CreatureHandlerService);
+    handlerService = TestBed.inject(CreatureHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.get(QueryService);
+    queryService = TestBed.inject(QueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
-    spyOn(TestBed.get(CreatureSpawnAddonService), 'selectQuery').and.returnValue(of(
+    spyOn(TestBed.inject(CreatureSpawnAddonService), 'selectQuery').and.returnValue(of(
       { results: creatingNew ? [] : [originalRow0, originalRow1, originalRow2] }
     ));
 

@@ -24,8 +24,8 @@ describe('CreatureSpawnAddonService', () => {
   }));
 
   it('selectQuery should correctly work', () => {
-    const service: CreatureSpawnAddonService = TestBed.get(CreatureSpawnAddonService);
-    const querySpy = spyOn(TestBed.get(QueryService), 'query');
+    const service: CreatureSpawnAddonService = TestBed.inject(CreatureSpawnAddonService);
+    const querySpy = spyOn(TestBed.inject(QueryService), 'query');
     const id = 123;
 
     service.selectQuery(id);

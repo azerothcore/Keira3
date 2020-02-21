@@ -22,7 +22,7 @@ describe('QuestRequestItemsService', () => {
   }));
 
   it('should be created', () => {
-    const service: QuestRequestItemsService = TestBed.get(QuestRequestItemsService);
+    const service: QuestRequestItemsService = TestBed.inject(QuestRequestItemsService);
     expect(service).toBeTruthy();
   });
 });

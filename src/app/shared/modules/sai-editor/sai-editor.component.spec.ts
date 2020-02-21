@@ -22,7 +22,7 @@ describe('SaiEditorComponent', () => {
 
   beforeEach(() => {
     const selected = { source_type: 1, entryorguid: 100 };
-    handler = TestBed.get(SaiHandlerService);
+    handler = TestBed.inject(SaiHandlerService);
     handler['_selected'] = JSON.stringify(selected);
 
     fixture = TestBed.createComponent(SaiEditorComponent);

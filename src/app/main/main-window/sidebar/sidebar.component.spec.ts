@@ -54,7 +54,7 @@ describe('SidebarComponent', () => {
   }));
 
   beforeEach(() => {
-    sidebarService = TestBed.get(SidebarService);
+    sidebarService = TestBed.inject(SidebarService);
 
     fixture = TestBed.createComponent(SidebarComponent);
     page = new SidebarComponentPage(fixture);
@@ -97,7 +97,7 @@ describe('SidebarComponent', () => {
   });
 
   it('reload the app on logout', () => {
-    const reloadSpy = spyOn(TestBed.get(LocationService), 'reload');
+    const reloadSpy = spyOn(TestBed.inject(LocationService), 'reload');
 
     component.logout();
 

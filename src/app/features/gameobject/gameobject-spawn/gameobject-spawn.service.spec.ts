@@ -24,7 +24,7 @@ describe('GameobjectSpawnService', () => {
   }));
 
   it('should be created', () => {
-    const service: GameobjectSpawnService = TestBed.get(GameobjectSpawnService);
+    const service: GameobjectSpawnService = TestBed.inject(GameobjectSpawnService);
     expect(service).toBeTruthy();
   });
 });

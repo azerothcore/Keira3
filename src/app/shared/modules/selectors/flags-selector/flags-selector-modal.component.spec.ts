@@ -22,7 +22,7 @@ describe('FlagsSelectorModalComponent', () => {
   }));
 
   beforeEach(() => {
-    flagsService = TestBed.get(FlagsService);
+    flagsService = TestBed.inject(FlagsService);
 
     fixture = TestBed.createComponent(FlagsSelectorModalComponent);
     component = fixture.componentInstance;

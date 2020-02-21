@@ -44,7 +44,7 @@ describe('GameobjectTemplateComponent', () => {
 
   beforeEach(() => {
     when(MockedQueryService.query(anything(), anything())).thenReturn(of());
-    editorService = TestBed.get(GameobjectLootTemplateService);
+    editorService = TestBed.inject(GameobjectLootTemplateService);
     reloadSpy = spyOn(editorService, 'reload');
 
     getLootIdSpy = spyOn(editorService, 'getLootId');

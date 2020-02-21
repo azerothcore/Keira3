@@ -45,7 +45,7 @@ describe('LootTemplateComponent', () => {
 
   beforeEach(() => {
     when(MockedQueryService.query(anything(), anything())).thenReturn(of());
-    editorService = TestBed.get(CreatureLootTemplateService);
+    editorService = TestBed.inject(CreatureLootTemplateService);
     reloadSpy = spyOn(editorService, 'reload');
     getLootIdSpy = spyOn(editorService, 'getLootId');
     getLootIdSpy.and.returnValue(of({ results: [ { lootId } ]}));
