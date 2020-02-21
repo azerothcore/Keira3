@@ -54,6 +54,7 @@ describe('AppComponent', () => {
     component = fixture.componentInstance;
 
     subject = new Subject<boolean>();
+    // @ts-ignore
     TestBed.inject(MysqlService)['connectionLost$'] = subject.asObservable();
 
     fixture.detectChanges();

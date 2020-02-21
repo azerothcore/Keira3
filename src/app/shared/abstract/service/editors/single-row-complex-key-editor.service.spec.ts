@@ -40,6 +40,7 @@ describe('SingleRowComplexKeyEditorService', () => {
 
     it('selecteQuery()', () => {
       const handlerService = TestBed.inject(MockHandlerService);
+      // @ts-ignore
       handlerService._selected = '{}';
       const selectAllMultipleKeysSpy = spyOn(TestBed.inject(QueryService), 'selectAllMultipleKeys');
 
@@ -73,6 +74,7 @@ describe('SingleRowComplexKeyEditorService', () => {
     it('updateFullQuery() when isNew is true', () => {
       const getFullDeleteInsertMultipleKeysQuerySpy = spyOn(TestBed.inject(QueryService), 'getFullDeleteInsertMultipleKeysQuery');
       const handlerService = TestBed.inject(MockHandlerService);
+      // @ts-ignore
       handlerService._selected = JSON.stringify({ 'id': 1, 'guid': 2 });
       service['_entityIdFields'] = ['id', 'guid'];
 
@@ -124,6 +126,7 @@ describe('SingleRowComplexKeyEditorService', () => {
     it('onCreatingNewEntity()', () => {
       const handlerService = TestBed.inject(MockHandlerService);
       spyOnProperty(service, 'entityIdFields', 'get').and.returnValue(['id', 'guid', 'test']);
+      // @ts-ignore
       handlerService._selected = JSON.stringify({ 'id': 1, 'guid': 2 });
 
       service['onCreatingNewEntity']();

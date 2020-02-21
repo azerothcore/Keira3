@@ -51,6 +51,7 @@ describe('EditorService', () => {
     beforeEach(() => {
       selectAllSpy = spyOn(TestBed.inject(QueryService), 'selectAll');
       formResetSpy = spyOn(service.form, 'reset');
+      // @ts-ignore
       onReloadSuccessfulSpy = spyOn(TestBed.inject(MockSingleRowEditorService), 'onReloadSuccessful');
     });
 

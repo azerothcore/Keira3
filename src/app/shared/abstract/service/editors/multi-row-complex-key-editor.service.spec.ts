@@ -11,7 +11,7 @@ import { MultiRowComplexKeyEditorService } from './multi-row-complex-key-editor.
 import { QueryService } from '../../../services/query.service';
 import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { MockEntity, MockMultiRowComplexKeyEditorService, MockHandlerService } from '@keira-testing/mock-services';
-import { MysqlResult } from '@keira-types/general';
+import { MysqlResult, TableRow } from '@keira-types/general';
 
 describe('MultiRowComplexKeyEditorService', () => {
   let service: MultiRowComplexKeyEditorService<MockEntity>;
@@ -69,8 +69,11 @@ describe('MultiRowComplexKeyEditorService', () => {
 
   it('selectQuery should correctly work', () => {
     const queryService = TestBed.inject(QueryService);
-    const selectAllMultipleKeysSpy = spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(of({ mock: 'data' }));
+    const selectAllMultipleKeysSpy = spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(
+      of({ mock: 'data' } as TableRow)
+    );
     const handlerService = TestBed.inject(MockHandlerService);
+    // @ts-ignore
     handlerService['_selected'] = 1;
 
     service['selectQuery']();
@@ -80,7 +83,7 @@ describe('MultiRowComplexKeyEditorService', () => {
 
   it('reloadEntity should correctly work', () => {
 
-    const onReloadSuccessfulSpy: Spy = spyOn<any>(service, 'onReloadSuccessful');
+    spyOn<any>(service, 'onReloadSuccessful');
     const error = { code: 'mock error', errno: 1234 } as MysqlError;
     const selectQuerySpy: Spy = spyOn<any>(service, 'selectQuery').and.returnValue(of({ mock: 'data' }));
 
@@ -108,6 +111,7 @@ describe('MultiRowComplexKeyEditorService', () => {
     const updateFullQuerySpy: Spy = spyOn<any>(service, 'updateFullQuery');
     const disableFormSpy: Spy = spyOn(service['_form'], 'disable');
 
+    // @ts-ignore
     handlerService['_selected'] = 1;
 
     service['onReloadSuccessful'](mockData);
