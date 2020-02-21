@@ -30,13 +30,13 @@ describe('MultiRowExternalEditorService', () => {
   }));
 
   beforeEach(() => {
-    service = TestBed.get(CreatureSpawnAddonService);
+    service = TestBed.inject(CreatureSpawnAddonService);
   });
 
   it('updateDiffQuery() should correctly work', () => {
     service['_diffQuery'] = '';
     const queryResult = '-- Mock query result';
-    const getQuerySpy = spyOn(TestBed.get(QueryService), 'getDiffDeleteInsertTwoKeysQuery').and.returnValue(queryResult);
+    const getQuerySpy = spyOn(TestBed.inject(QueryService), 'getDiffDeleteInsertTwoKeysQuery').and.returnValue(queryResult);
 
     service['updateDiffQuery']();
 
@@ -54,7 +54,7 @@ describe('MultiRowExternalEditorService', () => {
   it('updateFullQuery() should correctly work', () => {
     service['_fullQuery'] = '';
     const queryResult = '-- Mock query result';
-    const getQuerySpy = spyOn(TestBed.get(QueryService), 'getFullDeleteInsertQuery').and.returnValue(queryResult);
+    const getQuerySpy = spyOn(TestBed.inject(QueryService), 'getFullDeleteInsertQuery').and.returnValue(queryResult);
 
     service['updateFullQuery']();
 

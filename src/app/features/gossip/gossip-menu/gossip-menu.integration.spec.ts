@@ -43,11 +43,11 @@ describe('GossipMenu integration tests', () => {
   }));
 
   function setup(creatingNew: boolean) {
-    handlerService = TestBed.get(GossipHandlerService);
+    handlerService = TestBed.inject(GossipHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.get(QueryService);
+    queryService = TestBed.inject(QueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(

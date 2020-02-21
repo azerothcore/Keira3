@@ -20,7 +20,7 @@ describe('SelectGossipService', () => {
   }));
 
   it('should be created', () => {
-    const service: SelectGossipService = TestBed.get(SelectGossipService);
+    const service: SelectGossipService = TestBed.inject(SelectGossipService);
     expect(service).toBeTruthy();
   });
 });

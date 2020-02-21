@@ -25,7 +25,7 @@ describe('GameobjectSelectorModalComponent', () => {
   }));
 
   beforeEach(() => {
-    searchService = TestBed.get(GameobjectSearchService);
+    searchService = TestBed.inject(GameobjectSearchService);
     searchService.query = '--mock query';
 
     fixture = TestBed.createComponent(GameobjectSelectorModalComponent);

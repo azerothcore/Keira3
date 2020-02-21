@@ -35,7 +35,7 @@ describe('GameobjectComponent', () => {
   }));
 
   beforeEach(() => {
-    queryService = TestBed.get(QueryService);
+    queryService = TestBed.inject(QueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     fixture = TestBed.createComponent(GameobjectTemplateComponent);
@@ -47,7 +47,7 @@ describe('GameobjectComponent', () => {
     const mockValue: FieldDefinition = { name: 'Mock Value', tooltip: null };
     const mockType = 'mockTypeValue';
     const index = 3;
-    gameobjectTemplateService = TestBed.get(GameobjectTemplateService);
+    gameobjectTemplateService = TestBed.inject(GameobjectTemplateService);
     gameobjectTemplateService.form.controls['type'].setValue(mockType);
     getFieldSpy = spyOn(gameobjectTemplateService, 'getFieldDefinition').and.returnValue(mockValue);
 

@@ -25,7 +25,7 @@ describe('ItemSelectorModalComponent', () => {
   }));
 
   beforeEach(() => {
-    searchService = TestBed.get(ItemSearchService);
+    searchService = TestBed.inject(ItemSearchService);
     searchService.query = '--mock query';
 
     fixture = TestBed.createComponent(ItemSelectorModalComponent);

@@ -20,7 +20,7 @@ describe('SelectItemService', () => {
   }));
 
   it('should be created', () => {
-    const service: SelectItemService = TestBed.get(SelectItemService);
+    const service: SelectItemService = TestBed.inject(SelectItemService);
     expect(service).toBeTruthy();
   });
 });

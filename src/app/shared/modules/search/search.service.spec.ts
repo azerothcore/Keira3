@@ -21,14 +21,14 @@ describe('SearchService', () => {
   }));
 
   beforeEach( () => {
-    service = TestBed.get(ItemSearchService);
+    service = TestBed.inject(ItemSearchService);
   });
 
   describe('when queryForm value is changed', () => {
     let spy: Spy;
 
     beforeEach(() => {
-      spy = spyOn(TestBed.get(QueryService), 'getSearchQuery').and.returnValue(newQuery);
+      spy = spyOn(TestBed.inject(QueryService), 'getSearchQuery').and.returnValue(newQuery);
       service.query = null;
     });
 
@@ -51,7 +51,7 @@ describe('SearchService', () => {
 
   it('onSearch() should execute the query and update the rows with the result', () => {
     const newRows = [ { entry: 1 }, { entry: 2 } ] as ItemTemplate[];
-    const spy = spyOn(TestBed.get(QueryService), 'query').and.returnValue(of({ results: newRows} ));
+    const spy = spyOn(TestBed.inject(QueryService), 'query').and.returnValue(of({ results: newRows} ));
     service.rows = null;
     service.query = newQuery;
 

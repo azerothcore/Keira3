@@ -26,7 +26,7 @@ describe('SingleRowEditorService', () => {
   }));
 
   beforeEach(() => {
-    service = TestBed.get(MockSingleRowEditorService);
+    service = TestBed.inject(MockSingleRowEditorService);
   });
 
   describe('when the form value changes', () => {
@@ -79,7 +79,7 @@ describe('SingleRowEditorService', () => {
   it('updateDiffQuery() should correctly work', () => {
     service['_diffQuery'] = '';
     const queryResult = '-- Mock query result';
-    const getQuerySpy = spyOn(TestBed.get(QueryService), 'getUpdateQuery').and.returnValue(queryResult);
+    const getQuerySpy = spyOn(TestBed.inject(QueryService), 'getUpdateQuery').and.returnValue(queryResult);
 
     service['updateDiffQuery']();
 
@@ -96,7 +96,7 @@ describe('SingleRowEditorService', () => {
   it('updateFullQuery() should correctly work', () => {
     service['_fullQuery'] = '';
     const queryResult = '-- Mock query result';
-    const getQuerySpy = spyOn(TestBed.get(QueryService), 'getFullDeleteInsertQuery').and.returnValue(queryResult);
+    const getQuerySpy = spyOn(TestBed.inject(QueryService), 'getFullDeleteInsertQuery').and.returnValue(queryResult);
 
     service['updateFullQuery']();
 
@@ -118,7 +118,7 @@ describe('SingleRowEditorService', () => {
     });
 
     it('should correctly work when loading an existing entity [as main entity]', () => {
-      const handlerService = TestBed.get(MockHandlerService);
+      const handlerService = TestBed.inject(MockHandlerService);
       const entity: MockEntity = { id, guid: 12345, name: 'myName' };
       const data = { results: [entity] };
       handlerService.isNew = true;
@@ -137,7 +137,7 @@ describe('SingleRowEditorService', () => {
     });
 
     it('should correctly work when loading an existing entity [as non-main entity]', () => {
-      const handlerService = TestBed.get(MockHandlerService);
+      const handlerService = TestBed.inject(MockHandlerService);
       const entity: MockEntity = { id, guid: 12345, name: 'myName' };
       const data = { results: [entity] };
       handlerService.isNew = true;

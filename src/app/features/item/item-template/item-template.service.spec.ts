@@ -22,7 +22,7 @@ describe('ItemTemplateService', () => {
   }));
 
   it('should be created', () => {
-    const service: ItemTemplateService = TestBed.get(ItemTemplateService);
+    const service: ItemTemplateService = TestBed.inject(ItemTemplateService);
     expect(service).toBeTruthy();
   });
 });

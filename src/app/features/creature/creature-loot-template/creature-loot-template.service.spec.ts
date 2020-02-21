@@ -24,7 +24,7 @@ describe('CreatureLootTemplateService', () => {
   }));
 
   it('should be created', () => {
-    const service: CreatureLootTemplateService = TestBed.get(CreatureLootTemplateService);
+    const service: CreatureLootTemplateService = TestBed.inject(CreatureLootTemplateService);
     expect(service).toBeTruthy();
   });
 });

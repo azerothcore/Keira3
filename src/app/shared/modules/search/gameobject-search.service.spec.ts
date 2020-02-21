@@ -13,7 +13,7 @@ describe('GameobjectSearchService', () => {
   }));
 
   it('should be created', () => {
-    const service: GameobjectSearchService = TestBed.get(GameobjectSearchService);
+    const service: GameobjectSearchService = TestBed.inject(GameobjectSearchService);
     expect(service).toBeTruthy();
   });
 });

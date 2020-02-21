@@ -24,8 +24,8 @@ describe('SelectService', () => {
   }));
 
   it('onSelect() should correctly work', () => {
-    const service = TestBed.get(SelectCreatureService);
-    const spy = spyOn(TestBed.get(CreatureHandlerService), 'select');
+    const service = TestBed.inject(SelectCreatureService);
+    const spy = spyOn(TestBed.inject(CreatureHandlerService), 'select');
     const selected = [{ [service['entityIdField']]: 'myId', [service['entityNameField']]: 'myName' }];
 
     service.onSelect({ selected });
@@ -38,8 +38,8 @@ describe('SelectService', () => {
   });
 
   it('onSelect() should use the table name when the entityNameField is not defined', () => {
-    const service = TestBed.get(SelectCreatureService);
-    const spy = spyOn(TestBed.get(CreatureHandlerService), 'select');
+    const service = TestBed.inject(SelectCreatureService);
+    const spy = spyOn(TestBed.inject(CreatureHandlerService), 'select');
     const selected = [{ [service['entityIdField']]: 'myId', [service['entityNameField']]: 'myName' }];
     service['entityNameField'] = null;
 

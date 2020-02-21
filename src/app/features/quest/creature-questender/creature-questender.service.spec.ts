@@ -22,7 +22,7 @@ describe('CreatureQuestenderService', () => {
   }));
 
   it('should be created', () => {
-    const service: CreatureQuestenderService = TestBed.get(CreatureQuestenderService);
+    const service: CreatureQuestenderService = TestBed.inject(CreatureQuestenderService);
     expect(service).toBeTruthy();
   });
 });

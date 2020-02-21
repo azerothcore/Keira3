@@ -25,7 +25,7 @@ describe('SkinningLootTemplateService', () => {
   }));
 
   it('should be created', () => {
-    const service: SkinningLootTemplateService = TestBed.get(SkinningLootTemplateService);
+    const service: SkinningLootTemplateService = TestBed.inject(SkinningLootTemplateService);
     expect(service).toBeTruthy();
   });
 });

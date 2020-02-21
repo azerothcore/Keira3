@@ -99,7 +99,7 @@ describe('QueryOutputComponent', () => {
   });
 
   it('clicking the copy button should copy the correct query', () => {
-    const spy = spyOn(TestBed.get(ClipboardService), 'copyFromContent');
+    const spy = spyOn(TestBed.inject(ClipboardService), 'copyFromContent');
 
     page.clickElement(page.copyBtn);
     expect(spy).toHaveBeenCalledWith(diffQuery);

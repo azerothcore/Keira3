@@ -41,13 +41,13 @@ describe('SelectQuest integration tests', () => {
   }));
 
   beforeEach(() => {
-    navigateSpy = spyOn(TestBed.get(Router), 'navigate');
-    queryService = TestBed.get(QueryService);
+    navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    queryService = TestBed.inject(QueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of(
       { results: [{ max: 1 }] }
     ));
 
-    selectService = TestBed.get(SelectQuestService);
+    selectService = TestBed.inject(SelectQuestService);
 
     fixture = TestBed.createComponent(SelectQuestComponent);
     page = new SelectQuestComponentPage(fixture);

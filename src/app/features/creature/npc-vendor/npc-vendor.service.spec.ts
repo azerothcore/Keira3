@@ -24,7 +24,7 @@ describe('NpcVendorService', () => {
   }));
 
   it('should be created', () => {
-    const service: NpcVendorService = TestBed.get(NpcVendorService);
+    const service: NpcVendorService = TestBed.inject(NpcVendorService);
     expect(service).toBeTruthy();
   });
 });

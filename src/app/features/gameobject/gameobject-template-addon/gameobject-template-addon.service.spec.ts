@@ -25,7 +25,7 @@ describe('GameobjectTemplateAddonService', () => {
   }));
 
   it('should be created', () => {
-    const service: GameobjectTemplateAddonService = TestBed.get(GameobjectTemplateAddonService);
+    const service: GameobjectTemplateAddonService = TestBed.inject(GameobjectTemplateAddonService);
     expect(service).toBeTruthy();
   });
 });

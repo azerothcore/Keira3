@@ -35,7 +35,7 @@ describe('LogoutBtnComponent', () => {
   }));
 
   it('openModalConfirm() should correctly work', () => {
-    const showSpy = spyOn(TestBed.get(BsModalService), 'show').and.callThrough();
+    const showSpy = spyOn(TestBed.inject(BsModalService), 'show').and.callThrough();
     const logoutSpy = spyOn(component, 'logout');
 
     component.openModalConfirm();
@@ -49,7 +49,7 @@ describe('LogoutBtnComponent', () => {
   });
 
   it('logout() should correctly work', () => {
-    const locationServiceSpy: Spy = spyOn(TestBed.get(LocationService), 'reload');
+    const locationServiceSpy: Spy = spyOn(TestBed.inject(LocationService), 'reload');
     component.logout();
     expect(locationServiceSpy).toHaveBeenCalledTimes(1);
   });

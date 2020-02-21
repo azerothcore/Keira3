@@ -16,7 +16,7 @@ describe('ConditionsHandlerService', () => {
   }));
 
   it('should run getIdObject() correctly', () => {
-    const service: ConditionsHandlerService = TestBed.get(ConditionsHandlerService);
+    const service: ConditionsHandlerService = TestBed.inject(ConditionsHandlerService);
     expect(service).toBeTruthy();
 
     const input: Partial<Conditions> = {
@@ -48,7 +48,7 @@ describe('ConditionsHandlerService', () => {
     const res = service['getIdObject'](input);
     expect(res).toEqual(output);
 
-    spyOn(TestBed.get(Router), 'navigate');
+    spyOn(TestBed.inject(Router), 'navigate');
 
     service.select(true, input);
     expect(service.selected).toBe(JSON.stringify(res));

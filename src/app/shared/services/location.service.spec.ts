@@ -8,7 +8,7 @@ describe('LocationService', () => {
   });
 
   xit('reload() should correctly work', () => {
-    const service: LocationService = TestBed.get(LocationService);
+    const service: LocationService = TestBed.inject(LocationService);
     const spyLocationReload = spyOn<any>(location, 'reload');
 
     expect(spyLocationReload).toHaveBeenCalledTimes(0);

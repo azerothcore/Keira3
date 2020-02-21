@@ -47,15 +47,15 @@ describe('CreatureLootTemplate integration tests', () => {
   }));
 
   function setup(creatingNew: boolean, lootId = id) {
-    spyOn(TestBed.get(CreatureLootTemplateService), 'getLootId').and.returnValue(of(
+    spyOn(TestBed.inject(CreatureLootTemplateService), 'getLootId').and.returnValue(of(
       { results: [{ lootId }] }
     ));
 
-    handlerService = TestBed.get(CreatureHandlerService);
+    handlerService = TestBed.inject(CreatureHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.get(QueryService);
+    queryService = TestBed.inject(QueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(

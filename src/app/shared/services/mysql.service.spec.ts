@@ -30,7 +30,7 @@ describe('MysqlService', () => {
   }));
 
   beforeEach(() => {
-    service = TestBed.get(MysqlService);
+    service = TestBed.inject(MysqlService);
   });
 
   it('connectionEstablished getter', () => {

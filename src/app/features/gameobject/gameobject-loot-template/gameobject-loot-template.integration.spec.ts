@@ -48,19 +48,19 @@ describe('GameobjectLootTemplate integration tests', () => {
   }));
 
   function setup(creatingNew: boolean, lootId = id, type = _type)  {
-    spyOn(TestBed.get(GameobjectLootTemplateService), 'getLootId').and.returnValue(of(
+    spyOn(TestBed.inject(GameobjectLootTemplateService), 'getLootId').and.returnValue(of(
       { results: [{ lootId }] }
     ));
 
-    spyOn(TestBed.get(GameobjectLootTemplateService), 'getType').and.returnValue(of(
+    spyOn(TestBed.inject(GameobjectLootTemplateService), 'getType').and.returnValue(of(
       { results: [{ type }] }
     ));
 
-    handlerService = TestBed.get(GameobjectHandlerService);
+    handlerService = TestBed.inject(GameobjectHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.get(QueryService);
+    queryService = TestBed.inject(QueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(

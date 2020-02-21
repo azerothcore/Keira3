@@ -62,12 +62,12 @@ describe('Conditions integration tests', () => {
   }));
 
   function setup(creatingNew: boolean) {
-    navigateSpy = spyOn(TestBed.get(Router), 'navigate');
-    handlerService = TestBed.get(ConditionsHandlerService);
+    navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    handlerService = TestBed.inject(ConditionsHandlerService);
     handlerService['_selected'] = JSON.stringify(id);
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.get(QueryService);
+    queryService = TestBed.inject(QueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(of(

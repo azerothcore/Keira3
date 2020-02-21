@@ -13,7 +13,7 @@ describe('ItemSearchService', () => {
   }));
 
   it('should be created', () => {
-    const service: ItemSearchService = TestBed.get(ItemSearchService);
+    const service: ItemSearchService = TestBed.inject(ItemSearchService);
     expect(service).toBeTruthy();
   });
 });
