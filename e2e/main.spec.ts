@@ -1,5 +1,5 @@
-import {expect, assert} from 'chai';
-import {SpectronClient} from 'spectron';
+import * as chai from 'chai';
+import { SpectronClient } from 'spectron';
 
 import commonSetup from './common-setup';
 
@@ -22,7 +22,7 @@ describe('Keira3 App', function () {
 
   it('creates initial windows', async function () {
     const count = await client.getWindowCount();
-    expect(count).to.equal(1);
+    chai.expect(count).to.equal(1);
   });
 
 });
