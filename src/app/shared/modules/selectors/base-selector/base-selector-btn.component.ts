@@ -1,10 +1,11 @@
-import { Input } from '@angular/core';
+import { Input, Directive } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 
 import { Class } from '@keira-types/general';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
 
+@Directive()
 export abstract class BaseSelectorBtnComponent extends SubscriptionHandler {
 
   @Input() control: AbstractControl;

@@ -173,7 +173,7 @@ describe('QueryService', () => {
   it('selectAllMultipleKeys() should correctly work', async(() => {
     const data: MysqlResult<TableRow> = { results: [{ key: 'value'}] };
     const querySpy = spyOn(service, 'query').and.returnValue(of(data));
-    const row = { k1: 1, k2: 2};
+    const row: TableRow = { k1: 1, k2: 2};
 
     service.selectAllMultipleKeys('my_ac', row).subscribe((res) => {
       expect(res).toEqual(data);

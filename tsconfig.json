@@ -1,6 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "module": "esnext",
     "resolveJsonModule": true,
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
