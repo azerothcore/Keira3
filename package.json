@@ -37,7 +37,7 @@
     "ngx-toastr": "12.0.0",
     "ngx-ui-switch": "8.3.0",
     "serialize-javascript": "3.0.0",
-    "sqlite3": "^4.1.1",
+    "sqlite3": "4.1.1",
     "tslib": "1.11.0"
   },
   "devDependencies": {
@@ -60,7 +60,7 @@
     "@types/mocha": "7.0.1",
     "@types/mysql": "2.15.8",
     "@types/node": "12.12.28",
-    "@types/sqlite3": "^3.1.6",
+    "@types/sqlite3": "3.1.6",
     "@types/sqlstring": "2.2.1",
     "bootstrap": "4.4.1",
     "chai": "4.2.0",
