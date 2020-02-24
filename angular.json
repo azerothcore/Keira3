@@ -108,7 +108,7 @@
           }
         },
         "test": {
-          "builder": "@angular-builders/custom-webpack:karma",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "customWebpackConfig": {
               "path": "./extra-webpack.config.js"
