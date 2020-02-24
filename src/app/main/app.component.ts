@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { MysqlService } from '../shared/services/mysql.service';
 import { ToastrService } from 'ngx-toastr';
 import { distinctUntilChanged } from 'rxjs/operators';
+import * as sqlite from 'sqlite3';
+
+import { MysqlService } from '../shared/services/mysql.service';
 
 @Component({
   selector: 'app-root',
@@ -25,5 +27,8 @@ export class AppComponent implements OnInit {
           this.toastrService.success('Database reconnected');
         }
       });
+
+
+    const myDb = new sqlite.Database(':memory:');
   }
 }
