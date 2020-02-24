@@ -12,10 +12,7 @@
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
             "customWebpackConfig": {
-              "path": "./extra-webpack.config.js",
-              "mergeStrategies": {
-                "externals": "replace"
-              }
+              "path": "./extra-webpack.config.js"
             },
             "aot": true,
             "outputPath": "dist",
@@ -91,10 +88,7 @@
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
             "customWebpackConfig": {
-              "path": "./extra-webpack.config.js",
-              "mergeStrategies": {
-                "externals": "replace"
-              }
+              "path": "./extra-webpack.config.js"
             },
             "browserTarget": "Keira3:build"
           },
@@ -117,10 +111,7 @@
           "builder": "@angular-builders/custom-webpack:karma",
           "options": {
             "customWebpackConfig": {
-              "path": "./extra-webpack.config.js",
-              "mergeStrategies": {
-                "externals": "replace"
-              }
+              "path": "./extra-webpack.config.js"
             },
             "main": "src/test.ts",
             "polyfills": "src/polyfills-test.ts",
