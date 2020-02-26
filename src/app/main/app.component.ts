@@ -4,6 +4,7 @@ import { distinctUntilChanged } from 'rxjs/operators';
 
 import { MysqlService } from '../shared/services/mysql.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { ElectronService } from '@keira-shared/services/electron.service';
 
 @Component({
   selector: 'app-root',
@@ -12,10 +13,13 @@ import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service'
 })
 export class AppComponent implements OnInit {
 
+  sqliteResult: { id: number; name: string };
+
   constructor(
     public mysqlService: MysqlService,
     public toastrService: ToastrService,
-    public sqliteQueryService: SqliteQueryService,
+    private sqliteQueryService: SqliteQueryService,
+    private electronService: ElectronService,
   ) {}
 
   ngOnInit(): void {
@@ -30,8 +34,12 @@ export class AppComponent implements OnInit {
       });
 
     /* istanbul ignore next */
-    this.sqliteQueryService.query('SELECT * FROM achievements WHERE id = 42').subscribe((result) => {
-
-    });
+    if (this.electronService.isElectron()) {
+      this.sqliteQueryService.query<{ id: number, name: string}>(
+        'SELECT * FROM achievements WHERE id = 970'
+      ).subscribe((result) => {
+        this.sqliteResult = result;
+      });
+    }
   }
 }
