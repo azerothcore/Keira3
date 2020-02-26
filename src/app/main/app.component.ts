@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { distinctUntilChanged } from 'rxjs/operators';
-import * as sqlite from 'sqlite3';
 
 import { MysqlService } from '../shared/services/mysql.service';
+import { SqliteService } from '@keira-shared/services/sqlite.service';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +15,7 @@ export class AppComponent implements OnInit {
   constructor(
     public mysqlService: MysqlService,
     public toastrService: ToastrService,
+    public sqliteService: SqliteService,
   ) {}
 
   ngOnInit(): void {
@@ -27,8 +28,5 @@ export class AppComponent implements OnInit {
           this.toastrService.success('Database reconnected');
         }
       });
-
-
-    const myDb = new sqlite.Database(':memory:');
   }
 }
