@@ -6,6 +6,7 @@ import { SqliteService } from '@keira-shared/services/sqlite.service';
 import { ConfigService } from '@keira-shared/services/config.service';
 import { TableRow } from '@keira-types/general';
 
+/* istanbul ignore next */ // Note: will be tested in e2e
 @Injectable({
   providedIn: 'root'
 })

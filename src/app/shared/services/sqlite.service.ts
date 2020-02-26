@@ -1,16 +1,16 @@
 import { Injectable, NgZone } from '@angular/core';
-import { Database, OPEN_READONLY } from 'sqlite3';
 import { Observable } from 'rxjs';
-import { AppConfig } from '../../../environments/environment';
 import { ElectronService } from '@keira-shared/services/electron.service';
+import { AppConfig } from '../../../environments/environment';
 import { TableRow } from '@keira-types/general';
 
+/* istanbul ignore next */ // Note: will be tested in e2e
 @Injectable({
   providedIn: 'root'
 })
 export class SqliteService {
 
-  private db: Database;
+  private db;
 
   constructor(
     private electronService: ElectronService,
@@ -18,7 +18,8 @@ export class SqliteService {
   ) {
     /* istanbul ignore next */
     if (this.electronService.isElectron()) {
-      this.db = new Database(AppConfig.sqlitePath, OPEN_READONLY, (error) => {
+      const sqlite = window.require('sqlite3');
+      this.db = new sqlite.Database(AppConfig.sqlitePath, sqlite.OPEN_READONLY, (error) => {
         if (error) {
           console.log(`Error when opening sqlite database at ${AppConfig.sqlitePath}`);
           console.error(error);

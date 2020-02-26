@@ -29,6 +29,7 @@ export class AppComponent implements OnInit {
         }
       });
 
+    /* istanbul ignore next */
     this.sqliteQueryService.query('SELECT * FROM achievements WHERE id = 42').subscribe((result) => {
 
     });
