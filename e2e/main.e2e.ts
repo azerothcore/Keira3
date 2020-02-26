@@ -24,7 +24,7 @@ describe('Keira3 App', function () {
     const selector = '#sqlite-e2e-test';
     const expectedText = 'Tricks and Treats of Azeroth';
     const text = await browser.getAttribute(selector, 'e2e');
-    await sleep(3000);
+    await sleep(500);
     expect(text).to.equal(expectedText);
   });
 
