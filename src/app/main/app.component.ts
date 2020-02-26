@@ -3,7 +3,7 @@ import { ToastrService } from 'ngx-toastr';
 import { distinctUntilChanged } from 'rxjs/operators';
 
 import { MysqlService } from '../shared/services/mysql.service';
-import { SqliteService } from '@keira-shared/services/sqlite.service';
+import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +15,7 @@ export class AppComponent implements OnInit {
   constructor(
     public mysqlService: MysqlService,
     public toastrService: ToastrService,
-    public sqliteService: SqliteService,
+    public sqliteQueryService: SqliteQueryService,
   ) {}
 
   ngOnInit(): void {
@@ -28,5 +28,9 @@ export class AppComponent implements OnInit {
           this.toastrService.success('Database reconnected');
         }
       });
+
+    this.sqliteQueryService.query('SELECT * FROM achievements WHERE id = 42').subscribe((result) => {
+
+    });
   }
 }
