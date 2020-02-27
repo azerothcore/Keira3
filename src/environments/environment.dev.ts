@@ -5,5 +5,6 @@
 
 export const AppConfig = {
   production: false,
-  environment: 'DEV'
+  environment: 'DEV',
+  sqlitePath: 'src/assets/sqlite.db',
 };
