@@ -38,6 +38,10 @@
     "icon": "dist",
     "category": "Development",
     "target": [
+      "AppImage",
+      "deb",
+      "snap",
+      "rpm",
       "AppImage"
     ]
   }
