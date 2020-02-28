@@ -103,7 +103,8 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
       row.comment = await this.saiCommentGeneratorService.generateComment(
         this._newRows,
         row,
-        await this.handlerService.getName().toPromise(),
+        /* istanbul ignore next */
+        await this.handlerService.getName()?.toPromise(),
       );
 
       if (this.isRowSelected(row)) {
