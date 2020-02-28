@@ -1,0 +1,4 @@
+<app-connection-window *ngIf="!mysqlService.connectionEstablished"></app-connection-window>
+<app-main-window *ngIf="mysqlService.connectionEstablished"></app-main-window>
+
+<div id="sqlite-e2e-test" [attr.e2e]="sqliteResult?.name" style="display: none"></div>

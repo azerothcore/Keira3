@@ -4,18 +4,17 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './config/app-routing.module';
-import { AppComponent } from './components/app.component';
-import { CreatureModule } from './components/editors/creature/creature.module';
-import { ConnectionWindowModule } from './components/connection-window/connection-window.module';
-import { DashboardModule } from './components/editors/dashboard/dashboard.module';
-import { MainWindowModule } from './components/main-window/main-window.module';
-import { QuestModule } from './components/editors/quest/quest.module';
-import { GameobjectModule } from './components/editors/gameobject/gameobject.module';
-import { ItemModule } from './components/editors/item/item.module';
-import { GossipModule } from './components/editors/gossip/gossip.module';
-import { ConditionsModule } from './components/editors/conditions/conditions.module';
-import { SmartScriptsModule } from './components/editors/smart-scripts/smart-scripts.module';
-
+import { AppComponent } from './main/app.component';
+import { ConnectionWindowModule } from './main/connection-window/connection-window.module';
+import { DashboardModule } from './features/dashboard/dashboard.module';
+import { MainWindowModule } from './main/main-window/main-window.module';
+import { CreatureModule } from './features/creature/creature.module';
+import { QuestModule } from './features/quest/quest.module';
+import { GameobjectModule } from './features/gameobject/gameobject.module';
+import { ItemModule } from './features/item/item.module';
+import { GossipModule } from './features/gossip/gossip.module';
+import { ConditionsModule } from './features/conditions/conditions.module';
+import { SmartScriptsModule } from './features/smart-scripts/smart-scripts.module';
 
 @NgModule({
   declarations: [ AppComponent ],

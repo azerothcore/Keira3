@@ -1,0 +1,656 @@
+<app-top-bar [handler]="handlerService"></app-top-bar>
+
+<div class="container-fluid">
+
+  <span *ngIf="editorService.loading">Loading...</span>
+
+  <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
+
+    <app-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></app-query-output>
+
+    <hr class="mt-2 mb-1">
+
+    <div class="wiki-link">
+      <a [href]="docUrl" target="_blank">
+        <i class="fas fa-link"></i> {{ editorService.entityTable }} documentation
+      </a>
+    </div>
+
+    <form
+      [formGroup]="editorService.form"
+      class="form-group edit-form"
+    >
+
+      <span class="category-title">Base</span>
+      <div class="row">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="entry">entry</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'The unique ID of the creature'"
+          ></i>
+          <input [formControlName]="'entry'" id="entry" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="name">name</label>
+          <input [formControlName]="'name'" id="name" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="subname">subname</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'The subname of the creature that appears in <> below the creature name'"
+          ></i>
+          <input [formControlName]="'subname'" id="subname" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="IconName">IconName</label>
+          <app-single-value-selector-btn
+            [control]="editorService.form.controls['IconName']"
+            [config]="{ options: CREATURE_ICON, name: 'IconName' }"
+            [modalClass]="'modal-xl'"
+          ></app-single-value-selector-btn>
+          <input [formControlName]="'IconName'" id="IconName" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="minlevel">minlevel</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'The creature level will be in the range [minlevel, maxlevel]'"
+          ></i>
+          <input [formControlName]="'minlevel'" id="minlevel" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="maxlevel">maxlevel</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'The creature level will be in the range [minlevel, maxlevel]'"
+          ></i>
+          <input [formControlName]="'maxlevel'" id="maxlevel" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="exp">exp</label>
+          <app-single-value-selector-btn
+            [control]="editorService.form.controls['exp']"
+            [config]="{ options: EXPANSION, name: 'exp' }"
+            [modalClass]="'modal-md'"
+          ></app-single-value-selector-btn>
+          <input [formControlName]="'exp'" id="exp" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="faction">faction</label>
+          <app-single-value-selector-btn
+            [control]="editorService.form.controls['faction']"
+            [config]="{ options: FACTIONS, name: 'faction' }"
+            [modalClass]="'modal-md'"
+          ></app-single-value-selector-btn>
+          <input [formControlName]="'faction'" id="faction" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="npcflag">npcflag</label>
+          <app-flags-selector-btn
+            [control]="editorService.form.controls['npcflag']"
+            [config]="{ flags: NPC_FLAGS, name: 'npcflag' }"
+          ></app-flags-selector-btn>
+          <input [formControlName]="'npcflag'" id="npcflag" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="rank">rank</label>
+          <app-single-value-selector-btn
+            [control]="editorService.form.controls['rank']"
+            [config]="{ options: RANK, name: 'rank' }"
+            [modalClass]="'modal-md'"
+          ></app-single-value-selector-btn>
+
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'If you want the creature to show a skull or “??” in the portrait (often with Bosses), you have to enable BOSS_MOB in type_flags'"
+          ></i>
+          <input [formControlName]="'rank'" id="rank" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="family">family</label>
+          <app-single-value-selector-btn
+            [control]="editorService.form.controls['family']"
+            [config]="{ options: CREATURE_FAMILY, name: 'family' }"
+            [modalClass]="'modal-md'"
+          ></app-single-value-selector-btn>
+          <input [formControlName]="'family'" id="family" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="type">type</label>
+          <app-single-value-selector-btn
+            [control]="editorService.form.controls['type']"
+            [config]="{ options: CREATURE_TYPE, name: 'type' }"
+            [modalClass]="'modal-md'"
+          ></app-single-value-selector-btn>
+          <input [formControlName]="'type'" id="type" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="type_flags">type_flags</label>
+          <app-flags-selector-btn
+            [control]="editorService.form.controls['type_flags']"
+            [config]="{ flags: CREATURE_TYPE_FLAGS, name: 'type_flags' }"
+          ></app-flags-selector-btn>
+          <input [formControlName]="'type_flags'" id="type_flags" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="unit_class">unit_class</label>
+          <app-single-value-selector-btn
+            [control]="editorService.form.controls['unit_class']"
+            [config]="{ options: UNIT_CLASS, name: 'unit_class' }"
+            [modalClass]="'modal-lg'"
+          ></app-single-value-selector-btn>
+          <input [formControlName]="'unit_class'" id="unit_class" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="unit_flags">unit_flags</label>
+          <app-flags-selector-btn
+            [control]="editorService.form.controls['unit_flags']"
+            [config]="{ flags: UNIT_FLAGS, name: 'unit_flags' }"
+          ></app-flags-selector-btn>
+          <input [formControlName]="'unit_flags'" id="unit_flags" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="unit_flags2">unit_flags2</label>
+          <app-flags-selector-btn
+            [control]="editorService.form.controls['unit_flags2']"
+            [config]="{ flags: UNIT_FLAGS_2, name: 'unit_flags2' }"
+          ></app-flags-selector-btn>
+          <input [formControlName]="'unit_flags2'" id="unit_flags2" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="dynamicflags">dynamicflags</label>
+          <app-flags-selector-btn
+            [control]="editorService.form.controls['dynamicflags']"
+            [config]="{ flags: DYNAMIC_FLAGS, name: 'dynamicflags' }"
+          ></app-flags-selector-btn>
+          <input [formControlName]="'dynamicflags'" id="dynamicflags" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RegenHealth">RegenHealth</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Boolean (1 or 0) controlling whether the creature should regenerate its health or not.'"
+          ></i>
+          <input [formControlName]="'RegenHealth'" id="RegenHealth" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="mechanic_immune_mask">mechanic_immune_mask</label>
+          <app-flags-selector-btn
+            [control]="editorService.form.controls['mechanic_immune_mask']"
+            [config]="{ flags: MECHANIC_IMMUNE_MASK, name: 'mechanic_immune_mask' }"
+          ></app-flags-selector-btn>
+          <input [formControlName]="'mechanic_immune_mask'" id="mechanic_immune_mask" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="flags_extra">flags_extra</label>
+          <app-flags-selector-btn
+            [control]="editorService.form.controls['flags_extra']"
+            [config]="{ flags: FLAGS_EXTRA, name: 'flags_extra' }"
+          ></app-flags-selector-btn>
+          <input [formControlName]="'flags_extra'" id="flags_extra" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="VehicleId">VehicleId</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="VEHICLE_ID_TOOLTIP"
+          ></i>
+          <input [formControlName]="'VehicleId'" id="VehicleId" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="RacialLeader">RacialLeader</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Boolean (1 or 0) indicating whether the creature is a racial leader or not.'"
+          ></i>
+          <input [formControlName]="'RacialLeader'" id="RacialLeader" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="PetSpellDataId">PetSpellDataId</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'ID, found in CreatureSpellData.dbc, that displays what spells the pet has in the client.'"
+          ></i>
+          <input [formControlName]="'PetSpellDataId'" id="PetSpellDataId" type="number" class="form-control form-control-sm">
+        </div>
+      </div>
+      <hr>
+
+      <div class="row">
+        <div class="col-12 col-xl-4">
+          <span class="category-title">KillCredits</span>
+          <div class="row">
+
+            <div
+              *ngFor="let i of [1,2]"
+              class="form-group col-12 col-sm-6 col-md-6 col-lg-3 col-xl-6"
+            >
+              <label class="control-label" for="KillCredit{{ i }}">KillCredit{{ i }}</label>
+              <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="'Can be a link to the first entry of the creature that could be killed to give quest credit'"
+              ></i>
+              <input [formControlName]="'KillCredit' + i" id="KillCredit{{ i }}" type="number" class="form-control form-control-sm">
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col-12 col-xl-8">
+          <span class="category-title">
+            Models <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="MODEL_ID_TOOLTIP"></i>
+          </span>
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="control-label" for="modelid1">modelid1</label>
+              <input [formControlName]="'modelid1'" id="modelid1" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="control-label" for="modelid2">modelid2</label>
+              <input [formControlName]="'modelid2'" id="modelid2" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="control-label" for="modelid3">modelid3</label>
+              <input [formControlName]="'modelid3'" id="modelid3" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="control-label" for="modelid4">modelid4</label>
+              <input [formControlName]="'modelid4'" id="modelid4" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr>
+
+      <div class="row">
+        <div class="col-12 col-xl-4">
+          <span class="category-title">Money Loot</span>
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3 col-xl-6">
+              <label class="control-label" for="mingold">mingold</label>
+              <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="'Minimum money that the creature drops when killed, in copper.'"
+              ></i>
+              <input [formControlName]="'mingold'" id="mingold" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3 col-xl-6">
+              <label class="control-label" for="maxgold">maxgold</label>
+              <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="'Maximum money that the creature drops when killed, in copper.'"
+              ></i>
+              <input [formControlName]="'maxgold'" id="maxgold" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-xl-8">
+          <span class="category-title">Trainer</span>
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="control-label" for="trainer_type">trainer_type</label>
+              <app-single-value-selector-btn
+                [control]="editorService.form.controls['trainer_type']"
+                [config]="{ options: TRAINER_TYPE, name: 'trainer_type' }"
+                [modalClass]="'modal-md'"
+              ></app-single-value-selector-btn>
+              <input [formControlName]="'trainer_type'" id="trainer_type" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="control-label" for="trainer_spell">trainer_spell</label>
+              <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="TRAINER_SPELL_TOOLTIP"
+              ></i>
+              <input [formControlName]="'trainer_spell'" id="trainer_spell" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="control-label" for="trainer_class">trainer_class</label>
+              <app-single-value-selector-btn
+                [control]="editorService.form.controls['trainer_class']"
+                [config]="{ options: CREATURE_CLASS, name: 'trainer_class' }"
+                [modalClass]="'modal-md'"
+              ></app-single-value-selector-btn>
+              <input [formControlName]="'trainer_class'" id="trainer_class" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="control-label" for="trainer_race">trainer_race</label>
+              <app-single-value-selector-btn
+                [control]="editorService.form.controls['trainer_race']"
+                [config]="{ options: CREATURE_RACE, name: 'trainer_race' }"
+                [modalClass]="'modal-md'"
+              ></app-single-value-selector-btn>
+              <input [formControlName]="'trainer_race'" id="trainer_race" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr>
+
+      <div class="row">
+        <div class="col-12 col-xl-6">
+          <span class="category-title">Loots</span>
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4">
+              <label class="control-label" for="lootid">lootid</label>
+              <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="'Link to creature_loot_template.entry'"
+              ></i>
+              <input [formControlName]="'lootid'" id="lootid" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4">
+              <label class="control-label" for="pickpocketloot">pickpocketloot</label>
+              <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="'Link to pickpocketing_loot_template.entry'"
+              ></i>
+              <input [formControlName]="'pickpocketloot'" id="pickpocketloot" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4">
+              <label class="control-label" for="skinloot">skinloot</label>
+              <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="'Link to skinning_loot_template.entry'"
+              ></i>
+              <input [formControlName]="'skinloot'" id="skinloot" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-xl-6">
+          <span class="category-title">Difficulty Entries</span>
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4">
+              <label class="control-label" for="difficulty_entry_1">difficulty_entry_1</label>
+              <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="'Entry of the equivalent creature in Heroic Dungeon or 25man Normal Raid'"
+              ></i>
+              <input [formControlName]="'difficulty_entry_1'" id="difficulty_entry_1" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4">
+              <label class="control-label" for="difficulty_entry_2">difficulty_entry_2</label>
+              <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="'Entry of the equivalent creature in 10man Heroic Raid'"
+              ></i>
+              <input [formControlName]="'difficulty_entry_2'" id="difficulty_entry_2" type="number" class="form-control form-control-sm">
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4">
+              <label class="control-label" for="difficulty_entry_3">difficulty_entry_3</label>
+              <i
+                class="fas fa-info-circle ml-1" [placement]="'auto'"
+                [tooltip]="'Entry of the equivalent creature in 25man Heroic Raid'"
+              ></i>
+              <input [formControlName]="'difficulty_entry_3'" id="difficulty_entry_3" type="number" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr>
+
+      <span class="category-title">Damage</span>
+      <div class="row">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="mindmg">mindmg</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Minimum melee damage (affected by DamageModifier)'"
+          ></i>
+          <input [formControlName]="'mindmg'" id="mindmg" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="maxdmg">maxdmg</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Maximum melee damage (affected by DamageModifier)'"
+          ></i>
+          <input [formControlName]="'maxdmg'" id="maxdmg" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="dmgschool">dmgschool</label>
+          <app-single-value-selector-btn
+            [control]="editorService.form.controls['dmgschool']"
+            [config]="{ options: DAMAGE_TYPE, name: 'dmgschool' }"
+            [modalClass]="'modal-md'"
+          ></app-single-value-selector-btn>
+          <input [formControlName]="'dmgschool'" id="dmgschool" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="attackpower">attackpower</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Melee attack power used for spells'"
+          ></i>
+          <input [formControlName]="'attackpower'" id="attackpower" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="BaseAttackTime">BaseAttackTime</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Base time (milliseconds) that determines how long a creature must wait between melee attacks.'"
+          ></i>
+          <input [formControlName]="'BaseAttackTime'" id="BaseAttackTime" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Base time (milliseconds) that determines how long a creature must wait between ranged attacks.'"
+          ></i>
+          <label class="control-label" for="RangeAttackTime">RangeAttackTime</label>
+          <input [formControlName]="'RangeAttackTime'" id="RangeAttackTime" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="minrangedmg">minrangedmg</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Minimum ranged damage (affected by DamageModifier)'"
+          ></i>
+          <input [formControlName]="'minrangedmg'" id="minrangedmg" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="maxrangedmg">maxrangedmg</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Maximum ranged damage (affected by DamageModifier)'"
+          ></i>
+          <input [formControlName]="'maxrangedmg'" id="maxrangedmg" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="rangedattackpower">rangedattackpower</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Ranged attack power used for spells'"
+          ></i>
+          <input [formControlName]="'rangedattackpower'" id="rangedattackpower" type="number" class="form-control form-control-sm">
+        </div>
+      </div>
+      <hr>
+
+      <span class="category-title">Behaviour</span>
+      <div class="row">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="AIName">AIName</label>
+          <app-single-value-selector-btn
+            [control]="editorService.form.controls['AIName']"
+            [config]="{ options: CREATURE_AI_NAME, name: 'AIName' }"
+            [modalClass]="'modal-lg'"
+          ></app-single-value-selector-btn>
+          <input [formControlName]="'AIName'" id="AIName" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="ScriptName">ScriptName</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Overrides AIName. The name of the C++ script that this creature uses, if any.'"
+          ></i>
+          <input [formControlName]="'ScriptName'" id="ScriptName" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="gossip_menu_id">gossip_menu_id</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Linked to gossip_menu.entry'"
+          ></i>
+          <input [formControlName]="'gossip_menu_id'" id="gossip_menu_id" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="MovementType">MovementType</label>
+          <app-single-value-selector-btn
+            [control]="editorService.form.controls['MovementType']"
+            [config]="{ options: MOVEMENT_TYPE, name: 'MovementType' }"
+            [modalClass]="'modal-md'"
+          ></app-single-value-selector-btn>
+          <input [formControlName]="'MovementType'" id="MovementType" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="movementId">movementId</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'It looks like this field is passed directly to the client and there is no info about it'"
+          ></i>
+          <input [formControlName]="'movementId'" id="movementId" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="InhabitType">InhabitType</label>
+          <app-flags-selector-btn
+            [control]="editorService.form.controls['InhabitType']"
+            [config]="{ flags: INHABIT_TYPE, name: 'InhabitType' }"
+          ></app-flags-selector-btn>
+          <input [formControlName]="'InhabitType'" id="InhabitType" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="HoverHeight">HoverHeight</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Distance above the ground that the creature will hover if it has MOVEMENTFLAG_DISABLE_GRAVITY enabled'"
+          ></i>
+          <input [formControlName]="'HoverHeight'" id="HoverHeight" type="number" class="form-control form-control-sm">
+        </div>
+      </div>
+      <hr>
+
+      <span class="category-title">Modifiers</span>
+      <div class="row">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="scale">scale</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Size multiplier (how big the creature model appears). If 0, it uses the DBC default model size.'"
+          ></i>
+          <input [formControlName]="'scale'" id="scale" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="DamageModifier">DamageModifier</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Damage multiplier, affects mindmg and maxdmg'"
+          ></i>
+          <input [formControlName]="'DamageModifier'" id="DamageModifier" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="HealthModifier">HealthModifier</label>
+          <input [formControlName]="'HealthModifier'" id="HealthModifier" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="ManaModifier">ManaModifier</label>
+          <input [formControlName]="'ManaModifier'" id="ManaModifier" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="ArmorModifier">ArmorModifier</label>
+          <input [formControlName]="'ArmorModifier'" id="ArmorModifier" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="speed_walk">speed_walk</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Controls how fast the creature can walk. For vehicles it increases the flying speed.'"
+          ></i>
+          <input [formControlName]="'speed_walk'" id="speed_walk" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" for="speed_run">speed_run</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Controls how fast the creature can run. For vehicles it increases ground movement speed.'"
+          ></i>
+          <input [formControlName]="'speed_run'" id="speed_run" type="number" class="form-control form-control-sm">
+        </div>
+      </div>
+      <hr>
+
+      <span class="category-title">Resistances</span>
+      <div class="row">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="resistance1">resistance1</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Holy resistance'"
+          ></i>
+          <input [formControlName]="'resistance1'" id="resistance1" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="resistance2">resistance2</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Fire resistance'"
+          ></i>
+          <input [formControlName]="'resistance2'" id="resistance2" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="resistance3">resistance3</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Nature resistance'"
+          ></i>
+          <input [formControlName]="'resistance3'" id="resistance3" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="resistance4">resistance4</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Frost resistance'"
+          ></i>
+          <input [formControlName]="'resistance4'" id="resistance4" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="resistance5">resistance5</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Shadow resistance'"
+          ></i>
+          <input [formControlName]="'resistance5'" id="resistance5" type="number" class="form-control form-control-sm">
+        </div>
+        <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="resistance6">resistance6</label>
+          <i
+            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            [tooltip]="'Arcane resistance'"
+          ></i>
+          <input [formControlName]="'resistance6'" id="resistance6" type="number" class="form-control form-control-sm">
+        </div>
+      </div>
+      <hr>
+
+      <span class="category-title">
+        Spells <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="SPELLS_TOOLTIP"></i>
+      </span>
+      <div class="row">
+
+        <div
+          *ngFor="let i of [1,2,3,4,5,6,7,8]"
+          class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
+        >
+          <label class="control-label" for="spell{{ i }}">spell{{ i }}</label>
+          <input [formControlName]="'spell' + i" id="spell{{ i }}" type="number" class="form-control form-control-sm">
+        </div>
+
+      </div>
+
+    </form>
+  </div>
+</div>
