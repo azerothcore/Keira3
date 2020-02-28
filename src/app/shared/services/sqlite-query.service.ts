@@ -38,4 +38,8 @@ export class SqliteQueryService {
   getDisplayIdIcon(displayId: string | number): Observable<string> {
     return this.queryValue(`SELECT icon AS v FROM display_icons WHERE displayId = ${displayId}`);
   }
+
+  getSpellNameById(id: string | number): Promise<string> {
+    return this.queryValue<string>(`SELECT spellName AS v FROM spells WHERE id = ${id}`).toPromise();
+  }
 }
