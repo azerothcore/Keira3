@@ -3,7 +3,7 @@ import { SAI_ACTIONS } from './sai-actions';
 
 export const SAI_EVENT_COMMENTS = [];
 SAI_EVENT_COMMENTS[SAI_EVENTS.SPELLHIT] = `On Spellhit '_spellNameEventParamOne_'`;
-SAI_EVENT_COMMENTS[SAI_EVENTS.HAS_AURA] = `On _hasAuraEventParamOne_ '_spellNameEventParamOne_'`;
+SAI_EVENT_COMMENTS[SAI_EVENTS.HAS_AURA] = `On Aura '_hasAuraEventParamOne_'`;
 SAI_EVENT_COMMENTS[SAI_EVENTS.TARGET_BUFFED] = `On Target Buffed With '_spellNameEventParamOne_'`;
 SAI_EVENT_COMMENTS[SAI_EVENTS.SPELLHIT_TARGET] = `On Target Spellhit '_spellNameEventParamOne_'`;
 SAI_EVENT_COMMENTS[SAI_EVENTS.FRIENDLY_MISSING_BUFF] = `On Friendly Unit Missing Buff '_spellNameEventParamOne_'`;

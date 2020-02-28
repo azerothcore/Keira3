@@ -11,6 +11,7 @@ import {
 } from './constants/sai-constants';
 import { SAI_TARGETS } from './constants/sai-targets';
 import { SaiCommentGeneratorService } from './sai-comment-generator.service';
+import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 
 describe('SaiCommentGeneratorService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
@@ -25,6 +26,7 @@ describe('SaiCommentGeneratorService', () => {
     const mockQuestTitleById = 'mockQuestTitleById';
     const mockItemNameById = 'mockItemNameById';
     const mockQuestTitleByCriteria = 'mockQuestTitleByCriteria';
+    const mockGetSpellNameById = 'mockGetSpellNameById';
 
     beforeEach(() => {
       const queryService = TestBed.inject(QueryService);
@@ -35,6 +37,9 @@ describe('SaiCommentGeneratorService', () => {
       spyOn(queryService, 'getQuestTitleById').and.callFake(i => of(mockQuestTitleById + i).toPromise());
       spyOn(queryService, 'getItemNameById').and.callFake(i => of(mockItemNameById + i).toPromise());
       spyOn(queryService, 'getQuestTitleByCriteria').and.callFake(i => of(mockQuestTitleByCriteria + i).toPromise());
+
+      const sqliteQueryService = TestBed.inject(SqliteQueryService);
+      spyOn(sqliteQueryService, 'getSpellNameById').and.callFake(i => of(mockGetSpellNameById + i).toPromise());
     });
 
     it('should correctly handle linked events', async () => {
@@ -1704,6 +1709,34 @@ describe('SaiCommentGeneratorService', () => {
           event_flags: EVENT_FLAGS.DEBUG_ONLY,
         },
         expected: `MockEntity - In Combat - Mount To Model 1 (Phase 2) (Debug)`,
+      },
+      {
+        name: `SAI_EVENTS.SPELLHIT, SAI_ACTIONS.CAST`,
+        input: {
+          event_type: SAI_EVENTS.SPELLHIT,
+          event_param1: 123,
+          action_type: SAI_ACTIONS.CAST,
+          action_param1: 456,
+        },
+        expected: `MockEntity - On Spellhit 'mockGetSpellNameById123' - Cast 'mockGetSpellNameById456'`,
+      },
+      {
+        name: `SAI_EVENTS.VICTIM_CASTING, SAI_ACTIONS.INTERRUPT_SPELL`,
+        input: {
+          event_type: SAI_EVENTS.VICTIM_CASTING,
+          event_param3: 123,
+          action_type: SAI_ACTIONS.INTERRUPT_SPELL,
+          action_param2: 456,
+        },
+        expected: `MockEntity - On Victim Casting 'mockGetSpellNameById123' - Interrupt Spell 'mockGetSpellNameById456'`,
+      },
+      {
+        name: `SAI_EVENTS.HAS_AURA`,
+        input: {
+          event_type: SAI_EVENTS.HAS_AURA,
+          event_param1: 123,
+        },
+        expected: `MockEntity - On Aura 'mockGetSpellNameById123' - No Action Type`,
       },
     ];
 
