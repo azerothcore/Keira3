@@ -9,6 +9,7 @@ import {
   DYNAMIC_FLAGS, EVENT_FLAGS, GO_FLAGS, NPC_FLAGS, phaseMask, templates, UNIT_FLAGS, unitBytes1Flags, unitFieldBytes1Type, unitStandFlags,
   unitStandStateType
 } from '@keira-shared/modules/sai-editor/constants/sai-constants';
+import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,7 @@ export class SaiCommentGeneratorService {
 
   constructor(
     private queryService: QueryService,
+    private sqliteQueryService: SqliteQueryService,
   ) {}
 
   private async getStringByTargetType(smartScript: SmartScripts): Promise<string> {
@@ -148,16 +150,15 @@ export class SaiCommentGeneratorService {
     if (eventLine.indexOf('_questNameEventParamOne_') > -1) {
       eventLine = eventLine.replace('_questNameEventParamOne_', await this.queryService.getQuestTitleById(smartScript.event_param1));
     }
-    // TODO: spells
-    // if (eventLine.indexOf('_spellNameEventParamOne_') > -1) {
-    //   eventLine = eventLine.replace('_spellNameEventParamOne_', this.queryService.getSpellNameById(smartScript.event_param1));
-    // }
-    // if (eventLine.indexOf('_targetCastingSpellName_') > -1) {
-    //   eventLine = eventLine.replace('_targetCastingSpellName_', this.queryService.getSpellNameById(smartScript.event_param3));
-    // }
-    // if (eventLine.indexOf('_hasAuraEventParamOne_') > -1) {
-    //   eventLine = eventLine.replace('_hasAuraEventParamOne_',   this.queryService.getSpellNameById(smartScript.event_param1));
-    // }
+    if (eventLine.indexOf('_spellNameEventParamOne_') > -1) {
+      eventLine = eventLine.replace('_spellNameEventParamOne_', await this.sqliteQueryService.getSpellNameById(smartScript.event_param1));
+    }
+    if (eventLine.indexOf('_targetCastingSpellName_') > -1) {
+      eventLine = eventLine.replace('_targetCastingSpellName_', await this.sqliteQueryService.getSpellNameById(smartScript.event_param3));
+    }
+    if (eventLine.indexOf('_hasAuraEventParamOne_') > -1) {
+      eventLine = eventLine.replace('_hasAuraEventParamOne_', await this.sqliteQueryService.getSpellNameById(smartScript.event_param1));
+    }
 
     return eventLine;
   }
@@ -189,13 +190,18 @@ export class SaiCommentGeneratorService {
         (smartScript.action_param1, smartScript.action_param1, smartScript.action_param1, smartScript.action_param1)
       );
     }
-    // TODO: spells
-    // if (actionLine.indexOf('_spellNameActionParamOne_') > -1) {
-    //   actionLine = actionLine.replace('_spellNameActionParamOne_', this.queryService.getSpellNameById(smartScript.action_param1));
-    // }
-    // if (actionLine.indexOf('_spellNameActionParamTwo_') > -1) {
-    //   actionLine = actionLine.replace('_spellNameActionParamTwo_', this.queryService.getSpellNameById(smartScript.action_param2));
-    // }
+    if (actionLine.indexOf('_spellNameActionParamOne_') > -1) {
+      actionLine = actionLine.replace(
+        '_spellNameActionParamOne_',
+        await this.sqliteQueryService.getSpellNameById(smartScript.action_param1),
+      );
+    }
+    if (actionLine.indexOf('_spellNameActionParamTwo_') > -1) {
+      actionLine = actionLine.replace(
+        '_spellNameActionParamTwo_',
+        await this.sqliteQueryService.getSpellNameById(smartScript.action_param2),
+      );
+    }
 
     if (actionLine.indexOf('_reactStateParamOne_') > -1) {
 
