@@ -36,7 +36,7 @@ export class AppComponent implements OnInit {
     /* istanbul ignore next */
     if (this.electronService.isElectron()) {
       this.sqliteQueryService.query<{ id: number, name: string}>(
-        'SELECT * FROM achievements WHERE id = 970'
+        'SELECT * FROM achievements WHERE id = 970', true
       ).subscribe((result) => {
         this.sqliteResult = result;
       });

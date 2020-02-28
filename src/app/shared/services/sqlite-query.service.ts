@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 import { SqliteService } from '@keira-shared/services/sqlite.service';
 import { ConfigService } from '@keira-shared/services/config.service';
-import { TableRow } from '@keira-types/general';
+import { MysqlResult, TableRow, ValueRow } from '@keira-types/general';
 
-/* istanbul ignore next */ // Note: will be tested in e2e
 @Injectable({
   providedIn: 'root'
 })
@@ -17,14 +16,26 @@ export class SqliteQueryService {
     private configService: ConfigService,
   ) { }
 
-  query<T extends TableRow>(queryString: string): Observable<T> {
+  /* istanbul ignore next */ // Note: will be tested in e2e
+  query<T extends TableRow>(queryString: string, silent = false): Observable<T> {
     return this.sqliteService.dbQuery<T>(queryString).pipe(
       tap(val => {
-        if (this.configService.debugMode) {
+        if (this.configService.debugMode && !silent) {
           console.log(`\n${queryString}`);
           console.log(val);
         }
       })
     );
+  }
+
+  // Input query format must be: SELECT something AS v FROM ...
+  queryValue<T extends string | number>(query: string): Observable<T | null> {
+    return this.query(query).pipe(
+      map((data) => data ? data.v as T : null),
+    );
+  }
+
+  getDisplayIdIcon(displayId: string | number): Observable<string> {
+    return this.queryValue(`SELECT icon AS v FROM display_icons WHERE displayId = ${displayId}`);
   }
 }
