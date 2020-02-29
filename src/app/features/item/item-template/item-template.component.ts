@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
 import { ItemTemplate } from '@keira-types/item-template.type';
@@ -24,13 +24,17 @@ import { DAMAGE_TYPE } from '@keira-constants/options/damage-type';
 import { SOCKET_BONUS } from '@keira-constants/options/socket-bonus';
 import { FACTIONS } from '@keira-constants/options/faction';
 import { STAT_TYPE } from '@keira-constants/options/stat-type';
+import { AOWOW_ITEM } from './aowow';
+import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { Observable, forkJoin } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-item-template',
   templateUrl: './item-template.component.html',
   styleUrls: ['./item-template.component.scss']
 })
-export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate> {
+export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate> implements OnInit {
 
   public readonly ITEM_CLASS = ITEM_CLASS;
   public readonly ITEM_SUBCLASS = ITEM_SUBCLASS;
@@ -58,78 +62,52 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   constructor(
     public editorService: ItemTemplateService,
     public handlerService: ItemHandlerService,
+    public sqliteQueryService: SqliteQueryService,
   ) {
     super(editorService, handlerService);
   }
 
-  public bottomTextPreview: string = '';
+  public readonly AOWOW_ITEM = AOWOW_ITEM;
+  public icon: Promise<string>;
+  public statsTop: string = '';
+  public statsBottom: string = '';
 
-  public readonly statType = [ // ITEM_MOD_*
-    'Mana',
-    'Health',
-    null,
-    'Agility',
-    'Strength',
-    'Intellect',
-    'Spirit',
-    'Stamina',
-    null, null, null, null,
-    'Increases defense rating by %d.',
-    'Increases your dodge rating by %d.',
-    'Increases your parry rating by %d.',
-    'Increases your shield block rating by %d.',
-    'Improves melee hit rating by %d.',
-    'Improves ranged hit rating by %d.',
-    'Improves spell hit rating by %d.',
-    'Improves melee critical strike rating by %d.',
-    'Improves ranged critical strike rating by %d.',
-    'Improves spell critical strike rating by %d.',
-    'Improves melee hit avoidance rating by %d.',
-    'Improves ranged hit avoidance rating by %d.',
-    'Improves spell hit avoidance rating by %d.',
-    'Improves melee critical avoidance rating by %d.',
-    'Improves ranged critical avoidance rating by %d.',
-    'Improves spell critical avoidance rating by %d.',
-    'Improves melee haste rating by %d.',
-    'Improves ranged haste rating by %d.',
-    'Improves spell haste rating by %d.',
-    'Improves hit rating by %d.',
-    'Improves critical strike rating by %d.',
-    'Improves hit avoidance rating by %d.',
-    'Improves critical avoidance rating by %d.',
-    'Increases your resilience rating by %d.',
-    'Increases your haste rating by %d.',
-    'Increases expertise rating by %d.',
-    'Increases attack power by %d.',
-    'Increases ranged attack power by %d.',
-    'Increases attack power by %d in Cat, Bear, Dire Bear, and Moonkin forms only.',
-    'Increases damage done by magical spells and effects by up to %d.',
-    'Increases healing done by magical spells and effects by up to %d.',
-    'Restores %d mana per 5 sec.',
-    'Increases your armor penetration rating by %d.',
-    'Increases spell power by %d.',
-    'Restores %d health per 5 sec.',
-    'Increases spell penetration by %d.',
-    'Increases the block value of your shield by %d.',
-    'Unknown Bonus #%d (%d)',
-  ];
+  private calculateStats() {
 
-  getStatType(type: number, val: number): string {
-    if (this.statType[type] == null || val === 0) {
-      return '';
+  this.subscriptions.push(
+    this.editorService.form.valueChanges.pipe(
+      distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
+    ).subscribe(() => {
+
+      this.statsTop = '';
+      this.statsBottom = '';
+
+      for (const i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) {
+        const stat = this.editorService.form.controls['stat_value' + i].value;
+        if (stat !== 0 && stat != null) {
+          this.getStatType(
+            this.editorService.form.controls['stat_type' + i].value,
+            this.editorService.form.controls['stat_value' + i].value
+          );
+        }
+      }
+    })
+  );
+
+  }
+
+  getStatType(type: number, val: number): void {
+
+    if (this.AOWOW_ITEM.statType[type] == null || val === 0) {
+      return;
     }
 
     if (type <= 7) {
       const stat = this.STAT_TYPE.find(st => st.value === type).name;
-      return '<span style="text-transform: capitalize;">' +
-             (val > 0 ? '+' + val : '-' + val) + ' ' + stat.toLowerCase().replace(/_/g, ' ') +
-             '</span>';
+      this.statsTop += '<span style="text-transform: capitalize;">' + (val > 0 ? '+' + val : '-' + val) + ' ' + stat.toLowerCase().replace(/_/g, ' ') + '</span><br>';
+    } else { //  (type > 7)
+      this.statsBottom += '<span style="color: #1eff00">' + this.AOWOW_ITEM.statType[type].replace(/%d/g, val.toString()) + '</span><br>';
     }
-
-    this.bottomTextPreview = (this.bottomTextPreview !== null ? this.bottomTextPreview : '') +
-                             '<span style="color: #1eff00">' + this.statType[type].replace(/%d/g, val.toString()) + '</span><br>';
-
-    return '';
   }
 
   getPrice(val: number) {
@@ -153,6 +131,17 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
 
   parsePrice(price: string, type: string): string {
     return price !== '00' ? price + type : '';
+  }
+
+  ngOnInit() {
+    super.ngOnInit();
+    this.editorService.form.get('displayid').valueChanges.subscribe((x) => {
+      this.icon = this.sqliteQueryService.getDisplayIdIcon(x);
+    });
+
+    this.calculateStats();
+
+
   }
 
 }

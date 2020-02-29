@@ -7,19 +7,42 @@
 .q6  { color: #e5cc80 !important; }
 .q7  { color: #0cf    !important; }
 
+.icon {
+  width: 100px;
+  height: 100px;
+  position: relative;
+}
+
+.icon img {
+  width: 90px;
+  height: 90px;
+  margin-top: 3px;
+}
+
 .item-description { color: #ffd100 !important }
 
 .item-preview {
-  text-align: left;
-  font-family: Verdana, "Open Sans", Arial, "Helvetica Neue", Helvetica, sans-serif;
-  font-size: 12px;
+  text-align: center;
+  margin: auto;
+  position: fixed;
+}
 
-  line-height: 17px;
-  width: 300px;
-  padding: 10px;
-
-  color: #ccc;
+.item-stats, .icon {
+  margin: auto;
   background-color: #080d22;
   border: 2px solid #6b6d78;
   border-radius: 3px;
+}
+
+.item-stats {
+  text-align: left;
+  font-family: Verdana, "Open Sans", Arial, "Helvetica Neue", Helvetica, sans-serif;
+  font-size: 18px;
+
+  line-height: 20px;
+  min-width: 300px;
+  width: auto;
+  padding: 10px;
+
+  color: #ccc;
 }
