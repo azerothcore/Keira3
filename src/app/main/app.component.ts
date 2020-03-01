@@ -38,7 +38,7 @@ export class AppComponent implements OnInit {
       this.sqliteQueryService.query<{ id: number, name: string}>(
         'SELECT * FROM achievements WHERE id = 970', true
       ).subscribe((result) => {
-        this.sqliteResult = result;
+        this.sqliteResult = result ? result[0] : null;
       });
     }
   }

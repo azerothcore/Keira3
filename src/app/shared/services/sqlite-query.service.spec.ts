@@ -14,7 +14,7 @@ describe('SqliteQueryService', () => {
   describe('queryValue()', () => {
     it('should correctly work', async () => {
       const value = 'mock result value';
-      spyOn(service, 'query').and.returnValue(of({ v: value }));
+      spyOn(service, 'query').and.returnValue(of([{ v: value }]));
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
 
       expect(await service.queryValue(query)).toEqual(value);
