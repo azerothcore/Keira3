@@ -56,6 +56,12 @@ Please follow [Angular-cli documentation](https://github.com/angular/angular-cli
 npm install -g @angular/cli
 ```
 
+Only for **Windows**, install windows-build-tools as administrator:
+```
+npm install --global-production windows-build-tools
+```
+This installation will take time and probably your PC will **reboot** during the installation.
+
 ### Build
 
 
