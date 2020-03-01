@@ -2,26 +2,28 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { Squel, Delete, Insert, Update } from 'squel';
-import { escape } from 'sqlstring';
 
 import { MysqlService } from './mysql.service';
-import { MaxRow, MysqlResult, QueryForm, TableRow, ValueRow } from '../types/general';
+import { MaxRow, MysqlResult, TableRow, ValueRow } from '../types/general';
 import { squelConfig } from '../../config/squel.config';
 import { ConfigService } from './config.service';
+import { QueryService } from '@keira-shared/services/query.service';
 
 declare const squel: Squel & {flavour: null};
 
 @Injectable({
   providedIn: 'root'
 })
-export class MysqlQueryService {
+export class MysqlQueryService extends QueryService {
 
   private readonly QUERY_NO_CHANGES = '-- There are no changes';
 
   constructor(
     private mysqlService: MysqlService,
     private configService: ConfigService,
-  ) { }
+  ) {
+    super();
+  }
 
   query<T extends TableRow>(queryString: string, values?: string[]): Observable<MysqlResult<T>> {
     return this.mysqlService.dbQuery<T>(queryString, values).pipe(
@@ -32,36 +34,6 @@ export class MysqlQueryService {
         }
       })
     );
-  }
-
-  getSearchQuery(table: string, queryForm: QueryForm, selectFields: string[] = null, groupFields: string[] = null): string {
-    const query = squel.select(squelConfig).from(table);
-
-    if (selectFields) {
-      query.fields(selectFields);
-    }
-
-    const filters = queryForm.fields;
-
-    for (const filter in filters) {
-      if (filters.hasOwnProperty(filter) && filters[filter] !== undefined && filters[filter] !== null) {
-        const value = escape(`%${filters[filter]}%`);
-
-        query.where(`\`${filter}\` LIKE ${value}`);
-      }
-    }
-
-    if (groupFields) {
-      for (const groupField of groupFields) {
-        query.group(groupField);
-      }
-    }
-
-    if (queryForm.limit) {
-      query.limit(Number.parseInt(queryForm.limit, 10));
-    }
-
-    return query.toString();
   }
 
   selectAll<T extends TableRow>(

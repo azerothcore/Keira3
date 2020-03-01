@@ -4,20 +4,23 @@ import { map, tap } from 'rxjs/operators';
 
 import { SqliteService } from '@keira-shared/services/sqlite.service';
 import { ConfigService } from '@keira-shared/services/config.service';
-import { MysqlResult, TableRow, ValueRow } from '@keira-types/general';
+import { TableRow } from '@keira-types/general';
+import { QueryService } from '@keira-shared/services/query.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SqliteQueryService {
+export class SqliteQueryService extends QueryService {
 
   constructor(
     private sqliteService: SqliteService,
     private configService: ConfigService,
-  ) { }
+  ) {
+    super();
+  }
 
   /* istanbul ignore next */ // Note: will be tested in e2e
-  query<T extends TableRow>(queryString: string, silent = false): Observable<T> {
+  query<T extends TableRow>(queryString: string, silent = false): Observable<T[]> {
     return this.sqliteService.dbQuery<T>(queryString).pipe(
       tap(val => {
         if (this.configService.debugMode && !silent) {
@@ -31,7 +34,7 @@ export class SqliteQueryService {
   // Input query format must be: SELECT something AS v FROM ...
   queryValue<T extends string | number>(query: string): Promise<T | null> {
     return this.query(query).pipe(
-      map((data) => data ? data.v as T : null),
+      map((data) => data && data[0] ? data[0].v as T : null),
     ).toPromise();
   }
 
