@@ -4,7 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 
 import { Class, MysqlResult, TableRow } from '@keira-types/general';
 import { HandlerService } from '../handlers/handler.service';
-import { QueryService } from '../../../services/query.service';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { MultiRowEditorService } from './multi-row-editor.service';
 
 export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extends MultiRowEditorService<T> {
@@ -20,7 +20,7 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
     _entityIdField: string[],
     protected _entitySecondIdField: string,
     protected handlerService: HandlerService<T>,
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(

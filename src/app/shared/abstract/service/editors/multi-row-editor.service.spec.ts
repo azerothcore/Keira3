@@ -5,8 +5,8 @@ import { ToastrService } from 'ngx-toastr';
 import Spy = jasmine.Spy;
 
 
-import { QueryService } from '../../../services/query.service';
-import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { MultiRowEditorService } from './multi-row-editor.service';
 import { MOCK_ID, MOCK_ID_2, MOCK_NAME, MockEntity, MockMultiRowEditorService } from '@keira-testing/mock-services';
 import { MysqlResult } from '@keira-types/general';
@@ -29,7 +29,7 @@ describe('MultiRowEditorService', () => {
       RouterTestingModule,
     ],
     providers: [
-      { provide: QueryService, useValue: instance(MockedQueryService) },
+      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
       { provide: ToastrService, useValue: instance(MockedToastrService) },
 
     ],
@@ -85,7 +85,7 @@ describe('MultiRowEditorService', () => {
 
   it('updateDiffQuery() should correctly work', () => {
     service['_diffQuery'] = '';
-    const getQuerySpy = spyOn(TestBed.inject(QueryService), 'getDiffDeleteInsertTwoKeysQuery').and.returnValue(queryResult);
+    const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getDiffDeleteInsertTwoKeysQuery').and.returnValue(queryResult);
 
     service['updateDiffQuery']();
 
@@ -102,7 +102,7 @@ describe('MultiRowEditorService', () => {
 
   it('updateFullQuery() should correctly work', () => {
     service['_fullQuery'] = '';
-    const getQuerySpy = spyOn(TestBed.inject(QueryService), 'getFullDeleteInsertQuery').and.returnValue(queryResult);
+    const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertQuery').and.returnValue(queryResult);
 
     service['updateFullQuery']();
 

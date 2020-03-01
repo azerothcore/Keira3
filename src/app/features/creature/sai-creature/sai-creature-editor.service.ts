@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
 import { SaiEditorService } from '@keira-shared/modules/sai-editor/sai-editor.service';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { SaiCommentGeneratorService } from '@keira-shared/modules/sai-editor/sai-comment-generator.service';
 
@@ -10,7 +10,7 @@ import { SaiCommentGeneratorService } from '@keira-shared/modules/sai-editor/sai
 export class SaiCreatureEditorService extends SaiEditorService {
   constructor(
     protected handlerService: SaiCreatureHandlerService,
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     protected toastrService: ToastrService,
     protected saiCommentGeneratorService: SaiCommentGeneratorService,
   ) {

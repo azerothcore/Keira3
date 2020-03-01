@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../shared/services/mysql-query.service';
 import { VersionDbRow, VersionRow } from '@keira-types/general';
 import { version } from '../../../../package.json';
 import { AC_FORUM_URL, PAYPAL_DONATE_URL, KEIRA3_REPO_URL, AC_DISCORD_URL } from '@keira-constants/general';
@@ -23,7 +23,7 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
   public readonly KEIRA3_REPO_URL = KEIRA3_REPO_URL;
 
   constructor(
-    private queryService: QueryService,
+    private queryService: MysqlQueryService,
     public configService: ConfigService,
   ) {
     super();

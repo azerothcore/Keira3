@@ -4,8 +4,8 @@ import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
 import { ItemSearchService } from './item-search.service';
-import { QueryService } from '../../services/query.service';
-import { MockedQueryService } from '../../testing/mocks';
+import { MysqlQueryService } from '../../services/mysql-query.service';
+import { MockedMysqlQueryService } from '../../testing/mocks';
 import { SearchService } from './search.service';
 import { ItemTemplate } from '../../types/item-template.type';
 
@@ -16,7 +16,7 @@ describe('SearchService', () => {
 
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
-      { provide: QueryService, useValue: instance(MockedQueryService) },
+      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
     ]
   }));
 
@@ -28,7 +28,7 @@ describe('SearchService', () => {
     let spy: Spy;
 
     beforeEach(() => {
-      spy = spyOn(TestBed.inject(QueryService), 'getSearchQuery').and.returnValue(newQuery);
+      spy = spyOn(TestBed.inject(MysqlQueryService), 'getSearchQuery').and.returnValue(newQuery);
       service.query = null;
     });
 
@@ -51,7 +51,7 @@ describe('SearchService', () => {
 
   it('onSearch() should execute the query and update the rows with the result', () => {
     const newRows = [ { entry: 1 }, { entry: 2 } ] as ItemTemplate[];
-    const spy = spyOn(TestBed.inject(QueryService), 'query').and.returnValue(of({ results: newRows} ));
+    const spy = spyOn(TestBed.inject(MysqlQueryService), 'query').and.returnValue(of({ results: newRows} ));
     service.rows = null;
     service.query = newQuery;
 

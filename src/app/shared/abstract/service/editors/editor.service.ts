@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { MysqlError } from 'mysql';
 
 import { Class, MysqlResult, TableRow } from '@keira-types/general';
-import { QueryService } from '../../../services/query.service';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { HandlerService } from '../handlers/handler.service';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
 import { ToastrService } from 'ngx-toastr';
@@ -32,7 +32,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     protected _entityTable: string,
     protected _entityIdField: string,
     protected handlerService: HandlerService<T>,
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super();

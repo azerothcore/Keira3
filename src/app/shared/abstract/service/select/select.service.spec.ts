@@ -3,8 +3,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { instance } from 'ts-mockito';
 
 import { SelectCreatureService } from '../../../../features/creature/select-creature/select-creature.service';
-import { QueryService } from '../../../services/query.service';
-import { MockedQueryService } from '@keira-testing/mocks';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { SelectService } from './select.service';
 import { CreatureHandlerService } from '../../../../features/creature/creature-handler.service';
 import { SaiCreatureHandlerService } from '../../../../features/creature/sai-creature-handler.service';
@@ -16,7 +16,7 @@ describe('SelectService', () => {
       RouterTestingModule,
     ],
     providers: [
-      { provide: QueryService, useValue: instance(MockedQueryService) },
+      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
       SelectCreatureService,
       CreatureHandlerService,
       SaiCreatureHandlerService,

@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { DisenchantLootTemplateComponent } from './disenchant-loot-template.component';
 import { DisenchantLootTemplateModule } from './disenchant-loot-template.module';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
 import { DisenchantLootTemplate } from '@keira-types/disenchant-loot-template.type';
 import { ItemHandlerService } from '../item-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -16,7 +16,7 @@ class DisenchantLootTemplatePage extends MultiRowEditorPageObject<DisenchantLoot
 describe('DisenchantLootTemplate integration tests', () => {
   let component: DisenchantLootTemplateComponent;
   let fixture: ComponentFixture<DisenchantLootTemplateComponent>;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let handlerService: ItemHandlerService;
   let page: DisenchantLootTemplatePage;
@@ -53,7 +53,7 @@ describe('DisenchantLootTemplate integration tests', () => {
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(

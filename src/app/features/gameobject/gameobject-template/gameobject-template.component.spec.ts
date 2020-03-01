@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
 import { GameobjectTemplateComponent } from './gameobject-template.component';
 import { GameobjectTemplateModule } from './gameobject-template.module';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -14,7 +14,7 @@ import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 describe('GameobjectComponent', () => {
   let component: GameobjectTemplateComponent;
   let fixture: ComponentFixture<GameobjectTemplateComponent>;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let gameobjectTemplateService: GameobjectTemplateService;
   let getFieldSpy: Spy;
@@ -35,7 +35,7 @@ describe('GameobjectComponent', () => {
   }));
 
   beforeEach(() => {
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     fixture = TestBed.createComponent(GameobjectTemplateComponent);

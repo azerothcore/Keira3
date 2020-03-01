@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
 import { SelectCreatureComponent } from './select-creature.component';
 import { SelectCreatureService } from './select-creature.service';
 import { SelectCreatureModule } from './select-creature.module';
@@ -23,7 +23,7 @@ describe('SelectCreature integration tests', () => {
   let fixture: ComponentFixture<SelectCreatureComponent>;
   let selectService: SelectCreatureService;
   let page: SelectCreatureComponentPage;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let navigateSpy: Spy;
 
@@ -45,7 +45,7 @@ describe('SelectCreature integration tests', () => {
 
   beforeEach(() => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of(
       { results: [{ max: 1 }] }
     ));

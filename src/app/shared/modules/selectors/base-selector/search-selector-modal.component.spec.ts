@@ -3,8 +3,8 @@ import { BsModalRef } from 'ngx-bootstrap';
 import { instance } from 'ts-mockito';
 
 import { ItemSelectorModalComponent } from '../item-selector/item-selector-modal.component';
-import { QueryService } from '../../../services/query.service';
-import { MockedQueryService } from '@keira-testing/mocks';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { SearchService } from '../../search/search.service';
 import { ItemTemplate } from '@keira-types/item-template.type';
 import { ItemSearchService } from '../../search/item-search.service';
@@ -23,7 +23,7 @@ describe('SearchSelectorModalComponent', () => {
       ],
       providers: [
         BsModalRef,
-        { provide: QueryService, useValue: instance(MockedQueryService) },
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
       ],
     })
       .compileComponents();

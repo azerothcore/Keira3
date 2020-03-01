@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
 import { QuestHandlerService } from '../quest-handler.service';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
 import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
 import {
   QUEST_OFFER_REWARD_ID,
@@ -16,7 +16,7 @@ export class QuestOfferRewardService extends SingleRowEditorService<QuestOfferRe
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: QuestHandlerService,
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 
 import { ComplexKeyHandlerService } from '../../abstract/service/handlers/complex-key.handler.service';
 import { SAI_ID_FIELDS, SAI_TYPES, SmartScripts } from '../../types/smart-scripts.type';
-import { QueryService } from '../../services/query.service';
+import { MysqlQueryService } from '../../services/mysql-query.service';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
@@ -20,7 +20,7 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected router: Router,
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
   ) {
     super(
       'smart-ai/editors',

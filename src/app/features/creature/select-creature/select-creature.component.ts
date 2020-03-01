@@ -9,7 +9,7 @@ import {
 } from '@keira-types/creature-template.type';
 import { SelectCreatureService } from './select-creature.service';
 import { CreatureHandlerService } from '../creature-handler.service';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
 
 @Component({
   selector: 'app-select-creature',
@@ -21,7 +21,7 @@ export class SelectCreatureComponent extends SelectComponent<CreatureTemplate> {
   constructor(
     public selectService: SelectCreatureService,
     public handlerService: CreatureHandlerService,
-    public queryService: QueryService,
+    public queryService: MysqlQueryService,
   ) {
     super(
       CREATURE_TEMPLATE_TABLE,

@@ -2,7 +2,7 @@ import { distinctUntilChanged } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 
 import { Class, MysqlResult, TableRow } from '@keira-types/general';
-import { QueryService } from '../../../services/query.service';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { EditorService } from './editor.service';
 import { HandlerService } from '../handlers/handler.service';
 import { getNumberOrString } from '../../../utils/helpers';
@@ -18,7 +18,7 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     protected _entityNameField: string,
     protected isMainEntity: boolean,
     protected handlerService: HandlerService<T>,
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(

@@ -7,14 +7,14 @@ import {
   GOSSIP_MENU_TABLE,
   GossipMenu
 } from '@keira-types/gossip-menu.type';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
 import { GossipHandlerService } from '../gossip-handler.service';
 
 @Injectable()
 export class SelectGossipService extends SelectService<GossipMenu> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     public handlerService: GossipHandlerService,
   ) {
     super(

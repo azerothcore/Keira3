@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { PickpocketingLootTemplateComponent } from './pickpocketing-loot-template.component';
 import { PickpocketingLootTemplateModule } from './pickpocketing-loot-template.module';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
 import { PickpocketingLootTemplate } from '@keira-types/pickpocketing-loot-template.type';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -17,7 +17,7 @@ class PickpocketingLootTemplatePage extends MultiRowEditorPageObject<Pickpocketi
 describe('PickpocketingLootTemplate integration tests', () => {
   let component: PickpocketingLootTemplateComponent;
   let fixture: ComponentFixture<PickpocketingLootTemplateComponent>;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let handlerService: CreatureHandlerService;
   let page: PickpocketingLootTemplatePage;
@@ -55,7 +55,7 @@ describe('PickpocketingLootTemplate integration tests', () => {
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(

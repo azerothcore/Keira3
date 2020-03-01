@@ -6,8 +6,8 @@ import Spy = jasmine.Spy;
 
 import { TooltipModule } from 'ngx-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
-import { QueryService } from '@keira-shared/services/query.service';
-import { MockedQueryService } from '@keira-testing/mocks';
+import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { GameobjectLootTemplateComponent } from './gameobject-loot-template.component';
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
 import { GameobjectLootTemplateModule } from './gameobject-loot-template.module';
@@ -34,7 +34,7 @@ describe('GameobjectTemplateComponent', () => {
         ToastrModule.forRoot(),
       ],
       providers: [
-        { provide : QueryService, useValue: instance(MockedQueryService) },
+        { provide : MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
         GameobjectHandlerService,
         SaiGameobjectHandlerService,
       ]
@@ -43,7 +43,7 @@ describe('GameobjectTemplateComponent', () => {
   }));
 
   beforeEach(() => {
-    when(MockedQueryService.query(anything(), anything())).thenReturn(of());
+    when(MockedMysqlQueryService.query(anything(), anything())).thenReturn(of());
     editorService = TestBed.inject(GameobjectLootTemplateService);
     reloadSpy = spyOn(editorService, 'reload');
 

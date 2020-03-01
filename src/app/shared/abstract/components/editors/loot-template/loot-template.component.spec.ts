@@ -4,7 +4,7 @@ import { anything, instance, when } from 'ts-mockito';
 import { of, throwError } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { MockedQueryService } from '@keira-testing/mocks';
+import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { LootTemplateComponent } from './loot-template.component';
 import { CreatureLootTemplate } from '@keira-types/creature-loot-template.type';
 import { CreatureLootTemplateComponent } from '../../../../../features/creature/creature-loot-template/creature-loot-template.component';
@@ -13,7 +13,7 @@ import { LootEditorService } from '../../../service/editors/loot-editor.service'
 import { CreatureLootTemplateModule } from '../../../../../features/creature/creature-loot-template/creature-loot-template.module';
 import { TooltipModule } from 'ngx-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
-import { QueryService } from '../../../../services/query.service';
+import { MysqlQueryService } from '../../../../services/mysql-query.service';
 import { CreatureHandlerService } from '../../../../../features/creature/creature-handler.service';
 import { SaiCreatureHandlerService } from '../../../../../features/creature/sai-creature-handler.service';
 
@@ -35,7 +35,7 @@ describe('LootTemplateComponent', () => {
         ToastrModule.forRoot(),
       ],
       providers: [
-        { provide : QueryService, useValue: instance(MockedQueryService) },
+        { provide : MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
         CreatureHandlerService,
         SaiCreatureHandlerService,
       ]
@@ -44,7 +44,7 @@ describe('LootTemplateComponent', () => {
   }));
 
   beforeEach(() => {
-    when(MockedQueryService.query(anything(), anything())).thenReturn(of());
+    when(MockedMysqlQueryService.query(anything(), anything())).thenReturn(of());
     editorService = TestBed.inject(CreatureLootTemplateService);
     reloadSpy = spyOn(editorService, 'reload');
     getLootIdSpy = spyOn(editorService, 'getLootId');
