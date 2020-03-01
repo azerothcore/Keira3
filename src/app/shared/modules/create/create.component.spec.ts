@@ -5,7 +5,7 @@ import { anything, instance, mock, reset, when } from 'ts-mockito';
 import { of, throwError } from 'rxjs';
 
 import { CreateComponent } from './create.component';
-import { MockedQueryService, MockType } from '../../testing/mocks';
+import { MockedMysqlQueryService, MockType } from '../../testing/mocks';
 import { PageObject } from '../../testing/page-object';
 import Spy = jasmine.Spy;
 import { CreatureHandlerService } from '../../../features/creature/creature-handler.service';
@@ -43,16 +43,16 @@ describe('CreateComponent', () => {
   }));
 
   beforeEach(() => {
-    when(MockedQueryService.getMaxId(mockTable, mockId)).thenReturn(of({ results: [{ max: maxId }]}));
-    when(MockedQueryService.selectAll(mockTable, mockId, anything())).thenReturn(of({ results: []}));
-    when(MockedQueryService.selectAll(mockTable, mockId, takenId)).thenReturn(of({ results: [{}]}));
+    when(MockedMysqlQueryService.getMaxId(mockTable, mockId)).thenReturn(of({ results: [{ max: maxId }]}));
+    when(MockedMysqlQueryService.selectAll(mockTable, mockId, anything())).thenReturn(of({ results: []}));
+    when(MockedMysqlQueryService.selectAll(mockTable, mockId, takenId)).thenReturn(of({ results: [{}]}));
 
     fixture = TestBed.createComponent(CreateComponent);
     component = fixture.componentInstance;
     component.entityTable = mockTable;
     component.entityIdField = mockId;
     component.handlerService = instance(mock(CreatureHandlerService));
-    component.queryService = instance(MockedQueryService);
+    component.queryService = instance(MockedMysqlQueryService);
     page = new CreateComponentPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
@@ -76,9 +76,9 @@ describe('CreateComponent', () => {
   });
 
   it('should correctly show console errors if any', () => {
-    reset(MockedQueryService);
-    when(MockedQueryService.getMaxId(mockTable, mockId)).thenReturn(throwError('error'));
-    when(MockedQueryService.selectAll(mockTable, mockId, anything())).thenReturn(throwError('error'));
+    reset(MockedMysqlQueryService);
+    when(MockedMysqlQueryService.getMaxId(mockTable, mockId)).thenReturn(throwError('error'));
+    when(MockedMysqlQueryService.selectAll(mockTable, mockId, anything())).thenReturn(throwError('error'));
 
     component.checkId();
     component['getNextId']();
@@ -113,6 +113,6 @@ describe('CreateComponent', () => {
   });
 
   afterEach(() => {
-    reset(MockedQueryService);
+    reset(MockedMysqlQueryService);
   });
 });

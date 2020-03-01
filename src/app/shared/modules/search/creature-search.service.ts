@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { SearchService } from './search.service';
-import { QueryService } from '../../services/query.service';
+import { MysqlQueryService } from '../../services/mysql-query.service';
 import {
   CREATURE_TEMPLATE_SEARCH_FIELDS,
   CREATURE_TEMPLATE_TABLE,
@@ -15,7 +15,7 @@ export class CreatureSearchService extends SearchService<CreatureTemplate> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
   ) {
     super(queryService, CREATURE_TEMPLATE_TABLE, CREATURE_TEMPLATE_SEARCH_FIELDS);
   }

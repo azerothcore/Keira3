@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { GameobjectTemplateAddonComponent } from './gameobject-template-addon.component';
 import { GameobjectTemplateAddonModule } from './gameobject-template-addon.module';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { GameobjectTemplateAddon } from '@keira-types/gameobject-template-addon.type';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
@@ -16,7 +16,7 @@ class GameobjectTemplateAddonPage extends EditorPageObject<GameobjectTemplateAdd
 describe('GameobjectTemplateAddon integration tests', () => {
   let component: GameobjectTemplateAddonComponent;
   let fixture: ComponentFixture<GameobjectTemplateAddonComponent>;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let handlerService: GameobjectHandlerService;
   let page: GameobjectTemplateAddonPage;
@@ -48,7 +48,7 @@ describe('GameobjectTemplateAddon integration tests', () => {
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(

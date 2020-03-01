@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { ProspectingLootTemplateComponent } from './prospecting-loot-template.component';
 import { ProspectingLootTemplateModule } from './prospecting-loot-template.module';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
 import { ProspectingLootTemplate } from '@keira-types/prospecting-loot-template.type';
 import { ItemHandlerService } from '../item-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -15,7 +15,7 @@ class ProspectingLootTemplatePage extends MultiRowEditorPageObject<ProspectingLo
 describe('ProspectingLootTemplate integration tests', () => {
   let component: ProspectingLootTemplateComponent;
   let fixture: ComponentFixture<ProspectingLootTemplateComponent>;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let handlerService: ItemHandlerService;
   let page: ProspectingLootTemplatePage;
@@ -48,7 +48,7 @@ describe('ProspectingLootTemplate integration tests', () => {
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(

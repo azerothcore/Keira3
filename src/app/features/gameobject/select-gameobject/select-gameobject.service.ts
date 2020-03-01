@@ -7,14 +7,14 @@ import {
   GAMEOBJECT_TEMPLATE_TABLE,
   GameobjectTemplate
 } from '@keira-types/gameobject-template.type';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 
 @Injectable()
 export class SelectGameobjectService extends SelectService<GameobjectTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     public handlerService: GameobjectHandlerService,
   ) {
     super(

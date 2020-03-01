@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { ItemEnchantmentTemplateComponent } from './item-enchantment-template.component';
 import { ItemEnchantmentTemplateModule } from './item-enchantment-template.module';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
 import { ItemEnchantmentTemplate } from '@keira-types/item-enchantment-template.type';
 import { ItemHandlerService } from '../item-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -15,7 +15,7 @@ class ItemEnchantmentTemplatePage extends MultiRowEditorPageObject<ItemEnchantme
 describe('ItemEnchantmentTemplate integration tests', () => {
   let component: ItemEnchantmentTemplateComponent;
   let fixture: ComponentFixture<ItemEnchantmentTemplateComponent>;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let handlerService: ItemHandlerService;
   let page: ItemEnchantmentTemplatePage;
@@ -48,7 +48,7 @@ describe('ItemEnchantmentTemplate integration tests', () => {
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(

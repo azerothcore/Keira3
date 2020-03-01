@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { CreatureQuestitemComponent } from './creature-questitem.component';
 import { CreatureQuestitemModule } from './creature-questitem.module';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
 import { CreatureQuestitem } from '@keira-types/creature-questitem.type';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -16,7 +16,7 @@ class CreatureQuestitemPage extends MultiRowEditorPageObject<CreatureQuestitemCo
 describe('CreatureQuestitem integration tests', () => {
   let component: CreatureQuestitemComponent;
   let fixture: ComponentFixture<CreatureQuestitemComponent>;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let handlerService: CreatureHandlerService;
   let page: CreatureQuestitemPage;
@@ -50,7 +50,7 @@ describe('CreatureQuestitem integration tests', () => {
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(

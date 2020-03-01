@@ -4,15 +4,15 @@ import { instance } from 'ts-mockito';
 import { ToastrService } from 'ngx-toastr';
 
 import { SaiEditorService } from './sai-editor.service';
-import { QueryService } from '@keira-shared/services/query.service';
-import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { MysqlQueryService } from '../../services/mysql-query.service';
+import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
 import { SmartScripts } from '@keira-types/smart-scripts.type';
 
 describe('SAI Editor Service', () => {
   let service: SaiEditorService;
   let handlerService: SaiHandlerService;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
 
   const mockQuery = '-- Mock Query result';
 
@@ -21,7 +21,7 @@ describe('SAI Editor Service', () => {
       RouterTestingModule,
     ],
     providers: [
-      { provide: QueryService, useValue: instance(MockedQueryService) },
+      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
       { provide: ToastrService, useValue: instance(MockedToastrService) },
     ],
   }));
@@ -29,7 +29,7 @@ describe('SAI Editor Service', () => {
   beforeEach(() => {
     service = TestBed.inject(SaiEditorService);
     handlerService = TestBed.inject(SaiHandlerService);
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
   });
 
 

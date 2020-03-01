@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { SAI_TYPES, SmartScripts } from '@keira-types/smart-scripts.type';
 import { SAI_EVENTS } from '@keira-shared/modules/sai-editor/constants/sai-event';
 import { SAI_ACTION_COMMENTS, SAI_EVENT_COMMENTS } from '@keira-shared/modules/sai-editor/constants/sai-comments';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../services/mysql-query.service';
 import { SAI_TARGETS } from '@keira-shared/modules/sai-editor/constants/sai-targets';
 import {
   DYNAMIC_FLAGS, EVENT_FLAGS, GO_FLAGS, NPC_FLAGS, phaseMask, templates, UNIT_FLAGS, unitBytes1Flags, unitFieldBytes1Type, unitStandFlags,
@@ -17,7 +17,7 @@ import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service'
 export class SaiCommentGeneratorService {
 
   constructor(
-    private queryService: QueryService,
+    private queryService: MysqlQueryService,
     private sqliteQueryService: SqliteQueryService,
   ) {}
 

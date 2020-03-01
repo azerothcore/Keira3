@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MysqlError } from 'mysql';
 
 import { TableRow } from '../../types/general';
-import { QueryService } from '../../services/query.service';
+import { MysqlQueryService } from '../../services/mysql-query.service';
 import { HandlerService } from '../../abstract/service/handlers/handler.service';
 import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
 
@@ -16,7 +16,7 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
   @Input() entityIdField: string;
   @Input() customStartingId: number;
   @Input() handlerService: HandlerService<T>;
-  @Input() queryService: QueryService;
+  @Input() queryService: MysqlQueryService;
 
   public idModel: number;
   private _loading = false;

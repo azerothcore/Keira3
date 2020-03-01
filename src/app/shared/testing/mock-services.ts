@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 
 import { SingleRowEditorService } from '../abstract/service/editors/single-row-editor.service';
 import { HandlerService } from '../abstract/service/handlers/handler.service';
-import { QueryService } from '../services/query.service';
+import { MysqlQueryService } from '../services/mysql-query.service';
 import { TableRow } from '../types/general';
 import { MultiRowEditorService } from '../abstract/service/editors/multi-row-editor.service';
 import { SingleRowComplexKeyEditorService } from '../abstract/service/editors/single-row-complex-key-editor.service';
@@ -42,7 +42,7 @@ export class MockSingleRowEditorService extends SingleRowEditorService<MockEntit
 
   constructor(
     protected handlerService: MockHandlerService,
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -65,7 +65,7 @@ export class MockSingleRowComplexKeyEditorService extends SingleRowComplexKeyEdi
 
   constructor(
     protected handlerService: MockHandlerService,
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -88,7 +88,7 @@ export class MockMultiRowEditorService extends MultiRowEditorService<MockEntity>
 
   constructor(
     protected handlerService: MockHandlerService,
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -110,7 +110,7 @@ export class MockMultiRowComplexKeyEditorService extends MultiRowComplexKeyEdito
 
   constructor(
     protected handlerService: MockHandlerService,
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
