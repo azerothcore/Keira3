@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
 import { CreatureHandlerService } from '../creature-handler.service';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
 import {
   PICKPOCKETING_LOOT_TEMPLATE_TABLE,
   PickpocketingLootTemplate
@@ -20,7 +20,7 @@ export class PickpocketingLootTemplateService extends LootEditorService<Pickpock
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: CreatureHandlerService,
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(

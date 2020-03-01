@@ -7,8 +7,8 @@ import { MysqlError } from 'mysql';
 import Spy = jasmine.Spy;
 
 
-import { QueryService } from '../../../services/query.service';
-import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { MockSingleRowEditorService, MockEntity } from '@keira-testing/mock-services';
 import { EditorService } from './editor.service';
 
@@ -22,7 +22,7 @@ describe('EditorService', () => {
       RouterTestingModule,
     ],
     providers: [
-      { provide: QueryService, useValue: instance(MockedQueryService) },
+      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
       { provide: ToastrService, useValue: instance(MockedToastrService) },
 
     ],
@@ -49,7 +49,7 @@ describe('EditorService', () => {
     const data = 'mock data result';
 
     beforeEach(() => {
-      selectAllSpy = spyOn(TestBed.inject(QueryService), 'selectAll');
+      selectAllSpy = spyOn(TestBed.inject(MysqlQueryService), 'selectAll');
       formResetSpy = spyOn(service.form, 'reset');
       // @ts-ignore
       onReloadSuccessfulSpy = spyOn(TestBed.inject(MockSingleRowEditorService), 'onReloadSuccessful');
@@ -101,7 +101,7 @@ describe('EditorService', () => {
       const toastrService = TestBed.inject(ToastrService);
       toastrSucessSpy = spyOn(toastrService, 'success');
       toastrErrorSpy = spyOn(toastrService, 'error');
-      querySpy = spyOn(TestBed.inject(QueryService), 'query');
+      querySpy = spyOn(TestBed.inject(MysqlQueryService), 'query');
       reloadSpy = spyOn(service, 'reload');
     });
 

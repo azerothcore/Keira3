@@ -1,6 +1,6 @@
 import { TableRow } from '@keira-types/general';
 import { SelectService } from '../../service/select/select.service';
-import { QueryService } from '../../../services/query.service';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { HandlerService } from '../../service/handlers/handler.service';
 import { DTCFG } from '@keira-config/datatable.config';
 
@@ -14,6 +14,6 @@ export abstract class SelectComponent<T extends TableRow> {
     public customStartingId: number,
     public selectService: SelectService<T>,
     public handlerService: HandlerService<T>,
-    public queryService: QueryService,
+    public queryService: MysqlQueryService,
   ) { }
 }

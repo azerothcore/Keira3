@@ -2,7 +2,7 @@ import { async, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { instance } from 'ts-mockito';
 
-import { QueryService } from './query.service';
+import { MysqlQueryService } from './mysql-query.service';
 import { MysqlService } from './mysql.service';
 import { MockedMysqlService } from '../testing/mocks';
 import { MaxRow, MysqlResult, QueryForm, TableRow } from '../types/general';
@@ -33,8 +33,8 @@ interface MockTwoKeysComplexRow extends TableRow {
   attribute2: number;
 }
 
-describe('QueryService', () => {
-  let service: QueryService;
+describe('MysqlQueryService', () => {
+  let service: MysqlQueryService;
   let configService: ConfigService;
 
   const QUERY_NO_CHANGES = '-- There are no changes';
@@ -47,7 +47,7 @@ describe('QueryService', () => {
 
   beforeEach(() => {
     configService = TestBed.inject(ConfigService);
-    service = TestBed.inject(QueryService);
+    service = TestBed.inject(MysqlQueryService);
   });
 
   it('query() should call mysqlService.dbQuery() and output query and results if debug mode is enabled', () => {

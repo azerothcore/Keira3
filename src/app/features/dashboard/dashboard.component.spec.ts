@@ -3,8 +3,8 @@ import { anyString, instance, when } from 'ts-mockito';
 import { of, throwError } from 'rxjs';
 
 import { DashboardComponent } from './dashboard.component';
-import { QueryService } from '@keira-shared/services/query.service';
-import { MockedQueryService } from '@keira-testing/mocks';
+import { MysqlQueryService } from '../../shared/services/mysql-query.service';
+import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { VersionDbRow, VersionRow } from '@keira-types/general';
 import { PageObject } from '@keira-testing/page-object';
 import { DashboardModule } from './dashboard.module';
@@ -38,15 +38,15 @@ describe('DashboardComponent', () => {
     TestBed.configureTestingModule({
       imports: [ DashboardModule ],
       providers: [
-        { provide: QueryService, useValue: instance(MockedQueryService) },
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
       ]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    when(MockedQueryService.query('SELECT * FROM version')).thenReturn(of({ results: [versionRow] }));
-    when(MockedQueryService.query('SELECT * FROM version_db_world')).thenReturn(of({ results: [versionDbRow] }));
+    when(MockedMysqlQueryService.query('SELECT * FROM version')).thenReturn(of({ results: [versionRow] }));
+    when(MockedMysqlQueryService.query('SELECT * FROM version_db_world')).thenReturn(of({ results: [versionDbRow] }));
 
     fixture = TestBed.createComponent(DashboardComponent);
     page = new DashboardComponentPage(fixture);
@@ -62,7 +62,7 @@ describe('DashboardComponent', () => {
   });
 
   it('should correctly give error if the query does not return the data in the expected format', () => {
-    when(MockedQueryService.query(anyString())).thenReturn(of({ results: [] }));
+    when(MockedMysqlQueryService.query(anyString())).thenReturn(of({ results: [] }));
     const errorSpy = spyOn(console, 'error');
 
     component.ngOnInit();
@@ -72,7 +72,7 @@ describe('DashboardComponent', () => {
 
   it('should correctly give error if the query returns an error', () => {
     const error = 'some error';
-    when(MockedQueryService.query(anyString())).thenReturn(throwError(error));
+    when(MockedMysqlQueryService.query(anyString())).thenReturn(throwError(error));
     const errorSpy = spyOn(console, 'error');
 
     component.ngOnInit();

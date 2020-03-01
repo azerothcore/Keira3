@@ -4,8 +4,8 @@ import { instance } from 'ts-mockito';
 import { ToastrService } from 'ngx-toastr';
 
 
-import { QueryService } from '../../../services/query.service';
-import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { MultiRowExternalEditorService } from './multi-row-external-editor.service';
 import { CreatureSpawnAddon } from '@keira-types/creature-spawn-addon.type';
 import { CreatureSpawnAddonService } from '../../../../features/creature/creature-spawn-addon/creature-spawn-addon.service';
@@ -21,7 +21,7 @@ describe('MultiRowExternalEditorService', () => {
       RouterTestingModule,
     ],
     providers: [
-      { provide: QueryService, useValue: instance(MockedQueryService) },
+      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
       { provide: ToastrService, useValue: instance(MockedToastrService) },
       CreatureHandlerService,
       SaiCreatureHandlerService,
@@ -36,7 +36,7 @@ describe('MultiRowExternalEditorService', () => {
   it('updateDiffQuery() should correctly work', () => {
     service['_diffQuery'] = '';
     const queryResult = '-- Mock query result';
-    const getQuerySpy = spyOn(TestBed.inject(QueryService), 'getDiffDeleteInsertTwoKeysQuery').and.returnValue(queryResult);
+    const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getDiffDeleteInsertTwoKeysQuery').and.returnValue(queryResult);
 
     service['updateDiffQuery']();
 
@@ -54,7 +54,7 @@ describe('MultiRowExternalEditorService', () => {
   it('updateFullQuery() should correctly work', () => {
     service['_fullQuery'] = '';
     const queryResult = '-- Mock query result';
-    const getQuerySpy = spyOn(TestBed.inject(QueryService), 'getFullDeleteInsertQuery').and.returnValue(queryResult);
+    const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertQuery').and.returnValue(queryResult);
 
     service['updateFullQuery']();
 

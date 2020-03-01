@@ -9,7 +9,7 @@ import {
 } from '@keira-types/gameobject-template.type';
 import { SelectGameobjectService } from './select-gameobject.service';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
 
 @Component({
   selector: 'app-select-gameobject',
@@ -21,7 +21,7 @@ export class SelectGameobjectComponent extends SelectComponent<GameobjectTemplat
   constructor(
     public selectService: SelectGameobjectService,
     public handlerService: GameobjectHandlerService,
-    public queryService: QueryService,
+    public queryService: MysqlQueryService,
   ) {
     super(
       GAMEOBJECT_TEMPLATE_TABLE,

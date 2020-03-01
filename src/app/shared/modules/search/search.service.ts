@@ -1,7 +1,7 @@
 import { FormControl, FormGroup } from '@angular/forms';
 
 import { TableRow } from '../../types/general';
-import { QueryService } from '../../services/query.service';
+import { MysqlQueryService } from '../../services/mysql-query.service';
 import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
 
 export abstract class SearchService<T extends TableRow> extends SubscriptionHandler {
@@ -16,7 +16,7 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
   groupFields: string[] = null;
 
   constructor(
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     protected entityTable: string,
     protected fieldList: string[],
   ) {

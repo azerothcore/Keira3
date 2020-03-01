@@ -6,7 +6,7 @@ import { SaiTopBarComponent } from './sai-top-bar.component';
 import { SaiHandlerService } from '../sai-handler.service';
 import { PageObject } from '@keira-testing/page-object';
 import { SAI_TYPES } from '@keira-types/smart-scripts.type';
-import { QueryService } from '../../../services/query.service';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { Component, ViewChild } from '@angular/core';
 import { of } from 'rxjs';
 
@@ -46,7 +46,7 @@ describe('SaiTopBarComponent', () => {
   beforeEach(() => {
     handler = TestBed.inject(SaiHandlerService);
     handler['_selected'] = JSON.stringify({ source_type: SAI_TYPES.SAI_TYPE_GAMEOBJECT, entryorguid });
-    querySpy = spyOn(TestBed.inject(QueryService), 'query').and.returnValue(of({ results: [] }));
+    querySpy = spyOn(TestBed.inject(MysqlQueryService), 'query').and.returnValue(of({ results: [] }));
 
     fixture = TestBed.createComponent(TestHostComponent);
     host = fixture.componentInstance;

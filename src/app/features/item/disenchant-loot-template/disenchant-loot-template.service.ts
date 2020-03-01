@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
 import { ItemHandlerService } from '../item-handler.service';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
 import {
   DISENCHANT_LOOT_TEMPLATE_TABLE,
   DisenchantLootTemplate,
@@ -16,7 +16,7 @@ export class DisenchantLootTemplateService extends LootEditorService<DisenchantL
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: ItemHandlerService,
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(

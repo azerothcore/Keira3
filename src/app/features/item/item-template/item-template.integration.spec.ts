@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { ItemTemplateComponent } from './item-template.component';
 import { ItemTemplateModule } from './item-template.module';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { ItemTemplate } from '@keira-types/item-template.type';
 import { ItemHandlerService } from '../item-handler.service';
@@ -16,7 +16,7 @@ class ItemTemplatePage extends EditorPageObject<ItemTemplateComponent> {}
 describe('ItemTemplate integration tests', () => {
   let component: ItemTemplateComponent;
   let fixture: ComponentFixture<ItemTemplateComponent>;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let handlerService: ItemHandlerService;
   let page: ItemTemplatePage;
@@ -69,7 +69,7 @@ describe('ItemTemplate integration tests', () => {
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(

@@ -5,8 +5,8 @@ import { ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
 
 
-import { QueryService } from '../../../services/query.service';
-import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { LootEditorService } from './loot-editor.service';
 import { CreatureLootTemplate } from '@keira-types/creature-loot-template.type';
 import { CreatureLootTemplateService } from '../../../../features/creature/creature-loot-template/creature-loot-template.service';
@@ -23,7 +23,7 @@ describe('LootEditorService', () => {
       RouterTestingModule,
     ],
     providers: [
-      { provide: QueryService, useValue: instance(MockedQueryService) },
+      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
       { provide: ToastrService, useValue: instance(MockedToastrService) },
       CreatureHandlerService,
       SaiCreatureHandlerService,
@@ -38,7 +38,7 @@ describe('LootEditorService', () => {
   it('getLootId() should correctly work', () => {
     const lootId = 1200;
     const mockData: MysqlResult<{ lootId: number }> = { results: [{ lootId }] };
-    const querySpy = spyOn(TestBed.inject(QueryService), 'query').and.returnValue(of(mockData));
+    const querySpy = spyOn(TestBed.inject(MysqlQueryService), 'query').and.returnValue(of(mockData));
 
     service.getLootId().subscribe((data) => {
       expect(data).toEqual(mockData);

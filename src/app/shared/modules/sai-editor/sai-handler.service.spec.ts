@@ -2,12 +2,12 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { SaiHandlerService } from './sai-handler.service';
-import { QueryService } from '../../services/query.service';
+import { MysqlQueryService } from '../../services/mysql-query.service';
 import { of } from 'rxjs';
 import { SAI_TYPES } from '../../types/smart-scripts.type';
 import { Router } from '@angular/router';
 import { instance } from 'ts-mockito';
-import { MockedQueryService } from '@keira-testing/mocks';
+import { MockedMysqlQueryService } from '@keira-testing/mocks';
 
 describe('SaiHandlerService', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -15,7 +15,7 @@ describe('SaiHandlerService', () => {
       RouterTestingModule,
     ],
     providers: [
-      { provide: QueryService, useValue: instance(MockedQueryService) },
+      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
     ]
   }));
 
@@ -25,7 +25,7 @@ describe('SaiHandlerService', () => {
   ]) {
     it(`selectFromEntity() should correctly work [${testId}]`, fakeAsync(() => {
       const service: SaiHandlerService = TestBed.inject(SaiHandlerService);
-      const queryService: QueryService = TestBed.inject(QueryService);
+      const queryService: MysqlQueryService = TestBed.inject(MysqlQueryService);
       const mockResults = isNew ? [] : ['some result'];
       spyOn(queryService, 'query').and.returnValue(of({ results: mockResults } as any));
       spyOn(service, 'select');
@@ -94,7 +94,7 @@ describe('SaiHandlerService', () => {
   it('getName() should work correctly', fakeAsync(() => {
     const service: SaiHandlerService = TestBed.inject(SaiHandlerService);
     const spy = spyOn(TestBed.inject(Router), 'navigate');
-    const queryService = TestBed.inject(QueryService);
+    const queryService = TestBed.inject(MysqlQueryService);
     const querySpy = spyOn(queryService, 'query');
     const mockName = 'Mock Name';
 

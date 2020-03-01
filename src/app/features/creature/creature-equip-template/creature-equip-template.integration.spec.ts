@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { CreatureEquipTemplateComponent } from './creature-equip-template.component';
 import { CreatureEquipTemplateModule } from './creature-equip-template.module';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { CreatureEquipTemplate } from '@keira-types/creature-equip-template.type';
 import { CreatureHandlerService } from '../creature-handler.service';
@@ -16,7 +16,7 @@ class CreatureEquipTemplatePage extends EditorPageObject<CreatureEquipTemplateCo
 describe('CreatureEquipTemplate integration tests', () => {
   let component: CreatureEquipTemplateComponent;
   let fixture: ComponentFixture<CreatureEquipTemplateComponent>;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let handlerService: CreatureHandlerService;
   let page: CreatureEquipTemplatePage;
@@ -48,7 +48,7 @@ describe('CreatureEquipTemplate integration tests', () => {
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(

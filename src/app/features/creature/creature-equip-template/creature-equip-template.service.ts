@@ -3,7 +3,7 @@ import { ToastrService } from 'ngx-toastr';
 
 import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
 import { CreatureHandlerService } from '../creature-handler.service';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
 import {
   CREATURE_EQUIP_TEMPLATE_ID, CREATURE_EQUIP_TEMPLATE_TABLE,
   CreatureEquipTemplate
@@ -15,7 +15,7 @@ export class CreatureEquipTemplateService extends SingleRowEditorService<Creatur
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: CreatureHandlerService,
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(

@@ -6,7 +6,7 @@ import Spy = jasmine.Spy;
 
 import { ConditionsComponent } from './conditions.component';
 import { ConditionsEditorModule } from './conditions-editor.module';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { Conditions } from '@keira-types/conditions.type';
 import { ConditionsHandlerService } from '../conditions-handler.service';
@@ -16,7 +16,7 @@ class ConditionsPage extends EditorPageObject<ConditionsComponent> {}
 describe('Conditions integration tests', () => {
   let component: ConditionsComponent;
   let fixture: ComponentFixture<ConditionsComponent>;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let handlerService: ConditionsHandlerService;
   let page: ConditionsPage;
@@ -67,7 +67,7 @@ describe('Conditions integration tests', () => {
     handlerService['_selected'] = JSON.stringify(id);
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(of(

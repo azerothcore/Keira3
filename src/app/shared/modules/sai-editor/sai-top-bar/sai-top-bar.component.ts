@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 
 import { SaiHandlerService } from '../sai-handler.service';
 import { SAI_TYPES, SmartScripts } from '@keira-types/smart-scripts.type';
-import { QueryService } from '../../../services/query.service';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
 
 @Component({
@@ -20,7 +20,7 @@ export class SaiTopBarComponent extends SubscriptionHandler implements OnInit {
   }
 
   constructor(
-    public queryService: QueryService,
+    public queryService: MysqlQueryService,
   ) {
     super();
   }

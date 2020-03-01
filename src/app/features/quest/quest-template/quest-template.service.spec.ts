@@ -4,8 +4,8 @@ import { instance } from 'ts-mockito';
 import { ToastrService } from 'ngx-toastr';
 
 import { QuestTemplateService } from './quest-template.service';
-import { QueryService } from '@keira-shared/services/query.service';
-import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { QuestHandlerService } from '../quest-handler.service';
 
 describe('QuestTemplateService', () => {
@@ -14,7 +14,7 @@ describe('QuestTemplateService', () => {
       RouterTestingModule,
     ],
     providers: [
-      { provide: QueryService, useValue: instance(MockedQueryService) },
+      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
       { provide: ToastrService, useValue: instance(MockedToastrService) },
       QuestHandlerService,
       QuestTemplateService,

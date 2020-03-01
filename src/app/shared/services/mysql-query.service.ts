@@ -14,7 +14,7 @@ declare const squel: Squel & {flavour: null};
 @Injectable({
   providedIn: 'root'
 })
-export class QueryService {
+export class MysqlQueryService {
 
   private readonly QUERY_NO_CHANGES = '-- There are no changes';
 

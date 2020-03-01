@@ -7,14 +7,14 @@ import {
   ITEM_TEMPLATE_TABLE,
   ItemTemplate
 } from '@keira-types/item-template.type';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
 import { ItemHandlerService } from '../item-handler.service';
 
 @Injectable()
 export class SelectItemService extends SelectService<ItemTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     public handlerService: ItemHandlerService,
   ) {
     super(

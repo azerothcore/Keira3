@@ -3,7 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
 import { QuestTemplateAddonComponent } from './quest-template-addon.component';
 import { QuestTemplateAddonModule } from './quest-template-addon.module';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
@@ -15,7 +15,7 @@ class QuestTemplateAddonPage extends EditorPageObject<QuestTemplateAddonComponen
 describe('QuestTemplateAddon integration tests', () => {
   let component: QuestTemplateAddonComponent;
   let fixture: ComponentFixture<QuestTemplateAddonComponent>;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let handlerService: QuestHandlerService;
   let page: QuestTemplateAddonPage;
@@ -65,7 +65,7 @@ describe('QuestTemplateAddon integration tests', () => {
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(

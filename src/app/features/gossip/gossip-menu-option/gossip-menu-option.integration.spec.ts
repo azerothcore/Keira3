@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { GossipMenuOptionComponent } from './gossip-menu-option.component';
 import { GossipMenuOptionModule } from './gossip-menu-option.module';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
 import { GossipMenuOption } from '@keira-types/gossip-menu-option.type';
 import { GossipHandlerService } from '../gossip-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -15,7 +15,7 @@ class GossipMenuOptionPage extends MultiRowEditorPageObject<GossipMenuOptionComp
 describe('GossipMenu integration tests', () => {
   let component: GossipMenuOptionComponent;
   let fixture: ComponentFixture<GossipMenuOptionComponent>;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let handlerService: GossipHandlerService;
   let page: GossipMenuOptionPage;
@@ -48,7 +48,7 @@ describe('GossipMenu integration tests', () => {
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(

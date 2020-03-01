@@ -3,8 +3,8 @@ import { BsModalRef } from 'ngx-bootstrap';
 import { instance } from 'ts-mockito';
 
 import { GameobjectSelectorModalComponent } from './gameobject-selector-modal.component';
-import { QueryService } from '../../../services/query.service';
-import { MockedQueryService } from '@keira-testing/mocks';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { GameobjectSearchService } from '../../search/gameobject-search.service';
 import { GameobjectSelectorModule } from './gameobject-selector.module';
 
@@ -18,7 +18,7 @@ describe('GameobjectSelectorModalComponent', () => {
       imports: [ GameobjectSelectorModule ],
       providers: [
         BsModalRef,
-        { provide: QueryService, useValue: instance(MockedQueryService) },
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
       ],
     })
     .compileComponents();
