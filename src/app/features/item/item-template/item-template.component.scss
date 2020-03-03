@@ -19,6 +19,12 @@
   margin-top: 3px;
 }
 
+.item-name {
+  font-weight: 400;
+  line-height: 30px;
+  font-size: 22px;
+}
+
 .item-description { color: #ffd100 !important }
 
 .item-preview {
@@ -39,10 +45,9 @@
   font-family: Verdana, "Open Sans", Arial, "Helvetica Neue", Helvetica, sans-serif;
   font-size: 18px;
 
-  line-height: 28px;
-  min-width: 300px;
+  line-height: 25px;
   width: auto;
-  padding: 10px;
+  padding: 8px;
 
   color: #ccc;
 }

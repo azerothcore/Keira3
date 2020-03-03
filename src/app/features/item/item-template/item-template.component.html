@@ -786,7 +786,7 @@
           <div class="icon">
             <div *ngIf="(icon | async) as iconName; else defaultIcon">
               <img [src]="'https://wow.zamimg.com/images/wow/icons/large/' + iconName + '.jpg'">
-              <span class="q1 stackable" *ngIf="editorService.form.controls.stackable.value > 1">{{ editorService.form.controls.stackable.value }}</span>
+              <span class="item-name q1 stackable" *ngIf="editorService.form.controls.stackable.value > 1">{{ editorService.form.controls.stackable.value }}</span>
             </div>
 
             <ng-template #defaultIcon>
@@ -806,7 +806,7 @@
             <div [innerHTML]="statsTop | safeHTML"></div>
             <span *ngIf="editorService.form.controls.MaxDurability.value > 0">Durability {{ editorService.form.controls.MaxDurability.value + '/' + editorService.form.controls.MaxDurability.value }}<br></span>
             <span *ngIf="editorService.form.controls.RequiredLevel.value > 0">Required Level {{ editorService.form.controls.RequiredLevel.value }}<br></span>
-            <span *ngIf="editorService.form.controls.ItemLevel.value > 0">Item Level {{ editorService.form.controls.ItemLevel.value }}<br></span>
+            <span *ngIf="hasItemLevel && editorService.form.controls.ItemLevel.value > 0">Item Level {{ editorService.form.controls.ItemLevel.value }}<br></span>
             <span *ngIf="editorService.form.controls.description.value != ''" class="item-description">{{ editorService.form.controls.description.value }}<br></span>
             <span *ngIf="editorService.form.controls.SellPrice.value > 0">Sell Price: <span [innerHTML]="getPrice(editorService.form.controls.SellPrice.value)"></span><br></span>
             <div [innerHTML]="statsBottom | safeHTML"></div>

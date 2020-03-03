@@ -1,33 +1,37 @@
 import { Component, OnInit } from '@angular/core';
-
 import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
-import { ItemTemplate } from '@keira-types/item-template.type';
-import { ItemTemplateService } from './item-template.service';
-import { ItemHandlerService } from '../item-handler.service';
-import { ITEM_CLASS, ITEM_SUBCLASS } from '@keira-constants/options/item-class';
-import { ITEM_QUALITY } from '@keira-constants/options/item-quality';
-import { ITEM_FLAGS } from '@keira-constants/flags/item-flags';
-import { ITEM_FLAGS_EXTRA } from '@keira-constants/flags/item-flags-extra';
-import { INVENTORY_TYPE } from '@keira-constants/options/inventory-type';
 import { ALLOWABLE_CLASSES } from '@keira-constants/flags/allowable-classes';
 import { ALLOWABLE_RACES } from '@keira-constants/flags/allowable-races';
-import { FACTION_RANK } from '@keira-constants/options/faction-rank';
 import { BAG_FAMILY } from '@keira-constants/flags/bag-family';
-import { SOCKET_COLOR } from '@keira-constants/flags/socket-color';
-import { ITEM_BONDING } from '@keira-constants/options/item-bonding';
-import { ITEM_MATERIAL } from '@keira-constants/options/item-material';
-import { ITEM_SHEAT } from '@keira-constants/options/item-sheath';
-import { TOTEM_CATEGORY } from '@keira-constants/options/totem-category';
-import { FOOD_TYPE } from '@keira-constants/options/foot-type';
+import { ITEM_FLAGS } from '@keira-constants/flags/item-flags';
 import { ITEM_FLAGS_CUSTOM } from '@keira-constants/flags/item-flags-custom';
+import { ITEM_FLAGS_EXTRA } from '@keira-constants/flags/item-flags-extra';
+import { SOCKET_COLOR } from '@keira-constants/flags/socket-color';
 import { DAMAGE_TYPE } from '@keira-constants/options/damage-type';
-import { SOCKET_BONUS } from '@keira-constants/options/socket-bonus';
 import { FACTIONS } from '@keira-constants/options/faction';
+import { FACTION_RANK } from '@keira-constants/options/faction-rank';
+import { FOOD_TYPE } from '@keira-constants/options/foot-type';
+import { INVENTORY_TYPE } from '@keira-constants/options/inventory-type';
+import { ITEM_BONDING } from '@keira-constants/options/item-bonding';
+import { ITEM_CLASS, ITEM_SUBCLASS } from '@keira-constants/options/item-class';
+import { ITEM_MATERIAL } from '@keira-constants/options/item-material';
+import { ITEM_QUALITY } from '@keira-constants/options/item-quality';
+import { ITEM_SHEAT } from '@keira-constants/options/item-sheath';
+import { SOCKET_BONUS } from '@keira-constants/options/socket-bonus';
 import { STAT_TYPE } from '@keira-constants/options/stat-type';
-import { AOWOW_ITEM } from './aowow';
+import { TOTEM_CATEGORY } from '@keira-constants/options/totem-category';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
-import { Observable, forkJoin } from 'rxjs';
+import { ItemTemplate } from '@keira-types/item-template.type';
 import { distinctUntilChanged } from 'rxjs/operators';
+import { ItemHandlerService } from '../item-handler.service';
+import { AOWOW_ITEM } from './aowow';
+import { ItemTemplateService } from './item-template.service';
+
+enum ITEM_TYPE {
+  WEAPON     = 2,
+  ARMOR      = 4,
+  AMMUNITION = 6,
+}
 
 @Component({
   selector: 'app-item-template',
@@ -72,12 +76,15 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   public statsTop: string = '';
   public statsBottom: string = '';
   public itemClass: string = '';
+  public hasItemLevel: boolean = false;
 
-  private getItemClass() {
+  private handleItemClass() {
     this.subscriptions.push(
       this.editorService.form.controls?.class?.valueChanges.subscribe((itemClass: number) => {
         const subclass = this.editorService.form.controls?.subcclass?.value;
         this.itemClass = ITEM_SUBCLASS[itemClass] && ITEM_SUBCLASS[itemClass][subclass] && ITEM_SUBCLASS[itemClass][subclass].name;
+
+        this.hasItemLevel = [ITEM_TYPE.WEAPON, ITEM_TYPE.ARMOR, ITEM_TYPE.AMMUNITION].includes(itemClass);
       })
     );
 
@@ -156,7 +163,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
       this.icon = this.sqliteQueryService.getDisplayIdIcon(x);
     });
 
-    this.getItemClass();
+    this.handleItemClass();
     this.calculateStats();
   }
 
