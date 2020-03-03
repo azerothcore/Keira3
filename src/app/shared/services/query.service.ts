@@ -2,12 +2,12 @@ import { Observable } from 'rxjs';
 import { escape } from 'sqlstring';
 import * as squel from 'squel';
 
-import { QueryForm } from '@keira-types/general';
+import { QueryForm, TableRow } from '@keira-types/general';
 import { squelConfig } from '@keira-config/squel.config';
 
 export abstract class QueryService {
 
-  abstract query(queryString: string): Observable<object>;
+  abstract query<T extends TableRow>(queryString: string): Observable<T[]>;
 
   getSearchQuery(table: string, queryForm: QueryForm, selectFields: string[] = null, groupFields: string[] = null): string {
     const query = squel.select(squelConfig).from(table);
