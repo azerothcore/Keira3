@@ -10,6 +10,7 @@ import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
 import { QueryOutputModule } from '@keira-shared/modules/query-output/query-output.module';
 import { NpcTrainerComponent } from './npc-trainer.component';
 import { NpcTrainerService } from './npc-trainer.service';
+import { SpellSelectorModule } from '@keira-shared/modules/selectors/spell-selector/spell-selector.module';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { NpcTrainerService } from './npc-trainer.service';
     TooltipModule.forRoot(),
     ToastrModule.forRoot(toastrConfig),
     NgxDatatableModule,
+    SpellSelectorModule,
   ],
   exports: [
     NpcTrainerComponent,
