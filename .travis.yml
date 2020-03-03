@@ -1,7 +1,7 @@
 language: node_js
 node_js:
-  - '10'
-dist: xenial
+  - '12'
+dist: bionic
 sudo: required
 services:
   - xvfb
