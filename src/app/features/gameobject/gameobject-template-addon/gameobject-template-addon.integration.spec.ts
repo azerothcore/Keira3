@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { GameobjectTemplateAddonComponent } from './gameobject-template-addon.component';
 import { GameobjectTemplateAddonModule } from './gameobject-template-addon.module';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { GameobjectTemplateAddon } from '@keira-types/gameobject-template-addon.type';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
@@ -52,7 +52,7 @@ describe('GameobjectTemplateAddon integration tests', () => {
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
-      { results: creatingNew ? [] : [originalEntity] }
+      creatingNew ? [] : [originalEntity]
     ));
 
     fixture = TestBed.createComponent(GameobjectTemplateAddonComponent);

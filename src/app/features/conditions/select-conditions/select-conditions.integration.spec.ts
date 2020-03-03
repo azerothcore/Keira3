@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SelectConditionsComponent } from './select-conditions.component';
 import { ConditionsSearchService } from '@keira-shared/modules/search/conditions-search.service';
 import { SelectConditionsModule } from './select-conditions.module';
@@ -51,7 +51,7 @@ describe('SelectConditions integration tests', () => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of(
-      { results: [{ max: 1 }] }
+      [{ max: 1 }]
     ));
 
     selectService = TestBed.inject(ConditionsSearchService);
@@ -141,7 +141,7 @@ describe('SelectConditions integration tests', () => {
     ];
 
     querySpy.calls.reset();
-    querySpy.and.returnValue(of({ results }));
+    querySpy.and.returnValue(of(results));
 
     page.clickElement(page.searchBtn);
 

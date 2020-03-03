@@ -10,7 +10,6 @@ import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/moc
 import { LootEditorService } from './loot-editor.service';
 import { CreatureLootTemplate } from '@keira-types/creature-loot-template.type';
 import { CreatureLootTemplateService } from '../../../../features/creature/creature-loot-template/creature-loot-template.service';
-import { MysqlResult } from '@keira-types/general';
 import { CreatureHandlerService } from '../../../../features/creature/creature-handler.service';
 import { SaiCreatureHandlerService } from '../../../../features/creature/sai-creature-handler.service';
 
@@ -37,7 +36,7 @@ describe('LootEditorService', () => {
 
   it('getLootId() should correctly work', () => {
     const lootId = 1200;
-    const mockData: MysqlResult<{ lootId: number }> = { results: [{ lootId }] };
+    const mockData: { lootId: number }[] = [{ lootId }];
     const querySpy = spyOn(TestBed.inject(MysqlQueryService), 'query').and.returnValue(of(mockData));
 
     service.getLootId().subscribe((data) => {

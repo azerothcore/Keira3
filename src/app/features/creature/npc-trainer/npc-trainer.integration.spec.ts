@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { NpcTrainerComponent } from './npc-trainer.component';
 import { NpcTrainerModule } from './npc-trainer.module';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { NpcTrainer } from '@keira-types/npc-trainer.type';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -54,7 +54,7 @@ describe('NpcTrainer integration tests', () => {
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
-      { results: creatingNew ? [] : [originalRow0, originalRow1, originalRow2] }
+      creatingNew ? [] : [originalRow0, originalRow1, originalRow2]
     ));
 
     fixture = TestBed.createComponent(NpcTrainerComponent);

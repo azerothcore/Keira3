@@ -109,7 +109,7 @@ describe('SingleRowComplexKeyEditorService', () => {
     it('reloadEntity()', () => {
       const selectQuerySpy = spyOn<any>(service, 'selectQuery');
       const error = { code: 'mock error', errno: 1234 } as MysqlError;
-      selectQuerySpy.and.returnValue(of({ results: [{ [MOCK_NAME]: 'mockName' }] }));
+      selectQuerySpy.and.returnValue(of([{ [MOCK_NAME]: 'mockName' }]));
 
       service['reloadEntity']();
 
@@ -157,7 +157,7 @@ describe('SingleRowComplexKeyEditorService', () => {
       const setLoadedEntitySpy = spyOn<any>(service, 'setLoadedEntity');
       const updateFullQuerySpy = spyOn<any>(service, 'updateFullQuery');
       const onLoadedExistingEntitySpy = spyOn<any>(service, 'onLoadedExistingEntity');
-      const data = { results: [] };
+      const data = [];
 
       service['onReloadSuccessful'](data);
 

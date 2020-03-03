@@ -39,8 +39,8 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
 
     this.subscriptions.push(
       this.queryService.query<VersionRow>(query).subscribe((data) => {
-        if (data && data.results && data.results.length > 0) {
-          this.coreVersions = data.results[0];
+        if (data && data.length > 0) {
+          this.coreVersions = data[0];
         } else {
           console.error(`Query ${query} produced no results: ${data}`);
         }
@@ -54,8 +54,8 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
     const query = 'SELECT * FROM version_db_world';
     this.subscriptions.push(
       this.queryService.query<VersionDbRow>(query).subscribe((data) => {
-        if (data && data.results && data.results.length > 0) {
-          const keys = Object.keys(data.results[0]);
+        if (data && data.length > 0) {
+          const keys = Object.keys(data[0]);
           this.dbWorldVersion = keys[2];
         } else {
           console.error(`Query ${query} produced no results: ${data}`);

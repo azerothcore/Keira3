@@ -46,7 +46,7 @@ describe('SaiTopBarComponent', () => {
   beforeEach(() => {
     handler = TestBed.inject(SaiHandlerService);
     handler['_selected'] = JSON.stringify({ source_type: SAI_TYPES.SAI_TYPE_GAMEOBJECT, entryorguid });
-    querySpy = spyOn(TestBed.inject(MysqlQueryService), 'query').and.returnValue(of({ results: [] }));
+    querySpy = spyOn(TestBed.inject(MysqlQueryService), 'query').and.returnValue(of([]));
 
     fixture = TestBed.createComponent(TestHostComponent);
     host = fixture.componentInstance;

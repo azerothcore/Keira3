@@ -9,7 +9,7 @@ import {
   GAMEOBJECT_SPAWN_TABLE
 } from '@keira-types/gameobject-spawn.type';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 
 @Injectable()
 export class GameobjectSpawnService extends MultiRowEditorService<GameobjectSpawn> {

@@ -43,9 +43,9 @@ describe('CreateComponent', () => {
   }));
 
   beforeEach(() => {
-    when(MockedMysqlQueryService.getMaxId(mockTable, mockId)).thenReturn(of({ results: [{ max: maxId }]}));
-    when(MockedMysqlQueryService.selectAll(mockTable, mockId, anything())).thenReturn(of({ results: []}));
-    when(MockedMysqlQueryService.selectAll(mockTable, mockId, takenId)).thenReturn(of({ results: [{}]}));
+    when(MockedMysqlQueryService.getMaxId(mockTable, mockId)).thenReturn(of([{ max: maxId }]));
+    when(MockedMysqlQueryService.selectAll(mockTable, mockId, anything())).thenReturn(of([]));
+    when(MockedMysqlQueryService.selectAll(mockTable, mockId, takenId)).thenReturn(of([{}]));
 
     fixture = TestBed.createComponent(CreateComponent);
     component = fixture.componentInstance;

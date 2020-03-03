@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { CreatureEquipTemplateComponent } from './creature-equip-template.component';
 import { CreatureEquipTemplateModule } from './creature-equip-template.module';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { CreatureEquipTemplate } from '@keira-types/creature-equip-template.type';
 import { CreatureHandlerService } from '../creature-handler.service';
@@ -52,7 +52,7 @@ describe('CreatureEquipTemplate integration tests', () => {
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
-      { results: creatingNew ? [] : [originalEntity] }
+      creatingNew ? [] : [originalEntity]
     ));
 
     fixture = TestBed.createComponent(CreatureEquipTemplateComponent);
@@ -136,7 +136,7 @@ describe('CreatureEquipTemplate integration tests', () => {
 
       const itemEntry = 1200;
       querySpy.and.returnValue(of(
-        { results: [{ entry: itemEntry, name: 'Mock Item' }] }
+        [{ entry: itemEntry, name: 'Mock Item' }]
       ));
       const field = 'ItemID1';
       page.clickElement(page.getSelectorBtn(field));

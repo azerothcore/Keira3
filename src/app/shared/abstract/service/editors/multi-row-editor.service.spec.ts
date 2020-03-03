@@ -9,7 +9,7 @@ import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { MultiRowEditorService } from './multi-row-editor.service';
 import { MOCK_ID, MOCK_ID_2, MOCK_NAME, MockEntity, MockMultiRowEditorService } from '@keira-testing/mock-services';
-import { MysqlResult } from '@keira-types/general';
+
 
 
 describe('MultiRowEditorService', () => {
@@ -156,11 +156,10 @@ describe('MultiRowEditorService', () => {
     service['_originalRows'] = [{ [MOCK_ID]: 123, [MOCK_ID_2]: 3, [MOCK_NAME]: 'some previous value' }];
     service['_newRows'] = [{ [MOCK_ID]: 123, [MOCK_ID_2]: 3, [MOCK_NAME]: '.....some previous value' }];
     const rows = [{ [MOCK_ID]: 123, [MOCK_ID_2]: 1, [MOCK_NAME]: 'new value' }];
-    const data: MysqlResult<MockEntity> = { results: rows };
     const id = 10;
     updateFullQuerySpy = spyOn<any>(service, 'updateFullQuery');
 
-    service['onReloadSuccessful'](data, id);
+    service['onReloadSuccessful'](rows, id);
 
     expect(service['_originalRows']).toEqual(rows);
     expect(service['_newRows']).toEqual(rows);

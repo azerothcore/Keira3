@@ -27,7 +27,7 @@ describe('SaiHandlerService', () => {
       const service: SaiHandlerService = TestBed.inject(SaiHandlerService);
       const queryService: MysqlQueryService = TestBed.inject(MysqlQueryService);
       const mockResults = isNew ? [] : ['some result'];
-      spyOn(queryService, 'query').and.returnValue(of({ results: mockResults } as any));
+      spyOn(queryService, 'query').and.returnValue(of(mockResults as any));
       spyOn(service, 'select');
 
       service.selectFromEntity(sourceType, entryOrGuid);
@@ -101,22 +101,22 @@ describe('SaiHandlerService', () => {
     for (const test of [
       {
         source_type: SAI_TYPES.SAI_TYPE_CREATURE,  entryorguid: -123, name: mockName,
-        returnValue: { results: [ { name: mockName } ] },
+        returnValue: [ { name: mockName } ],
         expected: mockName,
       },
       {
         source_type: SAI_TYPES.SAI_TYPE_CREATURE,  entryorguid: 123, name: mockName,
-        returnValue: { results: [] },
+        returnValue: [],
         expected: null,
       },
       {
         source_type: SAI_TYPES.SAI_TYPE_GAMEOBJECT,  entryorguid: -123, name: mockName,
-        returnValue: { results: [ { name: mockName } ] },
+        returnValue: [ { name: mockName } ],
         expected: mockName,
       },
       {
         source_type: SAI_TYPES.SAI_TYPE_GAMEOBJECT,  entryorguid: 123, name: mockName,
-        returnValue: { results: [ { name: mockName } ] },
+        returnValue: [ { name: mockName } ],
         expected: mockName,
       },
     ]) {

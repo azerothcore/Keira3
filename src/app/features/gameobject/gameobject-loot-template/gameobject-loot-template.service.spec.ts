@@ -4,13 +4,12 @@ import { instance } from 'ts-mockito';
 import { ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
 
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
-import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
-import { MysqlResult } from '@keira-types/general';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
 import { GAMEOBJECT_TEMPLATE_TYPE } from '@keira-types/gameobject-template.type';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
+import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 
 describe('GameobjectLootTemplateService', () => {
   let service: GameobjectLootTemplateService;
@@ -34,7 +33,7 @@ describe('GameobjectLootTemplateService', () => {
 
   it('getType() should correctly work', () => {
     const type = 3;
-    const mockData: MysqlResult<{ type: number }> = { results: [{ type }] };
+    const mockData: { type: number }[] = [{ type }];
     const querySpy = spyOn(TestBed.inject(MysqlQueryService), 'query').and.returnValue(of(mockData));
 
     service.getType().subscribe((data) => {

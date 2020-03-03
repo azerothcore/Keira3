@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SelectGameobjectComponent } from './select-gameobject.component';
 import { SelectGameobjectService } from './select-gameobject.service';
 import { SelectGameobjectModule } from './select-gameobject.module';
@@ -46,7 +46,7 @@ describe('SelectGameobject integration tests', () => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of(
-      { results: [{ max: 1 }] }
+      [{ max: 1 }]
     ));
 
     selectService = TestBed.inject(SelectGameobjectService);
@@ -74,9 +74,7 @@ describe('SelectGameobject integration tests', () => {
   it('should correctly behave when inserting and selecting free id', async(() => {
     fixture.whenStable().then(() => {
       querySpy.calls.reset();
-      querySpy.and.returnValue(of(
-        { results: [] }
-      ));
+      querySpy.and.returnValue(of([]));
 
       page.setInputValue(page.createInput, value);
 
@@ -98,7 +96,7 @@ describe('SelectGameobject integration tests', () => {
     fixture.whenStable().then(() => {
       querySpy.calls.reset();
       querySpy.and.returnValue(of(
-        { results: ['mock value'] }
+        ['mock value']
       ));
 
       page.setInputValue(page.createInput, value);
@@ -155,7 +153,7 @@ describe('SelectGameobject integration tests', () => {
       { id: 3, name: 'An awesome Gameobject 3', GameobjectType: 0, GameobjectDisplayId: 3   },
     ];
     querySpy.calls.reset();
-    querySpy.and.returnValue(of({ results }));
+    querySpy.and.returnValue(of(results));
 
     page.clickElement(page.searchBtn);
 
