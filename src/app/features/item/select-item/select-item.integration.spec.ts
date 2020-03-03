@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SelectItemComponent } from './select-item.component';
 import { SelectItemService } from './select-item.service';
 import { SelectItemModule } from './select-item.module';
@@ -44,7 +44,7 @@ describe('SelectItem integration tests', () => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of(
-      { results: [{ max: 1 }] }
+      [{ max: 1 }]
     ));
 
     selectService = TestBed.inject(SelectItemService);
@@ -73,7 +73,7 @@ describe('SelectItem integration tests', () => {
     fixture.whenStable().then(() => {
       querySpy.calls.reset();
       querySpy.and.returnValue(of(
-        { results: [] }
+        []
       ));
 
       page.setInputValue(page.createInput, value);
@@ -96,7 +96,7 @@ describe('SelectItem integration tests', () => {
     fixture.whenStable().then(() => {
       querySpy.calls.reset();
       querySpy.and.returnValue(of(
-        { results: ['mock value'] }
+        ['mock value']
       ));
 
       page.setInputValue(page.createInput, value);
@@ -153,7 +153,7 @@ describe('SelectItem integration tests', () => {
       { id: 3, name: 'An awesome Item 3', ItemType: 0, ItemLevel: 3, MinLevel: 30, ItemDescription: ''   },
     ];
     querySpy.calls.reset();
-    querySpy.and.returnValue(of({ results }));
+    querySpy.and.returnValue(of(results));
 
     page.clickElement(page.searchBtn);
 

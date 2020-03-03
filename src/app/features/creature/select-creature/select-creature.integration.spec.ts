@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SelectCreatureComponent } from './select-creature.component';
 import { SelectCreatureService } from './select-creature.service';
 import { SelectCreatureModule } from './select-creature.module';
@@ -47,7 +47,7 @@ describe('SelectCreature integration tests', () => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of(
-      { results: [{ max: 1 }] }
+      [{ max: 1 }]
     ));
 
     selectService = TestBed.inject(SelectCreatureService);
@@ -75,9 +75,7 @@ describe('SelectCreature integration tests', () => {
   it('should correctly behave when inserting and selecting free entry', async(() => {
     fixture.whenStable().then(() => {
       querySpy.calls.reset();
-      querySpy.and.returnValue(of(
-        { results: [] }
-      ));
+      querySpy.and.returnValue(of([]));
 
       page.setInputValue(page.createInput, value);
 
@@ -98,9 +96,7 @@ describe('SelectCreature integration tests', () => {
   it('should correctly behave when inserting an existing entity', async(() => {
     fixture.whenStable().then(() => {
       querySpy.calls.reset();
-      querySpy.and.returnValue(of(
-        { results: ['mock value'] }
-      ));
+      querySpy.and.returnValue(of(['mock value']));
 
       page.setInputValue(page.createInput, value);
 
@@ -160,7 +156,7 @@ describe('SelectCreature integration tests', () => {
       { entry: 3, name: 'Kalhac', subname: 'Mathmatician', minlevel: 1, maxlevel: 80, AIName: '', ScriptName: 'Kalhac.cpp' },
     ];
     querySpy.calls.reset();
-    querySpy.and.returnValue(of({ results }));
+    querySpy.and.returnValue(of(results));
 
     page.clickElement(page.searchBtn);
 

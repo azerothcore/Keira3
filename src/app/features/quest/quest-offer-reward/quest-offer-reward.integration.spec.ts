@@ -3,7 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { QuestOfferRewardComponent } from './quest-offer-reward.component';
 import { QuestOfferRewardModule } from './quest-offer-reward.module';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
@@ -60,7 +60,7 @@ describe('QuestOfferReward integration tests', () => {
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
-      { results: creatingNew ? [] : [originalEntity] }
+      creatingNew ? [] : [originalEntity]
     ));
 
     fixture = TestBed.createComponent(QuestOfferRewardComponent);

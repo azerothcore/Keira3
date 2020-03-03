@@ -7,7 +7,7 @@ import {
   CREATURE_TEMPLATE_NAME, CREATURE_TEMPLATE_TABLE,
   CreatureTemplate
 } from '@keira-types/creature-template.type';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { CreatureHandlerService } from '../creature-handler.service';
 
 @Injectable()

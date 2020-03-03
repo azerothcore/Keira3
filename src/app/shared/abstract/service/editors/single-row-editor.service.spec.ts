@@ -120,12 +120,12 @@ describe('SingleRowEditorService', () => {
     it('should correctly work when loading an existing entity [as main entity]', () => {
       const handlerService = TestBed.inject(MockHandlerService);
       const entity: MockEntity = { id, guid: 12345, name: 'myName' };
-      const data = { results: [entity] };
+      const data = [entity];
       handlerService.isNew = true;
 
       service['onReloadSuccessful'](data, id);
 
-      expect(service['_originalValue']).toEqual(data.results[0]);
+      expect(service['_originalValue']).toEqual(data[0]);
       expect(service.isNew).toBe(false);
 
       expect(handlerService.isNew).toBe(false);
@@ -139,13 +139,13 @@ describe('SingleRowEditorService', () => {
     it('should correctly work when loading an existing entity [as non-main entity]', () => {
       const handlerService = TestBed.inject(MockHandlerService);
       const entity: MockEntity = { id, guid: 12345, name: 'myName' };
-      const data = { results: [entity] };
+      const data = [entity];
       handlerService.isNew = true;
       service['isMainEntity'] = false;
 
       service['onReloadSuccessful'](data, id);
 
-      expect(service['_originalValue']).toEqual(data.results[0]);
+      expect(service['_originalValue']).toEqual(data[0]);
       expect(service.isNew).toBe(false);
 
       expect(handlerService.isNew).toBe(true);
@@ -157,7 +157,7 @@ describe('SingleRowEditorService', () => {
     });
 
     it('should correctly work when creating a new entity', () => {
-      const data = { results: [] };
+      const data = [];
 
       service['onReloadSuccessful'](data, id);
 

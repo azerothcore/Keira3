@@ -21,7 +21,7 @@ export class GameobjectLootTemplateComponent extends LootTemplateComponent<Gameo
       this.editorService.getType().subscribe((data) => {
 
         // always re-check the 'type'
-        this._type = data.results[0].type;
+        this._type = data[0].type;
 
       }, (error: MysqlError) => {
         console.error(error);

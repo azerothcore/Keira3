@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { MillingLootTemplateComponent } from './milling-loot-template.component';
 import { MillingLootTemplateModule } from './milling-loot-template.module';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { MillingLootTemplate } from '@keira-types/milling-loot-template.type';
 import { ItemHandlerService } from '../item-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -52,7 +52,7 @@ describe('MillingLootTemplate integration tests', () => {
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
-      { results: creatingNew ? [] : [originalRow0, originalRow1, originalRow2] }
+      creatingNew ? [] : [originalRow0, originalRow1, originalRow2]
     ));
 
     fixture = TestBed.createComponent(MillingLootTemplateComponent);

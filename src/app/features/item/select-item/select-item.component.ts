@@ -9,7 +9,7 @@ import {
 } from '@keira-types/item-template.type';
 import { SelectItemService } from './select-item.service';
 import { ItemHandlerService } from '../item-handler.service';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 
 @Component({
   selector: 'app-select-item',

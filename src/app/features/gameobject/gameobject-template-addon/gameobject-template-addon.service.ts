@@ -7,7 +7,7 @@ import {
   GAMEOBJECT_TEMPLATE_ADDON_TABLE,
   GameobjectTemplateAddon,
 } from '@keira-types/gameobject-template-addon.type';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 
 @Injectable()

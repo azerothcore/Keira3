@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
 import { GameobjectHandlerService } from '../gameobject-handler.service';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import {
   GAMEOBJECT_LOOT_TEMPLATE_TABLE,
   GameobjectLootTemplate
@@ -13,7 +13,6 @@ import {
   GAMEOBJECT_TEMPLATE_TABLE
 } from '@keira-types/gameobject-template.type';
 import { Observable } from 'rxjs';
-import { MysqlResult } from '@keira-types/general';
 
 @Injectable()
 export class GameobjectLootTemplateService extends LootEditorService<GameobjectLootTemplate> {
@@ -36,7 +35,7 @@ export class GameobjectLootTemplateService extends LootEditorService<GameobjectL
     );
   }
 
-  getType(): Observable<MysqlResult<{ type: number }>> {
+  getType(): Observable<{ type: number }[]> {
     return this.queryService.query(
       `SELECT ${GAMEOBJECT_TEMPLATE_TYPE} `
       + `FROM ${GAMEOBJECT_TEMPLATE_TABLE} `

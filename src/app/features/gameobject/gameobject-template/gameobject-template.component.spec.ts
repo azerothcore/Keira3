@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { GameobjectTemplateComponent } from './gameobject-template.component';
 import { GameobjectTemplateModule } from './gameobject-template.module';
 import { RouterTestingModule } from '@angular/router/testing';

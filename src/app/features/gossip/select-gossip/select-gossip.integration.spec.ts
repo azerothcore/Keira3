@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SelectGossipComponent } from './select-gossip.component';
 import { SelectGossipService } from './select-gossip.service';
 import { SelectGossipModule } from './select-gossip.module';
@@ -44,7 +44,7 @@ describe('SelectGossip integration tests', () => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of(
-      { results: [{ max: 1 }] }
+      [{ max: 1 }]
     ));
 
     selectService = TestBed.inject(SelectGossipService);
@@ -73,7 +73,7 @@ describe('SelectGossip integration tests', () => {
     fixture.whenStable().then(() => {
       querySpy.calls.reset();
       querySpy.and.returnValue(of(
-        { results: [] }
+        []
       ));
 
       page.setInputValue(page.createInput, value);
@@ -96,7 +96,7 @@ describe('SelectGossip integration tests', () => {
     fixture.whenStable().then(() => {
       querySpy.calls.reset();
       querySpy.and.returnValue(of(
-        { results: ['mock value'] }
+        ['mock value']
       ));
 
       page.setInputValue(page.createInput, value);
@@ -150,7 +150,7 @@ describe('SelectGossip integration tests', () => {
       { MenuID: 1, TextID: 3 },
     ];
     querySpy.calls.reset();
-    querySpy.and.returnValue(of({ results }));
+    querySpy.and.returnValue(of(results));
 
     page.clickElement(page.searchBtn);
 

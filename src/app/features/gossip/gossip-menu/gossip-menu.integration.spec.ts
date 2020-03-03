@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { GossipMenuComponent } from './gossip-menu.component';
 import { GossipMenuModule } from './gossip-menu.module';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { GossipMenu } from '@keira-types/gossip-menu.type';
 import { GossipHandlerService } from '../gossip-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -51,7 +51,7 @@ describe('GossipMenu integration tests', () => {
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
-      { results: creatingNew ? [] : [originalRow0, originalRow1, originalRow2] }
+      creatingNew ? [] : [originalRow0, originalRow1, originalRow2]
     ));
 
     fixture = TestBed.createComponent(GossipMenuComponent);

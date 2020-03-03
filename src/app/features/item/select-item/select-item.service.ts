@@ -7,7 +7,7 @@ import {
   ITEM_TEMPLATE_TABLE,
   ItemTemplate
 } from '@keira-types/item-template.type';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { ItemHandlerService } from '../item-handler.service';
 
 @Injectable()

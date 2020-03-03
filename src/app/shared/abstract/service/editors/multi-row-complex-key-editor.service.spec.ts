@@ -11,7 +11,7 @@ import { MultiRowComplexKeyEditorService } from './multi-row-complex-key-editor.
 import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { MockEntity, MockMultiRowComplexKeyEditorService, MockHandlerService } from '@keira-testing/mock-services';
-import { MysqlResult, TableRow } from '@keira-types/general';
+import { TableRow } from '@keira-types/general';
 
 describe('MultiRowComplexKeyEditorService', () => {
   let service: MultiRowComplexKeyEditorService<MockEntity>;
@@ -70,7 +70,7 @@ describe('MultiRowComplexKeyEditorService', () => {
   it('selectQuery should correctly work', () => {
     const queryService = TestBed.inject(MysqlQueryService);
     const selectAllMultipleKeysSpy = spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(
-      of({ mock: 'data' } as TableRow)
+      of([{ mock: 'data' }] as TableRow[])
     );
     const handlerService = TestBed.inject(MockHandlerService);
     // @ts-ignore
@@ -106,7 +106,7 @@ describe('MultiRowComplexKeyEditorService', () => {
       guid: 0,
       name: '',
     }];
-    const mockData: MysqlResult<MockEntity> = { results: res };
+    const mockData: MockEntity[] = res;
     const handlerService = TestBed.inject(MockHandlerService);
     const updateFullQuerySpy: Spy = spyOn<any>(service, 'updateFullQuery');
     const disableFormSpy: Spy = spyOn(service['_form'], 'disable');

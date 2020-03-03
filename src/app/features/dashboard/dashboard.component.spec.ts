@@ -45,8 +45,8 @@ describe('DashboardComponent', () => {
   }));
 
   beforeEach(() => {
-    when(MockedMysqlQueryService.query('SELECT * FROM version')).thenReturn(of({ results: [versionRow] }));
-    when(MockedMysqlQueryService.query('SELECT * FROM version_db_world')).thenReturn(of({ results: [versionDbRow] }));
+    when(MockedMysqlQueryService.query('SELECT * FROM version')).thenReturn(of([versionRow]));
+    when(MockedMysqlQueryService.query('SELECT * FROM version_db_world')).thenReturn(of([versionDbRow]));
 
     fixture = TestBed.createComponent(DashboardComponent);
     page = new DashboardComponentPage(fixture);
@@ -62,7 +62,7 @@ describe('DashboardComponent', () => {
   });
 
   it('should correctly give error if the query does not return the data in the expected format', () => {
-    when(MockedMysqlQueryService.query(anyString())).thenReturn(of({ results: [] }));
+    when(MockedMysqlQueryService.query(anyString())).thenReturn(of([]));
     const errorSpy = spyOn(console, 'error');
 
     component.ngOnInit();

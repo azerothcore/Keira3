@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { GameobjectLootTemplateComponent } from './gameobject-loot-template.component';
 import { GameobjectLootTemplateModule } from './gameobject-loot-template.module';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { GameobjectLootTemplate } from '@keira-types/gameobject-loot-template.type';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -49,11 +49,11 @@ describe('GameobjectLootTemplate integration tests', () => {
 
   function setup(creatingNew: boolean, lootId = id, type = _type)  {
     spyOn(TestBed.inject(GameobjectLootTemplateService), 'getLootId').and.returnValue(of(
-      { results: [{ lootId }] }
+      [{ lootId }]
     ));
 
     spyOn(TestBed.inject(GameobjectLootTemplateService), 'getType').and.returnValue(of(
-      { results: [{ type }] }
+      [{ type }]
     ));
 
     handlerService = TestBed.inject(GameobjectHandlerService);
@@ -64,7 +64,7 @@ describe('GameobjectLootTemplate integration tests', () => {
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
-      { results: creatingNew ? [] : [originalRow0, originalRow1, originalRow2] }
+      creatingNew ? [] : [originalRow0, originalRow1, originalRow2]
     ));
 
     fixture = TestBed.createComponent(GameobjectLootTemplateComponent);

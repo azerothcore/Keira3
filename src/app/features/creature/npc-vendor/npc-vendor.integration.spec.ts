@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { NpcVendorComponent } from './npc-vendor.component';
 import { NpcVendorModule } from './npc-vendor.module';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { NpcVendor } from '@keira-types/npc-vendor.type';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -54,7 +54,7 @@ describe('NpcVendor integration tests', () => {
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
-      { results: creatingNew ? [] : [originalRow0, originalRow1, originalRow2] }
+      creatingNew ? [] : [originalRow0, originalRow1, originalRow2]
     ));
 
     fixture = TestBed.createComponent(NpcVendorComponent);

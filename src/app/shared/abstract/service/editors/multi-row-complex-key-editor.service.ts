@@ -65,7 +65,7 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
     this.reloadEntity();
   }
 
-  protected selectQuery(): Observable<MysqlResult<T>> {
+  protected selectQuery(): Observable<T[]> {
     return this.queryService.selectAllMultipleKeys<T>(this._entityTable, JSON.parse(this.handlerService.selected));
   }
 
@@ -82,10 +82,10 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
     );
   }
 
-  protected onReloadSuccessful(data: MysqlResult<T>) {
+  protected onReloadSuccessful(data: T[]) {
     this._originalRows = [];
     this._newRows = [];
-    for (const row of data.results) {
+    for (const row of data) {
       this._originalRows.push({ ...row });
       this._newRows.push({ ...row });
     }

@@ -9,7 +9,7 @@ import {
 } from '@keira-types/gameobject-template.type';
 import { SelectGameobjectService } from './select-gameobject.service';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 
 @Component({
   selector: 'app-select-gameobject',

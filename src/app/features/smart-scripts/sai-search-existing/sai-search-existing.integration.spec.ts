@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { PageObject } from '@keira-testing/page-object';
 import { SaiSearchExistingComponent } from './sai-search-existing.component';
 import { SaiSearchService } from '@keira-shared/modules/search/sai-search.service';
@@ -43,7 +43,7 @@ describe('SaiSearchExisting integration tests', () => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of(
-      { results: [{ max: 1 }] }
+      [{ max: 1 }]
     ));
 
     selectService = TestBed.inject(SaiSearchService);
@@ -110,7 +110,7 @@ describe('SaiSearchExisting integration tests', () => {
     ];
 
     querySpy.calls.reset();
-    querySpy.and.returnValue(of({ results }));
+    querySpy.and.returnValue(of(results));
 
     page.clickElement(page.searchBtn);
 

@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { CreatureTemplateComponent } from './creature-template.component';
 import { CreatureTemplateModule } from './creature-template.module';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { CreatureTemplate } from '@keira-types/creature-template.type';
 import { CreatureHandlerService } from '../creature-handler.service';
@@ -65,7 +65,7 @@ describe('CreatureTemplate integration tests', () => {
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
-      { results: creatingNew ? [] : [originalEntity] }
+      creatingNew ? [] : [originalEntity]
     ));
 
     fixture = TestBed.createComponent(CreatureTemplateComponent);

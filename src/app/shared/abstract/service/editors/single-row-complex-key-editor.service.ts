@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
-import { MysqlResult, TableRow, Class } from '@keira-types/general';
+import { TableRow, Class } from '@keira-types/general';
 import { SingleRowEditorService } from './single-row-editor.service';
 import { HandlerService } from '../handlers/handler.service';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
@@ -39,7 +39,7 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
 
   protected disableEntityIdField() {}
 
-  protected selectQuery(): Observable<MysqlResult<T>> {
+  protected selectQuery(): Observable<T[]> {
     return this.queryService.selectAllMultipleKeys<T>(this._entityTable, JSON.parse(this.handlerService.selected));
   }
 
@@ -110,10 +110,10 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
     this.handlerService.select(this.handlerService.isNew, getPartial<T>(this._originalValue, this.entityIdFields));
   }
 
-  protected onReloadSuccessful(data: MysqlResult<T>) {
+  protected onReloadSuccessful(data: T[]) {
     if (!this.handlerService.isNew) {
       // we are loading an existing entity
-      this.onLoadedExistingEntity(data.results[0]);
+      this.onLoadedExistingEntity(data[0]);
     } else {
       // we are creating a new entity
       this.onCreatingNewEntity();

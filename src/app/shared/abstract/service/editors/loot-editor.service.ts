@@ -3,7 +3,7 @@ import { ToastrService } from 'ngx-toastr';
 
 import { MultiRowEditorService } from './multi-row-editor.service';
 import { LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, LootTemplate } from '@keira-types/loot-template.type';
-import { Class, MysqlResult } from '@keira-types/general';
+import { Class } from '@keira-types/general';
 import { HandlerService } from '../handlers/handler.service';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
 
@@ -33,7 +33,7 @@ export abstract class LootEditorService<T extends LootTemplate> extends MultiRow
     );
   }
 
-  getLootId(): Observable<MysqlResult<{ lootId: number }>> {
+  getLootId(): Observable<{ lootId: number }[]> {
     return this.queryService.query(
       `SELECT ${this._entityTemplateLootField} AS lootId `
       + `FROM ${this._entityTemplateTable} `

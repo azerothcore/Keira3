@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
 import { QuestHandlerService } from '../quest-handler.service';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
 import {
   QUEST_TEMPLATE_ADDON_ID,
