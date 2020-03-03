@@ -39,10 +39,20 @@
   font-family: Verdana, "Open Sans", Arial, "Helvetica Neue", Helvetica, sans-serif;
   font-size: 18px;
 
-  line-height: 20px;
+  line-height: 28px;
   min-width: 300px;
   width: auto;
   padding: 10px;
 
   color: #ccc;
+}
+
+.stackable {
+  position: absolute;
+  margin-left: -33px;
+  bottom: -5px;
+  font-weight: 700;
+  font-size: 30px;
+  white-space: nowrap;
+  text-shadow: 2px 2px #000;
 }

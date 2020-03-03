@@ -9,13 +9,13 @@ export const ITEM_CLASS: Option[] = [
   { value: 5,  name: 'Reagent' },
   { value: 6,  name: 'Projectile' },
   { value: 7,  name: 'Trade Goods' },
-  { value: 8,  name: 'Generic(OBSOLETE)' },
+  { value: 8,  name: 'Generic', comment: 'OBSOLETE' },
   { value: 9,  name: 'Recipe' },
-  { value: 0,  name: 'Money(OBSOLETE)' },
+  { value: 0,  name: 'Money', comment: 'OBSOLETE' },
   { value: 11, name: 'Quiver' },
   { value: 12, name: 'Quest' },
   { value: 13, name: 'Key' },
-  { value: 14, name: 'Permanent(OBSOLETE)' },
+  { value: 14, name: 'Permanent', comment: 'OBSOLETE' },
   { value: 15, name: 'Miscellaneous' },
   { value: 16, name: 'Glyph' },
 ];
@@ -23,7 +23,7 @@ export const ITEM_CLASS: Option[] = [
 export const ITEM_SUBCLASS: Option[][] = [];
 
 ITEM_SUBCLASS[0] = [
-  { value: 0, name: 'Consumable (usability in combat depends on the assigned spell)' },
+  { value: 0, name: 'Consumable', comment: 'usability in combat depends on the assigned spell' },
   { value: 1, name: 'Potion' },
   { value: 2, name: 'Elixir' },
   { value: 3, name: 'Flask' },
@@ -47,21 +47,21 @@ ITEM_SUBCLASS[1] = [
 ];
 
 ITEM_SUBCLASS[2] = [
-  { value: 0,  name: 'Axe (One-handed)' },
-  { value: 1,  name: 'Axe (Two-handed)' },
+  { value: 0,  name: 'Axe', comment: 'One-handed' },
+  { value: 1,  name: 'Axe', comment: 'Two-handed' },
   { value: 2,  name: 'Bow' },
   { value: 3,  name: 'Gun' },
-  { value: 4,  name: 'Mace (One-handed)' },
-  { value: 5,  name: 'Mace (Two-handed)' },
+  { value: 4,  name: 'Mace', comment: 'One-handed' },
+  { value: 5,  name: 'Mace', comment: 'Two-handed' },
   { value: 6,  name: 'Polearm' },
-  { value: 7,  name: 'Sword (One-handed)' },
-  { value: 8,  name: 'Sword (Two-handed)' },
+  { value: 7,  name: 'Sword', comment: 'One-handed' },
+  { value: 8,  name: 'Sword', comment: 'Two-handed' },
   { value: 9,  name: 'Obsolete' },
   { value: 10, name: 'Staff' },
   { value: 11, name: 'Exotic' },
   { value: 12, name: 'Exotic' },
   { value: 13, name: 'Fist Weapon' },
-  { value: 14, name: 'Miscellaneous (Blacksmith Hammer, Mining Pick, etc.)' },
+  { value: 14, name: 'Miscellaneous', comment: 'Blacksmith Hammer, Mining Pick, etc.' },
   { value: 15, name: 'Dagger' },
   { value: 16, name: 'Thrown' },
   { value: 17, name: 'Spear' },
@@ -88,7 +88,7 @@ ITEM_SUBCLASS[4] = [
   { value: 2,  name: 'Leather' },
   { value: 3,  name: 'Mail' },
   { value: 4,  name: 'Plate' },
-  { value: 5,  name: 'Buckler (OBSOLETE)' },
+  { value: 5,  name: 'Buckler', comment: 'OBSOLETE' },
   { value: 6,  name: 'Shield' },
   { value: 7,  name: 'Libram' },
   { value: 8,  name: 'Idol' },
@@ -101,11 +101,11 @@ ITEM_SUBCLASS[5] = [
 ];
 
 ITEM_SUBCLASS[6] = [
-  { value: 0, name: 'Wand (OBSOLETE)' },
-  { value: 1, name: 'Bolt (OBSOLETE)' },
+  { value: 0, name: 'Wand', comment: 'OBSOLETE' },
+  { value: 1, name: 'Bolt', comment: 'OBSOLETE' },
   { value: 2, name: 'Arrow' },
   { value: 3, name: 'Bullet' },
-  { value: 4, name: 'Thrown (OBSOLETE)' },
+  { value: 4, name: 'Thrown', comment: 'OBSOLETE' },
 ];
 
 ITEM_SUBCLASS[7] = [
@@ -128,7 +128,7 @@ ITEM_SUBCLASS[7] = [
 ];
 
 ITEM_SUBCLASS[8] = [
-  { value: 0, name: 'Generic (OBSOLETE)' },
+  { value: 0, name: 'Generic', comment: 'OBSOLETE' },
 ];
 
 ITEM_SUBCLASS[9] = [
@@ -146,14 +146,14 @@ ITEM_SUBCLASS[9] = [
 ];
 
 ITEM_SUBCLASS[10] = [
-  { value: 0, name: 'Money (OBSOLETE)' },
+  { value: 0, name: 'Money', comment: 'OBSOLETE' },
 ];
 
 ITEM_SUBCLASS[11] = [
   { value: 0, name: 'Quiver (OBSOLETE)' },
   { value: 1, name: 'Quiver (OBSOLETE)' },
-  { value: 2, name: 'Quiver (Can hold arrows)' },
-  { value: 3, name: 'Ammo Pouch (Can hold bullets)' },
+  { value: 2, name: 'Quiver', comment: '(Can hold arrows)' },
+  { value: 3, name: 'Ammo Pouch', comment: 'Can hold bullets' },
 ];
 
 ITEM_SUBCLASS[12] = [

@@ -71,6 +71,23 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   public icon: Promise<string>;
   public statsTop: string = '';
   public statsBottom: string = '';
+  public itemClass: string = '';
+
+  private getItemClass() {
+    this.subscriptions.push(
+      this.editorService.form.controls?.class?.valueChanges.subscribe((itemClass: number) => {
+        const subclass = this.editorService.form.controls?.subcclass?.value;
+        this.itemClass = ITEM_SUBCLASS[itemClass] && ITEM_SUBCLASS[itemClass][subclass] && ITEM_SUBCLASS[itemClass][subclass].name;
+      })
+    );
+
+    this.subscriptions.push(
+      this.editorService.form.controls?.subclass?.valueChanges.subscribe((subclass: number) => {
+        const itemClass = this.editorService.form.controls?.class?.value;
+        this.itemClass = ITEM_SUBCLASS[itemClass] && ITEM_SUBCLASS[itemClass][subclass] && ITEM_SUBCLASS[itemClass][subclass].name;
+      })
+    );
+  }
 
   private calculateStats() {
 
@@ -139,9 +156,8 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
       this.icon = this.sqliteQueryService.getDisplayIdIcon(x);
     });
 
+    this.getItemClass();
     this.calculateStats();
-
-
   }
 
 }
