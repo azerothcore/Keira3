@@ -66,7 +66,7 @@ describe('MysqlQueryService', () => {
   it('query() should call mysqlService.dbQuery() and not output anything if debug mode is disabled', () => {
     const logSpy = spyOn(console, 'log');
     configService.debugMode = false;
-    const querySpy = spyOn(TestBed.inject(MysqlService), 'dbQuery').and.returnValue(of({}));
+    const querySpy = spyOn(TestBed.inject(MysqlService), 'dbQuery').and.returnValue(of(null));
     const myQuery = 'SELECT azerothcore FROM projects;';
 
     service.query(myQuery).subscribe(() => {
