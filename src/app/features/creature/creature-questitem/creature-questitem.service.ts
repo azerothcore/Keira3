@@ -3,7 +3,7 @@ import { ToastrService } from 'ngx-toastr';
 
 import { MultiRowEditorService } from '@keira-abstract/service/editors/multi-row-editor.service';
 import { CreatureHandlerService } from '../creature-handler.service';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import {
   CREATURE_QUESTITEM_ID,
   CREATURE_QUESTITEM_ID_2,

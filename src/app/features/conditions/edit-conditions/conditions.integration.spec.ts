@@ -6,7 +6,7 @@ import Spy = jasmine.Spy;
 
 import { ConditionsComponent } from './conditions.component';
 import { ConditionsEditorModule } from './conditions-editor.module';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { Conditions } from '@keira-types/conditions.type';
 import { ConditionsHandlerService } from '../conditions-handler.service';
@@ -71,7 +71,7 @@ describe('Conditions integration tests', () => {
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(of(
-      { results: creatingNew ? [] : [originalEntity] }
+      creatingNew ? [] : [originalEntity]
     ));
 
     fixture = TestBed.createComponent(ConditionsComponent);

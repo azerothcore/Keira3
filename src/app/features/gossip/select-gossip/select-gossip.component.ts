@@ -9,7 +9,7 @@ import {
 } from '@keira-types/gossip-menu.type';
 import { SelectGossipService } from './select-gossip.service';
 import { GossipHandlerService } from '../gossip-handler.service';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 
 @Component({
   selector: 'app-select-gossip',

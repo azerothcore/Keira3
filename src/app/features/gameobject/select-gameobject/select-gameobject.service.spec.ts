@@ -3,7 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { instance } from 'ts-mockito';
 
 import { SelectGameobjectService } from './select-gameobject.service';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';

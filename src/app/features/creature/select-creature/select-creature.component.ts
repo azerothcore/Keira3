@@ -9,7 +9,7 @@ import {
 } from '@keira-types/creature-template.type';
 import { SelectCreatureService } from './select-creature.service';
 import { CreatureHandlerService } from '../creature-handler.service';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 
 @Component({
   selector: 'app-select-creature',

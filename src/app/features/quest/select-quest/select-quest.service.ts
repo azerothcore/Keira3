@@ -7,7 +7,7 @@ import {
   QUEST_TEMPLATE_TABLE,
   QuestTemplate
 } from '@keira-types/quest-template.type';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { QuestHandlerService } from '../quest-handler.service';
 
 @Injectable()

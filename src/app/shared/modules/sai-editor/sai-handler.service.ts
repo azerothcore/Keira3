@@ -35,7 +35,7 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
       this.queryService.query(
         `SELECT * FROM smart_scripts WHERE source_type = ${sourceType} AND entryorguid = ${entryOrGuid}`
       ).subscribe((data) => {
-        this.select(data.results.length === 0, { source_type: sourceType, entryorguid: entryOrGuid });
+        this.select(data.length === 0, { source_type: sourceType, entryorguid: entryOrGuid });
       })
     );
   }
@@ -94,8 +94,8 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
 
     return this.queryService.query<{ name: string }>(query).pipe(
       map((data) => {
-        if (data.results.length > 0) {
-          return `${data.results[0].name}`;
+        if (data.length > 0) {
+          return `${data[0].name}`;
         } else {
           console.error(`Unable to find name for source_type = ${sai.source_type}, entryorguid = ${sai.entryorguid}`);
           return null;

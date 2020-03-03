@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { GameobjectSpawnComponent } from './gameobject-spawn.component';
 import { GameobjectSpawnModule } from './gameobject-spawn.module';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { GameobjectSpawn } from '@keira-types/gameobject-spawn.type';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -54,7 +54,7 @@ describe('GameobjectSpawn integration tests', () => {
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
-      { results: creatingNew ? [] : [originalRow0, originalRow1, originalRow2] }
+      creatingNew ? [] : [originalRow0, originalRow1, originalRow2]
     ));
 
     fixture = TestBed.createComponent(GameobjectSpawnComponent);

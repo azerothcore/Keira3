@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
 import { SaiEditorService } from '@keira-shared/modules/sai-editor/sai-editor.service';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { SaiCommentGeneratorService } from '@keira-shared/modules/sai-editor/sai-comment-generator.service';
 

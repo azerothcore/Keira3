@@ -7,7 +7,7 @@ import {
   CreatureOnkillReputation
 } from '@keira-types/creature-onkill-reputation.type';
 import { CreatureHandlerService } from '../creature-handler.service';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 
 @Injectable()
 export class CreatureOnkillReputationService extends SingleRowEditorService<CreatureOnkillReputation> {

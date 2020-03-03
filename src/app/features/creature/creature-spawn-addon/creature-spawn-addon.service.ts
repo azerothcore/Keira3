@@ -3,7 +3,7 @@ import { ToastrService } from 'ngx-toastr';
 
 import { MultiRowExternalEditorService } from '@keira-abstract/service/editors/multi-row-external-editor.service';
 import { CreatureHandlerService } from '../creature-handler.service';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import {
   CREATURE_SPAWN_ADDON_ID_2,
   CREATURE_SPAWN_ADDON_TABLE,

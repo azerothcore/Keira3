@@ -51,7 +51,7 @@ describe('SearchService', () => {
 
   it('onSearch() should execute the query and update the rows with the result', () => {
     const newRows = [ { entry: 1 }, { entry: 2 } ] as ItemTemplate[];
-    const spy = spyOn(TestBed.inject(MysqlQueryService), 'query').and.returnValue(of({ results: newRows} ));
+    const spy = spyOn(TestBed.inject(MysqlQueryService), 'query').and.returnValue(of(newRows));
     service.rows = null;
     service.query = newQuery;
 

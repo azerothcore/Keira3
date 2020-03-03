@@ -5,7 +5,7 @@ import { instance } from 'ts-mockito';
 import { MysqlQueryService } from './mysql-query.service';
 import { MysqlService } from './mysql.service';
 import { MockedMysqlService } from '../testing/mocks';
-import { MaxRow, MysqlResult, QueryForm, TableRow } from '../types/general';
+import { MaxRow, QueryForm, TableRow } from '../types/general';
 import { ConfigService } from './config.service';
 
 interface MockRow extends TableRow {
@@ -66,7 +66,7 @@ describe('MysqlQueryService', () => {
   it('query() should call mysqlService.dbQuery() and not output anything if debug mode is disabled', () => {
     const logSpy = spyOn(console, 'log');
     configService.debugMode = false;
-    const querySpy = spyOn(TestBed.inject(MysqlService), 'dbQuery').and.returnValue(of({}));
+    const querySpy = spyOn(TestBed.inject(MysqlService), 'dbQuery').and.returnValue(of(null));
     const myQuery = 'SELECT azerothcore FROM projects;';
 
     service.query(myQuery).subscribe(() => {
@@ -159,7 +159,7 @@ describe('MysqlQueryService', () => {
   });
 
   it('selectAll() should correctly work', async(() => {
-    const data: MysqlResult<TableRow> = { results: [{ key: 'value'}] };
+    const data: TableRow[] = [{ key: 'value'}];
     const querySpy = spyOn(service, 'query').and.returnValue(of(data));
 
     service.selectAll('my_ac', 'param', 'value').subscribe((res) => {
@@ -171,7 +171,7 @@ describe('MysqlQueryService', () => {
   }));
 
   it('selectAllMultipleKeys() should correctly work', async(() => {
-    const data: MysqlResult<TableRow> = { results: [{ key: 'value'}] };
+    const data: TableRow[] = [{ key: 'value'}];
     const querySpy = spyOn(service, 'query').and.returnValue(of(data));
     const row: TableRow = { k1: 1, k2: 2};
 
@@ -184,7 +184,7 @@ describe('MysqlQueryService', () => {
   }));
 
   it('getMaxId() should correctly work', async(() => {
-    const data: MysqlResult<MaxRow> = { results: [{ max: 123 }] };
+    const data: MaxRow[] = [{ max: 123 }];
     const querySpy = spyOn(service, 'query').and.returnValue(of());
 
     service.getMaxId('my_ac', 'param').subscribe((res) => {
@@ -768,7 +768,7 @@ describe('MysqlQueryService', () => {
   describe('queryValue()', () => {
     it('should correctly work', async () => {
       const value = 'mock result value';
-      spyOn(service, 'query').and.returnValue(of({ results: [ { v: value }] }));
+      spyOn(service, 'query').and.returnValue(of([ { v: value }]));
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
 
       expect(await service.queryValue(query)).toEqual(value);
@@ -777,7 +777,7 @@ describe('MysqlQueryService', () => {
     });
 
     it('should be safe in case of no results', async () => {
-      spyOn(service, 'query').and.returnValue(of({ results: [] }));
+      spyOn(service, 'query').and.returnValue(of([]));
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
 
       expect(await service.queryValue(query)).toEqual(null);

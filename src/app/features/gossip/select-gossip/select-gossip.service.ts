@@ -7,7 +7,7 @@ import {
   GOSSIP_MENU_TABLE,
   GossipMenu
 } from '@keira-types/gossip-menu.type';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { GossipHandlerService } from '../gossip-handler.service';
 
 @Injectable()

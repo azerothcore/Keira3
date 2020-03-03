@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { CreatureQueststarterComponent } from './creature-queststarter.component';
 import { CreatureQueststarterModule } from './creature-queststarter.module';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { CreatureQueststarter } from '@keira-types/creature-queststarter.type';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { QuestHandlerService } from '../quest-handler.service';
@@ -52,7 +52,7 @@ describe('CreatureQueststarter integration tests', () => {
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
-      { results: creatingNew ? [] : [originalRow0, originalRow1, originalRow2] }
+      creatingNew ? [] : [originalRow0, originalRow1, originalRow2]
     ));
 
     fixture = TestBed.createComponent(CreatureQueststarterComponent);

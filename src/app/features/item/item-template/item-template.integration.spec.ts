@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { ItemTemplateComponent } from './item-template.component';
 import { ItemTemplateModule } from './item-template.module';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { ItemTemplate } from '@keira-types/item-template.type';
 import { ItemHandlerService } from '../item-handler.service';
@@ -73,7 +73,7 @@ describe('ItemTemplate integration tests', () => {
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
-      { results: creatingNew ? [] : [originalEntity] }
+      creatingNew ? [] : [originalEntity]
     ));
 
     fixture = TestBed.createComponent(ItemTemplateComponent);

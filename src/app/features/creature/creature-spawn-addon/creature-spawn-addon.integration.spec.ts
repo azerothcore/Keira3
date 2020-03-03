@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { CreatureSpawnAddonComponent } from './creature-spawn-addon.component';
 import { CreatureSpawnAddonModule } from './creature-spawn-addon.module';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { CreatureSpawnAddon } from '@keira-types/creature-spawn-addon.type';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -54,7 +54,7 @@ describe('CreatureSpawnAddon integration tests', () => {
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(TestBed.inject(CreatureSpawnAddonService), 'selectQuery').and.returnValue(of(
-      { results: creatingNew ? [] : [originalRow0, originalRow1, originalRow2] }
+      creatingNew ? [] : [originalRow0, originalRow1, originalRow2]
     ));
 
     fixture = TestBed.createComponent(CreatureSpawnAddonComponent);

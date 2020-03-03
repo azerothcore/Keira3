@@ -4,7 +4,7 @@ import { instance } from 'ts-mockito';
 import { ToastrService } from 'ngx-toastr';
 
 import { GossipMenuService } from './gossip-menu.service';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { GossipHandlerService } from '../gossip-handler.service';
 

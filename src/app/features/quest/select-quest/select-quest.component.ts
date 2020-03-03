@@ -9,7 +9,7 @@ import {
 } from '@keira-types/quest-template.type';
 import { SelectQuestService } from './select-quest.service';
 import { QuestHandlerService } from '../quest-handler.service';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 
 @Component({
   selector: 'app-select-quest',

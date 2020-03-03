@@ -3,7 +3,7 @@ import { ToastrService } from 'ngx-toastr';
 
 import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
 import { CreatureHandlerService } from '../creature-handler.service';
-import { MysqlQueryService } from '../../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import {
   CREATURE_EQUIP_TEMPLATE_ID, CREATURE_EQUIP_TEMPLATE_TABLE,
   CreatureEquipTemplate

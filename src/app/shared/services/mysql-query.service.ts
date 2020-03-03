@@ -4,7 +4,7 @@ import { map, tap } from 'rxjs/operators';
 import { Squel, Delete, Insert, Update } from 'squel';
 
 import { MysqlService } from './mysql.service';
-import { MaxRow, MysqlResult, TableRow, ValueRow } from '../types/general';
+import { MaxRow, TableRow, ValueRow } from '../types/general';
 import { squelConfig } from '../../config/squel.config';
 import { ConfigService } from './config.service';
 import { QueryService } from '@keira-shared/services/query.service';
@@ -25,14 +25,15 @@ export class MysqlQueryService extends QueryService {
     super();
   }
 
-  query<T extends TableRow>(queryString: string, values?: string[]): Observable<MysqlResult<T>> {
+  query<T extends TableRow>(queryString: string, values?: string[]): Observable<T[]> {
     return this.mysqlService.dbQuery<T>(queryString, values).pipe(
       tap(val => {
         if (this.configService.debugMode) {
           console.log(`\n${queryString}`);
           console.log(val);
         }
-      })
+      }),
+      map(val => val?.results),
     );
   }
 
@@ -40,7 +41,7 @@ export class MysqlQueryService extends QueryService {
     table: string,
     idField: string,
     idValue: string|number,
-  ): Observable<MysqlResult<T>> {
+  ): Observable<T[]> {
     return this.query<T>(
       squel.select(squelConfig).from(table).where(`${idField} = ${idValue}`).toString()
     );
@@ -49,7 +50,7 @@ export class MysqlQueryService extends QueryService {
   selectAllMultipleKeys<T extends TableRow>(
     table: string,
     row: Partial<T>,
-  ): Observable<MysqlResult<T>> {
+  ): Observable<T[]> {
     const query = squel.select(squelConfig).from(table);
 
     for (const key in row) {
@@ -62,7 +63,7 @@ export class MysqlQueryService extends QueryService {
     return this.query<T>(query.toString());
   }
 
-  getMaxId(table: string, idField: string): Observable<MysqlResult<MaxRow>> {
+  getMaxId(table: string, idField: string): Observable<MaxRow[]> {
     return this.query<MaxRow>(
       `SELECT MAX(${idField}) AS max FROM ${table};`
     );
@@ -343,7 +344,7 @@ export class MysqlQueryService extends QueryService {
   // Input query format must be: SELECT something AS v FROM ...
   queryValue(query: string): Promise<string> {
     return this.query(query).pipe(
-      map((data: MysqlResult<ValueRow>) => (data.results.length > 0) ? data.results[0].v : null),
+      map((data: ValueRow[]) => data.length > 0 ? data[0].v : null),
     ).toPromise();
   }
 
