@@ -24,10 +24,10 @@
       <div class="row">
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="SpellID">SpellID</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'The Spell ID. Future releases of Keira3 will include a selector for it.'"
-          ></i>
+          <app-spell-selector-btn
+            [control]="editorService.form.controls['SpellID']"
+            [modalClass]="'modal-lg'"
+          ></app-spell-selector-btn>
           <input [formControlName]="'SpellID'" id="SpellID" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">

@@ -1,0 +1,39 @@
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { BsModalRef } from 'ngx-bootstrap';
+import { instance } from 'ts-mockito';
+
+import { SpellSelectorModalComponent } from './spell-selector-modal.component';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MockedMysqlQueryService } from '@keira-testing/mocks';
+import { SpellSearchService } from '../../search/spell-search.service';
+import { SpellSelectorModule } from './spell-selector.module';
+
+describe('SpellSelectorModalComponent', () => {
+  let component: SpellSelectorModalComponent;
+  let fixture: ComponentFixture<SpellSelectorModalComponent>;
+  let searchService: SpellSearchService;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [ SpellSelectorModule ],
+      providers: [
+        BsModalRef,
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+      ],
+    })
+    .compileComponents();
+  }));
+
+  beforeEach(() => {
+    searchService = TestBed.inject(SpellSearchService);
+    searchService.query = '--mock query';
+
+    fixture = TestBed.createComponent(SpellSelectorModalComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
