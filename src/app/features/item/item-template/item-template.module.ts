@@ -11,7 +11,6 @@ import { ItemTemplateComponent } from './item-template.component';
 import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
 import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selector/flags-selector.module';
 import { ItemTemplateService } from './item-template.service';
-import { SafeHtmlPipeModule } from 'app/utils/safeHTMLPipe/safe-html-pipe.module';
 
 @NgModule({
   declarations: [
@@ -26,7 +25,6 @@ import { SafeHtmlPipeModule } from 'app/utils/safeHTMLPipe/safe-html-pipe.module
     ToastrModule.forRoot(toastrConfig),
     SingleValueSelectorModule,
     FlagsSelectorModule,
-    SafeHtmlPipeModule,
   ],
   exports: [
     ItemTemplateComponent,

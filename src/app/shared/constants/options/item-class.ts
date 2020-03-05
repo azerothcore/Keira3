@@ -190,3 +190,10 @@ ITEM_SUBCLASS[16] = [
   { value: 9,  name: 'Warlock' },
   { value: 11, name: 'Druid' },
 ];
+
+export enum ITEM_TYPE {
+  CONTAINER  = 1,
+  WEAPON     = 2,
+  ARMOR      = 4,
+  AMMUNITION = 6,
+}

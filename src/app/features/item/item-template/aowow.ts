@@ -1,4 +1,34 @@
+import { ITEM_TYPE } from "@keira-shared/constants/options/item-class";
+
 export const AOWOW_ITEM = {
+  'timeUnits': {
+    sg: ['year',  'month',  'week',  'day',  'hour',  'minute',  'second',  'millisecond'],
+    pl: ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds', 'milliseconds'],
+    ab: ['yr',    'mo',     'wk',    'day',  'hr',    'min',     'sec',     'ms'],
+  },
+  'gl':            [null, 'Major', 'Minor'],                                                                                                                                // MAJOR_GLYPH, MINOR_GLYPH
+  'si':            { '-1': 'Alliance only', '-2': 'Horde only', 0: null, 1: 'Alliance', 2: 'Horde', 3: 'Both' },
+  'resistances':   [null, 'Holy Resistance', 'Fire Resistance', 'Nature Resistance', 'Frost Resistance', 'Shadow Resistance', 'Arcane Resistance'],                         // RESISTANCE?_NAME
+  'dt':            [null, 'Magic', 'Curse', 'Disease', 'Poison', 'Stealth', 'Invisibility', null, null, 'Enrage'],                                                          // SpellDispalType.dbc
+  'sc':            ['Physical', 'Holy', 'Fire', 'Nature', 'Frost', 'Shadow', 'Arcane'],                                                                                     // STRING_SCHOOL_*
+  'cl':            [null, 'Warrior', 'Paladin', 'Hunter', 'Rogue', 'Priest', 'Death Knight', 'Shaman', 'Mage', 'Warlock', null, 'Druid'],                                   // ChrClasses.dbc
+  'ra': {  // ChrRaces.dbc
+    '-2': 'Horde',
+    '-1': 'Alliance',
+    1:    null,
+    2:    'Human',
+    3:    'Orc',
+    4:    'Dwarf',
+    5:    'Night Elf',
+    6:    'Undead',
+    7:    'Tauren',
+    8:    'Gnome',
+    9:    'Troll',
+    10:   null,
+    11:   'Blood Elf',
+    12:   'Draenei',
+  },
+  'rep':           ['Hated', 'Hostile', 'Unfriendly', 'Neutral', 'Friendly', 'Honored', 'Revered', 'Exalted'],                                                              // FACTION_STANDING_LABEL*
   'notFound':          'This item doesn\'t exist.',
   'armor':             '%s Armor',                      // ARMOR_TEMPLATE
   'block':             '%s Block',                      // SHIELD_BLOCK_TEMPLATE
@@ -154,7 +184,7 @@ export const AOWOW_ITEM = {
   ],
   'elixirType': [null, 'Battle', 'Guardian'],
   // 'cat': {                           // ordered by content first, then alphabeticaly; item menu from locale_enus.js
-  //      2: 'Weapons',                                // self::$spell['weaponSubClass']
+  //      2: 'Weapons',                                // self::spell['weaponSubClass']
   //      4: [ // TODO
   //        'Armor', {
   //          1: 'Cloth Armor',                 2: 'Leather Armor',           3: 'Mail Armor',              4: 'Plate Armor',             6: 'Shields',                 7: 'Librams',
@@ -248,3 +278,127 @@ export const AOWOW_ITEM = {
     'Unknown Bonus #%d (%d)',
   ]
 };
+
+export function parseTime(sec: number) {
+  const time = {
+  'd': 0,
+  'h': 0,
+  'm': 0,
+  's': 0,
+  'ms': 0,
+  };
+
+  if (sec >= 3600 * 24) {
+    time['d'] = Math.floor(sec / 3600 / 24);
+    sec -= time['d'] * 3600 * 24;
+  }
+
+  if (sec >= 3600) {
+    time.h = Math.floor(sec / 3600);
+    sec -= time['h'] * 3600;
+  }
+
+  if (sec >= 60) {
+    time.m = Math.floor(sec / 60);
+    sec -= time.m * 60;
+  }
+
+  if (sec > 0) {
+    time['s'] = sec;
+    sec -= time['s'];
+  }
+
+  if ((sec * 1000) % 1000) {
+    time.ms = sec * 1000;
+  }
+
+  return time;
+}
+
+
+export function formatTime(base, short = false) {
+    const s = parseTime(base / 1000);
+    let tmp = 0;
+
+    if (short) {
+        if (tmp = Math.round(s.d / 364)) {
+            return tmp + ' ' + AOWOW_ITEM.timeUnits.ab[0];
+        }
+
+        if (tmp = Math.round(s.d / 30)) {
+          return tmp + ' ' + AOWOW_ITEM.timeUnits.ab[1];
+        }
+        if (tmp = Math.round(s.d / 7)) {
+            return tmp + ' ' + AOWOW_ITEM.timeUnits.ab[2];
+        }
+        if (tmp = Math.round(s.d)) {
+            return tmp + ' ' + AOWOW_ITEM.timeUnits.ab[3];
+        }
+        if (tmp = Math.round(s.h)) {
+            return tmp + ' ' + AOWOW_ITEM.timeUnits.ab[4];
+        }
+        if (tmp = Math.round(s.m)) {
+            return tmp + ' ' + AOWOW_ITEM.timeUnits.ab[5];
+        }
+        if (tmp = Math.round(s.s + s.ms / 1000)) {
+            return tmp + ' ' + AOWOW_ITEM.timeUnits.ab[6];
+        }
+        if (s.ms) {
+            return s.ms + ' ' + AOWOW_ITEM.timeUnits.ab[7];
+        }
+
+        return '0 ' + AOWOW_ITEM.timeUnits.ab[6];
+    } else {
+        tmp = s.d + s.h / 24;
+        if (tmp > 1 && !(tmp % 364)) {                      // whole years
+            return Math.round((s.d + s.h / 24) / 364) + ' ' + AOWOW_ITEM.timeUnits[s.d / 364 === 1 && !s.h ? 'sg' : 'pl'][0];
+        }
+        if (tmp > 1 && !(tmp % 30)) {                       // whole month
+            return Math.round((s.d + s.h / 24) /  30) + ' ' + AOWOW_ITEM.timeUnits[s.d /  30 === 1 && !s.h ? 'sg' : 'pl'][1];
+        }
+        if (tmp > 1 && !(tmp % 7)) {                        // whole weeks
+            return Math.round((s.d + s.h / 24) /   7) + ' ' + AOWOW_ITEM.timeUnits[s.d / 7 === 1 && !s.h ? 'sg' : 'pl'][2];
+        }
+        if (s.d) {
+          return Math.round(s.d + s.h  /   24) + ' ' + AOWOW_ITEM.timeUnits[s.d === 1 && !s.h  ? 'sg' : 'pl'][3];
+        }
+        if (s.h) {
+          return Math.round(s.h + s.m  /   60) + ' ' + AOWOW_ITEM.timeUnits[s.h === 1 && !s.m  ? 'sg' : 'pl'][4];
+        }
+        if (s.m) {
+          return Math.round(s.m + s.s  /   60) + ' ' + AOWOW_ITEM.timeUnits[s.m === 1 && !s.s  ? 'sg' : 'pl'][5];
+        }
+        if (s.s) {
+          return Math.round(s.s + s.ms / 1000) + ' ' + AOWOW_ITEM.timeUnits[s.s === 1 && !s.ms ? 'sg' : 'pl'][6];
+        }
+        if (s.ms) {
+            return s.ms + ' ' + AOWOW_ITEM.timeUnits[s.ms === 1 ? 'sg' : 'pl'][7];
+        }
+
+        return '0 ' + AOWOW_ITEM.timeUnits.pl[6];
+    }
+}
+
+export function getFeralAP(itemClass: number, subclass: number, dps: number): number {
+  // must be weapon
+  if (itemClass !== ITEM_TYPE.WEAPON) {
+    return 0;
+  }
+
+  // must be 2H weapon (2H-Mace, Polearm, Staff, ..Fishing Pole)
+  if (![5, 6, 10, 20].includes(subclass)) {
+    return 0;
+  }
+
+  // thats fucked up..
+  // if (!delay) {
+  //   return 0;
+  // }
+
+  // must have enough damage
+  if (dps < 54.8) {
+    return 0;
+  }
+
+  return Math.round((dps - 54.8) * 14);
+}

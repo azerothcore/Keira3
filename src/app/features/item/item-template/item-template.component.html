@@ -786,7 +786,7 @@
           <div class="icon">
             <div *ngIf="(icon | async) as iconName; else defaultIcon">
               <img [src]="'https://wow.zamimg.com/images/wow/icons/large/' + iconName + '.jpg'">
-              <span class="item-name q1 stackable" *ngIf="editorService.form.controls.stackable.value > 1">{{ editorService.form.controls.stackable.value }}</span>
+              <span class="item-stock q1 stackable" *ngIf="editorService.form.controls.stackable.value > 1">{{ editorService.form.controls.stackable.value }}</span>
             </div>
 
             <ng-template #defaultIcon>
@@ -797,19 +797,21 @@
           <br>
 
           <div class="item-stats">
-            <b [ngClass]="'q' + editorService.form.controls.Quality.value">{{ editorService.form.controls.name.value }}<br></b>
-            <span *ngIf="editorService.form.controls.InventoryType.value > 0" class="float-left">{{ AOWOW_ITEM['inventoryType'][editorService.form.controls.InventoryType.value] }}<br></span>
-            <div class="float-right" *ngIf="editorService.form.controls.InventoryType.value > 0">
-              <span>{{ itemClass }}<br></span>
+            <!-- <b class="item-name" [ngClass]="'q' + editorService.form.controls.Quality.value">{{ editorService.form.controls.name.value }}</b> -->
+            <!-- <span *ngIf="editorService.form.controls.InventoryType.value > 0 && itemType != ''" class="float-left">{{ AOWOW_ITEM['inventoryType'][editorService.form.controls.InventoryType.value] }}<br></span>
+            <div class="float-right" *ngIf="editorService.form.controls.InventoryType.value > 0 && itemType != ''">
+              <span>{{ itemType }}<br></span>
             </div>
             <div class="clearfix"></div>
-            <div [innerHTML]="statsTop | safeHTML"></div>
+            <div [innerHTML]="statsTop | safe: 'html'"></div>
             <span *ngIf="editorService.form.controls.MaxDurability.value > 0">Durability {{ editorService.form.controls.MaxDurability.value + '/' + editorService.form.controls.MaxDurability.value }}<br></span>
             <span *ngIf="editorService.form.controls.RequiredLevel.value > 0">Required Level {{ editorService.form.controls.RequiredLevel.value }}<br></span>
             <span *ngIf="hasItemLevel && editorService.form.controls.ItemLevel.value > 0">Item Level {{ editorService.form.controls.ItemLevel.value }}<br></span>
             <span *ngIf="editorService.form.controls.description.value != ''" class="item-description">{{ editorService.form.controls.description.value }}<br></span>
             <span *ngIf="editorService.form.controls.SellPrice.value > 0">Sell Price: <span [innerHTML]="getPrice(editorService.form.controls.SellPrice.value)"></span><br></span>
-            <div [innerHTML]="statsBottom | safeHTML"></div>
+            <div [innerHTML]="statsBottom | safe: 'html'"></div> -->
+
+            <div [innerHTML]="itemPreview"></div>
           </div>
         </div>
         <div class="clearfix"></div>
