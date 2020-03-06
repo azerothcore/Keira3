@@ -307,6 +307,7 @@
               ></i>
               <app-spell-selector-btn
                 [control]="editorService.form.controls['trainer_spell']"
+                [config]="{ name: 'trainer_spell' }"
                 [modalClass]="'modal-lg'"
               ></app-spell-selector-btn>
               <input [formControlName]="'trainer_spell'" id="trainer_spell" type="number" class="form-control form-control-sm">
@@ -652,6 +653,7 @@
           <label class="control-label" for="spell{{ i }}">spell{{ i }}</label>
           <app-spell-selector-btn
             [control]="editorService.form.controls['spell' + i]"
+            [config]="{ name: 'spell' + i }"
             [modalClass]="'modal-lg'"
           ></app-spell-selector-btn>
           <input [formControlName]="'spell' + i" id="spell{{ i }}" type="number" class="form-control form-control-sm">
