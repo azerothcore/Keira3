@@ -79,6 +79,11 @@
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'The spell ID cast on player upon starting the quest.'"
           ></i>
+          <app-spell-selector-btn
+            [control]="editorService.form.controls['SourceSpellID']"
+            [config]="{ name: 'SourceSpellID' }"
+            [modalClass]="'modal-lg'"
+          ></app-spell-selector-btn>
           <input [formControlName]="'SourceSpellID'" id="SourceSpellID" type="number" class="form-control form-control-sm">
         </div>
 

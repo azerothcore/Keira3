@@ -9,6 +9,10 @@ import { QuestTemplateAddonModule } from './quest-template-addon.module';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { QuestTemplateAddon } from '@keira-types/quest-template-addon.type';
 import { QuestHandlerService } from '../quest-handler.service';
+import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { instance } from 'ts-mockito';
+import { MockedSqliteService } from '@keira-testing/mocks';
+import { SqliteService } from '@keira-shared/services/sqlite.service';
 
 class QuestTemplateAddonPage extends EditorPageObject<QuestTemplateAddonComponent> {}
 
@@ -55,6 +59,7 @@ describe('QuestTemplateAddon integration tests', () => {
       ],
       providers: [
         QuestHandlerService,
+        { provide: SqliteService, useValue: instance(MockedSqliteService) },
       ]
     })
       .compileComponents();
@@ -187,5 +192,38 @@ describe('QuestTemplateAddon integration tests', () => {
         '`RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`, `SpecialFlags`) VALUES\n' +
         '(1234, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 10)');
     });
+
+    it('changing a value via SpellSelector should correctly work', async () => {
+
+      //  note: previously disabled because of:
+      //  https://stackoverflow.com/questions/57336982/how-to-make-angular-tests-wait-for-previous-async-operation-to-complete-before-e
+
+      const field = 'SourceSpellID';
+      const sqliteQueryService = TestBed.inject(SqliteQueryService);
+      spyOn(sqliteQueryService, 'query').and.returnValue(of(
+        [{ ID: 123, spellName: 'Mock Spell' }]
+      ));
+
+      page.clickElement(page.getSelectorBtn(field));
+      page.expectModalDisplayed();
+
+      page.clickSearchBtn();
+
+      await fixture.whenStable();
+      page.clickRowOfDatatable(0);
+      page.clickModalSelect();
+
+      page.expectDiffQueryToContain(
+        'UPDATE `quest_template_addon` SET `SourceSpellID` = 123 WHERE (`ID` = 1234);'
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
+        'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, `PrevQuestID`, `NextQuestID`, ' +
+        '`ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`, `RequiredMinRepFaction`, ' +
+        '`RequiredMaxRepFaction`, `RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`, `SpecialFlags`) VALUES\n' +
+        '(1234, 1, 2, 123, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);'
+      );
+    });
+
   });
 });

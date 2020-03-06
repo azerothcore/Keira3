@@ -424,6 +424,11 @@
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'The required spell that the player needs to have to use this item.'"
           ></i>
+          <app-spell-selector-btn
+            [control]="editorService.form.controls['requiredspell']"
+            [config]="{ name: 'requiredspell' }"
+            [modalClass]="'modal-lg'"
+          ></app-spell-selector-btn>
           <input [formControlName]="'requiredspell'" id="requiredspell" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -723,6 +728,11 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="spellid_{{ i }}">id_{{ i }}</label>
+              <app-spell-selector-btn
+                [control]="editorService.form.controls['spellid_' + i]"
+                [config]="{ name: 'spellid_' + i }"
+                [modalClass]="'modal-lg'"
+              ></app-spell-selector-btn>
               <input [formControlName]="'spellid_' + i" id="spellid_{{ i }}" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">

@@ -129,9 +129,9 @@ describe('CreatureEquipTemplate integration tests', () => {
       );
     });
 
-    xit('changing a value via ItemSelector should correctly work', async () => {
+    it('changing a value via ItemSelector should correctly work', async () => {
 
-      // TODO: test excluded since it will make other tests failing, see:
+      //  note: previously disabled because of:
       //  https://stackoverflow.com/questions/57336982/how-to-make-angular-tests-wait-for-previous-async-operation-to-complete-before-e
 
       const itemEntry = 1200;
@@ -142,7 +142,7 @@ describe('CreatureEquipTemplate integration tests', () => {
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
 
-      page.clickItemSearchBtn();
+      page.clickSearchBtn();
 
       await fixture.whenStable();
       page.clickRowOfDatatable(0);
