@@ -142,7 +142,7 @@ describe('CreatureEquipTemplate integration tests', () => {
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
 
-      page.clickItemSearchBtn();
+      page.clickSearchBtn();
 
       fixture.whenStable().then(() => {
         page.clickRowOfDatatable(0);

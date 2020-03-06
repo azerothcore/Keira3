@@ -102,8 +102,8 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
       .toBeFalsy('Expected modal to be hidden');
   }
 
-  clickItemSearchBtn() {
-    this.clickElement(this.queryOutisdeComponent('#item-search-btn'));
+  clickSearchBtn() {
+    this.clickElement(this.queryOutisdeComponent('#search-btn'));
   }
 
   expectQuerySwitchToBeHidden() {
