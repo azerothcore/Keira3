@@ -11,6 +11,7 @@ import { QuestTemplateAddonComponent } from './quest-template-addon.component';
 import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selector/flags-selector.module';
 import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
 import { QuestTemplateAddonService } from './quest-template-addon.service';
+import { SpellSelectorModule } from '@keira-shared/modules/selectors/spell-selector/spell-selector.module';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { QuestTemplateAddonService } from './quest-template-addon.service';
     ToastrModule.forRoot(toastrConfig),
     FlagsSelectorModule,
     SingleValueSelectorModule,
+    SpellSelectorModule,
   ],
   exports: [
     QuestTemplateAddonComponent,

@@ -414,6 +414,11 @@
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'Spell that is shown to be casted on quest completion in the quest log. Note that this spell will NOT be casted if RewardSpellCast is non-zero.'"
           ></i>
+          <app-spell-selector-btn
+            [control]="editorService.form.controls['RewardSpell']"
+            [config]="{ name: 'RewardSpell' }"
+            [modalClass]="'modal-lg'"
+          ></app-spell-selector-btn>
           <input [formControlName]="'RewardSpell'" id="RewardSpell" type="number" class="form-control form-control-sm">
         </div>
 
