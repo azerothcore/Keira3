@@ -11,6 +11,7 @@ import { CreatureTemplateComponent } from './creature-template.component';
 import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
 import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selector/flags-selector.module';
 import { CreatureTemplateService } from './creature-template.service';
+import { SpellSelectorModule } from '@keira-shared/modules/selectors/spell-selector/spell-selector.module';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { CreatureTemplateService } from './creature-template.service';
     ToastrModule.forRoot(toastrConfig),
     SingleValueSelectorModule,
     FlagsSelectorModule,
+    SpellSelectorModule,
   ],
   exports: [
     CreatureTemplateComponent,

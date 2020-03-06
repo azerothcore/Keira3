@@ -6,10 +6,12 @@ import { MysqlService } from '../services/mysql.service';
 import { MysqlQueryService } from '../services/mysql-query.service';
 import { TableRow } from '../types/general';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { SqliteService } from '@keira-shared/services/sqlite.service';
 
 export const MockedToastrService = mock(ToastrService);
 export const MockedMysqlQueryService = mock(MysqlQueryService);
 export const MockedSqliteQueryService = mock(SqliteQueryService);
+export const MockedSqliteService = mock(SqliteService);
 export const MockedMysqlService = mock(MysqlService);
 export const MockedElectronService = mock(ElectronService);
 
