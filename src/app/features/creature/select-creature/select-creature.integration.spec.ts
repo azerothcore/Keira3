@@ -40,7 +40,7 @@ describe('SelectCreature integration tests', () => {
         SaiCreatureHandlerService,
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -59,59 +59,57 @@ describe('SelectCreature integration tests', () => {
     fixture.detectChanges();
   });
 
-  it('should correctly initialise', async(() => {
-    fixture.whenStable().then(() => {
-      expect(page.createInput.value).toEqual(`${component.customStartingId}`);
-      page.expectNewEntityFree();
-      expect(querySpy).toHaveBeenCalledWith(
-        'SELECT MAX(entry) AS max FROM creature_template;'
-      );
-      expect(page.queryWrapper.innerText).toContain(
-        'SELECT * FROM `creature_template` LIMIT 100'
-      );
-    });
-  }));
+  it('should correctly initialise', async () => {
+    await fixture.whenStable();
+    expect(page.createInput.value).toEqual(`${component.customStartingId}`);
+    page.expectNewEntityFree();
+    expect(querySpy).toHaveBeenCalledWith(
+      'SELECT MAX(entry) AS max FROM creature_template;'
+    );
+    expect(page.queryWrapper.innerText).toContain(
+      'SELECT * FROM `creature_template` LIMIT 100'
+    );
+  });
 
-  it('should correctly behave when inserting and selecting free entry', async(() => {
-    fixture.whenStable().then(() => {
-      querySpy.calls.reset();
-      querySpy.and.returnValue(of([]));
+  it('should correctly behave when inserting and selecting free entry', async () => {
+    await fixture.whenStable();
+    querySpy.calls.reset();
+    querySpy.and.returnValue(of([]));
 
-      page.setInputValue(page.createInput, value);
+    page.setInputValue(page.createInput, value);
 
-      expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy).toHaveBeenCalledWith(
-        `SELECT * FROM \`creature_template\` WHERE (entry = ${value})`
-      );
-      page.expectNewEntityFree();
+    expect(querySpy).toHaveBeenCalledTimes(1);
+    expect(querySpy).toHaveBeenCalledWith(
+      `SELECT * FROM \`creature_template\` WHERE (entry = ${value})`
+    );
+    page.expectNewEntityFree();
 
-      page.clickElement(page.selectNewBtn);
+    page.clickElement(page.selectNewBtn);
 
-      expect(navigateSpy).toHaveBeenCalledTimes(1);
-      expect(navigateSpy).toHaveBeenCalledWith(['creature/creature-template']);
-      page.expectTopBarCreatingNew(value);
-    });
-  }));
+    expect(navigateSpy).toHaveBeenCalledTimes(1);
+    expect(navigateSpy).toHaveBeenCalledWith(['creature/creature-template']);
+    page.expectTopBarCreatingNew(value);
 
-  it('should correctly behave when inserting an existing entity', async(() => {
-    fixture.whenStable().then(() => {
-      querySpy.calls.reset();
-      querySpy.and.returnValue(of(['mock value']));
+  });
 
-      page.setInputValue(page.createInput, value);
+  it('should correctly behave when inserting an existing entity', async () => {
+    await fixture.whenStable();
+    querySpy.calls.reset();
+    querySpy.and.returnValue(of(['mock value']));
 
-      expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy).toHaveBeenCalledWith(
-        `SELECT * FROM \`creature_template\` WHERE (entry = ${value})`
-      );
-      page.expectEntityAlreadyInUse();
-    });
-  }));
+    page.setInputValue(page.createInput, value);
+
+    expect(querySpy).toHaveBeenCalledTimes(1);
+    expect(querySpy).toHaveBeenCalledWith(
+      `SELECT * FROM \`creature_template\` WHERE (entry = ${value})`
+    );
+    page.expectEntityAlreadyInUse();
+  });
 
   for (const { id, entry, name, subname, limit, expectedQuery } of [
     {
       id: 1, entry: 1200, name: 'Helias', subname: 'Dev', limit: '100', expectedQuery:
-      'SELECT * FROM `creature_template` ' +
+        'SELECT * FROM `creature_template` ' +
         'WHERE (`entry` LIKE \'%1200%\') AND (`name` LIKE \'%Helias%\') AND (`subname` LIKE \'%Dev%\') LIMIT 100'
     },
     {

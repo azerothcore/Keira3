@@ -58,11 +58,10 @@ describe('CreateComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should display the next id by default', () => {
-    fixture.whenStable().then(() => {
-      expect(page.idInput.value).toEqual(`${maxId + 1}`);
-      expect(component.loading).toBe(false);
-    });
+  it('should display the next id by default', async () => {
+    await fixture.whenStable();
+    expect(page.idInput.value).toEqual(`${maxId + 1}`);
+    expect(component.loading).toBe(false);
   });
 
   it('should correctly toggle id free status the message', () => {

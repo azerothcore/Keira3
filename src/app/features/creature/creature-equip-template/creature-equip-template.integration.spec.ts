@@ -129,7 +129,7 @@ describe('CreatureEquipTemplate integration tests', () => {
       );
     });
 
-    xit('changing a value via ItemSelector should correctly work', async(() => {
+    xit('changing a value via ItemSelector should correctly work', async () => {
 
       // TODO: test excluded since it will make other tests failing, see:
       //  https://stackoverflow.com/questions/57336982/how-to-make-angular-tests-wait-for-previous-async-operation-to-complete-before-e
@@ -144,20 +144,19 @@ describe('CreatureEquipTemplate integration tests', () => {
 
       page.clickItemSearchBtn();
 
-      fixture.whenStable().then(() => {
-        page.clickRowOfDatatable(0);
-        page.clickModalSelect();
+      await fixture.whenStable();
+      page.clickRowOfDatatable(0);
+      page.clickModalSelect();
 
-        page.expectDiffQueryToContain(
-          'UPDATE `creature_equip_template` SET `ItemID1` = 1200 WHERE (`CreatureID` = 1234);'
-        );
-        page.expectFullQueryToContain(
-          'DELETE FROM `creature_equip_template` WHERE (`CreatureID` = 1234);\n' +
-          'INSERT INTO `creature_equip_template` (`CreatureID`, `ID`, `ItemID1`, `ItemID2`, `ItemID3`, `VerifiedBuild`) VALUES\n' +
-          '(1234, 1, 1200, 0, 0, 0);'
-        );
-      });
-    }));
+      page.expectDiffQueryToContain(
+        'UPDATE `creature_equip_template` SET `ItemID1` = 1200 WHERE (`CreatureID` = 1234);'
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `creature_equip_template` WHERE (`CreatureID` = 1234);\n' +
+        'INSERT INTO `creature_equip_template` (`CreatureID`, `ID`, `ItemID1`, `ItemID2`, `ItemID3`, `VerifiedBuild`) VALUES\n' +
+        '(1234, 1, 1200, 0, 0, 0);'
+      );
+    });
   });
 });
 
