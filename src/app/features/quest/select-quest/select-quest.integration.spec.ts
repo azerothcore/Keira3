@@ -56,8 +56,8 @@ describe('SelectQuest integration tests', () => {
     fixture.detectChanges();
   });
 
-  it('should correctly initialise', async(() => {
-    fixture.whenStable().then(() => {
+  it('should correctly initialise', async () => {
+    await fixture.whenStable();
       expect(page.createInput.value).toEqual(`${component.customStartingId}`);
       page.expectNewEntityFree();
       expect(querySpy).toHaveBeenCalledWith(
@@ -66,11 +66,10 @@ describe('SelectQuest integration tests', () => {
       expect(page.queryWrapper.innerText).toContain(
         'SELECT * FROM `quest_template` LIMIT 100'
       );
-    });
-  }));
+  });
 
-  it('should correctly behave when inserting and selecting free id', async(() => {
-    fixture.whenStable().then(() => {
+  it('should correctly behave when inserting and selecting free id', async () => {
+    await fixture.whenStable();
       querySpy.calls.reset();
       querySpy.and.returnValue(of(
         []
@@ -89,11 +88,10 @@ describe('SelectQuest integration tests', () => {
       expect(navigateSpy).toHaveBeenCalledTimes(1);
       expect(navigateSpy).toHaveBeenCalledWith(['quest/quest-template']);
       page.expectTopBarCreatingNew(value);
-    });
-  }));
+  });
 
-  it('should correctly behave when inserting an existing entity', async(() => {
-    fixture.whenStable().then(() => {
+  it('should correctly behave when inserting an existing entity', async () => {
+    await fixture.whenStable();
       querySpy.calls.reset();
       querySpy.and.returnValue(of(
         ['mock value']
@@ -106,8 +104,7 @@ describe('SelectQuest integration tests', () => {
         `SELECT * FROM \`quest_template\` WHERE (ID = ${value})`
       );
       page.expectEntityAlreadyInUse();
-    });
-  }));
+  });
 
   for (const { testId, id, name, limit, expectedQuery } of [
     {
