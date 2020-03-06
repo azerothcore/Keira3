@@ -55,13 +55,12 @@ describe('SaiSearchExisting integration tests', () => {
     fixture.detectChanges();
   });
 
-  it('should correctly initialise', async(() => {
-    fixture.whenStable().then(() => {
+  it('should correctly initialise', async () => {
+    await fixture.whenStable();
       expect(page.queryWrapper.innerText).toContain(
         'SELECT * FROM `smart_scripts` LIMIT 100'
       );
-    });
-  }));
+  });
 
   for (const { testId, entryorguid, source_type, limit, expectedQuery } of [
     {

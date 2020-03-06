@@ -58,56 +58,53 @@ describe('SelectGameobject integration tests', () => {
     fixture.detectChanges();
   });
 
-  it('should correctly initialise', async(() => {
-    fixture.whenStable().then(() => {
-      expect(page.createInput.value).toEqual(`${component.customStartingId}`);
-      page.expectNewEntityFree();
-      expect(querySpy).toHaveBeenCalledWith(
-        'SELECT MAX(entry) AS max FROM gameobject_template;'
-      );
-      expect(page.queryWrapper.innerText).toContain(
-        'SELECT * FROM `gameobject_template` LIMIT 100'
-      );
-    });
-  }));
+  it('should correctly initialise', async () => {
+    await fixture.whenStable();
+    expect(page.createInput.value).toEqual(`${component.customStartingId}`);
+    page.expectNewEntityFree();
+    expect(querySpy).toHaveBeenCalledWith(
+      'SELECT MAX(entry) AS max FROM gameobject_template;'
+    );
+    expect(page.queryWrapper.innerText).toContain(
+      'SELECT * FROM `gameobject_template` LIMIT 100'
+    );
+  });
 
-  it('should correctly behave when inserting and selecting free id', async(() => {
-    fixture.whenStable().then(() => {
-      querySpy.calls.reset();
-      querySpy.and.returnValue(of([]));
+  it('should correctly behave when inserting and selecting free id', async () => {
+    await fixture.whenStable();
+    querySpy.calls.reset();
+    querySpy.and.returnValue(of([]));
 
-      page.setInputValue(page.createInput, value);
+    page.setInputValue(page.createInput, value);
 
-      expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy).toHaveBeenCalledWith(
-        `SELECT * FROM \`gameobject_template\` WHERE (entry = ${value})`
-      );
-      page.expectNewEntityFree();
+    expect(querySpy).toHaveBeenCalledTimes(1);
+    expect(querySpy).toHaveBeenCalledWith(
+      `SELECT * FROM \`gameobject_template\` WHERE (entry = ${value})`
+    );
+    page.expectNewEntityFree();
 
-      page.clickElement(page.selectNewBtn);
+    page.clickElement(page.selectNewBtn);
 
-      expect(navigateSpy).toHaveBeenCalledTimes(1);
-      expect(navigateSpy).toHaveBeenCalledWith(['gameobject/gameobject-template']);
-      page.expectTopBarCreatingNew(value);
-    });
-  }));
+    expect(navigateSpy).toHaveBeenCalledTimes(1);
+    expect(navigateSpy).toHaveBeenCalledWith(['gameobject/gameobject-template']);
+    page.expectTopBarCreatingNew(value);
+  });
 
-  it('should correctly behave when inserting an existing entity', async(() => {
-    fixture.whenStable().then(() => {
-      querySpy.calls.reset();
-      querySpy.and.returnValue(of(
-        ['mock value']
-      ));
+  it('should correctly behave when inserting an existing entity', async () => {
+    await fixture.whenStable();
+    querySpy.calls.reset();
+    querySpy.and.returnValue(of(
+      ['mock value']
+    ));
 
-      page.setInputValue(page.createInput, value);
+    page.setInputValue(page.createInput, value);
 
-      expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy).toHaveBeenCalledWith(
-        `SELECT * FROM \`gameobject_template\` WHERE (entry = ${value})`
-      );
-      page.expectEntityAlreadyInUse();
-    });
-  }));
+    expect(querySpy).toHaveBeenCalledTimes(1);
+    expect(querySpy).toHaveBeenCalledWith(
+      `SELECT * FROM \`gameobject_template\` WHERE (entry = ${value})`
+    );
+    page.expectEntityAlreadyInUse();
+  });
 
   for (const { testId, id, name, limit, expectedQuery } of [
     {

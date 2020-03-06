@@ -63,13 +63,12 @@ describe('SelectConditions integration tests', () => {
     fixture.detectChanges();
   });
 
-  it('should correctly initialise', async(() => {
-    fixture.whenStable().then(() => {
-      expect(page.queryWrapper.innerText).toContain(
-        'SELECT * FROM `conditions` LIMIT 100'
-      );
-    });
-  }));
+  it('should correctly initialise', async  () => {
+    await fixture.whenStable();
+    expect(page.queryWrapper.innerText).toContain(
+      'SELECT * FROM `conditions` LIMIT 100'
+    );
+  });
 
   for (const { testId, sourceIdorRef, group, entry, limit, expectedQuery } of [
     {
