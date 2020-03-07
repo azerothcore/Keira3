@@ -1,12 +1,3 @@
-.q0  { color: #9d9d9d !important; }
-.q1  { color: #fff    !important; }
-.q2  { color: #1eff00 !important; }
-.q3  { color: #0070dd !important; }
-.q4  { color: #a335ee !important; }
-.q5  { color: #ff8000 !important; }
-.q6  { color: #e5cc80 !important; }
-.q7  { color: #0cf    !important; }
-
 .icon {
   width: 100px;
   height: 100px;
@@ -17,6 +8,10 @@
   width: 90px;
   height: 90px;
   margin-top: 3px;
+}
+
+.item-container {
+  width: 100%;
 }
 
 .item-stock, .item-name {

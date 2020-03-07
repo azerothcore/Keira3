@@ -13,7 +13,7 @@ import { FACTION_RANK } from '@keira-constants/options/faction-rank';
 import { FOOD_TYPE } from '@keira-constants/options/foot-type';
 import { INVENTORY_TYPE } from '@keira-constants/options/inventory-type';
 import { ITEM_BONDING } from '@keira-constants/options/item-bonding';
-import { ITEM_CLASS, ITEM_SUBCLASS, ITEM_TYPE } from '@keira-constants/options/item-class';
+import { ITEM_CLASS, ITEM_SUBCLASS, ITEM_TYPE, ITEM_MOD } from '@keira-constants/options/item-class';
 import { ITEM_MATERIAL } from '@keira-constants/options/item-material';
 import { ITEM_QUALITY, ITEMS_QUALITY } from '@keira-constants/options/item-quality';
 import { ITEM_SHEAT } from '@keira-constants/options/item-sheath';
@@ -272,7 +272,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
         }
 
         if (itemClass === ITEM_TYPE.WEAPON) {
-          this.itemPreview += `<table width="100%"><tr><td>${dmg}</td><th>${speed}<!--spd-->${speed.toFixed(2)}</th></tr></table>`;
+          this.itemPreview += `<table width="100%"><tr><td>${dmg}</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><th>Speed <!--spd-->${speed.toFixed(2)}</th></tr></table>`;
         } else {
           this.itemPreview += `<!--dmg-->${dmg}<br>`;
         }
@@ -291,8 +291,9 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
             + '<br>';
         }
 
+        console.log(dps);
         if (itemClass === ITEM_TYPE.WEAPON) {
-          this.itemPreview += `<!--dps-->${AOWOW_ITEM.dps[dps]}<br>`;
+          this.itemPreview += `<!--dps-->${AOWOW_ITEM.dps.replace('%.1f', dps.toFixed(2))}<br>`;
         }
 
         // display FeralAttackPower if set
@@ -302,21 +303,25 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
         }
     }
 
-    // // Armor
-    // if (itemClass == ITEM_CLASS_ARMOR && $this->curTpl['armorDamageModifier'] > 0)
-    // {
-    //     $spanI = 'class="q2"';
-    //     if ($interactive)
-    //         $spanI = 'class="q2 tip" onmouseover="$WH.Tooltip.showAtCursor(event, $WH.sprintf(LANG.tooltip_armorbonus, '.$this->curTpl['armorDamageModifier'].'), 0, 0, \'q\')" onmousemove="$WH.Tooltip.cursorUpdate(event)" onmouseout="$WH.Tooltip.hide()"';
+    // Armor
+    const armorDamageModifier = this.editorService.form.controls.ArmorDamageModifier.value;
+    const armor = this.editorService.form.controls.armor.value;
+    if (itemClass === ITEM_TYPE.ARMOR && armorDamageModifier > 0) {
+      const spanI = 'class="q2"';
+      // if ($interactive)
+      //   $spanI = `class="q2 tip" onmouseover="$WH.Tooltip.showAtCursor(event, $WH.sprintf(LANG.tooltip_armorbonus,
+      //   ${armorDamageModifier}), 0, 0, \'q\')" onmousemove="$WH.Tooltip.cursorUpdate(event)" onmouseout="$WH.Tooltip.hide()"`;
 
-    //     this.itemPreview += '<span '.$spanI.'><!--addamr'.$this->curTpl['armorDamageModifier'].'--><span>'.Lang::item('armor', [$this->curTpl['armor']]).'</span></span><br>';
-    // }
-    // else if ($this->curTpl['armor'])
-    //     this.itemPreview += '<span><!--amr-->'.Lang::item('armor', [$this->curTpl['armor']]).'</span><br>';
+      this.itemPreview += `<span ${spanI}><!--addamr${armorDamageModifier}--><span>${AOWOW_ITEM.armor.replace('%s', armor)}</span></span><br>`;
+    } else if (armor) {
+      this.itemPreview += `<span><!--amr-->${AOWOW_ITEM.armor.replace('%s', armor)}</span><br>`;
+    }
 
-    // // Block (note: block value from field block and from field stats or parsed from itemSpells are displayed independently)
-    // if ($this->curTpl['tplBlock'])
-    //     this.itemPreview += '<span>'.sprintf(Lang::item('block'), $this->curTpl['tplBlock']).'</span><br>';
+    // Block (note: block value from field block and from field stats or parsed from itemSpells are displayed independently)
+    const block = this.editorService.form.controls.block.value;
+    if (block) {
+      this.itemPreview += `<span>${AOWOW_ITEM.block.replace('%s', block)}</span><br>`;
+    }
 
     // // Item is a gem (don't mix with sockets)
     // if ($geId = $this->curTpl['gemEnchantmentId'])
@@ -354,39 +359,40 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     //     }
     // }
 
-    // // Random Enchantment - if random enchantment is set, prepend stats from it
-    // if ($this->curTpl['randomEnchant'] && empty($enhance['r']))
-    //     this.itemPreview += '<span class="q2">'.Lang::item('randEnchant').'</span><br>';
-    // else if (!empty($enhance['r']))
-    //     this.itemPreview += $randEnchant;
 
-    // // itemMods (display stats and save ratings for later use)
-    // for ($j = 1; $j <= 10; $j++)
-    // {
-    //     $type = $this->curTpl['statType'.$j];
-    //     $qty  = $this->curTpl['statValue'.$j];
+    // Random Enchantment - if random enchantment is set, prepend stats from it
+    const RandomProperty: number = this.editorService.form.controls.RandomProperty.value;
+    if (RandomProperty /* && empty($enhance['r']) */) {
+      this.itemPreview += `<span class="q2">${AOWOW_ITEM.randEnchant}</span><br>`;
+ /*    } else if (!empty($enhance['r'])) {
+      this.itemPreview += $randEnchant;
+    } */
 
-    //     if (!$qty || $type <= 0)
-    //         continue;
+    // itemMods (display stats and save ratings for later use)
+    for (let i = 1; i <= 10; i++) {
+      $type = $this->curTpl['statType'.i];
+      $qty  = $this->curTpl['statValue'.i];
 
-    //     // base stat
-    //     switch ($type)
-    //     {
-    //         case ITEM_MOD_MANA:
-    //         case ITEM_MOD_HEALTH:
-    //             // $type += 1;                          // i think i fucked up somewhere mapping item_mods: offsets may be required somewhere
-    //         case ITEM_MOD_AGILITY:
-    //         case ITEM_MOD_STRENGTH:
-    //         case ITEM_MOD_INTELLECT:
-    //         case ITEM_MOD_SPIRIT:
-    //         case ITEM_MOD_STAMINA:
-    //             this.itemPreview += '<span><!--stat'.$type.'-->'.($qty > 0 ? '+' : '-').abs($qty).' '.Lang::item('statType', $type).'</span><br>';
-    //             break;
-    //         default:                                    // rating with % for reqLevel
-    //             $green[] = $this->parseRating($type, $qty, $interactive, $causesScaling);
+      if (!$qty || $type <= 0) {
+        continue;
+      }
 
-    //     }
-    // }
+      // base stat
+      switch ($type) {
+        case ITEM_MOD.MANA:
+        case ITEM_MOD.HEALTH:
+          // $type += 1;                          // i think i fucked up somewhere mapping item_mods: offsets may be required somewhere
+        case ITEM_MOD.AGILITY:
+        case ITEM_MOD.STRENGTH:
+        case ITEM_MOD.INTELLECT:
+        case ITEM_MOD.SPIRIT:
+        case ITEM_MOD.STAMINA:
+          this.itemPreview += '<span><!--stat'.$type.'-->'.($qty > 0 ? '+' : '-').abs($qty).' '.Lang::item('statType', $type).'</span><br>';
+          break;
+        default:                                    // rating with % for reqLevel
+          $green[] = $this->parseRating($type, $qty, $interactive, $causesScaling);
+      }
+    }
 
     // // magic resistances
     // foreach (Game::$resistanceFields as $j => $rowName)
