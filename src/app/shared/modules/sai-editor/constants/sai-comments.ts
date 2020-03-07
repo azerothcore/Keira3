@@ -7,6 +7,7 @@ SAI_EVENT_COMMENTS[SAI_EVENTS.HAS_AURA] = `On Aura '_hasAuraEventParamOne_'`;
 SAI_EVENT_COMMENTS[SAI_EVENTS.TARGET_BUFFED] = `On Target Buffed With '_spellNameEventParamOne_'`;
 SAI_EVENT_COMMENTS[SAI_EVENTS.SPELLHIT_TARGET] = `On Target Spellhit '_spellNameEventParamOne_'`;
 SAI_EVENT_COMMENTS[SAI_EVENTS.FRIENDLY_MISSING_BUFF] = `On Friendly Unit Missing Buff '_spellNameEventParamOne_'`;
+SAI_EVENT_COMMENTS[SAI_EVENTS.HEALTH_PCT] = `Between _eventParamOne_-_eventParamTwo_% Health`;
 SAI_EVENT_COMMENTS[SAI_EVENTS.MANA_PCT] = `Between _eventParamOne_-_eventParamTwo_% Mana`;
 SAI_EVENT_COMMENTS[SAI_EVENTS.RANGE] = `Within _eventParamOne_-_eventParamTwo_ Range`;
 SAI_EVENT_COMMENTS[SAI_EVENTS.OOC_LOS] = `Within _eventParamOne_-_eventParamTwo_ Range Out of Combat LoS`;
