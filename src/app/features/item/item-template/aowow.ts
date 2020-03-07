@@ -1,4 +1,4 @@
-import { ITEM_TYPE } from "@keira-shared/constants/options/item-class";
+import { ITEM_TYPE, ITEM_MOD } from "@keira-shared/constants/options/item-class";
 
 export const AOWOW_ITEM = {
   'timeUnits': {
@@ -401,4 +401,123 @@ export function getFeralAP(itemClass: number, subclass: number, dps: number): nu
   }
 
   return Math.round((dps - 54.8) * 14);
+}
+
+export const MAX_LEVEL = 80;
+
+export const lvlIndepRating = [        // rating doesn't scale with level
+  ITEM_MOD.MANA,
+  ITEM_MOD.HEALTH,
+  ITEM_MOD.ATTACK_POWER,
+  ITEM_MOD.MANA_REGENERATION,
+  ITEM_MOD.SPELL_POWER,
+  ITEM_MOD.HEALTH_REGEN,
+  ITEM_MOD.SPELL_PENETRATION,
+  ITEM_MOD.BLOCK_VALUE,
+];
+
+export const gtCombatRatings = {
+  12: 1.5,
+  13: 13.8,
+  14: 13.8,
+  15: 5,
+  16: 10,
+  17: 10,
+  18: 8,
+  19: 14,
+  20: 14,
+  21: 14,
+  22: 10,
+  23: 10,
+  24: 8,
+  25: 0,
+  26: 0,
+  27: 0,
+  28: 10,
+  29: 10,
+  30: 10,
+  31: 10,
+  32: 14,
+  33: 0,
+  34: 0,
+  35: 28.75,
+  36: 10,
+  37: 2.5,
+  44: 4.26,
+};
+
+export const resistanceFields = [
+  // null,
+  'holy',
+  'fire',
+  'nature',
+  'frost',
+  'shadow',
+  'arcane',
+];
+
+export function parseRating(type: number, value: number, requiredLevel: number, interactive: boolean = false, /*&*/scaling = false) {
+    // clamp level range
+    const level = requiredLevel > 1 ? requiredLevel : MAX_LEVEL;
+
+     // unknown rating
+    if ([2, 8, 9, 10, 11].includes[type] || type > ITEM_MOD.BLOCK_VALUE || type < 0) {
+        // if (User::isInGroup(U_GROUP_EMPLOYEE))
+        // {
+        //     return sprintf(Lang::item('statType', count(Lang::item('statType')) - 1), type, $value);
+        // } else {
+            return null;
+        // }
+    } else if (lvlIndepRating.includes[type]) { // level independant Bonus
+      return AOWOW_ITEM.trigger[1] + AOWOW_ITEM.statType[type].replace('%d', `<!--rtg${type}-->${value}`);
+    } else { // rating-Bonuses
+        scaling = true;
+
+        // if (interactive) {
+        //   js = '&nbsp;<small>('.sprintf(Util::hangeLevelString, Util::setRatingLevel($level, type, $value)).')</small>';
+        // } else {
+        const js = `&nbsp;<small>(${setRatingLevel(level, type, value)})</small>`;
+        // }
+
+        return AOWOW_ITEM.trigger[1] + AOWOW_ITEM.statType[type].replace('%d', `<!--rtg${type}-->${value}${js}`);
+    }
+}
+
+export function setRatingLevel(level: number, type: number, val: number) {
+  let result = '';
+
+  const rating = [
+    ITEM_MOD.DEFENSE_SKILL_RATING,
+    ITEM_MOD.DODGE_RATING,
+    ITEM_MOD.PARRY_RATING,
+    ITEM_MOD.BLOCK_RATING,
+    ITEM_MOD.RESILIENCE_RATING
+  ];
+
+  if (rating.includes(type) && level < 34) {
+    level = 34;
+  }
+
+  if (gtCombatRatings[type]) {
+    let c = 0;
+    if (level > 70) {
+      c = 82 / 52 * Math.pow(131 / 63, (level - 70) / 10);
+    } else if (level > 60) {
+      c = 82 / (262 - 3 * level);
+    } else if (level > 10) {
+      c = (level - 8) / 52;
+    } else {
+      c = 2 / 52;
+    }
+    // do not use localized number format here!
+    result = (val / gtCombatRatings[type] / c).toFixed(2);
+  }
+
+  if (![ITEM_MOD.DEFENSE_SKILL_RATING, ITEM_MOD.EXPERTISE_RATING].includes(type)) {
+    result += '%';
+  }
+
+  return AOWOW_ITEM.ratingString
+    .replace('%s', `<!--rtg%${type}-->${result}`)
+    .replace('%s', `<!--lvl-->${level}`);
 }

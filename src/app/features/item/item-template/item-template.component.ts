@@ -24,7 +24,7 @@ import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service'
 import { ItemTemplate } from '@keira-types/item-template.type';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { ItemHandlerService } from '../item-handler.service';
-import { AOWOW_ITEM, formatTime, getFeralAP } from './aowow';
+import { AOWOW_ITEM, formatTime, getFeralAP, parseRating, resistanceFields } from './aowow';
 import { ItemTemplateService } from './item-template.service';
 import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
 
@@ -120,6 +120,8 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   private calculatePreview() {
     this.itemPreview = '';
 
+    const green = [];
+
     const flags = this.editorService.form.controls.Flags.value;
     const bonding = this.editorService.form.controls.bonding.value;
     const maxcount = this.editorService.form.controls.maxcount.value;
@@ -173,7 +175,8 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
         this.itemPreview += '<br>' + this.AOWOW_ITEM['uniqueEquipped'][0];
     } /* else if (itemLimitCategory) {
         $limit = DB::Aowow()->selectRow("SELECT * FROM ?_itemlimitcategory WHERE id = ?", $this->curTpl['itemLimitCategory']);
-        this.itemPreview += '<br>'.sprintf(Lang::item($limit['isGem'] ? 'uniqueEquipped' : 'unique', 2), Util::localizedString($limit, 'name'), $limit['count']);
+        this.itemPreview += '<br>'.sprintf(Lang::item($limit['isGem'] ? 'uniqueEquipped' : 'unique', 2),
+          Util::localizedString($limit, 'name'), $limit['count']);
     } */
 
     // max duration
@@ -327,7 +330,8 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     // if ($geId = $this->curTpl['gemEnchantmentId'])
     // {
     //     $gemEnch = DB::Aowow()->selectRow('SELECT * FROM ?_itemenchantment WHERE id = ?d', $geId);
-    //     this.itemPreview += '<span class="q1"><a href="?enchantment='.$geId.'">'.Util::localizedString($gemEnch, 'name').'</a></span><br>';
+    //     this.itemPreview += '<span class="q1"><a href="?enchantment='.$geId.'">'.
+    //        Util::localizedString($gemEnch, 'name').'</a></span><br>';
 
     //     // activation conditions for meta gems
     //     if (!empty($gemEnch['conditionId']))
@@ -347,13 +351,15 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     //                         $vspfArgs = [$gemCnd['value'.$i], Lang::item('gemColors', $gemCnd['color'.$i] - 1)];
     //                         break;
     //                     case 3:                         // requires more <color> than (<value> || <comparecolor>) gems
-    //                         $vspfArgs = [Lang::item('gemColors', $gemCnd['color'.$i] - 1), Lang::item('gemColors', $gemCnd['cmpColor'.$i] - 1)];
+    //                         $vspfArgs = [Lang::item('gemColors', $gemCnd['color'.$i] - 1),
+    //                             Lang::item('gemColors', $gemCnd['cmpColor'.$i] - 1)];
     //                         break;
     //                     default:
     //                         continue;
     //                 }
 
-    //                 this.itemPreview += '<span class="q0">'.Lang::achievement('reqNumCrt').' '.Lang::item('gemConditions', $gemCnd['comparator'.$i], $vspfArgs).'</span><br>';
+    //                 this.itemPreview += '<span class="q0">'.Lang::achievement('reqNumCrt').' '.
+    //                    Lang::item('gemConditions', $gemCnd['comparator'.$i], $vspfArgs).'</span><br>';
     //             }
     //         }
     //     }
@@ -364,21 +370,21 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     const RandomProperty: number = this.editorService.form.controls.RandomProperty.value;
     if (RandomProperty /* && empty($enhance['r']) */) {
       this.itemPreview += `<span class="q2">${AOWOW_ITEM.randEnchant}</span><br>`;
- /*    } else if (!empty($enhance['r'])) {
+     }/* else if (!empty($enhance['r'])) {
       this.itemPreview += $randEnchant;
     } */
 
     // itemMods (display stats and save ratings for later use)
+    const requiredLevel = this.editorService.form.controls.RequiredLevel.value;
     for (let i = 1; i <= 10; i++) {
-      $type = $this->curTpl['statType'.i];
-      $qty  = $this->curTpl['statValue'.i];
+      const type = this.editorService.form.controls['stat_type' + i].value;
+      const qty  = this.editorService.form.controls['stat_value' + i].value;
 
-      if (!$qty || $type <= 0) {
+      if (!qty || type <= 0) {
         continue;
       }
-
       // base stat
-      switch ($type) {
+      switch (type) {
         case ITEM_MOD.MANA:
         case ITEM_MOD.HEALTH:
           // $type += 1;                          // i think i fucked up somewhere mapping item_mods: offsets may be required somewhere
@@ -387,17 +393,20 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
         case ITEM_MOD.INTELLECT:
         case ITEM_MOD.SPIRIT:
         case ITEM_MOD.STAMINA:
-          this.itemPreview += '<span><!--stat'.$type.'-->'.($qty > 0 ? '+' : '-').abs($qty).' '.Lang::item('statType', $type).'</span><br>';
+          this.itemPreview += `<span><!--stat${type}-->${(qty > 0 ? '+' : '-') + Math.abs(qty)} ${AOWOW_ITEM.statType[type]}</span><br>`;
           break;
         default:                                    // rating with % for reqLevel
-          $green[] = $this->parseRating($type, $qty, $interactive, $causesScaling);
+          green.push(parseRating(type, qty, requiredLevel, /* interactive */ false, /* causesScaling */ false));
       }
     }
 
-    // // magic resistances
-    // foreach (Game::$resistanceFields as $j => $rowName)
-    //     if ($rowName && $this->curTpl[$rowName] != 0)
-    //         this.itemPreview += '+'.$this->curTpl[$rowName].' '.Lang::game('resistances', $j).'<br>';
+    // magic resistances
+    resistanceFields.forEach((rowName, idx) => {
+      const resField = this.editorService.form.controls[rowName + '_res'].value;
+      if (rowName && resField !== 0) {
+        this.itemPreview += `+${resField} ${AOWOW_ITEM.resistances[idx]} <br>`;
+      }
+    });
 
     // // Enchantment
     // if (isset($enhance['e']))
@@ -607,10 +616,13 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     // if (!$subOf)
     //     this.itemPreview += '<table><tr><td>';
 
-    // if (isset($green))
-    //     foreach ($green as $j => $bonus)
-    //         if ($bonus)
-    //             this.itemPreview += '<span class="q2">'.$bonus.'</span><br>';
+    if (green) {
+      for (const bonus of green) {
+        if (bonus) {
+          this.itemPreview += `<span class="q2">${bonus}</span><br>`;
+        }
+      }
+    }
 
     // // Item Set
     // $pieces  = [];
@@ -753,7 +765,8 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     //     this.itemPreview += implode('<br>', $xMisc);
 
     // if ($sp = $this->curTpl['sellPrice'])
-    //     this.itemPreview += '<div class="q1 whtt-sellprice">'.Lang::item('sellPrice').Lang::main('colon').Util::formatMoney($sp).'</div>';
+    //     this.itemPreview += '<div class="q1 whtt-sellprice">'.
+    //        Lang::item('sellPrice').Lang::main('colon').Util::formatMoney($sp).'</div>';
 
     // if (!$subOf)
     //     this.itemPreview += '</td></tr></table>';
