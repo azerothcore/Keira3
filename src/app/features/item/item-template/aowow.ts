@@ -1,4 +1,4 @@
-import { ITEM_TYPE, ITEM_MOD } from "@keira-shared/constants/options/item-class";
+import { ITEM_TYPE, ITEM_MOD } from '@keira-shared/constants/options/item-class';
 
 export const AOWOW_ITEM = {
   'timeUnits': {
@@ -520,4 +520,44 @@ export function setRatingLevel(level: number, type: number, val: number) {
   return AOWOW_ITEM.ratingString
     .replace('%s', `<!--rtg%${type}-->${result}`)
     .replace('%s', `<!--lvl-->${level}`);
+}
+
+export enum CLASSES {
+  WARRIOR     = 0x001,
+  PALADIN     = 0x002,
+  HUNTER      = 0x004,
+  ROGUE       = 0x008,
+  PRIEST      = 0x010,
+  DEATHKNIGHT = 0x020,
+  SHAMAN      = 0x040,
+  MAGE        = 0x080,
+  WARLOCK     = 0x100,
+  DRUID       = 0x400,
+  MASK_ALL    = 0x5FF,
+}
+
+export function fmod(a: number, b: number) { return Number((a - (Math.floor(a / b) * b)).toPrecision(8)); }
+
+export function getRequiredClass(classMask: number): string[] {
+  classMask &= CLASSES.MASK_ALL; // clamp to available classes..
+
+  if (classMask === CLASSES.MASK_ALL) { // available to all classes
+    return null;
+  }
+
+  const tmp = [];
+  let i = 1;
+  while (classMask) {
+    if (classMask & (1 << (i - 1))) {
+      const tmpClass = (!fmod(tmp.length + 1, 3) ? '<br>' : '') + AOWOW_ITEM.cl[i];
+      if (tmpClass != null && tmpClass !== '') {
+        tmp.push(tmpClass);
+      }
+
+      classMask &= ~(1 << (i - 1));
+    }
+    i++;
+  }
+
+  return tmp;
 }

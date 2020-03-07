@@ -24,7 +24,7 @@ import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service'
 import { ItemTemplate } from '@keira-types/item-template.type';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { ItemHandlerService } from '../item-handler.service';
-import { AOWOW_ITEM, formatTime, getFeralAP, parseRating, resistanceFields } from './aowow';
+import { AOWOW_ITEM, formatTime, getFeralAP, parseRating, resistanceFields, getRequiredClass } from './aowow';
 import { ItemTemplateService } from './item-template.service';
 import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
 
@@ -494,19 +494,18 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     //     this.itemPreview += '<span class="q'.($hasMatch ? '2' : '0').'">'.Lang::item('socketBonus', ['<a href="?enchantment='.$_.'">'.Util::localizedString($sbonus, 'name').'</a>']).'</span><br>';
     // }
 
-    // // durability
-    // if ($dur = $this->curTpl['durability'])
-    //     this.itemPreview += sprintf(Lang::item('durability'), $dur, $dur).'<br>';
+    // durability
+    const durability = this.editorService.form.controls.MaxDurability.value;
+    if (durability) {
+        this.itemPreview += `${AOWOW_ITEM.durability.replace(/%d/g, durability)}<br>`;
+    }
 
-    // // required classes
-    // if ($classes = Lang::getClassString($this->curTpl['requiredClass'], $jsg, $__))
-    // {
-    //     foreach ($jsg as $js)
-    //         if (empty($this->jsGlobals[TYPE_CLASS][$js]))
-    //             $this->jsGlobals[TYPE_CLASS][$js] = $js;
-
-    //     this.itemPreview += Lang::game('classes').Lang::main('colon').$classes.'<br>';
-    // }
+    // required classes
+    const allowableClasses = this.editorService.form.controls.AllowableClass.value;
+    const classes = getRequiredClass(allowableClasses);
+    if (classes.length > 0) {
+      this.itemPreview += `Classes: ${classes.join(', ')}<br>`;
+    }
 
     // // required races
     // if ($races = Lang::getRaceString($this->curTpl['requiredRace'], $jsg, $__))
