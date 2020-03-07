@@ -179,6 +179,8 @@ describe('QuestTemplateAddon integration tests', () => {
       page.clickModalSelect();
       await fixture.whenStable();
       await fixture.whenRenderingDone();
+      const sleep = time => new Promise(r => setTimeout(r, time));
+      await sleep(500);
 
       expect(page.getInputById(field).value).toEqual('10');
       page.expectDiffQueryToContain(
