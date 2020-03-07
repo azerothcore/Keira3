@@ -7,12 +7,8 @@ describe('LocationService', () => {
     TestBed.configureTestingModule({});
   });
 
-  xit('reload() should correctly work', () => {
+  it('should be defined', () => {
     const service: LocationService = TestBed.inject(LocationService);
-    const spyLocationReload = spyOn<any>(location, 'reload');
-
-    expect(spyLocationReload).toHaveBeenCalledTimes(0);
-    service.reload();
-    expect(spyLocationReload).toHaveBeenCalledTimes(1);
+    expect(service).toBeDefined();
   });
 });
