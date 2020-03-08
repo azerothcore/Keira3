@@ -66,7 +66,7 @@ describe('SelectGameobject integration tests', () => {
       'SELECT MAX(entry) AS max FROM gameobject_template;'
     );
     expect(page.queryWrapper.innerText).toContain(
-      'SELECT * FROM `gameobject_template` LIMIT 100'
+      'SELECT * FROM `gameobject_template` LIMIT 50'
     );
   });
 
