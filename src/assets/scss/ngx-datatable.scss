@@ -269,3 +269,15 @@ label.datatable-checkbox {
   background-color: lightgrey;
   font-weight: 600;
 }
+
+.ngx-datatable.datatable-icon-list {
+  .item-list-icon {
+    float: right;
+    height: 28px;
+    margin-top: -3px;
+  }
+
+  .datatable-body-cell-label {
+    margin-top: 3px;
+  }
+}

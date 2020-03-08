@@ -41,18 +41,23 @@
   <div *ngIf="selectService.rows">
 
     <ngx-datatable
-      class="bootstrap table table-striped text-center datatable-select"
+      class="bootstrap table table-striped text-center datatable-select datatable-icon-list"
       [rows]="selectService.rows"
       [headerHeight]="DTCFG.headerHeight"
       [footerHeight]="DTCFG.footerHeight"
       [columnMode]="DTCFG.columnMode"
-      [rowHeight]="DTCFG.rowHeight"
+      [rowHeight]="DTCFG.rowHeightWithIcon"
       [limit]="DTCFG.limit"
       [selectionType]="DTCFG.selectionType"
       (select)='selectService.onSelect($event)'
       [count]="false"
     >
-      <ngx-datatable-column name="ID" prop="ID" [minWidth]="100">
+      <ngx-datatable-column [minWidth]="50" [sortable]="false">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <img [src]="row.iconLink" class="item-list-icon">
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="ID" prop="ID">
         <ng-template let-row="row" ngx-datatable-cell-template>
           {{ row.entry }}
         </ng-template>

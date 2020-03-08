@@ -9,7 +9,7 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
   rows: T[];
   fields = new FormGroup({});
   queryForm = new FormGroup({
-    'limit': new FormControl(100),
+    'limit': new FormControl(50),
     'fields': this.fields,
   });
   selectFields: string[] = null;
@@ -47,10 +47,13 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
     );
   }
 
+  protected processRows() {}
+
   onSearch() {
     this.subscriptions.push(
       this.queryService.query<T>(this.query).subscribe((data) => {
         this.rows = data;
+        this.processRows();
       })
     );
   }
