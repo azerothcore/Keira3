@@ -6,7 +6,6 @@ import { SqliteService } from '@keira-shared/services/sqlite.service';
 import { ConfigService } from '@keira-shared/services/config.service';
 import { TableRow } from '@keira-types/general';
 import { QueryService } from '@keira-shared/services/query.service';
-import { fromPromise } from 'rxjs/internal-compatibility';
 
 @Injectable({
   providedIn: 'root'
@@ -41,12 +40,6 @@ export class SqliteQueryService extends QueryService {
 
   getDisplayIdIcon(displayId: string | number): Promise<string> {
     return this.queryValue<string>(`SELECT icon AS v FROM display_icons WHERE displayId = ${displayId}`);
-  }
-
-  getIconLinkByDisplayId(displayId: string | number, size: 'large' | 'medium' | 'small'): Promise<string> {
-    return fromPromise(this.getDisplayIdIcon(displayId)).pipe(
-      map(icon => `https://wow.zamimg.com/images/wow/icons/${size}/${icon}.jpg`),
-    ).toPromise();
   }
 
   getSpellNameById(id: string | number): Promise<string> {
