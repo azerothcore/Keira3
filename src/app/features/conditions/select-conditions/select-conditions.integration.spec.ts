@@ -66,7 +66,7 @@ describe('SelectConditions integration tests', () => {
   it('should correctly initialise', async  () => {
     await fixture.whenStable();
     expect(page.queryWrapper.innerText).toContain(
-      'SELECT * FROM `conditions` LIMIT 100'
+      'SELECT * FROM `conditions` LIMIT 50'
     );
   });
 

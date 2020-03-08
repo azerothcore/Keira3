@@ -64,7 +64,7 @@ describe('SelectItem integration tests', () => {
         'SELECT MAX(entry) AS max FROM item_template;'
       );
       expect(page.queryWrapper.innerText).toContain(
-        'SELECT * FROM `item_template` LIMIT 100'
+        'SELECT * FROM `item_template` LIMIT 50'
       );
   });
 

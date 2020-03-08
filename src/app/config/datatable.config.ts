@@ -6,5 +6,6 @@ export const DTCFG = {
   headerHeight: 50,
   footerHeight: 50,
   rowHeight: 30,
+  rowHeightWithIcon: 38,
   selectionType: SelectionType.single,
 };

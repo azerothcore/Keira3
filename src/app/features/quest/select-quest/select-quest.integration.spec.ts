@@ -64,7 +64,7 @@ describe('SelectQuest integration tests', () => {
         'SELECT MAX(ID) AS max FROM quest_template;'
       );
       expect(page.queryWrapper.innerText).toContain(
-        'SELECT * FROM `quest_template` LIMIT 100'
+        'SELECT * FROM `quest_template` LIMIT 50'
       );
   });
 

@@ -67,7 +67,7 @@ describe('SelectCreature integration tests', () => {
       'SELECT MAX(entry) AS max FROM creature_template;'
     );
     expect(page.queryWrapper.innerText).toContain(
-      'SELECT * FROM `creature_template` LIMIT 100'
+      'SELECT * FROM `creature_template` LIMIT 50'
     );
   });
 
