@@ -64,7 +64,7 @@ describe('SelectGossip integration tests', () => {
         'SELECT MAX(MenuID) AS max FROM gossip_menu;'
       );
       expect(page.queryWrapper.innerText).toContain(
-        'SELECT * FROM `gossip_menu` LIMIT 100'
+        'SELECT * FROM `gossip_menu` LIMIT 50'
       );
   });
 
