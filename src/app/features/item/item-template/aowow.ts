@@ -15,18 +15,18 @@ export const AOWOW_ITEM = {
   'ra': {  // ChrRaces.dbc
     '-2': 'Horde',
     '-1': 'Alliance',
-    1:    null,
-    2:    'Human',
-    3:    'Orc',
-    4:    'Dwarf',
-    5:    'Night Elf',
-    6:    'Undead',
-    7:    'Tauren',
-    8:    'Gnome',
-    9:    'Troll',
-    10:   null,
-    11:   'Blood Elf',
-    12:   'Draenei',
+    0:    null,
+    1:    'Human',
+    2:    'Orc',
+    3:    'Dwarf',
+    4:    'Night Elf',
+    5:    'Undead',
+    6:    'Tauren',
+    7:    'Gnome',
+    8:    'Troll',
+    9:    null,
+    10:   'Blood Elf',
+    11:   'Draenei',
   },
   'rep':           ['Hated', 'Hostile', 'Unfriendly', 'Neutral', 'Friendly', 'Honored', 'Revered', 'Exalted'],                                                              // FACTION_STANDING_LABEL*
   'notFound':          'This item doesn\'t exist.',
@@ -555,6 +555,53 @@ export function getRequiredClass(classMask: number): string[] {
       }
 
       classMask &= ~(1 << (i - 1));
+    }
+    i++;
+  }
+
+  return tmp;
+}
+
+export enum RACE {
+  HUMAN         = 0x001,
+  ORC           = 0x002,
+  DWARF         = 0x004,
+  NIGHTELF      = 0x008,
+  UNDEAD        = 0x010,
+  TAUREN        = 0x020,
+  GNOME         = 0x040,
+  TROLL         = 0x080,
+  BLOODELF      = 0x200,
+  DRAENEI       = 0x400,
+  MASK_ALLIANCE = 0x44D,
+  MASK_HORDE    = 0x2B2,
+  MASK_ALL      = 0x6FF,
+}
+
+export function getRaceString(raceMask: number): string[] {
+  raceMask &= RACE.MASK_ALL;                         // clamp to available races..
+
+  if (!raceMask || raceMask === RACE.MASK_ALL) {                    // available to all races (we don't display 'both factions')
+    return null;
+  }
+
+  if (raceMask === RACE.MASK_HORDE) {
+    return [AOWOW_ITEM.ra['-2']];
+  }
+
+  if (raceMask === RACE.MASK_ALLIANCE) {
+    return [AOWOW_ITEM.ra['-1']];
+  }
+
+  const tmp  = [];
+  let i = 1;
+  while (raceMask) {
+    if (raceMask & (1 << (i - 1))) {
+      const tmpRace = AOWOW_ITEM.ra[i];
+      if (tmpRace != null && tmpRace !== '') {
+        tmp.push(tmpRace);
+      }
+      raceMask &= ~(1 << (i - 1));
     }
     i++;
   }

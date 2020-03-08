@@ -24,7 +24,7 @@ import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service'
 import { ItemTemplate } from '@keira-types/item-template.type';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { ItemHandlerService } from '../item-handler.service';
-import { AOWOW_ITEM, formatTime, getFeralAP, parseRating, resistanceFields, getRequiredClass } from './aowow';
+import { AOWOW_ITEM, formatTime, getFeralAP, parseRating, resistanceFields, getRequiredClass, getRaceString } from './aowow';
 import { ItemTemplateService } from './item-template.service';
 import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
 
@@ -503,19 +503,16 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     // required classes
     const allowableClasses = this.editorService.form.controls.AllowableClass.value;
     const classes = getRequiredClass(allowableClasses);
-    if (classes.length > 0) {
+    if (classes) {
       this.itemPreview += `Classes: ${classes.join(', ')}<br>`;
     }
 
-    // // required races
-    // if ($races = Lang::getRaceString($this->curTpl['requiredRace'], $jsg, $__))
-    // {
-    //     foreach ($jsg as $js)
-    //         if (empty($this->jsGlobals[TYPE_RACE][$js]))
-    //             $this->jsGlobals[TYPE_RACE][$js] = $js;
-
-    //     this.itemPreview += Lang::game('races').Lang::main('colon').$races.'<br>';
-    // }
+    // required races
+    const allowableRaces = this.editorService.form.controls.AllowableRace.value;
+    const races = getRaceString(allowableRaces);
+    if (races) {
+      this.itemPreview += `Races: ${races.join(', ')}<br>`;
+    }
 
     // // required honorRank (not used anymore)
     // if ($rhr = $this->curTpl['requiredHonorRank'])
