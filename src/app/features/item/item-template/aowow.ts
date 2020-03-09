@@ -1,4 +1,5 @@
 import { ITEM_TYPE, ITEM_MOD } from '@keira-shared/constants/options/item-class';
+import { QueryService } from '@keira-shared/services/query.service';
 
 export const AOWOW_ITEM = {
   'timeUnits': {
@@ -6,6 +7,13 @@ export const AOWOW_ITEM = {
     pl: ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds', 'milliseconds'],
     ab: ['yr',    'mo',     'wk',    'day',  'hr',    'min',     'sec',     'ms'],
   },
+  'pvpRank': [                           // PVP_RANK_\d_\d(_FEMALE)?
+    null,                           'Private / Scout',                    'Corporal / Grunt',
+    'Sergeant / Sergeant',          'Master Sergeant / Senior Sergeant',  'Sergeant Major / First Sergeant',
+    'Knight / Stone Guard',         'Knight-Lieutenant / Blood Guard',    'Knight-Captain / Legionnare',
+    'Knight-Champion / Centurion',  'Lieutenant Commander / Champion',    'Commander / Lieutenant General',
+    'Marshal / General',            'Field Marshal / Warlord',            'Grand Marshal / High Warlord'
+  ],
   'gl':            [null, 'Major', 'Minor'],                                                                                                                                // MAJOR_GLYPH, MINOR_GLYPH
   'si':            { '-1': 'Alliance only', '-2': 'Horde only', 0: null, 1: 'Alliance', 2: 'Horde', 3: 'Both' },
   'resistances':   [null, 'Holy Resistance', 'Fire Resistance', 'Nature Resistance', 'Frost Resistance', 'Shadow Resistance', 'Arcane Resistance'],                         // RESISTANCE?_NAME
@@ -32,7 +40,7 @@ export const AOWOW_ITEM = {
   'notFound':          'This item doesn\'t exist.',
   'armor':             '%s Armor',                      // ARMOR_TEMPLATE
   'block':             '%s Block',                      // SHIELD_BLOCK_TEMPLATE
-  'charges':           '%d |4Charge:Charges;',          // ITEM_SPELL_CHARGES
+  'charges':           '%d Charges', /* |4Charge: */          // ITEM_SPELL_CHARGES
   'locked':            'Locked',                        // LOCKED
   'ratingString':      '%s&nbsp;@&nbsp;L%s',
   'heroic':            'Heroic',                        // ITEM_HEROIC
@@ -536,7 +544,8 @@ export enum CLASSES {
   MASK_ALL    = 0x5FF,
 }
 
-export function fmod(a: number, b: number) { return Number((a - (Math.floor(a / b) * b)).toPrecision(8)); }
+// TODO: delete this useless function
+// export function fmod(a: number, b: number) { return Number((a - (Math.floor(a / b) * b)).toPrecision(8)); }
 
 export function getRequiredClass(classMask: number): string[] {
   classMask &= CLASSES.MASK_ALL; // clamp to available classes..
@@ -549,7 +558,7 @@ export function getRequiredClass(classMask: number): string[] {
   let i = 1;
   while (classMask) {
     if (classMask & (1 << (i - 1))) {
-      const tmpClass = (!fmod(tmp.length + 1, 3) ? '<br>' : '') + AOWOW_ITEM.cl[i];
+      const tmpClass = AOWOW_ITEM.cl[i];
       if (tmpClass != null && tmpClass !== '') {
         tmp.push(tmpClass);
       }
@@ -607,4 +616,96 @@ export function getRaceString(raceMask: number): string[] {
   }
 
   return tmp;
+}
+
+/* export async function getLocks(lockId: number, queryService: QueryService) {
+  let locks = [];
+  let lock  = await DB::Aowow()->selectRow('SELECT * FROM ?_lock WHERE id = ?d', lockId);
+  if (!lock) {
+      return locks;
+  }
+
+  for (let i = 1; i <= 5; i++) {
+      let prop = lock['properties' + i];
+      let rank = lock['reqSkill' + i];
+      let name = '';
+
+      if (lock['type' + i] === 1) {                      // opened by item
+          name = await queryService.getItemNameById(prop);
+          if (!name) {
+            continue;
+          }
+
+      } else if (lock['type'.i] == 2) {                 // opened by skill
+          // exclude unusual stuff
+          if (!in_array(prop, [1, 2, 3, 4, 9, 16, 20])) {
+              continue;
+          }
+
+          name = self::spell('lockType', prop);
+          if (!name) {
+              continue;
+          }
+
+          // if (interactive) {
+          //     skill = 0;
+          //     switch (prop) {
+          //         case  1: skill = 633; break;       // Lockpicking
+          //         case  2: skill = 182; break;       // Herbing
+          //         case  3: skill = 186; break;       // Mining
+          //         case 20: skill = 773; break;       // Scribing
+          //     }
+
+          //     if (skill) {
+          //         name = '<a href="?skill='.skill.'">'.name.'</a>';
+          //     }
+          // }
+
+          if (rank > 0) {
+              name .= ' ('.rank.')';
+          }
+      } else {
+          continue;
+      }
+
+      locks[lock['type'.i] == 1 ? prop : -prop] = sprintf(self::game('requires'), name);
+  }
+
+  return locks;
+} */
+
+export function canTeachSpell(spellId1: number, spellId2: number = null) {
+  // 483: learn recipe; 55884: learn mount/pet
+  if (![483, 55884].includes(spellId1)) {
+    return false;
+  }
+
+  // needs learnable spell
+  if (!spellId2) {
+    return false;
+  }
+
+  return true;
+}
+
+export function formatMoney(qty: number) {
+  let money = '';
+
+  if (qty >= 10000) {
+    const g = Math.floor(qty / 10000);
+    money += `<span class="moneygold">${g}</span> &nbsp;`;
+    qty -= g * 10000;
+  }
+
+  if (qty >= 100) {
+    const s = Math.floor(qty / 100);
+    money +=`<span class="moneysilver">${s}</span> &nbsp;`;
+    qty -= s * 100;
+  }
+
+  if (qty > 0) {
+    money += `<span class="moneycopper">${qty}</span> &nbsp;`;
+  }
+
+  return money;
 }

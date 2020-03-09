@@ -39,7 +39,20 @@ export class SqliteQueryService {
     return this.queryValue<string>(`SELECT icon AS v FROM display_icons WHERE displayId = ${displayId}`);
   }
 
+  getSkillNameById(skillId: string | number): Promise<string> {
+    return this.queryValue<string>(`SELECT name AS v FROM skills WHERE id = ${skillId} LIMIT 1`);
+  }
+
   getSpellNameById(id: string | number): Promise<string> {
     return this.queryValue<string>(`SELECT spellName AS v FROM spells WHERE id = ${id}`);
+  }
+
+  getFactionNameById(id: string | number): Promise<string> {
+    return this.queryValue<string>(`SELECT m_name_lang_1 AS v FROM factions WHERE m_ID = ${id}`);
+  }
+
+  // TODO: deve ritornare la row
+  getLockById(id: string | number): Promise<string> {
+    return this.queryValue<string>(`SELECT * FROM lock WHERE id = ${id}`);
   }
 }
