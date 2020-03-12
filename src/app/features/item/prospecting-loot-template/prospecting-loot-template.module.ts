@@ -12,6 +12,7 @@ import { toastrConfig } from '@keira-config/toastr.config';
 import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selector/flags-selector.module';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ProspectingLootTemplateService } from './prospecting-loot-template.service';
+import { IconModule } from '@keira-shared/modules/item-icon/icon.module';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { ProspectingLootTemplateService } from './prospecting-loot-template.serv
     ItemSelectorModule,
     FlagsSelectorModule,
     NgxDatatableModule,
+    IconModule,
   ],
   exports: [
     ProspectingLootTemplateComponent,
