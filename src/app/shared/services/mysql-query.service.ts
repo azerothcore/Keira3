@@ -372,6 +372,10 @@ export class MysqlQueryService extends QueryService {
     return this.queryValue(`SELECT name AS v FROM item_template WHERE entry = ${id}`);
   }
 
+  getItemDisplayIdById(id: string|number): Promise<string> {
+    return this.queryValue(`SELECT displayid AS v FROM item_template WHERE entry = ${id}`);
+  }
+
   // Note: at least one param should be defined
   getQuestTitleByCriteria(
     requiredNpcOrGo1: string|number|null,

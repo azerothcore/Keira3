@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { fromPromise } from 'rxjs/internal-compatibility';
-import { map } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
@@ -25,6 +25,12 @@ export class ItemIconService {
   getIconLinkByDisplayId(displayId: string | number, size: 'large' | 'medium' | 'small'): Promise<string> {
     return fromPromise(this.sqliteQueryService.getDisplayIdIcon(displayId)).pipe(
       map(icon => `https://wow.zamimg.com/images/wow/icons/${size}/${icon}.jpg`),
+    ).toPromise();
+  }
+
+  getIconById(id: string | number, size: 'large' | 'medium' | 'small'): Promise<string> {
+    return fromPromise(this.mysqlQueryService.getItemDisplayIdById(id)).pipe(
+      mergeMap(displayId => fromPromise(this.sqliteQueryService.getDisplayIdIcon(displayId))),
     ).toPromise();
   }
 }
