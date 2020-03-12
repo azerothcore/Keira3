@@ -43,14 +43,14 @@ describe('SqliteQueryService', () => {
 
     it('getDisplayIdIcon', () => {
       expect(service.getIconByItemDisplayId(id)).toEqual(result);
-      expect(service.queryValueToPromise).toHaveBeenCalledWith(
+      expect(service.queryValue).toHaveBeenCalledWith(
         `SELECT icon AS v FROM display_icons WHERE displayId = ${id}`
       );
     });
 
-    it('getSpellNameById', () => {
-      expect(service.getSpellNameById(id)).toEqual(resultAsPromise);
-      expect(service.queryValueToPromise).toHaveBeenCalledWith(
+    it('getSpellNameById', async () => {
+      expect(await service.getSpellNameById(id)).toEqual(await resultAsPromise);
+      expect(service.queryValue).toHaveBeenCalledWith(
         `SELECT spellName AS v FROM spells WHERE id = ${id}`
       );
     });
