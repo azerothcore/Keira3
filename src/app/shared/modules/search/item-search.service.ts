@@ -23,6 +23,6 @@ export class ItemSearchService extends SearchService<ItemTemplate> {
   }
 
   protected async processRows() {
-    await this.itemIconService.addIconLinkToRows(this.rows);
+    await this.itemIconService.addIconLinkToRowsByDisplayId(this.rows);
   }
 }

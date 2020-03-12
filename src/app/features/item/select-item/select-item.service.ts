@@ -31,6 +31,6 @@ export class SelectItemService extends SelectService<ItemTemplate> {
   }
 
   protected async processRows() {
-    await this.itemIconService.addIconLinkToRows(this.rows);
+    await this.itemIconService.addIconLinkToRowsByDisplayId(this.rows);
   }
 }

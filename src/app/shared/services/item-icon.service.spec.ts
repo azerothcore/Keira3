@@ -21,7 +21,7 @@ describe('ItemIconService', () => {
       { displayid: 123 },
     ];
 
-    await service.addIconLinkToRows(rows as ItemTemplate[]);
+    await service.addIconLinkToRowsByDisplayId(rows as ItemTemplate[]);
 
     expect(rows[0].iconLink).toEqual(`https://wow.zamimg.com/images/wow/icons/medium/${iconName}.jpg`);
   });
