@@ -342,37 +342,41 @@ export class MysqlQueryService extends QueryService {
   }
 
   // Input query format must be: SELECT something AS v FROM ...
-  queryValue(query: string): Promise<string> {
+  queryValue(query: string): Observable<string> {
     return this.query(query).pipe(
       map((data: ValueRow[]) => data.length > 0 ? data[0].v : null),
-    ).toPromise();
+    );
+  }
+
+  queryValueToPromise(query: string): Promise<string> {
+    return this.queryValue(query).toPromise();
   }
 
   getCreatureNameById(id: string|number): Promise<string> {
-    return this.queryValue(`SELECT name AS v FROM creature_template WHERE entry = ${id}`);
+    return this.queryValueToPromise(`SELECT name AS v FROM creature_template WHERE entry = ${id}`);
   }
 
   getCreatureNameByGuid(guid: string|number): Promise<string> {
-    return this.queryValue(`SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id WHERE c.guid = ${guid}`);
+    return this.queryValueToPromise(`SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id WHERE c.guid = ${guid}`);
   }
 
   getGameObjectNameById(id: string|number): Promise<string> {
-    return this.queryValue(`SELECT name AS v FROM gameobject_template WHERE entry = ${id}`);
+    return this.queryValueToPromise(`SELECT name AS v FROM gameobject_template WHERE entry = ${id}`);
   }
 
   getGameObjectNameByGuid(guid: string|number): Promise<string> {
-    return this.queryValue(`SELECT name AS v FROM gameobject_template AS gt INNER JOIN gameobject AS g ON gt.entry = g.id WHERE g.guid = ${guid}`);
+    return this.queryValueToPromise(`SELECT name AS v FROM gameobject_template AS gt INNER JOIN gameobject AS g ON gt.entry = g.id WHERE g.guid = ${guid}`);
   }
 
   getQuestTitleById(id: string|number): Promise<string> {
-    return this.queryValue(`SELECT LogTitle AS v FROM quest_template WHERE ID = ${id}`);
+    return this.queryValueToPromise(`SELECT LogTitle AS v FROM quest_template WHERE ID = ${id}`);
   }
 
   getItemNameById(id: string|number): Promise<string> {
-    return this.queryValue(`SELECT name AS v FROM item_template WHERE entry = ${id}`);
+    return this.queryValueToPromise(`SELECT name AS v FROM item_template WHERE entry = ${id}`);
   }
 
-  getItemDisplayIdById(id: string|number): Promise<string> {
+  getItemDisplayIdById(id: string|number): Observable<string> {
     return this.queryValue(`SELECT displayid AS v FROM item_template WHERE entry = ${id}`);
   }
 
@@ -402,6 +406,6 @@ export class MysqlQueryService extends QueryService {
       query.where(`RequiredSpellCast1 = ${requiredSpellCast1}`);
     }
 
-    return this.queryValue(query.toString());
+    return this.queryValueToPromise(query.toString());
   }
 }

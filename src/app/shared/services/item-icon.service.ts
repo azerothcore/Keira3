@@ -5,6 +5,7 @@ import { map, mergeMap } from 'rxjs/operators';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { ItemTemplate } from '@keira-types/item-template.type';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -23,14 +24,18 @@ export class ItemIconService {
   }
 
   getIconLinkByDisplayId(displayId: string | number, size: 'large' | 'medium' | 'small'): Promise<string> {
-    return fromPromise(this.sqliteQueryService.getDisplayIdIcon(displayId)).pipe(
+    return this.getIconByDisplayId(displayId).pipe(
       map(icon => `https://wow.zamimg.com/images/wow/icons/${size}/${icon}.jpg`),
     ).toPromise();
   }
 
-  getIconById(id: string | number, size: 'large' | 'medium' | 'small'): Promise<string> {
-    return fromPromise(this.mysqlQueryService.getItemDisplayIdById(id)).pipe(
-      mergeMap(displayId => fromPromise(this.sqliteQueryService.getDisplayIdIcon(displayId))),
-    ).toPromise();
+  getIconByDisplayId(displayId: string | number): Observable<string> {
+    return this.sqliteQueryService.queryValue<string>(`SELECT icon AS v FROM display_icons WHERE displayId = ${displayId}`);
+  }
+
+  getIconById(id: string | number): Observable<string> {
+    return this.mysqlQueryService.getItemDisplayIdById(id).pipe(
+      mergeMap(displayId => this.getIconByDisplayId(displayId)),
+    );
   }
 }

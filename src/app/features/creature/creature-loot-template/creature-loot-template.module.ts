@@ -12,6 +12,7 @@ import { toastrConfig } from '@keira-config/toastr.config';
 import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selector/flags-selector.module';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { CreatureLootTemplateService } from './creature-loot-template.service';
+import { IconModule } from '@keira-shared/modules/item-icon/icon.module';
 
 @NgModule({
   declarations: [
@@ -24,9 +25,10 @@ import { CreatureLootTemplateService } from './creature-loot-template.service';
     QueryOutputModule,
     TooltipModule.forRoot(),
     ToastrModule.forRoot(toastrConfig),
+    NgxDatatableModule,
     ItemSelectorModule,
     FlagsSelectorModule,
-    NgxDatatableModule,
+    IconModule,
   ],
   exports: [
     CreatureLootTemplateComponent,
