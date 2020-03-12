@@ -33,22 +33,23 @@ describe('SqliteQueryService', () => {
   });
 
   describe('get helpers', () => {
-    const result = of('mock result').toPromise();
+    const result = of('mock result');
+    const resultAsPromise = result.toPromise();
     const id = '123';
 
     beforeEach(() => {
-      spyOn(service, 'queryValueToPromise').and.returnValue(result);
+      spyOn(service, 'queryValue').and.returnValue(result);
     });
 
     it('getDisplayIdIcon', () => {
-      expect(service.getDisplayIdIcon(id)).toEqual(result);
+      expect(service.getIconByItemDisplayId(id)).toEqual(result);
       expect(service.queryValueToPromise).toHaveBeenCalledWith(
         `SELECT icon AS v FROM display_icons WHERE displayId = ${id}`
       );
     });
 
     it('getSpellNameById', () => {
-      expect(service.getSpellNameById(id)).toEqual(result);
+      expect(service.getSpellNameById(id)).toEqual(resultAsPromise);
       expect(service.queryValueToPromise).toHaveBeenCalledWith(
         `SELECT spellName AS v FROM spells WHERE id = ${id}`
       );

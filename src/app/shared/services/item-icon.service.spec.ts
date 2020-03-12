@@ -13,16 +13,16 @@ describe('ItemIconService', () => {
     service = TestBed.inject(ItemIconService);
   });
 
-  it('addIconLinkToRows() should correctly work', async () => {
-    const sqliteQueryService = TestBed.inject(SqliteQueryService);
-    const iconName = 'mock_icon_name';
-    spyOn(sqliteQueryService, 'getDisplayIdIcon').and.returnValue(of(iconName).toPromise());
-    const rows: Partial<ItemTemplate>[] = [
-      { displayid: 123 },
-    ];
-
-    await service.addIconLinkToRows(rows as ItemTemplate[]);
-
-    expect(rows[0].iconLink).toEqual(`https://wow.zamimg.com/images/wow/icons/medium/${iconName}.jpg`);
-  });
+  // it('addIconLinkToRows() should correctly work', async () => {
+  //   const sqliteQueryService = TestBed.inject(SqliteQueryService);
+  //   const iconName = 'mock_icon_name';
+  //   spyOn(sqliteQueryService, 'getDisplayIdIcon').and.returnValue(of(iconName).toPromise());
+  //   const rows: Partial<ItemTemplate>[] = [
+  //     { displayid: 123 },
+  //   ];
+  //
+  //   await service.addIconLinkToRows(rows as ItemTemplate[]);
+  //
+  //   expect(rows[0].iconLink).toEqual(`https://wow.zamimg.com/images/wow/icons/medium/${iconName}.jpg`);
+  // });
 });

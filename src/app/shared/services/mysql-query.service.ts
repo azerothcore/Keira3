@@ -376,7 +376,7 @@ export class MysqlQueryService extends QueryService {
     return this.queryValueToPromise(`SELECT name AS v FROM item_template WHERE entry = ${id}`);
   }
 
-  getItemDisplayIdById(id: string|number): Observable<string> {
+  getDisplayIdByItemId(id: string|number): Observable<string> {
     return this.queryValue(`SELECT displayid AS v FROM item_template WHERE entry = ${id}`);
   }
 

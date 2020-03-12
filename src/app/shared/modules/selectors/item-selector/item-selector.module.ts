@@ -8,6 +8,7 @@ import { highlightOptions } from '@keira-config/highlight.config';
 import { HighlightModule } from 'ngx-highlightjs';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ModalModule } from 'ngx-bootstrap';
+import { IconModule } from '@keira-shared/modules/item-icon/icon.module';
 
 @NgModule({
   entryComponents: [
@@ -23,6 +24,7 @@ import { ModalModule } from 'ngx-bootstrap';
     NgxDatatableModule,
     ModalModule.forRoot(),
     HighlightModule.forRoot(highlightOptions),
+    IconModule,
   ],
   exports: [
     ItemSelectorBtnComponent,

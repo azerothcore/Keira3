@@ -42,6 +42,10 @@ export class SqliteQueryService extends QueryService {
     return this.queryValue<T>(query).toPromise();
   }
 
+  getIconByItemDisplayId(displayId: string | number): Observable<string> {
+    return this.queryValue<string>(`SELECT icon AS v FROM display_icons WHERE displayId = ${displayId}`);
+  }
+
   getSpellNameById(id: string | number): Promise<string> {
     return this.queryValueToPromise<string>(`SELECT spellName AS v FROM spells WHERE id = ${id}`);
   }

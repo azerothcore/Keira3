@@ -29,8 +29,4 @@ export class SelectItemService extends SelectService<ItemTemplate> {
       ITEM_TEMPLATE_SEARCH_FIELDS,
     );
   }
-
-  protected async processRows() {
-    await this.itemIconService.addIconLinkToRows(this.rows);
-  }
 }

@@ -47,13 +47,10 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
     );
   }
 
-  protected processRows() {}
-
   onSearch() {
     this.subscriptions.push(
       this.queryService.query<T>(this.query).subscribe((data) => {
         this.rows = data;
-        this.processRows();
       })
     );
   }

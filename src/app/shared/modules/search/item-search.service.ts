@@ -21,8 +21,4 @@ export class ItemSearchService extends SearchService<ItemTemplate> {
   ) {
     super(queryService, ITEM_TEMPLATE_TABLE, ITEM_TEMPLATE_SEARCH_FIELDS);
   }
-
-  protected async processRows() {
-    await this.itemIconService.addIconLinkToRows(this.rows);
-  }
 }
