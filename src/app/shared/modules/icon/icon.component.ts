@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
-import { ItemIconService } from '@keira-shared/services/item-icon.service';
+import { IconService } from '@keira-shared/modules/icon/icon.service';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
 
 @Component({
@@ -25,7 +25,7 @@ export class IconComponent extends SubscriptionHandler {
   }
 
   constructor(
-    private readonly itemIconService: ItemIconService,
+    private readonly itemIconService: IconService,
     private readonly cd: ChangeDetectorRef,
   ) {
     super();

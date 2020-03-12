@@ -1,16 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ItemIconService } from './item-icon.service';
+import { IconService } from './icon.service';
 import { ItemTemplate } from '@keira-types/item-template.type';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { of } from 'rxjs';
 
-describe('ItemIconService', () => {
-  let service: ItemIconService;
+fdescribe('ItemIconService', () => {
+  let service: IconService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ItemIconService);
+    service = TestBed.inject(IconService);
   });
 
   // it('addIconLinkToRows() should correctly work', async () => {

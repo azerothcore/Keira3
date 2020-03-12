@@ -12,7 +12,7 @@ import { PickpocketingLootTemplateComponent } from './pickpocketing-loot-templat
 import { ItemSelectorModule } from '@keira-shared/modules/selectors/item-selector/item-selector.module';
 import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selector/flags-selector.module';
 import { PickpocketingLootTemplateService } from './pickpocketing-loot-template.service';
-import { IconModule } from '@keira-shared/modules/item-icon/icon.module';
+import { IconModule } from '@keira-shared/modules/icon/icon.module';
 
 @NgModule({
   declarations: [

@@ -10,7 +10,7 @@ import { QueryOutputModule } from '@keira-shared/modules/query-output/query-outp
 import { CreatureQuestitemComponent } from './creature-questitem.component';
 import { ItemSelectorModule } from '@keira-shared/modules/selectors/item-selector/item-selector.module';
 import { CreatureQuestitemService } from './creature-questitem.service';
-import { IconModule } from '@keira-shared/modules/item-icon/icon.module';
+import { IconModule } from '@keira-shared/modules/icon/icon.module';
 
 @NgModule({
   declarations: [

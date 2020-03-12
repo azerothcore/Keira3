@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class ItemIconService {
+export class IconService {
 
   constructor(
     private sqliteQueryService: SqliteQueryService,

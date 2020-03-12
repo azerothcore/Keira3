@@ -8,7 +8,7 @@ import { highlightOptions } from '@keira-config/highlight.config';
 import { HighlightModule } from 'ngx-highlightjs';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ModalModule } from 'ngx-bootstrap';
-import { IconModule } from '@keira-shared/modules/item-icon/icon.module';
+import { IconModule } from '@keira-shared/modules/icon/icon.module';
 
 @NgModule({
   entryComponents: [
