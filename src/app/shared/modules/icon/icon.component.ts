@@ -12,12 +12,12 @@ export class IconComponent extends SubscriptionHandler {
   private readonly DEFAULT_ICON = 'inv_misc_questionmark';
   private _iconId: string = this.DEFAULT_ICON;
 
-  @Input() size = 'medium';
+  @Input() size: 'small'|'medium'|'large' = 'medium';
   @Input() set itemId(itemId: string) {
-    this.subscriptions.push(this.itemIconService.getIconByItemId(itemId).subscribe(this.setIcon.bind(this)));
+    this.subscriptions.push(this.service.getIconByItemId(itemId).subscribe(this.setIcon.bind(this)));
   }
   @Input() set itemDisplayId(displayId: string) {
-    this.subscriptions.push(this.itemIconService.getIconByItemDisplayId(displayId).subscribe(this.setIcon.bind(this)));
+    this.subscriptions.push(this.service.getIconByItemDisplayId(displayId).subscribe(this.setIcon.bind(this)));
   }
 
   get iconLink(): string {
@@ -25,7 +25,7 @@ export class IconComponent extends SubscriptionHandler {
   }
 
   constructor(
-    private readonly itemIconService: IconService,
+    private readonly service: IconService,
     private readonly cd: ChangeDetectorRef,
   ) {
     super();
