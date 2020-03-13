@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { Squel, Delete, Insert, Update } from 'squel';
 
@@ -377,7 +377,7 @@ export class MysqlQueryService extends QueryService {
   }
 
   getDisplayIdByItemId(id: string|number): Observable<string> {
-    return this.queryValue(`SELECT displayid AS v FROM item_template WHERE entry = ${id}`);
+    return !!id ? this.queryValue(`SELECT displayid AS v FROM item_template WHERE entry = ${id}`) : of(null);
   }
 
   // Note: at least one param should be defined

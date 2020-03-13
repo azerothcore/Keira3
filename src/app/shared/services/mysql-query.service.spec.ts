@@ -787,65 +787,81 @@ describe('MysqlQueryService', () => {
   });
 
   describe('get helpers', () => {
-    const result = of('mock result').toPromise();
+    const result = of('mock result');
+    const resultToPromise = result.toPromise();
     const id = '123';
     const guid = id;
 
     beforeEach(() => {
-      spyOn(service, 'queryValueToPromise').and.returnValue(result);
+      spyOn(service, 'queryValue').and.returnValue(result);
+      spyOn(service, 'queryValueToPromise').and.returnValue(resultToPromise);
     });
 
     it('getCreatureNameById', () => {
-      expect(service.getCreatureNameById(id)).toEqual(result);
+      expect(service.getCreatureNameById(id)).toEqual(resultToPromise);
       expect(service.queryValueToPromise).toHaveBeenCalledWith(
         `SELECT name AS v FROM creature_template WHERE entry = ${id}`
       );
     });
 
     it('getCreatureNameByGuid', () => {
-      expect(service.getCreatureNameByGuid(guid)).toEqual(result);
+      expect(service.getCreatureNameByGuid(guid)).toEqual(resultToPromise);
       expect(service.queryValueToPromise).toHaveBeenCalledWith(
         `SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id WHERE c.guid = ${guid}`
       );
     });
 
     it('getGameObjectNameById', () => {
-      expect(service.getGameObjectNameById(id)).toEqual(result);
+      expect(service.getGameObjectNameById(id)).toEqual(resultToPromise);
       expect(service.queryValueToPromise).toHaveBeenCalledWith(
         `SELECT name AS v FROM gameobject_template WHERE entry = ${id}`
       );
     });
 
     it('getGameObjectNameByGuid', () => {
-      expect(service.getGameObjectNameByGuid(guid)).toEqual(result);
+      expect(service.getGameObjectNameByGuid(guid)).toEqual(resultToPromise);
       expect(service.queryValueToPromise).toHaveBeenCalledWith(
         `SELECT name AS v FROM gameobject_template AS gt INNER JOIN gameobject AS g ON gt.entry = g.id WHERE g.guid = ${guid}`
       );
     });
 
     it('getQuestTitleById', () => {
-      expect(service.getQuestTitleById(id)).toEqual(result);
+      expect(service.getQuestTitleById(id)).toEqual(resultToPromise);
       expect(service.queryValueToPromise).toHaveBeenCalledWith(
         `SELECT LogTitle AS v FROM quest_template WHERE ID = ${id}`
       );
     });
 
     it('getItemNameById', () => {
-      expect(service.getItemNameById(id)).toEqual(result);
+      expect(service.getItemNameById(id)).toEqual(resultToPromise);
       expect(service.queryValueToPromise).toHaveBeenCalledWith(
         `SELECT name AS v FROM item_template WHERE entry = ${id}`
       );
     });
 
+    it('getDisplayIdByItemId (case non-null)', () => {
+      expect(service.getDisplayIdByItemId(id)).toEqual(result);
+      expect(service.queryValue).toHaveBeenCalledWith(
+        `SELECT displayid AS v FROM item_template WHERE entry = ${id}`
+      );
+    });
+
+    it('getDisplayIdByItemId (case null)', () => {
+      service.getDisplayIdByItemId(null).subscribe(res => {
+        expect(res).toEqual(null);
+      });
+      expect(service.queryValue).toHaveBeenCalledTimes(0);
+    });
+
     it('getQuestTitleByCriteria (case 1)', () => {
-      expect(service.getQuestTitleByCriteria(null, 2, 3, 4, 5)).toEqual(result);
+      expect(service.getQuestTitleByCriteria(null, 2, 3, 4, 5)).toEqual(resultToPromise);
       expect(service.queryValueToPromise).toHaveBeenCalledWith(
         'SELECT `LogTitle` AS "v" FROM `quest_template` WHERE (RequiredNpcOrGo2 = 2) AND (RequiredNpcOrGo3 = 3) AND (RequiredNpcOrGo4 = 4) AND (RequiredSpellCast1 = 5)'
       );
     });
 
     it('getQuestTitleByCriteria (case 2)', () => {
-      expect(service.getQuestTitleByCriteria(1, null, null, null)).toEqual(result);
+      expect(service.getQuestTitleByCriteria(1, null, null, null)).toEqual(resultToPromise);
       expect(service.queryValueToPromise).toHaveBeenCalledWith(
         'SELECT `LogTitle` AS "v" FROM `quest_template` WHERE (RequiredNpcOrGo1 = 1)'
       );
