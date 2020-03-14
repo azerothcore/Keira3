@@ -46,6 +46,7 @@ export class SaiTopBarComponent extends SubscriptionHandler implements OnInit {
 
       case SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST:
         this._selectedText = `Timed Actionlist ID ${selected.entryorguid}`;
+        this._selectedText = `${this._selectedText} (${await this.handler.getName().toPromise()})`;
         break;
 
     }

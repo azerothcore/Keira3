@@ -1,12 +1,12 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { of } from 'rxjs';
+import { Router } from '@angular/router';
+import { instance } from 'ts-mockito';
 
 import { SaiHandlerService } from './sai-handler.service';
 import { MysqlQueryService } from '../../services/mysql-query.service';
-import { of } from 'rxjs';
 import { SAI_TYPES } from '../../types/smart-scripts.type';
-import { Router } from '@angular/router';
-import { instance } from 'ts-mockito';
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
 
 describe('SaiHandlerService', () => {
@@ -98,7 +98,13 @@ describe('SaiHandlerService', () => {
     const querySpy = spyOn(queryService, 'query');
     const mockName = 'Mock Name';
 
+    // TODO: this test case should be refactored and split in several cases
     for (const test of [
+      {
+        source_type: SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST,  entryorguid: 123, name: mockName,
+        returnValue: [ { name: mockName } ],
+        expected: mockName,
+      },
       {
         source_type: SAI_TYPES.SAI_TYPE_CREATURE,  entryorguid: -123, name: mockName,
         returnValue: [ { name: mockName } ],
