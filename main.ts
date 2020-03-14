@@ -39,6 +39,19 @@ function createWindow() {
     win.webContents.openDevTools();
   }
 
+  win.on('close', function(e) {
+    const choice = require('electron').dialog.showMessageBoxSync(this,
+      {
+        type: 'question',
+        buttons: ['Yes', 'No'],
+        title: 'Confirm',
+        message: 'Are you sure you want to quit?'
+      });
+    if (choice === 1) {
+      e.preventDefault();
+    }
+  });
+
   // Emitted when the window is closed.
   win.on('closed', () => {
     // Dereference the window object, usually you would store window
