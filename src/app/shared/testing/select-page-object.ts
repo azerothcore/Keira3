@@ -14,7 +14,7 @@ export abstract class SelectPageObject<T> extends PageObject<T> {
   get searchLimitInput() { return this.query<HTMLInputElement>('input#limit'); }
   get searchBtn() { return this.query<HTMLButtonElement>('#search-btn'); }
 
-  get topBar() { return this.query<HTMLElement>('app-top-bar'); }
+  get topBar() { return this.query<HTMLElement>('>('keira-p-bar'); }
 
   expectTopBarCreatingNew(id: number) {
     expect(this.topBar.innerText).toContain(`Creating new: ${id}`);
