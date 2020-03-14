@@ -10,5 +10,6 @@ export const ALLOWABLE_CLASSES: Flag[] = [
   { bit: 6,  name: 'Shaman' },
   { bit: 7,  name: 'Mage' },
   { bit: 8,  name: 'Warlock' },
+  { bit: 9,  name: 'UNUSUED' },
   { bit: 10, name: 'Druid' },
 ];
