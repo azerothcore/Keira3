@@ -13,6 +13,7 @@ import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selec
 import { ItemSelectorModule } from '@keira-shared/modules/selectors/item-selector/item-selector.module';
 import { QuestTemplateService } from './quest-template.service';
 import { SpellSelectorModule } from '@keira-shared/modules/selectors/spell-selector/spell-selector.module';
+import { IconModule } from '@keira-shared/modules/icon/icon.module';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { SpellSelectorModule } from '@keira-shared/modules/selectors/spell-selec
     FlagsSelectorModule,
     ItemSelectorModule,
     SpellSelectorModule,
+    IconModule,
   ],
   exports: [
     QuestTemplateComponent,
