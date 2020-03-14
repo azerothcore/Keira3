@@ -104,7 +104,7 @@ describe('SaiCommentGeneratorService', () => {
         input: {
           source_type: SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST,
         },
-        expected: ' - No Action Type',
+        expected: 'MockEntity - Actionlist - No Action Type',
       },
       {
         name: 'SAI_EVENTS.ACCEPTED_QUEST',

@@ -127,7 +127,7 @@ export class SaiCommentGeneratorService {
         break;
 
       case SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST:
-        // TODO: comment generation of actionlist scripts
+        eventLine += `${name} - Actionlist`;
         break;
     }
 
