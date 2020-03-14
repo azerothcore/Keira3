@@ -10,7 +10,7 @@ import { CREATURE_ADDON_BYTES_1 } from '@keira-constants/options/creature-addon-
 import { CREATURE_ADDON_BYTES_2 } from '@keira-constants/options/creature-addon-bytes2';
 
 @Component({
-  selector: 'app-creature-template-addon',
+  selector: 'keira-creature-template-addon',
   templateUrl: './creature-template-addon.component.html',
   styleUrls: ['./creature-template-addon.component.scss']
 })

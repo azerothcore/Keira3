@@ -6,7 +6,7 @@ import { CreatureQueststarterService } from './creature-queststarter.service';
 import { CreatureQueststarter } from '@keira-types/creature-queststarter.type';
 
 @Component({
-  selector: 'app-creature-queststarter',
+  selector: 'keira-creature-queststarter',
   templateUrl: './creature-queststarter.component.html',
   styleUrls: ['./creature-queststarter.component.scss']
 })

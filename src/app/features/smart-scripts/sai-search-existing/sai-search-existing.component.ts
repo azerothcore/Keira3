@@ -6,7 +6,7 @@ import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.
 import { SaiSearchService } from '@keira-shared/modules/search/sai-search.service';
 
 @Component({
-  selector: 'app-sai-search-existing',
+  selector: 'keira-sai-search-existing',
   templateUrl: './sai-search-existing.component.html',
   styleUrls: ['./sai-search-existing.component.scss']
 })

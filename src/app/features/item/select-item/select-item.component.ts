@@ -12,7 +12,7 @@ import { ItemHandlerService } from '../item-handler.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 
 @Component({
-  selector: 'app-select-item',
+  selector: 'keira-select-item',
   templateUrl: './select-item.component.html',
   styleUrls: ['./select-item.component.scss']
 })

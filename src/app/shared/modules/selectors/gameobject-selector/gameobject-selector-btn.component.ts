@@ -5,7 +5,7 @@ import { GameobjectSelectorModalComponent } from './gameobject-selector-modal.co
 import { BaseSelectorBtnComponent } from '../base-selector/base-selector-btn.component';
 
 @Component({
-  selector: 'app-gameobject-selector-btn',
+  selector: 'keira-gameobject-selector-btn',
   templateUrl: '../base-selector/base-selector-btn.component.html',
   styleUrls: ['../base-selector/base-selector-btn.component.scss']
 })

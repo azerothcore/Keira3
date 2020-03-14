@@ -1,4 +1,4 @@
-<app-top-bar [handler]="handlerService"></app-top-bar>
+<keira-top-bar [handler]="handlerService"></keira-top-bar>
 
 <div class="container-fluid">
 
@@ -6,7 +6,7 @@
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
 
-    <app-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></app-query-output>
+    <keira-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
 
     <hr class="mt-2 mb-1">
 
@@ -42,11 +42,11 @@
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
           <label class="control-label" for="EmoteOnComplete">EmoteOnComplete</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
             [control]="editorService.form.controls['EmoteOnComplete']"
             [config]="{ options: EMOTE, name: 'EmoteOnComplete' }"
             [modalClass]="'modal-md'"
-          ></app-single-value-selector-btn>
+          ></keira-single-value-selector-btn>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'Played by the quest ender NPC when all quest objectives are completed.'"
@@ -56,11 +56,11 @@
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
           <label class="control-label" for="EmoteOnIncomplete">EmoteOnIncomplete</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
             [control]="editorService.form.controls['EmoteOnIncomplete']"
             [config]="{ options: EMOTE, name: 'EmoteOnIncomplete' }"
             [modalClass]="'modal-md'"
-          ></app-single-value-selector-btn>
+          ></keira-single-value-selector-btn>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'Played by the quest ender NPC if any of the quest objectives are incomplete.'"

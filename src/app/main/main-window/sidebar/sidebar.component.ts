@@ -13,7 +13,7 @@ import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.
 import { LocationService } from '@keira-shared/services/location.service';
 
 @Component({
-  selector: 'app-sidebar',
+  selector: 'keira-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
   animations: [

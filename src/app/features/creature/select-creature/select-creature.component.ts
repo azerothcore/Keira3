@@ -12,7 +12,7 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 
 @Component({
-  selector: 'app-select-creature',
+  selector: 'keira-select-creature',
   templateUrl: './select-creature.component.html',
   styleUrls: ['./select-creature.component.scss']
 })

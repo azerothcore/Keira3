@@ -5,7 +5,7 @@ import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { SaiGameobjectEditorService } from './sai-gameobject-editor.service';
 
 @Component({
-  selector: 'app-sai-gameobject',
+  selector: 'keira-sai-gameobject',
   templateUrl: '../../../shared/modules/sai-editor/sai-editor.component.html',
   styleUrls: ['../../../shared/modules/sai-editor/sai-editor.component.scss']
 })

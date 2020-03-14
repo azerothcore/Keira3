@@ -3,7 +3,7 @@ import { IconService } from '@keira-shared/modules/icon/icon.service';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
 
 @Component({
-  selector: 'app-icon',
+  selector: 'keira-icon',
   templateUrl: './icon.component.html',
   styleUrls: ['./icon.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -12,7 +12,7 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 
 @Component({
-  selector: 'app-select-gameobject',
+  selector: 'keira-select-gameobject',
   templateUrl: './select-gameobject.component.html',
   styleUrls: ['./select-gameobject.component.scss']
 })

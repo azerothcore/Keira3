@@ -7,7 +7,7 @@ import { HandlerService } from '../../abstract/service/handlers/handler.service'
 import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
 
 @Component({
-  selector: 'app-create',
+  selector: 'keira-create',
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss']
 })

@@ -6,7 +6,7 @@ import { DTCFG } from '@keira-config/datatable.config';
 import { Option } from '@keira-types/general';
 
 @Component({
-  selector: 'app-single-value-selector-modal',
+  selector: 'keira-single-value-selector-modal',
   templateUrl: './single-value-selector-modal.component.html',
   styleUrls: ['./single-value-selector-modal.component.scss']
 })
