@@ -5,7 +5,7 @@ import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service'
 import { of } from 'rxjs';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 
-describe('ItemIconService', () => {
+describe('IconService', () => {
   const mockArgument = '123';
   const mockResult = 'some result';
   beforeEach(() => {

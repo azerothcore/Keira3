@@ -23,7 +23,10 @@
 
       <div class="row">
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-          <label class="control-label" for="item">item</label>
+          <label class="control-label" for="item">
+            <keira-icon [itemId]="editorService.form.controls['item'].value"></keira-icon>
+            item
+          </label>
           <keira-item-selector-btn
             [control]="editorService.form.controls['item']"
             [config]="{  name: 'item' }"
