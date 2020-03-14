@@ -18,18 +18,20 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 @import './editor.scss';
 
 .item-preview {
-  .q  { color:#ffd100!important; }
-  .q0 { color:#9d9d9d!important; }
-  .q1 { color:#ffffff!important; }
-  .q2 { color:#1eff00!important; }
-  .q3 { color:#0070dd!important; }
-  .q4 { color:#a335ee!important; }
-  .q5 { color:#ff8000!important; }
-  .q6 { color:#e5cc80!important; }
-  .q7 { color:#e5cc80!important; }
-  .q8 { color:#ffff98!important; }
-  .q9 { color:#71d5ff!important; }
- .q10 { color:#ff0000!important; }
+  .item-stock, .item-name {
+    line-height: 30px;
+    font-size: 22px;
+  }
+
+  .q  { color: #ffd100!important; }
+  .q0 { color: #9d9d9d!important; }
+  .q1 { color: #ffffff!important; }
+  .q2 { color: #1eff00!important; }
+  .q3 { color: #0070dd!important; }
+  .q4 { color: #a335ee!important; }
+  .q5 { color: #ff8000!important; }
+  .q6 { color: #e5cc80!important; }
+  .q7 { color: #e5cc80!important; }
 
  .moneyitem, .moneygold, .moneysilver, .moneycopper, .moneyalliance, .moneyhorde, .moneyarena, .moneyachievement, .moneysocketmeta, .moneysocketred, .moneysocketyellow, .moneysocketblue, .moneysocketprismatic {
     background: no-repeat right center;
@@ -49,4 +51,16 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   // .moneysocketyellow    { padding-right: 18px; background-image: url(../images/icons/socket-yellow.gif);    }
   // .moneysocketblue      { padding-right: 18px; background-image: url(../images/icons/socket-blue.gif);      }
   // .moneysocketprismatic { padding-right: 18px; background-image: url(../images/icons/socket-prismatic.gif); }
+}
+
+.item-select {
+  .q  { color: #ffd100!important; }
+  .q0 { color: #757575!important; }
+  /* .q1 { color:#ffffff!important; } */
+  .q2 { color: #4CAF50!important; }
+  .q3 { color: #0070dd!important; }
+  .q4 { color: #a335ee!important; }
+  .q5 { color: #ffc107!important; }
+  .q6 { color: #ffab00!important; }
+  .q7 { color: #ff8a65!important; }
 }

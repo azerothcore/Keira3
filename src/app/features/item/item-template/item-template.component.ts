@@ -73,7 +73,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   public statsBottom: string = '';
   public itemType: string = '';
   public hasItemLevel: boolean = false;
-  public itemPreview: SafeHtml = '';
+  public itemPreview: SafeHtml = this.sanitizer.bypassSecurityTrustHtml('loading...');
   private tmpItemPreview: string = '';
 
   private async calculatePreview() {
@@ -89,8 +89,10 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     // const itemLimitCategory = this.editorService.form.controls.ItemLimitCategory.value;
 
     // ITEM NAME
-    this.tmpItemPreview += '<b class="item-name q' + quality + '">'
-      + this.editorService.form.controls.name.value + '</b>';
+    const itemName = this.editorService.form.controls.name.value;
+    if (itemName) {
+      this.tmpItemPreview += '<b class="item-name q' + quality + '">' + itemName + '</b>';
+    }
 
     // heroic tag
     if (flags === ITEM_FLAG.HEROIC && quality === ITEMS_QUALITY.EPIC) {
@@ -142,13 +144,13 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     const duration = Math.abs(this.editorService.form.controls.duration.value);
     // const flagsCustom = this.editorService.form.controls.flagsCustom.value;
     if (duration) {
-/*    let rt = '';
-      if (flagsCustom & 0x1) {
-        rt = $interactive
-          ? ' ('.sprintf(Util::$dfnString, 'LANG.tooltip_realduration', Lang::item('realTime')).')'
-          : ' ('.Lang::item('realTime').')';
-      }
- */
+      /*    let rt = '';
+            if (flagsCustom & 0x1) {
+              rt = $interactive
+                ? ' ('.sprintf(Util::$dfnString, 'LANG.tooltip_realduration', Lang::item('realTime')).')'
+                : ' ('.Lang::item('realTime').')';
+            }
+       */
       this.tmpItemPreview += '<br>Duration' + ': ' + formatTime(duration * 1000) /* + rt */;
     }
 
@@ -195,7 +197,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
 
       this.tmpItemPreview += '</tr></table>';
 
-    // yes, inventoryType/slot can occur on random items and is then also displayed <_< .. excluding Bags >_>
+      // yes, inventoryType/slot can occur on random items and is then also displayed <_< .. excluding Bags >_>
     } else if (inventoryType && itemClass !== ITEM_TYPE.CONTAINER) {
       this.tmpItemPreview += `<br>${AOWOW_ITEM.inventoryType[subclass]}<br>`;
     } else {
@@ -207,12 +209,12 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     const dmgmin2 = this.editorService.form.controls.dmg_min2.value;
     const dmgmax1 = this.editorService.form.controls.dmg_max1.value;
     const dmgmax2 = this.editorService.form.controls.dmg_max2.value;
-    const speed  = this.editorService.form.controls.delay.value / 1000;
-    const sc1    = this.editorService.form.controls.dmg_type1.value;
-    const sc2    = this.editorService.form.controls.dmg_type2.value;
+    const speed = this.editorService.form.controls.delay.value / 1000;
+    const sc1 = this.editorService.form.controls.dmg_type1.value;
+    const sc2 = this.editorService.form.controls.dmg_type2.value;
     const dmgmin = dmgmin1 + dmgmin2;
     const dmgmax = dmgmax1 + dmgmax2;
-    const dps    = speed ? (dmgmin + dmgmax) / (2 * speed) : 0;
+    const dps = speed ? (dmgmin + dmgmax) / (2 * speed) : 0;
 
     let dmg = '';
 
@@ -223,48 +225,48 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
         this.tmpItemPreview += AOWOW_ITEM.damage.ammo[0].replace('%d', ((dmgmin + dmgmax) / 2).toString()) + '<br>';
       }
     } else if (dps) {
-        if (dmgmin1 === dmgmax1) {
-          dmg = AOWOW_ITEM.damage.single[sc1 ? 1 : 0]
-            .replace('%g', dmgmin1)
-            .replace('%s', (sc1 ? AOWOW_ITEM.sc[sc1] : ''))
-            + '<br>';
-        } else {
-          dmg = AOWOW_ITEM.damage.range[sc1 ? 1 : 0]
-            .replace('%d', dmgmin1)
-            .replace('%d', dmgmax1)
-            .replace('%s', sc1 ? AOWOW_ITEM.sc[sc1] : '')
-            + '<br>';
-        }
+      if (dmgmin1 === dmgmax1) {
+        dmg = AOWOW_ITEM.damage.single[sc1 ? 1 : 0]
+          .replace('%g', dmgmin1)
+          .replace('%s', (sc1 ? AOWOW_ITEM.sc[sc1] : ''))
+          + '<br>';
+      } else {
+        dmg = AOWOW_ITEM.damage.range[sc1 ? 1 : 0]
+          .replace('%d', dmgmin1)
+          .replace('%d', dmgmax1)
+          .replace('%s', sc1 ? AOWOW_ITEM.sc[sc1] : '')
+          + '<br>';
+      }
 
-        if (itemClass === ITEM_TYPE.WEAPON) {
-          this.tmpItemPreview += `<table width="100%"><tr><td>${dmg}</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><th style="text-align: right;">Speed <!--spd-->${speed.toFixed(2)}</th></tr></table>`;
-        } else {
-          this.tmpItemPreview += `<!--dmg-->${dmg}<br>`;
-        }
+      if (itemClass === ITEM_TYPE.WEAPON) {
+        this.tmpItemPreview += `<table width="100%"><tr><td>${dmg}</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><th style="text-align: right;">Speed <!--spd-->${speed.toFixed(2)}</th></tr></table>`;
+      } else {
+        this.tmpItemPreview += `<!--dmg-->${dmg}<br>`;
+      }
 
-        // secondary damage is set
-        if ((dmgmin2 || dmgmax2) && dmgmin2 !== dmgmax2) {
-          this.tmpItemPreview += AOWOW_ITEM.damage.range[sc2 ? 3 : 2]
-            .replace('%d', dmgmin2)
-            .replace('%d', dmgmax2)
-            .replace('%s', sc2 ? AOWOW_ITEM.sc[sc2] : '')
-            + '<br>';
-        } else if (dmgmin2) {
-          this.tmpItemPreview += AOWOW_ITEM.damage.single[sc2 ? 3 : 2]
-            .replace('%d', dmgmin2)
-            .replace('%s', sc2 ? AOWOW_ITEM.sc[sc2] : '')
-            + '<br>';
-        }
+      // secondary damage is set
+      if ((dmgmin2 || dmgmax2) && dmgmin2 !== dmgmax2) {
+        this.tmpItemPreview += AOWOW_ITEM.damage.range[sc2 ? 3 : 2]
+          .replace('%d', dmgmin2)
+          .replace('%d', dmgmax2)
+          .replace('%s', sc2 ? AOWOW_ITEM.sc[sc2] : '')
+          + '<br>';
+      } else if (dmgmin2) {
+        this.tmpItemPreview += AOWOW_ITEM.damage.single[sc2 ? 3 : 2]
+          .replace('%d', dmgmin2)
+          .replace('%s', sc2 ? AOWOW_ITEM.sc[sc2] : '')
+          + '<br>';
+      }
 
-        if (itemClass === ITEM_TYPE.WEAPON) {
-          this.tmpItemPreview += `<!--dps-->${AOWOW_ITEM.dps.replace('%.1f', dps.toFixed(2))}<br>`;
-        }
+      if (itemClass === ITEM_TYPE.WEAPON) {
+        this.tmpItemPreview += `<!--dps-->${AOWOW_ITEM.dps.replace('%.1f', dps.toFixed(2))}<br>`;
+      }
 
-        // display FeralAttackPower if set
-        const fap = getFeralAP(itemClass, subclass, dps);
-        if (fap) {
-          this.tmpItemPreview += `<span class="c11"><!--fap-->(${fap} ${AOWOW_ITEM.fap})</span><br>`;
-        }
+      // display FeralAttackPower if set
+      const fap = getFeralAP(itemClass, subclass, dps);
+      if (fap) {
+        this.tmpItemPreview += `<span class="c11"><!--fap-->(${fap} ${AOWOW_ITEM.fap})</span><br>`;
+      }
     }
 
     // Armor
@@ -282,51 +284,48 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
       this.tmpItemPreview += `<span>${AOWOW_ITEM.block.replace('%s', block)}</span><br>`;
     }
 
-    // // Item is a gem (don't mix with sockets)
-    // if ($geId = $this->curTpl['gemEnchantmentId'])
-    // {
-    //     $gemEnch = DB::Aowow()->selectRow('SELECT * FROM ?_itemenchantment WHERE id = ?d', $geId);
-    //     this.tmpItemPreview += '<span class="q1"><a href="?enchantment='.$geId.'">'.
-    //        Util::localizedString($gemEnch, 'name').'</a></span><br>';
+  // // Item is a gem (don't mix with sockets)
+  // const gemEnchantmentId = this.editorService.form.controls.gemEnchantmentId.value;
+  // if (gemEnchantmentId) {
+  //   gemEnch = DB:: Aowow() -> selectRow('SELECT * FROM ?_itemenchantment WHERE id = ?d', geId);
+  //   this.tmpItemPreview += '<span class="q1"><a href="?enchantment='.geId.'">'.
+  //   Util:: localizedString(gemEnch, 'name').'</a></span><br>';
 
-    //     // activation conditions for meta gems
-    //     if (!empty($gemEnch['conditionId']))
-    //     {
-    //         if ($gemCnd = DB::Aowow()->selectRow('SELECT * FROM ?_itemenchantmentcondition WHERE id = ?d', $gemEnch['conditionId']))
-    //         {
-    //             for ($i = 1; $i < 6; $i++)
-    //             {
-    //                 if (!$gemCnd['color'.$i])
-    //                     continue;
+  //   // activation conditions for meta gems
+  //   if (!empty(gemEnch['conditionId'])) {
+  //     if (gemCnd = DB:: Aowow() -> selectRow('SELECT * FROM ?_itemenchantmentcondition WHERE id = ?d', gemEnch['conditionId'])) {
+  //       for (let i = 1; i < 6; i++) {
+  //         if (!gemCnd['color'.i]) {
+  //           continue;
+  //         }
 
-    //                 $vspfArgs = [];
-    //                 switch ($gemCnd['comparator'.$i])
-    //                 {
-    //                     case 2:                         // requires less <color> than (<value> || <comparecolor>) gems
-    //                     case 5:                         // requires at least <color> than (<value> || <comparecolor>) gems
-    //                         $vspfArgs = [$gemCnd['value'.$i], Lang::item('gemColors', $gemCnd['color'.$i] - 1)];
-    //                         break;
-    //                     case 3:                         // requires more <color> than (<value> || <comparecolor>) gems
-    //                         $vspfArgs = [Lang::item('gemColors', $gemCnd['color'.$i] - 1),
-    //                             Lang::item('gemColors', $gemCnd['cmpColor'.$i] - 1)];
-    //                         break;
-    //                     default:
-    //                         continue;
-    //                 }
+  //         vspfArgs = [];
+  //         switch (gemCnd['comparator'.i]) {
+  //           case 2:                         // requires less <color> than (<value> || <comparecolor>) gems
+  //           case 5:                         // requires at least <color> than (<value> || <comparecolor>) gems
+  //           vspfArgs = [gemCnd['value'.i], Lang:: item('gemColors', gemCnd['color'.i] - 1)];
+  //           break;
+  //           case 3:                         // requires more <color> than (<value> || <comparecolor>) gems
+  //           vspfArgs = [Lang:: item('gemColors', gemCnd['color'.i] - 1),
+  //           Lang:: item('gemColors', gemCnd['cmpColor'.i] - 1)];
+  //           break;
+  //           default:
+  //           continue;
+  //         }
 
-    //                 this.tmpItemPreview += '<span class="q0">'.Lang::achievement('reqNumCrt').' '.
-    //                    Lang::item('gemConditions', $gemCnd['comparator'.$i], $vspfArgs).'</span><br>';
-    //             }
-    //         }
-    //     }
-    // }
+  //         this.tmpItemPreview += '<span class="q0">'.Lang:: achievement('reqNumCrt').' '.
+  //         Lang:: item('gemConditions', gemCnd['comparator'.i], vspfArgs).'</span><br>';
+  //       }
+  //     }
+  //   }
+  // }
 
 
     // Random Enchantment - if random enchantment is set, prepend stats from it
     const RandomProperty: number = this.editorService.form.controls.RandomProperty.value;
     if (RandomProperty /* && empty($enhance['r']) */) {
       this.tmpItemPreview += `<span class="q2">${AOWOW_ITEM.randEnchant}</span><br>`;
-     }/* else if (!empty($enhance['r'])) {
+    }/* else if (!empty($enhance['r'])) {
       this.tmpItemPreview += $randEnchant;
     } */
 
@@ -334,7 +333,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     const requiredLevel = this.editorService.form.controls.RequiredLevel.value;
     for (let i = 1; i <= 10; i++) {
       const type = this.editorService.form.controls['stat_type' + i].value;
-      const qty  = this.editorService.form.controls['stat_value' + i].value;
+      const qty = this.editorService.form.controls['stat_value' + i].value;
 
       if (!qty || type <= 0) {
         continue;
@@ -343,7 +342,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
       switch (type) {
         case ITEM_MOD.MANA:
         case ITEM_MOD.HEALTH:
-          // $type += 1;                          // i think i fucked up somewhere mapping item_mods: offsets may be required somewhere
+        // $type += 1;                          // i think i fucked up somewhere mapping item_mods: offsets may be required somewhere
         case ITEM_MOD.AGILITY:
         case ITEM_MOD.STRENGTH:
         case ITEM_MOD.INTELLECT:
@@ -452,7 +451,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
 
     // durability
     const durability = this.editorService.form.controls.MaxDurability.value;
-    if (durability  ) {
+    if (durability) {
       this.tmpItemPreview += `${AOWOW_ITEM.durability.replace(/%d/g, durability)}<br>`;
     }
 
@@ -578,88 +577,90 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     //   }
     // }
 
-    if (green) {
+    if (green && green.length > 0) {
       for (const bonus of green) {
         if (bonus) {
-          this.tmpItemPreview += `<span class="q2">{bonus}</span><br>`;
+          this.tmpItemPreview += `<span class="q2">${bonus}</span><br>`;
         }
       }
+
+      const lastBr = this.tmpItemPreview.lastIndexOf('<br>');
+      this.tmpItemPreview = this.tmpItemPreview.substring(0, lastBr);
     }
 
-    // // Item Set
-    // $pieces  = [];
-    // if ($setId = $this->getField('itemset'))
-    // {
-    //     // while Ids can technically be used multiple times the only difference in data are the items used. So it doesn't matter what we get
-    //     $itemset = new ItemsetList(array(['id', $setId]));
-    //     if (!$itemset->error && $itemset->pieceToSet)
-    //     {
-    //         $pieces = DB::Aowow()->select('
-    //             SELECT b.id AS ARRAY_KEY, b.name_loc0, b.name_loc2, b.name_loc3, b.name_loc4, b.name_loc6, b.name_loc8, GROUP_CONCAT(a.id SEPARATOR \':\') AS equiv
-    //             FROM   ?_items a, ?_items b
-    //             WHERE  a.slotBak = b.slotBak AND a.itemset = b.itemset AND b.id IN (?a)
-    //             GROUP BY b.id;',
-    //             array_keys($itemset->pieceToSet)
-    //         );
+  // // Item Set
+  // const pieces  = [];
+  // setId = this->getField('itemset')
+  // if (itemSet) {
+  //   // while Ids can technically be used multiple times the only difference in data are the items used. So it doesn't matter what we get
+  //   const itemset = new ItemsetList(array(['id', setId]));
+  //   if (!itemset->error && itemset->pieceToSet) {
+  //     pieces = DB::Aowow()->select('
+  //     SELECT b.id AS ARRAY_KEY, b.name_loc0, b.name_loc2, b.name_loc3, b.name_loc4, b.name_loc6, b.name_loc8, GROUP_CONCAT(a.id SEPARATOR \':\') AS equiv
+  //     FROM   ?_items a, ?_items b
+  //     WHERE  a.slotBak = b.slotBak AND a.itemset = b.itemset AND b.id IN (?a)
+  //     GROUP BY b.id;',
+  //     array_keys(itemset->pieceToSet)
+  //     );
 
-    //         foreach ($pieces as $k => &$p)
-    //             $p = '<span><!--si'.$p['equiv'].'--><a href="?item='.$k.'">'.Util::localizedString($p, 'name').'</a></span>';
+  //     foreach (pieces as k => &p)
+  //     p = '<span><!--si'.p['equiv'].'--><a href="?item='.k.'">'.Util::localizedString(p, 'name').'</a></span>';
 
-    //         $xSet = '<br><span class="q">'.Lang::item('setName', ['<a href="?itemset='.$itemset->id.'" class="q">'.$itemset->getField('name', true).'</a>', 0, count($pieces)]).'</span>';
+  //     xSet = '<br><span class="q">'.Lang::item('setName', ['<a href="?itemset='.itemset->id.'" class="q">'.itemset->getField('name', true).'</a>', 0, count(pieces)]).'</span>';
 
-    //         if ($skId = $itemset->getField('skillId'))      // bonus requires skill to activate
-    //         {
-    //             $xSet .= '<br>'.sprintf(Lang::game('requires'), '<a href="?skills='.$skId.'" class="q1">'.SkillList::getName($skId).'</a>');
+  //     if (skId = itemset->getField('skillId'))      // bonus requires skill to activate
+  //     {
+  //       xSet += '<br>'.sprintf(Lang::game('requires'), '<a href="?skills='.skId.'" class="q1">'.SkillList::getName(skId).'</a>');
 
-    //             if ($_ = $itemset->getField('skillLevel'))
-    //                 $xSet .= ' ('.$_.')';
+  //       if (_ = itemset->getField('skillLevel'))
+  //       xSet += ' ('._.')';
 
-    //             $xSet .= '<br>';
-    //         }
+  //       xSet += '<br>';
+  //     }
 
-    //         // list pieces
-    //         $xSet .= '<div class="q0 indent">'.implode('<br>', $pieces).'</div><br>';
+  //     // list pieces
+  //     xSet += '<div class="q0 indent">'.implode('<br>', pieces).'</div><br>';
 
-    //         // get bonuses
-    //         $setSpellsAndIdx = [];
-    //         for ($j = 1; $j <= 8; $j++)
-    //             if ($_ = $itemset->getField('spell'.$j))
-    //                 $setSpellsAndIdx[$_] = $j;
+  //     // get bonuses
+  //     setSpellsAndIdx = [];
+  //     for (j = 1; j <= 8; j++)
+  //     if (_ = itemset->getField('spell'.j))
+  //     setSpellsAndIdx[_] = j;
 
-    //         $setSpells = [];
-    //         if ($setSpellsAndIdx)
-    //         {
-    //             $boni = new SpellList(array(['s.id', array_keys($setSpellsAndIdx)]));
-    //             foreach ($boni->iterate() as $__)
-    //             {
-    //                 $setSpells[] = array(
-    //                     'tooltip' => $boni->parseText('description', $_reqLvl > 1 ? $_reqLvl : MAX_LEVEL, false, $causesScaling)[0],
-    //                     'entry'   => $itemset->getField('spell'.$setSpellsAndIdx[$boni->id]),
-    //                     'bonus'   => $itemset->getField('bonus'.$setSpellsAndIdx[$boni->id])
-    //                 );
-    //             }
-    //         }
+  //     setSpells = [];
+  //     if (setSpellsAndIdx)
+  //     {
+  //       boni = new SpellList(array(['s.id', array_keys(setSpellsAndIdx)]));
+  //       foreach (boni->iterate() as __)
+  //       {
+  //         setSpells[] = array(
+  //           'tooltip' => boni->parseText('description', _reqLvl > 1 ? _reqLvl : MAX_LEVEL, false, causesScaling)[0],
+  //           'entry'   => itemset->getField('spell'.setSpellsAndIdx[boni->id]),
+  //           'bonus'   => itemset->getField('bonus'.setSpellsAndIdx[boni->id])
+  //           );
+  //         }
+  //       }
 
-    //         // sort and list bonuses
-    //         $xSet .= '<span class="q0">';
-    //         for ($i = 0; $i < count($setSpells); $i++)
-    //         {
-    //             for ($j = $i; $j < count($setSpells); $j++)
-    //             {
-    //                 if ($setSpells[$j]['bonus'] >= $setSpells[$i]['bonus'])
-    //                     continue;
+  //       // sort and list bonuses
+  //       xSet += '<span class="q0">';
+  //       for (i = 0; i < count(setSpells); i++)
+  //       {
+  //         for (j = i; j < count(setSpells); j++)
+  //         {
+  //           if (setSpells[j]['bonus'] >= setSpells[i]['bonus'])
+  //           continue;
 
-    //                 $tmp = $setSpells[$i];
-    //                 $setSpells[$i] = $setSpells[$j];
-    //                 $setSpells[$j] = $tmp;
-    //             }
-    //             $xSet .= '<span>'.Lang::item('setBonus', [$setSpells[$i]['bonus'], '<a href="?spell='.$setSpells[$i]['entry'].'">'.$setSpells[$i]['tooltip'].'</a>']).'</span>';
-    //             if ($i < count($setSpells) - 1)
-    //                 $xSet .= '<br>';
-    //         }
-    //         $xSet .= '</span>';
-    //     }
-    // }
+  //           tmp = setSpells[i];
+  //           setSpells[i] = setSpells[j];
+  //           setSpells[j] = tmp;
+  //         }
+  //         xSet += '<span>'.Lang::item('setBonus', [setSpells[i]['bonus'], '<a href="?spell='.setSpells[i]['entry'].'">'.setSpells[i]['tooltip'].'</a>']).'</span>';
+  //         if (i < count(setSpells) - 1)
+  //         xSet += '<br>';
+  //       }
+  //       xSet += '</span>';
+  //     }
+  //   }
 
     // // recipes, vanity pets, mounts
     // if ($this->canTeachSpell())

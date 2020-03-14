@@ -57,7 +57,13 @@
           {{ row.entry }}
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column name="Name" prop="name" [minWidth]="60"></ngx-datatable-column>
+      <ngx-datatable-column name="Name" prop="name" [minWidth]="60">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <div class="item-select">
+            <b [ngClass]="'q' + row.Quality">{{ row.name }}</b>
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
       <ngx-datatable-column name="DisplayID" prop="displayid"></ngx-datatable-column>
       <ngx-datatable-column name="Class" prop="class"></ngx-datatable-column>
       <ngx-datatable-column name="Subclass" prop="subclass"></ngx-datatable-column>
