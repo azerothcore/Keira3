@@ -75,6 +75,8 @@ describe('SaiTopBarComponent', () => {
     it(`should correctly handle different types [${testId}]`, () => {
       handler['_selected'] = JSON.stringify({ source_type: type, entryorguid: positive ? entryorguid : -entryorguid });
       spyOn(handler, 'getName').and.returnValue(of(name));
+      // TODO: for some reasons this test cannot get the async name
+
       fixture.detectChanges();
 
       expect(page.mainText.innerText).toContain(expected);
