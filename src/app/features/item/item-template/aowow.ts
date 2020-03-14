@@ -688,7 +688,7 @@ export function canTeachSpell(spellId1: number, spellId2: number = null) {
   return true;
 }
 
-export function formatMoney(qty: number) {
+export function formatMoney(qty: number): string {
   let money = '';
 
   if (qty >= 10000) {

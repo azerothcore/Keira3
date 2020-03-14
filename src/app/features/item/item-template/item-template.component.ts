@@ -61,7 +61,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   constructor(
     public editorService: ItemTemplateService,
     public handlerService: ItemHandlerService,
-    public sqliteQueryService: SqliteQueryService,
+    public readonly sqliteQueryService: SqliteQueryService,
     private sanitizer: DomSanitizer,
   ) {
     super(editorService, handlerService);
@@ -69,12 +69,9 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
 
   public readonly AOWOW_ITEM = AOWOW_ITEM;
   public icon: Promise<string>;
-  public statsTop: string = '';
-  public statsBottom: string = '';
-  public itemType: string = '';
   public hasItemLevel: boolean = false;
   public itemPreview: SafeHtml = this.sanitizer.bypassSecurityTrustHtml('loading...');
-  private tmpItemPreview: string = '';
+  private tmpItemPreview = '';
 
   private async calculatePreview() {
     this.tmpItemPreview = '';
@@ -743,11 +740,13 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   ngOnInit() {
     super.ngOnInit();
     this.calculatePreview();
-    this.icon = this.sqliteQueryService.getDisplayIdIcon(this.editorService.form.get('displayid').value);
+    this.icon = this.sqliteQueryService.getDisplayIdIcon(this.editorService.form.controls.displayid.value);
 
-    this.editorService.form.get('displayid').valueChanges.subscribe((x) => {
-      this.icon = this.sqliteQueryService.getDisplayIdIcon(x);
-    });
+    this.subscriptions.push(
+      this.editorService.form.controls.displayid.valueChanges.subscribe((x: number) => {
+        this.icon = this.sqliteQueryService.getDisplayIdIcon(x);
+      })
+    );
 
     this.subscriptions.push(
       this.editorService.form.valueChanges
