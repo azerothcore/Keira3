@@ -12,7 +12,7 @@ import { GossipHandlerService } from '../gossip-handler.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 
 @Component({
-  selector: 'app-select-gossip',
+  selector: 'keira-select-gossip',
   templateUrl: './select-gossip.component.html',
   styleUrls: ['./select-gossip.component.scss']
 })

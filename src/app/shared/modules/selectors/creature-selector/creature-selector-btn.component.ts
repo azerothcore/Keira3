@@ -5,7 +5,7 @@ import { CreatureSelectorModalComponent } from './creature-selector-modal.compon
 import { BaseSelectorBtnComponent } from '../base-selector/base-selector-btn.component';
 
 @Component({
-  selector: 'app-creature-selector-btn',
+  selector: 'keira-creature-selector-btn',
   templateUrl: '../base-selector/base-selector-btn.component.html',
   styleUrls: ['../base-selector/base-selector-btn.component.scss']
 })

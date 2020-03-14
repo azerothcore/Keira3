@@ -6,7 +6,7 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { NpcVendor } from '@keira-types/npc-vendor.type';
 
 @Component({
-  selector: 'app-npc-vendor',
+  selector: 'keira-npc-vendor',
   templateUrl: './npc-vendor.component.html',
   styleUrls: ['./npc-vendor.component.scss']
 })

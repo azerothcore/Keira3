@@ -26,7 +26,7 @@ import { FACTIONS } from '@keira-constants/options/faction';
 import { STAT_TYPE } from '@keira-constants/options/stat-type';
 
 @Component({
-  selector: 'app-item-template',
+  selector: 'keira-item-template',
   templateUrl: './item-template.component.html',
   styleUrls: ['./item-template.component.scss']
 })

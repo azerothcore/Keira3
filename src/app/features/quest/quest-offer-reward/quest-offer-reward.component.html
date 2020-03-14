@@ -1,4 +1,4 @@
-<app-top-bar [handler]="handlerService"></app-top-bar>
+<keira-top-bar [handler]="handlerService"></keira-top-bar>
 
 <div class="container-fluid">
 
@@ -6,7 +6,7 @@
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
 
-    <app-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></app-query-output>
+    <keira-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
 
     <hr class="mt-2 mb-1">
 
@@ -51,11 +51,11 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="Emote{{ i }}">Emote{{ i }}</label>
-              <app-single-value-selector-btn
+              <keira-single-value-selector-btn
                 [control]="editorService.form.controls['Emote' + i]"
                 [config]="{ options: EMOTE, name: 'Emote' + i }"
                 [modalClass]="'modal-md'"
-              ></app-single-value-selector-btn>
+              ></keira-single-value-selector-btn>
               <input [formControlName]="'Emote' + i" id="Emote{{ i }}" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">

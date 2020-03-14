@@ -1,4 +1,4 @@
-<app-top-bar [handler]="handlerService"></app-top-bar>
+<keira-top-bar [handler]="handlerService"></keira-top-bar>
 
 <div class="container-fluid">
 
@@ -6,7 +6,7 @@
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
 
-    <app-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></app-query-output>
+    <keira-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
 
     <hr class="mt-2 mb-1">
 
@@ -62,10 +62,10 @@
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="AllowableClasses">AllowableClasses</label>
-          <app-flags-selector-btn
+          <keira-flags-selector-btn
             [control]="editorService.form.controls['AllowableClasses']"
             [config]="{ flags: ALLOWABLE_CLASSES, name: 'AllowableClasses' }"
-          ></app-flags-selector-btn>
+          ></keira-flags-selector-btn>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'Use 0 to allow all classes'"
@@ -79,11 +79,11 @@
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'The spell ID cast on player upon starting the quest.'"
           ></i>
-          <app-spell-selector-btn
+          <keira-spell-selector-btn
             [control]="editorService.form.controls['SourceSpellID']"
             [config]="{ name: 'SourceSpellID' }"
             [modalClass]="'modal-lg'"
-          ></app-spell-selector-btn>
+          ></keira-spell-selector-btn>
           <input [formControlName]="'SourceSpellID'" id="SourceSpellID" type="number" class="form-control form-control-sm">
         </div>
 
@@ -107,10 +107,10 @@
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="SpecialFlags">SpecialFlags</label>
-          <app-flags-selector-btn
+          <keira-flags-selector-btn
             [control]="editorService.form.controls['SpecialFlags']"
             [config]="{ flags: SPECIAL_FLAGS, name: 'SpecialFlags' }"
-          ></app-flags-selector-btn>
+          ></keira-flags-selector-btn>
           <input [formControlName]="'SpecialFlags'" id="SpecialFlags" type="number" class="form-control form-control-sm">
         </div>
 
@@ -139,11 +139,11 @@
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="RequiredMinRepFaction">RequiredMinRepFaction</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
                 [control]="editorService.form.controls['RequiredMinRepFaction']"
                 [config]="{ options: FACTIONS, name: 'RequiredMinRepFaction' }"
                 [modalClass]="'modal-md'"
-              ></app-single-value-selector-btn>
+              ></keira-single-value-selector-btn>
           <input [formControlName]="'RequiredMinRepFaction'" id="RequiredMinRepFaction" type="number" class="form-control form-control-sm">
         </div>
 
@@ -158,11 +158,11 @@
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="RequiredMaxRepFaction">RequiredMaxRepFaction</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
                 [control]="editorService.form.controls['RequiredMaxRepFaction']"
                 [config]="{ options: FACTIONS, name: 'RequiredMaxRepFaction' }"
                 [modalClass]="'modal-md'"
-              ></app-single-value-selector-btn>
+              ></keira-single-value-selector-btn>
           <input [formControlName]="'RequiredMaxRepFaction'" id="RequiredMaxRepFaction" type="number" class="form-control form-control-sm">
         </div>
 

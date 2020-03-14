@@ -11,8 +11,8 @@ class SaiSearchEntityComponentPage extends PageObject<SaiSearchEntityComponent> 
   get entryOrGuidInput() { return this.query<HTMLInputElement>('input#entryorguid', false); }
   get entryOrGuidLabel() { return this.query<HTMLLabelElement>('label[for="entryorguid"]', false); }
   get editBtn() { return this.query<HTMLButtonElement>('#edit-btn', false); }
-  get creatureSelector() { return this.query<HTMLElement>('app-creature-selector-btn', false); }
-  get gameobjectSelector() { return this.query<HTMLElement>('app-gameobject-selector-btn', false); }
+  get creatureSelector() { return this.query<HTMLElement>('keira-creature-selector-btn', false); }
+  get gameobjectSelector() { return this.query<HTMLElement>('keira-gameobject-selector-btn', false); }
 }
 
 describe('SaiSearchEntityComponent', () => {

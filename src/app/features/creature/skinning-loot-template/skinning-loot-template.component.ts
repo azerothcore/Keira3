@@ -6,7 +6,7 @@ import { SkinningLootTemplateService } from './skinning-loot-template.service';
 import { LootTemplateComponent } from '@keira-abstract/components/editors/loot-template/loot-template.component';
 
 @Component({
-  selector: 'app-skinning-loot-template',
+  selector: 'keira-skinning-loot-template',
   templateUrl: '../../../shared/abstract/components/editors/loot-template/loot-template.component.html',
   styleUrls: ['../../../shared/abstract/components/editors/loot-template/loot-template.component.scss']
 })

@@ -9,11 +9,11 @@ import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
 @Component({
-  template: `<app-icon
+  template: `<keira-icon
     [size]="size"
     [itemId]="itemId"
     [itemDisplayId]="itemDisplayId"
-  ></app-icon>`
+  ></keira-icon>`
 })
 class TestHostComponent {
   @ViewChild(IconComponent) child: IconComponent;

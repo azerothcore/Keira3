@@ -9,7 +9,7 @@ import { FACTIONS } from '@keira-constants/options/faction';
 import { SPECIAL_FLAGS } from '@keira-constants/flags/special-flags';
 
 @Component({
-  selector: 'app-quest-template-addon',
+  selector: 'keira-quest-template-addon',
   templateUrl: './quest-template-addon.component.html',
   styleUrls: ['./quest-template-addon.component.scss']
 })

@@ -6,7 +6,7 @@ import { GameobjectQuestenderService } from './gameobject-questender.service';
 import { GameobjectQuestender } from '@keira-types/gameobject-questender.type';
 
 @Component({
-  selector: 'app-gameobject-questender',
+  selector: 'keira-gameobject-questender',
   templateUrl: './gameobject-questender.component.html',
   styleUrls: ['./gameobject-questender.component.scss']
 })

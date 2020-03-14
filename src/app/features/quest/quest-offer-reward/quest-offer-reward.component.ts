@@ -7,7 +7,7 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { EMOTE } from '@keira-constants/options/emote';
 
 @Component({
-  selector: 'app-quest-offer-reward',
+  selector: 'keira-quest-offer-reward',
   templateUrl: './quest-offer-reward.component.html',
   styleUrls: ['./quest-offer-reward.component.scss']
 })

@@ -15,7 +15,7 @@ class SaiTopBarComponentPage extends PageObject<TestHostComponent> {
 }
 
 @Component({
-  template: '<app-sai-top-bar [handler]="handlerService"><</app-sai-top-bar>'
+  template: '<keira-sai-top-bar [handler]="handlerService"><</keira-sai-top-bar>'
 })
 class TestHostComponent {
   @ViewChild(SaiTopBarComponent, { static: true }) child: SaiTopBarComponent;

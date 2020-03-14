@@ -1,4 +1,4 @@
-<app-top-bar [handler]="handlerService"></app-top-bar>
+<keira-top-bar [handler]="handlerService"></keira-top-bar>
 
 <div class="container-fluid">
 
@@ -6,7 +6,7 @@
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
 
-    <app-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></app-query-output>
+    <keira-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
 
     <hr class="mt-2 mb-1">
 
@@ -23,10 +23,10 @@
       <div class="row">
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
           <label class="control-label" for="id">id</label>
-          <app-creature-selector-btn
+          <keira-creature-selector-btn
             [control]="editorService.form.controls['id']"
             [config]="{  name: 'id' }"
-          ></app-creature-selector-btn>
+          ></keira-creature-selector-btn>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'creature_template.entry'"

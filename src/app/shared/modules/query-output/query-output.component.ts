@@ -5,7 +5,7 @@ import { EditorService } from '../../abstract/service/editors/editor.service';
 import { TableRow } from '../../types/general';
 
 @Component({
-  selector: 'app-query-output',
+  selector: 'keira-query-output',
   templateUrl: './query-output.component.html',
   styleUrls: ['./query-output.component.scss']
 })

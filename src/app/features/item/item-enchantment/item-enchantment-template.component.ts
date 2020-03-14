@@ -6,7 +6,7 @@ import { ItemEnchantmentTemplate } from '@keira-types/item-enchantment-template.
 import { ItemEnchantmentTemplateService } from './item-enchantment-template.service';
 
 @Component({
-  selector: 'app-item-enchantment-template',
+  selector: 'keira-item-enchantment-template',
   templateUrl: './item-enchantment-template.component.html',
   styleUrls: ['./item-enchantment-template.component.scss']
 })

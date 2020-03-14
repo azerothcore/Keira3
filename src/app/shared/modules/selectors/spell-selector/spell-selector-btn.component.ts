@@ -5,7 +5,7 @@ import { SpellSelectorModalComponent } from './spell-selector-modal.component';
 import { BaseSelectorBtnComponent } from '../base-selector/base-selector-btn.component';
 
 @Component({
-  selector: 'app-spell-selector-btn',
+  selector: 'keira-spell-selector-btn',
   templateUrl: '../base-selector/base-selector-btn.component.html',
   styleUrls: ['../base-selector/base-selector-btn.component.scss']
 })

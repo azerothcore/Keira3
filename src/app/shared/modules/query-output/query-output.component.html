@@ -10,11 +10,11 @@
     </div>
   </div>
 
-  <app-highlightjs-wrapper id="diff-query" [code]="editorService.diffQuery" [hidden]="showFullQuery()"></app-highlightjs-wrapper>
-  <app-highlightjs-wrapper id="full-query" [code]="editorService.fullQuery" [hidden]="!showFullQuery()"></app-highlightjs-wrapper>
+  <keira-highlightjs-wrapper id="diff-query" [code]="editorService.diffQuery" [hidden]="showFullQuery()"></keira-highlightjs-wrapper>
+  <keira-highlightjs-wrapper id="full-query" [code]="editorService.fullQuery" [hidden]="!showFullQuery()"></keira-highlightjs-wrapper>
 
   <button type="button" class="btn btn-secondary btn-sm" (click)="copy()" id="copy-btn">Copy</button>
   <button type="button" class="btn btn-primary btn-sm" (click)="execute()" id="execute-btn">Execute</button>
 
-  <app-query-error [error]="editorService.error"></app-query-error>
+  <keira-query-error [error]="editorService.error"></keira-query-error>
 </ng-container>

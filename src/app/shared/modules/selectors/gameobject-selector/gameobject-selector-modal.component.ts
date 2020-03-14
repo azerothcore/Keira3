@@ -6,7 +6,7 @@ import { GAMEOBJECT_TEMPLATE_ID } from '@keira-types/gameobject-template.type';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 
 @Component({
-  selector: 'app-gameobject-selector-modal',
+  selector: 'keira-gameobject-selector-modal',
   templateUrl: './gameobject-selector-modal.component.html',
   styleUrls: ['./gameobject-selector-modal.component.scss']
 })

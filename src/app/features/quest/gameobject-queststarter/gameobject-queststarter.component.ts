@@ -6,7 +6,7 @@ import { GameobjectQueststarterService } from './gameobject-queststarter.service
 import { GameobjectQueststarter } from '@keira-types/gameobject-queststarter.type';
 
 @Component({
-  selector: 'app-gameobject-queststarter',
+  selector: 'keira-gameobject-queststarter',
   templateUrl: './gameobject-queststarter.component.html',
   styleUrls: ['./gameobject-queststarter.component.scss']
 })

@@ -6,7 +6,7 @@ import { CreatureQuestitem } from '@keira-types/creature-questitem.type';
 import { CreatureQuestitemService } from './creature-questitem.service';
 
 @Component({
-  selector: 'app-creature-questitem',
+  selector: 'keira-creature-questitem',
   templateUrl: './creature-questitem.component.html',
   styleUrls: ['./creature-questitem.component.scss']
 })

@@ -6,7 +6,7 @@ import { CreatureEquipTemplateService } from './creature-equip-template.service'
 import { CreatureEquipTemplate } from '@keira-types/creature-equip-template.type';
 
 @Component({
-  selector: 'app-creature-equip-template',
+  selector: 'keira-creature-equip-template',
   templateUrl: './creature-equip-template.component.html',
   styleUrls: ['./creature-equip-template.component.scss']
 })
