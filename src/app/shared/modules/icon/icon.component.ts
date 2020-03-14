@@ -14,10 +14,14 @@ export class IconComponent extends SubscriptionHandler {
 
   @Input() size: 'small'|'medium'|'large' = 'medium';
   @Input() set itemId(itemId: string) {
-    this.subscriptions.push(this.service.getIconByItemId(itemId).subscribe(this.setIcon.bind(this)));
+    if (!!itemId) {
+      this.subscriptions.push(this.service.getIconByItemId(itemId).subscribe(this.setIcon.bind(this)));
+    }
   }
   @Input() set itemDisplayId(displayId: string) {
-    this.subscriptions.push(this.service.getIconByItemDisplayId(displayId).subscribe(this.setIcon.bind(this)));
+    if (!!displayId) {
+      this.subscriptions.push(this.service.getIconByItemDisplayId(displayId).subscribe(this.setIcon.bind(this)));
+    }
   }
 
   get iconLink(): string {
