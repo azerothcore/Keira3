@@ -32,17 +32,21 @@ export class SqliteQueryService extends QueryService {
   }
 
   // Input query format must be: SELECT something AS v FROM ...
-  queryValue<T extends string | number>(query: string): Promise<T | null> {
+  queryValue<T extends string | number>(query: string): Observable<T | null> {
     return this.query(query).pipe(
       map((data) => data && data[0] ? data[0].v as T : null),
-    ).toPromise();
+    );
   }
 
-  getDisplayIdIcon(displayId: string | number): Promise<string> {
+  queryValueToPromise<T extends string | number>(query: string): Promise<T | null> {
+    return this.queryValue<T>(query).toPromise();
+  }
+
+  getIconByItemDisplayId(displayId: string | number): Observable<string> {
     return this.queryValue<string>(`SELECT icon AS v FROM display_icons WHERE displayId = ${displayId}`);
   }
 
   getSpellNameById(id: string | number): Promise<string> {
-    return this.queryValue<string>(`SELECT spellName AS v FROM spells WHERE id = ${id}`);
+    return this.queryValueToPromise<string>(`SELECT spellName AS v FROM spells WHERE id = ${id}`);
   }
 }
