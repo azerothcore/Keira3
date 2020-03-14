@@ -5,7 +5,7 @@ import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.
 import { SAI_TYPES, SAI_TYPES_KEYS } from '@keira-types/smart-scripts.type';
 
 @Component({
-  selector: 'app-sai-search-entity',
+  selector: 'keira-sai-search-entity',
   templateUrl: './sai-search-entity.component.html',
   styleUrls: ['./sai-search-entity.component.scss']
 })

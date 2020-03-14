@@ -1,4 +1,4 @@
-<app-top-bar [handler]="handlerService"></app-top-bar>
+<keira-top-bar [handler]="handlerService"></keira-top-bar>
 
 <div class="container-fluid">
 
@@ -6,7 +6,7 @@
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
 
-    <app-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></app-query-output>
+    <keira-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
 
     <hr class="mt-2 mb-1">
 
@@ -28,26 +28,26 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="ItemID1">ItemID1</label>
-          <app-item-selector-btn
+          <keira-item-selector-btn
             [control]="editorService.form.controls['ItemID1']"
             [config]="{  name: 'ItemID1' }"
-          ></app-item-selector-btn>
+          ></keira-item-selector-btn>
           <input [formControlName]="'ItemID1'" id="ItemID1" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="ItemID2">ItemID2</label>
-          <app-item-selector-btn
+          <keira-item-selector-btn
             [control]="editorService.form.controls['ItemID2']"
             [config]="{  name: 'ItemID2' }"
-          ></app-item-selector-btn>
+          ></keira-item-selector-btn>
           <input [formControlName]="'ItemID2'" id="ItemID2" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="ItemID3">ItemID3</label>
-          <app-item-selector-btn
+          <keira-item-selector-btn
             [control]="editorService.form.controls['ItemID3']"
             [config]="{  name: 'ItemID3' }"
-          ></app-item-selector-btn>
+          ></keira-item-selector-btn>
           <input [formControlName]="'ItemID3'" id="ItemID3" type="number" class="form-control form-control-sm">
         </div>
       </div>

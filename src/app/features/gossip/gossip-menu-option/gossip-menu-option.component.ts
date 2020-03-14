@@ -8,7 +8,7 @@ import { OPTION_ICON } from '@keira-constants/options/gossip-option-icon';
 import { OPTION_TYPE } from '@keira-constants/options/gossip-option-type';
 
 @Component({
-  selector: 'app-gossip-menu-option',
+  selector: 'keira-gossip-menu-option',
   templateUrl: './gossip-menu-option.component.html',
   styleUrls: ['./gossip-menu-option.component.scss']
 })

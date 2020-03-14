@@ -22,7 +22,7 @@ class SelectConditionsComponentPage extends PageObject<SelectConditionsComponent
   get searchBtn() { return this.query<HTMLButtonElement>('#search-btn'); }
   get createBtn() { return this.query<HTMLButtonElement>('#create-new-btn'); }
 
-  get topBar() { return this.query<HTMLElement>('app-top-bar'); }
+  get topBar() { return this.query<HTMLElement>('keira-top-bar'); }
 }
 
 describe('SelectConditions integration tests', () => {

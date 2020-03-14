@@ -6,7 +6,7 @@ import { ConditionsHandlerService } from '../conditions-handler.service';
 import { SelectComplexKeyComponent } from '@keira-abstract/components/editors/select-complex-key.component';
 
 @Component({
-  selector: 'app-select-creature',
+  selector: 'keira-select-creature',
   templateUrl: './select-conditions.component.html',
   styleUrls: ['./select-conditions.component.scss']
 })

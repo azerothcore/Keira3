@@ -12,7 +12,7 @@ import { SPAWN_MASK } from '@keira-constants/flags/spawn-mask';
 import { PHASE_MASK } from '@keira-constants/flags/phase-mask';
 
 @Component({
-  selector: 'app-creature-spawn',
+  selector: 'keira-creature-spawn',
   templateUrl: './creature-spawn.component.html',
   styleUrls: ['./creature-spawn.component.scss']
 })

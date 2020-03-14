@@ -6,7 +6,7 @@ import { CreatureLootTemplateService } from './creature-loot-template.service';
 import { LootTemplateComponent } from '@keira-abstract/components/editors/loot-template/loot-template.component';
 
 @Component({
-  selector: 'app-creature-loot-template',
+  selector: 'keira-creature-loot-template',
   templateUrl: '../../../shared/abstract/components/editors/loot-template/loot-template.component.html',
   styleUrls: ['../../../shared/abstract/components/editors/loot-template/loot-template.component.scss']
 })

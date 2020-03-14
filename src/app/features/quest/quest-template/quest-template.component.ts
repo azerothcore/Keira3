@@ -10,7 +10,7 @@ import { QUEST_FLAGS } from '@keira-constants/flags/quest-flags';
 import { QUEST_TYPE } from '@keira-constants/options/quest-type';
 
 @Component({
-  selector: 'app-quest-template',
+  selector: 'keira-quest-template',
   templateUrl: './quest-template.component.html',
   styleUrls: ['./quest-template.component.scss']
 })

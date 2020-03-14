@@ -6,7 +6,7 @@ import { SPELL_ID } from '@keira-types/spell.type';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 
 @Component({
-  selector: 'app-spell-selector-modal',
+  selector: 'keira-spell-selector-modal',
   templateUrl: './spell-selector-modal.component.html',
   styleUrls: ['./spell-selector-modal.component.scss']
 })

@@ -1,4 +1,4 @@
-<app-top-bar [handler]="handlerService"></app-top-bar>
+<keira-top-bar [handler]="handlerService"></keira-top-bar>
 
 <div class="container-fluid">
 
@@ -6,7 +6,7 @@
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
 
-    <app-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></app-query-output>
+    <keira-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
 
     <hr class="mt-2 mb-1">
 
@@ -64,16 +64,16 @@
       <div class="row">
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="class">class</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
             [control]="editorService.form.controls['class']"
             [config]="{ options: ITEM_CLASS, name: 'class' }"
             [modalClass]="'modal-md'"
-          ></app-single-value-selector-btn>
+          ></keira-single-value-selector-btn>
           <input [formControlName]="'class'" id="class" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="subclass">subclass</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
             *ngIf="editorService.form.controls['class']
             && editorService.form.controls['class'].value !== null
             && editorService.form.controls['class'].value >= 0
@@ -81,7 +81,7 @@
             [control]="editorService.form.controls['subclass']"
             [config]="{ options: ITEM_SUBCLASS[editorService.form.controls['class'].value], name: 'subclass' }"
             [modalClass]="'modal-md'"
-          ></app-single-value-selector-btn>
+          ></keira-single-value-selector-btn>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'The subclass meaning varies according to the item class (so the class must be set BEFORE the subclass)'"
@@ -106,29 +106,29 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="Quality">Quality</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
             [control]="editorService.form.controls['Quality']"
             [config]="{ options: ITEM_QUALITY, name: 'Quality' }"
             [modalClass]="'modal-md'"
-          ></app-single-value-selector-btn>
+          ></keira-single-value-selector-btn>
           <input [formControlName]="'Quality'" id="Quality" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="Flags">Flags</label>
-          <app-flags-selector-btn
+          <keira-flags-selector-btn
             [control]="editorService.form.controls['Flags']"
             [config]="{ flags: ITEM_FLAGS, name: 'Flags' }"
             [modalClass]="'modal-lg'"
-          ></app-flags-selector-btn>
+          ></keira-flags-selector-btn>
           <input [formControlName]="'Flags'" id="Flags" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="FlagsExtra">FlagsExtra</label>
-          <app-flags-selector-btn
+          <keira-flags-selector-btn
             [control]="editorService.form.controls['FlagsExtra']"
             [config]="{ flags: ITEM_FLAGS_EXTRA, name: 'FlagsExtra' }"
             [modalClass]="'modal-lg'"
-          ></app-flags-selector-btn>
+          ></keira-flags-selector-btn>
           <input [formControlName]="'FlagsExtra'" id="FlagsExtra" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -157,11 +157,11 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="InventoryType">InventoryType</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
             [control]="editorService.form.controls['InventoryType']"
             [config]="{ options: INVENTORY_TYPE, name: 'InventoryType' }"
             [modalClass]="'modal-md'"
-          ></app-single-value-selector-btn>
+          ></keira-single-value-selector-btn>
           <input [formControlName]="'InventoryType'" id="InventoryType" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -230,20 +230,20 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="Material">Material</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
             [control]="editorService.form.controls['Material']"
             [config]="{ options: ITEM_MATERIAL, name: 'Material' }"
             [modalClass]="'modal-md'"
-          ></app-single-value-selector-btn>
+          ></keira-single-value-selector-btn>
           <input [formControlName]="'Material'" id="Material" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="sheath">sheath</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
             [control]="editorService.form.controls['sheath']"
             [config]="{ options: ITEM_SHEAT, name: 'sheath' }"
             [modalClass]="'modal-md'"
-          ></app-single-value-selector-btn>
+          ></keira-single-value-selector-btn>
           <input [formControlName]="'sheath'" id="sheath" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -280,20 +280,20 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="BagFamily">BagFamily</label>
-          <app-flags-selector-btn
+          <keira-flags-selector-btn
             [control]="editorService.form.controls['BagFamily']"
             [config]="{ flags: BAG_FAMILY, name: 'BagFamily' }"
             [modalClass]="'modal-md'"
-          ></app-flags-selector-btn>
+          ></keira-flags-selector-btn>
           <input [formControlName]="'BagFamily'" id="BagFamily" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="TotemCategory">TotemCategory</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
             [control]="editorService.form.controls['TotemCategory']"
             [config]="{ options: TOTEM_CATEGORY, name: 'TotemCategory' }"
             [modalClass]="'modal-md'"
-          ></app-single-value-selector-btn>
+          ></keira-single-value-selector-btn>
           <input [formControlName]="'TotemCategory'" id="TotemCategory" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -330,11 +330,11 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="FoodType">FoodType</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
             [control]="editorService.form.controls['FoodType']"
             [config]="{ options: FOOD_TYPE, name: 'FoodType' }"
             [modalClass]="'modal-md'"
-          ></app-single-value-selector-btn>
+          ></keira-single-value-selector-btn>
           <input [formControlName]="'FoodType'" id="FoodType" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -355,11 +355,11 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="flagsCustom">flagsCustom</label>
-          <app-flags-selector-btn
+          <keira-flags-selector-btn
             [control]="editorService.form.controls['flagsCustom']"
             [config]="{ flags: ITEM_FLAGS_CUSTOM, name: 'flagsCustom' }"
             [modalClass]="'modal-lg'"
-          ></app-flags-selector-btn>
+          ></keira-flags-selector-btn>
           <input [formControlName]="'flagsCustom'" id="flagsCustom" type="number" class="form-control form-control-sm">
         </div>
       </div>
@@ -370,20 +370,20 @@
       <div class="row">
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="AllowableClass">AllowableClass</label>
-          <app-flags-selector-btn
+          <keira-flags-selector-btn
             [control]="editorService.form.controls['AllowableClass']"
             [config]="{ flags: ALLOWABLE_CLASSES, name: 'AllowableClass' }"
             [modalClass]="'modal-lg'"
-          ></app-flags-selector-btn>
+          ></keira-flags-selector-btn>
           <input [formControlName]="'AllowableClass'" id="AllowableClass" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="AllowableRace">AllowableRace</label>
-          <app-flags-selector-btn
+          <keira-flags-selector-btn
             [control]="editorService.form.controls['AllowableRace']"
             [config]="{ flags: ALLOWABLE_RACES, name: 'AllowableRace' }"
             [modalClass]="'modal-lg'"
-          ></app-flags-selector-btn>
+          ></keira-flags-selector-btn>
           <input [formControlName]="'AllowableRace'" id="AllowableRace" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -424,11 +424,11 @@
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'The required spell that the player needs to have to use this item.'"
           ></i>
-          <app-spell-selector-btn
+          <keira-spell-selector-btn
             [control]="editorService.form.controls['requiredspell']"
             [config]="{ name: 'requiredspell' }"
             [modalClass]="'modal-lg'"
-          ></app-spell-selector-btn>
+          ></keira-spell-selector-btn>
           <input [formControlName]="'requiredspell'" id="requiredspell" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -449,20 +449,20 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="RequiredReputationFaction">RequiredReputationFaction</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
             [control]="editorService.form.controls['RequiredReputationFaction']"
             [config]="{ options: FACTIONS, name: 'RequiredReputationFaction' }"
             [modalClass]="'modal-md'"
-          ></app-single-value-selector-btn>
+          ></keira-single-value-selector-btn>
           <input [formControlName]="'RequiredReputationFaction'" id="RequiredReputationFaction" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="RequiredReputationRank">RequiredReputationRank</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
             [control]="editorService.form.controls['RequiredReputationRank']"
             [config]="{ options: FACTION_RANK, name: 'RequiredReputationRank' }"
             [modalClass]="'modal-md'"
-          ></app-single-value-selector-btn>
+          ></keira-single-value-selector-btn>
           <input [formControlName]="'RequiredReputationRank'" id="RequiredReputationRank" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -526,11 +526,11 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="stat_type{{ i }}">type{{ i }}</label>
-              <app-single-value-selector-btn
+              <keira-single-value-selector-btn
                 [control]="editorService.form.controls['stat_type' + i]"
                 [config]="{ options: STAT_TYPE, name: 'stat_type' + i }"
                 [modalClass]="'modal-md'"
-              ></app-single-value-selector-btn>
+              ></keira-single-value-selector-btn>
               <input [formControlName]="'stat_type' + i" id="stat_type{{ i }}" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
@@ -575,11 +575,11 @@
                 </div>
                 <div class="col-12">
                   <label class="control-label" for="dmg_type{{ i }}">type{{ i }}</label>
-                  <app-single-value-selector-btn
+                  <keira-single-value-selector-btn
                     [control]="editorService.form.controls['dmg_type' + i]"
                     [config]="{ options: DAMAGE_TYPE, name: 'dmg_type' + i }"
                     [modalClass]="'modal-md'"
-                  ></app-single-value-selector-btn>
+                  ></keira-single-value-selector-btn>
                   <input [formControlName]="'dmg_type' + i" id="dmg_type{{ i }}" type="number" class="form-control form-control-sm">
                 </div>
               </div>
@@ -596,11 +596,11 @@
           <div class="row">
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg col-xl-5">
               <label class="control-label" for="socketBonus">socketBonus</label>
-              <app-single-value-selector-btn
+              <keira-single-value-selector-btn
                 [control]="editorService.form.controls['socketBonus']"
                 [config]="{ options: SOCKET_BONUS, name: 'socketBonus' }"
                 [modalClass]="'modal-md'"
-              ></app-single-value-selector-btn>
+              ></keira-single-value-selector-btn>
               <input [formControlName]="'socketBonus'" id="socketBonus" type="number" class="form-control form-control-sm">
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg col-xl-5">
@@ -621,11 +621,11 @@
               <div class="row">
                 <div class="col-12">
                   <label class="control-label" for="socketColor_{{ i }}">Color_{{ i }}</label>
-                  <app-flags-selector-btn
+                  <keira-flags-selector-btn
                     [control]="editorService.form.controls['socketColor_' + i]"
                     [config]="{ flags: SOCKET_COLOR, name: 'socketColor_' + i }"
                     [modalClass]="'modal-md'"
-                  ></app-flags-selector-btn>
+                  ></keira-flags-selector-btn>
                   <input [formControlName]="'socketColor_' + i" id="socketColor_{{ i }}" type="number" class="form-control form-control-sm">
                 </div>
                 <div class="col-12">
@@ -690,11 +690,11 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="bonding">bonding</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
             [control]="editorService.form.controls['bonding']"
             [config]="{ options: ITEM_BONDING, name: 'bonding' }"
             [modalClass]="'modal-md'"
-          ></app-single-value-selector-btn>
+          ></keira-single-value-selector-btn>
           <input [formControlName]="'bonding'" id="bonding" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -728,11 +728,11 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="spellid_{{ i }}">id_{{ i }}</label>
-              <app-spell-selector-btn
+              <keira-spell-selector-btn
                 [control]="editorService.form.controls['spellid_' + i]"
                 [config]="{ name: 'spellid_' + i }"
                 [modalClass]="'modal-lg'"
-              ></app-spell-selector-btn>
+              ></keira-spell-selector-btn>
               <input [formControlName]="'spellid_' + i" id="spellid_{{ i }}" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">

@@ -7,7 +7,7 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { EMOTE } from '@keira-constants/options/emote';
 
 @Component({
-  selector: 'app-quest-request-items',
+  selector: 'keira-quest-request-items',
   templateUrl: './quest-request-items.component.html',
   styleUrls: ['./quest-request-items.component.scss']
 })

@@ -28,16 +28,16 @@
             >2) Select an Entry(+) or manually insert a GUID(-) </ng-container>
             <ng-template #idBlock>Insert an ID</ng-template>
           </label>
-          <app-creature-selector-btn
+          <keira-creature-selector-btn
             *ngIf="typeCreatureSelected"
             [control]="entryOrGuidControl"
             [config]="{  name: 'entryorguid' }"
-          ></app-creature-selector-btn>
-          <app-gameobject-selector-btn
+          ></keira-creature-selector-btn>
+          <keira-gameobject-selector-btn
             *ngIf="typeGameobjectSelected"
             [control]="entryOrGuidControl"
             [config]="{  name: 'entryorguid' }"
-          ></app-gameobject-selector-btn>
+          ></keira-gameobject-selector-btn>
           <input [formControlName]="'entryorguid'" id="entryorguid" type="number" class="form-control form-control-sm">
         </div>
       </div>

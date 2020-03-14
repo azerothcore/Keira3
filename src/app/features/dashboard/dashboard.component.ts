@@ -8,7 +8,7 @@ import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/su
 import { ConfigService } from '@keira-shared/services/config.service';
 
 @Component({
-  selector: 'app-home',
+  selector: 'keira-home',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })

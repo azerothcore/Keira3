@@ -9,7 +9,7 @@ import { CREATURE_ADDON_BYTES_1 } from '@keira-constants/options/creature-addon-
 import { CREATURE_ADDON_BYTES_2 } from '@keira-constants/options/creature-addon-bytes2';
 
 @Component({
-  selector: 'app-creature-spawn-addon',
+  selector: 'keira-creature-spawn-addon',
   templateUrl: './creature-spawn-addon.component.html',
   styleUrls: ['./creature-spawn-addon.component.scss']
 })

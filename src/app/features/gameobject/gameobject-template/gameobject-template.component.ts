@@ -10,7 +10,7 @@ import { FieldDefinition } from '@keira-types/general';
 
 
 @Component({
-  selector: 'app-gameobject-template',
+  selector: 'keira-gameobject-template',
   templateUrl: './gameobject-template.component.html',
   styleUrls: ['./gameobject-template.component.scss']
 })

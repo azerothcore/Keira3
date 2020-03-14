@@ -7,7 +7,7 @@ import { MultiRowEditorComponent } from '@keira-abstract/components/editors/mult
 import { LOOT_MODE } from '@keira-constants/flags/loot-mode';
 
 @Component({
-  selector: 'app-item-loot-template',
+  selector: 'keira-item-loot-template',
   templateUrl: './item-loot-template.component.html',
   styleUrls: ['./item-loot-template.component.scss']
 })

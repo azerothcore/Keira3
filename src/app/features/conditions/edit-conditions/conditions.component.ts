@@ -18,7 +18,7 @@ import {
 } from './conditions-constants';
 
 @Component({
-  selector: 'app-conditions',
+  selector: 'keira-conditions',
   templateUrl: './conditions.component.html',
   styleUrls: ['./conditions.component.scss']
 })

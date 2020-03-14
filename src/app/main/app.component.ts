@@ -7,7 +7,7 @@ import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service'
 import { ElectronService } from '@keira-shared/services/electron.service';
 
 @Component({
-  selector: 'app-root',
+  selector: 'keira-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })

@@ -12,7 +12,7 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 
 @Component({
-  selector: 'app-select-quest',
+  selector: 'keira-select-quest',
   templateUrl: './select-quest.component.html',
   styleUrls: ['./select-quest.component.scss']
 })

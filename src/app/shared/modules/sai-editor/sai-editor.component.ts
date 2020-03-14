@@ -36,7 +36,7 @@ import { EVENT_PHASE_MASK } from '../../constants/flags/event-phase-mask';
 import { SMART_EVENT_FLAGS } from '../../constants/flags/smart-event-flags';
 
 @Component({
-  selector: 'app-sai-editor',
+  selector: 'keira-sai-editor',
   templateUrl: './sai-editor.component.html',
   styleUrls: ['./sai-editor.component.scss']
 })

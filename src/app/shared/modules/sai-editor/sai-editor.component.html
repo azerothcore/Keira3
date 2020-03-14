@@ -1,4 +1,4 @@
-<app-sai-top-bar [handler]="getHandler()"></app-sai-top-bar>
+<keira-sai-top-bar [handler]="getHandler()"></keira-sai-top-bar>
 
 <div class="container-fluid">
 
@@ -6,7 +6,7 @@
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
 
-    <app-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></app-query-output>
+    <keira-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
 
     <div class="wiki-link">
       <a [href]="docUrl" target="_blank">
@@ -77,11 +77,11 @@
           <div class="form-row">
             <div class="form-group col-6">
               <label class="control-label" for="event_phase_mask">phase</label>
-              <app-flags-selector-btn
+              <keira-flags-selector-btn
                 [control]="editorService.form.controls['event_phase_mask']"
                 [config]="{ flags: EVENT_PHASE_MASK, name: 'event_phase_mask' }"
                 [modalClass]="'modal-lg'"
-              ></app-flags-selector-btn>
+              ></keira-flags-selector-btn>
               <i
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
                 [tooltip]="'Use 0 for all phases'"
@@ -110,11 +110,11 @@
           <div class="form-row">
             <div class="form-group col-6">
               <label class="control-label" for="event_flags">flags</label>
-              <app-flags-selector-btn
+              <keira-flags-selector-btn
                 [control]="editorService.form.controls['event_flags']"
                 [config]="{ flags: SMART_EVENT_FLAGS, name: 'event_flags' }"
                 [modalClass]="'modal-lg'"
-              ></app-flags-selector-btn>
+              ></keira-flags-selector-btn>
             </div>
 
             <div class="form-group col">

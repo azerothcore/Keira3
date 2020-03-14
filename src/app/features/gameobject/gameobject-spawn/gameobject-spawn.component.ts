@@ -8,7 +8,7 @@ import { SPAWN_MASK } from '@keira-constants/flags/spawn-mask';
 import { PHASE_MASK } from '@keira-constants/flags/phase-mask';
 
 @Component({
-  selector: 'app-gameobject-spawn',
+  selector: 'keira-gameobject-spawn',
   templateUrl: './gameobject-spawn.component.html',
   styleUrls: ['./gameobject-spawn.component.scss']
 })

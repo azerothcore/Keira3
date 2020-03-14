@@ -6,7 +6,7 @@ import { NpcTrainer } from '@keira-types/npc-trainer.type';
 import { NpcTrainerService } from './npc-trainer.service';
 
 @Component({
-  selector: 'app-npc-trainer',
+  selector: 'keira-npc-trainer',
   templateUrl: './npc-trainer.component.html',
   styleUrls: ['./npc-trainer.component.scss']
 })

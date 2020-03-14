@@ -18,7 +18,7 @@ class ConnectionWindowComponentPage extends PageObject<ConnectionWindowComponent
   get passwordInput() { return this.query<HTMLInputElement>('#password'); }
   get databaseInput() { return this.query<HTMLInputElement>('#database'); }
   get connectBtn() { return this.query<HTMLButtonElement>('.connect-button'); }
-  get errorElement() { return this.query<HTMLButtonElement>('app-query-error'); }
+  get errorElement() { return this.query<HTMLButtonElement>('keira-query-error'); }
 }
 
 describe('ConnectionWindowComponent', () => {

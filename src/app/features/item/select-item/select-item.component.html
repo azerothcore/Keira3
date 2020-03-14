@@ -1,14 +1,14 @@
-<app-top-bar [handler]="handlerService"></app-top-bar>
+<keira-top-bar [handler]="handlerService"></keira-top-bar>
 
 <div class="container-fluid p-3">
 
-  <app-create
+  <keira-create
     [entityTable]="entityTable"
     [entityIdField]="entityIdField"
     [customStartingId]="customStartingId"
     [handlerService]="handlerService"
     [queryService]="queryService"
-  ></app-create>
+  ></keira-create>
 
   <hr class="mt-2 mb-2">
 
@@ -54,7 +54,7 @@
     >
       <ngx-datatable-column [minWidth]="50" [sortable]="false">
         <ng-template let-row="row" ngx-datatable-cell-template>
-          <app-icon [itemDisplayId]="row.displayid"></app-icon>
+          <keira-icon [itemDisplayId]="row.displayid"></keira-icon>
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column name="ID">

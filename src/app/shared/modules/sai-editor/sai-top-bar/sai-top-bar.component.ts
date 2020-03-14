@@ -6,7 +6,7 @@ import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
 
 @Component({
-  selector: 'app-sai-top-bar',
+  selector: 'keira-sai-top-bar',
   templateUrl: './sai-top-bar.component.html',
 })
 export class SaiTopBarComponent extends SubscriptionHandler implements OnInit {

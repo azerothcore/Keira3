@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { SidebarService } from './sidebar/sidebar.service';
 
 @Component({
-  selector: 'app-main-window',
+  selector: 'keira-main-window',
   templateUrl: './main-window.component.html',
   styleUrls: ['./main-window.component.scss']
 })
