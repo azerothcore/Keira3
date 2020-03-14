@@ -10,7 +10,7 @@ import {
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { ItemHandlerService } from '../item-handler.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
-import { ItemIconService } from '@keira-shared/services/item-icon.service';
+import { IconService } from '@keira-shared/modules/icon/icon.service';
 
 @Injectable()
 export class SelectItemService extends SelectService<ItemTemplate> {
@@ -18,7 +18,7 @@ export class SelectItemService extends SelectService<ItemTemplate> {
   constructor(
     protected queryService: MysqlQueryService,
     public handlerService: ItemHandlerService,
-    private itemIconService: ItemIconService,
+    private itemIconService: IconService,
   ) {
     super(
       queryService,
@@ -28,9 +28,5 @@ export class SelectItemService extends SelectService<ItemTemplate> {
       ITEM_TEMPLATE_NAME,
       ITEM_TEMPLATE_SEARCH_FIELDS,
     );
-  }
-
-  protected async processRows() {
-    await this.itemIconService.addIconLinkToRows(this.rows);
   }
 }

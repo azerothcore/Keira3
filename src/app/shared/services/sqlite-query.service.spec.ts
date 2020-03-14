@@ -17,7 +17,7 @@ describe('SqliteQueryService', () => {
       spyOn(service, 'query').and.returnValue(of([{ v: value }]));
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
 
-      expect(await service.queryValue(query)).toEqual(value);
+      expect(await service.queryValueToPromise(query)).toEqual(value);
       expect(service.query).toHaveBeenCalledTimes(1);
       expect(service.query).toHaveBeenCalledWith(query);
     });
@@ -26,14 +26,15 @@ describe('SqliteQueryService', () => {
       spyOn(service, 'query').and.returnValue(of(null ));
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
 
-      expect(await service.queryValue(query)).toEqual(null);
+      expect(await service.queryValueToPromise(query)).toEqual(null);
       expect(service.query).toHaveBeenCalledTimes(1);
       expect(service.query).toHaveBeenCalledWith(query);
     });
   });
 
   describe('get helpers', () => {
-    const result = of('mock result').toPromise();
+    const result = of('mock result');
+    const resultAsPromise = result.toPromise();
     const id = '123';
 
     beforeEach(() => {
@@ -41,14 +42,14 @@ describe('SqliteQueryService', () => {
     });
 
     it('getDisplayIdIcon', () => {
-      expect(service.getDisplayIdIcon(id)).toEqual(result);
+      expect(service.getIconByItemDisplayId(id)).toEqual(result);
       expect(service.queryValue).toHaveBeenCalledWith(
         `SELECT icon AS v FROM display_icons WHERE displayId = ${id}`
       );
     });
 
-    it('getSpellNameById', () => {
-      expect(service.getSpellNameById(id)).toEqual(result);
+    it('getSpellNameById', async () => {
+      expect(await service.getSpellNameById(id)).toEqual(await resultAsPromise);
       expect(service.queryValue).toHaveBeenCalledWith(
         `SELECT spellName AS v FROM spells WHERE id = ${id}`
       );
