@@ -7,6 +7,7 @@ import { MysqlService } from './mysql.service';
 import { MockedMysqlService } from '../testing/mocks';
 import { MaxRow, QueryForm, TableRow } from '../types/general';
 import { ConfigService } from './config.service';
+import { SmartScripts } from '@keira-types/smart-scripts.type';
 
 interface MockRow extends TableRow {
   entry: number;
@@ -194,6 +195,21 @@ describe('MysqlQueryService', () => {
     expect(querySpy).toHaveBeenCalledWith('SELECT MAX(param) AS max ' +
       'FROM my_ac;');
   }));
+
+  it('getTimedActionlists() should correctly work', async(() => {
+    const id = 1234;
+    const data: SmartScripts[] = [{ entryorguid: 1111} as SmartScripts];
+    const querySpy = spyOn(service, 'query').and.returnValue(of(data));
+
+    service.getTimedActionlists(id).subscribe((res) => {
+      expect(res).toEqual(data);
+    });
+
+    expect(querySpy).toHaveBeenCalledWith(
+      `SELECT * FROM smart_scripts WHERE source_type = 9 AND entryorguid >= ${id * 100} AND entryorguid < ${id * 100 + 100}`
+    );
+  }));
+
 
   describe('Query builders', () => {
     const tableName = 'my_table';

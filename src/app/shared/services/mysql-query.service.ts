@@ -8,6 +8,7 @@ import { MaxRow, TableRow, ValueRow } from '../types/general';
 import { squelConfig } from '../../config/squel.config';
 import { ConfigService } from './config.service';
 import { QueryService } from '@keira-shared/services/query.service';
+import { SmartScripts } from '@keira-types/smart-scripts.type';
 
 declare const squel: Squel & {flavour: null};
 
@@ -340,6 +341,14 @@ export class MysqlQueryService extends QueryService {
     query += insertQuery.toString() + ';\n';
     return this.formatQuery(query);
   }
+
+  getTimedActionlists(creatureId: string | number): Observable<SmartScripts[]> {
+    const startId = +creatureId * 100;
+    return this.query<SmartScripts>(
+      `SELECT * FROM smart_scripts WHERE source_type = 9 AND entryorguid >= ${startId} AND entryorguid < ${startId + 100}`
+    );
+  }
+
 
   // Input query format must be: SELECT something AS v FROM ...
   queryValue(query: string): Observable<string> {
