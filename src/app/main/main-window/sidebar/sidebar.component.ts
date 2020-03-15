@@ -59,8 +59,9 @@ export class SidebarComponent {
   toggleSidebar() {
     this.sidebarService.setSidebarState(!this.sidebarService.getSidebarState());
 
-    // fix ngx-datatable(s) size
+    /* istanbul ignore next */
     setTimeout(() => {
+      // fix ngx-datatable(s) size
       window.dispatchEvent(new Event('resize'));
     }, animationTime + 100);
   }
