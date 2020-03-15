@@ -100,6 +100,15 @@ export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> im
     return this.handlerService.parsedSelected.source_type === SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST;
   }
 
+  get showTimedActionlists(): boolean {
+    return this.handlerService.parsedSelected.source_type === SAI_TYPES.SAI_TYPE_CREATURE
+      && this.handlerService.parsedSelected.entryorguid > 0;
+  }
+
+  get entryOrGuid(): number {
+    return this.handlerService.parsedSelected.entryorguid;
+  }
+
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: SaiEditorService,

@@ -28,7 +28,7 @@ import { SaiCreatureEditorService } from './sai-creature-editor.service';
     NgxDatatableModule,
     FlagsSelectorModule,
     SingleValueSelectorModule,
-    SaiEditorModule
+    SaiEditorModule,
   ],
   exports: [
     SaiCreatureComponent,
