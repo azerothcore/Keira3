@@ -78,7 +78,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
 
     const green = [];
 
-    const flags = Math.log2(this.editorService.form.controls.Flags.value);
+    const flags = this.editorService.form.controls.Flags.value;
     const bonding: number = Number(this.editorService.form.controls.bonding.value);
     const maxcount: number = Number(this.editorService.form.controls.maxcount.value);
     const bagFamily: number = Number(this.editorService.form.controls.BagFamily.value);
@@ -92,7 +92,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     }
 
     // heroic tag
-    if (flags === ITEM_FLAG.HEROIC && quality === ITEMS_QUALITY.EPIC) {
+    if (flags & ITEM_FLAG.HEROIC && quality === ITEMS_QUALITY.EPIC) {
       this.tmpItemPreview += '<br><span class="q2">Heroic</span>';
     }
 
@@ -111,12 +111,12 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     }
 
     // conjured
-    if (flags === ITEM_FLAG.CONJURED) {
+    if (flags & ITEM_FLAG.CONJURED) {
       this.tmpItemPreview += '<br> Conjured Item';
     }
 
     // bonding
-    if (flags === ITEM_FLAG.ACCOUNTBOUND) {
+    if (flags & ITEM_FLAG.ACCOUNTBOUND) {
       this.tmpItemPreview += '<br>' + this.AOWOW_ITEM.bonding[0];
     } else if (bonding) {
       this.tmpItemPreview += '<br>' + this.AOWOW_ITEM.bonding[bonding];
@@ -127,7 +127,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
       this.tmpItemPreview += '<br>' + this.AOWOW_ITEM['unique'][0];
     } else if (maxcount && bagFamily !== 8192) { // not for currency tokens
       this.tmpItemPreview += '<br>' + this.AOWOW_ITEM['unique'][1].replace('%d', maxcount.toString());
-    } else if (flags === ITEM_FLAG.UNIQUEEQUIPPED) {
+    } else if (flags & ITEM_FLAG.UNIQUEEQUIPPED) {
       this.tmpItemPreview += '<br>' + this.AOWOW_ITEM['uniqueEquipped'][0];
     } /* else if (itemLimitCategory) {
         $limit = DB::Aowow()->selectRow("SELECT * FROM ?_itemlimitcategory WHERE id = ?", $this->curTpl['itemLimitCategory']);
@@ -140,7 +140,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     const flagsCustom = this.editorService.form.controls.flagsCustom.value;
     if (duration) {
       let rt = '';
-      if (flagsCustom & 0x1) { // if flagsCustom contains CU_DURATION_REAL_TIME
+      if (flagsCustom & 0x1) { // if CU_DURATION_REAL_TIME
         rt = ' (real time)';
       }
       this.tmpItemPreview += `<br>Duration: ${formatTime(duration * 1000)} ${rt}`;
