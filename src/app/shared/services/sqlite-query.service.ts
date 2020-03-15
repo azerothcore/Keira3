@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map, shareReplay, tap } from 'rxjs/operators';
 
 import { SqliteService } from '@keira-shared/services/sqlite.service';
 import { ConfigService } from '@keira-shared/services/config.service';
@@ -11,6 +11,9 @@ import { QueryService } from '@keira-shared/services/query.service';
   providedIn: 'root'
 })
 export class SqliteQueryService extends QueryService {
+
+  private itemDisplayIdCache: Observable<string>[] = [];
+  private spellNameCache: Observable<string>[] = [];
 
   constructor(
     private sqliteService: SqliteService,
@@ -38,15 +41,27 @@ export class SqliteQueryService extends QueryService {
     );
   }
 
-  queryValueToPromise<T extends string | number>(query: string): Promise<T | null> {
-    return this.queryValue<T>(query).toPromise();
-  }
-
   getIconByItemDisplayId(displayId: string | number): Observable<string> {
-    return this.queryValue<string>(`SELECT icon AS v FROM display_icons WHERE displayId = ${displayId}`);
+    displayId = Number(displayId);
+
+    if (!this.itemDisplayIdCache[displayId]) {
+      this.itemDisplayIdCache[displayId] = this.queryValue<string>(
+        `SELECT icon AS v FROM display_icons WHERE displayId = ${displayId}`
+      ).pipe(shareReplay());
+    }
+
+    return this.itemDisplayIdCache[displayId];
   }
 
-  getSpellNameById(id: string | number): Promise<string> {
-    return this.queryValueToPromise<string>(`SELECT spellName AS v FROM spells WHERE id = ${id}`);
+  getSpellNameById(spellId: string | number): Promise<string> {
+    spellId = Number(spellId);
+
+    if (!this.spellNameCache[spellId]) {
+      this.spellNameCache[spellId] = this.queryValue<string>(
+        `SELECT spellName AS v FROM spells WHERE id = ${spellId}`
+      ).pipe(shareReplay());
+    }
+
+    return this.spellNameCache[spellId].toPromise();
   }
 }
