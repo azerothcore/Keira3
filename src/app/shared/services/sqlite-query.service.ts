@@ -55,4 +55,12 @@ export class SqliteQueryService {
   getLockById(id: string | number): Promise<string> {
     return this.queryValue<string>(`SELECT * FROM lock WHERE id = ${id}`);
   }
+
+  getMapNameById(id: string | number): Promise<string> {
+    return this.queryValue<string>(`SELECT m_MapName_lang1 AS v FROM maps WHERE m_ID = ${id}`);
+  }
+
+  getAreaNameById(id: string | number): Promise<string> {
+    return this.queryValue<string>(`SELECT m_AreaName_lang AS v FROM areas_and_zones WHERE m_ID = ${id}`);
+  }
 }
