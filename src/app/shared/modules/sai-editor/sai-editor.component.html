@@ -140,16 +140,16 @@
           <div class="form-row">
             <div class="form-group col-7">
               <label class="control-label" id="label-event-param1">
-              <ng-container *ngIf="!isTimedActionlists">
-                {{ getName('param1', EVENT_PARAM1_NAMES[selectedEvent]) }} <i
-                class="fas fa-info-circle ml-1" [placement]="'auto'"
-                [hidden]="!EVENT_PARAM1_TOOLTIPS[selectedEvent]"
-                [tooltip]="EVENT_PARAM1_TOOLTIPS[selectedEvent]"
-              ></i>
-              </ng-container>
-              <ng-container *ngIf="isTimedActionlists">
-                minTimer
-              </ng-container>
+                <ng-container *ngIf="!isTimedActionlists">
+                  {{ getName('param1', EVENT_PARAM1_NAMES[selectedEvent]) }} <i
+                  class="fas fa-info-circle ml-1" [placement]="'auto'"
+                  [hidden]="!EVENT_PARAM1_TOOLTIPS[selectedEvent]"
+                  [tooltip]="EVENT_PARAM1_TOOLTIPS[selectedEvent]"
+                ></i>
+                </ng-container>
+                <ng-container *ngIf="isTimedActionlists">
+                  minTimer
+                </ng-container>
               </label>
             </div>
 
@@ -166,7 +166,7 @@
                   class="fas fa-info-circle ml-1" [placement]="'auto'"
                   [hidden]="!EVENT_PARAM2_TOOLTIPS[selectedEvent]"
                   [tooltip]="EVENT_PARAM2_TOOLTIPS[selectedEvent]"
-                  ></i>
+                ></i>
                 </ng-container>
                 <ng-container *ngIf="isTimedActionlists">
                   maxTimer
@@ -510,12 +510,12 @@
           [rowHeight]="DTCFG.rowHeight"
           [selectionType]="DTCFG.selectionType"
           (select)='editorService.onRowSelection($event)'>
-          <ngx-datatable-column [width]="30" [sortable]="false">
+          <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
             <ng-template let-row="row" ngx-datatable-cell-template>
               <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="id" prop="id"></ngx-datatable-column>
+          <ngx-datatable-column [minWidth]="50" [maxWidth]="60" name="id" prop="id"></ngx-datatable-column>
           <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="event" prop="event_type"></ngx-datatable-column>
           <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="action" prop="action_type"></ngx-datatable-column>
           <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="target" prop="target_type"></ngx-datatable-column>
@@ -529,11 +529,17 @@
       </div>
     </div>
 
-
-    <keira-timed-actionlist
-      *ngIf="showTimedActionlists"
-      [creatureId]="entryOrGuid"
-    ></keira-timed-actionlist>
+    <div *ngIf="showTimedActionlists">
+      <hr class="mt-0">
+      <p class="lead">
+        Creature's Timed Actionlists
+        <i
+          class="fas fa-info-circle ml-1" [placement]="'auto'"
+          [tooltip]="'All smart_scripts having source_type = 9 and entryorguid between CreatureID * 100 and CreatureID * 100 + 100'"
+        ></i>
+      </p>
+      <keira-timed-actionlist [creatureId]="entryOrGuid"></keira-timed-actionlist>
+    </div>
 
   </div>
 </div>
