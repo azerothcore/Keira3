@@ -1,5 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
+import { Observable } from 'rxjs';
+
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { SmartScripts } from '@keira-types/smart-scripts.type';
+import { DTCFG } from '@keira-config/datatable.config';
 
 @Component({
   selector: 'keira-timed-actionlist',
@@ -8,19 +12,19 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimedActionlistComponent implements OnChanges {
+  public readonly DTCFG = DTCFG;
   @Input() creatureId: string|number;
+
+  private _timedActionLists$: Observable<SmartScripts[]>;
+  get timedActionlists$(): Observable<SmartScripts[]> {
+    return this._timedActionLists$;
+  }
 
   constructor(
     private queryService: MysqlQueryService,
   ) { }
 
-  /* istanbul ignore next */ // TODO: write test once this component is complete
-  ngOnChanges(): void {
-    if (!!this.creatureId) {
-      this.queryService.getTimedActionlists(this.creatureId).subscribe((result) => {
-        console.log(result);
-      });
-    }
+  ngOnChanges() {
+    this._timedActionLists$ = this.queryService.getTimedActionlists(this.creatureId);
   }
-
 }
