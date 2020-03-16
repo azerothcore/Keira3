@@ -63,11 +63,16 @@ import { SaiCreatureComponent } from '../features/creature/sai-creature/sai-crea
 import { SaiFullEditorComponent } from '../features/smart-scripts/sai-full-editor/sai-full-editor.component';
 import { SaiGameobjectComponent } from '../features/gameobject/sai-gameobject/sai-gameobject.component';
 import { ConditionsComponent } from '../features/conditions/edit-conditions/conditions.component';
+import { SqlEditorComponent } from '../features/sql-editor/sql-editor.component';
 
 const routes: Routes = [
   {
     path: '',
     component: DashboardComponent
+  },
+  {
+    path: 'sql-editor',
+    component: SqlEditorComponent,
   },
   {
     path: 'creature',
