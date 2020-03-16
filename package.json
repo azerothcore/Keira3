@@ -38,7 +38,8 @@
     "ngx-ui-switch": "9.0.1",
     "serialize-javascript": "3.0.0",
     "sqlite3": "4.1.1",
-    "tslib": "1.11.1"
+    "tslib": "1.11.1",
+    "acorn": ">=6.4.1"
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "9.0.0",
