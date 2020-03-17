@@ -5,6 +5,27 @@
        [tooltip]="'A minimalistic SQL Editor to run custom queries'"></i>
   </p>
 
-  <textarea id="code" [(ngModel)]="code"></textarea>
+  <textarea id="code" [(ngModel)]="code" rows="6"></textarea>
 
+  <button type="button" class="btn btn-secondary btn-sm mr-2" (click)="copy()" id="copy-btn">Copy</button>
+  <button type="button" class="btn btn-primary btn-sm" (click)="execute()" id="execute-btn">Execute</button>
+
+  <keira-query-error [error]="error"></keira-query-error>
+
+  <hr>
+  Display: <select [(ngModel)]="displayLimit" class="select-limit">
+    <option *ngFor="let option of displayLimitOptions" [value]="option">{{ option }}</option>
+  </select>
+  <ngx-datatable
+    id="editor-table"
+    class="bootstrap table table-striped text-center mt-1"
+    [rows]="rows"
+    [headerHeight]="DTCFG.headerHeight"
+    [footerHeight]="DTCFG.footerHeight"
+    [columnMode]="DTCFG.columnMode"
+    [rowHeight]="DTCFG.rowHeight"
+    [limit]="displayLimit"
+  >
+    <ngx-datatable-column *ngFor="let col of columns" [prop]="col" [minWidth]="100"></ngx-datatable-column>
+  </ngx-datatable>
 </div>
