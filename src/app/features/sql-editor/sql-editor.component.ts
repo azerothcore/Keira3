@@ -1,10 +1,11 @@
 import { Component, } from '@angular/core';
 import { ClipboardService } from 'ngx-clipboard';
+import { MysqlError } from 'mysql';
+
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
 import { TableRow } from '@keira-types/general';
-import { MysqlError } from 'mysql';
 import { DTCFG } from '@keira-config/datatable.config';
 
 @Component({
@@ -16,10 +17,10 @@ export class SqlEditorComponent extends SubscriptionHandler {
   public readonly DTCFG = DTCFG;
   public readonly docUrl = 'https://www.w3schools.com/sql/sql_intro.asp';
 
-  displayLimit = 10;
-  get displayLimitOptions() {
-    return [10, 20, 50, 100, 200, 500, 1000];
-  }
+  // displayLimit = 10;
+  // get displayLimitOptions() {
+  //   return [10, 20, 50, 100, 200, 500, 1000];
+  // }
 
   code = 'SELECT `entry`, `name`, `subname`, `minlevel`, `maxlevel`, `AIName`, `ScriptName` \n' +
     'FROM `creature_template` \n' +

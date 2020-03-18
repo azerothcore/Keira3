@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SqlEditorComponent } from './sql-editor.component';
 import { SqlEditorModule } from './sql-editor.module';
 
-describe('SqlEditorComponent', () => {
+fdescribe('SqlEditorComponent', () => {
   let component: SqlEditorComponent;
   let fixture: ComponentFixture<SqlEditorComponent>;
 
