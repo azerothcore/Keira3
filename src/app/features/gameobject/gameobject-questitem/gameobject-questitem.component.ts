@@ -6,7 +6,7 @@ import { GameobjectQuestitem } from '@keira-types/gameobject-questitem.type';
 import { GameobjectQuestitemService } from './gameobject-questitem.service';
 
 @Component({
-  selector: 'app-gameobject-questitem',
+  selector: 'keira-gameobject-questitem',
   templateUrl: './gameobject-questitem.component.html',
   styleUrls: ['./gameobject-questitem.component.scss']
 })

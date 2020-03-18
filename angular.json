@@ -173,11 +173,11 @@
   "defaultProject": "Keira3",
   "schematics": {
     "@schematics/angular:component": {
-      "prefix": "app",
+      "prefix": "keira",
       "style": "scss"
     },
     "@schematics/angular:directive": {
-      "prefix": "app"
+      "prefix": "keira"
     }
   },
   "cli": {

@@ -6,7 +6,7 @@ import { CREATURE_TEMPLATE_ID } from '@keira-types/creature-template.type';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 
 @Component({
-  selector: 'app-creature-selector-modal',
+  selector: 'keira-creature-selector-modal',
   templateUrl: './creature-selector-modal.component.html',
   styleUrls: ['./creature-selector-modal.component.scss']
 })

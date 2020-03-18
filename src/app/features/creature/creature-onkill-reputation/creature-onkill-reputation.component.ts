@@ -9,7 +9,7 @@ import { FACTION_RANK } from '@keira-constants/options/faction-rank';
 
 
 @Component({
-  selector: 'app-creature-onkill-reputation',
+  selector: 'keira-creature-onkill-reputation',
   templateUrl: './creature-onkill-reputation.component.html',
   styleUrls: ['./creature-onkill-reputation.component.scss']
 })

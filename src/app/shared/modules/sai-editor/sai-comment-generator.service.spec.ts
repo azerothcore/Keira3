@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { SAI_ACTIONS } from '@keira-shared/modules/sai-editor/constants/sai-actions';
 import { SAI_EVENTS } from '@keira-shared/modules/sai-editor/constants/sai-event';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../services/mysql-query.service';
 import { SAI_TYPES, SmartScripts } from '@keira-types/smart-scripts.type';
 import { of } from 'rxjs';
 import {
@@ -29,7 +29,7 @@ describe('SaiCommentGeneratorService', () => {
     const mockGetSpellNameById = 'mockGetSpellNameById';
 
     beforeEach(() => {
-      const queryService = TestBed.inject(QueryService);
+      const queryService = TestBed.inject(MysqlQueryService);
       spyOn(queryService, 'getCreatureNameById').and.callFake(i => of(mockCreatureNameById + i).toPromise());
       spyOn(queryService, 'getCreatureNameByGuid').and.callFake(i => of(mockCreatureNameByGuid + i).toPromise());
       spyOn(queryService, 'getGameObjectNameById').and.callFake(i => of(mockGameobjectNameById + i).toPromise());
@@ -104,7 +104,7 @@ describe('SaiCommentGeneratorService', () => {
         input: {
           source_type: SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST,
         },
-        expected: ' - No Action Type',
+        expected: 'MockEntity - Actionlist - No Action Type',
       },
       {
         name: 'SAI_EVENTS.ACCEPTED_QUEST',

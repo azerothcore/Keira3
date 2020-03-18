@@ -11,6 +11,7 @@ import { QueryOutputModule } from '@keira-shared/modules/query-output/query-outp
 import { NpcVendorComponent } from './npc-vendor.component';
 import { ItemSelectorModule } from '@keira-shared/modules/selectors/item-selector/item-selector.module';
 import { NpcVendorService } from './npc-vendor.service';
+import { IconModule } from '@keira-shared/modules/icon/icon.module';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { NpcVendorService } from './npc-vendor.service';
     ToastrModule.forRoot(toastrConfig),
     NgxDatatableModule,
     ItemSelectorModule,
+    IconModule,
   ],
   exports: [
     NpcVendorComponent,

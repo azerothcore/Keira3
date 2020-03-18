@@ -5,7 +5,7 @@ import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { SaiCreatureEditorService } from './sai-creature-editor.service';
 
 @Component({
-  selector: 'app-sai-creature',
+  selector: 'keira-sai-creature',
   templateUrl: '../../../shared/modules/sai-editor/sai-editor.component.html',
   styleUrls: ['../../../shared/modules/sai-editor/sai-editor.component.scss']
 })

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SelectGossipComponent } from './select-gossip.component';
 import { SelectGossipService } from './select-gossip.service';
 import { SelectGossipModule } from './select-gossip.module';
@@ -21,7 +21,7 @@ describe('SelectGossip integration tests', () => {
   let fixture: ComponentFixture<SelectGossipComponent>;
   let selectService: SelectGossipService;
   let page: SelectGossipComponentPage;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let navigateSpy: Spy;
 
@@ -42,9 +42,9 @@ describe('SelectGossip integration tests', () => {
 
   beforeEach(() => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of(
-      { results: [{ max: 1 }] }
+      [{ max: 1 }]
     ));
 
     selectService = TestBed.inject(SelectGossipService);
@@ -56,24 +56,23 @@ describe('SelectGossip integration tests', () => {
     fixture.detectChanges();
   });
 
-  it('should correctly initialise', async(() => {
-    fixture.whenStable().then(() => {
+  it('should correctly initialise', async () => {
+    await fixture.whenStable();
       expect(page.createInput.value).toEqual(`${component.customStartingId}`);
       page.expectNewEntityFree();
       expect(querySpy).toHaveBeenCalledWith(
         'SELECT MAX(MenuID) AS max FROM gossip_menu;'
       );
       expect(page.queryWrapper.innerText).toContain(
-        'SELECT * FROM `gossip_menu` LIMIT 100'
+        'SELECT * FROM `gossip_menu` LIMIT 50'
       );
-    });
-  }));
+  });
 
-  it('should correctly behave when inserting and selecting free id', async(() => {
-    fixture.whenStable().then(() => {
+  it('should correctly behave when inserting and selecting free id', async () => {
+    await fixture.whenStable();
       querySpy.calls.reset();
       querySpy.and.returnValue(of(
-        { results: [] }
+        []
       ));
 
       page.setInputValue(page.createInput, value);
@@ -89,14 +88,13 @@ describe('SelectGossip integration tests', () => {
       expect(navigateSpy).toHaveBeenCalledTimes(1);
       expect(navigateSpy).toHaveBeenCalledWith(['gossip/gossip-menu']);
       page.expectTopBarCreatingNew(value);
-    });
-  }));
+  });
 
-  it('should correctly behave when inserting an existing entity', async(() => {
-    fixture.whenStable().then(() => {
+  it('should correctly behave when inserting an existing entity', async () => {
+    await fixture.whenStable();
       querySpy.calls.reset();
       querySpy.and.returnValue(of(
-        { results: ['mock value'] }
+        ['mock value']
       ));
 
       page.setInputValue(page.createInput, value);
@@ -106,8 +104,7 @@ describe('SelectGossip integration tests', () => {
         `SELECT * FROM \`gossip_menu\` WHERE (MenuID = ${value})`
       );
       page.expectEntityAlreadyInUse();
-    });
-  }));
+  });
 
   for (const { testId, MenuID, TextID, limit, expectedQuery } of [
     {
@@ -150,7 +147,7 @@ describe('SelectGossip integration tests', () => {
       { MenuID: 1, TextID: 3 },
     ];
     querySpy.calls.reset();
-    querySpy.and.returnValue(of({ results }));
+    querySpy.and.returnValue(of(results));
 
     page.clickElement(page.searchBtn);
 

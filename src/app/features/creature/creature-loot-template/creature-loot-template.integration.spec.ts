@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { CreatureLootTemplateComponent } from './creature-loot-template.component';
 import { CreatureLootTemplateModule } from './creature-loot-template.module';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { CreatureLootTemplate } from '@keira-types/creature-loot-template.type';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -17,7 +17,7 @@ class CreatureLootTemplatePage extends MultiRowEditorPageObject<CreatureLootTemp
 describe('CreatureLootTemplate integration tests', () => {
   let component: CreatureLootTemplateComponent;
   let fixture: ComponentFixture<CreatureLootTemplateComponent>;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let handlerService: CreatureHandlerService;
   let page: CreatureLootTemplatePage;
@@ -48,18 +48,19 @@ describe('CreatureLootTemplate integration tests', () => {
 
   function setup(creatingNew: boolean, lootId = id) {
     spyOn(TestBed.inject(CreatureLootTemplateService), 'getLootId').and.returnValue(of(
-      { results: [{ lootId }] }
+      [{ lootId }]
     ));
 
     handlerService = TestBed.inject(CreatureHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
+    spyOn(queryService, 'queryValue').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
-      { results: creatingNew ? [] : [originalRow0, originalRow1, originalRow2] }
+      creatingNew ? [] : [originalRow0, originalRow1, originalRow2]
     ));
 
     fixture = TestBed.createComponent(CreatureLootTemplateComponent);

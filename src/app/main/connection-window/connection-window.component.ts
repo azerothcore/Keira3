@@ -9,7 +9,7 @@ import { Config } from '@keira-types/config.type';
 import { LocalStorageService } from '../../shared/services/local-storage.service';
 
 @Component({
-  selector: 'app-connection-window',
+  selector: 'keira-connection-window',
   templateUrl: './connection-window.component.html',
   styleUrls: ['./connection-window.component.scss']
 })

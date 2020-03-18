@@ -4,8 +4,8 @@ import { instance } from 'ts-mockito';
 import { ToastrService } from 'ngx-toastr';
 
 import { GameobjectTemplateService } from './gameobject-template.service';
-import { QueryService } from '@keira-shared/services/query.service';
-import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { GO_DATA_FIELDS } from '@keira-constants/gameobject-types';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
@@ -17,7 +17,7 @@ describe('GameobjectTemplateService', () => {
       RouterTestingModule,
     ],
     providers: [
-      { provide: QueryService, useValue: instance(MockedQueryService) },
+      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
       { provide: ToastrService, useValue: instance(MockedToastrService) },
       GameobjectHandlerService,
       SaiGameobjectHandlerService,

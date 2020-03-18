@@ -3,8 +3,8 @@ import { BsModalRef } from 'ngx-bootstrap';
 import { instance } from 'ts-mockito';
 
 import { CreatureSelectorModalComponent } from './creature-selector-modal.component';
-import { QueryService } from '../../../services/query.service';
-import { MockedQueryService } from '@keira-testing/mocks';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { CreatureSearchService } from '../../search/creature-search.service';
 import { CreatureSelectorModule } from './creature-selector.module';
 
@@ -18,7 +18,7 @@ describe('CreatureSelectorModalComponent', () => {
       imports: [ CreatureSelectorModule ],
       providers: [
         BsModalRef,
-        { provide: QueryService, useValue: instance(MockedQueryService) },
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
       ],
     })
     .compileComponents();

@@ -1,4 +1,4 @@
-<app-top-bar [handler]="handlerService"></app-top-bar>
+<keira-top-bar [handler]="handlerService"></keira-top-bar>
 
 <div class="container-fluid">
 
@@ -6,7 +6,7 @@
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
 
-    <app-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></app-query-output>
+    <keira-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
 
     <hr class="mt-2 mb-1">
 
@@ -44,11 +44,11 @@
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="QuestType">QuestType</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
             [control]="editorService.form.controls['QuestType']"
             [config]="{ options: QUEST_TYPE, name: 'QuestType' }"
             [modalClass]="'modal-md'"
-          ></app-single-value-selector-btn>
+          ></keira-single-value-selector-btn>
           <input [formControlName]="'QuestType'" id="QuestType" type="number" class="form-control form-control-sm">
         </div>
 
@@ -98,11 +98,14 @@
         </div>
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="StartItem">StartItem</label>
-          <app-item-selector-btn
+          <label class="control-label" for="StartItem">
+            <keira-icon [itemId]="editorService.form.controls['StartItem'].value"></keira-icon>
+            StartItem
+          </label>
+          <keira-item-selector-btn
             [control]="editorService.form.controls['StartItem']"
             [config]="{  name: 'StartItem' }"
-          ></app-item-selector-btn>
+          ></keira-item-selector-btn>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'Items given by the quest giver at beginning of the quest. They will be deleted when quest is abandoned.'"
@@ -112,10 +115,10 @@
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="Flags">Flags</label>
-          <app-flags-selector-btn
+          <keira-flags-selector-btn
             [control]="editorService.form.controls['Flags']"
             [config]="{ flags: QUEST_FLAGS, name: 'Flags' }"
-          ></app-flags-selector-btn>
+          ></keira-flags-selector-btn>
           <input [formControlName]="'Flags'" id="Flags" type="number" class="form-control form-control-sm">
         </div>
 
@@ -130,10 +133,10 @@
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="AllowableRaces">AllowableRaces</label>
-          <app-flags-selector-btn
+          <keira-flags-selector-btn
             [control]="editorService.form.controls['AllowableRaces']"
             [config]="{ flags: ALLOWABLE_RACES, name: 'AllowableRaces' }"
-          ></app-flags-selector-btn>
+          ></keira-flags-selector-btn>
           <input [formControlName]="'AllowableRaces'" id="AllowableRaces" type="number" class="form-control form-control-sm">
         </div>
 
@@ -245,15 +248,18 @@
         >
           <div class="row">
             <div class="col-12">
-              <label class="control-label" for="RequiredItemId{{ i }}">RequiredItemId{{ i }}</label>
-              <app-item-selector-btn
+              <label class="control-label" for="RequiredItemId{{ i }}">
+                <keira-icon [itemId]="editorService.form.controls['RequiredItemId' + i].value"></keira-icon>
+                Req.ItemId{{ i }}
+              </label>
+              <keira-item-selector-btn
                 [control]="editorService.form.controls['RequiredItemId' + i]"
                 [config]="{  name: 'RequiredItemId' + i }"
-              ></app-item-selector-btn>
+              ></keira-item-selector-btn>
               <input [formControlName]="'RequiredItemId' + i" id="RequiredItemId{{ i }}" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
-              <label class="control-label" for="RequiredItemCount{{ i }}">RequiredItemCount{{ i }}</label>
+              <label class="control-label" for="RequiredItemCount{{ i }}">Req.ItemCount{{ i }}</label>
               <input [formControlName]="'RequiredItemCount' + i" id="RequiredItemCount{{ i }}" type="number" class="form-control form-control-sm">
             </div>
           </div>
@@ -272,11 +278,11 @@
         >
           <div class="row">
             <div class="col-12">
-              <label class="control-label" for="RequiredNpcOrGo{{ i }}">RequiredNpcOrGo{{ i }}</label>
+              <label class="control-label" for="RequiredNpcOrGo{{ i }}">Req.NpcOrGo{{ i }}</label>
               <input [formControlName]="'RequiredNpcOrGo' + i" id="RequiredNpcOrGo{{ i }}" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
-              <label class="control-label" for="RequiredNpcOrGoCount{{ i }}">RequiredNpcOrGoCount{{ i }}</label>
+              <label class="control-label" for="RequiredNpcOrGoCount{{ i }}">Req.NpcOrGoCount{{ i }}</label>
               <input [formControlName]="'RequiredNpcOrGoCount' + i" id="RequiredNpcOrGoCount{{ i }}" type="number" class="form-control form-control-sm">
             </div>
           </div>
@@ -291,12 +297,12 @@
               *ngFor="let i of [1,2]"
               class="col-12"
             >
-              <label class="control-label" for="RequiredFactionId{{ i }}">RequiredFactionId{{ i }}</label>
-              <app-single-value-selector-btn
+              <label class="control-label" for="RequiredFactionId{{ i }}">Req.FactionId{{ i }}</label>
+              <keira-single-value-selector-btn
                 [control]="editorService.form.controls['RequiredFactionId' + i]"
                 [config]="{ options: FACTIONS, name: 'RequiredFactionId' + i }"
                 [modalClass]="'modal-md'"
-              ></app-single-value-selector-btn>
+              ></keira-single-value-selector-btn>
               <input [formControlName]="'RequiredFactionId' + i" id="RequiredFactionId{{ i }}" type="number" class="form-control form-control-sm">
             </div>
           </div>
@@ -308,7 +314,7 @@
               *ngFor="let i of [1,2]"
               class="col-12"
             >
-              <label class="control-label" for="RequiredFactionValue{{ i }}">RequiredFactionValue{{ i }}</label>
+              <label class="control-label" for="RequiredFactionValue{{ i }}">Req.FactionValue{{ i }}</label>
               <input [formControlName]="'RequiredFactionValue' + i" id="RequiredFactionValue{{ i }}" type="number" class="form-control form-control-sm">
             </div>
           </div>
@@ -325,11 +331,14 @@
         >
           <div class="row">
             <div class="col-12">
-              <label class="control-label" for="ItemDrop{{ i }}">ItemDrop{{ i }}</label>
-              <app-item-selector-btn
+              <label class="control-label" for="ItemDrop{{ i }}">
+                <keira-icon [itemId]="editorService.form.controls['ItemDrop' + i].value"></keira-icon>
+                ItemDrop{{ i }}
+              </label>
+              <keira-item-selector-btn
                 [control]="editorService.form.controls['ItemDrop' + i]"
                 [config]="{  name: 'ItemDrop' + i }"
-              ></app-item-selector-btn>
+              ></keira-item-selector-btn>
               <input [formControlName]="'ItemDrop' + i" id="ItemDrop{{ i }}" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
@@ -414,6 +423,11 @@
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'Spell that is shown to be casted on quest completion in the quest log. Note that this spell will NOT be casted if RewardSpellCast is non-zero.'"
           ></i>
+          <keira-spell-selector-btn
+            [control]="editorService.form.controls['RewardSpell']"
+            [config]="{ name: 'RewardSpell' }"
+            [modalClass]="'modal-lg'"
+          ></keira-spell-selector-btn>
           <input [formControlName]="'RewardSpell'" id="RewardSpell" type="number" class="form-control form-control-sm">
         </div>
 
@@ -442,15 +456,18 @@
         >
           <div class="row">
             <div class="col-12">
-              <label class="control-label" for="RewardItem{{ i }}">RewardItem{{ i }}</label>
-              <app-item-selector-btn
+              <label class="control-label" for="RewardItem{{ i }}">
+                <keira-icon [itemId]="editorService.form.controls['RewardItem' + i].value"></keira-icon>
+                Rew.Item{{ i }}
+              </label>
+              <keira-item-selector-btn
                 [control]="editorService.form.controls['RewardItem' + i]"
                 [config]="{  name: 'RewardItem' + i }"
-              ></app-item-selector-btn>
+              ></keira-item-selector-btn>
               <input [formControlName]="'RewardItem' + i" id="RewardItem{{ i }}" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
-              <label class="control-label" for="RewardAmount{{ i }}">RewardAmount{{ i }}</label>
+              <label class="control-label" for="RewardAmount{{ i }}">Rew.Amount{{ i }}</label>
               <input [formControlName]="'RewardAmount' + i" id="RewardAmount{{ i }}" type="number" class="form-control form-control-sm">
             </div>
           </div>
@@ -467,15 +484,18 @@
         >
           <div class="row">
             <div class="col-12">
-              <label class="control-label" for="RewardChoiceItemID{{ i }}">RewardChoiceItemID{{ i }}</label>
-              <app-item-selector-btn
+              <label class="control-label" for="RewardChoiceItemID{{ i }}">
+                <keira-icon [itemId]="editorService.form.controls['RewardChoiceItemID' + i].value"></keira-icon>
+                ChoiceItem{{ i }}
+              </label>
+              <keira-item-selector-btn
                 [control]="editorService.form.controls['RewardChoiceItemID' + i]"
                 [config]="{ name: 'RewardChoiceItemID' + i }"
-              ></app-item-selector-btn>
+              ></keira-item-selector-btn>
               <input [formControlName]="'RewardChoiceItemID' + i" id="RewardChoiceItemID{{ i }}" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
-              <label class="control-label" for="RewardChoiceItemQuantity{{ i }}">RewardChoiceItemQuantity{{ i }}</label>
+              <label class="control-label" for="RewardChoiceItemQuantity{{ i }}">ChoiceItemQuantity{{ i }}</label>
               <input [formControlName]="'RewardChoiceItemQuantity' + i" id="RewardChoiceItemQuantity{{ i }}" type="number" class="form-control form-control-sm">
             </div>
           </div>
@@ -494,20 +514,20 @@
         >
           <div class="row">
             <div class="col-12">
-              <label class="control-label" for="RewardFactionID{{ i }}">RewardFactionID{{ i }}</label>
-              <app-single-value-selector-btn
+              <label class="control-label" for="RewardFactionID{{ i }}">Rew.FactionID{{ i }}</label>
+              <keira-single-value-selector-btn
                 [control]="editorService.form.controls['RewardFactionID' + i]"
                 [config]="{ options: FACTIONS, name: 'RewardFactionID' + i }"
                 [modalClass]="'modal-md'"
-              ></app-single-value-selector-btn>
+              ></keira-single-value-selector-btn>
               <input [formControlName]="'RewardFactionID' + i" id="RewardFactionID{{ i }}" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
-              <label class="control-label" for="RewardFactionValue{{ i }}">RewardFactionValue{{ i }}</label>
+              <label class="control-label" for="RewardFactionValue{{ i }}">Rew.FactionValue{{ i }}</label>
               <input [formControlName]="'RewardFactionValue' + i" id="RewardFactionValue{{ i }}" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">
-              <label class="control-label" for="RewardFactionOverride{{ i }}">RewardFactionOverride{{ i }}</label>
+              <label class="control-label" for="RewardFactionOverride{{ i }}">Rew.FactionOverride{{ i }}</label>
               <input [formControlName]="'RewardFactionOverride' + i" id="RewardFactionOverride{{ i }}" type="number" class="form-control form-control-sm">
             </div>
           </div>

@@ -9,10 +9,10 @@ import {
 } from '@keira-types/gossip-menu.type';
 import { SelectGossipService } from './select-gossip.service';
 import { GossipHandlerService } from '../gossip-handler.service';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 
 @Component({
-  selector: 'app-select-gossip',
+  selector: 'keira-select-gossip',
   templateUrl: './select-gossip.component.html',
   styleUrls: ['./select-gossip.component.scss']
 })
@@ -21,7 +21,7 @@ export class SelectGossipComponent extends SelectComponent<GossipMenu> {
   constructor(
     public selectService: SelectGossipService,
     public handlerService: GossipHandlerService,
-    public queryService: QueryService,
+    public queryService: MysqlQueryService,
   ) {
     super(
       GOSSIP_MENU_TABLE,

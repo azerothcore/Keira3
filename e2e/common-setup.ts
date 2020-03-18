@@ -10,6 +10,8 @@ export default function setup() {
       // But for the sake of the example we fetch it from our node_modules.
       path: electronPath,
 
+      env: { RUNNING_IN_SPECTRON: true },
+
       // Assuming you have the following directory structure
 
       //  |__ my project

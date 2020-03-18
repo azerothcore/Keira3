@@ -1,8 +1,8 @@
 import { distinctUntilChanged } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 
-import { Class, MysqlResult, TableRow } from '@keira-types/general';
-import { QueryService } from '../../../services/query.service';
+import { Class, TableRow } from '@keira-types/general';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { EditorService } from './editor.service';
 import { HandlerService } from '../handlers/handler.service';
 import { getNumberOrString } from '../../../utils/helpers';
@@ -18,7 +18,7 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     protected _entityNameField: string,
     protected isMainEntity: boolean,
     protected handlerService: HandlerService<T>,
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -116,10 +116,10 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     this._loading = false;
   }
 
-  protected onReloadSuccessful(data: MysqlResult<T>, id: string|number) {
-    if (data.results.length > 0) {
+  protected onReloadSuccessful(data: T[], id: string|number) {
+    if (data.length > 0) {
       // we are loading an existing entity
-      this.onLoadedExistingEntity(data.results[0]);
+      this.onLoadedExistingEntity(data[0]);
     } else {
       // we are creating a new entity
       this.onCreatingNewEntity(id);

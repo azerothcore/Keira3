@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { GossipMenuComponent } from './gossip-menu.component';
 import { GossipMenuModule } from './gossip-menu.module';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { GossipMenu } from '@keira-types/gossip-menu.type';
 import { GossipHandlerService } from '../gossip-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -14,7 +14,7 @@ class GossipMenuPage extends MultiRowEditorPageObject<GossipMenuComponent> {}
 describe('GossipMenu integration tests', () => {
   let component: GossipMenuComponent;
   let fixture: ComponentFixture<GossipMenuComponent>;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let handlerService: GossipHandlerService;
   let page: GossipMenuPage;
@@ -47,11 +47,11 @@ describe('GossipMenu integration tests', () => {
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
-      { results: creatingNew ? [] : [originalRow0, originalRow1, originalRow2] }
+      creatingNew ? [] : [originalRow0, originalRow1, originalRow2]
     ));
 
     fixture = TestBed.createComponent(GossipMenuComponent);

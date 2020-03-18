@@ -5,7 +5,7 @@ import { SingleValueSelectorModalComponent } from './single-value-selector-modal
 import { BaseSelectorBtnComponent } from '../base-selector/base-selector-btn.component';
 
 @Component({
-  selector: 'app-single-value-selector-btn',
+  selector: 'keira-single-value-selector-btn',
   templateUrl: '../base-selector/base-selector-btn.component.html',
   styleUrls: ['../base-selector/base-selector-btn.component.scss']
 })

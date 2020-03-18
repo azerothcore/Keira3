@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { CreatureOnkillReputationComponent } from './creature-onkill-reputation.component';
 import { CreatureOnkillReputationModule } from './creature-onkill-reputation.module';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { CreatureOnkillReputation } from '@keira-types/creature-onkill-reputation.type';
 import { CreatureHandlerService } from '../creature-handler.service';
@@ -16,7 +16,7 @@ class CreatureOnkillReputationPage extends EditorPageObject<CreatureOnkillReputa
 describe('CreatureOnkillReputation integration tests', () => {
   let component: CreatureOnkillReputationComponent;
   let fixture: ComponentFixture<CreatureOnkillReputationComponent>;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let handlerService: CreatureHandlerService;
   let page: CreatureOnkillReputationPage;
@@ -50,11 +50,11 @@ describe('CreatureOnkillReputation integration tests', () => {
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
-      { results: creatingNew ? [] : [originalEntity] }
+      creatingNew ? [] : [originalEntity]
     ));
 
     fixture = TestBed.createComponent(CreatureOnkillReputationComponent);

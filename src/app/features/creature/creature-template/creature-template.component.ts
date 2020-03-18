@@ -27,7 +27,7 @@ import { DAMAGE_TYPE } from '@keira-constants/options/damage-type';
 import { CREATURE_AI_NAME } from '@keira-constants/options/creature-ai-name';
 
 @Component({
-  selector: 'app-creature-template',
+  selector: 'keira-creature-template',
   templateUrl: './creature-template.component.html',
   styleUrls: ['./creature-template.component.scss']
 })

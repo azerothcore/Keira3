@@ -36,7 +36,7 @@ import { EVENT_PHASE_MASK } from '../../constants/flags/event-phase-mask';
 import { SMART_EVENT_FLAGS } from '../../constants/flags/smart-event-flags';
 
 @Component({
-  selector: 'app-sai-editor',
+  selector: 'keira-sai-editor',
   templateUrl: './sai-editor.component.html',
   styleUrls: ['./sai-editor.component.scss']
 })
@@ -98,6 +98,15 @@ export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> im
 
   get isTimedActionlists(): boolean {
     return this.handlerService.parsedSelected.source_type === SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST;
+  }
+
+  get showTimedActionlists(): boolean {
+    return this.handlerService.parsedSelected.source_type === SAI_TYPES.SAI_TYPE_CREATURE
+      && this.handlerService.parsedSelected.entryorguid > 0;
+  }
+
+  get entryOrGuid(): number {
+    return this.handlerService.parsedSelected.entryorguid;
   }
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

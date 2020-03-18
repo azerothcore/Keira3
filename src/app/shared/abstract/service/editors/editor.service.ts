@@ -2,8 +2,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { MysqlError } from 'mysql';
 
-import { Class, MysqlResult, TableRow } from '@keira-types/general';
-import { QueryService } from '../../../services/query.service';
+import { Class, TableRow } from '@keira-types/general';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { HandlerService } from '../handlers/handler.service';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
 import { ToastrService } from 'ngx-toastr';
@@ -32,7 +32,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     protected _entityTable: string,
     protected _entityIdField: string,
     protected handlerService: HandlerService<T>,
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super();
@@ -41,7 +41,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
 
   protected abstract updateDiffQuery();
   protected abstract updateFullQuery();
-  protected abstract onReloadSuccessful(data: MysqlResult<T>, id: string|number);
+  protected abstract onReloadSuccessful(data: T[], id: string|number);
 
   private getClassAttributes(c: Class): string[] {
     const tmpInstance = new c();
@@ -62,7 +62,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     this.disableEntityIdField();
   }
 
-  protected selectQuery(id: string|number): Observable<MysqlResult<T>> {
+  protected selectQuery(id: string|number): Observable<T[]> {
     return this.queryService.selectAll<T>(this._entityTable, this._entityIdField, id);
   }
 

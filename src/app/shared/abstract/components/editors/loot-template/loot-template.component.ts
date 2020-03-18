@@ -18,7 +18,7 @@ export abstract class LootTemplateComponent<T extends LootTemplate> extends Mult
     this.subscriptions.push(
       this.editorService.getLootId().subscribe((data) => {
         // always re-check the lootId
-        this._lootId = data.results[0].lootId;
+        this._lootId = data[0].lootId;
 
         if (this._lootId !== 0) {
           // the lootId is correctly set

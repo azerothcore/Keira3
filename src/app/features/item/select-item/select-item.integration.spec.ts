@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SelectItemComponent } from './select-item.component';
 import { SelectItemService } from './select-item.service';
 import { SelectItemModule } from './select-item.module';
@@ -21,7 +21,7 @@ describe('SelectItem integration tests', () => {
   let fixture: ComponentFixture<SelectItemComponent>;
   let selectService: SelectItemService;
   let page: SelectItemComponentPage;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let navigateSpy: Spy;
 
@@ -42,9 +42,9 @@ describe('SelectItem integration tests', () => {
 
   beforeEach(() => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of(
-      { results: [{ max: 1 }] }
+      [{ max: 1 }]
     ));
 
     selectService = TestBed.inject(SelectItemService);
@@ -56,24 +56,23 @@ describe('SelectItem integration tests', () => {
     fixture.detectChanges();
   });
 
-  it('should correctly initialise', async(() => {
-    fixture.whenStable().then(() => {
+  it('should correctly initialise', async () => {
+    await fixture.whenStable();
       expect(page.createInput.value).toEqual(`${component.customStartingId}`);
       page.expectNewEntityFree();
       expect(querySpy).toHaveBeenCalledWith(
         'SELECT MAX(entry) AS max FROM item_template;'
       );
       expect(page.queryWrapper.innerText).toContain(
-        'SELECT * FROM `item_template` LIMIT 100'
+        'SELECT * FROM `item_template` LIMIT 50'
       );
-    });
-  }));
+  });
 
-  it('should correctly behave when inserting and selecting free id', async(() => {
-    fixture.whenStable().then(() => {
+  it('should correctly behave when inserting and selecting free id', async () => {
+    await fixture.whenStable();
       querySpy.calls.reset();
       querySpy.and.returnValue(of(
-        { results: [] }
+        []
       ));
 
       page.setInputValue(page.createInput, value);
@@ -89,14 +88,13 @@ describe('SelectItem integration tests', () => {
       expect(navigateSpy).toHaveBeenCalledTimes(1);
       expect(navigateSpy).toHaveBeenCalledWith(['item/item-template']);
       page.expectTopBarCreatingNew(value);
-    });
-  }));
+  });
 
-  it('should correctly behave when inserting an existing entity', async(() => {
-    fixture.whenStable().then(() => {
+  it('should correctly behave when inserting an existing entity', async () => {
+    await fixture.whenStable();
       querySpy.calls.reset();
       querySpy.and.returnValue(of(
-        { results: ['mock value'] }
+        ['mock value']
       ));
 
       page.setInputValue(page.createInput, value);
@@ -106,8 +104,7 @@ describe('SelectItem integration tests', () => {
         `SELECT * FROM \`item_template\` WHERE (entry = ${value})`
       );
       page.expectEntityAlreadyInUse();
-    });
-  }));
+  });
 
   for (const { testId, id, name, limit, expectedQuery } of [
     {
@@ -153,7 +150,7 @@ describe('SelectItem integration tests', () => {
       { id: 3, name: 'An awesome Item 3', ItemType: 0, ItemLevel: 3, MinLevel: 30, ItemDescription: ''   },
     ];
     querySpy.calls.reset();
-    querySpy.and.returnValue(of({ results }));
+    querySpy.and.returnValue(of(results));
 
     page.clickElement(page.searchBtn);
 

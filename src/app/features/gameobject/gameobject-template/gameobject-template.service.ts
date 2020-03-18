@@ -10,7 +10,7 @@ import {
 } from '@keira-types/gameobject-template.type';
 import { FieldDefinition } from '@keira-types/general';
 import { GO_DATA_FIELDS } from '@keira-constants/gameobject-types';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class GameobjectTemplateService extends SingleRowEditorService<Gameobject
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: GameobjectHandlerService,
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(

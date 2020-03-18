@@ -7,7 +7,7 @@ import {
   GAMEOBJECT_TEMPLATE_ADDON_TABLE,
   GameobjectTemplateAddon,
 } from '@keira-types/gameobject-template-addon.type';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class GameobjectTemplateAddonService extends SingleRowEditorService<Gameo
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: GameobjectHandlerService,
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(

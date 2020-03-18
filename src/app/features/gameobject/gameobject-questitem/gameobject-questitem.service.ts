@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
 import { GameobjectHandlerService } from '../gameobject-handler.service';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { MultiRowEditorService } from '@keira-abstract/service/editors/multi-row-editor.service';
 import {
   GAMEOBJECT_QUESTITEM_ID,
@@ -17,7 +17,7 @@ export class GameobjectQuestitemService extends MultiRowEditorService<Gameobject
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: GameobjectHandlerService,
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(

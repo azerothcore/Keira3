@@ -2,13 +2,13 @@ import { TestBed } from '@angular/core/testing';
 import { instance } from 'ts-mockito';
 
 import { CreatureSearchService } from './creature-search.service';
-import { QueryService } from '../../services/query.service';
-import { MockedQueryService } from '../../testing/mocks';
+import { MysqlQueryService } from '../../services/mysql-query.service';
+import { MockedMysqlQueryService } from '../../testing/mocks';
 
 describe('CreatureSearchService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
-      { provide: QueryService, useValue: instance(MockedQueryService) },
+      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
     ]
   }));
 

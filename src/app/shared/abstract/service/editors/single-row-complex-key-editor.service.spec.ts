@@ -6,8 +6,8 @@ import { MysqlError } from 'mysql';
 import { instance } from 'ts-mockito';
 import { ToastrService } from 'ngx-toastr';
 
-import { QueryService } from '../../../services/query.service';
-import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { SingleRowComplexKeyEditorService } from './single-row-complex-key-editor.service';
 import { MockSingleRowComplexKeyEditorService, MockEntity, MockHandlerService, MOCK_NAME } from '@keira-testing/mock-services';
 
@@ -22,7 +22,7 @@ describe('SingleRowComplexKeyEditorService', () => {
       RouterTestingModule,
     ],
     providers: [
-      { provide: QueryService, useValue: instance(MockedQueryService) },
+      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
       { provide: ToastrService, useValue: instance(MockedToastrService) },
     ],
   }));
@@ -42,7 +42,7 @@ describe('SingleRowComplexKeyEditorService', () => {
       const handlerService = TestBed.inject(MockHandlerService);
       // @ts-ignore
       handlerService._selected = '{}';
-      const selectAllMultipleKeysSpy = spyOn(TestBed.inject(QueryService), 'selectAllMultipleKeys');
+      const selectAllMultipleKeysSpy = spyOn(TestBed.inject(MysqlQueryService), 'selectAllMultipleKeys');
 
       service['selectQuery']();
 
@@ -50,7 +50,7 @@ describe('SingleRowComplexKeyEditorService', () => {
     });
 
     it('updateDiffQuery()', () => {
-      const getUpdateMultipleKeysQuerySpy = spyOn(TestBed.inject(QueryService), 'getUpdateMultipleKeysQuery');
+      const getUpdateMultipleKeysQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getUpdateMultipleKeysQuery');
 
       service['updateDiffQuery']();
 
@@ -64,7 +64,7 @@ describe('SingleRowComplexKeyEditorService', () => {
     });
 
     it('updateFullQuery()', () => {
-      const getFullDeleteInsertMultipleKeysQuerySpy = spyOn(TestBed.inject(QueryService), 'getFullDeleteInsertMultipleKeysQuery');
+      const getFullDeleteInsertMultipleKeysQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertMultipleKeysQuery');
 
       service['updateFullQuery']();
 
@@ -72,7 +72,7 @@ describe('SingleRowComplexKeyEditorService', () => {
     });
 
     it('updateFullQuery() when isNew is true', () => {
-      const getFullDeleteInsertMultipleKeysQuerySpy = spyOn(TestBed.inject(QueryService), 'getFullDeleteInsertMultipleKeysQuery');
+      const getFullDeleteInsertMultipleKeysQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertMultipleKeysQuery');
       const handlerService = TestBed.inject(MockHandlerService);
       // @ts-ignore
       handlerService._selected = JSON.stringify({ 'id': 1, 'guid': 2 });
@@ -109,7 +109,7 @@ describe('SingleRowComplexKeyEditorService', () => {
     it('reloadEntity()', () => {
       const selectQuerySpy = spyOn<any>(service, 'selectQuery');
       const error = { code: 'mock error', errno: 1234 } as MysqlError;
-      selectQuerySpy.and.returnValue(of({ results: [{ [MOCK_NAME]: 'mockName' }] }));
+      selectQuerySpy.and.returnValue(of([{ [MOCK_NAME]: 'mockName' }]));
 
       service['reloadEntity']();
 
@@ -157,7 +157,7 @@ describe('SingleRowComplexKeyEditorService', () => {
       const setLoadedEntitySpy = spyOn<any>(service, 'setLoadedEntity');
       const updateFullQuerySpy = spyOn<any>(service, 'updateFullQuery');
       const onLoadedExistingEntitySpy = spyOn<any>(service, 'onLoadedExistingEntity');
-      const data = { results: [] };
+      const data = [];
 
       service['onReloadSuccessful'](data);
 

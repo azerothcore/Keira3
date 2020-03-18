@@ -1,4 +1,4 @@
-<app-top-bar [handler]="handlerService"></app-top-bar>
+<keira-top-bar [handler]="handlerService"></keira-top-bar>
 
 <div class="container-fluid">
 
@@ -6,7 +6,7 @@
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
 
-    <app-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></app-query-output>
+    <keira-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
 
     <hr class="mt-2 mb-1">
 
@@ -23,11 +23,14 @@
 
       <div class="row">
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-          <label class="control-label" for="Item">Item</label>
-          <app-item-selector-btn
+          <label class="control-label" for="Item">
+            <keira-icon [itemId]="editorService.form.controls['Item'].value"></keira-icon>
+            Item
+          </label>
+          <keira-item-selector-btn
             [control]="editorService.form.controls['Item']"
             [config]="{  name: 'Item' }"
-          ></app-item-selector-btn>
+          ></keira-item-selector-btn>
           <input [formControlName]="'Item'" id="Item" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
@@ -56,11 +59,11 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="LootMode">LootMode</label>
-          <app-flags-selector-btn
+          <keira-flags-selector-btn
             [control]="editorService.form.controls['LootMode']"
             [config]="{ flags: LOOT_MODE, name: 'LootMode' }"
             [modalClass]="'modal-lg'"
-          ></app-flags-selector-btn>
+          ></keira-flags-selector-btn>
           <input [formControlName]="'LootMode'" id="LootMode" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
@@ -123,17 +126,22 @@
 
         <ngx-datatable
           id="editor-table"
-          class="bootstrap table table-striped text-center datatable-select"
+          class="bootstrap table table-striped text-center datatable-select datatable-icon-list"
           [rows]="editorService.newRows"
           [headerHeight]="DTCFG.headerHeight"
           [footerHeight]="DTCFG.footerHeight"
           [columnMode]="DTCFG.columnMode"
-          [rowHeight]="DTCFG.rowHeight"
+          [rowHeight]="DTCFG.rowHeightWithIcon"
           [selectionType]="DTCFG.selectionType"
           (select)='editorService.onRowSelection($event)'>
-          <ngx-datatable-column [width]="30" [sortable]="false">
+          <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
             <ng-template let-row="row" ngx-datatable-cell-template>
               <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column [minWidth]="42" [maxWidth]="42" [sortable]="false">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <keira-icon [itemId]="row.Item"></keira-icon>
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column name="Item" prop="Item" [minWidth]="80"></ngx-datatable-column>

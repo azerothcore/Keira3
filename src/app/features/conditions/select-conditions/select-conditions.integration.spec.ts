@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SelectConditionsComponent } from './select-conditions.component';
 import { ConditionsSearchService } from '@keira-shared/modules/search/conditions-search.service';
 import { SelectConditionsModule } from './select-conditions.module';
@@ -22,7 +22,7 @@ class SelectConditionsComponentPage extends PageObject<SelectConditionsComponent
   get searchBtn() { return this.query<HTMLButtonElement>('#search-btn'); }
   get createBtn() { return this.query<HTMLButtonElement>('#create-new-btn'); }
 
-  get topBar() { return this.query<HTMLElement>('app-top-bar'); }
+  get topBar() { return this.query<HTMLElement>('keira-top-bar'); }
 }
 
 describe('SelectConditions integration tests', () => {
@@ -30,7 +30,7 @@ describe('SelectConditions integration tests', () => {
   let fixture: ComponentFixture<SelectConditionsComponent>;
   let selectService: ConditionsSearchService;
   let page: SelectConditionsComponentPage;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let navigateSpy: Spy;
 
@@ -49,9 +49,9 @@ describe('SelectConditions integration tests', () => {
 
   beforeEach(() => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of(
-      { results: [{ max: 1 }] }
+      [{ max: 1 }]
     ));
 
     selectService = TestBed.inject(ConditionsSearchService);
@@ -63,13 +63,12 @@ describe('SelectConditions integration tests', () => {
     fixture.detectChanges();
   });
 
-  it('should correctly initialise', async(() => {
-    fixture.whenStable().then(() => {
-      expect(page.queryWrapper.innerText).toContain(
-        'SELECT * FROM `conditions` LIMIT 100'
-      );
-    });
-  }));
+  it('should correctly initialise', async  () => {
+    await fixture.whenStable();
+    expect(page.queryWrapper.innerText).toContain(
+      'SELECT * FROM `conditions` LIMIT 50'
+    );
+  });
 
   for (const { testId, sourceIdorRef, group, entry, limit, expectedQuery } of [
     {
@@ -141,7 +140,7 @@ describe('SelectConditions integration tests', () => {
     ];
 
     querySpy.calls.reset();
-    querySpy.and.returnValue(of({ results }));
+    querySpy.and.returnValue(of(results));
 
     page.clickElement(page.searchBtn);
 

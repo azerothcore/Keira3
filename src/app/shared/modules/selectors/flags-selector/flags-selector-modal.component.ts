@@ -5,7 +5,7 @@ import { BaseSelectorModalComponent } from '../base-selector/base-selector-modal
 import { FlagsService } from './flags.service';
 
 @Component({
-  selector: 'app-flags-selector-modal',
+  selector: 'keira-flags-selector-modal',
   templateUrl: './flags-selector-modal.component.html',
   styleUrls: ['./flags-selector-modal.component.scss']
 })

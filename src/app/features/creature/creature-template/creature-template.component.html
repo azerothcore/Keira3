@@ -1,4 +1,4 @@
-<app-top-bar [handler]="handlerService"></app-top-bar>
+<keira-top-bar [handler]="handlerService"></keira-top-bar>
 
 <div class="container-fluid">
 
@@ -6,7 +6,7 @@
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
 
-    <app-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></app-query-output>
+    <keira-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
 
     <hr class="mt-2 mb-1">
 
@@ -45,11 +45,11 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="IconName">IconName</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
             [control]="editorService.form.controls['IconName']"
             [config]="{ options: CREATURE_ICON, name: 'IconName' }"
             [modalClass]="'modal-xl'"
-          ></app-single-value-selector-btn>
+          ></keira-single-value-selector-btn>
           <input [formControlName]="'IconName'" id="IconName" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -70,37 +70,37 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="exp">exp</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
             [control]="editorService.form.controls['exp']"
             [config]="{ options: EXPANSION, name: 'exp' }"
             [modalClass]="'modal-md'"
-          ></app-single-value-selector-btn>
+          ></keira-single-value-selector-btn>
           <input [formControlName]="'exp'" id="exp" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="faction">faction</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
             [control]="editorService.form.controls['faction']"
             [config]="{ options: FACTIONS, name: 'faction' }"
             [modalClass]="'modal-md'"
-          ></app-single-value-selector-btn>
+          ></keira-single-value-selector-btn>
           <input [formControlName]="'faction'" id="faction" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="npcflag">npcflag</label>
-          <app-flags-selector-btn
+          <keira-flags-selector-btn
             [control]="editorService.form.controls['npcflag']"
             [config]="{ flags: NPC_FLAGS, name: 'npcflag' }"
-          ></app-flags-selector-btn>
+          ></keira-flags-selector-btn>
           <input [formControlName]="'npcflag'" id="npcflag" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="rank">rank</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
             [control]="editorService.form.controls['rank']"
             [config]="{ options: RANK, name: 'rank' }"
             [modalClass]="'modal-md'"
-          ></app-single-value-selector-btn>
+          ></keira-single-value-selector-btn>
 
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
@@ -110,61 +110,61 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="family">family</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
             [control]="editorService.form.controls['family']"
             [config]="{ options: CREATURE_FAMILY, name: 'family' }"
             [modalClass]="'modal-md'"
-          ></app-single-value-selector-btn>
+          ></keira-single-value-selector-btn>
           <input [formControlName]="'family'" id="family" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="type">type</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
             [control]="editorService.form.controls['type']"
             [config]="{ options: CREATURE_TYPE, name: 'type' }"
             [modalClass]="'modal-md'"
-          ></app-single-value-selector-btn>
+          ></keira-single-value-selector-btn>
           <input [formControlName]="'type'" id="type" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="type_flags">type_flags</label>
-          <app-flags-selector-btn
+          <keira-flags-selector-btn
             [control]="editorService.form.controls['type_flags']"
             [config]="{ flags: CREATURE_TYPE_FLAGS, name: 'type_flags' }"
-          ></app-flags-selector-btn>
+          ></keira-flags-selector-btn>
           <input [formControlName]="'type_flags'" id="type_flags" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="unit_class">unit_class</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
             [control]="editorService.form.controls['unit_class']"
             [config]="{ options: UNIT_CLASS, name: 'unit_class' }"
             [modalClass]="'modal-lg'"
-          ></app-single-value-selector-btn>
+          ></keira-single-value-selector-btn>
           <input [formControlName]="'unit_class'" id="unit_class" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="unit_flags">unit_flags</label>
-          <app-flags-selector-btn
+          <keira-flags-selector-btn
             [control]="editorService.form.controls['unit_flags']"
             [config]="{ flags: UNIT_FLAGS, name: 'unit_flags' }"
-          ></app-flags-selector-btn>
+          ></keira-flags-selector-btn>
           <input [formControlName]="'unit_flags'" id="unit_flags" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="unit_flags2">unit_flags2</label>
-          <app-flags-selector-btn
+          <keira-flags-selector-btn
             [control]="editorService.form.controls['unit_flags2']"
             [config]="{ flags: UNIT_FLAGS_2, name: 'unit_flags2' }"
-          ></app-flags-selector-btn>
+          ></keira-flags-selector-btn>
           <input [formControlName]="'unit_flags2'" id="unit_flags2" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="dynamicflags">dynamicflags</label>
-          <app-flags-selector-btn
+          <keira-flags-selector-btn
             [control]="editorService.form.controls['dynamicflags']"
             [config]="{ flags: DYNAMIC_FLAGS, name: 'dynamicflags' }"
-          ></app-flags-selector-btn>
+          ></keira-flags-selector-btn>
           <input [formControlName]="'dynamicflags'" id="dynamicflags" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -177,18 +177,18 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="mechanic_immune_mask">mechanic_immune_mask</label>
-          <app-flags-selector-btn
+          <keira-flags-selector-btn
             [control]="editorService.form.controls['mechanic_immune_mask']"
             [config]="{ flags: MECHANIC_IMMUNE_MASK, name: 'mechanic_immune_mask' }"
-          ></app-flags-selector-btn>
+          ></keira-flags-selector-btn>
           <input [formControlName]="'mechanic_immune_mask'" id="mechanic_immune_mask" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="flags_extra">flags_extra</label>
-          <app-flags-selector-btn
+          <keira-flags-selector-btn
             [control]="editorService.form.controls['flags_extra']"
             [config]="{ flags: FLAGS_EXTRA, name: 'flags_extra' }"
-          ></app-flags-selector-btn>
+          ></keira-flags-selector-btn>
           <input [formControlName]="'flags_extra'" id="flags_extra" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -292,11 +292,11 @@
           <div class="row">
             <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="control-label" for="trainer_type">trainer_type</label>
-              <app-single-value-selector-btn
+              <keira-single-value-selector-btn
                 [control]="editorService.form.controls['trainer_type']"
                 [config]="{ options: TRAINER_TYPE, name: 'trainer_type' }"
                 [modalClass]="'modal-md'"
-              ></app-single-value-selector-btn>
+              ></keira-single-value-selector-btn>
               <input [formControlName]="'trainer_type'" id="trainer_type" type="number" class="form-control form-control-sm">
             </div>
             <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
@@ -305,24 +305,29 @@
                 class="fas fa-info-circle ml-1" [placement]="'auto'"
                 [tooltip]="TRAINER_SPELL_TOOLTIP"
               ></i>
+              <keira-spell-selector-btn
+                [control]="editorService.form.controls['trainer_spell']"
+                [config]="{ name: 'trainer_spell' }"
+                [modalClass]="'modal-lg'"
+              ></keira-spell-selector-btn>
               <input [formControlName]="'trainer_spell'" id="trainer_spell" type="number" class="form-control form-control-sm">
             </div>
             <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="control-label" for="trainer_class">trainer_class</label>
-              <app-single-value-selector-btn
+              <keira-single-value-selector-btn
                 [control]="editorService.form.controls['trainer_class']"
                 [config]="{ options: CREATURE_CLASS, name: 'trainer_class' }"
                 [modalClass]="'modal-md'"
-              ></app-single-value-selector-btn>
+              ></keira-single-value-selector-btn>
               <input [formControlName]="'trainer_class'" id="trainer_class" type="number" class="form-control form-control-sm">
             </div>
             <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="control-label" for="trainer_race">trainer_race</label>
-              <app-single-value-selector-btn
+              <keira-single-value-selector-btn
                 [control]="editorService.form.controls['trainer_race']"
                 [config]="{ options: CREATURE_RACE, name: 'trainer_race' }"
                 [modalClass]="'modal-md'"
-              ></app-single-value-selector-btn>
+              ></keira-single-value-selector-btn>
               <input [formControlName]="'trainer_race'" id="trainer_race" type="number" class="form-control form-control-sm">
             </div>
           </div>
@@ -413,11 +418,11 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
           <label class="control-label" for="dmgschool">dmgschool</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
             [control]="editorService.form.controls['dmgschool']"
             [config]="{ options: DAMAGE_TYPE, name: 'dmgschool' }"
             [modalClass]="'modal-md'"
-          ></app-single-value-selector-btn>
+          ></keira-single-value-selector-btn>
           <input [formControlName]="'dmgschool'" id="dmgschool" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
@@ -475,11 +480,11 @@
       <div class="row">
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="AIName">AIName</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
             [control]="editorService.form.controls['AIName']"
             [config]="{ options: CREATURE_AI_NAME, name: 'AIName' }"
             [modalClass]="'modal-lg'"
-          ></app-single-value-selector-btn>
+          ></keira-single-value-selector-btn>
           <input [formControlName]="'AIName'" id="AIName" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -500,11 +505,11 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="MovementType">MovementType</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
             [control]="editorService.form.controls['MovementType']"
             [config]="{ options: MOVEMENT_TYPE, name: 'MovementType' }"
             [modalClass]="'modal-md'"
-          ></app-single-value-selector-btn>
+          ></keira-single-value-selector-btn>
           <input [formControlName]="'MovementType'" id="MovementType" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -517,10 +522,10 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="InhabitType">InhabitType</label>
-          <app-flags-selector-btn
+          <keira-flags-selector-btn
             [control]="editorService.form.controls['InhabitType']"
             [config]="{ flags: INHABIT_TYPE, name: 'InhabitType' }"
-          ></app-flags-selector-btn>
+          ></keira-flags-selector-btn>
           <input [formControlName]="'InhabitType'" id="InhabitType" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -646,6 +651,11 @@
           class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
         >
           <label class="control-label" for="spell{{ i }}">spell{{ i }}</label>
+          <keira-spell-selector-btn
+            [control]="editorService.form.controls['spell' + i]"
+            [config]="{ name: 'spell' + i }"
+            [modalClass]="'modal-lg'"
+          ></keira-spell-selector-btn>
           <input [formControlName]="'spell' + i" id="spell{{ i }}" type="number" class="form-control form-control-sm">
         </div>
 

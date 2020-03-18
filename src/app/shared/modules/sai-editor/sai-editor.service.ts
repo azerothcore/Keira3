@@ -4,7 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { MultiRowComplexKeyEditorService } from '@keira-abstract/service/editors/multi-row-complex-key-editor.service';
 import { SAI_ID_2, SAI_ID_FIELDS, SAI_TABLE, SAI_TYPES, SmartScripts } from '@keira-types/smart-scripts.type';
 import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '../../services/mysql-query.service';
 import { SaiCommentGeneratorService } from '@keira-shared/modules/sai-editor/sai-comment-generator.service';
 
 @Injectable({
@@ -18,7 +18,7 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: SaiHandlerService,
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     protected toastrService: ToastrService,
     protected saiCommentGeneratorService: SaiCommentGeneratorService,
   ) {

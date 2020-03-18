@@ -3,8 +3,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { instance } from 'ts-mockito';
 import { ToastrService } from 'ngx-toastr';
 
-import { QueryService } from '@keira-shared/services/query.service';
-import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { ConditionsService } from './conditions.service';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 
@@ -14,7 +14,7 @@ describe('ConditionsService', () => {
       RouterTestingModule,
     ],
     providers: [
-      { provide: QueryService, useValue: instance(MockedQueryService) },
+      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
       { provide: ToastrService, useValue: instance(MockedToastrService) },
       ConditionsHandlerService,
       ConditionsService,

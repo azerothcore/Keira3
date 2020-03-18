@@ -3,9 +3,9 @@ import { ToastrService } from 'ngx-toastr';
 
 import { MultiRowEditorService } from './multi-row-editor.service';
 import { LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, LootTemplate } from '@keira-types/loot-template.type';
-import { Class, MysqlResult } from '@keira-types/general';
+import { Class } from '@keira-types/general';
 import { HandlerService } from '../handlers/handler.service';
-import { QueryService } from '../../../services/query.service';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
 
 export abstract class LootEditorService<T extends LootTemplate> extends MultiRowEditorService<T> {
   get entityTemplateTable(): string { return this._entityTemplateTable; }
@@ -19,7 +19,7 @@ export abstract class LootEditorService<T extends LootTemplate> extends MultiRow
     protected _entityTemplateIdField: string, // e.g. entry
     protected _entityTemplateLootField: string, // e.g. lootid
     protected handlerService: HandlerService<T>,
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -33,7 +33,7 @@ export abstract class LootEditorService<T extends LootTemplate> extends MultiRow
     );
   }
 
-  getLootId(): Observable<MysqlResult<{ lootId: number }>> {
+  getLootId(): Observable<{ lootId: number }[]> {
     return this.queryService.query(
       `SELECT ${this._entityTemplateLootField} AS lootId `
       + `FROM ${this._entityTemplateTable} `

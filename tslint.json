@@ -118,7 +118,7 @@
     "component-selector": [
       true,
       "element",
-      "app",
+      "keira",
       "kebab-case"
     ],
     "no-output-on-prefix": true,

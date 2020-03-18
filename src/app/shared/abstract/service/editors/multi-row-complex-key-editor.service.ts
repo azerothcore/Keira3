@@ -4,7 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 
 import { Class, MysqlResult, TableRow } from '@keira-types/general';
 import { HandlerService } from '../handlers/handler.service';
-import { QueryService } from '../../../services/query.service';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { MultiRowEditorService } from './multi-row-editor.service';
 
 export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extends MultiRowEditorService<T> {
@@ -20,7 +20,7 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
     _entityIdField: string[],
     protected _entitySecondIdField: string,
     protected handlerService: HandlerService<T>,
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -65,7 +65,7 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
     this.reloadEntity();
   }
 
-  protected selectQuery(): Observable<MysqlResult<T>> {
+  protected selectQuery(): Observable<T[]> {
     return this.queryService.selectAllMultipleKeys<T>(this._entityTable, JSON.parse(this.handlerService.selected));
   }
 
@@ -82,10 +82,10 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
     );
   }
 
-  protected onReloadSuccessful(data: MysqlResult<T>) {
+  protected onReloadSuccessful(data: T[]) {
     this._originalRows = [];
     this._newRows = [];
-    for (const row of data.results) {
+    for (const row of data) {
       this._originalRows.push({ ...row });
       this._newRows.push({ ...row });
     }

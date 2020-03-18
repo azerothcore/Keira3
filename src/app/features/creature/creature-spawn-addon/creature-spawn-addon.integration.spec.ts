@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { CreatureSpawnAddonComponent } from './creature-spawn-addon.component';
 import { CreatureSpawnAddonModule } from './creature-spawn-addon.module';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { CreatureSpawnAddon } from '@keira-types/creature-spawn-addon.type';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -17,7 +17,7 @@ class CreatureSpawnAddonPage extends MultiRowEditorPageObject<CreatureSpawnAddon
 describe('CreatureSpawnAddon integration tests', () => {
   let component: CreatureSpawnAddonComponent;
   let fixture: ComponentFixture<CreatureSpawnAddonComponent>;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let handlerService: CreatureHandlerService;
   let page: CreatureSpawnAddonPage;
@@ -50,11 +50,11 @@ describe('CreatureSpawnAddon integration tests', () => {
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(TestBed.inject(CreatureSpawnAddonService), 'selectQuery').and.returnValue(of(
-      { results: creatingNew ? [] : [originalRow0, originalRow1, originalRow2] }
+      creatingNew ? [] : [originalRow0, originalRow1, originalRow2]
     ));
 
     fixture = TestBed.createComponent(CreatureSpawnAddonComponent);

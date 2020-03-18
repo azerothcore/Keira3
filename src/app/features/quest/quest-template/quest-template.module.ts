@@ -12,6 +12,8 @@ import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/singl
 import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selector/flags-selector.module';
 import { ItemSelectorModule } from '@keira-shared/modules/selectors/item-selector/item-selector.module';
 import { QuestTemplateService } from './quest-template.service';
+import { SpellSelectorModule } from '@keira-shared/modules/selectors/spell-selector/spell-selector.module';
+import { IconModule } from '@keira-shared/modules/icon/icon.module';
 
 @NgModule({
   declarations: [
@@ -27,6 +29,8 @@ import { QuestTemplateService } from './quest-template.service';
     SingleValueSelectorModule,
     FlagsSelectorModule,
     ItemSelectorModule,
+    SpellSelectorModule,
+    IconModule,
   ],
   exports: [
     QuestTemplateComponent,

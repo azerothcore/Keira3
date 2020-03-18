@@ -6,7 +6,7 @@ import { GossipMenuService } from './gossip-menu.service';
 import { GossipHandlerService } from '../gossip-handler.service';
 
 @Component({
-  selector: 'app-gossip-menu',
+  selector: 'keira-gossip-menu',
   templateUrl: './gossip-menu.component.html',
   styleUrls: ['./gossip-menu.component.scss']
 })

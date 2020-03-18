@@ -6,7 +6,7 @@ import { ITEM_TEMPLATE_ID } from '@keira-types/item-template.type';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 
 @Component({
-  selector: 'app-item-selector-modal',
+  selector: 'keira-item-selector-modal',
   templateUrl: './item-selector-modal.component.html',
   styleUrls: ['./item-selector-modal.component.scss']
 })

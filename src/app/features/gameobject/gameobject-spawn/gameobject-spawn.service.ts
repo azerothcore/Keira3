@@ -9,7 +9,7 @@ import {
   GAMEOBJECT_SPAWN_TABLE
 } from '@keira-types/gameobject-spawn.type';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 
 @Injectable()
 export class GameobjectSpawnService extends MultiRowEditorService<GameobjectSpawn> {
@@ -17,7 +17,7 @@ export class GameobjectSpawnService extends MultiRowEditorService<GameobjectSpaw
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: GameobjectHandlerService,
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(

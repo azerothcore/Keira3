@@ -8,7 +8,7 @@ import { SaiEditorModule } from './sai-editor.module';
 import { SaiHandlerService } from './sai-handler.service';
 import { MultiRowEditorPageObject } from '../../testing/multi-row-editor-page-object';
 import { SAI_TYPES, SmartScripts } from '../../types/smart-scripts.type';
-import { QueryService } from '../../services/query.service';
+import { MysqlQueryService } from '../../services/mysql-query.service';
 import { SAI_EVENTS } from '@keira-shared/modules/sai-editor/constants/sai-event';
 import { SAI_ACTIONS } from '@keira-shared/modules/sai-editor/constants/sai-actions';
 
@@ -37,7 +37,7 @@ describe('SaiEditorComponent integration tests', () => {
   let component: SaiEditorComponent;
   let fixture: ComponentFixture<SaiEditorComponent>;
   let handlerService: SaiHandlerService;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let page: SaiEditorPage;
 
@@ -73,11 +73,11 @@ describe('SaiEditorComponent integration tests', () => {
       handlerService['_templateQuery'] = '-- Mock template query';
     }
 
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(of(
-      { results: creatingNew ? [] : [originalRow0, originalRow1, originalRow2] }
+      creatingNew ? [] : [originalRow0, originalRow1, originalRow2]
     ));
 
     fixture = TestBed.createComponent(SaiEditorComponent);

@@ -3,7 +3,7 @@ import { ToastrService } from 'ngx-toastr';
 
 import { MultiRowExternalEditorService } from '@keira-abstract/service/editors/multi-row-external-editor.service';
 import { CreatureHandlerService } from '../creature-handler.service';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import {
   CREATURE_SPAWN_ADDON_ID_2,
   CREATURE_SPAWN_ADDON_TABLE,
@@ -16,7 +16,7 @@ export class CreatureSpawnAddonService extends MultiRowExternalEditorService<Cre
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: CreatureHandlerService,
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(

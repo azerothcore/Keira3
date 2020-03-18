@@ -10,12 +10,17 @@ import { QueryOutputModule } from '../query-output/query-output.module';
 import { SaiEditorComponent } from './sai-editor.component';
 import { SaiTopBarComponent } from './sai-top-bar/sai-top-bar.component';
 import { FlagsSelectorModule } from '../selectors/flags-selector/flags-selector.module';
+import { TimedActionlistComponent } from './timed-actionlist/timed-actionlist.component';
+
+const components = [
+  SaiEditorComponent,
+  SaiTopBarComponent,
+  TimedActionlistComponent,
+];
 
 @NgModule({
-  declarations: [
-    SaiEditorComponent,
-    SaiTopBarComponent,
-  ],
+  declarations: components,
+  exports: components,
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -24,7 +29,6 @@ import { FlagsSelectorModule } from '../selectors/flags-selector/flags-selector.
     TooltipModule.forRoot(),
     ToastrModule.forRoot(toastrConfig),
     NgxDatatableModule,
-  ],
-  exports: [SaiEditorComponent, SaiTopBarComponent],
+  ]
 })
 export class SaiEditorModule { }

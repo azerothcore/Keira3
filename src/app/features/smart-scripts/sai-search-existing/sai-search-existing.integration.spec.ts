@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { PageObject } from '@keira-testing/page-object';
 import { SaiSearchExistingComponent } from './sai-search-existing.component';
 import { SaiSearchService } from '@keira-shared/modules/search/sai-search.service';
@@ -25,7 +25,7 @@ describe('SaiSearchExisting integration tests', () => {
   let fixture: ComponentFixture<SaiSearchExistingComponent>;
   let selectService: SaiSearchService;
   let page: SaiSearchExistingComponentPage;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let navigateSpy: Spy;
 
@@ -41,9 +41,9 @@ describe('SaiSearchExisting integration tests', () => {
 
   beforeEach(() => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of(
-      { results: [{ max: 1 }] }
+      [{ max: 1 }]
     ));
 
     selectService = TestBed.inject(SaiSearchService);
@@ -55,13 +55,12 @@ describe('SaiSearchExisting integration tests', () => {
     fixture.detectChanges();
   });
 
-  it('should correctly initialise', async(() => {
-    fixture.whenStable().then(() => {
+  it('should correctly initialise', async () => {
+    await fixture.whenStable();
       expect(page.queryWrapper.innerText).toContain(
-        'SELECT * FROM `smart_scripts` LIMIT 100'
+        'SELECT * FROM `smart_scripts` LIMIT 50'
       );
-    });
-  }));
+  });
 
   for (const { testId, entryorguid, source_type, limit, expectedQuery } of [
     {
@@ -110,7 +109,7 @@ describe('SaiSearchExisting integration tests', () => {
     ];
 
     querySpy.calls.reset();
-    querySpy.and.returnValue(of({ results }));
+    querySpy.and.returnValue(of(results));
 
     page.clickElement(page.searchBtn);
 

@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { GameobjectLootTemplateComponent } from './gameobject-loot-template.component';
 import { GameobjectLootTemplateModule } from './gameobject-loot-template.module';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { GameobjectLootTemplate } from '@keira-types/gameobject-loot-template.type';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -17,7 +17,7 @@ class GameobjectLootTemplatePage extends MultiRowEditorPageObject<GameobjectLoot
 describe('GameobjectLootTemplate integration tests', () => {
   let component: GameobjectLootTemplateComponent;
   let fixture: ComponentFixture<GameobjectLootTemplateComponent>;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let handlerService: GameobjectHandlerService;
   let page: GameobjectLootTemplatePage;
@@ -49,22 +49,23 @@ describe('GameobjectLootTemplate integration tests', () => {
 
   function setup(creatingNew: boolean, lootId = id, type = _type)  {
     spyOn(TestBed.inject(GameobjectLootTemplateService), 'getLootId').and.returnValue(of(
-      { results: [{ lootId }] }
+      [{ lootId }]
     ));
 
     spyOn(TestBed.inject(GameobjectLootTemplateService), 'getType').and.returnValue(of(
-      { results: [{ type }] }
+      [{ type }]
     ));
 
     handlerService = TestBed.inject(GameobjectHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
+    spyOn(queryService, 'queryValue').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
-      { results: creatingNew ? [] : [originalRow0, originalRow1, originalRow2] }
+      creatingNew ? [] : [originalRow0, originalRow1, originalRow2]
     ));
 
     fixture = TestBed.createComponent(GameobjectLootTemplateComponent);

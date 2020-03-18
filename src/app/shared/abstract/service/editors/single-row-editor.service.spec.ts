@@ -5,8 +5,8 @@ import { ToastrService } from 'ngx-toastr';
 
 import Spy = jasmine.Spy;
 
-import { QueryService } from '../../../services/query.service';
-import { MockedQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { SingleRowEditorService } from './single-row-editor.service';
 import { MockSingleRowEditorService, MockEntity, MockHandlerService } from '@keira-testing/mock-services';
 
@@ -19,7 +19,7 @@ describe('SingleRowEditorService', () => {
       RouterTestingModule,
     ],
     providers: [
-      { provide: QueryService, useValue: instance(MockedQueryService) },
+      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
       { provide: ToastrService, useValue: instance(MockedToastrService) },
 
     ],
@@ -79,7 +79,7 @@ describe('SingleRowEditorService', () => {
   it('updateDiffQuery() should correctly work', () => {
     service['_diffQuery'] = '';
     const queryResult = '-- Mock query result';
-    const getQuerySpy = spyOn(TestBed.inject(QueryService), 'getUpdateQuery').and.returnValue(queryResult);
+    const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getUpdateQuery').and.returnValue(queryResult);
 
     service['updateDiffQuery']();
 
@@ -96,7 +96,7 @@ describe('SingleRowEditorService', () => {
   it('updateFullQuery() should correctly work', () => {
     service['_fullQuery'] = '';
     const queryResult = '-- Mock query result';
-    const getQuerySpy = spyOn(TestBed.inject(QueryService), 'getFullDeleteInsertQuery').and.returnValue(queryResult);
+    const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertQuery').and.returnValue(queryResult);
 
     service['updateFullQuery']();
 
@@ -120,12 +120,12 @@ describe('SingleRowEditorService', () => {
     it('should correctly work when loading an existing entity [as main entity]', () => {
       const handlerService = TestBed.inject(MockHandlerService);
       const entity: MockEntity = { id, guid: 12345, name: 'myName' };
-      const data = { results: [entity] };
+      const data = [entity];
       handlerService.isNew = true;
 
       service['onReloadSuccessful'](data, id);
 
-      expect(service['_originalValue']).toEqual(data.results[0]);
+      expect(service['_originalValue']).toEqual(data[0]);
       expect(service.isNew).toBe(false);
 
       expect(handlerService.isNew).toBe(false);
@@ -139,13 +139,13 @@ describe('SingleRowEditorService', () => {
     it('should correctly work when loading an existing entity [as non-main entity]', () => {
       const handlerService = TestBed.inject(MockHandlerService);
       const entity: MockEntity = { id, guid: 12345, name: 'myName' };
-      const data = { results: [entity] };
+      const data = [entity];
       handlerService.isNew = true;
       service['isMainEntity'] = false;
 
       service['onReloadSuccessful'](data, id);
 
-      expect(service['_originalValue']).toEqual(data.results[0]);
+      expect(service['_originalValue']).toEqual(data[0]);
       expect(service.isNew).toBe(false);
 
       expect(handlerService.isNew).toBe(true);
@@ -157,7 +157,7 @@ describe('SingleRowEditorService', () => {
     });
 
     it('should correctly work when creating a new entity', () => {
-      const data = { results: [] };
+      const data = [];
 
       service['onReloadSuccessful'](data, id);
 

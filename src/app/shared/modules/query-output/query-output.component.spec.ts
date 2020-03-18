@@ -13,8 +13,8 @@ import { EditorService } from '../../abstract/service/editors/editor.service';
 import { PageObject } from '../../testing/page-object';
 
 export class QueryOutputComponentPage extends PageObject<QueryOutputComponent<MockType>> {
-  get diffQueryWrapper() { return this.query<HTMLElement>('app-highlightjs-wrapper#diff-query'); }
-  get fullQueryWrapper() { return this.query<HTMLElement>('app-highlightjs-wrapper#full-query'); }
+  get diffQueryWrapper() { return this.query<HTMLElement>('keira-highlightjs-wrapper#diff-query'); }
+  get fullQueryWrapper() { return this.query<HTMLElement>('keira-highlightjs-wrapper#full-query'); }
 
   get diffQueryInput() { return this.query<HTMLInputElement>('#diff-query-input'); }
   get fullQueryInput() { return this.query<HTMLInputElement>('#full-query-input'); }

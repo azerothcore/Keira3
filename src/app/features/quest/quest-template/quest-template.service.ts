@@ -8,7 +8,7 @@ import {
   QUEST_TEMPLATE_TABLE,
   QuestTemplate
 } from '@keira-types/quest-template.type';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { QuestHandlerService } from '../quest-handler.service';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class QuestTemplateService extends SingleRowEditorService<QuestTemplate> 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: QuestHandlerService,
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(

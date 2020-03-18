@@ -1,15 +1,15 @@
 import { FormControl, FormGroup } from '@angular/forms';
 
 import { TableRow } from '../../types/general';
-import { QueryService } from '../../services/query.service';
 import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
+import { QueryService } from '@keira-shared/services/query.service';
 
 export abstract class SearchService<T extends TableRow> extends SubscriptionHandler {
   query: string;
   rows: T[];
   fields = new FormGroup({});
   queryForm = new FormGroup({
-    'limit': new FormControl(100),
+    'limit': new FormControl(50),
     'fields': this.fields,
   });
   selectFields: string[] = null;
@@ -50,7 +50,7 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
   onSearch() {
     this.subscriptions.push(
       this.queryService.query<T>(this.query).subscribe((data) => {
-        this.rows = data.results;
+        this.rows = data;
       })
     );
   }

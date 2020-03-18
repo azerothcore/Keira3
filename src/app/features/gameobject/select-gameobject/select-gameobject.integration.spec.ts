@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SelectGameobjectComponent } from './select-gameobject.component';
 import { SelectGameobjectService } from './select-gameobject.service';
 import { SelectGameobjectModule } from './select-gameobject.module';
@@ -22,7 +22,7 @@ describe('SelectGameobject integration tests', () => {
   let fixture: ComponentFixture<SelectGameobjectComponent>;
   let selectService: SelectGameobjectService;
   let page: SelectGameobjectComponentPage;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let navigateSpy: Spy;
 
@@ -44,9 +44,9 @@ describe('SelectGameobject integration tests', () => {
 
   beforeEach(() => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of(
-      { results: [{ max: 1 }] }
+      [{ max: 1 }]
     ));
 
     selectService = TestBed.inject(SelectGameobjectService);
@@ -58,58 +58,53 @@ describe('SelectGameobject integration tests', () => {
     fixture.detectChanges();
   });
 
-  it('should correctly initialise', async(() => {
-    fixture.whenStable().then(() => {
-      expect(page.createInput.value).toEqual(`${component.customStartingId}`);
-      page.expectNewEntityFree();
-      expect(querySpy).toHaveBeenCalledWith(
-        'SELECT MAX(entry) AS max FROM gameobject_template;'
-      );
-      expect(page.queryWrapper.innerText).toContain(
-        'SELECT * FROM `gameobject_template` LIMIT 100'
-      );
-    });
-  }));
+  it('should correctly initialise', async () => {
+    await fixture.whenStable();
+    expect(page.createInput.value).toEqual(`${component.customStartingId}`);
+    page.expectNewEntityFree();
+    expect(querySpy).toHaveBeenCalledWith(
+      'SELECT MAX(entry) AS max FROM gameobject_template;'
+    );
+    expect(page.queryWrapper.innerText).toContain(
+      'SELECT * FROM `gameobject_template` LIMIT 50'
+    );
+  });
 
-  it('should correctly behave when inserting and selecting free id', async(() => {
-    fixture.whenStable().then(() => {
-      querySpy.calls.reset();
-      querySpy.and.returnValue(of(
-        { results: [] }
-      ));
+  it('should correctly behave when inserting and selecting free id', async () => {
+    await fixture.whenStable();
+    querySpy.calls.reset();
+    querySpy.and.returnValue(of([]));
 
-      page.setInputValue(page.createInput, value);
+    page.setInputValue(page.createInput, value);
 
-      expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy).toHaveBeenCalledWith(
-        `SELECT * FROM \`gameobject_template\` WHERE (entry = ${value})`
-      );
-      page.expectNewEntityFree();
+    expect(querySpy).toHaveBeenCalledTimes(1);
+    expect(querySpy).toHaveBeenCalledWith(
+      `SELECT * FROM \`gameobject_template\` WHERE (entry = ${value})`
+    );
+    page.expectNewEntityFree();
 
-      page.clickElement(page.selectNewBtn);
+    page.clickElement(page.selectNewBtn);
 
-      expect(navigateSpy).toHaveBeenCalledTimes(1);
-      expect(navigateSpy).toHaveBeenCalledWith(['gameobject/gameobject-template']);
-      page.expectTopBarCreatingNew(value);
-    });
-  }));
+    expect(navigateSpy).toHaveBeenCalledTimes(1);
+    expect(navigateSpy).toHaveBeenCalledWith(['gameobject/gameobject-template']);
+    page.expectTopBarCreatingNew(value);
+  });
 
-  it('should correctly behave when inserting an existing entity', async(() => {
-    fixture.whenStable().then(() => {
-      querySpy.calls.reset();
-      querySpy.and.returnValue(of(
-        { results: ['mock value'] }
-      ));
+  it('should correctly behave when inserting an existing entity', async () => {
+    await fixture.whenStable();
+    querySpy.calls.reset();
+    querySpy.and.returnValue(of(
+      ['mock value']
+    ));
 
-      page.setInputValue(page.createInput, value);
+    page.setInputValue(page.createInput, value);
 
-      expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy).toHaveBeenCalledWith(
-        `SELECT * FROM \`gameobject_template\` WHERE (entry = ${value})`
-      );
-      page.expectEntityAlreadyInUse();
-    });
-  }));
+    expect(querySpy).toHaveBeenCalledTimes(1);
+    expect(querySpy).toHaveBeenCalledWith(
+      `SELECT * FROM \`gameobject_template\` WHERE (entry = ${value})`
+    );
+    page.expectEntityAlreadyInUse();
+  });
 
   for (const { testId, id, name, limit, expectedQuery } of [
     {
@@ -155,7 +150,7 @@ describe('SelectGameobject integration tests', () => {
       { id: 3, name: 'An awesome Gameobject 3', GameobjectType: 0, GameobjectDisplayId: 3   },
     ];
     querySpy.calls.reset();
-    querySpy.and.returnValue(of({ results }));
+    querySpy.and.returnValue(of(results));
 
     page.clickElement(page.searchBtn);
 

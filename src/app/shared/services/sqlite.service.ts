@@ -28,10 +28,10 @@ export class SqliteService {
     }
   }
 
-  dbQuery<T extends TableRow>(queryString: string): Observable<T> {
-    return new Observable<T>(subscriber => {
+  dbQuery<T extends TableRow>(queryString: string): Observable<T[]> {
+    return new Observable<T[]>(subscriber => {
       if (this.db) {
-        this.db.get(queryString, this.getQueryCallback(subscriber));
+        this.db.all(queryString, this.getQueryCallback(subscriber));
       } else {
         console.error(`sqite db was not defined when trying to run query: ${queryString}`);
       }

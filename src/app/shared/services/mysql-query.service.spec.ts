@@ -2,11 +2,12 @@ import { async, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { instance } from 'ts-mockito';
 
-import { QueryService } from './query.service';
+import { MysqlQueryService } from './mysql-query.service';
 import { MysqlService } from './mysql.service';
 import { MockedMysqlService } from '../testing/mocks';
-import { MaxRow, MysqlResult, QueryForm, TableRow } from '../types/general';
+import { MaxRow, QueryForm, TableRow } from '../types/general';
 import { ConfigService } from './config.service';
+import { SmartScripts } from '@keira-types/smart-scripts.type';
 
 interface MockRow extends TableRow {
   entry: number;
@@ -33,8 +34,8 @@ interface MockTwoKeysComplexRow extends TableRow {
   attribute2: number;
 }
 
-describe('QueryService', () => {
-  let service: QueryService;
+describe('MysqlQueryService', () => {
+  let service: MysqlQueryService;
   let configService: ConfigService;
 
   const QUERY_NO_CHANGES = '-- There are no changes';
@@ -47,7 +48,7 @@ describe('QueryService', () => {
 
   beforeEach(() => {
     configService = TestBed.inject(ConfigService);
-    service = TestBed.inject(QueryService);
+    service = TestBed.inject(MysqlQueryService);
   });
 
   it('query() should call mysqlService.dbQuery() and output query and results if debug mode is enabled', () => {
@@ -66,7 +67,7 @@ describe('QueryService', () => {
   it('query() should call mysqlService.dbQuery() and not output anything if debug mode is disabled', () => {
     const logSpy = spyOn(console, 'log');
     configService.debugMode = false;
-    const querySpy = spyOn(TestBed.inject(MysqlService), 'dbQuery').and.returnValue(of({}));
+    const querySpy = spyOn(TestBed.inject(MysqlService), 'dbQuery').and.returnValue(of(null));
     const myQuery = 'SELECT azerothcore FROM projects;';
 
     service.query(myQuery).subscribe(() => {
@@ -159,7 +160,7 @@ describe('QueryService', () => {
   });
 
   it('selectAll() should correctly work', async(() => {
-    const data: MysqlResult<TableRow> = { results: [{ key: 'value'}] };
+    const data: TableRow[] = [{ key: 'value'}];
     const querySpy = spyOn(service, 'query').and.returnValue(of(data));
 
     service.selectAll('my_ac', 'param', 'value').subscribe((res) => {
@@ -171,7 +172,7 @@ describe('QueryService', () => {
   }));
 
   it('selectAllMultipleKeys() should correctly work', async(() => {
-    const data: MysqlResult<TableRow> = { results: [{ key: 'value'}] };
+    const data: TableRow[] = [{ key: 'value'}];
     const querySpy = spyOn(service, 'query').and.returnValue(of(data));
     const row: TableRow = { k1: 1, k2: 2};
 
@@ -184,7 +185,7 @@ describe('QueryService', () => {
   }));
 
   it('getMaxId() should correctly work', async(() => {
-    const data: MysqlResult<MaxRow> = { results: [{ max: 123 }] };
+    const data: MaxRow[] = [{ max: 123 }];
     const querySpy = spyOn(service, 'query').and.returnValue(of());
 
     service.getMaxId('my_ac', 'param').subscribe((res) => {
@@ -194,6 +195,21 @@ describe('QueryService', () => {
     expect(querySpy).toHaveBeenCalledWith('SELECT MAX(param) AS max ' +
       'FROM my_ac;');
   }));
+
+  it('getTimedActionlists() should correctly work', async(() => {
+    const id = 1234;
+    const data: SmartScripts[] = [{ entryorguid: 1111} as SmartScripts];
+    const querySpy = spyOn(service, 'query').and.returnValue(of(data));
+
+    service.getTimedActionlists(id).subscribe((res) => {
+      expect(res).toEqual(data);
+    });
+
+    expect(querySpy).toHaveBeenCalledWith(
+      `SELECT * FROM smart_scripts WHERE source_type = 9 AND entryorguid >= ${id * 100} AND entryorguid < ${id * 100 + 100}`
+    );
+  }));
+
 
   describe('Query builders', () => {
     const tableName = 'my_table';
@@ -768,85 +784,101 @@ describe('QueryService', () => {
   describe('queryValue()', () => {
     it('should correctly work', async () => {
       const value = 'mock result value';
-      spyOn(service, 'query').and.returnValue(of({ results: [ { v: value }] }));
+      spyOn(service, 'query').and.returnValue(of([ { v: value }]));
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
 
-      expect(await service.queryValue(query)).toEqual(value);
+      expect(await service.queryValueToPromise(query)).toEqual(value);
       expect(service.query).toHaveBeenCalledTimes(1);
       expect(service.query).toHaveBeenCalledWith(query);
     });
 
     it('should be safe in case of no results', async () => {
-      spyOn(service, 'query').and.returnValue(of({ results: [] }));
+      spyOn(service, 'query').and.returnValue(of([]));
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
 
-      expect(await service.queryValue(query)).toEqual(null);
+      expect(await service.queryValueToPromise(query)).toEqual(null);
       expect(service.query).toHaveBeenCalledTimes(1);
       expect(service.query).toHaveBeenCalledWith(query);
     });
   });
 
   describe('get helpers', () => {
-    const result = of('mock result').toPromise();
+    const result = of('mock result');
+    const resultToPromise = result.toPromise();
     const id = '123';
     const guid = id;
 
     beforeEach(() => {
       spyOn(service, 'queryValue').and.returnValue(result);
+      spyOn(service, 'queryValueToPromise').and.returnValue(resultToPromise);
     });
 
     it('getCreatureNameById', () => {
-      expect(service.getCreatureNameById(id)).toEqual(result);
-      expect(service.queryValue).toHaveBeenCalledWith(
+      expect(service.getCreatureNameById(id)).toEqual(resultToPromise);
+      expect(service.queryValueToPromise).toHaveBeenCalledWith(
         `SELECT name AS v FROM creature_template WHERE entry = ${id}`
       );
     });
 
     it('getCreatureNameByGuid', () => {
-      expect(service.getCreatureNameByGuid(guid)).toEqual(result);
-      expect(service.queryValue).toHaveBeenCalledWith(
+      expect(service.getCreatureNameByGuid(guid)).toEqual(resultToPromise);
+      expect(service.queryValueToPromise).toHaveBeenCalledWith(
         `SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id WHERE c.guid = ${guid}`
       );
     });
 
     it('getGameObjectNameById', () => {
-      expect(service.getGameObjectNameById(id)).toEqual(result);
-      expect(service.queryValue).toHaveBeenCalledWith(
+      expect(service.getGameObjectNameById(id)).toEqual(resultToPromise);
+      expect(service.queryValueToPromise).toHaveBeenCalledWith(
         `SELECT name AS v FROM gameobject_template WHERE entry = ${id}`
       );
     });
 
     it('getGameObjectNameByGuid', () => {
-      expect(service.getGameObjectNameByGuid(guid)).toEqual(result);
-      expect(service.queryValue).toHaveBeenCalledWith(
+      expect(service.getGameObjectNameByGuid(guid)).toEqual(resultToPromise);
+      expect(service.queryValueToPromise).toHaveBeenCalledWith(
         `SELECT name AS v FROM gameobject_template AS gt INNER JOIN gameobject AS g ON gt.entry = g.id WHERE g.guid = ${guid}`
       );
     });
 
     it('getQuestTitleById', () => {
-      expect(service.getQuestTitleById(id)).toEqual(result);
-      expect(service.queryValue).toHaveBeenCalledWith(
+      expect(service.getQuestTitleById(id)).toEqual(resultToPromise);
+      expect(service.queryValueToPromise).toHaveBeenCalledWith(
         `SELECT LogTitle AS v FROM quest_template WHERE ID = ${id}`
       );
     });
 
     it('getItemNameById', () => {
-      expect(service.getItemNameById(id)).toEqual(result);
-      expect(service.queryValue).toHaveBeenCalledWith(
+      expect(service.getItemNameById(id)).toEqual(resultToPromise);
+      expect(service.queryValueToPromise).toHaveBeenCalledWith(
         `SELECT name AS v FROM item_template WHERE entry = ${id}`
       );
     });
 
-    it('getQuestTitleByCriteria (case 1)', () => {
-      expect(service.getQuestTitleByCriteria(null, 2, 3, 4, 5)).toEqual(result);
+    it('getDisplayIdByItemId (case non-null)', () => {
+      expect(service.getDisplayIdByItemId(id)).toEqual(result);
       expect(service.queryValue).toHaveBeenCalledWith(
+        `SELECT displayid AS v FROM item_template WHERE entry = ${id}`
+      );
+    });
+
+    it('getDisplayIdByItemId (case null)', () => {
+      service.getDisplayIdByItemId(null).subscribe(res => {
+        expect(res).toEqual(null);
+      });
+      expect(service.queryValue).toHaveBeenCalledTimes(0);
+    });
+
+    it('getQuestTitleByCriteria (case 1)', () => {
+      expect(service.getQuestTitleByCriteria(null, 2, 3, 4, 5)).toEqual(resultToPromise);
+      expect(service.queryValueToPromise).toHaveBeenCalledWith(
         'SELECT `LogTitle` AS "v" FROM `quest_template` WHERE (RequiredNpcOrGo2 = 2) AND (RequiredNpcOrGo3 = 3) AND (RequiredNpcOrGo4 = 4) AND (RequiredSpellCast1 = 5)'
       );
     });
 
     it('getQuestTitleByCriteria (case 2)', () => {
-      expect(service.getQuestTitleByCriteria(1, null, null, null)).toEqual(result);
-      expect(service.queryValue).toHaveBeenCalledWith(
+      expect(service.getQuestTitleByCriteria(1, null, null, null)).toEqual(resultToPromise);
+      expect(service.queryValueToPromise).toHaveBeenCalledWith(
         'SELECT `LogTitle` AS "v" FROM `quest_template` WHERE (RequiredNpcOrGo1 = 1)'
       );
     });

@@ -3,8 +3,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { instance } from 'ts-mockito';
 
 import { SelectQuestService } from './select-quest.service';
-import { QueryService } from '@keira-shared/services/query.service';
-import { MockedQueryService } from '@keira-testing/mocks';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { QuestHandlerService } from '../quest-handler.service';
 
 describe('SelectQuestService', () => {
@@ -13,7 +13,7 @@ describe('SelectQuestService', () => {
       RouterTestingModule,
     ],
     providers: [
-      { provide: QueryService, useValue: instance(MockedQueryService) },
+      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
       QuestHandlerService,
       SelectQuestService,
     ]

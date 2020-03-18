@@ -2,11 +2,11 @@ import { Component, Input, OnInit } from '@angular/core';
 
 import { SaiHandlerService } from '../sai-handler.service';
 import { SAI_TYPES, SmartScripts } from '@keira-types/smart-scripts.type';
-import { QueryService } from '../../../services/query.service';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
 
 @Component({
-  selector: 'app-sai-top-bar',
+  selector: 'keira-sai-top-bar',
   templateUrl: './sai-top-bar.component.html',
 })
 export class SaiTopBarComponent extends SubscriptionHandler implements OnInit {
@@ -20,7 +20,7 @@ export class SaiTopBarComponent extends SubscriptionHandler implements OnInit {
   }
 
   constructor(
-    public queryService: QueryService,
+    public queryService: MysqlQueryService,
   ) {
     super();
   }
@@ -46,6 +46,7 @@ export class SaiTopBarComponent extends SubscriptionHandler implements OnInit {
 
       case SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST:
         this._selectedText = `Timed Actionlist ID ${selected.entryorguid}`;
+        this._selectedText = `${this._selectedText} (${await this.handler.getName().toPromise()})`;
         break;
 
     }

@@ -3,7 +3,7 @@ import { OnInit, Component } from '@angular/core';
 import { Subject } from 'rxjs';
 
 @Component({
-  selector: 'app-modal-confirm',
+  selector: 'keira-modal-confirm',
   templateUrl: './modal-confirm.component.html',
 })
 export class ModalConfirmComponent implements OnInit {

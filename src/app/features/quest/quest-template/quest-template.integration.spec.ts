@@ -5,7 +5,7 @@ import Spy = jasmine.Spy;
 
 import { QuestTemplateComponent } from './quest-template.component';
 import { QuestTemplateModule } from './quest-template.module';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { QuestTemplate } from '@keira-types/quest-template.type';
 import { QuestHandlerService } from '../quest-handler.service';
@@ -15,7 +15,7 @@ class QuestTemplatePage extends EditorPageObject<QuestTemplateComponent> {}
 describe('QuestTemplate integration tests', () => {
   let component: QuestTemplateComponent;
   let fixture: ComponentFixture<QuestTemplateComponent>;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let handlerService: QuestHandlerService;
   let page: QuestTemplatePage;
@@ -66,11 +66,12 @@ describe('QuestTemplate integration tests', () => {
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
+    spyOn(queryService, 'queryValue').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
-      { results: creatingNew ? [] : [originalEntity] }
+      creatingNew ? [] : [originalEntity]
     ));
 
     fixture = TestBed.createComponent(QuestTemplateComponent);

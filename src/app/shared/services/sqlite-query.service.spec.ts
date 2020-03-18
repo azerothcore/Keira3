@@ -14,10 +14,12 @@ describe('SqliteQueryService', () => {
   describe('queryValue()', () => {
     it('should correctly work', async () => {
       const value = 'mock result value';
-      spyOn(service, 'query').and.returnValue(of({ v: value }));
+      spyOn(service, 'query').and.returnValue(of([{ v: value }]));
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
 
-      expect(await service.queryValue(query)).toEqual(value);
+      service.queryValue(query).subscribe(result => {
+        expect(result).toEqual(value);
+      });
       expect(service.query).toHaveBeenCalledTimes(1);
       expect(service.query).toHaveBeenCalledWith(query);
     });
@@ -26,29 +28,39 @@ describe('SqliteQueryService', () => {
       spyOn(service, 'query').and.returnValue(of(null ));
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
 
-      expect(await service.queryValue(query)).toEqual(null);
+      service.queryValue(query).subscribe(result => {
+        expect(result).toEqual(null);
+      });
       expect(service.query).toHaveBeenCalledTimes(1);
       expect(service.query).toHaveBeenCalledWith(query);
     });
   });
 
   describe('get helpers', () => {
-    const result = of('mock result').toPromise();
+    const mockResult = 'mock result';
     const id = '123';
 
     beforeEach(() => {
-      spyOn(service, 'queryValue').and.returnValue(result);
+      spyOn(service, 'queryValue').and.returnValue(of(mockResult));
     });
 
     it('getDisplayIdIcon', () => {
-      expect(service.getDisplayIdIcon(id)).toEqual(result);
+      service.getIconByItemDisplayId(id).subscribe(res => {
+        expect(res).toEqual(mockResult);
+      });
+      service.getIconByItemDisplayId(id).subscribe(res => {
+        expect(res).toEqual(mockResult);
+      });
+      expect(service.queryValue).toHaveBeenCalledTimes(1);
       expect(service.queryValue).toHaveBeenCalledWith(
         `SELECT icon AS v FROM display_icons WHERE displayId = ${id}`
       );
     });
 
-    it('getSpellNameById', () => {
-      expect(service.getSpellNameById(id)).toEqual(result);
+    it('getSpellNameById', async () => {
+      expect(await service.getSpellNameById(id)).toEqual(mockResult);
+      expect(await service.getSpellNameById(id)).toEqual(mockResult);
+      expect(service.queryValue).toHaveBeenCalledTimes(1);
       expect(service.queryValue).toHaveBeenCalledWith(
         `SELECT spellName AS v FROM spells WHERE id = ${id}`
       );

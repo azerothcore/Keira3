@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SelectQuestComponent } from './select-quest.component';
 import { SelectQuestService } from './select-quest.service';
 import { SelectQuestModule } from './select-quest.module';
@@ -21,7 +21,7 @@ describe('SelectQuest integration tests', () => {
   let fixture: ComponentFixture<SelectQuestComponent>;
   let selectService: SelectQuestService;
   let page: SelectQuestComponentPage;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let navigateSpy: Spy;
 
@@ -42,9 +42,9 @@ describe('SelectQuest integration tests', () => {
 
   beforeEach(() => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of(
-      { results: [{ max: 1 }] }
+      [{ max: 1 }]
     ));
 
     selectService = TestBed.inject(SelectQuestService);
@@ -56,24 +56,23 @@ describe('SelectQuest integration tests', () => {
     fixture.detectChanges();
   });
 
-  it('should correctly initialise', async(() => {
-    fixture.whenStable().then(() => {
+  it('should correctly initialise', async () => {
+    await fixture.whenStable();
       expect(page.createInput.value).toEqual(`${component.customStartingId}`);
       page.expectNewEntityFree();
       expect(querySpy).toHaveBeenCalledWith(
         'SELECT MAX(ID) AS max FROM quest_template;'
       );
       expect(page.queryWrapper.innerText).toContain(
-        'SELECT * FROM `quest_template` LIMIT 100'
+        'SELECT * FROM `quest_template` LIMIT 50'
       );
-    });
-  }));
+  });
 
-  it('should correctly behave when inserting and selecting free id', async(() => {
-    fixture.whenStable().then(() => {
+  it('should correctly behave when inserting and selecting free id', async () => {
+    await fixture.whenStable();
       querySpy.calls.reset();
       querySpy.and.returnValue(of(
-        { results: [] }
+        []
       ));
 
       page.setInputValue(page.createInput, value);
@@ -89,14 +88,13 @@ describe('SelectQuest integration tests', () => {
       expect(navigateSpy).toHaveBeenCalledTimes(1);
       expect(navigateSpy).toHaveBeenCalledWith(['quest/quest-template']);
       page.expectTopBarCreatingNew(value);
-    });
-  }));
+  });
 
-  it('should correctly behave when inserting an existing entity', async(() => {
-    fixture.whenStable().then(() => {
+  it('should correctly behave when inserting an existing entity', async () => {
+    await fixture.whenStable();
       querySpy.calls.reset();
       querySpy.and.returnValue(of(
-        { results: ['mock value'] }
+        ['mock value']
       ));
 
       page.setInputValue(page.createInput, value);
@@ -106,8 +104,7 @@ describe('SelectQuest integration tests', () => {
         `SELECT * FROM \`quest_template\` WHERE (ID = ${value})`
       );
       page.expectEntityAlreadyInUse();
-    });
-  }));
+  });
 
   for (const { testId, id, name, limit, expectedQuery } of [
     {
@@ -149,7 +146,7 @@ describe('SelectQuest integration tests', () => {
       { id: 3, LogTitle: 'An awesome Quest 3', QuestType: 0, QuestLevel: 3, MinLevel: 30, QuestDescription: ''   },
     ];
     querySpy.calls.reset();
-    querySpy.and.returnValue(of({ results }));
+    querySpy.and.returnValue(of(results));
 
     page.clickElement(page.searchBtn);
 

@@ -7,7 +7,7 @@ import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service'
 import { ElectronService } from '@keira-shared/services/electron.service';
 
 @Component({
-  selector: 'app-root',
+  selector: 'keira-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
@@ -38,7 +38,7 @@ export class AppComponent implements OnInit {
       this.sqliteQueryService.query<{ id: number, name: string}>(
         'SELECT * FROM achievements WHERE id = 970', true
       ).subscribe((result) => {
-        this.sqliteResult = result;
+        this.sqliteResult = result ? result[0] : null;
       });
     }
   }

@@ -13,6 +13,7 @@ import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selec
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
+import { IconModule } from '@keira-shared/modules/icon/icon.module';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
     ItemSelectorModule,
     FlagsSelectorModule,
     NgxDatatableModule,
+    IconModule,
   ],
   exports: [
     GameobjectLootTemplateComponent,

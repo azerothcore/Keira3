@@ -29,9 +29,10 @@ import {
   AOWOW_ITEM, formatTime, getFeralAP, getRaceString, getRequiredClass, MAX_LEVEL, parseRating, resistanceFields, formatMoney, canTeachSpell
 } from './aowow';
 import { ItemTemplateService } from './item-template.service';
+import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-item-template',
+  selector: 'keira-item-template',
   templateUrl: './item-template.component.html',
   styleUrls: ['./item-template.component.scss']
 })
@@ -70,7 +71,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   }
 
   public readonly AOWOW_ITEM = AOWOW_ITEM;
-  public icon: Promise<string>;
+  public icon: Observable<string>;
   public hasItemLevel: boolean = false;
   public itemPreview: SafeHtml = this.sanitizer.bypassSecurityTrustHtml('loading...');
   private tmpItemPreview = '';
@@ -737,11 +738,11 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   ngOnInit() {
     super.ngOnInit();
     this.calculatePreview();
-    this.icon = this.sqliteQueryService.getDisplayIdIcon(this.editorService.form.controls.displayid.value);
+    this.icon = this.sqliteQueryService.getIconByItemDisplayId(this.editorService.form.controls.displayid.value);
 
     this.subscriptions.push(
-      this.editorService.form.controls.displayid.valueChanges.subscribe((x: number) => {
-        this.icon = this.sqliteQueryService.getDisplayIdIcon(x);
+      this.editorService.form.controls.displayid.valueChanges.subscribe((icon: number) => {
+        this.icon = this.sqliteQueryService.getIconByItemDisplayId(icon);
       })
     );
 

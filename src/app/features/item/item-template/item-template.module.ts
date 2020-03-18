@@ -11,6 +11,7 @@ import { ItemTemplateComponent } from './item-template.component';
 import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
 import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selector/flags-selector.module';
 import { ItemTemplateService } from './item-template.service';
+import { SpellSelectorModule } from '@keira-shared/modules/selectors/spell-selector/spell-selector.module';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { ItemTemplateService } from './item-template.service';
     ToastrModule.forRoot(toastrConfig),
     SingleValueSelectorModule,
     FlagsSelectorModule,
+    SpellSelectorModule,
   ],
   exports: [
     ItemTemplateComponent,

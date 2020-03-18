@@ -1,10 +1,10 @@
 import { distinctUntilChanged } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 
-import { Class, MysqlResult, TableRow } from '@keira-types/general';
+import { Class, TableRow } from '@keira-types/general';
 import { EditorService } from './editor.service';
 import { HandlerService } from '../handlers/handler.service';
-import { QueryService } from '../../../services/query.service';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
 
 export abstract class MultiRowEditorService<T extends TableRow> extends EditorService<T> {
   protected _originalRows: T[] = [];
@@ -25,7 +25,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     protected _entityIdField: string,
     protected _entitySecondIdField: string,
     protected handlerService: HandlerService<T>,
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -76,10 +76,10 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     return this.getRowIndex(this._selectedRowId);
   }
 
-  protected onReloadSuccessful(data: MysqlResult<T>, id: string|number) {
+  protected onReloadSuccessful(data: T[], id: string|number) {
     this._originalRows = [];
     this._newRows = [];
-    for (const row of data.results) {
+    for (const row of data) {
       this._originalRows.push({ ...row });
       this._newRows.push({ ...row });
     }

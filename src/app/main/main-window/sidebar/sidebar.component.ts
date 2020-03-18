@@ -12,15 +12,17 @@ import { ConditionsHandlerService } from '../../../features/conditions/condition
 import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
 import { LocationService } from '@keira-shared/services/location.service';
 
+const animationTime = 200;
+
 @Component({
-  selector: 'app-sidebar',
+  selector: 'keira-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
   animations: [
     trigger('slide', [
       state('up', style({ height: 0 })),
       state('down', style({ height: '*' })),
-      transition('up <=> down', animate(200))
+      transition('up <=> down', animate(animationTime))
     ])
   ]
 })
@@ -56,6 +58,12 @@ export class SidebarComponent {
 
   toggleSidebar() {
     this.sidebarService.setSidebarState(!this.sidebarService.getSidebarState());
+
+    /* istanbul ignore next */
+    setTimeout(() => {
+      // fix ngx-datatable(s) size
+      window.dispatchEvent(new Event('resize'));
+    }, animationTime + 100);
   }
 
   hasBackgroundImage() {

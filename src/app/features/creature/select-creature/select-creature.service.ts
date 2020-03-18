@@ -7,14 +7,14 @@ import {
   CREATURE_TEMPLATE_TABLE,
   CreatureTemplate
 } from '@keira-types/creature-template.type';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { CreatureHandlerService } from '../creature-handler.service';
 
 @Injectable()
 export class SelectCreatureService extends SelectService<CreatureTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     public handlerService: CreatureHandlerService,
   ) {
     super(

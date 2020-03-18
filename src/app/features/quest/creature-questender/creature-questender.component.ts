@@ -6,7 +6,7 @@ import { CreatureQuestenderService } from './creature-questender.service';
 import { CreatureQuestender } from '@keira-types/creature-questender.type';
 
 @Component({
-  selector: 'app-creature-questender',
+  selector: 'keira-creature-questender',
   templateUrl: './creature-questender.component.html',
   styleUrls: ['./creature-questender.component.scss']
 })

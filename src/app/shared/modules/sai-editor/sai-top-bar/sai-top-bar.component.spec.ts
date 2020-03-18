@@ -6,7 +6,7 @@ import { SaiTopBarComponent } from './sai-top-bar.component';
 import { SaiHandlerService } from '../sai-handler.service';
 import { PageObject } from '@keira-testing/page-object';
 import { SAI_TYPES } from '@keira-types/smart-scripts.type';
-import { QueryService } from '../../../services/query.service';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { Component, ViewChild } from '@angular/core';
 import { of } from 'rxjs';
 
@@ -15,7 +15,7 @@ class SaiTopBarComponentPage extends PageObject<TestHostComponent> {
 }
 
 @Component({
-  template: '<app-sai-top-bar [handler]="handlerService"><</app-sai-top-bar>'
+  template: '<keira-sai-top-bar [handler]="handlerService"><</keira-sai-top-bar>'
 })
 class TestHostComponent {
   @ViewChild(SaiTopBarComponent, { static: true }) child: SaiTopBarComponent;
@@ -46,7 +46,7 @@ describe('SaiTopBarComponent', () => {
   beforeEach(() => {
     handler = TestBed.inject(SaiHandlerService);
     handler['_selected'] = JSON.stringify({ source_type: SAI_TYPES.SAI_TYPE_GAMEOBJECT, entryorguid });
-    querySpy = spyOn(TestBed.inject(QueryService), 'query').and.returnValue(of({ results: [] }));
+    querySpy = spyOn(TestBed.inject(MysqlQueryService), 'query').and.returnValue(of([]));
 
     fixture = TestBed.createComponent(TestHostComponent);
     host = fixture.componentInstance;
@@ -75,6 +75,8 @@ describe('SaiTopBarComponent', () => {
     it(`should correctly handle different types [${testId}]`, () => {
       handler['_selected'] = JSON.stringify({ source_type: type, entryorguid: positive ? entryorguid : -entryorguid });
       spyOn(handler, 'getName').and.returnValue(of(name));
+      // TODO: for some reasons this test cannot get the async name
+
       fixture.detectChanges();
 
       expect(page.mainText.innerText).toContain(expected);

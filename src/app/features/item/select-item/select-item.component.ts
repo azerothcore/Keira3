@@ -9,10 +9,10 @@ import {
 } from '@keira-types/item-template.type';
 import { SelectItemService } from './select-item.service';
 import { ItemHandlerService } from '../item-handler.service';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 
 @Component({
-  selector: 'app-select-item',
+  selector: 'keira-select-item',
   templateUrl: './select-item.component.html',
   styleUrls: ['./select-item.component.scss']
 })
@@ -21,7 +21,7 @@ export class SelectItemComponent extends SelectComponent<ItemTemplate> {
   constructor(
     public selectService: SelectItemService,
     public handlerService: ItemHandlerService,
-    public queryService: QueryService,
+    public queryService: MysqlQueryService,
   ) {
     super(
       ITEM_TEMPLATE_TABLE,

@@ -8,7 +8,7 @@ import { GAMEOBJECT_FLAGS } from '@keira-constants/flags/gameobject-flags';
 import { FACTIONS } from '@keira-constants/options/faction';
 
 @Component({
-  selector: 'app-gameobject-template-addon',
+  selector: 'keira-gameobject-template-addon',
   templateUrl: './gameobject-template-addon.component.html',
   styleUrls: ['./gameobject-template-addon.component.scss']
 })

@@ -1,4 +1,4 @@
-<app-top-bar [handler]="handlerService"></app-top-bar>
+<keira-top-bar [handler]="handlerService"></keira-top-bar>
 
 <div class="container-fluid">
 
@@ -6,7 +6,7 @@
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
 
-    <app-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></app-query-output>
+    <keira-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
 
     <hr class="mt-2 mb-1">
 
@@ -40,20 +40,20 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="spawnMask">spawnMask</label>
-          <app-flags-selector-btn
+          <keira-flags-selector-btn
             [control]="editorService.form.controls['spawnMask']"
             [config]="{ flags: SPAWN_MASK, name: 'spawnMask' }"
             [modalClass]="'modal-lg'"
-          ></app-flags-selector-btn>
+          ></keira-flags-selector-btn>
           <input [formControlName]="'spawnMask'" id="spawnMask" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="phaseMask">phaseMask</label>
-          <app-flags-selector-btn
+          <keira-flags-selector-btn
             [control]="editorService.form.controls['phaseMask']"
             [config]="{ flags: PHASE_MASK, name: 'phaseMask' }"
             [modalClass]="'modal-lg'"
-          ></app-flags-selector-btn>
+          ></keira-flags-selector-btn>
           <input [formControlName]="'phaseMask'" id="phaseMask" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
@@ -110,35 +110,35 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="MovementType">MovementType</label>
-          <app-single-value-selector-btn
+          <keira-single-value-selector-btn
             [control]="editorService.form.controls['MovementType']"
             [config]="{ options: MOVEMENT_TYPE, name: 'MovementType' }"
             [modalClass]="'modal-md'"
-          ></app-single-value-selector-btn>
+          ></keira-single-value-selector-btn>
           <input [formControlName]="'MovementType'" id="MovementType" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="npcflag">npcflag</label>
-          <app-flags-selector-btn
+          <keira-flags-selector-btn
             [control]="editorService.form.controls['npcflag']"
             [config]="{ flags: NPC_FLAGS, name: 'npcflag' }"
-          ></app-flags-selector-btn>
+          ></keira-flags-selector-btn>
           <input [formControlName]="'npcflag'" id="npcflag" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="unit_flags">unit_flags</label>
-          <app-flags-selector-btn
+          <keira-flags-selector-btn
             [control]="editorService.form.controls['unit_flags']"
             [config]="{ flags: UNIT_FLAGS, name: 'unit_flags' }"
-          ></app-flags-selector-btn>
+          ></keira-flags-selector-btn>
           <input [formControlName]="'unit_flags'" id="unit_flags" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="dynamicflags">dynamicflags</label>
-          <app-flags-selector-btn
+          <keira-flags-selector-btn
             [control]="editorService.form.controls['dynamicflags']"
             [config]="{ flags: DYNAMIC_FLAGS, name: 'dynamicflags' }"
-          ></app-flags-selector-btn>
+          ></keira-flags-selector-btn>
           <input [formControlName]="'dynamicflags'" id="dynamicflags" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
@@ -185,7 +185,7 @@
           [rowHeight]="DTCFG.rowHeight"
           [selectionType]="DTCFG.selectionType"
           (select)='editorService.onRowSelection($event)'>
-          <ngx-datatable-column [width]="30" [sortable]="false">
+          <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
             <ng-template let-row="row" ngx-datatable-cell-template>
               <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
             </ng-template>

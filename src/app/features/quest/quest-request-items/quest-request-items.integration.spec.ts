@@ -3,7 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { QuestRequestItemsComponent } from './quest-request-items.component';
 import { QuestRequestItemsModule } from './quest-request-items.module';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
@@ -15,7 +15,7 @@ class QuestRequestItemsPage extends EditorPageObject<QuestRequestItemsComponent>
 describe('QuestRequestItems integration tests', () => {
   let component: QuestRequestItemsComponent;
   let fixture: ComponentFixture<QuestRequestItemsComponent>;
-  let queryService: QueryService;
+  let queryService: MysqlQueryService;
   let querySpy: Spy;
   let handlerService: QuestHandlerService;
   let page: QuestRequestItemsPage;
@@ -50,11 +50,11 @@ describe('QuestRequestItems integration tests', () => {
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(QueryService);
+    queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
-      { results: creatingNew ? [] : [originalEntity] }
+      creatingNew ? [] : [originalEntity]
     ));
 
     fixture = TestBed.createComponent(QuestRequestItemsComponent);
@@ -91,13 +91,13 @@ describe('QuestRequestItems integration tests', () => {
   describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    it('should correctly initialise', async(() => {
+    it('should correctly initialise', async () => {
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain('DELETE FROM `quest_request_items` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `quest_request_items` (`ID`, `EmoteOnComplete`, `EmoteOnIncomplete`, `CompletionText`, `VerifiedBuild`) VALUES\n' +
         '(1234, 2, 3, \'4\', 0);');
-    }));
+    });
 
     it('changing all properties and executing the query should correctly work', () => {
       const expectedQuery = 'UPDATE `quest_request_items` SET ' +
@@ -112,7 +112,7 @@ describe('QuestRequestItems integration tests', () => {
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
 
-    it('changing values should correctly update the queries', async(() => {
+    it('changing values should correctly update the queries', async () => {
       page.setInputValueById('EmoteOnComplete', '11');
       page.expectDiffQueryToContain(
         'UPDATE `quest_request_items` SET `EmoteOnComplete` = 11 WHERE (`ID` = 1234);'
@@ -132,7 +132,7 @@ describe('QuestRequestItems integration tests', () => {
         'INSERT INTO `quest_request_items` (`ID`, `EmoteOnComplete`, `EmoteOnIncomplete`, `CompletionText`, `VerifiedBuild`) VALUES\n' +
         '(1234, 11, 22, \'4\', 0);\n'
       );
-    }));
+    });
 
     it('changing a value via SingleValueSelector should correctly work', async () => {
       const field = 'EmoteOnComplete';

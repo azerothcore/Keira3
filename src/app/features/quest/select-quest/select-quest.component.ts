@@ -9,10 +9,10 @@ import {
 } from '@keira-types/quest-template.type';
 import { SelectQuestService } from './select-quest.service';
 import { QuestHandlerService } from '../quest-handler.service';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 
 @Component({
-  selector: 'app-select-quest',
+  selector: 'keira-select-quest',
   templateUrl: './select-quest.component.html',
   styleUrls: ['./select-quest.component.scss']
 })
@@ -21,7 +21,7 @@ export class SelectQuestComponent extends SelectComponent<QuestTemplate> {
   constructor(
     public selectService: SelectQuestService,
     public handlerService: QuestHandlerService,
-    public queryService: QueryService,
+    public queryService: MysqlQueryService,
   ) {
     super(
       QUEST_TEMPLATE_TABLE,

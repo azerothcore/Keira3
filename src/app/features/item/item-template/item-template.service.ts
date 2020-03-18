@@ -8,7 +8,7 @@ import {
   ITEM_TEMPLATE_TABLE,
   ItemTemplate
 } from '@keira-types/item-template.type';
-import { QueryService } from '@keira-shared/services/query.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { ItemHandlerService } from '../item-handler.service';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class ItemTemplateService extends SingleRowEditorService<ItemTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: ItemHandlerService,
-    protected queryService: QueryService,
+    protected queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
