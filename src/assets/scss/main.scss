@@ -38,19 +38,9 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
     color: white;
   }
 
-  // .moneyitem            { padding-right: 18px; }
-  .moneygold            { padding-right: 15px; background-image: url(../img/money/gold.gif);       }
-  .moneysilver          { padding-right: 15px; background-image: url(../img/money/silver.gif);     }
-  .moneycopper          { padding-right: 15px; background-image: url(../img/money/copper.gif);     }
-  // .moneyalliance        { padding-right: 12px; background-image: url(../images/icons/alliance.gif);         }
-  // .moneyhorde           { padding-right: 17px; background-image: url(../images/icons/horde.gif);            }
-  // .moneyarena           { padding-right: 18px; background-image: url(../images/icons/arena.gif);            }
-  // .moneyachievement     { padding-right: 13px; background-image: url(../images/icons/achievement.gif);      }
-  // .moneysocketmeta      { padding-right: 18px; background-image: url(../images/icons/socket-meta.gif);      }
-  // .moneysocketred       { padding-right: 18px; background-image: url(../images/icons/socket-red.gif);       }
-  // .moneysocketyellow    { padding-right: 18px; background-image: url(../images/icons/socket-yellow.gif);    }
-  // .moneysocketblue      { padding-right: 18px; background-image: url(../images/icons/socket-blue.gif);      }
-  // .moneysocketprismatic { padding-right: 18px; background-image: url(../images/icons/socket-prismatic.gif); }
+  .moneygold   { padding-right: 15px; background-image: url(../img/money/gold.gif);   }
+  .moneysilver { padding-right: 15px; background-image: url(../img/money/silver.gif); }
+  .moneycopper { padding-right: 15px; background-image: url(../img/money/copper.gif); }
 }
 
 .item-select {
