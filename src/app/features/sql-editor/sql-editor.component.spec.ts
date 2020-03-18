@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SqlEditorComponent } from './sql-editor.component';
+import { SqlEditorModule } from './sql-editor.module';
 
 describe('SqlEditorComponent', () => {
   let component: SqlEditorComponent;
@@ -8,7 +9,7 @@ describe('SqlEditorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SqlEditorComponent ]
+      imports: [SqlEditorModule],
     })
     .compileComponents();
   }));
