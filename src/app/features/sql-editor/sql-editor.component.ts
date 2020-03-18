@@ -14,6 +14,7 @@ import { DTCFG } from '@keira-config/datatable.config';
 })
 export class SqlEditorComponent extends SubscriptionHandler {
   public readonly DTCFG = DTCFG;
+  public readonly docUrl = 'https://www.w3schools.com/sql/sql_intro.asp';
 
   displayLimit = 10;
   get displayLimitOptions() {

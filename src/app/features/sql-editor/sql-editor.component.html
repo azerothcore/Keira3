@@ -1,14 +1,25 @@
 <div class="container-fluid">
-  <p class="lead mt-3">
+  <p class="lead mt-3 mb-2">
     SQL Editor
     <i class="fas fa-info-circle ml-1" [placement]="'auto'"
        [tooltip]="'A minimalistic SQL Editor to run custom queries'"></i>
   </p>
 
-  <textarea id="code" [(ngModel)]="code" rows="6"></textarea>
+  <textarea id="code" class="mb-1" [(ngModel)]="code" rows="6"></textarea>
 
-  <button type="button" class="btn btn-secondary btn-sm mr-2" (click)="copy()" id="copy-btn">Copy</button>
-  <button type="button" class="btn btn-primary btn-sm" (click)="execute()" id="execute-btn">Execute</button>
+  <div class="row">
+    <div class="col-sm-7">
+      <button type="button" class="btn btn-secondary btn-sm mr-2" (click)="copy()" id="copy-btn">Copy</button>
+      <button type="button" class="btn btn-primary btn-sm" (click)="execute()" id="execute-btn">Execute</button>
+    </div>
+    <div class="col-sm-5">
+      <div class="wiki-link">
+        <a [href]="docUrl" target="_blank">
+          <i class="fas fa-link"></i> learn the SQL language
+        </a>
+      </div>
+    </div>
+  </div>
 
   <keira-query-error [error]="error"></keira-query-error>
 
