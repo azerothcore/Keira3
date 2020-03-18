@@ -51,10 +51,10 @@ export class SqliteQueryService {
     return this.queryValue<string>(`SELECT m_name_lang_1 AS v FROM factions WHERE m_ID = ${id}`);
   }
 
-  // TODO: deve ritornare la row
-  getLockById(id: string | number): Promise<string> {
-    return this.queryValue<string>(`SELECT * FROM lock WHERE id = ${id}`);
-  }
+  // TODO: getLock
+  // getLockById(id: string | number): Promise<string> {
+  //   return this.queryValue<string>(`SELECT * FROM lock WHERE id = ${id}`);
+  // }
 
   getMapNameById(id: string | number): Promise<string> {
     return this.queryValue<string>(`SELECT m_MapName_lang1 AS v FROM maps WHERE m_ID = ${id}`);

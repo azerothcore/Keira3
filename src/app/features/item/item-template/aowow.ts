@@ -464,30 +464,18 @@ export const resistanceFields = [
   'arcane',
 ];
 
-export function parseRating(type: number, value: number, requiredLevel: number, interactive: boolean = false, /*&*/scaling = false) {
+export function parseRating(type: number, value: number, requiredLevel: number): string {
     // clamp level range
     const level = requiredLevel > 1 ? requiredLevel : MAX_LEVEL;
 
      // unknown rating
     if ([2, 8, 9, 10, 11].includes[type] || type > ITEM_MOD.BLOCK_VALUE || type < 0) {
-        // if (User::isInGroup(U_GROUP_EMPLOYEE))
-        // {
-        //     return sprintf(Lang::item('statType', count(Lang::item('statType')) - 1), type, $value);
-        // } else {
-            return null;
-        // }
+      return '';
     } else if (lvlIndepRating.includes[type]) { // level independant Bonus
       return AOWOW_ITEM.trigger[1] + AOWOW_ITEM.statType[type].replace('%d', `<!--rtg${type}-->${value}`);
     } else { // rating-Bonuses
-        scaling = true;
-
-        // if (interactive) {
-        //   js = '&nbsp;<small>('.sprintf(Util::hangeLevelString, Util::setRatingLevel($level, type, $value)).')</small>';
-        // } else {
-        const js = `&nbsp;<small>(${setRatingLevel(level, type, value)})</small>`;
-        // }
-
-        return AOWOW_ITEM.trigger[1] + AOWOW_ITEM.statType[type].replace('%d', `<!--rtg${type}-->${value}${js}`);
+      const js = `&nbsp;<small>(${setRatingLevel(level, type, value)})</small>`;
+      return AOWOW_ITEM.trigger[1] + AOWOW_ITEM.statType[type].replace('%d', `<!--rtg${type}-->${value}${js}`);
     }
 }
 
@@ -709,3 +697,404 @@ export function formatMoney(qty: number): string {
 
   return money;
 }
+
+
+// // should probably used only once to create ?_spell. come to think of it, it yields the same results every time.. it absolutely has to!
+// // although it seems to be pretty fast, even on those pesky test-spells with extra complex tooltips (Ron Test Spell X))
+// export function parseText(type: string = 'description', level: number = MAX_LEVEL, scaling: boolean = false) {
+//     // oooo..kaaayy.. parsing text in 6 or 7 easy steps
+//     // we don't use the internal iterator here. This func has to be called for the individual template.
+//     // otherwise it will get a bit messy, when we iterate, while we iterate *yo dawg!*
+
+// /* documentation .. sort of
+//     bracket use
+//         ${}.x - formulas; .x is optional; x:[0-9] .. max-precision of a floatpoint-result; default: 0
+//         $[]   - conditionals ... like $?condition[true][false]; alternative $?!(cond1|cond2)[true]$?cond3[elseTrue][false]; ?a40120: has aura 40120; ?s40120: knows spell 40120(?)
+//         $<>   - variables
+//         ()    - regular use for function-like calls
+
+//     variables in use .. caseSensitive
+
+//     game variables (optionally replace with textVars)
+//         $PlayerName - Cpt. Obvious
+//         $PL / $pl   - PlayerLevel
+//         $STR        - Strength Attribute (not seen)
+//         $AGI        - Agility Attribute (not seen)
+//         $STA        - Stamina Attribute (not seen)
+//         $INT        - Intellect Attribute (not seen)
+//         $SPI        - Spirit Attribute
+//         $AP         - Atkpwr
+//         $RAP        - RngAtkPwr
+//         $HND        - hands used by weapon (1H, 2H) => (1, 2)
+//         $MWS        - MainhandWeaponSpeed
+//         $mw / $MW   - MainhandWeaponDamage Min/Max
+//         $rwb / $RWB - RangedWeapon..Bonus? Min/Max
+//         $sp         - Spellpower
+//         $spa        - Spellpower Arcane
+//         $spfi       - Spellpower Fire
+//         $spfr       - Spellpower Frost
+//         $sph        - Spellpower Holy
+//         $spn        - Spellpower Nature
+//         $sps        - Spellpower Shadow
+//         $bh         - Bonus Healing
+//         $pa         - %-ArcaneDmg (as float)         // V seems broken
+//         $pfi        - %-FireDmg (as float)
+//         $pfr        - %-FrostDmg (as float)
+//         $ph         - %-HolyDmg (as float)
+//         $pn         - %-NatureDmg (as float)
+//         $ps         - %-ShadowDmg (as float)
+//         $pbh        - %-HealingBonus (as float)
+//         $pbhd       - %-Healing Done (as float)      // all above seem broken
+//         $bc2        - baseCritChance? always 3.25 (unsure)
+
+//     spell variables (the stuff we can actually parse) rounding... >5 up?
+//         $a          - SpellRadius; per EffectIdx
+//         $b          - PointsPerComboPoint; per EffectIdx
+//         $d / $D     - SpellDuration; appended timeShorthand; d/D maybe base/max duration?; interpret "0" as "until canceled"
+//         $e          - EffectValueMultiplier; per EffectIdx
+//         $f / $F     - EffectDamageMultiplier; per EffectIdx
+//         $g / $G     - Gender-Switch $Gmale:female;
+//         $h / $H     - ProcChance
+//         $i          - MaxAffectedTargets
+//         $l          - LastValue-Switch; last value as condition $Ltrue:false;
+//         $m / $M     - BasePoints; per EffectIdx; m/M +1/+effectDieSides
+//         $n          - ProcCharges
+//         $o          - TotalAmount (for periodic auras); per EffectIdx
+//         $q          - EffectMiscValue; per EffectIdx
+//         $r          - SpellRange (hostile)
+//         $s / $S     - BasePoints; per EffectIdx; as Range, if applicable
+//         $t / $T     - EffectPeriode; per EffectIdx
+//         $u          - StackAmount
+//         $v          - MaxTargetLevel
+//         $x          - MaxAffectedTargets
+//         $z          - no place like <Home>
+
+//     deviations from standard procedures
+//         division    - example: $/10;2687s1 => $2687s1/10
+//                     - also:    $61829/5;s1 => $61829s1/5
+
+//     functions in use .. caseInsensitive
+//         $cond(a, b, c) - like SQL, if A is met use B otherwise use C
+//         $eq(a, b)      - a == b
+//         $floor(a)      - floor()
+//         $gt(a, b)      - a > b
+//         $gte(a, b)     - a >= b
+//         $min(a, b)     - min()
+//         $max(a, b)     - max()
+// */
+
+//     $this->charLevel   = $level;
+
+// // step 0: get text
+//     $data = $this->getField($type, true);
+//     if (empty($data) || $data == "[]")                  // empty tooltip shouldn't be displayed anyway
+//         return ['', []];
+
+// // step 1: if the text is supplemented with text-variables, get and replace them
+//     if ($this->curTpl['spellDescriptionVariableId'] > 0)
+//     {
+//         if (empty($this->spellVars[$this->id]))
+//         {
+//             $spellVars = DB::Aowow()->SelectCell('SELECT vars FROM ?_spellvariables WHERE id = ?d', $this->curTpl['spellDescriptionVariableId']);
+//             $spellVars = explode("\n", $spellVars);
+//             foreach ($spellVars as $sv)
+//                 if (preg_match('/\$(\w*\d*)=(.*)/i', trim($sv), $matches))
+//                     $this->spellVars[$this->id][$matches[1]] = $matches[2];
+//         }
+
+//         // replace self-references
+//         $reset = true;
+//         while ($reset)
+//         {
+//             $reset = false;
+//             foreach ($this->spellVars[$this->id] as $k => $sv)
+//             {
+//                 if (preg_match('/\$<(\w*\d*)>/i', $sv, $matches))
+//                 {
+//                     $this->spellVars[$this->id][$k] = str_replace('$<'.$matches[1].'>', '${'.$this->spellVars[$this->id][$matches[1]].'}', $sv);
+//                     $reset = true;
+//                 }
+//             }
+//         }
+
+//         // finally, replace SpellDescVars
+//         foreach ($this->spellVars[$this->id] as $k => $sv)
+//             $data = str_replace('$<'.$k.'>', $sv, $data);
+//     }
+
+// // step 2: resolving conditions
+//     // aura- or spell-conditions cant be resolved for our purposes, so force them to false for now (todo (low): strg+f "know" in aowowPower.js ^.^)
+
+//     /* sequences
+//         a) simple    - $?cond[A][B]                      // simple case of b)
+//         b) elseif    - $?cond[A]?cond[B]..[C]            // can probably be repeated as often as you wanted
+//         c) recursive - $?cond[A][$?cond[B][..]]          // can probably be stacked as deep as you wanted
+
+//         only case a) can be used for KNOW-parameter
+//     */
+
+//     $relSpells = [];
+//     $data = $this->handleConditions($data, $scaling, $relSpells, true);
+
+// // step 3: unpack formulas ${ .. }.X
+//     $data = $this->handleFormulas($data, $scaling, true);
+
+// // step 4: find and eliminate regular variables
+//     $data = $this->handleVariables($data, $scaling, true);
+
+// // step 5: variable-dependant variable-text
+//     // special case $lONE:ELSE[:ELSE2]; or $|ONE:ELSE[:ELSE2];
+//     while (preg_match('/([\d\.]+)([^\d]*)(\$[l|]:*)([^:]*):([^;]*);/i', $data, $m))
+//     {
+//         $plurals = explode(':', $m[5]);
+//         $replace = '';
+
+//         if (count($plurals) == 2)                       // special case: ruRU
+//         {
+//             switch (substr($m[1], -1))                  // check last digit of number
+//             {
+//                 case 1:
+//                     // but not 11 (teen number)
+//                     if (!in_array($m[1], [11]))
+//                     {
+//                         $replace = $m[4];
+//                         break;
+//                     }
+//                 case 2:
+//                 case 3:
+//                 case 4:
+//                     // but not 12, 13, 14 (teen number) [11 is passthrough]
+//                     if (!in_array($m[1], [11, 12, 13, 14]))
+//                     {
+//                         $replace = $plurals[0];
+//                         break;
+//                     }
+//                     break;
+//                 default:
+//                     $replace = $plurals[1];
+//             }
+
+//         }
+//         else
+//             $replace = ($m[1] == 1 ? $m[4] : $plurals[0]);
+
+//         $data = str_ireplace($m[1].$m[2].$m[3].$m[4].':'.$m[5].';', $m[1].$m[2].$replace, $data);
+//     }
+
+// // step 6: HTMLize
+//     // colors
+//     $data = preg_replace('/\|cff([a-f0-9]{6})(.+?)\|r/i', '<span style="color: #$1;">$2</span>', $data);
+
+//     // line endings
+//     $data = strtr($data, ["\r" => '', "\n" => '<br />']);
+
+//     return [$data, $relSpells];
+// }
+
+// private function handleFormulas($data, &$scaling, $topLevel = false)
+// {
+//     // they are stacked recursively but should be balanced .. hf
+//     while (($formStartPos = strpos($data, '${')) !== false)
+//     {
+//         $formBrktCnt   = 0;
+//         $formPrecision = 0;
+//         $formCurPos    = $formStartPos;
+
+//         $formOutStr    = '';
+
+//         while ($formCurPos <= strlen($data))            // only hard-exit condition, we'll hit those breaks eventually^^
+//         {
+//             $char = $data[$formCurPos];
+
+//             if ($char == '}')
+//                 $formBrktCnt--;
+
+//             if ($formBrktCnt)
+//                 $formOutStr .= $char;
+
+//             if ($char == '{')
+//                 $formBrktCnt++;
+
+//             if (!$formBrktCnt && $formCurPos != $formStartPos)
+//                 break;
+
+//             // advance position
+//             $formCurPos++;
+//         }
+
+//         $formCurPos++;
+
+//         // check for precision-modifiers
+//         if ($formCurPos + 1 < strlen($data) && $data[$formCurPos] == '.' && is_numeric($data[$formCurPos + 1]))
+//         {
+//             $formPrecision = $data[$formCurPos + 1];
+//             $formCurPos += 2;
+//         }
+//         [$formOutVal, $formOutStr, $ratingId] = $this->resolveFormulaString($formOutStr, $formPrecision ?: ($topLevel ? 0 : 10), $scaling);
+
+//         if ($ratingId && Util::checkNumeric($formOutVal))
+//             $resolved = sprintf($formOutStr, $ratingId, abs($formOutVal), Util::setRatingLevel($this->charLevel, $ratingId, abs($formOutVal)));
+//         else
+//             $resolved = sprintf($formOutStr, Util::checkNumeric($formOutVal) ? abs($formOutVal) : $formOutVal);
+
+//         $data = substr_replace($data, $resolved, $formStartPos, ($formCurPos - $formStartPos));
+//     }
+
+//     return $data;
+// }
+
+// private function handleVariables($data, &$scaling, $topLevel = false)
+// {
+//     $pos = 0;                                           // continue strpos-search from this offset
+//     $str = '';
+//     while (($npos = strpos($data, '$', $pos)) !== false)
+//     {
+//         if ($npos != $pos)
+//             $str .= substr($data, $pos, $npos - $pos);
+
+//         $pos = $npos++;
+
+//         if ($data[$pos] == '$')
+//             $pos++;
+
+//         $varParts = $this->matchVariableString(substr($data, $pos), $len);
+//         if (!$varParts)
+//         {
+//             $str .= '#';                                // mark as done, reset below
+//             continue;
+//         }
+
+//         $pos += $len;
+
+//         $var = $this->resolveVariableString($varParts, $scaling);
+//         $resolved = is_numeric($var[0]) ? abs($var[0]) : $var[0];
+//         if (isset($var[2]))
+//         {
+//             if (isset($var[4]))
+//                 $resolved = sprintf($var[2], $var[4], abs($var[0]), Util::setRatingLevel($this->charLevel, $var[4], abs($var[0])));
+//             else
+//                 $resolved = sprintf($var[2], $resolved);
+//         }
+
+//         if (isset($var[1]) && $var[0] != $var[1] && !isset($var[4]))
+//         {
+//             $_ = is_numeric($var[1]) ? abs($var[1]) : $var[1];
+//             $resolved .= Lang::game('valueDelim');
+//             $resolved .= isset($var[3]) ? sprintf($var[3], $_) : $_;
+//         }
+
+//         $str .= $resolved;
+//     }
+//     $str .= substr($data, $pos);
+//     $str = str_replace('#', '$', $str);                 // reset marker
+
+//     return $str;
+// }
+
+// private function handleConditions($data, &$scaling, &$relSpells, $topLevel = false)
+// {
+//     while (($condStartPos = strpos($data, '$?')) !== false)
+//     {
+//         $condBrktCnt = 0;
+//         $condCurPos  = $condStartPos + 2;               // after the '$?'
+//         $targetPart  = 3;                               // we usually want the second pair of brackets
+//         $curPart     = 0;                               // parts: $? 0 [ 1 ] 2 [ 3 ] 4 ...
+//         $condParts   = [];
+//         $isLastElse  = false;
+
+//         while ($condCurPos <= strlen($data))            // only hard-exit condition, we'll hit those breaks eventually^^
+//         {
+//             $char = $data[$condCurPos];
+
+//             // advance position
+//             $condCurPos++;
+
+//             if ($char == '[')
+//             {
+//                 $condBrktCnt++;
+
+//                 if ($condBrktCnt == 1)
+//                     $curPart++;
+
+//                 // previously there was no condition -> last else
+//                 if ($condBrktCnt == 1)
+//                     if (($curPart && ($curPart % 2)) && (!isset($condParts[$curPart - 1]) || empty(trim($condParts[$curPart - 1]))))
+//                         $isLastElse = true;
+
+//                 if (empty($condParts[$curPart]))
+//                     continue;
+//             }
+
+//             if (empty($condParts[$curPart]))
+//                 $condParts[$curPart] = $char;
+//             else
+//                 $condParts[$curPart] .= $char;
+
+//             if ($char == ']')
+//             {
+//                 $condBrktCnt--;
+
+//                 if (!$condBrktCnt)
+//                 {
+//                     $condParts[$curPart] = substr($condParts[$curPart], 0, -1);
+//                     $curPart++;
+//                 }
+
+//                 if ($condBrktCnt)
+//                     continue;
+
+//                 if ($isLastElse)
+//                     break;
+//             }
+//         }
+
+//         // check if it is know-compatible
+//         $know = 0;
+//         if (preg_match('/\(?(\!?)[as](\d+)\)?$/i', $condParts[0], $m))
+//         {
+//             if (!strstr($condParts[1], '$?'))
+//                 if (!strstr($condParts[3], '$?'))
+//                     if (!isset($condParts[5]))
+//                         $know = $m[2];
+
+//             // found a negation -> switching condition target
+//             if ($m[1] == '!')
+//                 $targetPart = 1;
+//         }
+//         // if not, what part of the condition should be used?
+//         else if (preg_match('/(([\W\D]*[as]\d+)|([^\[]*))/i', $condParts[0], $m) && !empty($m[3]))
+//         {
+//             $cnd = $this->resolveEvaluation($m[3]);
+//             if ((is_numeric($cnd) || is_bool($cnd)) && $cnd) // only case, deviating from normal; positive result -> use [true]
+//                 $targetPart = 1;
+//         }
+
+//         // recursive conditions
+//         if (strstr($condParts[$targetPart], '$?'))
+//             $condParts[$targetPart] = $this->handleConditions($condParts[$targetPart], $scaling, $relSpells);
+
+//         if ($know && $topLevel)
+//         {
+//             foreach ([1, 3] as $pos)
+//             {
+//                 if (strstr($condParts[$pos], '${'))
+//                     $condParts[$pos] = $this->handleFormulas($condParts[$pos], $scaling);
+
+//                 if (strstr($condParts[$pos], '$'))
+//                     $condParts[$pos] = $this->handleVariables($condParts[$pos], $scaling);
+//             }
+
+//             // false condition first
+//             if (!isset($relSpells[$know]))
+//                 $relSpells[$know] = [];
+
+//             $relSpells[$know][] = [$condParts[3], $condParts[1]];
+
+//             $data = substr_replace($data, '<!--sp'.$know.':0-->'.$condParts[$targetPart].'<!--sp'.$know.'-->', $condStartPos, ($condCurPos - $condStartPos));
+//         }
+//         else
+//             $data = substr_replace($data, $condParts[$targetPart], $condStartPos, ($condCurPos - $condStartPos));
+//     }
+
+//     return $data;
+// }

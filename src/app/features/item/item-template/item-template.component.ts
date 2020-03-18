@@ -25,7 +25,9 @@ import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service'
 import { ItemTemplate } from '@keira-types/item-template.type';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ItemHandlerService } from '../item-handler.service';
-import { AOWOW_ITEM, formatTime, getFeralAP, getRaceString, getRequiredClass, MAX_LEVEL, parseRating, resistanceFields, formatMoney } from './aowow';
+import {
+  AOWOW_ITEM, formatTime, getFeralAP, getRaceString, getRequiredClass, MAX_LEVEL, parseRating, resistanceFields, formatMoney, canTeachSpell
+} from './aowow';
 import { ItemTemplateService } from './item-template.service';
 
 @Component({
@@ -93,21 +95,21 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
 
     // heroic tag
     if (flags & ITEM_FLAG.HEROIC && quality === ITEMS_QUALITY.EPIC) {
-      this.tmpItemPreview += '<br><span class="q2">Heroic</span>';
+      this.tmpItemPreview += '<br><!-- ITEM_FLAG.HEROIC --><span class="q2">Heroic</span>';
     }
 
     // REQUIRE MAP
     const map = this.editorService.form.controls.Map.value;
     if (!!map) {
       const mapName = await this.sqliteQueryService.getMapNameById(map);
-      this.tmpItemPreview += `<br><span class="q1">${mapName}</span>`;
+      this.tmpItemPreview += `<br><!-- map --><span class="q1">${mapName}</span>`;
     }
 
     // REQUIRE AREA
     const area = this.editorService.form.controls.area.value;
     if (!!area) {
       const areaName = await this.sqliteQueryService.getAreaNameById(area);
-      this.tmpItemPreview += `<br>${areaName}`;
+      this.tmpItemPreview += `<br><!-- area -->${areaName}`;
     }
 
     // conjured
@@ -117,21 +119,21 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
 
     // bonding
     if (flags & ITEM_FLAG.ACCOUNTBOUND) {
-      this.tmpItemPreview += '<br>' + this.AOWOW_ITEM.bonding[0];
+      this.tmpItemPreview += '<br><!-- bonding[0] -->' + this.AOWOW_ITEM.bonding[0];
     } else if (bonding) {
-      this.tmpItemPreview += '<br>' + this.AOWOW_ITEM.bonding[bonding];
+      this.tmpItemPreview += '<br><!-- [bonding] -->' + this.AOWOW_ITEM.bonding[bonding];
     }
 
     // unique || unique-equipped || unique-limited
     if (maxcount === 1) {
-      this.tmpItemPreview += '<br>' + this.AOWOW_ITEM['unique'][0];
+      this.tmpItemPreview += '<br><!-- unique[0] -->' + this.AOWOW_ITEM['unique'][0];
     } else if (maxcount && bagFamily !== 8192) { // not for currency tokens
-      this.tmpItemPreview += '<br>' + this.AOWOW_ITEM['unique'][1].replace('%d', maxcount.toString());
+      this.tmpItemPreview += '<br><!-- unique[1] -->' + this.AOWOW_ITEM['unique'][1].replace('%d', maxcount.toString());
     } else if (flags & ITEM_FLAG.UNIQUEEQUIPPED) {
-      this.tmpItemPreview += '<br>' + this.AOWOW_ITEM['uniqueEquipped'][0];
+      this.tmpItemPreview += '<br><!-- uniqueEquipped -->' + this.AOWOW_ITEM['uniqueEquipped'][0];
     } /* else if (itemLimitCategory) {
         $limit = DB::Aowow()->selectRow("SELECT * FROM ?_itemlimitcategory WHERE id = ?", $this->curTpl['itemLimitCategory']);
-        this.tmpItemPreview += '<br>'.sprintf(Lang::item($limit['isGem'] ? 'uniqueEquipped' : 'unique', 2),
+        this.tmpItemPreview += '<br><!-- unique isGem -->'.sprintf(Lang::item($limit['isGem'] ? 'uniqueEquipped' : 'unique', 2),
           Util::localizedString($limit, 'name'), $limit['count']);
     } */
 
@@ -170,7 +172,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     const subclass: number = Number(this.editorService.form.controls.subclass.value);
     let textRight = '';
     if ([ITEM_TYPE.ARMOR, ITEM_TYPE.WEAPON, ITEM_TYPE.AMMUNITION].includes(itemClass)) {
-      this.tmpItemPreview += '<table width="100%"><tr>';
+      this.tmpItemPreview += '<table style="float: left;" width="100%"><tr>';
 
       // Class
       if (inventoryType) {
@@ -190,10 +192,8 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
       this.tmpItemPreview += '</tr></table>';
 
       // yes, inventoryType/slot can occur on random items and is then also displayed <_< .. excluding Bags >_>
-    } else if (inventoryType && itemClass !== ITEM_TYPE.CONTAINER) {
-      this.tmpItemPreview += `<br>${AOWOW_ITEM.inventoryType[subclass]}<br>`;
-    } else {
-      this.tmpItemPreview += '<br>';
+    } else if (inventoryType && itemClass !== ITEM_TYPE.CONTAINER && !!AOWOW_ITEM.inventoryType[subclass]) {
+      this.tmpItemPreview += `<br><!-- InventoryType -->${AOWOW_ITEM.inventoryType[subclass]}`;
     }
 
     // Weapon/Ammunition Stats                          (not limited to weapons (see item:1700))
@@ -212,28 +212,26 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
 
     if (itemClass === ITEM_TYPE.AMMUNITION && dmgmin && dmgmax) {
       if (sc1) {
-        this.tmpItemPreview += AOWOW_ITEM.damage.ammo[1].replace('%d', ((dmgmin + dmgmax) / 2).toString()) + AOWOW_ITEM.sc[sc1] + '<br>';
+        this.tmpItemPreview += AOWOW_ITEM.damage.ammo[1].replace('%d', ((dmgmin + dmgmax) / 2).toString()) + AOWOW_ITEM.sc[sc1];
       } else {
-        this.tmpItemPreview += AOWOW_ITEM.damage.ammo[0].replace('%d', ((dmgmin + dmgmax) / 2).toString()) + '<br>';
+        this.tmpItemPreview += AOWOW_ITEM.damage.ammo[0].replace('%d', ((dmgmin + dmgmax) / 2).toString());
       }
     } else if (dps) {
       if (dmgmin1 === dmgmax1) {
         dmg = AOWOW_ITEM.damage.single[sc1 ? 1 : 0]
           .replace('%g', dmgmin1)
-          .replace('%s', (sc1 ? AOWOW_ITEM.sc[sc1] : ''))
-          + '<br>';
+          .replace('%s', (sc1 ? AOWOW_ITEM.sc[sc1] : ''));
       } else {
         dmg = AOWOW_ITEM.damage.range[sc1 ? 1 : 0]
           .replace('%d', dmgmin1)
           .replace('%d', dmgmax1)
-          .replace('%s', sc1 ? AOWOW_ITEM.sc[sc1] : '')
-          + '<br>';
+          .replace('%s', sc1 ? AOWOW_ITEM.sc[sc1] : '');
       }
 
       if (itemClass === ITEM_TYPE.WEAPON) {
-        this.tmpItemPreview += `<table width="100%"><tr><td>${dmg}</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><th style="text-align: right;">Speed <!--spd-->${speed.toFixed(2)}</th></tr></table>`;
+        this.tmpItemPreview += `<table style="float: left;" width="100%"><tr><td>${dmg}</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><th style="text-align: right;">Speed <!--spd-->${speed.toFixed(2)}</th></tr></table>`;
       } else {
-        this.tmpItemPreview += `<!--dmg-->${dmg}<br>`;
+        this.tmpItemPreview += `<br><!--dmg-->${dmg}`;
       }
 
       // secondary damage is set
@@ -241,23 +239,21 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
         this.tmpItemPreview += AOWOW_ITEM.damage.range[sc2 ? 3 : 2]
           .replace('%d', dmgmin2)
           .replace('%d', dmgmax2)
-          .replace('%s', sc2 ? AOWOW_ITEM.sc[sc2] : '')
-          + '<br>';
+          .replace('%s', sc2 ? AOWOW_ITEM.sc[sc2] : '');
       } else if (dmgmin2) {
         this.tmpItemPreview += AOWOW_ITEM.damage.single[sc2 ? 3 : 2]
           .replace('%d', dmgmin2)
-          .replace('%s', sc2 ? AOWOW_ITEM.sc[sc2] : '')
-          + '<br>';
+          .replace('%s', sc2 ? AOWOW_ITEM.sc[sc2] : '');
       }
 
       if (itemClass === ITEM_TYPE.WEAPON) {
-        this.tmpItemPreview += `<!--dps-->${AOWOW_ITEM.dps.replace('%.1f', dps.toFixed(2))}<br>`;
+        this.tmpItemPreview += `<br><!--dps-->${AOWOW_ITEM.dps.replace('%.1f', dps.toFixed(2))}`;
       }
 
       // display FeralAttackPower if set
       const fap = getFeralAP(itemClass, subclass, dps);
       if (fap) {
-        this.tmpItemPreview += `<span class="c11"><!--fap-->(${fap} ${AOWOW_ITEM.fap})</span><br>`;
+        this.tmpItemPreview += `<br><span class="c11"><!--fap-->(${fap} ${AOWOW_ITEM.fap})</span>`;
       }
     }
 
@@ -265,15 +261,15 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     const armorDamageModifier = this.editorService.form.controls.ArmorDamageModifier.value;
     const armor = this.editorService.form.controls.armor.value;
     if (itemClass === ITEM_TYPE.ARMOR && armorDamageModifier > 0) {
-      this.tmpItemPreview += `<span class="q2"><!--addamr${armorDamageModifier}--><span>${AOWOW_ITEM.armor.replace('%s', armor)}</span></span><br>`;
+      this.tmpItemPreview += `<br><span class="q2"><!--addamr${armorDamageModifier}--><span>${AOWOW_ITEM.armor.replace('%s', armor)}</span></span>`;
     } else if (armor) {
-      this.tmpItemPreview += `<span><!--amr-->${AOWOW_ITEM.armor.replace('%s', armor)}</span><br>`;
+      this.tmpItemPreview += `<br><span><!--amr-->${AOWOW_ITEM.armor.replace('%s', armor)}</span>`;
     }
 
     // Block (note: block value from field block and from field stats or parsed from itemSpells are displayed independently)
     const block = this.editorService.form.controls.block.value;
     if (block) {
-      this.tmpItemPreview += `<span>${AOWOW_ITEM.block.replace('%s', block)}</span><br>`;
+      this.tmpItemPreview += `<br><span>${AOWOW_ITEM.block.replace('%s', block)}</span>`;
     }
 
     // // Item is a gem (don't mix with sockets)
@@ -316,7 +312,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     // Random Enchantment - if random enchantment is set, prepend stats from it
     const RandomProperty: number = this.editorService.form.controls.RandomProperty.value;
     if (RandomProperty /* && empty($enhance['r']) */) {
-      this.tmpItemPreview += `<span class="q2">${AOWOW_ITEM.randEnchant}</span><br>`;
+      this.tmpItemPreview += `<br><span class="q2">${AOWOW_ITEM.randEnchant}</span>`;
     }/* else if (!empty($enhance['r'])) {
       this.tmpItemPreview += $randEnchant;
     } */
@@ -340,10 +336,10 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
         case ITEM_MOD.INTELLECT:
         case ITEM_MOD.SPIRIT:
         case ITEM_MOD.STAMINA:
-          this.tmpItemPreview += `<span><!--stat${type}-->${(qty > 0 ? '+' : '-') + Math.abs(qty)} ${AOWOW_ITEM.statType[type]}</span><br>`;
+          this.tmpItemPreview += `<br><span><!--stat${type}-->${(qty > 0 ? '+' : '-') + Math.abs(qty)} ${AOWOW_ITEM.statType[type]}</span>`;
           break;
         default:                                    // rating with % for reqLevel
-          green.push(parseRating(type, qty, requiredLevel, /* interactive */ false, /* causesScaling */ false));
+          green.push(parseRating(type, qty, requiredLevel));
       }
     }
 
@@ -351,7 +347,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     resistanceFields.forEach((rowName, idx) => {
       const resField = this.editorService.form.controls[rowName + '_res'].value;
       if (rowName != null && resField != null && resField !== 0) {
-        this.tmpItemPreview += `+${resField} ${AOWOW_ITEM.resistances[idx]} <br>`;
+        this.tmpItemPreview += `<br>+${resField} ${AOWOW_ITEM.resistances[idx]}`;
       }
     });
 
@@ -444,27 +440,27 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     // durability
     const durability = this.editorService.form.controls.MaxDurability.value;
     if (durability) {
-      this.tmpItemPreview += `${AOWOW_ITEM.durability.replace(/%d/g, durability)}<br>`;
+      this.tmpItemPreview += `<br>${AOWOW_ITEM.durability.replace(/%d/g, durability)}`;
     }
 
     // required classes
     const allowableClasses = this.editorService.form.controls.AllowableClass.value;
     const classes = getRequiredClass(allowableClasses);
     if (classes != null && classes.length > 0) {
-      this.tmpItemPreview += `Classes: ${classes.join(', ')}<br>`;
+      this.tmpItemPreview += `<br>Classes: ${classes.join(', ')}`;
     }
 
     // required races
     const allowableRaces = this.editorService.form.controls.AllowableRace.value;
     const races = getRaceString(allowableRaces);
     if (races) {
-      this.tmpItemPreview += `Races: ${races.join(', ')}<br>`;
+      this.tmpItemPreview += `<br>Races: ${races.join(', ')}`;
     }
 
     // required honorRank (not used anymore)
     const requiredhonorrank = this.editorService.form.controls.requiredhonorrank.value;
     if (requiredhonorrank) {
-      this.tmpItemPreview += `Requires ${AOWOW_ITEM.pvpRank[requiredhonorrank]}<br>`;
+      this.tmpItemPreview += `<br>Requires ${AOWOW_ITEM.pvpRank[requiredhonorrank]}`;
     }
 
     // required CityRank..?
@@ -472,15 +468,16 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     // required level
     if ((flags & ITEM_FLAG.ACCOUNTBOUND) && quality === ITEMS_QUALITY.HEIRLOOM) {
 
-      this.tmpItemPreview += AOWOW_ITEM.reqLevelRange
+      this.tmpItemPreview += '<br>' + AOWOW_ITEM.reqLevelRange
         .replace('%d', '1')
         .replace('%d', MAX_LEVEL.toString())
-        .replace('%s', MAX_LEVEL.toString()) + '<br>';
+        .replace('%s', MAX_LEVEL.toString());
 
     } else if (requiredLevel > 1) {
-      this.tmpItemPreview += AOWOW_ITEM.reqMinLevel.replace('%d', requiredLevel) + '<br>';
+      this.tmpItemPreview += '<br>' + AOWOW_ITEM.reqMinLevel.replace('%d', requiredLevel);
     }
 
+    // TODO
     // required arena team rating / personal rating / todo (low): sort out what kind of rating
     // if (!empty($this->getExtendedCost([], $reqRating)[$this->id]) && $reqRating) {
     //   this.tmpItemPreview += sprintf(Lang::item('reqRating', $reqRating[1]), $reqRating[0]).'<br>';
@@ -489,10 +486,9 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     // item level
     const itemLevel = this.editorService.form.controls.ItemLevel.value;
     if (itemLevel > 0 && [ITEM_TYPE.ARMOR, ITEM_TYPE.WEAPON].includes(itemClass)) {
-      this.tmpItemPreview += `${AOWOW_ITEM.itemLevel.replace('%d', itemLevel)} <br>`;
+      this.tmpItemPreview += `<br>${AOWOW_ITEM.itemLevel.replace('%d', itemLevel)}`;
     }
 
-    // TODO: fix this
     // required skill
     const requiredSkill = this.editorService.form.controls.RequiredSkill.value;
     const requiredSkillRank = this.editorService.form.controls.RequiredSkillRank.value;
@@ -502,13 +498,13 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
         reqSkill += ` (${requiredSkillRank})`;
       }
 
-      this.tmpItemPreview += `Requires: ${reqSkill}<br>`;
+      this.tmpItemPreview += `<br>Requires: ${reqSkill}`;
     }
 
     // required spell
     const requiredSpell = this.editorService.form.controls.requiredspell.value;
     if (requiredSpell > 0) {
-      this.tmpItemPreview += `Requires <span class="q1">${await this.sqliteQueryService.getSpellNameById(requiredSpell)}</span><br>`;
+      this.tmpItemPreview += `<br>Requires <span class="q1">${await this.sqliteQueryService.getSpellNameById(requiredSpell)}</span>`;
     }
 
     // required reputation w/ faction
@@ -519,7 +515,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
       if (requiredFactionRank > 0) {
         reqFaction += ` (${requiredFactionRank})`;
       }
-      this.tmpItemPreview += `Requires ${reqFaction}<br>`;
+      this.tmpItemPreview += `<br>Requires ${reqFaction}`;
     }
 
     // TODO: fix this
@@ -533,51 +529,58 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     //   this.tmpItemPreview += `<span class="q2">${AOWOW_ITEM.openClick}</span><br>`;
     // }
 
-    // // spells on item
-    // const spellId1 = this.editorService.form.controls.spellid_1.value;
-    // const spellId2 = this.editorService.form.controls.spellid_2.value;
-    // if (!canTeachSpell(spellId1, spellId2)) {
-    //   const itemSpellsAndTrigger = [];
-    //   for (let j = 1; j <= 5; j++) {
-    //     const spellid = this.editorService.form.controls['spellId' + j].value;
+    // spells on item
+    const spellId1 = this.editorService.form.controls.spellid_1.value;
+    const spellId2 = this.editorService.form.controls.spellid_2.value;
+    if (!canTeachSpell(spellId1, spellId2)) {
+      const itemSpellsAndTrigger = [];
+      for (let j = 1; j <= 5; j++) {
+        const spellid = this.editorService.form.controls['spellid_' + j].value;
 
-    //     if (spellid > 0) {
-    //       let cd = this.editorService.form.controls['spellCooldown' + j].value;
-    //       const cdCategory = this.editorService.form.controls['spellCategoryCooldown' + j].value;
+        if (spellid > 0) {
+          let cooldown = this.editorService.form.controls['spellcooldown_' + j].value;
+          const cooldownCategory = this.editorService.form.controls['spellcategory_' + j].value;
 
-    //       if (cd < cdCategory) {
-    //         cd = cdCategory;
-    //       }
+          if (cooldown < cooldownCategory) {
+            cooldown = cooldownCategory;
+          }
 
-    //       cd = cd < 5000 ? '' : ` ( ${formatTime(cd)} cooldown)`;
+          cooldown = cooldown < 5000 ? '' : ` ( ${formatTime(cooldown)} cooldown)`;
 
-    //       itemSpellsAndTrigger[spellid] = [this.editorService.form.controls['spellTrigger' + j].value, cd];
-    //     }
-    //   }
+          itemSpellsAndTrigger[spellid] = [this.editorService.form.controls['spelltrigger_' + j].value, cooldown];
+        }
+      }
 
-    //   if (itemSpellsAndTrigger) {
-    //     let cooldown = '';
+      if (itemSpellsAndTrigger) {
+        // OLD CODE
+        // let itemSpells = new SpellList(array(['s.id', array_keys(itemSpellsAndTrigger)]));
+        // foreach (itemSpells->iterate() as __) {
+        //   if (parsed = itemSpells->parseText('description', requiredLevel > 1 ? requiredLevel : MAX_LEVEL, false, false)[0]) {
 
-    //     let itemSpells = new SpellList(array(['s.id', array_keys(itemSpellsAndTrigger)]));
-    //     foreach (itemSpells->iterate() as __) {
-    //       if (parsed = itemSpells->parseText('description', _reqLvl > 1 ? _reqLvl : MAX_LEVEL, false, false)[0]) {
+        //     green.push(AOWOW_ITEM.trigger[itemSpellsAndTrigger[itemSpells->id][0]] + parsed + itemSpellsAndTrigger[itemSpells->id][1]);
 
-    //         green[] = Lang::item('trigger', itemSpellsAndTrigger[itemSpells->id][0]).parsed.itemSpellsAndTrigger[itemSpells->id][1];
+        //   }
+        // }
 
-    //       }
-    //     }
-    //   }
-    // }
+        // TODO
+        // let itemSpells = new SpellList(array(['s.id', array_keys(itemSpellsAndTrigger)]));
+        // foreach (itemSpells->iterate() as __) {
+        //   if (parsed = itemSpells->parseText('description', requiredLevel > 1 ? requiredLevel : MAX_LEVEL, false, false)[0]) {
+
+        //     green.push(AOWOW_ITEM.trigger[itemSpellsAndTrigger[itemSpells->id][0]] + parsed + itemSpellsAndTrigger[itemSpells->id][1]);
+
+        //   }
+        // }
+
+      }
+    }
 
     if (green && green.length > 0) {
       for (const bonus of green) {
         if (bonus) {
-          this.tmpItemPreview += `<span class="q2">${bonus}</span><br>`;
+          this.tmpItemPreview += `<br><span class="q2">${bonus}</span>`;
         }
       }
-
-      const lastBr = this.tmpItemPreview.lastIndexOf('<br>');
-      this.tmpItemPreview = this.tmpItemPreview.substring(0, lastBr);
     }
 
     // // Item Set
@@ -641,7 +644,6 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     //         {
     //           if (setSpells[j]['bonus'] >= setSpells[i]['bonus'])
     //           continue;
-
     //           tmp = setSpells[i];
     //           setSpells[i] = setSpells[j];
     //           setSpells[j] = tmp;
@@ -721,7 +723,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     //     xMisc[] = $xCraft;
 
     if (xMisc) {
-      this.tmpItemPreview += xMisc.join('<br>') + '<br>';
+      this.tmpItemPreview += '<br>' + xMisc.join('<br>');
     }
 
     const sellPrice = this.editorService.form.controls.SellPrice.value;
