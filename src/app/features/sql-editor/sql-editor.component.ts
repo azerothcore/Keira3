@@ -66,27 +66,29 @@ export class SqlEditorComponent extends SubscriptionHandler {
   execute() {
     this.subscriptions.push(this.mysqlQueryService.query(this.code).subscribe(
       (rows: TableRow[] | { affectedRows: number, message: string }) => {
-      this._error = null;
-      this._affectedRows = -1;
+        this._error = null;
+        this._affectedRows = -1;
 
-      if (!Array.isArray(rows)) {
-        this._affectedRows = rows.affectedRows;
-        this._message = rows.message;
-      } else if (rows.length > 0) {
-        const columns = Object.keys(rows[0]);
+        if (!Array.isArray(rows)) {
+          this._affectedRows = rows.affectedRows;
+          this._message = rows.message;
+        } else if (rows.length > 0) {
+          const columns = Object.keys(rows[0]);
 
-        if (columns.length > this.MAX_COL_SHOWN) {
-          this._columns = columns.slice(0, this.MAX_COL_SHOWN);
+          if (columns.length > this.MAX_COL_SHOWN) {
+            this._columns = columns.slice(0, this.MAX_COL_SHOWN);
+          } else {
+            this._columns = columns;
+          }
         } else {
-          this._columns = columns;
+          this._columns = [];
         }
-      } else {
-        this._columns = [];
-      }
 
-      this._rows = rows as TableRow[];
-    }, (error: MysqlError) => {
-      this._error = error;
-    }));
+        this._rows = rows as TableRow[];
+      }, (error: MysqlError) => {
+        this._error = error;
+        this._rows = [];
+        this._columns = [];
+      }));
   }
 }
