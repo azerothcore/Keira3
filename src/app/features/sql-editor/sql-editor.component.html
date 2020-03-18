@@ -5,12 +5,12 @@
        [tooltip]="'A minimalistic SQL Editor to run custom queries'"></i>
   </p>
 
-  <textarea id="code" class="mb-1" [(ngModel)]="code" rows="6"></textarea>
+  <textarea id="code" class="mb-1" [(ngModel)]="code" (keydown.f9)="execute()" rows="6"></textarea>
 
   <div class="row">
     <div class="col-sm-7">
       <button type="button" class="btn btn-secondary btn-sm mr-2" (click)="copy()" id="copy-btn">Copy</button>
-      <button type="button" class="btn btn-primary btn-sm" (click)="execute()" id="execute-btn">Execute</button>
+      <button type="button" class="btn btn-primary btn-sm" (click)="execute()" id="execute-btn">Execute (F9)</button>
     </div>
     <div class="col-sm-5">
       <div class="wiki-link">
@@ -41,7 +41,12 @@
       [rowHeight]="DTCFG.rowHeight"
       [limit]="20"
     >
-      <ngx-datatable-column *ngFor="let col of columns" [prop]="col" [minWidth]="100"></ngx-datatable-column>
+      <ngx-datatable-column
+        *ngFor="let col of columns"
+        [prop]="col"
+        [minWidth]="columns.length === 1 ? 300 : 100"
+        [resizeable]="true"
+      ></ngx-datatable-column>
     </ngx-datatable>
   </ng-template>
 
