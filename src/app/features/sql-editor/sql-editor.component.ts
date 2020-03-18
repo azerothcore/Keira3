@@ -3,7 +3,6 @@ import { ClipboardService } from 'ngx-clipboard';
 import { MysqlError } from 'mysql';
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
 import { TableRow } from '@keira-types/general';
 import { DTCFG } from '@keira-config/datatable.config';
@@ -16,6 +15,7 @@ import { DTCFG } from '@keira-config/datatable.config';
 export class SqlEditorComponent extends SubscriptionHandler {
   public readonly DTCFG = DTCFG;
   public readonly docUrl = 'https://www.w3schools.com/sql/sql_intro.asp';
+  private readonly MAX_COL_SHOWN = 20;
 
   // displayLimit = 10;
   // get displayLimitOptions() {
@@ -25,8 +25,8 @@ export class SqlEditorComponent extends SubscriptionHandler {
   code = 'SELECT `entry`, `name`, `subname`, `minlevel`, `maxlevel`, `AIName`, `ScriptName` \n' +
     'FROM `creature_template` \n' +
     'WHERE `entry` > 100 \n' +
-    'ORDER BY `entry` ASC LIMIT 100';
-
+    'ORDER BY `entry` ASC \n' +
+    'LIMIT 100';
   private _error: MysqlError;
   get error(): MysqlError {
     return this._error;
@@ -37,14 +37,23 @@ export class SqlEditorComponent extends SubscriptionHandler {
     return this._rows;
   }
 
-  private _columns;
-  get columns() {
+  private _columns: string[];
+  get columns(): string[] {
     return this._columns;
+  }
+
+  private _affectedRows: number;
+  get affectedRows(): number {
+    return this._affectedRows;
+  }
+
+  private _message: string;
+  get message(): string {
+    return this._message;
   }
 
   constructor(
     private mysqlQueryService: MysqlQueryService,
-    private sqliteQueryService: SqliteQueryService,
     private clipboardService: ClipboardService,
   ) {
     super();
@@ -55,12 +64,27 @@ export class SqlEditorComponent extends SubscriptionHandler {
   }
 
   execute() {
-    this.subscriptions.push(this.mysqlQueryService.query(this.code).subscribe(rows => {
-      if (rows?.length > 0) {
-        this._columns = Object.keys(rows[0]);
+    this.subscriptions.push(this.mysqlQueryService.query(this.code).subscribe(
+      (rows: TableRow[] | { affectedRows: number, message: string }) => {
+      this._error = null;
+      this._affectedRows = -1;
+
+      if (!Array.isArray(rows)) {
+        this._affectedRows = rows.affectedRows;
+        this._message = rows.message;
+      } else if (rows.length > 0) {
+        const columns = Object.keys(rows[0]);
+
+        if (columns.length > this.MAX_COL_SHOWN) {
+          this._columns = columns.slice(0, this.MAX_COL_SHOWN);
+        } else {
+          this._columns = columns;
+        }
+      } else {
+        this._columns = [];
       }
 
-      this._rows = rows;
+      this._rows = rows as TableRow[];
     }, (error: MysqlError) => {
       this._error = error;
     }));

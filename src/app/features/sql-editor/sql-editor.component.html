@@ -23,20 +23,26 @@
 
   <keira-query-error [error]="error"></keira-query-error>
 
-  <hr>
-<!--  Display: <select [(ngModel)]="displayLimit" class="select-limit">-->
-<!--    <option *ngFor="let option of displayLimitOptions" [value]="option">{{ option }}</option>-->
-<!--  </select>-->
-  <ngx-datatable
-    id="editor-table"
-    class="bootstrap table table-striped text-center mt-1"
-    [rows]="rows"
-    [headerHeight]="DTCFG.headerHeight"
-    [footerHeight]="DTCFG.footerHeight"
-    [columnMode]="DTCFG.columnMode"
-    [rowHeight]="DTCFG.rowHeight"
-    [limit]="20"
-  >
-    <ngx-datatable-column *ngFor="let col of columns" [prop]="col" [minWidth]="100"></ngx-datatable-column>
-  </ngx-datatable>
+  <p *ngIf="affectedRows > -1; else queryResults" id="affected-rows-box" class="mt-2">
+    <code class="hljs">Affected rows: <strong>{{ affectedRows }}</strong> {{ message }}</code>
+  </p>
+  <ng-template #queryResults>
+    <hr>
+<!--    Display: <select [(ngModel)]="displayLimit" class="select-limit">-->
+<!--      <option *ngFor="let option of displayLimitOptions" [value]="option">{{ option }}</option>-->
+<!--    </select>-->
+    <ngx-datatable
+      id="editor-table"
+      class="bootstrap table table-striped text-center mt-1"
+      [rows]="rows"
+      [headerHeight]="DTCFG.headerHeight"
+      [footerHeight]="DTCFG.footerHeight"
+      [columnMode]="DTCFG.columnMode"
+      [rowHeight]="DTCFG.rowHeight"
+      [limit]="20"
+    >
+      <ngx-datatable-column *ngFor="let col of columns" [prop]="col" [minWidth]="100"></ngx-datatable-column>
+    </ngx-datatable>
+  </ng-template>
+
 </div>
