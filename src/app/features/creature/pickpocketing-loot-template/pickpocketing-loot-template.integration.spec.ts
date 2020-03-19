@@ -14,7 +14,7 @@ import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 class PickpocketingLootTemplatePage extends MultiRowEditorPageObject<PickpocketingLootTemplateComponent> {}
 
-fdescribe('PickpocketingLootTemplate integration tests', () => {
+describe('PickpocketingLootTemplate integration tests', () => {
   let component: PickpocketingLootTemplateComponent;
   let fixture: ComponentFixture<PickpocketingLootTemplateComponent>;
   let queryService: MysqlQueryService;
@@ -46,7 +46,7 @@ fdescribe('PickpocketingLootTemplate integration tests', () => {
       .compileComponents();
   }));
 
-  function setup(creatingNew: boolean, lootId = id) {
+  async function setup(creatingNew: boolean, lootId = id) {
     spyOn(TestBed.inject(PickpocketingLootTemplateService), 'getLootId').and.returnValue(of(
       [{ lootId }]
     ));
@@ -68,9 +68,10 @@ fdescribe('PickpocketingLootTemplate integration tests', () => {
     page = new PickpocketingLootTemplatePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    await page.whenStable();
   }
 
-  fdescribe('Creating new', () => {
+  describe('Creating new', () => {
     beforeEach(() => setup(true));
 
     it('should correctly initialise', async () => {
@@ -177,7 +178,7 @@ fdescribe('PickpocketingLootTemplate integration tests', () => {
     });
   });
 
-  fdescribe('Editing existing', () => {
+  describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', async () => {

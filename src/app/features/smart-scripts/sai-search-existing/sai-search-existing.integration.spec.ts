@@ -20,7 +20,7 @@ class SaiSearchExistingComponentPage extends PageObject<SaiSearchExistingCompone
   get searchBtn() { return this.query<HTMLButtonElement>('#search-btn'); }
 }
 
-fdescribe('SaiSearchExisting integration tests', () => {
+describe('SaiSearchExisting integration tests', () => {
   let component: SaiSearchExistingComponent;
   let fixture: ComponentFixture<SaiSearchExistingComponent>;
   let selectService: SaiSearchService;
@@ -39,7 +39,7 @@ fdescribe('SaiSearchExisting integration tests', () => {
       .compileComponents();
   }));
 
-  beforeEach(() => {
+  beforeEach(async () => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of(
@@ -53,6 +53,7 @@ fdescribe('SaiSearchExisting integration tests', () => {
     component = fixture.componentInstance;
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    await page.whenStable();
   });
 
   it('should correctly initialise', async () => {

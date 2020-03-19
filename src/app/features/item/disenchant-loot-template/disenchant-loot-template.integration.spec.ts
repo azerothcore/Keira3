@@ -13,7 +13,7 @@ import { DisenchantLootTemplateService } from './disenchant-loot-template.servic
 
 class DisenchantLootTemplatePage extends MultiRowEditorPageObject<DisenchantLootTemplateComponent> {}
 
-fdescribe('DisenchantLootTemplate integration tests', () => {
+describe('DisenchantLootTemplate integration tests', () => {
   let component: DisenchantLootTemplateComponent;
   let fixture: ComponentFixture<DisenchantLootTemplateComponent>;
   let queryService: MysqlQueryService;
@@ -44,7 +44,7 @@ fdescribe('DisenchantLootTemplate integration tests', () => {
       .compileComponents();
   }));
 
-  function setup(creatingNew: boolean, lootId = id) {
+  async function setup(creatingNew: boolean, lootId = id) {
     spyOn(TestBed.inject(DisenchantLootTemplateService), 'getLootId').and.returnValue(of(
       [{ lootId }]
     ));
@@ -66,9 +66,10 @@ fdescribe('DisenchantLootTemplate integration tests', () => {
     page = new DisenchantLootTemplatePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    await page.whenStable();
   }
 
-  fdescribe('Creating new', () => {
+  describe('Creating new', () => {
     beforeEach(() => setup(true));
 
     it('should correctly initialise', async () => {
@@ -178,7 +179,7 @@ fdescribe('DisenchantLootTemplate integration tests', () => {
     });
   });
 
-  fdescribe('Editing existing', () => {
+  describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', async () => {

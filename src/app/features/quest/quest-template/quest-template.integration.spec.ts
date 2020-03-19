@@ -12,7 +12,7 @@ import { QuestHandlerService } from '../quest-handler.service';
 
 class QuestTemplatePage extends EditorPageObject<QuestTemplateComponent> {}
 
-fdescribe('QuestTemplate integration tests', () => {
+describe('QuestTemplate integration tests', () => {
   let component: QuestTemplateComponent;
   let fixture: ComponentFixture<QuestTemplateComponent>;
   let queryService: MysqlQueryService;
@@ -61,7 +61,7 @@ fdescribe('QuestTemplate integration tests', () => {
       .compileComponents();
   }));
 
-  function setup(creatingNew: boolean) {
+  async function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(QuestHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
@@ -79,9 +79,10 @@ fdescribe('QuestTemplate integration tests', () => {
     page = new QuestTemplatePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    await page.whenStable();
   }
 
-  fdescribe('Creating new', () => {
+  describe('Creating new', () => {
     beforeEach(() => setup(true));
 
     it('should correctly initialise', async () => {
@@ -103,7 +104,7 @@ fdescribe('QuestTemplate integration tests', () => {
     });
   });
 
-  fdescribe('Editing existing', () => {
+  describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', async () => {

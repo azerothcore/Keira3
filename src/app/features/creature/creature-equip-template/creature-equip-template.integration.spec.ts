@@ -13,7 +13,7 @@ import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 class CreatureEquipTemplatePage extends EditorPageObject<CreatureEquipTemplateComponent> {}
 
-fdescribe('CreatureEquipTemplate integration tests', () => {
+describe('CreatureEquipTemplate integration tests', () => {
   let component: CreatureEquipTemplateComponent;
   let fixture: ComponentFixture<CreatureEquipTemplateComponent>;
   let queryService: MysqlQueryService;
@@ -43,7 +43,7 @@ fdescribe('CreatureEquipTemplate integration tests', () => {
       .compileComponents();
   }));
 
-  function setup(creatingNew: boolean) {
+  async function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(CreatureHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
@@ -61,9 +61,10 @@ fdescribe('CreatureEquipTemplate integration tests', () => {
     page = new CreatureEquipTemplatePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    await page.whenStable();
   }
 
-  fdescribe('Creating new', () => {
+  describe('Creating new', () => {
     beforeEach(() => setup(true));
 
     it('should correctly initialise', async () => {
@@ -87,7 +88,7 @@ fdescribe('CreatureEquipTemplate integration tests', () => {
     });
   });
 
-  fdescribe('Editing existing', () => {
+  describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', async () => {

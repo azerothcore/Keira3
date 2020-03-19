@@ -13,7 +13,7 @@ import { ITEM_SUBCLASS } from '@keira-constants/options/item-class';
 
 class ItemTemplatePage extends EditorPageObject<ItemTemplateComponent> {}
 
-fdescribe('ItemTemplate integration tests', () => {
+describe('ItemTemplate integration tests', () => {
   let component: ItemTemplateComponent;
   let fixture: ComponentFixture<ItemTemplateComponent>;
   let queryService: MysqlQueryService;
@@ -64,7 +64,7 @@ fdescribe('ItemTemplate integration tests', () => {
       .compileComponents();
   }));
 
-  function setup(creatingNew: boolean) {
+  async function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(ItemHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
@@ -81,9 +81,10 @@ fdescribe('ItemTemplate integration tests', () => {
     page = new ItemTemplatePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    await page.whenStable();
   }
 
-  fdescribe('Creating new', () => {
+  describe('Creating new', () => {
     beforeEach(() => setup(true));
 
     it('should correctly initialise', async () => {
@@ -105,7 +106,7 @@ fdescribe('ItemTemplate integration tests', () => {
     });
   });
 
-  fdescribe('Editing existing', () => {
+  describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', async () => {
@@ -193,7 +194,7 @@ fdescribe('ItemTemplate integration tests', () => {
       page.expectFullQueryToContain('4100');
     });
 
-    fdescribe('the subclass field', async () => {
+    describe('the subclass field', async () => {
       it('should show the selector button only if class has a valid value', async () => {
         page.setInputValueById('class', 100);
         expect(page.getSelectorBtn('subclass', false)).toBeFalsy();

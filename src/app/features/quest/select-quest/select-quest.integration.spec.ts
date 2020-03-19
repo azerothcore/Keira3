@@ -16,7 +16,7 @@ class SelectQuestComponentPage extends SelectPageObject<SelectQuestComponent> {
   ID_FIELD = 'ID';
 }
 
-fdescribe('SelectQuest integration tests', () => {
+describe('SelectQuest integration tests', () => {
   let component: SelectQuestComponent;
   let fixture: ComponentFixture<SelectQuestComponent>;
   let selectService: SelectQuestService;
@@ -40,7 +40,7 @@ fdescribe('SelectQuest integration tests', () => {
       .compileComponents();
   }));
 
-  beforeEach(() => {
+  beforeEach(async () => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of(
@@ -54,6 +54,7 @@ fdescribe('SelectQuest integration tests', () => {
     component = fixture.componentInstance;
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    await page.whenStable();
   });
 
   it('should correctly initialise', async () => {

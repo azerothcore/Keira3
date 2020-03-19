@@ -12,7 +12,7 @@ import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-o
 
 class ItemEnchantmentTemplatePage extends MultiRowEditorPageObject<ItemEnchantmentTemplateComponent> {}
 
-fdescribe('ItemEnchantmentTemplate integration tests', () => {
+describe('ItemEnchantmentTemplate integration tests', () => {
   let component: ItemEnchantmentTemplateComponent;
   let fixture: ComponentFixture<ItemEnchantmentTemplateComponent>;
   let queryService: MysqlQueryService;
@@ -43,7 +43,7 @@ fdescribe('ItemEnchantmentTemplate integration tests', () => {
       .compileComponents();
   }));
 
-  function setup(creatingNew: boolean) {
+  async function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(ItemHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
@@ -60,9 +60,10 @@ fdescribe('ItemEnchantmentTemplate integration tests', () => {
     page = new ItemEnchantmentTemplatePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    await page.whenStable();
   }
 
-  fdescribe('Creating new', () => {
+  describe('Creating new', () => {
     beforeEach(() => setup(true));
 
     it('should correctly initialise', async () => {
@@ -142,7 +143,7 @@ fdescribe('ItemEnchantmentTemplate integration tests', () => {
     });
   });
 
-  fdescribe('Editing existing', () => {
+  describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', async () => {

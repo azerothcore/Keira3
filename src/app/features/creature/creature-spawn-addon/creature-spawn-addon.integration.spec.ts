@@ -14,7 +14,7 @@ import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 class CreatureSpawnAddonPage extends MultiRowEditorPageObject<CreatureSpawnAddonComponent> {}
 
-fdescribe('CreatureSpawnAddon integration tests', () => {
+describe('CreatureSpawnAddon integration tests', () => {
   let component: CreatureSpawnAddonComponent;
   let fixture: ComponentFixture<CreatureSpawnAddonComponent>;
   let queryService: MysqlQueryService;
@@ -45,7 +45,7 @@ fdescribe('CreatureSpawnAddon integration tests', () => {
       .compileComponents();
   }));
 
-  function setup(creatingNew: boolean) {
+  async function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(CreatureHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
@@ -62,9 +62,10 @@ fdescribe('CreatureSpawnAddon integration tests', () => {
     page = new CreatureSpawnAddonPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    await page.whenStable();
   }
 
-  fdescribe('Creating new', () => {
+  describe('Creating new', () => {
     beforeEach(() => setup(true));
 
     it('should correctly initialise', async () => {
@@ -93,7 +94,7 @@ fdescribe('CreatureSpawnAddon integration tests', () => {
     // });
   });
 
-  fdescribe('Editing existing', () => {
+  describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', async () => {

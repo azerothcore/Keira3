@@ -33,7 +33,7 @@ class SaiEditorPage extends MultiRowEditorPageObject<SaiEditorComponent> {
   get generateCommentsBtn() { return this.query<HTMLButtonElement>('#generate-comments-btn'); }
 }
 
-fdescribe('SaiEditorComponent integration tests', () => {
+describe('SaiEditorComponent integration tests', () => {
   let component: SaiEditorComponent;
   let fixture: ComponentFixture<SaiEditorComponent>;
   let handlerService: SaiHandlerService;
@@ -63,7 +63,7 @@ fdescribe('SaiEditorComponent integration tests', () => {
       .compileComponents();
   }));
 
-  function setup(creatingNew: boolean, hasTemplateQuery = false, st = sourceType) {
+  async function setup(creatingNew: boolean, hasTemplateQuery = false, st = sourceType) {
     const selected = { source_type: st, entryorguid: id };
     handlerService = TestBed.inject(SaiHandlerService);
     handlerService['_selected'] = JSON.stringify(selected);
@@ -85,6 +85,7 @@ fdescribe('SaiEditorComponent integration tests', () => {
     page = new SaiEditorPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    await page.whenStable();
   }
 
   it('should correctly work when TimedActionlists', async () => {
@@ -101,7 +102,7 @@ fdescribe('SaiEditorComponent integration tests', () => {
     expect(page.eventType.value).toBe('0: 0');
   });
 
-  fdescribe('Creating new', () => {
+  describe('Creating new', () => {
     beforeEach(() => setup(true));
 
     it('should correctly initialise', async () => {
@@ -285,7 +286,7 @@ fdescribe('SaiEditorComponent integration tests', () => {
     });
   });
 
-  fdescribe('Editing existing', () => {
+  describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', async () => {
@@ -480,7 +481,7 @@ fdescribe('SaiEditorComponent integration tests', () => {
 
   });
 
-  fdescribe('Template query', async () => {
+  describe('Template query', async () => {
     beforeEach(() => setup(false, true));
 
     it('should correctly initialise', async () => {
@@ -502,8 +503,8 @@ fdescribe('SaiEditorComponent integration tests', () => {
     });
   });
 
-  fdescribe('Dynamic param names', async () => {
-    beforeEach(() => {
+  describe('Dynamic param names', async () => {
+    beforeEach(async () => {
       setup(true);
       page.addNewRow();
     });

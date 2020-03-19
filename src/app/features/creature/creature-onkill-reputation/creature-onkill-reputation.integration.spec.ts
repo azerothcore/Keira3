@@ -13,7 +13,7 @@ import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 class CreatureOnkillReputationPage extends EditorPageObject<CreatureOnkillReputationComponent> {}
 
-fdescribe('CreatureOnkillReputation integration tests', () => {
+describe('CreatureOnkillReputation integration tests', () => {
   let component: CreatureOnkillReputationComponent;
   let fixture: ComponentFixture<CreatureOnkillReputationComponent>;
   let queryService: MysqlQueryService;
@@ -45,7 +45,7 @@ fdescribe('CreatureOnkillReputation integration tests', () => {
       .compileComponents();
   }));
 
-  function setup(creatingNew: boolean) {
+  async function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(CreatureHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
@@ -62,9 +62,10 @@ fdescribe('CreatureOnkillReputation integration tests', () => {
     page = new CreatureOnkillReputationPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    await page.whenStable();
   }
 
-  fdescribe('Creating new', () => {
+  describe('Creating new', () => {
     beforeEach(() => setup(true));
 
     it('should correctly initialise', async () => {
@@ -90,7 +91,7 @@ fdescribe('CreatureOnkillReputation integration tests', () => {
     });
   });
 
-  fdescribe('Editing existing', () => {
+  describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', async () => {

@@ -13,7 +13,7 @@ import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 class NpcTrainerPage extends MultiRowEditorPageObject<NpcTrainerComponent> {}
 
-fdescribe('NpcTrainer integration tests', () => {
+describe('NpcTrainer integration tests', () => {
   let component: NpcTrainerComponent;
   let fixture: ComponentFixture<NpcTrainerComponent>;
   let queryService: MysqlQueryService;
@@ -45,7 +45,7 @@ fdescribe('NpcTrainer integration tests', () => {
       .compileComponents();
   }));
 
-  function setup(creatingNew: boolean) {
+  async function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(CreatureHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
@@ -62,9 +62,10 @@ fdescribe('NpcTrainer integration tests', () => {
     page = new NpcTrainerPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    await page.whenStable();
   }
 
-  fdescribe('Creating new', () => {
+  describe('Creating new', () => {
     beforeEach(() => setup(true));
 
     it('should correctly initialise', async () => {
@@ -158,7 +159,7 @@ fdescribe('NpcTrainer integration tests', () => {
     });
   });
 
-  fdescribe('Editing existing', () => {
+  describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', async () => {

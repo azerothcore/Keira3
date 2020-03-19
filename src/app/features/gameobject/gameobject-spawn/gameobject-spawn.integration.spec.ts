@@ -13,7 +13,7 @@ import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
 class GameobjectSpawnPage extends MultiRowEditorPageObject<GameobjectSpawnComponent> {}
 
-fdescribe('GameobjectSpawn integration tests', () => {
+describe('GameobjectSpawn integration tests', () => {
   let component: GameobjectSpawnComponent;
   let fixture: ComponentFixture<GameobjectSpawnComponent>;
   let queryService: MysqlQueryService;
@@ -45,7 +45,7 @@ fdescribe('GameobjectSpawn integration tests', () => {
       .compileComponents();
   }));
 
-  function setup(creatingNew: boolean) {
+  async function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(GameobjectHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
@@ -62,9 +62,10 @@ fdescribe('GameobjectSpawn integration tests', () => {
     page = new GameobjectSpawnPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    await page.whenStable();
   }
 
-  fdescribe('Creating new', () => {
+  describe('Creating new', () => {
     beforeEach(() => setup(true));
 
     it('should correctly initialise', async () => {
@@ -196,7 +197,7 @@ fdescribe('GameobjectSpawn integration tests', () => {
     });
   });
 
-  fdescribe('Editing existing', () => {
+  describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', async () => {

@@ -16,7 +16,7 @@ class SelectItemComponentPage extends SelectPageObject<SelectItemComponent> {
   ID_FIELD = 'entry';
 }
 
-fdescribe('SelectItem integration tests', () => {
+describe('SelectItem integration tests', () => {
   let component: SelectItemComponent;
   let fixture: ComponentFixture<SelectItemComponent>;
   let selectService: SelectItemService;
@@ -40,7 +40,7 @@ fdescribe('SelectItem integration tests', () => {
       .compileComponents();
   }));
 
-  beforeEach(() => {
+  beforeEach(async () => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of(
@@ -54,6 +54,7 @@ fdescribe('SelectItem integration tests', () => {
     component = fixture.componentInstance;
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    await page.whenStable();
   });
 
   it('should correctly initialise', async () => {

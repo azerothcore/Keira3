@@ -17,7 +17,7 @@ class SelectGameobjectComponentPage extends SelectPageObject<SelectGameobjectCom
   ID_FIELD = 'entry';
 }
 
-fdescribe('SelectGameobject integration tests', () => {
+describe('SelectGameobject integration tests', () => {
   let component: SelectGameobjectComponent;
   let fixture: ComponentFixture<SelectGameobjectComponent>;
   let selectService: SelectGameobjectService;
@@ -42,7 +42,7 @@ fdescribe('SelectGameobject integration tests', () => {
       .compileComponents();
   }));
 
-  beforeEach(() => {
+  beforeEach(async () => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of(
@@ -56,6 +56,7 @@ fdescribe('SelectGameobject integration tests', () => {
     component = fixture.componentInstance;
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    await page.whenStable();
   });
 
   it('should correctly initialise', async () => {

@@ -16,7 +16,7 @@ import { SqliteService } from '@keira-shared/services/sqlite.service';
 
 class QuestTemplateAddonPage extends EditorPageObject<QuestTemplateAddonComponent> {}
 
-fdescribe('QuestTemplateAddon integration tests', () => {
+describe('QuestTemplateAddon integration tests', () => {
   let component: QuestTemplateAddonComponent;
   let fixture: ComponentFixture<QuestTemplateAddonComponent>;
   let queryService: MysqlQueryService;
@@ -65,7 +65,7 @@ fdescribe('QuestTemplateAddon integration tests', () => {
       .compileComponents();
   }));
 
-  function setup(creatingNew: boolean) {
+  async function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(QuestHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
@@ -82,9 +82,10 @@ fdescribe('QuestTemplateAddon integration tests', () => {
     page = new QuestTemplateAddonPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    await page.whenStable();
   }
 
-  fdescribe('Creating new', () => {
+  describe('Creating new', () => {
     beforeEach(() => setup(true));
 
     it('should correctly initialise', async () => {
@@ -111,7 +112,7 @@ fdescribe('QuestTemplateAddon integration tests', () => {
     });
   });
 
-  fdescribe('Editing existing', () => {
+  describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', async () => {

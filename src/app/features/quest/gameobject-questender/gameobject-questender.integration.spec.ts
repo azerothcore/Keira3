@@ -12,7 +12,7 @@ import { QuestHandlerService } from '../quest-handler.service';
 
 class GameobjectQuestenderPage extends MultiRowEditorPageObject<GameobjectQuestenderComponent> {}
 
-fdescribe('GameobjectQuestender integration tests', () => {
+describe('GameobjectQuestender integration tests', () => {
   let component: GameobjectQuestenderComponent;
   let fixture: ComponentFixture<GameobjectQuestenderComponent>;
   let queryService: MysqlQueryService;
@@ -43,7 +43,7 @@ fdescribe('GameobjectQuestender integration tests', () => {
       .compileComponents();
   }));
 
-  function setup(creatingNew: boolean) {
+  async function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(QuestHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
@@ -60,9 +60,10 @@ fdescribe('GameobjectQuestender integration tests', () => {
     page = new GameobjectQuestenderPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    await page.whenStable();
   }
 
-  fdescribe('Creating new', () => {
+  describe('Creating new', () => {
     beforeEach(() => setup(true));
 
 
@@ -127,7 +128,7 @@ fdescribe('GameobjectQuestender integration tests', () => {
     });
   });
 
-  fdescribe('Editing existing', () => {
+  describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', async () => {

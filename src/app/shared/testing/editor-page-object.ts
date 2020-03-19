@@ -118,11 +118,13 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
     this.queryPo.expectDiffQueryToBeShown();
   }
 
-  expectFullQueryToContain(expectedQuery: string) {
+  async expectFullQueryToContain(expectedQuery: string) {
+    await this.whenStable();
     expect(this.queryPo.fullQueryWrapper.innerText).toContain(expectedQuery);
   }
 
-  expectDiffQueryToContain(expectedQuery: string) {
+  async expectDiffQueryToContain(expectedQuery: string) {
+    await this.whenStable();
     expect(this.queryPo.diffQueryWrapper.innerText).toContain(expectedQuery);
   }
 
@@ -131,11 +133,13 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
     this.expectFullQueryToContain(expectedQuery);
   }
 
-  expectFullQueryToBeEmpty() {
+  async expectFullQueryToBeEmpty() {
+    await this.whenStable();
     expect(this.queryPo.fullQueryWrapper.innerText).toEqual('');
   }
 
-  expectDiffQueryToBeEmpty() {
+  async expectDiffQueryToBeEmpty() {
+    await this.whenStable();
     expect(this.queryPo.diffQueryWrapper.innerText).toEqual('');
   }
 }

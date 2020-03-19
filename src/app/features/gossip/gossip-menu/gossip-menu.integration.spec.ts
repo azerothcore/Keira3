@@ -11,7 +11,7 @@ import { GossipHandlerService } from '../gossip-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 class GossipMenuPage extends MultiRowEditorPageObject<GossipMenuComponent> {}
 
-fdescribe('GossipMenu integration tests', () => {
+describe('GossipMenu integration tests', () => {
   let component: GossipMenuComponent;
   let fixture: ComponentFixture<GossipMenuComponent>;
   let queryService: MysqlQueryService;
@@ -42,7 +42,7 @@ fdescribe('GossipMenu integration tests', () => {
       .compileComponents();
   }));
 
-  function setup(creatingNew: boolean) {
+  async function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(GossipHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
@@ -59,9 +59,10 @@ fdescribe('GossipMenu integration tests', () => {
     page = new GossipMenuPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    await page.whenStable();
   }
 
-  fdescribe('Creating new', () => {
+  describe('Creating new', () => {
     beforeEach(() => setup(true));
 
     it('should correctly initialise', async () => {
@@ -125,7 +126,7 @@ fdescribe('GossipMenu integration tests', () => {
     });
   });
 
-  fdescribe('Editing existing', () => {
+  describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', async () => {

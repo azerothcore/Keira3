@@ -16,7 +16,7 @@ class SelectGossipComponentPage extends SelectPageObject<SelectGossipComponent> 
   ID_FIELD = 'MenuID';
 }
 
-fdescribe('SelectGossip integration tests', () => {
+describe('SelectGossip integration tests', () => {
   let component: SelectGossipComponent;
   let fixture: ComponentFixture<SelectGossipComponent>;
   let selectService: SelectGossipService;
@@ -40,7 +40,7 @@ fdescribe('SelectGossip integration tests', () => {
       .compileComponents();
   }));
 
-  beforeEach(() => {
+  beforeEach(async () => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of(
@@ -54,6 +54,7 @@ fdescribe('SelectGossip integration tests', () => {
     component = fixture.componentInstance;
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    await page.whenStable();
   });
 
   it('should correctly initialise', async () => {

@@ -13,7 +13,7 @@ import { ConditionsHandlerService } from '../conditions-handler.service';
 
 class ConditionsPage extends EditorPageObject<ConditionsComponent> {}
 
-fdescribe('Conditions integration tests', () => {
+describe('Conditions integration tests', () => {
   let component: ConditionsComponent;
   let fixture: ComponentFixture<ConditionsComponent>;
   let queryService: MysqlQueryService;
@@ -61,7 +61,7 @@ fdescribe('Conditions integration tests', () => {
       .compileComponents();
   }));
 
-  function setup(creatingNew: boolean) {
+  async function setup(creatingNew: boolean) {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     handlerService = TestBed.inject(ConditionsHandlerService);
     handlerService['_selected'] = JSON.stringify(id);
@@ -79,9 +79,10 @@ fdescribe('Conditions integration tests', () => {
     page = new ConditionsPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    await page.whenStable();
   }
 
-  fdescribe('Creating new', () => {
+  describe('Creating new', () => {
     beforeEach(() => setup(true));
 
     it('should correctly initialise', async () => {
@@ -111,7 +112,7 @@ fdescribe('Conditions integration tests', () => {
   });
 
 
-  fdescribe('Editing existing', () => {
+  describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', async () => {

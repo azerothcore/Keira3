@@ -14,7 +14,7 @@ import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 class CreatureLootTemplatePage extends MultiRowEditorPageObject<CreatureLootTemplateComponent> {}
 
-fdescribe('CreatureLootTemplate integration tests', () => {
+describe('CreatureLootTemplate integration tests', () => {
   let component: CreatureLootTemplateComponent;
   let fixture: ComponentFixture<CreatureLootTemplateComponent>;
   let queryService: MysqlQueryService;
@@ -46,7 +46,7 @@ fdescribe('CreatureLootTemplate integration tests', () => {
       .compileComponents();
   }));
 
-  function setup(creatingNew: boolean, lootId = id) {
+  async function setup(creatingNew: boolean, lootId = id) {
     spyOn(TestBed.inject(CreatureLootTemplateService), 'getLootId').and.returnValue(of(
       [{ lootId }]
     ));
@@ -68,9 +68,10 @@ fdescribe('CreatureLootTemplate integration tests', () => {
     page = new CreatureLootTemplatePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    await page.whenStable();
   }
 
-  fdescribe('Creating new', () => {
+  describe('Creating new', () => {
     beforeEach(() => setup(true));
 
     it('should correctly initialise', async () => {
@@ -177,7 +178,7 @@ fdescribe('CreatureLootTemplate integration tests', () => {
     });
   });
 
-  fdescribe('Editing existing', () => {
+  describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', async () => {

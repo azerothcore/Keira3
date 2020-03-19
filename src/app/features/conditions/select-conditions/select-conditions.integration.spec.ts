@@ -25,7 +25,7 @@ class SelectConditionsComponentPage extends PageObject<SelectConditionsComponent
   get topBar() { return this.query<HTMLElement>('keira-top-bar'); }
 }
 
-fdescribe('SelectConditions integration tests', () => {
+describe('SelectConditions integration tests', () => {
   let component: SelectConditionsComponent;
   let fixture: ComponentFixture<SelectConditionsComponent>;
   let selectService: ConditionsSearchService;
@@ -47,7 +47,7 @@ fdescribe('SelectConditions integration tests', () => {
       .compileComponents();
   }));
 
-  beforeEach(() => {
+  beforeEach(async () => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of(
@@ -61,6 +61,7 @@ fdescribe('SelectConditions integration tests', () => {
     component = fixture.componentInstance;
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    await page.whenStable();
   });
 
   it('should correctly initialise', async  () => {

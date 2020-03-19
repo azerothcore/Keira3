@@ -13,7 +13,7 @@ import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
 class GameobjectTemplateAddonPage extends EditorPageObject<GameobjectTemplateAddonComponent> {}
 
-fdescribe('GameobjectTemplateAddon integration tests', () => {
+describe('GameobjectTemplateAddon integration tests', () => {
   let component: GameobjectTemplateAddonComponent;
   let fixture: ComponentFixture<GameobjectTemplateAddonComponent>;
   let queryService: MysqlQueryService;
@@ -43,7 +43,7 @@ fdescribe('GameobjectTemplateAddon integration tests', () => {
       .compileComponents();
   }));
 
-  function setup(creatingNew: boolean) {
+  async function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(GameobjectHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
@@ -60,9 +60,10 @@ fdescribe('GameobjectTemplateAddon integration tests', () => {
     page = new GameobjectTemplateAddonPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    await page.whenStable();
   }
 
-  fdescribe('Creating new', () => {
+  describe('Creating new', () => {
     beforeEach(() => setup(true));
 
     it('should correctly initialise', async () => {
@@ -89,7 +90,7 @@ fdescribe('GameobjectTemplateAddon integration tests', () => {
     });
   });
 
-  fdescribe('Editing existing', () => {
+  describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', async () => {

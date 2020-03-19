@@ -13,7 +13,7 @@ import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
 class GameobjectQuestitemPage extends MultiRowEditorPageObject<GameobjectQuestitemComponent> {}
 
-fdescribe('GameobjectQuestitem integration tests', () => {
+describe('GameobjectQuestitem integration tests', () => {
   let component: GameobjectQuestitemComponent;
   let fixture: ComponentFixture<GameobjectQuestitemComponent>;
   let queryService: MysqlQueryService;
@@ -45,7 +45,7 @@ fdescribe('GameobjectQuestitem integration tests', () => {
       .compileComponents();
   }));
 
-  function setup(creatingNew: boolean) {
+  async function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(GameobjectHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
@@ -63,9 +63,10 @@ fdescribe('GameobjectQuestitem integration tests', () => {
     page = new GameobjectQuestitemPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    await page.whenStable();
   }
 
-  fdescribe('Creating new', () => {
+  describe('Creating new', () => {
     beforeEach(() => setup(true));
 
     it('should correctly initialise', async () => {
@@ -142,7 +143,7 @@ fdescribe('GameobjectQuestitem integration tests', () => {
     });
   });
 
-  fdescribe('Editing existing', () => {
+  describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', async () => {

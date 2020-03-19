@@ -14,7 +14,7 @@ import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
 class GameobjectLootTemplatePage extends MultiRowEditorPageObject<GameobjectLootTemplateComponent> {}
 
-fdescribe('GameobjectLootTemplate integration tests', () => {
+describe('GameobjectLootTemplate integration tests', () => {
   let component: GameobjectLootTemplateComponent;
   let fixture: ComponentFixture<GameobjectLootTemplateComponent>;
   let queryService: MysqlQueryService;
@@ -47,7 +47,7 @@ fdescribe('GameobjectLootTemplate integration tests', () => {
       .compileComponents();
   }));
 
-  function setup(creatingNew: boolean, lootId = id, type = _type)  {
+  async function setup(creatingNew: boolean, lootId = id, type = _type)  {
     spyOn(TestBed.inject(GameobjectLootTemplateService), 'getLootId').and.returnValue(of(
       [{ lootId }]
     ));
@@ -73,9 +73,10 @@ fdescribe('GameobjectLootTemplate integration tests', () => {
     page = new GameobjectLootTemplatePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    await page.whenStable();
   }
 
-  fdescribe('Creating new', () => {
+  describe('Creating new', () => {
     beforeEach(() => setup(true));
 
     it('should correctly initialise', async () => {
@@ -185,7 +186,7 @@ fdescribe('GameobjectLootTemplate integration tests', () => {
     });
   });
 
-  fdescribe('Editing existing', () => {
+  describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', async () => {

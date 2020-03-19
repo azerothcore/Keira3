@@ -18,7 +18,7 @@ class SelectCreatureComponentPage extends SelectPageObject<SelectCreatureCompone
   get searchSubnameInput() { return this.query<HTMLInputElement>('#subname'); }
 }
 
-fdescribe('SelectCreature integration tests', () => {
+describe('SelectCreature integration tests', () => {
   let component: SelectCreatureComponent;
   let fixture: ComponentFixture<SelectCreatureComponent>;
   let selectService: SelectCreatureService;
@@ -43,7 +43,7 @@ fdescribe('SelectCreature integration tests', () => {
       .compileComponents();
   }));
 
-  beforeEach(() => {
+  beforeEach(async () => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of(
@@ -57,6 +57,7 @@ fdescribe('SelectCreature integration tests', () => {
     component = fixture.componentInstance;
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    await page.whenStable();
   });
 
   it('should correctly initialise', async () => {
