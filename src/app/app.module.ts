@@ -15,6 +15,7 @@ import { ItemModule } from './features/item/item.module';
 import { GossipModule } from './features/gossip/gossip.module';
 import { ConditionsModule } from './features/conditions/conditions.module';
 import { SmartScriptsModule } from './features/smart-scripts/smart-scripts.module';
+import { SqlEditorModule } from './features/sql-editor/sql-editor.module';
 
 @NgModule({
   declarations: [ AppComponent ],
@@ -26,6 +27,7 @@ import { SmartScriptsModule } from './features/smart-scripts/smart-scripts.modul
     DashboardModule,
     MainWindowModule,
     /* Editors */
+    SqlEditorModule,
     CreatureModule,
     QuestModule,
     GameobjectModule,
