@@ -62,7 +62,10 @@ export class ItemUtilsService {
     .replace('%s', `<!--lvl-->${level}`);
   }
 
-  private parseRating(type: number, value: number, requiredLevel: number): string {
+  private parseRating(type: number, value: number): string {
+
+    const requiredLevel = this.editorService.form.controls.RequiredLevel.value;
+
     // clamp level range
     const level = requiredLevel > 1 ? requiredLevel : MAX_LEVEL;
 
@@ -386,7 +389,7 @@ export class ItemUtilsService {
           stats += `<br><span><!--stat${type}-->${(qty > 0 ? '+' : '-') + Math.abs(qty)} ${ITEM_CONSTANTS.statType[type]}</span>`;
           break;
         default: // rating with % for reqLevel
-          greenText.push(this.parseRating(type, qty, requiredLevel));
+          greenText.push(this.parseRating(type, qty));
       }
     }
 

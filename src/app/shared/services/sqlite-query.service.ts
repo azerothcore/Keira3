@@ -69,6 +69,10 @@ export class SqliteQueryService extends QueryService {
     return this.spellNameCache[spellId].toPromise();
   }
 
+  getSpellDescriptionById(spellId: string | number): Promise<string> {
+    return this.queryValue<string>(`SELECT Description AS v FROM spells WHERE id = ${spellId} LIMIT 1`).toPromise();
+  }
+
   getFactionNameById(id: string | number): Promise<string> {
     return this.queryValue<string>(`SELECT m_name_lang_1 AS v FROM factions WHERE m_ID = ${id}`).toPromise();
   }

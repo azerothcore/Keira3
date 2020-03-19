@@ -29,6 +29,7 @@ import { ITEM_CONSTANTS } from './item_constants';
 import { ItemTemplateService } from './item-template.service';
 import { Observable } from 'rxjs';
 import { ItemUtilsService } from './item-utils.service';
+import { MAX_LEVEL } from './item-utils';
 
 @Component({
   selector: 'keira-item-template',
@@ -189,27 +190,14 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
       }
 
       if (itemSpellsAndTrigger) {
-        // OLD CODE
-        // let itemSpells = new SpellList(array(['s.id', array_keys(itemSpellsAndTrigger)]));
-        // for (_ of itemSpells->iterate()) {
-        //   if (parsed = itemSpells->parseText('description', requiredLevel > 1 ? requiredLevel : MAX_LEVEL, false, false)[0]) {
-
-        //     green.push(ITEM_CONSTANTS.trigger[itemSpellsAndTrigger[itemSpells->id][0]]
-        //      + parsed + itemSpellsAndTrigger[itemSpells->id][1]);
-
-        //   }
-        // }
-
         // TODO
-        // let itemSpells = new SpellList(array(['s.id', array_keys(itemSpellsAndTrigger)]));
-        // for (_ of itemSpells->iterate()) {
-        //   if (parsed = itemSpells->parseText('description', requiredLevel > 1 ? requiredLevel : MAX_LEVEL, false, false)[0]) {
+        const spellIDs = Object.keys(itemSpellsAndTrigger);
+        for (const spellID of spellIDs) {
+          const spellTrigger = itemSpellsAndTrigger[spellID];
+          const parsed = this.sqliteQueryService.getSpellDescriptionById(spellID);
 
-        //     green.push(ITEM_CONSTANTS.trigger[itemSpellsAndTrigger[itemSpells->id][0]]
-        //     + parsed + itemSpellsAndTrigger[itemSpells->id][1]);
-
-        //   }
-        // }
+          green.push(ITEM_CONSTANTS.trigger[spellTrigger[0]] + parsed + spellTrigger[1]);
+        }
 
       }
     }
