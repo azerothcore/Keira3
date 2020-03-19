@@ -16,7 +16,7 @@ import { highlightOptions } from '@keira-config/highlight.config';
     ReactiveFormsModule,
     TopBarModule,
     QueryOutputModule,
-    HighlightModule.forRoot(highlightOptions),
+    HighlightModule,
     NgxDatatableModule,
   ],
   exports: [SaiSearchExistingComponent],

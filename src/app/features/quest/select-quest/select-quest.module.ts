@@ -21,7 +21,7 @@ import { SelectQuestService } from './select-quest.service';
     TopBarModule,
     QueryOutputModule,
     CreateModule,
-    HighlightModule.forRoot(highlightOptions),
+    HighlightModule,
     NgxDatatableModule,
   ],
   exports: [

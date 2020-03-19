@@ -18,7 +18,7 @@ import { GameobjectSelectorModule } from '@keira-shared/modules/selectors/gameob
     ReactiveFormsModule,
     TopBarModule,
     QueryOutputModule,
-    HighlightModule.forRoot(highlightOptions),
+    HighlightModule,
     NgxDatatableModule,
     CreatureSelectorModule,
     GameobjectSelectorModule,

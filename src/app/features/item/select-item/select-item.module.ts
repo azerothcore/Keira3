@@ -22,7 +22,7 @@ import { IconModule } from '@keira-shared/modules/icon/icon.module';
     TopBarModule,
     QueryOutputModule,
     CreateModule,
-    HighlightModule.forRoot(highlightOptions),
+    HighlightModule,
     NgxDatatableModule,
     IconModule,
   ],

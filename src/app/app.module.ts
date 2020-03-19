@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import '../polyfills';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 
 import { AppRoutingModule } from './config/app-routing.module';
 import { AppComponent } from './main/app.component';
@@ -16,6 +17,7 @@ import { GossipModule } from './features/gossip/gossip.module';
 import { ConditionsModule } from './features/conditions/conditions.module';
 import { SmartScriptsModule } from './features/smart-scripts/smart-scripts.module';
 import { SqlEditorModule } from './features/sql-editor/sql-editor.module';
+import { highlightOptions } from '@keira-config/highlight.config';
 
 @NgModule({
   declarations: [ AppComponent ],
@@ -36,6 +38,12 @@ import { SqlEditorModule } from './features/sql-editor/sql-editor.module';
     ConditionsModule,
     SmartScriptsModule,
   ],
-  bootstrap: [ AppComponent ]
+  bootstrap: [ AppComponent ],
+  providers: [
+    {
+      provide: HIGHLIGHT_OPTIONS,
+      useValue: highlightOptions,
+    }
+  ],
 })
 export class AppModule { }

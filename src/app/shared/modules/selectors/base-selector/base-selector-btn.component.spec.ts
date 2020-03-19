@@ -25,7 +25,7 @@ import { closeModalsAfterEach } from '@keira-testing/test-helpers';
     FormsModule,
     ReactiveFormsModule,
     NgxDatatableModule,
-    HighlightModule.forRoot(highlightOptions),
+    HighlightModule,
   ],
   providers: [
     { provide : MysqlService, useValue: instance(MockedMysqlService) },

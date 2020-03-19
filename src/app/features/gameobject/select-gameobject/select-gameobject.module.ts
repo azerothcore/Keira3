@@ -21,7 +21,7 @@ import { SelectGameobjectService } from './select-gameobject.service';
     TopBarModule,
     QueryOutputModule,
     CreateModule,
-    HighlightModule.forRoot(highlightOptions),
+    HighlightModule,
     NgxDatatableModule,
   ],
   exports: [

@@ -20,7 +20,7 @@ import { highlightOptions } from '@keira-config/highlight.config';
     TopBarModule,
     QueryOutputModule,
     CreateModule,
-    HighlightModule.forRoot(highlightOptions),
+    HighlightModule,
     NgxDatatableModule,
   ],
   exports: [

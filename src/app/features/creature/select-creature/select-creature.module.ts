@@ -21,7 +21,7 @@ import { SelectCreatureService } from './select-creature.service';
     TopBarModule,
     QueryOutputModule,
     CreateModule,
-    HighlightModule.forRoot(highlightOptions),
+    HighlightModule,
     NgxDatatableModule,
   ],
   exports: [

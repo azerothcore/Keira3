@@ -22,7 +22,7 @@ import { ModalModule } from 'ngx-bootstrap';
     ReactiveFormsModule,
     NgxDatatableModule,
     ModalModule.forRoot(),
-    HighlightModule.forRoot(highlightOptions),
+    HighlightModule,
   ],
   exports: [
     SpellSelectorBtnComponent,

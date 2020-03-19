@@ -23,7 +23,7 @@ import { IconModule } from '@keira-shared/modules/icon/icon.module';
     ReactiveFormsModule,
     NgxDatatableModule,
     ModalModule.forRoot(),
-    HighlightModule.forRoot(highlightOptions),
+    HighlightModule,
     IconModule,
   ],
   exports: [

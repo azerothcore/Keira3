@@ -21,7 +21,7 @@ import { SelectGossipService } from './select-gossip.service';
     TopBarModule,
     QueryOutputModule,
     CreateModule,
-    HighlightModule.forRoot(highlightOptions),
+    HighlightModule,
     NgxDatatableModule,
   ],
   exports: [

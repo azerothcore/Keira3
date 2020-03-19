@@ -59,7 +59,7 @@ describe('QueryOutputComponent', () => {
       imports: [
         BrowserModule,
         FormsModule,
-        HighlightModule.forRoot(highlightOptions),
+        HighlightModule,
       ],
     })
     .compileComponents();
