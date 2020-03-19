@@ -17,7 +17,7 @@ class SelectGameobjectComponentPage extends SelectPageObject<SelectGameobjectCom
   ID_FIELD = 'entry';
 }
 
-describe('SelectGameobject integration tests', () => {
+fdescribe('SelectGameobject integration tests', () => {
   let component: SelectGameobjectComponent;
   let fixture: ComponentFixture<SelectGameobjectComponent>;
   let selectService: SelectGameobjectService;
@@ -59,6 +59,7 @@ describe('SelectGameobject integration tests', () => {
   });
 
   it('should correctly initialise', async () => {
+      await page.whenStable();
     await fixture.whenStable();
     expect(page.createInput.value).toEqual(`${component.customStartingId}`);
     page.expectNewEntityFree();
@@ -71,6 +72,7 @@ describe('SelectGameobject integration tests', () => {
   });
 
   it('should correctly behave when inserting and selecting free id', async () => {
+      await page.whenStable();
     await fixture.whenStable();
     querySpy.calls.reset();
     querySpy.and.returnValue(of([]));
@@ -91,6 +93,7 @@ describe('SelectGameobject integration tests', () => {
   });
 
   it('should correctly behave when inserting an existing entity', async () => {
+      await page.whenStable();
     await fixture.whenStable();
     querySpy.calls.reset();
     querySpy.and.returnValue(of(
@@ -124,7 +127,8 @@ describe('SelectGameobject integration tests', () => {
         'SELECT * FROM `gameobject_template` WHERE (`entry` LIKE \'%1200%\')'
     },
   ]) {
-    it(`searching an existing entity should correctly work [${testId}]`, () => {
+    it(`searching an existing entity should correctly work [${testId}]`, async () => {
+      await page.whenStable();
       querySpy.calls.reset();
       if (id) {
         page.setInputValue(page.searchIdInput, id);
@@ -143,7 +147,8 @@ describe('SelectGameobject integration tests', () => {
     });
   }
 
-  it('searching and selecting an existing entity from the datatable should correctly work', () => {
+  it('searching and selecting an existing entity from the datatable should correctly work', async () => {
+      await page.whenStable();
     const results: Partial<GameobjectTemplate>[] = [
       { id: 1, name: 'An awesome Gameobject 1', GameobjectType: 0, GameobjectDisplayId: 1   },
       { id: 2, name: 'An awesome Gameobject 2', GameobjectType: 0, GameobjectDisplayId: 2   },

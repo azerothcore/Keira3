@@ -13,7 +13,7 @@ import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 class CreatureEquipTemplatePage extends EditorPageObject<CreatureEquipTemplateComponent> {}
 
-describe('CreatureEquipTemplate integration tests', () => {
+fdescribe('CreatureEquipTemplate integration tests', () => {
   let component: CreatureEquipTemplateComponent;
   let fixture: ComponentFixture<CreatureEquipTemplateComponent>;
   let queryService: MysqlQueryService;
@@ -63,16 +63,16 @@ describe('CreatureEquipTemplate integration tests', () => {
     fixture.detectChanges();
   }
 
-  describe('Creating new', () => {
+  fdescribe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing a property and executing the query should correctly work', () => {
+    it('changing a property and executing the query should correctly work', async () => {
       const expectedQuery = 'DELETE FROM `creature_equip_template` WHERE (`CreatureID` = 1234);\n' +
         'INSERT INTO `creature_equip_template` (`CreatureID`, `ID`, `ItemID1`, `ItemID2`, `ItemID3`, `VerifiedBuild`) VALUES\n' +
         '(1234, 1, 0, 2, 0, 0);';
@@ -87,29 +87,31 @@ describe('CreatureEquipTemplate integration tests', () => {
     });
   });
 
-  describe('Editing existing', () => {
+  fdescribe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing all properties and executing the query should correctly work', () => {
+    it('changing all properties and executing the query should correctly work', async () => {
       const expectedQuery = 'UPDATE `creature_equip_template` SET `ItemID2` = 1, `ItemID3` = 2 WHERE (`CreatureID` = 1234);';
       querySpy.calls.reset();
 
       page.changeAllFields(originalEntity, ['ID', 'VerifiedBuild']);
       page.clickExecuteQuery();
 
+      await page.whenStable();
       page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
 
-    it('changing values should correctly update the queries', () => {
+    it('changing values should correctly update the queries', async () => {
       page.setInputValueById('ItemID1', '1');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `creature_equip_template` SET `ItemID1` = 1 WHERE (`CreatureID` = 1234);'
       );
@@ -120,6 +122,7 @@ describe('CreatureEquipTemplate integration tests', () => {
       );
 
       page.setInputValueById('ItemID3', '3');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `creature_equip_template` SET `ItemID1` = 1, `ItemID3` = 3 WHERE (`CreatureID` = 1234);'
       );
@@ -131,6 +134,7 @@ describe('CreatureEquipTemplate integration tests', () => {
     });
 
     it('changing a value via ItemSelector should correctly work', async () => {
+      await page.whenStable();
 
       //  note: previously disabled because of:
       //  https://stackoverflow.com/questions/57336982/how-to-make-angular-tests-wait-for-previous-async-operation-to-complete-before-e
@@ -149,6 +153,7 @@ describe('CreatureEquipTemplate integration tests', () => {
       page.clickRowOfDatatable(0);
       page.clickModalSelect();
 
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `creature_equip_template` SET `ItemID1` = 1200 WHERE (`CreatureID` = 1234);'
       );

@@ -16,7 +16,7 @@ class SelectQuestComponentPage extends SelectPageObject<SelectQuestComponent> {
   ID_FIELD = 'ID';
 }
 
-describe('SelectQuest integration tests', () => {
+fdescribe('SelectQuest integration tests', () => {
   let component: SelectQuestComponent;
   let fixture: ComponentFixture<SelectQuestComponent>;
   let selectService: SelectQuestService;
@@ -57,6 +57,7 @@ describe('SelectQuest integration tests', () => {
   });
 
   it('should correctly initialise', async () => {
+      await page.whenStable();
     await fixture.whenStable();
       expect(page.createInput.value).toEqual(`${component.customStartingId}`);
       page.expectNewEntityFree();
@@ -69,6 +70,7 @@ describe('SelectQuest integration tests', () => {
   });
 
   it('should correctly behave when inserting and selecting free id', async () => {
+      await page.whenStable();
     await fixture.whenStable();
       querySpy.calls.reset();
       querySpy.and.returnValue(of(
@@ -91,6 +93,7 @@ describe('SelectQuest integration tests', () => {
   });
 
   it('should correctly behave when inserting an existing entity', async () => {
+      await page.whenStable();
     await fixture.whenStable();
       querySpy.calls.reset();
       querySpy.and.returnValue(of(
@@ -120,7 +123,7 @@ describe('SelectQuest integration tests', () => {
         'SELECT * FROM `quest_template` WHERE (`ID` LIKE \'%1200%\')'
     },
   ]) {
-    it(`searching an existing entity should correctly work [${testId}]`, () => {
+    it(`searching an existing entity should correctly work [${testId}]`, async () => {
       querySpy.calls.reset();
       if (id) {
         page.setInputValue(page.searchIdInput, id);
@@ -139,7 +142,7 @@ describe('SelectQuest integration tests', () => {
     });
   }
 
-  it('searching and selecting an existing entity from the datatable should correctly work', () => {
+  it('searching and selecting an existing entity from the datatable should correctly work', async () => {
     const results: Partial<QuestTemplate>[] = [
       { id: 1, LogTitle: 'An awesome Quest 1', QuestType: 0, QuestLevel: 1, MinLevel: 10, QuestDescription: ''   },
       { id: 2, LogTitle: 'An awesome Quest 2', QuestType: 0, QuestLevel: 2, MinLevel: 20, QuestDescription: ''   },

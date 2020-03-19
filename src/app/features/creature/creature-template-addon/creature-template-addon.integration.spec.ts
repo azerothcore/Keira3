@@ -13,7 +13,7 @@ import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 class CreatureTemplateAddonPage extends EditorPageObject<CreatureTemplateAddonComponent> {}
 
-describe('CreatureTemplateAddon integration tests', () => {
+fdescribe('CreatureTemplateAddon integration tests', () => {
   let component: CreatureTemplateAddonComponent;
   let fixture: ComponentFixture<CreatureTemplateAddonComponent>;
   let queryService: MysqlQueryService;
@@ -68,16 +68,16 @@ describe('CreatureTemplateAddon integration tests', () => {
     fixture.detectChanges();
   }
 
-  describe('Creating new', () => {
+  fdescribe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing a property and executing the query should correctly work', () => {
+    it('changing a property and executing the query should correctly work', async () => {
       const expectedQuery = 'DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
         'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +
         '(1234, 3, 0, 0, 0, 0, 0, \'\');';
@@ -92,10 +92,10 @@ describe('CreatureTemplateAddon integration tests', () => {
     });
   });
 
-  describe('Editing existing', () => {
+  fdescribe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain('DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
@@ -103,7 +103,7 @@ describe('CreatureTemplateAddon integration tests', () => {
         '(1234, 123, 0, 1, 2, 3, 0, NULL);');
     });
 
-    it('changing all properties and executing the query should correctly work', () => {
+    it('changing all properties and executing the query should correctly work', async () => {
       const expectedQuery = 'UPDATE `creature_template_addon` SET ' +
         '`path_id` = 0, `mount` = 1, `bytes1` = 2, `bytes2` = 3, `emote` = 4, `isLarge` = 5, `auras` = \'6\' WHERE (`entry` = 1234);';
       querySpy.calls.reset();
@@ -111,13 +111,15 @@ describe('CreatureTemplateAddon integration tests', () => {
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.clickExecuteQuery();
 
+      await page.whenStable();
       page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
 
-    it('changing values should correctly update the queries', () => {
+    it('changing values should correctly update the queries', async () => {
       page.setInputValueById('path_id', '3');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `creature_template_addon` SET `path_id` = 3 WHERE (`entry` = 1234);'
       );
@@ -128,6 +130,7 @@ describe('CreatureTemplateAddon integration tests', () => {
       );
 
       page.setInputValueById('bytes1', '2');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `creature_template_addon` SET `path_id` = 3, `bytes1` = 2 WHERE (`entry` = 1234);'
       );
@@ -139,6 +142,7 @@ describe('CreatureTemplateAddon integration tests', () => {
     });
 
     it('changing a value via SingleValueSelector should correctly work', async () => {
+      await page.whenStable();
       const field = 'bytes1';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
@@ -149,6 +153,7 @@ describe('CreatureTemplateAddon integration tests', () => {
       await fixture.whenRenderingDone();
 
       expect(page.getInputById(field).value).toEqual('8');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `creature_template_addon` SET `bytes1` = 8 WHERE (`entry` = 1234);'
       );

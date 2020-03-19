@@ -13,7 +13,7 @@ import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 class CreatureOnkillReputationPage extends EditorPageObject<CreatureOnkillReputationComponent> {}
 
-describe('CreatureOnkillReputation integration tests', () => {
+fdescribe('CreatureOnkillReputation integration tests', () => {
   let component: CreatureOnkillReputationComponent;
   let fixture: ComponentFixture<CreatureOnkillReputationComponent>;
   let queryService: MysqlQueryService;
@@ -64,16 +64,16 @@ describe('CreatureOnkillReputation integration tests', () => {
     fixture.detectChanges();
   }
 
-  describe('Creating new', () => {
+  fdescribe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing a property and executing the query should correctly work', () => {
+    it('changing a property and executing the query should correctly work', async () => {
       const expectedQuery = 'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
       'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +
       ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, '  +
@@ -90,16 +90,16 @@ describe('CreatureOnkillReputation integration tests', () => {
     });
   });
 
-  describe('Editing existing', () => {
+  fdescribe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing all properties and executing the query should correctly work', () => {
+    it('changing all properties and executing the query should correctly work', async () => {
       const expectedQuery = 'UPDATE `creature_onkill_reputation` SET ' +
         '`RewOnKillRepFaction2` = 1, `MaxStanding1` = 2, `IsTeamAward1` = 3, `RewOnKillRepValue1` = 4, ' +
         '`MaxStanding2` = 5, `IsTeamAward2` = 6, `RewOnKillRepValue2` = 7, `TeamDependent` = 8 WHERE (`creature_id` = 1234);';
@@ -108,13 +108,15 @@ describe('CreatureOnkillReputation integration tests', () => {
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.clickExecuteQuery();
 
+      await page.whenStable();
       page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
 
-    it('changing values should correctly update the queries', () => {
+    it('changing values should correctly update the queries', async () => {
       page.setInputValueById('RewOnKillRepFaction2', '1');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `creature_onkill_reputation` SET `RewOnKillRepFaction2` = 1 WHERE (`creature_id` = 1234);'
       );
@@ -127,6 +129,7 @@ describe('CreatureOnkillReputation integration tests', () => {
       );
 
       page.setInputValueById('IsTeamAward1', '3');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `creature_onkill_reputation` SET `RewOnKillRepFaction2` = 1, `IsTeamAward1` = 3 WHERE (`creature_id` = 1234);'
       );
@@ -140,6 +143,7 @@ describe('CreatureOnkillReputation integration tests', () => {
     });
 
     it('changing a value via SingleValueSelector should correctly work', async () => {
+      await page.whenStable();
       const field = 'MaxStanding1';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
@@ -150,6 +154,7 @@ describe('CreatureOnkillReputation integration tests', () => {
       await fixture.whenRenderingDone();
 
       expect(page.getInputById(field).value).toEqual('7');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `creature_onkill_reputation` SET `MaxStanding1` = 7 WHERE (`creature_id` = 1234);'
       );

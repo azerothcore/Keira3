@@ -16,7 +16,7 @@ class SelectItemComponentPage extends SelectPageObject<SelectItemComponent> {
   ID_FIELD = 'entry';
 }
 
-describe('SelectItem integration tests', () => {
+fdescribe('SelectItem integration tests', () => {
   let component: SelectItemComponent;
   let fixture: ComponentFixture<SelectItemComponent>;
   let selectService: SelectItemService;
@@ -57,6 +57,7 @@ describe('SelectItem integration tests', () => {
   });
 
   it('should correctly initialise', async () => {
+      await page.whenStable();
     await fixture.whenStable();
       expect(page.createInput.value).toEqual(`${component.customStartingId}`);
       page.expectNewEntityFree();
@@ -69,6 +70,7 @@ describe('SelectItem integration tests', () => {
   });
 
   it('should correctly behave when inserting and selecting free id', async () => {
+      await page.whenStable();
     await fixture.whenStable();
       querySpy.calls.reset();
       querySpy.and.returnValue(of(
@@ -91,6 +93,7 @@ describe('SelectItem integration tests', () => {
   });
 
   it('should correctly behave when inserting an existing entity', async () => {
+      await page.whenStable();
     await fixture.whenStable();
       querySpy.calls.reset();
       querySpy.and.returnValue(of(
@@ -124,7 +127,7 @@ describe('SelectItem integration tests', () => {
         'SELECT * FROM `item_template` WHERE (`entry` LIKE \'%1200%\')'
     },
   ]) {
-    it(`searching an existing entity should correctly work [${testId}]`, () => {
+    it(`searching an existing entity should correctly work [${testId}]`, async () => {
       querySpy.calls.reset();
       if (id) {
         page.setInputValue(page.searchIdInput, id);
@@ -143,7 +146,7 @@ describe('SelectItem integration tests', () => {
     });
   }
 
-  it('searching and selecting an existing entity from the datatable should correctly work', () => {
+  it('searching and selecting an existing entity from the datatable should correctly work', async () => {
     const results: Partial<ItemTemplate>[] = [
       { id: 1, name: 'An awesome Item 1', ItemType: 0, ItemLevel: 1, MinLevel: 10, ItemDescription: ''   },
       { id: 2, name: 'An awesome Item 2', ItemType: 0, ItemLevel: 2, MinLevel: 20, ItemDescription: ''   },

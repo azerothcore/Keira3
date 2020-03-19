@@ -18,7 +18,7 @@ class SelectCreatureComponentPage extends SelectPageObject<SelectCreatureCompone
   get searchSubnameInput() { return this.query<HTMLInputElement>('#subname'); }
 }
 
-describe('SelectCreature integration tests', () => {
+fdescribe('SelectCreature integration tests', () => {
   let component: SelectCreatureComponent;
   let fixture: ComponentFixture<SelectCreatureComponent>;
   let selectService: SelectCreatureService;
@@ -60,6 +60,7 @@ describe('SelectCreature integration tests', () => {
   });
 
   it('should correctly initialise', async () => {
+      await page.whenStable();
     await fixture.whenStable();
     expect(page.createInput.value).toEqual(`${component.customStartingId}`);
     page.expectNewEntityFree();
@@ -72,6 +73,7 @@ describe('SelectCreature integration tests', () => {
   });
 
   it('should correctly behave when inserting and selecting free entry', async () => {
+      await page.whenStable();
     await fixture.whenStable();
     querySpy.calls.reset();
     querySpy.and.returnValue(of([]));
@@ -93,6 +95,7 @@ describe('SelectCreature integration tests', () => {
   });
 
   it('should correctly behave when inserting an existing entity', async () => {
+      await page.whenStable();
     await fixture.whenStable();
     querySpy.calls.reset();
     querySpy.and.returnValue(of(['mock value']));
@@ -125,7 +128,7 @@ describe('SelectCreature integration tests', () => {
         'SELECT * FROM `creature_template` WHERE (`subname` LIKE \'%it\\\'s a cool dev!%\')'
     },
   ]) {
-    it(`searching an existing entity should correctly work [${id}]`, () => {
+    it(`searching an existing entity should correctly work [${id}]`, async () => {
       querySpy.calls.reset();
       if (entry) {
         page.setInputValue(page.searchIdInput, entry);
@@ -147,7 +150,7 @@ describe('SelectCreature integration tests', () => {
     });
   }
 
-  it('searching and selecting an existing entity from the datatable should correctly work', () => {
+  it('searching and selecting an existing entity from the datatable should correctly work', async () => {
     const results: Partial<CreatureTemplate>[] = [
       { entry: 1, name: 'Shin',   subname: 'Developer',    minlevel: 1, maxlevel: 80, AIName: '', ScriptName: 'Shin.cpp'   },
       { entry: 2, name: 'Helias', subname: 'Developer',    minlevel: 1, maxlevel: 80, AIName: '', ScriptName: 'Helias.cpp' },

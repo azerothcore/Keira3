@@ -14,7 +14,7 @@ import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 class CreatureSpawnAddonPage extends MultiRowEditorPageObject<CreatureSpawnAddonComponent> {}
 
-describe('CreatureSpawnAddon integration tests', () => {
+fdescribe('CreatureSpawnAddon integration tests', () => {
   let component: CreatureSpawnAddonComponent;
   let fixture: ComponentFixture<CreatureSpawnAddonComponent>;
   let queryService: MysqlQueryService;
@@ -64,10 +64,10 @@ describe('CreatureSpawnAddon integration tests', () => {
     fixture.detectChanges();
   }
 
-  describe('Creating new', () => {
+  fdescribe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.formError.hidden).toBe(true);
@@ -84,19 +84,19 @@ describe('CreatureSpawnAddon integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(0);
     });
 
-    // it('adding new rows and executing the query should correctly work', () => {
+    // it('adding new rows and executing the query should correctly work', async () => {
     //  // Missing feature: ADD
     // });
 
-    // it('adding a row and changing its values should correctly update the queries', () => {
+    // it('adding a row and changing its values should correctly update the queries', async () => {
     //   // Missing feature: ADD
     // });
   });
 
-  describe('Editing existing', () => {
+  fdescribe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
@@ -108,9 +108,10 @@ describe('CreatureSpawnAddon integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(3);
     });
 
-    it('deleting rows should correctly work', () => {
+    it('deleting rows should correctly work', async () => {
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_addon` WHERE (`guid` IN (1));'
       );
@@ -123,6 +124,7 @@ describe('CreatureSpawnAddon integration tests', () => {
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_addon` WHERE (`guid` IN (1, 2));'
       );
@@ -133,19 +135,21 @@ describe('CreatureSpawnAddon integration tests', () => {
 
       page.deleteRow(0);
       expect(page.getEditorTableRowsCount()).toBe(0);
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_addon` WHERE (`guid` IN (0, 1, 2));'
       );
       page.expectFullQueryToBeEmpty();
     });
 
-    it('editing existing rows should correctly work', () => {
+    it('editing existing rows should correctly work', async () => {
       page.clickRowOfDatatable(1);
       page.setInputValueById('path_id', 1);
 
       page.clickRowOfDatatable(2);
       page.setInputValueById('mount', 2);
 
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_addon` WHERE (`guid` IN (1, 2));\n' +
         'INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +
@@ -161,11 +165,11 @@ describe('CreatureSpawnAddon integration tests', () => {
       );
     });
 
-    // it('combining add, edit and delete should correctly work', () => {
+    // it('combining add, edit and delete should correctly work', async () => {
     //   // Missing feature: ADD
     // });
 
-    it('using the same row id for multiple rows should correctly show an error', () => {
+    it('using the same row id for multiple rows should correctly show an error', async () => {
       page.clickRowOfDatatable(2);
       page.setInputValueById('guid', 0);
 

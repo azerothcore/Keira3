@@ -14,7 +14,7 @@ import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
 class GameobjectLootTemplatePage extends MultiRowEditorPageObject<GameobjectLootTemplateComponent> {}
 
-describe('GameobjectLootTemplate integration tests', () => {
+fdescribe('GameobjectLootTemplate integration tests', () => {
   let component: GameobjectLootTemplateComponent;
   let fixture: ComponentFixture<GameobjectLootTemplateComponent>;
   let queryService: MysqlQueryService;
@@ -75,10 +75,11 @@ describe('GameobjectLootTemplate integration tests', () => {
     fixture.detectChanges();
   }
 
-  describe('Creating new', () => {
+  fdescribe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
+      await page.whenStable();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.formError.hidden).toBe(true);
@@ -96,7 +97,8 @@ describe('GameobjectLootTemplate integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(0);
     });
 
-    it('adding new rows and executing the query should correctly work', () => {
+    it('adding new rows and executing the query should correctly work', async () => {
+      await page.whenStable();
       const expectedQuery = 'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0, 1, 2));\n' +
         'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
         '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
@@ -113,13 +115,16 @@ describe('GameobjectLootTemplate integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(3);
       page.clickExecuteQuery();
 
+      await page.whenStable();
       page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
 
-    it('adding a row and changing its values should correctly update the queries', () => {
+    it('adding a row and changing its values should correctly update the queries', async () => {
+      await page.whenStable();
       page.addNewRow();
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
         'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
@@ -134,6 +139,7 @@ describe('GameobjectLootTemplate integration tests', () => {
       );
 
       page.setInputValueById('Chance', '1');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
         'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
@@ -148,6 +154,7 @@ describe('GameobjectLootTemplate integration tests', () => {
       );
 
       page.setInputValueById('QuestRequired', '2');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
         'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
@@ -162,6 +169,7 @@ describe('GameobjectLootTemplate integration tests', () => {
       );
 
       page.setInputValueById('Item', '123');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (123));\n' +
         'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
@@ -177,10 +185,11 @@ describe('GameobjectLootTemplate integration tests', () => {
     });
   });
 
-  describe('Editing existing', () => {
+  fdescribe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
+      await page.whenStable();
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
@@ -194,9 +203,11 @@ describe('GameobjectLootTemplate integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(3);
     });
 
-    it('deleting rows should correctly work', () => {
+    it('deleting rows should correctly work', async () => {
+      await page.whenStable();
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1));'
       );
@@ -210,6 +221,7 @@ describe('GameobjectLootTemplate integration tests', () => {
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2));'
       );
@@ -222,19 +234,22 @@ describe('GameobjectLootTemplate integration tests', () => {
 
       page.deleteRow(0);
       expect(page.getEditorTableRowsCount()).toBe(0);
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_loot_template` WHERE `Entry` = 1234;'
       );
       page.expectFullQueryToBeEmpty();
     });
 
-    it('editing existing rows should correctly work', () => {
+    it('editing existing rows should correctly work', async () => {
+      await page.whenStable();
       page.clickRowOfDatatable(1);
       page.setInputValueById('LootMode', 1);
 
       page.clickRowOfDatatable(2);
       page.setInputValueById('GroupId', 2);
 
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (2));\n' +
         'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
@@ -251,7 +266,8 @@ describe('GameobjectLootTemplate integration tests', () => {
       );
     });
 
-    it('combining add, edit and delete should correctly work', () => {
+    it('combining add, edit and delete should correctly work', async () => {
+      await page.whenStable();
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
 
@@ -262,6 +278,7 @@ describe('GameobjectLootTemplate integration tests', () => {
       page.deleteRow(2);
       expect(page.getEditorTableRowsCount()).toBe(3);
 
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2, 3));\n' +
         'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
@@ -279,7 +296,7 @@ describe('GameobjectLootTemplate integration tests', () => {
       );
     });
 
-    it('using the same row id for multiple rows should correctly show an error', () => {
+    it('using the same row id for multiple rows should correctly show an error', async () => {
       page.clickRowOfDatatable(2);
       page.setInputValueById('Item', 0);
 
@@ -287,7 +304,7 @@ describe('GameobjectLootTemplate integration tests', () => {
     });
   });
 
-  it('should correctly show the warning if the loot id and type field are not correctly set in the gameobject template', () => {
+  it('should correctly show the warning if the loot id and type field are not correctly set in the gameobject template', async () => {
     setup(true, 0);
 
     expect(page.query('.alert-info').innerText).toContain(

@@ -12,7 +12,7 @@ import { QuestHandlerService } from '../quest-handler.service';
 
 class QuestOfferRewardPage extends EditorPageObject<QuestOfferRewardComponent> {}
 
-describe('QuestOfferReward integration tests', () => {
+fdescribe('QuestOfferReward integration tests', () => {
   let component: QuestOfferRewardComponent;
   let fixture: ComponentFixture<QuestOfferRewardComponent>;
   let queryService: MysqlQueryService;
@@ -70,16 +70,18 @@ describe('QuestOfferReward integration tests', () => {
     fixture.detectChanges();
   }
 
-  describe('Creating new', () => {
+  fdescribe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
+      await page.whenStable();
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing a property and executing the query should correctly work', () => {
+    it('changing a property and executing the query should correctly work', async () => {
+      await page.whenStable();
       const expectedQuery = 'DELETE FROM `quest_offer_reward` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `quest_offer_reward` (`ID`, `Emote1`, `Emote2`, `Emote3`, `Emote4`, ' +
         '`EmoteDelay1`, `EmoteDelay2`, `EmoteDelay3`, `EmoteDelay4`, `RewardText`, `VerifiedBuild`) VALUES\n' +
@@ -95,10 +97,11 @@ describe('QuestOfferReward integration tests', () => {
     });
   });
 
-  describe('Editing existing', () => {
+  fdescribe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
+      await page.whenStable();
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain('DELETE FROM `quest_offer_reward` WHERE (`ID` = 1234);\n' +
@@ -107,7 +110,8 @@ describe('QuestOfferReward integration tests', () => {
         '(1234, 2, 3, 4, 5, 6, 7, 8, 9, \'10\', 0);');
     });
 
-    it('changing all properties and executing the query should correctly work', () => {
+    it('changing all properties and executing the query should correctly work', async () => {
+      await page.whenStable();
       const expectedQuery = 'UPDATE `quest_offer_reward` SET `Emote1` = 0, `Emote2` = 1, `Emote3` = 2, `Emote4` = 3, ' +
         '`EmoteDelay1` = 4, `EmoteDelay2` = 5, `EmoteDelay3` = 6, `EmoteDelay4` = 7, `RewardText` = \'8\' WHERE (`ID` = 1234);';
       querySpy.calls.reset();
@@ -115,13 +119,15 @@ describe('QuestOfferReward integration tests', () => {
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.clickExecuteQuery();
 
+      await page.whenStable();
       page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
 
-    it('changing values should correctly update the queries', () => {
+    it('changing values should correctly update the queries', async () => {
       page.setInputValueById('Emote1', '11');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `quest_offer_reward` SET `Emote1` = 11 WHERE (`ID` = 1234);'
       );
@@ -133,6 +139,7 @@ describe('QuestOfferReward integration tests', () => {
       );
 
       page.setInputValueById('Emote2', '22');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `quest_offer_reward` SET `Emote1` = 11, `Emote2` = 22 WHERE (`ID` = 1234);'
       );
@@ -145,6 +152,7 @@ describe('QuestOfferReward integration tests', () => {
     });
 
     it('changing a value via SingleValueSelector should correctly work', async () => {
+      await page.whenStable();
       const field = 'Emote1';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
@@ -155,6 +163,7 @@ describe('QuestOfferReward integration tests', () => {
       await fixture.whenRenderingDone();
 
       expect(page.getInputById(field).value).toEqual('4');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `quest_offer_reward` SET `Emote1` = 4 WHERE (`ID` = 1234);'
       );

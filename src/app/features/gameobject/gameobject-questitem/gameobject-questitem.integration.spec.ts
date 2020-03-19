@@ -13,7 +13,7 @@ import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
 class GameobjectQuestitemPage extends MultiRowEditorPageObject<GameobjectQuestitemComponent> {}
 
-describe('GameobjectQuestitem integration tests', () => {
+fdescribe('GameobjectQuestitem integration tests', () => {
   let component: GameobjectQuestitemComponent;
   let fixture: ComponentFixture<GameobjectQuestitemComponent>;
   let queryService: MysqlQueryService;
@@ -65,10 +65,10 @@ describe('GameobjectQuestitem integration tests', () => {
     fixture.detectChanges();
   }
 
-  describe('Creating new', () => {
+  fdescribe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.formError.hidden).toBe(true);
@@ -78,7 +78,7 @@ describe('GameobjectQuestitem integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(0);
     });
 
-    it('adding new rows and executing the query should correctly work', () => {
+    it('adding new rows and executing the query should correctly work', async () => {
       const expectedQuery = 'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234) AND (`Idx` IN (0, 1, 2));\n' +
         'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
         '(1234, 0, 0, 0),\n' +
@@ -94,13 +94,15 @@ describe('GameobjectQuestitem integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(3);
       page.clickExecuteQuery();
 
+      await page.whenStable();
       page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
 
-    it('adding a row and changing its values should correctly update the queries', () => {
+    it('adding a row and changing its values should correctly update the queries', async () => {
       page.addNewRow();
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234) AND (`Idx` IN (0));\n' +
         'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
@@ -113,6 +115,7 @@ describe('GameobjectQuestitem integration tests', () => {
       );
 
       page.setInputValueById('Idx', '1');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234) AND (`Idx` IN (1));\n' +
         'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
@@ -125,6 +128,7 @@ describe('GameobjectQuestitem integration tests', () => {
       );
 
       page.setInputValueById('ItemId', '123');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234) AND (`Idx` IN (1));\n' +
         'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
@@ -138,10 +142,10 @@ describe('GameobjectQuestitem integration tests', () => {
     });
   });
 
-  describe('Editing existing', () => {
+  fdescribe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
@@ -153,9 +157,10 @@ describe('GameobjectQuestitem integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(3);
     });
 
-    it('deleting rows should correctly work', () => {
+    it('deleting rows should correctly work', async () => {
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234) AND (`Idx` IN (1));'
       );
@@ -168,6 +173,7 @@ describe('GameobjectQuestitem integration tests', () => {
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234) AND (`Idx` IN (1, 2));'
       );
@@ -179,16 +185,18 @@ describe('GameobjectQuestitem integration tests', () => {
 
       page.deleteRow(0);
       expect(page.getEditorTableRowsCount()).toBe(0);
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_questitem` WHERE `GameObjectEntry` = 1234;'
       );
       page.expectFullQueryToBeEmpty();
     });
 
-    it('editing existing rows should correctly work', () => {
+    it('editing existing rows should correctly work', async () => {
       page.clickRowOfDatatable(1);
       page.setInputValueById('ItemId', 1);
 
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234) AND (`Idx` IN (1));\n' +
         'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
@@ -204,6 +212,7 @@ describe('GameobjectQuestitem integration tests', () => {
     });
 
     it('combining add, edit and delete should correctly work', async () => {
+      await page.whenStable();
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
 
@@ -216,6 +225,7 @@ describe('GameobjectQuestitem integration tests', () => {
 
       await fixture.detectChanges();
 
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234) AND (`Idx` IN (1, 2, 3));\n' +
         'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
@@ -231,7 +241,7 @@ describe('GameobjectQuestitem integration tests', () => {
       );
     });
 
-    it('using the same row id for multiple rows should correctly show an error', () => {
+    it('using the same row id for multiple rows should correctly show an error', async () => {
       page.clickRowOfDatatable(2);
       page.setInputValueById('Idx', 0);
 

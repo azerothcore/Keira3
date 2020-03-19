@@ -33,7 +33,7 @@ class SaiEditorPage extends MultiRowEditorPageObject<SaiEditorComponent> {
   get generateCommentsBtn() { return this.query<HTMLButtonElement>('#generate-comments-btn'); }
 }
 
-describe('SaiEditorComponent integration tests', () => {
+fdescribe('SaiEditorComponent integration tests', () => {
   let component: SaiEditorComponent;
   let fixture: ComponentFixture<SaiEditorComponent>;
   let handlerService: SaiHandlerService;
@@ -87,7 +87,8 @@ describe('SaiEditorComponent integration tests', () => {
     fixture.detectChanges();
   }
 
-  it('should correctly work when TimedActionlists', () => {
+  it('should correctly work when TimedActionlists', async () => {
+      await page.whenStable();
     setup(true, false, SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST);
 
     expect(page.event1Name.innerText).toEqual('minTimer');
@@ -100,10 +101,11 @@ describe('SaiEditorComponent integration tests', () => {
     expect(page.eventType.value).toBe('0: 0');
   });
 
-  describe('Creating new', () => {
+  fdescribe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
+      await page.whenStable();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.addNewRowBtn.disabled).toBe(false);
@@ -138,7 +140,8 @@ describe('SaiEditorComponent integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(0);
     });
 
-    it('adding new rows and executing the query should correctly work', () => {
+    it('adding new rows and executing the query should correctly work', async () => {
+      await page.whenStable();
       const expectedQuery = 'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (0, 1, 2));\n' +
         'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
         '`event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
@@ -158,13 +161,16 @@ describe('SaiEditorComponent integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(3);
       page.clickExecuteQuery();
 
+      await page.whenStable();
       page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
 
-    it('adding a row and changing its values should correctly update the queries', () => {
+    it('adding a row and changing its values should correctly update the queries', async () => {
+      await page.whenStable();
       page.addNewRow();
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (0));\n' +
         'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, ' +
@@ -185,6 +191,7 @@ describe('SaiEditorComponent integration tests', () => {
       );
 
       page.setInputValueById('event_chance', 1);
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (0));\n' +
         'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
@@ -205,6 +212,7 @@ describe('SaiEditorComponent integration tests', () => {
       );
 
       page.setInputValueById('event_param1', '2');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (0));\n' +
         'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
@@ -225,6 +233,7 @@ describe('SaiEditorComponent integration tests', () => {
       );
 
       page.setInputValueById('action_param2', '123');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (0));\n' +
         'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
@@ -276,10 +285,11 @@ describe('SaiEditorComponent integration tests', () => {
     });
   });
 
-  describe('Editing existing', () => {
+  fdescribe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
+      await page.whenStable();
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain('DELETE FROM `smart_scripts` WHERE (`source_type` = 0 AND `entryorguid` = 1234);\n' +
@@ -294,9 +304,11 @@ describe('SaiEditorComponent integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(3);
     });
 
-    it('deleting rows should correctly work', () => {
+    it('deleting rows should correctly work', async () => {
+      await page.whenStable();
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (1));'
       );
@@ -313,6 +325,7 @@ describe('SaiEditorComponent integration tests', () => {
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (1, 2));'
       );
@@ -328,19 +341,22 @@ describe('SaiEditorComponent integration tests', () => {
 
       page.deleteRow(0);
       expect(page.getEditorTableRowsCount()).toBe(0);
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0)'
       );
       page.expectFullQueryToBeEmpty();
     });
 
-    it('editing existing rows should correctly work', () => {
+    it('editing existing rows should correctly work', async () => {
+      await page.whenStable();
       page.clickRowOfDatatable(1);
       page.setInputValueById('target_param1', 1);
 
       page.clickRowOfDatatable(2);
       page.setInputValueById('target_x', 2);
 
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (1, 2));\n' +
         'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
@@ -364,7 +380,8 @@ describe('SaiEditorComponent integration tests', () => {
       );
     });
 
-    it('combining add, edit and delete should correctly work', () => {
+    it('combining add, edit and delete should correctly work', async () => {
+      await page.whenStable();
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
 
@@ -375,6 +392,7 @@ describe('SaiEditorComponent integration tests', () => {
       page.deleteRow(2);
       expect(page.getEditorTableRowsCount()).toBe(3);
 
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (1, 2, 3));\n' +
         'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
@@ -398,6 +416,7 @@ describe('SaiEditorComponent integration tests', () => {
     });
 
     it('changing a value via FlagsSelector should correctly work', async () => {
+      await page.whenStable();
       const field = 'event_flags';
       page.clickRowOfDatatable(0);
       page.clickElement(page.getSelectorBtn(field));
@@ -410,6 +429,7 @@ describe('SaiEditorComponent integration tests', () => {
       await fixture.whenRenderingDone();
 
       expect(page.getInputById(field).value).toEqual('10');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (0));\n' +
         'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
@@ -433,7 +453,8 @@ describe('SaiEditorComponent integration tests', () => {
       );
     });
 
-    it('shows error on wrong linked event', () => {
+    it('shows error on wrong linked event', async () => {
+      await page.whenStable();
 
       const mockRows: Partial<SmartScripts>[] = [
         { entryorguid: 0, source_type: 0, id: 0, link: 1, event_type: 0  },
@@ -459,10 +480,11 @@ describe('SaiEditorComponent integration tests', () => {
 
   });
 
-  describe('Template query', () => {
+  fdescribe('Template query', async () => {
     beforeEach(() => setup(false, true));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
+      await page.whenStable();
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(
@@ -480,13 +502,13 @@ describe('SaiEditorComponent integration tests', () => {
     });
   });
 
-  describe('Dynamic param names', () => {
+  fdescribe('Dynamic param names', async () => {
     beforeEach(() => {
       setup(true);
       page.addNewRow();
     });
 
-    it('event param names should correctly work', () => {
+    it('event param names should correctly work', async () => {
       page.setSelectValueById('event_type', 1);
 
       expect(page.event1Name.innerText).toContain('InitialMin');
@@ -504,7 +526,7 @@ describe('SaiEditorComponent integration tests', () => {
       expect(page.event5Name.innerText).toContain('PlayerOnly');
     });
 
-    it('action param names should correctly work', () => {
+    it('action param names should correctly work', async () => {
       page.setSelectValueById('action_type', 1);
 
       expect(page.action1Name.innerText).toContain('GroupId');
@@ -524,7 +546,7 @@ describe('SaiEditorComponent integration tests', () => {
       expect(page.action6Name.innerText).toContain('EmoteId6');
     });
 
-    it('target param names should correctly work', () => {
+    it('target param names should correctly work', async () => {
       page.setSelectValueById('target_type', 1);
 
       expect(page.target1Name.innerText).toContain('param1');

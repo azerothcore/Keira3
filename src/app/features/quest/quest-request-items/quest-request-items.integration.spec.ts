@@ -12,7 +12,7 @@ import { QuestHandlerService } from '../quest-handler.service';
 
 class QuestRequestItemsPage extends EditorPageObject<QuestRequestItemsComponent> {}
 
-describe('QuestRequestItems integration tests', () => {
+fdescribe('QuestRequestItems integration tests', () => {
   let component: QuestRequestItemsComponent;
   let fixture: ComponentFixture<QuestRequestItemsComponent>;
   let queryService: MysqlQueryService;
@@ -64,16 +64,16 @@ describe('QuestRequestItems integration tests', () => {
     fixture.detectChanges();
   }
 
-  describe('Creating new', () => {
+  fdescribe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing a property and executing the query should correctly work', () => {
+    it('changing a property and executing the query should correctly work', async () => {
       const expectedQuery = 'DELETE FROM `quest_request_items` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `quest_request_items` (`ID`, `EmoteOnComplete`, `EmoteOnIncomplete`, `CompletionText`, `VerifiedBuild`) VALUES\n' +
         '(1234, 33, 0, \'\', 0);';
@@ -88,10 +88,11 @@ describe('QuestRequestItems integration tests', () => {
     });
   });
 
-  describe('Editing existing', () => {
+  fdescribe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', async () => {
+      await page.whenStable();
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain('DELETE FROM `quest_request_items` WHERE (`ID` = 1234);\n' +
@@ -99,7 +100,7 @@ describe('QuestRequestItems integration tests', () => {
         '(1234, 2, 3, \'4\', 0);');
     });
 
-    it('changing all properties and executing the query should correctly work', () => {
+    it('changing all properties and executing the query should correctly work', async () => {
       const expectedQuery = 'UPDATE `quest_request_items` SET ' +
         '`EmoteOnComplete` = 0, `EmoteOnIncomplete` = 1, `CompletionText` = \'2\' WHERE (`ID` = 1234);';
       querySpy.calls.reset();
@@ -107,13 +108,16 @@ describe('QuestRequestItems integration tests', () => {
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.clickExecuteQuery();
 
+      await page.whenStable();
       page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
 
     it('changing values should correctly update the queries', async () => {
+      await page.whenStable();
       page.setInputValueById('EmoteOnComplete', '11');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `quest_request_items` SET `EmoteOnComplete` = 11 WHERE (`ID` = 1234);'
       );
@@ -124,6 +128,7 @@ describe('QuestRequestItems integration tests', () => {
       );
 
       page.setInputValueById('EmoteOnIncomplete', '22');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `quest_request_items` SET `EmoteOnComplete` = 11, `EmoteOnIncomplete` = 22 WHERE (`ID` = 1234);'
       );
@@ -135,6 +140,7 @@ describe('QuestRequestItems integration tests', () => {
     });
 
     it('changing a value via SingleValueSelector should correctly work', async () => {
+      await page.whenStable();
       const field = 'EmoteOnComplete';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
@@ -145,6 +151,7 @@ describe('QuestRequestItems integration tests', () => {
       await fixture.whenRenderingDone();
 
       expect(page.getInputById(field).value).toEqual('4');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `quest_request_items` SET `EmoteOnComplete` = 4 WHERE (`ID` = 1234);'
       );

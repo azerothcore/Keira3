@@ -13,7 +13,7 @@ import { ITEM_SUBCLASS } from '@keira-constants/options/item-class';
 
 class ItemTemplatePage extends EditorPageObject<ItemTemplateComponent> {}
 
-describe('ItemTemplate integration tests', () => {
+fdescribe('ItemTemplate integration tests', () => {
   let component: ItemTemplateComponent;
   let fixture: ComponentFixture<ItemTemplateComponent>;
   let queryService: MysqlQueryService;
@@ -83,16 +83,16 @@ describe('ItemTemplate integration tests', () => {
     fixture.detectChanges();
   }
 
-  describe('Creating new', () => {
+  fdescribe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing a property and executing the query should correctly work', () => {
+    it('changing a property and executing the query should correctly work', async () => {
       querySpy.calls.reset();
 
       page.setInputValueById('name', 'Shin');
@@ -105,16 +105,16 @@ describe('ItemTemplate integration tests', () => {
     });
   });
 
-  describe('Editing existing', () => {
+  fdescribe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing all properties and executing the query should correctly work', () => {
+    it('changing all properties and executing the query should correctly work', async () => {
       const expectedQuery = 'UPDATE `item_template` SET ' +
         '`subclass` = 1, `SoundOverrideSubclass` = 2, `name` = \'3\', `displayid` = 4, `Quality` = 5, `Flags` = 6, `FlagsExtra` = 7, ' +
         '`BuyCount` = 8, `BuyPrice` = 9, `SellPrice` = 10, `InventoryType` = 11, `AllowableClass` = 12, `AllowableRace` = 13, ' +
@@ -146,21 +146,24 @@ describe('ItemTemplate integration tests', () => {
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.clickExecuteQuery();
 
+      await page.whenStable();
       page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
 
-    it('changing values should correctly update the queries', () => {
+    it('changing values should correctly update the queries', async () => {
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
 
       page.setInputValueById('name', 'Shin');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `item_template` SET `name` = \'Shin\' WHERE (`entry` = 1234);'
       );
       page.expectFullQueryToContain('Shin');
 
       page.setInputValueById('BuyCount', 22);
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `item_template` SET `name` = \'Shin\', `BuyCount` = 22 WHERE (`entry` = 1234);'
       );
@@ -169,6 +172,7 @@ describe('ItemTemplate integration tests', () => {
     });
 
     it('changing a value via FlagsSelector should correctly work', async () => {
+      await page.whenStable();
       const field = 'Flags';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
@@ -180,6 +184,7 @@ describe('ItemTemplate integration tests', () => {
       await fixture.whenRenderingDone();
 
       expect(page.getInputById(field).value).toEqual('4100');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `item_template` SET `Flags` = 4100 WHERE (`entry` = 1234);'
       );
@@ -188,8 +193,8 @@ describe('ItemTemplate integration tests', () => {
       page.expectFullQueryToContain('4100');
     });
 
-    describe('the subclass field', () => {
-      it('should show the selector button only if class has a valid value', () => {
+    fdescribe('the subclass field', async () => {
+      it('should show the selector button only if class has a valid value', async () => {
         page.setInputValueById('class', 100);
         expect(page.getSelectorBtn('subclass', false)).toBeFalsy();
 
@@ -206,7 +211,7 @@ describe('ItemTemplate integration tests', () => {
         expect(page.getSelectorBtn('subclass', false)).toBeFalsy();
       });
 
-      it('should show its values according to the value of class', () => {
+      it('should show its values according to the value of class', async () => {
         page.setInputValueById('class', 3);
         page.clickElement(page.getSelectorBtn('subclass'));
 

@@ -13,7 +13,7 @@ import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
 class GameobjectSpawnPage extends MultiRowEditorPageObject<GameobjectSpawnComponent> {}
 
-describe('GameobjectSpawn integration tests', () => {
+fdescribe('GameobjectSpawn integration tests', () => {
   let component: GameobjectSpawnComponent;
   let fixture: ComponentFixture<GameobjectSpawnComponent>;
   let queryService: MysqlQueryService;
@@ -64,10 +64,11 @@ describe('GameobjectSpawn integration tests', () => {
     fixture.detectChanges();
   }
 
-  describe('Creating new', () => {
+  fdescribe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
+      await page.whenStable();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.formError.hidden).toBe(true);
@@ -94,7 +95,8 @@ describe('GameobjectSpawn integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(0);
     });
 
-    it('adding new rows and executing the query should correctly work', () => {
+    it('adding new rows and executing the query should correctly work', async () => {
+      await page.whenStable();
       const expectedQuery = 'DELETE FROM `gameobject` WHERE (`id` = ' + id + ') AND (`guid` IN (0, 1, 2));\n' +
       'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
       '`position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, ' +
@@ -113,13 +115,16 @@ describe('GameobjectSpawn integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(3);
       page.clickExecuteQuery();
 
+      await page.whenStable();
       page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
 
-    it('adding a row and changing its values should correctly update the queries', () => {
+    it('adding a row and changing its values should correctly update the queries', async () => {
+      await page.whenStable();
       page.addNewRow();
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject` WHERE (`id` = ' + id + ') AND (`guid` IN (0));\n' +
         'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
@@ -137,6 +142,7 @@ describe('GameobjectSpawn integration tests', () => {
       );
 
       page.setInputValueById('map', '1');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject` WHERE (`id` = ' + id + ') AND (`guid` IN (0));\n' +
         'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
@@ -153,6 +159,7 @@ describe('GameobjectSpawn integration tests', () => {
       );
 
       page.setInputValueById('zoneId', '2');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject` WHERE (`id` = ' + id + ') AND (`guid` IN (0));\n' +
         'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
@@ -170,6 +177,7 @@ describe('GameobjectSpawn integration tests', () => {
 
 
       page.setInputValueById('guid', '123');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject` WHERE (`id` = ' + id + ') AND (`guid` IN (123));\n' +
         'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
@@ -188,10 +196,11 @@ describe('GameobjectSpawn integration tests', () => {
     });
   });
 
-  describe('Editing existing', () => {
+  fdescribe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
+      await page.whenStable();
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
@@ -206,9 +215,11 @@ describe('GameobjectSpawn integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(3);
     });
 
-    it('deleting rows should correctly work', () => {
+    it('deleting rows should correctly work', async () => {
+      await page.whenStable();
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject` WHERE (`id` = ' + id + ') AND (`guid` IN (1));'
       );
@@ -223,6 +234,7 @@ describe('GameobjectSpawn integration tests', () => {
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject` WHERE (`id` = ' + id + ') AND (`guid` IN (1, 2));\n'
       );
@@ -236,19 +248,22 @@ describe('GameobjectSpawn integration tests', () => {
 
       page.deleteRow(0);
       expect(page.getEditorTableRowsCount()).toBe(0);
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject` WHERE `id` = ' + id + ';'
       );
       page.expectFullQueryToBeEmpty();
     });
 
-    it('editing existing rows should correctly work', () => {
+    it('editing existing rows should correctly work', async () => {
+      await page.whenStable();
       page.clickRowOfDatatable(1);
       page.setInputValueById('map', 1);
 
       page.clickRowOfDatatable(2);
       page.setInputValueById('zoneId', 2);
 
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject` WHERE (`id` = ' + id + ') AND (`guid` IN (1, 2));\n' +
         'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
@@ -268,7 +283,8 @@ describe('GameobjectSpawn integration tests', () => {
       );
     });
 
-    it('combining add, edit and delete should correctly work', () => {
+    it('combining add, edit and delete should correctly work', async () => {
+      await page.whenStable();
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
 
@@ -279,6 +295,7 @@ describe('GameobjectSpawn integration tests', () => {
       page.deleteRow(2);
       expect(page.getEditorTableRowsCount()).toBe(3);
 
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject` WHERE (`id` = ' + id + ') AND (`guid` IN (1, 2, 3));\n' +
         'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
@@ -298,7 +315,8 @@ describe('GameobjectSpawn integration tests', () => {
       );
     });
 
-    it('using the same row id for multiple rows should correctly show an error', () => {
+    it('using the same row id for multiple rows should correctly show an error', async () => {
+      await page.whenStable();
       page.clickRowOfDatatable(2);
       page.setInputValueById('guid', 0);
 

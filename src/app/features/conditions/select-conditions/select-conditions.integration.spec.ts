@@ -25,7 +25,7 @@ class SelectConditionsComponentPage extends PageObject<SelectConditionsComponent
   get topBar() { return this.query<HTMLElement>('keira-top-bar'); }
 }
 
-describe('SelectConditions integration tests', () => {
+fdescribe('SelectConditions integration tests', () => {
   let component: SelectConditionsComponent;
   let fixture: ComponentFixture<SelectConditionsComponent>;
   let selectService: ConditionsSearchService;
@@ -100,7 +100,8 @@ describe('SelectConditions integration tests', () => {
         'SELECT * FROM `conditions` WHERE (`SourceGroup` LIKE \'%2%\') AND (`SourceEntry` LIKE \'%3%\') LIMIT 100'
     },
   ]) {
-    it(`searching an existing entity should correctly work [${testId}]`, () => {
+    it(`searching an existing entity should correctly work [${testId}]`, async () => {
+      await page.whenStable();
       querySpy.calls.reset();
       if (sourceIdorRef) {
         page.setInputValue(page.searchIdSelect, sourceIdorRef + ': ' + sourceIdorRef);
@@ -122,7 +123,8 @@ describe('SelectConditions integration tests', () => {
     });
   }
 
-  it('searching and selecting an existing entity from the datatable should correctly work', () => {
+  it('searching and selecting an existing entity from the datatable should correctly work', async () => {
+      await page.whenStable();
     const results: Partial<Conditions>[] = [
       {
         SourceTypeOrReferenceId: 1, SourceGroup: 4, SourceEntry: 7, SourceId: 0, ElseGroup: 0,
@@ -158,7 +160,8 @@ describe('SelectConditions integration tests', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['conditions/conditions']);
   });
 
-  it('creating new should correctly work', () => {
+  it('creating new should correctly work', async () => {
+      await page.whenStable();
     page.setInputValue(page.searchIdSelect, 1 + ': ' + 1);
     page.setInputValue(page.searchGroupInput, 2);
     page.setInputValue(page.searchEntryInput, 3);

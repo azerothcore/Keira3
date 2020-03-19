@@ -16,7 +16,7 @@ import { SqliteService } from '@keira-shared/services/sqlite.service';
 
 class QuestTemplateAddonPage extends EditorPageObject<QuestTemplateAddonComponent> {}
 
-describe('QuestTemplateAddon integration tests', () => {
+fdescribe('QuestTemplateAddon integration tests', () => {
   let component: QuestTemplateAddonComponent;
   let fixture: ComponentFixture<QuestTemplateAddonComponent>;
   let queryService: MysqlQueryService;
@@ -84,16 +84,16 @@ describe('QuestTemplateAddon integration tests', () => {
     fixture.detectChanges();
   }
 
-  describe('Creating new', () => {
+  fdescribe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing a property and executing the query should correctly work', () => {
+    it('changing a property and executing the query should correctly work', async () => {
       const expectedQuery = 'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, `PrevQuestID`, `NextQuestID`,' +
         ' `ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`,' +
@@ -111,10 +111,10 @@ describe('QuestTemplateAddon integration tests', () => {
     });
   });
 
-  describe('Editing existing', () => {
+  fdescribe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain('DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
@@ -125,7 +125,7 @@ describe('QuestTemplateAddon integration tests', () => {
         '(1234, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);');
     });
 
-    it('changing all properties and executing the query should correctly work', () => {
+    it('changing all properties and executing the query should correctly work', async () => {
       const expectedQuery = 'UPDATE `quest_template_addon` SET ' +
         '`MaxLevel` = 0, `AllowableClasses` = 1, `SourceSpellID` = 2, `PrevQuestID` = 3, `NextQuestID` = 4, `ExclusiveGroup` = 5, ' +
         '`RewardMailTemplateID` = 6, `RewardMailDelay` = 7, `RequiredSkillID` = 8, `RequiredSkillPoints` = 9, ' +
@@ -136,13 +136,15 @@ describe('QuestTemplateAddon integration tests', () => {
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.clickExecuteQuery();
 
+      await page.whenStable();
       page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
 
-    it('changing values should correctly update the queries', () => {
+    it('changing values should correctly update the queries', async () => {
       page.setInputValueById('PrevQuestID', '11');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `quest_template_addon` SET `PrevQuestID` = 11 WHERE (`ID` = 1234);'
       );
@@ -156,6 +158,7 @@ describe('QuestTemplateAddon integration tests', () => {
       );
 
       page.setInputValueById('NextQuestID', '22');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `quest_template_addon` SET `PrevQuestID` = 11, `NextQuestID` = 22 WHERE (`ID` = 1234);'
       );
@@ -170,6 +173,7 @@ describe('QuestTemplateAddon integration tests', () => {
     });
 
     it('changing a value via FlagsSelector should correctly work', async () => {
+      await page.whenStable();
       const field = 'SpecialFlags';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
@@ -181,6 +185,7 @@ describe('QuestTemplateAddon integration tests', () => {
       await fixture.whenRenderingDone();
 
       expect(page.getInputById(field).value).toEqual('10');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `quest_template_addon` SET `SpecialFlags` = 10 WHERE (`ID` = 1234);'
       );
@@ -194,6 +199,7 @@ describe('QuestTemplateAddon integration tests', () => {
     });
 
     it('changing a value via SpellSelector should correctly work', async () => {
+      await page.whenStable();
 
       //  note: previously disabled because of:
       //  https://stackoverflow.com/questions/57336982/how-to-make-angular-tests-wait-for-previous-async-operation-to-complete-before-e
@@ -213,6 +219,7 @@ describe('QuestTemplateAddon integration tests', () => {
       page.clickRowOfDatatable(0);
       page.clickModalSelect();
 
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `quest_template_addon` SET `SourceSpellID` = 123 WHERE (`ID` = 1234);'
       );

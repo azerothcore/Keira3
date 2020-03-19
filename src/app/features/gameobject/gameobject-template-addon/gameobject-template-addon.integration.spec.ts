@@ -13,7 +13,7 @@ import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
 class GameobjectTemplateAddonPage extends EditorPageObject<GameobjectTemplateAddonComponent> {}
 
-describe('GameobjectTemplateAddon integration tests', () => {
+fdescribe('GameobjectTemplateAddon integration tests', () => {
   let component: GameobjectTemplateAddonComponent;
   let fixture: ComponentFixture<GameobjectTemplateAddonComponent>;
   let queryService: MysqlQueryService;
@@ -62,16 +62,18 @@ describe('GameobjectTemplateAddon integration tests', () => {
     fixture.detectChanges();
   }
 
-  describe('Creating new', () => {
+  fdescribe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
+      await page.whenStable();
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing a property and executing the query should correctly work', () => {
+    it('changing a property and executing the query should correctly work', async () => {
+      await page.whenStable();
       const expectedQuery = 'DELETE FROM `gameobject_template_addon` WHERE (`entry` = ' + id + ');\n' +
       'INSERT INTO `gameobject_template_addon` (`entry`, `faction`, `flags`, `mingold`, `maxgold`) VALUES\n' +
       '(' + id + ', 35, 0, 0, 0);';
@@ -87,16 +89,18 @@ describe('GameobjectTemplateAddon integration tests', () => {
     });
   });
 
-  describe('Editing existing', () => {
+  fdescribe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
+      await page.whenStable();
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing all properties and executing the query should correctly work', () => {
+    it('changing all properties and executing the query should correctly work', async () => {
+      await page.whenStable();
       const expectedQuery = 'UPDATE `gameobject_template_addon` SET ' +
       '`flags` = 1, `mingold` = 2, `maxgold` = 3 WHERE (`entry` = ' + id + ');';
 
@@ -105,13 +109,16 @@ describe('GameobjectTemplateAddon integration tests', () => {
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.clickExecuteQuery();
 
+      await page.whenStable();
       page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
 
-    it('changing values should correctly update the queries', () => {
+    it('changing values should correctly update the queries', async () => {
+      await page.whenStable();
       page.setInputValueById('faction', '35');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `gameobject_template_addon` SET `faction` = 35 WHERE (`entry` = ' + id + ');'
       );
@@ -120,6 +127,7 @@ describe('GameobjectTemplateAddon integration tests', () => {
     });
 
     it('changing a value via FlagsSelector should correctly work', async () => {
+      await page.whenStable();
       const field = 'flags';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
@@ -131,6 +139,7 @@ describe('GameobjectTemplateAddon integration tests', () => {
       await fixture.whenRenderingDone();
 
       expect(page.getInputById(field).value).toEqual('10');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `gameobject_template_addon` SET `flags` = 10 WHERE (`entry` = ' + id + ');'
       );

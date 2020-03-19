@@ -13,7 +13,7 @@ import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 class CreatureTemplatePage extends EditorPageObject<CreatureTemplateComponent> {}
 
-describe('CreatureTemplate integration tests', () => {
+fdescribe('CreatureTemplate integration tests', () => {
   let component: CreatureTemplateComponent;
   let fixture: ComponentFixture<CreatureTemplateComponent>;
   let queryService: MysqlQueryService;
@@ -75,16 +75,16 @@ describe('CreatureTemplate integration tests', () => {
     fixture.detectChanges();
   }
 
-  describe('Creating new', () => {
+  fdescribe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing a property and executing the query should correctly work', () => {
+    it('changing a property and executing the query should correctly work', async () => {
       const expectedQuery = 'DELETE FROM `creature_template` WHERE (`entry` = 1234);\n' +
       'INSERT INTO `creature_template` (`entry`, `difficulty_entry_1`, `difficulty_entry_2`, `difficulty_entry_3`,' +
       ' `KillCredit1`, `KillCredit2`, `modelid1`, `modelid2`, `modelid3`, `modelid4`, `name`, `subname`,' +
@@ -112,16 +112,16 @@ describe('CreatureTemplate integration tests', () => {
     });
   });
 
-  describe('Editing existing', () => {
+  fdescribe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing all properties and executing the query should correctly work', () => {
+    it('changing all properties and executing the query should correctly work', async () => {
       const expectedQuery = 'UPDATE `creature_template` SET ' +
         '`difficulty_entry_2` = 1, `difficulty_entry_3` = 2, `KillCredit1` = 3, `KillCredit2` = 4, `modelid1` = 5, `modelid2` = 6, ' +
         '`modelid3` = 7, `modelid4` = 8, `name` = \'9\', `subname` = \'10\', `IconName` = \'11\', `gossip_menu_id` = 12, ' +
@@ -141,21 +141,24 @@ describe('CreatureTemplate integration tests', () => {
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.clickExecuteQuery();
 
+      await page.whenStable();
       page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
 
-    it('changing values should correctly update the queries', () => {
+    it('changing values should correctly update the queries', async () => {
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
 
       page.setInputValueById('name', 'Shin');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `creature_template` SET `name` = \'Shin\' WHERE (`entry` = 1234);'
       );
       page.expectFullQueryToContain('Shin');
 
       page.setInputValueById('subname', 'AC Developer');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `creature_template` SET `name` = \'Shin\', `subname` = \'AC Developer\' WHERE (`entry` = 1234);'
       );
@@ -164,6 +167,7 @@ describe('CreatureTemplate integration tests', () => {
     });
 
     it('changing a value via FlagsSelector should correctly work', async () => {
+      await page.whenStable();
       const field = 'unit_flags';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
@@ -175,6 +179,7 @@ describe('CreatureTemplate integration tests', () => {
       await fixture.whenRenderingDone();
 
       expect(page.getInputById(field).value).toEqual('4100');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `creature_template` SET `unit_flags` = 4100 WHERE (`entry` = 1234);'
       );

@@ -16,7 +16,7 @@ class SelectGossipComponentPage extends SelectPageObject<SelectGossipComponent> 
   ID_FIELD = 'MenuID';
 }
 
-describe('SelectGossip integration tests', () => {
+fdescribe('SelectGossip integration tests', () => {
   let component: SelectGossipComponent;
   let fixture: ComponentFixture<SelectGossipComponent>;
   let selectService: SelectGossipService;
@@ -57,6 +57,7 @@ describe('SelectGossip integration tests', () => {
   });
 
   it('should correctly initialise', async () => {
+      await page.whenStable();
     await fixture.whenStable();
       expect(page.createInput.value).toEqual(`${component.customStartingId}`);
       page.expectNewEntityFree();
@@ -69,6 +70,7 @@ describe('SelectGossip integration tests', () => {
   });
 
   it('should correctly behave when inserting and selecting free id', async () => {
+      await page.whenStable();
     await fixture.whenStable();
       querySpy.calls.reset();
       querySpy.and.returnValue(of(
@@ -91,6 +93,7 @@ describe('SelectGossip integration tests', () => {
   });
 
   it('should correctly behave when inserting an existing entity', async () => {
+      await page.whenStable();
     await fixture.whenStable();
       querySpy.calls.reset();
       querySpy.and.returnValue(of(
@@ -120,7 +123,7 @@ describe('SelectGossip integration tests', () => {
         'SELECT * FROM `gossip_menu` WHERE (`MenuID` LIKE \'%1200%\')'
     },
   ]) {
-    it(`searching an existing entity should correctly work [${testId}]`, () => {
+    it(`searching an existing entity should correctly work [${testId}]`, async () => {
       querySpy.calls.reset();
       // Note: this is different than in other editors
       if (MenuID) {
@@ -140,7 +143,7 @@ describe('SelectGossip integration tests', () => {
     });
   }
 
-  it('searching and selecting an existing entity from the datatable should correctly work', () => {
+  it('searching and selecting an existing entity from the datatable should correctly work', async () => {
     const results: GossipMenu[] = [
       { MenuID: 1, TextID: 1 },
       { MenuID: 1, TextID: 2 },

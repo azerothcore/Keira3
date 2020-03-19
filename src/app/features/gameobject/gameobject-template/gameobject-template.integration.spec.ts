@@ -13,7 +13,7 @@ import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
 class GameobjectTemplatePage extends EditorPageObject<GameobjectTemplateComponent> {}
 
-describe('GameobjectTemplate integration tests', () => {
+fdescribe('GameobjectTemplate integration tests', () => {
   let component: GameobjectTemplateComponent;
   let fixture: ComponentFixture<GameobjectTemplateComponent>;
   let queryService: MysqlQueryService;
@@ -66,16 +66,18 @@ describe('GameobjectTemplate integration tests', () => {
     fixture.detectChanges();
   }
 
-  describe('Creating new', () => {
+  fdescribe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
+      await page.whenStable();
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing a property and executing the query should correctly work', () => {
+    it('changing a property and executing the query should correctly work', async () => {
+      await page.whenStable();
       const expectedQuery = 'DELETE FROM `gameobject_template` WHERE (`entry` = ' + id + ');\n' +
       'INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, ' +
       '`unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, ' +
@@ -95,16 +97,18 @@ describe('GameobjectTemplate integration tests', () => {
     });
   });
 
-  describe('Editing existing', () => {
+  fdescribe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
+      await page.whenStable();
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing all properties and executing the query should correctly work', () => {
+    it('changing all properties and executing the query should correctly work', async () => {
+      await page.whenStable();
       const expectedQuery = 'UPDATE `gameobject_template` SET `displayId` = 1, `name` = \'2\', `IconName` = \'3\', ' +
       '`castBarCaption` = \'4\', `unk1` = \'5\', `size` = 6, `Data0` = 7, `Data1` = 8, `Data2` = 9, `Data3` = 10, ' +
       '`Data4` = 11, `Data5` = 12, `Data6` = 13, `Data7` = 14, `Data8` = 15, `Data9` = 16, `Data10` = 17, `Data11` = 18, ' +
@@ -117,21 +121,25 @@ describe('GameobjectTemplate integration tests', () => {
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.clickExecuteQuery();
 
+      await page.whenStable();
       page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
 
-    it('changing values should correctly update the queries', () => {
+    it('changing values should correctly update the queries', async () => {
+      await page.whenStable();
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
 
       page.setInputValueById('name', 'Helias');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `gameobject_template` SET `name` = \'Helias\' WHERE (`entry` = ' + id + ');'
       );
       page.expectFullQueryToContain('Helias');
 
       page.setInputValueById('Data0', '35');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `gameobject_template` SET `name` = \'Helias\', `Data0` = 35 WHERE (`entry` = ' + id + ');'
       );
@@ -140,6 +148,7 @@ describe('GameobjectTemplate integration tests', () => {
     });
 
     it('changing a value via SingleValueSelector should correctly work', async () => {
+      await page.whenStable();
       const field = 'type';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
@@ -150,6 +159,7 @@ describe('GameobjectTemplate integration tests', () => {
       await fixture.whenRenderingDone();
 
       expect(page.getInputById(field).value).toEqual('7');
+      await page.whenStable();
       page.expectDiffQueryToContain(
         'UPDATE `gameobject_template` SET `type` = 7 WHERE (`entry` = ' + id + ');'
       );

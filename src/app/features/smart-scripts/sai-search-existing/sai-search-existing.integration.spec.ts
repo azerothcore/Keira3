@@ -20,7 +20,7 @@ class SaiSearchExistingComponentPage extends PageObject<SaiSearchExistingCompone
   get searchBtn() { return this.query<HTMLButtonElement>('#search-btn'); }
 }
 
-describe('SaiSearchExisting integration tests', () => {
+fdescribe('SaiSearchExisting integration tests', () => {
   let component: SaiSearchExistingComponent;
   let fixture: ComponentFixture<SaiSearchExistingComponent>;
   let selectService: SaiSearchService;
@@ -56,6 +56,7 @@ describe('SaiSearchExisting integration tests', () => {
   });
 
   it('should correctly initialise', async () => {
+      await page.whenStable();
     await fixture.whenStable();
       expect(page.queryWrapper.innerText).toContain(
         'SELECT * FROM `smart_scripts` LIMIT 50'
@@ -80,7 +81,8 @@ describe('SaiSearchExisting integration tests', () => {
         'SELECT `entryorguid`, `source_type` FROM `smart_scripts` WHERE (`entryorguid` LIKE \'%123%\') GROUP BY entryorguid, source_type'
     },
   ]) {
-    it(`searching an existing entity should correctly work [${testId}]`, () => {
+    it(`searching an existing entity should correctly work [${testId}]`, async () => {
+      await page.whenStable();
       querySpy.calls.reset();
       if (source_type) {
         page.setInputValue(page.searchSourceTypeSelect, source_type + ': ' + source_type);
@@ -100,7 +102,8 @@ describe('SaiSearchExisting integration tests', () => {
     });
   }
 
-  it('searching and selecting an existing entity from the datatable should correctly work', () => {
+  it('searching and selecting an existing entity from the datatable should correctly work', async () => {
+      await page.whenStable();
     const results: Partial<SmartScripts>[] = [
       { entryorguid: 1, source_type: 2 },
       { entryorguid: 2, source_type: 3 },
