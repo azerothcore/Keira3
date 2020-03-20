@@ -712,19 +712,28 @@ export class ItemUtilsService {
 
     // yellow text at the bottom, omit if we have a recipe
     if (!!description && !this.canTeachSpell(spellId1, spellId2)) {
-      xMisc.push(`<span class="q">"${description}"</span>`);
+      xMisc.push(`<br><span class="q">"${description}"</span>`);
     }
 
     // readable
     const PageText = this.editorService.form.controls.PageText.value;
     if (PageText > 0) {
-      xMisc.push(`<span class="q2">${ITEM_CONSTANTS.readClick}</span>`);
+      xMisc.push(`<br><span class="q2">${ITEM_CONSTANTS.readClick}</span>`);
     }
 
-    // charges (i guess checking first spell is enough)
+    // charges (I guess, checking first spell is enough)
     const spellCharges1 = this.editorService.form.controls.spellcharges_1.value;
-    if (spellCharges1 != null && spellCharges1 !== 0) {
-      xMisc.push(`<span class="q1">${ITEM_CONSTANTS.charges.replace('%d', Math.abs(spellCharges1).toString())}"</span>`);
+    if (!!spellCharges1) {
+
+      const charges = ITEM_CONSTANTS.charges.replace('%d', Math.abs(spellCharges1).toString());
+      if (Math.abs(spellCharges1) === 1) {
+        charges.replace('Charges', 'Charge');
+      }
+
+      if (!!charges && charges !== '') {
+        console.log(charges);
+        xMisc.push(`<br><span class="q1">${charges}</span>`);
+      }
     }
   }
 

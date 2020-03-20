@@ -194,7 +194,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
         const spellIDs = Object.keys(itemSpellsAndTrigger);
         for (const spellID of spellIDs) {
           const spellTrigger = itemSpellsAndTrigger[spellID];
-          const parsed = this.sqliteQueryService.getSpellDescriptionById(spellID);
+          const parsed = await this.sqliteQueryService.getSpellDescriptionById(spellID);
 
           green.push(ITEM_CONSTANTS.trigger[spellTrigger[0]] + parsed + spellTrigger[1]);
         }
@@ -264,8 +264,8 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     // if (isset(xCraft))
     //     xMisc.push(xCraft);
 
-    if (xMisc) {
-      this.tmpItemPreview += '<br>' + xMisc.join('<br>');
+    if (!!xMisc) {
+      this.tmpItemPreview += xMisc.join('');
     }
 
     const sellPrice = this.editorService.form.controls.SellPrice.value;
