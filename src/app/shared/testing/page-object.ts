@@ -12,6 +12,10 @@ export abstract class PageObject<ComponentType> {
     }
   }
 
+  whenStable() {
+    return this.fixture.whenStable();
+  }
+
   detectChanges() {
     this.fixture.detectChanges();
   }
@@ -50,7 +54,7 @@ export abstract class PageObject<ComponentType> {
     return children;
   }
 
-  public setInputValue(inputElement: HTMLInputElement | HTMLSelectElement, value: string|number) {
+  public setInputValue(inputElement: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement, value: string|number) {
     inputElement.value = `${value}`;
     inputElement.dispatchEvent(new Event('input'));
     inputElement.dispatchEvent(new Event('change'));
