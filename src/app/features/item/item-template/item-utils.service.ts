@@ -864,4 +864,97 @@ export class ItemUtilsService {
     return '';
   }
 
+  public async getSpellDesc(green: string[]) {
+    const spellId1 = this.editorService.form.controls.spellid_1.value;
+    const spellId2 = this.editorService.form.controls.spellid_2.value;
+
+    if (!this.canTeachSpell(spellId1, spellId2)) {
+      const itemSpellsAndTrigger = [];
+      for (let j = 1; j <= 5; j++) {
+        const spellid = this.editorService.form.controls['spellid_' + j].value;
+
+        if (spellid > 0) {
+          let cooldown = this.editorService.form.controls['spellcooldown_' + j].value;
+          const cooldownCategory = this.editorService.form.controls['spellcategory_' + j].value;
+
+          if (cooldown < cooldownCategory) {
+            cooldown = cooldownCategory;
+          }
+
+          cooldown = cooldown < 5000 ? '' : ` ( ${this.formatTime(cooldown)} cooldown)`;
+
+          itemSpellsAndTrigger[spellid] = [this.editorService.form.controls['spelltrigger_' + j].value, cooldown];
+        }
+      }
+
+      if (itemSpellsAndTrigger) {
+        const spellIDs = Object.keys(itemSpellsAndTrigger);
+        for (const spellID of spellIDs) {
+          const spellTrigger = itemSpellsAndTrigger[spellID];
+          const parsed = await this.sqliteQueryService.getSpellDescriptionById(spellID); // TODO: parseText correctly
+
+          green.push(ITEM_CONSTANTS.trigger[spellTrigger[0]] + parsed + spellTrigger[1]);
+        }
+
+      }
+    }
+  }
+
+  // TODO: recipes, vanity pets, mounts
+  public async getLearnSpellText(): Promise<string> {
+    /* TODO - WIP */
+
+    let spellDesc = '';
+
+    // const bagFamily: number = Number(this.editorService.form.controls.BagFamily.value);
+    // const itemClass: number = Number(this.editorService.form.controls.class.value);
+    const spellId1 = this.editorService.form.controls.spellid_1.value;
+    const spellId2 = this.editorService.form.controls.spellid_2.value;
+
+    if (this.canTeachSpell(spellId1, spellId2)) {
+      const craftSpell = spellId2;
+
+
+      if (!!craftSpell) {
+        // let xCraft = '';
+
+        const desc = await this.sqliteQueryService.getSpellDescriptionById(spellId2);
+
+        if (!!desc) {
+          spellDesc += `<br><span class="q2">${ITEM_CONSTANTS.trigger[0]} ${desc}</span>`;
+        }
+
+        // TODO: spell description for recipe
+        // // recipe handling (some stray Techniques have subclass == 0), place at bottom of tooltipp
+        // if (itemClass === ITEM_CLASS_RECIPE || bagFamily === 16) {
+        //   let craftItem  = craftSpell->curTpl['effect1CreateItemId'];
+
+        //   if (!!craftItem) {
+
+        //     const reagentItems = {};
+
+        //     for (let i = 1; i <= 8; i++) {
+        //       if (rId = craftSpell->getField('reagent' + i)) {
+        //         reagentItems[rId] = craftSpell->getField('reagentCount' + i);
+        //       }
+        //     }
+
+        //     if (!!xCraft && !!reagentItems) {
+        //       let reagents = Object.keys(reagentItems);
+        //       let reqReag  = [];
+
+        //       for (const _ of reagents) {
+        //         reqReag.push(`<a href="?item=${reagents->id}">${reagents->getField('name', true)}</a> (${reagentItems[reagents->id]})`);
+        //       }
+
+        //       xCraft += '<div class="q1 whtt-reagents"><br>Requires: ' + reqReag.join(', ') + '</div>';
+        //     }
+        //   }
+        // }
+      }
+    }
+
+    return spellDesc;
+  }
+
 }

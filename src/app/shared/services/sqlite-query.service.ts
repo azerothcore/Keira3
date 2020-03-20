@@ -77,10 +77,9 @@ export class SqliteQueryService extends QueryService {
     return this.queryValue<string>(`SELECT m_name_lang_1 AS v FROM factions WHERE m_ID = ${id}`).toPromise();
   }
 
-  // TODO: getLock
-  // getLockById(id: string | number): Promise<string> {
-  //   return this.queryValue<string>(`SELECT * FROM lock WHERE id = ${id}`);
-  // }
+  getLockById(id: string | number): Promise<TableRow[]> {
+    return this.query(`SELECT * FROM lock WHERE id = ${id}`).toPromise();
+  }
 
   getMapNameById(id: string | number): Promise<string> {
     return this.queryValue<string>(`SELECT m_MapName_lang1 AS v FROM maps WHERE m_ID = ${id}`).toPromise();

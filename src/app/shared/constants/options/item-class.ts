@@ -264,3 +264,6 @@ export enum ITEM_MOD {
   NATURE_POWER             = 61,
   ARCANE_POWER             = 62,
 }
+
+// ItemClass
+export const ITEM_CLASS_RECIPE = 9;

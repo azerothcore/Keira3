@@ -14,7 +14,7 @@ import { FACTION_RANK } from '@keira-constants/options/faction-rank';
 import { FOOD_TYPE } from '@keira-constants/options/foot-type';
 import { INVENTORY_TYPE } from '@keira-constants/options/inventory-type';
 import { ITEM_BONDING } from '@keira-constants/options/item-bonding';
-import { ITEM_CLASS, ITEM_SUBCLASS } from '@keira-constants/options/item-class';
+import { ITEM_CLASS, ITEM_SUBCLASS, ITEM_CLASS_RECIPE } from '@keira-constants/options/item-class';
 import { ITEM_MATERIAL } from '@keira-constants/options/item-material';
 import { ITEMS_QUALITY, ITEM_QUALITY } from '@keira-constants/options/item-quality';
 import { ITEM_SHEAT } from '@keira-constants/options/item-sheath';
@@ -156,51 +156,18 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
 
     this.tmpItemPreview += await this.itemUtilsService.getRequiredText();
 
-    // TODO: fix this
+    // TODO
     // // locked or openable
     // const lockid = this.editorService.form.controls.lockid.value;
-    // // const lockData = await this.sqliteQueryService.getLockById(lockid, this.editorService.queryService);
-    // const lockData = false;
-    // if (lockid > 0 && lockData) {
-    //   // this.tmpItemPreview += `<span class="q0">Locked<br>${lockData.join('<br>')}</span><br>`;
+    // const lockData = await this.sqliteQueryService.getLockById(lockid);
+    // if (!!lockid && !!lockData) {
+    //   this.tmpItemPreview += `<span class="q0">Locked<br>${lockData.join('<br>')}</span><br>`;
     // } else if (flags & ITEM_FLAG.OPENABLE) {
     //   this.tmpItemPreview += `<span class="q2">${ITEM_CONSTANTS.openClick}</span><br>`;
     // }
 
     // spells on item
-    const spellId1 = this.editorService.form.controls.spellid_1.value;
-    const spellId2 = this.editorService.form.controls.spellid_2.value;
-    if (!this.itemUtilsService.canTeachSpell(spellId1, spellId2)) {
-      const itemSpellsAndTrigger = [];
-      for (let j = 1; j <= 5; j++) {
-        const spellid = this.editorService.form.controls['spellid_' + j].value;
-
-        if (spellid > 0) {
-          let cooldown = this.editorService.form.controls['spellcooldown_' + j].value;
-          const cooldownCategory = this.editorService.form.controls['spellcategory_' + j].value;
-
-          if (cooldown < cooldownCategory) {
-            cooldown = cooldownCategory;
-          }
-
-          cooldown = cooldown < 5000 ? '' : ` ( ${this.itemUtilsService.formatTime(cooldown)} cooldown)`;
-
-          itemSpellsAndTrigger[spellid] = [this.editorService.form.controls['spelltrigger_' + j].value, cooldown];
-        }
-      }
-
-      if (itemSpellsAndTrigger) {
-        // TODO
-        const spellIDs = Object.keys(itemSpellsAndTrigger);
-        for (const spellID of spellIDs) {
-          const spellTrigger = itemSpellsAndTrigger[spellID];
-          const parsed = await this.sqliteQueryService.getSpellDescriptionById(spellID);
-
-          green.push(ITEM_CONSTANTS.trigger[spellTrigger[0]] + parsed + spellTrigger[1]);
-        }
-
-      }
-    }
+    this.tmpItemPreview += await this.itemUtilsService.getSpellDesc(green);
 
     for (const bonus of green) {
       if (bonus) {
@@ -210,46 +177,8 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
 
     this.tmpItemPreview += this.itemUtilsService.getItemSet();
 
-    // // recipes, vanity pets, mounts
-    // if ($this->canTeachSpell())
-    // {
-    //     $craftSpell = new SpellList(array(['s.id', intVal($this->curTpl['spellId2'])]));
-    //     if (!$craftSpell->error)
-    //     {
-    //         $xCraft = '';
-    //         if ($desc = $this->getField('description', true))
-    //             this.tmpItemPreview += '<span class="q2">'.Lang::item('trigger', 0).' <a href="?spell='.
-    //             $this->curTpl['spellId2'].'">'.$desc.'</a></span><br>';
-
-    //         // recipe handling (some stray Techniques have subclass == 0), place at bottom of tooltipp
-    //         if (itemClass == ITEM_CLASS_RECIPE || $this->curTpl['bagFamily'] == 16)
-    //         {
-    //             $craftItem  = new ItemList(array(['i.id', (int)$craftSpell->curTpl['effect1CreateItemId']]));
-    //             if (!$craftItem->error)
-    //             {
-    //                 if ($itemTT = $craftItem->renderTooltip($interactive, $this->id))
-    //                     $xCraft .= '<div><br>'.$itemTT.'</div>';
-
-    //                 $reagentItems = [];
-    //                 for ($i = 1; $i <= 8; $i++)
-    //                     if ($rId = $craftSpell->getField('reagent'.$i))
-    //                         $reagentItems[$rId] = $craftSpell->getField('reagentCount'.$i);
-
-    //                 if (isset($xCraft) && $reagentItems)
-    //                 {
-    //                     $reagents = new ItemList(array(['i.id', array_keys($reagentItems)]));
-    //                     $reqReag  = [];
-
-    //                     foreach ($reagents->iterate() as $__)
-    //                         $reqReag[] = '<a href="?item='.$reagents->id.'">'.$reagents->getField('name', true).
-    //                         '</a> ('.$reagentItems[$reagents->id].')';
-
-    //                     $xCraft .= '<div class="q1 whtt-reagents"><br>'.Lang::game('requires2').' '.implode(', ', $reqReag).'</div>';
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
+    // recipes, vanity pets, mounts
+    this.tmpItemPreview += await this.itemUtilsService.getLearnSpellText();
 
     // misc (no idea, how to organize the <br> better)
     const xMisc = [];
