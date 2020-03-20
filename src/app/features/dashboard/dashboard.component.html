@@ -24,6 +24,19 @@
 
   <hr>
 
+  <div *ngIf="error" class="alert alert-danger error-box mt-2">
+    <p>
+      <strong>WARNING:</strong> It looks like <strong><i>{{ mysqlService.config.database }}</i></strong> is not a valid AzerothCore world database.
+    </p>
+
+    <ul>
+      <li>If you selected the wrong database by mistake, you can logout and change it.</li>
+      <li>If you are using an old version of AzerothCore, we recommend to <a href="http://www.azerothcore.org/wiki/Update">update it</a> before using the editor.</li>
+      <li>If you are using a different emulator than AzerothCore, be aware that some features will be broken</li>
+        More info are available <a href="https://github.com/azerothcore/forum/issues/43">here</a>.
+    </ul>
+  </div>
+
   <p class="lead">System details:</p>
 
   <table class="table table-striped table-bordered table-sm">

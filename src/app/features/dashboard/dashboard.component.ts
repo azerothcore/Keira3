@@ -6,6 +6,7 @@ import { version } from '../../../../package.json';
 import { AC_FORUM_URL, PAYPAL_DONATE_URL, KEIRA3_REPO_URL, AC_DISCORD_URL } from '@keira-constants/general';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
 import { ConfigService } from '@keira-shared/services/config.service';
+import { MysqlService } from '@keira-shared/services/mysql.service';
 
 @Component({
   selector: 'keira-home',
@@ -16,6 +17,7 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
 
   coreVersions: VersionRow;
   dbWorldVersion: string;
+  error = false;
   public readonly KEIRA_VERSION = version;
   public readonly PAYPAL_DONATE_URL = PAYPAL_DONATE_URL;
   public readonly AC_FORUM_URL = AC_FORUM_URL;
@@ -25,6 +27,7 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
   constructor(
     private queryService: MysqlQueryService,
     public configService: ConfigService,
+    public readonly mysqlService: MysqlService,
   ) {
     super();
   }
@@ -41,10 +44,15 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
       this.queryService.query<VersionRow>(query).subscribe((data) => {
         if (data && data.length > 0) {
           this.coreVersions = data[0];
+
+          if (!this.coreVersions.db_version.startsWith('ACDB') || !this.coreVersions.core_revision.startsWith('AzerothCopre')) {
+            this.error = true;
+          }
         } else {
           console.error(`Query ${query} produced no results: ${data}`);
         }
       }, (error) => {
+        this.error = true;
         console.error(error);
       })
     );
@@ -61,6 +69,7 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
           console.error(`Query ${query} produced no results: ${data}`);
         }
       }, (error) => {
+        this.error = true;
         console.error(error);
       })
     );
