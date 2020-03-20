@@ -23,7 +23,7 @@ export class ItemUtilsService {
    * utils
    */
 
-  private setRatingLevel(level: number, type: number, val: number) {
+  private setRatingLevel(level: number, type: number, val: number): string {
     let result = '';
 
     const rating = [
@@ -39,7 +39,7 @@ export class ItemUtilsService {
     }
 
     if (gtCombatRatings[type]) {
-      let c = 0;
+      let c: number;
       if (level > 70) {
         c = 82 / 52 * Math.pow(131 / 63, (level - 70) / 10);
       } else if (level > 60) {
@@ -147,7 +147,7 @@ export class ItemUtilsService {
 
     if (qty >= 100) {
       const s = Math.floor(qty / 100);
-      money +=`<span class="moneysilver">${s}</span> &nbsp;`;
+      money += `<span class="moneysilver">${s}</span> &nbsp;`;
       qty -= s * 100;
     }
 
@@ -276,7 +276,7 @@ export class ItemUtilsService {
     return Math.round((dps - 54.8) * 14);
   }
 
-  public canTeachSpell(spellId1: number, spellId2: number = null) {
+  public canTeachSpell(spellId1: number, spellId2: number = null): boolean {
     // 483:   learn recipe;
     // 55884: learn mount/pet
     if (![483, 55884].includes(spellId1)) {
@@ -284,11 +284,7 @@ export class ItemUtilsService {
     }
 
     // needs learnable spell
-    if (!spellId2) {
-      return false;
-    }
-
-    return true;
+    return !!spellId2;
   }
 
 
@@ -366,8 +362,6 @@ export class ItemUtilsService {
 
   public getStats(greenText: string[]): string {
     let stats = '';
-
-    const requiredLevel = this.editorService.form.controls.RequiredLevel.value;
 
     for (let i = 1; i <= 10; i++) {
       const type = this.editorService.form.controls['stat_type' + i].value;
