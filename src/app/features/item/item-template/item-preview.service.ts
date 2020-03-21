@@ -19,6 +19,8 @@ export class ItemPreviewService {
     protected queryService: MysqlQueryService,
   ) { }
 
+  private vendors = [];
+
   /**
    * utils
    */
@@ -293,6 +295,173 @@ export class ItemPreviewService {
     // needs learnable spell
     return !!spellId2;
   }
+
+  // // todo (med): information will get lost if one vendor sells one item multiple times with different costs (e.g. for item 54637)
+  // //             wowhead seems to have had the same issues
+  // public getExtendedCost(filter = []): [] {
+
+  //   if (this.vendors.length === 0) {
+  //     let itemz      = [];
+  //     let xCostData  = [];
+  //     let rawEntries = DB::World()->select(
+  //       `
+  //       SELECT   nv.item,       nv.entry,             0  AS eventId,   nv.maxcount,   nv.extendedCost FROM npc_vendor   nv                                                                                                  WHERE {nv.entry IN (?a) AND} nv.item IN (?a)
+  //       UNION
+  //       SELECT genv.item, c.id AS \`entry\`, ge.eventEntry AS eventId, genv.maxcount, genv.extendedCost FROM game_event_npc_vendor genv
+  //       LEFT JOIN game_event ge ON genv.eventEntry = ge.eventEntry
+  //       JOIN creature c ON c.guid = genv.guid
+  //       WHERE {c.id IN (?a) AND}   genv.item IN (?a)`,
+  //       empty($filter[TYPE_NPC]) || !is_array($filter[TYPE_NPC]) ? DBSIMPLE_SKIP : $filter[TYPE_NPC],
+  //       array_keys($this->templates),
+  //       empty($filter[TYPE_NPC]) || !is_array($filter[TYPE_NPC]) ? DBSIMPLE_SKIP : $filter[TYPE_NPC],
+  //       array_keys($this->templates)
+  //       );
+
+  //       foreach ($rawEntries as $costEntry) {
+  //         if ($costEntry['extendedCost']) {
+  //           $xCostData[] = $costEntry['extendedCost'];
+  //         }
+
+  //         if (!isset($itemz[$costEntry['item']][$costEntry['entry']])) {
+  //           $itemz[$costEntry['item']][$costEntry['entry']] = [$costEntry];
+  //         } else {
+  //           $itemz[$costEntry['item']][$costEntry['entry']][] = $costEntry;
+  //         }
+  //       }
+
+  //       if ($xCostData) {
+  //         $xCostData = DB::Aowow()->select('SELECT *, id AS ARRAY_KEY FROM ?_itemextendedcost WHERE id IN (?a)', $xCostData);
+  //       }
+
+  //       $cItems = [];
+  //       foreach ($itemz as $k => $vendors) {
+  //         foreach ($vendors as $l => $vendor) {
+  //           foreach ($vendor as $m => $vInfo) {
+  //             $costs = [];
+  //             if (!empty($xCostData[$vInfo['extendedCost']])) {
+  //               $costs = $xCostData[$vInfo['extendedCost']];
+  //             }
+
+  //             $data   = array(
+  //               'stock'      => $vInfo['maxcount'] ?: -1,
+  //               'event'      => $vInfo['eventId'],
+  //               'reqRating'  => $costs ? $costs['reqPersonalRating'] : 0,
+  //               'reqBracket' => $costs ? $costs['reqArenaSlot']      : 0
+  //               );
+
+  //               // hardcode arena(103) & honor(104)
+  //               if (!empty($costs['reqArenaPoints'])) {
+  //                 $data[-103] = $costs['reqArenaPoints'];
+  //                 $this->jsGlobals[TYPE_CURRENCY][103] = 103;
+  //               }
+
+  //               if (!empty($costs['reqHonorPoints'])) {
+  //                 $data[-104] = $costs['reqHonorPoints'];
+  //                 $this->jsGlobals[TYPE_CURRENCY][104] = 104;
+  //               }
+
+  //               for ($i = 1; $i < 6; $i++) {
+  //                 if (!empty($costs['reqItemId'.$i]) && $costs['itemCount'.$i] > 0) {
+  //                   $data[$costs['reqItemId'.$i]] = $costs['itemCount'.$i];
+  //                   $cItems[] = $costs['reqItemId'.$i];
+  //                 }
+  //               }
+
+  //               // no extended cost or additional gold required
+  //               if (!$costs || $this->getField('flagsExtra') & 0x04) {
+  //                 $this->getEntry($k);
+  //                 if ($_ = $this->getField('buyPrice')) {
+  //                   $data[0] = $_;
+  //                 }
+  //               }
+
+  //               $vendor[$m] = $data;
+  //             }
+  //             $vendors[$l] = $vendor;
+  //           }
+
+  //           $itemz[$k] = $vendors;
+  //         }
+
+  //         // convert items to currency if possible
+  //         if ($cItems) {
+  //           $moneyItems = new CurrencyList(array(['itemId', $cItems]));
+  //           foreach ($moneyItems->getJSGlobals() as $type => $jsData) {
+  //             foreach ($jsData as $k => $v) {
+  //               $this->jsGlobals[$type][$k] = $v;
+  //             }
+  //           }
+
+  //           foreach ($itemz as $itemId => $vendors) {
+  //             foreach ($vendors as $npcId => $costData) {
+  //               foreach ($costData as $itr => $cost) {
+  //                 foreach ($cost as $k => $v) {
+  //                   if (in_array($k, $cItems)) {
+  //                     $found = false;
+  //                     foreach ($moneyItems->iterate() as $__) {
+  //                       if ($moneyItems->getField('itemId') == $k) {
+  //                         unset($cost[$k]);
+  //                         $cost[-$moneyItems->id] = $v;
+  //                         $found = true;
+  //                         break;
+  //                       }
+  //                     }
+
+  //                     if (!$found) {
+  //                       $this->jsGlobals[TYPE_ITEM][$k] = $k;
+  //                     }
+  //                   }
+  //                 }
+  //                 $costData[$itr] = $cost;
+  //               }
+  //               $vendors[$npcId] = $costData;
+  //             }
+  //             $itemz[$itemId] = $vendors;
+  //           }
+  //         }
+
+  //         $this->vendors = $itemz;
+  //       }
+
+  //       $result = $this->vendors;
+
+  //       // apply filter if given
+  //       $tok = !empty($filter[TYPE_ITEM])     ? $filter[TYPE_ITEM]     : null;
+  //       $cur = !empty($filter[TYPE_CURRENCY]) ? $filter[TYPE_CURRENCY] : null;
+
+  //       foreach ($result as $itemId => &$data) {
+  //         $reqRating = [];
+  //         foreach ($data as $npcId => $entries) {
+  //           foreach ($entries as $costs) {
+  //             if ($tok || $cur) {                           // bought with specific token or currency
+  //               $valid = false;
+  //               foreach ($costs as $k => $qty) {
+  //                 if ((!$tok || $k == $tok) && (!$cur || $k == -$cur)) {
+  //                   $valid = true;
+  //                   break;
+  //                 }
+  //               }
+
+  //               if (!$valid) {
+  //                 unset($data[$npcId]);
+  //               }
+  //             }
+
+  //             // reqRating ins't really a cost .. so pass it by ref instead of return
+  //             // use highest total value
+  //             if (isset($data[$npcId]) && $costs['reqRating'] && (!$reqRating || $reqRating[0] < $costs['reqRating'])) {
+  //               $reqRating = [$costs['reqRating'], $costs['reqBracket']];
+  //             }
+  //           }
+  //         }
+
+  //         if (empty($data)) {
+  //           unset($result[$itemId]);
+  //         }
+  //       }
+
+  //       return $result;
+  //     }
 
 
   /**
@@ -612,9 +781,10 @@ export class ItemPreviewService {
 
     // TODO
     // required arena team rating / personal rating / todo (low): sort out what kind of rating
-    // if (!empty($this->getExtendedCost([], $reqRating)[$this->id]) && $reqRating) {
-    //   requiredText += sprintf(Lang::item('reqRating', $reqRating[1]), $reqRating[0]).'<br>';
-    // }
+    const entry = this.editorService.form.controls.entry.value;
+    if (!empty(this.getExtendedCost()[entry]) && $reqRating) {
+      requiredText += sprintf(Lang::item('reqRating', $reqRating[1]), $reqRating[0]).'<br>';
+    }
 
     // item level
     const itemClass: number = Number(this.editorService.form.controls.class.value);
