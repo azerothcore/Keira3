@@ -45,7 +45,7 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
         if (data && data.length > 0) {
           this.coreVersions = data[0];
 
-          if (!this.coreVersions.db_version.startsWith('ACDB') || !this.coreVersions.core_revision.startsWith('AzerothCopre')) {
+          if (!this.coreVersions.db_version.startsWith('ACDB') || !this.coreVersions.core_revision.startsWith('AzerothCore')) {
             this.error = true;
           }
         } else {
