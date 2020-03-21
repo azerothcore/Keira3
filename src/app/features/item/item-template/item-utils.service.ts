@@ -957,4 +957,71 @@ export class ItemUtilsService {
     return spellDesc;
   }
 
+  private async getLocks(lockId: number): Promise<string[]> {
+    const lock = (await this.sqliteQueryService.getLockById(lockId))[0];
+
+    if (!lock) {
+      return [];
+    }
+
+    const locks = [];
+
+    for (let i = 1; i <= 5; i++) {
+      const prop = lock['properties' + i];
+      const rank = lock['reqSkill' + i];
+      let name = '';
+
+      const lockType = Number(lock['type' + i]);
+
+      if (lockType === 1) {                      // opened by item
+        name = await this.queryService.getItemNameById(prop);
+
+        if (!name) {
+          continue;
+        }
+      } else if (lockType === 2) {                 // opened by skill
+
+        // exclude unusual stuff
+        if (![1, 2, 3, 4, 9, 16, 20].includes(Number(prop))) {
+          continue;
+        }
+
+        name = ITEM_CONSTANTS.lockType[prop];
+
+        if (!name) {
+          continue;
+        }
+
+        if (rank > 0) {
+          name += ` (${rank})`;
+        }
+      } else {
+        continue;
+      }
+
+      // locks[lockType === 1 ? prop : -prop] = `Requires ${name}`;
+      locks.push(`<br>Requires ${name}`);
+    }
+
+    return locks;
+  }
+
+  // locked or openable
+  public async getLockText(): Promise<string> {
+    let lockText = '';
+
+    const flags = this.editorService.form.controls.Flags.value;
+    const lockid = this.editorService.form.controls.lockid.value;
+    if (!!lockid) {
+      const lockData = await this.getLocks(lockid);
+
+      if (!!lockData) {
+        lockText += `<br><span class="q0">Locked${lockData.join('')}</span>`;
+      } else if (flags & ITEM_FLAG.OPENABLE) {
+        lockText += `<br><span class="q2">${ITEM_CONSTANTS.openClick}</span>`;
+      }
+    }
+
+    return lockText;
+  }
 }

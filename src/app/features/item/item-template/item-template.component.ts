@@ -156,22 +156,16 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
 
     this.tmpItemPreview += await this.itemUtilsService.getRequiredText();
 
-    // TODO
-    // // locked or openable
-    // const lockid = this.editorService.form.controls.lockid.value;
-    // const lockData = await this.sqliteQueryService.getLockById(lockid);
-    // if (!!lockid && !!lockData) {
-    //   this.tmpItemPreview += `<span class="q0">Locked<br>${lockData.join('<br>')}</span><br>`;
-    // } else if (flags & ITEM_FLAG.OPENABLE) {
-    //   this.tmpItemPreview += `<span class="q2">${ITEM_CONSTANTS.openClick}</span><br>`;
-    // }
+    this.tmpItemPreview += await this.itemUtilsService.getLockText();
 
     // spells on item
-    this.tmpItemPreview += await this.itemUtilsService.getSpellDesc(green);
+    await this.itemUtilsService.getSpellDesc(green);
 
-    for (const bonus of green) {
-      if (bonus) {
-        this.tmpItemPreview += `<br><span class="q2">${bonus}</span>`;
+    if (!!green && green.length > 0) {
+      for (const bonus of green) {
+        if (bonus) {
+          this.tmpItemPreview += `<br><span class="q2">${bonus}</span>`;
+        }
       }
     }
 
@@ -193,7 +187,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     // if (isset(xCraft))
     //     xMisc.push(xCraft);
 
-    if (!!xMisc) {
+    if (!!xMisc && xMisc.length > 0) {
       this.tmpItemPreview += xMisc.join('');
     }
 

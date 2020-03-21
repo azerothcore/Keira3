@@ -236,5 +236,13 @@ export const ITEM_CONSTANTS = {
     'Increases spell penetration by %d.',
     'Increases the block value of your shield by %d.',
     'Unknown Bonus #%d (%d)',
-  ]
+  ],
+  lockType: [                          // lockType.dbc
+    null,                                   'Lockpicking',                          'Herbalism',                            'Mining',                               'Disarm Trap',
+    'Open',                                 'Treasure (DND)',                       'Calcified Elven Gems (DND)',           'Close',                                'Arm Trap',
+    'Quick Open',                           'Quick Close',                          'Open Tinkering',                       'Open Kneeling',                        'Open Attacking',
+    'Gahz\'ridian (DND)',                    'Blasting',                             'PvP Open',                             'PvP Close',                            'Fishing (DND)',
+    'Inscription',                          'Open From Vehicle'
+  ],
+
 };
