@@ -14,7 +14,7 @@ import { FACTION_RANK } from '@keira-constants/options/faction-rank';
 import { FOOD_TYPE } from '@keira-constants/options/foot-type';
 import { INVENTORY_TYPE } from '@keira-constants/options/inventory-type';
 import { ITEM_BONDING } from '@keira-constants/options/item-bonding';
-import { ITEM_CLASS, ITEM_SUBCLASS, ITEM_CLASS_RECIPE } from '@keira-constants/options/item-class';
+import { ITEM_CLASS, ITEM_SUBCLASS } from '@keira-constants/options/item-class';
 import { ITEM_MATERIAL } from '@keira-constants/options/item-material';
 import { ITEMS_QUALITY, ITEM_QUALITY } from '@keira-constants/options/item-quality';
 import { ITEM_SHEAT } from '@keira-constants/options/item-sheath';
@@ -23,13 +23,12 @@ import { STAT_TYPE } from '@keira-constants/options/stat-type';
 import { TOTEM_CATEGORY } from '@keira-constants/options/totem-category';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { ItemTemplate } from '@keira-types/item-template.type';
+import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ItemHandlerService } from '../item-handler.service';
-import { ITEM_CONSTANTS } from './item_constants';
+import { ItemPreviewService } from './item-preview.service';
 import { ItemTemplateService } from './item-template.service';
-import { Observable } from 'rxjs';
-import { ItemUtilsService } from './item-utils.service';
-import { MAX_LEVEL } from './item-utils';
+import { ITEM_CONSTANTS } from './item_constants';
 
 @Component({
   selector: 'keira-item-template',
@@ -65,7 +64,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     public editorService: ItemTemplateService,
     public handlerService: ItemHandlerService,
     public readonly sqliteQueryService: SqliteQueryService,
-    private itemUtilsService: ItemUtilsService,
+    private itemPreviewService: ItemPreviewService,
     private sanitizer: DomSanitizer,
   ) {
     super(editorService, handlerService);
@@ -75,133 +74,14 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   public icon: Observable<string>;
   public hasItemLevel: boolean = false;
   public itemPreview: SafeHtml = this.sanitizer.bypassSecurityTrustHtml('loading...');
-  private tmpItemPreview = '';
 
-  private async calculatePreview() {
-    this.tmpItemPreview = '';
-    const green: string[] = [];
-
-    const flags = this.editorService.form.controls.Flags.value;
-    const bagFamily: number = Number(this.editorService.form.controls.BagFamily.value);
-    const quality: number = Number(this.editorService.form.controls.Quality.value);
-
-    // ITEM NAME
-    const itemName = this.editorService.form.controls.name.value;
-    if (itemName) {
-      this.tmpItemPreview += '<b class="item-name q' + quality + '">' + itemName + '</b>';
-    }
-
-    // heroic tag
-    if (flags & ITEM_FLAG.HEROIC && quality === ITEMS_QUALITY.EPIC) {
-      this.tmpItemPreview += '<br><!-- ITEM_FLAG.HEROIC --><span class="q2">Heroic</span>';
-    }
-
-    this.tmpItemPreview += await this.itemUtilsService.getRequiredZone();
-
-    // conjured
-    if (flags & ITEM_FLAG.CONJURED) {
-      this.tmpItemPreview += '<br> Conjured Item';
-    }
-
-    this.tmpItemPreview += this.itemUtilsService.getBonding();
-    this.tmpItemPreview += this.itemUtilsService.getDuration();
-
-    // // required holiday
-    // if ($eId = $this->curTpl['eventId'])
-    //   if ($hName = selectRow('SELECT h.* FROM ?_holidays h JOIN ?_events e ON e.holidayId = h.id WHERE e.id = ?d', $eId))
-    //     this.tmpItemPreview += '<br>'.sprintf(Lang::game('requires'), '<a href="'.$eId.'" class="q1">
-    //     '.Util::localizedString($hName, 'name').'</a>');
-
-    // item begins a quest
-    const startquest: number = Number(this.editorService.form.controls.startquest.value);
-    if (startquest > 0) {
-      this.tmpItemPreview += `<br><a class="q1" href="?quest=${startquest}">This Item Begins a Quest</a>`;
-    }
-
-    // containerType (slotCount)
-    const containerSlots: number = Number(this.editorService.form.controls.ContainerSlots.value);
-    if (containerSlots > 0) {
-      const fam = bagFamily ? Math.log2(bagFamily) + 1 : 0;
-      this.tmpItemPreview += `<br>${containerSlots} Slot ${ITEM_CONSTANTS.bagFamily[fam]}`;
-    }
-
-    this.tmpItemPreview += this.itemUtilsService.getClassText();
-    this.tmpItemPreview += this.itemUtilsService.getDamageText();
-    this.tmpItemPreview += this.itemUtilsService.getArmorText();
-
-    // Item is a gem (don't mix with sockets) (TODO)
-    this.tmpItemPreview += this.itemUtilsService.getGemEnchantment();
-
-    // Random Enchantment - if random enchantment is set, prepend stats from it
-    const RandomProperty: number = this.editorService.form.controls.RandomProperty.value;
-    if (RandomProperty /* && empty($enhance['r']) */) {
-      this.tmpItemPreview += `<br><span class="q2">${ITEM_CONSTANTS.randEnchant}</span>`;
-    }/* else if (!empty($enhance['r'])) {
-      this.tmpItemPreview += randEnchant;
-    } */
-
-    // itemMods (display stats and save ratings for later use)
-    this.tmpItemPreview += this.itemUtilsService.getStats(green);
-
-    this.tmpItemPreview += this.itemUtilsService.getMagicResistances();
-
-    // Socket & Enchantment (TODO)
-    this.tmpItemPreview += this.itemUtilsService.getSocketEnchantment();
-
-    // durability
-    const durability = this.editorService.form.controls.MaxDurability.value;
-    if (durability) {
-      this.tmpItemPreview += `<br>${ITEM_CONSTANTS.durability.replace(/%d/g, durability)}`;
-    }
-
-    this.tmpItemPreview += await this.itemUtilsService.getRequiredText();
-
-    this.tmpItemPreview += await this.itemUtilsService.getLockText();
-
-    // spells on item
-    await this.itemUtilsService.getSpellDesc(green);
-
-    if (!!green && green.length > 0) {
-      for (const bonus of green) {
-        if (bonus) {
-          this.tmpItemPreview += `<br><span class="q2">${bonus}</span>`;
-        }
-      }
-    }
-
-    this.tmpItemPreview += this.itemUtilsService.getItemSet();
-
-    // recipes, vanity pets, mounts
-    this.tmpItemPreview += await this.itemUtilsService.getLearnSpellText();
-
-    // misc (no idea, how to organize the <br> better)
-    const xMisc = [];
-
-    // // itemset: pieces and boni
-    // if (isset($xSet))
-    //     xMisc[] = $xSet;
-
-    this.itemUtilsService.getMisc(xMisc);
-
-    // // list required reagents
-    // if (isset(xCraft))
-    //     xMisc.push(xCraft);
-
-    if (!!xMisc && xMisc.length > 0) {
-      this.tmpItemPreview += xMisc.join('');
-    }
-
-    const sellPrice = this.editorService.form.controls.SellPrice.value;
-    if (!!sellPrice) {
-      this.tmpItemPreview += '<br>Sell Price: ' + this.itemUtilsService.formatMoney(sellPrice);
-    }
-
-    this.itemPreview = this.sanitizer.bypassSecurityTrustHtml(this.tmpItemPreview);
+  private async loadItemPreview() {
+    this.itemPreview = this.sanitizer.bypassSecurityTrustHtml(await this.itemPreviewService.calculatePreview());
   }
 
   ngOnInit() {
     super.ngOnInit();
-    this.calculatePreview();
+    this.loadItemPreview();
     this.icon = this.sqliteQueryService.getIconByItemDisplayId(this.editorService.form.controls.displayid.value);
 
     this.subscriptions.push(
@@ -216,7 +96,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
           debounceTime(600),
           distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
         )
-        .subscribe(this.calculatePreview.bind(this))
+        .subscribe(this.loadItemPreview.bind(this))
     );
   }
 

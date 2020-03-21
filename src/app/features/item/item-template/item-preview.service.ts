@@ -4,12 +4,12 @@ import { ItemTemplateService } from './item-template.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { ITEM_TYPE, ITEM_MOD } from '@keira-shared/constants/options/item-class';
 import { ITEM_CONSTANTS } from './item_constants';
-import { MAX_LEVEL, lvlIndepRating, gtCombatRatings, CLASSES, RACE, resistanceFields } from './item-utils';
+import { MAX_LEVEL, lvlIndepRating, gtCombatRatings, CLASSES, RACE, resistanceFields } from './item-preview';
 import { ITEM_FLAG } from '@keira-shared/constants/flags/item-flags';
 import { ITEMS_QUALITY } from '@keira-shared/constants/options/item-quality';
 
 @Injectable()
-export class ItemUtilsService {
+export class ItemPreviewService {
   private readonly ITEM_CONSTANTS = ITEM_CONSTANTS;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
@@ -199,26 +199,33 @@ export class ItemUtilsService {
     let tmp = 0;
 
     if (short) {
-      if (tmp = Math.round(s.d / 364)) {
+      tmp = Math.round(s.d / 364);
+      if (tmp) {
         return tmp + ' ' + ITEM_CONSTANTS.timeUnits.ab[0];
       }
 
-      if (tmp = Math.round(s.d / 30)) {
+      tmp = Math.round(s.d / 30);
+      if (tmp) {
         return tmp + ' ' + ITEM_CONSTANTS.timeUnits.ab[1];
       }
-      if (tmp = Math.round(s.d / 7)) {
+      tmp = Math.round(s.d / 7);
+      if (tmp) {
         return tmp + ' ' + ITEM_CONSTANTS.timeUnits.ab[2];
       }
-      if (tmp = Math.round(s.d)) {
+      tmp = Math.round(s.d);
+      if (tmp) {
         return tmp + ' ' + ITEM_CONSTANTS.timeUnits.ab[3];
       }
-      if (tmp = Math.round(s.h)) {
+      tmp = Math.round(s.h);
+      if (tmp) {
         return tmp + ' ' + ITEM_CONSTANTS.timeUnits.ab[4];
       }
-      if (tmp = Math.round(s.m)) {
+      tmp = Math.round(s.m);
+      if (tmp) {
         return tmp + ' ' + ITEM_CONSTANTS.timeUnits.ab[5];
       }
-      if (tmp = Math.round(s.s + s.ms / 1000)) {
+      tmp = Math.round(s.s + s.ms / 1000);
+      if (tmp) {
         return tmp + ' ' + ITEM_CONSTANTS.timeUnits.ab[6];
       }
       if (s.ms) {
@@ -329,7 +336,7 @@ export class ItemUtilsService {
       }
 
       if (itemClass === ITEM_TYPE.WEAPON) {
-        damageText += `<table style="float: left;" width="100%"><tr><td>${dmg}</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><th style="text-align: right;">Speed <!--spd-->${speed.toFixed(2)}</th></tr></table>`;
+        damageText += `<table style="float: left; width: 100%;"><tr><td>${dmg}</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><th style="text-align: right;">Speed <!--spd-->${speed.toFixed(2)}</th></tr></table>`;
       } else {
         damageText += `<br><!--dmg-->${dmg}`;
       }
@@ -513,7 +520,7 @@ export class ItemUtilsService {
 
     let textRight = '';
     if ([ITEM_TYPE.ARMOR, ITEM_TYPE.WEAPON, ITEM_TYPE.AMMUNITION].includes(itemClass)) {
-      classText += '<table style="float: left;" width="100%"><tr>';
+      classText += '<table style="float: left; width: 100%;"><tr>';
 
       // Class
       if (inventoryType) {
@@ -725,7 +732,6 @@ export class ItemUtilsService {
       }
 
       if (!!charges && charges !== '') {
-        console.log(charges);
         xMisc.push(`<br><span class="q1">${charges}</span>`);
       }
     }
@@ -736,7 +742,7 @@ export class ItemUtilsService {
     // const gemEnchantmentId = this.editorService.form.controls.gemEnchantmentId.value;
     // if (gemEnchantmentId) {
     //   gemEnch = selectRow('SELECT * FROM ?_itemenchantment WHERE id = ?d', geId);
-    //   this.tmpItemPreview += '<span class="q1"><a href="?enchantment='.geId.'">'.
+    //   tmpItemPreview += '<span class="q1"><a href="?enchantment='.geId.'">'.
     //   Util:: localizedString(gemEnch, 'name').'</a></span><br>';
 
     //   // activation conditions for meta gems
@@ -761,7 +767,7 @@ export class ItemUtilsService {
     //           continue;
     //         }
 
-    //         this.tmpItemPreview += '<span class="q0">'.Lang:: achievement('reqNumCrt').' '.
+    //         tmpItemPreview += '<span class="q0">'.Lang:: achievement('reqNumCrt').' '.
     //         Lang:: item('gemConditions', gemCnd['comparator'.i], vspfArgs).'</span><br>';
     //       }
     //     }
@@ -776,15 +782,15 @@ export class ItemUtilsService {
     // if (isset($enhance['e']))
     // {
     //     if ($enchText = selectRow('SELECT * FROM ?_itemenchantment WHERE Id = ?', $enhance['e']))
-    //         this.tmpItemPreview += '<span class="q2"><!--e-->'.Util::localizedString($enchText, 'name').'</span><br>';
+    //         tmpItemPreview += '<span class="q2"><!--e-->'.Util::localizedString($enchText, 'name').'</span><br>';
     //     else
     //     {
     //         unset($enhance['e']);
-    //         this.tmpItemPreview += '<!--e-->';
+    //         tmpItemPreview += '<!--e-->';
     //     }
     // }
     // else                                                // enchantment placeholder
-    //     this.tmpItemPreview += '<!--e-->';
+    //     tmpItemPreview += '<!--e-->';
 
     // // Sockets w/ Gems
     // if (!empty($enhance['g']))
@@ -831,10 +837,10 @@ export class ItemUtilsService {
     //     $text      = $pop ? Util::localizedString($gems[$pop], 'name') : Lang::item('socket', $colorId);
 
     //     if ($interactive)
-    //         this.tmpItemPreview += '<a href="?items=3&amp;filter=cr=81;crs='
+    //         tmpItemPreview += '<a href="?items=3&amp;filter=cr=81;crs='
     //         .($colorId + 1).';crv=0" class="socket-'.Game::$sockets[$colorId].' q'.$col.'" '.$icon.'>'.$text.'</a><br>';
     //     else
-    //         this.tmpItemPreview += '<span class="socket-'.Game::$sockets[$colorId].' q'.$col.'" '.$icon.'>'.$text.'</span><br>';
+    //         tmpItemPreview += '<span class="socket-'.Game::$sockets[$colorId].' q'.$col.'" '.$icon.'>'.$text.'</span><br>';
     // }
 
     // // fill extra socket
@@ -846,18 +852,18 @@ export class ItemUtilsService {
     //     $text = $pop ? Util::localizedString($gems[$pop], 'name') : Lang::item('socket', -1);
 
     //     if ($interactive)
-    //         this.tmpItemPreview += '<a href="?items=3&amp;filter=cr=81;crs=5;crv=0"
+    //         tmpItemPreview += '<a href="?items=3&amp;filter=cr=81;crs=5;crv=0"
     //         class="socket-prismatic q'.$col.'" '.$icon.'>'.$text.'</a><br>';
     //     else
-    //         this.tmpItemPreview += '<span class="socket-prismatic q'.$col.'" '.$icon.'>'.$text.'</span><br>';
+    //         tmpItemPreview += '<span class="socket-prismatic q'.$col.'" '.$icon.'>'.$text.'</span><br>';
     // }
     // else                                                // prismatic socket placeholder
-    //     this.tmpItemPreview += '<!--ps-->';
+    //     tmpItemPreview += '<!--ps-->';
 
     // if ($_ = $this->curTpl['socketBonus'])
     // {
     //     $sbonus = selectRow('SELECT * FROM ?_itemenchantment WHERE Id = ?d', $_);
-    //     this.tmpItemPreview += '<span class="q'.($hasMatch ? '2' : '0').'">'
+    //     tmpItemPreview += '<span class="q'.($hasMatch ? '2' : '0').'">'
     //     .Lang::item('socketBonus', ['<a href="?enchantment='.$_.'">'.Util::localizedString($sbonus, 'name').'</a>']).'</span><br>';
     // }
 
@@ -1024,4 +1030,128 @@ export class ItemUtilsService {
 
     return lockText;
   }
+
+  public async calculatePreview(): Promise<string> {
+    let tmpItemPreview = '';
+    const green: string[] = [];
+
+    const flags = this.editorService.form.controls.Flags.value;
+    const bagFamily: number = Number(this.editorService.form.controls.BagFamily.value);
+    const quality: number = Number(this.editorService.form.controls.Quality.value);
+
+    // ITEM NAME
+    const itemName = this.editorService.form.controls.name.value;
+    if (itemName) {
+      tmpItemPreview += '<b class="item-name q' + quality + '">' + itemName + '</b>';
+    }
+
+    // heroic tag
+    if (flags & ITEM_FLAG.HEROIC && quality === ITEMS_QUALITY.EPIC) {
+      tmpItemPreview += '<br><!-- ITEM_FLAG.HEROIC --><span class="q2">Heroic</span>';
+    }
+
+    tmpItemPreview += await this.getRequiredZone();
+
+    // conjured
+    if (flags & ITEM_FLAG.CONJURED) {
+      tmpItemPreview += '<br> Conjured Item';
+    }
+
+    tmpItemPreview += this.getBonding();
+    tmpItemPreview += this.getDuration();
+
+    // TODO
+    // // required holiday
+    // if ($eId = $this->curTpl['eventId'])
+    //   if ($hName = selectRow('SELECT h.* FROM ?_holidays h JOIN ?_events e ON e.holidayId = h.id WHERE e.id = ?d', $eId))
+    //     tmpItemPreview += '<br>'.sprintf(Lang::game('requires'), '<a href="'.$eId.'" class="q1">
+    //     '.Util::localizedString($hName, 'name').'</a>');
+
+    // item begins a quest
+    const startquest: number = Number(this.editorService.form.controls.startquest.value);
+    if (startquest > 0) {
+      tmpItemPreview += `<br><a class="q1" href="?quest=${startquest}">This Item Begins a Quest</a>`;
+    }
+
+    // containerType (slotCount)
+    const containerSlots: number = Number(this.editorService.form.controls.ContainerSlots.value);
+    if (containerSlots > 0) {
+      const fam = bagFamily ? Math.log2(bagFamily) + 1 : 0;
+      tmpItemPreview += `<br>${containerSlots} Slot ${ITEM_CONSTANTS.bagFamily[fam]}`;
+    }
+
+    tmpItemPreview += this.getClassText();
+    tmpItemPreview += this.getDamageText();
+    tmpItemPreview += this.getArmorText();
+
+    // Item is a gem (don't mix with sockets) (TODO)
+    tmpItemPreview += this.getGemEnchantment();
+
+    // Random Enchantment - if random enchantment is set, prepend stats from it
+    const RandomProperty: number = this.editorService.form.controls.RandomProperty.value;
+    if (RandomProperty /* && empty($enhance['r']) */) {
+      tmpItemPreview += `<br><span class="q2">${ITEM_CONSTANTS.randEnchant}</span>`;
+    }/* else if (!empty($enhance['r'])) {
+      tmpItemPreview += randEnchant;
+    } */
+
+    // itemMods (display stats and save ratings for later use)
+    tmpItemPreview += this.getStats(green);
+
+    tmpItemPreview += this.getMagicResistances();
+
+    // Socket & Enchantment (TODO)
+    tmpItemPreview += this.getSocketEnchantment();
+
+    // durability
+    const durability = this.editorService.form.controls.MaxDurability.value;
+    if (durability) {
+      tmpItemPreview += `<br>${ITEM_CONSTANTS.durability.replace(/%d/g, durability)}`;
+    }
+
+    tmpItemPreview += await this.getRequiredText();
+
+    tmpItemPreview += await this.getLockText();
+
+    // spells on item
+    await this.getSpellDesc(green);
+
+    if (!!green && green.length > 0) {
+      for (const bonus of green) {
+        if (bonus) {
+          tmpItemPreview += `<br><span class="q2">${bonus}</span>`;
+        }
+      }
+    }
+
+    tmpItemPreview += this.getItemSet();
+
+    // recipes, vanity pets, mounts
+    tmpItemPreview += await this.getLearnSpellText();
+
+    // misc (no idea, how to organize the <br> better)
+    const xMisc = [];
+
+    // // itemset: pieces and boni
+    // if (isset($xSet))
+    //     xMisc[] = $xSet;
+
+    this.getMisc(xMisc);
+
+    // // list required reagents
+    // if (isset(xCraft))
+    //     xMisc.push(xCraft);
+
+    if (!!xMisc && xMisc.length > 0) {
+      tmpItemPreview += xMisc.join('');
+    }
+
+    const sellPrice = this.editorService.form.controls.SellPrice.value;
+    if (!!sellPrice) {
+      tmpItemPreview += '<br>Sell Price: ' + this.formatMoney(sellPrice);
+    }
+
+    return tmpItemPreview;
+  }
+
 }

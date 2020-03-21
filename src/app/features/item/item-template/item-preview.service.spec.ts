@@ -2,9 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { instance } from 'ts-mockito';
-import { ItemUtilsService } from './item-utils.service';
+import { ItemPreviewService } from './item-preview.service';
 
-describe('ItemUtilsService', () => {
+describe('ItemPreviewService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [],
     providers: [
@@ -13,7 +13,7 @@ describe('ItemUtilsService', () => {
   }));
 
   it('should be created', () => {
-    const service: ItemUtilsService = TestBed.inject(ItemUtilsService);
+    const service: ItemPreviewService = TestBed.inject(ItemPreviewService);
     expect(service).toBeTruthy();
   });
 });

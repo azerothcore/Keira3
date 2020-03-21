@@ -67,9 +67,6 @@ export enum CLASSES {
   MASK_ALL    = 0x5FF,
 }
 
-// TODO: delete this useless function
-// export function fmod(a: number, b: number) { return Number((a - (Math.floor(a / b) * b)).toPrecision(8)); }
-
 export enum RACE {
   HUMAN         = 0x001,
   ORC           = 0x002,
