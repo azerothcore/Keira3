@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { mergeMap } from 'rxjs/operators';
+import { mergeMap, map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
@@ -16,7 +16,9 @@ export class IconService {
   ) {}
 
   getIconByItemDisplayId(displayId: string | number): Observable<string> {
-    return this.sqliteQueryService.getIconByItemDisplayId(displayId);
+    return this.sqliteQueryService.getIconByItemDisplayId(displayId).pipe(
+      map(icon => icon.replace('.tga', ''))
+    );
   }
 
   getIconByItemId(itemId: string | number): Observable<string> {
