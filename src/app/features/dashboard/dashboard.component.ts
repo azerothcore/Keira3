@@ -24,10 +24,14 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
   public readonly AC_DISCORD_URL = AC_DISCORD_URL;
   public readonly KEIRA3_REPO_URL = KEIRA3_REPO_URL;
 
+  get databaseName() {
+    return this.mysqlService.config.database;
+  }
+
   constructor(
     private queryService: MysqlQueryService,
     public configService: ConfigService,
-    public readonly mysqlService: MysqlService,
+    private readonly mysqlService: MysqlService,
   ) {
     super();
   }
@@ -45,7 +49,7 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
         if (data && data.length > 0) {
           this.coreVersions = data[0];
 
-          if (!this.coreVersions.db_version.startsWith('ACDB') || !this.coreVersions.core_revision.startsWith('AzerothCore')) {
+          if (!this.coreVersions.db_version.startsWith('ACDB') || !this.coreVersions.core_version.startsWith('AzerothCore')) {
             this.error = true;
           }
         } else {
