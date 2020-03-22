@@ -55,7 +55,7 @@
           <a [href]="getCommit(coreVersions.core_revision)" target="_blank">
             {{ coreVersions.core_revision }}
           </a>
-          <button class="btn btn-secondary btn-sm ml-2 px-2 py-1" ngxClipboard [cbContent]="getCommit(coreVersions.core_revision)">
+          <button class="btn btn-secondary btn-sm ml-2 px-2 py-1" [ngxClipboard] [cbContent]="getCommit(coreVersions.core_revision)">
             <i class="far fa-copy fa-sm"></i>
           </button>
         </td>
