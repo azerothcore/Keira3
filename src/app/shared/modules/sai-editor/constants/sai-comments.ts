@@ -191,7 +191,8 @@ SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_COMBAT_DISTANCE] = 'Set combat distance to _
 SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_CASTER_COMBAT_DIST] = 'Set caster combat distance to _actionParamOne_ (RestToMax: _actionParamTwo_)';
 SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_HOVER] = 'Set hover _actionParamOne_';
 SAI_ACTION_COMMENTS[SAI_ACTIONS.ADD_IMMUNITY] = 'Add immunity Type: _actionParamOne_, Id: _actionParamTwo_, Value: _actionParamThree_';
-SAI_ACTION_COMMENTS[SAI_ACTIONS.REMOVE_IMMUNITY] = 'Remove immunity Type: _actionParamOne_, Id: _actionParamTwo_, Value: _actionParamThree_';
+SAI_ACTION_COMMENTS[SAI_ACTIONS.REMOVE_IMMUNITY] =
+  'Remove immunity Type: _actionParamOne_, Id: _actionParamTwo_, Value: _actionParamThree_';
 SAI_ACTION_COMMENTS[SAI_ACTIONS.FALL] = 'Fall';
 SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_EVENT_FLAG_RESET] = 'Flag reset _actionParamOne_';
 SAI_ACTION_COMMENTS[SAI_ACTIONS.STOP_MOTION] = 'Stop motion (StopMoving: _actionParamOne_, MovementExpired: _actionParamTwo_)';
