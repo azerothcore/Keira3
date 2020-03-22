@@ -16,6 +16,11 @@ export abstract class PageObject<ComponentType> {
     return this.fixture.whenStable();
   }
 
+  async whenReady() {
+    await this.fixture.whenStable();
+    await this.fixture.whenRenderingDone();
+  }
+
   detectChanges() {
     this.fixture.detectChanges();
   }
