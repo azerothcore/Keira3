@@ -1,4 +1,3 @@
-/*------------------------------default theme---------------------------------*/
 $bg-sidebar-wrapper : #1d1d1d;
 $border-color : #2b2b2b;
 $footer-top-border-color :#3a3a3a;
@@ -8,62 +7,22 @@ $hover-color:#ffffff;
 $shadow-color:#131212;
 $bg-scrollbar :#636363;
 
-// colors with backgound image
 $img-bg-sidebar-wrapper : rgba(29, 29, 29, 0.8);
 $img-border-color : rgba(255, 255, 255, 0.1);
 $img-bg-footer :rgba(43, 43, 43, 0.5);
 $img-shadow-color:rgba(0, 0, 0, 0.5);
 
 @keyframes swing {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  10% {
-    transform: rotate(10deg);
-  }
-
-  30% {
-    transform: rotate(0deg);
-  }
-
-  40% {
-    transform: rotate(-10deg);
-  }
-
-  50% {
-    transform: rotate(0deg);
-  }
-
-  60% {
-    transform: rotate(5deg);
-  }
-
-  70% {
-    transform: rotate(0deg);
-  }
-
-  80% {
-    transform: rotate(-5deg);
-  }
-
-  100% {
-    transform: rotate(0deg);
-  }
+  0% { transform: rotate(0deg); }
+  10% { transform: rotate(10deg); }
+  30% { transform: rotate(0deg); }
+  40% { transform: rotate(-10deg); }
+  50% { transform: rotate(0deg); }
+  60% { transform: rotate(5deg); }
+  70% { transform: rotate(0deg); }
+  80% { transform: rotate(-5deg); }
+  100% { transform: rotate(0deg); }
 }
-
-@keyframes sonar {
-  0% {
-    transform: scale(.9);
-    opacity: 1;
-  }
-
-  100% {
-    transform: scale(2);
-    opacity: 0;
-  }
-}
-
 .sidebar {
   width: 260px;
   height: 100%;
@@ -96,12 +55,6 @@ $img-shadow-color:rgba(0, 0, 0, 0.5);
         font-weight: bold;
         flex-grow: 1;
         text-decoration: none;
-      }
-
-      #close-sidebar {
-        cursor: pointer;
-        font-size: 20px;
-        transition: color .3s ease;
       }
     }
 
@@ -161,33 +114,6 @@ $img-shadow-color:rgba(0, 0, 0, 0.5);
             }
           }
         }
-      }
-
-      .refresh {
-        margin-left: 8px;
-        font-size: 9px !important;
-        width: 22px;
-        height: 22px;
-        line-height: 22px;
-        text-align: center;
-        border-radius: 4px;
-        background-color: $img-border-color;
-        cursor: pointer;
-
-        &:hover {
-          color: $hover-color;
-        }
-      }
-    }
-
-    .sidebar-search {
-
-      >div {
-        padding: 10px 20px;
-      }
-
-      .input-group-append .input-group-text {
-        border-left: 0;
       }
     }
 
@@ -304,7 +230,7 @@ $img-shadow-color:rgba(0, 0, 0, 0.5);
               .badge,
               .label {
                 float: right;
-                margin-top: 0px;
+                margin-top: 0;
               }
               &.active {
                 font-weight: bold;
@@ -321,8 +247,6 @@ $img-shadow-color:rgba(0, 0, 0, 0.5);
       }
 
     }
-
-
   }
 }
 
@@ -332,21 +256,12 @@ $img-shadow-color:rgba(0, 0, 0, 0.5);
   background-color: $bg-sidebar-wrapper;
 
   .sidebar-profile,
-  .sidebar-search,
   .sidebar-menu {
     border-top: 1px solid $border-color;
   }
 
-  .sidebar-search input.search-menu,
-  .sidebar-search .input-group-text {
-    border-color: $border-color;
-    box-shadow: none;
-  }
-
   .sidebar-profile .user-info .db-user,
   .sidebar-profile .user-info .user-status,
-  .sidebar-search input.search-menu,
-  .sidebar-search .input-group-text,
   .sidebar-header>a,
   .sidebar-menu ul li a,
   #close-sidebar {
@@ -363,15 +278,12 @@ $img-shadow-color:rgba(0, 0, 0, 0.5);
 
   ul li:hover a i,
   .sidebar-dropdown .sidebar-submenu li a:hover:before,
-  .sidebar-search input.search-menu:focus+span,
   .sidebar-menu .sidebar-dropdown.active a i {
     color: $hover-color;
   }
 
   .sidebar-menu ul li a i,
-  .sidebar-menu .sidebar-dropdown div,
-  .sidebar-search input.search-menu,
-  .sidebar-search .input-group-text {
+  .sidebar-menu .sidebar-dropdown div {
     background-color: $border-color;
     border: none;
     margin-left: 1px;
@@ -399,27 +311,16 @@ $img-shadow-color:rgba(0, 0, 0, 0.5);
     }
 
     .sidebar-profile,
-    .sidebar-search,
     .sidebar-menu {
       border-top: 1px solid $img-border-color;
     }
 
-    .sidebar-search input.search-menu,
-    .sidebar-search .input-group-text {
-      border-color: $img-border-color;
-      box-shadow: none;
-    }
-
     .sidebar-menu ul li a i,
-    .sidebar-menu .sidebar-dropdown div,
-    .sidebar-search input.search-menu,
-    .sidebar-search .input-group-text {
+    .sidebar-menu .sidebar-dropdown div {
       background-color: $img-border-color;
 
     }
-
   }
-
 }
 
 .sidebar-button {
