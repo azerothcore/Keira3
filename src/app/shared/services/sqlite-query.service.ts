@@ -88,4 +88,9 @@ export class SqliteQueryService extends QueryService {
   getAreaNameById(id: string | number): Promise<string> {
     return this.queryValue<string>(`SELECT m_AreaName_lang AS v FROM areas_and_zones WHERE m_ID = ${id}`).toPromise();
   }
+
+  getEventNameByHolidayId(id: string | number): Promise<string> {
+    return this.queryValue<string>(`SELECT name AS v FROM holiday WHERE id = ${id}`).toPromise();
+  }
+
 }

@@ -1236,12 +1236,12 @@ WHERE
     tmpItemPreview += await this.getBonding();
     tmpItemPreview += this.getDuration();
 
-    // TODO
-    // // required holiday
-    // if ($eId = $this->curTpl['eventId'])
-    //   if ($hName = selectRow('SELECT h.* FROM ?_holidays h JOIN ?_events e ON e.holidayId = h.id WHERE e.id = ?d', $eId))
-    //     tmpItemPreview += '<br>'.sprintf(Lang::game('requires'), '<a href="'.$eId.'" class="q1">
-    //     '.Util::localizedString($hName, 'name').'</a>');
+    // required holiday
+    const holiday = this.editorService.form.controls.HolidayId.value;
+    if (!!holiday) {
+      const eventName = await this.sqliteQueryService.getEventNameByHolidayId(holiday);
+      tmpItemPreview += `<br>Requires ${eventName}`;
+    }
 
     // item begins a quest
     const startquest: number = Number(this.editorService.form.controls.startquest.value);
