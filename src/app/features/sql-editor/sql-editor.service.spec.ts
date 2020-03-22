@@ -6,7 +6,9 @@ describe('SqlEditorService', () => {
   let service: SqlEditorService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [SqlEditorService],
+    });
     service = TestBed.inject(SqlEditorService);
   });
 
