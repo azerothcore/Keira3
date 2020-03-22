@@ -37,7 +37,7 @@
     "node_modules"
   ],
   "angularCompilerOptions": {
-    "strictTemplates": false,
+    "strictTemplates": true,
     "strictInjectionParameters": true
   }
 }
