@@ -7,6 +7,7 @@ import { ITEM_CONSTANTS } from './item_constants';
 import { MAX_LEVEL, lvlIndepRating, gtCombatRatings, CLASSES, RACE, resistanceFields } from './item-preview';
 import { ITEM_FLAG } from '@keira-shared/constants/flags/item-flags';
 import { ITEMS_QUALITY } from '@keira-shared/constants/options/item-quality';
+import { TableRow } from '@keira-shared/types/general';
 
 @Injectable()
 export class ItemPreviewService {
@@ -18,8 +19,6 @@ export class ItemPreviewService {
     public readonly sqliteQueryService: SqliteQueryService,
     protected queryService: MysqlQueryService,
   ) { }
-
-  private vendors = [];
 
   /**
    * utils
@@ -138,7 +137,7 @@ export class ItemPreviewService {
     return tmp;
   }
 
-  public formatMoney(qty: number): string {
+  private formatMoney(qty: number): string {
     let money = '';
 
     if (qty >= 10000) {
@@ -196,7 +195,7 @@ export class ItemPreviewService {
     return time;
   }
 
-  public formatTime(base, short = false) {
+  private formatTime(base, short = false) {
     const s = this.parseTime(base / 1000);
     let tmp = 0;
 
@@ -266,7 +265,7 @@ export class ItemPreviewService {
     }
   }
 
-  public getFeralAP(itemClass: number, subclass: number, dps: number): number {
+  private getFeralAP(itemClass: number, subclass: number, dps: number): number {
     // must be weapon
     if (itemClass !== ITEM_TYPE.WEAPON) {
       return 0;
@@ -285,7 +284,7 @@ export class ItemPreviewService {
     return Math.round((dps - 54.8) * 14);
   }
 
-  public canTeachSpell(spellId1: number, spellId2: number = null): boolean {
+  private canTeachSpell(spellId1: number, spellId2: number = null): boolean {
     // 483:   learn recipe;
     // 55884: learn mount/pet
     if (![483, 55884].includes(spellId1)) {
@@ -296,173 +295,221 @@ export class ItemPreviewService {
     return !!spellId2;
   }
 
-  // // todo (med): information will get lost if one vendor sells one item multiple times with different costs (e.g. for item 54637)
-  // //             wowhead seems to have had the same issues
-  // public getExtendedCost(filter = []): [] {
+  private async getLocks(lockId: number): Promise<string[]> {
+    const lock = (await this.sqliteQueryService.getLockById(lockId))[0];
 
-  //   if (this.vendors.length === 0) {
-  //     let itemz      = [];
-  //     let xCostData  = [];
-  //     let rawEntries = DB::World()->select(
-  //       `
-  //       SELECT   nv.item,       nv.entry,             0  AS eventId,   nv.maxcount,   nv.extendedCost FROM npc_vendor   nv                                                                                                  WHERE {nv.entry IN (?a) AND} nv.item IN (?a)
-  //       UNION
-  //       SELECT genv.item, c.id AS \`entry\`, ge.eventEntry AS eventId, genv.maxcount, genv.extendedCost FROM game_event_npc_vendor genv
-  //       LEFT JOIN game_event ge ON genv.eventEntry = ge.eventEntry
-  //       JOIN creature c ON c.guid = genv.guid
-  //       WHERE {c.id IN (?a) AND}   genv.item IN (?a)`,
-  //       empty($filter[TYPE_NPC]) || !is_array($filter[TYPE_NPC]) ? DBSIMPLE_SKIP : $filter[TYPE_NPC],
-  //       array_keys($this->templates),
-  //       empty($filter[TYPE_NPC]) || !is_array($filter[TYPE_NPC]) ? DBSIMPLE_SKIP : $filter[TYPE_NPC],
-  //       array_keys($this->templates)
-  //       );
+    if (!lock) {
+      return [];
+    }
 
-  //       foreach ($rawEntries as $costEntry) {
-  //         if ($costEntry['extendedCost']) {
-  //           $xCostData[] = $costEntry['extendedCost'];
-  //         }
+    const locks = [];
 
-  //         if (!isset($itemz[$costEntry['item']][$costEntry['entry']])) {
-  //           $itemz[$costEntry['item']][$costEntry['entry']] = [$costEntry];
-  //         } else {
-  //           $itemz[$costEntry['item']][$costEntry['entry']][] = $costEntry;
-  //         }
-  //       }
+    for (let i = 1; i <= 5; i++) {
+      const prop = lock['properties' + i];
+      const rank = lock['reqSkill' + i];
+      let name = '';
 
-  //       if ($xCostData) {
-  //         $xCostData = DB::Aowow()->select('SELECT *, id AS ARRAY_KEY FROM ?_itemextendedcost WHERE id IN (?a)', $xCostData);
-  //       }
+      const lockType = Number(lock['type' + i]);
 
-  //       $cItems = [];
-  //       foreach ($itemz as $k => $vendors) {
-  //         foreach ($vendors as $l => $vendor) {
-  //           foreach ($vendor as $m => $vInfo) {
-  //             $costs = [];
-  //             if (!empty($xCostData[$vInfo['extendedCost']])) {
-  //               $costs = $xCostData[$vInfo['extendedCost']];
-  //             }
+      if (lockType === 1) {                      // opened by item
+        name = await this.queryService.getItemNameById(prop);
 
-  //             $data   = array(
-  //               'stock'      => $vInfo['maxcount'] ?: -1,
-  //               'event'      => $vInfo['eventId'],
-  //               'reqRating'  => $costs ? $costs['reqPersonalRating'] : 0,
-  //               'reqBracket' => $costs ? $costs['reqArenaSlot']      : 0
-  //               );
+        if (!name) {
+          continue;
+        }
+      } else if (lockType === 2) {                 // opened by skill
 
-  //               // hardcode arena(103) & honor(104)
-  //               if (!empty($costs['reqArenaPoints'])) {
-  //                 $data[-103] = $costs['reqArenaPoints'];
-  //                 $this->jsGlobals[TYPE_CURRENCY][103] = 103;
-  //               }
+        // exclude unusual stuff
+        if (![1, 2, 3, 4, 9, 16, 20].includes(Number(prop))) {
+          continue;
+        }
 
-  //               if (!empty($costs['reqHonorPoints'])) {
-  //                 $data[-104] = $costs['reqHonorPoints'];
-  //                 $this->jsGlobals[TYPE_CURRENCY][104] = 104;
-  //               }
+        name = ITEM_CONSTANTS.lockType[prop];
 
-  //               for ($i = 1; $i < 6; $i++) {
-  //                 if (!empty($costs['reqItemId'.$i]) && $costs['itemCount'.$i] > 0) {
-  //                   $data[$costs['reqItemId'.$i]] = $costs['itemCount'.$i];
-  //                   $cItems[] = $costs['reqItemId'.$i];
-  //                 }
-  //               }
+        if (!name) {
+          continue;
+        }
 
-  //               // no extended cost or additional gold required
-  //               if (!$costs || $this->getField('flagsExtra') & 0x04) {
-  //                 $this->getEntry($k);
-  //                 if ($_ = $this->getField('buyPrice')) {
-  //                   $data[0] = $_;
-  //                 }
-  //               }
+        if (rank > 0) {
+          name += ` (${rank})`;
+        }
+      } else {
+        continue;
+      }
 
-  //               $vendor[$m] = $data;
-  //             }
-  //             $vendors[$l] = $vendor;
-  //           }
+      // locks[lockType === 1 ? prop : -prop] = `Requires ${name}`;
+      locks.push(`<br>Requires ${name}`);
+    }
 
-  //           $itemz[$k] = $vendors;
-  //         }
+    return locks;
+  }
 
-  //         // convert items to currency if possible
-  //         if ($cItems) {
-  //           $moneyItems = new CurrencyList(array(['itemId', $cItems]));
-  //           foreach ($moneyItems->getJSGlobals() as $type => $jsData) {
-  //             foreach ($jsData as $k => $v) {
-  //               $this->jsGlobals[$type][$k] = $v;
-  //             }
-  //           }
 
-  //           foreach ($itemz as $itemId => $vendors) {
-  //             foreach ($vendors as $npcId => $costData) {
-  //               foreach ($costData as $itr => $cost) {
-  //                 foreach ($cost as $k => $v) {
-  //                   if (in_array($k, $cItems)) {
-  //                     $found = false;
-  //                     foreach ($moneyItems->iterate() as $__) {
-  //                       if ($moneyItems->getField('itemId') == $k) {
-  //                         unset($cost[$k]);
-  //                         $cost[-$moneyItems->id] = $v;
-  //                         $found = true;
-  //                         break;
-  //                       }
-  //                     }
+  // todo (med): information will get lost if one vendor sells one item multiple times with different costs (e.g. for item 54637)
+  //             wowhead seems to have had the same issues
+  public async getExtendedCost(filter = []): Promise<any[]> {
+    const flagsExtra = Number(this.editorService.form.controls.FlagsExtra.value);
+    const buyPrice = Number(this.editorService.form.controls.BuyPrice.value);
+    const entry = Number(this.editorService.form.controls.entry.value);
+    let vendorx = {};
 
-  //                     if (!$found) {
-  //                       $this->jsGlobals[TYPE_ITEM][$k] = $k;
-  //                     }
-  //                   }
-  //                 }
-  //                 $costData[$itr] = $cost;
-  //               }
-  //               $vendors[$npcId] = $costData;
-  //             }
-  //             $itemz[$itemId] = $vendors;
-  //           }
-  //         }
+    const itemz = {};
+    let xCostData = [];
+    const xCostDataArr = {};
+    const rawEntries = await this.queryService.query(`SELECT
+    nv.item,
+    nv.entry,
+    0 AS eventId,
+    nv.maxcount,
+    nv.extendedCost
+FROM
+    npc_vendor nv
+WHERE
+    nv.item = ${entry}
+UNION SELECT
+    genv.item,
+    c.id AS \`entry\`,
+    ge.eventEntry AS eventId,
+    genv.maxcount,
+    genv.extendedCost
+FROM
+    game_event_npc_vendor genv
+        LEFT JOIN
+    game_event ge ON genv.eventEntry = ge.eventEntry
+        JOIN
+    creature c ON c.guid = genv.guid
+WHERE
+    genv.item = ${entry};`).toPromise();
 
-  //         $this->vendors = $itemz;
-  //       }
+    for (const costEntry of rawEntries) {
+      if (costEntry.extendedCost) {
+        xCostData.push(costEntry.extendedCost);
+      }
 
-  //       $result = $this->vendors;
+      if (itemz[costEntry.item] && itemz[costEntry.item][costEntry.entry]) {
+        itemz[costEntry.item][costEntry.entry] = [costEntry];
+      } else {
+        itemz[costEntry.item] = {};
+        itemz[costEntry.item][costEntry.entry] = [];
+        itemz[costEntry.item][costEntry.entry].push(costEntry);
+      }
+    }
 
-  //       // apply filter if given
-  //       $tok = !empty($filter[TYPE_ITEM])     ? $filter[TYPE_ITEM]     : null;
-  //       $cur = !empty($filter[TYPE_CURRENCY]) ? $filter[TYPE_CURRENCY] : null;
+    if (!!xCostData && xCostData.length > 0) {
+      xCostData = Array.from(new Set(xCostData)); // filter duplicates
+      xCostData = await this.sqliteQueryService.query(`SELECT * FROM itemextendedcost WHERE id IN (${xCostData.join(',')})`).toPromise();
 
-  //       foreach ($result as $itemId => &$data) {
-  //         $reqRating = [];
-  //         foreach ($data as $npcId => $entries) {
-  //           foreach ($entries as $costs) {
-  //             if ($tok || $cur) {                           // bought with specific token or currency
-  //               $valid = false;
-  //               foreach ($costs as $k => $qty) {
-  //                 if ((!$tok || $k == $tok) && (!$cur || $k == -$cur)) {
-  //                   $valid = true;
-  //                   break;
-  //                 }
-  //               }
+      // converting xCostData to ARRAY_KEY structure
+      for (const xCost of xCostData) {
+        xCostDataArr[xCost.id] = xCost;
+      }
+    }
 
-  //               if (!$valid) {
-  //                 unset($data[$npcId]);
-  //               }
-  //             }
+    const cItems = [];
 
-  //             // reqRating ins't really a cost .. so pass it by ref instead of return
-  //             // use highest total value
-  //             if (isset($data[$npcId]) && $costs['reqRating'] && (!$reqRating || $reqRating[0] < $costs['reqRating'])) {
-  //               $reqRating = [$costs['reqRating'], $costs['reqBracket']];
-  //             }
-  //           }
-  //         }
+    for (const [k, vendors] of Object.entries(itemz)) {
+      for (const [l, vendor] of Object.entries(vendors)) {
+        for (const [m, vInfo] of Object.entries(vendor)) {
 
-  //         if (empty($data)) {
-  //           unset($result[$itemId]);
-  //         }
-  //       }
+          let costs = [];
+          if (xCostDataArr[vInfo['extendedCost']] && Object.keys(xCostDataArr[vInfo['extendedCost']]).length > 0) {
+            costs = xCostDataArr[vInfo['extendedCost']];
+          }
 
-  //       return $result;
-  //     }
+          const data = {
+            stock:      vInfo['maxcount'] ?? -1,
+            event:      vInfo['eventId'],
+            reqRating:  costs ? costs['reqPersonalRating'] : 0,
+            reqBracket: costs ? costs['reqArenaSlot']      : 0
+          };
 
+          // hardcode arena(103) & honor(104)
+          if (costs['reqArenaPoints'] > 0) {
+            data[-103] = costs['reqArenaPoints'];
+          }
+
+          if (costs['reqHonorPoints'] > 0) {
+            data[-104] = costs['reqHonorPoints'];
+          }
+
+          for (let i = 1; i < 6; i++) {
+            if (costs['reqItemId' + i] /* && costs['reqItemId' + i].length > 0 */
+            && costs['itemCount' + i] && costs['itemCount' + i] > 0) {
+              data[costs['reqItemId' + i]] = costs['itemCount' + i];
+              cItems.push(costs['reqItemId' + i]);
+            }
+          }
+
+          // no extended cost or additional gold required
+          if (!costs || flagsExtra & 0x04) {
+            if (!!buyPrice) {
+              data[0] = buyPrice;
+            }
+          }
+
+          vendor[m] = data;
+        }
+        vendors[l] = vendor;
+      }
+
+      itemz[k] = vendors;
+    }
+
+    // convert items to currency if possible
+    if (!!cItems) {
+      const moneyItems = cItems;
+
+      for (const [itemId, vendors] of Object.entries(itemz)) {
+        for (const [npcId, costData] of Object.entries(vendors)) {
+          for (const [itr, cost] of Object.entries(costData)) {
+            for (const [k, v] of Object.entries(cost)) {
+              if (cItems.includes(k)) {
+                let found = false;
+                for (const item of moneyItems) {
+                  if (item.id === k) {
+                    delete cost[k];
+                    cost[-item.id] = v;
+                    found = true;
+                    break;
+                  }
+                }
+              }
+            }
+            costData[itr] = cost;
+          }
+          vendors[npcId] = costData;
+        }
+        itemz[itemId] = vendors;
+      }
+    }
+
+    vendorx = itemz;
+
+    const result = vendorx;
+
+    let reqRating = [];
+    for (const [itemId, data] of Object.entries(result)) {
+      reqRating = [];
+      for (const [npcId, entries] of Object.entries(data)) {
+        for (const costs of entries) {
+          // reqRating isn't really a cost .. so pass it by ref instead of return
+          // use highest total value
+          if (data[npcId] &&
+                costs['reqRating'] &&
+                (reqRating.length === 0 || (reqRating && reqRating[0] < costs['reqRating']))
+          ) {
+            reqRating = [costs['reqRating'], costs['reqBracket']];
+          }
+        }
+      }
+
+      if (!(data)) {
+        delete result[itemId];
+      }
+    }
+
+    return [result, reqRating];
+  }
 
   /**
    * get item preview text
@@ -779,11 +826,15 @@ export class ItemPreviewService {
       requiredText += '<br>' + ITEM_CONSTANTS.reqMinLevel.replace('%d', requiredLevel);
     }
 
-    // TODO
     // required arena team rating / personal rating / todo (low): sort out what kind of rating
     const entry = this.editorService.form.controls.entry.value;
-    if (!empty(this.getExtendedCost()[entry]) && $reqRating) {
-      requiredText += sprintf(Lang::item('reqRating', $reqRating[1]), $reqRating[0]).'<br>';
+
+    let reqRating = [];
+    let res = [];
+    [res, reqRating] = await this.getExtendedCost();
+
+    if (res[entry] && Object.keys(res[entry]).length > 0 && reqRating) {
+      requiredText += '<br>' + ITEM_CONSTANTS.reqRating[reqRating[1]].replace('%d', reqRating[0]);
     }
 
     // item level
@@ -1131,55 +1182,6 @@ export class ItemPreviewService {
     }
 
     return spellDesc;
-  }
-
-  private async getLocks(lockId: number): Promise<string[]> {
-    const lock = (await this.sqliteQueryService.getLockById(lockId))[0];
-
-    if (!lock) {
-      return [];
-    }
-
-    const locks = [];
-
-    for (let i = 1; i <= 5; i++) {
-      const prop = lock['properties' + i];
-      const rank = lock['reqSkill' + i];
-      let name = '';
-
-      const lockType = Number(lock['type' + i]);
-
-      if (lockType === 1) {                      // opened by item
-        name = await this.queryService.getItemNameById(prop);
-
-        if (!name) {
-          continue;
-        }
-      } else if (lockType === 2) {                 // opened by skill
-
-        // exclude unusual stuff
-        if (![1, 2, 3, 4, 9, 16, 20].includes(Number(prop))) {
-          continue;
-        }
-
-        name = ITEM_CONSTANTS.lockType[prop];
-
-        if (!name) {
-          continue;
-        }
-
-        if (rank > 0) {
-          name += ` (${rank})`;
-        }
-      } else {
-        continue;
-      }
-
-      // locks[lockType === 1 ? prop : -prop] = `Requires ${name}`;
-      locks.push(`<br>Requires ${name}`);
-    }
-
-    return locks;
   }
 
   // locked or openable

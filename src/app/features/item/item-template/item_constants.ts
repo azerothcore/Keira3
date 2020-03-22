@@ -120,8 +120,8 @@ export const ITEM_CONSTANTS = {
   },
   'reqRating': [                                    // ITEM_REQ_ARENA_RATING*
       'Requires personal and team arena rating of %d',
-      'Requires personal and team arena rating of %d|nin 3v3 or 5v5 brackets',
-      'Requires personal and team arena rating of %d|nin 5v5 bracket',
+      'Requires personal and team arena rating of %d in 3v3 or 5v5 brackets',
+      'Requires personal and team arena rating of %d in 5v5 bracket',
   ],
   'quality': [                                       // ITEM_QUALITY?_DESC
     'Poor',
