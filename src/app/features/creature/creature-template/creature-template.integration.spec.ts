@@ -167,12 +167,16 @@ describe('CreatureTemplate integration tests', () => {
       const field = 'unit_flags';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
+      await page.whenReady();
 
       page.toggleFlagInRow(2);
+
+      await page.whenReady();
       page.toggleFlagInRow(12);
+
+      await page.whenReady();
       page.clickModalSelect();
-      await fixture.whenStable();
-      await fixture.whenRenderingDone();
+      await page.whenReady();
 
       expect(page.getInputById(field).value).toEqual('4100');
       page.expectDiffQueryToContain(

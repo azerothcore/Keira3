@@ -172,13 +172,15 @@ describe('QuestTemplateAddon integration tests', () => {
     it('changing a value via FlagsSelector should correctly work', async () => {
       const field = 'SpecialFlags';
       page.clickElement(page.getSelectorBtn(field));
+      await page.whenReady();
       page.expectModalDisplayed();
 
       page.toggleFlagInRow(1);
+      await page.whenReady();
       page.toggleFlagInRow(3);
+      await page.whenReady();
       page.clickModalSelect();
-      await fixture.whenStable();
-      await fixture.whenRenderingDone();
+      await page.whenReady();
 
       expect(page.getInputById(field).value).toEqual('10');
       page.expectDiffQueryToContain(
@@ -205,13 +207,16 @@ describe('QuestTemplateAddon integration tests', () => {
       ));
 
       page.clickElement(page.getSelectorBtn(field));
+      await page.whenReady();
       page.expectModalDisplayed();
 
       page.clickSearchBtn();
 
       await fixture.whenStable();
       page.clickRowOfDatatable(0);
+      await page.whenReady();
       page.clickModalSelect();
+      await page.whenReady();
 
       page.expectDiffQueryToContain(
         'UPDATE `quest_template_addon` SET `SourceSpellID` = 123 WHERE (`ID` = 1234);'
