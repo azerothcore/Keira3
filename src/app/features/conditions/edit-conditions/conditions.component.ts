@@ -40,6 +40,10 @@ export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
    return this.editorService.form.controls['SourceTypeOrReferenceId'].value;
   }
 
+  get conditionType(): number {
+    return this.editorService.form.controls['ConditionTypeOrReference'].value;
+  }
+
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: ConditionsService,
