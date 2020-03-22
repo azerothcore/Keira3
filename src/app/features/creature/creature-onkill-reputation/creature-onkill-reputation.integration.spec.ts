@@ -143,11 +143,12 @@ describe('CreatureOnkillReputation integration tests', () => {
       const field = 'MaxStanding1';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
+      await page.whenReady();
 
       page.clickRowOfDatatable(7);
+      await page.whenReady();
       page.clickModalSelect();
-      await fixture.whenStable();
-      await fixture.whenRenderingDone();
+      await page.whenReady();
 
       expect(page.getInputById(field).value).toEqual('7');
       page.expectDiffQueryToContain(
