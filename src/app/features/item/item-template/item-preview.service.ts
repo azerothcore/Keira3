@@ -397,7 +397,7 @@ WHERE
 
     if (!!xCostData && xCostData.length > 0) {
       xCostData = Array.from(new Set(xCostData)); // filter duplicates
-      xCostData = await this.sqliteQueryService.query(`SELECT * FROM itemextendedcost WHERE id IN (${xCostData.join(',')})`).toPromise();
+      xCostData = await this.sqliteQueryService.query(`SELECT * FROM item_extended_cost WHERE id IN (${xCostData.join(',')})`).toPromise();
 
       // converting xCostData to ARRAY_KEY structure
       for (const xCost of xCostData) {
@@ -695,14 +695,14 @@ WHERE
     return '';
   }
 
-  public getBonding(): string {
+  public async getBonding(): Promise<string> {
     let bondingText = '';
 
     const flags = this.editorService.form.controls.Flags.value;
     const bonding: number = Number(this.editorService.form.controls.bonding.value);
     const maxcount: number = Number(this.editorService.form.controls.maxcount.value);
     const bagFamily: number = Number(this.editorService.form.controls.BagFamily.value);
-    // const itemLimitCategory = this.editorService.form.controls.ItemLimitCategory.value;
+    const itemLimitCategory = this.editorService.form.controls.ItemLimitCategory.value;
 
     // bonding
     if (flags & ITEM_FLAG.ACCOUNTBOUND) {
@@ -718,11 +718,15 @@ WHERE
       bondingText += '<br><!-- unique[1] -->' + this.ITEM_CONSTANTS['unique'][1].replace('%d', maxcount.toString());
     } else if (flags & ITEM_FLAG.UNIQUEEQUIPPED) {
       bondingText += '<br><!-- uniqueEquipped -->' + this.ITEM_CONSTANTS['uniqueEquipped'][0];
-    } /* else if (itemLimitCategory) {
-        $limit = selectRow("SELECT * FROM ?_itemlimitcategory WHERE id = ?", $this->curTpl['itemLimitCategory']);
-        bondingText += '<br><!-- unique isGem -->'.sprintf(Lang::item($limit['isGem'] ? 'uniqueEquipped' : 'unique', 2),
-          Util::localizedString($limit, 'name'), $limit['count']);
-    } */
+    } else if (itemLimitCategory) {
+      let limit: any = await this.sqliteQueryService.query(
+        `SELECT * FROM item_limit_category WHERE id = ${itemLimitCategory}`
+      ).toPromise();
+      limit = limit[0];
+
+      const index = limit && limit.isGem ? 'uniqueEquipped' : 'unique';
+      bondingText += '<br><!-- unique isGem -->' + ITEM_CONSTANTS[index][2].replace('%s', limit.name).replace('%d', limit.count);
+    }
 
     return bondingText;
   }
@@ -1229,7 +1233,7 @@ WHERE
       tmpItemPreview += '<br> Conjured Item';
     }
 
-    tmpItemPreview += this.getBonding();
+    tmpItemPreview += await this.getBonding();
     tmpItemPreview += this.getDuration();
 
     // TODO
