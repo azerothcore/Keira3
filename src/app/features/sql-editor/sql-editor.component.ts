@@ -6,6 +6,7 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
 import { TableRow } from '@keira-types/general';
 import { DTCFG } from '@keira-config/datatable.config';
+import { SqlEditorService } from './sql-editor.service';
 
 @Component({
   selector: 'keira-sql-editor',
@@ -22,11 +23,6 @@ export class SqlEditorComponent extends SubscriptionHandler {
   //   return [10, 20, 50, 100, 200, 500, 1000];
   // }
 
-  code = 'SELECT `entry`, `name`, `subname`, `minlevel`, `maxlevel`, `AIName`, `ScriptName` \n' +
-    'FROM `creature_template` \n' +
-    'WHERE `entry` > 100 \n' +
-    'ORDER BY `entry` ASC \n' +
-    'LIMIT 100';
   private _error: MysqlError;
   get error(): MysqlError {
     return this._error;
@@ -55,16 +51,17 @@ export class SqlEditorComponent extends SubscriptionHandler {
   constructor(
     private mysqlQueryService: MysqlQueryService,
     private clipboardService: ClipboardService,
+    public readonly service: SqlEditorService,
   ) {
     super();
   }
 
   copy() {
-    this.clipboardService.copyFromContent(this.code);
+    this.clipboardService.copyFromContent(this.service.code);
   }
 
   execute() {
-    this.subscriptions.push(this.mysqlQueryService.query(this.code).subscribe(
+    this.subscriptions.push(this.mysqlQueryService.query(this.service.code).subscribe(
       (rows: TableRow[] | { affectedRows: number, message: string }) => {
         this._error = null;
         this._affectedRows = -1;

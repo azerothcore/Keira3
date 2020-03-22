@@ -5,7 +5,7 @@
        [tooltip]="'A minimalistic SQL Editor to run custom queries'"></i>
   </p>
 
-  <textarea id="code" class="mb-1" [(ngModel)]="code" (keydown.f9)="execute()" rows="6"></textarea>
+  <textarea id="code" class="mb-1" [(ngModel)]="service.code" (keydown.f9)="execute()" rows="6"></textarea>
 
   <div class="row">
     <div class="col-sm-7">
