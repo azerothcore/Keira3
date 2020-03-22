@@ -137,12 +137,13 @@ describe('QuestRequestItems integration tests', () => {
     it('changing a value via SingleValueSelector should correctly work', async () => {
       const field = 'EmoteOnComplete';
       page.clickElement(page.getSelectorBtn(field));
+      await page.whenReady();
       page.expectModalDisplayed();
 
       page.clickRowOfDatatable(4);
+      await page.whenReady();
       page.clickModalSelect();
-      await fixture.whenStable();
-      await fixture.whenRenderingDone();
+      await page.whenReady();
 
       expect(page.getInputById(field).value).toEqual('4');
       page.expectDiffQueryToContain(

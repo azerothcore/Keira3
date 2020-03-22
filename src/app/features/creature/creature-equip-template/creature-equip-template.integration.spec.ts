@@ -142,12 +142,14 @@ describe('CreatureEquipTemplate integration tests', () => {
       const field = 'ItemID1';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
+      await page.whenReady();
 
       page.clickSearchBtn();
-
-      await fixture.whenStable();
+      await page.whenReady();
       page.clickRowOfDatatable(0);
+      await page.whenReady();
       page.clickModalSelect();
+      await page.whenReady();
 
       page.expectDiffQueryToContain(
         'UPDATE `creature_equip_template` SET `ItemID1` = 1200 WHERE (`CreatureID` = 1234);'
