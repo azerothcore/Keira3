@@ -616,81 +616,86 @@ WHERE
   public getItemSet(): string {
     /* TODO */
 
+    const itemset = this.editorService.form.controls.itemset.value;
+
+    if (!itemset) {
+      return '';
+    }
+
     // // Item Set
     // const pieces  = [];
     // setId = this->getField('itemset')
-    // if (itemSet) {
+
     // // while Ids can technically be used multiple times the only difference in data are the items used. So it doesn't matter what we get
-    //   const itemset = new ItemsetList(array(['id', setId]));
-    //   if (!itemset->error && itemset->pieceToSet) {
-    //     pieces = select('
-    //     SELECT b.id AS ARRAY_KEY, b.name_loc0, b.name_loc2, b.name_loc3, b.name_loc4, b.name_loc6, b.name_loc8,
-    //     GROUP_CONCAT(a.id SEPARATOR \':\') AS equiv
-    //     FROM   ?_items a, ?_items b
-    //     WHERE  a.slotBak = b.slotBak AND a.itemset = b.itemset AND b.id IN (?a)
-    //     GROUP BY b.id;',
-    //     array_keys(itemset->pieceToSet)
-    //     );
+    // const itemset = new ItemsetList(array(['id', setId]));
+    // if (!itemset->error && itemset->pieceToSet) {
+    //   pieces = select(`
+    //   SELECT b.id AS ARRAY_KEY, b.name_loc0, b.name_loc2, b.name_loc3, b.name_loc4, b.name_loc6, b.name_loc8,
+    //   GROUP_CONCAT(a.id SEPARATOR \':\') AS equiv
+    //   FROM   ?_items a, ?_items b
+    //   WHERE  a.slotBak = b.slotBak AND a.itemset = b.itemset AND b.id IN (?a)
+    //   GROUP BY b.id;',
+    //   array_keys(itemset->pieceToSet)
+    //   `);
 
-    //     foreach (pieces as k => &p)
-    //     p = '<span><!--si'.p['equiv'].'--><a href="?item='.k.'">'.Util::localizedString(p, 'name').'</a></span>';
+      // foreach (pieces as k => &p)
+      // p = '<span><!--si'.p['equiv'].'--><a href="?item='.k.'">'.Util::localizedString(p, 'name').'</a></span>';
 
-    //     xSet = '<br><span class="q">'.Lang::item('setName', ['<a href="?itemset='.itemset->id.'" class="q">'.
-    //      itemset->getField('name', true).'</a>', 0, count(pieces)]).'</span>';
+      // xSet = '<br><span class="q">'.Lang::item('setName', ['<a href="?itemset='.itemset->id.'" class="q">'.
+      //   itemset->getField('name', true).'</a>', 0, count(pieces)]).'</span>';
 
-    //     if (skId = itemset->getField('skillId'))      // bonus requires skill to activate
-    //     {
-    //       xSet += '<br>'.sprintf(Lang::game('requires'), '<a href="?skills='.skId.'" class="q1">'.SkillList::getName(skId).'</a>');
+      // if (skId = itemset->getField('skillId'))      // bonus requires skill to activate
+      // {
+      //   xSet += '<br>'.sprintf(Lang::game('requires'), '<a href="?skills='.skId.'" class="q1">'.SkillList::getName(skId).'</a>');
 
-    //       if (_ = itemset->getField('skillLevel'))
-    //       xSet += ' ('._.')';
+      //   if (_ = itemset->getField('skillLevel'))
+      //   xSet += ' ('._.')';
 
-    //       xSet += '<br>';
-    //     }
+      //   xSet += '<br>';
+      // }
 
-    //     // list pieces
-    //     xSet += '<div class="q0 indent">'.implode('<br>', pieces).'</div><br>';
+      // // list pieces
+      // xSet += '<div class="q0 indent">'.implode('<br>', pieces).'</div><br>';
 
-    //     // get bonuses
-    //     setSpellsAndIdx = [];
-    //     for (j = 1; j <= 8; j++)
-    //     if (_ = itemset->getField('spell'.j))
-    //     setSpellsAndIdx[_] = j;
+      // // get bonuses
+      // setSpellsAndIdx = [];
+      // for (j = 1; j <= 8; j++)
+      // if (_ = itemset->getField('spell'.j))
+      // setSpellsAndIdx[_] = j;
 
-    //     setSpells = [];
-    //     if (setSpellsAndIdx)
-    //     {
-    //       boni = new SpellList(array(['s.id', array_keys(setSpellsAndIdx)]));
-    //       foreach (boni->iterate() as __)
-    //       {
-    //         setSpells[] = array(
-    //           'tooltip' => boni->parseText('description', _reqLvl > 1 ? _reqLvl : MAX_LEVEL, false, causesScaling)[0],
-    //           'entry'   => itemset->getField('spell'.setSpellsAndIdx[boni->id]),
-    //           'bonus'   => itemset->getField('bonus'.setSpellsAndIdx[boni->id])
-    //           );
-    //         }
-    //       }
+      // setSpells = [];
+      // if (setSpellsAndIdx)
+      // {
+      //   boni = new SpellList(array(['s.id', array_keys(setSpellsAndIdx)]));
+      //   foreach (boni->iterate() as __)
+      //   {
+      //     setSpells[] = array(
+      //       'tooltip' => boni->parseText('description', _reqLvl > 1 ? _reqLvl : MAX_LEVEL, false, causesScaling)[0],
+      //       'entry'   => itemset->getField('spell'.setSpellsAndIdx[boni->id]),
+      //       'bonus'   => itemset->getField('bonus'.setSpellsAndIdx[boni->id])
+      //       );
+      //     }
+      //   }
 
-    //       // sort and list bonuses
-    //       xSet += '<span class="q0">';
-    //       for (i = 0; i < count(setSpells); i++)
-    //       {
-    //         for (j = i; j < count(setSpells); j++)
-    //         {
-    //           if (setSpells[j]['bonus'] >= setSpells[i]['bonus'])
-    //           continue;
-    //           tmp = setSpells[i];
-    //           setSpells[i] = setSpells[j];
-    //           setSpells[j] = tmp;
-    //         }
-    //         xSet += '<span>'.Lang::item('setBonus', [setSpells[i]['bonus'], '<a href="?spell='.
-    //         setSpells[i]['entry'].'">'.setSpells[i]['tooltip'].'</a>']).'</span>';
-    //         if (i < count(setSpells) - 1)
-    //         xSet += '<br>';
-    //       }
-    //       xSet += '</span>';
-    //     }
-    //   }
+      //   // sort and list bonuses
+      //   xSet += '<span class="q0">';
+      //   for (i = 0; i < count(setSpells); i++)
+      //   {
+      //     for (j = i; j < count(setSpells); j++)
+      //     {
+      //       if (setSpells[j]['bonus'] >= setSpells[i]['bonus'])
+      //       continue;
+      //       tmp = setSpells[i];
+      //       setSpells[i] = setSpells[j];
+      //       setSpells[j] = tmp;
+      //     }
+      //     xSet += '<span>'.Lang::item('setBonus', [setSpells[i]['bonus'], '<a href="?spell='.
+      //     setSpells[i]['entry'].'">'.setSpells[i]['tooltip'].'</a>']).'</span>';
+      //     if (i < count(setSpells) - 1)
+      //     xSet += '<br>';
+      //   }
+      //   xSet += '</span>';
+      // }
 
     return '';
   }
@@ -816,7 +821,7 @@ WHERE
       requiredText += `<br>Requires ${ITEM_CONSTANTS.pvpRank[requiredhonorrank]}`;
     }
 
-    // required CityRank (TODO?)
+    // required CityRank -> the value is always 0
 
     // required level
     if ((flags & ITEM_FLAG.ACCOUNTBOUND) && quality === ITEMS_QUALITY.HEIRLOOM) {
@@ -837,7 +842,7 @@ WHERE
     let res = [];
     [res, reqRating] = await this.getExtendedCost();
 
-    if (res[entry] && Object.keys(res[entry]).length > 0 && reqRating) {
+    if (res[entry] && Object.keys(res[entry]).length > 0 && reqRating.length > 0) {
       requiredText += '<br>' + ITEM_CONSTANTS.reqRating[reqRating[1]].replace('%d', reqRating[0]);
     }
 
@@ -962,43 +967,71 @@ WHERE
     }
   }
 
-  // TODO
-  public getGemEnchantment(): string {
-    // const gemEnchantmentId = this.editorService.form.controls.gemEnchantmentId.value;
-    // if (gemEnchantmentId) {
-    //   gemEnch = selectRow('SELECT * FROM ?_itemenchantment WHERE id = ?d', geId);
-    //   tmpItemPreview += '<span class="q1"><a href="?enchantment='.geId.'">'.
-    //   Util:: localizedString(gemEnch, 'name').'</a></span><br>';
+  public async getGemEnchantment(): Promise<string> {
+    let gemEnchantmentText = '';
 
-    //   // activation conditions for meta gems
-    //   if (!empty(gemEnch['conditionId'])) {
-    //     if (gemCnd = selectRow('SELECT * FROM ?_itemenchantmentcondition WHERE id = ?d', gemEnch['conditionId'])) {
-    //       for (let i = 1; i < 6; i++) {
-    //         if (!gemCnd['color'.i]) {
-    //           continue;
-    //         }
+    const entry = this.editorService.form.controls.entry.value;
+    const gemEnchantmentId = await this.sqliteQueryService.queryValue(
+      `SELECT gemEnchantmentId AS v FROM items WHERE id = ${entry};`
+    ).toPromise();
 
-    //         vspfArgs = [];
-    //         switch (gemCnd['comparator'.i]) {
-    //           case 2:                         // requires less <color> than (<value> || <comparecolor>) gems
-    //           case 5:                         // requires at least <color> than (<value> || <comparecolor>) gems
-    //           vspfArgs = [gemCnd['value'.i], Lang:: item('gemColors', gemCnd['color'.i] - 1)];
-    //           break;
-    //           case 3:                         // requires more <color> than (<value> || <comparecolor>) gems
-    //           vspfArgs = [Lang:: item('gemColors', gemCnd['color'.i] - 1),
-    //           Lang:: item('gemColors', gemCnd['cmpColor'.i] - 1)];
-    //           break;
-    //           default:
-    //           continue;
-    //         }
+    if (!!gemEnchantmentId) {
+      const gemEnch = (await this.sqliteQueryService.query(`SELECT * FROM item_enchantment WHERE id = ${gemEnchantmentId}`).toPromise())[0];
+      gemEnchantmentText += `<br><span class="q1">${gemEnch['name']}</span>`;
 
-    //         tmpItemPreview += '<span class="q0">'.Lang:: achievement('reqNumCrt').' '.
-    //         Lang:: item('gemConditions', gemCnd['comparator'.i], vspfArgs).'</span><br>';
-    //       }
-    //     }
-    //   }
-    // }
-    return '';
+      // activation conditions for meta gems
+      if (!!gemEnch['conditionId']) {
+        const gemCnd = (await this.sqliteQueryService.query(
+          `SELECT * FROM item_enchantment_condition WHERE id = ${gemEnch['conditionId']}`
+          ).toPromise())[0];
+
+        if (!!gemCnd) {
+
+          const gemConditions = ITEM_CONSTANTS['gemConditions'];
+
+          for (let i = 1; i < 6; i++) {
+            if (!gemCnd['color' + i]) {
+              continue;
+            }
+
+            const gemCndColor = Number(gemCnd[`color${i}`]);
+            const gemCndCmpColor = Number(gemCnd[`cmpColor${i}`]);
+            const gemCndComparator = gemCnd[`comparator${i}`];
+
+            let vspfArgs: any = [];
+            switch (gemCnd['comparator' + i]) {
+              case 2:                         // requires less <color> than (<value> || <comparecolor>) gems
+              case 5:                         // requires at least <color> than (<value> || <comparecolor>) gems
+              vspfArgs = [
+                gemCnd['value' + i],
+                ITEM_CONSTANTS['gemColors'][gemCndColor - 1],
+              ];
+              break;
+              case 3:                         // requires more <color> than (<value> || <comparecolor>) gems
+                vspfArgs = [
+                  ITEM_CONSTANTS['gemColors'][gemCndColor - 1],
+                  ITEM_CONSTANTS['gemColors'][gemCndCmpColor - 1],
+                ];
+              break;
+              default:
+                break;
+            }
+
+            if (vspfArgs.length === 0) {
+              continue;
+            }
+
+            const gemEnchText = gemConditions[gemCndComparator]
+                                .replace('%s', vspfArgs[0] ?? '')
+                                .replace('%s', vspfArgs[1] ?? '');
+
+            gemEnchantmentText += `<br><span class="q0">Requires ${gemEnchText}</span>`;
+          }
+        }
+      }
+    }
+
+    return gemEnchantmentText;
   }
 
   // TODO
@@ -1260,8 +1293,8 @@ WHERE
     tmpItemPreview += this.getDamageText();
     tmpItemPreview += this.getArmorText();
 
-    // Item is a gem (don't mix with sockets) (TODO)
-    tmpItemPreview += this.getGemEnchantment();
+    // Item is a gem (don't mix with sockets)
+    tmpItemPreview += await this.getGemEnchantment();
 
     // Random Enchantment - if random enchantment is set, prepend stats from it
     const RandomProperty: number = this.editorService.form.controls.RandomProperty.value;

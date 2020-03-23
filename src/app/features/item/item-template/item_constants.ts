@@ -114,9 +114,9 @@ export const ITEM_CONSTANTS = {
     'blue'
   ],
   'gemConditions': {                              // ENCHANT_CONDITION_* in GlobalStrings.lua
-    2: 'less than %d %s |4gem:gems;',
+    2: 'less than %s %s gems;',
     3: 'more %s gems than %s gems',
-    5: 'at least %d %s |4gem:gems',
+    5: 'at least %s %s gems',
   },
   'reqRating': [                                    // ITEM_REQ_ARENA_RATING*
       'Requires personal and team arena rating of %d',
