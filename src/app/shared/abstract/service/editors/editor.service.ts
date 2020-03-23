@@ -26,6 +26,9 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   get isNew(): boolean { return this._isNew; }
   get form(): FormGroup { return this._form; }
   get error(): MysqlError { return this._error; }
+  get mysqlQueryService(): MysqlQueryService {
+    return this.queryService;
+  }
 
   constructor(
     protected _entityClass: Class,
@@ -37,6 +40,10 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   ) {
     super();
     this.fields = this.getClassAttributes(this._entityClass);
+  }
+
+  clearCache(): void {
+    this.queryService.clearCache();
   }
 
   protected abstract updateDiffQuery();

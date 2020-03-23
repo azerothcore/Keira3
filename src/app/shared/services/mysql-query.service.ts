@@ -18,12 +18,17 @@ declare const squel: Squel & {flavour: null};
 export class MysqlQueryService extends QueryService {
 
   private readonly QUERY_NO_CHANGES = '-- There are no changes';
+  private cache: { [key: string]: Promise<string>[] } = {};
 
   constructor(
     private mysqlService: MysqlService,
     private configService: ConfigService,
   ) {
     super();
+  }
+
+  clearCache(): void {
+    this.cache = {};
   }
 
   query<T extends TableRow>(queryString: string, values?: string[]): Observable<T[]> {
@@ -361,6 +366,16 @@ export class MysqlQueryService extends QueryService {
     return this.queryValue(query).toPromise();
   }
 
+  queryValueToPromiseCached(cacheId: string, id: string, query: string): Promise<string> {
+    if (!this.cache[cacheId]) {
+      this.cache[cacheId] = [];
+    }
+    if (!this.cache[cacheId][id]) {
+      this.cache[cacheId][id] = this.queryValue(query).toPromise();
+    }
+    return this.cache[cacheId][id];
+  }
+
   getCreatureNameById(id: string|number): Promise<string> {
     return this.queryValueToPromise(`SELECT name AS v FROM creature_template WHERE entry = ${id}`);
   }
@@ -382,7 +397,7 @@ export class MysqlQueryService extends QueryService {
   }
 
   getItemNameById(id: string|number): Promise<string> {
-    return this.queryValueToPromise(`SELECT name AS v FROM item_template WHERE entry = ${id}`);
+    return this.queryValueToPromiseCached('itemName', String(id), `SELECT name AS v FROM item_template WHERE entry = ${id}`);
   }
 
   getDisplayIdByItemId(id: string|number): Observable<string> {
