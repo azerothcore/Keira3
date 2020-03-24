@@ -42,7 +42,7 @@ export class MockSingleRowEditorService extends SingleRowEditorService<MockEntit
 
   constructor(
     protected handlerService: MockHandlerService,
-    protected queryService: MysqlQueryService,
+    public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -65,7 +65,7 @@ export class MockSingleRowComplexKeyEditorService extends SingleRowComplexKeyEdi
 
   constructor(
     protected handlerService: MockHandlerService,
-    protected queryService: MysqlQueryService,
+    public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -88,7 +88,7 @@ export class MockMultiRowEditorService extends MultiRowEditorService<MockEntity>
 
   constructor(
     protected handlerService: MockHandlerService,
-    protected queryService: MysqlQueryService,
+    public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -110,7 +110,7 @@ export class MockMultiRowComplexKeyEditorService extends MultiRowComplexKeyEdito
 
   constructor(
     protected handlerService: MockHandlerService,
-    protected queryService: MysqlQueryService,
+    public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(

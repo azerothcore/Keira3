@@ -43,6 +43,7 @@ export abstract class LootTemplateComponent<T extends LootTemplate> extends Mult
   }
 
   ngOnInit() {
+    this.editorService.clearCache();
     this.checkTemplateLootId();
   }
 }

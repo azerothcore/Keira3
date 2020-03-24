@@ -25,7 +25,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     protected _entityIdField: string,
     protected _entitySecondIdField: string,
     protected handlerService: HandlerService<T>,
-    protected queryService: MysqlQueryService,
+    public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(

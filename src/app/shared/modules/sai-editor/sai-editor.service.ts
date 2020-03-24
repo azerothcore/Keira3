@@ -18,7 +18,7 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: SaiHandlerService,
-    protected queryService: MysqlQueryService,
+    public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
     protected saiCommentGeneratorService: SaiCommentGeneratorService,
   ) {

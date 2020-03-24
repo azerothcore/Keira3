@@ -6,7 +6,7 @@ import { SearchService } from '../../../modules/search/search.service';
 export abstract class SelectService<T extends TableRow> extends SearchService<T> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    protected queryService: MysqlQueryService,
+    public readonly queryService: MysqlQueryService,
     public handlerService: HandlerService<T>,
     protected entityTable: string,
     protected entityIdField: string,

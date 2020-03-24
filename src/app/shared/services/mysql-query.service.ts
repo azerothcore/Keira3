@@ -9,6 +9,7 @@ import { squelConfig } from '../../config/squel.config';
 import { ConfigService } from './config.service';
 import { QueryService } from '@keira-shared/services/query.service';
 import { SmartScripts } from '@keira-types/smart-scripts.type';
+import { fromPromise } from 'rxjs/internal-compatibility';
 
 declare const squel: Squel & {flavour: null};
 
@@ -18,12 +19,17 @@ declare const squel: Squel & {flavour: null};
 export class MysqlQueryService extends QueryService {
 
   private readonly QUERY_NO_CHANGES = '-- There are no changes';
+  private cache: { [key: string]: Promise<string>[] } = {};
 
   constructor(
     private mysqlService: MysqlService,
     private configService: ConfigService,
   ) {
     super();
+  }
+
+  clearCache(): void {
+    this.cache = {};
   }
 
   query<T extends TableRow>(queryString: string, values?: string[]): Observable<T[]> {
@@ -361,32 +367,48 @@ export class MysqlQueryService extends QueryService {
     return this.queryValue(query).toPromise();
   }
 
+  queryValueToPromiseCached(cacheId: string, id: string, query: string): Promise<string> {
+    if (!this.cache[cacheId]) {
+      this.cache[cacheId] = [];
+    }
+    if (!this.cache[cacheId][id]) {
+      this.cache[cacheId][id] = this.queryValue(query).toPromise();
+    }
+    return this.cache[cacheId][id];
+  }
+
   getCreatureNameById(id: string|number): Promise<string> {
-    return this.queryValueToPromise(`SELECT name AS v FROM creature_template WHERE entry = ${id}`);
+    return this.queryValueToPromiseCached('getCreatureNameById', String(id), `SELECT name AS v FROM creature_template WHERE entry = ${id}`);
   }
 
   getCreatureNameByGuid(guid: string|number): Promise<string> {
-    return this.queryValueToPromise(`SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id WHERE c.guid = ${guid}`);
+    return this.queryValueToPromiseCached('getCreatureNameByGuid', String(guid), `SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id WHERE c.guid = ${guid}`);
   }
 
   getGameObjectNameById(id: string|number): Promise<string> {
-    return this.queryValueToPromise(`SELECT name AS v FROM gameobject_template WHERE entry = ${id}`);
+    return this.queryValueToPromiseCached('getGameObjectNameById', String(id), `SELECT name AS v FROM gameobject_template WHERE entry = ${id}`);
   }
 
   getGameObjectNameByGuid(guid: string|number): Promise<string> {
-    return this.queryValueToPromise(`SELECT name AS v FROM gameobject_template AS gt INNER JOIN gameobject AS g ON gt.entry = g.id WHERE g.guid = ${guid}`);
+    return this.queryValueToPromiseCached('getGameObjectNameByGuid', String(guid), `SELECT name AS v FROM gameobject_template AS gt INNER JOIN gameobject AS g ON gt.entry = g.id WHERE g.guid = ${guid}`);
   }
 
   getQuestTitleById(id: string|number): Promise<string> {
-    return this.queryValueToPromise(`SELECT LogTitle AS v FROM quest_template WHERE ID = ${id}`);
+    return this.queryValueToPromiseCached('getQuestTitleById', String(id), `SELECT LogTitle AS v FROM quest_template WHERE ID = ${id}`);
   }
 
   getItemNameById(id: string|number): Promise<string> {
-    return this.queryValueToPromise(`SELECT name AS v FROM item_template WHERE entry = ${id}`);
+    return this.queryValueToPromiseCached('getItemNameById', String(id), `SELECT name AS v FROM item_template WHERE entry = ${id}`);
   }
 
   getDisplayIdByItemId(id: string|number): Observable<string> {
-    return !!id ? this.queryValue(`SELECT displayid AS v FROM item_template WHERE entry = ${id}`) : of(null);
+    return !!id
+      ? fromPromise(this.queryValueToPromiseCached(
+        'getDisplayIdByItemId',
+        String(id),
+        `SELECT displayid AS v FROM item_template WHERE entry = ${id}`,
+      ))
+      : of(null);
   }
 
   // Note: at least one param should be defined

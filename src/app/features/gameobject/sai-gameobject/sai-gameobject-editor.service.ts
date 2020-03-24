@@ -10,7 +10,7 @@ import { SaiCommentGeneratorService } from '@keira-shared/modules/sai-editor/sai
 export class SaiGameobjectEditorService extends SaiEditorService {
   constructor(
     protected handlerService: SaiGameobjectHandlerService,
-    protected queryService: MysqlQueryService,
+    public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
     protected saiCommentGeneratorService: SaiCommentGeneratorService,
   ) {

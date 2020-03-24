@@ -38,6 +38,7 @@ export class GameobjectLootTemplateComponent extends LootTemplateComponent<Gameo
   }
 
   ngOnInit() {
+    this.editorService.clearCache();
     this.checkTemplateType();
     this.checkTemplateLootId();
   }
