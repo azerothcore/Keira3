@@ -378,23 +378,23 @@ export class MysqlQueryService extends QueryService {
   }
 
   getCreatureNameById(id: string|number): Promise<string> {
-    return this.queryValueToPromiseCached('getCreatureNameById', String(id),`SELECT name AS v FROM creature_template WHERE entry = ${id}`);
+    return this.queryValueToPromiseCached('getCreatureNameById', String(id), `SELECT name AS v FROM creature_template WHERE entry = ${id}`);
   }
 
   getCreatureNameByGuid(guid: string|number): Promise<string> {
-    return this.queryValueToPromiseCached('getCreatureNameByGuid', String(guid),`SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id WHERE c.guid = ${guid}`);
+    return this.queryValueToPromiseCached('getCreatureNameByGuid', String(guid), `SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id WHERE c.guid = ${guid}`);
   }
 
   getGameObjectNameById(id: string|number): Promise<string> {
-    return this.queryValueToPromiseCached('getGameObjectNameById', String(id),`SELECT name AS v FROM gameobject_template WHERE entry = ${id}`);
+    return this.queryValueToPromiseCached('getGameObjectNameById', String(id), `SELECT name AS v FROM gameobject_template WHERE entry = ${id}`);
   }
 
   getGameObjectNameByGuid(guid: string|number): Promise<string> {
-    return this.queryValueToPromiseCached('getGameObjectNameByGuid', String(guid),`SELECT name AS v FROM gameobject_template AS gt INNER JOIN gameobject AS g ON gt.entry = g.id WHERE g.guid = ${guid}`);
+    return this.queryValueToPromiseCached('getGameObjectNameByGuid', String(guid), `SELECT name AS v FROM gameobject_template AS gt INNER JOIN gameobject AS g ON gt.entry = g.id WHERE g.guid = ${guid}`);
   }
 
   getQuestTitleById(id: string|number): Promise<string> {
-    return this.queryValueToPromiseCached('getQuestTitleById', String(id),`SELECT LogTitle AS v FROM quest_template WHERE ID = ${id}`);
+    return this.queryValueToPromiseCached('getQuestTitleById', String(id), `SELECT LogTitle AS v FROM quest_template WHERE ID = ${id}`);
   }
 
   getItemNameById(id: string|number): Promise<string> {
