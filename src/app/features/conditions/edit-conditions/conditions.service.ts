@@ -13,7 +13,7 @@ export class ConditionsService extends SingleRowComplexKeyEditorService<Conditio
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: ConditionsHandlerService,
-    protected queryService: MysqlQueryService,
+    public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(

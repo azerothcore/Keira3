@@ -16,7 +16,7 @@ import { IconService } from '@keira-shared/modules/icon/icon.service';
 export class SelectItemService extends SelectService<ItemTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    protected queryService: MysqlQueryService,
+    public readonly queryService: MysqlQueryService,
     public handlerService: ItemHandlerService,
     private itemIconService: IconService,
   ) {

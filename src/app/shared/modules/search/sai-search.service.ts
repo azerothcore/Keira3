@@ -13,7 +13,7 @@ export class SaiSearchService extends SearchService<SmartScripts> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    protected queryService: MysqlQueryService,
+    public readonly queryService: MysqlQueryService,
   ) {
     super(queryService, SAI_TABLE, SAI_SEARCH_FIELDS);
   }

@@ -26,16 +26,13 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   get isNew(): boolean { return this._isNew; }
   get form(): FormGroup { return this._form; }
   get error(): MysqlError { return this._error; }
-  get mysqlQueryService(): MysqlQueryService {
-    return this.queryService;
-  }
 
   constructor(
     protected _entityClass: Class,
     protected _entityTable: string,
     protected _entityIdField: string,
     protected handlerService: HandlerService<T>,
-    protected queryService: MysqlQueryService,
+    public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super();
