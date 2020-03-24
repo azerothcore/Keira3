@@ -16,7 +16,7 @@ export class ItemSearchService extends SearchService<ItemTemplate> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    protected queryService: MysqlQueryService,
+    public readonly queryService: MysqlQueryService,
     private itemIconService: IconService,
   ) {
     super(queryService, ITEM_TEMPLATE_TABLE, ITEM_TEMPLATE_SEARCH_FIELDS);

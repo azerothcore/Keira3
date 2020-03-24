@@ -32,11 +32,15 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     protected _entityTable: string,
     protected _entityIdField: string,
     protected handlerService: HandlerService<T>,
-    protected queryService: MysqlQueryService,
+    public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super();
     this.fields = this.getClassAttributes(this._entityClass);
+  }
+
+  clearCache(): void {
+    this.queryService.clearCache();
   }
 
   protected abstract updateDiffQuery();

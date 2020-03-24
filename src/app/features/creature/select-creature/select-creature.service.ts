@@ -14,7 +14,7 @@ import { CreatureHandlerService } from '../creature-handler.service';
 export class SelectCreatureService extends SelectService<CreatureTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    protected queryService: MysqlQueryService,
+    public readonly queryService: MysqlQueryService,
     public handlerService: CreatureHandlerService,
   ) {
     super(

@@ -14,7 +14,7 @@ import { GossipHandlerService } from '../gossip-handler.service';
 export class SelectGossipService extends SelectService<GossipMenu> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    protected queryService: MysqlQueryService,
+    public readonly queryService: MysqlQueryService,
     public handlerService: GossipHandlerService,
   ) {
     super(
