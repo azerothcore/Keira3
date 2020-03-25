@@ -46,7 +46,14 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   .c9  { color: #9382C9 !important } /* Warlock */
   .c11 { color: #FF7C0A !important } /* Druid */
 
- .moneyitem, .moneygold, .moneysilver, .moneycopper, .moneyalliance, .moneyhorde, .moneyarena, .moneyachievement, .moneysocketmeta, .moneysocketred, .moneysocketyellow, .moneysocketblue, .moneysocketprismatic {
+  /* Sockets */
+  .socket0 { padding-left: 26px; background: url(../img/sockets/meta.gif) no-repeat left center;      } /* meta */
+  .socket1 { padding-left: 26px; background: url(../img/sockets/red.gif) no-repeat left center;       } /* red */
+  .socket2 { padding-left: 26px; background: url(../img/sockets/yellow.gif) no-repeat left center;    } /* yellow */
+  .socket3 { padding-left: 26px; background: url(../img/sockets/blue.gif) no-repeat left center;      } /* blue */
+  .socket4 { padding-left: 26px; background: url(../img/sockets/prismatic.gif) no-repeat left center; } /* prismatic */
+
+  .moneygold, .moneysilver, .moneycopper {
     background: no-repeat right center;
     color: white;
   }

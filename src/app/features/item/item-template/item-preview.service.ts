@@ -1093,98 +1093,36 @@ WHERE
     return gemEnchantmentText;
   }
 
-  // TODO
-  public getSocketEnchantment(): string {
-    // // Enchantment
-    // if (isset($enhance['e']))
-    // {
-    //     if ($enchText = selectRow('SELECT * FROM ?_itemenchantment WHERE Id = ?', $enhance['e']))
-    //         tmpItemPreview += '<span class="q2"><!--e-->'.Util::localizedString($enchText, 'name').'</span><br>';
-    //     else
-    //     {
-    //         unset($enhance['e']);
-    //         tmpItemPreview += '<!--e-->';
-    //     }
-    // }
-    // else                                                // enchantment placeholder
-    //     tmpItemPreview += '<!--e-->';
+  public async getSocketEnchantment(): Promise<string> {
 
-    // // Sockets w/ Gems
-    // if (!empty($enhance['g']))
-    // {
-    //     $gems = select('
-    //         SELECT it.id AS ARRAY_KEY, ic.name AS iconString, ae.*, it.gemColorMask AS colorMask
-    //         FROM   ?_items it
-    //         JOIN   ?_itemenchantment ae ON ae.id = it.gemEnchantmentId
-    //         JOIN   ?_icons ic ON ic.id = it.iconId
-    //         WHERE  it.id IN (?a)',
-    //         $enhance['g']);
-    //     foreach ($enhance['g'] as $k => $v)
-    //         if ($v && !in_array($v, array_keys($gems))) // 0 is valid
-    //             unset($enhance['g'][$k]);
-    // }
-    // else
-    //     $enhance['g'] = [];
+    let socketText = '';
 
-    // // zero fill empty sockets
-    // $sockCount = isset($enhance['s']) ? 1 : 0;
-    // if (!empty($this->json[$this->id]['nsockets']))
-    //     $sockCount += $this->json[$this->id]['nsockets'];
+    // fill native sockets
+    for (let j = 1; j <= 3; j++) {
+      const socketColor = this.editorService.form.controls['socketColor_' + j].value;
 
-    // while ($sockCount > count($enhance['g']))
-    //     $enhance['g'][] = 0;
+      if (!socketColor) {
+        continue;
+      }
 
-    // $enhance['g'] = array_reverse($enhance['g']);
+      let colorId = 0;
+      for (let i = 0; i < 4; i++) {
+        if (socketColor & (1 << i)) {
+          colorId = i;
+        }
+      }
 
-    // $hasMatch = 1;
-    // // fill native sockets
-    // for ($j = 1; $j <= 3; $j++)
-    // {
-    //     if (!$this->curTpl['socketColor'.$j])
-    //         continue;
+      socketText += `<br><span class="socket-${ITEM_CONSTANTS.gemColors[colorId]} q0 socket${colorId}">${ITEM_CONSTANTS.socket[colorId]}</span>`;
+    }
 
-    //     for ($i = 0; $i < 4; $i++)
-    //         if (($this->curTpl['socketColor'.$j] & (1 << $i)))
-    //             $colorId = $i;
+    const socketBonus = this.editorService.form.controls.socketBonus.value;
+    if (!!socketBonus) {
+      const sbonus = await this.sqliteQueryService.getSocketBonusById(socketBonus);
+      const socketBonusText = `${ITEM_CONSTANTS.socketBonus.replace('%s', sbonus)}`;
+      socketText += `<br><span class="q0">${socketBonusText}</span>`;
+    }
 
-    //     $pop       = array_pop($enhance['g']);
-    //     $col       = $pop ? 1 : 0;
-    //     $hasMatch &= $pop ? (($gems[$pop]['colorMask'] & (1 << $colorId)) ? 1 : 0) : 0;
-    //     $icon      = $pop ? sprintf(Util::$bgImagePath['tiny'], STATIC_URL, strtolower($gems[$pop]['iconString'])) : null;
-    //     $text      = $pop ? Util::localizedString($gems[$pop], 'name') : Lang::item('socket', $colorId);
-
-    //     if ($interactive)
-    //         tmpItemPreview += '<a href="?items=3&amp;filter=cr=81;crs='
-    //         .($colorId + 1).';crv=0" class="socket-'.Game::$sockets[$colorId].' q'.$col.'" '.$icon.'>'.$text.'</a><br>';
-    //     else
-    //         tmpItemPreview += '<span class="socket-'.Game::$sockets[$colorId].' q'.$col.'" '.$icon.'>'.$text.'</span><br>';
-    // }
-
-    // // fill extra socket
-    // if (isset($enhance['s']))
-    // {
-    //     $pop  = array_pop($enhance['g']);
-    //     $col  = $pop ? 1 : 0;
-    //     $icon = $pop ? sprintf(Util::$bgImagePath['tiny'], STATIC_URL, strtolower($gems[$pop]['iconString'])) : null;
-    //     $text = $pop ? Util::localizedString($gems[$pop], 'name') : Lang::item('socket', -1);
-
-    //     if ($interactive)
-    //         tmpItemPreview += '<a href="?items=3&amp;filter=cr=81;crs=5;crv=0"
-    //         class="socket-prismatic q'.$col.'" '.$icon.'>'.$text.'</a><br>';
-    //     else
-    //         tmpItemPreview += '<span class="socket-prismatic q'.$col.'" '.$icon.'>'.$text.'</span><br>';
-    // }
-    // else                                                // prismatic socket placeholder
-    //     tmpItemPreview += '<!--ps-->';
-
-    // if ($_ = $this->curTpl['socketBonus'])
-    // {
-    //     $sbonus = selectRow('SELECT * FROM ?_itemenchantment WHERE Id = ?d', $_);
-    //     tmpItemPreview += '<span class="q'.($hasMatch ? '2' : '0').'">'
-    //     .Lang::item('socketBonus', ['<a href="?enchantment='.$_.'">'.Util::localizedString($sbonus, 'name').'</a>']).'</span><br>';
-    // }
-
-    return '';
+    return socketText;
   }
 
   public async getSpellDesc(green: string[]) {
@@ -1369,7 +1307,7 @@ WHERE
     tmpItemPreview += this.getMagicResistances();
 
     // Socket & Enchantment (TODO)
-    tmpItemPreview += this.getSocketEnchantment();
+    tmpItemPreview += await this.getSocketEnchantment();
 
     // durability
     const durability = this.editorService.form.controls.MaxDurability.value;

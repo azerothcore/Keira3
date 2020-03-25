@@ -93,4 +93,8 @@ export class SqliteQueryService extends QueryService {
     return this.queryValue<string>(`SELECT name AS v FROM holiday WHERE id = ${id}`).toPromise();
   }
 
+  getSocketBonusById(id: string | number): Promise<string> {
+    return this.queryValue<string>(`SELECT name AS v FROM item_enchantment WHERE id = ${id}`).toPromise();
+  }
+
 }
