@@ -5,6 +5,8 @@
     text-align: center;
     margin: auto;
     position: fixed;
+    overflow: auto;
+    max-height: 800px;
 
     .icon {
       width: 100px;
@@ -28,7 +30,7 @@
     .item-stats {
       text-align: left;
       font-family: Verdana, "Open Sans", Arial, "Helvetica Neue", Helvetica, sans-serif;
-      font-size: 18px;
+      font-size: 15px;
 
       line-height: 25px;
       width: auto;
@@ -37,6 +39,7 @@
 
       color: #ccc;
     }
+
 
     .stackable {
       position: absolute;

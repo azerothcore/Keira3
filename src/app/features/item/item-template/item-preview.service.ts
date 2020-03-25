@@ -613,91 +613,150 @@ WHERE
     return stats;
   }
 
-  public getItemSet(): string {
-    /* TODO */
-
+  public async getItemSet(): Promise<string> {
     const itemset = this.editorService.form.controls.itemset.value;
+    const entry = this.editorService.form.controls.entry.value;
 
     if (!itemset) {
       return '';
     }
 
-    // // Item Set
-    // const pieces  = [];
-    // setId = this->getField('itemset')
+    let itemsetText = '';
 
-    // // while Ids can technically be used multiple times the only difference in data are the items used. So it doesn't matter what we get
-    // const itemset = new ItemsetList(array(['id', setId]));
-    // if (!itemset->error && itemset->pieceToSet) {
-    //   pieces = select(`
-    //   SELECT b.id AS ARRAY_KEY, b.name_loc0, b.name_loc2, b.name_loc3, b.name_loc4, b.name_loc6, b.name_loc8,
-    //   GROUP_CONCAT(a.id SEPARATOR \':\') AS equiv
-    //   FROM   ?_items a, ?_items b
-    //   WHERE  a.slotBak = b.slotBak AND a.itemset = b.itemset AND b.id IN (?a)
-    //   GROUP BY b.id;',
-    //   array_keys(itemset->pieceToSet)
-    //   `);
+    const itemsetPieces = await this.sqliteQueryService.query(
+      `SELECT * FROM items WHERE itemset = ${itemset} ORDER BY slotBak, id`
+    ).toPromise();
 
-      // foreach (pieces as k => &p)
-      // p = '<span><!--si'.p['equiv'].'--><a href="?item='.k.'">'.Util::localizedString(p, 'name').'</a></span>';
+    // check if there are multiple itemset with the same itemset ID
+    let multipleItemset = false;
 
-      // xSet = '<br><span class="q">'.Lang::item('setName', ['<a href="?itemset='.itemset->id.'" class="q">'.
-      //   itemset->getField('name', true).'</a>', 0, count(pieces)]).'</span>';
+    if (itemsetPieces.length > 10) {
+      multipleItemset = true;
+    } else {
+      const slotBak = [];
+      for (const p of itemsetPieces) {
+        if (slotBak.includes(p.slotBak)) {
+          multipleItemset = true;
+          break;
+        } else {
+          slotBak.push(p.slotBak);
+        }
+      }
+    }
 
-      // if (skId = itemset->getField('skillId'))      // bonus requires skill to activate
-      // {
-      //   xSet += '<br>'.sprintf(Lang::game('requires'), '<a href="?skills='.skId.'" class="q1">'.SkillList::getName(skId).'</a>');
+    // get pieces IDs
+    const piecesIDs = [];
 
-      //   if (_ = itemset->getField('skillLevel'))
-      //   xSet += ' ('._.')';
+    if (multipleItemset) {
+      // detect position of current item
+      let position = 0;
+      let currentSlotBak = itemsetPieces[0].slotBak;
+      for (let i = 0; i < itemsetPieces.length; i++) {
+        if (currentSlotBak !== itemsetPieces[i].slotBak) {
+          currentSlotBak = itemsetPieces[i].slotBak;
+          position = 0;
+        }
 
-      //   xSet += '<br>';
-      // }
+        position++;
+        if (itemsetPieces[i].id === entry) {
+          break;
+        }
+      }
 
-      // // list pieces
-      // xSet += '<div class="q0 indent">'.implode('<br>', pieces).'</div><br>';
+      // get itemsetPieces IDs
+      let pos = 0;
+      for (const p of itemsetPieces) {
+        if (p.slotBak !== currentSlotBak) {
+          currentSlotBak = p.slotBak;
+          pos = 0;
+        }
 
-      // // get bonuses
-      // setSpellsAndIdx = [];
-      // for (j = 1; j <= 8; j++)
-      // if (_ = itemset->getField('spell'.j))
-      // setSpellsAndIdx[_] = j;
+        pos++;
+        if (pos === position) {
+          piecesIDs.push(p.id);
+        }
+      }
+    } else {
+      for (const p of itemsetPieces) {
+        piecesIDs.push(p.id);
+      }
+    }
 
-      // setSpells = [];
-      // if (setSpellsAndIdx)
-      // {
-      //   boni = new SpellList(array(['s.id', array_keys(setSpellsAndIdx)]));
-      //   foreach (boni->iterate() as __)
-      //   {
-      //     setSpells[] = array(
-      //       'tooltip' => boni->parseText('description', _reqLvl > 1 ? _reqLvl : MAX_LEVEL, false, causesScaling)[0],
-      //       'entry'   => itemset->getField('spell'.setSpellsAndIdx[boni->id]),
-      //       'bonus'   => itemset->getField('bonus'.setSpellsAndIdx[boni->id])
-      //       );
-      //     }
-      //   }
+    piecesIDs.sort();
 
-      //   // sort and list bonuses
-      //   xSet += '<span class="q0">';
-      //   for (i = 0; i < count(setSpells); i++)
-      //   {
-      //     for (j = i; j < count(setSpells); j++)
-      //     {
-      //       if (setSpells[j]['bonus'] >= setSpells[i]['bonus'])
-      //       continue;
-      //       tmp = setSpells[i];
-      //       setSpells[i] = setSpells[j];
-      //       setSpells[j] = tmp;
-      //     }
-      //     xSet += '<span>'.Lang::item('setBonus', [setSpells[i]['bonus'], '<a href="?spell='.
-      //     setSpells[i]['entry'].'">'.setSpells[i]['tooltip'].'</a>']).'</span>';
-      //     if (i < count(setSpells) - 1)
-      //     xSet += '<br>';
-      //   }
-      //   xSet += '</span>';
-      // }
+    // get items name
+    const itemsName: any[] = await this.queryService.query(`SELECT name FROM item_template WHERE entry IN (${piecesIDs.join(',')}) ORDER BY entry ASC`).toPromise();
 
-    return '';
+    for (let i = 0; i < itemsName.length; i++) {
+      itemsName[i] = itemsName[i].name;
+    }
+
+    const itemsetAttr = (await this.sqliteQueryService.query(`SELECT * FROM itemset WHERE id = ${itemset}`).toPromise())[0];
+
+    itemsetText += '<br><br><span class="q">' + ITEM_CONSTANTS.setName
+      .replace('%s', `${itemsetAttr['name']}</span>`)
+      .replace('%d', '0')
+      .replace('%d', itemsName.length.toString())
+      + '</span>';
+
+
+      // if require skill
+      if (!!itemsetAttr['skillId']) {
+        itemsetText += `<br>Requires ${await this.sqliteQueryService.getSkillNameById(itemsetAttr['skillId'])}`;
+
+        if (!!itemsetAttr['skillLevel']) {
+          itemsetText += ` (${itemsetAttr['skillLevel']})`;
+        }
+      }
+
+      // list pieces
+      itemsetText += `<br><div class="q0" style="padding-left: .6em">${itemsName.join('<br>')}</div>`;
+
+      // get bonuses
+      const setSpellsAndIdx = [];
+
+      for (let j = 1; j <= 8; j++) {
+        const spell = itemsetAttr['spell' + j];
+
+        if (!!spell) {
+          setSpellsAndIdx[spell] = j;
+        }
+      }
+
+      const setSpells = [];
+      if (setSpellsAndIdx && setSpellsAndIdx.length > 0) {
+        const spellsIDs = Object.keys(setSpellsAndIdx);
+        for (const s of spellsIDs) {
+          setSpells.push({
+            tooltip: await this.sqliteQueryService.getSpellDescriptionById(s),
+            entry: itemsetAttr['spell' + setSpellsAndIdx[s]],
+            bonus: itemsetAttr['bonus' + setSpellsAndIdx[s]],
+          });
+        }
+      }
+
+      // sort and list bonuses
+      itemsetText += '<span class="q0">';
+      for (let i = 0; i < setSpells.length; i++) {
+        for (let j = i; j < setSpells.length; j++) {
+          if (setSpells[j]['bonus'] >= setSpells[i]['bonus']) {
+            continue;
+          }
+
+          const tmp = setSpells[i];
+          setSpells[i] = setSpells[j];
+          setSpells[j] = tmp;
+        }
+
+        const bonusText = ITEM_CONSTANTS.setBonus
+          .replace('%d', setSpells[i]['bonus'])
+          .replace('%s', setSpells[i]['tooltip']);
+
+        itemsetText += `<br><span>${bonusText}</span>`;
+      }
+      itemsetText += '</span>';
+
+    return itemsetText;
   }
 
   public async getBonding(): Promise<string> {
@@ -1333,7 +1392,7 @@ WHERE
       }
     }
 
-    tmpItemPreview += this.getItemSet();
+    tmpItemPreview += await this.getItemSet();
 
     // recipes, vanity pets, mounts
     tmpItemPreview += await this.getLearnSpellText();
