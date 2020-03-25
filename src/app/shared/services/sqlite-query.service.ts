@@ -13,7 +13,7 @@ import { QueryService } from '@keira-shared/services/query.service';
 export class SqliteQueryService extends QueryService {
 
   private itemDisplayIdCache: Observable<string>[] = [];
-  private spellNameCache: Observable<string>[] = [];
+  private spellNameCache: Promise<string>[] = [];
 
   constructor(
     private sqliteService: SqliteService,
@@ -63,10 +63,10 @@ export class SqliteQueryService extends QueryService {
     if (!this.spellNameCache[spellId]) {
       this.spellNameCache[spellId] = this.queryValue<string>(
         `SELECT spellName AS v FROM spells WHERE id = ${spellId}`
-      ).pipe(shareReplay());
+      ).pipe(shareReplay()).toPromise();
     }
 
-    return this.spellNameCache[spellId].toPromise();
+    return this.spellNameCache[spellId];
   }
 
   getSpellDescriptionById(spellId: string | number): Promise<string> {

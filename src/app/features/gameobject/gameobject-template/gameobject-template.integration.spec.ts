@@ -142,12 +142,13 @@ describe('GameobjectTemplate integration tests', () => {
     it('changing a value via SingleValueSelector should correctly work', async () => {
       const field = 'type';
       page.clickElement(page.getSelectorBtn(field));
+      await page.whenReady();
       page.expectModalDisplayed();
 
       page.clickRowOfDatatable(7);
+      await page.whenReady();
       page.clickModalSelect();
-      await fixture.whenStable();
-      await fixture.whenRenderingDone();
+      await page.whenReady();
 
       expect(page.getInputById(field).value).toEqual('7');
       page.expectDiffQueryToContain(

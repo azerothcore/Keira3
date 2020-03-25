@@ -20,7 +20,7 @@ export class GameobjectLootTemplateService extends LootEditorService<GameobjectL
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: GameobjectHandlerService,
-    protected queryService: MysqlQueryService,
+    public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(

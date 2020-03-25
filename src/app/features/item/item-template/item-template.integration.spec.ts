@@ -171,13 +171,16 @@ describe('ItemTemplate integration tests', () => {
     it('changing a value via FlagsSelector should correctly work', async () => {
       const field = 'Flags';
       page.clickElement(page.getSelectorBtn(field));
+
+      await page.whenReady();
       page.expectModalDisplayed();
 
       page.toggleFlagInRow(2);
+      await page.whenReady();
       page.toggleFlagInRow(12);
+      await page.whenReady();
       page.clickModalSelect();
-      await fixture.whenStable();
-      await fixture.whenRenderingDone();
+      await page.whenReady();
 
       expect(page.getInputById(field).value).toEqual('4100');
       page.expectDiffQueryToContain(

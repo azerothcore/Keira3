@@ -19,7 +19,7 @@ export abstract class LootEditorService<T extends LootTemplate> extends MultiRow
     protected _entityTemplateIdField: string, // e.g. entry
     protected _entityTemplateLootField: string, // e.g. lootid
     protected handlerService: HandlerService<T>,
-    protected queryService: MysqlQueryService,
+    public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(

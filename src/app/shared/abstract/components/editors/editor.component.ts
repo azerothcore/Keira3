@@ -20,6 +20,8 @@ export abstract class EditorComponent<T extends TableRow> extends SubscriptionHa
   }
 
   ngOnInit() {
+    this.editorService.clearCache();
+
     if (this.editorService.loadedEntityId !== this.handlerService.selected) {
       this.editorService.reload(this.handlerService.selected);
     }

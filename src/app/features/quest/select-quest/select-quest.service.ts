@@ -14,7 +14,7 @@ import { QuestHandlerService } from '../quest-handler.service';
 export class SelectQuestService extends SelectService<QuestTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    protected queryService: MysqlQueryService,
+    public readonly queryService: MysqlQueryService,
     public handlerService: QuestHandlerService,
   ) {
     super(

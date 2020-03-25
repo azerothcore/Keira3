@@ -20,7 +20,7 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
     _entityIdField: string[],
     protected _entitySecondIdField: string,
     protected handlerService: HandlerService<T>,
-    protected queryService: MysqlQueryService,
+    public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(

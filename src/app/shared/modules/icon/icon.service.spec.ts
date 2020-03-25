@@ -24,6 +24,23 @@ describe('IconService', () => {
     expect(sqliteQueryService.getIconByItemDisplayId).toHaveBeenCalledWith(mockArgument);
   });
 
+  it('getIconByItemDisplayId() should remove .tga from icon name', () => {
+    const service = TestBed.inject(IconService);
+    const sqliteQueryService = TestBed.inject(SqliteQueryService);
+
+    const tgaIcon = 'icon.tga';
+    const icon = 'icon';
+
+    spyOn(sqliteQueryService, 'getIconByItemDisplayId').and.returnValue(of(tgaIcon));
+
+    service.getIconByItemDisplayId(mockArgument).subscribe(result => {
+      expect(result).toEqual(icon);
+    });
+    expect(sqliteQueryService.getIconByItemDisplayId).toHaveBeenCalledTimes(1);
+    expect(sqliteQueryService.getIconByItemDisplayId).toHaveBeenCalledWith(mockArgument);
+  });
+
+
   it('getIconByItemId() should correctly work [case mysqlQuery return non-null]', () => {
     const service = TestBed.inject(IconService);
     const mysqlQueryService = TestBed.inject(MysqlQueryService);

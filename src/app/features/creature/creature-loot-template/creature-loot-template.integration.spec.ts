@@ -58,6 +58,8 @@ describe('CreatureLootTemplate integration tests', () => {
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
     spyOn(queryService, 'queryValue').and.returnValue(of());
+    const itemNamePromise = of(`MockItemName`).toPromise();
+    spyOn(queryService, 'getItemNameById').and.returnValue(itemNamePromise);
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
       creatingNew ? [] : [originalRow0, originalRow1, originalRow2]
@@ -89,6 +91,13 @@ describe('CreatureLootTemplate integration tests', () => {
       expect(page.getInputById('MaxCount').disabled).toBe(true);
       expect(page.getInputById('Comment').disabled).toBe(true);
       expect(page.getEditorTableRowsCount()).toBe(0);
+    });
+
+    it('should reflect the item names', async () => {
+      page.addNewRow();
+      page.detectChanges();
+      await page.whenReady();
+      expect(page.getDatatableCell(page.EDITOR_DT_SELECTOR, 0, 3).innerText).toContain('MockItemName');
     });
 
     it('adding new rows and executing the query should correctly work', () => {

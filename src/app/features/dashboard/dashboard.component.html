@@ -24,6 +24,18 @@
 
   <hr>
 
+  <div *ngIf="error" class="alert alert-danger error-box mt-2" id="database-warning">
+    <p>
+      <strong>WARNING:</strong> It looks like <strong><i>{{ databaseName }}</i></strong> is not a valid AzerothCore world database.
+    </p>
+
+    <ul>
+      <li>If you selected the wrong database by mistake, you can <strong>logout</strong> and change it.</li>
+      <li>If you are using an old version of AzerothCore, we recommend to <a target="_blank" href="http://www.azerothcore.org/wiki/Update">update it</a> before using the editor.</li>
+      <li>If you are using a different emulator than AzerothCore, <strong>be aware that some features will be broken</strong>. More info are available <a target="_blank" href="https://github.com/azerothcore/forum/issues/43">here</a>.</li>
+    </ul>
+  </div>
+
   <p class="lead">System details:</p>
 
   <table class="table table-striped table-bordered table-sm">
@@ -43,7 +55,7 @@
           <a [href]="getCommit(coreVersions.core_revision)" target="_blank">
             {{ coreVersions.core_revision }}
           </a>
-          <button class="btn btn-secondary btn-sm ml-2 px-2 py-1" ngxClipboard [cbContent]="getCommit(coreVersions.core_revision)">
+          <button class="btn btn-secondary btn-sm ml-2 px-2 py-1" [ngxClipboard] [cbContent]="getCommit(coreVersions.core_revision)">
             <i class="far fa-copy fa-sm"></i>
           </button>
         </td>

@@ -400,14 +400,17 @@ describe('SaiEditorComponent integration tests', () => {
     it('changing a value via FlagsSelector should correctly work', async () => {
       const field = 'event_flags';
       page.clickRowOfDatatable(0);
+      await page.whenReady();
       page.clickElement(page.getSelectorBtn(field));
+      await page.whenReady();
       page.expectModalDisplayed();
 
       page.toggleFlagInRow(1); // +2^1
+      await page.whenReady();
       page.toggleFlagInRow(3); // +2^3
+      await page.whenReady();
       page.clickModalSelect();
-      await fixture.whenStable();
-      await fixture.whenRenderingDone();
+      await page.whenReady();
 
       expect(page.getInputById(field).value).toEqual('10');
       page.expectDiffQueryToContain(
