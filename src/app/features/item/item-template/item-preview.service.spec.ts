@@ -1,19 +1,24 @@
 import { TestBed } from '@angular/core/testing';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { MockedMysqlQueryService } from '@keira-testing/mocks';
-import { instance } from 'ts-mockito';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ItemHandlerService } from '../item-handler.service';
 import { ItemPreviewService } from './item-preview.service';
+import { ItemTemplateService } from './item-template.service';
 
-describe('ItemPreviewService', () => {
+fdescribe('ItemPreviewService', () => {
   beforeEach(() => TestBed.configureTestingModule({
-    imports: [],
+    imports: [
+      RouterTestingModule,
+    ],
     providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+      ItemPreviewService,
+      ItemTemplateService,
+      ItemHandlerService,
     ]
   }));
 
-  it('should be created', () => {
+  it('calculatePreview()', async() => {
     const service: ItemPreviewService = TestBed.inject(ItemPreviewService);
-    expect(service).toBeTruthy();
+
+    expect(await service.calculatePreview()).toEqual('asd');
   });
 });

@@ -28,7 +28,6 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemPreviewService } from './item-preview.service';
 import { ItemTemplateService } from './item-template.service';
-import { ITEM_CONSTANTS } from './item_constants';
 
 @Component({
   selector: 'keira-item-template',
@@ -63,16 +62,14 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   constructor(
     public editorService: ItemTemplateService,
     public handlerService: ItemHandlerService,
-    public readonly sqliteQueryService: SqliteQueryService,
-    private itemPreviewService: ItemPreviewService,
-    private sanitizer: DomSanitizer,
+    private readonly sqliteQueryService: SqliteQueryService,
+    private readonly itemPreviewService: ItemPreviewService,
+    private readonly sanitizer: DomSanitizer,
   ) {
     super(editorService, handlerService);
   }
 
-  public readonly ITEM_CONSTANTS = ITEM_CONSTANTS;
   public icon: Observable<string>;
-  public hasItemLevel: boolean = false;
   public itemPreview: SafeHtml = this.sanitizer.bypassSecurityTrustHtml('loading...');
 
   private async loadItemPreview() {
@@ -91,12 +88,10 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     );
 
     this.subscriptions.push(
-      this.editorService.form.valueChanges
-        .pipe(
-          debounceTime(600),
-          distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
-        )
-        .subscribe(this.loadItemPreview.bind(this))
+      this.editorService.form.valueChanges.pipe(
+        debounceTime(600),
+        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
+      ).subscribe(this.loadItemPreview.bind(this))
     );
   }
 

@@ -6,6 +6,7 @@ import { SqliteService } from '@keira-shared/services/sqlite.service';
 import { ConfigService } from '@keira-shared/services/config.service';
 import { TableRow } from '@keira-types/general';
 import { QueryService } from '@keira-shared/services/query.service';
+import { Lock } from 'app/features/item/item-template/item-preview';
 
 @Injectable({
   providedIn: 'root'
@@ -77,8 +78,8 @@ export class SqliteQueryService extends QueryService {
     return this.queryValue<string>(`SELECT m_name_lang_1 AS v FROM factions WHERE m_ID = ${id}`).toPromise();
   }
 
-  getLockById(id: string | number): Promise<TableRow[]> {
-    return this.query(`SELECT * FROM lock WHERE id = ${id}`).toPromise();
+  getLockById(id: string | number): Promise<Lock[]> {
+    return this.query<Lock>(`SELECT * FROM lock WHERE id = ${id}`).toPromise();
   }
 
   getMapNameById(id: string | number): Promise<string> {

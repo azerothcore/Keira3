@@ -13,7 +13,6 @@ export const ITEM_CONSTANTS = {
   ],
   'si':            { '-1': 'Alliance only', '-2': 'Horde only', 0: null, 1: 'Alliance', 2: 'Horde', 3: 'Both' },
   'resistances':   [null, 'Holy Resistance', 'Fire Resistance', 'Nature Resistance', 'Frost Resistance', 'Shadow Resistance', 'Arcane Resistance'],                         // RESISTANCE?_NAME
-  'dt':            [null, 'Magic', 'Curse', 'Disease', 'Poison', 'Stealth', 'Invisibility', null, null, 'Enrage'],                                                          // SpellDispalType.dbc
   'sc':            ['Physical', 'Holy', 'Fire', 'Nature', 'Frost', 'Shadow', 'Arcane'],                                                                                     // STRING_SCHOOL_*
   'cl':            [null, 'Warrior', 'Paladin', 'Hunter', 'Rogue', 'Priest', 'Death Knight', 'Shaman', 'Mage', 'Warlock', null, 'Druid'],                                   // ChrClasses.dbc
   'ra': {  // ChrRaces.dbc
@@ -126,8 +125,8 @@ export const ITEM_CONSTANTS = {
       'Chest',                'Waist',            'Legs',                 'Feet',                         'Wrist',
       'Hands',                'Finger',           'Trinket',              'One-Hand',                     'Off Hand', /*Shield*/
       'Ranged',               'Back',             'Two-Hand',             'Bag',                          'Tabard',
-      null, /*Robe*/          'Main Hand',        'Off Hand',             'Held In Off-Hand',             'Projectile',
-      'Thrown',               null, /*Ranged2*/   'Quiver',               'Relic'
+      'Robe',                 'Main Hand',        'Off Hand',             'Held In Off-Hand',             'Projectile',
+      'Thrown',               'Ranged',           'Quiver',               'Relic'
   ],
   'armorSubClass': [                           // ItemSubClass.dbc/2
       'Miscellaneous',        'Cloth',            'Leather',              'Mail',                         'Plate',

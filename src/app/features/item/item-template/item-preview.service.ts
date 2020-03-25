@@ -3,7 +3,7 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { ItemTemplateService } from './item-template.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { ITEM_TYPE, ITEM_MOD } from '@keira-shared/constants/options/item-class';
-import { ITEM_CONSTANTS } from './item_constants';
+import { ITEM_CONSTANTS } from './item-constants';
 import { MAX_LEVEL, lvlIndepRating, gtCombatRatings, CLASSES, RACE, resistanceFields } from './item-preview';
 import { ITEM_FLAG } from '@keira-shared/constants/flags/item-flags';
 import { ITEMS_QUALITY } from '@keira-shared/constants/options/item-quality';
@@ -14,9 +14,9 @@ export class ItemPreviewService {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    public editorService: ItemTemplateService,
-    public readonly sqliteQueryService: SqliteQueryService,
-    protected queryService: MysqlQueryService,
+    private readonly editorService: ItemTemplateService,
+    private readonly sqliteQueryService: SqliteQueryService,
+    private readonly mysqlQueryService: MysqlQueryService,
   ) { }
 
   /**
@@ -58,8 +58,8 @@ export class ItemPreviewService {
     }
 
     return ITEM_CONSTANTS.ratingString
-    .replace('%s', `<!--rtg%${type}-->${result}`)
-    .replace('%s', `<!--lvl-->${level}`);
+      .replace('%s', `<!--rtg%${type}-->${result}`)
+      .replace('%s', `<!--lvl-->${level}`);
   }
 
   private parseRating(type: number, value: number): string {
@@ -72,12 +72,15 @@ export class ItemPreviewService {
     // unknown rating
     if ([2, 8, 9, 10, 11].includes[type] || type > ITEM_MOD.BLOCK_VALUE || type < 0) {
       return '';
-    } else if (lvlIndepRating.includes[type]) { // level independant Bonus
-      return ITEM_CONSTANTS.trigger[1] + ITEM_CONSTANTS.statType[type].replace('%d', `<!--rtg${type}-->${value}`);
-    } else { // rating-Bonuses
-      const js = `&nbsp;<small>(${this.setRatingLevel(level, type, value)})</small>`;
-      return ITEM_CONSTANTS.trigger[1] + ITEM_CONSTANTS.statType[type].replace('%d', `<!--rtg${type}-->${value}${js}`);
     }
+
+    if (lvlIndepRating.includes[type]) { // level independant Bonus
+      return ITEM_CONSTANTS.trigger[1] + ITEM_CONSTANTS.statType[type].replace('%d', `<!--rtg${type}-->${value}`);
+    }
+
+     // rating-Bonuses
+    const js = `&nbsp;<small>(${this.setRatingLevel(level, type, value)})</small>`;
+    return ITEM_CONSTANTS.trigger[1] + ITEM_CONSTANTS.statType[type].replace('%d', `<!--rtg${type}-->${value}${js}`);
   }
 
   private getRequiredClass(classMask: number): string[] {
@@ -160,11 +163,11 @@ export class ItemPreviewService {
 
   private parseTime(sec: number) {
     const time = {
-      'd': 0,
-      'h': 0,
-      'm': 0,
-      's': 0,
-      'ms': 0,
+      d: 0,
+      h: 0,
+      m: 0,
+      s: 0,
+      ms: 0,
     };
 
     if (sec >= 3600 * 24) {
@@ -196,72 +199,72 @@ export class ItemPreviewService {
 
   private formatTime(base, short = false) {
     const s = this.parseTime(base / 1000);
-    let tmp = 0;
+    let tmp: number;
 
     if (short) {
       tmp = Math.round(s.d / 364);
-      if (tmp) {
+      if (tmp !== 0) {
         return tmp + ' ' + ITEM_CONSTANTS.timeUnits.ab[0];
       }
 
       tmp = Math.round(s.d / 30);
-      if (tmp) {
+      if (tmp !== 0) {
         return tmp + ' ' + ITEM_CONSTANTS.timeUnits.ab[1];
       }
       tmp = Math.round(s.d / 7);
-      if (tmp) {
+      if (tmp !== 0) {
         return tmp + ' ' + ITEM_CONSTANTS.timeUnits.ab[2];
       }
       tmp = Math.round(s.d);
-      if (tmp) {
+      if (tmp !== 0) {
         return tmp + ' ' + ITEM_CONSTANTS.timeUnits.ab[3];
       }
       tmp = Math.round(s.h);
-      if (tmp) {
+      if (tmp !== 0) {
         return tmp + ' ' + ITEM_CONSTANTS.timeUnits.ab[4];
       }
       tmp = Math.round(s.m);
-      if (tmp) {
+      if (tmp !== 0) {
         return tmp + ' ' + ITEM_CONSTANTS.timeUnits.ab[5];
       }
       tmp = Math.round(s.s + s.ms / 1000);
-      if (tmp) {
+      if (tmp !== 0) {
         return tmp + ' ' + ITEM_CONSTANTS.timeUnits.ab[6];
       }
-      if (s.ms) {
+      if (s.ms !== 0) {
         return s.ms + ' ' + ITEM_CONSTANTS.timeUnits.ab[7];
       }
 
       return '0 ' + ITEM_CONSTANTS.timeUnits.ab[6];
-    } else {
-      tmp = s.d + s.h / 24;
-      if (tmp > 1 && !(tmp % 364)) {                      // whole years
-        return Math.round((s.d + s.h / 24) / 364) + ' ' + ITEM_CONSTANTS.timeUnits[s.d / 364 === 1 && !s.h ? 'sg' : 'pl'][0];
-      }
-      if (tmp > 1 && !(tmp % 30)) {                       // whole month
-        return Math.round((s.d + s.h / 24) /  30) + ' ' + ITEM_CONSTANTS.timeUnits[s.d /  30 === 1 && !s.h ? 'sg' : 'pl'][1];
-      }
-      if (tmp > 1 && !(tmp % 7)) {                        // whole weeks
-        return Math.round((s.d + s.h / 24) /   7) + ' ' + ITEM_CONSTANTS.timeUnits[s.d / 7 === 1 && !s.h ? 'sg' : 'pl'][2];
-      }
-      if (s.d) {
-        return Math.round(s.d + s.h  /   24) + ' ' + ITEM_CONSTANTS.timeUnits[s.d === 1 && !s.h  ? 'sg' : 'pl'][3];
-      }
-      if (s.h) {
-        return Math.round(s.h + s.m  /   60) + ' ' + ITEM_CONSTANTS.timeUnits[s.h === 1 && !s.m  ? 'sg' : 'pl'][4];
-      }
-      if (s.m) {
-        return Math.round(s.m + s.s  /   60) + ' ' + ITEM_CONSTANTS.timeUnits[s.m === 1 && !s.s  ? 'sg' : 'pl'][5];
-      }
-      if (s.s) {
-        return Math.round(s.s + s.ms / 1000) + ' ' + ITEM_CONSTANTS.timeUnits[s.s === 1 && !s.ms ? 'sg' : 'pl'][6];
-      }
-      if (s.ms) {
-        return s.ms + ' ' + ITEM_CONSTANTS.timeUnits[s.ms === 1 ? 'sg' : 'pl'][7];
-      }
-
-      return '0 ' + ITEM_CONSTANTS.timeUnits.pl[6];
     }
+
+    tmp = s.d + s.h / 24;
+    if (tmp > 1 && !(tmp % 364)) {                      // whole years
+      return Math.round((s.d + s.h / 24) / 364) + ' ' + ITEM_CONSTANTS.timeUnits[s.d / 364 === 1 && !s.h ? 'sg' : 'pl'][0];
+    }
+    if (tmp > 1 && !(tmp % 30)) {                       // whole month
+      return Math.round((s.d + s.h / 24) /  30) + ' ' + ITEM_CONSTANTS.timeUnits[s.d /  30 === 1 && !s.h ? 'sg' : 'pl'][1];
+    }
+    if (tmp > 1 && !(tmp % 7)) {                        // whole weeks
+      return Math.round((s.d + s.h / 24) /   7) + ' ' + ITEM_CONSTANTS.timeUnits[s.d / 7 === 1 && !s.h ? 'sg' : 'pl'][2];
+    }
+    if (s.d !== 0) {
+      return Math.round(s.d + s.h  /   24) + ' ' + ITEM_CONSTANTS.timeUnits[s.d === 1 && !s.h  ? 'sg' : 'pl'][3];
+    }
+    if (s.h !== 0) {
+      return Math.round(s.h + s.m  /   60) + ' ' + ITEM_CONSTANTS.timeUnits[s.h === 1 && !s.m  ? 'sg' : 'pl'][4];
+    }
+    if (s.m !== 0) {
+      return Math.round(s.m + s.s  /   60) + ' ' + ITEM_CONSTANTS.timeUnits[s.m === 1 && !s.s  ? 'sg' : 'pl'][5];
+    }
+    if (s.s !== 0) {
+      return Math.round(s.s + s.ms / 1000) + ' ' + ITEM_CONSTANTS.timeUnits[s.s === 1 && !s.ms ? 'sg' : 'pl'][6];
+    }
+    if (s.ms !== 0) {
+      return s.ms + ' ' + ITEM_CONSTANTS.timeUnits[s.ms === 1 ? 'sg' : 'pl'][7];
+    }
+
+    return '0 ' + ITEM_CONSTANTS.timeUnits.pl[6];
   }
 
   private getFeralAP(itemClass: number, subclass: number, dps: number): number {
@@ -311,7 +314,7 @@ export class ItemPreviewService {
       const lockType = Number(lock['type' + i]);
 
       if (lockType === 1) {                      // opened by item
-        name = await this.queryService.getItemNameById(prop);
+        name = await this.mysqlQueryService.getItemNameById(prop);
 
         if (!name) {
           continue;
@@ -342,19 +345,17 @@ export class ItemPreviewService {
     return locks;
   }
 
-
   // todo (med): information will get lost if one vendor sells one item multiple times with different costs (e.g. for item 54637)
   //             wowhead seems to have had the same issues
-  public async getExtendedCost(filter = []): Promise<any[]> {
+  private async getExtendedCost(filter = []): Promise<any[]> {
     const flagsExtra = Number(this.editorService.form.controls.FlagsExtra.value);
     const buyPrice = Number(this.editorService.form.controls.BuyPrice.value);
     const entry = Number(this.editorService.form.controls.entry.value);
-    let vendorx = {};
 
     const itemz = {};
     let xCostData = [];
     const xCostDataArr = {};
-    const rawEntries = await this.queryService.query(`SELECT
+    const rawEntries = await this.mysqlQueryService.query(`SELECT
     nv.item,
     nv.entry,
     0 AS eventId,
@@ -455,7 +456,6 @@ WHERE
 
     // convert items to currency if possible
     if (!!cItems) {
-      const moneyItems = cItems;
 
       for (const [itemId, vendors] of Object.entries(itemz)) {
         for (const [npcId, costData] of Object.entries(vendors)) {
@@ -463,7 +463,7 @@ WHERE
             for (const [k, v] of Object.entries(cost)) {
               if (cItems.includes(k)) {
                 let found = false;
-                for (const item of moneyItems) {
+                for (const item of cItems) {
                   if (item.id === k) {
                     delete cost[k];
                     cost[-item.id] = v;
@@ -481,9 +481,7 @@ WHERE
       }
     }
 
-    vendorx = itemz;
-
-    const result = vendorx;
+    const result = itemz;
 
     let reqRating = [];
     for (const [itemId, data] of Object.entries(result)) {
@@ -513,7 +511,7 @@ WHERE
    * get item preview text
    */
 
-  public getDamageText(): string {
+  private getDamageText(): string {
     // Weapon/Ammunition Stats (not limited to weapons (see item:1700))
     const itemClass: number = Number(this.editorService.form.controls.class.value);
     const subclass: number = Number(this.editorService.form.controls.subclass.value);
@@ -581,7 +579,7 @@ WHERE
     return damageText;
   }
 
-  public getStats(greenText: string[]): string {
+  private getStats(greenText: string[]): string {
     let stats = '';
 
     for (let i = 1; i <= 10; i++) {
@@ -611,7 +609,7 @@ WHERE
     return stats;
   }
 
-  public async getItemSet(): Promise<string> {
+  private async getItemSet(): Promise<string> {
     const itemset = this.editorService.form.controls.itemset.value;
     const entry = this.editorService.form.controls.entry.value;
 
@@ -683,7 +681,7 @@ WHERE
     piecesIDs.sort();
 
     // get items name
-    const itemsName: any[] = await this.queryService.query(`SELECT name FROM item_template WHERE entry IN (${piecesIDs.join(',')}) ORDER BY entry ASC`).toPromise();
+    const itemsName: any[] = await this.mysqlQueryService.query(`SELECT name FROM item_template WHERE entry IN (${piecesIDs.join(',')}) ORDER BY entry ASC`).toPromise();
 
     for (let i = 0; i < itemsName.length; i++) {
       itemsName[i] = itemsName[i].name;
@@ -757,7 +755,7 @@ WHERE
     return itemsetText;
   }
 
-  public async getBonding(): Promise<string> {
+  private async getBonding(): Promise<string> {
     let bondingText = '';
 
     const flags = this.editorService.form.controls.Flags.value;
@@ -793,7 +791,7 @@ WHERE
     return bondingText;
   }
 
-  public getClassText(): string {
+  private getClassText(): string {
     let classText = '';
 
     const inventoryType: number = Number(this.editorService.form.controls.InventoryType.value);
@@ -804,6 +802,7 @@ WHERE
     if ([ITEM_TYPE.ARMOR, ITEM_TYPE.WEAPON, ITEM_TYPE.AMMUNITION].includes(itemClass)) {
       classText += '<table style="float: left; width: 100%;"><tr>';
 
+      debugger;
       // Class
       if (inventoryType) {
         classText += `<td>${ITEM_CONSTANTS.inventoryType[inventoryType]}</td>`;
@@ -829,7 +828,7 @@ WHERE
     return classText;
   }
 
-  public getArmorText(): string {
+  private getArmorText(): string {
     let armorText = '';
 
     // Armor
@@ -851,7 +850,7 @@ WHERE
     return armorText;
   }
 
-  public async getRequiredText(): Promise<string> {
+  private async getRequiredText(): Promise<string> {
     let requiredText = '';
 
     const flags = this.editorService.form.controls.Flags.value;
@@ -895,9 +894,7 @@ WHERE
     // required arena team rating / personal rating / todo (low): sort out what kind of rating
     const entry = this.editorService.form.controls.entry.value;
 
-    let reqRating = [];
-    let res = [];
-    [res, reqRating] = await this.getExtendedCost();
+    const [res, reqRating] = await this.getExtendedCost();
 
     if (res[entry] && Object.keys(res[entry]).length > 0 && reqRating.length > 0) {
       requiredText += '<br>' + ITEM_CONSTANTS.reqRating[reqRating[1]].replace('%d', reqRating[0]);
@@ -942,7 +939,7 @@ WHERE
     return requiredText;
   }
 
-  public async getRequiredZone(): Promise<string> {
+  private async getRequiredZone(): Promise<string> {
     let requiredZone = '';
 
     // require map
@@ -962,7 +959,7 @@ WHERE
     return requiredZone;
   }
 
-  public getDuration(): string {
+  private getDuration(): string {
     let durationText = '';
 
     // max duration
@@ -979,7 +976,7 @@ WHERE
     return durationText;
   }
 
-  public getMagicResistances(): string {
+  private getMagicResistances(): string {
     let magicRsistances = '';
 
     // magic resistances
@@ -993,7 +990,7 @@ WHERE
     return magicRsistances;
   }
 
-  public getMisc(): string {
+  private getMisc(): string {
     const xMisc = [];
 
     const spellId1 = this.editorService.form.controls.spellid_1.value;
@@ -1028,7 +1025,7 @@ WHERE
     return xMisc.length > 0 ? xMisc.join('') : '';
   }
 
-  public async getGemEnchantment(): Promise<string> {
+  private async getGemEnchantment(): Promise<string> {
     let gemEnchantmentText = '';
 
     const entry = this.editorService.form.controls.entry.value;
@@ -1095,7 +1092,7 @@ WHERE
     return gemEnchantmentText;
   }
 
-  public async getSocketEnchantment(): Promise<string> {
+  private async getSocketEnchantment(): Promise<string> {
 
     let socketText = '';
 
@@ -1127,7 +1124,7 @@ WHERE
     return socketText;
   }
 
-  public async getSpellDesc(green: string[]) {
+  private async getSpellDesc(green: string[]) {
     const spellId1 = this.editorService.form.controls.spellid_1.value;
     const spellId2 = this.editorService.form.controls.spellid_2.value;
 
@@ -1164,7 +1161,7 @@ WHERE
   }
 
   // TODO: recipes, vanity pets, mounts
-  public async getLearnSpellText(): Promise<string> {
+  private async getLearnSpellText(): Promise<string> {
     /* TODO - WIP */
 
     let spellDesc = '';
@@ -1221,7 +1218,7 @@ WHERE
   }
 
   // locked or openable
-  public async getLockText(): Promise<string> {
+  private async getLockText(): Promise<string> {
     let lockText = '';
 
     const flags = this.editorService.form.controls.Flags.value;
