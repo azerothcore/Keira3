@@ -23,6 +23,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
     font-size: 18px;
   }
 
+  /* Quality */
   .q  { color: #ffd100; }
   .q0 { color: #9d9d9d; }
   .q1 { color: #ffffff; }
@@ -32,6 +33,18 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   .q5 { color: #ff8000; }
   .q6 { color: #e5cc80; }
   .q7 { color: #e5cc80; }
+
+  /* Classes */
+  .c1  { color: #C69B6D !important } /* Warrior */
+  .c2  { color: #F48CBA !important } /* Paladin */
+  .c3  { color: #AAD372 !important } /* Hunter */
+  .c4  { color: #FFF468 !important } /* Rogue */
+  .c5  { color: #FFFFFF !important } /* Priest */
+  .c6  { color: #C41E3B !important } /* Death Knight */
+  .c7  { color: #2359FF !important } /* Shaman */
+  .c8  { color: #68CCEF !important } /* Mage */
+  .c9  { color: #9382C9 !important } /* Warlock */
+  .c11 { color: #FF7C0A !important } /* Druid */
 
  .moneyitem, .moneygold, .moneysilver, .moneycopper, .moneyalliance, .moneyhorde, .moneyarena, .moneyachievement, .moneysocketmeta, .moneysocketred, .moneysocketyellow, .moneysocketblue, .moneysocketprismatic {
     background: no-repeat right center;
@@ -44,6 +57,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 }
 
 .item-select {
+  /* Quality text with white background */
   .q  { color: #ffd100; }
   .q0 { color: #757575; }
   /* .q1 { color:#ffffff; } */

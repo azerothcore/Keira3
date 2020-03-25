@@ -94,7 +94,7 @@ export class ItemPreviewService {
       if (classMask & (1 << (i - 1))) {
         const tmpClass = ITEM_CONSTANTS.cl[i];
         if (tmpClass != null && tmpClass !== '') {
-          tmp.push(tmpClass);
+          tmp.push(`<span class="c${i}">${tmpClass}</span>`);
         }
 
         classMask &= ~(1 << (i - 1));
