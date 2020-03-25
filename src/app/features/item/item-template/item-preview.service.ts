@@ -7,7 +7,6 @@ import { ITEM_CONSTANTS } from './item_constants';
 import { MAX_LEVEL, lvlIndepRating, gtCombatRatings, CLASSES, RACE, resistanceFields } from './item-preview';
 import { ITEM_FLAG } from '@keira-shared/constants/flags/item-flags';
 import { ITEMS_QUALITY } from '@keira-shared/constants/options/item-quality';
-import { TableRow } from '@keira-shared/types/general';
 
 @Injectable()
 export class ItemPreviewService {
@@ -337,7 +336,6 @@ export class ItemPreviewService {
         continue;
       }
 
-      // locks[lockType === 1 ? prop : -prop] = `Requires ${name}`;
       locks.push(`<br>Requires ${name}`);
     }
 
@@ -995,7 +993,9 @@ WHERE
     return magicRsistances;
   }
 
-  public getMisc(xMisc: string[]): void {
+  public getMisc(): string {
+    const xMisc = [];
+
     const spellId1 = this.editorService.form.controls.spellid_1.value;
     const spellId2 = this.editorService.form.controls.spellid_2.value;
     const description = this.editorService.form.controls.description.value;
@@ -1024,6 +1024,8 @@ WHERE
         xMisc.push(`<br><span class="q1">${charges}</span>`);
       }
     }
+
+    return xMisc.length > 0 ? xMisc.join('') : '';
   }
 
   public async getGemEnchantment(): Promise<string> {
@@ -1276,7 +1278,7 @@ WHERE
     // item begins a quest
     const startquest: number = Number(this.editorService.form.controls.startquest.value);
     if (startquest > 0) {
-      tmpItemPreview += `<br><a class="q1" href="?quest=${startquest}">This Item Begins a Quest</a>`;
+      tmpItemPreview += `<br><span class="q1">This Item Begins a Quest</span>`;
     }
 
     // containerType (slotCount)
@@ -1295,11 +1297,10 @@ WHERE
 
     // Random Enchantment - if random enchantment is set, prepend stats from it
     const RandomProperty: number = this.editorService.form.controls.RandomProperty.value;
-    if (RandomProperty /* && empty($enhance['r']) */) {
+    const RandomSuffix: number = this.editorService.form.controls.RandomSuffix.value;
+    if (!!RandomProperty || RandomSuffix) {
       tmpItemPreview += `<br><span class="q2">${ITEM_CONSTANTS.randEnchant}</span>`;
-    }/* else if (!empty($enhance['r'])) {
-      tmpItemPreview += randEnchant;
-    } */
+    }
 
     // itemMods (display stats and save ratings for later use)
     tmpItemPreview += this.getStats(green);
@@ -1335,22 +1336,7 @@ WHERE
     // recipes, vanity pets, mounts
     tmpItemPreview += await this.getLearnSpellText();
 
-    // misc (no idea, how to organize the <br> better)
-    const xMisc = [];
-
-    // // itemset: pieces and boni
-    // if (isset($xSet))
-    //     xMisc[] = $xSet;
-
-    this.getMisc(xMisc);
-
-    // // list required reagents
-    // if (isset(xCraft))
-    //     xMisc.push(xCraft);
-
-    if (!!xMisc && xMisc.length > 0) {
-      tmpItemPreview += xMisc.join('');
-    }
+    tmpItemPreview += this.getMisc();
 
     const sellPrice = this.editorService.form.controls.SellPrice.value;
     if (!!sellPrice) {
