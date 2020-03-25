@@ -4,6 +4,7 @@ import { MultiRowEditorComponent } from '@keira-abstract/components/editors/mult
 import { CreatureHandlerService } from '../creature-handler.service';
 import { NpcTrainer } from '@keira-types/npc-trainer.type';
 import { NpcTrainerService } from './npc-trainer.service';
+import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 
 @Component({
   selector: 'keira-npc-trainer',
@@ -16,6 +17,7 @@ export class NpcTrainerComponent extends MultiRowEditorComponent<NpcTrainer> {
   constructor(
     public editorService: NpcTrainerService,
     public handlerService: CreatureHandlerService,
+    public readonly sqliteQueryService: SqliteQueryService,
   ) {
     super(editorService, handlerService);
   }
