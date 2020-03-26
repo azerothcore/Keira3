@@ -67,7 +67,9 @@ fdescribe('ItemPreviewService', () => {
       { name: 'RandomSuffix',     template: { RandomSuffix: 1 }, output: `<br><span class="q2">&lt;Random enchantment&gt</span>` },
       { name: 'Durability',       template: { MaxDurability: 100 }, output: `<br>Durability 100 / 100` },
       { name: 'Sell Price',       template: { SellPrice: 123456 }, output: `<br>Sell Price: <span class="moneygold">12</span> &nbsp;<span class="moneysilver">34</span> &nbsp;<span class="moneycopper">56</span> &nbsp;` },
-
+      { name: 'Sell Price-1',       template: { SellPrice: 9999 }, output: `<br>Sell Price: <span class="moneysilver">99</span> &nbsp;<span class="moneycopper">99</span> &nbsp;` },
+      { name: 'Sell Price-2',       template: { SellPrice: 99 }, output: `<br>Sell Price: <span class="moneycopper">99</span> &nbsp;` },
+      { name: 'Sell Price-3',       template: { SellPrice: -1 }, output: `` },
     ];
 
     for (const { name, template, output } of cases) {

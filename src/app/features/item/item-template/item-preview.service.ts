@@ -217,9 +217,7 @@ export class ItemPreviewService {
       qty -= s * 100;
     }
 
-    if (qty > 0) {
-      money += `<span class="moneycopper">${qty}</span> &nbsp;`;
-    }
+    money += `<span class="moneycopper">${qty}</span> &nbsp;`;
 
     return money;
   }
@@ -1386,7 +1384,7 @@ export class ItemPreviewService {
     tmpItemPreview += this.getMisc();
 
     const sellPrice = this.editorService.form.controls.SellPrice.value;
-    if (!!sellPrice) {
+    if (!!sellPrice && sellPrice > 0) {
       tmpItemPreview += '<br>Sell Price: ' + this.formatMoney(sellPrice);
     }
 
