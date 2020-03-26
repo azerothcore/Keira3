@@ -20,6 +20,69 @@ export class ItemPreviewService {
   ) { }
 
   /**
+   * query functions
+   */
+
+  private getItemsetSlotBak(itemset: number | string): Promise<any[]> {
+    return this.sqliteQueryService.query(`SELECT * FROM items WHERE itemset = ${itemset} ORDER BY slotBak, id`).toPromise();
+  }
+
+  private getItemNameByIDsASC(IDs: number[]): Promise<any[]> {
+    return this.mysqlQueryService.query(`SELECT name FROM item_template WHERE entry IN (${IDs.join(',')}) ORDER BY entry ASC`).toPromise();
+  }
+
+  private getItemsetById(ID: number | string): Promise<any[]> {
+    return this.sqliteQueryService.query(`SELECT * FROM itemset WHERE id = ${ID}`).toPromise();
+  }
+
+  private getItemLimitCategoryById(id: number | string): Promise<any[]> {
+    return this.sqliteQueryService.query(`SELECT * FROM item_limit_category WHERE id = ${id}`).toPromise();
+  }
+
+  private getGemEnchantmentIdById(id: number | string): Promise<string|number> {
+    return this.sqliteQueryService.queryValue(`SELECT gemEnchantmentId AS v FROM items WHERE id = ${id};`).toPromise();
+  }
+
+  private getItemEnchantmentById(id: number | string): Promise<any[]> {
+    return this.sqliteQueryService.query(`SELECT * FROM item_enchantment WHERE id = ${id}`).toPromise();
+  }
+
+  private getItemExtendedCost(IDs: number[]): Promise<any[]> {
+    return this.sqliteQueryService.query(`SELECT * FROM item_extended_cost WHERE id IN (${IDs.join(',')})`).toPromise();
+  }
+
+  private getItemEnchantmentConditionById(id: number | string): Promise<any[]> {
+    return this.sqliteQueryService.query(`SELECT * FROM item_enchantment_condition WHERE id = ${id}`).toPromise();
+  }
+
+  private getItemExtendedCostFromVendor(id: number | string): Promise<any[]> {
+    return this.mysqlQueryService.query(`SELECT
+      nv.item,
+      nv.entry,
+      0 AS eventId,
+      nv.maxcount,
+      nv.extendedCost
+    FROM
+      npc_vendor nv
+    WHERE
+      nv.item = ${id}
+    UNION SELECT
+      genv.item,
+      c.id AS \`entry\`,
+      ge.eventEntry AS eventId,
+      genv.maxcount,
+      genv.extendedCost
+    FROM
+      game_event_npc_vendor genv
+          LEFT JOIN
+      game_event ge ON genv.eventEntry = ge.eventEntry
+          JOIN
+      creature c ON c.guid = genv.guid
+    WHERE
+      genv.item = ${id};`).toPromise();
+  }
+
+  /**
    * utils
    */
 
@@ -355,30 +418,11 @@ export class ItemPreviewService {
     const itemz = {};
     let xCostData = [];
     const xCostDataArr = {};
-    const rawEntries = await this.mysqlQueryService.query(`SELECT
-    nv.item,
-    nv.entry,
-    0 AS eventId,
-    nv.maxcount,
-    nv.extendedCost
-FROM
-    npc_vendor nv
-WHERE
-    nv.item = ${entry}
-UNION SELECT
-    genv.item,
-    c.id AS \`entry\`,
-    ge.eventEntry AS eventId,
-    genv.maxcount,
-    genv.extendedCost
-FROM
-    game_event_npc_vendor genv
-        LEFT JOIN
-    game_event ge ON genv.eventEntry = ge.eventEntry
-        JOIN
-    creature c ON c.guid = genv.guid
-WHERE
-    genv.item = ${entry};`).toPromise();
+    const rawEntries = await this.getItemExtendedCostFromVendor(entry);
+
+    if (!rawEntries) {
+      return [];
+    }
 
     for (const costEntry of rawEntries) {
       if (costEntry.extendedCost) {
@@ -396,11 +440,14 @@ WHERE
 
     if (!!xCostData && xCostData.length > 0) {
       xCostData = Array.from(new Set(xCostData)); // filter duplicates
-      xCostData = await this.sqliteQueryService.query(`SELECT * FROM item_extended_cost WHERE id IN (${xCostData.join(',')})`).toPromise();
+      xCostData = await this.getItemExtendedCost(xCostData);
 
-      // converting xCostData to ARRAY_KEY structure
-      for (const xCost of xCostData) {
-        xCostDataArr[xCost.id] = xCost;
+      if (!xCostData) {
+
+        // converting xCostData to ARRAY_KEY structure
+        for (const xCost of xCostData) {
+          xCostDataArr[xCost.id] = xCost;
+        }
       }
     }
 
@@ -619,14 +666,12 @@ WHERE
 
     let itemsetText = '';
 
-    const itemsetPieces = await this.sqliteQueryService.query(
-      `SELECT * FROM items WHERE itemset = ${itemset} ORDER BY slotBak, id`
-    ).toPromise();
+    const itemsetPieces = await this.getItemsetSlotBak(itemset);
 
     // check if there are multiple itemset with the same itemset ID
     let multipleItemset = false;
 
-    if (itemsetPieces.length > 10) {
+    if (itemsetPieces && itemsetPieces.length > 10) {
       multipleItemset = true;
     } else {
       const slotBak = [];
@@ -681,13 +726,22 @@ WHERE
     piecesIDs.sort();
 
     // get items name
-    const itemsName: any[] = await this.mysqlQueryService.query(`SELECT name FROM item_template WHERE entry IN (${piecesIDs.join(',')}) ORDER BY entry ASC`).toPromise();
+    const itemsName: any[] = await this.getItemNameByIDsASC(piecesIDs);
+
+    if (!itemsName) {
+      return '';
+    }
 
     for (let i = 0; i < itemsName.length; i++) {
       itemsName[i] = itemsName[i].name;
     }
 
-    const itemsetAttr = (await this.sqliteQueryService.query(`SELECT * FROM itemset WHERE id = ${itemset}`).toPromise())[0];
+    let itemsetAttr = await this.getItemsetById(itemset);
+    itemsetAttr = itemsetAttr ? itemsetAttr[0] : null;
+
+    if (!itemsetAttr) {
+      return '';
+    }
 
     itemsetText += '<br><br><span class="q">' + ITEM_CONSTANTS.setName
       .replace('%s', `${itemsetAttr['name']}</span>`)
@@ -779,9 +833,7 @@ WHERE
     } else if (flags & ITEM_FLAG.UNIQUEEQUIPPED) {
       bondingText += '<br><!-- uniqueEquipped -->' + this.ITEM_CONSTANTS['uniqueEquipped'][0];
     } else if (itemLimitCategory) {
-      let limit: any = await this.sqliteQueryService.query(
-        `SELECT * FROM item_limit_category WHERE id = ${itemLimitCategory}`
-      ).toPromise();
+      let limit: any = await this.getItemLimitCategoryById(itemLimitCategory);
       limit = limit[0];
 
       const index = limit && limit.isGem ? 'uniqueEquipped' : 'unique';
@@ -802,7 +854,6 @@ WHERE
     if ([ITEM_TYPE.ARMOR, ITEM_TYPE.WEAPON, ITEM_TYPE.AMMUNITION].includes(itemClass)) {
       classText += '<table style="float: left; width: 100%;"><tr>';
 
-      debugger;
       // Class
       if (inventoryType) {
         classText += `<td>${ITEM_CONSTANTS.inventoryType[inventoryType]}</td>`;
@@ -1029,19 +1080,18 @@ WHERE
     let gemEnchantmentText = '';
 
     const entry = this.editorService.form.controls.entry.value;
-    const gemEnchantmentId = await this.sqliteQueryService.queryValue(
-      `SELECT gemEnchantmentId AS v FROM items WHERE id = ${entry};`
-    ).toPromise();
+    const gemEnchantmentId = await this.getGemEnchantmentIdById(entry);
 
     if (!!gemEnchantmentId) {
-      const gemEnch = (await this.sqliteQueryService.query(`SELECT * FROM item_enchantment WHERE id = ${gemEnchantmentId}`).toPromise())[0];
+      let gemEnch = await this.getItemEnchantmentById(gemEnchantmentId);
+      gemEnch = gemEnch ? gemEnch[0] : null;
+
       gemEnchantmentText += `<br><span class="q1">${gemEnch['name']}</span>`;
 
       // activation conditions for meta gems
       if (!!gemEnch['conditionId']) {
-        const gemCnd = (await this.sqliteQueryService.query(
-          `SELECT * FROM item_enchantment_condition WHERE id = ${gemEnch['conditionId']}`
-          ).toPromise())[0];
+        let gemCnd = await this.getItemEnchantmentConditionById(gemEnch['conditionId']);
+        gemCnd = gemCnd ? gemCnd[0] : null;
 
         if (!!gemCnd) {
 
