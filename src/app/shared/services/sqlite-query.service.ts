@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map, shareReplay, tap } from 'rxjs/operators';
+import { shareReplay, tap } from 'rxjs/operators';
 
 import { SqliteService } from '@keira-shared/services/sqlite.service';
 import { ConfigService } from '@keira-shared/services/config.service';
 import { TableRow } from '@keira-types/general';
 import { QueryService } from '@keira-shared/services/query.service';
-import { Lock } from 'app/features/item/item-template/item-preview';
+import { Lock } from '@keira-types/lock.type';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,6 @@ import { Lock } from 'app/features/item/item-template/item-preview';
 export class SqliteQueryService extends QueryService {
 
   private itemDisplayIdCache: Observable<string>[] = [];
-  private spellNameCache: Promise<string>[] = [];
 
   constructor(
     private sqliteService: SqliteService,
@@ -35,13 +34,6 @@ export class SqliteQueryService extends QueryService {
     );
   }
 
-  // Input query format must be: SELECT something AS v FROM ...
-  queryValue<T extends string | number>(query: string): Observable<T | null> {
-    return this.query(query).pipe(
-      map((data) => data && data[0] ? data[0].v as T : null),
-    );
-  }
-
   getIconByItemDisplayId(displayId: string | number): Observable<string> {
     displayId = Number(displayId);
 
@@ -59,43 +51,35 @@ export class SqliteQueryService extends QueryService {
   }
 
   getSpellNameById(spellId: string | number): Promise<string> {
-    spellId = Number(spellId);
-
-    if (!this.spellNameCache[spellId]) {
-      this.spellNameCache[spellId] = this.queryValue<string>(
-        `SELECT spellName AS v FROM spells WHERE id = ${spellId}`
-      ).pipe(shareReplay()).toPromise();
-    }
-
-    return this.spellNameCache[spellId];
-  }
-
-  getSpellDescriptionById(spellId: string | number): Promise<string> {
-    return this.queryValue<string>(`SELECT Description AS v FROM spells WHERE id = ${spellId} LIMIT 1`).toPromise();
+    return this.queryValueToPromiseCached('getSpellNameById', String(spellId), `SELECT spellName AS v FROM spells WHERE id = ${spellId}`);
   }
 
   getFactionNameById(id: string | number): Promise<string> {
-    return this.queryValue<string>(`SELECT m_name_lang_1 AS v FROM factions WHERE m_ID = ${id}`).toPromise();
-  }
-
-  getLockById(id: string | number): Promise<Lock[]> {
-    return this.query<Lock>(`SELECT * FROM lock WHERE id = ${id}`).toPromise();
+    return this.queryValueToPromiseCached<string>('getFactionNameById', String(id), `SELECT m_name_lang_1 AS v FROM factions WHERE m_ID = ${id}`);
   }
 
   getMapNameById(id: string | number): Promise<string> {
-    return this.queryValue<string>(`SELECT m_MapName_lang1 AS v FROM maps WHERE m_ID = ${id}`).toPromise();
+    return this.queryValueToPromiseCached<string>('getMapNameById', String(id), `SELECT m_MapName_lang1 AS v FROM maps WHERE m_ID = ${id}`);
   }
 
   getAreaNameById(id: string | number): Promise<string> {
-    return this.queryValue<string>(`SELECT m_AreaName_lang AS v FROM areas_and_zones WHERE m_ID = ${id}`).toPromise();
+    return this.queryValueToPromiseCached<string>('getAreaNameById', String(id), `SELECT m_AreaName_lang AS v FROM areas_and_zones WHERE m_ID = ${id}`);
   }
 
   getEventNameByHolidayId(id: string | number): Promise<string> {
-    return this.queryValue<string>(`SELECT name AS v FROM holiday WHERE id = ${id}`).toPromise();
+    return this.queryValueToPromiseCached<string>('getEventNameByHolidayId', String(id), `SELECT name AS v FROM holiday WHERE id = ${id}`);
   }
 
   getSocketBonusById(id: string | number): Promise<string> {
-    return this.queryValue<string>(`SELECT name AS v FROM item_enchantment WHERE id = ${id}`).toPromise();
+    return this.queryValueToPromiseCached<string>('getSocketBonusById', String(id), `SELECT name AS v FROM item_enchantment WHERE id = ${id}`);
+  }
+
+  getSpellDescriptionById(spellId: string | number): Promise<string> {
+    return this.queryValueToPromiseCached<string>('getSpellDescriptionById', String(spellId), `SELECT Description AS v FROM spells WHERE id = ${spellId}`);
+  }
+
+  getLockById(id: string | number): Promise<Lock[]> {
+    return this.queryToPromiseCached<Lock>('getLockById', String(id), `SELECT * FROM lock WHERE id = ${id}`);
   }
 
 }

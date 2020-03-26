@@ -17,10 +17,6 @@ With Keira3 you don't have to know the SQL language in order to change contents:
 
 Made with ❤ and [TypeScript](http://www.typescriptlang.org/), [Electron](https://electronjs.org/), [Angular](https://angular.io/), [Bootstrap](https://getbootstrap.com/).
 
-## Work in progress
-
-Keira3 is currently in a WIP state. You can download the latest pre-release [here](https://github.com/azerothcore/Keira3/releases) and follow the development status [here](https://github.com/azerothcore/Keira3/issues/66) (you can also check the [forum](https://github.com/azerothcore/forum/issues/21) and the [chat](https://discordapp.com/channels/217589275766685707/536630256048799744))
-
 ## Support us
 
 You can support the Keira3 development by [donating with PayPal](https://www.paypal.me/francesco92dev).
@@ -36,6 +32,8 @@ Keira3 is the direct successor of [Keira2](https://github.com/Helias/Keira2). We
 In order to use Keira3 you have to connect to an instance of the [AzerothCore](https://github.com/azerothcore/azerothcore-wotlk) Database.
 
 If you don't have any, you can easily create one following [this guide](http://www.azerothcore.org/wiki/database-only-quick-setup).
+
+Alternatively, you can use a public database of AzerothCore with read-only access. Details [here](https://github.com/azerothcore/forum/issues/84).
 
 ## Development
 
