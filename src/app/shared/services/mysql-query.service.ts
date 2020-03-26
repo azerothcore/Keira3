@@ -4,7 +4,7 @@ import { map, tap } from 'rxjs/operators';
 import { Squel, Delete, Insert, Update } from 'squel';
 
 import { MysqlService } from './mysql.service';
-import { MaxRow, TableRow, ValueRow } from '../types/general';
+import { MaxRow, TableRow } from '../types/general';
 import { squelConfig } from '../../config/squel.config';
 import { ConfigService } from './config.service';
 import { QueryService } from '@keira-shared/services/query.service';
@@ -19,7 +19,6 @@ declare const squel: Squel & {flavour: null};
 export class MysqlQueryService extends QueryService {
 
   private readonly QUERY_NO_CHANGES = '-- There are no changes';
-  private cache: { [key: string]: Promise<string>[] } = {};
 
   constructor(
     private mysqlService: MysqlService,
@@ -353,28 +352,6 @@ export class MysqlQueryService extends QueryService {
     return this.query<SmartScripts>(
       `SELECT * FROM smart_scripts WHERE source_type = 9 AND entryorguid >= ${startId} AND entryorguid < ${startId + 100}`
     );
-  }
-
-
-  // Input query format must be: SELECT something AS v FROM ...
-  queryValue(query: string): Observable<string> {
-    return this.query(query).pipe(
-      map((data: ValueRow[]) => data.length > 0 ? data[0].v : null),
-    );
-  }
-
-  queryValueToPromise(query: string): Promise<string> {
-    return this.queryValue(query).toPromise();
-  }
-
-  queryValueToPromiseCached(cacheId: string, id: string, query: string): Promise<string> {
-    if (!this.cache[cacheId]) {
-      this.cache[cacheId] = [];
-    }
-    if (!this.cache[cacheId][id]) {
-      this.cache[cacheId][id] = this.queryValue(query).toPromise();
-    }
-    return this.cache[cacheId][id];
   }
 
   getCreatureNameById(id: string|number): Promise<string> {
