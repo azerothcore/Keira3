@@ -1345,7 +1345,7 @@ export class ItemPreviewService {
     // Random Enchantment - if random enchantment is set, prepend stats from it
     const RandomProperty: number = this.editorService.form.controls.RandomProperty.value;
     const RandomSuffix: number = this.editorService.form.controls.RandomSuffix.value;
-    if (!!RandomProperty || RandomSuffix) {
+    if (!!RandomProperty || !!RandomSuffix) {
       tmpItemPreview += `<br><span class="q2">${ITEM_CONSTANTS.randEnchant}</span>`;
     }
 

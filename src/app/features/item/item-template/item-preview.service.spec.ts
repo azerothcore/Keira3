@@ -11,7 +11,8 @@ import { ItemTemplate } from '@keira-shared/types/item-template.type';
 import { Lock } from './item-preview';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { of } from 'rxjs';
-import { TableRow } from '@keira-shared/types/general';
+import { ITEMS_QUALITY } from '@keira-shared/constants/options/item-quality';
+import { ITEM_FLAG } from '@keira-shared/constants/flags/item-flags';
 
 fdescribe('ItemPreviewService', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -54,16 +55,33 @@ fdescribe('ItemPreviewService', () => {
       spyOn(sqliteQueryService, 'query').and.callFake(i => of([]));
     });
 
-  it('calculatePreview()', async() => {
-    const service: ItemPreviewService = TestBed.inject(ItemPreviewService);
-    const editorService: ItemTemplateService = TestBed.inject(ItemTemplateService);
+    const cases = [
+      { name: 'Empty variables',  template: { }, output: ''  },
+      { name: 'Item Name',        template: { name: 'Helias Item' }, output: `<b class="item-name q0">Helias Item</b>` },
+      { name: 'All Flags & Quality Epic', template: { Quality: ITEMS_QUALITY.EPIC, Flags: -1 }, output: `<br><!-- ITEM_FLAG.HEROIC --><span class="q2">Heroic</span><br> Conjured Item<br><!-- bonding[0] -->Binds to account<br><!-- uniqueEquipped -->Unique-Equipped` },
+      { name: 'Empty variables',  template: { HolidayId: 140 }, output: `<br>Requires ${mockGetEventNameByHolidayId}140` },
+      { name: 'StartQuest',       template: { startquest: 1  }, output: `<br><span class="q1">This Item Begins a Quest</span>` },
+      { name: 'ContainerSlots',   template: { ContainerSlots: 1  }, output: `<br>1 Slot Bag` },
+      { name: 'ContainerSlots-2', template: { ContainerSlots: 1, BagFamily: 2 }, output: `<br>1 Slot Ammo Pouch` },
+      { name: 'RandomProperty',   template: { RandomProperty: 1 }, output: `<br><span class="q2">&lt;Random enchantment&gt</span>` },
+      { name: 'RandomSuffix',     template: { RandomSuffix: 1 }, output: `<br><span class="q2">&lt;Random enchantment&gt</span>` },
+      { name: 'Durability',       template: { MaxDurability: 100 }, output: `<br>Durability 100 / 100` },
+      { name: 'Sell Price',       template: { SellPrice: 123456 }, output: `<br>Sell Price: <span class="moneygold">12</span> &nbsp;<span class="moneysilver">34</span> &nbsp;<span class="moneycopper">56</span> &nbsp;` },
 
-    for (const test of [
-      { template: createItem({}), output: '' },
-      { template: createItem({}), output: '' },
-    ]) {
-      editorService['_form'].setValue(test.template);
-      expect(await service.calculatePreview()).toEqual(test.output);
+    ];
+
+    for (const { name, template, output } of cases) {
+
+      it(`Case ${name}`, async() => {
+        const service: ItemPreviewService = TestBed.inject(ItemPreviewService);
+        const editorService: ItemTemplateService = TestBed.inject(ItemTemplateService);
+        const data = createItem(template);
+
+        editorService['_form'].setValue(data);
+        expect(await service.calculatePreview()).toEqual(output);
+      });
     }
-  });
+
+
+
 });
