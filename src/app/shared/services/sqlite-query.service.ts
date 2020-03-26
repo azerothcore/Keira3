@@ -51,34 +51,36 @@ export class SqliteQueryService extends QueryService {
   }
 
   getSkillNameById(skillId: string | number): Promise<string> {
-    return this.queryValue<string>(`SELECT name AS v FROM skills WHERE id = ${skillId}`).toPromise();
+    return this.queryValueToPromiseCached<string>(
+      'getSkillNameById', String(skillId), `SELECT name AS v FROM skills WHERE id = ${skillId}`
+    );
   }
 
   getFactionNameById(id: string | number): Promise<string> {
-    return this.queryValue<string>(`SELECT m_name_lang_1 AS v FROM factions WHERE m_ID = ${id}`).toPromise();
-  }
-
-  getLockById(id: string | number): Promise<Lock[]> {
-    return this.query<Lock>(`SELECT * FROM lock WHERE id = ${id}`).toPromise();
+    return this.queryValueToPromiseCached<string>('getFactionNameById', String(id), `SELECT m_name_lang_1 AS v FROM factions WHERE m_ID = ${id}`);
   }
 
   getMapNameById(id: string | number): Promise<string> {
-    return this.queryValue<string>(`SELECT m_MapName_lang1 AS v FROM maps WHERE m_ID = ${id}`).toPromise();
+    return this.queryValueToPromiseCached<string>('getMapNameById', String(id), `SELECT m_MapName_lang1 AS v FROM maps WHERE m_ID = ${id}`);
   }
 
   getAreaNameById(id: string | number): Promise<string> {
-    return this.queryValue<string>(`SELECT m_AreaName_lang AS v FROM areas_and_zones WHERE m_ID = ${id}`).toPromise();
+    return this.queryValueToPromiseCached<string>('getAreaNameById', String(id), `SELECT m_AreaName_lang AS v FROM areas_and_zones WHERE m_ID = ${id}`);
   }
 
   getEventNameByHolidayId(id: string | number): Promise<string> {
-    return this.queryValue<string>(`SELECT name AS v FROM holiday WHERE id = ${id}`).toPromise();
+    return this.queryValueToPromiseCached<string>('getEventNameByHolidayId', String(id), `SELECT name AS v FROM holiday WHERE id = ${id}`);
   }
 
   getSocketBonusById(id: string | number): Promise<string> {
-    return this.queryValue<string>(`SELECT name AS v FROM item_enchantment WHERE id = ${id}`).toPromise();
+    return this.queryValueToPromiseCached<string>('getSocketBonusById', String(id), `SELECT name AS v FROM item_enchantment WHERE id = ${id}`);
   }
 
   getSpellDescriptionById(spellId: string | number): Promise<string> {
-    return this.queryValue<string>(`SELECT Description AS v FROM spells WHERE id = ${spellId}`).toPromise();
+    return this.queryValueToPromiseCached<string>('getSpellDescriptionById', String(spellId), `SELECT Description AS v FROM spells WHERE id = ${spellId}`);
+  }
+
+  getLockById(id: string | number): Promise<Lock[]> {
+    return this.queryToPromiseCached<Lock>('getLockById', String(id), `SELECT * FROM lock WHERE id = ${id}`);
   }
 }

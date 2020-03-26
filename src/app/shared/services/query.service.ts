@@ -22,12 +22,22 @@ export abstract class QueryService {
     return this.queryValue<T>(query).toPromise();
   }
 
+  queryToPromiseCached<T extends TableRow>(cacheId: string, id: string, query: string): Promise<T[]> {
+    if (!this.cache[cacheId]) {
+      this.cache[cacheId] = [];
+    }
+    if (!this.cache[cacheId][id]) {
+      this.cache[cacheId][id] = this.query<T>(query).toPromise();
+    }
+    return this.cache[cacheId][id];
+  }
+
   queryValueToPromiseCached<T extends string | number>(cacheId: string, id: string, query: string): Promise<T> {
     if (!this.cache[cacheId]) {
       this.cache[cacheId] = [];
     }
     if (!this.cache[cacheId][id]) {
-      this.cache[cacheId][id] = this.queryValue(query).toPromise();
+      this.cache[cacheId][id] = this.queryValue<T>(query).toPromise();
     }
     return this.cache[cacheId][id];
   }
