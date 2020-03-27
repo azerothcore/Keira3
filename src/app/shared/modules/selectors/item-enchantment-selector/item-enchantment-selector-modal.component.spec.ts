@@ -1,0 +1,39 @@
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { BsModalRef } from 'ngx-bootstrap';
+import { instance } from 'ts-mockito';
+
+import { ItemEnchantmentSelectorModalComponent } from './item-enchantment-selector-modal.component';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MockedMysqlQueryService } from '@keira-testing/mocks';
+import { ItemEnchantmentSearchService } from '../../search/item-enchantment-search.service';
+import { ItemEnchantmentSelectorModule } from './item-enchantment-selector.module';
+
+describe('ItemEnchantmentSelectorModalComponent', () => {
+  let component: ItemEnchantmentSelectorModalComponent;
+  let fixture: ComponentFixture<ItemEnchantmentSelectorModalComponent>;
+  let searchService: ItemEnchantmentSearchService;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [ ItemEnchantmentSelectorModule ],
+      providers: [
+        BsModalRef,
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+      ],
+    })
+    .compileComponents();
+  }));
+
+  beforeEach(() => {
+    searchService = TestBed.inject(ItemEnchantmentSearchService);
+    searchService.query = '--mock query';
+
+    fixture = TestBed.createComponent(ItemEnchantmentSelectorModalComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
