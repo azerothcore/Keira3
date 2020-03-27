@@ -292,32 +292,15 @@
           *ngFor="let i of [1,2]"
           class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
         >
-          <div class="row">
-            <div
-              *ngFor="let i of [1,2]"
-              class="col-12"
-            >
-              <label class="control-label" for="RequiredFactionId{{ i }}">Req.FactionId{{ i }}</label>
-              <keira-single-value-selector-btn
-                [control]="editorService.form.controls['RequiredFactionId' + i]"
-                [config]="{ options: FACTIONS, name: 'RequiredFactionId' + i }"
-                [modalClass]="'modal-md'"
-              ></keira-single-value-selector-btn>
-              <input [formControlName]="'RequiredFactionId' + i" id="RequiredFactionId{{ i }}" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
+          <label class="control-label" for="RequiredFactionId{{ i }}">Req.FactionId{{ i }}</label>
+          <keira-faction-selector-btn
+            [config]="{ name: 'RequiredFactionId' + i }"
+            [control]="editorService.form.controls['RequiredFactionId' + i]"
+          ></keira-faction-selector-btn>
+          <input [formControlName]="'RequiredFactionId' + i" id="RequiredFactionId{{ i }}" type="number" class="form-control form-control-sm">
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <div class="row">
-            <div
-              *ngFor="let i of [1,2]"
-              class="col-12"
-            >
-              <label class="control-label" for="RequiredFactionValue{{ i }}">Req.FactionValue{{ i }}</label>
-              <input [formControlName]="'RequiredFactionValue' + i" id="RequiredFactionValue{{ i }}" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
+          <label class="control-label" for="RequiredFactionValue{{ i }}">Req.FactionValue{{ i }}</label>
+          <input [formControlName]="'RequiredFactionValue' + i" id="RequiredFactionValue{{ i }}" type="number" class="form-control form-control-sm">
         </div>
 
       </div>
@@ -515,11 +498,10 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="RewardFactionID{{ i }}">Rew.FactionID{{ i }}</label>
-              <keira-single-value-selector-btn
+              <keira-faction-selector-btn
+                [config]="{ name: 'RewardFactionID' + i }"
                 [control]="editorService.form.controls['RewardFactionID' + i]"
-                [config]="{ options: FACTIONS, name: 'RewardFactionID' + i }"
-                [modalClass]="'modal-md'"
-              ></keira-single-value-selector-btn>
+              ></keira-faction-selector-btn>
               <input [formControlName]="'RewardFactionID' + i" id="RewardFactionID{{ i }}" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">

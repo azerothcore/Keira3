@@ -9,7 +9,6 @@ import { INHABIT_TYPE } from '@keira-constants/flags/inhabit-type';
 import { TRAINER_TYPE } from '@keira-constants/options/trainer-type';
 import { NPC_FLAGS } from '@keira-constants/flags/npc-flags';
 import { CREATURE_FAMILY } from '@keira-constants/options/creature-family';
-import { FACTIONS } from '@keira-constants/options/faction';
 import { CREATURE_TYPE } from '@keira-constants/options/creature-type';
 import { CREATURE_TYPE_FLAGS } from '@keira-constants/flags/creature-type-flags';
 import { RANK } from '@keira-constants/options/rank';
@@ -39,7 +38,6 @@ export class CreatureTemplateComponent extends SingleRowEditorComponent<Creature
   public readonly TRAINER_TYPE = TRAINER_TYPE;
   public readonly NPC_FLAGS = NPC_FLAGS;
   public readonly CREATURE_FAMILY = CREATURE_FAMILY;
-  public readonly FACTIONS = FACTIONS;
   public readonly CREATURE_TYPE = CREATURE_TYPE;
   public readonly CREATURE_TYPE_FLAGS = CREATURE_TYPE_FLAGS;
   public readonly RANK = RANK;

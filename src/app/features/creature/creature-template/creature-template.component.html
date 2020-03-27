@@ -79,11 +79,10 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="faction">faction</label>
-          <keira-single-value-selector-btn
+          <keira-faction-selector-btn
+            [config]="{ name: 'faction' }"
             [control]="editorService.form.controls['faction']"
-            [config]="{ options: FACTIONS, name: 'faction' }"
-            [modalClass]="'modal-md'"
-          ></keira-single-value-selector-btn>
+          ></keira-faction-selector-btn>
           <input [formControlName]="'faction'" id="faction" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -442,11 +441,11 @@
           <input [formControlName]="'BaseAttackTime'" id="BaseAttackTime" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+          <label class="control-label" for="RangeAttackTime">RangeAttackTime</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'Base time (milliseconds) that determines how long a creature must wait between ranged attacks.'"
           ></i>
-          <label class="control-label" for="RangeAttackTime">RangeAttackTime</label>
           <input [formControlName]="'RangeAttackTime'" id="RangeAttackTime" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">

@@ -10,6 +10,7 @@ import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { CreatureOnkillReputation } from '@keira-types/creature-onkill-reputation.type';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
+import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 
 class CreatureOnkillReputationPage extends EditorPageObject<CreatureOnkillReputationComponent> {}
 
@@ -163,6 +164,33 @@ describe('CreatureOnkillReputation integration tests', () => {
       );
     });
 
+    it('changing a value via FactionSelector should correctly work', async () => {
+      const field = 'RewOnKillRepFaction1';
+      const sqliteQueryService = TestBed.inject(SqliteQueryService);
+      spyOn(sqliteQueryService, 'query').and.returnValue(of(
+        [{ m_ID: 123, m_name_lang_1: 'Mock Faction' }]
+      ));
+
+      page.clickElement(page.getSelectorBtn(field));
+      await page.whenReady();
+      page.expectModalDisplayed();
+
+      page.clickSearchBtn();
+      await fixture.whenStable();
+      page.clickRowOfDatatable(0);
+      await page.whenReady();
+      page.clickModalSelect();
+      await page.whenReady();
+
+      page.expectDiffQueryToContain(
+        'UPDATE `creature_onkill_reputation` SET `RewOnKillRepFaction1` = 123 WHERE (`creature_id` = 1234);'
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
+        'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`, `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, `MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n' +
+        '(1234, 123, 0, 0, 0, 0, 0, 0, 0, 0);'
+      );
+    });
   });
 });
 
