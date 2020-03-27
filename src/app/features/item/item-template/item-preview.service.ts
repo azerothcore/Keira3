@@ -995,14 +995,14 @@ export class ItemPreviewService {
     const map = this.editorService.form.controls.Map.value;
     if (!!map) {
       const mapName = await this.sqliteQueryService.getMapNameById(map);
-      requiredZone += `<br><!-- map --><span class="q1">${mapName}</span>`;
+      requiredZone += mapName && mapName !== '' ? `<br><!-- map --><span class="q1">${mapName}</span>` : '';
     }
 
     // require area
     const area = this.editorService.form.controls.area.value;
     if (!!area) {
       const areaName = await this.sqliteQueryService.getAreaNameById(area);
-      requiredZone += `<br><!-- area -->${areaName}`;
+      requiredZone += areaName && areaName !== '' ? `<br><!-- area -->${areaName}` : '';
     }
 
     return requiredZone;

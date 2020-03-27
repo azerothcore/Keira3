@@ -6,12 +6,18 @@
     margin: auto;
     position: fixed;
     overflow: auto;
-    max-height: 800px;
+    max-height: 95vh;
+
+    background-color: #080d22;
+    border: 2px solid #6b6d78;
 
     .icon {
       width: 100px;
       height: 100px;
       position: relative;
+      margin: auto;
+      margin-top: 5px;
+      border: 1px solid #6b6d78;
 
       img {
         width: 90px;
@@ -21,11 +27,8 @@
     }
 
     .item-stats, .icon {
-      margin: auto;
-      background-color: #080d22;
-      border: 2px solid #6b6d78;
       border-radius: 3px;
-    }
+   }
 
     .item-stats {
       text-align: left;

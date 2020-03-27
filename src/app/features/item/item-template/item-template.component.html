@@ -6,18 +6,19 @@
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
 
-    <keira-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
-
-    <hr class="mt-2 mb-1">
-
-    <div class="wiki-link">
-      <a [href]="docUrl" target="_blank">
-        <i class="fas fa-link"></i> {{ editorService.entityTable }} documentation
-      </a>
-    </div>
 
     <div class="row">
       <div class="col-9">
+
+        <keira-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
+
+        <hr class="mt-2 mb-1">
+
+        <div class="wiki-link">
+          <a [href]="docUrl" target="_blank">
+            <i class="fas fa-link"></i> {{ editorService.entityTable }} documentation
+          </a>
+        </div>
 
         <form
           [formGroup]="editorService.form"
@@ -803,8 +804,6 @@
                 <img [src]="'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg'">
               </ng-template>
             </div>
-
-            <br>
 
             <div class="item-stats">
               <div [innerHTML]="itemPreview"></div>
