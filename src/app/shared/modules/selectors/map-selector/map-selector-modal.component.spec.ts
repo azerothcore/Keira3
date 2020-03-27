@@ -1,0 +1,39 @@
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { BsModalRef } from 'ngx-bootstrap';
+import { instance } from 'ts-mockito';
+
+import { MapSelectorModalComponent } from './map-selector-modal.component';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MockedMysqlQueryService } from '@keira-testing/mocks';
+import { MapSearchService } from '../../search/map-search.service';
+import { MapSelectorModule } from './map-selector.module';
+
+describe('MapSelectorModalComponent', () => {
+  let component: MapSelectorModalComponent;
+  let fixture: ComponentFixture<MapSelectorModalComponent>;
+  let searchService: MapSearchService;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [ MapSelectorModule ],
+      providers: [
+        BsModalRef,
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+      ],
+    })
+    .compileComponents();
+  }));
+
+  beforeEach(() => {
+    searchService = TestBed.inject(MapSearchService);
+    searchService.query = '--mock query';
+
+    fixture = TestBed.createComponent(MapSelectorModalComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
