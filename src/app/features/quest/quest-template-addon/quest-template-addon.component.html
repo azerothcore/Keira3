@@ -139,11 +139,10 @@
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="RequiredMinRepFaction">RequiredMinRepFaction</label>
-          <keira-single-value-selector-btn
-                [control]="editorService.form.controls['RequiredMinRepFaction']"
-                [config]="{ options: FACTIONS, name: 'RequiredMinRepFaction' }"
-                [modalClass]="'modal-md'"
-              ></keira-single-value-selector-btn>
+          <keira-faction-selector-btn
+            [config]="{ name: 'RequiredMinRepFaction' }"
+            [control]="editorService.form.controls['RequiredMinRepFaction']"
+          ></keira-faction-selector-btn>
           <input [formControlName]="'RequiredMinRepFaction'" id="RequiredMinRepFaction" type="number" class="form-control form-control-sm">
         </div>
 
@@ -158,11 +157,10 @@
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="RequiredMaxRepFaction">RequiredMaxRepFaction</label>
-          <keira-single-value-selector-btn
-                [control]="editorService.form.controls['RequiredMaxRepFaction']"
-                [config]="{ options: FACTIONS, name: 'RequiredMaxRepFaction' }"
-                [modalClass]="'modal-md'"
-              ></keira-single-value-selector-btn>
+          <keira-faction-selector-btn
+            [config]="{ name: 'RequiredMaxRepFaction' }"
+            [control]="editorService.form.controls['RequiredMaxRepFaction']"
+          ></keira-faction-selector-btn>
           <input [formControlName]="'RequiredMaxRepFaction'" id="RequiredMaxRepFaction" type="number" class="form-control form-control-sm">
         </div>
 

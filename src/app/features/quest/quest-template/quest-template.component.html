@@ -298,11 +298,10 @@
               class="col-12"
             >
               <label class="control-label" for="RequiredFactionId{{ i }}">Req.FactionId{{ i }}</label>
-              <keira-single-value-selector-btn
-                [control]="editorService.form.controls['RequiredFactionId' + i]"
-                [config]="{ options: FACTIONS, name: 'RequiredFactionId' + i }"
-                [modalClass]="'modal-md'"
-              ></keira-single-value-selector-btn>
+              <keira-faction-selector-btn
+                [config]="{ name: 'RequiredFactionId' }"
+                [control]="editorService.form.controls['RequiredFactionId']"
+              ></keira-faction-selector-btn>
               <input [formControlName]="'RequiredFactionId' + i" id="RequiredFactionId{{ i }}" type="number" class="form-control form-control-sm">
             </div>
           </div>
@@ -515,11 +514,10 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="RewardFactionID{{ i }}">Rew.FactionID{{ i }}</label>
-              <keira-single-value-selector-btn
-                [control]="editorService.form.controls['RewardFactionID' + i]"
-                [config]="{ options: FACTIONS, name: 'RewardFactionID' + i }"
-                [modalClass]="'modal-md'"
-              ></keira-single-value-selector-btn>
+              <keira-faction-selector-btn
+                [config]="{ name: 'RewardFactionID' }"
+                [control]="editorService.form.controls['RewardFactionID']"
+              ></keira-faction-selector-btn>
               <input [formControlName]="'RewardFactionID' + i" id="RewardFactionID{{ i }}" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">

@@ -11,6 +11,7 @@ import { GameobjectTemplateAddonComponent } from './gameobject-template-addon.co
 import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
 import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selector/flags-selector.module';
 import { GameobjectTemplateAddonService } from './gameobject-template-addon.service';
+import { FactionSelectorModule } from '@keira-shared/modules/selectors/faction-selector/faction-selector.module';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { GameobjectTemplateAddonService } from './gameobject-template-addon.serv
     ToastrModule.forRoot(toastrConfig),
     SingleValueSelectorModule,
     FlagsSelectorModule,
+    FactionSelectorModule,
   ],
   exports: [
     GameobjectTemplateAddonComponent,

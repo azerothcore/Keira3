@@ -28,20 +28,18 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="RewOnKillRepFaction1">RewOnKillRepFaction1</label>
-          <keira-single-value-selector-btn
+          <keira-faction-selector-btn
+            [config]="{ name: 'RewOnKillRepFaction1' }"
             [control]="editorService.form.controls['RewOnKillRepFaction1']"
-            [config]="{ options: FACTIONS, name: 'RewOnKillRepFaction1' }"
-            [modalClass]="'modal-md'"
-          ></keira-single-value-selector-btn>
+          ></keira-faction-selector-btn>
           <input [formControlName]="'RewOnKillRepFaction1'" id="RewOnKillRepFaction1" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="RewOnKillRepFaction2">RewOnKillRepFaction2</label>
-          <keira-single-value-selector-btn
+          <keira-faction-selector-btn
+            [config]="{ name: 'RewOnKillRepFaction2' }"
             [control]="editorService.form.controls['RewOnKillRepFaction2']"
-            [config]="{ options: FACTIONS, name: 'RewOnKillRepFaction2' }"
-            [modalClass]="'modal-md'"
-          ></keira-single-value-selector-btn>
+          ></keira-faction-selector-btn>
           <input [formControlName]="'RewOnKillRepFaction2'" id="RewOnKillRepFaction2" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">

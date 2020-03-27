@@ -5,7 +5,6 @@ import { GameobjectTemplateAddon } from '@keira-types/gameobject-template-addon.
 import { GameobjectTemplateAddonService } from './gameobject-template-addon.service';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GAMEOBJECT_FLAGS } from '@keira-constants/flags/gameobject-flags';
-import { FACTIONS } from '@keira-constants/options/faction';
 
 @Component({
   selector: 'keira-gameobject-template-addon',
@@ -15,7 +14,6 @@ import { FACTIONS } from '@keira-constants/options/faction';
 export class GameobjectTemplateAddonComponent extends SingleRowEditorComponent<GameobjectTemplateAddon> {
 
   public readonly GAMEOBJECT_FLAGS = GAMEOBJECT_FLAGS;
-  public readonly FACTIONS = FACTIONS;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

@@ -10,6 +10,7 @@ import { QueryOutputModule } from '@keira-shared/modules/query-output/query-outp
 import { CreatureOnkillReputationComponent } from './creature-onkill-reputation.component';
 import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
 import { CreatureOnkillReputationService } from './creature-onkill-reputation.service';
+import { FactionSelectorModule } from '@keira-shared/modules/selectors/faction-selector/faction-selector.module';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { CreatureOnkillReputationService } from './creature-onkill-reputation.se
     TooltipModule.forRoot(),
     ToastrModule.forRoot(toastrConfig),
     SingleValueSelectorModule,
+    FactionSelectorModule,
   ],
   exports: [
     CreatureOnkillReputationComponent,
