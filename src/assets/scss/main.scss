@@ -20,9 +20,10 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 .item-preview {
   .item-stock, .item-name {
     line-height: 30px;
-    font-size: 22px;
+    font-size: 18px;
   }
 
+  /* Quality */
   .q  { color: #ffd100; }
   .q0 { color: #9d9d9d; }
   .q1 { color: #ffffff; }
@@ -33,17 +34,39 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   .q6 { color: #e5cc80; }
   .q7 { color: #e5cc80; }
 
- .moneyitem, .moneygold, .moneysilver, .moneycopper, .moneyalliance, .moneyhorde, .moneyarena, .moneyachievement, .moneysocketmeta, .moneysocketred, .moneysocketyellow, .moneysocketblue, .moneysocketprismatic {
+  /* Classes */
+  .c1  { color: #C69B6D; } /* Warrior */
+  .c2  { color: #F48CBA; } /* Paladin */
+  .c3  { color: #AAD372; } /* Hunter */
+  .c4  { color: #FFF468; } /* Rogue */
+  .c5  { color: #FFFFFF; } /* Priest */
+  .c6  { color: #C41E3B; } /* Death Knight */
+  .c7  { color: #2359FF; } /* Shaman */
+  .c8  { color: #68CCEF; } /* Mage */
+  .c9  { color: #9382C9; } /* Warlock */
+  .c11 { color: #FF7C0A; } /* Druid */
+
+  /* Sockets */
+  .socket0, .socket1, .socket2, .socket3, .socket4 {  padding-left: 26px; }
+  .socket0 { background: url(../img/sockets/meta.gif) no-repeat left center;      } /* meta */
+  .socket1 { background: url(../img/sockets/red.gif) no-repeat left center;       } /* red */
+  .socket2 { background: url(../img/sockets/yellow.gif) no-repeat left center;    } /* yellow */
+  .socket3 { background: url(../img/sockets/blue.gif) no-repeat left center;      } /* blue */
+  .socket4 { background: url(../img/sockets/prismatic.gif) no-repeat left center; } /* prismatic */
+
+  .moneygold, .moneysilver, .moneycopper {
     background: no-repeat right center;
     color: white;
+    padding-right: 15px;
   }
 
-  .moneygold   { padding-right: 15px; background-image: url(../img/money/gold.gif);   }
-  .moneysilver { padding-right: 15px; background-image: url(../img/money/silver.gif); }
-  .moneycopper { padding-right: 15px; background-image: url(../img/money/copper.gif); }
+  .moneygold   { background-image: url(../img/money/gold.gif);   }
+  .moneysilver { background-image: url(../img/money/silver.gif); }
+  .moneycopper { background-image: url(../img/money/copper.gif); }
 }
 
 .item-select {
+  /* Quality (used for text with white background) */
   .q  { color: #ffd100; }
   .q0 { color: #757575; }
   /* .q1 { color:#ffffff; } */

@@ -45,6 +45,7 @@ export interface Flag {
 export interface Option {
   value: number|string;
   name: string;
+  comment?: string;
 }
 
 export interface FieldDefinition {

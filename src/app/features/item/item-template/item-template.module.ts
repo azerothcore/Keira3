@@ -12,6 +12,7 @@ import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/singl
 import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selector/flags-selector.module';
 import { ItemTemplateService } from './item-template.service';
 import { SpellSelectorModule } from '@keira-shared/modules/selectors/spell-selector/spell-selector.module';
+import { ItemPreviewService } from './item-preview.service';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { SpellSelectorModule } from '@keira-shared/modules/selectors/spell-selec
   ],
   providers: [
     ItemTemplateService,
+    ItemPreviewService,
   ],
 })
 export class ItemTemplateModule {}
