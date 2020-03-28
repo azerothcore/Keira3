@@ -53,12 +53,12 @@ describe('SqlEditorComponent', () => {
 
     expect(mysqlQueryService.query).toHaveBeenCalledWith(page.code.value);
     expect(mysqlQueryService.query).toHaveBeenCalledTimes(1);
-    expect(page.getDatatableCell(page.DT, 0, 0).innerText).toEqual(mockRows[0].col1);
-    expect(page.getDatatableCell(page.DT, 0, 1).innerText).toEqual(mockRows[0].col2);
-    expect(page.getDatatableCell(page.DT, 0, 2).innerText).toEqual(mockRows[0].col3);
-    expect(page.getDatatableCell(page.DT, 1, 0).innerText).toEqual(mockRows[1].col1);
-    expect(page.getDatatableCell(page.DT, 1, 1).innerText).toEqual(mockRows[1].col2);
-    expect(page.getDatatableCell(page.DT, 1, 2).innerText).toEqual(mockRows[1].col3);
+    expect(page.getDatatableCell(null, 0, 0).innerText).toEqual(mockRows[0].col1);
+    expect(page.getDatatableCell(null, 0, 1).innerText).toEqual(mockRows[0].col2);
+    expect(page.getDatatableCell(null, 0, 2).innerText).toEqual(mockRows[0].col3);
+    expect(page.getDatatableCell(null, 1, 0).innerText).toEqual(mockRows[1].col1);
+    expect(page.getDatatableCell(null, 1, 1).innerText).toEqual(mockRows[1].col2);
+    expect(page.getDatatableCell(null, 1, 2).innerText).toEqual(mockRows[1].col3);
   });
 
   it('should allow the user to insert a custom query', async() => {

@@ -95,6 +95,7 @@ export abstract class PageObject<ComponentType> {
 
   /*** ngx-datatable utilities ***/
 
+  /* selector string generators */
   private getDatatableHeaderByTitleSelector(datatableSelector: string, text: string): string {
     return `${datatableSelector} .datatable-header-cell[title="${text}"]`;
   }
@@ -105,18 +106,31 @@ export abstract class PageObject<ComponentType> {
     return `${datatableSelector} .datatable-row-wrapper:nth-child(${rowIndex + 1}) .datatable-body-cell:nth-child(${colIndex + 1})`;
   }
 
-  getDatatableHeaderByTitle(datatableSelector: string, text: string, assert = true): HTMLElement {
+  /* internal selectors (querying the component) */
+  private getDefaultSelectorIfNull(datatableSelector: string|null) {
+    return datatableSelector ? datatableSelector : this.DT_SELECTOR;
+  }
+
+  getDatatableHeaderByTitle(datatableSelector: string|null, text: string, assert = true): HTMLElement {
+    datatableSelector = this.getDefaultSelectorIfNull(datatableSelector);
     return this.query(this.getDatatableHeaderByTitleSelector(datatableSelector, text), assert);
   }
 
-  getDatatableRow(datatableSelector: string, rowIndex: number, assert = true): HTMLElement {
+  getDatatableRow(datatableSelector: string|null, rowIndex: number, assert = true): HTMLElement {
+    datatableSelector = this.getDefaultSelectorIfNull(datatableSelector);
     return this.query(this.getDatatableRowSelector(datatableSelector, rowIndex), assert);
   }
 
-  getDatatableCell(datatableSelector: string, rowIndex: number, colIndex: number, assert = true): HTMLElement {
+  getDatatableCell(datatableSelector: string|null, rowIndex: number, colIndex: number, assert = true): HTMLElement {
+    datatableSelector = this.getDefaultSelectorIfNull(datatableSelector);
     return this.query(this.getDatatableCellSelector(datatableSelector, rowIndex, colIndex), assert);
   }
 
+  clickRowOfDatatable(rowIndex: number) {
+    this.clickElement(this.getDatatableCell(this.DT_SELECTOR, rowIndex, 0));
+  }
+
+  /* external selectors (querying the document) */
   getDatatableHeaderByTitleExternal(datatableSelector: string, text: string): HTMLElement {
     return document.querySelector(this.getDatatableHeaderByTitleSelector(datatableSelector, text));
   }
@@ -133,10 +147,6 @@ export abstract class PageObject<ComponentType> {
     const element = this.getDatatableCellExternal(`.modal-content ${this.DT_SELECTOR}`, rowIndex, colIndex);
     expect(element).toBeTruthy(`Unable to find column ${colIndex} of row ${rowIndex} of ${this.DT_SELECTOR}`);
     return element;
-  }
-
-  clickRowOfDatatable(rowIndex: number) {
-    this.clickElement(this.getDatatableCell(this.DT_SELECTOR, rowIndex, 0));
   }
 
   clickRowOfDatatableInModal(rowIndex: number) {
