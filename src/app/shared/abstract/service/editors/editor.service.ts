@@ -1,15 +1,12 @@
-import { FormControl } from '@angular/forms';
-import { FormGroup } from 'ngx-typesafe-forms';
+import { FormControl, FormGroup } from 'ngx-typesafe-forms';
 import { Observable } from 'rxjs';
 import { MysqlError } from 'mysql';
+import { ToastrService } from 'ngx-toastr';
 
-import { Class, TableRow } from '@keira-types/general';
+import { Class, StringKeys, TableRow } from '@keira-types/general';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { HandlerService } from '../handlers/handler.service';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
-import { ToastrService } from 'ngx-toastr';
-
-declare type StringKeys<T> = Extract<keyof T, string>;
 
 export abstract class EditorService<T extends TableRow> extends SubscriptionHandler {
   protected _loading = false;

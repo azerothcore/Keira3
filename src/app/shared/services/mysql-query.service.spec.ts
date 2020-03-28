@@ -81,7 +81,7 @@ describe('MysqlQueryService', () => {
     const table = 'my_keira3';
 
     it('should properly work when using fields', () => {
-      const queryForm: QueryForm = {
+      const queryForm: QueryForm<any> = {
         fields: {
           myField1: 'myValue1',
           myField2: 'myValue2',
@@ -95,7 +95,7 @@ describe('MysqlQueryService', () => {
     });
 
     it('should properly work when using fields that contain special characters', () => {
-      const queryForm: QueryForm = {
+      const queryForm: QueryForm<any> = {
         fields: {
           myField1: `The People's Militia`,
           myField2: `Mi illumino d'immenso`,
@@ -110,12 +110,12 @@ describe('MysqlQueryService', () => {
     });
 
     it('should properly work when using fields and limit', () => {
-      const queryForm: QueryForm = {
+      const queryForm: QueryForm<any> = {
         fields: {
           myField1: 'myValue1',
           myField2: 'myValue2',
         },
-        limit: '20',
+        limit: 20,
       };
 
       expect(service.getSearchQuery(table, queryForm)).toEqual(
@@ -125,11 +125,11 @@ describe('MysqlQueryService', () => {
     });
 
     it('should properly work when using limit only', () => {
-      const queryForm: QueryForm = {
+      const queryForm: QueryForm<any> = {
         fields: {
           param: null,
         },
-        limit: '20',
+        limit: 20,
       };
 
       expect(service.getSearchQuery(table, queryForm)).toEqual(
@@ -139,12 +139,12 @@ describe('MysqlQueryService', () => {
     });
 
     it('should properly work when using fields, limit, selectFields and groupField', () => {
-      const queryForm: QueryForm = {
+      const queryForm: QueryForm<any> = {
         fields: {
           myField1: 'myValue1',
           myField2: 'myValue2',
         },
-        limit: '20',
+        limit: 20,
       };
 
       const selectFields = ['sel1', 'sel2'];
