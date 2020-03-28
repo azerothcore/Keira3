@@ -12,6 +12,7 @@ import { NpcVendorComponent } from './npc-vendor.component';
 import { ItemSelectorModule } from '@keira-shared/modules/selectors/item-selector/item-selector.module';
 import { NpcVendorService } from './npc-vendor.service';
 import { IconModule } from '@keira-shared/modules/icon/icon.module';
+import { ItemExtendedCostSelectorModule } from '@keira-shared/modules/selectors/item-extended-cost-selector/item-extended-cost-selector.module';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { IconModule } from '@keira-shared/modules/icon/icon.module';
     NgxDatatableModule,
     ItemSelectorModule,
     IconModule,
+    ItemExtendedCostSelectorModule,
   ],
   exports: [
     NpcVendorComponent,
