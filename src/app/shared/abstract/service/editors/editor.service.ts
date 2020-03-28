@@ -1,5 +1,4 @@
-import { FormControl } from '@angular/forms';
-import { FormGroup } from 'ngx-typesafe-forms';
+import { FormGroup, FormControl } from 'ngx-typesafe-forms';
 import { Observable } from 'rxjs';
 import { MysqlError } from 'mysql';
 
@@ -31,7 +30,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   get error(): MysqlError { return this._error; }
 
   constructor(
-    protected _entityClass: Class,
+    protected _entityClass: Class<T>,
     protected _entityTable: string,
     protected _entityIdField: string,
     protected handlerService: HandlerService<T>,
@@ -50,9 +49,9 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   protected abstract updateFullQuery();
   protected abstract onReloadSuccessful(data: T[], id: string|number);
 
-  private getClassAttributes(c: Class): StringKeys<T>[] {
+  private getClassAttributes(c: Class<T>): StringKeys<T>[] {
     const tmpInstance = new c();
-    return Object.getOwnPropertyNames(tmpInstance) as any;
+    return Object.getOwnPropertyNames(tmpInstance) as StringKeys<T>[];
   }
 
   protected disableEntityIdField() {

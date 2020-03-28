@@ -7,7 +7,7 @@ export interface QueryForm {
   };
 }
 
-export type Class = new(...args: any[]) => any;
+export type Class<T> = new(...args: any[]) => T;
 
 export interface MysqlResult<T extends TableRow> {
   results?: T[];
