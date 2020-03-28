@@ -263,11 +263,11 @@ describe('SaiEditorComponent integration tests', () => {
       fixture.detectChanges();
       await fixture.whenStable();
 
-      expect(page.getDatatableCell(page.EDITOR_DT_SELECTOR, 0, saiColIndex).innerText)
+      expect(page.getDatatableCell(0, saiColIndex).innerText)
         .toEqual(`${name} - On Aggro - Kill Target`);
-      expect(page.getDatatableCell(page.EDITOR_DT_SELECTOR, 1, saiColIndex).innerText)
+      expect(page.getDatatableCell(1, saiColIndex).innerText)
         .toEqual(`${name} - On Just Died - Start Attacking`);
-      expect(page.getDatatableCell(page.EDITOR_DT_SELECTOR, 2, saiColIndex).innerText)
+      expect(page.getDatatableCell(2, saiColIndex).innerText)
         .toEqual(`${name} - On Evade - Flee For Assist`);
 
       page.expectAllQueriesToContain(`${name} - On Aggro - Kill Target`);
