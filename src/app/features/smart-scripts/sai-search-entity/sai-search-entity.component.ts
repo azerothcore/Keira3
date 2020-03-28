@@ -1,8 +1,9 @@
 import { Component, } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Validators } from '@angular/forms';
+import { FormControl, FormGroup } from 'ngx-typesafe-forms';
 
 import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
-import { SAI_TYPES, SAI_TYPES_KEYS } from '@keira-types/smart-scripts.type';
+import { SAI_TYPES, SAI_TYPES_KEYS, SmartScripts } from '@keira-types/smart-scripts.type';
 
 @Component({
   selector: 'keira-sai-search-entity',
@@ -14,9 +15,9 @@ export class SaiSearchEntityComponent {
   public readonly SAI_SEARCH_TYPES = SAI_TYPES;
   public readonly SAI_SEARCH_TYPES_KEYS = SAI_TYPES_KEYS;
 
-  public readonly form = new FormGroup({
-    'source_type': new FormControl(null, [Validators.required]),
-    'entryorguid': new FormControl(null, [Validators.required]),
+  public readonly form = new FormGroup<Partial<SmartScripts>>({
+    'source_type': new FormControl<number>(null, [Validators.required]),
+    'entryorguid': new FormControl<number>(null, [Validators.required]),
   });
 
   get typeCreatureSelected(): boolean {
@@ -27,12 +28,12 @@ export class SaiSearchEntityComponent {
     return this.sourceTypeControl.value === SAI_TYPES.SAI_TYPE_GAMEOBJECT;
   }
 
-  get sourceTypeControl(): AbstractControl {
-    return this.form.controls['source_type'];
+  get sourceTypeControl() {
+    return this.form.controls.source_type as FormGroup<number>;
   }
 
-  get entryOrGuidControl(): AbstractControl {
-    return this.form.controls['entryorguid'];
+  get entryOrGuidControl() {
+    return this.form.controls.entryorguid as FormGroup<number>;
   }
 
   constructor(
@@ -40,7 +41,7 @@ export class SaiSearchEntityComponent {
   ) {}
 
   onSelectedTypeChange() {
-    this.entryOrGuidControl.setValue('');
+    this.entryOrGuidControl.setValue(null);
   }
 
   onEdit() {

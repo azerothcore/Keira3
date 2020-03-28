@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import { MysqlError } from 'mysql';
 import { ToastrService } from 'ngx-toastr';
 
-import { Class, MysqlResult, TableRow } from '@keira-types/general';
+import { Class, TableRow } from '@keira-types/general';
 import { HandlerService } from '../handlers/handler.service';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { MultiRowEditorService } from './multi-row-editor.service';

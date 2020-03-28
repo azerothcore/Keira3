@@ -1,4 +1,4 @@
-import { TableRow } from '@keira-types/general';
+import { StringKeys, TableRow } from '@keira-types/general';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { HandlerService } from '../handlers/handler.service';
 import { SearchService } from '../../../modules/search/search.service';
@@ -11,7 +11,7 @@ export abstract class SelectService<T extends TableRow> extends SearchService<T>
     protected entityTable: string,
     protected entityIdField: string,
     protected entityNameField: string,
-    protected fieldList: string[],
+    protected fieldList: StringKeys<T>[],
   ) {
     super(queryService, entityTable, fieldList);
   }

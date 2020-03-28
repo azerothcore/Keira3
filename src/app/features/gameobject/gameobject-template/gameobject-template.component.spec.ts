@@ -45,7 +45,7 @@ describe('GameobjectComponent', () => {
 
   it('should check the Data* field name on change the field "type"', () => {
     const mockValue: FieldDefinition = { name: 'Mock Value', tooltip: null };
-    const mockType = 'mockTypeValue';
+    const mockType = 123;
     const index = 3;
     gameobjectTemplateService = TestBed.inject(GameobjectTemplateService);
     gameobjectTemplateService.form.controls['type'].setValue(mockType);

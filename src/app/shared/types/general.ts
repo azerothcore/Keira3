@@ -1,10 +1,10 @@
 import { FieldInfo } from 'mysql';
 
-export interface QueryForm {
-  limit?: string;
-  fields?: {
-    [key: string]: string;
-  };
+export type StringKeys<T> = Extract<keyof T, string>;
+
+export interface QueryForm<T> {
+  limit?: number;
+  fields?: T;
 }
 
 export type Class = new(...args: any[]) => any;

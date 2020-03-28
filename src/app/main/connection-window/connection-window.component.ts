@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { MysqlError } from 'mysql';
+import { FormControl, FormGroup } from 'ngx-typesafe-forms';
+import { ConnectionConfig, MysqlError } from 'mysql';
 import { version } from '../../../../package.json';
 
 import { MysqlService } from '../../shared/services/mysql.service';
@@ -17,7 +17,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
 
   public readonly KEIRA_VERSION = version;
   private configStorage: Config;
-  form: FormGroup;
+  form: FormGroup<Partial<ConnectionConfig>>;
   error: MysqlError;
 
   constructor(
@@ -31,7 +31,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
 
     this.form = new FormGroup({
       'host': new FormControl('127.0.0.1'),
-      'port': new FormControl('3306'),
+      'port': new FormControl(3306),
       'user': new FormControl('root'),
       'password': new FormControl('root'),
       'database': new FormControl('acore_world'),
@@ -42,7 +42,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
     if (!!this.configStorage) {
       this.form.setValue({
         host: this.configStorage.host,
-        port: this.configStorage.port,
+        port: Number(this.configStorage.port),
         user: this.configStorage.user,
         password: atob(this.configStorage.keira3String),
         database: this.configStorage.database,
@@ -54,7 +54,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
     const tmpValues = this.form.getRawValue();
     this.configStorage = {
       host: tmpValues.host,
-      port: tmpValues.port,
+      port: String(tmpValues.port),
       user: tmpValues.user,
       keira3String: btoa(tmpValues.password),
       database: tmpValues.database,
