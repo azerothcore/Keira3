@@ -73,7 +73,9 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   public itemPreview: SafeHtml = this.sanitizer.bypassSecurityTrustHtml('loading...');
 
   private async loadItemPreview() {
-    this.itemPreview = this.sanitizer.bypassSecurityTrustHtml(await this.itemPreviewService.calculatePreview());
+    this.itemPreview = this.sanitizer.bypassSecurityTrustHtml(
+      await this.itemPreviewService.calculatePreview(this.editorService.form.value)
+    );
   }
 
   ngOnInit() {

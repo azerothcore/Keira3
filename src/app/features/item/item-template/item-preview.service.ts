@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { ItemTemplateService } from './item-template.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { ITEM_TYPE, ITEM_MOD } from '@keira-shared/constants/options/item-class';
 import { ITEM_CONSTANTS } from './item-constants';
 import { MAX_LEVEL, lvlIndepRating, gtCombatRatings, CLASSES, RACE, resistanceFields } from './item-preview';
 import { ITEM_FLAG } from '@keira-shared/constants/flags/item-flags';
 import { ITEMS_QUALITY } from '@keira-shared/constants/options/item-quality';
+import { ItemTemplate } from '@keira-shared/types/item-template.type';
 
 @Injectable()
 export class ItemPreviewService {
@@ -14,7 +14,6 @@ export class ItemPreviewService {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    private readonly editorService: ItemTemplateService,
     private readonly sqliteQueryService: SqliteQueryService,
     private readonly mysqlQueryService: MysqlQueryService,
   ) { }
@@ -125,9 +124,7 @@ export class ItemPreviewService {
       .replace('%s', `<!--lvl-->${level}`);
   }
 
-  private parseRating(type: number, value: number): string {
-
-    const requiredLevel = this.editorService.form.controls.RequiredLevel.value;
+  private parseRating(type: number, value: number, requiredLevel: number): string {
 
     // clamp level range
     const level = requiredLevel > 1 ? requiredLevel : MAX_LEVEL;
@@ -359,6 +356,8 @@ export class ItemPreviewService {
   }
 
   private async getLocks(lockId: number): Promise<string[]> {
+    if (!lockId) { return; }
+
     const lock = (await this.sqliteQueryService.getLockById(lockId))[0];
 
     if (!lock) {
@@ -408,10 +407,9 @@ export class ItemPreviewService {
 
   // todo (med): information will get lost if one vendor sells one item multiple times with different costs (e.g. for item 54637)
   //             wowhead seems to have had the same issues
-  private async getExtendedCost(filter = []): Promise<any[]> {
-    const flagsExtra = Number(this.editorService.form.controls.FlagsExtra.value);
-    const buyPrice = Number(this.editorService.form.controls.BuyPrice.value);
-    const entry = Number(this.editorService.form.controls.entry.value);
+  private async getExtendedCost(entry: number, flagsExtra: number, buyPrice: number): Promise<any[]> {
+
+    if (!entry) { return []; }
 
     const itemz = {};
     let xCostData = [];
@@ -556,17 +554,17 @@ export class ItemPreviewService {
    * get item preview text
    */
 
-  private getDamageText(): string {
+  private getDamageText(itemTemplate: ItemTemplate): string {
     // Weapon/Ammunition Stats (not limited to weapons (see item:1700))
-    const itemClass: number = Number(this.editorService.form.controls.class.value);
-    const subclass: number = Number(this.editorService.form.controls.subclass.value);
-    const dmgmin1 = this.editorService.form.controls.dmg_min1.value;
-    const dmgmin2 = this.editorService.form.controls.dmg_min2.value;
-    const dmgmax1 = this.editorService.form.controls.dmg_max1.value;
-    const dmgmax2 = this.editorService.form.controls.dmg_max2.value;
-    const speed = this.editorService.form.controls.delay.value / 1000;
-    const sc1 = this.editorService.form.controls.dmg_type1.value;
-    const sc2 = this.editorService.form.controls.dmg_type2.value;
+    const itemClass: number = Number(itemTemplate.class);
+    const subclass: number = Number(itemTemplate.subclass);
+    const dmgmin1: number = Number(itemTemplate.dmg_min1);
+    const dmgmin2: number = Number(itemTemplate.dmg_min2);
+    const dmgmax1: number = Number(itemTemplate.dmg_max1);
+    const dmgmax2: number = Number(itemTemplate.dmg_max2);
+    const speed = itemTemplate.delay / 1000;
+    const sc1 = itemTemplate.dmg_type1;
+    const sc2 = itemTemplate.dmg_type2;
     const dmgmin = dmgmin1 + dmgmin2;
     const dmgmax = dmgmax1 + dmgmax2;
     const dps = speed ? (dmgmin + dmgmax) / (2 * speed) : 0;
@@ -583,12 +581,12 @@ export class ItemPreviewService {
     } else if (dps) {
       if (dmgmin1 === dmgmax1) {
         dmg = ITEM_CONSTANTS.damage.single[sc1 ? 1 : 0]
-          .replace('%g', dmgmin1)
+          .replace('%g', String(dmgmin1))
           .replace('%s', (sc1 ? ITEM_CONSTANTS.sc[sc1] : ''));
       } else {
         dmg = ITEM_CONSTANTS.damage.range[sc1 ? 1 : 0]
-          .replace('%d', dmgmin1)
-          .replace('%d', dmgmax1)
+          .replace('%d', String(dmgmin1))
+          .replace('%d', String(dmgmax1))
           .replace('%s', sc1 ? ITEM_CONSTANTS.sc[sc1] : '');
       }
 
@@ -601,12 +599,12 @@ export class ItemPreviewService {
       // secondary damage is set
       if ((dmgmin2 || dmgmax2) && dmgmin2 !== dmgmax2) {
         damageText += ITEM_CONSTANTS.damage.range[sc2 ? 3 : 2]
-          .replace('%d', dmgmin2)
-          .replace('%d', dmgmax2)
+          .replace('%d', String(dmgmin2))
+          .replace('%d', String(dmgmax2))
           .replace('%s', sc2 ? ITEM_CONSTANTS.sc[sc2] : '');
       } else if (dmgmin2) {
         damageText += ITEM_CONSTANTS.damage.single[sc2 ? 3 : 2]
-          .replace('%d', dmgmin2)
+          .replace('%d', String(dmgmin2))
           .replace('%s', sc2 ? ITEM_CONSTANTS.sc[sc2] : '');
       }
 
@@ -624,12 +622,14 @@ export class ItemPreviewService {
     return damageText;
   }
 
-  private getStats(greenText: string[]): string {
+  private getStats(itemTemplate: ItemTemplate, greenText: string[]): string {
     let stats = '';
 
+    const requiredLevel = Number(itemTemplate.RequiredLevel);
+
     for (let i = 1; i <= 10; i++) {
-      const type = this.editorService.form.controls['stat_type' + i].value;
-      const qty = this.editorService.form.controls['stat_value' + i].value;
+      const type = Number(itemTemplate['stat_type' + i]);
+      const qty = Number(itemTemplate['stat_value' + i]);
 
       if (!qty || type <= 0) {
         continue;
@@ -647,17 +647,14 @@ export class ItemPreviewService {
           stats += `<br><span><!--stat${type}-->${(qty > 0 ? '+' : '-') + Math.abs(qty)} ${ITEM_CONSTANTS.statType[type]}</span>`;
           break;
         default: // rating with % for reqLevel
-          greenText.push(this.parseRating(type, qty));
+          greenText.push(this.parseRating(type, qty, requiredLevel));
       }
     }
 
     return stats;
   }
 
-  private async getItemSet(): Promise<string> {
-    const itemset = this.editorService.form.controls.itemset.value;
-    const entry = this.editorService.form.controls.entry.value;
-
+  private async getItemSet(entry: number, itemset: number): Promise<string> {
     if (!itemset) {
       return '';
     }
@@ -807,14 +804,14 @@ export class ItemPreviewService {
     return itemsetText;
   }
 
-  private async getBonding(): Promise<string> {
+  private async getBonding(itemTemplate: ItemTemplate): Promise<string> {
     let bondingText = '';
 
-    const flags = this.editorService.form.controls.Flags.value;
-    const bonding: number = Number(this.editorService.form.controls.bonding.value);
-    const maxcount: number = Number(this.editorService.form.controls.maxcount.value);
-    const bagFamily: number = Number(this.editorService.form.controls.BagFamily.value);
-    const itemLimitCategory = this.editorService.form.controls.ItemLimitCategory.value;
+    const flags = itemTemplate.Flags;
+    const bonding: number = Number(itemTemplate.bonding);
+    const maxcount: number = Number(itemTemplate.maxcount);
+    const bagFamily: number = Number(itemTemplate.BagFamily);
+    const itemLimitCategory = itemTemplate.ItemLimitCategory;
 
     // bonding
     if (flags & ITEM_FLAG.ACCOUNTBOUND) {
@@ -826,11 +823,11 @@ export class ItemPreviewService {
     // unique || unique-equipped || unique-limited
     if (maxcount === 1) {
       bondingText += '<br><!-- unique[0] -->' + this.ITEM_CONSTANTS['unique'][0];
-    } else if (maxcount && bagFamily !== 8192) { // not for currency tokens
+    } else if (!!maxcount && bagFamily !== 8192) { // not for currency tokens
       bondingText += '<br><!-- unique[1] -->' + this.ITEM_CONSTANTS['unique'][1].replace('%d', maxcount.toString());
     } else if (flags & ITEM_FLAG.UNIQUEEQUIPPED) {
       bondingText += '<br><!-- uniqueEquipped -->' + this.ITEM_CONSTANTS['uniqueEquipped'][0];
-    } else if (itemLimitCategory) {
+    } else if (!!itemLimitCategory) {
       let limit: any = await this.getItemLimitCategoryById(itemLimitCategory);
       limit = limit[0];
 
@@ -841,12 +838,8 @@ export class ItemPreviewService {
     return bondingText;
   }
 
-  private getClassText(): string {
+  private getClassText(inventoryType: number, itemClass: number, subclass: number): string {
     let classText = '';
-
-    const inventoryType: number = Number(this.editorService.form.controls.InventoryType.value);
-    const itemClass: number = Number(this.editorService.form.controls.class.value);
-    const subclass: number = Number(this.editorService.form.controls.subclass.value);
 
     let textRight = '';
     if ([ITEM_TYPE.ARMOR, ITEM_TYPE.WEAPON, ITEM_TYPE.AMMUNITION].includes(itemClass)) {
@@ -877,89 +870,80 @@ export class ItemPreviewService {
     return classText;
   }
 
-  private getArmorText(): string {
+  private getArmorText(itemTemplate: ItemTemplate): string {
     let armorText = '';
 
     // Armor
-    const armorDamageModifier = this.editorService.form.controls.ArmorDamageModifier.value;
-    const armor = this.editorService.form.controls.armor.value;
-    const itemClass: number = Number(this.editorService.form.controls.class.value);
+    const armorDamageModifier = itemTemplate.ArmorDamageModifier;
+    const armor = itemTemplate.armor;
+    const itemClass: number = Number(itemTemplate.class);
     if (itemClass === ITEM_TYPE.ARMOR && armorDamageModifier > 0) {
-      armorText += `<br><span class="q2"><!--addamr${armorDamageModifier}--><span>${ITEM_CONSTANTS.armor.replace('%s', armor)}</span></span>`;
+      armorText += `<br><span class="q2"><!--addamr${armorDamageModifier}--><span>${ITEM_CONSTANTS.armor.replace('%s', String(armor))}</span></span>`;
     } else if (armor) {
-      armorText += `<br><span><!--amr-->${ITEM_CONSTANTS.armor.replace('%s', armor)}</span>`;
+      armorText += `<br><span><!--amr-->${ITEM_CONSTANTS.armor.replace('%s', String(armor))}</span>`;
     }
 
     // Block (note: block value from field block and from field stats or parsed from itemSpells are displayed independently)
-    const block = this.editorService.form.controls.block.value;
+    const block = itemTemplate.block;
     if (block) {
-      armorText += `<br><span>${ITEM_CONSTANTS.block.replace('%s', block)}</span>`;
+      armorText += `<br><span>${ITEM_CONSTANTS.block.replace('%s', String(block))}</span>`;
     }
 
     return armorText;
   }
 
-  private async getRequiredText(): Promise<string> {
+  private async getRequiredText(itemTemplate: ItemTemplate): Promise<string> {
     let requiredText = '';
 
-    const flags = this.editorService.form.controls.Flags.value;
-    const quality: number = Number(this.editorService.form.controls.Quality.value);
-    const requiredLevel = this.editorService.form.controls.RequiredLevel.value;
-
     // required classes
-    const allowableClasses = this.editorService.form.controls.AllowableClass.value;
-    const classes = this.getRequiredClass(allowableClasses);
+    const classes = this.getRequiredClass(itemTemplate.AllowableClass);
     if (classes != null && classes.length > 0) {
       requiredText += `<br>Classes: ${classes.join(', ')}`;
     }
 
     // required races
-    const allowableRaces = this.editorService.form.controls.AllowableRace.value;
-    const races = this.getRaceString(allowableRaces);
+    const races = this.getRaceString(itemTemplate.AllowableRace);
     if (races) {
       requiredText += `<br>Races: ${races.join(', ')}`;
     }
 
     // required honorRank (not used anymore)
-    const requiredhonorrank = this.editorService.form.controls.requiredhonorrank.value;
-    if (requiredhonorrank) {
-      requiredText += `<br>Requires ${ITEM_CONSTANTS.pvpRank[requiredhonorrank]}`;
+    if (!!itemTemplate.requiredhonorrank) {
+      requiredText += `<br>Requires ${ITEM_CONSTANTS.pvpRank[itemTemplate.requiredhonorrank]}`;
     }
 
     // required CityRank -> the value is always 0
 
     // required level
-    if ((flags & ITEM_FLAG.ACCOUNTBOUND) && quality === ITEMS_QUALITY.HEIRLOOM) {
+    if ((itemTemplate.Flags & ITEM_FLAG.ACCOUNTBOUND) && itemTemplate.quality === ITEMS_QUALITY.HEIRLOOM) {
 
       requiredText += '<br>' + ITEM_CONSTANTS.reqLevelRange
         .replace('%d', '1')
         .replace('%d', MAX_LEVEL.toString())
         .replace('%s', MAX_LEVEL.toString());
 
-    } else if (requiredLevel > 1) {
-      requiredText += '<br>' + ITEM_CONSTANTS.reqMinLevel.replace('%d', requiredLevel);
+    } else if (itemTemplate.RequiredLevel > 1) {
+      requiredText += '<br>' + ITEM_CONSTANTS.reqMinLevel.replace('%d', String(itemTemplate.RequiredLevel));
     }
 
     // required arena team rating / personal rating / todo (low): sort out what kind of rating
-    const entry = this.editorService.form.controls.entry.value;
+    const [res, reqRating] = await this.getExtendedCost(itemTemplate.entry, itemTemplate.FlagsExtra, itemTemplate.BuyPrice);
 
-    const [res, reqRating] = await this.getExtendedCost();
-
-    if (res[entry] && Object.keys(res[entry]).length > 0 && reqRating.length > 0) {
+    if (!!res && !!reqRating && res[itemTemplate.entry] && Object.keys(res[itemTemplate.entry]).length > 0 && reqRating.length > 0) {
       requiredText += '<br>' + ITEM_CONSTANTS.reqRating[reqRating[1]].replace('%d', reqRating[0]);
     }
 
     // item level
-    const itemClass: number = Number(this.editorService.form.controls.class.value);
-    const itemLevel = this.editorService.form.controls.ItemLevel.value;
+    const itemClass = Number(itemTemplate.class);
+    const itemLevel = itemTemplate.ItemLevel;
     if (itemLevel > 0 && [ITEM_TYPE.ARMOR, ITEM_TYPE.WEAPON].includes(itemClass)) {
-      requiredText += `<br>${ITEM_CONSTANTS.itemLevel.replace('%d', itemLevel)}`;
+      requiredText += `<br>${ITEM_CONSTANTS.itemLevel.replace('%d', String(itemLevel))}`;
     }
 
     // required skill
-    const requiredSkill = this.editorService.form.controls.RequiredSkill.value;
-    const requiredSkillRank = this.editorService.form.controls.RequiredSkillRank.value;
-    if (requiredSkill > 0) {
+    const requiredSkill = itemTemplate.RequiredSkill;
+    const requiredSkillRank = itemTemplate.RequiredSkillRank;
+    if (!!requiredSkill && requiredSkill > 0) {
       let reqSkill = await this.sqliteQueryService.getSkillNameById(requiredSkill);
       if (requiredSkillRank > 0) {
         reqSkill += ` (${requiredSkillRank})`;
@@ -969,15 +953,15 @@ export class ItemPreviewService {
     }
 
     // required spell
-    const requiredSpell = this.editorService.form.controls.requiredspell.value;
-    if (requiredSpell > 0) {
+    const requiredSpell = itemTemplate.requiredspell;
+    if (!!requiredSpell && requiredSpell > 0) {
       requiredText += `<br>Requires <span class="q1">${await this.sqliteQueryService.getSpellNameById(requiredSpell)}</span>`;
     }
 
     // required reputation w/ faction
-    const requiredFaction = this.editorService.form.controls.RequiredReputationFaction.value;
-    const requiredFactionRank = this.editorService.form.controls.RequiredReputationRank.value;
-    if (requiredFaction > 0) {
+    const requiredFaction = itemTemplate.RequiredReputationFaction;
+    const requiredFactionRank = itemTemplate.RequiredReputationRank;
+    if (!!requiredFaction && requiredFaction > 0) {
       let reqFaction = await this.sqliteQueryService.getFactionNameById(requiredFaction);
       if (requiredFactionRank > 0) {
         reqFaction += ` (${requiredFactionRank})`;
@@ -988,18 +972,16 @@ export class ItemPreviewService {
     return requiredText;
   }
 
-  private async getRequiredZone(): Promise<string> {
+  private async getRequiredZone(map: number, area: number): Promise<string> {
     let requiredZone = '';
 
     // require map
-    const map = this.editorService.form.controls.Map.value;
     if (!!map) {
       const mapName = await this.sqliteQueryService.getMapNameById(map);
       requiredZone += mapName && mapName !== '' ? `<br><!-- map --><span class="q1">${mapName}</span>` : '';
     }
 
     // require area
-    const area = this.editorService.form.controls.area.value;
     if (!!area) {
       const areaName = await this.sqliteQueryService.getAreaNameById(area);
       requiredZone += areaName && areaName !== '' ? `<br><!-- area -->${areaName}` : '';
@@ -1008,12 +990,10 @@ export class ItemPreviewService {
     return requiredZone;
   }
 
-  private getDuration(): string {
+  private getDuration(duration: number, flagsCustom: number): string {
     let durationText = '';
 
     // max duration
-    const duration = Math.abs(this.editorService.form.controls.duration.value);
-    const flagsCustom = this.editorService.form.controls.flagsCustom.value;
     if (duration) {
       let rt = '';
       if (flagsCustom & 0x1) { // if CU_DURATION_REAL_TIME
@@ -1025,12 +1005,12 @@ export class ItemPreviewService {
     return durationText;
   }
 
-  private getMagicResistances(): string {
+  private getMagicResistances(itemTemplate: ItemTemplate): string {
     let magicRsistances = '';
 
     // magic resistances
     resistanceFields.forEach((rowName, idx) => {
-      const resField = this.editorService.form.controls[rowName + '_res'].value;
+      const resField = itemTemplate[rowName + '_res'];
       if (rowName != null && resField != null && resField !== 0) {
         magicRsistances += `<br>+${resField} ${ITEM_CONSTANTS.resistances[idx]}`;
       }
@@ -1039,12 +1019,12 @@ export class ItemPreviewService {
     return magicRsistances;
   }
 
-  private getMisc(): string {
+  private getMisc(itemTemplate: ItemTemplate): string {
     const xMisc = [];
 
-    const spellId1 = this.editorService.form.controls.spellid_1.value;
-    const spellId2 = this.editorService.form.controls.spellid_2.value;
-    const description = this.editorService.form.controls.description.value;
+    const spellId1 = itemTemplate.spellid_1;
+    const spellId2 = itemTemplate.spellid_2;
+    const description = itemTemplate.description;
 
     // yellow text at the bottom, omit if we have a recipe
     if (!!description && !this.canTeachSpell(spellId1, spellId2)) {
@@ -1052,13 +1032,13 @@ export class ItemPreviewService {
     }
 
     // readable
-    const PageText = this.editorService.form.controls.PageText.value;
+    const PageText = itemTemplate.PageText;
     if (PageText > 0) {
       xMisc.push(`<br><span class="q2">${ITEM_CONSTANTS.readClick}</span>`);
     }
 
     // charges (I guess, checking first spell is enough)
-    const spellCharges1 = this.editorService.form.controls.spellcharges_1.value;
+    const spellCharges1 = itemTemplate.spellcharges_1;
     if (!!spellCharges1) {
 
       const charges = ITEM_CONSTANTS.charges.replace('%d', Math.abs(spellCharges1).toString());
@@ -1074,10 +1054,10 @@ export class ItemPreviewService {
     return xMisc.length > 0 ? xMisc.join('') : '';
   }
 
-  private async getGemEnchantment(): Promise<string> {
-    let gemEnchantmentText = '';
+  private async getGemEnchantment(entry: number): Promise<string> {
+    if (!entry) { return; }
 
-    const entry = this.editorService.form.controls.entry.value;
+    let gemEnchantmentText = '';
     const gemEnchantmentId = await this.getGemEnchantmentIdById(entry);
 
     if (!!gemEnchantmentId) {
@@ -1140,13 +1120,13 @@ export class ItemPreviewService {
     return gemEnchantmentText;
   }
 
-  private async getSocketEnchantment(): Promise<string> {
+  private async getSocketEnchantment(itemTemplate: ItemTemplate): Promise<string> {
 
     let socketText = '';
 
     // fill native sockets
     for (let j = 1; j <= 3; j++) {
-      const socketColor = this.editorService.form.controls['socketColor_' + j].value;
+      const socketColor = Number(itemTemplate['socketColor_' + j]);
 
       if (!socketColor) {
         continue;
@@ -1162,7 +1142,7 @@ export class ItemPreviewService {
       socketText += `<br><span class="socket-${ITEM_CONSTANTS.gemColors[colorId]} q0 socket${colorId}">${ITEM_CONSTANTS.socket[colorId]}</span>`;
     }
 
-    const socketBonus = this.editorService.form.controls.socketBonus.value;
+    const socketBonus = itemTemplate.socketBonus;
     if (!!socketBonus) {
       const sbonus = await this.sqliteQueryService.getSocketBonusById(socketBonus);
       const socketBonusText = `${ITEM_CONSTANTS.socketBonus.replace('%s', sbonus)}`;
@@ -1172,18 +1152,18 @@ export class ItemPreviewService {
     return socketText;
   }
 
-  private async getSpellDesc(green: string[]) {
-    const spellId1 = this.editorService.form.controls.spellid_1.value;
-    const spellId2 = this.editorService.form.controls.spellid_2.value;
+  private async getSpellDesc(itemTemplate: ItemTemplate, green: string[]) {
+    const spellId1 = itemTemplate.spellid_1;
+    const spellId2 = itemTemplate.spellid_2;
 
     if (!this.canTeachSpell(spellId1, spellId2)) {
       const itemSpellsAndTrigger = [];
       for (let j = 1; j <= 5; j++) {
-        const spellid = this.editorService.form.controls['spellid_' + j].value;
+        const spellid = itemTemplate['spellid_' + j];
 
         if (spellid > 0) {
-          let cooldown = this.editorService.form.controls['spellcooldown_' + j].value;
-          const cooldownCategory = this.editorService.form.controls['spellcategory_' + j].value;
+          let cooldown = itemTemplate['spellcooldown_' + j];
+          const cooldownCategory = itemTemplate['spellcategory_' + j];
 
           if (cooldown < cooldownCategory) {
             cooldown = cooldownCategory;
@@ -1191,7 +1171,7 @@ export class ItemPreviewService {
 
           cooldown = cooldown < 5000 ? '' : ` ( ${this.formatTime(cooldown)} cooldown)`;
 
-          itemSpellsAndTrigger[spellid] = [this.editorService.form.controls['spelltrigger_' + j].value, cooldown];
+          itemSpellsAndTrigger[spellid] = [itemTemplate['spelltrigger_' + j], cooldown];
         }
       }
 
@@ -1209,15 +1189,17 @@ export class ItemPreviewService {
   }
 
   // TODO: recipes, vanity pets, mounts
-  private async getLearnSpellText(): Promise<string> {
+  private async getLearnSpellText(itemTemplate: ItemTemplate): Promise<string> {
     /* TODO - WIP */
 
     let spellDesc = '';
 
-    // const bagFamily: number = Number(this.editorService.form.controls.BagFamily.value);
-    // const itemClass: number = Number(this.editorService.form.controls.class.value);
-    const spellId1 = this.editorService.form.controls.spellid_1.value;
-    const spellId2 = this.editorService.form.controls.spellid_2.value;
+    // const bagFamily: number = Number(itemTemplate.BagFamily);
+    // const itemClass: number = Number(itemTemplate.class);
+    const spellId1 = itemTemplate.spellid_1;
+    const spellId2 = itemTemplate.spellid_2;
+
+    if (!spellId1 || !spellId2) { return; }
 
     if (this.canTeachSpell(spellId1, spellId2)) {
       const craftSpell = spellId2;
@@ -1266,11 +1248,9 @@ export class ItemPreviewService {
   }
 
   // locked or openable
-  private async getLockText(): Promise<string> {
+  private async getLockText(flags: number, lockid: number): Promise<string> {
     let lockText = '';
 
-    const flags = this.editorService.form.controls.Flags.value;
-    const lockid = this.editorService.form.controls.lockid.value;
     if (!!lockid) {
       const lockData = await this.getLocks(lockid);
 
@@ -1284,16 +1264,16 @@ export class ItemPreviewService {
     return lockText;
   }
 
-  public async calculatePreview(): Promise<string> {
+  public async calculatePreview(itemTemplate: ItemTemplate): Promise<string> {
     let tmpItemPreview = '';
     const green: string[] = [];
 
-    const flags = this.editorService.form.controls.Flags.value;
-    const bagFamily: number = Number(this.editorService.form.controls.BagFamily.value);
-    const quality: number = Number(this.editorService.form.controls.Quality.value);
+    const flags = itemTemplate.Flags;
+    const bagFamily: number = Number(itemTemplate.BagFamily);
+    const quality: number = Number(itemTemplate.Quality);
 
     // ITEM NAME
-    const itemName = this.editorService.form.controls.name.value;
+    const itemName = itemTemplate.name;
     if (itemName) {
       tmpItemPreview += '<b class="item-name q' + quality + '">' + itemName + '</b>';
     }
@@ -1303,70 +1283,71 @@ export class ItemPreviewService {
       tmpItemPreview += '<br><!-- ITEM_FLAG.HEROIC --><span class="q2">Heroic</span>';
     }
 
-    tmpItemPreview += await this.getRequiredZone();
+    tmpItemPreview += await this.getRequiredZone(Number(itemTemplate.Map), Number(itemTemplate.area));
 
     // conjured
     if (flags & ITEM_FLAG.CONJURED) {
       tmpItemPreview += '<br> Conjured Item';
     }
 
-    tmpItemPreview += await this.getBonding();
-    tmpItemPreview += this.getDuration();
+    tmpItemPreview += await this.getBonding(itemTemplate);
+    tmpItemPreview += this.getDuration(itemTemplate.duration, itemTemplate.flagsCustom);
 
     // required holiday
-    const holiday = this.editorService.form.controls.HolidayId.value;
+    const holiday = itemTemplate.HolidayId;
     if (!!holiday) {
       const eventName = await this.sqliteQueryService.getEventNameByHolidayId(holiday);
       tmpItemPreview += `<br>Requires ${eventName}`;
     }
 
     // item begins a quest
-    const startquest: number = Number(this.editorService.form.controls.startquest.value);
-    if (startquest > 0) {
+    const startquest: number = Number(itemTemplate.startquest);
+    if (!!startquest && startquest > 0) {
       tmpItemPreview += `<br><span class="q1">This Item Begins a Quest</span>`;
     }
 
     // containerType (slotCount)
-    const containerSlots: number = Number(this.editorService.form.controls.ContainerSlots.value);
+    const containerSlots: number = Number(itemTemplate.ContainerSlots);
     if (containerSlots > 0) {
       const fam = bagFamily ? Math.log2(bagFamily) + 1 : 0;
       tmpItemPreview += `<br>${containerSlots} Slot ${ITEM_CONSTANTS.bagFamily[fam]}`;
     }
 
-    tmpItemPreview += this.getClassText();
-    tmpItemPreview += this.getDamageText();
-    tmpItemPreview += this.getArmorText();
+    tmpItemPreview += this.getClassText(itemTemplate.InventoryType, itemTemplate.class, itemTemplate.subclass);
+    tmpItemPreview += this.getDamageText(itemTemplate);
+    tmpItemPreview += this.getArmorText(itemTemplate);
 
     // Item is a gem (don't mix with sockets)
-    tmpItemPreview += await this.getGemEnchantment();
+    tmpItemPreview += await this.getGemEnchantment(itemTemplate.entry);
 
     // Random Enchantment - if random enchantment is set, prepend stats from it
-    const RandomProperty: number = this.editorService.form.controls.RandomProperty.value;
-    const RandomSuffix: number = this.editorService.form.controls.RandomSuffix.value;
+    const RandomProperty: number = itemTemplate.RandomProperty;
+    const RandomSuffix: number = itemTemplate.RandomSuffix;
     if (!!RandomProperty || !!RandomSuffix) {
       tmpItemPreview += `<br><span class="q2">${ITEM_CONSTANTS.randEnchant}</span>`;
     }
 
     // itemMods (display stats and save ratings for later use)
-    tmpItemPreview += this.getStats(green);
+    tmpItemPreview += this.getStats(itemTemplate, green);
 
-    tmpItemPreview += this.getMagicResistances();
+    tmpItemPreview += this.getMagicResistances(itemTemplate);
 
     // Socket & Enchantment (TODO)
-    tmpItemPreview += await this.getSocketEnchantment();
+    tmpItemPreview += await this.getSocketEnchantment(itemTemplate);
 
     // durability
-    const durability = this.editorService.form.controls.MaxDurability.value;
+    const durability = itemTemplate.MaxDurability;
     if (durability) {
-      tmpItemPreview += `<br>${ITEM_CONSTANTS.durability.replace(/%d/g, durability)}`;
+      tmpItemPreview += `<br>${ITEM_CONSTANTS.durability.replace(/%d/g, durability.toString())}`;
     }
 
-    tmpItemPreview += await this.getRequiredText();
+    tmpItemPreview += await this.getRequiredText(itemTemplate);
 
-    tmpItemPreview += await this.getLockText();
+    const lockid = itemTemplate.lockid;
+    tmpItemPreview += await this.getLockText(flags, lockid);
 
     // spells on item
-    await this.getSpellDesc(green);
+    await this.getSpellDesc(itemTemplate, green);
 
     if (!!green && green.length > 0) {
       for (const bonus of green) {
@@ -1376,14 +1357,14 @@ export class ItemPreviewService {
       }
     }
 
-    tmpItemPreview += await this.getItemSet();
+    tmpItemPreview += await this.getItemSet(itemTemplate.entry, itemTemplate.itemset);
 
     // recipes, vanity pets, mounts
-    tmpItemPreview += await this.getLearnSpellText();
+    tmpItemPreview += await this.getLearnSpellText(itemTemplate);
 
-    tmpItemPreview += this.getMisc();
+    tmpItemPreview += this.getMisc(itemTemplate);
 
-    const sellPrice = this.editorService.form.controls.SellPrice.value;
+    const sellPrice = itemTemplate.SellPrice;
     if (!!sellPrice && sellPrice > 0) {
       tmpItemPreview += '<br>Sell Price: ' + this.formatMoney(sellPrice);
     }
