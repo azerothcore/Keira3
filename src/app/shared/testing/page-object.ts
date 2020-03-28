@@ -150,13 +150,5 @@ export abstract class PageObject<ComponentType> {
   clickRowOfDatatableInModal(rowIndex: number) {
     this.clickElement(this.getCellOfDatatableInModal(rowIndex, 0));
   }
-
-  getCellOfTableExternal(tableSelector: string, rowIndex: number, colIndex: number): HTMLTableDataCellElement {
-    const element = document.querySelector<HTMLTableDataCellElement>(
-      `${tableSelector} tr:nth-child(${rowIndex + 1}) td:nth-child(${colIndex + 1})`
-    );
-    expect(element).toBeTruthy(`Unable to find column ${colIndex} of row ${rowIndex} of ${tableSelector}`);
-    return element;
-  }
 }
 
