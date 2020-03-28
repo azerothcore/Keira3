@@ -128,5 +128,35 @@ export abstract class PageObject<ComponentType> {
   getDatatableCellExternal(datatableSelector: string, rowIndex: number, colIndex: number): HTMLElement {
     return document.querySelector(this.getDatatableCellSelector(datatableSelector, rowIndex, colIndex));
   }
+
+  getCellOfDatatable(rowIndex: number, colIndex: number) {
+    // TODO: this is calling External, ideally we should have 2 separate methods 'getCellOfDatatable' and 'getCellOfDatatableExternal'
+    //  and make only 'getCellOfDatatableExternal' to call external
+    const element = this.getDatatableCellExternal(this.DT_SELECTOR, rowIndex, colIndex);
+    expect(element).toBeTruthy(`Unable to find column ${colIndex} of row ${rowIndex} of ${this.DT_SELECTOR}`);
+    return element;
+  }
+
+  getCellOfDatatableInModal(rowIndex: number, colIndex: number) {
+    const element = this.getDatatableCellExternal(`.modal-content ${this.DT_SELECTOR}`, rowIndex, colIndex);
+    expect(element).toBeTruthy(`Unable to find column ${colIndex} of row ${rowIndex} of ${this.DT_SELECTOR}`);
+    return element;
+  }
+
+  clickRowOfDatatable(rowIndex: number) {
+    this.clickElement(this.getCellOfDatatable(rowIndex, 0));
+  }
+
+  clickRowOfDatatableInModal(rowIndex: number) {
+    this.clickElement(this.getCellOfDatatableInModal(rowIndex, 0));
+  }
+
+  getCellOfTableExternal(tableSelector: string, rowIndex: number, colIndex: number): HTMLTableDataCellElement {
+    const element = document.querySelector<HTMLTableDataCellElement>(
+      `${tableSelector} tr:nth-child(${rowIndex + 1}) td:nth-child(${colIndex + 1})`
+    );
+    expect(element).toBeTruthy(`Unable to find column ${colIndex} of row ${rowIndex} of ${tableSelector}`);
+    return element;
+  }
 }
 
