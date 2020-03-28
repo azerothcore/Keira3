@@ -145,7 +145,7 @@ describe('GameobjectTemplate integration tests', () => {
       await page.whenReady();
       page.expectModalDisplayed();
 
-      page.clickRowOfDatatable(7);
+      page.clickRowOfDatatableInModal(7);
       await page.whenReady();
       page.clickModalSelect();
       await page.whenReady();

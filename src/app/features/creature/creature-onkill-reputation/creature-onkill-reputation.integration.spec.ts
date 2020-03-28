@@ -146,7 +146,7 @@ describe('CreatureOnkillReputation integration tests', () => {
       page.expectModalDisplayed();
       await page.whenReady();
 
-      page.clickRowOfDatatable(7);
+      page.clickRowOfDatatableInModal(7);
       await page.whenReady();
       page.clickModalSelect();
       await page.whenReady();
@@ -177,7 +177,7 @@ describe('CreatureOnkillReputation integration tests', () => {
 
       page.clickSearchBtn();
       await fixture.whenStable();
-      page.clickRowOfDatatable(0);
+      page.clickRowOfDatatableInModal(0);
       await page.whenReady();
       page.clickModalSelect();
       await page.whenReady();

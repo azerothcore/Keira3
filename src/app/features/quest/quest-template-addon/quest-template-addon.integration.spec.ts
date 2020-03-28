@@ -213,7 +213,7 @@ describe('QuestTemplateAddon integration tests', () => {
       page.clickSearchBtn();
 
       await fixture.whenStable();
-      page.clickRowOfDatatable(0);
+      page.clickRowOfDatatableInModal(0);
       await page.whenReady();
       page.clickModalSelect();
       await page.whenReady();
