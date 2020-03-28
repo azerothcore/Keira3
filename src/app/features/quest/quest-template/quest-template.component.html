@@ -45,7 +45,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="QuestType">QuestType</label>
           <keira-single-value-selector-btn
-            [control]="editorService.form.controls['QuestType']"
+            [control]="editorService.form.controls.QuestType"
             [config]="{ options: QUEST_TYPE, name: 'QuestType' }"
             [modalClass]="'modal-md'"
           ></keira-single-value-selector-btn>
@@ -99,11 +99,11 @@
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="StartItem">
-            <keira-icon [itemId]="editorService.form.controls['StartItem'].value"></keira-icon>
+            <keira-icon [itemId]="editorService.form.controls.StartItem.value"></keira-icon>
             StartItem
           </label>
           <keira-item-selector-btn
-            [control]="editorService.form.controls['StartItem']"
+            [control]="editorService.form.controls.StartItem"
             [config]="{  name: 'StartItem' }"
           ></keira-item-selector-btn>
           <i
@@ -116,7 +116,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="Flags">Flags</label>
           <keira-flags-selector-btn
-            [control]="editorService.form.controls['Flags']"
+            [control]="editorService.form.controls.Flags"
             [config]="{ flags: QUEST_FLAGS, name: 'Flags' }"
           ></keira-flags-selector-btn>
           <input [formControlName]="'Flags'" id="Flags" type="number" class="form-control form-control-sm">
@@ -134,7 +134,7 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="AllowableRaces">AllowableRaces</label>
           <keira-flags-selector-btn
-            [control]="editorService.form.controls['AllowableRaces']"
+            [control]="editorService.form.controls.AllowableRaces"
             [config]="{ flags: ALLOWABLE_RACES, name: 'AllowableRaces' }"
           ></keira-flags-selector-btn>
           <input [formControlName]="'AllowableRaces'" id="AllowableRaces" type="number" class="form-control form-control-sm">
@@ -292,32 +292,15 @@
           *ngFor="let i of [1,2]"
           class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
         >
-          <div class="row">
-            <div
-              *ngFor="let i of [1,2]"
-              class="col-12"
-            >
-              <label class="control-label" for="RequiredFactionId{{ i }}">Req.FactionId{{ i }}</label>
-              <keira-single-value-selector-btn
-                [control]="editorService.form.controls['RequiredFactionId' + i]"
-                [config]="{ options: FACTIONS, name: 'RequiredFactionId' + i }"
-                [modalClass]="'modal-md'"
-              ></keira-single-value-selector-btn>
-              <input [formControlName]="'RequiredFactionId' + i" id="RequiredFactionId{{ i }}" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
-        </div>
+          <label class="control-label" for="RequiredFactionId{{ i }}">Req.FactionId{{ i }}</label>
+          <keira-faction-selector-btn
+            [config]="{ name: 'RequiredFactionId' + i }"
+            [control]="editorService.form.controls['RequiredFactionId' + i]"
+          ></keira-faction-selector-btn>
+          <input [formControlName]="'RequiredFactionId' + i" id="RequiredFactionId{{ i }}" type="number" class="form-control form-control-sm">
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <div class="row">
-            <div
-              *ngFor="let i of [1,2]"
-              class="col-12"
-            >
-              <label class="control-label" for="RequiredFactionValue{{ i }}">Req.FactionValue{{ i }}</label>
-              <input [formControlName]="'RequiredFactionValue' + i" id="RequiredFactionValue{{ i }}" type="number" class="form-control form-control-sm">
-            </div>
-          </div>
+          <label class="control-label" for="RequiredFactionValue{{ i }}">Req.FactionValue{{ i }}</label>
+          <input [formControlName]="'RequiredFactionValue' + i" id="RequiredFactionValue{{ i }}" type="number" class="form-control form-control-sm">
         </div>
 
       </div>
@@ -424,7 +407,7 @@
             [tooltip]="'Spell that is shown to be casted on quest completion in the quest log. Note that this spell will NOT be casted if RewardSpellCast is non-zero.'"
           ></i>
           <keira-spell-selector-btn
-            [control]="editorService.form.controls['RewardSpell']"
+            [control]="editorService.form.controls.RewardSpell"
             [config]="{ name: 'RewardSpell' }"
             [modalClass]="'modal-lg'"
           ></keira-spell-selector-btn>
@@ -515,11 +498,10 @@
           <div class="row">
             <div class="col-12">
               <label class="control-label" for="RewardFactionID{{ i }}">Rew.FactionID{{ i }}</label>
-              <keira-single-value-selector-btn
+              <keira-faction-selector-btn
+                [config]="{ name: 'RewardFactionID' + i }"
                 [control]="editorService.form.controls['RewardFactionID' + i]"
-                [config]="{ options: FACTIONS, name: 'RewardFactionID' + i }"
-                [modalClass]="'modal-md'"
-              ></keira-single-value-selector-btn>
+              ></keira-faction-selector-btn>
               <input [formControlName]="'RewardFactionID' + i" id="RewardFactionID{{ i }}" type="number" class="form-control form-control-sm">
             </div>
             <div class="col-12">

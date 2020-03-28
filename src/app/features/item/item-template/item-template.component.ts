@@ -4,21 +4,19 @@ import { SingleRowEditorComponent } from '@keira-abstract/components/editors/sin
 import { ALLOWABLE_CLASSES } from '@keira-constants/flags/allowable-classes';
 import { ALLOWABLE_RACES } from '@keira-constants/flags/allowable-races';
 import { BAG_FAMILY } from '@keira-constants/flags/bag-family';
-import { ITEM_FLAG, ITEM_FLAGS } from '@keira-constants/flags/item-flags';
+import { ITEM_FLAGS } from '@keira-constants/flags/item-flags';
 import { ITEM_FLAGS_CUSTOM } from '@keira-constants/flags/item-flags-custom';
 import { ITEM_FLAGS_EXTRA } from '@keira-constants/flags/item-flags-extra';
 import { SOCKET_COLOR } from '@keira-constants/flags/socket-color';
 import { DAMAGE_TYPE } from '@keira-constants/options/damage-type';
-import { FACTIONS } from '@keira-constants/options/faction';
 import { FACTION_RANK } from '@keira-constants/options/faction-rank';
 import { FOOD_TYPE } from '@keira-constants/options/foot-type';
 import { INVENTORY_TYPE } from '@keira-constants/options/inventory-type';
 import { ITEM_BONDING } from '@keira-constants/options/item-bonding';
 import { ITEM_CLASS, ITEM_SUBCLASS } from '@keira-constants/options/item-class';
 import { ITEM_MATERIAL } from '@keira-constants/options/item-material';
-import { ITEMS_QUALITY, ITEM_QUALITY } from '@keira-constants/options/item-quality';
+import { ITEM_QUALITY } from '@keira-constants/options/item-quality';
 import { ITEM_SHEAT } from '@keira-constants/options/item-sheath';
-import { SOCKET_BONUS } from '@keira-constants/options/socket-bonus';
 import { STAT_TYPE } from '@keira-constants/options/stat-type';
 import { TOTEM_CATEGORY } from '@keira-constants/options/totem-category';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
@@ -54,8 +52,6 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   public readonly FOOD_TYPE = FOOD_TYPE;
   public readonly ITEM_FLAGS_CUSTOM = ITEM_FLAGS_CUSTOM;
   public readonly DAMAGE_TYPE = DAMAGE_TYPE;
-  public readonly SOCKET_BONUS = SOCKET_BONUS;
-  public readonly FACTIONS = FACTIONS;
   public readonly STAT_TYPE = STAT_TYPE;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

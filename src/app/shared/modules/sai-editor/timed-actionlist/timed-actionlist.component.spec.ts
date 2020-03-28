@@ -51,9 +51,9 @@ describe('TimedActionlistComponent', () => {
     host.child.ngOnChanges();
     page.detectChanges();
 
-    expect(page.getDatatableCell('ngx-datatable', 0, 0).innerText).toContain(String(timedActionlists[0].entryorguid));
-    expect(page.getDatatableCell('ngx-datatable', 0, 1).innerText).toContain(String(timedActionlists[0].id));
-    expect(page.getDatatableCell('ngx-datatable', 1,  0).innerText).toContain(String(timedActionlists[1].entryorguid));
-    expect(page.getDatatableCell('ngx-datatable', 1,  1).innerText).toContain(String(timedActionlists[1].id));
+    expect(page.getDatatableCell(0, 0).innerText).toContain(String(timedActionlists[0].entryorguid));
+    expect(page.getDatatableCell(0, 1).innerText).toContain(String(timedActionlists[0].id));
+    expect(page.getDatatableCell(1, 0).innerText).toContain(String(timedActionlists[1].entryorguid));
+    expect(page.getDatatableCell(1, 1).innerText).toContain(String(timedActionlists[1].id));
   });
 });

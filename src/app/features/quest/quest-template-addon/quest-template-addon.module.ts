@@ -12,6 +12,7 @@ import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selec
 import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
 import { QuestTemplateAddonService } from './quest-template-addon.service';
 import { SpellSelectorModule } from '@keira-shared/modules/selectors/spell-selector/spell-selector.module';
+import { FactionSelectorModule } from '@keira-shared/modules/selectors/faction-selector/faction-selector.module';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { SpellSelectorModule } from '@keira-shared/modules/selectors/spell-selec
     FlagsSelectorModule,
     SingleValueSelectorModule,
     SpellSelectorModule,
+    FactionSelectorModule,
   ],
   exports: [
     QuestTemplateAddonComponent,

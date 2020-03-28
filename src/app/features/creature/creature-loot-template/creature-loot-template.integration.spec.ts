@@ -97,7 +97,7 @@ describe('CreatureLootTemplate integration tests', () => {
       page.addNewRow();
       page.detectChanges();
       await page.whenReady();
-      expect(page.getDatatableCell(page.EDITOR_DT_SELECTOR, 0, 3).innerText).toContain('MockItemName');
+      expect(page.getDatatableCell(0, 3).innerText).toContain('MockItemName');
     });
 
     it('adding new rows and executing the query should correctly work', () => {

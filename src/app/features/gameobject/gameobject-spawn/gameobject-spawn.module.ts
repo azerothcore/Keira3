@@ -12,6 +12,8 @@ import { GameobjectSpawnComponent } from './gameobject-spawn.component';
 import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selector/flags-selector.module';
 import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
 import { GameobjectSpawnService } from './gameobject-spawn.service';
+import { MapSelectorModule } from '@keira-shared/modules/selectors/map-selector/map-selector.module';
+import { AreaSelectorModule } from '@keira-shared/modules/selectors/area-selector/area-selector.module';
 
 @NgModule({
   declarations: [
@@ -27,6 +29,8 @@ import { GameobjectSpawnService } from './gameobject-spawn.service';
     NgxDatatableModule,
     FlagsSelectorModule,
     SingleValueSelectorModule,
+    MapSelectorModule,
+    AreaSelectorModule,
   ],
   exports: [
     GameobjectSpawnComponent,

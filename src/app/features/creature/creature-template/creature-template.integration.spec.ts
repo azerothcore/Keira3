@@ -169,10 +169,10 @@ describe('CreatureTemplate integration tests', () => {
       page.expectModalDisplayed();
       await page.whenReady();
 
-      page.toggleFlagInRow(2);
+      page.toggleFlagInRowExternal(2);
 
       await page.whenReady();
-      page.toggleFlagInRow(12);
+      page.toggleFlagInRowExternal(12);
 
       await page.whenReady();
       page.clickModalSelect();

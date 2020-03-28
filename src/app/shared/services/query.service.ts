@@ -42,7 +42,7 @@ export abstract class QueryService {
     return this.cache[cacheId][id];
   }
 
-  getSearchQuery(table: string, queryForm: QueryForm, selectFields: string[] = null, groupFields: string[] = null): string {
+  getSearchQuery<T>(table: string, queryForm: QueryForm<T>, selectFields: string[] = null, groupFields: string[] = null): string {
     const query = squel.select(squelConfig).from(table);
 
     if (selectFields) {
@@ -66,7 +66,7 @@ export abstract class QueryService {
     }
 
     if (queryForm.limit) {
-      query.limit(Number.parseInt(queryForm.limit, 10));
+      query.limit(Number(queryForm.limit));
     }
 
     return query.toString();

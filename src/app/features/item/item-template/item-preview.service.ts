@@ -356,7 +356,7 @@ export class ItemPreviewService {
   }
 
   private async getLocks(lockId: number): Promise<string[]> {
-    if (!lockId) { return; }
+    if (!lockId) { return ['']; }
 
     const lock = (await this.sqliteQueryService.getLockById(lockId))[0];
 
@@ -1055,7 +1055,7 @@ export class ItemPreviewService {
   }
 
   private async getGemEnchantment(entry: number): Promise<string> {
-    if (!entry) { return; }
+    if (!entry) { return ''; }
 
     let gemEnchantmentText = '';
     const gemEnchantmentId = await this.getGemEnchantmentIdById(entry);
@@ -1199,7 +1199,7 @@ export class ItemPreviewService {
     const spellId1 = itemTemplate.spellid_1;
     const spellId2 = itemTemplate.spellid_2;
 
-    if (!spellId1 || !spellId2) { return; }
+    if (!spellId1 || !spellId2) { return ''; }
 
     if (this.canTeachSpell(spellId1, spellId2)) {
       const craftSpell = spellId2;

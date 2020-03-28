@@ -146,7 +146,7 @@ describe('CreatureEquipTemplate integration tests', () => {
 
       page.clickSearchBtn();
       await page.whenReady();
-      page.clickRowOfDatatable(0);
+      page.clickRowOfDatatableInModal(0);
       await page.whenReady();
       page.clickModalSelect();
       await page.whenReady();

@@ -1,14 +1,14 @@
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from 'ngx-typesafe-forms';
 
-import { TableRow } from '../../types/general';
+import { QueryForm, StringKeys, TableRow } from '../../types/general';
 import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
 import { QueryService } from '@keira-shared/services/query.service';
 
 export abstract class SearchService<T extends TableRow> extends SubscriptionHandler {
   query: string;
   rows: T[];
-  fields = new FormGroup({});
-  queryForm = new FormGroup({
+  fields: FormGroup<T> = new FormGroup({} as any);
+  queryForm = new FormGroup<QueryForm<T>>({
     'limit': new FormControl(50),
     'fields': this.fields,
   });
@@ -18,7 +18,7 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
   constructor(
     protected queryService: QueryService,
     protected entityTable: string,
-    protected fieldList: string[],
+    protected fieldList: StringKeys<T>[],
   ) {
     super();
 
