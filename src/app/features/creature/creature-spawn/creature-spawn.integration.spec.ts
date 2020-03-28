@@ -327,7 +327,9 @@ describe('CreatureSpawn integration tests', () => {
         [{ m_ID: 123, m_MapName_lang1: 'Mock Map' }]
       ));
 
-      page.addNewRow();
+      // because this is a multi-row editor
+      page.clickRowOfDatatable(0);
+      await page.whenReady();
 
       page.clickElement(page.getSelectorBtn(field));
       await page.whenReady();
@@ -335,23 +337,22 @@ describe('CreatureSpawn integration tests', () => {
 
       page.clickSearchBtn();
       await fixture.whenStable();
-      page.clickRowOfDatatable(0);
+      page.clickRowOfDatatableInModal(0);
       await page.whenReady();
       page.clickModalSelect();
       await page.whenReady();
 
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature` WHERE (`id` = 1234) AND (`guid` IN (3));\n' +
+        'DELETE FROM `creature` WHERE (`id` = 1234) AND (`guid` IN (0));\n' +
         'INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-        '(3, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0);'
+        '(0, 1234, 123, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0);'
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature` WHERE (`id` = 1234);\n' +
         'INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-        '(0, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0),\n' +
+        '(0, 1234, 123, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0),\n' +
         '(1, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0),\n' +
-        '(2, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0),\n' +
-        '(3, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0);'
+        '(2, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0);\n'
       );
     });
   });

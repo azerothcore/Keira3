@@ -213,7 +213,7 @@ describe('ItemTemplate integration tests', () => {
         page.setInputValueById('class', 3);
         page.clickElement(page.getSelectorBtn('subclass'));
 
-        expect(page.getCellOfDatatableInModal(2, 1).innerText).toContain(ITEM_SUBCLASS[3][2].name);
+        expect(page.getCellOfDatatable(2, 1).innerText).toContain(ITEM_SUBCLASS[3][2].name);
         page.clickModalSelect();
       });
     });
