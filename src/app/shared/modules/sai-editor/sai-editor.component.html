@@ -78,7 +78,7 @@
             <div class="form-group col-6">
               <label class="control-label" for="event_phase_mask">phase</label>
               <keira-flags-selector-btn
-                [control]="editorService.form.controls['event_phase_mask']"
+                [control]="editorService.form.controls.event_phase_mask"
                 [config]="{ flags: EVENT_PHASE_MASK, name: 'event_phase_mask' }"
                 [modalClass]="'modal-lg'"
               ></keira-flags-selector-btn>
@@ -111,7 +111,7 @@
             <div class="form-group col-6">
               <label class="control-label" for="event_flags">flags</label>
               <keira-flags-selector-btn
-                [control]="editorService.form.controls['event_flags']"
+                [control]="editorService.form.controls.event_flags"
                 [config]="{ flags: SMART_EVENT_FLAGS, name: 'event_flags' }"
                 [modalClass]="'modal-lg'"
               ></keira-flags-selector-btn>
