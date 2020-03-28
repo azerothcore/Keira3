@@ -306,7 +306,7 @@ describe('GameobjectSpawn integration tests', () => {
       page.expectUniqueError();
     });
 
-    it('changing a value via FactionSelector should correctly work', async () => {
+    it('changing a value via AreaSelector should correctly work', async () => {
       const field = 'areaId';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       spyOn(sqliteQueryService, 'query').and.returnValue(of(
