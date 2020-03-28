@@ -15,6 +15,10 @@ import { SpellSelectorModule } from '@keira-shared/modules/selectors/spell-selec
 import { FactionSelectorModule } from '@keira-shared/modules/selectors/faction-selector/faction-selector.module';
 import { MapSelectorModule } from '@keira-shared/modules/selectors/map-selector/map-selector.module';
 import { AreaSelectorModule } from '@keira-shared/modules/selectors/area-selector/area-selector.module';
+import { ItemEnchantmentSelectorModule } from '@keira-shared/modules/selectors/item-enchantment-selector/item-enchantment-selector.module';
+import { HolidaySelectorModule } from '@keira-shared/modules/selectors/holiday-selector/holiday-selector.module';
+import { LanguageSelectorModule } from '@keira-shared/modules/selectors/language-selector/language-selector.module';
+import { ItemLimitCategorySelectorModule } from '@keira-shared/modules/selectors/item-limit-category-selector/item-limit-category-selector.module';
 
 @NgModule({
   declarations: [
@@ -33,6 +37,10 @@ import { AreaSelectorModule } from '@keira-shared/modules/selectors/area-selecto
     FactionSelectorModule,
     MapSelectorModule,
     AreaSelectorModule,
+    ItemEnchantmentSelectorModule,
+    HolidaySelectorModule,
+    LanguageSelectorModule,
+    ItemLimitCategorySelectorModule,
   ],
   exports: [
     ItemTemplateComponent,

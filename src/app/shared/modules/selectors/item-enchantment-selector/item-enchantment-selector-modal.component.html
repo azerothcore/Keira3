@@ -5,14 +5,14 @@
   <form [formGroup]="searchService.queryForm">
     <div class="row">
       <ng-container [formGroup]="searchService.fields">
-        <div class="form-group col-3">
+        <div class="form-group col-2">
           <input [formControlName]="'id'" type="number" class="form-control form-control-sm" id="id" placeholder="ID">
         </div>
-        <div class="form-group col-5">
-          <input [formControlName]="'name'" class="form-control form-control-sm" id="name" placeholder="ItemEnchantment Name">
+        <div class="form-group col-4">
+          <input [formControlName]="'name'" class="form-control form-control-sm" id="name" placeholder="Name">
         </div>
-        <div class="form-group col-3">
-          <input [formControlName]="'conditionId'" type="number" class="form-control form-control-sm" id="conditionId" placeholder="Condition ID">
+        <div class="form-group col-2">
+          <input [formControlName]="'conditionId'" type="number" class="form-control form-control-sm" id="conditionId" placeholder="Condition">
         </div>
       </ng-container>
       <div class="form-group col-2">

@@ -198,6 +198,10 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="LanguageID">LanguageID</label>
+          <keira-language-selector-btn
+            [config]="{ name: 'LanguageID' }"
+            [control]="editorService.form.controls.LanguageID"
+          ></keira-language-selector-btn>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'The language that the item text is written in. See the Languages DBC file for the IDs of all of the languages.'"
@@ -318,10 +322,18 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="ItemLimitCategory">ItemLimitCategory</label>
+          <keira-item-limit-category-selector-btn
+            [config]="{ name: 'ItemLimitCategory' }"
+            [control]="editorService.form.controls.ItemLimitCategory"
+          ></keira-item-limit-category-selector-btn>
           <input [formControlName]="'ItemLimitCategory'" id="ItemLimitCategory" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="HolidayId">HolidayId</label>
+          <keira-holiday-selector-btn
+            [config]="{ name: 'HolidayId' }"
+            [control]="editorService.form.controls.HolidayId"
+          ></keira-holiday-selector-btn>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'See the Holidays DBC file for the IDs of all of the holidays.'"
@@ -603,11 +615,10 @@
           <div class="row">
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg col-xl-5">
               <label class="control-label" for="socketBonus">socketBonus</label>
-              <keira-single-value-selector-btn
-                [control]="editorService.form.controls['socketBonus']"
-                [config]="{ options: SOCKET_BONUS, name: 'socketBonus' }"
-                [modalClass]="'modal-md'"
-              ></keira-single-value-selector-btn>
+              <keira-item-enchantment-selector-btn
+                [config]="{ name: 'socketBonus' }"
+                [control]="editorService.form.controls.socketBonus"
+              ></keira-item-enchantment-selector-btn>
               <input [formControlName]="'socketBonus'" id="socketBonus" type="number" class="form-control form-control-sm">
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg col-xl-5">
