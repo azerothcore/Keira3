@@ -1,4 +1,5 @@
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl } from '@angular/forms';
+import { FormGroup } from 'ngx-typesafe-forms';
 import { Observable } from 'rxjs';
 import { MysqlError } from 'mysql';
 
@@ -8,14 +9,16 @@ import { HandlerService } from '../handlers/handler.service';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
 import { ToastrService } from 'ngx-toastr';
 
+declare type StringKeys<T> = Extract<keyof T, string>;
+
 export abstract class EditorService<T extends TableRow> extends SubscriptionHandler {
   protected _loading = false;
   protected _loadedEntityId: string | number | Partial<T>;
-  protected readonly fields: string[];
+  protected readonly fields: StringKeys<T>[];
   protected _diffQuery: string;
   protected _fullQuery: string;
   protected _isNew = false;
-  protected _form: FormGroup;
+  protected _form: FormGroup<T>;
   protected _error: MysqlError;
 
   get loadedEntityId(): string { return `${this._loadedEntityId}`; }
@@ -24,7 +27,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   get fullQuery(): string { return this._fullQuery; }
   get entityTable(): string { return this._entityTable; }
   get isNew(): boolean { return this._isNew; }
-  get form(): FormGroup { return this._form; }
+  get form(): FormGroup<T> { return this._form; }
   get error(): MysqlError { return this._error; }
 
   constructor(
@@ -47,9 +50,9 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   protected abstract updateFullQuery();
   protected abstract onReloadSuccessful(data: T[], id: string|number);
 
-  private getClassAttributes(c: Class): string[] {
+  private getClassAttributes(c: Class): StringKeys<T>[] {
     const tmpInstance = new c();
-    return Object.getOwnPropertyNames(tmpInstance);
+    return Object.getOwnPropertyNames(tmpInstance) as any;
   }
 
   protected disableEntityIdField() {
@@ -57,7 +60,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   }
 
   protected initForm() {
-    this._form = new FormGroup({});
+    this._form = new FormGroup<T>({} as any);
 
     for (const field of this.fields) {
       this._form.addControl(field, new FormControl());
