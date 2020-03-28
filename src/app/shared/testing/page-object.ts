@@ -105,11 +105,11 @@ export abstract class PageObject<ComponentType> {
   private getDatatableCellSelector(datatableSelector: string, rowIndex: number, colIndex: number): string {
     return `${datatableSelector} .datatable-row-wrapper:nth-child(${rowIndex + 1}) .datatable-body-cell:nth-child(${colIndex + 1})`;
   }
-
-  /* internal selectors (querying the component) */
   private getDefaultSelectorIfNull(datatableSelector: string|null) {
     return datatableSelector ? datatableSelector : this.DT_SELECTOR;
   }
+
+  /* internal selectors (querying the component) */
 
   getDatatableHeaderByTitle(text: string, assert = true, datatableSelector?: string): HTMLElement {
     datatableSelector = this.getDefaultSelectorIfNull(datatableSelector);
@@ -131,25 +131,36 @@ export abstract class PageObject<ComponentType> {
   }
 
   /* external selectors (querying the document) */
-  getDatatableHeaderByTitleExternal(datatableSelector: string|null, text: string): HTMLElement {
+  getDatatableHeaderByTitleExternal(text: string, assert = true, datatableSelector?: string): HTMLElement {
     datatableSelector = this.getDefaultSelectorIfNull(datatableSelector);
-    return document.querySelector(this.getDatatableHeaderByTitleSelector(datatableSelector, text));
-  }
-
-  getDatatableRowExternal(rowIndex: number, datatableSelector?: string): HTMLElement {
-    datatableSelector = this.getDefaultSelectorIfNull(datatableSelector);
-    return document.querySelector(this.getDatatableRowSelector(datatableSelector, rowIndex));
-  }
-
-  getDatatableCellExternal(rowIndex: number, colIndex: number, datatableSelector?: string): HTMLElement {
-    datatableSelector = this.getDefaultSelectorIfNull(datatableSelector);
-    return document.querySelector(this.getDatatableCellSelector(datatableSelector, rowIndex, colIndex));
-  }
-
-  getCellOfDatatableInModal(rowIndex: number, colIndex: number) {
-    const element = this.getDatatableCellExternal(rowIndex, colIndex, `.modal-content ${this.DT_SELECTOR}`);
-    expect(element).toBeTruthy(`Unable to find column ${colIndex} of row ${rowIndex} of ${this.DT_SELECTOR}`);
+    const element: HTMLElement = document.querySelector(this.getDatatableHeaderByTitleSelector(datatableSelector, text));
+    if (assert) {
+      expect(element).toBeTruthy(`Unable to find text ${text} of ${datatableSelector}`);
+    }
     return element;
+  }
+
+  getDatatableRowExternal(rowIndex: number, assert = true, datatableSelector?: string): HTMLElement {
+    datatableSelector = this.getDefaultSelectorIfNull(datatableSelector);
+    const element: HTMLElement = document.querySelector(this.getDatatableRowSelector(datatableSelector, rowIndex));
+    if (assert) {
+      expect(element).toBeTruthy(`Unable to find row ${rowIndex} of ${datatableSelector}`);
+    }
+    return element;
+  }
+
+  getDatatableCellExternal(rowIndex: number, colIndex: number, assert = true, datatableSelector?: string): HTMLElement {
+    datatableSelector = this.getDefaultSelectorIfNull(datatableSelector);
+    const element: HTMLElement = document.querySelector(this.getDatatableCellSelector(datatableSelector, rowIndex, colIndex));
+    if (assert) {
+      expect(element).toBeTruthy(`Unable to find column ${colIndex} of row ${rowIndex} of ${datatableSelector}`);
+    }
+    return element;
+  }
+
+  getCellOfDatatableInModal(rowIndex: number, colIndex: number, assert = true) {
+    const datatableSelector = `.modal-content ${this.DT_SELECTOR}`;
+    return this.getDatatableCellExternal(rowIndex, colIndex, true, datatableSelector);
   }
 
   clickRowOfDatatableInModal(rowIndex: number) {
