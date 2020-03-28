@@ -30,6 +30,6 @@ export class GameobjectTemplateComponent extends SingleRowEditorComponent<Gameob
   }
 
   dataFieldDefinition(dataIndex: number): FieldDefinition {
-    return this.editorService.getFieldDefinition(this.editorService.form.controls['type'].value, dataIndex);
+    return this.editorService.getFieldDefinition(this.editorService.form.controls.type.value, dataIndex);
   }
 }
