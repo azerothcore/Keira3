@@ -10,6 +10,7 @@ import { NpcVendor } from '@keira-types/npc-vendor.type';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
+import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 
 class NpcVendorPage extends MultiRowEditorPageObject<NpcVendorComponent> {}
 
@@ -255,6 +256,42 @@ describe('NpcVendor integration tests', () => {
       page.setInputValueById('item', 0);
 
       page.expectUniqueError();
+    });
+
+    it('changing a value via ItemExtendedCost should correctly work', async () => {
+      const field = 'ExtendedCost';
+      const sqliteQueryService = TestBed.inject(SqliteQueryService);
+      spyOn(sqliteQueryService, 'query').and.returnValue(of(
+        [{ id: 123, name: 'Mock ExtendedCost' }]
+      ));
+
+      // because this is a multi-row editor
+      page.clickRowOfDatatable(0);
+      await page.whenReady();
+
+      page.clickElement(page.getSelectorBtn(field));
+      await page.whenReady();
+      page.expectModalDisplayed();
+
+      page.clickSearchBtn();
+      await fixture.whenStable();
+      page.clickRowOfDatatableInModal(0);
+      await page.whenReady();
+      page.clickModalSelect();
+      await page.whenReady();
+
+      page.expectDiffQueryToContain(
+        'DELETE FROM `npc_vendor` WHERE (`entry` = 1234) AND (`item` IN (0));\n' +
+        'INSERT INTO `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `VerifiedBuild`) VALUES\n' +
+        '(1234, 0, 0, 0, 0, 123, 0);'
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `npc_vendor` WHERE (`entry` = 1234);\n' +
+        'INSERT INTO `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `VerifiedBuild`) VALUES\n' +
+        '(1234, 0, 0, 0, 0, 123, 0),\n' +
+        '(1234, 0, 1, 0, 0, 0, 0),\n' +
+        '(1234, 0, 2, 0, 0, 0, 0);'
+      );
     });
   });
 });
