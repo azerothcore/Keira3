@@ -145,7 +145,7 @@ describe('CreatureTemplateAddon integration tests', () => {
       await page.whenReady();
       page.expectModalDisplayed();
 
-      page.clickRowOfDatatable(8);
+      page.clickRowOfDatatableInModal(8);
 
       await page.whenReady();
       page.clickModalSelect();

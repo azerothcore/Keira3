@@ -54,7 +54,15 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
     return this.query<HTMLButtonElement>(`#${name}-selector-btn`, assert);
   }
 
-  toggleFlagInRow(rowIndex: number) {
+  getCellOfTableExternal(tableSelector: string, rowIndex: number, colIndex: number): HTMLTableDataCellElement {
+    const element = document.querySelector<HTMLTableDataCellElement>(
+      `${tableSelector} tr:nth-child(${rowIndex + 1}) td:nth-child(${colIndex + 1})`
+    );
+    expect(element).toBeTruthy(`Unable to find column ${colIndex} of row ${rowIndex} of ${tableSelector}`);
+    return element;
+  }
+
+  toggleFlagInRowExternal(rowIndex: number) {
     const cell = this.getCellOfTableExternal('#flags-table', rowIndex, 0);
     const toggleSelector = 'ui-switch';
     const toggleElement = cell.querySelector<HTMLElement>(toggleSelector);

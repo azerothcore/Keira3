@@ -151,7 +151,7 @@ describe('QuestOfferReward integration tests', () => {
       await page.whenReady();
       page.expectModalDisplayed();
 
-      page.clickRowOfDatatable(4);
+      page.clickRowOfDatatableInModal(4);
 
       await page.whenReady();
       page.clickModalSelect();

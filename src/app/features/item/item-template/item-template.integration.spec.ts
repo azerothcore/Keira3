@@ -175,9 +175,9 @@ describe('ItemTemplate integration tests', () => {
       await page.whenReady();
       page.expectModalDisplayed();
 
-      page.toggleFlagInRow(2);
+      page.toggleFlagInRowExternal(2);
       await page.whenReady();
-      page.toggleFlagInRow(12);
+      page.toggleFlagInRowExternal(12);
       await page.whenReady();
       page.clickModalSelect();
       await page.whenReady();
@@ -213,7 +213,7 @@ describe('ItemTemplate integration tests', () => {
         page.setInputValueById('class', 3);
         page.clickElement(page.getSelectorBtn('subclass'));
 
-        expect(page.getCellOfDatatable(2, 1).innerText).toContain(ITEM_SUBCLASS[3][2].name);
+        expect(page.getCellOfDatatableInModal(2, 1).innerText).toContain(ITEM_SUBCLASS[3][2].name);
         page.clickModalSelect();
       });
     });
