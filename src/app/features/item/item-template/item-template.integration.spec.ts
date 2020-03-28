@@ -175,9 +175,9 @@ describe('ItemTemplate integration tests', () => {
       await page.whenReady();
       page.expectModalDisplayed();
 
-      page.toggleFlagInRow(2);
+      page.toggleFlagInRowExternal(2);
       await page.whenReady();
-      page.toggleFlagInRow(12);
+      page.toggleFlagInRowExternal(12);
       await page.whenReady();
       page.clickModalSelect();
       await page.whenReady();

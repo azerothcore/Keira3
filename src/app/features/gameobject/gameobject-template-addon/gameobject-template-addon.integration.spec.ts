@@ -125,9 +125,9 @@ describe('GameobjectTemplateAddon integration tests', () => {
       await page.whenReady();
       page.expectModalDisplayed();
 
-      page.toggleFlagInRow(1); // +2^1
+      page.toggleFlagInRowExternal(1); // +2^1
       await page.whenReady();
-      page.toggleFlagInRow(3); // +2^3
+      page.toggleFlagInRowExternal(3); // +2^3
       await page.whenReady();
       page.clickModalSelect();
       await page.whenReady();

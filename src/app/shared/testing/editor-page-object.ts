@@ -62,7 +62,7 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
     return element;
   }
 
-  toggleFlagInRow(rowIndex: number) {
+  toggleFlagInRowExternal(rowIndex: number) {
     const cell = this.getCellOfTableExternal('#flags-table', rowIndex, 0);
     const toggleSelector = 'ui-switch';
     const toggleElement = cell.querySelector<HTMLElement>(toggleSelector);
