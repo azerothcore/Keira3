@@ -49,7 +49,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
 
   private getClassAttributes(c: Class): StringKeys<T>[] {
     const tmpInstance = new c();
-    return Object.getOwnPropertyNames(tmpInstance) as any;
+    return Object.getOwnPropertyNames(tmpInstance) as StringKeys<T>[];
   }
 
   protected disableEntityIdField() {
