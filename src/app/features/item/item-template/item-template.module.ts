@@ -14,6 +14,7 @@ import { ItemTemplateService } from './item-template.service';
 import { SpellSelectorModule } from '@keira-shared/modules/selectors/spell-selector/spell-selector.module';
 import { FactionSelectorModule } from '@keira-shared/modules/selectors/faction-selector/faction-selector.module';
 import { MapSelectorModule } from '@keira-shared/modules/selectors/map-selector/map-selector.module';
+import { AreaSelectorModule } from '@keira-shared/modules/selectors/area-selector/area-selector.module';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { MapSelectorModule } from '@keira-shared/modules/selectors/map-selector/
     SpellSelectorModule,
     FactionSelectorModule,
     MapSelectorModule,
+    AreaSelectorModule,
   ],
   exports: [
     ItemTemplateComponent,

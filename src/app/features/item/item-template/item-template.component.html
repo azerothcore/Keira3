@@ -264,6 +264,10 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="area">area</label>
+          <keira-area-selector-btn
+            [config]="{ name: 'area' }"
+            [control]="editorService.form.controls['area']"
+          ></keira-area-selector-btn>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'The ID of the zone in which this item can be used.'"
