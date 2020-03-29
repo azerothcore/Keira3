@@ -1,15 +1,15 @@
 .item-container {
   width: 100%;
+  background-color: #080d22;
+  padding: 0;
+
+  perfect-scrollbar {
+    max-height: 95vh;
+  }
 
   .item-preview {
     text-align: center;
     margin: auto;
-    position: fixed;
-    overflow: auto;
-    max-height: 95vh;
-
-    background-color: #080d22;
-    border: 2px solid #6b6d78;
 
     .icon {
       width: 100px;
@@ -38,7 +38,7 @@
       line-height: 25px;
       width: auto;
       min-width: 200px;
-      padding: 8px;
+      padding: 12px;
 
       color: #ccc;
     }

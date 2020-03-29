@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TooltipModule } from 'ngx-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
+import { PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarConfigInterface, PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { toastrConfig } from '@keira-config/toastr.config';
 
 import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
@@ -20,6 +21,10 @@ import { ItemEnchantmentSelectorModule } from '@keira-shared/modules/selectors/i
 import { HolidaySelectorModule } from '@keira-shared/modules/selectors/holiday-selector/holiday-selector.module';
 import { LanguageSelectorModule } from '@keira-shared/modules/selectors/language-selector/language-selector.module';
 import { ItemLimitCategorySelectorModule } from '@keira-shared/modules/selectors/item-limit-category-selector/item-limit-category-selector.module';
+
+const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
+  suppressScrollX: true
+};
 
 @NgModule({
   declarations: [
@@ -42,11 +47,13 @@ import { ItemLimitCategorySelectorModule } from '@keira-shared/modules/selectors
     HolidaySelectorModule,
     LanguageSelectorModule,
     ItemLimitCategorySelectorModule,
+    PerfectScrollbarModule,
   ],
   exports: [
     ItemTemplateComponent,
   ],
   providers: [
+    // { provide: PERFECT_SCROLLBAR_CONFIG, useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG },
     ItemTemplateService,
     ItemPreviewService,
   ],

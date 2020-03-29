@@ -8,6 +8,7 @@
 
     <div class="row">
       <div class="col-9">
+        <perfect-scrollbar style="max-height: 95vh;">
 
         <keira-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
 
@@ -806,13 +807,11 @@
           </div>
 
         </form>
-
+        </perfect-scrollbar>
       </div>
-      <div class="col-3">
 
-        <br>
-
-        <div class="item-container">
+      <div class="col-3 item-container">
+        <perfect-scrollbar class="transparent">
           <div class="item-preview">
             <div class="icon">
               <div *ngIf="(icon | async) as iconName; else defaultIcon">
@@ -830,10 +829,7 @@
               <div [innerHTML]="itemPreview"></div>
             </div>
           </div>
-
-        </div>
-        <div class="clearfix"></div>
-
+        </perfect-scrollbar>
       </div>
     </div>
 
