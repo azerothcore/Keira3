@@ -1,7 +1,17 @@
-.item-container {
-  width: 100%;
+$item-preview-width: 240px;
+
+.container-fluid {
+  padding-right: $item-preview-width + 15px;
+}
+
+.item-preview-container {
+  width: $item-preview-width;
+  position: fixed;
+  top: 0;
+  right: 0;
+  padding-top: 22px;
+  height: 100%;
   background-color: #080d22;
-  padding: 0;
 
   perfect-scrollbar {
     max-height: 95vh;
