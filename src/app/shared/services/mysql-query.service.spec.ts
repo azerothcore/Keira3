@@ -38,8 +38,6 @@ describe('MysqlQueryService', () => {
   let service: MysqlQueryService;
   let configService: ConfigService;
 
-  const QUERY_NO_CHANGES = '-- There are no changes';
-
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
       { provide : MysqlService, useValue: instance(MockedMysqlService) },
@@ -263,13 +261,13 @@ describe('MysqlQueryService', () => {
 
       it('should return empty string if currentRows or newRows are null', () => {
         expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, [], [])).toEqual(
-          QUERY_NO_CHANGES
+          ''
         );
       });
 
       it('should correctly work when there are no changes', () => {
         expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, myRows, myRows)).toEqual(
-          QUERY_NO_CHANGES
+          ''
         );
       });
 
@@ -504,7 +502,7 @@ describe('MysqlQueryService', () => {
 
       it('should correctly work when there are no changes', () => {
         expect(service.getDiffDeleteInsertOneKeyQuery(tableName, primaryKey, myRows, myRows)).toEqual(
-          QUERY_NO_CHANGES
+          ''
         );
       });
 

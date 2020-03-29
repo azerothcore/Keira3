@@ -47,6 +47,10 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   protected abstract updateFullQuery();
   protected abstract onReloadSuccessful(data: T[], id: string|number);
 
+  protected updateEditorStatus() {
+    this.handlerService.statusMap[this._entityTable] = !!this._diffQuery;
+  }
+
   private getClassAttributes(c: Class): StringKeys<T>[] {
     const tmpInstance = new c();
     return Object.getOwnPropertyNames(tmpInstance) as StringKeys<T>[];
@@ -87,6 +91,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     this._form.reset();
     this._fullQuery = '';
     this._diffQuery = '';
+    this.updateEditorStatus();
   }
 
   reload(id: string|number) {

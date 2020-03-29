@@ -8,6 +8,13 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
   selectedName: string;
   isNew = false;
 
+  protected _statusMap: { // TODO: make abstract
+    [key: string]: boolean;
+  };
+  get statusMap() {
+    return this._statusMap;
+  }
+
   get selected(): string { return this._selected; }
 
   get parsedSelected(): Partial<T> {

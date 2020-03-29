@@ -49,8 +49,7 @@ export class SidebarComponent {
     public conditionsHandlerService: ConditionsHandlerService,
     public saiHandlerService: SaiHandlerService,
     private locationService: LocationService,
-  ) {
-   }
+  ) { }
 
   getSideBarState() {
     return this.sidebarService.getSidebarState();

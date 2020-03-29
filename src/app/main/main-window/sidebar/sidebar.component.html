@@ -157,43 +157,43 @@
                 <ng-container *ngIf="questHandlerService.selected">
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-template'">
-                      Quest Template
+                      Quest Template <keira-unsaved-icon *ngIf="questHandlerService.isQuestTemplateUnsaved"></keira-unsaved-icon>
                     </a>
                   </li>
                   <ng-container *ngIf="!questHandlerService.isNew">
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-template-addon'">
-                        Quest Template Addon
+                        Quest Template Addon <keira-unsaved-icon *ngIf="questHandlerService.isQuestTemplateAddonUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-offer-reward'">
-                        Quest Offer Reward
+                        Quest Offer Reward <keira-unsaved-icon *ngIf="questHandlerService.isQuestOfferRewardUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-request-items'">
-                        Quest Request Items
+                        Quest Request Items <keira-unsaved-icon *ngIf="questHandlerService.isQuestRequestItemsUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/creature-queststarter'">
-                        Creature Queststarter
+                        Creature Queststarter <keira-unsaved-icon *ngIf="questHandlerService.isCreatureQueststarterUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/creature-questender'">
-                        Creature Questender
+                        Creature Questender <keira-unsaved-icon *ngIf="questHandlerService.isCreatureQuestenderUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/gameobject-queststarter'">
-                        Gameobject Queststarter
+                        Gameobject Queststarter <keira-unsaved-icon *ngIf="questHandlerService.isGameobjectQueststarterUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/gameobject-questender'">
-                        Gameobject Questender
+                        Gameobject Questender <keira-unsaved-icon *ngIf="questHandlerService.isGameobjectQuestenderUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                   </ng-container>

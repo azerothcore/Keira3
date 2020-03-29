@@ -56,6 +56,8 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
       this._originalValue,
       this._form.getRawValue(),
     );
+
+    this.updateEditorStatus();
   }
 
   protected updateFullQuery(): void {
