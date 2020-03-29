@@ -218,6 +218,11 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="startquest">startquest</label>
+          <keira-quest-selector-btn
+            [control]="editorService.form.controls.startquest"
+            [config]="{ name: 'startquest' }"
+            [modalClass]="'modal-lg'"
+          ></keira-quest-selector-btn>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'The ID of the quest that this item will start if right-clicked. See quest_template.id'"
