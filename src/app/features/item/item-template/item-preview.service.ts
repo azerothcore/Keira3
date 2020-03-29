@@ -87,7 +87,6 @@ export class ItemPreviewService {
 
   private setRatingLevel(level: number, type: number, val: number): string {
     let result = '';
-
     const rating = [
       ITEM_MOD.DEFENSE_SKILL_RATING,
       ITEM_MOD.DODGE_RATING,
@@ -125,16 +124,15 @@ export class ItemPreviewService {
   }
 
   private parseRating(type: number, value: number, requiredLevel: number): string {
-
     // clamp level range
     const level = requiredLevel > 1 ? requiredLevel : MAX_LEVEL;
 
     // unknown rating
-    if ([2, 8, 9, 10, 11].includes[type] || type > ITEM_MOD.BLOCK_VALUE || type < 0) {
+    if ([2, 8, 9, 10, 11].includes(type) || type > ITEM_MOD.BLOCK_VALUE || type < 0 || !ITEM_CONSTANTS.statType[type]) {
       return '';
     }
 
-    if (lvlIndepRating.includes[type]) { // level independant Bonus
+    if (lvlIndepRating.includes(type)) { // level independant Bonus
       return ITEM_CONSTANTS.trigger[1] + ITEM_CONSTANTS.statType[type].replace('%d', `<!--rtg${type}-->${value}`);
     }
 
@@ -155,7 +153,8 @@ export class ItemPreviewService {
     while (classMask) {
       if (classMask & (1 << (i - 1))) {
         const tmpClass = ITEM_CONSTANTS.cl[i];
-        if (tmpClass != null && tmpClass !== '') {
+        /* istanbul ignore else */
+        if (!!tmpClass) {
           tmp.push(`<span class="c${i}">${tmpClass}</span>`);
         }
 
@@ -188,7 +187,8 @@ export class ItemPreviewService {
     while (raceMask) {
       if (raceMask & (1 << (i - 1))) {
         const tmpRace = ITEM_CONSTANTS.ra[i];
-        if (tmpRace != null && tmpRace !== '') {
+        /* istanbul ignore else */
+        if (!!tmpRace) {
           tmp.push(tmpRace);
         }
         raceMask &= ~(1 << (i - 1));
@@ -255,46 +255,9 @@ export class ItemPreviewService {
     return time;
   }
 
-  private formatTime(base, short = false) {
+  private formatTime(base: number) {
     const s = this.parseTime(base / 1000);
     let tmp: number;
-
-    if (short) {
-      tmp = Math.round(s.d / 364);
-      if (tmp !== 0) {
-        return tmp + ' ' + ITEM_CONSTANTS.timeUnits.ab[0];
-      }
-
-      tmp = Math.round(s.d / 30);
-      if (tmp !== 0) {
-        return tmp + ' ' + ITEM_CONSTANTS.timeUnits.ab[1];
-      }
-      tmp = Math.round(s.d / 7);
-      if (tmp !== 0) {
-        return tmp + ' ' + ITEM_CONSTANTS.timeUnits.ab[2];
-      }
-      tmp = Math.round(s.d);
-      if (tmp !== 0) {
-        return tmp + ' ' + ITEM_CONSTANTS.timeUnits.ab[3];
-      }
-      tmp = Math.round(s.h);
-      if (tmp !== 0) {
-        return tmp + ' ' + ITEM_CONSTANTS.timeUnits.ab[4];
-      }
-      tmp = Math.round(s.m);
-      if (tmp !== 0) {
-        return tmp + ' ' + ITEM_CONSTANTS.timeUnits.ab[5];
-      }
-      tmp = Math.round(s.s + s.ms / 1000);
-      if (tmp !== 0) {
-        return tmp + ' ' + ITEM_CONSTANTS.timeUnits.ab[6];
-      }
-      if (s.ms !== 0) {
-        return s.ms + ' ' + ITEM_CONSTANTS.timeUnits.ab[7];
-      }
-
-      return '0 ' + ITEM_CONSTANTS.timeUnits.ab[6];
-    }
 
     tmp = s.d + s.h / 24;
     if (tmp > 1 && !(tmp % 364)) {                      // whole years
@@ -631,7 +594,7 @@ export class ItemPreviewService {
       const type = Number(itemTemplate['stat_type' + i]);
       const qty = Number(itemTemplate['stat_value' + i]);
 
-      if (!qty || type <= 0) {
+      if (!qty || !type || type <= 0) {
         continue;
       }
       // base stat
@@ -999,7 +962,7 @@ export class ItemPreviewService {
       if (flagsCustom & 0x1) { // if CU_DURATION_REAL_TIME
         rt = ' (real time)';
       }
-      durationText += `<br>Duration: ${this.formatTime(duration * 1000)} ${rt}`;
+      durationText += `<br>Duration: ${this.formatTime(duration * 1000)}${rt}`;
     }
 
     return durationText;
@@ -1169,7 +1132,7 @@ export class ItemPreviewService {
             cooldown = cooldownCategory;
           }
 
-          cooldown = cooldown < 5000 ? '' : ` ( ${this.formatTime(cooldown)} cooldown)`;
+          cooldown = cooldown < 5000 ? '' : ` ( ${this.formatTime(Number(cooldown))} cooldown)`;
 
           itemSpellsAndTrigger[spellid] = [itemTemplate['spelltrigger_' + j], cooldown];
         }
@@ -1275,7 +1238,7 @@ export class ItemPreviewService {
     // ITEM NAME
     const itemName = itemTemplate.name;
     if (itemName) {
-      tmpItemPreview += '<b class="item-name q' + quality + '">' + itemName + '</b>';
+      tmpItemPreview += `<b class="item-name q${!isNaN(quality) ? quality : ''}">${itemName}</b>`;
     }
 
     // heroic tag
