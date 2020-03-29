@@ -1,3 +1,5 @@
+@import './_partials/sidebar-width.scss';
+
 /* Custom global code coming from the sidebar lib */
 
 body {
@@ -5,7 +7,7 @@ body {
 }
 
 .page-wrapper.toggled .sidebar {
-  left: -300px;
+  left: -$sidebar-width;
 }
 
 .sidebar .ps.ps--active-y>.ps__rail-y:hover,

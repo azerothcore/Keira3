@@ -54,6 +54,8 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   public readonly DAMAGE_TYPE = DAMAGE_TYPE;
   public readonly STAT_TYPE = STAT_TYPE;
 
+  showItemPreview = true;
+
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: ItemTemplateService,

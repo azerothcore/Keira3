@@ -1,11 +1,23 @@
 $item-preview-width: 240px;
 
 .container-fluid {
-  padding-right: $item-preview-width + 15px;
+  transition: padding-right .3s ease;
+
+  &.show-item-preview {
+    padding-right: $item-preview-width + 15px;
+  }
+}
+
+.item-preview-container.show-item-preview {
+  width: $item-preview-width;
+}
+
+.item-preview-container.hide-item-preview {
+  width: 0;
 }
 
 .item-preview-container {
-  width: $item-preview-width;
+  transition: width .3s ease;
   position: fixed;
   top: 0;
   right: 0;
@@ -38,7 +50,7 @@ $item-preview-width: 240px;
 
     .item-stats, .icon {
       border-radius: 3px;
-   }
+    }
 
     .item-stats {
       text-align: left;
