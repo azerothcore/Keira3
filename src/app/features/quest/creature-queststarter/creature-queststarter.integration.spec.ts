@@ -222,6 +222,43 @@ describe('CreatureQueststarter integration tests', () => {
 
       page.expectUniqueError();
     });
+
+    it('changing a value via CreatureSelector should correctly work', async () => {
+      const field = 'id';
+      const mysqlQueryService = TestBed.inject(MysqlQueryService);
+      (mysqlQueryService.query as Spy).and.returnValue(of(
+        [{ entry: 123, name: 'Mock Creature' }]
+      ));
+
+      // because this is a multi-row editor
+      page.clickRowOfDatatable(0);
+      await page.whenReady();
+
+      page.clickElement(page.getSelectorBtn(field));
+      await page.whenReady();
+      page.expectModalDisplayed();
+
+      page.clickSearchBtn();
+
+      await fixture.whenStable();
+      page.clickRowOfDatatableInModal(0);
+      await page.whenReady();
+      page.clickModalSelect();
+      await page.whenReady();
+
+      page.expectDiffQueryToContain(
+        'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234) AND (`id` IN (0, 123));\n' +
+        'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
+        '(123, 1234);'
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234);\n' +
+        'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
+        '(123, 1234),\n' +
+        '(1, 1234),\n' +
+        '(2, 1234);'
+      );
+    });
   });
 });
 
