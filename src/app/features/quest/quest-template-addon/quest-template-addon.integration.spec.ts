@@ -230,5 +230,36 @@ describe('QuestTemplateAddon integration tests', () => {
       );
     });
 
+    it('changing a value via QuestSelector should correctly work', async () => {
+      const field = 'NextQuestID';
+      const mysqlQueryService = TestBed.inject(MysqlQueryService);
+      (mysqlQueryService.query as Spy).and.returnValue(of(
+        [{ ID: 123, LogTitle: 'Mock Quest' }]
+      ));
+
+      page.clickElement(page.getSelectorBtn(field));
+      await page.whenReady();
+      page.expectModalDisplayed();
+
+      page.clickSearchBtn();
+
+      await fixture.whenStable();
+      page.clickRowOfDatatableInModal(0);
+      await page.whenReady();
+      page.clickModalSelect();
+      await page.whenReady();
+
+      page.expectDiffQueryToContain(
+        'UPDATE `quest_template_addon` SET `NextQuestID` = 123 WHERE (`ID` = 1234);'
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
+        'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, `PrevQuestID`, `NextQuestID`, ' +
+        '`ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`, `RequiredMinRepFaction`, ' +
+        '`RequiredMaxRepFaction`, `RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`, `SpecialFlags`) VALUES\n' +
+        '(1234, 1, 2, 3, 4, 123, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);'
+      );
+    });
+
   });
 });
