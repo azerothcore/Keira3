@@ -1,3 +1,5 @@
+@import './src/assets/scss/_partials/sidebar-width';
+
 $bg-sidebar-wrapper: #1d1d1d;
 $border-color: #2b2b2b;
 $color: #bdbdbd;
@@ -19,7 +21,7 @@ $img-border-color: rgba(255, 255, 255, 0.1);
   100% { transform: rotate(0deg); }
 }
 .sidebar {
-  width: 260px;
+  width: $sidebar-width;
   height: 100%;
   max-height: 100%;
   position: fixed;
@@ -40,6 +42,7 @@ $img-border-color: rgba(255, 255, 255, 0.1);
     position: relative;
 
     .sidebar-header {
+      font-size: 0.8rem;
       text-align: center;
       padding: 10px 20px;
       display: flex;
@@ -85,6 +88,7 @@ $img-border-color: rgba(255, 255, 255, 0.1);
         }
 
         .db-host {
+          font-size: .8rem;
           .port {
             color: lightgray;
           }
@@ -126,6 +130,7 @@ $img-border-color: rgba(255, 255, 255, 0.1);
     }
 
     .sidebar-menu {
+      padding-top: 4px;
       padding-bottom: 10px;
 
       .header-menu span {
