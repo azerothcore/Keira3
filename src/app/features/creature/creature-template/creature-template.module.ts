@@ -13,6 +13,7 @@ import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selec
 import { CreatureTemplateService } from './creature-template.service';
 import { SpellSelectorModule } from '@keira-shared/modules/selectors/spell-selector/spell-selector.module';
 import { FactionSelectorModule } from '@keira-shared/modules/selectors/faction-selector/faction-selector.module';
+import { CreatureSelectorModule } from '@keira-shared/modules/selectors/creature-selector/creature-selector.module';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { FactionSelectorModule } from '@keira-shared/modules/selectors/faction-s
     FlagsSelectorModule,
     SpellSelectorModule,
     FactionSelectorModule,
+    CreatureSelectorModule,
   ],
   exports: [
     CreatureTemplateComponent,
