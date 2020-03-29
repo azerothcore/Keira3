@@ -11,6 +11,7 @@ import { QueryOutputModule } from '@keira-shared/modules/query-output/query-outp
 import { NpcTrainerComponent } from './npc-trainer.component';
 import { NpcTrainerService } from './npc-trainer.service';
 import { SpellSelectorModule } from '@keira-shared/modules/selectors/spell-selector/spell-selector.module';
+import { SkillSelectorModule } from '@keira-shared/modules/selectors/skill-selector/skill-selector.module';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { SpellSelectorModule } from '@keira-shared/modules/selectors/spell-selec
     ToastrModule.forRoot(toastrConfig),
     NgxDatatableModule,
     SpellSelectorModule,
+    SkillSelectorModule,
   ],
   exports: [
     NpcTrainerComponent,

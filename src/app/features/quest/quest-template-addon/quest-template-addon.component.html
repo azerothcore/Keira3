@@ -35,6 +35,11 @@
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="PrevQuestID">PrevQuestID</label>
+          <keira-quest-selector-btn
+            [control]="editorService.form.controls.PrevQuestID"
+            [config]="{ name: 'PrevQuestID' }"
+            [modalClass]="'modal-lg'"
+          ></keira-quest-selector-btn>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'if > 0: previous quest id; if < 0 parent quest id'"
@@ -44,6 +49,11 @@
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="NextQuestID">NextQuestID</label>
+          <keira-quest-selector-btn
+            [control]="editorService.form.controls.NextQuestID"
+            [config]="{ name: 'NextQuestID' }"
+            [modalClass]="'modal-lg'"
+          ></keira-quest-selector-btn>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'Contains the next quest id, in case PrevQuestId of that other quest is not sufficient.'"
@@ -120,16 +130,20 @@
       <div class="row">
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="RequiredSkillID">RequiredSkillID</label>
+          <label class="control-label" for="RequiredSkillID">Req.SkillID</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'Skill required to know to accept the quest. Use 0 for no skill required.'"
           ></i>
+          <keira-skill-selector-btn
+            [config]="{ name: 'RequiredSkillID' }"
+            [control]="editorService.form.controls.RequiredSkillID"
+          ></keira-skill-selector-btn>
           <input [formControlName]="'RequiredSkillID'" id="RequiredSkillID" type="number" class="form-control form-control-sm">
         </div>
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="RequiredSkillPoints">RequiredSkillPoints</label>
+          <label class="control-label" for="RequiredSkillPoints">Req.SkillPoints</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'Skill points required to have in order to accept the quest.'"
@@ -138,7 +152,7 @@
         </div>
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="RequiredMinRepFaction">RequiredMinRepFaction</label>
+          <label class="control-label" for="RequiredMinRepFaction">Req.MinRepFaction</label>
           <keira-faction-selector-btn
             [config]="{ name: 'RequiredMinRepFaction' }"
             [control]="editorService.form.controls.RequiredMinRepFaction"
@@ -147,7 +161,7 @@
         </div>
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="RequiredMinRepValue">RequiredMinRepValue</label>
+          <label class="control-label" for="RequiredMinRepValue">Req.MinRepValue</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'Players must have this reputation or higher in order to receive the quest.'"
@@ -156,7 +170,7 @@
         </div>
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="RequiredMaxRepFaction">RequiredMaxRepFaction</label>
+          <label class="control-label" for="RequiredMaxRepFaction">Req.MaxRepFaction</label>
           <keira-faction-selector-btn
             [config]="{ name: 'RequiredMaxRepFaction' }"
             [control]="editorService.form.controls.RequiredMaxRepFaction"
@@ -165,7 +179,7 @@
         </div>
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="RequiredMaxRepValue">RequiredMaxRepValue</label>
+          <label class="control-label" for="RequiredMaxRepValue">Req.MaxRepValue</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'The maximum reputation value that the player can have with a faction and still get the quest.'"

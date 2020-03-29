@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TooltipModule } from 'ngx-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
-import { PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarConfigInterface, PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { toastrConfig } from '@keira-config/toastr.config';
 
 import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
@@ -21,10 +21,8 @@ import { ItemEnchantmentSelectorModule } from '@keira-shared/modules/selectors/i
 import { HolidaySelectorModule } from '@keira-shared/modules/selectors/holiday-selector/holiday-selector.module';
 import { LanguageSelectorModule } from '@keira-shared/modules/selectors/language-selector/language-selector.module';
 import { ItemLimitCategorySelectorModule } from '@keira-shared/modules/selectors/item-limit-category-selector/item-limit-category-selector.module';
+import { QuestSelectorModule } from '@keira-shared/modules/selectors/quest-selector/quest-selector.module';
 
-const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
-  suppressScrollX: true
-};
 
 @NgModule({
   declarations: [
@@ -37,6 +35,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     QueryOutputModule,
     TooltipModule.forRoot(),
     ToastrModule.forRoot(toastrConfig),
+    PerfectScrollbarModule,
     SingleValueSelectorModule,
     FlagsSelectorModule,
     SpellSelectorModule,
@@ -47,13 +46,12 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     HolidaySelectorModule,
     LanguageSelectorModule,
     ItemLimitCategorySelectorModule,
-    PerfectScrollbarModule,
+    QuestSelectorModule,
   ],
   exports: [
     ItemTemplateComponent,
   ],
   providers: [
-    // { provide: PERFECT_SCROLLBAR_CONFIG, useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG },
     ItemTemplateService,
     ItemPreviewService,
   ],
