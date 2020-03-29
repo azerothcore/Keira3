@@ -70,7 +70,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
 
   private async loadItemPreview() {
     this.itemPreview = this.sanitizer.bypassSecurityTrustHtml(
-      await this.itemPreviewService.calculatePreview(this.editorService.form.value)
+      await this.itemPreviewService.calculatePreview(this.editorService.form.getRawValue())
     );
   }
 

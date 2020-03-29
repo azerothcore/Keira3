@@ -243,7 +243,7 @@ export class ItemPreviewService {
       sec -= time.m * 60;
     }
 
-    if (sec > 0) {
+    if (sec >= 1) {
       time['s'] = sec;
       sec -= time['s'];
     }
@@ -261,28 +261,28 @@ export class ItemPreviewService {
 
     tmp = s.d + s.h / 24;
     if (tmp > 1 && !(tmp % 364)) {                      // whole years
-      return Math.round((s.d + s.h / 24) / 364) + ' ' + ITEM_CONSTANTS.timeUnits[s.d / 364 === 1 && !s.h ? 'sg' : 'pl'][0];
+      return Math.round((s.d + s.h / 24) / 364) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.d / 364) === 1 && !s.h ? 'sg' : 'pl'][0];
     }
     if (tmp > 1 && !(tmp % 30)) {                       // whole month
-      return Math.round((s.d + s.h / 24) /  30) + ' ' + ITEM_CONSTANTS.timeUnits[s.d /  30 === 1 && !s.h ? 'sg' : 'pl'][1];
+      return Math.round((s.d + s.h / 24) /  30) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.d /  30) === 1 && !s.h ? 'sg' : 'pl'][1];
     }
     if (tmp > 1 && !(tmp % 7)) {                        // whole weeks
-      return Math.round((s.d + s.h / 24) /   7) + ' ' + ITEM_CONSTANTS.timeUnits[s.d / 7 === 1 && !s.h ? 'sg' : 'pl'][2];
+      return Math.round((s.d + s.h / 24) /   7) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.d / 7) === 1 && !s.h ? 'sg' : 'pl'][2];
     }
     if (s.d !== 0) {
-      return Math.round(s.d + s.h  /   24) + ' ' + ITEM_CONSTANTS.timeUnits[s.d === 1 && !s.h  ? 'sg' : 'pl'][3];
+      return Math.round(s.d + s.h  /   24) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.d) === 1 && !s.h  ? 'sg' : 'pl'][3];
     }
     if (s.h !== 0) {
-      return Math.round(s.h + s.m  /   60) + ' ' + ITEM_CONSTANTS.timeUnits[s.h === 1 && !s.m  ? 'sg' : 'pl'][4];
+      return Math.round(s.h + s.m  /   60) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.h) === 1 && !s.m  ? 'sg' : 'pl'][4];
     }
     if (s.m !== 0) {
-      return Math.round(s.m + s.s  /   60) + ' ' + ITEM_CONSTANTS.timeUnits[s.m === 1 && !s.s  ? 'sg' : 'pl'][5];
+      return Math.round(s.m + s.s  /   60) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.m) === 1 && !s.s  ? 'sg' : 'pl'][5];
     }
     if (s.s !== 0) {
-      return Math.round(s.s + s.ms / 1000) + ' ' + ITEM_CONSTANTS.timeUnits[s.s === 1 && !s.ms ? 'sg' : 'pl'][6];
+      return Math.round(s.s + s.ms / 1000) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.s) === 1 && !s.ms ? 'sg' : 'pl'][6];
     }
     if (s.ms !== 0) {
-      return s.ms + ' ' + ITEM_CONSTANTS.timeUnits[s.ms === 1 ? 'sg' : 'pl'][7];
+      return s.ms + ' ' + ITEM_CONSTANTS.timeUnits[ Math.abs(s.ms) === 1 ? 'sg' : 'pl'][7];
     }
 
     return '0 ' + ITEM_CONSTANTS.timeUnits.pl[6];
@@ -319,6 +319,7 @@ export class ItemPreviewService {
   }
 
   private async getLocks(lockId: number): Promise<string[]> {
+    /* istanbul ignore next */
     if (!lockId) { return ['']; }
 
     const lock = (await this.sqliteQueryService.getLockById(lockId))[0];
@@ -345,15 +346,11 @@ export class ItemPreviewService {
       } else if (lockType === 2) {                 // opened by skill
 
         // exclude unusual stuff
-        if (![1, 2, 3, 4, 9, 16, 20].includes(Number(prop))) {
+        if (!ITEM_CONSTANTS.lockType[prop] || ![1, 2, 3, 4, 9, 16, 20].includes(Number(prop))) {
           continue;
         }
 
         name = ITEM_CONSTANTS.lockType[prop];
-
-        if (!name) {
-          continue;
-        }
 
         if (rank > 0) {
           name += ` (${rank})`;
@@ -372,12 +369,15 @@ export class ItemPreviewService {
   //             wowhead seems to have had the same issues
   private async getExtendedCost(entry: number, flagsExtra: number, buyPrice: number): Promise<any[]> {
 
+    console.log(entry);
+
     if (!entry) { return []; }
 
     const itemz = {};
     let xCostData = [];
     const xCostDataArr = {};
     const rawEntries = await this.getItemExtendedCostFromVendor(entry);
+    console.log(rawEntries);
 
     if (!rawEntries) {
       return [];
@@ -544,7 +544,7 @@ export class ItemPreviewService {
     } else if (dps) {
       if (dmgmin1 === dmgmax1) {
         dmg = ITEM_CONSTANTS.damage.single[sc1 ? 1 : 0]
-          .replace('%g', String(dmgmin1))
+          .replace('%d', String(dmgmin1))
           .replace('%s', (sc1 ? ITEM_CONSTANTS.sc[sc1] : ''));
       } else {
         dmg = ITEM_CONSTANTS.damage.range[sc1 ? 1 : 0]
@@ -756,9 +756,11 @@ export class ItemPreviewService {
           setSpells[j] = tmp;
         }
 
-        const bonusText = ITEM_CONSTANTS.setBonus
+        const bonusText = setSpells[i]['bonus'] && setSpells[i]['tooltip']
+        ? ITEM_CONSTANTS.setBonus
           .replace('%d', setSpells[i]['bonus'])
-          .replace('%s', setSpells[i]['tooltip']);
+          .replace('%s', setSpells[i]['tooltip'])
+        : '';
 
         itemsetText += `<br><span>${bonusText}</span>`;
       }
@@ -878,7 +880,7 @@ export class ItemPreviewService {
     // required CityRank -> the value is always 0
 
     // required level
-    if ((itemTemplate.Flags & ITEM_FLAG.ACCOUNTBOUND) && itemTemplate.quality === ITEMS_QUALITY.HEIRLOOM) {
+    if ((itemTemplate.Flags & ITEM_FLAG.ACCOUNTBOUND) && itemTemplate.Quality === ITEMS_QUALITY.HEIRLOOM) {
 
       requiredText += '<br>' + ITEM_CONSTANTS.reqLevelRange
         .replace('%d', '1')
@@ -891,6 +893,9 @@ export class ItemPreviewService {
 
     // required arena team rating / personal rating / todo (low): sort out what kind of rating
     const [res, reqRating] = await this.getExtendedCost(itemTemplate.entry, itemTemplate.FlagsExtra, itemTemplate.BuyPrice);
+
+    console.log(res);
+    console.log(reqRating);
 
     if (!!res && !!reqRating && res[itemTemplate.entry] && Object.keys(res[itemTemplate.entry]).length > 0 && reqRating.length > 0) {
       requiredText += '<br>' + ITEM_CONSTANTS.reqRating[reqRating[1]].replace('%d', reqRating[0]);
@@ -997,7 +1002,7 @@ export class ItemPreviewService {
     // readable
     const PageText = itemTemplate.PageText;
     if (PageText > 0) {
-      xMisc.push(`<br><span class="q2">${ITEM_CONSTANTS.readClick}</span>`);
+      xMisc.push(`<br><!--pagetext--><span class="q2">${ITEM_CONSTANTS.readClick}</span>`);
     }
 
     // charges (I guess, checking first spell is enough)
@@ -1144,7 +1149,9 @@ export class ItemPreviewService {
           const spellTrigger = itemSpellsAndTrigger[spellID];
           const parsed = await this.sqliteQueryService.getSpellDescriptionById(spellID); // TODO: parseText correctly
 
-          green.push(ITEM_CONSTANTS.trigger[spellTrigger[0]] + parsed + spellTrigger[1]);
+          if (spellTrigger[0] || parsed || spellTrigger[1]) {
+            green.push(ITEM_CONSTANTS.trigger[spellTrigger[0]] ?? '' + parsed ?? '' + ' ' + ITEM_CONSTANTS.trigger[spellTrigger[1]] ?? '');
+          }
         }
 
       }
@@ -1174,7 +1181,7 @@ export class ItemPreviewService {
         const desc = await this.sqliteQueryService.getSpellDescriptionById(spellId2);
 
         if (!!desc) {
-          spellDesc += `<br><span class="q2">${ITEM_CONSTANTS.trigger[0]} ${desc}</span>`;
+          spellDesc += `<br><!--spellDesc--><span class="q2">${ITEM_CONSTANTS.trigger[0]} ${desc}</span>`;
         }
 
         // TODO: spell description for recipe
@@ -1217,10 +1224,10 @@ export class ItemPreviewService {
     if (!!lockid) {
       const lockData = await this.getLocks(lockid);
 
-      if (!!lockData) {
+      if (!!lockData && lockData.length > 0) {
         lockText += `<br><span class="q0">Locked${lockData.join('')}</span>`;
       } else if (flags & ITEM_FLAG.OPENABLE) {
-        lockText += `<br><span class="q2">${ITEM_CONSTANTS.openClick}</span>`;
+        lockText += `<br><!--lockData--><span class="q2">${ITEM_CONSTANTS.openClick}</span>`;
       }
     }
 
@@ -1287,7 +1294,7 @@ export class ItemPreviewService {
     const RandomProperty: number = itemTemplate.RandomProperty;
     const RandomSuffix: number = itemTemplate.RandomSuffix;
     if (!!RandomProperty || !!RandomSuffix) {
-      tmpItemPreview += `<br><span class="q2">${ITEM_CONSTANTS.randEnchant}</span>`;
+      tmpItemPreview += `<br><!--randEnchant--><span class="q2">${ITEM_CONSTANTS.randEnchant}</span>`;
     }
 
     // itemMods (display stats and save ratings for later use)
@@ -1314,8 +1321,8 @@ export class ItemPreviewService {
 
     if (!!green && green.length > 0) {
       for (const bonus of green) {
-        if (bonus) {
-          tmpItemPreview += `<br><span class="q2">${bonus}</span>`;
+        if (!!bonus) {
+          tmpItemPreview += `<br><!--bonus--><span class="q2">${bonus}</span>`;
         }
       }
     }
