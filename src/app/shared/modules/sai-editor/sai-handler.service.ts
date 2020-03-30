@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { ComplexKeyHandlerService } from '../../abstract/service/handlers/complex-key.handler.service';
-import { SAI_ID_FIELDS, SAI_TYPES, SmartScripts } from '../../types/smart-scripts.type';
+import { SAI_ID_FIELDS, SAI_TABLE, SAI_TYPES, SmartScripts } from '../../types/smart-scripts.type';
 import { MysqlQueryService } from '../../services/mysql-query.service';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -11,6 +11,10 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
+
+  protected _statusMap = {
+    [SAI_TABLE]: false,
+  };
 
   protected _templateQuery: string;
   get templateQuery(): string {

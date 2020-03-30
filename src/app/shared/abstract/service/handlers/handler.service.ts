@@ -28,7 +28,14 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
     super();
   }
 
+  private resetStatus() {
+    for (const key of Object.keys(this._statusMap)) {
+      this._statusMap[key] = false;
+    }
+  }
+
   select(isNew: boolean, id: string|number|Partial<T>, name?: string, navigate = true) {
+    this.resetStatus();
     this.isNew = isNew;
 
     if (typeof id === 'object') {

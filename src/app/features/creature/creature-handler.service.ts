@@ -32,7 +32,7 @@ export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
   get isSkinningLootTemplateUnsaved(): boolean { return this.statusMap[SKINNING_LOOT_TEMPLATE_TABLE]; }
   get isCreatureSpawnUnsaved(): boolean { return this.statusMap[CREATURE_SPAWN_TABLE]; }
   get isCreatureSpawnAddonUnsaved(): boolean { return this.statusMap[CREATURE_SPAWN_ADDON_TABLE]; }
-  get isCreatureSaiUnsaved(): boolean { return this.statusMap[SAI_TABLE]; } // TODO
+  get isCreatureSaiUnsaved(): boolean { return this.saiCreatureHandler.statusMap[SAI_TABLE]; }
 
   protected _statusMap = {
     [CREATURE_TEMPLATE_TABLE]: false,
@@ -47,7 +47,6 @@ export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
     [SKINNING_LOOT_TEMPLATE_TABLE]: false,
     [CREATURE_SPAWN_TABLE]: false,
     [CREATURE_SPAWN_ADDON_TABLE]: false,
-    [SAI_TABLE]: false,
   };
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
