@@ -378,7 +378,7 @@
                 <ng-container *ngIf="saiHandlerService.selected">
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'smart-ai/editors'">
-                      SmartAI editor
+                      SmartAI editor <keira-unsaved-icon *ngIf="saiHandlerService.isSaiUnsaved"></keira-unsaved-icon>
                     </a>
                   </li>
                 </ng-container>

@@ -12,6 +12,8 @@ import { Observable } from 'rxjs';
 })
 export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
 
+  get isSaiUnsaved(): boolean { return this.statusMap[SAI_TABLE]; }
+
   protected _statusMap = {
     [SAI_TABLE]: false,
   };
