@@ -29,6 +29,11 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
   }
 
   private resetStatus() {
+    /* istanbul ignore next */ // not reachable under normal circumstances
+    if (!this._statusMap) {
+      return; // prevent test error: TypeError: Cannot convert undefined or null to object
+    }
+
     for (const key of Object.keys(this._statusMap)) {
       this._statusMap[key] = false;
     }
