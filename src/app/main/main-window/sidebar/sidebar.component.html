@@ -268,33 +268,33 @@
                 <ng-container *ngIf="itemHandlerService.selected">
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'item/item-template'">
-                      Item Template
+                      Item Template <keira-unsaved-icon *ngIf="itemHandlerService.isItemTemplateUnsaved"></keira-unsaved-icon>
                     </a>
                   </li>
                   <ng-container *ngIf="!itemHandlerService.isNew">
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'item/item-enchantment-template'">
-                        Enchantment Template
+                        Enchantment Template <keira-unsaved-icon *ngIf="itemHandlerService.isItemEnchantmentUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'item/item-loot-template'">
-                        Item Loot
+                        Item Loot <keira-unsaved-icon *ngIf="itemHandlerService.isItemLootTemplateUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'item/disenchant-loot-template'">
-                        Disenchant Loot
+                        Disenchant Loot <keira-unsaved-icon *ngIf="itemHandlerService.isDisenchantmentLootTemplateUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'item/prospecting-loot-template'">
-                        Prospecting Loot
+                        Prospecting Loot <keira-unsaved-icon *ngIf="itemHandlerService.isProspectingLootTemplateUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'item/milling-loot-template'">
-                        Milling Loot
+                        Milling Loot <keira-unsaved-icon *ngIf="itemHandlerService.isMillingLootTemplateUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                   </ng-container>
