@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 
 import { HandlerService } from '@keira-abstract/service/handlers/handler.service';
 import { ITEM_TEMPLATE_TABLE, ItemTemplate } from '@keira-types/item-template.type';
-import { ITEM_ENCHANTMENT_TABLE } from '@keira-types/item-enchantment.type';
 import { ITEM_LOOT_TEMPLATE_TABLE } from '@keira-types/item-loot-template.type';
 import { DISENCHANT_LOOT_TEMPLATE_TABLE } from '@keira-types/disenchant-loot-template.type';
 import { PROSPECTING_LOOT_TEMPLATE_TABLE } from '@keira-types/prospecting-loot-template.type';

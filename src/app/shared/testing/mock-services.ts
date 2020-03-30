@@ -25,6 +25,8 @@ export class MockEntity extends TableRow {
   providedIn: 'root'
 })
 export class MockHandlerService extends HandlerService<MockEntity> {
+  protected _statusMap: {};
+
   constructor(
     protected router: Router,
   ) {
