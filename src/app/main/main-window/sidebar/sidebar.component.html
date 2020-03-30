@@ -12,7 +12,7 @@
 
       <div class="sidebar-profile">
         <div class="user-pic">
-          <img class="img-responsive img-rounded" src="assets/img/ac.png" alt="User picture">
+          <img class="img-responsive img-rounded" [src]="'assets/img/ac.png'" alt="User picture">
         </div>
         <div class="user-info" *ngIf="mysqlService.config">
           <span class="db-user">
@@ -318,13 +318,13 @@
                 <ng-container *ngIf="gossipHandlerService.selected">
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'gossip/gossip-menu'">
-                      Gossip Menu
+                      Gossip Menu <keira-unsaved-icon *ngIf="gossipHandlerService.isGossipMenuTableUnsaved"></keira-unsaved-icon>
                     </a>
                   </li>
                   <ng-container *ngIf="!gossipHandlerService.isNew">
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gossip/gossip-menu-option'">
-                        Gossip Menu Option
+                        Gossip Menu Option <keira-unsaved-icon *ngIf="gossipHandlerService.isGossipMenuOptionTableUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                   </ng-container>
