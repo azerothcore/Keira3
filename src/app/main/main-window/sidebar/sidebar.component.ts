@@ -37,6 +37,7 @@ export class SidebarComponent {
     conditions: 'up',
     gossip: 'up',
   };
+  readonly style = 'background-image: url(assets/img/bg1.jpg);';
 
   constructor(
     public sidebarService: SidebarService,

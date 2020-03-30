@@ -2,7 +2,7 @@
   id="sidebar"
   class="sidebar"
   [ngClass]="{'sidebar-bg' : hasBackgroundImage()}"
-  style="background-image: url(assets/img/bg1.jpg);"
+  [style]="style"
 >
   <div class="sidebar-content">
     <perfect-scrollbar>
@@ -218,33 +218,33 @@
                 <ng-container *ngIf="gameobjectHandlerService.selected">
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-template'">
-                      Gameobject Template
+                      Gameobject Template <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectTemplateUnsaved"></keira-unsaved-icon>
                     </a>
                   </li>
                   <ng-container *ngIf="!gameobjectHandlerService.isNew">
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-template-addon'">
-                        Template Addon
+                        Template Addon <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectTemplateAddonUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-questitem'">
-                        Quest Items
+                        Quest Items <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectQuestitemUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-loot-template'">
-                        Gameobject Loot
+                        Gameobject Loot <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectLooTemplateUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-spawn'">
-                        Spawns
+                        Spawns <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectSpawnUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gameobject/sai-gameobject'">
-                        SmartAI
+                        SmartAI <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectSaiUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                   </ng-container>
