@@ -86,6 +86,7 @@ describe('MultiRowEditorService', () => {
   it('updateDiffQuery() should correctly work', () => {
     service['_diffQuery'] = '';
     const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getDiffDeleteInsertTwoKeysQuery').and.returnValue(queryResult);
+    spyOn<any>(service, 'updateEditorStatus');
 
     service['updateDiffQuery']();
 
@@ -98,6 +99,7 @@ describe('MultiRowEditorService', () => {
       service.newRows,
     );
     expect(service.diffQuery).toEqual(queryResult);
+    expect(service['updateEditorStatus']).toHaveBeenCalledTimes(1);
   });
 
   it('updateFullQuery() should correctly work', () => {

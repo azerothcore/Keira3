@@ -94,7 +94,7 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
     this._newRows = [...this._newRows];
     this._selectedRowId = null;
     this._form.disable();
-    this._loadedEntityId = this.handlerService.selected;
+    this._loadedEntityId = JSON.parse(this.handlerService.selected);
     this._nextRowId = 0;
     this.updateFullQuery();
   }

@@ -18,7 +18,9 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   protected _form: FormGroup<T>;
   protected _error: MysqlError;
 
-  get loadedEntityId(): string { return `${this._loadedEntityId}`; }
+  get loadedEntityId(): string {
+    return typeof this._loadedEntityId === 'object' ? JSON.stringify(this._loadedEntityId) : String(this._loadedEntityId);
+  }
   get loading(): boolean { return this._loading; }
   get diffQuery(): string { return this._diffQuery; }
   get fullQuery(): string { return this._fullQuery; }
