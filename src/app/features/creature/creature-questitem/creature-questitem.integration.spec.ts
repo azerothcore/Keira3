@@ -78,6 +78,14 @@ describe('CreatureQuestitem integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(0);
     });
 
+    it('should correctly update the unsaved status', () => {
+      expect(handlerService.isCreatureQuestitemUnsaved).toBe(false);
+      page.addNewRow();
+      expect(handlerService.isCreatureQuestitemUnsaved).toBe(true);
+      page.deleteRow();
+      expect(handlerService.isCreatureQuestitemUnsaved).toBe(false);
+    });
+
     it('adding new rows and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `creature_questitem` WHERE (`CreatureEntry` = 1234) AND (`Idx` IN (0, 1, 2));\n' +
         'INSERT INTO `creature_questitem` (`CreatureEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +

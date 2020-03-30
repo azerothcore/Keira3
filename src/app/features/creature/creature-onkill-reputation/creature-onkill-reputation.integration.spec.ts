@@ -74,6 +74,15 @@ describe('CreatureOnkillReputation integration tests', () => {
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
+    it('should correctly update the unsaved status', () => {
+      const field = 'RewOnKillRepFaction1';
+      expect(handlerService.isCreatureOnkillReputationUnsaved).toBe(false);
+      page.setInputValueById(field, 3);
+      expect(handlerService.isCreatureOnkillReputationUnsaved).toBe(true);
+      page.setInputValueById(field, 0);
+      expect(handlerService.isCreatureOnkillReputationUnsaved).toBe(false);
+    });
+
     it('changing a property and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
       'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +

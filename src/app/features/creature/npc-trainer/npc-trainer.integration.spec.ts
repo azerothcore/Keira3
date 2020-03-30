@@ -83,6 +83,14 @@ describe('NpcTrainer integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(0);
     });
 
+    it('should correctly update the unsaved status', () => {
+      expect(handlerService.isNpcTrainerUnsaved).toBe(false);
+      page.addNewRow();
+      expect(handlerService.isNpcTrainerUnsaved).toBe(true);
+      page.deleteRow();
+      expect(handlerService.isNpcTrainerUnsaved).toBe(false);
+    });
+
     it('adding new rows and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `npc_trainer` WHERE (`ID` = 1234) AND (`SpellID` IN (0, 1, 2));\n' +
         'INSERT INTO `npc_trainer` (`ID`, `SpellID`, `MoneyCost`, `ReqSkillLine`, `ReqSkillRank`, `ReqLevel`) VALUES\n' +

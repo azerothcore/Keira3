@@ -66,7 +66,6 @@ describe('CreatureQueststarter integration tests', () => {
   describe('Creating new', () => {
     beforeEach(() => setup(true));
 
-
     it('should correctly initialise', () => {
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
@@ -75,6 +74,14 @@ describe('CreatureQueststarter integration tests', () => {
       expect(page.deleteSelectedRowBtn.disabled).toBe(true);
       expect(page.getInputById('id').disabled).toBe(true);
       expect(page.getEditorTableRowsCount()).toBe(0);
+    });
+
+    it('should correctly update the unsaved status', () => {
+      expect(handlerService.isCreatureQueststarterUnsaved).toBe(false);
+      page.addNewRow();
+      expect(handlerService.isCreatureQueststarterUnsaved).toBe(true);
+      page.deleteRow();
+      expect(handlerService.isCreatureQueststarterUnsaved).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

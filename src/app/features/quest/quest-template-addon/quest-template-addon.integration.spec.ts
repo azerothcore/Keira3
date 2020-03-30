@@ -93,6 +93,15 @@ describe('QuestTemplateAddon integration tests', () => {
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
+    it('should correctly update the unsaved status', () => {
+      const field = 'NextQuestID';
+      expect(handlerService.isQuestTemplateAddonUnsaved).toBe(false);
+      page.setInputValueById(field, 3);
+      expect(handlerService.isQuestTemplateAddonUnsaved).toBe(true);
+      page.setInputValueById(field, 0);
+      expect(handlerService.isQuestTemplateAddonUnsaved).toBe(false);
+    });
+
     it('changing a property and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, `PrevQuestID`, `NextQuestID`,' +

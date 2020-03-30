@@ -84,6 +84,14 @@ describe('ItemLootTemplate integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(0);
     });
 
+    it('should correctly update the unsaved status', () => {
+      expect(handlerService.isItemLootTemplateUnsaved).toBe(false);
+      page.addNewRow();
+      expect(handlerService.isItemLootTemplateUnsaved).toBe(true);
+      page.deleteRow();
+      expect(handlerService.isItemLootTemplateUnsaved).toBe(false);
+    });
+
     it('adding new rows and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `item_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0, 1, 2));\n' +
         'INSERT INTO `item_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +

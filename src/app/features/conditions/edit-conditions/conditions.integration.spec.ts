@@ -90,6 +90,15 @@ describe('Conditions integration tests', () => {
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
+    it('should correctly update the unsaved status', () => {
+      const field = 'ElseGroup';
+      expect(handlerService.isConditionsUnsaved).toBe(false);
+      page.setInputValueById(field, 3);
+      expect(handlerService.isConditionsUnsaved).toBe(true);
+      page.setInputValueById(field, 0);
+      expect(handlerService.isConditionsUnsaved).toBe(false);
+    });
+
     it('changing a property and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `conditions` WHERE (`SourceTypeOrReferenceId` = 2) AND (`SourceGroup` = 3) AND ' +
       '(`SourceEntry` = ' + sourceEntry + ') AND (`SourceId` = 0) AND (`ElseGroup` = 0) AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0);\n' +

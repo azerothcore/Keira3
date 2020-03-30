@@ -77,6 +77,15 @@ describe('CreatureTemplateAddon integration tests', () => {
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
+    it('should correctly update the unsaved status', () => {
+      const field = 'path_id';
+      expect(handlerService.isCreatureTemplateAddonUnsaved).toBe(false);
+      page.setInputValueById(field, 3);
+      expect(handlerService.isCreatureTemplateAddonUnsaved).toBe(true);
+      page.setInputValueById(field, 0);
+      expect(handlerService.isCreatureTemplateAddonUnsaved).toBe(false);
+    });
+
     it('changing a property and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
         'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +

@@ -95,6 +95,14 @@ describe('GameobjectSpawn integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(0);
     });
 
+    it('should correctly update the unsaved status', () => {
+      expect(handlerService.isGameobjectSpawnUnsaved).toBe(false);
+      page.addNewRow();
+      expect(handlerService.isGameobjectSpawnUnsaved).toBe(true);
+      page.deleteRow();
+      expect(handlerService.isGameobjectSpawnUnsaved).toBe(false);
+    });
+
     it('adding new rows and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `gameobject` WHERE (`id` = ' + id + ') AND (`guid` IN (0, 1, 2));\n' +
       'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +

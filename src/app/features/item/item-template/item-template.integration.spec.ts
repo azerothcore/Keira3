@@ -93,6 +93,15 @@ describe('ItemTemplate integration tests', () => {
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
+    it('should correctly update the unsaved status', () => {
+      const field = 'Quality';
+      expect(handlerService.isItemTemplateUnsaved).toBe(false);
+      page.setInputValueById(field, 3);
+      expect(handlerService.isItemTemplateUnsaved).toBe(true);
+      page.setInputValueById(field, 0);
+      expect(handlerService.isItemTemplateUnsaved).toBe(false);
+    });
+
     it('changing a property and executing the query should correctly work', () => {
       querySpy.calls.reset();
 

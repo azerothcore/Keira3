@@ -79,6 +79,15 @@ describe('QuestOfferReward integration tests', () => {
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
+    it('should correctly update the unsaved status', () => {
+      const field = 'Emote1';
+      expect(handlerService.isQuestOfferRewardUnsaved).toBe(false);
+      page.setInputValueById(field, 3);
+      expect(handlerService.isQuestOfferRewardUnsaved).toBe(true);
+      page.setInputValueById(field, 0);
+      expect(handlerService.isQuestOfferRewardUnsaved).toBe(false);
+    });
+
     it('changing a property and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `quest_offer_reward` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `quest_offer_reward` (`ID`, `Emote1`, `Emote2`, `Emote3`, `Emote4`, ' +

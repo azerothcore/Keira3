@@ -84,6 +84,14 @@ describe('NpcVendor integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(0);
     });
 
+    it('should correctly update the unsaved status', () => {
+      expect(handlerService.isNpcVendorUnsaved).toBe(false);
+      page.addNewRow();
+      expect(handlerService.isNpcVendorUnsaved).toBe(true);
+      page.deleteRow();
+      expect(handlerService.isNpcVendorUnsaved).toBe(false);
+    });
+
     it('adding new rows and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `npc_vendor` WHERE (`entry` = 1234) AND (`item` IN (0, 1, 2));\n' +
         'INSERT INTO `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `VerifiedBuild`) VALUES\n' +

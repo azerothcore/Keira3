@@ -71,6 +71,15 @@ describe('GameobjectTemplateAddon integration tests', () => {
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
+    it('should correctly update the unsaved status', () => {
+      const field = 'faction';
+      expect(handlerService.isGameobjectTemplateAddonUnsaved).toBe(false);
+      page.setInputValueById(field, 3);
+      expect(handlerService.isGameobjectTemplateAddonUnsaved).toBe(true);
+      page.setInputValueById(field, 0);
+      expect(handlerService.isGameobjectTemplateAddonUnsaved).toBe(false);
+    });
+
     it('changing a property and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `gameobject_template_addon` WHERE (`entry` = ' + id + ');\n' +
       'INSERT INTO `gameobject_template_addon` (`entry`, `faction`, `flags`, `mingold`, `maxgold`) VALUES\n' +
