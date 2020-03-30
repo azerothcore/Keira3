@@ -349,7 +349,7 @@
                 <ng-container *ngIf="conditionsHandlerService.selected">
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'conditions/conditions'">
-                      Conditions
+                      Conditions <keira-unsaved-icon *ngIf="conditionsHandlerService.isConditionsUnsaved"></keira-unsaved-icon>
                     </a>
                   </li>
                 </ng-container>

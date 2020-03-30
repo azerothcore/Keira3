@@ -8,7 +8,7 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
   selectedName: string;
   isNew = false;
 
-  protected _statusMap: { // TODO: make abstract
+  protected abstract _statusMap: {
     [key: string]: boolean;
   };
   get statusMap() {
