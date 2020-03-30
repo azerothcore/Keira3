@@ -10,6 +10,8 @@ import { SaiCreatureEditorService } from './sai-creature-editor.service';
   styleUrls: ['../../../shared/modules/sai-editor/sai-editor.component.scss']
 })
 export class SaiCreatureComponent extends SaiEditorComponent {
+
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: SaiCreatureEditorService,
     protected handlerService: SaiCreatureHandlerService,

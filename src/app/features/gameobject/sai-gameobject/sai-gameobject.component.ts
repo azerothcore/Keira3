@@ -10,6 +10,8 @@ import { SaiGameobjectEditorService } from './sai-gameobject-editor.service';
   styleUrls: ['../../../shared/modules/sai-editor/sai-editor.component.scss']
 })
 export class SaiGameobjectComponent extends SaiEditorComponent {
+
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: SaiGameobjectEditorService,
     protected handlerService: SaiGameobjectHandlerService,
