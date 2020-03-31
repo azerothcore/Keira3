@@ -85,6 +85,7 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
   }
 
   protected onReloadSuccessful(data: T[]) {
+    this._errors = [];
     this._originalRows = [];
     this._newRows = [];
     for (const row of data) {
@@ -94,8 +95,8 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
     this._newRows = [...this._newRows];
     this._selectedRowId = null;
     this._form.disable();
-    this._loadedEntityId = JSON.parse(this.handlerService.selected);
     this._nextRowId = 0;
+    this._loadedEntityId = JSON.parse(this.handlerService.selected);
     this.updateFullQuery();
   }
 }
