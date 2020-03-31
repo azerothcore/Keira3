@@ -82,6 +82,7 @@ describe('CreatureSpawnAddon integration tests', () => {
       expect(page.getInputById('isLarge').disabled).toBe(true);
       expect(page.getInputById('auras').disabled).toBe(true);
       expect(page.getEditorTableRowsCount()).toBe(0);
+      expect(handlerService.isCreatureSpawnAddonUnsaved).toBe(false);
     });
 
     // it('adding new rows and executing the query should correctly work', () => {

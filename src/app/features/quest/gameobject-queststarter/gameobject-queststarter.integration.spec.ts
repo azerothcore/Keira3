@@ -77,6 +77,14 @@ describe('GameobjectQueststarter integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(0);
     });
 
+    it('should correctly update the unsaved status', () => {
+      expect(handlerService.isGameobjectQueststarterUnsaved).toBe(false);
+      page.addNewRow();
+      expect(handlerService.isGameobjectQueststarterUnsaved).toBe(true);
+      page.deleteRow();
+      expect(handlerService.isGameobjectQueststarterUnsaved).toBe(false);
+    });
+
     it('adding new rows and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (0, 1, 2));\n' +
         'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +

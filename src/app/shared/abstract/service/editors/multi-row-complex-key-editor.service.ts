@@ -44,6 +44,8 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
       this._originalRows,
       this._newRows,
     );
+
+    this.updateEditorStatus();
   }
 
   protected abstract updateFullQuery(): void;

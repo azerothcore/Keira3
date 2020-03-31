@@ -99,6 +99,8 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
       this._originalRows,
       this._newRows,
     );
+
+    this.updateEditorStatus();
   }
 
   protected updateFullQuery(): void {

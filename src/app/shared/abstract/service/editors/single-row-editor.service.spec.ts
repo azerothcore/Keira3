@@ -76,10 +76,11 @@ describe('SingleRowEditorService', () => {
     });
   });
 
-  it('updateDiffQuery() should correctly work', () => {
+  it('updateDiffQuery should correctly work', () => {
     service['_diffQuery'] = '';
     const queryResult = '-- Mock query result';
     const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getUpdateQuery').and.returnValue(queryResult);
+    spyOn<any>(service, 'updateEditorStatus');
 
     service['updateDiffQuery']();
 
@@ -91,6 +92,7 @@ describe('SingleRowEditorService', () => {
       service.form.getRawValue(),
     );
     expect(service.diffQuery).toEqual(queryResult);
+    expect(service['updateEditorStatus']).toHaveBeenCalledTimes(1);
   });
 
   it('updateFullQuery() should correctly work', () => {

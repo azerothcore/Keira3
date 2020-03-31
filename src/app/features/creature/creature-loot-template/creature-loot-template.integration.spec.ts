@@ -93,6 +93,14 @@ describe('CreatureLootTemplate integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(0);
     });
 
+    it('should correctly update the unsaved status', () => {
+      expect(handlerService.isCreatureLootTemplateUnsaved).toBe(false);
+      page.addNewRow();
+      expect(handlerService.isCreatureLootTemplateUnsaved).toBe(true);
+      page.deleteRow();
+      expect(handlerService.isCreatureLootTemplateUnsaved).toBe(false);
+    });
+
     it('should reflect the item names', async () => {
       page.addNewRow();
       page.detectChanges();

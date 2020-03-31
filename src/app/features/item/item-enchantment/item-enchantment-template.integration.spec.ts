@@ -75,6 +75,14 @@ describe('ItemEnchantmentTemplate integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(0);
     });
 
+    it('should correctly update the unsaved status', () => {
+      expect(handlerService.isItemEnchantmentUnsaved).toBe(false);
+      page.addNewRow();
+      expect(handlerService.isItemEnchantmentUnsaved).toBe(true);
+      page.deleteRow();
+      expect(handlerService.isItemEnchantmentUnsaved).toBe(false);
+    });
+
     it('adding new rows and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `item_enchantment_template` WHERE (`entry` = 1234) AND (`ench` IN (0, 1, 2));\n' +
         'INSERT INTO `item_enchantment_template` (`entry`, `ench`, `chance`) VALUES\n' +

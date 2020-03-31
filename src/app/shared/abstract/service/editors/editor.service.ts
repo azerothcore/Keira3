@@ -18,7 +18,9 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   protected _form: FormGroup<T>;
   protected _error: MysqlError;
 
-  get loadedEntityId(): string { return `${this._loadedEntityId}`; }
+  get loadedEntityId(): string {
+    return typeof this._loadedEntityId === 'object' ? JSON.stringify(this._loadedEntityId) : String(this._loadedEntityId);
+  }
   get loading(): boolean { return this._loading; }
   get diffQuery(): string { return this._diffQuery; }
   get fullQuery(): string { return this._fullQuery; }
@@ -46,6 +48,10 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   protected abstract updateDiffQuery();
   protected abstract updateFullQuery();
   protected abstract onReloadSuccessful(data: T[], id: string|number);
+
+  protected updateEditorStatus() {
+    this.handlerService.statusMap[this._entityTable] = !!this._diffQuery;
+  }
 
   private getClassAttributes(c: Class): StringKeys<T>[] {
     const tmpInstance = new c();
@@ -87,6 +93,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     this._form.reset();
     this._fullQuery = '';
     this._diffQuery = '';
+    this.updateEditorStatus();
   }
 
   reload(id: string|number) {

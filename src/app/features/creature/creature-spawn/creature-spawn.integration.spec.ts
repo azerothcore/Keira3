@@ -99,6 +99,14 @@ describe('CreatureSpawn integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(0);
     });
 
+    it('should correctly update the unsaved status', () => {
+      expect(handlerService.isCreatureSpawnUnsaved).toBe(false);
+      page.addNewRow();
+      expect(handlerService.isCreatureSpawnUnsaved).toBe(true);
+      page.deleteRow();
+      expect(handlerService.isCreatureSpawnUnsaved).toBe(false);
+    });
+
     it('adding new rows and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `creature` WHERE (`id` = 1234) AND (`guid` IN (0, 1, 2));\n' +
         'INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +

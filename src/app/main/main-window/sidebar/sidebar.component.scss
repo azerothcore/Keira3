@@ -150,7 +150,7 @@ $img-border-color: rgba(255, 255, 255, 0.1);
           width: 100%;
           text-decoration: none;
           position: relative;
-          padding: 8px 30px 8px 20px;
+          padding: 8px 30px 8px 10px;
           cursor: pointer;
 
           i {
@@ -204,24 +204,9 @@ $img-border-color: rgba(255, 255, 255, 0.1);
           }
 
           li {
-            padding-left: 8px;
             font-size: 13px;
 
             a {
-              &:before {
-                content: "\f111";
-                font-family: "Font Awesome 5 Free", serif;
-                font-weight: 400;
-                font-style: normal;
-                display: inline-block;
-                text-align: center;
-                text-decoration: none;
-                -webkit-font-smoothing: antialiased;
-                -moz-osx-font-smoothing: grayscale;
-                margin-right: 10px;
-                font-size: 8px;
-              }
-
               .badge,
               .label {
                 float: right;

@@ -39,6 +39,8 @@ export abstract class MultiRowExternalEditorService<T extends TableRow> extends 
       null,
       this._entitySecondIdField,
     );
+
+    this.updateEditorStatus();
   }
 
   protected updateDiffQuery(): void {

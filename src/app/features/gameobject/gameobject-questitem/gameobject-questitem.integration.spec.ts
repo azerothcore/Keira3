@@ -78,6 +78,14 @@ describe('GameobjectQuestitem integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(0);
     });
 
+    it('should correctly update the unsaved status', () => {
+      expect(handlerService.isGameobjectQuestitemUnsaved).toBe(false);
+      page.addNewRow();
+      expect(handlerService.isGameobjectQuestitemUnsaved).toBe(true);
+      page.deleteRow();
+      expect(handlerService.isGameobjectQuestitemUnsaved).toBe(false);
+    });
+
     it('adding new rows and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234) AND (`Idx` IN (0, 1, 2));\n' +
         'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +

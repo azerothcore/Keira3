@@ -14,7 +14,6 @@ import { EditorService } from './editor.service';
 
 describe('EditorService', () => {
   let service: EditorService<MockEntity>;
-
   const error = { code: 'some error', errno: 1234 } as MysqlError;
 
   beforeEach(() => TestBed.configureTestingModule({
@@ -60,6 +59,7 @@ describe('EditorService', () => {
       service['_fullQuery'] = '-- some previous query';
       service['_diffQuery'] = '-- some previous query';
       selectAllSpy.and.returnValue(of(data));
+      spyOn<any>(service, 'updateEditorStatus');
 
       service.reload(id);
 
@@ -70,12 +70,14 @@ describe('EditorService', () => {
       expect(selectAllSpy).toHaveBeenCalledWith(service.entityTable, service['_entityIdField'], id);
       expect(formResetSpy).toHaveBeenCalledTimes(1);
       expect(onReloadSuccessfulSpy).toHaveBeenCalledWith(data, id);
+      expect(service['updateEditorStatus']).toHaveBeenCalledTimes(1);
     });
 
     it('should behave correctly when the query errors', () => {
       service['_fullQuery'] = '-- some previous query';
       service['_diffQuery'] = '-- some previous query';
       selectAllSpy.and.returnValue(throwError(error));
+      spyOn<any>(service, 'updateEditorStatus');
 
       service.reload(id);
 
@@ -86,6 +88,7 @@ describe('EditorService', () => {
       expect(selectAllSpy).toHaveBeenCalledWith(service.entityTable, service['_entityIdField'], id);
       expect(formResetSpy).toHaveBeenCalledTimes(1);
       expect(onReloadSuccessfulSpy).toHaveBeenCalledTimes(0);
+      expect(service['updateEditorStatus']).toHaveBeenCalledTimes(1);
     });
   });
 

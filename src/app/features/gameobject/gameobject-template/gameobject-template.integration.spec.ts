@@ -75,6 +75,15 @@ describe('GameobjectTemplate integration tests', () => {
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
+    it('should correctly update the unsaved status', () => {
+      const field = 'Data0';
+      expect(handlerService.isGameobjectTemplateUnsaved).toBe(false);
+      page.setInputValueById(field, 3);
+      expect(handlerService.isGameobjectTemplateUnsaved).toBe(true);
+      page.setInputValueById(field, 0);
+      expect(handlerService.isGameobjectTemplateUnsaved).toBe(false);
+    });
+
     it('changing a property and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `gameobject_template` WHERE (`entry` = ' + id + ');\n' +
       'INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, ' +

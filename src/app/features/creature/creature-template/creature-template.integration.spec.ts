@@ -110,6 +110,16 @@ describe('CreatureTemplate integration tests', () => {
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
+
+    it('should correctly update the unsaved status', () => {
+      const field = 'difficulty_entry_1';
+      expect(handlerService.isCreatureTemplateUnsaved).toBe(false);
+      page.setInputValueById(field, 3);
+      expect(handlerService.isCreatureTemplateUnsaved).toBe(true);
+      page.setInputValueById(field, 0);
+      expect(handlerService.isCreatureTemplateUnsaved).toBe(false);
+    });
+
   });
 
   describe('Editing existing', () => {

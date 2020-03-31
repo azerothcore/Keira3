@@ -50,6 +50,8 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
       this._form.getRawValue(),
       this.entityIdFields,
     );
+
+    this.updateEditorStatus();
   }
 
   protected updateFullQuery(): void {
