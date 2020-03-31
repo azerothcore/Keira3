@@ -8,10 +8,8 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
   selectedName: string;
   isNew = false;
 
-  protected abstract _statusMap: {
-    [key: string]: boolean;
-  };
-  get statusMap() {
+  protected abstract _statusMap: { [key: string]: boolean };
+  get statusMap(): { [key: string]: boolean } {
     return this._statusMap;
   }
 
@@ -28,7 +26,7 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
     super();
   }
 
-  private resetStatus() {
+  private resetStatus(): void {
     /* istanbul ignore next */ // not reachable under normal circumstances
     if (!this._statusMap) {
       return; // prevent test error: TypeError: Cannot convert undefined or null to object
