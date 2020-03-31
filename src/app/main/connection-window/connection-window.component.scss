@@ -1,10 +1,39 @@
-$buttons-color: #0052a7;
+$main-color-blue: #0052a7;
+$secondary-color-blue: #cdcfff;
+$main-color-red: #772b2b;
+
+.wrapper.img-1 {
+  background-image: url("../../../assets/img/login-backgrounds/ne-1.jpg");
+  .input-group-prepend span {
+    background-color: $main-color-blue;
+  }
+  .connect-button {
+    background-color: $main-color-blue;
+    border-color: $main-color-blue;
+  }
+  a {
+    color: $secondary-color-blue;
+  }
+}
+
+.wrapper.img-2 {
+  background-image: url("../../../assets/img/login-backgrounds/ragnaros.jpg");
+  .input-group-prepend span {
+    background-color: $main-color-red;
+  }
+  .connect-button {
+    background-color: $main-color-red;
+    border-color: $main-color-red;
+  }
+  a {
+    color: $secondary-color-blue;
+  }
+}
 
 .wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url("~assets/img/login-backgrounds/1.jpg");
   background-size: cover;
   height: 100vh;
 
@@ -32,7 +61,6 @@ $buttons-color: #0052a7;
 
         .input-group-prepend span {
           width: 130px;
-          background-color: $buttons-color;
           font-weight: bold;
           color: #fff;
           border: 0 !important;
@@ -50,8 +78,6 @@ $buttons-color: #0052a7;
       }
 
       .connect-button {
-        background-color: $buttons-color;
-        border-color: $buttons-color;
         font-weight: bold;
         width: 70%;
         margin: auto;
@@ -67,7 +93,6 @@ $buttons-color: #0052a7;
       font-weight: bold;
 
       a, a:hover {
-        color: #cdcfff;
         text-decoration: none;
       }
     }
