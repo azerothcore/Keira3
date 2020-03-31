@@ -8,6 +8,8 @@ import { SaiCommentGeneratorService } from '@keira-shared/modules/sai-editor/sai
 
 @Injectable()
 export class SaiCreatureEditorService extends SaiEditorService {
+
+  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: SaiCreatureHandlerService,
     public readonly queryService: MysqlQueryService,

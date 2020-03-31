@@ -72,6 +72,15 @@ describe('CreatureEquipTemplate integration tests', () => {
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
+    it('should correctly update the unsaved status', () => {
+      const field = 'ItemID1';
+      expect(handlerService.isCreatureEquipTemplateUnsaved).toBe(false);
+      page.setInputValueById(field, 3);
+      expect(handlerService.isCreatureEquipTemplateUnsaved).toBe(true);
+      page.setInputValueById(field, 0);
+      expect(handlerService.isCreatureEquipTemplateUnsaved).toBe(false);
+    });
+
     it('changing a property and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `creature_equip_template` WHERE (`CreatureID` = 1234);\n' +
         'INSERT INTO `creature_equip_template` (`CreatureID`, `ID`, `ItemID1`, `ItemID2`, `ItemID3`, `VerifiedBuild`) VALUES\n' +

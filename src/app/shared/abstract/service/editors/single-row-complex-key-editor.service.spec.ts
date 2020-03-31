@@ -49,8 +49,9 @@ describe('SingleRowComplexKeyEditorService', () => {
       expect(selectAllMultipleKeysSpy).toHaveBeenCalled();
     });
 
-    it('updateDiffQuery()', () => {
+    it('updateDiffQuery  should correctly work', () => {
       const getUpdateMultipleKeysQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getUpdateMultipleKeysQuery');
+      spyOn<any>(service, 'updateEditorStatus');
 
       service['updateDiffQuery']();
 
@@ -61,6 +62,7 @@ describe('SingleRowComplexKeyEditorService', () => {
         service['_form'].getRawValue(),
         service['entityIdFields']
       );
+      expect(service['updateEditorStatus']).toHaveBeenCalledTimes(1);
     });
 
     it('updateFullQuery()', () => {

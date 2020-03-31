@@ -8,6 +8,11 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
   selectedName: string;
   isNew = false;
 
+  protected abstract _statusMap: { [key: string]: boolean };
+  get statusMap(): { [key: string]: boolean } {
+    return this._statusMap;
+  }
+
   get selected(): string { return this._selected; }
 
   get parsedSelected(): Partial<T> {
@@ -21,7 +26,19 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
     super();
   }
 
+  private resetStatus(): void {
+    /* istanbul ignore next */ // not reachable under normal circumstances
+    if (!this._statusMap) {
+      return; // prevent test error: TypeError: Cannot convert undefined or null to object
+    }
+
+    for (const key of Object.keys(this._statusMap)) {
+      this._statusMap[key] = false;
+    }
+  }
+
   select(isNew: boolean, id: string|number|Partial<T>, name?: string, navigate = true) {
+    this.resetStatus();
     this.isNew = isNew;
 
     if (typeof id === 'object') {

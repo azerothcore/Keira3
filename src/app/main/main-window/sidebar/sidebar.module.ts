@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
-import { ModalModule } from 'ngx-bootstrap';
+import { ModalModule, TooltipModule } from 'ngx-bootstrap';
 import { PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarConfigInterface, PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
@@ -12,6 +12,7 @@ import { SidebarComponent } from './sidebar.component';
 import { LogoutBtnComponent } from './logout-btn/logout-btn.component';
 import { ModalConfirmComponent } from '@keira-shared/modules/modal-confirm/modal-confirm.component';
 import { ModalConfirmModule } from '@keira-shared/modules/modal-confirm/modal-confirm.module';
+import { UnsavedIconComponent } from './unsaved-icon/unsaved-icon.component';
 
 @NgModule({
   entryComponents: [
@@ -20,13 +21,15 @@ import { ModalConfirmModule } from '@keira-shared/modules/modal-confirm/modal-co
   declarations: [
     SidebarComponent,
     LogoutBtnComponent,
+    UnsavedIconComponent,
   ],
   imports: [
     RouterModule,
     BrowserAnimationsModule,
     PerfectScrollbarModule,
     ModalModule.forRoot(),
-    ModalConfirmModule
+    ModalConfirmModule,
+    TooltipModule
   ],
   exports: [
     SidebarComponent,

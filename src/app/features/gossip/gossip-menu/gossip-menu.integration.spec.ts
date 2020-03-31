@@ -74,6 +74,14 @@ describe('GossipMenu integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(0);
     });
 
+    it('should correctly update the unsaved status', () => {
+      expect(handlerService.isGossipMenuTableUnsaved).toBe(false);
+      page.addNewRow();
+      expect(handlerService.isGossipMenuTableUnsaved).toBe(true);
+      page.deleteRow();
+      expect(handlerService.isGossipMenuTableUnsaved).toBe(false);
+    });
+
     it('adding new rows and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `gossip_menu` WHERE (`MenuID` = 1234) AND (`TextID` IN (0, 1, 2));\n' +
         'INSERT INTO `gossip_menu` (`MenuID`, `TextID`) VALUES\n' +

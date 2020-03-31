@@ -50,9 +50,11 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
   protected updateDiffQuery(): void {
     super.updateDiffQuery();
 
-    if (this.handlerService.templateQuery) {
+    if (this.handlerService.templateQuery && this._diffQuery) {
       this._diffQuery = `${this.handlerService.templateQuery}\n\n${this._diffQuery}`;
     }
+
+    this.updateEditorStatus();
   }
 
   protected checkRowsCorrectness(): void {

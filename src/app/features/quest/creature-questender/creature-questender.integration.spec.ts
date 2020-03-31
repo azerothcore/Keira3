@@ -77,6 +77,14 @@ describe('CreatureQuestender integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(0);
     });
 
+    it('should correctly update the unsaved status', () => {
+      expect(handlerService.isCreatureQuestenderUnsaved).toBe(false);
+      page.addNewRow();
+      expect(handlerService.isCreatureQuestenderUnsaved).toBe(true);
+      page.deleteRow();
+      expect(handlerService.isCreatureQuestenderUnsaved).toBe(false);
+    });
+
     it('adding new rows and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `creature_questender` WHERE (`quest` = 1234) AND (`id` IN (0, 1, 2));\n' +
         'INSERT INTO `creature_questender` (`id`, `quest`) VALUES\n' +

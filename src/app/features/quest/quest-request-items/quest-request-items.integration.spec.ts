@@ -73,6 +73,15 @@ describe('QuestRequestItems integration tests', () => {
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
+    it('should correctly update the unsaved status', () => {
+      const field = 'EmoteOnComplete';
+      expect(handlerService.isQuestRequestItemsUnsaved).toBe(false);
+      page.setInputValueById(field, 3);
+      expect(handlerService.isQuestRequestItemsUnsaved).toBe(true);
+      page.setInputValueById(field, 0);
+      expect(handlerService.isQuestRequestItemsUnsaved).toBe(false);
+    });
+
     it('changing a property and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `quest_request_items` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `quest_request_items` (`ID`, `EmoteOnComplete`, `EmoteOnIncomplete`, `CompletionText`, `VerifiedBuild`) VALUES\n' +

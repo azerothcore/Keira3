@@ -18,8 +18,6 @@ declare const squel: Squel & {flavour: null};
 })
 export class MysqlQueryService extends QueryService {
 
-  private readonly QUERY_NO_CHANGES = '-- There are no changes';
-
   constructor(
     private mysqlService: MysqlService,
     private configService: ConfigService,
@@ -194,7 +192,7 @@ export class MysqlQueryService extends QueryService {
 
     if (!newRows || !currentRows) { return ''; }
     if (newRows.length === 0 && currentRows.length === 0) {
-      return this.QUERY_NO_CHANGES;
+      return '';
     }
 
     const deleteQuery: Delete = squel.delete(squelConfig).from(tableName);
@@ -216,7 +214,7 @@ export class MysqlQueryService extends QueryService {
     this.findAddedRows(primaryKey2, currentRows, newRows, involvedRows, addedOrEditedRows);
 
     if ( involvedRows.length === 0 ) {
-      return this.QUERY_NO_CHANGES;
+      return '';
     }
     const insertQuery: Insert = squel.insert(squelConfig).into(tableName);
 
@@ -250,7 +248,7 @@ export class MysqlQueryService extends QueryService {
     this.findAddedRows(primaryKey, currentRows, newRows, involvedRows, addedOrEditedRows);
 
     if ( involvedRows.length === 0 ) {
-      return this.QUERY_NO_CHANGES;
+      return '';
     }
 
     const deleteQuery: Delete = squel.delete(squelConfig).from(tableName);

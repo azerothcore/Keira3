@@ -1,11 +1,19 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Conditions, CONDITIONS_ID_FIELDS } from '@keira-types/conditions.type';
+import { Conditions, CONDITIONS_ID_FIELDS, CONDITIONS_TABLE } from '@keira-types/conditions.type';
 import { ComplexKeyHandlerService } from '@keira-abstract/service/handlers/complex-key.handler.service';
+import { QUEST_TEMPLATE_TABLE } from '@keira-types/quest-template.type';
 
 @Injectable()
 export class ConditionsHandlerService extends ComplexKeyHandlerService<Conditions> {
+
+  get isConditionsUnsaved(): boolean { return this.statusMap[CONDITIONS_TABLE]; }
+
+  protected _statusMap = {
+    [CONDITIONS_TABLE]: false,
+  };
+
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected router: Router,

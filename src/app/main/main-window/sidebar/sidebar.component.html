@@ -2,7 +2,7 @@
   id="sidebar"
   class="sidebar perfect-scrollbar-transparent"
   [ngClass]="{'sidebar-bg' : hasBackgroundImage()}"
-  style="background-image: url(assets/img/bg1.jpg);"
+  [style]="style"
 >
   <div class="sidebar-content">
     <perfect-scrollbar class="transparent">
@@ -12,7 +12,7 @@
 
       <div class="sidebar-profile">
         <div class="user-pic">
-          <img class="img-responsive img-rounded" src="assets/img/ac.png" alt="User picture">
+          <img class="img-responsive img-rounded" [src]="'assets/img/ac.png'" alt="User picture">
         </div>
         <div class="user-info" *ngIf="mysqlService.config">
           <span class="db-user">
@@ -70,68 +70,68 @@
                 <ng-container *ngIf="creatureHandlerService.selected">
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template'">
-                      Creature Template
+                      Creature Template <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureTemplateUnsaved"></keira-unsaved-icon>
                     </a>
                   </li>
                   <ng-container *ngIf="!creatureHandlerService.isNew">
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template-addon'">
-                        Template Addon
+                        Template Addon <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureTemplateAddonUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-onkill-reputation'">
-                        Onkill Reputation
+                        Onkill Reputation <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureOnkillReputationUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-equip-template'">
-                        Equip Template
+                        Equip Template <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureEquipTemplateUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/npc-vendor'">
-                        Vendor
+                        Vendor <keira-unsaved-icon *ngIf="creatureHandlerService.isNpcVendorUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/npc-trainer'">
-                        Trainer
+                        Trainer <keira-unsaved-icon *ngIf="creatureHandlerService.isNpcTrainerUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-questitem'">
-                        Quest Item
+                        Quest Item <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureQuestitemUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-loot-template'">
-                        Creature Loot
+                        Creature Loot <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureLootTemplateUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/pickpocketing-loot-template'">
-                        Pickpocketing Loot
+                        Pickpocketing Loot <keira-unsaved-icon *ngIf="creatureHandlerService.isPickpocketingLootTemplateUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/skinning-loot-template'">
-                        Skinning Loot
+                        Skinning Loot <keira-unsaved-icon *ngIf="creatureHandlerService.isSkinningLootTemplateUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-spawn'">
-                        Spawn
+                        Spawn <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureSpawnUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-spawn-addon'">
-                        Spawn Addon
+                        Spawn Addon <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureSpawnAddonUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/sai-creature'">
-                        SmartAI
+                        SmartAI <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureSaiUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                   </ng-container>
@@ -157,43 +157,43 @@
                 <ng-container *ngIf="questHandlerService.selected">
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-template'">
-                      Quest Template
+                      Quest Template <keira-unsaved-icon *ngIf="questHandlerService.isQuestTemplateUnsaved"></keira-unsaved-icon>
                     </a>
                   </li>
                   <ng-container *ngIf="!questHandlerService.isNew">
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-template-addon'">
-                        Quest Template Addon
+                        Quest Template Addon <keira-unsaved-icon *ngIf="questHandlerService.isQuestTemplateAddonUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-offer-reward'">
-                        Quest Offer Reward
+                        Quest Offer Reward <keira-unsaved-icon *ngIf="questHandlerService.isQuestOfferRewardUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-request-items'">
-                        Quest Request Items
+                        Quest Request Items <keira-unsaved-icon *ngIf="questHandlerService.isQuestRequestItemsUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/creature-queststarter'">
-                        Creature Queststarter
+                        Creature Queststarter <keira-unsaved-icon *ngIf="questHandlerService.isCreatureQueststarterUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/creature-questender'">
-                        Creature Questender
+                        Creature Questender <keira-unsaved-icon *ngIf="questHandlerService.isCreatureQuestenderUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/gameobject-queststarter'">
-                        Gameobject Queststarter
+                        Gameobject Queststarter <keira-unsaved-icon *ngIf="questHandlerService.isGameobjectQueststarterUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/gameobject-questender'">
-                        Gameobject Questender
+                        Gameobject Questender <keira-unsaved-icon *ngIf="questHandlerService.isGameobjectQuestenderUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                   </ng-container>
@@ -218,33 +218,33 @@
                 <ng-container *ngIf="gameobjectHandlerService.selected">
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-template'">
-                      Gameobject Template
+                      Gameobject Template <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectTemplateUnsaved"></keira-unsaved-icon>
                     </a>
                   </li>
                   <ng-container *ngIf="!gameobjectHandlerService.isNew">
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-template-addon'">
-                        Template Addon
+                        Template Addon <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectTemplateAddonUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-questitem'">
-                        Quest Items
+                        Quest Items <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectQuestitemUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-loot-template'">
-                        Gameobject Loot
+                        Gameobject Loot <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectLooTemplateUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-spawn'">
-                        Spawns
+                        Spawns <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectSpawnUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gameobject/sai-gameobject'">
-                        SmartAI
+                        SmartAI <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectSaiUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                   </ng-container>
@@ -268,33 +268,33 @@
                 <ng-container *ngIf="itemHandlerService.selected">
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'item/item-template'">
-                      Item Template
+                      Item Template <keira-unsaved-icon *ngIf="itemHandlerService.isItemTemplateUnsaved"></keira-unsaved-icon>
                     </a>
                   </li>
                   <ng-container *ngIf="!itemHandlerService.isNew">
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'item/item-enchantment-template'">
-                        Enchantment Template
+                        Enchantment Template <keira-unsaved-icon *ngIf="itemHandlerService.isItemEnchantmentUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'item/item-loot-template'">
-                        Item Loot
+                        Item Loot <keira-unsaved-icon *ngIf="itemHandlerService.isItemLootTemplateUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'item/disenchant-loot-template'">
-                        Disenchant Loot
+                        Disenchant Loot <keira-unsaved-icon *ngIf="itemHandlerService.isDisenchantmentLootTemplateUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'item/prospecting-loot-template'">
-                        Prospecting Loot
+                        Prospecting Loot <keira-unsaved-icon *ngIf="itemHandlerService.isProspectingLootTemplateUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'item/milling-loot-template'">
-                        Milling Loot
+                        Milling Loot <keira-unsaved-icon *ngIf="itemHandlerService.isMillingLootTemplateUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                   </ng-container>
@@ -318,13 +318,13 @@
                 <ng-container *ngIf="gossipHandlerService.selected">
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'gossip/gossip-menu'">
-                      Gossip Menu
+                      Gossip Menu <keira-unsaved-icon *ngIf="gossipHandlerService.isGossipMenuTableUnsaved"></keira-unsaved-icon>
                     </a>
                   </li>
                   <ng-container *ngIf="!gossipHandlerService.isNew">
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gossip/gossip-menu-option'">
-                        Gossip Menu Option
+                        Gossip Menu Option <keira-unsaved-icon *ngIf="gossipHandlerService.isGossipMenuOptionTableUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                   </ng-container>
@@ -349,7 +349,7 @@
                 <ng-container *ngIf="conditionsHandlerService.selected">
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'conditions/conditions'">
-                      Conditions
+                      Conditions <keira-unsaved-icon *ngIf="conditionsHandlerService.isConditionsUnsaved"></keira-unsaved-icon>
                     </a>
                   </li>
                 </ng-container>
@@ -378,7 +378,7 @@
                 <ng-container *ngIf="saiHandlerService.selected">
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'smart-ai/editors'">
-                      SmartAI editor
+                      SmartAI editor <keira-unsaved-icon *ngIf="saiHandlerService.isSaiUnsaved"></keira-unsaved-icon>
                     </a>
                   </li>
                 </ng-container>

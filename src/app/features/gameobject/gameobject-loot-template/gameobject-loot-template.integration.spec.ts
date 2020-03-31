@@ -96,6 +96,14 @@ describe('GameobjectLootTemplate integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(0);
     });
 
+    it('should correctly update the unsaved status', () => {
+      expect(handlerService.isGameobjectLooTemplateUnsaved).toBe(false);
+      page.addNewRow();
+      expect(handlerService.isGameobjectLooTemplateUnsaved).toBe(true);
+      page.deleteRow();
+      expect(handlerService.isGameobjectLooTemplateUnsaved).toBe(false);
+    });
+
     it('adding new rows and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0, 1, 2));\n' +
         'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +

@@ -38,10 +38,12 @@ describe('MultiRowComplexKeyEditorService', () => {
   it('updateDiffQuery should correctly work', () => {
     const queryService = TestBed.inject(MysqlQueryService);
     const getDiffDeleteInsertTwoKeysQuerySpy = spyOn(queryService, 'getDiffDeleteInsertTwoKeysQuery').and.returnValue('-- Mock Query');
+    spyOn<any>(service, 'updateEditorStatus');
 
     service['updateDiffQuery']();
 
     expect(getDiffDeleteInsertTwoKeysQuerySpy).toHaveBeenCalledTimes(1);
+    expect(service['updateEditorStatus']).toHaveBeenCalledTimes(1);
   });
 
   it('addToNewRow should correctly work', () => {

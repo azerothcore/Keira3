@@ -77,6 +77,13 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   }
 
   protected onReloadSuccessful(data: T[], id: string|number) {
+    this.loadNewData(data);
+    this._loadedEntityId = id;
+    this.updateFullQuery();
+  }
+
+  protected loadNewData(data: T[]) {
+    this._errors = [];
     this._originalRows = [];
     this._newRows = [];
     for (const row of data) {
@@ -86,9 +93,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     this._newRows = [...this._newRows];
     this._selectedRowId = null;
     this._form.disable();
-    this._loadedEntityId = id;
     this._nextRowId = 0;
-    this.updateFullQuery();
   }
 
   protected updateDiffQuery(): void {
@@ -99,6 +104,8 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
       this._originalRows,
       this._newRows,
     );
+
+    this.updateEditorStatus();
   }
 
   protected updateFullQuery(): void {
