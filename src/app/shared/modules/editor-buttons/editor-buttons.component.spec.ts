@@ -3,8 +3,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { EditorButtonsComponent } from './editor-buttons.component';
 
 describe('EditorButtonsComponent', () => {
-  let component: EditorButtonsComponent;
-  let fixture: ComponentFixture<EditorButtonsComponent>;
+  let component: EditorButtonsComponent<any>;
+  let fixture: ComponentFixture<EditorButtonsComponent<any>>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
