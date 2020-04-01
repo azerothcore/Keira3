@@ -403,8 +403,6 @@ export class ItemPreviewService {
         // converting xCostData to ARRAY_KEY structure
         for (const xCost of xCostData) {
           xCostDataArr[xCost.id] = xCost;
-
-          // console.log(xCostDataArr);
         }
       } else {
         return [];
@@ -418,12 +416,6 @@ export class ItemPreviewService {
         for (const [m, vInfo] of Object.entries(vendor)) {
 
           let costs = [];
-          // console.log('XDATA');
-          // console.log(JSON.stringify(itemz));
-          // console.log(JSON.stringify(vendors));
-          // console.log(JSON.stringify(vInfo));
-          // console.log(JSON.stringify(xCostDataArr));
-          // console.log(JSON.stringify(rawEntries));
           if (xCostDataArr[vInfo['extendedCost']] && Object.keys(xCostDataArr[vInfo['extendedCost']]).length > 0) {
             costs = xCostDataArr[vInfo['extendedCost']];
           }
@@ -474,11 +466,11 @@ export class ItemPreviewService {
         for (const [npcId, costData] of Object.entries(vendors)) {
           for (const [itr, cost] of Object.entries(costData)) {
             for (const [k, v] of Object.entries(cost)) {
-              if (cItems.includes(k)) {
+              if (cItems.includes(Number(k))) {
                 let found = false;
                 for (const item of cItems) {
-                  if (item.id === k) {
-                    delete cost[k];
+                  if (item === Number(k)) {
+                    delete cost[Number(k)];
                     cost[-item.id] = v;
                     found = true;
                     break;
@@ -808,10 +800,15 @@ export class ItemPreviewService {
       bondingText += '<br><!-- uniqueEquipped -->' + this.ITEM_CONSTANTS['uniqueEquipped'][0];
     } else if (!!itemLimitCategory) {
       let limit: any = await this.getItemLimitCategoryById(itemLimitCategory);
-      limit = limit[0];
 
-      const index = limit && limit.isGem ? 'uniqueEquipped' : 'unique';
-      bondingText += '<br><!-- unique isGem -->' + ITEM_CONSTANTS[index][2].replace('%s', limit.name).replace('%d', limit.count);
+      if (limit && limit.length > 0) {
+        limit = limit[0];
+
+        const index = limit && limit.isGem ? 'uniqueEquipped' : 'unique';
+        bondingText += `<br><!-- unique isGem -->${
+          ITEM_CONSTANTS[index][2].replace('%s', limit.name).replace('%d', limit.count)
+        }`;
+      }
     }
 
     return bondingText;
@@ -822,24 +819,31 @@ export class ItemPreviewService {
 
     let textRight = '';
     if ([ITEM_TYPE.ARMOR, ITEM_TYPE.WEAPON, ITEM_TYPE.AMMUNITION].includes(itemClass)) {
-      classText += '<table style="float: left; width: 100%;"><tr>';
+      let classTmpText = '<table style="float: left; width: 100%;"><tr>';
 
       // Class
       if (inventoryType) {
-        classText += `<td>${ITEM_CONSTANTS.inventoryType[inventoryType]}</td>`;
+        classTmpText += `<td>${ITEM_CONSTANTS.inventoryType[inventoryType]}</td>`;
         textRight = ' style="text-align: right;"';
       }
 
       // Subclass
+      /* istanbul ignore else */
       if (itemClass === ITEM_TYPE.ARMOR && subclass > 0) {
-        classText += `<th${textRight}><!--asc ${subclass} -->${ITEM_CONSTANTS.armorSubClass[subclass]}</th>`;
+        classTmpText += `<th${textRight}><!--asc ${subclass} -->${ITEM_CONSTANTS.armorSubClass[subclass]}</th>`;
       } else if (itemClass === ITEM_TYPE.WEAPON) {
-        classText += `<th${textRight}>${ITEM_CONSTANTS.weaponSubClass[subclass] ?? ''}</th>`;
+        classTmpText += ITEM_CONSTANTS.weaponSubClass[subclass] ? `<th${textRight}>${ITEM_CONSTANTS.weaponSubClass[subclass]}</th>` : '';
       } else if (itemClass === ITEM_TYPE.AMMUNITION) {
-        classText += `<th${textRight}>${ITEM_CONSTANTS.projectileSubClass[subclass] ?? ''}</th>`;
+        classTmpText += ITEM_CONSTANTS.projectileSubClass[subclass]
+         ? `<th${textRight}>${ITEM_CONSTANTS.projectileSubClass[subclass]}</th>`
+          : '';
       }
 
-      classText += '</tr></table>';
+      classTmpText += '</tr></table>';
+
+      if (classTmpText !== '<table style="float: left; width: 100%;"><tr></tr></table>') {
+        classText += classTmpText;
+      }
 
       // inventoryType/slot can occur on random items and is then also displayed <_< .. excluding Bags >_>
     } else if (inventoryType && itemClass !== ITEM_TYPE.CONTAINER && !!ITEM_CONSTANTS.inventoryType[subclass]) {
@@ -1020,11 +1024,12 @@ export class ItemPreviewService {
     const spellCharges1 = itemTemplate.spellcharges_1;
     if (!!spellCharges1) {
 
-      const charges = ITEM_CONSTANTS.charges.replace('%d', Math.abs(spellCharges1).toString());
+      let charges = ITEM_CONSTANTS.charges.replace('%d', Math.abs(spellCharges1).toString());
       if (Math.abs(spellCharges1) === 1) {
-        charges.replace('Charges', 'Charge');
+        charges = charges.replace('Charges', 'Charge');
       }
 
+      /* istanbul ignore else */
       if (!!charges && charges !== '') {
         xMisc.push(`<br><span class="q1">${charges}</span>`);
       }
@@ -1041,34 +1046,42 @@ export class ItemPreviewService {
 
     if (!!gemEnchantmentId) {
       let gemEnch = await this.getItemEnchantmentById(gemEnchantmentId);
-      gemEnch = gemEnch ? gemEnch[0] : null;
+      if (!gemEnch || (gemEnch && gemEnch.length === 0)) { return ''; }
 
-      gemEnchantmentText += `<br><span class="q1">${gemEnch['name']}</span>`;
+      gemEnch = gemEnch[0];
+
+      if (!!gemEnch['name'] && gemEnch['name'] !== '') {
+        gemEnchantmentText += `<br><span class="q1">${gemEnch['name']}</span>`;
+      }
 
       // activation conditions for meta gems
       if (!!gemEnch['conditionId']) {
+
         let gemCnd = await this.getItemEnchantmentConditionById(gemEnch['conditionId']);
-        gemCnd = gemCnd ? gemCnd[0] : null;
+        if (!gemCnd || (gemCnd && gemCnd.length === 0)) { return ''; }
+
+        gemCnd = gemCnd[0];
 
         if (!!gemCnd) {
 
-          const gemConditions = ITEM_CONSTANTS['gemConditions'];
-
           for (let i = 1; i < 6; i++) {
-            if (!gemCnd['color' + i]) {
+            const gemCndColor = Number(gemCnd[`color${i}`]);
+
+            if (!gemCndColor) {
               continue;
             }
 
-            const gemCndColor = Number(gemCnd[`color${i}`]);
             const gemCndCmpColor = Number(gemCnd[`cmpColor${i}`]);
-            const gemCndComparator = gemCnd[`comparator${i}`];
+            const gemCndComparator = Number(gemCnd[`comparator${i}`]);
+            const gemCndValue = Number(gemCnd[`value${i}`]);
 
-            let vspfArgs: any = [];
-            switch (gemCnd['comparator' + i]) {
+            let vspfArgs: any = ['', ''];
+
+            switch (gemCndComparator) {
               case 2:                         // requires less <color> than (<value> || <comparecolor>) gems
               case 5:                         // requires at least <color> than (<value> || <comparecolor>) gems
               vspfArgs = [
-                gemCnd['value' + i],
+                gemCndValue,
                 ITEM_CONSTANTS['gemColors'][gemCndColor - 1],
               ];
               break;
@@ -1082,13 +1095,16 @@ export class ItemPreviewService {
                 break;
             }
 
-            if (vspfArgs.length === 0) {
+            if (vspfArgs[0] === '' && vspfArgs[1] === '') {
               continue;
             }
 
-            const gemEnchText = gemConditions[gemCndComparator]
-                                .replace('%s', vspfArgs[0] ?? '')
-                                .replace('%s', vspfArgs[1] ?? '');
+            let gemEnchText = ITEM_CONSTANTS['gemConditions'][gemCndComparator];
+
+            /* istanbul ignore next */
+            if (!!vspfArgs[0] && !!vspfArgs[1]) {
+              gemEnchText = gemEnchText.replace('%s', vspfArgs[0]).replace('%s', vspfArgs[1]);
+            }
 
             gemEnchantmentText += `<br><span class="q0">Requires ${gemEnchText}</span>`;
           }
@@ -1154,13 +1170,15 @@ export class ItemPreviewService {
         }
       }
 
-      if (itemSpellsAndTrigger) {
+      if (itemSpellsAndTrigger && itemSpellsAndTrigger.length > 0) {
         const spellIDs = Object.keys(itemSpellsAndTrigger);
         for (const spellID of spellIDs) {
           const spellTrigger = itemSpellsAndTrigger[spellID];
           const parsed = await this.sqliteQueryService.getSpellDescriptionById(spellID); // TODO: parseText correctly
 
+          /* istanbul ignore next */
           if (spellTrigger[0] || parsed || spellTrigger[1]) {
+            /* istanbul ignore next */
             green.push(ITEM_CONSTANTS.trigger[spellTrigger[0]] ?? '' + parsed ?? '' + ' ' + ITEM_CONSTANTS.trigger[spellTrigger[1]] ?? '');
           }
         }
@@ -1185,8 +1203,10 @@ export class ItemPreviewService {
     if (this.canTeachSpell(spellId1, spellId2)) {
       const craftSpell = spellId2;
 
-
-      if (!!craftSpell) {
+      if (
+        /* istanbul ignore next */
+        !!craftSpell
+      ) {
         // let xCraft = '';
 
         const desc = await this.sqliteQueryService.getSpellDescriptionById(spellId2);
