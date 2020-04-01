@@ -5,7 +5,6 @@ import { TableRow } from '@keira-types/general';
 @Component({
   selector: 'keira-editor-buttons',
   templateUrl: './editor-buttons.component.html',
-  styleUrls: ['./editor-buttons.component.scss']
 })
 export class EditorButtonsComponent<T extends TableRow> {
   @Input() editorService: MultiRowEditorService<T>;
