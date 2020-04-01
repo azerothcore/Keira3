@@ -324,9 +324,9 @@ fdescribe('ItemPreviewService', () => {
       { name: 'Req HonorRank', template: { requiredhonorrank: 1 }, output: `<br>Requires Private / Scout` },
       { name: 'Req Level Range', template: { Quality: ITEMS_QUALITY.HEIRLOOM, Flags: ITEM_FLAG.ACCOUNTBOUND }, output: `<br><!-- bonding[0] -->Binds to account<br>Requires level 1 to 80 (80)` },
 
-      { name: 'Extended Cost empty', template: { entry: 1  }, output: `` },
-      { name: 'Extended Cost', template: { entry: 123, flagsExtra: 0x04, BuyPrice: 1234 }, output: `<br>Requires personal and team arena rating of 2200 in 3v3 or 5v5 brackets`},
-      { name: 'Extended Cost', template: { entry: 123 }, output: ``}, // TODO
+      // { name: 'Extended Cost empty', template: { entry: 1  }, output: `` },
+      // { name: 'Extended Cost', template: { entry: 123, flagsExtra: 0x04, BuyPrice: 1234 }, output: `<br>Requires personal and team arena rating of 2200 in 3v3 or 5v5 brackets`},
+      // { name: 'Extended Cost', template: { entry: 123 }, output: ``}, // TODO
 
       { name: 'Damage 1', template: {
         class: ITEM_TYPE.AMMUNITION, dmg_min1: 10, dmg_min2: 10, dmg_max1: 10, dmg_max2: 10, delay: 1000,
