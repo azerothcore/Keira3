@@ -10,6 +10,7 @@ import { SelectQuestComponent } from './select-quest.component';
 import { CreateModule } from '@keira-shared/modules/create/create.module';
 import { highlightOptions } from '@keira-config/highlight.config';
 import { SelectQuestService } from './select-quest.service';
+import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { SelectQuestService } from './select-quest.service';
     CreateModule,
     HighlightModule.forRoot(highlightOptions),
     NgxDatatableModule,
+    SearchButtonsModule,
   ],
   exports: [
     SelectQuestComponent,

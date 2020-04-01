@@ -16,12 +16,7 @@
         <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Unlimited">
       </div>
       <div class="col-2">
-        <button
-          id="search-button"
-          class="btn btn-primary btn-sm"
-          [disabled]="searchService.queryForm.invalid"
-          (click)="searchService.onSearch()"
-        >Search</button>
+        <keira-search-button [searchService]="searchService"></keira-search-button>
       </div>
     </div>
     <code [highlight]="searchService.query"></code>
