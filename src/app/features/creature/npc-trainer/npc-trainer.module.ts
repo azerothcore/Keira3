@@ -12,6 +12,7 @@ import { NpcTrainerComponent } from './npc-trainer.component';
 import { NpcTrainerService } from './npc-trainer.service';
 import { SpellSelectorModule } from '@keira-shared/modules/selectors/spell-selector/spell-selector.module';
 import { SkillSelectorModule } from '@keira-shared/modules/selectors/skill-selector/skill-selector.module';
+import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { SkillSelectorModule } from '@keira-shared/modules/selectors/skill-selec
     NgxDatatableModule,
     SpellSelectorModule,
     SkillSelectorModule,
+    EditorButtonsModule,
   ],
   exports: [
     NpcTrainerComponent,

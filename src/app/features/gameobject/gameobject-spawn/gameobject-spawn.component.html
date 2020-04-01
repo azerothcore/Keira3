@@ -141,18 +141,7 @@
     <div class="row">
       <div class="col-12">
 
-        <button
-          id="delete-selected-row-btn"
-          class="btn btn-danger btn-sm mr-2"
-          (click)="editorService.deleteSelectedRow()"
-          [disabled]="editorService.selectedRowId === null"
-        >Delete selected row</button>
-
-        <button
-          id="add-new-row-btn"
-          class="btn btn-success btn-sm"
-          (click)="editorService.addNewRow()"
-        >Add new row</button>
+        <keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>
 
         <ngx-datatable
           id="editor-table"

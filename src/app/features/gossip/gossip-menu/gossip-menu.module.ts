@@ -10,6 +10,7 @@ import { QueryOutputModule } from '@keira-shared/modules/query-output/query-outp
 import { GossipMenuComponent } from './gossip-menu.component';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { GossipMenuService } from './gossip-menu.service';
+import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { GossipMenuService } from './gossip-menu.service';
     TooltipModule.forRoot(),
     ToastrModule.forRoot(toastrConfig),
     NgxDatatableModule,
+    EditorButtonsModule,
   ],
   exports: [
     GossipMenuComponent,
