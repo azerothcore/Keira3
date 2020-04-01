@@ -14,6 +14,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { IconModule } from '@keira-shared/modules/icon/icon.module';
+import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { IconModule } from '@keira-shared/modules/icon/icon.module';
     FlagsSelectorModule,
     NgxDatatableModule,
     IconModule,
+    EditorButtonsModule,
   ],
   exports: [
     GameobjectLootTemplateComponent,

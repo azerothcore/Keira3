@@ -38,15 +38,21 @@
         <ul>
 
           <li>
-            <a id="dashboard-toggle" href="#" [routerLink]="''">Dashboard</a>
+            <a id="dashboard-toggle" href="#" [routerLink]="''">
+              <i class="fa fa-tachometer-alt"></i> Dashboard
+            </a>
           </li>
 
           <li>
-            <a id="sql-editor-toggle" href="#" [routerLink]="'sql-editor'">SQL Editor</a>
+            <a id="sql-editor-toggle" href="#" [routerLink]="'sql-editor'">
+              <i class="fa fa-code"></i> SQL Editor
+            </a>
           </li>
 
           <li>
-            <a id="collapse-all" (click)="collapseAll()">Collapse All</a>
+            <a id="collapse-all" (click)="collapseAll()">
+              <i class="fas fa-angle-double-up"></i> Collapse All
+            </a>
           </li>
 
           <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.creature === 'down' }">

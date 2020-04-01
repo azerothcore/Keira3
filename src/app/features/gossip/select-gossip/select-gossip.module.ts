@@ -10,6 +10,7 @@ import { SelectGossipComponent } from './select-gossip.component';
 import { CreateModule } from '@keira-shared/modules/create/create.module';
 import { highlightOptions } from '@keira-config/highlight.config';
 import { SelectGossipService } from './select-gossip.service';
+import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { SelectGossipService } from './select-gossip.service';
     CreateModule,
     HighlightModule.forRoot(highlightOptions),
     NgxDatatableModule,
+    SearchButtonsModule,
   ],
   exports: [
     SelectGossipComponent,

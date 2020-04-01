@@ -16,7 +16,7 @@
         id="select-button"
         [disabled]="!isIdFree || !idModel"
         (click)="handlerService.select(true, idModel)"
-      >Select</button>
+      ><i class="fa fa-plus"></i> Select</button>
     </div>
   </div>
   <div class="col-12 mt-1" [hidden]="!idModel" id="id-free-status">

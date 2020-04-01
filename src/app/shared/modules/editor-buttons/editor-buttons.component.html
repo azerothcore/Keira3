@@ -1,0 +1,12 @@
+<button
+  id="delete-selected-row-btn"
+  class="btn btn-danger btn-sm mr-2"
+  (click)="editorService.deleteSelectedRow()"
+  [disabled]="editorService.selectedRowId === null"
+><i class="fa fa-trash fa-sm"></i> Delete selected row</button>
+
+<button
+  id="add-new-row-btn"
+  class="btn btn-success btn-sm"
+  (click)="editorService.addNewRow()"
+><i class="fa fa-plus fa-sm"></i> Add new row</button>

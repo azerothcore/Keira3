@@ -10,6 +10,7 @@ import { SelectCreatureComponent } from './select-creature.component';
 import { CreateModule } from '@keira-shared/modules/create/create.module';
 import { highlightOptions } from '@keira-config/highlight.config';
 import { SelectCreatureService } from './select-creature.service';
+import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { SelectCreatureService } from './select-creature.service';
     CreateModule,
     HighlightModule.forRoot(highlightOptions),
     NgxDatatableModule,
+    SearchButtonsModule,
   ],
   exports: [
     SelectCreatureComponent,
