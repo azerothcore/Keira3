@@ -53,7 +53,7 @@ export const ITEM_CONSTANTS = {
             //  basic,                          basic /w school,                add basic,                  add basic /w school
     'single': ['%d Damage',                    '%d %s Damage',                 '+ %d Damage',              '+%d %s Damage'             ],
     'range':  ['%d - %d Damage',               '%d - %d %s Damage',            '+ %d - %d Damage',         '+%d - %d %s Damage'        ],
-    'ammo':   ['Adds %g damage per second',    'Adds %g %s damage per second', '+ %g damage per second',   '+ %g %s damage per second' ],
+    'ammo':   ['Adds %d damage per second',    'Adds %d %s damage per second', '+ %d damage per second',   '+ %d %s damage per second' ],
   },
   'socketBonus': 'Socket Bonus: %s',              // ITEM_SOCKET_BONUS
   'socket': [

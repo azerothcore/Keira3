@@ -30,7 +30,7 @@ export class ItemPreviewService {
     return this.mysqlQueryService.query(`SELECT name FROM item_template WHERE entry IN (${IDs.join(',')}) ORDER BY entry ASC`).toPromise();
   }
 
-  private getItemsetById(ID: number | string): Promise<any[]> {
+  private getItemsetById(ID: number | string): Promise<any> {
     return this.sqliteQueryService.query(`SELECT * FROM itemset WHERE id = ${ID}`).toPromise();
   }
 
@@ -369,15 +369,12 @@ export class ItemPreviewService {
   //             wowhead seems to have had the same issues
   private async getExtendedCost(entry: number, flagsExtra: number, buyPrice: number): Promise<any[]> {
 
-    console.log(entry);
-
     if (!entry) { return []; }
 
     const itemz = {};
     let xCostData = [];
     const xCostDataArr = {};
     const rawEntries = await this.getItemExtendedCostFromVendor(entry);
-    console.log(rawEntries);
 
     if (!rawEntries) {
       return [];
@@ -401,12 +398,16 @@ export class ItemPreviewService {
       xCostData = Array.from(new Set(xCostData)); // filter duplicates
       xCostData = await this.getItemExtendedCost(xCostData);
 
-      if (!xCostData) {
+      if (!!xCostData && xCostData.length > 0) {
 
         // converting xCostData to ARRAY_KEY structure
         for (const xCost of xCostData) {
           xCostDataArr[xCost.id] = xCost;
+
+          // console.log(xCostDataArr);
         }
+      } else {
+        return [];
       }
     }
 
@@ -417,6 +418,12 @@ export class ItemPreviewService {
         for (const [m, vInfo] of Object.entries(vendor)) {
 
           let costs = [];
+          // console.log('XDATA');
+          // console.log(JSON.stringify(itemz));
+          // console.log(JSON.stringify(vendors));
+          // console.log(JSON.stringify(vInfo));
+          // console.log(JSON.stringify(xCostDataArr));
+          // console.log(JSON.stringify(rawEntries));
           if (xCostDataArr[vInfo['extendedCost']] && Object.keys(xCostDataArr[vInfo['extendedCost']]).length > 0) {
             costs = xCostDataArr[vInfo['extendedCost']];
           }
@@ -554,12 +561,13 @@ export class ItemPreviewService {
       }
 
       if (itemClass === ITEM_TYPE.WEAPON) {
-        damageText += `<table style="float: left; width: 100%;"><tr><td>${dmg}</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><th style="text-align: right;">Speed <!--spd-->${speed.toFixed(2)}</th></tr></table>`;
+        damageText += `<!--dmg--><table style="float: left; width: 100%;"><tr><td>${dmg}</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><th style="text-align: right;">Speed <!--spd-->${speed.toFixed(2)}</th></tr></table>`;
       } else {
         damageText += `<br><!--dmg-->${dmg}`;
       }
 
       // secondary damage is set
+      /* istanbul ignore next */
       if ((dmgmin2 || dmgmax2) && dmgmin2 !== dmgmax2) {
         damageText += ITEM_CONSTANTS.damage.range[sc2 ? 3 : 2]
           .replace('%d', String(dmgmin2))
@@ -626,6 +634,8 @@ export class ItemPreviewService {
 
     const itemsetPieces = await this.getItemsetSlotBak(itemset);
 
+    if (!itemsetPieces || itemsetPieces.length === 0) { return ''; }
+
     // check if there are multiple itemset with the same itemset ID
     let multipleItemset = false;
 
@@ -671,6 +681,8 @@ export class ItemPreviewService {
         }
 
         pos++;
+
+        /* istanbul ignore else */
         if (pos === position) {
           piecesIDs.push(p.id);
         }
@@ -686,27 +698,25 @@ export class ItemPreviewService {
     // get items name
     const itemsName: any[] = await this.getItemNameByIDsASC(piecesIDs);
 
-    if (!itemsName) {
+    if (!itemsName || (itemsName && itemsName.length === 0)) {
       return '';
     }
 
     for (let i = 0; i < itemsName.length; i++) {
-      itemsName[i] = itemsName[i].name;
+      itemsName[i] = itemsName[i].name ?? '';
     }
 
-    let itemsetAttr = await this.getItemsetById(itemset);
-    itemsetAttr = itemsetAttr ? itemsetAttr[0] : null;
+    const itemsetAttr = await this.getItemsetById(itemset);
 
-    if (!itemsetAttr) {
+    if (!itemsetAttr || itemsName.join('') === '') {
       return '';
     }
 
     itemsetText += '<br><br><span class="q">' + ITEM_CONSTANTS.setName
-      .replace('%s', `${itemsetAttr['name']}</span>`)
+      .replace('%s', `${itemsetAttr['name'] ?? ''}`)
       .replace('%d', '0')
       .replace('%d', itemsName.length.toString())
       + '</span>';
-
 
       // if require skill
       if (!!itemsetAttr['skillId']) {
@@ -744,7 +754,7 @@ export class ItemPreviewService {
       }
 
       // sort and list bonuses
-      itemsetText += '<span class="q0">';
+      let tmpBonus = '';
       for (let i = 0; i < setSpells.length; i++) {
         for (let j = i; j < setSpells.length; j++) {
           if (setSpells[j]['bonus'] >= setSpells[i]['bonus']) {
@@ -762,9 +772,13 @@ export class ItemPreviewService {
           .replace('%s', setSpells[i]['tooltip'])
         : '';
 
-        itemsetText += `<br><span>${bonusText}</span>`;
+        if (!!bonusText) {
+          tmpBonus += `<br><span>${bonusText}</span>`;
+        }
       }
-      itemsetText += '</span>';
+      if (tmpBonus !== '') {
+        itemsetText += `<span class="q0">${tmpBonus}</span>`;
+      }
 
     return itemsetText;
   }
@@ -813,16 +827,16 @@ export class ItemPreviewService {
       // Class
       if (inventoryType) {
         classText += `<td>${ITEM_CONSTANTS.inventoryType[inventoryType]}</td>`;
-        textRight = 'style="text-align: right;"';
+        textRight = ' style="text-align: right;"';
       }
 
       // Subclass
       if (itemClass === ITEM_TYPE.ARMOR && subclass > 0) {
-        classText += `<th ${textRight}><!--asc ${subclass} -->${ITEM_CONSTANTS.armorSubClass[subclass]}</th>`;
+        classText += `<th${textRight}><!--asc ${subclass} -->${ITEM_CONSTANTS.armorSubClass[subclass]}</th>`;
       } else if (itemClass === ITEM_TYPE.WEAPON) {
-        classText += `<th ${textRight}>${ITEM_CONSTANTS.weaponSubClass[subclass]}</th>`;
+        classText += `<th${textRight}>${ITEM_CONSTANTS.weaponSubClass[subclass] ?? ''}</th>`;
       } else if (itemClass === ITEM_TYPE.AMMUNITION) {
-        classText += `<th ${textRight}>${ITEM_CONSTANTS.projectileSubClass[subclass]}</th>`;
+        classText += `<th${textRight}>${ITEM_CONSTANTS.projectileSubClass[subclass] ?? ''}</th>`;
       }
 
       classText += '</tr></table>';
@@ -893,9 +907,6 @@ export class ItemPreviewService {
 
     // required arena team rating / personal rating / todo (low): sort out what kind of rating
     const [res, reqRating] = await this.getExtendedCost(itemTemplate.entry, itemTemplate.FlagsExtra, itemTemplate.BuyPrice);
-
-    console.log(res);
-    console.log(reqRating);
 
     if (!!res && !!reqRating && res[itemTemplate.entry] && Object.keys(res[itemTemplate.entry]).length > 0 && reqRating.length > 0) {
       requiredText += '<br>' + ITEM_CONSTANTS.reqRating[reqRating[1]].replace('%d', reqRating[0]);
