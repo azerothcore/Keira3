@@ -1,59 +1,67 @@
-<div class="container">
-  <div class="mt-3 text-center">
-    <span class="lead font-weight-bold">Keira {{ KEIRA_VERSION }}</span>
-  </div>
-  <hr>
-  <div class="form-wrapper" *ngIf="form">
-    <form [formGroup]="form" class="mb-4">
-      <div class="form-group row">
-        <label class="col-4 col-form-label" for="host">Host</label>
-        <input
-          [formControlName]="'host'"
-          class="form-control col-7"
-          id="host"
-          placeholder="Enter your MySQL server address"
-        >
-      </div>
-      <div class="form-group row">
-        <label class="col-4 col-form-label" for="port">Port</label>
-        <input
-          [formControlName]="'port'"
-          class="form-control col-7"
-          id="port"
-          placeholder="Enter your MySQL server port"
-        >
-      </div>
-      <div class="form-group row">
-        <label class="col-4 col-form-label" for="user">User</label>
-        <input
-          [formControlName]="'user'"
-          class="form-control col-7"
-          id="user"
-          placeholder="Enter your MySQL user name"
-        >
-      </div>
-      <div class="form-group row">
-        <label class="col-4 col-form-label" for="password">Password</label>
-        <input
-          [formControlName]="'password'"
-          type="password"
-          class="form-control col-7"
-          id="password"
-          placeholder="Enter your MySQL user password"
-        >
-      </div>
-      <div class="form-group row">
-        <label class="col-4 col-form-label" for="database">Database</label>
-        <input
-          [formControlName]="'database'"
-          class="form-control col-7"
-          id="database"
-          placeholder="Enter your AC world database name"
-        >
-      </div>
-      <button class="btn btn-success connect-button" (click)="onConnect()">Connect</button>
-    </form>
+<div class="wrapper img-{{ RANDOM_IMAGE }}">
+  <div class="content">
 
-    <keira-query-error [error]="error"></keira-query-error>
+    <div class="title">
+      <span class="lead font-weight-bold">Keira {{ KEIRA_VERSION }}</span>
+    </div>
+
+    <div class="form-wrapper" *ngIf="form">
+      <form [formGroup]="form">
+        <div class="form-group">
+          <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-server"></i>Host</span></div>
+          <input
+            [formControlName]="'host'"
+            class="form-control"
+            id="host"
+            placeholder="Enter your MySQL server address"
+          >
+        </div>
+        <div class="form-group">
+          <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-network-wired"></i>Port</span></div>
+          <input
+            [formControlName]="'port'"
+            class="form-control"
+            id="port"
+            placeholder="Enter your MySQL server port"
+          >
+        </div>
+        <div class="form-group">
+          <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-user"></i>Username</span></div>
+          <input
+            [formControlName]="'user'"
+            class="form-control"
+            id="user"
+            placeholder="Enter your MySQL user name"
+          >
+        </div>
+        <div class="form-group">
+          <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-key"></i>Password</span></div>
+          <input
+            [formControlName]="'password'"
+            type="password"
+            class="form-control"
+            id="password"
+            placeholder="Enter your MySQL user password"
+          >
+        </div>
+        <div class="form-group">
+          <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-database"></i>Database</span></div>
+          <input
+            [formControlName]="'database'"
+            class="form-control"
+            id="database"
+            placeholder="Enter your AC world database name"
+          >
+        </div>
+        <button class="btn btn-primary connect-button" (click)="onConnect()">Connect</button>
+      </form>
+
+      <keira-query-error [error]="error"></keira-query-error>
+    </div>
+
+    <div class="end-text">
+      <!-- We have worked hard to create Keira3 for free, please do not remove the credits -->
+      Created by <a href="https://github.com/FrancescoBorzi" target="_blank">Shin</a> && <a href="https://github.com/Helias" target="_blank">Helias</a>
+    </div>
   </div>
 </div>

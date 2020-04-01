@@ -15,6 +15,8 @@ import { LocalStorageService } from '../../shared/services/local-storage.service
 })
 export class ConnectionWindowComponent extends SubscriptionHandler implements OnInit {
 
+  private readonly IMAGES_COUNT = 10;
+  public readonly RANDOM_IMAGE = Math.floor(Math.random() * this.IMAGES_COUNT) + 1;
   public readonly KEIRA_VERSION = version;
   private configStorage: Config;
   form: FormGroup<Partial<ConnectionConfig>>;
