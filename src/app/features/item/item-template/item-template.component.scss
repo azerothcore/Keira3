@@ -1,84 +1,51 @@
-$item-preview-width: 240px;
+.item-preview {
+  text-align: center;
+  margin: auto;
 
-.container-fluid {
-  transition: padding-right .3s ease;
-
-  &.show-item-preview {
-    padding-right: $item-preview-width + 15px;
-  }
-}
-
-.item-preview-container.show-item-preview {
-  width: $item-preview-width;
-}
-
-.item-preview-container.hide-item-preview {
-  width: 0;
-}
-
-.item-preview-container {
-  transition: width .3s ease;
-  position: fixed;
-  top: 0;
-  right: 0;
-  padding-top: 22px;
-  height: 100%;
-  background-color: #080d22;
-
-  perfect-scrollbar {
-    max-height: 95vh;
-  }
-
-  .item-preview {
-    text-align: center;
+  .icon {
+    width: 100px;
+    height: 100px;
+    position: relative;
     margin: auto;
+    margin-top: 5px;
+    border: 1px solid #6b6d78;
 
-    .icon {
-      width: 100px;
-      height: 100px;
-      position: relative;
-      margin: auto;
-      margin-top: 5px;
-      border: 1px solid #6b6d78;
-
-      img {
-        width: 90px;
-        height: 90px;
-        margin-top: 3px;
-      }
+    img {
+      width: 90px;
+      height: 90px;
+      margin-top: 3px;
     }
-
-    .item-stats, .icon {
-      border-radius: 3px;
-    }
-
-    .item-stats {
-      text-align: left;
-      font-family: Verdana, "Open Sans", Arial, "Helvetica Neue", Helvetica, sans-serif;
-      font-size: 15px;
-
-      line-height: 25px;
-      width: auto;
-      min-width: 200px;
-      padding: 12px;
-
-      color: #ccc;
-    }
-
-
-    .stackable {
-      position: absolute;
-      margin-left: -33px;
-      bottom: -5px;
-      font-weight: 700;
-      font-size: 30px;
-      white-space: nowrap;
-      text-shadow: 2px 2px #000;
-    }
-
-    .stackable-100 {
-      margin-left: -48px;
-    }
-
   }
+
+  .item-stats, .icon {
+    border-radius: 3px;
+  }
+
+  .item-stats {
+    text-align: left;
+    font-family: Verdana, "Open Sans", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    font-size: 15px;
+
+    line-height: 25px;
+    width: auto;
+    min-width: 200px;
+    padding: 12px;
+
+    color: #ccc;
+  }
+
+  .stackable {
+    position: absolute;
+    margin-left: -33px;
+    bottom: -5px;
+    font-weight: 700;
+    font-size: 30px;
+    white-space: nowrap;
+    text-shadow: 2px 2px #000;
+  }
+
+  .stackable-100 {
+    margin-left: -48px;
+  }
+
 }
