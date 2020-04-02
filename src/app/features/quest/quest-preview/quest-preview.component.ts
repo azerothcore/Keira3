@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { QuestPreviewService } from './quest-preview.service';
 
 @Component({
   selector: 'keira-quest-preview',
@@ -6,8 +7,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./quest-preview.component.scss']
 })
 export class QuestPreviewComponent {
-
-  showPreview = false;
-
-  constructor() { }
+  constructor(public readonly service: QuestPreviewService) {}
 }
