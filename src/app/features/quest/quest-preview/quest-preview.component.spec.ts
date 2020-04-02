@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { QuestPreviewComponent } from './quest-preview.component';
+import { QuestPreviewModule } from './quest-preview.module';
 
 describe('QuestPreviewComponent', () => {
   let component: QuestPreviewComponent;
@@ -8,7 +9,8 @@ describe('QuestPreviewComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ QuestPreviewComponent ]
+      declarations: [ QuestPreviewComponent ],
+      imports: [ QuestPreviewModule ],
     })
     .compileComponents();
   }));

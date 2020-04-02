@@ -6,7 +6,11 @@ describe('QuestPreviewService', () => {
   let service: QuestPreviewService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [
+        QuestPreviewService,
+      ]
+    });
     service = TestBed.inject(QuestPreviewService);
   });
 

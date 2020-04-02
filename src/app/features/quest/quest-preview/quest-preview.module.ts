@@ -10,11 +10,11 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
   declarations: [QuestPreviewComponent],
   imports: [
     CommonModule,
-    PerfectScrollbarModule
+    PerfectScrollbarModule,
   ],
   providers: [QuestPreviewService],
   exports: [
-    QuestPreviewComponent
+    QuestPreviewComponent,
   ]
 })
 export class QuestPreviewModule { }
