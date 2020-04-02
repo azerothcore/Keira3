@@ -12,6 +12,7 @@ import { toastrConfig } from '@keira-config/toastr.config';
 import { CreatureSelectorModule } from '@keira-shared/modules/selectors/creature-selector/creature-selector.module';
 import { CreatureQuestenderService } from './creature-questender.service';
 import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
+import { QuestPreviewModule } from '../quest-preview/quest-preview.module';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
     ToastrModule.forRoot(toastrConfig),
     CreatureSelectorModule,
     EditorButtonsModule,
+    QuestPreviewModule,
   ],
   exports: [
     CreatureQuestenderComponent,

@@ -4,6 +4,7 @@ import { MultiRowEditorComponent } from '@keira-abstract/components/editors/mult
 import { QuestHandlerService } from '../quest-handler.service';
 import { CreatureQueststarterService } from './creature-queststarter.service';
 import { CreatureQueststarter } from '@keira-types/creature-queststarter.type';
+import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 
 @Component({
   selector: 'keira-creature-queststarter',
@@ -16,6 +17,7 @@ export class CreatureQueststarterComponent extends MultiRowEditorComponent<Creat
   constructor(
     public editorService: CreatureQueststarterService,
     public handlerService: QuestHandlerService,
+    public readonly questPreviewService: QuestPreviewService,
   ) {
     super(editorService, handlerService);
   }

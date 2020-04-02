@@ -10,6 +10,7 @@ import { QueryOutputModule } from '@keira-shared/modules/query-output/query-outp
 import { QuestRequestItemsComponent } from './quest-request-items.component';
 import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
 import { QuestRequestItemsService } from './quest-request-items.service';
+import { QuestPreviewModule } from '../quest-preview/quest-preview.module';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { QuestRequestItemsService } from './quest-request-items.service';
     TooltipModule.forRoot(),
     ToastrModule.forRoot(toastrConfig),
     SingleValueSelectorModule,
+    QuestPreviewModule,
   ],
   exports: [
     QuestRequestItemsComponent,

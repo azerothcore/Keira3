@@ -12,6 +12,7 @@ import { toastrConfig } from '@keira-config/toastr.config';
 import { GameobjectSelectorModule } from '@keira-shared/modules/selectors/gameobject-selector/gameobject-selector.module';
 import { GameobjectQueststarterService } from './gameobject-queststarter.service';
 import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
+import { QuestPreviewModule } from '../quest-preview/quest-preview.module';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
     ToastrModule.forRoot(toastrConfig),
     GameobjectSelectorModule,
     EditorButtonsModule,
+    QuestPreviewModule,
   ],
   exports: [
     GameobjectQueststarterComponent,

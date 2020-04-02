@@ -24,7 +24,7 @@ export class QuestTemplateComponent extends SingleRowEditorComponent<QuestTempla
   constructor(
     public editorService: QuestTemplateService,
     public handlerService: QuestHandlerService,
-    public questPreviewService: QuestPreviewService,
+    public readonly questPreviewService: QuestPreviewService,
   ) {
     super(editorService, handlerService);
   }
