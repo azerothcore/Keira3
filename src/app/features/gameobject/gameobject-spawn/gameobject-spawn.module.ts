@@ -14,6 +14,7 @@ import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/singl
 import { GameobjectSpawnService } from './gameobject-spawn.service';
 import { MapSelectorModule } from '@keira-shared/modules/selectors/map-selector/map-selector.module';
 import { AreaSelectorModule } from '@keira-shared/modules/selectors/area-selector/area-selector.module';
+import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { AreaSelectorModule } from '@keira-shared/modules/selectors/area-selecto
     SingleValueSelectorModule,
     MapSelectorModule,
     AreaSelectorModule,
+    EditorButtonsModule,
   ],
   exports: [
     GameobjectSpawnComponent,

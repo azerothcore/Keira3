@@ -13,8 +13,12 @@
   <keira-highlightjs-wrapper id="diff-query" [code]="editorService.diffQuery" [hidden]="showFullQuery()"></keira-highlightjs-wrapper>
   <keira-highlightjs-wrapper id="full-query" [code]="editorService.fullQuery" [hidden]="!showFullQuery()"></keira-highlightjs-wrapper>
 
-  <button type="button" class="btn btn-secondary btn-sm" (click)="copy()" id="copy-btn">Copy</button>
-  <button type="button" class="btn btn-primary btn-sm" (click)="execute()" id="execute-btn">Execute</button>
+  <button type="button" class="btn btn-secondary btn-sm" (click)="copy()" id="copy-btn">
+    <i class="fa fa-copy fa-sm"></i> Copy
+  </button>
+  <button type="button" class="btn btn-primary btn-sm" (click)="execute()" id="execute-btn">
+    <i class="fa fa-bolt fa-sm"></i> Execute
+  </button>
 
   <keira-query-error [error]="editorService.error"></keira-query-error>
 </ng-container>

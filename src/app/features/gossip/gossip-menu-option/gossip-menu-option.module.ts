@@ -11,6 +11,7 @@ import { QueryOutputModule } from '@keira-shared/modules/query-output/query-outp
 import { GossipMenuOptionComponent } from './gossip-menu-option.component';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { GossipMenuOptionService } from './gossip-menu-option.service';
+import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { GossipMenuOptionService } from './gossip-menu-option.service';
     ToastrModule.forRoot(toastrConfig),
     NgxDatatableModule,
     SingleValueSelectorModule,
+    EditorButtonsModule,
   ],
   exports: [
     GossipMenuOptionComponent,

@@ -11,6 +11,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { toastrConfig } from '@keira-config/toastr.config';
 import { CreatureSelectorModule } from '@keira-shared/modules/selectors/creature-selector/creature-selector.module';
 import { CreatureQuestenderService } from './creature-questender.service';
+import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { CreatureQuestenderService } from './creature-questender.service';
     TooltipModule.forRoot(),
     ToastrModule.forRoot(toastrConfig),
     CreatureSelectorModule,
+    EditorButtonsModule,
   ],
   exports: [
     CreatureQuestenderComponent,

@@ -1,6 +1,6 @@
 <keira-top-bar [handler]="handlerService"></keira-top-bar>
 
-<div class="container-fluid" [ngClass]="{'show-item-preview': showItemPreview }">
+<div class="container-fluid editor-with-preview" [ngClass]="{'show-preview': showItemPreview }">
 
   <span *ngIf="editorService.loading">Loading...</span>
 
@@ -810,7 +810,7 @@
 
     </form>
 
-    <div class="item-preview-container" [ngClass]="showItemPreview ? 'show-item-preview' : 'hide-item-preview'">
+    <div class="preview-container" [ngClass]="showItemPreview ? 'show-preview' : 'hide-preview'">
       <perfect-scrollbar class="transparent">
         <div class="item-preview">
           <div class="icon">

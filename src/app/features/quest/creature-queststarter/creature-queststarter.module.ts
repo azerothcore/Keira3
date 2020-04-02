@@ -11,6 +11,7 @@ import { QueryOutputModule } from '@keira-shared/modules/query-output/query-outp
 import { CreatureQueststarterComponent } from './creature-queststarter.component';
 import { CreatureSelectorModule } from '@keira-shared/modules/selectors/creature-selector/creature-selector.module';
 import { CreatureQueststarterService } from './creature-queststarter.service';
+import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { CreatureQueststarterService } from './creature-queststarter.service';
     TooltipModule.forRoot(),
     ToastrModule.forRoot(toastrConfig),
     CreatureSelectorModule,
+    EditorButtonsModule,
   ],
   exports: [
     CreatureQueststarterComponent,

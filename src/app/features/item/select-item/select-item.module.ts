@@ -11,6 +11,7 @@ import { CreateModule } from '@keira-shared/modules/create/create.module';
 import { highlightOptions } from '@keira-config/highlight.config';
 import { SelectItemService } from './select-item.service';
 import { IconModule } from '@keira-shared/modules/icon/icon.module';
+import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { IconModule } from '@keira-shared/modules/icon/icon.module';
     HighlightModule.forRoot(highlightOptions),
     NgxDatatableModule,
     IconModule,
+    SearchButtonsModule,
   ],
   exports: [
     SelectItemComponent,

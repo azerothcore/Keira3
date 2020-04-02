@@ -1,0 +1,31 @@
+$preview-width: 240px;
+
+.editor-with-preview {
+  transition: padding-right .3s ease;
+
+  &.show-preview {
+    padding-right: $preview-width + 15px;
+  }
+}
+
+.preview-container.show-preview {
+  width: $preview-width;
+}
+
+.preview-container.hide-preview {
+  width: 0;
+}
+
+.preview-container {
+  transition: width .3s ease;
+  position: fixed;
+  top: 0;
+  right: 0;
+  padding-top: 22px; // topbar size
+  height: 100%;
+  background-color: #080d22;
+
+  perfect-scrollbar {
+    max-height: 95vh;
+  }
+}
