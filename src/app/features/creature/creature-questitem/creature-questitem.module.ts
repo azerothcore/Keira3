@@ -11,6 +11,7 @@ import { CreatureQuestitemComponent } from './creature-questitem.component';
 import { ItemSelectorModule } from '@keira-shared/modules/selectors/item-selector/item-selector.module';
 import { CreatureQuestitemService } from './creature-questitem.service';
 import { IconModule } from '@keira-shared/modules/icon/icon.module';
+import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { IconModule } from '@keira-shared/modules/icon/icon.module';
     ItemSelectorModule,
     ToastrModule.forRoot(toastrConfig),
     IconModule,
+    EditorButtonsModule,
   ],
   exports: [
     CreatureQuestitemComponent,

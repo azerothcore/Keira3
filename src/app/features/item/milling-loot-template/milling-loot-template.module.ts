@@ -13,6 +13,7 @@ import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selec
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { MillingLootTemplateService } from './milling-loot-template.service';
 import { IconModule } from '@keira-shared/modules/icon/icon.module';
+import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { IconModule } from '@keira-shared/modules/icon/icon.module';
     FlagsSelectorModule,
     NgxDatatableModule,
     IconModule,
+    EditorButtonsModule,
   ],
   exports: [
     MillingLootTemplateComponent,

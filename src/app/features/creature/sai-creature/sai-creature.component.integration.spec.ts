@@ -12,7 +12,7 @@ import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 class SaiCreaturePage extends MultiRowEditorPageObject<SaiCreatureComponent> {}
 
-describe('SaiEditorComponent integration tests', () => {
+describe('SaiCreatureComponent integration tests', () => {
   let component: SaiCreatureComponent;
   let fixture: ComponentFixture<SaiCreatureComponent>;
   let handlerService: SaiCreatureHandlerService;

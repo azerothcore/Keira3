@@ -13,6 +13,7 @@ import { ItemSelectorModule } from '@keira-shared/modules/selectors/item-selecto
 import { NpcVendorService } from './npc-vendor.service';
 import { IconModule } from '@keira-shared/modules/icon/icon.module';
 import { ItemExtendedCostSelectorModule } from '@keira-shared/modules/selectors/item-extended-cost-selector/item-extended-cost-selector.module';
+import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { ItemExtendedCostSelectorModule } from '@keira-shared/modules/selectors/
     ItemSelectorModule,
     IconModule,
     ItemExtendedCostSelectorModule,
+    EditorButtonsModule,
   ],
   exports: [
     NpcVendorComponent,

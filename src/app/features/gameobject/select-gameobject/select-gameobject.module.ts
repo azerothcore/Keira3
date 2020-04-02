@@ -10,6 +10,7 @@ import { SelectGameobjectComponent } from './select-gameobject.component';
 import { CreateModule } from '@keira-shared/modules/create/create.module';
 import { highlightOptions } from '@keira-config/highlight.config';
 import { SelectGameobjectService } from './select-gameobject.service';
+import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { SelectGameobjectService } from './select-gameobject.service';
     CreateModule,
     HighlightModule.forRoot(highlightOptions),
     NgxDatatableModule,
+    SearchButtonsModule,
   ],
   exports: [
     SelectGameobjectComponent,

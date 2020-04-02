@@ -9,6 +9,7 @@ import { HighlightModule } from 'ngx-highlightjs';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ModalModule } from 'ngx-bootstrap';
 import { IconModule } from '@keira-shared/modules/icon/icon.module';
+import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 
 @NgModule({
   entryComponents: [
@@ -25,6 +26,7 @@ import { IconModule } from '@keira-shared/modules/icon/icon.module';
     ModalModule.forRoot(),
     HighlightModule.forRoot(highlightOptions),
     IconModule,
+    SearchButtonsModule,
   ],
   exports: [
     ItemSelectorBtnComponent,
