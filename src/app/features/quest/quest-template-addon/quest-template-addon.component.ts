@@ -6,6 +6,7 @@ import { QuestTemplateAddonService } from './quest-template-addon.service';
 import { QuestHandlerService } from '../quest-handler.service';
 import { ALLOWABLE_CLASSES } from '@keira-constants/flags/allowable-classes';
 import { SPECIAL_FLAGS } from '@keira-constants/flags/special-flags';
+import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 
 @Component({
   selector: 'keira-quest-template-addon',
@@ -21,6 +22,7 @@ export class QuestTemplateAddonComponent extends SingleRowEditorComponent<QuestT
   constructor(
     public editorService: QuestTemplateAddonService,
     public handlerService: QuestHandlerService,
+    public readonly questPreviewService: QuestPreviewService,
   ) {
     super(editorService, handlerService);
   }

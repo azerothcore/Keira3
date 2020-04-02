@@ -1,6 +1,6 @@
 <keira-top-bar [handler]="handlerService"></keira-top-bar>
 
-<div class="container-fluid">
+<div class="container-fluid editor-with-preview" [ngClass]="{'show-preview': questPreviewService.showPreview }">
 
   <span *ngIf="editorService.loading">Loading...</span>
 
@@ -213,6 +213,8 @@
       </div>
 
     </form>
+
+    <keira-quest-preview></keira-quest-preview>
 
   </div>
 </div>

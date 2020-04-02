@@ -4,6 +4,7 @@ import { MultiRowEditorComponent } from '@keira-abstract/components/editors/mult
 import { QuestHandlerService } from '../quest-handler.service';
 import { GameobjectQueststarterService } from './gameobject-queststarter.service';
 import { GameobjectQueststarter } from '@keira-types/gameobject-queststarter.type';
+import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 
 @Component({
   selector: 'keira-gameobject-queststarter',
@@ -16,6 +17,7 @@ export class GameobjectQueststarterComponent extends MultiRowEditorComponent<Gam
   constructor(
     public editorService: GameobjectQueststarterService,
     public handlerService: QuestHandlerService,
+    public readonly questPreviewService: QuestPreviewService,
   ) {
     super(editorService, handlerService);
   }

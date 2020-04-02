@@ -11,6 +11,7 @@ import { QuestOfferRewardComponent } from './quest-offer-reward.component';
 import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selector/flags-selector.module';
 import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
 import { QuestOfferRewardService } from './quest-offer-reward.service';
+import { QuestPreviewModule } from '../quest-preview/quest-preview.module';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { QuestOfferRewardService } from './quest-offer-reward.service';
     ToastrModule.forRoot(toastrConfig),
     FlagsSelectorModule,
     SingleValueSelectorModule,
+    QuestPreviewModule,
   ],
   exports: [
     QuestOfferRewardComponent,

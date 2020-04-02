@@ -1,0 +1,11 @@
+<div class="preview-container" [ngClass]="service.showPreview ? 'show-preview' : 'hide-preview'">
+  <perfect-scrollbar class="transparent">
+    <div class="preview-content">
+      The Quest Preview feature is not yet available and will be implemented soon...
+    </div>
+  </perfect-scrollbar>
+</div>
+
+<button class="btn btn-secondary btn-sm toggle-preview-button" (click)="service.showPreview = !service.showPreview">
+  <i class="fas {{ service.showPreview ? 'fa-angle-double-right' : 'fa-angle-double-left' }}"></i>
+</button>

@@ -7,6 +7,7 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { ALLOWABLE_RACES } from '@keira-constants/flags/allowable-races';
 import { QUEST_FLAGS } from '@keira-constants/flags/quest-flags';
 import { QUEST_TYPE } from '@keira-constants/options/quest-type';
+import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 
 @Component({
   selector: 'keira-quest-template',
@@ -23,6 +24,7 @@ export class QuestTemplateComponent extends SingleRowEditorComponent<QuestTempla
   constructor(
     public editorService: QuestTemplateService,
     public handlerService: QuestHandlerService,
+    public readonly questPreviewService: QuestPreviewService,
   ) {
     super(editorService, handlerService);
   }

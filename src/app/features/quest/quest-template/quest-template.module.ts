@@ -15,6 +15,7 @@ import { QuestTemplateService } from './quest-template.service';
 import { SpellSelectorModule } from '@keira-shared/modules/selectors/spell-selector/spell-selector.module';
 import { IconModule } from '@keira-shared/modules/icon/icon.module';
 import { FactionSelectorModule } from '@keira-shared/modules/selectors/faction-selector/faction-selector.module';
+import { QuestPreviewModule } from '../quest-preview/quest-preview.module';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { FactionSelectorModule } from '@keira-shared/modules/selectors/faction-s
     SpellSelectorModule,
     IconModule,
     FactionSelectorModule,
+    QuestPreviewModule,
   ],
   exports: [
     QuestTemplateComponent,

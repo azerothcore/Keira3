@@ -5,6 +5,7 @@ import { QuestOfferReward } from '@keira-types/quest-offer-reward.type';
 import { QuestOfferRewardService } from './quest-offer-reward.service';
 import { QuestHandlerService } from '../quest-handler.service';
 import { EMOTE } from '@keira-constants/options/emote';
+import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 
 @Component({
   selector: 'keira-quest-offer-reward',
@@ -19,6 +20,7 @@ export class QuestOfferRewardComponent extends SingleRowEditorComponent<QuestOff
   constructor(
     public editorService: QuestOfferRewardService,
     public handlerService: QuestHandlerService,
+    public readonly questPreviewService: QuestPreviewService,
   ) {
     super(editorService, handlerService);
   }
