@@ -718,10 +718,12 @@ export class ItemPreviewService {
       itemsName[i] = itemsName[i].name ?? '';
     }
 
-    const itemsetAttr = await this.getItemsetById(itemset);
+    let itemsetAttr = await this.getItemsetById(itemset);
 
-    if (!itemsetAttr || itemsName.join('') === '') {
+    if (!itemsetAttr || itemsName.join('') === '' || !itemsetAttr[0]) {
       return '';
+    } else {
+      itemsetAttr = itemsetAttr[0];
     }
 
     itemsetText += '<br><br><span class="q">' + ITEM_CONSTANTS.setName
@@ -788,6 +790,7 @@ export class ItemPreviewService {
           tmpBonus += `<br><span>${bonusText}</span>`;
         }
       }
+
       if (tmpBonus !== '') {
         itemsetText += `<span class="q0">${tmpBonus}</span>`;
       }

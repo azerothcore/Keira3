@@ -102,10 +102,10 @@ describe('ItemPreviewService', () => {
     const mockItems4 = [{ id: 152, slotBak: 1, itemset: 152 }];
     const mockItems5 = [{ id: 153, slotBak: 1, itemset: 153 }, { id: 153, slotBak: 2, itemset: 153 }];
 
-    const mockItemset1 = { id: 123, name: 'Helias itemset', spell1: 1, bonus1: 2, bonus2: 1, skillId: 1, skillLevel: 1 };
-    const mockItemset2 = { id: 123, name: 'Shin itemset',   spell1: 1, spell2: 2, skillId: 1 };
-    const mockItemset3 = { id: 123, name: 'Kalhac itemset' };
-    const mockItemset4 = { id: 123, name: null };
+    const mockItemset1 = [{ id: 123, name: 'Helias itemset', spell1: 1, bonus1: 2, bonus2: 1, skillId: 1, skillLevel: 1 }];
+    const mockItemset2 = [{ id: 123, name: 'Shin itemset',   spell1: 1, spell2: 2, skillId: 1 }];
+    const mockItemset3 = [{ id: 123, name: 'Kalhac itemset' }];
+    const mockItemset4 = [{ id: 123, name: null }];
 
     const id = 123;
 
