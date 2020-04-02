@@ -90,7 +90,11 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     this.subscriptions.push(
       this.editorService.form.valueChanges.pipe(
         debounceTime(600),
-        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
+        /* TODO */
+        distinctUntilChanged(
+          /* istanbul ignore next */
+          (a, b) => JSON.stringify(a) === JSON.stringify(b)
+        ),
       ).subscribe(this.loadItemPreview.bind(this))
     );
   }

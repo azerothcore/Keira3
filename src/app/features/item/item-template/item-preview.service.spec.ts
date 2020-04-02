@@ -15,7 +15,7 @@ import { ItemTemplateService } from './item-template.service';
 import { ITEM_FLAG } from '@keira-shared/constants/flags/item-flags';
 import { ITEM_TYPE } from '@keira-shared/constants/options/item-class';
 
-fdescribe('ItemPreviewService', () => {
+describe('ItemPreviewService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       RouterTestingModule,
@@ -361,7 +361,7 @@ fdescribe('ItemPreviewService', () => {
       }, output: `Adds 20 damage per second` },
       { name: 'Damage 2', template: {
         class: ITEM_TYPE.AMMUNITION, dmg_min1: 10, dmg_min2: 10, dmg_max1: 10, dmg_max2: 10, delay: 1000, dmg_type1: 1,
-      }, output: `Adds 20 %s damage per secondHoly` }, // TODO: fix %s
+      }, output: `Adds 20 Holy damage per second` },
       { name: 'Damage 3', template: {
         dmg_min1: 10, dmg_min2: 10, dmg_max1: 10, dmg_max2: 10, delay: 1000, dmg_type1: 1, dmg_type2: 2,
       }, output: `<br><!--dmg-->10 Holy Damage+10 Fire Damage` },
@@ -383,8 +383,8 @@ fdescribe('ItemPreviewService', () => {
       { name: 'Item Limit Category, no data', template: { ItemLimitCategory: 124 }, output: `` },
       {
         name: 'inventoryType, class ARMOR, armorDamager',
-        template: { class: ITEM_TYPE.ARMOR, subclass: 1, InventoryType: 1, ArmorDamageModifier: 1 },
-        output: `<table style="float: left; width: 100%;"><tr><td>Head</td><th style="text-align: right;"><!--asc 1 -->Cloth</th></tr></table><br><span class="q2"><!--addamr1--><span>undefined Armor</span></span>` // TODO: fix
+        template: { class: ITEM_TYPE.ARMOR, subclass: 1, InventoryType: 1, ArmorDamageModifier: 1, armor: 1 },
+        output: `<table style="float: left; width: 100%;"><tr><td>Head</td><th style="text-align: right;"><!--asc 1 -->Cloth</th></tr></table><br><span class="q2"><!--addamr1--><span>1 Armor</span></span>`
       },
       { name: 'inventoryType - 1', template: { class: 3, subclass: 2, InventoryType: 2 }, output: `<br><!-- InventoryType -->Neck` },
       { name: 'inventoryType, armor', template: { class: ITEM_TYPE.WEAPON, armor: 1, ItemLevel: 10, }, output: `<br><span><!--amr-->1 Armor</span><br>Item Level 10` },
