@@ -1,1 +1,9 @@
-<p>quest-preview works!</p>
+<div class="preview-container" [ngClass]="showPreview ? 'show-preview' : 'hide-preview'">
+  <perfect-scrollbar class="transparent">
+    TODO
+  </perfect-scrollbar>
+</div>
+
+<button class="btn btn-secondary btn-sm toggle-preview-button" (click)="showPreview = !showPreview">
+  <i class="fas {{ showPreview ? 'fa-angle-double-right' : 'fa-angle-double-left' }}"></i>
+</button>
