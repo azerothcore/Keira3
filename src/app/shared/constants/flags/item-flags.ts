@@ -34,3 +34,22 @@ export const ITEM_FLAGS: Flag[] = [
   { bit: 30, name: 'REPORT_TO_GUILD_CHAT' },
   { bit: 31, name: 'NO_PROGRESSIVE_LOOT' },
 ];
+
+// ItemFlags values
+export enum ITEM_FLAG {
+  CONJURED         = 0x00000002,
+  OPENABLE         = 0x00000004,
+  HEROIC           = 0x00000008,
+  DEPRECATED       = 0x00000010,
+  INDESTRUCTIBLE   = 0x00000020,
+  NO_EQUIPCD       = 0x00000080,
+  PARTYLOOT        = 0x00000800,
+  REFUNDABLE       = 0x00001000,
+  PROSPECTABLE     = 0x00040000,
+  UNIQUEEQUIPPED   = 0x00080000,
+  USABLE_ARENA     = 0x00200000,
+  USABLE_SHAPED    = 0x00800000,
+  SMARTLOOT        = 0x02000000,
+  ACCOUNTBOUND     = 0x08000000,
+  MILLABLE         = 0x20000000,
+}

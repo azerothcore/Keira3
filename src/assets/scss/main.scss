@@ -8,50 +8,15 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 @import '~perfect-scrollbar/css/perfect-scrollbar.css';
 @import '~highlight.js/styles/github.css';
 @import '~@swimlane/ngx-datatable/index.css';
-@import './ngx-datatable.scss';
 @import '~@swimlane/ngx-datatable/assets/icons.css';
 @import '~ngx-ui-switch/ui-switch.component.scss';
 @import '~ngx-toastr/toastr-bs4-alert';
 
-@import './sidebar.scss';
+@import './ngx-datatable';
+@import './sidebar';
+@import './perfect-scrollbar';
 @import './preview';
-@import './utils.scss';
+@import './utils';
 @import './editor.scss';
-
-.item-preview {
-  .item-stock, .item-name {
-    line-height: 30px;
-    font-size: 22px;
-  }
-
-  .q  { color: #ffd100; }
-  .q0 { color: #9d9d9d; }
-  .q1 { color: #ffffff; }
-  .q2 { color: #1eff00; }
-  .q3 { color: #0070dd; }
-  .q4 { color: #a335ee; }
-  .q5 { color: #ff8000; }
-  .q6 { color: #e5cc80; }
-  .q7 { color: #e5cc80; }
-
- .moneyitem, .moneygold, .moneysilver, .moneycopper, .moneyalliance, .moneyhorde, .moneyarena, .moneyachievement, .moneysocketmeta, .moneysocketred, .moneysocketyellow, .moneysocketblue, .moneysocketprismatic {
-    background: no-repeat right center;
-    color: white;
-  }
-
-  .moneygold   { padding-right: 15px; background-image: url(../img/money/gold.gif);   }
-  .moneysilver { padding-right: 15px; background-image: url(../img/money/silver.gif); }
-  .moneycopper { padding-right: 15px; background-image: url(../img/money/copper.gif); }
-}
-
-.item-select {
-  .q  { color: #ffd100; }
-  .q0 { color: #757575; }
-  /* .q1 { color:#ffffff; } */
-  .q2 { color: #4CAF50; }
-  .q3 { color: #0070dd; }
-  .q4 { color: #a335ee; }
-  .q5 { color: #ffc107; }
-  .q6 { color: #ffab00; }
-  .q7 { color: #ff8a65; }
-}
+@import './item-preview';
+@import './item-select';

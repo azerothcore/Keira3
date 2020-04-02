@@ -1,10 +1,11 @@
 <keira-top-bar [handler]="handlerService"></keira-top-bar>
 
-<div class="container-fluid">
+<div class="container-fluid editor-with-preview" [ngClass]="{'show-preview': showItemPreview }">
 
   <span *ngIf="editorService.loading">Loading...</span>
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
+
 
     <keira-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
 
@@ -75,9 +76,9 @@
           <label class="control-label" for="subclass">subclass</label>
           <keira-single-value-selector-btn
             *ngIf="editorService.form.controls.class
-            && editorService.form.controls.class.value !== null
-            && editorService.form.controls.class.value >= 0
-            && editorService.form.controls.class.value < ITEM_SUBCLASS.length"
+                && editorService.form.controls.class.value !== null
+                && editorService.form.controls.class.value >= 0
+                && editorService.form.controls.class.value < ITEM_SUBCLASS.length"
             [control]="editorService.form.controls.subclass"
             [config]="{ options: ITEM_SUBCLASS[editorService.form.controls.class.value], name: 'subclass' }"
             [modalClass]="'modal-md'"
@@ -89,7 +90,7 @@
           <input [formControlName]="'subclass'" id="subclass" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="SoundOverrideSubclass">SoundOverrideSubclass</label>
+          <label class="control-label" for="SoundOverrideSubclass">SoundOverride</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'Weapons have special sounds on impact, this field is used to override them sounds by specifying another subclass'"
@@ -197,7 +198,7 @@
           <input [formControlName]="'PageText'" id="PageText" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="LanguageID">LanguageID</label>
+          <label class="control-label" for="LanguageID">Lang.ID</label>
           <keira-language-selector-btn
             [config]="{ name: 'LanguageID' }"
             [control]="editorService.form.controls.LanguageID"
@@ -326,7 +327,7 @@
           <input [formControlName]="'duration'" id="duration" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="ItemLimitCategory">ItemLimitCategory</label>
+          <label class="control-label" for="ItemLimitCategory">ItemLimitCat.</label>
           <keira-item-limit-category-selector-btn
             [config]="{ name: 'ItemLimitCategory' }"
             [control]="editorService.form.controls.ItemLimitCategory"
@@ -390,8 +391,8 @@
       </div>
 
       <span class="category-title">
-        Requirements
-      </span>
+            Requirements
+          </span>
       <div class="row">
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="AllowableClass">AllowableClass</label>
@@ -420,7 +421,7 @@
           <input [formControlName]="'ItemLevel'" id="ItemLevel" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="RequiredLevel">RequiredLevel</label>
+          <label class="control-label" for="RequiredLevel">Req.Level</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'The level required to equip the item'"
@@ -428,7 +429,7 @@
           <input [formControlName]="'RequiredLevel'" id="RequiredLevel" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="RequiredSkill">RequiredSkill</label>
+          <label class="control-label" for="RequiredSkill">Req.Skill</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'The skill required to use this item. See the SkillLine DBC file for IDs which can be used here.'"
@@ -436,7 +437,7 @@
           <input [formControlName]="'RequiredSkill'" id="RequiredSkill" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="RequiredSkillRank">RequiredSkillRank</label>
+          <label class="control-label" for="RequiredSkillRank">Req.SkillRank</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'The skill rank required to use this item.'"
@@ -444,7 +445,7 @@
           <input [formControlName]="'RequiredSkillRank'" id="RequiredSkillRank" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="requiredspell">requiredspell</label>
+          <label class="control-label" for="requiredspell">Req.spell</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'The required spell that the player needs to have to use this item.'"
@@ -457,7 +458,7 @@
           <input [formControlName]="'requiredspell'" id="requiredspell" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="requiredhonorrank">requiredhonorrank</label>
+          <label class="control-label" for="requiredhonorrank">Req.honorrank</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'The honor rank required to use this item.'"
@@ -465,7 +466,7 @@
           <input [formControlName]="'requiredhonorrank'" id="requiredhonorrank" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="RequiredCityRank">RequiredCityRank</label>
+          <label class="control-label" for="RequiredCityRank">Req.CityRank</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'Its use is unknown. All items have 0'"
@@ -473,7 +474,7 @@
           <input [formControlName]="'RequiredCityRank'" id="RequiredCityRank" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="RequiredReputationFaction">RequiredReputationFaction</label>
+          <label class="control-label" for="RequiredReputationFaction">Req.Rep.Faction</label>
           <keira-faction-selector-btn
             [config]="{ name: 'RequiredReputationFaction' }"
             [control]="editorService.form.controls.RequiredReputationFaction"
@@ -481,7 +482,7 @@
           <input [formControlName]="'RequiredReputationFaction'" id="RequiredReputationFaction" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="RequiredReputationRank">RequiredReputationRank</label>
+          <label class="control-label" for="RequiredReputationRank">Req.Rep.Rank</label>
           <keira-single-value-selector-btn
             [control]="editorService.form.controls.RequiredReputationRank"
             [config]="{ options: FACTION_RANK, name: 'RequiredReputationRank' }"
@@ -490,18 +491,18 @@
           <input [formControlName]="'RequiredReputationRank'" id="RequiredReputationRank" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="RequiredDisenchantSkill">RequiredDisenchantSkill</label>
+          <label class="control-label" for="RequiredDisenchantSkill">Req.Disenchant</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'The required proficiency in disenchanting that the player needs to have to be able to disenchant this item.'"
+            [tooltip]="'The required skill proficiency in disenchanting that the player needs to have to be able to disenchant this item.'"
           ></i>
           <input [formControlName]="'RequiredDisenchantSkill'" id="RequiredDisenchantSkill" type="number" class="form-control form-control-sm">
         </div>
       </div>
 
       <span class="category-title">
-        Resistance <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="'Related resistance per type.'"></i>
-      </span>
+            Resistance <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="'Related resistance per type.'"></i>
+          </span>
       <div class="row">
         <div
           *ngFor="let resistance of ['holy', 'fire', 'nature', 'frost', 'shadow', 'arcane']"
@@ -513,8 +514,8 @@
       </div>
 
       <span class="category-title">
-        Stats
-      </span>
+            Stats
+          </span>
       <div class="row">
         <div class="form-group col-12 col-sm-6 col-md-3 col-lg-3 col-xl-2">
           <label class="control-label" for="ScalingStatDistribution">ScalingStatDistribution</label>
@@ -614,9 +615,9 @@
         </div>
         <div class="col-12 col-lg-6">
 
-          <span class="category-title">
-            Socket
-          </span>
+              <span class="category-title">
+                Socket
+              </span>
           <div class="row">
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg col-xl-5">
               <label class="control-label" for="socketBonus">socketBonus</label>
@@ -668,8 +669,8 @@
       </div>
 
       <span class="category-title">
-        Weapon
-      </span>
+            Weapon
+          </span>
       <div class="row">
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" for="armor">armor</label>
@@ -696,7 +697,7 @@
           <input [formControlName]="'ammo_type'" id="ammo_type" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="RangedModRange">RangedModRange</label>
+          <label class="control-label" for="RangedModRange">RangModRange</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'Range Modifier for bows/guns/crossbows: Default range is somewhere between 0.3 and 0.4 yards, all blizzard ranged weapons have RangedModRange100'"
@@ -740,8 +741,8 @@
       </div>
 
       <span class="category-title">
-        Spell <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="'The spells that the item can cast or trigger'"></i>
-      </span>
+            Spell <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="'The spells that the item can cast or trigger'"></i>
+          </span>
       <div class="row">
 
         <div
@@ -809,5 +810,31 @@
 
     </form>
 
+    <div class="preview-container" [ngClass]="showItemPreview ? 'show-preview' : 'hide-preview'">
+      <perfect-scrollbar class="transparent">
+        <div class="item-preview">
+          <div class="icon">
+            <div *ngIf="(icon | async) as iconName; else defaultIcon">
+              <img [src]="'https://wow.zamimg.com/images/wow/icons/large/' + iconName + '.jpg'">
+              <span class="item-stock q1 stackable" *ngIf="editorService.form.controls.stackable.value > 1 && editorService.form.controls.stackable.value < 100">{{ editorService.form.controls.stackable.value }}</span>
+              <span class="item-stock q1 stackable stackable-100" *ngIf="editorService.form.controls.stackable.value >= 100">{{ editorService.form.controls.stackable.value }}</span>
+            </div>
+
+            <ng-template #defaultIcon>
+              <img [src]="'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg'">
+            </ng-template>
+          </div>
+
+          <div class="item-stats">
+            <div [innerHTML]="itemPreview"></div>
+          </div>
+        </div>
+      </perfect-scrollbar>
+    </div>
+
+    <button class="btn btn-secondary btn-sm toggle-preview-button" (click)="showItemPreview = !showItemPreview">
+      <i class="fas {{ showItemPreview ? 'fa-angle-double-right' : 'fa-angle-double-left' }}"></i>
+    </button>
   </div>
+
 </div>

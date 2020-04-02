@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TooltipModule } from 'ngx-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
+import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { toastrConfig } from '@keira-config/toastr.config';
 
 import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
@@ -12,6 +13,7 @@ import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/singl
 import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selector/flags-selector.module';
 import { ItemTemplateService } from './item-template.service';
 import { SpellSelectorModule } from '@keira-shared/modules/selectors/spell-selector/spell-selector.module';
+import { ItemPreviewService } from './item-preview.service';
 import { FactionSelectorModule } from '@keira-shared/modules/selectors/faction-selector/faction-selector.module';
 import { MapSelectorModule } from '@keira-shared/modules/selectors/map-selector/map-selector.module';
 import { AreaSelectorModule } from '@keira-shared/modules/selectors/area-selector/area-selector.module';
@@ -20,6 +22,7 @@ import { HolidaySelectorModule } from '@keira-shared/modules/selectors/holiday-s
 import { LanguageSelectorModule } from '@keira-shared/modules/selectors/language-selector/language-selector.module';
 import { ItemLimitCategorySelectorModule } from '@keira-shared/modules/selectors/item-limit-category-selector/item-limit-category-selector.module';
 import { QuestSelectorModule } from '@keira-shared/modules/selectors/quest-selector/quest-selector.module';
+
 
 @NgModule({
   declarations: [
@@ -32,6 +35,7 @@ import { QuestSelectorModule } from '@keira-shared/modules/selectors/quest-selec
     QueryOutputModule,
     TooltipModule.forRoot(),
     ToastrModule.forRoot(toastrConfig),
+    PerfectScrollbarModule,
     SingleValueSelectorModule,
     FlagsSelectorModule,
     SpellSelectorModule,
@@ -49,6 +53,7 @@ import { QuestSelectorModule } from '@keira-shared/modules/selectors/quest-selec
   ],
   providers: [
     ItemTemplateService,
+    ItemPreviewService,
   ],
 })
 export class ItemTemplateModule {}

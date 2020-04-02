@@ -10,3 +10,14 @@ export const ITEM_QUALITY: Option[] = [
   { value: 6, name: 'Red (Artifact)' },
   { value: 7, name: 'Gold (Bind to Account) [requires flags 134221824]' },
 ];
+
+export enum ITEMS_QUALITY {
+  POOR      = 0, // GREY
+  NORMAL    = 1, // WHITE
+  UNCOMMON  = 2, // GREEN
+  RARE      = 3, // BLUE
+  EPIC      = 4, // PURPLE
+  LEGENDARY = 5, // ORANGE
+  ARTIFACT  = 6, // LIGHT YELLOW
+  HEIRLOOM  = 7, // GOLD
+}
