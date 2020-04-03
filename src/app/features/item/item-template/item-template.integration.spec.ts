@@ -353,7 +353,6 @@ describe('ItemTemplate integration tests', () => {
       beforeEach(() => {
         mysqlQueryService = TestBed.inject(MysqlQueryService);
         spyOn(mysqlQueryService, 'getItemNameById').and.callFake(i => of(mockItemNameById).toPromise());
-        // spyOn(mysqlQueryService, 'query').and.callFake(i => of([234] as any));
         spyOn(mysqlQueryService, 'queryValue').and.callFake(i => of([234] as any));
 
         sqliteQueryService = TestBed.inject(SqliteQueryService);
@@ -556,7 +555,6 @@ describe('ItemTemplate integration tests', () => {
           expect(itemStats).toContain('123 Charges');
         });
 
-        // expect(page.getInputById('item-stats')).toBe('');
       }));
     });
   });

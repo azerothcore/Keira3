@@ -555,7 +555,7 @@ export class ItemPreviewService {
     let dmg = '';
 
     if (itemClass === ITEM_TYPE.AMMUNITION && dmgmin && dmgmax) {
-      if (sc1 && sc1 < 7 && sc1 > 0) {
+      if (sc1 && sc1 < ITEM_CONSTANTS.sc.length && sc1 > 0) {
         damageText += ITEM_CONSTANTS.damage.ammo[1].replace('%d', ((dmgmin + dmgmax) / 2).toString()).replace('%s', ITEM_CONSTANTS.sc[sc1]);
       } else {
         damageText += ITEM_CONSTANTS.damage.ammo[0].replace('%d', ((dmgmin + dmgmax) / 2).toString());
@@ -564,12 +564,12 @@ export class ItemPreviewService {
       if (dmgmin1 === dmgmax1) {
         dmg = ITEM_CONSTANTS.damage.single[sc1 ? 1 : 0]
           .replace('%d', String(dmgmin1))
-          .replace('%s', (!!sc1 && sc1 < 7 && sc1 > 0 ? ITEM_CONSTANTS.sc[sc1] : ''));
+          .replace('%s', (!!sc1 && sc1 < ITEM_CONSTANTS.sc.length && sc1 > 0 ? ITEM_CONSTANTS.sc[sc1] : ''));
       } else {
         dmg = ITEM_CONSTANTS.damage.range[sc1 ? 1 : 0]
           .replace('%d', String(dmgmin1))
           .replace('%d', String(dmgmax1))
-          .replace('%s', !!sc1 && sc1 < 7 && sc1 > 0 ? ITEM_CONSTANTS.sc[sc1] : '');
+          .replace('%s', !!sc1 && sc1 < ITEM_CONSTANTS.sc.length && sc1 > 0 ? ITEM_CONSTANTS.sc[sc1] : '');
       }
 
       if (itemClass === ITEM_TYPE.WEAPON) {
@@ -584,11 +584,11 @@ export class ItemPreviewService {
         damageText += ITEM_CONSTANTS.damage.range[sc2 ? 3 : 2]
           .replace('%d', String(dmgmin2))
           .replace('%d', String(dmgmax2))
-          .replace('%s', !!sc2 && sc2 < 7 && sc2 > 0 ? ITEM_CONSTANTS.sc[sc2] : '');
+          .replace('%s', !!sc2 && sc2 < ITEM_CONSTANTS.sc.length && sc2 > 0 ? ITEM_CONSTANTS.sc[sc2] : '');
       } else if (dmgmin2) {
         damageText += ITEM_CONSTANTS.damage.single[sc2 ? 3 : 2]
           .replace('%d', String(dmgmin2))
-          .replace('%s', !!sc2 && sc2 < 7 && sc2 > 0 ? ITEM_CONSTANTS.sc[sc2] : '');
+          .replace('%s', !!sc2 && sc2 < ITEM_CONSTANTS.sc.length && sc2 > 0 ? ITEM_CONSTANTS.sc[sc2] : '');
       }
 
       if (itemClass === ITEM_TYPE.WEAPON) {
