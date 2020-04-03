@@ -555,7 +555,7 @@ export class ItemPreviewService {
     let dmg = '';
 
     if (itemClass === ITEM_TYPE.AMMUNITION && dmgmin && dmgmax) {
-      if (sc1) {
+      if (sc1 && sc1 < 7 && sc1 > 0) {
         damageText += ITEM_CONSTANTS.damage.ammo[1].replace('%d', ((dmgmin + dmgmax) / 2).toString()).replace('%s', ITEM_CONSTANTS.sc[sc1]);
       } else {
         damageText += ITEM_CONSTANTS.damage.ammo[0].replace('%d', ((dmgmin + dmgmax) / 2).toString());
@@ -564,12 +564,12 @@ export class ItemPreviewService {
       if (dmgmin1 === dmgmax1) {
         dmg = ITEM_CONSTANTS.damage.single[sc1 ? 1 : 0]
           .replace('%d', String(dmgmin1))
-          .replace('%s', (sc1 ? ITEM_CONSTANTS.sc[sc1] : ''));
+          .replace('%s', (!!sc1 && sc1 < 7 && sc1 > 0 ? ITEM_CONSTANTS.sc[sc1] : ''));
       } else {
         dmg = ITEM_CONSTANTS.damage.range[sc1 ? 1 : 0]
           .replace('%d', String(dmgmin1))
           .replace('%d', String(dmgmax1))
-          .replace('%s', sc1 ? ITEM_CONSTANTS.sc[sc1] : '');
+          .replace('%s', !!sc1 && sc1 < 7 && sc1 > 0 ? ITEM_CONSTANTS.sc[sc1] : '');
       }
 
       if (itemClass === ITEM_TYPE.WEAPON) {
@@ -584,11 +584,11 @@ export class ItemPreviewService {
         damageText += ITEM_CONSTANTS.damage.range[sc2 ? 3 : 2]
           .replace('%d', String(dmgmin2))
           .replace('%d', String(dmgmax2))
-          .replace('%s', sc2 ? ITEM_CONSTANTS.sc[sc2] : '');
+          .replace('%s', !!sc2 && sc2 < 7 && sc2 > 0 ? ITEM_CONSTANTS.sc[sc2] : '');
       } else if (dmgmin2) {
         damageText += ITEM_CONSTANTS.damage.single[sc2 ? 3 : 2]
           .replace('%d', String(dmgmin2))
-          .replace('%s', sc2 ? ITEM_CONSTANTS.sc[sc2] : '');
+          .replace('%s', !!sc2 && sc2 < 7 && sc2 > 0 ? ITEM_CONSTANTS.sc[sc2] : '');
       }
 
       if (itemClass === ITEM_TYPE.WEAPON) {
@@ -808,9 +808,9 @@ export class ItemPreviewService {
     const itemLimitCategory = itemTemplate.ItemLimitCategory;
 
     // bonding
-    if (flags & ITEM_FLAG.ACCOUNTBOUND) {
+    if (flags & ITEM_FLAG.ACCOUNTBOUND && !!this.ITEM_CONSTANTS.bonding[0]) {
       bondingText += '<br><!-- bonding[0] -->' + this.ITEM_CONSTANTS.bonding[0];
-    } else if (bonding) {
+    } else if (bonding && !!this.ITEM_CONSTANTS.bonding[bonding]) {
       bondingText += '<br><!-- [bonding] -->' + this.ITEM_CONSTANTS.bonding[bonding];
     }
 
@@ -914,7 +914,7 @@ export class ItemPreviewService {
     }
 
     // required honorRank (not used anymore)
-    if (!!itemTemplate.requiredhonorrank) {
+    if (!!itemTemplate.requiredhonorrank && !!ITEM_CONSTANTS.pvpRank[itemTemplate.requiredhonorrank]) {
       requiredText += `<br>Requires ${ITEM_CONSTANTS.pvpRank[itemTemplate.requiredhonorrank]}`;
     }
 
@@ -951,11 +951,15 @@ export class ItemPreviewService {
     const requiredSkillRank = itemTemplate.RequiredSkillRank;
     if (!!requiredSkill && requiredSkill > 0) {
       let reqSkill = await this.sqliteQueryService.getSkillNameById(requiredSkill);
-      if (requiredSkillRank > 0) {
-        reqSkill += ` (${requiredSkillRank})`;
-      }
 
-      requiredText += `<br>Requires: ${reqSkill}`;
+      /* istanbul ignore else */
+      if (!!reqSkill) {
+        if (requiredSkillRank > 0) {
+          reqSkill += ` (${requiredSkillRank})`;
+        }
+
+        requiredText += `<br>Requires: ${reqSkill}`;
+      }
     }
 
     // required spell
@@ -969,10 +973,14 @@ export class ItemPreviewService {
     const requiredFactionRank = itemTemplate.RequiredReputationRank;
     if (!!requiredFaction && requiredFaction > 0) {
       let reqFaction = await this.sqliteQueryService.getFactionNameById(requiredFaction);
-      if (requiredFactionRank > 0) {
-        reqFaction += ` (${requiredFactionRank})`;
+
+      /* istanbul ignore else */
+      if (!!reqFaction) {
+        if (requiredFactionRank > 0) {
+          reqFaction += ` (${requiredFactionRank})`;
+        }
+        requiredText += `<br>Requires ${reqFaction}`;
       }
-      requiredText += `<br>Requires ${reqFaction}`;
     }
 
     return requiredText;
@@ -1334,7 +1342,7 @@ export class ItemPreviewService {
     const containerSlots: number = Number(itemTemplate.ContainerSlots);
     if (containerSlots > 0) {
       const fam = bagFamily ? Math.log2(bagFamily) + 1 : 0;
-      tmpItemPreview += `<br>${containerSlots} Slot ${ITEM_CONSTANTS.bagFamily[fam]}`;
+      tmpItemPreview += `<br>${containerSlots} Slot ${ITEM_CONSTANTS.bagFamily[fam] ?? ''}`;
     }
 
     tmpItemPreview += this.getClassText(itemTemplate.InventoryType, itemTemplate.class, itemTemplate.subclass);

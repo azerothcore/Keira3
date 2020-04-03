@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
@@ -11,8 +11,11 @@ import { ItemTemplate } from '@keira-types/item-template.type';
 import { ItemHandlerService } from '../item-handler.service';
 import { ITEM_SUBCLASS } from '@keira-constants/options/item-class';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { Lock } from '@keira-shared/types/lock.type';
 
-class ItemTemplatePage extends EditorPageObject<ItemTemplateComponent> {}
+class ItemTemplatePage extends EditorPageObject<ItemTemplateComponent> {
+  get itemStats() { return this.query<HTMLDivElement>('.item-stats'); }
+}
 
 describe('ItemTemplate integration tests', () => {
   let component: ItemTemplateComponent;
@@ -328,8 +331,48 @@ describe('ItemTemplate integration tests', () => {
       });
     });
 
-    fdescribe('item preview', () => {
-      it('all fields', () => {
+    describe('item preview', () => {
+      const mockItemNameById = 'mockItemNameById';
+      const mockGetSpellNameById = 'mockGetSpellNameById';
+      const mockGetSpellDescriptionById = 'mockGetSpellDescriptionById';
+      const mockGetFactionNameById = 'mockGetFactionNameById';
+      const mockGetMapNameById = 'mockGetMapNameById';
+      const mockGetAreaNameById = 'mockGetAreaNameById';
+      const mockGetEventNameByHolidayId = 'mockGetEventNameByHolidayId';
+      const mockGetSocketBonusById = 'mockgetFactionNameByIdGetSocketBonusById';
+
+      const lockData: Lock = {
+        id: 1, type1: 1, type2: 1, type3: 2, type4: 2, type5: 0,
+        properties1: 1, properties2: 0, properties3: 1, properties4: 0, properties5: 0,
+        reqSkill1: 0, reqSkill2: 0, reqSkill3: 1, reqSkill4: 0, reqSkill5: 0
+      };
+
+      let mysqlQueryService: MysqlQueryService;
+      let sqliteQueryService: SqliteQueryService;
+
+      beforeEach(() => {
+        mysqlQueryService = TestBed.inject(MysqlQueryService);
+        spyOn(mysqlQueryService, 'getItemNameById').and.callFake(i => of(mockItemNameById).toPromise());
+        // spyOn(mysqlQueryService, 'query').and.callFake(i => of([234] as any));
+        spyOn(mysqlQueryService, 'queryValue').and.callFake(i => of([234] as any));
+
+        sqliteQueryService = TestBed.inject(SqliteQueryService);
+        spyOn(sqliteQueryService, 'getSpellNameById').and.callFake(i => of(mockGetSpellNameById + i).toPromise());
+        spyOn(sqliteQueryService, 'getSpellDescriptionById').and.callFake(i => of(mockGetSpellDescriptionById + i).toPromise());
+        spyOn(sqliteQueryService, 'getFactionNameById').and.callFake(i => of(mockGetFactionNameById + i).toPromise());
+        spyOn(sqliteQueryService, 'getMapNameById').and.callFake(i => of(mockGetMapNameById + i).toPromise());
+        spyOn(sqliteQueryService, 'getAreaNameById').and.callFake(i => of(mockGetAreaNameById + i).toPromise());
+        spyOn(sqliteQueryService, 'getEventNameByHolidayId').and.callFake(i => of(mockGetEventNameByHolidayId + i).toPromise());
+        spyOn(sqliteQueryService, 'getSocketBonusById').and.callFake(i => of(mockGetSocketBonusById + i).toPromise());
+        spyOn(sqliteQueryService, 'getLockById').and.callFake(i => of([lockData]).toPromise());
+        spyOn(sqliteQueryService, 'getSkillNameById').and.callFake(i => of('profession').toPromise());
+        spyOn(sqliteQueryService, 'getIconByItemDisplayId').and.callFake(i => of('inv_axe_60'));
+        spyOn(sqliteQueryService, 'queryValue').and.callFake(i => of('inv_axe_60' as any));
+        spyOn(sqliteQueryService, 'query').and.callFake(i => of([{ name: 'test' }] as any));
+      });
+
+      it('all fields', fakeAsync(() => {
+
         page.setInputValueById('class', 1);
         page.setInputValueById('subclass', 2);
         page.setInputValueById('SoundOverrideSubclass', 3);
@@ -380,10 +423,10 @@ describe('ItemTemplate integration tests', () => {
         page.setInputValueById('ScalingStatDistribution', 123);
         page.setInputValueById('ScalingStatValue', 123);
         page.setInputValueById('dmg_min1', 123);
-        page.setInputValueById('dmg_max1', 123);
+        page.setInputValueById('dmg_max1', 125);
         page.setInputValueById('dmg_type1', 123);
-        page.setInputValueById('dmg_min2', 123);
-        page.setInputValueById('dmg_max2', 123);
+        page.setInputValueById('dmg_min2', 124);
+        page.setInputValueById('dmg_max2', 126);
         page.setInputValueById('dmg_type2', 123);
         page.setInputValueById('armor', 123);
         page.setInputValueById('holy_res', 123);
@@ -467,7 +510,54 @@ describe('ItemTemplate integration tests', () => {
         page.setInputValueById('minMoneyLoot', 123);
         page.setInputValueById('maxMoneyLoot', 123);
         page.setInputValueById('flagsCustom', 123);
-      });
+
+        tick(700);
+
+        fixture.whenStable().then(() => {
+          const itemStats = page.itemStats.innerText;
+          expect(itemStats).toContain('Helias item');
+          expect(itemStats).toContain('mockGetMapNameById123');
+          expect(itemStats).toContain('mockGetAreaNameById123');
+          expect(itemStats).toContain('Conjured Item');
+          expect(itemStats).toContain('Unique (123)');
+          expect(itemStats).toContain('Duration: 2 minutes (real time)');
+          expect(itemStats).toContain('Requires mockGetEventNameByHolidayId123');
+          expect(itemStats).toContain('This Item Begins a Quest');
+          expect(itemStats).toContain('123 Slot');
+          expect(itemStats).toContain('123 - 125 Damage+124 - 126 Damage');
+          expect(itemStats).toContain('123 Armor');
+          expect(itemStats).toContain('123 Block');
+          expect(itemStats).toContain('test');
+          expect(itemStats).toContain('<Random enchantment>');
+          expect(itemStats).toContain('+123 Holy Resistance');
+          expect(itemStats).toContain('+123 Fire Resistance');
+          expect(itemStats).toContain('+123 Nature Resistance');
+          expect(itemStats).toContain('+123 Frost Resistance');
+          expect(itemStats).toContain('+123 Shadow Resistance');
+          expect(itemStats).toContain('+123 Arcane Resistance');
+          expect(itemStats).toContain('Blue Socket');
+          expect(itemStats).toContain('Blue Socket');
+          expect(itemStats).toContain('Blue Socket');
+          expect(itemStats).toContain('Socket Bonus: mockgetFactionNameByIdGetSocketBonusById123');
+          expect(itemStats).toContain('Durability 123 / 123');
+          expect(itemStats).toContain('Classes: Warrior, Paladin, Rogue');
+          expect(itemStats).toContain('Races: Orc');
+          expect(itemStats).toContain('Requires Level 123');
+          expect(itemStats).toContain('Requires: profession (123)');
+          expect(itemStats).toContain('Requires mockGetSpellNameById123');
+          expect(itemStats).toContain('Requires mockGetFactionNameById123 (123)');
+          expect(itemStats).toContain('Locked');
+          expect(itemStats).toContain('Requires mockItemNameById');
+          expect(itemStats).toContain('Requires mockItemNameById');
+          expect(itemStats).toContain('Requires Lockpicking (1)');
+          expect(itemStats).toContain('mockGetSpellDescriptionById123');
+          expect(itemStats).toContain('"123"');
+          expect(itemStats).toContain('<Right Click To Read>');
+          expect(itemStats).toContain('123 Charges');
+        });
+
+        // expect(page.getInputById('item-stats')).toBe('');
+      }));
     });
   });
 });
