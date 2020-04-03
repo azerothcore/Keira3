@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
@@ -11,8 +11,11 @@ import { ItemTemplate } from '@keira-types/item-template.type';
 import { ItemHandlerService } from '../item-handler.service';
 import { ITEM_SUBCLASS } from '@keira-constants/options/item-class';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { Lock } from '@keira-shared/types/lock.type';
 
-class ItemTemplatePage extends EditorPageObject<ItemTemplateComponent> {}
+class ItemTemplatePage extends EditorPageObject<ItemTemplateComponent> {
+  get itemStats() { return this.query<HTMLDivElement>('.item-stats'); }
+}
 
 describe('ItemTemplate integration tests', () => {
   let component: ItemTemplateComponent;
@@ -326,6 +329,233 @@ describe('ItemTemplate integration tests', () => {
         expect(page.getCellOfDatatableInModal(2, 1).innerText).toContain(ITEM_SUBCLASS[3][2].name);
         page.clickModalSelect();
       });
+    });
+
+    describe('item preview', () => {
+      const mockItemNameById = 'mockItemNameById';
+      const mockGetSpellNameById = 'mockGetSpellNameById';
+      const mockGetSpellDescriptionById = 'mockGetSpellDescriptionById';
+      const mockGetFactionNameById = 'mockGetFactionNameById';
+      const mockGetMapNameById = 'mockGetMapNameById';
+      const mockGetAreaNameById = 'mockGetAreaNameById';
+      const mockGetEventNameByHolidayId = 'mockGetEventNameByHolidayId';
+      const mockGetSocketBonusById = 'mockgetFactionNameByIdGetSocketBonusById';
+
+      const lockData: Lock = {
+        id: 1, type1: 1, type2: 1, type3: 2, type4: 2, type5: 0,
+        properties1: 1, properties2: 0, properties3: 1, properties4: 0, properties5: 0,
+        reqSkill1: 0, reqSkill2: 0, reqSkill3: 1, reqSkill4: 0, reqSkill5: 0
+      };
+
+      let mysqlQueryService: MysqlQueryService;
+      let sqliteQueryService: SqliteQueryService;
+
+      beforeEach(() => {
+        mysqlQueryService = TestBed.inject(MysqlQueryService);
+        spyOn(mysqlQueryService, 'getItemNameById').and.callFake(i => of(mockItemNameById).toPromise());
+        spyOn(mysqlQueryService, 'queryValue').and.callFake(i => of([234] as any));
+
+        sqliteQueryService = TestBed.inject(SqliteQueryService);
+        spyOn(sqliteQueryService, 'getSpellNameById').and.callFake(i => of(mockGetSpellNameById + i).toPromise());
+        spyOn(sqliteQueryService, 'getSpellDescriptionById').and.callFake(i => of(mockGetSpellDescriptionById + i).toPromise());
+        spyOn(sqliteQueryService, 'getFactionNameById').and.callFake(i => of(mockGetFactionNameById + i).toPromise());
+        spyOn(sqliteQueryService, 'getMapNameById').and.callFake(i => of(mockGetMapNameById + i).toPromise());
+        spyOn(sqliteQueryService, 'getAreaNameById').and.callFake(i => of(mockGetAreaNameById + i).toPromise());
+        spyOn(sqliteQueryService, 'getEventNameByHolidayId').and.callFake(i => of(mockGetEventNameByHolidayId + i).toPromise());
+        spyOn(sqliteQueryService, 'getSocketBonusById').and.callFake(i => of(mockGetSocketBonusById + i).toPromise());
+        spyOn(sqliteQueryService, 'getLockById').and.callFake(i => of([lockData]).toPromise());
+        spyOn(sqliteQueryService, 'getSkillNameById').and.callFake(i => of('profession').toPromise());
+        spyOn(sqliteQueryService, 'getIconByItemDisplayId').and.callFake(i => of('inv_axe_60'));
+        spyOn(sqliteQueryService, 'queryValue').and.callFake(i => of('inv_axe_60' as any));
+        spyOn(sqliteQueryService, 'query').and.callFake(i => of([{ name: 'test' }] as any));
+      });
+
+      it('all fields', fakeAsync(() => {
+
+        page.setInputValueById('class', 1);
+        page.setInputValueById('subclass', 2);
+        page.setInputValueById('SoundOverrideSubclass', 3);
+        page.setInputValueById('name', 'Helias item');
+        page.setInputValueById('displayid', 4);
+        page.setInputValueById('Quality', 5);
+        page.setInputValueById('Flags', 6);
+        page.setInputValueById('FlagsExtra', 7);
+        page.setInputValueById('BuyCount', 8);
+        page.setInputValueById('BuyPrice', 9);
+        page.setInputValueById('SellPrice', 10);
+        page.setInputValueById('InventoryType', 3);
+        page.setInputValueById('AllowableClass', 11);
+        page.setInputValueById('AllowableRace', 2);
+        page.setInputValueById('ItemLevel', 123);
+        page.setInputValueById('RequiredLevel', 123);
+        page.setInputValueById('RequiredSkill', 755);
+        page.setInputValueById('RequiredSkillRank', 123);
+        page.setInputValueById('requiredspell', 123);
+        page.setInputValueById('requiredhonorrank', 123);
+        page.setInputValueById('RequiredCityRank', 123);
+        page.setInputValueById('RequiredReputationFaction', 123);
+        page.setInputValueById('RequiredReputationRank', 123);
+        page.setInputValueById('maxcount', 123);
+        page.setInputValueById('stackable', 123);
+        page.setInputValueById('ContainerSlots', 123);
+        page.setInputValueById('StatsCount', 123);
+        page.setInputValueById('stat_type1', 123);
+        page.setInputValueById('stat_value1', 123);
+        page.setInputValueById('stat_type2', 123);
+        page.setInputValueById('stat_value2', 123);
+        page.setInputValueById('stat_type3', 123);
+        page.setInputValueById('stat_value3', 123);
+        page.setInputValueById('stat_type4', 123);
+        page.setInputValueById('stat_value4', 123);
+        page.setInputValueById('stat_type5', 123);
+        page.setInputValueById('stat_value5', 123);
+        page.setInputValueById('stat_type6', 123);
+        page.setInputValueById('stat_value6', 123);
+        page.setInputValueById('stat_type7', 123);
+        page.setInputValueById('stat_value7', 123);
+        page.setInputValueById('stat_type8', 123);
+        page.setInputValueById('stat_value8', 123);
+        page.setInputValueById('stat_type9', 123);
+        page.setInputValueById('stat_value9', 123);
+        page.setInputValueById('stat_type10', 123);
+        page.setInputValueById('stat_value10', 123);
+        page.setInputValueById('ScalingStatDistribution', 123);
+        page.setInputValueById('ScalingStatValue', 123);
+        page.setInputValueById('dmg_min1', 123);
+        page.setInputValueById('dmg_max1', 125);
+        page.setInputValueById('dmg_type1', 123);
+        page.setInputValueById('dmg_min2', 124);
+        page.setInputValueById('dmg_max2', 126);
+        page.setInputValueById('dmg_type2', 123);
+        page.setInputValueById('armor', 123);
+        page.setInputValueById('holy_res', 123);
+        page.setInputValueById('fire_res', 123);
+        page.setInputValueById('nature_res', 123);
+        page.setInputValueById('frost_res', 123);
+        page.setInputValueById('shadow_res', 123);
+        page.setInputValueById('arcane_res', 123);
+        page.setInputValueById('delay', 123);
+        page.setInputValueById('ammo_type', 123);
+        page.setInputValueById('RangedModRange', 123);
+        page.setInputValueById('spellid_1', 123);
+        page.setInputValueById('spelltrigger_1', 123);
+        page.setInputValueById('spellcharges_1', 123);
+        page.setInputValueById('spellppmRate_1', 123);
+        page.setInputValueById('spellcooldown_1', 123);
+        page.setInputValueById('spellcategory_1', 123);
+        page.setInputValueById('spellcategorycooldown_1', 123);
+        page.setInputValueById('spellid_2', 123);
+        page.setInputValueById('spelltrigger_2', 123);
+        page.setInputValueById('spellcharges_2', 123);
+        page.setInputValueById('spellppmRate_2', 123);
+        page.setInputValueById('spellcooldown_2', 123);
+        page.setInputValueById('spellcategory_2', 123);
+        page.setInputValueById('spellcategorycooldown_2', 123);
+        page.setInputValueById('spellid_3', 123);
+        page.setInputValueById('spelltrigger_3', 123);
+        page.setInputValueById('spellcharges_3', 123);
+        page.setInputValueById('spellppmRate_3', 123);
+        page.setInputValueById('spellcooldown_3', 123);
+        page.setInputValueById('spellcategory_3', 123);
+        page.setInputValueById('spellcategorycooldown_3', 123);
+        page.setInputValueById('spellid_4', 123);
+        page.setInputValueById('spelltrigger_4', 123);
+        page.setInputValueById('spellcharges_4', 123);
+        page.setInputValueById('spellppmRate_4', 123);
+        page.setInputValueById('spellcooldown_4', 123);
+        page.setInputValueById('spellcategory_4', 123);
+        page.setInputValueById('spellcategorycooldown_4', 123);
+        page.setInputValueById('spellid_5', 123);
+        page.setInputValueById('spelltrigger_5', 123);
+        page.setInputValueById('spellcharges_5', 123);
+        page.setInputValueById('spellppmRate_5', 123);
+        page.setInputValueById('spellcooldown_5', 123);
+        page.setInputValueById('spellcategory_5', 123);
+        page.setInputValueById('spellcategorycooldown_5', 123);
+        page.setInputValueById('bonding', 123);
+        page.setInputValueById('description', 123);
+        page.setInputValueById('PageText', 123);
+        page.setInputValueById('LanguageID', 123);
+        page.setInputValueById('PageMaterial', 123);
+        page.setInputValueById('startquest', 123);
+        page.setInputValueById('lockid', 123);
+        page.setInputValueById('Material', 123);
+        page.setInputValueById('sheath', 123);
+        page.setInputValueById('RandomProperty', 123);
+        page.setInputValueById('RandomSuffix', 123);
+        page.setInputValueById('block', 123);
+        page.setInputValueById('itemset', 123);
+        page.setInputValueById('MaxDurability', 123);
+        page.setInputValueById('area', 123);
+        page.setInputValueById('Map', 123);
+        page.setInputValueById('BagFamily', 123);
+        page.setInputValueById('TotemCategory', 123);
+        page.setInputValueById('socketColor_1', 123);
+        page.setInputValueById('socketContent_1', 123);
+        page.setInputValueById('socketColor_2', 123);
+        page.setInputValueById('socketContent_2', 123);
+        page.setInputValueById('socketColor_3', 123);
+        page.setInputValueById('socketContent_3', 123);
+        page.setInputValueById('socketBonus', 123);
+        page.setInputValueById('GemProperties', 123);
+        page.setInputValueById('RequiredDisenchantSkill', 123);
+        page.setInputValueById('ArmorDamageModifier', 123);
+        page.setInputValueById('duration', 123);
+        page.setInputValueById('ItemLimitCategory', 123);
+        page.setInputValueById('HolidayId', 123);
+        page.setInputValueById('ScriptName', 123);
+        page.setInputValueById('DisenchantID', 123);
+        page.setInputValueById('FoodType', 123);
+        page.setInputValueById('minMoneyLoot', 123);
+        page.setInputValueById('maxMoneyLoot', 123);
+        page.setInputValueById('flagsCustom', 123);
+
+        tick(700);
+
+        fixture.whenStable().then(() => {
+          const itemStats = page.itemStats.innerText;
+          expect(itemStats).toContain('Helias item');
+          expect(itemStats).toContain('mockGetMapNameById123');
+          expect(itemStats).toContain('mockGetAreaNameById123');
+          expect(itemStats).toContain('Conjured Item');
+          expect(itemStats).toContain('Unique (123)');
+          expect(itemStats).toContain('Duration: 2 minutes (real time)');
+          expect(itemStats).toContain('Requires mockGetEventNameByHolidayId123');
+          expect(itemStats).toContain('This Item Begins a Quest');
+          expect(itemStats).toContain('123 Slot');
+          expect(itemStats).toContain('123 - 125 Damage+124 - 126 Damage');
+          expect(itemStats).toContain('123 Armor');
+          expect(itemStats).toContain('123 Block');
+          expect(itemStats).toContain('test');
+          expect(itemStats).toContain('<Random enchantment>');
+          expect(itemStats).toContain('+123 Holy Resistance');
+          expect(itemStats).toContain('+123 Fire Resistance');
+          expect(itemStats).toContain('+123 Nature Resistance');
+          expect(itemStats).toContain('+123 Frost Resistance');
+          expect(itemStats).toContain('+123 Shadow Resistance');
+          expect(itemStats).toContain('+123 Arcane Resistance');
+          expect(itemStats).toContain('Blue Socket');
+          expect(itemStats).toContain('Blue Socket');
+          expect(itemStats).toContain('Blue Socket');
+          expect(itemStats).toContain('Socket Bonus: mockgetFactionNameByIdGetSocketBonusById123');
+          expect(itemStats).toContain('Durability 123 / 123');
+          expect(itemStats).toContain('Classes: Warrior, Paladin, Rogue');
+          expect(itemStats).toContain('Races: Orc');
+          expect(itemStats).toContain('Requires Level 123');
+          expect(itemStats).toContain('Requires: profession (123)');
+          expect(itemStats).toContain('Requires mockGetSpellNameById123');
+          expect(itemStats).toContain('Requires mockGetFactionNameById123 (123)');
+          expect(itemStats).toContain('Locked');
+          expect(itemStats).toContain('Requires mockItemNameById');
+          expect(itemStats).toContain('Requires mockItemNameById');
+          expect(itemStats).toContain('Requires Lockpicking (1)');
+          expect(itemStats).toContain('mockGetSpellDescriptionById123');
+          expect(itemStats).toContain('"123"');
+          expect(itemStats).toContain('<Right Click To Read>');
+          expect(itemStats).toContain('123 Charges');
+        });
+
+      }));
     });
   });
 });
