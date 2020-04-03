@@ -37,7 +37,9 @@ export class SidebarComponent {
     conditions: 'up',
     gossip: 'up',
   };
-  readonly style = 'background-image: url(assets/img/bg1.jpg);';
+  private readonly IMAGES_COUNT = 7;
+  private readonly RANDOM_IMAGE = Math.floor(Math.random() * this.IMAGES_COUNT) + 1;
+  readonly style = `background-image: url(assets/img/sidebar-backgrounds/bg${this.RANDOM_IMAGE}.jpg);`;
 
   constructor(
     public sidebarService: SidebarService,
