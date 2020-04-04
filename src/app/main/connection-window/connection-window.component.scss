@@ -114,6 +114,10 @@ $secondary-color-green: #b7e2ad;
         width: 70%;
         margin: auto;
         display: block;
+
+        &:focus {
+          box-shadow: none;
+        }
       }
     }
 
