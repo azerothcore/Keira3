@@ -22,6 +22,7 @@ import { HolidaySelectorModule } from '@keira-shared/modules/selectors/holiday-s
 import { LanguageSelectorModule } from '@keira-shared/modules/selectors/language-selector/language-selector.module';
 import { ItemLimitCategorySelectorModule } from '@keira-shared/modules/selectors/item-limit-category-selector/item-limit-category-selector.module';
 import { QuestSelectorModule } from '@keira-shared/modules/selectors/quest-selector/quest-selector.module';
+import { SkillSelectorModule } from '@keira-shared/modules/selectors/skill-selector/skill-selector.module';
 
 
 @NgModule({
@@ -47,6 +48,7 @@ import { QuestSelectorModule } from '@keira-shared/modules/selectors/quest-selec
     LanguageSelectorModule,
     ItemLimitCategorySelectorModule,
     QuestSelectorModule,
+    SkillSelectorModule,
   ],
   exports: [
     ItemTemplateComponent,
