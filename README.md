@@ -8,7 +8,7 @@
 <a href="https://www.paypal.me/francesco92dev" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
 [![Discord](https://img.shields.io/discord/217589275766685707.svg)](https://discordapp.com/channels/217589275766685707/536630256048799744)
 
-![Keira3](https://user-images.githubusercontent.com/75517/59927799-8eba4a00-943d-11e9-876e-06f4b08e01a2.png)
+![Keira3](https://raw.githubusercontent.com/azerothcore/Keira3/master/screenshot.png)
 
 
 Cross-platform desktop application featuring a **Database Editor** for the [AzerothCore MMORPG framework](http://www.azerothcore.org).
