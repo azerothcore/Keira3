@@ -1,11 +1,15 @@
-@import './_partials/sidebar-width.scss';
+@import 'variables';
+
+.modal-content {
+  background-color: $content-block-bg-color;
+}
 
 .page-wrapper {
   height: 100vh;
 
   .page-content {
     background-color: #00000024;
-    height: 100vh;
+    min-height: 100vh;
     display: inline-block;
     width: 100%;
     transition: padding-left .3s ease;
@@ -13,7 +17,7 @@
     padding-left: $sidebar-width;
 
     .content-block {
-      background-color: #FAFAFA;
+      background-color: $content-block-bg-color;
       padding: 20px;
       margin-top: 15px;
       border-radius: 4px;
