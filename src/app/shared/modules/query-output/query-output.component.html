@@ -16,7 +16,7 @@
     </div>
 
     <div class="col">
-      <div class="wiki-link mb-2">
+      <div *ngIf="docUrl" class="wiki-link mb-2">
         <a [href]="docUrl" target="_blank">
           <i class="fas fa-link"></i> {{ editorService.entityTable }} documentation
         </a>
