@@ -434,6 +434,10 @@
             class="fas fa-info-circle ml-1" [placement]="'auto'"
             [tooltip]="'The skill required to use this item. See the SkillLine DBC file for IDs which can be used here.'"
           ></i>
+          <keira-skill-selector-btn
+            [config]="{ name: 'RequiredSkill' }"
+            [control]="editorService.form.controls.RequiredSkill"
+          ></keira-skill-selector-btn>
           <input [formControlName]="'RequiredSkill'" id="RequiredSkill" type="number" class="form-control form-control-sm">
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
