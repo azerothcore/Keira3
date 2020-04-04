@@ -1,0 +1,34 @@
+@import './_partials/sidebar-width.scss';
+
+.page-wrapper {
+  height: 100vh;
+
+  .page-content {
+    background-color: #00000024;
+    height: 100vh;
+    display: inline-block;
+    width: 100%;
+    transition: padding-left .3s ease;
+
+    padding-left: $sidebar-width;
+
+    .content-block {
+      background-color: #FAFAFA;
+      padding: 20px;
+      margin-top: 15px;
+      border-radius: 4px;
+      box-shadow: 0 0 15px 1px rgba(43, 43, 43, 0.1), 0 11px 6px -7px rgba(43, 43, 43, 0.1)
+    }
+  }
+
+  .sidebar {
+    left: 0;
+  }
+
+  &.toggled {
+
+    .page-content {
+      padding-left: 0;
+    }
+  }
+}
