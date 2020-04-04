@@ -6,14 +6,8 @@
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
 
-    <keira-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
-
-    <hr class="mt-2 mb-1">
-
-    <div class="wiki-link mb-2">
-      <a [href]="docUrl" target="_blank">
-        <i class="fas fa-link"></i> {{ editorService.entityTable }} documentation
-      </a>
+    <div class="content-block">
+      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
     </div>
 
     <form

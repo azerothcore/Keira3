@@ -11,7 +11,9 @@
 
   <div *ngIf="lootId > 0 && editorService.form && !!editorService.loadedEntityId && !editorService.loading">
 
-    <keira-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
+    <div class="content-block">
+<keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
+    </div>
 
     <hr class="mt-2 mb-1">
 
