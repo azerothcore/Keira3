@@ -10,12 +10,13 @@
       <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
     </div>
 
-    <div class="content-block">
+    <form
+      [formGroup]="editorService.form"
+      class="form-group edit-form"
+    >
 
-      <form
-        [formGroup]="editorService.form"
-        class="form-group edit-form"
-      >
+
+      <div class="content-block">
 
         <span class="category-title">Addon Base</span>
         <div class="row">
@@ -122,6 +123,9 @@
 
         </div>
 
+      </div>
+      <div class="content-block">
+
         <span class="category-title">Addon Requirements</span>
         <div class="row">
 
@@ -185,6 +189,9 @@
 
         </div>
 
+      </div>
+      <div class="content-block">
+
         <span class="category-title">Addon Rewards</span>
         <div class="row">
 
@@ -208,9 +215,9 @@
 
         </div>
 
-      </form>
+      </div>
 
-    </div>
+    </form>
 
     <keira-quest-preview></keira-quest-preview>
 
