@@ -22,7 +22,7 @@ export class ConnectionWindowService {
     for (let i = 0; i < configs.length; i++) {
       if (this.isSameConfig(configs[i], newConfig)) {
         // existing config
-        configs = configs.splice(i, 1);
+        configs.splice(i, 1);
         configs.push(newConfig);
         this.setConfigsToStorage(configs);
         return;
