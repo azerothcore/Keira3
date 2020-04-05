@@ -1,61 +1,63 @@
 <keira-top-bar [handler]="handlerService"></keira-top-bar>
 
-<div class="container-fluid p-3">
+<div class="container-fluid">
 
-  <keira-create
-    [entityTable]="entityTable"
-    [entityIdField]="entityIdField"
-    [customStartingId]="customStartingId"
-    [handlerService]="handlerService"
-    [queryService]="queryService"
-  ></keira-create>
+  <div class="content-block">
+    <keira-create
+      [entityTable]="entityTable"
+      [entityIdField]="entityIdField"
+      [customStartingId]="customStartingId"
+      [handlerService]="handlerService"
+      [queryService]="queryService"
+    ></keira-create>
+  </div>
 
-  <hr class="mt-2 mb-2">
-
-  <p class="lead">Select existing</p>
-  <form [formGroup]="selectService.queryForm">
-    <div class="row">
-      <ng-container [formGroup]="selectService.fields">
+  <div class="content-block">
+    <p class="lead">Select existing</p>
+    <form [formGroup]="selectService.queryForm">
+      <div class="row">
+        <ng-container [formGroup]="selectService.fields">
+          <div class="form-group col-2">
+            <input [formControlName]="'entry'" type="number" class="form-control form-control-sm" id="search-id" placeholder="entry">
+          </div>
+          <div class="form-group col-3">
+            <input [formControlName]="'name'" class="form-control form-control-sm" id="name" placeholder="Name">
+          </div>
+        </ng-container>
         <div class="form-group col-2">
-          <input [formControlName]="'entry'" type="number" class="form-control form-control-sm" id="search-id" placeholder="entry">
+          <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Limit">
         </div>
-        <div class="form-group col-3">
-          <input [formControlName]="'name'" class="form-control form-control-sm" id="name" placeholder="Name">
+        <div class="col-2">
+          <keira-search-button [searchService]="selectService"></keira-search-button>
         </div>
-      </ng-container>
-      <div class="form-group col-2">
-        <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Limit">
       </div>
-      <div class="col-2">
-        <keira-search-button [searchService]="selectService"></keira-search-button>
-      </div>
+      <code [highlight]="selectService.query"></code>
+    </form>
+
+    <div *ngIf="selectService.rows">
+
+      <ngx-datatable
+        class="bootstrap table table-striped text-center datatable-select"
+        [rows]="selectService.rows"
+        [headerHeight]="DTCFG.headerHeight"
+        [footerHeight]="DTCFG.footerHeight"
+        [columnMode]="DTCFG.columnMode"
+        [rowHeight]="DTCFG.rowHeight"
+        [limit]="DTCFG.limit"
+        [selectionType]="DTCFG.selectionType"
+        (select)='selectService.onSelect($event)'
+      >
+        <ngx-datatable-column name="Entry" prop="entry" [minWidth]="100">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.entry }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Name" prop="name" [minWidth]="120" [maxWidth]="600"></ngx-datatable-column>
+        <ngx-datatable-column name="Display Id" prop="displayId" [minWidth]="75" [maxWidth]="100"></ngx-datatable-column>
+        <ngx-datatable-column name="Type" prop="type" [minWidth]="75" [maxWidth]="100"></ngx-datatable-column>
+        <ngx-datatable-column name="AIName" prop="AIName" [minWidth]="75" [maxWidth]="130"></ngx-datatable-column>
+      </ngx-datatable>
+
     </div>
-    <code [highlight]="selectService.query"></code>
-  </form>
-
-  <div *ngIf="selectService.rows">
-
-    <ngx-datatable
-      class="bootstrap table table-striped text-center datatable-select"
-      [rows]="selectService.rows"
-      [headerHeight]="DTCFG.headerHeight"
-      [footerHeight]="DTCFG.footerHeight"
-      [columnMode]="DTCFG.columnMode"
-      [rowHeight]="DTCFG.rowHeight"
-      [limit]="DTCFG.limit"
-      [selectionType]="DTCFG.selectionType"
-      (select)='selectService.onSelect($event)'
-    >
-      <ngx-datatable-column name="Entry" prop="entry" [minWidth]="100">
-        <ng-template let-row="row" ngx-datatable-cell-template>
-          {{ row.entry }}
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column name="Name" prop="name" [minWidth]="120" [maxWidth]="600"></ngx-datatable-column>
-      <ngx-datatable-column name="Display Id" prop="displayId" [minWidth]="75" [maxWidth]="100"></ngx-datatable-column>
-      <ngx-datatable-column name="Type" prop="type" [minWidth]="75" [maxWidth]="100"></ngx-datatable-column>
-      <ngx-datatable-column name="AIName" prop="AIName" [minWidth]="75" [maxWidth]="130"></ngx-datatable-column>
-    </ngx-datatable>
-
   </div>
 </div>

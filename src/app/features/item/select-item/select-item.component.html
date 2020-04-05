@@ -1,75 +1,77 @@
 <keira-top-bar [handler]="handlerService"></keira-top-bar>
 
-<div class="container-fluid p-3">
+<div class="container-fluid">
 
-  <keira-create
-    [entityTable]="entityTable"
-    [entityIdField]="entityIdField"
-    [customStartingId]="customStartingId"
-    [handlerService]="handlerService"
-    [queryService]="queryService"
-  ></keira-create>
+  <div class="content-block">
+    <keira-create
+      [entityTable]="entityTable"
+      [entityIdField]="entityIdField"
+      [customStartingId]="customStartingId"
+      [handlerService]="handlerService"
+      [queryService]="queryService"
+    ></keira-create>
+  </div>
 
-  <hr class="mt-2 mb-2">
-
-  <p class="lead">Select existing</p>
-  <form [formGroup]="selectService.queryForm">
-    <div class="row">
-      <ng-container [formGroup]="selectService.fields">
-        <div class="form-group col-2">
-          <input [formControlName]="'entry'" type="number" class="form-control form-control-sm" id="search-id" placeholder="Item ID">
-        </div>
-        <div class="form-group col-3">
-          <input [formControlName]="'name'" class="form-control form-control-sm" id="name" placeholder="Item name">
-        </div>
-      </ng-container>
-      <div class="form-group col-2">
-        <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Limit">
-      </div>
-      <div class="col-2">
-        <keira-search-button [searchService]="selectService"></keira-search-button>
-      </div>
-    </div>
-    <code [highlight]="selectService.query"></code>
-  </form>
-
-  <div *ngIf="selectService.rows">
-
-    <ngx-datatable
-      class="bootstrap table table-striped text-center datatable-select datatable-icon-list"
-      [rows]="selectService.rows"
-      [headerHeight]="DTCFG.headerHeight"
-      [footerHeight]="DTCFG.footerHeight"
-      [columnMode]="DTCFG.columnMode"
-      [rowHeight]="DTCFG.rowHeightWithIcon"
-      [limit]="DTCFG.limit"
-      [selectionType]="DTCFG.selectionType"
-      (select)='selectService.onSelect($event)'
-    >
-      <ngx-datatable-column [minWidth]="42" [maxWidth]="42" [sortable]="false">
-        <ng-template let-row="row" ngx-datatable-cell-template>
-          <keira-icon [itemDisplayId]="row.displayid"></keira-icon>
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column name="ID">
-        <ng-template let-row="row" ngx-datatable-cell-template>
-          {{ row.entry }}
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column name="Name" prop="name" [minWidth]="60">
-        <ng-template let-row="row" ngx-datatable-cell-template>
-          <div class="item-select">
-            <b [ngClass]="'q' + row.Quality">{{ row.name }}</b>
+  <div class="content-block">
+    <p class="lead">Select existing</p>
+    <form [formGroup]="selectService.queryForm">
+      <div class="row">
+        <ng-container [formGroup]="selectService.fields">
+          <div class="form-group col-2">
+            <input [formControlName]="'entry'" type="number" class="form-control form-control-sm" id="search-id" placeholder="Item ID">
           </div>
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column name="DisplayID" prop="displayid"></ngx-datatable-column>
-      <ngx-datatable-column name="Class" prop="class"></ngx-datatable-column>
-      <ngx-datatable-column name="Subclass" prop="subclass"></ngx-datatable-column>
-      <ngx-datatable-column name="Quality" prop="Quality"></ngx-datatable-column>
-      <ngx-datatable-column name="ItemLevel" prop="ItemLevel"></ngx-datatable-column>
-      <ngx-datatable-column name="RequiredLevel" prop="RequiredLevel"></ngx-datatable-column>
-    </ngx-datatable>
+          <div class="form-group col-3">
+            <input [formControlName]="'name'" class="form-control form-control-sm" id="name" placeholder="Item name">
+          </div>
+        </ng-container>
+        <div class="form-group col-2">
+          <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Limit">
+        </div>
+        <div class="col-2">
+          <keira-search-button [searchService]="selectService"></keira-search-button>
+        </div>
+      </div>
+      <code [highlight]="selectService.query"></code>
+    </form>
 
+    <div *ngIf="selectService.rows">
+
+      <ngx-datatable
+        class="bootstrap table table-striped text-center datatable-select datatable-icon-list"
+        [rows]="selectService.rows"
+        [headerHeight]="DTCFG.headerHeight"
+        [footerHeight]="DTCFG.footerHeight"
+        [columnMode]="DTCFG.columnMode"
+        [rowHeight]="DTCFG.rowHeightWithIcon"
+        [limit]="DTCFG.limit"
+        [selectionType]="DTCFG.selectionType"
+        (select)='selectService.onSelect($event)'
+      >
+        <ngx-datatable-column [minWidth]="42" [maxWidth]="42" [sortable]="false">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <keira-icon [itemDisplayId]="row.displayid"></keira-icon>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="ID">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.entry }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Name" prop="name" [minWidth]="60">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <div class="item-select">
+              <b [ngClass]="'q' + row.Quality">{{ row.name }}</b>
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="DisplayID" prop="displayid"></ngx-datatable-column>
+        <ngx-datatable-column name="Class" prop="class"></ngx-datatable-column>
+        <ngx-datatable-column name="Subclass" prop="subclass"></ngx-datatable-column>
+        <ngx-datatable-column name="Quality" prop="Quality"></ngx-datatable-column>
+        <ngx-datatable-column name="ItemLevel" prop="ItemLevel"></ngx-datatable-column>
+        <ngx-datatable-column name="RequiredLevel" prop="RequiredLevel"></ngx-datatable-column>
+      </ngx-datatable>
+
+    </div>
   </div>
 </div>
