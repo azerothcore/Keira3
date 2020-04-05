@@ -1,7 +1,10 @@
+@import 'variables';
+
 .top-bar {
   background-color: #000;
+  color: $content-block-bg-color;
+  font-family: monospace;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  color: #fff;
   height: 24px;
   padding: 1px;
 
