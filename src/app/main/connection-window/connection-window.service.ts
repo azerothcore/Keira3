@@ -35,8 +35,14 @@ export class ConnectionWindowService {
   }
 
   getConfigs(): Config[] {
-    const configs: string = this.localStorageService.getItem(this.KEY);
-    return JSON.parse(configs) ?? [];
+    const raw: string = this.localStorageService.getItem(this.KEY);
+    const configs = JSON.parse(raw) ?? [];
+
+    for (const config of configs) {
+      config.password = atob(config.password);
+    }
+
+    return configs;
   }
 
   private isSameConfig(config1: Config, config2: Config): boolean {
@@ -47,6 +53,10 @@ export class ConnectionWindowService {
   }
 
   private setConfigsToStorage(configs: Config[]): void {
+    for (const config of configs) {
+      config.password = btoa(config.password);
+    }
+
     this.localStorageService.setItem(this.KEY, JSON.stringify(configs));
   }
 }

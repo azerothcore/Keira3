@@ -39,16 +39,17 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
 
     this.configs = this.connectionWindowService.getConfigs();
 
-    console.log(this.configs);
     if (this.configs.length > 0) {
       this.form.setValue(this.configs[this.configs.length - 1]);
     }
   }
 
+  /* istanbul ignore next */ // TODO: will be tested when the feature is enabled
   loadConfig(config: Partial<ConnectionConfig>): void {
     this.form.setValue(config);
   }
 
+  /* istanbul ignore next */ // TODO: will be tested when the feature is enabled
   removeAllConfigs(): void {
     this.connectionWindowService.removeAllConfigs();
   }
