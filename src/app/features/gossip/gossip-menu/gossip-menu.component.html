@@ -7,66 +7,61 @@
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
 
     <div class="content-block">
-<keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
+      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
     </div>
 
-    <hr class="mt-2 mb-1">
+    <div class="content-block">
 
-    <div class="wiki-link">
-      <a [href]="docUrl" target="_blank">
-        <i class="fas fa-link"></i> {{ editorService.entityTable }} documentation
-      </a>
-    </div>
+      <form
+        [formGroup]="editorService.form"
+        class="form-group edit-form"
+      >
 
-    <form
-      [formGroup]="editorService.form"
-      class="form-group edit-form"
-    >
+        <div class="row">
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+            <label class="control-label" for="TextID">TextID</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'The npc_text.ID for the gossip you want to be initially displayed. Also this tells the NPC what to say at the top of the options menu when it is displayed.'"
+            ></i>
+            <input [formControlName]="'TextID'" id="TextID" type="number" class="form-control form-control-sm">
+          </div>
+
+          <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
+            <i class="fas fa-exclamation-triangle"></i>
+            The <strong>{{ editorService.entitySecondIdField }}</strong> must be unique.
+          </div>
+
+        </div>
+
+      </form>
 
       <div class="row">
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-          <label class="control-label" for="TextID">TextID</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'The npc_text.ID for the gossip you want to be initially displayed. Also this tells the NPC what to say at the top of the options menu when it is displayed.'"
-          ></i>
-          <input [formControlName]="'TextID'" id="TextID" type="number" class="form-control form-control-sm">
-        </div>
+        <div class="col-12">
 
-        <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
-          <i class="fas fa-exclamation-triangle"></i>
-          The <strong>{{ editorService.entitySecondIdField }}</strong> must be unique.
-        </div>
+          <keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>
 
+          <ngx-datatable
+            id="editor-table"
+            class="bootstrap table table-striped text-center datatable-select"
+            [rows]="editorService.newRows"
+            [headerHeight]="DTCFG.headerHeight"
+            [footerHeight]="DTCFG.footerHeight"
+            [columnMode]="DTCFG.columnMode"
+            [rowHeight]="DTCFG.rowHeight"
+            [selectionType]="DTCFG.selectionType"
+            (select)='editorService.onRowSelection($event)'>
+            <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="TextID" prop="TextID" [minWidth]="80"></ngx-datatable-column>
+          </ngx-datatable>
+
+        </div>
       </div>
 
-    </form>
-
-    <div class="row">
-      <div class="col-12">
-
-        <keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>
-
-        <ngx-datatable
-          id="editor-table"
-          class="bootstrap table table-striped text-center datatable-select"
-          [rows]="editorService.newRows"
-          [headerHeight]="DTCFG.headerHeight"
-          [footerHeight]="DTCFG.footerHeight"
-          [columnMode]="DTCFG.columnMode"
-          [rowHeight]="DTCFG.rowHeight"
-          [selectionType]="DTCFG.selectionType"
-          (select)='editorService.onRowSelection($event)'>
-          <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
-            <ng-template let-row="row" ngx-datatable-cell-template>
-              <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
-            </ng-template>
-          </ngx-datatable-column>
-          <ngx-datatable-column name="TextID" prop="TextID" [minWidth]="80"></ngx-datatable-column>
-        </ngx-datatable>
-
-      </div>
     </div>
-
   </div>
 </div>

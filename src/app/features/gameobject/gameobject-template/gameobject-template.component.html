@@ -7,80 +7,80 @@
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
 
     <div class="content-block">
-<keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
+      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
     </div>
 
+    <div class="content-block">
 
+      <form
+        [formGroup]="editorService.form"
+        class="form-group edit-form"
+      >
 
-    <form
-      [formGroup]="editorService.form"
-      class="form-group edit-form"
-    >
+        <div class="row">
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="entry">entry</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'The unique ID of the gameobject'"
+            ></i>
+            <input [formControlName]="'entry'" id="entry" type="number" class="form-control form-control-sm">
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="name">name</label>
+            <input [formControlName]="'name'" id="name" class="form-control form-control-sm">
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="type">type</label>
+            <keira-single-value-selector-btn
+              [control]="editorService.form.controls.type"
+              [config]="{ options: GAMEOBJECT_TYPE, name: 'type' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
+            <input [formControlName]="'type'" id="type" type="number" class="form-control form-control-sm">
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="displayId">displayId</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'Graphic model id sent to the client from GameObjectDisplayInfo.dbc'"
+            ></i>
+            <input [formControlName]="'displayId'" id="displayId" type="number" class="form-control form-control-sm">
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="IconName">IconName</label>
+            <keira-single-value-selector-btn
+              [control]="editorService.form.controls.IconName"
+              [config]="{ options: GAMEOBJECT_ICON, name: 'IconName' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
+            <input [formControlName]="'IconName'" id="IconName" class="form-control form-control-sm">
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="size">size</label>
+            <input [formControlName]="'size'" id="size" type="number" class="form-control form-control-sm">
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="AIName">AIName</label>
+            <input [formControlName]="'AIName'" id="AIName" class="form-control form-control-sm">
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="ScriptName">ScriptName</label>
+            <input [formControlName]="'ScriptName'" id="ScriptName" class="form-control form-control-sm">
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="castBarCaption">castBarCaption</label>
+            <input [formControlName]="'castBarCaption'" id="castBarCaption" class="form-control form-control-sm">
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="unk1">unk1</label>
+            <input [formControlName]="'unk1'" id="unk1" class="form-control form-control-sm">
+          </div>
+        </div>
 
-      <div class="row">
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="entry">entry</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'The unique ID of the gameobject'"
-          ></i>
-          <input [formControlName]="'entry'" id="entry" type="number" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="name">name</label>
-          <input [formControlName]="'name'" id="name" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="type">type</label>
-          <keira-single-value-selector-btn
-            [control]="editorService.form.controls.type"
-            [config]="{ options: GAMEOBJECT_TYPE, name: 'type' }"
-            [modalClass]="'modal-md'"
-          ></keira-single-value-selector-btn>
-          <input [formControlName]="'type'" id="type" type="number" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="displayId">displayId</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'Graphic model id sent to the client from GameObjectDisplayInfo.dbc'"
-          ></i>
-          <input [formControlName]="'displayId'" id="displayId" type="number" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="IconName">IconName</label>
-          <keira-single-value-selector-btn
-            [control]="editorService.form.controls.IconName"
-            [config]="{ options: GAMEOBJECT_ICON, name: 'IconName' }"
-            [modalClass]="'modal-md'"
-          ></keira-single-value-selector-btn>
-          <input [formControlName]="'IconName'" id="IconName" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="size">size</label>
-          <input [formControlName]="'size'" id="size" type="number" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="AIName">AIName</label>
-          <input [formControlName]="'AIName'" id="AIName" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="ScriptName">ScriptName</label>
-          <input [formControlName]="'ScriptName'" id="ScriptName" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="castBarCaption">castBarCaption</label>
-          <input [formControlName]="'castBarCaption'" id="castBarCaption" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="unk1">unk1</label>
-          <input [formControlName]="'unk1'" id="unk1" class="form-control form-control-sm">
-        </div>
-      </div>
+        <br>
 
-      <br>
-
-      <span class="category-title">
+        <span class="category-title">
         Gameobject Data
         <i
           class="fas fa-info-circle ml-1" [placement]="'auto'"
@@ -88,19 +88,20 @@
         ></i>
       </span>
 
-      <div class="row">
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2" *ngFor="let item of [].constructor(24); let i = index">
-          <label class="control-label" for="Data{{i}}">{{ dataFieldDefinition(i).name }}</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="dataFieldDefinition(i).tooltip"
-            *ngIf="!!dataFieldDefinition(i).tooltip"
-          ></i>
-          <input [formControlName]="'Data'+i" id="Data{{i}}" type="number" class="form-control form-control-sm">
+        <div class="row">
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2" *ngFor="let item of [].constructor(24); let i = index">
+            <label class="control-label" for="Data{{i}}">{{ dataFieldDefinition(i).name }}</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="dataFieldDefinition(i).tooltip"
+              *ngIf="!!dataFieldDefinition(i).tooltip"
+            ></i>
+            <input [formControlName]="'Data'+i" id="Data{{i}}" type="number" class="form-control form-control-sm">
+          </div>
+
         </div>
 
-      </div>
-
-    </form>
+      </form>
+    </div>
   </div>
 </div>
