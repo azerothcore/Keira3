@@ -339,17 +339,17 @@ describe('ItemPreviewService', () => {
       { name: 'Feral Attack Power 4', template: {
         dmg_min1: 1, dmg_min2: 1, dmg_max1: 5, dmg_max2: 5, delay: 1000, class: 2, subclass: 5
       }, output: `<table style="float: left; width: 100%;"><tr><th>Mace</th></tr></table><!--dmg--><table style="float: left; width: 100%;"><tr><td>1 - 5 Damage</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><th style="text-align: right;">Speed <!--spd-->1.00</th></tr></table>+ 1 - 5 Damage<br><!--dps-->(6.00 damage per second)` },
-      { name: 'Spell ID 1', template: { spellid_1: 1, spellid_2: 1 }, output: `<br><!--bonus--><span class="q2">${mockGetSpellDescriptionById}1</span>` },
-      { name: 'Spell ID 2', template: { spellid_2: 1 }, output: `<br><!--bonus--><span class="q2">${mockGetSpellDescriptionById}1</span>` },
+      { name: 'Spell ID 1', template: { spellid_1: 1, spellid_2: 1 }, output: `<br><!--bonus--><span class="q2">${mockGetSpellDescriptionById}1 </span>` },
+      { name: 'Spell ID 2', template: { spellid_2: 1 }, output: `<br><!--bonus--><span class="q2">${mockGetSpellDescriptionById}1 </span>`},
       { name: 'Spell ID 483', template: { spellid_1: 483 },
-        output: `<br><!--bonus--><span class="q2">${mockGetSpellDescriptionById}483</span>`
+        output: `<br><!--bonus--><span class="q2">${mockGetSpellDescriptionById}483 </span>`
       },
       { name: 'Spell ID 55884', template: { spellid_1: 55884 },
-        output: `<br><!--bonus--><span class="q2">${mockGetSpellDescriptionById}55884</span>`
+        output: `<br><!--bonus--><span class="q2">${mockGetSpellDescriptionById}55884 </span>`
       },
-      { name: 'Spell ID 123, 123 charges', template: { spellid_1: 123, spellcharges_1: 123, PageText: 123}, output: `<br><!--bonus--><span class="q2">mockGetSpellDescriptionById123</span><br><!--pagetext--><span class="q2">&lt;Right Click To Read&gt</span><br><span class="q1">123 Charges</span>` },
-      { name: 'Spell ID 123, 1 charge', template: { spellid_1: 123, spellcharges_1: 1,  description: 'spellDesc' }, output: `<br><!--bonus--><span class="q2">mockGetSpellDescriptionById123</span><br><span class="q">"spellDesc"</span><br><span class="q1">1 Charge</span>` },
-      { name: 'Spell ID 123, no charges', template: { spellid_1: 123,  }, output: `<br><!--bonus--><span class="q2">mockGetSpellDescriptionById123</span>` },
+      { name: 'Spell ID 123, 123 charges', template: { spellid_1: 123, spellcharges_1: 123, PageText: 123}, output: `<br><!--bonus--><span class="q2">mockGetSpellDescriptionById123 </span><br><!--pagetext--><span class="q2">&lt;Right Click To Read&gt</span><br><span class="q1">123 Charges</span>` },
+      { name: 'Spell ID 123, 1 charge', template: { spellid_1: 123, spellcharges_1: 1,  description: 'spellDesc' }, output: `<br><!--bonus--><span class="q2">mockGetSpellDescriptionById123 </span><br><span class="q">"spellDesc"</span><br><span class="q1">1 Charge</span>` },
+      { name: 'Spell ID 123, no charges', template: { spellid_1: 123,  }, output: `<br><!--bonus--><span class="q2">mockGetSpellDescriptionById123 </span>` },
       { name: 'LockId 1', template: { Flags: 1, lockid: 1 }, output: `<br><span class="q0">Locked<br>Requires Lockpicking (1)<br>Requires Lockpicking (1)<br>Requires Lockpicking</span>` },
       { name: 'LockId 2', template: { Flags: 1, lockid: 2 }, output: `<br><span class="q0">Locked<br>Requires mockItemNameById1<br>Requires Lockpicking (1)</span>` },
       { name: 'LockId 3', template: { Flags: 1, lockid: 3 }, output: `` },
@@ -407,8 +407,8 @@ describe('ItemPreviewService', () => {
       { name: 'Sockets ', template: { socketColor_1: 0, socketColor_2: 1, socketColor_3: 2, socketBonus: 1 }, output: `<br><span class="socket-meta q0 socket0">Meta Socket</span><br><span class="socket-red q0 socket1">Red Socket</span><br><span class="q0">Socket Bonus: mockGetSocketBonusById1</span>` },
       { name: 'getSpellDesc ', template: {
         spellid_1: 1, spellid_2: 2, spellcooldown_1: 2, spellcooldown_2: 1, spellcategory_1: 1, spellcategory_2: 2
-      }, output: `<br><!--bonus--><span class="q2">mockGetSpellDescriptionById1</span><br><!--bonus--><span class="q2">mockGetSpellDescriptionById2</span>` },
-      { name: 'getSpellDesc null check - 1', template: { spellid_1: 1, spellid_2: 2 }, output: `<br><!--bonus--><span class="q2">mockGetSpellDescriptionById1</span><br><!--bonus--><span class="q2">mockGetSpellDescriptionById2</span>` },
+      }, output: `<br><!--bonus--><span class="q2">mockGetSpellDescriptionById1 </span><br><!--bonus--><span class="q2">mockGetSpellDescriptionById2 </span>` },
+      { name: 'getSpellDesc null check - 1', template: { spellid_1: 1, spellid_2: 2 }, output: `<br><!--bonus--><span class="q2">mockGetSpellDescriptionById1 </span><br><!--bonus--><span class="q2">mockGetSpellDescriptionById2 </span>` },
       { name: 'getSpellDesc null check - 2', template: { spellid_1: 483, spellid_2: 555 }, output: `` },
       { name: 'getLearnSpellText', template: { spellid_1: 483, spellid_2: 124 }, output: `<br><!--spellDesc--><span class="q2">Use:  mockGetSpellDescriptionById124</span>` },
       { name: 'Extended Cost - 1', template: { entry: 600, FlagsExtra: 0x04, BuyPrice: 1234 }, output: `<br>Requires personal and team arena rating of 2200 in 3v3 or 5v5 brackets`},
