@@ -12,3 +12,7 @@ code.hljs {
     cursor: pointer;
   }
 }
+
+.btn:disabled {
+  cursor: default;
+}

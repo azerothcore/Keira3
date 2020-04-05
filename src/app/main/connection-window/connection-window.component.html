@@ -54,7 +54,7 @@
           >
         </div>
         <div class="recent-container" *ngIf="configs">
-          <div class="btn-group" dropdown [dropup]="true">
+          <div class="btn-group" dropdown [dropup]="true" [isDisabled]="true">
             <button dropdownToggle type="button" class="btn btn-sm btn-primary dropdown-toggle">
               <i class="fas fa-history"></i> Load recent <span class="caret"></span>
             </button>
