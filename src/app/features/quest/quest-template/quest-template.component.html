@@ -20,7 +20,7 @@
         <span class="category-title">Base</span>
         <div class="row">
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="ID">ID</label>
             <i
               class="fas fa-info-circle ml-1" [placement]="'auto'"
@@ -38,7 +38,7 @@
             <input [formControlName]="'LogTitle'" id="LogTitle" class="form-control form-control-sm">
           </div>
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="QuestType">QuestType</label>
             <keira-single-value-selector-btn
               [control]="editorService.form.controls.QuestType"
@@ -48,7 +48,7 @@
             <input [formControlName]="'QuestType'" id="QuestType" type="number" class="form-control form-control-sm">
           </div>
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-6 col-lg-4 col-xl-2">
             <label class="control-label" for="QuestLevel">QuestLevel</label>
             <i
               class="fas fa-info-circle ml-1" [placement]="'auto'"
@@ -57,7 +57,7 @@
             <input [formControlName]="'QuestLevel'" id="QuestLevel" type="number" class="form-control form-control-sm">
           </div>
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="MinLevel">MinLevel</label>
             <i
               class="fas fa-info-circle ml-1" [placement]="'auto'"
@@ -66,7 +66,7 @@
             <input [formControlName]="'MinLevel'" id="MinLevel" type="number" class="form-control form-control-sm">
           </div>
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="QuestSortID">QuestSortID</label>
             <i
               class="fas fa-info-circle ml-1" [placement]="'auto'"
@@ -75,7 +75,7 @@
             <input [formControlName]="'QuestSortID'" id="QuestSortID" type="number" class="form-control form-control-sm">
           </div>
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="QuestInfoID">QuestInfoID</label>
             <i
               class="fas fa-info-circle ml-1" [placement]="'auto'"
@@ -84,7 +84,7 @@
             <input [formControlName]="'QuestInfoID'" id="QuestInfoID" type="number" class="form-control form-control-sm">
           </div>
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="SuggestedGroupNum">SuggestedGroupNum</label>
             <i
               class="fas fa-info-circle ml-1" [placement]="'auto'"
@@ -93,7 +93,7 @@
             <input [formControlName]="'SuggestedGroupNum'" id="SuggestedGroupNum" type="number" class="form-control form-control-sm">
           </div>
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="StartItem">
               <keira-icon [itemId]="editorService.form.controls.StartItem.value"></keira-icon>
               StartItem
@@ -109,7 +109,7 @@
             <input [formControlName]="'StartItem'" id="StartItem" type="number" class="form-control form-control-sm">
           </div>
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="Flags">Flags</label>
             <keira-flags-selector-btn
               [control]="editorService.form.controls.Flags"
@@ -118,7 +118,7 @@
             <input [formControlName]="'Flags'" id="Flags" type="number" class="form-control form-control-sm">
           </div>
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="TimeAllowed">TimeAllowed</label>
             <i
               class="fas fa-info-circle ml-1" [placement]="'auto'"
@@ -127,7 +127,7 @@
             <input [formControlName]="'TimeAllowed'" id="TimeAllowed" type="number" class="form-control form-control-sm">
           </div>
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="AllowableRaces">AllowableRaces</label>
             <keira-flags-selector-btn
               [control]="editorService.form.controls.AllowableRaces"
@@ -136,12 +136,12 @@
             <input [formControlName]="'AllowableRaces'" id="AllowableRaces" type="number" class="form-control form-control-sm">
           </div>
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="Unknown0">Unknown0</label>
             <input [formControlName]="'Unknown0'" id="Unknown0" type="number" class="form-control form-control-sm">
           </div>
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="RequiredPlayerKills">RequiredPlayerKills</label>
             <i
               class="fas fa-info-circle ml-1" [placement]="'auto'"
@@ -158,7 +158,7 @@
         <span class="category-title">Point Of Interest</span>
         <div class="row">
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="POIContinent">POIContinent</label>
             <i
               class="fas fa-info-circle ml-1" [placement]="'auto'"
@@ -167,7 +167,7 @@
             <input [formControlName]="'POIContinent'" id="POIContinent" type="number" class="form-control form-control-sm">
           </div>
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="POIx">POIx</label>
             <i
               class="fas fa-info-circle ml-1" [placement]="'auto'"
@@ -176,7 +176,7 @@
             <input [formControlName]="'POIx'" id="POIx" type="number" class="form-control form-control-sm">
           </div>
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="POIy">POIy</label>
             <i
               class="fas fa-info-circle ml-1" [placement]="'auto'"
@@ -185,7 +185,7 @@
             <input [formControlName]="'POIy'" id="POIy" type="number" class="form-control form-control-sm">
           </div>
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="POIPriority">POIPriority</label>
             <input [formControlName]="'POIPriority'" id="POIPriority" type="number" class="form-control form-control-sm">
           </div>
@@ -252,7 +252,7 @@
 
           <div
             *ngFor="let i of [1,2,3,4,5,6]"
-            class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
+            class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2"
           >
             <div class="row">
               <div class="col-12">
@@ -285,7 +285,7 @@
 
           <div
             *ngFor="let i of [1,2,3,4]"
-            class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
+            class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2"
           >
             <div class="row">
               <div class="col-12">
@@ -301,7 +301,7 @@
 
           <div
             *ngFor="let i of [1,2]"
-            class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
+            class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2"
           >
             <label class="control-label" for="RequiredFactionId{{ i }}">Req.FactionId{{ i }}</label>
             <keira-faction-selector-btn
@@ -324,7 +324,7 @@
 
           <div
             *ngFor="let i of [1,2,3,4]"
-            class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
+            class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2"
           >
             <div class="row">
               <div class="col-12">
@@ -353,12 +353,12 @@
         <span class="category-title">Rewards</span>
         <div class="row">
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="RewardTitle">RewardTitle</label>
             <input [formControlName]="'RewardTitle'" id="RewardTitle" type="number" class="form-control form-control-sm">
           </div>
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="RewardTalents">RewardTalents</label>
             <i
               class="fas fa-info-circle ml-1" [placement]="'auto'"
@@ -367,7 +367,7 @@
             <input [formControlName]="'RewardTalents'" id="RewardTalents" type="number" class="form-control form-control-sm">
           </div>
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="RewardArenaPoints">RewardArenaPoints</label>
             <i
               class="fas fa-info-circle ml-1" [placement]="'auto'"
@@ -376,7 +376,7 @@
             <input [formControlName]="'RewardArenaPoints'" id="RewardArenaPoints" type="number" class="form-control form-control-sm">
           </div>
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="RewardNextQuest">RewardNextQuest</label>
             <i
               class="fas fa-info-circle ml-1" [placement]="'auto'"
@@ -385,7 +385,7 @@
             <input [formControlName]="'RewardNextQuest'" id="RewardNextQuest" type="number" class="form-control form-control-sm">
           </div>
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="RewardXPDifficulty">RewardXPDifficulty</label>
             <i
               class="fas fa-info-circle ml-1" [placement]="'auto'"
@@ -394,7 +394,7 @@
             <input [formControlName]="'RewardXPDifficulty'" id="RewardXPDifficulty" type="number" class="form-control form-control-sm">
           </div>
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="RewardMoney">RewardMoney</label>
             <i
               class="fas fa-info-circle ml-1" [placement]="'auto'"
@@ -403,7 +403,7 @@
             <input [formControlName]="'RewardMoney'" id="RewardMoney" type="number" class="form-control form-control-sm">
           </div>
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="RewardBonusMoney">RewardBonusMoney</label>
             <i
               class="fas fa-info-circle ml-1" [placement]="'auto'"
@@ -412,12 +412,12 @@
             <input [formControlName]="'RewardBonusMoney'" id="RewardBonusMoney" type="number" class="form-control form-control-sm">
           </div>
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="RewardDisplaySpell">RewardDisplaySpell</label>
             <input [formControlName]="'RewardDisplaySpell'" id="RewardDisplaySpell" type="number" class="form-control form-control-sm">
           </div>
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="RewardSpell">RewardSpell</label>
             <i
               class="fas fa-info-circle ml-1" [placement]="'auto'"
@@ -431,7 +431,7 @@
             <input [formControlName]="'RewardSpell'" id="RewardSpell" type="number" class="form-control form-control-sm">
           </div>
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="RewardHonor">RewardHonor</label>
             <i
               class="fas fa-info-circle ml-1" [placement]="'auto'"
@@ -440,7 +440,7 @@
             <input [formControlName]="'RewardHonor'" id="RewardHonor" type="number" class="form-control form-control-sm">
           </div>
 
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="RewardKillHonor">RewardKillHonor</label>
             <input [formControlName]="'RewardKillHonor'" id="RewardKillHonor" type="number" class="form-control form-control-sm">
           </div>
@@ -455,7 +455,7 @@
 
           <div
             *ngFor="let i of [1,2,3,4]"
-            class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
+            class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2"
           >
             <div class="row">
               <div class="col-12">
@@ -486,7 +486,7 @@
 
           <div
             *ngFor="let i of [1,2,3,4,5,6]"
-            class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
+            class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2"
           >
             <div class="row">
               <div class="col-12">
@@ -519,7 +519,7 @@
 
           <div
             *ngFor="let i of [1,2,3,4,5]"
-            class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
+            class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2"
           >
             <div class="row">
               <div class="col-12">
