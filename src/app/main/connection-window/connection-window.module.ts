@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { ConnectionWindowComponent } from './connection-window.component';
 import { QueryOutputModule } from '../../shared/modules/query-output/query-output.module';
+import { BsDropdownModule } from 'ngx-bootstrap';
 
 @NgModule({
   declarations: [
@@ -13,6 +14,7 @@ import { QueryOutputModule } from '../../shared/modules/query-output/query-outpu
     BrowserModule,
     ReactiveFormsModule,
     QueryOutputModule,
+    BsDropdownModule.forRoot(),
   ],
   exports: [
     ConnectionWindowComponent,
