@@ -72,7 +72,10 @@
         <button class="btn btn-primary connect-button" (click)="onConnect()">Connect</button>
       </form>
 
-      <keira-query-error [error]="error"></keira-query-error>
+      <div class="login-error-box">
+        <keira-query-error [error]="error"></keira-query-error>
+      </div>
+
     </div>
 
     <div class="end-text">
