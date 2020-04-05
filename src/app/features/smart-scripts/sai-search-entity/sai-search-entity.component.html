@@ -5,12 +5,11 @@
       <p class="lead">Select a Source Type</p>
 
       <div class="radio-container" *ngFor="let key of SAI_SEARCH_TYPES_KEYS">
-        <label class="cursor-pointer">
+        <label class="cursor-pointer" [id]="SAI_SEARCH_TYPES[key]">
           <input
             [value]="key"
             [formControlName]="'source_type'"
             (change)="onSelectedTypeChange()"
-            id="source_type"
             type="radio"
           >
           <span class="radio-text">{{ SAI_SEARCH_TYPES[key] }}</span>
