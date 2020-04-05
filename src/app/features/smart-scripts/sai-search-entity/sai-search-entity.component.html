@@ -1,61 +1,77 @@
 <div class="container-fluid">
-  <div class="content-block">
-    <form [formGroup]="form" class="form-group edit-form">
+  <form [formGroup]="form" class="form-group">
+
+    <div class="content-block">
+      <p class="lead">Select a Source Type</p>
+
+      <div class="radio-container" *ngFor="let key of SAI_SEARCH_TYPES_KEYS">
+        <label class="cursor-pointer" [id]="SAI_SEARCH_TYPES[key]">
+          <input
+            [value]="key"
+            [formControlName]="'source_type'"
+            (change)="onSelectedTypeChange()"
+            type="radio"
+          >
+          <span class="radio-text">{{ SAI_SEARCH_TYPES[key] }}</span>
+        </label>
+      </div>
+    </div>
+
+    <div *ngIf="sourceTypeControl.valid" class="content-block">
+      <p class="lead">
+        Select
+        <ng-container *ngIf="isTypeCreatureSelected"> Creature</ng-container>
+        <ng-container *ngIf="isTypeGameobjectSelected"> Gameobject</ng-container>
+        <ng-container *ngIf="isTypeAreatriggerSelected"> Areatrigger</ng-container>
+        <ng-container *ngIf="isTypeTimedActionlistsSelected"> TimedActionlist</ng-container>
+      </p>
 
       <div class="row">
-
         <div class="form-group col-12">
-          <label class="control-label" for="source_type">1) Select a Source Type</label>
-          <select
-            [formControlName]="'source_type'"
-            class="form-control form-control-sm"
-            id="source_type"
-            (change)="onSelectedTypeChange()"
-          >
-            <option *ngFor="let key of SAI_SEARCH_TYPES_KEYS" [ngValue]="key" [label]="SAI_SEARCH_TYPES[key]"></option>
-          </select>
-        </div>
+          <label class="control-label mb-2" for="entryorguid">
+            <ng-container *ngIf="isTypeCreatureSelected || isTypeGameobjectSelected">
+              Insert a negative number to select a GUID(-) or a positive number to select an Entry(+)
+            </ng-container>
+            <ng-container *ngIf="isTypeAreatriggerSelected">
+              Insert the Areatrigger ID
+            </ng-container>
+            <ng-container *ngIf="isTypeTimedActionlistsSelected">
+              TimedActionlists IDs are composed by the <strong>Creature's Entry</strong> followed by a <strong>2-digits number</strong>
+            </ng-container>
+          </label>
 
+          <keira-creature-selector-btn
+            *ngIf="isTypeCreatureSelected"
+            [control]="entryOrGuidControl"
+            [config]="{  name: 'entryorguid' }"
+          ></keira-creature-selector-btn>
+          <keira-gameobject-selector-btn
+            *ngIf="isTypeGameobjectSelected"
+            [control]="entryOrGuidControl"
+            [config]="{  name: 'entryorguid' }"
+          ></keira-gameobject-selector-btn>
+
+          <input [formControlName]="'entryorguid'" id="entryorguid" type="number" class="form-control form-control-sm">
+
+          <div class="mt-2">
+            If the selected entity does not have any SmartScripts yet, new ones will be created.
+          </div>
+        </div>
       </div>
 
-      <ng-container *ngIf="sourceTypeControl.valid">
-
-        <div class="row mt-3">
-          <div class="form-group col-12">
-            <label class="control-label" for="entryorguid">
-              <ng-container
-                *ngIf="typeCreatureSelected || typeGameobjectSelected; else idBlock"
-              >2) Select an Entry(+) or manually insert a GUID(-) </ng-container>
-              <ng-template #idBlock>Insert an ID</ng-template>
-            </label>
-            <keira-creature-selector-btn
-              *ngIf="typeCreatureSelected"
-              [control]="entryOrGuidControl"
-              [config]="{  name: 'entryorguid' }"
-            ></keira-creature-selector-btn>
-            <keira-gameobject-selector-btn
-              *ngIf="typeGameobjectSelected"
-              [control]="entryOrGuidControl"
-              [config]="{  name: 'entryorguid' }"
-            ></keira-gameobject-selector-btn>
-            <input [formControlName]="'entryorguid'" id="entryorguid" type="number" class="form-control form-control-sm">
-          </div>
+      <div class="row mt-3">
+        <div class="col-12">
+          <button
+            class="btn btn-success float-right"
+            [disabled]="entryOrGuidControl.invalid"
+            (click)="onEdit()"
+            id="edit-btn"
+          >Edit SmartAI</button>
         </div>
+      </div>
 
-        <div class="row mt-3">
-          <div class="col-12">
-            <button
-              class="btn btn-success"
-              [disabled]="entryOrGuidControl.invalid"
-              (click)="onEdit()"
-              id="edit-btn"
-            >Edit SmartAI</button>
-          </div>
-        </div>
+    </div>
 
-      </ng-container>
+  </form>
 
-    </form>
-
-  </div>
 </div>

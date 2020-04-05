@@ -20,12 +20,20 @@ export class SaiSearchEntityComponent {
     'entryorguid': new FormControl<number>(null, [Validators.required]),
   });
 
-  get typeCreatureSelected(): boolean {
+  get isTypeCreatureSelected(): boolean {
     return this.sourceTypeControl.value === SAI_TYPES.SAI_TYPE_CREATURE;
   }
 
-  get typeGameobjectSelected(): boolean {
+  get isTypeGameobjectSelected(): boolean {
     return this.sourceTypeControl.value === SAI_TYPES.SAI_TYPE_GAMEOBJECT;
+  }
+
+  get isTypeAreatriggerSelected(): boolean {
+    return this.sourceTypeControl.value === SAI_TYPES.SAI_TYPE_AREATRIGGER;
+  }
+
+  get isTypeTimedActionlistsSelected(): boolean {
+    return this.sourceTypeControl.value === SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST;
   }
 
   get sourceTypeControl() {
