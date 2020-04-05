@@ -2,22 +2,7 @@
   text-align: center;
   margin: auto;
 
-  .icon {
-    width: 100px;
-    height: 100px;
-    position: relative;
-    margin: auto;
-    margin-top: 5px;
-    border: 1px solid #6b6d78;
-
-    img {
-      width: 90px;
-      height: 90px;
-      margin-top: 3px;
-    }
-  }
-
-  .item-stats, .icon {
+  .item-stats {
     border-radius: 3px;
   }
 

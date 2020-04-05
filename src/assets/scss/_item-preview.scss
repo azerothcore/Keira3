@@ -4,6 +4,23 @@
     font-size: 18px;
   }
 
+
+  .icon {
+    width: 100px;
+    height: 100px;
+    position: relative;
+    margin: auto;
+    margin-top: 5px;
+    border: 1px solid #6b6d78;
+    border-radius: 3px;
+
+    img {
+      width: 90px;
+      height: 90px;
+      margin-top: 3px;
+    }
+  }
+
   /* Quality */
   .q  { color: #ffd100; }
   .q0 { color: #9d9d9d; }
