@@ -1,4 +1,4 @@
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { DTCFG } from '@keira-config/datatable.config';
 import { BaseSelectorModalComponent } from './base-selector-modal.component';

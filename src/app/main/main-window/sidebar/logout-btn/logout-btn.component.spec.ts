@@ -1,9 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import Spy = jasmine.Spy;
 
 import { LogoutBtnComponent } from './logout-btn.component';
 import { LocationService } from '@keira-shared/services/location.service';
-import { ModalModule, BsModalService } from 'ngx-bootstrap';
 import { NgModule } from '@angular/core';
 import { ModalConfirmComponent } from '@keira-shared/modules/modal-confirm/modal-confirm.component';
 import { closeModalsAfterEach } from '@keira-testing/test-helpers';

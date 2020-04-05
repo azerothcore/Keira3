@@ -1,5 +1,5 @@
 import { Component, } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { LanguageSearchService } from '../../search/language-search.service';
 import { LANGUAGE_ID } from '@keira-types/language.type';

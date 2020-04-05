@@ -1,5 +1,5 @@
 import { Component, } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { ItemExtendedCostSearchService } from '../../search/item-extended-cost-search.service';
 import { ITEM_EXTENDED_COST_ID } from '@keira-types/item-extended-cost.type';

@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { BsModalService } from 'ngx-bootstrap';
+import { BsModalService } from 'ngx-bootstrap/modal';
 
 export function closeModalsAfterEach(upToLevel: number = 1) {
   afterEach(() => {

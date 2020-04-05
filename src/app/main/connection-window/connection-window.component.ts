@@ -17,7 +17,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
   private readonly IMAGES_COUNT = 10;
   public readonly RANDOM_IMAGE = Math.floor(Math.random() * this.IMAGES_COUNT) + 1;
   public readonly KEIRA_VERSION = version;
-  configs: Partial<ConnectionConfig>[] = [];
+  configs: Partial<ConnectionConfig>[];
   form: FormGroup<Partial<ConnectionConfig>>;
   error: MysqlError;
 
@@ -38,7 +38,6 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
     });
 
     this.configs = this.connectionWindowService.getConfigs();
-    console.log(this.configs);
 
     if (this.configs.length > 0) {
       this.form.setValue(this.configs[this.configs.length - 1]);

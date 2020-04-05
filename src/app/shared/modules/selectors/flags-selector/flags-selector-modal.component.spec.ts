@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { FlagsSelectorModalComponent } from './flags-selector-modal.component';
 import { FlagsService } from './flags.service';

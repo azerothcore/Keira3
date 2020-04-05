@@ -1,5 +1,5 @@
 import { Component, } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { GameobjectSearchService } from '../../search/gameobject-search.service';
 import { GAMEOBJECT_TEMPLATE_ID } from '@keira-types/gameobject-template.type';

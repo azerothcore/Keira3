@@ -1,5 +1,5 @@
 import { Component, } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { ItemLimitCategorySearchService } from '../../search/item-limit-category-search.service';
 import { ITEM_LIMIT_CATEGORY_ID } from '@keira-types/item-limit-category.type';
