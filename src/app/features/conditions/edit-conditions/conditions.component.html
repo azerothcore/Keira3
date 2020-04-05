@@ -8,12 +8,11 @@
       <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
     </div>
 
-    <div class="content-block">
-
-      <form
-        [formGroup]="editorService.form"
-        class="form-group edit-form"
-      >
+    <form
+      [formGroup]="editorService.form"
+      class="form-group edit-form"
+    >
+      <div class="content-block">
 
         <span class="category-title">Condition source</span>
         <div class="form-group row">
@@ -74,6 +73,9 @@
 
         </div>
 
+      </div>
+      <div class="content-block">
+
         <span class="category-title">Condition type & values</span>
         <div class="form-group row">
           <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="ConditionTypeOrReference">Condition Type:</label>
@@ -114,6 +116,9 @@
           </div>
 
         </div>
+
+      </div>
+      <div class="content-block">
 
         <span class="category-title">Other condition properties</span>
 
@@ -166,7 +171,9 @@
 
         </div>
 
-      </form>
-    </div>
+      </div>
+
+    </form>
+
   </div>
 </div>
