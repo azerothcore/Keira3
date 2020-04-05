@@ -1210,7 +1210,7 @@ export class ItemPreviewService {
           /* istanbul ignore next */
           if (spellTrigger[0] || parsed || spellTrigger[1]) {
             /* istanbul ignore next */
-            green.push(ITEM_CONSTANTS.trigger[spellTrigger[0]] ?? '' + parsed ?? '' + ' ' + ITEM_CONSTANTS.trigger[spellTrigger[1]] ?? '');
+            green.push(ITEM_CONSTANTS.trigger[spellTrigger[0]] + parsed + ' ' + ITEM_CONSTANTS.trigger[spellTrigger[1]]);
           }
         }
 
