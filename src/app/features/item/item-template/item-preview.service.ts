@@ -845,7 +845,7 @@ export class ItemPreviewService {
       let classTmpText = '<table style="float: left; width: 100%;"><tr>';
 
       // Class
-      if (inventoryType) {
+      if (inventoryType && !!ITEM_CONSTANTS.inventoryType[inventoryType]) {
         classTmpText += `<td>${ITEM_CONSTANTS.inventoryType[inventoryType]}</td>`;
         textRight = ' style="text-align: right;"';
       }
