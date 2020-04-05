@@ -42,7 +42,7 @@
     "acorn": "7.1.1"
   },
   "devDependencies": {
-    "@angular-builders/custom-webpack": "9.0.0",
+    "@angular-builders/custom-webpack": "9.1.0",
     "@angular-devkit/build-angular": "0.901.0",
     "@angular/animations": "9.1.0",
     "@angular/cli": "9.1.0",
