@@ -28,7 +28,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
     super();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.form = new FormGroup({
       'host': new FormControl('127.0.0.1'),
       'port': new FormControl(3306),
@@ -38,13 +38,22 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
     });
 
     this.configs = this.connectionWindowService.getConfigs();
+    console.log(this.configs);
 
     if (this.configs.length > 0) {
       this.form.setValue(this.configs[this.configs.length - 1]);
     }
   }
 
-  onConnect() {
+  loadConfig(config: Partial<ConnectionConfig>): void {
+    this.form.setValue(config);
+  }
+
+  removeAllConfigs(): void {
+    this.connectionWindowService.removeAllConfigs();
+  }
+
+  onConnect(): void {
     this.subscriptions.push(
       this.mysqlService.connect(this.form.getRawValue()).subscribe(() => {
         this.connectionWindowService.saveNewConfig(this.form.getRawValue());

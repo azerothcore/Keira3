@@ -16,7 +16,7 @@ import { QueryOutputModule } from '../../shared/modules/query-output/query-outpu
     BrowserAnimationsModule,
     ReactiveFormsModule,
     QueryOutputModule,
-    BsDropdownModule.forRoot(),
+    BsDropdownModule.forRoot({ isAnimated: true, autoClose: true }),
   ],
   exports: [
     ConnectionWindowComponent,

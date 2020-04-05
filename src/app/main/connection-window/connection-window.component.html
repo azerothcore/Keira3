@@ -54,17 +54,30 @@
           >
         </div>
         <div class="recent-container">
-          <div class="btn-group" dropdown>
+          <div class="btn-group" dropdown [dropup]="true">
             <button dropdownToggle type="button" class="btn btn-sm btn-primary dropdown-toggle">
               <i class="fas fa-history"></i> Load recent <span class="caret"></span>
             </button>
-            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu"
+            <ul *dropdownMenu class="dropdown-menu"
                 role="menu" aria-labelledby="button-basic">
-              <li role="menuitem"><a class="dropdown-item" href="#">Action</a></li>
-              <li role="menuitem"><a class="dropdown-item" href="#">Another action</a></li>
-              <li role="menuitem"><a class="dropdown-item" href="#">Something else here</a></li>
+              <li role="menuitem">
+                <a class="dropdown-item" href="#" (click)="removeAllConfigs()"><i class="fa fa-trash-alt"></i> Clear all</a>
+              </li>
               <li class="divider dropdown-divider"></li>
-              <li role="menuitem"><a class="dropdown-item" href="#">Separated link</a>
+              <li role="menuitem">
+                <a class="dropdown-item" href="#">
+                  {{ 'config.host' }}:{{ 'config.port' }}:{{ 'config.user' }}
+                </a>
+              </li>
+              <li role="menuitem">
+                <a class="dropdown-item" href="#">
+                  {{ 'config.host' }}:{{ 'config.port' }}:{{ 'config.user' }}
+                </a>
+              </li>
+              <li role="menuitem" *ngFor="let config of configs">
+                <a class="dropdown-item" href="#" (click)="loadConfig(config)">
+                  {{ config.host }}:{{ config.port }}:{{ config.user }}
+                </a>
               </li>
             </ul>
           </div>

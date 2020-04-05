@@ -12,12 +12,12 @@ export class ConnectionWindowService {
 
   constructor(private localStorageService: LocalStorageService) { }
 
-  clearAllConfigs(): void {
+  removeAllConfigs(): void {
     this.localStorageService.removeItem(this.KEY);
   }
 
   saveNewConfig(newConfig: Config): void {
-    let configs: Config[] = this.getConfigs();
+    const configs: Config[] = this.getConfigs();
 
     for (let i = 0; i < configs.length; i++) {
       if (this.isSameConfig(configs[i], newConfig)) {
