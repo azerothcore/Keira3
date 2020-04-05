@@ -4,172 +4,176 @@
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
 
-    <keira-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
-
-    <hr class="mt-2 mb-1">
-
-    <div class="wiki-link mb-2">
-      <a [href]="docUrl" target="_blank">
-        <i class="fas fa-link"></i> {{ editorService.entityTable }} documentation
-      </a>
+    <div class="content-block">
+      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
     </div>
 
     <form
       [formGroup]="editorService.form"
       class="form-group edit-form"
     >
+      <div class="content-block">
 
-      <span class="category-title">Condition source</span>
-      <div class="form-group row">
-        <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="SourceTypeOrReferenceId">Source Type:</label>
-        <div class="col-sm-8 col-md-9 col-lg-10">
-          <select [formControlName]="'SourceTypeOrReferenceId'" class="form-control form-control-sm" id="SourceTypeOrReferenceId">
-            <option *ngFor="let key of CONDITION_SOURCE_TYPES_KEYS" [ngValue]="key" [label]="CONDITION_SOURCE_TYPES[key]"></option>
-          </select>
-        </div>
-      </div>
-
-      <div class="row">
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="SourceGroup">SourceGroup</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="SOURCE_GROUP_TOOLTIPS[selectedSourceType]"
-          ></i>
-          <input [formControlName]="'SourceGroup'" id="SourceGroup" type="number" class="form-control form-control-sm">
+        <span class="category-title">Condition source</span>
+        <div class="form-group row">
+          <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="SourceTypeOrReferenceId">Source Type:</label>
+          <div class="col-sm-8 col-md-9 col-lg-10">
+            <select [formControlName]="'SourceTypeOrReferenceId'" class="form-control form-control-sm" id="SourceTypeOrReferenceId">
+              <option *ngFor="let key of CONDITION_SOURCE_TYPES_KEYS" [ngValue]="key" [label]="CONDITION_SOURCE_TYPES[key]"></option>
+            </select>
+          </div>
         </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="SourceEntry">SourceEntry</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="SOURCE_ENTRY_TOOLTIPS[selectedSourceType]"
-          ></i>
-          <input [formControlName]="'SourceEntry'" id="SourceEntry" type="number" class="form-control form-control-sm">
-        </div>
+        <div class="row">
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="SourceId">SourceId</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="selectedSourceType === CONDITION_SOURCE_TYPES.SOURCE_TYPE_SMART_EVENT ? 'smart_scripts.source_type' : 'Always 0'"
-          ></i>
-          <input [formControlName]="'SourceId'" id="SourceId" type="number" class="form-control form-control-sm">
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="SourceGroup">SourceGroup</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="SOURCE_GROUP_TOOLTIPS[selectedSourceType]"
+            ></i>
+            <input [formControlName]="'SourceGroup'" id="SourceGroup" type="number" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="ElseGroup">ElseGroup</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'Allows building grouped conditions - all entries belonging to the same condition (same SourceType, SourceGroup and SourceEntry) that share the same number in ElseGroup, define one group. The entire condition is met when any of its groups is met (logical OR). The group is met when all of its entries are met (logical AND).'"
-          ></i>
-          <input [formControlName]="'ElseGroup'" id="ElseGroup" type="number" class="form-control form-control-sm">
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="SourceEntry">SourceEntry</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="SOURCE_ENTRY_TOOLTIPS[selectedSourceType]"
+            ></i>
+            <input [formControlName]="'SourceEntry'" id="SourceEntry" type="number" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="ConditionTarget">ConditionTarget</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="CONDITION_TARGET_TOOLTIPS[selectedSourceType]"
-          ></i>
-          <input [formControlName]="'ConditionTarget'" id="ConditionTarget" type="number" class="form-control form-control-sm">
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="SourceId">SourceId</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="selectedSourceType === CONDITION_SOURCE_TYPES.SOURCE_TYPE_SMART_EVENT ? 'smart_scripts.source_type' : 'Always 0'"
+            ></i>
+            <input [formControlName]="'SourceId'" id="SourceId" type="number" class="form-control form-control-sm">
+          </div>
 
-      </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="ElseGroup">ElseGroup</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'Allows building grouped conditions - all entries belonging to the same condition (same SourceType, SourceGroup and SourceEntry) that share the same number in ElseGroup, define one group. The entire condition is met when any of its groups is met (logical OR). The group is met when all of its entries are met (logical AND).'"
+            ></i>
+            <input [formControlName]="'ElseGroup'" id="ElseGroup" type="number" class="form-control form-control-sm">
+          </div>
 
-      <span class="category-title">Condition type & values</span>
-      <div class="form-group row">
-        <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="ConditionTypeOrReference">Condition Type:</label>
-        <div class="col-sm-8 col-md-9 col-lg-10">
-          <select [formControlName]="'ConditionTypeOrReference'" class="form-control form-control-sm" id="ConditionTypeOrReference">
-            <option *ngFor="let key of CONDITION_TYPES_KEYS" [ngValue]="key" [label]="CONDITION_TYPES[key]"></option>
-          </select>
-        </div>
-      </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="ConditionTarget">ConditionTarget</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="CONDITION_TARGET_TOOLTIPS[selectedSourceType]"
+            ></i>
+            <input [formControlName]="'ConditionTarget'" id="ConditionTarget" type="number" class="form-control form-control-sm">
+          </div>
 
-      <div class="row">
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="ConditionValue1">ConditionValue1</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-             [tooltip]="CONDITION_VALUE_1_TOOLTIPS[conditionType]"
-          ></i>
-          <input [formControlName]="'ConditionValue1'" id="ConditionValue1" type="number" class="form-control form-control-sm">
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="ConditionValue2">ConditionValue2</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-             [tooltip]="CONDITION_VALUE_2_TOOLTIPS[conditionType]"
-          ></i>
-          <input [formControlName]="'ConditionValue2'" id="ConditionValue2" type="number" class="form-control form-control-sm">
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="ConditionValue3">ConditionValue3</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-             [tooltip]="CONDITION_VALUE_3_TOOLTIPS[conditionType]"
-          ></i>
-          <input [formControlName]="'ConditionValue3'" id="ConditionValue3" type="number" class="form-control form-control-sm">
         </div>
 
       </div>
+      <div class="content-block">
 
-      <span class="category-title">Other condition properties</span>
-
-      <div class="row">
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="NegativeCondition">NegativeCondition</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'If set to 1, the condition will be inverted'"
-          ></i>
-          <input [formControlName]="'NegativeCondition'" id="NegativeCondition" type="number" class="form-control form-control-sm">
+        <span class="category-title">Condition type & values</span>
+        <div class="form-group row">
+          <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="ConditionTypeOrReference">Condition Type:</label>
+          <div class="col-sm-8 col-md-9 col-lg-10">
+            <select [formControlName]="'ConditionTypeOrReference'" class="form-control form-control-sm" id="ConditionTypeOrReference">
+              <option *ngFor="let key of CONDITION_TYPES_KEYS" [ngValue]="key" [label]="CONDITION_TYPES[key]"></option>
+            </select>
+          </div>
         </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="ErrorType">ErrorType</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'Id from SharedDefines.h, will be displayed for CONDITION_SOURCE_TYPE_SPELL'"
-          ></i>
-          <input [formControlName]="'ErrorType'" id="ErrorType" type="number" class="form-control form-control-sm">
+        <div class="row">
+
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="ConditionValue1">ConditionValue1</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="CONDITION_VALUE_1_TOOLTIPS[conditionType]"
+            ></i>
+            <input [formControlName]="'ConditionValue1'" id="ConditionValue1" type="number" class="form-control form-control-sm">
+          </div>
+
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="ConditionValue2">ConditionValue2</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="CONDITION_VALUE_2_TOOLTIPS[conditionType]"
+            ></i>
+            <input [formControlName]="'ConditionValue2'" id="ConditionValue2" type="number" class="form-control form-control-sm">
+          </div>
+
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="ConditionValue3">ConditionValue3</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="CONDITION_VALUE_3_TOOLTIPS[conditionType]"
+            ></i>
+            <input [formControlName]="'ConditionValue3'" id="ConditionValue3" type="number" class="form-control form-control-sm">
+          </div>
+
         </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="ErrorTextId">ErrorTextId</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'Id from SharedDefines.h, will be displayed for CONDITION_SOURCE_TYPE_SPELL'"
-          ></i>
-          <input [formControlName]="'ErrorTextId'" id="ErrorTextId" type="number" class="form-control form-control-sm">
-        </div>
+      </div>
+      <div class="content-block">
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="ScriptName">ScriptName</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'The ScriptName this condition uses, if any.'"
-          ></i>
-          <input [formControlName]="'ScriptName'" id="ScriptName" class="form-control form-control-sm">
-        </div>
+        <span class="category-title">Other condition properties</span>
 
-        <div class="form-group col-12 col-sm-6">
-          <label class="control-label" for="Comment">Comment</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'Explanation of this condition or reference'"
-          ></i>
-          <input [formControlName]="'Comment'" id="Comment" class="form-control form-control-sm">
+        <div class="row">
+
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="NegativeCondition">NegativeCondition</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'If set to 1, the condition will be inverted'"
+            ></i>
+            <input [formControlName]="'NegativeCondition'" id="NegativeCondition" type="number" class="form-control form-control-sm">
+          </div>
+
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="ErrorType">ErrorType</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'Id from SharedDefines.h, will be displayed for CONDITION_SOURCE_TYPE_SPELL'"
+            ></i>
+            <input [formControlName]="'ErrorType'" id="ErrorType" type="number" class="form-control form-control-sm">
+          </div>
+
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="ErrorTextId">ErrorTextId</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'Id from SharedDefines.h, will be displayed for CONDITION_SOURCE_TYPE_SPELL'"
+            ></i>
+            <input [formControlName]="'ErrorTextId'" id="ErrorTextId" type="number" class="form-control form-control-sm">
+          </div>
+
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="ScriptName">ScriptName</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'The ScriptName this condition uses, if any.'"
+            ></i>
+            <input [formControlName]="'ScriptName'" id="ScriptName" class="form-control form-control-sm">
+          </div>
+
+          <div class="form-group col-12 col-sm-6">
+            <label class="control-label" for="Comment">Comment</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'Explanation of this condition or reference'"
+            ></i>
+            <input [formControlName]="'Comment'" id="Comment" class="form-control form-control-sm">
+          </div>
+
         </div>
 
       </div>
 
     </form>
+
   </div>
 </div>

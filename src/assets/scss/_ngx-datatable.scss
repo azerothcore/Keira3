@@ -1,9 +1,13 @@
+@import 'variables';
+
 .ngx-datatable.bootstrap {
+  background-color: $content-block-bg-color;
+
   box-shadow: none;
   font-size: 13px;
   .datatable-header {
     height: unset !important;
-    background-color: #ffffff;
+    background-color: $content-block-bg-color;
     .datatable-header-cell {
       vertical-align: bottom;
       padding: 0.75rem;
@@ -25,7 +29,7 @@
       border-top: 1px solid #e7e7e7;
       background-color: #f7f7f7;
       &.datatable-row-even {
-        background-color: #ffffff;
+        background-color: $content-block-bg-color;
       }
       &:hover {
         background-color: #eee;
@@ -57,7 +61,7 @@
     }
   }
   .datatable-footer {
-    background: #ffffff;
+    background-color: $content-block-bg-color;
     color: #666666;
     margin-top: -3px;
     .page-count {

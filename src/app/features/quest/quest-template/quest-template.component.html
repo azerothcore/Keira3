@@ -6,14 +6,8 @@
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
 
-    <keira-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
-
-    <hr class="mt-2 mb-1">
-
-    <div class="wiki-link">
-      <a [href]="docUrl" target="_blank">
-        <i class="fas fa-link"></i> {{ editorService.entityTable }} documentation
-      </a>
+    <div class="content-block">
+      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
     </div>
 
     <form
@@ -21,500 +15,533 @@
       class="form-group edit-form"
     >
 
-      <span class="category-title">Base</span>
-      <div class="row">
+      <div class="content-block">
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="ID">ID</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'The unique ID of the quest'"
-          ></i>
-          <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm">
-        </div>
+        <span class="category-title">Base</span>
+        <div class="row">
 
-        <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
-          <label class="control-label" for="LogTitle">LogTitle</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'Title of the quest'"
-          ></i>
-          <input [formControlName]="'LogTitle'" id="LogTitle" class="form-control form-control-sm">
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="ID">ID</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'The unique ID of the quest'"
+            ></i>
+            <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="QuestType">QuestType</label>
-          <keira-single-value-selector-btn
-            [control]="editorService.form.controls.QuestType"
-            [config]="{ options: QUEST_TYPE, name: 'QuestType' }"
-            [modalClass]="'modal-md'"
-          ></keira-single-value-selector-btn>
-          <input [formControlName]="'QuestType'" id="QuestType" type="number" class="form-control form-control-sm">
-        </div>
+          <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
+            <label class="control-label" for="LogTitle">LogTitle</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'Title of the quest'"
+            ></i>
+            <input [formControlName]="'LogTitle'" id="LogTitle" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="QuestLevel">QuestLevel</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'Level of the quest. Players receive full experience amount only if their level is <= Level+5. If -1, the player level will be used as Quest Level for experience calculation.'"
-          ></i>
-          <input [formControlName]="'QuestLevel'" id="QuestLevel" type="number" class="form-control form-control-sm">
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="QuestType">QuestType</label>
+            <keira-single-value-selector-btn
+              [control]="editorService.form.controls.QuestType"
+              [config]="{ options: QUEST_TYPE, name: 'QuestType' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
+            <input [formControlName]="'QuestType'" id="QuestType" type="number" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="MinLevel">MinLevel</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'Minimum level at which a player can get the quest.'"
-          ></i>
-          <input [formControlName]="'MinLevel'" id="MinLevel" type="number" class="form-control form-control-sm">
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-6 col-lg-4 col-xl-2">
+            <label class="control-label" for="QuestLevel">QuestLevel</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'Level of the quest. Players receive full experience amount only if their level is <= Level+5. If -1, the player level will be used as Quest Level for experience calculation.'"
+            ></i>
+            <input [formControlName]="'QuestLevel'" id="QuestLevel" type="number" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="QuestSortID">QuestSortID</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'Defines under which category the quest falls in the quest log. Value taken from (if > 0) AreaTable.dbc or (if < 0) QuestSort.dbc'"
-          ></i>
-          <input [formControlName]="'QuestSortID'" id="QuestSortID" type="number" class="form-control form-control-sm">
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="MinLevel">MinLevel</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'Minimum level at which a player can get the quest.'"
+            ></i>
+            <input [formControlName]="'MinLevel'" id="MinLevel" type="number" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="QuestInfoID">QuestInfoID</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'These values are ID taken from QuestInfo.dbc'"
-          ></i>
-          <input [formControlName]="'QuestInfoID'" id="QuestInfoID" type="number" class="form-control form-control-sm">
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="QuestSortID">QuestSortID</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'Defines under which category the quest falls in the quest log. Value taken from (if > 0) AreaTable.dbc or (if < 0) QuestSort.dbc'"
+            ></i>
+            <input [formControlName]="'QuestSortID'" id="QuestSortID" type="number" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="SuggestedGroupNum">SuggestedGroupNum</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'Recommended number of players to do the quest together.'"
-          ></i>
-          <input [formControlName]="'SuggestedGroupNum'" id="SuggestedGroupNum" type="number" class="form-control form-control-sm">
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="QuestInfoID">QuestInfoID</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'These values are ID taken from QuestInfo.dbc'"
+            ></i>
+            <input [formControlName]="'QuestInfoID'" id="QuestInfoID" type="number" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="StartItem">
-            <keira-icon [itemId]="editorService.form.controls.StartItem.value"></keira-icon>
-            StartItem
-          </label>
-          <keira-item-selector-btn
-            [control]="editorService.form.controls.StartItem"
-            [config]="{  name: 'StartItem' }"
-          ></keira-item-selector-btn>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'Items given by the quest giver at beginning of the quest. They will be deleted when quest is abandoned.'"
-          ></i>
-          <input [formControlName]="'StartItem'" id="StartItem" type="number" class="form-control form-control-sm">
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="SuggestedGroupNum">SuggestedGroupNum</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'Recommended number of players to do the quest together.'"
+            ></i>
+            <input [formControlName]="'SuggestedGroupNum'" id="SuggestedGroupNum" type="number" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="Flags">Flags</label>
-          <keira-flags-selector-btn
-            [control]="editorService.form.controls.Flags"
-            [config]="{ flags: QUEST_FLAGS, name: 'Flags' }"
-          ></keira-flags-selector-btn>
-          <input [formControlName]="'Flags'" id="Flags" type="number" class="form-control form-control-sm">
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="StartItem">
+              <keira-icon [itemId]="editorService.form.controls.StartItem.value"></keira-icon>
+              StartItem
+            </label>
+            <keira-item-selector-btn
+              [control]="editorService.form.controls.StartItem"
+              [config]="{  name: 'StartItem' }"
+            ></keira-item-selector-btn>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'Items given by the quest giver at beginning of the quest. They will be deleted when quest is abandoned.'"
+            ></i>
+            <input [formControlName]="'StartItem'" id="StartItem" type="number" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="TimeAllowed">TimeAllowed</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'Time (in seconds) that the player has to complete this quest'"
-          ></i>
-          <input [formControlName]="'TimeAllowed'" id="TimeAllowed" type="number" class="form-control form-control-sm">
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="Flags">Flags</label>
+            <keira-flags-selector-btn
+              [control]="editorService.form.controls.Flags"
+              [config]="{ flags: QUEST_FLAGS, name: 'Flags' }"
+            ></keira-flags-selector-btn>
+            <input [formControlName]="'Flags'" id="Flags" type="number" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="AllowableRaces">AllowableRaces</label>
-          <keira-flags-selector-btn
-            [control]="editorService.form.controls.AllowableRaces"
-            [config]="{ flags: ALLOWABLE_RACES, name: 'AllowableRaces' }"
-          ></keira-flags-selector-btn>
-          <input [formControlName]="'AllowableRaces'" id="AllowableRaces" type="number" class="form-control form-control-sm">
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="TimeAllowed">TimeAllowed</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'Time (in seconds) that the player has to complete this quest'"
+            ></i>
+            <input [formControlName]="'TimeAllowed'" id="TimeAllowed" type="number" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="Unknown0">Unknown0</label>
-          <input [formControlName]="'Unknown0'" id="Unknown0" type="number" class="form-control form-control-sm">
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="AllowableRaces">AllowableRaces</label>
+            <keira-flags-selector-btn
+              [control]="editorService.form.controls.AllowableRaces"
+              [config]="{ flags: ALLOWABLE_RACES, name: 'AllowableRaces' }"
+            ></keira-flags-selector-btn>
+            <input [formControlName]="'AllowableRaces'" id="AllowableRaces" type="number" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="RequiredPlayerKills">RequiredPlayerKills</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'How many players you need to kill in order to complete the quest.'"
-          ></i>
-          <input [formControlName]="'RequiredPlayerKills'" id="RequiredPlayerKills" type="number" class="form-control form-control-sm">
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="Unknown0">Unknown0</label>
+            <input [formControlName]="'Unknown0'" id="Unknown0" type="number" class="form-control form-control-sm">
+          </div>
 
-      </div>
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="RequiredPlayerKills">RequiredPlayerKills</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'How many players you need to kill in order to complete the quest.'"
+            ></i>
+            <input [formControlName]="'RequiredPlayerKills'" id="RequiredPlayerKills" type="number" class="form-control form-control-sm">
+          </div>
 
-      <span class="category-title">Point Of Interest</span>
-      <div class="row">
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="POIContinent">POIContinent</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'MapId of the Point Of Interest that will be shown on the map when the quest is active'"
-          ></i>
-          <input [formControlName]="'POIContinent'" id="POIContinent" type="number" class="form-control form-control-sm">
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="POIx">POIx</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'X coordinate of the Point Of Interest that will be shown on the map when the quest is active'"
-          ></i>
-          <input [formControlName]="'POIx'" id="POIx" type="number" class="form-control form-control-sm">
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="POIy">POIy</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'Y coordinate of the Point Of Interest that will be shown on the map when the quest is active'"
-          ></i>
-          <input [formControlName]="'POIy'" id="POIy" type="number" class="form-control form-control-sm">
-        </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="POIPriority">POIPriority</label>
-          <input [formControlName]="'POIPriority'" id="POIPriority" type="number" class="form-control form-control-sm">
         </div>
 
       </div>
+      <div class="content-block">
 
-      <span class="category-title">Texts</span>
-      <div class="row">
+        <span class="category-title">Point Of Interest</span>
+        <div class="row">
 
-        <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
-          <label class="control-label" for="QuestCompletionLog">QuestCompletionLog</label>
-          <textarea [formControlName]="'QuestCompletionLog'" id="QuestCompletionLog" class="form-control form-control-sm">
-          </textarea>
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="POIContinent">POIContinent</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'MapId of the Point Of Interest that will be shown on the map when the quest is active'"
+            ></i>
+            <input [formControlName]="'POIContinent'" id="POIContinent" type="number" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
-          <label class="control-label" for="QuestDescription">QuestDescription</label>
-          <textarea [formControlName]="'QuestDescription'" id="QuestDescription" class="form-control form-control-sm">
-          </textarea>
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="POIx">POIx</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'X coordinate of the Point Of Interest that will be shown on the map when the quest is active'"
+            ></i>
+            <input [formControlName]="'POIx'" id="POIx" type="number" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
-          <label class="control-label" for="AreaDescription">AreaDescription</label>
-          <textarea [formControlName]="'AreaDescription'" id="AreaDescription" class="form-control form-control-sm">
-          </textarea>
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="POIy">POIy</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'Y coordinate of the Point Of Interest that will be shown on the map when the quest is active'"
+            ></i>
+            <input [formControlName]="'POIy'" id="POIy" type="number" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
-          <label class="control-label" for="LogDescription">LogDescription</label>
-          <textarea [formControlName]="'LogDescription'" id="LogDescription" class="form-control form-control-sm">
-          </textarea>
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="POIPriority">POIPriority</label>
+            <input [formControlName]="'POIPriority'" id="POIPriority" type="number" class="form-control form-control-sm">
+          </div>
+
         </div>
 
       </div>
+      <div class="content-block">
 
-      <span class="category-title">
+        <span class="category-title">Texts</span>
+        <div class="row">
+
+          <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
+            <label class="control-label" for="QuestCompletionLog">QuestCompletionLog</label>
+            <textarea [formControlName]="'QuestCompletionLog'" id="QuestCompletionLog" class="form-control form-control-sm">
+          </textarea>
+          </div>
+
+          <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
+            <label class="control-label" for="QuestDescription">QuestDescription</label>
+            <textarea [formControlName]="'QuestDescription'" id="QuestDescription" class="form-control form-control-sm">
+          </textarea>
+          </div>
+
+          <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
+            <label class="control-label" for="AreaDescription">AreaDescription</label>
+            <textarea [formControlName]="'AreaDescription'" id="AreaDescription" class="form-control form-control-sm">
+          </textarea>
+          </div>
+
+          <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
+            <label class="control-label" for="LogDescription">LogDescription</label>
+            <textarea [formControlName]="'LogDescription'" id="LogDescription" class="form-control form-control-sm">
+          </textarea>
+          </div>
+
+        </div>
+
+      </div>
+      <div class="content-block">
+
+        <span class="category-title">
         ObjectiveTexts <i class="fas fa-info-circle ml-1" [placement]="'auto'"  [tooltip]="'Non-standard objective texts displayed in the quest log'"></i>
       </span>
-      <div class="row">
+        <div class="row">
 
-        <div
-          *ngFor="let i of [1,2,3,4]"
-          class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3"
-        >
-          <label class="control-label" for="ObjectiveText{{ i }}">ObjectiveText{{ i }}</label>
-          <input [formControlName]="'ObjectiveText' + i" id="ObjectiveText{{ i }}" class="form-control form-control-sm">
+          <div
+            *ngFor="let i of [1,2,3,4]"
+            class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3"
+          >
+            <label class="control-label" for="ObjectiveText{{ i }}">ObjectiveText{{ i }}</label>
+            <input [formControlName]="'ObjectiveText' + i" id="ObjectiveText{{ i }}" class="form-control form-control-sm">
+          </div>
+
         </div>
 
       </div>
+      <div class="content-block">
 
-      <span class="category-title">
+        <span class="category-title">
         RequiredItems <i class="fas fa-info-circle ml-1" [placement]="'auto'"  [tooltip]="'Items required to complete the quest'"></i>
       </span>
-      <div class="row">
+        <div class="row">
 
-        <div
-          *ngFor="let i of [1,2,3,4,5,6]"
-          class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
-        >
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RequiredItemId{{ i }}">
-                <keira-icon [itemId]="editorService.form.controls['RequiredItemId' + i].value"></keira-icon>
-                Req.ItemId{{ i }}
-              </label>
-              <keira-item-selector-btn
-                [control]="editorService.form.controls['RequiredItemId' + i]"
-                [config]="{  name: 'RequiredItemId' + i }"
-              ></keira-item-selector-btn>
-              <input [formControlName]="'RequiredItemId' + i" id="RequiredItemId{{ i }}" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RequiredItemCount{{ i }}">Req.ItemCount{{ i }}</label>
-              <input [formControlName]="'RequiredItemCount' + i" id="RequiredItemCount{{ i }}" type="number" class="form-control form-control-sm">
+          <div
+            *ngFor="let i of [1,2,3,4,5,6]"
+            class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2"
+          >
+            <div class="row">
+              <div class="col-12">
+                <label class="control-label" for="RequiredItemId{{ i }}">
+                  <keira-icon [itemId]="editorService.form.controls['RequiredItemId' + i].value"></keira-icon>
+                  Req.ItemId{{ i }}
+                </label>
+                <keira-item-selector-btn
+                  [control]="editorService.form.controls['RequiredItemId' + i]"
+                  [config]="{  name: 'RequiredItemId' + i }"
+                ></keira-item-selector-btn>
+                <input [formControlName]="'RequiredItemId' + i" id="RequiredItemId{{ i }}" type="number" class="form-control form-control-sm">
+              </div>
+              <div class="col-12">
+                <label class="control-label" for="RequiredItemCount{{ i }}">Req.ItemCount{{ i }}</label>
+                <input [formControlName]="'RequiredItemCount' + i" id="RequiredItemCount{{ i }}" type="number" class="form-control form-control-sm">
+              </div>
             </div>
           </div>
+
         </div>
 
       </div>
+      <div class="content-block">
 
-      <span class="category-title">
+        <span class="category-title">
         Required Factions, NpcOrGo <i class="fas fa-info-circle ml-1" [placement]="'auto'"  [tooltip]="'If > 0: creature; if < 0: gameobject'"></i>
       </span>
-      <div class="row">
+        <div class="row">
 
-        <div
-          *ngFor="let i of [1,2,3,4]"
-          class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
-        >
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RequiredNpcOrGo{{ i }}">Req.NpcOrGo{{ i }}</label>
-              <input [formControlName]="'RequiredNpcOrGo' + i" id="RequiredNpcOrGo{{ i }}" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RequiredNpcOrGoCount{{ i }}">Req.NpcOrGoCount{{ i }}</label>
-              <input [formControlName]="'RequiredNpcOrGoCount' + i" id="RequiredNpcOrGoCount{{ i }}" type="number" class="form-control form-control-sm">
+          <div
+            *ngFor="let i of [1,2,3,4]"
+            class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2"
+          >
+            <div class="row">
+              <div class="col-12">
+                <label class="control-label" for="RequiredNpcOrGo{{ i }}">Req.NpcOrGo{{ i }}</label>
+                <input [formControlName]="'RequiredNpcOrGo' + i" id="RequiredNpcOrGo{{ i }}" type="number" class="form-control form-control-sm">
+              </div>
+              <div class="col-12">
+                <label class="control-label" for="RequiredNpcOrGoCount{{ i }}">Req.NpcOrGoCount{{ i }}</label>
+                <input [formControlName]="'RequiredNpcOrGoCount' + i" id="RequiredNpcOrGoCount{{ i }}" type="number" class="form-control form-control-sm">
+              </div>
             </div>
           </div>
-        </div>
 
-        <div
-          *ngFor="let i of [1,2]"
-          class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
-        >
-          <label class="control-label" for="RequiredFactionId{{ i }}">Req.FactionId{{ i }}</label>
-          <keira-faction-selector-btn
-            [config]="{ name: 'RequiredFactionId' + i }"
-            [control]="editorService.form.controls['RequiredFactionId' + i]"
-          ></keira-faction-selector-btn>
-          <input [formControlName]="'RequiredFactionId' + i" id="RequiredFactionId{{ i }}" type="number" class="form-control form-control-sm">
+          <div
+            *ngFor="let i of [1,2]"
+            class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2"
+          >
+            <label class="control-label" for="RequiredFactionId{{ i }}">Req.FactionId{{ i }}</label>
+            <keira-faction-selector-btn
+              [config]="{ name: 'RequiredFactionId' + i }"
+              [control]="editorService.form.controls['RequiredFactionId' + i]"
+            ></keira-faction-selector-btn>
+            <input [formControlName]="'RequiredFactionId' + i" id="RequiredFactionId{{ i }}" type="number" class="form-control form-control-sm">
 
-          <label class="control-label" for="RequiredFactionValue{{ i }}">Req.FactionValue{{ i }}</label>
-          <input [formControlName]="'RequiredFactionValue' + i" id="RequiredFactionValue{{ i }}" type="number" class="form-control form-control-sm">
+            <label class="control-label" for="RequiredFactionValue{{ i }}">Req.FactionValue{{ i }}</label>
+            <input [formControlName]="'RequiredFactionValue' + i" id="RequiredFactionValue{{ i }}" type="number" class="form-control form-control-sm">
+          </div>
+
         </div>
 
       </div>
+      <div class="content-block">
 
-      <span class="category-title">ItemDrops</span>
-      <div class="row">
+        <span class="category-title">ItemDrops</span>
+        <div class="row">
 
-        <div
-          *ngFor="let i of [1,2,3,4]"
-          class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
-        >
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="ItemDrop{{ i }}">
-                <keira-icon [itemId]="editorService.form.controls['ItemDrop' + i].value"></keira-icon>
-                ItemDrop{{ i }}
-              </label>
-              <keira-item-selector-btn
-                [control]="editorService.form.controls['ItemDrop' + i]"
-                [config]="{  name: 'ItemDrop' + i }"
-              ></keira-item-selector-btn>
-              <input [formControlName]="'ItemDrop' + i" id="ItemDrop{{ i }}" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="ItemDropQuantity{{ i }}">ItemDropQuantity{{ i }}</label>
-              <input [formControlName]="'ItemDropQuantity' + i" id="ItemDropQuantity{{ i }}" type="number" class="form-control form-control-sm">
+          <div
+            *ngFor="let i of [1,2,3,4]"
+            class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2"
+          >
+            <div class="row">
+              <div class="col-12">
+                <label class="control-label" for="ItemDrop{{ i }}">
+                  <keira-icon [itemId]="editorService.form.controls['ItemDrop' + i].value"></keira-icon>
+                  ItemDrop{{ i }}
+                </label>
+                <keira-item-selector-btn
+                  [control]="editorService.form.controls['ItemDrop' + i]"
+                  [config]="{  name: 'ItemDrop' + i }"
+                ></keira-item-selector-btn>
+                <input [formControlName]="'ItemDrop' + i" id="ItemDrop{{ i }}" type="number" class="form-control form-control-sm">
+              </div>
+              <div class="col-12">
+                <label class="control-label" for="ItemDropQuantity{{ i }}">ItemDropQuantity{{ i }}</label>
+                <input [formControlName]="'ItemDropQuantity' + i" id="ItemDropQuantity{{ i }}" type="number" class="form-control form-control-sm">
+              </div>
             </div>
           </div>
+
         </div>
 
       </div>
+      <div class="content-block">
 
-      <span class="category-title">Rewards</span>
-      <div class="row">
+        <span class="category-title">Rewards</span>
+        <div class="row">
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="RewardTitle">RewardTitle</label>
-          <input [formControlName]="'RewardTitle'" id="RewardTitle" type="number" class="form-control form-control-sm">
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="RewardTitle">RewardTitle</label>
+            <input [formControlName]="'RewardTitle'" id="RewardTitle" type="number" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="RewardTalents">RewardTalents</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'Amount of bonus talent points received when completing the quest'"
-          ></i>
-          <input [formControlName]="'RewardTalents'" id="RewardTalents" type="number" class="form-control form-control-sm">
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="RewardTalents">RewardTalents</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'Amount of bonus talent points received when completing the quest'"
+            ></i>
+            <input [formControlName]="'RewardTalents'" id="RewardTalents" type="number" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="RewardArenaPoints">RewardArenaPoints</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'Amount of arena points received when completing the quest'"
-          ></i>
-          <input [formControlName]="'RewardArenaPoints'" id="RewardArenaPoints" type="number" class="form-control form-control-sm">
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="RewardArenaPoints">RewardArenaPoints</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'Amount of arena points received when completing the quest'"
+            ></i>
+            <input [formControlName]="'RewardArenaPoints'" id="RewardArenaPoints" type="number" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="RewardNextQuest">RewardNextQuest</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'The ID of the next quest that will be added automatically when completing the quest'"
-          ></i>
-          <input [formControlName]="'RewardNextQuest'" id="RewardNextQuest" type="number" class="form-control form-control-sm">
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="RewardNextQuest">RewardNextQuest</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'The ID of the next quest that will be added automatically when completing the quest'"
+            ></i>
+            <input [formControlName]="'RewardNextQuest'" id="RewardNextQuest" type="number" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="RewardXPDifficulty">RewardXPDifficulty</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'According to the Level, the basic experience with index RewardXPDifficulty is taken from QuestXP.dbc. Check the docs for more info.'"
-          ></i>
-          <input [formControlName]="'RewardXPDifficulty'" id="RewardXPDifficulty" type="number" class="form-control form-control-sm">
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="RewardXPDifficulty">RewardXPDifficulty</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'According to the Level, the basic experience with index RewardXPDifficulty is taken from QuestXP.dbc. Check the docs for more info.'"
+            ></i>
+            <input [formControlName]="'RewardXPDifficulty'" id="RewardXPDifficulty" type="number" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="RewardMoney">RewardMoney</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'If value > 0: money earned by completing the quest; if value < 0: money required to complete the quest'"
-          ></i>
-          <input [formControlName]="'RewardMoney'" id="RewardMoney" type="number" class="form-control form-control-sm">
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="RewardMoney">RewardMoney</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'If value > 0: money earned by completing the quest; if value < 0: money required to complete the quest'"
+            ></i>
+            <input [formControlName]="'RewardMoney'" id="RewardMoney" type="number" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="RewardBonusMoney">RewardBonusMoney</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'The money a character at level 80 would get when they complete this quest.'"
-          ></i>
-          <input [formControlName]="'RewardBonusMoney'" id="RewardBonusMoney" type="number" class="form-control form-control-sm">
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="RewardBonusMoney">RewardBonusMoney</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'The money a character at level 80 would get when they complete this quest.'"
+            ></i>
+            <input [formControlName]="'RewardBonusMoney'" id="RewardBonusMoney" type="number" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="RewardDisplaySpell">RewardDisplaySpell</label>
-          <input [formControlName]="'RewardDisplaySpell'" id="RewardDisplaySpell" type="number" class="form-control form-control-sm">
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="RewardDisplaySpell">RewardDisplaySpell</label>
+            <input [formControlName]="'RewardDisplaySpell'" id="RewardDisplaySpell" type="number" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="RewardSpell">RewardSpell</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'Spell that is shown to be casted on quest completion in the quest log. Note that this spell will NOT be casted if RewardSpellCast is non-zero.'"
-          ></i>
-          <keira-spell-selector-btn
-            [control]="editorService.form.controls.RewardSpell"
-            [config]="{ name: 'RewardSpell' }"
-            [modalClass]="'modal-lg'"
-          ></keira-spell-selector-btn>
-          <input [formControlName]="'RewardSpell'" id="RewardSpell" type="number" class="form-control form-control-sm">
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="RewardSpell">RewardSpell</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'Spell that is shown to be casted on quest completion in the quest log. Note that this spell will NOT be casted if RewardSpellCast is non-zero.'"
+            ></i>
+            <keira-spell-selector-btn
+              [control]="editorService.form.controls.RewardSpell"
+              [config]="{ name: 'RewardSpell' }"
+              [modalClass]="'modal-lg'"
+            ></keira-spell-selector-btn>
+            <input [formControlName]="'RewardSpell'" id="RewardSpell" type="number" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="RewardHonor">RewardHonor</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'Number of honorable kill honor rewarded for completing this quest'"
-          ></i>
-          <input [formControlName]="'RewardHonor'" id="RewardHonor" type="number" class="form-control form-control-sm">
-        </div>
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="RewardHonor">RewardHonor</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'Number of honorable kill honor rewarded for completing this quest'"
+            ></i>
+            <input [formControlName]="'RewardHonor'" id="RewardHonor" type="number" class="form-control form-control-sm">
+          </div>
 
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="RewardKillHonor">RewardKillHonor</label>
-          <input [formControlName]="'RewardKillHonor'" id="RewardKillHonor" type="number" class="form-control form-control-sm">
+          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+            <label class="control-label" for="RewardKillHonor">RewardKillHonor</label>
+            <input [formControlName]="'RewardKillHonor'" id="RewardKillHonor" type="number" class="form-control form-control-sm">
+          </div>
+
         </div>
 
       </div>
+      <div class="content-block">
 
-      <span class="category-title">RewardItems</span>
-      <div class="row">
+        <span class="category-title">RewardItems</span>
+        <div class="row">
 
-        <div
-          *ngFor="let i of [1,2,3,4]"
-          class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
-        >
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RewardItem{{ i }}">
-                <keira-icon [itemId]="editorService.form.controls['RewardItem' + i].value"></keira-icon>
-                Rew.Item{{ i }}
-              </label>
-              <keira-item-selector-btn
-                [control]="editorService.form.controls['RewardItem' + i]"
-                [config]="{  name: 'RewardItem' + i }"
-              ></keira-item-selector-btn>
-              <input [formControlName]="'RewardItem' + i" id="RewardItem{{ i }}" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RewardAmount{{ i }}">Rew.Amount{{ i }}</label>
-              <input [formControlName]="'RewardAmount' + i" id="RewardAmount{{ i }}" type="number" class="form-control form-control-sm">
+          <div
+            *ngFor="let i of [1,2,3,4]"
+            class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2"
+          >
+            <div class="row">
+              <div class="col-12">
+                <label class="control-label" for="RewardItem{{ i }}">
+                  <keira-icon [itemId]="editorService.form.controls['RewardItem' + i].value"></keira-icon>
+                  Rew.Item{{ i }}
+                </label>
+                <keira-item-selector-btn
+                  [control]="editorService.form.controls['RewardItem' + i]"
+                  [config]="{  name: 'RewardItem' + i }"
+                ></keira-item-selector-btn>
+                <input [formControlName]="'RewardItem' + i" id="RewardItem{{ i }}" type="number" class="form-control form-control-sm">
+              </div>
+              <div class="col-12">
+                <label class="control-label" for="RewardAmount{{ i }}">Rew.Amount{{ i }}</label>
+                <input [formControlName]="'RewardAmount' + i" id="RewardAmount{{ i }}" type="number" class="form-control form-control-sm">
+              </div>
             </div>
           </div>
+
         </div>
 
       </div>
+      <div class="content-block">
 
-      <span class="category-title">RewardChoiceItems</span>
-      <div class="row">
+        <span class="category-title">RewardChoiceItems</span>
+        <div class="row">
 
-        <div
-          *ngFor="let i of [1,2,3,4,5,6]"
-          class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
-        >
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RewardChoiceItemID{{ i }}">
-                <keira-icon [itemId]="editorService.form.controls['RewardChoiceItemID' + i].value"></keira-icon>
-                ChoiceItem{{ i }}
-              </label>
-              <keira-item-selector-btn
-                [control]="editorService.form.controls['RewardChoiceItemID' + i]"
-                [config]="{ name: 'RewardChoiceItemID' + i }"
-              ></keira-item-selector-btn>
-              <input [formControlName]="'RewardChoiceItemID' + i" id="RewardChoiceItemID{{ i }}" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RewardChoiceItemQuantity{{ i }}">ChoiceItemQuantity{{ i }}</label>
-              <input [formControlName]="'RewardChoiceItemQuantity' + i" id="RewardChoiceItemQuantity{{ i }}" type="number" class="form-control form-control-sm">
+          <div
+            *ngFor="let i of [1,2,3,4,5,6]"
+            class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2"
+          >
+            <div class="row">
+              <div class="col-12">
+                <label class="control-label" for="RewardChoiceItemID{{ i }}">
+                  <keira-icon [itemId]="editorService.form.controls['RewardChoiceItemID' + i].value"></keira-icon>
+                  ChoiceItem{{ i }}
+                </label>
+                <keira-item-selector-btn
+                  [control]="editorService.form.controls['RewardChoiceItemID' + i]"
+                  [config]="{ name: 'RewardChoiceItemID' + i }"
+                ></keira-item-selector-btn>
+                <input [formControlName]="'RewardChoiceItemID' + i" id="RewardChoiceItemID{{ i }}" type="number" class="form-control form-control-sm">
+              </div>
+              <div class="col-12">
+                <label class="control-label" for="RewardChoiceItemQuantity{{ i }}">ChoiceItemQuantity{{ i }}</label>
+                <input [formControlName]="'RewardChoiceItemQuantity' + i" id="RewardChoiceItemQuantity{{ i }}" type="number" class="form-control form-control-sm">
+              </div>
             </div>
           </div>
+
         </div>
 
       </div>
+      <div class="content-block">
 
-      <span class="category-title">
-        RewardFactions <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="'Faction ID for which the quest adds (or subtracts) reputation points.'"></i>
-      </span>
-      <div class="row">
+        <span class="category-title">
+          RewardFactions <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="'Faction ID for which the quest adds (or subtracts) reputation points.'"></i>
+        </span>
+        <div class="row">
 
-        <div
-          *ngFor="let i of [1,2,3,4,5]"
-          class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
-        >
-          <div class="row">
-            <div class="col-12">
-              <label class="control-label" for="RewardFactionID{{ i }}">Rew.FactionID{{ i }}</label>
-              <keira-faction-selector-btn
-                [config]="{ name: 'RewardFactionID' + i }"
-                [control]="editorService.form.controls['RewardFactionID' + i]"
-              ></keira-faction-selector-btn>
-              <input [formControlName]="'RewardFactionID' + i" id="RewardFactionID{{ i }}" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RewardFactionValue{{ i }}">Rew.FactionValue{{ i }}</label>
-              <input [formControlName]="'RewardFactionValue' + i" id="RewardFactionValue{{ i }}" type="number" class="form-control form-control-sm">
-            </div>
-            <div class="col-12">
-              <label class="control-label" for="RewardFactionOverride{{ i }}">Rew.FactionOverride{{ i }}</label>
-              <input [formControlName]="'RewardFactionOverride' + i" id="RewardFactionOverride{{ i }}" type="number" class="form-control form-control-sm">
+          <div
+            *ngFor="let i of [1,2,3,4,5]"
+            class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2"
+          >
+            <div class="row">
+              <div class="col-12">
+                <label class="control-label" for="RewardFactionID{{ i }}">Rew.FactionID{{ i }}</label>
+                <keira-faction-selector-btn
+                  [config]="{ name: 'RewardFactionID' + i }"
+                  [control]="editorService.form.controls['RewardFactionID' + i]"
+                ></keira-faction-selector-btn>
+                <input [formControlName]="'RewardFactionID' + i" id="RewardFactionID{{ i }}" type="number" class="form-control form-control-sm">
+              </div>
+              <div class="col-12">
+                <label class="control-label" for="RewardFactionValue{{ i }}">Rew.FactionValue{{ i }}</label>
+                <input [formControlName]="'RewardFactionValue' + i" id="RewardFactionValue{{ i }}" type="number" class="form-control form-control-sm">
+              </div>
+              <div class="col-12">
+                <label class="control-label" for="RewardFactionOverride{{ i }}">Rew.FactionOverride{{ i }}</label>
+                <input [formControlName]="'RewardFactionOverride' + i" id="RewardFactionOverride{{ i }}" type="number" class="form-control form-control-sm">
+              </div>
             </div>
           </div>
-        </div>
 
+        </div>
       </div>
     </form>
 

@@ -10,6 +10,7 @@ import { TableRow } from '../../types/general';
   styleUrls: ['./query-output.component.scss']
 })
 export class QueryOutputComponent<T extends TableRow> {
+  @Input() docUrl: string;
   @Input() editorService: EditorService<T>;
   @Output() executeQuery = new EventEmitter<string>();
   selectedQuery: 'diff'|'full' = 'diff';

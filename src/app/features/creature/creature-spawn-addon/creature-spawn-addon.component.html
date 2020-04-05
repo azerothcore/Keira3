@@ -6,141 +6,140 @@
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
 
-    <keira-query-output [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
-
-    <hr class="mt-2 mb-1">
-
-    <div class="wiki-link mb-2">
-      <a [href]="docUrl" target="_blank">
-        <i class="fas fa-link"></i> {{ editorService.entityTable }} documentation
-      </a>
+    <div class="content-block">
+      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
     </div>
 
-    <form
-      [formGroup]="editorService.form"
-      class="form-group edit-form"
-    >
+    <div class="content-block">
+
+      <form
+        [formGroup]="editorService.form"
+        class="form-group edit-form"
+      >
+
+        <div class="row">
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="guid">guid</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'guid'"
+              [tooltip]="'Link to creature.guid'"
+            ></i>
+            <input [formControlName]="'guid'" id="guid" type="number" class="form-control form-control-sm">
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="path_id">path_id</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'If the creature has waypoint pathed movement, contains the waypoint_data.id for the path the creature is to follow.'"
+            ></i>
+            <input [formControlName]="'path_id'" id="path_id" type="number" class="form-control form-control-sm">
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="mount">mount</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'The model ID of the mount to be used to make the creature appear mounted. The value here overrides the value for the creature unit field UNIT_FIELD_MOUNTDISPLAYID.'"
+            ></i>
+            <input [formControlName]="'mount'" id="mount" type="number" class="form-control form-control-sm">
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="bytes1">bytes1</label>
+            <keira-single-value-selector-btn
+              [control]="editorService.form.controls.bytes1"
+              [config]="{ options: CREATURE_ADDON_BYTES_1, name: 'bytes1' }"
+              [modalClass]="'modal-xl'"
+            ></keira-single-value-selector-btn>
+            <input [formControlName]="'bytes1'" id="bytes1" type="number" class="form-control form-control-sm">
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="bytes2">bytes2</label>
+            <keira-single-value-selector-btn
+              [control]="editorService.form.controls.bytes2"
+              [config]="{ options: CREATURE_ADDON_BYTES_2, name: 'bytes2' }"
+              [modalClass]="'modal-lg'"
+            ></keira-single-value-selector-btn>
+            <input [formControlName]="'bytes2'" id="bytes2" type="number" class="form-control form-control-sm">
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="emote">emote</label>
+            <keira-single-value-selector-btn
+              [control]="editorService.form.controls.emote"
+              [config]="{ options: EMOTE, name: 'emote' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
+            <input [formControlName]="'emote'" id="emote" type="number" class="form-control form-control-sm">
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="isLarge">isLarge</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'Controls the visibility distance of the creature. 0 = Normal (default 90 yards);  1 = Large (250 yards)'"
+            ></i>
+            <input [formControlName]="'isLarge'" id="isLarge" type="number" class="form-control form-control-sm">
+          </div>
+          <div class="form-group col-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
+            <label class="control-label" for="auras">auras</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'A list of comma-separated auras to be applied on the creature'"
+            ></i>
+            <input [formControlName]="'auras'" id="auras" class="form-control form-control-sm">
+          </div>
+
+          <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
+            <i class="fas fa-exclamation-triangle"></i>
+            The <strong>{{ editorService.entitySecondIdField }}</strong> must be unique.
+          </div>
+
+        </div>
+
+      </form>
 
       <div class="row">
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="guid">guid</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'guid'"
-            [tooltip]="'Link to creature.guid'"
-          ></i>
-          <input [formControlName]="'guid'" id="guid" type="number" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="path_id">path_id</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'If the creature has waypoint pathed movement, contains the waypoint_data.id for the path the creature is to follow.'"
-          ></i>
-          <input [formControlName]="'path_id'" id="path_id" type="number" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="mount">mount</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'The model ID of the mount to be used to make the creature appear mounted. The value here overrides the value for the creature unit field UNIT_FIELD_MOUNTDISPLAYID.'"
-          ></i>
-          <input [formControlName]="'mount'" id="mount" type="number" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="bytes1">bytes1</label>
-          <keira-single-value-selector-btn
-            [control]="editorService.form.controls.bytes1"
-            [config]="{ options: CREATURE_ADDON_BYTES_1, name: 'bytes1' }"
-            [modalClass]="'modal-xl'"
-          ></keira-single-value-selector-btn>
-          <input [formControlName]="'bytes1'" id="bytes1" type="number" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="bytes2">bytes2</label>
-          <keira-single-value-selector-btn
-            [control]="editorService.form.controls.bytes2"
-            [config]="{ options: CREATURE_ADDON_BYTES_2, name: 'bytes2' }"
-            [modalClass]="'modal-lg'"
-          ></keira-single-value-selector-btn>
-          <input [formControlName]="'bytes2'" id="bytes2" type="number" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="emote">emote</label>
-          <keira-single-value-selector-btn
-            [control]="editorService.form.controls.emote"
-            [config]="{ options: EMOTE, name: 'emote' }"
-            [modalClass]="'modal-md'"
-          ></keira-single-value-selector-btn>
-          <input [formControlName]="'emote'" id="emote" type="number" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" for="isLarge">isLarge</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'Controls the visibility distance of the creature. 0 = Normal (default 90 yards);  1 = Large (250 yards)'"
-          ></i>
-          <input [formControlName]="'isLarge'" id="isLarge" type="number" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
-          <label class="control-label" for="auras">auras</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'A list of comma-separated auras to be applied on the creature'"
-          ></i>
-          <input [formControlName]="'auras'" id="auras" class="form-control form-control-sm">
-        </div>
+        <div class="col-12">
 
-        <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
-          <i class="fas fa-exclamation-triangle"></i>
-          The <strong>{{ editorService.entitySecondIdField }}</strong> must be unique.
-        </div>
+          <button
+            id="delete-selected-row-btn"
+            class="btn btn-danger btn-sm mr-2"
+            (click)="editorService.deleteSelectedRow()"
+            [disabled]="editorService.selectedRowId === null"
+          >Delete selected row</button>
 
+          <button
+            id="add-new-row-btn"
+            class="btn btn-success btn-sm"
+            (click)="editorService.addNewRow()"
+            disabled
+          >Add new row</button>
+
+          <ngx-datatable
+            id="editor-table"
+            class="bootstrap table table-striped text-center datatable-select"
+            [rows]="editorService.newRows"
+            [headerHeight]="DTCFG.headerHeight"
+            [footerHeight]="DTCFG.footerHeight"
+            [columnMode]="DTCFG.columnMode"
+            [rowHeight]="DTCFG.rowHeight"
+            [selectionType]="DTCFG.selectionType"
+            (select)='editorService.onRowSelection($event)'>
+            <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="guid" prop="guid" [minWidth]="80"></ngx-datatable-column>
+            <ngx-datatable-column name="path_id" prop="path_id"></ngx-datatable-column>
+            <ngx-datatable-column name="mount" prop="mount"></ngx-datatable-column>
+            <ngx-datatable-column name="bytes1" prop="bytes1"></ngx-datatable-column>
+            <ngx-datatable-column name="bytes2" prop="bytes2"></ngx-datatable-column>
+            <ngx-datatable-column name="emote" prop="emote"></ngx-datatable-column>
+            <ngx-datatable-column name="auras" prop="auras"></ngx-datatable-column>
+          </ngx-datatable>
+
+        </div>
       </div>
 
-    </form>
-
-    <div class="row">
-      <div class="col-12">
-
-        <button
-          id="delete-selected-row-btn"
-          class="btn btn-danger btn-sm mr-2"
-          (click)="editorService.deleteSelectedRow()"
-          [disabled]="editorService.selectedRowId === null"
-        >Delete selected row</button>
-
-        <button
-          id="add-new-row-btn"
-          class="btn btn-success btn-sm"
-          (click)="editorService.addNewRow()"
-          disabled
-        >Add new row</button>
-
-        <ngx-datatable
-          id="editor-table"
-          class="bootstrap table table-striped text-center datatable-select"
-          [rows]="editorService.newRows"
-          [headerHeight]="DTCFG.headerHeight"
-          [footerHeight]="DTCFG.footerHeight"
-          [columnMode]="DTCFG.columnMode"
-          [rowHeight]="DTCFG.rowHeight"
-          [selectionType]="DTCFG.selectionType"
-          (select)='editorService.onRowSelection($event)'>
-          <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
-            <ng-template let-row="row" ngx-datatable-cell-template>
-              <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
-            </ng-template>
-          </ngx-datatable-column>
-          <ngx-datatable-column name="guid" prop="guid" [minWidth]="80"></ngx-datatable-column>
-          <ngx-datatable-column name="path_id" prop="path_id"></ngx-datatable-column>
-          <ngx-datatable-column name="mount" prop="mount"></ngx-datatable-column>
-          <ngx-datatable-column name="bytes1" prop="bytes1"></ngx-datatable-column>
-          <ngx-datatable-column name="bytes2" prop="bytes2"></ngx-datatable-column>
-          <ngx-datatable-column name="emote" prop="emote"></ngx-datatable-column>
-          <ngx-datatable-column name="auras" prop="auras"></ngx-datatable-column>
-        </ngx-datatable>
-
-      </div>
     </div>
+
   </div>
 </div>
