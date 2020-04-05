@@ -17,17 +17,17 @@
     <form [formGroup]="selectService.queryForm">
       <div class="row">
         <ng-container [formGroup]="selectService.fields">
-          <div class="form-group col-2">
+          <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <input [formControlName]="'ID'" type="number" class="form-control form-control-sm" id="search-id" placeholder="ID">
           </div>
-          <div class="form-group col-3">
+          <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-3">
             <input [formControlName]="'LogTitle'" class="form-control form-control-sm" id="name" placeholder="Quest Title">
           </div>
         </ng-container>
-        <div class="form-group col-2">
+        <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Limit">
         </div>
-        <div class="col-2">
+        <div class="mb-2 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <keira-search-button [searchService]="selectService"></keira-search-button>
         </div>
       </div>
