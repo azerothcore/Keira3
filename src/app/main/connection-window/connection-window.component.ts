@@ -39,6 +39,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
 
     this.configs = this.connectionWindowService.getConfigs();
 
+    console.log(this.configs);
     if (this.configs.length > 0) {
       this.form.setValue(this.configs[this.configs.length - 1]);
     }

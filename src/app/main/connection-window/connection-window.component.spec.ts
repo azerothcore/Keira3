@@ -1,15 +1,14 @@
-import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
+import { async, TestBed, tick, fakeAsync } from '@angular/core/testing';
 import { instance, reset } from 'ts-mockito';
-import { MysqlError } from 'mysql';
+import { ConnectionConfig, MysqlError } from 'mysql';
 import { of, throwError } from 'rxjs';
-import Spy = jasmine.Spy;
 
 import { ConnectionWindowComponent } from './connection-window.component';
 import { MockedMysqlService } from '@keira-testing/mocks';
 import { MysqlService } from '../../shared/services/mysql.service';
 import { PageObject } from '@keira-testing/page-object';
 import { ConnectionWindowModule } from './connection-window.module';
-import { LocalStorageService } from '../../shared/services/local-storage.service';
+import { ConnectionWindowService } from './connection-window.service';
 
 class ConnectionWindowComponentPage extends PageObject<ConnectionWindowComponent> {
   get hostInput() { return this.query<HTMLInputElement>('#host'); }
@@ -22,10 +21,6 @@ class ConnectionWindowComponentPage extends PageObject<ConnectionWindowComponent
 }
 
 describe('ConnectionWindowComponent', () => {
-  let component: ConnectionWindowComponent;
-  let fixture: ComponentFixture<ConnectionWindowComponent>;
-  let page: ConnectionWindowComponentPage;
-  let connectSpy: Spy;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -37,18 +32,23 @@ describe('ConnectionWindowComponent', () => {
       .compileComponents();
   }));
 
-  beforeEach(() => {
-    connectSpy = spyOn(TestBed.inject(MysqlService), 'connect').and.returnValue(of({}));
+  const setup = (detectChanges = true) => {
+    const connectSpy = spyOn(TestBed.inject(MysqlService), 'connect').and.returnValue(of({}));
 
-    fixture = TestBed.createComponent(ConnectionWindowComponent);
-    page = new ConnectionWindowComponentPage(fixture);
-    component = fixture.componentInstance;
+    const fixture = TestBed.createComponent(ConnectionWindowComponent);
+    const page = new ConnectionWindowComponentPage(fixture);
+    const component = fixture.componentInstance;
     fixture.autoDetectChanges(true);
-    fixture.detectChanges();
-  });
+
+    if (detectChanges) {
+      fixture.detectChanges();
+    }
+
+    return { fixture, page, component, connectSpy };
+  };
 
   it('clicking on the connect button without altering the default values should correctly work', fakeAsync(() => {
-    TestBed.inject(LocalStorageService).clear();
+    const { page, component, connectSpy } = setup();
     component.error = { code: 'some previous error', errno: 1234 } as MysqlError;
 
     tick();
@@ -67,20 +67,28 @@ describe('ConnectionWindowComponent', () => {
     expect(page.errorElement.innerHTML).not.toContain('error-box');
   }));
 
-  it('clicking on the connect button altering the default values using localStorage should correctly work', fakeAsync(() => {
-    const mockLocalStorage = {
-      'host': '127.0.0.1',
-      'port': '3306',
-      'user': 'Helias',
-      'keira3String': btoa('root'),
-      'database': 'shin_world',
-    };
-
-    TestBed.inject(LocalStorageService).setItem('config', JSON.stringify(mockLocalStorage));
-    component.ngOnInit();
-
+  it('the latest config should be loaded by default (if any)', fakeAsync(() => {
+    const mockConfigs: Partial<ConnectionConfig>[] = [
+      {
+        host: 'localhost',
+        port: 3306,
+        user: 'Helias',
+        password: 'shin123',
+        database: 'shin_world',
+      },
+      {
+        host: '127.0.0.1',
+        port: 3306,
+        user: 'Helias',
+        password: 'helias123',
+        database: 'helias_world',
+      },
+    ];
+    spyOn(TestBed.inject(ConnectionWindowService), 'getConfigs').and.returnValue(mockConfigs);
+    const { fixture, page, component, connectSpy } = setup(false);
     component.error = { code: 'some previous error', errno: 1234 } as MysqlError;
 
+    fixture.detectChanges();
     tick();
 
     page.clickElement(page.connectBtn);
@@ -90,8 +98,8 @@ describe('ConnectionWindowComponent', () => {
       'host': '127.0.0.1',
       'port': 3306,
       'user': 'Helias',
-      'password': 'root',
-      'database': 'shin_world',
+      'password': 'helias123',
+      'database': 'helias_world',
     });
 
     expect(component.error).toBeNull();
@@ -99,8 +107,9 @@ describe('ConnectionWindowComponent', () => {
   }));
 
   it('filling the form and clicking on the connect button should correctly work', () => {
+    const { page, component, connectSpy } = setup();
     const host = '192.168.1.100';
-    const port = '9000';
+    const port = 9000;
     const user = 'shin';
     const password = 'helias';
     const database = 'my_world';
@@ -120,6 +129,7 @@ describe('ConnectionWindowComponent', () => {
   });
 
   it('should correctly react on mysql connection error', () => {
+    const { page, component, connectSpy } = setup();
     const error = {
       code: 'some error happened',
       errno: 1000,
@@ -141,7 +151,7 @@ describe('ConnectionWindowComponent', () => {
 
 
   afterEach(() => {
-    fixture.debugElement.nativeElement.remove();
+    localStorage.clear();
     reset(MockedMysqlService);
   });
 });
