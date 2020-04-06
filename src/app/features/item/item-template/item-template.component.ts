@@ -21,11 +21,11 @@ import { STAT_TYPE } from '@keira-constants/options/stat-type';
 import { TOTEM_CATEGORY } from '@keira-constants/options/totem-category';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { ItemTemplate } from '@keira-types/item-template.type';
-import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemPreviewService } from './item-preview.service';
 import { ItemTemplateService } from './item-template.service';
+import { PVP_RANK } from '@keira-shared/constants/options/item-honorrank';
 
 @Component({
   selector: 'keira-item-template',
@@ -53,6 +53,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   public readonly ITEM_FLAGS_CUSTOM = ITEM_FLAGS_CUSTOM;
   public readonly DAMAGE_TYPE = DAMAGE_TYPE;
   public readonly STAT_TYPE = STAT_TYPE;
+  public readonly PVP_RANK = PVP_RANK;
 
   showItemPreview = true;
 
@@ -67,7 +68,6 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     super(editorService, handlerService);
   }
 
-  public icon: Observable<string>;
   public itemPreview: SafeHtml = this.sanitizer.bypassSecurityTrustHtml('loading...');
 
   private async loadItemPreview() {
@@ -79,13 +79,6 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   ngOnInit() {
     super.ngOnInit();
     this.loadItemPreview();
-    this.icon = this.sqliteQueryService.getIconByItemDisplayId(this.editorService.form.controls.displayid.value);
-
-    this.subscriptions.push(
-      this.editorService.form.controls.displayid.valueChanges.subscribe((icon: number) => {
-        this.icon = this.sqliteQueryService.getIconByItemDisplayId(icon);
-      })
-    );
 
     this.subscriptions.push(
       this.editorService.form.valueChanges.pipe(

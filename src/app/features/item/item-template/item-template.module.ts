@@ -23,6 +23,7 @@ import { LanguageSelectorModule } from '@keira-shared/modules/selectors/language
 import { ItemLimitCategorySelectorModule } from '@keira-shared/modules/selectors/item-limit-category-selector/item-limit-category-selector.module';
 import { QuestSelectorModule } from '@keira-shared/modules/selectors/quest-selector/quest-selector.module';
 import { SkillSelectorModule } from '@keira-shared/modules/selectors/skill-selector/skill-selector.module';
+import { IconModule } from '@keira-shared/modules/icon/icon.module';
 
 
 @NgModule({
@@ -49,6 +50,7 @@ import { SkillSelectorModule } from '@keira-shared/modules/selectors/skill-selec
     ItemLimitCategorySelectorModule,
     QuestSelectorModule,
     SkillSelectorModule,
+    IconModule,
   ],
   exports: [
     ItemTemplateComponent,

@@ -13,6 +13,26 @@ code.hljs {
   }
 }
 
+
 .btn:disabled {
   cursor: default;
+}
+
+.cursor-pointer,
+input[type="radio"] {
+  cursor: pointer;
+}
+
+.radio-container {
+  position: relative;
+  padding: 4px;
+
+  input[type="radio"] {
+    position: absolute;
+    top: 8px;
+  }
+
+  .radio-text {
+    margin-left: 16px;
+  }
 }

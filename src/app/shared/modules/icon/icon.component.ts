@@ -18,7 +18,7 @@ export class IconComponent extends SubscriptionHandler {
       this.subscriptions.push(this.service.getIconByItemId(itemId).subscribe(this.setIcon.bind(this)));
     }
   }
-  @Input() set itemDisplayId(displayId: string) {
+  @Input() set itemDisplayId(displayId: string | number) {
     if (!!displayId) {
       this.subscriptions.push(this.service.getIconByItemDisplayId(displayId).subscribe(this.setIcon.bind(this)));
     }

@@ -4,13 +4,6 @@ export const ITEM_CONSTANTS = {
     pl: ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds', 'milliseconds'],
     ab: ['yr',    'mo',     'wk',    'day',  'hr',    'min',     'sec',     'ms'],
   },
-  'pvpRank': [                           // PVP_RANK_\d_\d(_FEMALE)?
-    null,                           'Private / Scout',                    'Corporal / Grunt',
-    'Sergeant / Sergeant',          'Master Sergeant / Senior Sergeant',  'Sergeant Major / First Sergeant',
-    'Knight / Stone Guard',         'Knight-Lieutenant / Blood Guard',    'Knight-Captain / Legionnare',
-    'Knight-Champion / Centurion',  'Lieutenant Commander / Champion',    'Commander / Lieutenant General',
-    'Marshal / General',            'Field Marshal / Warlord',            'Grand Marshal / High Warlord'
-  ],
   'si':            { '-1': 'Alliance only', '-2': 'Horde only', 0: null, 1: 'Alliance', 2: 'Horde', 3: 'Both' },
   'resistances':   [/* null, */ 'Holy Resistance', 'Fire Resistance', 'Nature Resistance', 'Frost Resistance', 'Shadow Resistance', 'Arcane Resistance'],                         // RESISTANCE?_NAME
   'sc':            ['Physical', 'Holy', 'Fire', 'Nature', 'Frost', 'Shadow', 'Arcane'],                                                                                     // STRING_SCHOOL_*
