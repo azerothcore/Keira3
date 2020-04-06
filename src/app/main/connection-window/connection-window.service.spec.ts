@@ -7,7 +7,7 @@ import { Spied } from '@keira-testing/test-helpers';
 
 declare type Config = Partial<ConnectionConfig>;
 
-fdescribe('ConnectionWindowService', () => {
+describe('ConnectionWindowService', () => {
   const currentConfig: Config[] = [
     { host: '185.251.90.84', port: 3306, user: 'readonly', password: 'cmVhZG9ubHk=', database: 'world' },
     { host: '127.0.0.1', port: 3306, user: 'root', password: 'cm9vdA==', database: 'acore_world' },
