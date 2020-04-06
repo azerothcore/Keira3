@@ -915,7 +915,7 @@ export class ItemPreviewService {
     }
 
     // required honorRank (not used anymore)
-    if (!!itemTemplate.requiredhonorrank && !!PVP_RANK[itemTemplate.requiredhonorrank].name) {
+    if (!!itemTemplate.requiredhonorrank && !!PVP_RANK[itemTemplate.requiredhonorrank] && !!PVP_RANK[itemTemplate.requiredhonorrank].name) {
       requiredText += `<br>Requires ${PVP_RANK[itemTemplate.requiredhonorrank].name}`;
     }
 
