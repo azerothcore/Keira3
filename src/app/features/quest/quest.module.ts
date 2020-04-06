@@ -10,6 +10,7 @@ import { CreatureQuestenderModule } from './creature-questender/creature-questen
 import { GameobjectQuestenderModule } from './gameobject-questender/gameobject-questender.module';
 import { GameobjectQueststarterModule } from './gameobject-queststarter/gameobject-queststarter.module';
 import { QuestHandlerService } from './quest-handler.service';
+import { PreviewService } from '@keira-shared/abstract/service/editors/preview.service';
 
 const modules = [
   SelectQuestModule,
@@ -28,6 +29,7 @@ const modules = [
   exports: [modules],
   providers: [
     QuestHandlerService,
+    PreviewService,
   ],
 })
 export class QuestModule {}
