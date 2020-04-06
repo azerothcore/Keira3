@@ -25,6 +25,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemPreviewService } from './item-preview.service';
 import { ItemTemplateService } from './item-template.service';
+import { PVP_RANK } from '@keira-shared/constants/options/item-honorrank';
 
 @Component({
   selector: 'keira-item-template',
@@ -52,6 +53,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   public readonly ITEM_FLAGS_CUSTOM = ITEM_FLAGS_CUSTOM;
   public readonly DAMAGE_TYPE = DAMAGE_TYPE;
   public readonly STAT_TYPE = STAT_TYPE;
+  public readonly PVP_RANK = PVP_RANK;
 
   showItemPreview = true;
 

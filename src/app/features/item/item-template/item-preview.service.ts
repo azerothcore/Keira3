@@ -7,6 +7,7 @@ import { MAX_LEVEL, lvlIndepRating, gtCombatRatings, CLASSES, RACE, resistanceFi
 import { ITEM_FLAG } from '@keira-shared/constants/flags/item-flags';
 import { ITEMS_QUALITY } from '@keira-shared/constants/options/item-quality';
 import { ItemTemplate } from '@keira-shared/types/item-template.type';
+import { PVP_RANK } from '@keira-shared/constants/options/item-honorrank';
 
 @Injectable()
 export class ItemPreviewService {
@@ -914,8 +915,8 @@ export class ItemPreviewService {
     }
 
     // required honorRank (not used anymore)
-    if (!!itemTemplate.requiredhonorrank && !!ITEM_CONSTANTS.pvpRank[itemTemplate.requiredhonorrank]) {
-      requiredText += `<br>Requires ${ITEM_CONSTANTS.pvpRank[itemTemplate.requiredhonorrank]}`;
+    if (!!itemTemplate.requiredhonorrank && !!PVP_RANK[itemTemplate.requiredhonorrank].name) {
+      requiredText += `<br>Requires ${PVP_RANK[itemTemplate.requiredhonorrank].name}`;
     }
 
     // required CityRank -> the value is always 0
