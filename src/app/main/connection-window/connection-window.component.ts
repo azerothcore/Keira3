@@ -40,6 +40,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
     this.configs = this.connectionWindowService.getConfigs();
 
     if (this.configs.length > 0) {
+      // get last saved config
       this.form.setValue(this.configs[this.configs.length - 1]);
     }
   }

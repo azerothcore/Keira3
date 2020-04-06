@@ -10,3 +10,7 @@ export function closeModalsAfterEach(upToLevel: number = 1) {
     }
   });
 }
+
+export type Spied<T> = {
+  [Method in keyof T]: jasmine.Spy;
+};

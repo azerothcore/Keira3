@@ -8,7 +8,7 @@ declare type Config = Partial<ConnectionConfig>;
   providedIn: 'root'
 })
 export class ConnectionWindowService {
-  private KEY = 'strl';
+  readonly KEY = 'strl';
 
   constructor(private localStorageService: LocalStorageService) { }
 
