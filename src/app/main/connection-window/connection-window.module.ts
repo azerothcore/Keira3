@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
@@ -16,7 +16,8 @@ import { QueryOutputModule } from '../../shared/modules/query-output/query-outpu
     BrowserAnimationsModule,
     ReactiveFormsModule,
     QueryOutputModule,
-    BsDropdownModule.forRoot({ isAnimated: true, autoClose: true }),
+    BsDropdownModule.forRoot({isAnimated: true, autoClose: true}),
+    FormsModule,
   ],
   exports: [
     ConnectionWindowComponent,

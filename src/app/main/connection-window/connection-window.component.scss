@@ -90,6 +90,15 @@ $secondary-color-green: #b7e2ad;
         margin-bottom: 6px;
         padding-right: 4px;
 
+        .form-check-input {
+          width: 16px;
+          height: 16px;
+        }
+        .form-check-label {
+          margin-top: 2px;
+          font-weight: bold;
+        }
+
         .btn-group {
           float: right;
 

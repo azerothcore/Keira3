@@ -20,6 +20,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
   configs: Partial<ConnectionConfig>[];
   form: FormGroup<Partial<ConnectionConfig>>;
   error: MysqlError;
+  savePassword = true;
 
   constructor(
     private mysqlService: MysqlService,
@@ -42,6 +43,10 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
     if (this.configs.length > 0) {
       // get last saved config
       this.form.setValue(this.configs[this.configs.length - 1]);
+
+      if (!this.form.getRawValue().password) {
+        this.savePassword = false;
+      }
     }
   }
 
@@ -58,7 +63,11 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
   onConnect(): void {
     this.subscriptions.push(
       this.mysqlService.connect(this.form.getRawValue()).subscribe(() => {
-        this.connectionWindowService.saveNewConfig(this.form.getRawValue());
+        const newConfig = this.form.getRawValue();
+        if (!this.savePassword) {
+          newConfig.password = '';
+        }
+        this.connectionWindowService.saveNewConfig(newConfig);
         this.error = null;
       }, (error: MysqlError) => {
         this.error = error;
