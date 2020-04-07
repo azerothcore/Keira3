@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import Spy = jasmine.Spy;
 import { ModalConfirmComponent } from './modal-confirm.component';
 import { ModalConfirmModule } from './modal-confirm.module';

@@ -1,5 +1,5 @@
 import { Component, } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { ItemEnchantmentSearchService } from '../../search/item-enchantment-search.service';
 import { ITEM_ENCHANTMENT_ID } from '@keira-types/item-enchantment.type';

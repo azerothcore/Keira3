@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { BsModalService } from 'ngx-bootstrap';
+import { BsModalService } from 'ngx-bootstrap/modal';
 
 import { PageObject } from './page-object';
 import { QueryOutputComponentPage } from '../modules/query-output/query-output.component.spec';

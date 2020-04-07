@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
-import { BsModalService, ModalModule } from 'ngx-bootstrap';
+import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { instance } from 'ts-mockito';
 import { HighlightModule } from 'ngx-highlightjs';

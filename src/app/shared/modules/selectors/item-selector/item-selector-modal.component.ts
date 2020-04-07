@@ -1,5 +1,5 @@
 import { Component, } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { ItemSearchService } from '../../search/item-search.service';
 import { ITEM_TEMPLATE_ID } from '@keira-types/item-template.type';

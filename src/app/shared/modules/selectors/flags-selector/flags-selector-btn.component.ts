@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { BsModalService } from 'ngx-bootstrap';
+import { BsModalService } from 'ngx-bootstrap/modal';
 
 import { FlagsSelectorModalComponent } from './flags-selector-modal.component';
 import { BaseSelectorBtnComponent } from '../base-selector/base-selector-btn.component';

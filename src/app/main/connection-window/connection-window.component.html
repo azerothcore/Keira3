@@ -20,6 +20,7 @@
           <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-network-wired"></i>Port</span></div>
           <input
             [formControlName]="'port'"
+            type="number"
             class="form-control"
             id="port"
             placeholder="Enter your MySQL server port"
@@ -53,10 +54,32 @@
             placeholder="Enter your AC world database name"
           >
         </div>
+        <div class="recent-container" *ngIf="configs">
+          <div class="btn-group" dropdown [dropup]="true" [isDisabled]="true">
+            <button dropdownToggle type="button" class="btn btn-sm btn-primary dropdown-toggle">
+              <i class="fas fa-history"></i> Load recent <span class="caret"></span>
+            </button>
+            <ul *dropdownMenu class="dropdown-menu"
+                role="menu" aria-labelledby="button-basic">
+              <li role="menuitem">
+                <a class="dropdown-item" href="#" (click)="removeAllConfigs()"><i class="fa fa-trash-alt"></i> Clear all</a>
+              </li>
+              <li class="divider dropdown-divider"></li>
+              <li role="menuitem" *ngFor="let config of configs">
+                <a class="dropdown-item" href="#" (click)="loadConfig(config)">
+                  {{ config.host }}:{{ config.port }}:{{ config.user }}
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
         <button class="btn btn-primary connect-button" (click)="onConnect()">Connect</button>
       </form>
 
-      <keira-query-error [error]="error"></keira-query-error>
+      <div class="login-error-box">
+        <keira-query-error [error]="error"></keira-query-error>
+      </div>
+
     </div>
 
     <div class="end-text">

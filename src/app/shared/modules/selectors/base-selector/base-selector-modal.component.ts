@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 
 export abstract class BaseSelectorModalComponent {
 

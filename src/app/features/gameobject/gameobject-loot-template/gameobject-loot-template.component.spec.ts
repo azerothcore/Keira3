@@ -4,7 +4,7 @@ import { anything, instance, when } from 'ts-mockito';
 import { of, throwError } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { TooltipModule } from 'ngx-bootstrap';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { MockedMysqlQueryService } from '@keira-testing/mocks';

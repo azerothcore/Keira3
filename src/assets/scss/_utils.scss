@@ -13,6 +13,11 @@ code.hljs {
   }
 }
 
+
+.btn:disabled {
+  cursor: default;
+}
+
 .cursor-pointer,
 input[type="radio"] {
   cursor: pointer;
@@ -31,4 +36,3 @@ input[type="radio"] {
     margin-left: 16px;
   }
 }
-
