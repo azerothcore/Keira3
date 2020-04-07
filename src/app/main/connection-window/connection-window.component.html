@@ -27,7 +27,7 @@
           <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-database"></i>Database</span></div>
           <input [formControlName]="'database'" class="form-control" id="database">
         </div>
-        <div class="recent-container" *ngIf="configs">
+        <div class="recent-container">
           <div class="row">
             <div class="col">
               <div class="form-check">
@@ -38,17 +38,17 @@
               </div>
             </div>
             <div class="col">
-              <div class="btn-group" dropdown [dropup]="true" [isDisabled]="isRecentDropdownDisabled">
+              <div class="btn-group" id="load-recent" dropdown [dropup]="true" [isDisabled]="isRecentDropdownDisabled">
                 <button dropdownToggle type="button" class="btn btn-sm btn-primary dropdown-toggle">
                   <i class="fas fa-history"></i> Load recent <span class="caret"></span>
                 </button>
                 <ul *dropdownMenu class="dropdown-menu"
                     role="menu" aria-labelledby="button-basic">
                   <li role="menuitem">
-                    <a class="dropdown-item" href="#" (click)="removeAllConfigs()"><i class="fa fa-trash-alt"></i> Clear all</a>
+                    <a class="dropdown-item" href="#" (click)="removeAllConfigs()" id="clear-all"><i class="fa fa-trash-alt"></i> Clear all</a>
                   </li>
                   <li class="divider dropdown-divider"></li>
-                  <li role="menuitem" *ngFor="let config of configs">
+                  <li role="menuitem" *ngFor="let config of configs" class="config-item">
                     <a class="dropdown-item" href="#" (click)="loadConfig(config)">
                       {{ config.host }}:{{ config.port }}:{{ config.user }}
                     </a>
