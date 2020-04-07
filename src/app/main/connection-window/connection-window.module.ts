@@ -16,7 +16,8 @@ import { QueryOutputModule } from '../../shared/modules/query-output/query-outpu
     BrowserAnimationsModule,
     ReactiveFormsModule,
     QueryOutputModule,
-    BsDropdownModule.forRoot({isAnimated: true, autoClose: true}),
+    // TODO: enable animation once this bug is fixed: https://github.com/valor-software/ngx-bootstrap/issues/5727
+    BsDropdownModule.forRoot({ isAnimated: false, autoClose: true }),
     FormsModule,
   ],
   exports: [

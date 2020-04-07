@@ -22,6 +22,10 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
   error: MysqlError;
   savePassword = true;
 
+  get isRecentDropdownDisabled(): boolean {
+    return this.configs?.length === 0;
+  }
+
   constructor(
     private mysqlService: MysqlService,
     private connectionWindowService: ConnectionWindowService,
@@ -50,14 +54,14 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
     }
   }
 
-  /* istanbul ignore next */ // TODO: will be tested when the feature is enabled
   loadConfig(config: Partial<ConnectionConfig>): void {
     this.form.setValue(config);
   }
 
-  /* istanbul ignore next */ // TODO: will be tested when the feature is enabled
   removeAllConfigs(): void {
     this.connectionWindowService.removeAllConfigs();
+    this.configs = [];
+    this.form.reset();
   }
 
   onConnect(): void {
