@@ -16,7 +16,7 @@ class SelectQuestComponentPage extends SelectPageObject<SelectQuestComponent> {
   ID_FIELD = 'ID';
 }
 
-describe('SelectQuest integration tests', () => {
+fdescribe('SelectQuest integration tests', () => {
   let component: SelectQuestComponent;
   let fixture: ComponentFixture<SelectQuestComponent>;
   let selectService: SelectQuestService;

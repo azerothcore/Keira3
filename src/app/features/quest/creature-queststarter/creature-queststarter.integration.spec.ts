@@ -4,15 +4,15 @@ import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
 import { CreatureQueststarterComponent } from './creature-queststarter.component';
-import { CreatureQueststarterModule } from './creature-queststarter.module';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { CreatureQueststarter } from '@keira-types/creature-queststarter.type';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { QuestHandlerService } from '../quest-handler.service';
+import { QuestModule } from '../quest.module';
 
 class CreatureQueststarterPage extends MultiRowEditorPageObject<CreatureQueststarterComponent> {}
 
-describe('CreatureQueststarter integration tests', () => {
+fdescribe('CreatureQueststarter integration tests', () => {
   let component: CreatureQueststarterComponent;
   let fixture: ComponentFixture<CreatureQueststarterComponent>;
   let queryService: MysqlQueryService;
@@ -33,12 +33,9 @@ describe('CreatureQueststarter integration tests', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        CreatureQueststarterModule,
         RouterTestingModule,
+        QuestModule,
       ],
-      providers: [
-        QuestHandlerService,
-      ]
     })
       .compileComponents();
   }));
@@ -63,7 +60,7 @@ describe('CreatureQueststarter integration tests', () => {
     fixture.detectChanges();
   }
 
-  describe('Creating new', () => {
+  fdescribe('Creating new', () => {
     beforeEach(() => setup(true));
 
     it('should correctly initialise', () => {
@@ -132,7 +129,7 @@ describe('CreatureQueststarter integration tests', () => {
     });
   });
 
-  describe('Editing existing', () => {
+  fdescribe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', () => {

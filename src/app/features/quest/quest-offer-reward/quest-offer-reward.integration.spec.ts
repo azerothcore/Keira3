@@ -5,14 +5,14 @@ import Spy = jasmine.Spy;
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { QuestOfferRewardComponent } from './quest-offer-reward.component';
-import { QuestOfferRewardModule } from './quest-offer-reward.module';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { QuestOfferReward } from '@keira-types/quest-offer-reward.type';
 import { QuestHandlerService } from '../quest-handler.service';
+import { QuestModule } from '../quest.module';
 
 class QuestOfferRewardPage extends EditorPageObject<QuestOfferRewardComponent> {}
 
-describe('QuestOfferReward integration tests', () => {
+fdescribe('QuestOfferReward integration tests', () => {
   let component: QuestOfferRewardComponent;
   let fixture: ComponentFixture<QuestOfferRewardComponent>;
   let queryService: MysqlQueryService;
@@ -41,12 +41,9 @@ describe('QuestOfferReward integration tests', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        QuestOfferRewardModule,
         RouterTestingModule,
+        QuestModule,
       ],
-      providers: [
-        QuestHandlerService,
-      ]
     })
       .compileComponents();
   }));
@@ -70,7 +67,7 @@ describe('QuestOfferReward integration tests', () => {
     fixture.detectChanges();
   }
 
-  describe('Creating new', () => {
+  fdescribe('Creating new', () => {
     beforeEach(() => setup(true));
 
     it('should correctly initialise', () => {
@@ -104,7 +101,7 @@ describe('QuestOfferReward integration tests', () => {
     });
   });
 
-  describe('Editing existing', () => {
+  fdescribe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', () => {

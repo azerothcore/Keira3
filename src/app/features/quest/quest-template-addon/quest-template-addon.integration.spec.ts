@@ -5,7 +5,6 @@ import Spy = jasmine.Spy;
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { QuestTemplateAddonComponent } from './quest-template-addon.component';
-import { QuestTemplateAddonModule } from './quest-template-addon.module';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { QuestTemplateAddon } from '@keira-types/quest-template-addon.type';
 import { QuestHandlerService } from '../quest-handler.service';
@@ -13,10 +12,11 @@ import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service'
 import { instance } from 'ts-mockito';
 import { MockedSqliteService } from '@keira-testing/mocks';
 import { SqliteService } from '@keira-shared/services/sqlite.service';
+import { QuestModule } from '../quest.module';
 
 class QuestTemplateAddonPage extends EditorPageObject<QuestTemplateAddonComponent> {}
 
-describe('QuestTemplateAddon integration tests', () => {
+fdescribe('QuestTemplateAddon integration tests', () => {
   let component: QuestTemplateAddonComponent;
   let fixture: ComponentFixture<QuestTemplateAddonComponent>;
   let queryService: MysqlQueryService;
@@ -54,11 +54,10 @@ describe('QuestTemplateAddon integration tests', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        QuestTemplateAddonModule,
         RouterTestingModule,
+        QuestModule,
       ],
       providers: [
-        QuestHandlerService,
         { provide: SqliteService, useValue: instance(MockedSqliteService) },
       ]
     })
@@ -84,7 +83,7 @@ describe('QuestTemplateAddon integration tests', () => {
     fixture.detectChanges();
   }
 
-  describe('Creating new', () => {
+  fdescribe('Creating new', () => {
     beforeEach(() => setup(true));
 
     it('should correctly initialise', () => {
@@ -120,7 +119,7 @@ describe('QuestTemplateAddon integration tests', () => {
     });
   });
 
-  describe('Editing existing', () => {
+  fdescribe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', () => {
