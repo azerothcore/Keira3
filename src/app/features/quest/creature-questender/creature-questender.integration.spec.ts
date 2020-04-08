@@ -12,7 +12,7 @@ import { QuestModule } from '../quest.module';
 
 class CreatureQuestenderPage extends MultiRowEditorPageObject<CreatureQuestenderComponent> {}
 
-fdescribe('CreatureQuestender integration tests', () => {
+describe('CreatureQuestender integration tests', () => {
   let component: CreatureQuestenderComponent;
   let fixture: ComponentFixture<CreatureQuestenderComponent>;
   let queryService: MysqlQueryService;
@@ -60,7 +60,7 @@ fdescribe('CreatureQuestender integration tests', () => {
     fixture.detectChanges();
   }
 
-  fdescribe('Creating new', () => {
+  describe('Creating new', () => {
     beforeEach(() => setup(true));
 
 
@@ -130,7 +130,7 @@ fdescribe('CreatureQuestender integration tests', () => {
     });
   });
 
-  fdescribe('Editing existing', () => {
+  describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', () => {

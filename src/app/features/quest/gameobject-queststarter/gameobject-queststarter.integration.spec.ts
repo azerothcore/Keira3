@@ -12,7 +12,7 @@ import { QuestModule } from '../quest.module';
 
 class GameobjectQueststarterPage extends MultiRowEditorPageObject<GameobjectQueststarterComponent> {}
 
-fdescribe('GameobjectQueststarter integration tests', () => {
+describe('GameobjectQueststarter integration tests', () => {
   let component: GameobjectQueststarterComponent;
   let fixture: ComponentFixture<GameobjectQueststarterComponent>;
   let queryService: MysqlQueryService;
@@ -60,7 +60,7 @@ fdescribe('GameobjectQueststarter integration tests', () => {
     fixture.detectChanges();
   }
 
-  fdescribe('Creating new', () => {
+  describe('Creating new', () => {
     beforeEach(() => setup(true));
 
 
@@ -130,7 +130,7 @@ fdescribe('GameobjectQueststarter integration tests', () => {
     });
   });
 
-  fdescribe('Editing existing', () => {
+  describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', () => {

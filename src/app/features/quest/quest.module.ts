@@ -39,11 +39,13 @@ import { IconModule } from '@keira-shared/modules/icon/icon.module';
 import { GameobjectQuestenderService } from './gameobject-questender/gameobject-questender.service';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { ItemSelectorModule } from '@keira-shared/modules/selectors/item-selector/item-selector.module';
+import { GameobjectQuestenderComponent } from './gameobject-questender/gameobject-questender.component';
 
 const components = [
   CreatureQuestenderComponent,
   CreatureQueststarterComponent,
   GameobjectQueststarterComponent,
+  GameobjectQuestenderComponent,
   QuestOfferRewardComponent,
   QuestRequestItemsComponent,
   QuestTemplateComponent,

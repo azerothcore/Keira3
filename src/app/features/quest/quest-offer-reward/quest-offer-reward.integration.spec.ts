@@ -12,7 +12,7 @@ import { QuestModule } from '../quest.module';
 
 class QuestOfferRewardPage extends EditorPageObject<QuestOfferRewardComponent> {}
 
-fdescribe('QuestOfferReward integration tests', () => {
+describe('QuestOfferReward integration tests', () => {
   let component: QuestOfferRewardComponent;
   let fixture: ComponentFixture<QuestOfferRewardComponent>;
   let queryService: MysqlQueryService;
@@ -67,7 +67,7 @@ fdescribe('QuestOfferReward integration tests', () => {
     fixture.detectChanges();
   }
 
-  fdescribe('Creating new', () => {
+  describe('Creating new', () => {
     beforeEach(() => setup(true));
 
     it('should correctly initialise', () => {
@@ -101,7 +101,7 @@ fdescribe('QuestOfferReward integration tests', () => {
     });
   });
 
-  fdescribe('Editing existing', () => {
+  describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', () => {

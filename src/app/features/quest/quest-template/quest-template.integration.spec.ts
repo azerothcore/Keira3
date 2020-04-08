@@ -12,7 +12,7 @@ import { QuestModule } from '../quest.module';
 
 class QuestTemplatePage extends EditorPageObject<QuestTemplateComponent> {}
 
-fdescribe('QuestTemplate integration tests', () => {
+describe('QuestTemplate integration tests', () => {
   let component: QuestTemplateComponent;
   let fixture: ComponentFixture<QuestTemplateComponent>;
   let queryService: MysqlQueryService;
@@ -78,7 +78,7 @@ fdescribe('QuestTemplate integration tests', () => {
     fixture.detectChanges();
   }
 
-  fdescribe('Creating new', () => {
+  describe('Creating new', () => {
     beforeEach(() => setup(true));
 
     it('should correctly initialise', () => {
@@ -109,7 +109,7 @@ fdescribe('QuestTemplate integration tests', () => {
     });
   });
 
-  fdescribe('Editing existing', () => {
+  describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', () => {

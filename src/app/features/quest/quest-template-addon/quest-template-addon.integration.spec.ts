@@ -16,7 +16,7 @@ import { QuestModule } from '../quest.module';
 
 class QuestTemplateAddonPage extends EditorPageObject<QuestTemplateAddonComponent> {}
 
-fdescribe('QuestTemplateAddon integration tests', () => {
+describe('QuestTemplateAddon integration tests', () => {
   let component: QuestTemplateAddonComponent;
   let fixture: ComponentFixture<QuestTemplateAddonComponent>;
   let queryService: MysqlQueryService;
@@ -83,7 +83,7 @@ fdescribe('QuestTemplateAddon integration tests', () => {
     fixture.detectChanges();
   }
 
-  fdescribe('Creating new', () => {
+  describe('Creating new', () => {
     beforeEach(() => setup(true));
 
     it('should correctly initialise', () => {
@@ -119,7 +119,7 @@ fdescribe('QuestTemplateAddon integration tests', () => {
     });
   });
 
-  fdescribe('Editing existing', () => {
+  describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
     it('should correctly initialise', () => {
