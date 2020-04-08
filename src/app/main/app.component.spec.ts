@@ -1,4 +1,4 @@
-import { TestBed, async, ComponentFixture } from '@angular/core/testing';
+import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
@@ -17,11 +17,9 @@ import { ModalConfirmModule } from '../shared/modules/modal-confirm/modal-confir
 import { LogoutBtnComponent } from './main-window/sidebar/logout-btn/logout-btn.component';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
+import { HttpClientModule } from '@angular/common/http';
 
-describe('AppComponent', () => {
-  let component: AppComponent;
-  let fixture: ComponentFixture<AppComponent>;
-  let subject: Subject<boolean>;
+fdescribe('AppComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -39,6 +37,7 @@ describe('AppComponent', () => {
         RouterTestingModule,
         BrowserAnimationsModule,
         PerfectScrollbarModule,
+        HttpClientModule,
         ModalConfirmModule,
         ToastrModule.forRoot(),
       ],
@@ -49,19 +48,22 @@ describe('AppComponent', () => {
     }).compileComponents();
   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AppComponent);
-    component = fixture.componentInstance;
+  const setup = () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    const toastrService: ToastrService = TestBed.inject(ToastrService);
 
-    subject = new Subject<boolean>();
+    const subject = new Subject<boolean>();
     // @ts-ignore
     TestBed.inject(MysqlService)['connectionLost$'] = subject.asObservable();
 
     fixture.detectChanges();
-  });
+
+    return { fixture, component, subject, toastrService };
+  };
 
   it('should correctly react on connectionLost$ [connection lost]', () => {
-    const toastrService: ToastrService = TestBed.inject(ToastrService);
+    const { toastrService, subject } = setup();
     spyOnAllFunctions(toastrService);
 
     subject.next(false);
@@ -74,7 +76,7 @@ describe('AppComponent', () => {
   });
 
   it('should correctly react on connectionLost$ [reconnected]', () => {
-    const toastrService: ToastrService = TestBed.inject(ToastrService);
+    const { subject, toastrService } = setup();
     spyOnAllFunctions(toastrService);
 
     subject.next(true);
@@ -85,7 +87,6 @@ describe('AppComponent', () => {
   });
 
   afterEach(() => {
-    fixture.debugElement.nativeElement.remove();
     reset(MockedElectronService);
     reset(MockedMysqlService);
   });
