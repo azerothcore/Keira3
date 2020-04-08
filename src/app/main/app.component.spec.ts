@@ -53,22 +53,22 @@ fdescribe('AppComponent', () => {
     const component = fixture.componentInstance;
     const toastrService: ToastrService = TestBed.inject(ToastrService);
 
-    const subject = new Subject<boolean>();
+    const connectionLostSubject = new Subject<boolean>();
     // @ts-ignore
-    TestBed.inject(MysqlService)['connectionLost$'] = subject.asObservable();
+    TestBed.inject(MysqlService)['connectionLost$'] = connectionLostSubject.asObservable();
 
     fixture.detectChanges();
 
-    return { fixture, component, subject, toastrService };
+    return { fixture, component, connectionLostSubject, toastrService };
   };
 
   it('should correctly react on connectionLost$ [connection lost]', () => {
-    const { toastrService, subject } = setup();
+    const { toastrService, connectionLostSubject } = setup();
     spyOnAllFunctions(toastrService);
 
-    subject.next(false);
-    subject.next(false);
-    subject.next(false);
+    connectionLostSubject.next(false);
+    connectionLostSubject.next(false);
+    connectionLostSubject.next(false);
 
     expect(toastrService.success).toHaveBeenCalledTimes(0);
     expect(toastrService.error).toHaveBeenCalledTimes(1);
@@ -76,10 +76,10 @@ fdescribe('AppComponent', () => {
   });
 
   it('should correctly react on connectionLost$ [reconnected]', () => {
-    const { subject, toastrService } = setup();
+    const { connectionLostSubject, toastrService } = setup();
     spyOnAllFunctions(toastrService);
 
-    subject.next(true);
+    connectionLostSubject.next(true);
 
     expect(toastrService.error).toHaveBeenCalledTimes(0);
     expect(toastrService.success).toHaveBeenCalledTimes(1);
