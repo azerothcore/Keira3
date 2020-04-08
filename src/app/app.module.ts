@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import '../polyfills';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './config/app-routing.module';
 import { AppComponent } from './main/app.component';
@@ -21,6 +22,7 @@ import { SqlEditorModule } from './features/sql-editor/sql-editor.module';
   declarations: [ AppComponent ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     /* Misc */
     AppRoutingModule,
     ConnectionWindowModule,
