@@ -1,23 +1,23 @@
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+import { ToastrModule, ToastrService } from 'ngx-toastr';
+import { Subject } from 'rxjs';
+import { instance, reset } from 'ts-mockito';
 
 import { AppComponent } from './app.component';
 import { SidebarComponent } from './main-window/sidebar/sidebar.component';
 import { MainWindowComponent } from './main-window/main-window.component';
 import { ElectronService } from '../shared/services/electron.service';
-import { instance, reset } from 'ts-mockito';
 import { MockedElectronService, MockedMysqlService } from '@keira-testing/mocks';
 import { MysqlService } from '../shared/services/mysql.service';
 import { ConnectionWindowComponent } from './connection-window/connection-window.component';
 import { QueryErrorComponent } from '../shared/modules/query-output/query-error/query-error.component';
 import { ModalConfirmModule } from '../shared/modules/modal-confirm/modal-confirm.module';
 import { LogoutBtnComponent } from './main-window/sidebar/logout-btn/logout-btn.component';
-import { ToastrModule, ToastrService } from 'ngx-toastr';
-import { Subject } from 'rxjs';
-import { HttpClientModule } from '@angular/common/http';
 
 fdescribe('AppComponent', () => {
 
@@ -37,7 +37,7 @@ fdescribe('AppComponent', () => {
         RouterTestingModule,
         BrowserAnimationsModule,
         PerfectScrollbarModule,
-        HttpClientModule,
+        HttpClientTestingModule,
         ModalConfirmModule,
         ToastrModule.forRoot(),
       ],
