@@ -7,15 +7,17 @@ import { MysqlService } from '../shared/services/mysql.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { ElectronService } from '@keira-shared/services/electron.service';
 import { KEIRA3_REPO_URL, LATEST_RELEASE_API_URL } from '@keira-constants/general';
+import { version } from '../../../package.json';
+import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
 
 @Component({
   selector: 'keira-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent extends SubscriptionHandler implements OnInit {
   public readonly KEIRA3_REPO_URL = KEIRA3_REPO_URL;
-
+  showNewerVersionAlert = false;
   sqliteResult: { id: number; name: string };
 
   constructor(
@@ -24,7 +26,9 @@ export class AppComponent implements OnInit {
     private sqliteQueryService: SqliteQueryService,
     private electronService: ElectronService,
     private http: HttpClient,
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.handleConnectionLostAlerts();
@@ -57,7 +61,10 @@ export class AppComponent implements OnInit {
 
   private handleNewerVersionAlert() {
     this.http.get<{ tag_name: string }>(LATEST_RELEASE_API_URL).subscribe(release => {
-      console.log(release.tag_name);
+      const currentTag = `v${version}`;
+      if (currentTag !== release.tag_name) {
+        this.showNewerVersionAlert = true;
+      }
     });
   }
 }
