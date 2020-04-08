@@ -1,4 +1,4 @@
-import { app, BrowserWindow, screen } from 'electron';
+import { app, BrowserWindow, shell, screen } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 
@@ -64,6 +64,11 @@ function createWindow() {
     win = null;
   });
 
+  // open links in the default browser
+  win.webContents.on('new-window', function(event, link) {
+    event.preventDefault();
+    shell.openExternal(link);
+  });
 }
 
 try {
