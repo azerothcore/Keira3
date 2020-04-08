@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ITEM_CONSTANTS } from 'app/features/item/item-template/item-constants';
 import { RACE } from 'app/features/item/item-template/item-preview';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class PreviewService {
   private readonly ITEM_CONSTANTS = ITEM_CONSTANTS;
 
