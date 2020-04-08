@@ -57,13 +57,12 @@ fdescribe('AppComponent', () => {
     // @ts-ignore
     TestBed.inject(MysqlService)['connectionLost$'] = connectionLostSubject.asObservable();
 
-    fixture.detectChanges();
-
     return { fixture, component, connectionLostSubject, toastrService };
   };
 
   it('should correctly react on connectionLost$ [connection lost]', () => {
-    const { toastrService, connectionLostSubject } = setup();
+    const { fixture, toastrService, connectionLostSubject } = setup();
+    fixture.detectChanges();
     spyOnAllFunctions(toastrService);
 
     connectionLostSubject.next(false);
@@ -76,7 +75,8 @@ fdescribe('AppComponent', () => {
   });
 
   it('should correctly react on connectionLost$ [reconnected]', () => {
-    const { connectionLostSubject, toastrService } = setup();
+    const { fixture, connectionLostSubject, toastrService } = setup();
+    fixture.detectChanges();
     spyOnAllFunctions(toastrService);
 
     connectionLostSubject.next(true);
