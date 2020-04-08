@@ -5,10 +5,10 @@ import Spy = jasmine.Spy;
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { QuestRequestItemsComponent } from './quest-request-items.component';
-import { QuestRequestItemsModule } from './quest-request-items.module';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { QuestRequestItems } from '@keira-types/quest-request-items.type';
 import { QuestHandlerService } from '../quest-handler.service';
+import { QuestModule } from '../quest.module';
 
 class QuestRequestItemsPage extends EditorPageObject<QuestRequestItemsComponent> {}
 
@@ -35,12 +35,9 @@ describe('QuestRequestItems integration tests', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        QuestRequestItemsModule,
         RouterTestingModule,
+        QuestModule,
       ],
-      providers: [
-        QuestHandlerService,
-      ]
     })
       .compileComponents();
   }));
