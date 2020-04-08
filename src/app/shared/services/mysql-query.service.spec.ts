@@ -898,7 +898,7 @@ describe('MysqlQueryService', () => {
       );
     });
 
-    fit('getPrevQuestById', async () => {
+    it('getPrevQuestById', async () => {
       expect(await service.getPrevQuestById(id)).toEqual(result);
       expect(await service.getPrevQuestById(id)).toEqual(result); // check cache
       expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
@@ -907,7 +907,7 @@ describe('MysqlQueryService', () => {
       );
     });
 
-    fit('getNextQuestById', async () => {
+    it('getNextQuestById', async () => {
       expect(await service.getNextQuestById(id)).toEqual(result);
       expect(await service.getNextQuestById(id)).toEqual(result); // check cache
       expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
