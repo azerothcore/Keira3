@@ -11,7 +11,7 @@ import { CreatureLootTemplateComponent } from '../../../../../features/creature/
 import { CreatureLootTemplateService } from '../../../../../features/creature/creature-loot-template/creature-loot-template.service';
 import { LootEditorService } from '../../../service/editors/loot-editor.service';
 import { CreatureLootTemplateModule } from '../../../../../features/creature/creature-loot-template/creature-loot-template.module';
-import { TooltipModule } from 'ngx-bootstrap';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
 import { MysqlQueryService } from '../../../../services/mysql-query.service';
 import { CreatureHandlerService } from '../../../../../features/creature/creature-handler.service';

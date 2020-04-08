@@ -21,7 +21,7 @@ $secondary-color-green: #b7e2ad;
   .input-group-prepend span {
     background-color: $main-color-blue;
   }
-  .connect-button {
+  .btn {
     background-color: $main-color-blue;
     border-color: $main-color-blue;
   }
@@ -37,7 +37,7 @@ $secondary-color-green: #b7e2ad;
   .input-group-prepend span {
     background-color: $main-color-red;
   }
-  .connect-button {
+  .btn {
     background-color: $main-color-red;
     border-color: $main-color-red;
   }
@@ -52,7 +52,7 @@ $secondary-color-green: #b7e2ad;
   .input-group-prepend span {
     background-color: $main-color-green;
   }
-  .connect-button {
+  .btn {
     background-color: $main-color-green;
     border-color: $main-color-green;
   }
@@ -79,12 +79,43 @@ $secondary-color-green: #b7e2ad;
 
     .title {
       text-align: center;
-      margin-bottom: 40px;
     }
 
     .form-wrapper {
       max-width: 360px;
       margin: 20px auto auto;
+
+      .recent-container {
+        height: 38px;
+        margin-bottom: 6px;
+        padding-right: 4px;
+
+        .form-check-input {
+          width: 16px;
+          height: 16px;
+        }
+        .form-check-label {
+          margin-top: 2px;
+          font-weight: bold;
+        }
+
+        .btn-group {
+          float: right;
+
+          .dropdown-menu {
+            background-color: #000;
+
+            a {
+              font-weight: bold;
+              color: #fff;
+
+              &:hover, &:focus, &:active {
+                background-color: #2b2b2b;
+              }
+            }
+          }
+        }
+      }
 
       .form-group {
         display: flex;
@@ -114,6 +145,9 @@ $secondary-color-green: #b7e2ad;
         width: 70%;
         margin: auto;
         display: block;
+      }
+      .btn {
+        font-weight: bold;
 
         &:focus {
           box-shadow: none;
@@ -126,9 +160,8 @@ $secondary-color-green: #b7e2ad;
       bottom: 10px;
       left: 50%;
       transform: translateX(-50%);
-      font-weight: bold;
-
       a, a:hover {
+        font-weight: bold;
         text-decoration: none;
       }
     }

@@ -7,7 +7,7 @@ import { ItemExtendedCostSelectorBtnComponent } from './item-extended-cost-selec
 import { highlightOptions } from '@keira-config/highlight.config';
 import { HighlightModule } from 'ngx-highlightjs';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { ModalModule } from 'ngx-bootstrap';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 
 @NgModule({

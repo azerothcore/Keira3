@@ -1,5 +1,5 @@
 import { Component, } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { MapSearchService } from '../../search/map-search.service';
 import { MAP_ID } from '@keira-types/map.type';

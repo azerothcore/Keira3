@@ -7,7 +7,7 @@ import { ItemSelectorBtnComponent } from './item-selector-btn.component';
 import { highlightOptions } from '@keira-config/highlight.config';
 import { HighlightModule } from 'ngx-highlightjs';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { ModalModule } from 'ngx-bootstrap';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import { IconModule } from '@keira-shared/modules/icon/icon.module';
 import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 

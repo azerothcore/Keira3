@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance } from 'ts-mockito';
 
 import { MapSelectorModalComponent } from './map-selector-modal.component';

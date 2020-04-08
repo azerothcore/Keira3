@@ -1,5 +1,5 @@
 import { Component, } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { SpellSearchService } from '../../search/spell-search.service';
 import { SPELL_ID } from '@keira-types/spell.type';

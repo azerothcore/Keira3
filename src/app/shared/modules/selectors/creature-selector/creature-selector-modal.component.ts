@@ -1,5 +1,5 @@
 import { Component, } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { CreatureSearchService } from '../../search/creature-search.service';
 import { CREATURE_TEMPLATE_ID } from '@keira-types/creature-template.type';

@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { SingleValueSelectorModalComponent } from './single-value-selector-modal.component';
 import { SingleValueSelectorModule } from './single-value-selector.module';
