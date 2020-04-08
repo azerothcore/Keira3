@@ -898,6 +898,24 @@ describe('MysqlQueryService', () => {
       );
     });
 
+    it('getPrevQuestById', async () => {
+      expect(await service.getPrevQuestById(id)).toEqual(result);
+      expect(await service.getPrevQuestById(id)).toEqual(result); // check cache
+      expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
+      expect(service.queryValue).toHaveBeenCalledWith(
+        `SELECT PrevQuestID AS v FROM quest_template_addon WHERE id = ${id}`,
+      );
+    });
+
+    it('getNextQuestById', async () => {
+      expect(await service.getNextQuestById(id)).toEqual(result);
+      expect(await service.getNextQuestById(id)).toEqual(result); // check cache
+      expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
+      expect(service.queryValue).toHaveBeenCalledWith(
+        `SELECT NextQuestID AS v FROM quest_template_addon WHERE id = ${id}`,
+      );
+    });
+
     it('getQuestTitleByCriteria (case 2)', () => {
       expect(service.getQuestTitleByCriteria(1, null, null, null)).toEqual(resultToPromise);
       expect(service.queryValueToPromise).toHaveBeenCalledWith(

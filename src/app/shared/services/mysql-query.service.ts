@@ -372,6 +372,14 @@ export class MysqlQueryService extends QueryService {
     return this.queryValueToPromiseCached('getQuestTitleById', String(id), `SELECT LogTitle AS v FROM quest_template WHERE ID = ${id}`);
   }
 
+  getPrevQuestById(id: string|number): Promise<string> {
+    return this.queryValueToPromiseCached('getPrevQuestById', String(id), `SELECT PrevQuestID AS v FROM quest_template_addon WHERE id = ${id}`);
+  }
+
+  getNextQuestById(id: string|number): Promise<string> {
+    return this.queryValueToPromiseCached('getNextQuestById', String(id), `SELECT NextQuestID AS v FROM quest_template_addon WHERE id = ${id}`);
+  }
+
   getItemNameById(id: string|number): Promise<string> {
     return this.queryValueToPromiseCached('getItemNameById', String(id), `SELECT name AS v FROM item_template WHERE entry = ${id}`);
   }
