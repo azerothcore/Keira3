@@ -20,6 +20,11 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
   configs: Partial<ConnectionConfig>[];
   form: FormGroup<Partial<ConnectionConfig>>;
   error: MysqlError;
+  savePassword = true;
+
+  get isRecentDropdownDisabled(): boolean {
+    return !this.configs || this.configs.length === 0;
+  }
 
   constructor(
     private mysqlService: MysqlService,
@@ -39,26 +44,34 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
 
     this.configs = this.connectionWindowService.getConfigs();
 
-    if (this.configs.length > 0) {
+    if (this.configs?.length > 0) {
       // get last saved config
       this.form.setValue(this.configs[this.configs.length - 1]);
+
+      if (!this.form.getRawValue().password) {
+        this.savePassword = false;
+      }
     }
   }
 
-  /* istanbul ignore next */ // TODO: will be tested when the feature is enabled
   loadConfig(config: Partial<ConnectionConfig>): void {
     this.form.setValue(config);
   }
 
-  /* istanbul ignore next */ // TODO: will be tested when the feature is enabled
   removeAllConfigs(): void {
     this.connectionWindowService.removeAllConfigs();
+    this.configs = [];
+    this.form.reset();
   }
 
   onConnect(): void {
     this.subscriptions.push(
       this.mysqlService.connect(this.form.getRawValue()).subscribe(() => {
-        this.connectionWindowService.saveNewConfig(this.form.getRawValue());
+        const newConfig = this.form.getRawValue();
+        if (!this.savePassword) {
+          newConfig.password = '';
+        }
+        this.connectionWindowService.saveNewConfig(newConfig);
         this.error = null;
       }, (error: MysqlError) => {
         this.error = error;

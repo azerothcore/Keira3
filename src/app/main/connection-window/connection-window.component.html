@@ -9,68 +9,53 @@
       <form [formGroup]="form">
         <div class="form-group">
           <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-server"></i>Host</span></div>
-          <input
-            [formControlName]="'host'"
-            class="form-control"
-            id="host"
-            placeholder="Enter your MySQL server address"
-          >
+          <input [formControlName]="'host'" class="form-control" id="host">
         </div>
         <div class="form-group">
           <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-network-wired"></i>Port</span></div>
-          <input
-            [formControlName]="'port'"
-            type="number"
-            class="form-control"
-            id="port"
-            placeholder="Enter your MySQL server port"
-          >
+          <input [formControlName]="'port'" type="number" class="form-control" id="port">
         </div>
         <div class="form-group">
           <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-user"></i>Username</span></div>
-          <input
-            [formControlName]="'user'"
-            class="form-control"
-            id="user"
-            placeholder="Enter your MySQL user name"
-          >
+          <input [formControlName]="'user'" class="form-control" id="user">
         </div>
         <div class="form-group">
           <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-key"></i>Password</span></div>
-          <input
-            [formControlName]="'password'"
-            type="password"
-            class="form-control"
-            id="password"
-            placeholder="Enter your MySQL user password"
-          >
+          <input [formControlName]="'password'" type="password" class="form-control" id="password">
         </div>
         <div class="form-group">
           <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-database"></i>Database</span></div>
-          <input
-            [formControlName]="'database'"
-            class="form-control"
-            id="database"
-            placeholder="Enter your AC world database name"
-          >
+          <input [formControlName]="'database'" class="form-control" id="database">
         </div>
-        <div class="recent-container" *ngIf="configs">
-          <div class="btn-group" dropdown [dropup]="true" [isDisabled]="true">
-            <button dropdownToggle type="button" class="btn btn-sm btn-primary dropdown-toggle">
-              <i class="fas fa-history"></i> Load recent <span class="caret"></span>
-            </button>
-            <ul *dropdownMenu class="dropdown-menu"
-                role="menu" aria-labelledby="button-basic">
-              <li role="menuitem">
-                <a class="dropdown-item" href="#" (click)="removeAllConfigs()"><i class="fa fa-trash-alt"></i> Clear all</a>
-              </li>
-              <li class="divider dropdown-divider"></li>
-              <li role="menuitem" *ngFor="let config of configs">
-                <a class="dropdown-item" href="#" (click)="loadConfig(config)">
-                  {{ config.host }}:{{ config.port }}:{{ config.user }}
-                </a>
-              </li>
-            </ul>
+        <div class="recent-container">
+          <div class="row">
+            <div class="col">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="save-password" [(ngModel)]="savePassword" [ngModelOptions]="{ standalone: true }">
+                <label class="form-check-label" for="save-password">
+                  Save password
+                </label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="btn-group" id="load-recent" dropdown [dropup]="true" [isDisabled]="isRecentDropdownDisabled">
+                <button dropdownToggle type="button" class="btn btn-sm btn-primary dropdown-toggle">
+                  <i class="fas fa-history"></i> Load recent <span class="caret"></span>
+                </button>
+                <ul *dropdownMenu class="dropdown-menu"
+                    role="menu" aria-labelledby="button-basic">
+                  <li role="menuitem">
+                    <a class="dropdown-item" href="#" (click)="removeAllConfigs()" id="clear-all"><i class="fa fa-trash-alt"></i> Clear all</a>
+                  </li>
+                  <li class="divider dropdown-divider"></li>
+                  <li role="menuitem" *ngFor="let config of configs" class="config-item">
+                    <a class="dropdown-item" href="#" (click)="loadConfig(config)">
+                      {{ config.host }}:{{ config.port }}:{{ config.user }}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
         <button class="btn btn-primary connect-button" (click)="onConnect()">Connect</button>
