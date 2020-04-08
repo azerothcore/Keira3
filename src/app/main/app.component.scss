@@ -1,0 +1,19 @@
+.newer-version-alert {
+  position: fixed;
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 46px 0 white;
+  color: white;
+  padding: 14px 30px;
+  border-radius: 10px;
+
+  span {
+    font-style: italic;
+    font-weight: bold;
+  }
+  .btn {
+    font-weight: bold;
+  }
+}
