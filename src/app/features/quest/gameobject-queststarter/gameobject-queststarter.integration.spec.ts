@@ -4,11 +4,11 @@ import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
 import { GameobjectQueststarterComponent } from './gameobject-queststarter.component';
-import { GameobjectQueststarterModule } from './gameobject-queststarter.module';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { GameobjectQueststarter } from '@keira-types/gameobject-queststarter.type';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { QuestHandlerService } from '../quest-handler.service';
+import { QuestModule } from '../quest.module';
 
 class GameobjectQueststarterPage extends MultiRowEditorPageObject<GameobjectQueststarterComponent> {}
 
@@ -33,12 +33,9 @@ describe('GameobjectQueststarter integration tests', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        GameobjectQueststarterModule,
         RouterTestingModule,
+        QuestModule,
       ],
-      providers: [
-        QuestHandlerService,
-      ]
     })
       .compileComponents();
   }));

@@ -4,11 +4,11 @@ import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
 import { QuestTemplateComponent } from './quest-template.component';
-import { QuestTemplateModule } from './quest-template.module';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { QuestTemplate } from '@keira-types/quest-template.type';
 import { QuestHandlerService } from '../quest-handler.service';
+import { QuestModule } from '../quest.module';
 
 class QuestTemplatePage extends EditorPageObject<QuestTemplateComponent> {}
 
@@ -51,12 +51,9 @@ describe('QuestTemplate integration tests', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        QuestTemplateModule,
         RouterTestingModule,
+        QuestModule,
       ],
-      providers: [
-        QuestHandlerService,
-      ]
     })
       .compileComponents();
   }));

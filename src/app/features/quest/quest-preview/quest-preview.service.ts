@@ -15,13 +15,13 @@ export class QuestPreviewService {
 
   constructor(
     private readonly questTemplate: QuestTemplateService,
-    private readonly questRequestItem: QuestRequestItemsService,
-    private readonly questHandler: QuestHandlerService,
-    private readonly questTemplateAddon: QuestTemplateAddonService,
-    private readonly gameObjectQueststarter: GameobjectQueststarterService,
-    private readonly gameObjectQuestender: GameobjectQuestenderService,
-    private readonly creatureQueststarter: CreatureQueststarterService,
-    private readonly creatureQuestender: CreatureQuestenderService,
+    // private readonly questRequestItem: QuestRequestItemsService,
+    // private readonly questHandler: QuestHandlerService,
+    // private readonly questTemplateAddon: QuestTemplateAddonService,
+    // private readonly gameObjectQueststarter: GameobjectQueststarterService,
+    // private readonly gameObjectQuestender: GameobjectQuestenderService,
+    // private readonly creatureQueststarter: CreatureQueststarterService,
+    // private readonly creatureQuestender: CreatureQuestenderService,
     private readonly previewService: PreviewService,
   ) { }
 
