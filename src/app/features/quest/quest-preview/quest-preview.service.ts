@@ -25,9 +25,11 @@ export class QuestPreviewService {
     private readonly previewService: PreviewService,
   ) { }
 
-  get title(): string { return this.questTemplate.form.controls.LogTitle.value; }
-  get level(): string | number { return this.questTemplate.form.controls.QuestLevel.value; }
-  get minLevel(): number | string { return this.questTemplate.form.controls.MinLevel.value; }
-  get side(): string { return this.previewService.getFactionFromRace(this.questTemplate.form.controls.AllowableRaces.value); }
-  get races(): string { return this.previewService.getRaceString(this.questTemplate.form.controls.AllowableRaces.value).join(','); }
+  private questTemplateForm = this.questTemplate.form.controls;
+
+  get title(): string { return this.questTemplateForm.LogTitle.value; }
+  get level(): string | number { return this.questTemplateForm.QuestLevel.value; }
+  get minLevel(): number | string { return this.questTemplateForm.MinLevel.value; }
+  get side(): string { return this.previewService.getFactionFromRace(this.questTemplateForm.AllowableRaces.value); }
+  get races(): string { return this.previewService.getRaceString(this.questTemplateForm.AllowableRaces.value)?.join(','); }
 }

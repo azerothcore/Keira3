@@ -1,10 +1,10 @@
 <div class="preview-container" [ngClass]="service.showPreview ? 'show-preview' : 'hide-preview'">
   <perfect-scrollbar class="transparent">
     <div class="preview-content quest-preview">
-      <!-- <h2 *ngIf="!!service.title">{{ service.title }}</h2>
+      <h2 *ngIf="!!service.title">{{ service.title }}</h2>
       <span *ngIf="!!service.minLevel"><br>Requires level: {{ service.minLevel }}</span>
       <span *ngIf="!!service.side"><br>Side: &nbsp;<span class="side {{ service.side.toLowerCase() }}"></span> {{ service.side }}</span>
-      <span *ngIf="!service.side && service.races"><br>Races: {{ service.races }}</span> -->
+      <span *ngIf="!service.side && service.races"><br>Races: {{ service.races }}</span>
     </div>
   </perfect-scrollbar>
 </div>
