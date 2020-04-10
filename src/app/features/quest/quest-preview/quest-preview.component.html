@@ -5,6 +5,7 @@
       <p *ngIf="!!service.minLevel">Requires level: {{ service.minLevel }}</p>
       <p *ngIf="!!service.side">Side: &nbsp;<span class="side {{ service.side.toLowerCase() }}"></span> {{ service.side }}</p>
       <p *ngIf="!service.side && service.races">Races: {{ service.races }}</p>
+      <p>{{ service.sharable }}</p>
     </div>
   </perfect-scrollbar>
 </div>

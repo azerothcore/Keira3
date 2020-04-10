@@ -1,5 +1,7 @@
 import { Flag } from '../../types/general';
 
+export const QUEST_FLAG_SHARABLE = 0x00008;
+
 export const QUEST_FLAGS: Flag[] = [
   { bit: 0,  name: 'STAY_ALIVE - If the player dies, the quest is failed' },
   { bit: 1,  name: 'PARTY_ACCEPT - All party members that can accept this quest will receive a confirmation box to accept quest' },

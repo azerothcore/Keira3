@@ -8,6 +8,7 @@ import { GameobjectQuestenderService } from '../gameobject-questender/gameobject
 import { CreatureQueststarterService } from '../creature-queststarter/creature-queststarter.service';
 import { CreatureQuestenderService } from '../creature-questender/creature-questender.service';
 import { PreviewHelperService } from '@keira-shared/services/preview-helper.service';
+import { QUEST_FLAG_SHARABLE } from '@keira-shared/constants/flags/quest-flags';
 
 @Injectable()
 export class QuestPreviewService {
@@ -32,4 +33,5 @@ export class QuestPreviewService {
   get minLevel(): string { return String(this.questTemplateForm.MinLevel.value); }
   get side(): string { return this.helperService.getFactionFromRace(this.questTemplateForm.AllowableRaces.value); }
   get races(): string { return this.helperService.getRaceString(this.questTemplateForm.AllowableRaces.value)?.join(','); }
+  get sharable(): string { return this.questTemplateForm.Flags.value & QUEST_FLAG_SHARABLE ? 'Sharable' : ' Not sharable'; }
 }

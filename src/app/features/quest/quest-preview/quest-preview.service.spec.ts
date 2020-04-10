@@ -47,5 +47,12 @@ describe('QuestPreviewService', () => {
 
     questTemplateService.form.controls.AllowableRaces.setValue(null);
     expect(service.races).toBeUndefined();
+
+    // check if quest is sharable
+    questTemplateService.form.controls.Flags.setValue(8);
+    expect(service.sharable).toBe('Sharable');
+
+    questTemplateService.form.controls.Flags.setValue(4);
+    expect(service.sharable).toBe('Not sharable');
   });
 });
