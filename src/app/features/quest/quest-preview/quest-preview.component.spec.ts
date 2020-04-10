@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { QuestPreviewComponent } from './quest-preview.component';
 import { QuestModule } from '../quest.module';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('QuestPreviewComponent', () => {
   let component: QuestPreviewComponent;
@@ -11,6 +12,7 @@ describe('QuestPreviewComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ QuestPreviewComponent ],
       imports: [
+        RouterTestingModule,
         QuestModule,
       ],
     })

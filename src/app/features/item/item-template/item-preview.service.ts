@@ -3,11 +3,12 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { ITEM_TYPE, ITEM_MOD } from '@keira-shared/constants/options/item-class';
 import { ITEM_CONSTANTS } from './item-constants';
-import { MAX_LEVEL, lvlIndepRating, gtCombatRatings, CLASSES, RACE, resistanceFields } from './item-preview';
+import { MAX_LEVEL, lvlIndepRating, gtCombatRatings, CLASSES, resistanceFields } from './item-preview';
 import { ITEM_FLAG } from '@keira-shared/constants/flags/item-flags';
 import { ITEMS_QUALITY } from '@keira-shared/constants/options/item-quality';
 import { ItemTemplate } from '@keira-shared/types/item-template.type';
 import { PVP_RANK } from '@keira-shared/constants/options/item-honorrank';
+import { PreviewHelperService } from '@keira-shared/services/preview-helper.service';
 
 @Injectable()
 export class ItemPreviewService {
@@ -17,6 +18,7 @@ export class ItemPreviewService {
   constructor(
     private readonly sqliteQueryService: SqliteQueryService,
     private readonly mysqlQueryService: MysqlQueryService,
+    private readonly helperService: PreviewHelperService,
   ) { }
 
   /**
@@ -160,39 +162,6 @@ export class ItemPreviewService {
         }
 
         classMask &= ~(1 << (i - 1));
-      }
-      i++;
-    }
-
-    return tmp;
-  }
-
-  private getRaceString(raceMask: number): string[] {
-    // clamp to available races
-    raceMask &= RACE.MASK_ALL;
-    // available to all races (we don't display 'both factions')
-    if (!raceMask || raceMask === RACE.MASK_ALL) {
-      return null;
-    }
-
-    if (raceMask === RACE.MASK_HORDE) {
-      return [ITEM_CONSTANTS.ra['-2']];
-    }
-
-    if (raceMask === RACE.MASK_ALLIANCE) {
-      return [ITEM_CONSTANTS.ra['-1']];
-    }
-
-    const tmp  = [];
-    let i = 1;
-    while (raceMask) {
-      if (raceMask & (1 << (i - 1))) {
-        const tmpRace = ITEM_CONSTANTS.ra[i];
-        /* istanbul ignore else */
-        if (!!tmpRace) {
-          tmp.push(tmpRace);
-        }
-        raceMask &= ~(1 << (i - 1));
       }
       i++;
     }
@@ -909,7 +878,7 @@ export class ItemPreviewService {
     }
 
     // required races
-    const races = this.getRaceString(itemTemplate.AllowableRace);
+    const races = this.helperService.getRaceString(itemTemplate.AllowableRace);
     if (races) {
       requiredText += `<br>Races: ${races.join(', ')}`;
     }

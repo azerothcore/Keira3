@@ -1,7 +1,10 @@
 <div class="preview-container" [ngClass]="service.showPreview ? 'show-preview' : 'hide-preview'">
   <perfect-scrollbar class="transparent">
-    <div class="preview-content">
-      The Quest Preview feature is not yet available and will be implemented soon...
+    <div class="preview-content quest-preview">
+      <h5 *ngIf="!!service.title">{{ service.title }}</h5>
+      <p *ngIf="!!service.minLevel">Requires level: {{ service.minLevel }}</p>
+      <p *ngIf="!!service.side">Side: &nbsp;<span class="side {{ service.side.toLowerCase() }}"></span> {{ service.side }}</p>
+      <p *ngIf="!service.side && service.races">Races: {{ service.races }}</p>
     </div>
   </perfect-scrollbar>
 </div>
