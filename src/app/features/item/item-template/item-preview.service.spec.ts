@@ -15,7 +15,7 @@ import { ItemTemplateService } from './item-template.service';
 import { ITEM_FLAG } from '@keira-shared/constants/flags/item-flags';
 import { ITEM_TYPE } from '@keira-shared/constants/options/item-class';
 
-fdescribe('ItemPreviewService', () => {
+describe('ItemPreviewService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       RouterTestingModule,
