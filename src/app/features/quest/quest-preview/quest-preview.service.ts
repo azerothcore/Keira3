@@ -1,4 +1,4 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { QuestTemplateService } from '../quest-template/quest-template.service';
 import { QuestRequestItemsService } from '../quest-request-items/quest-request-items.service';
 import { QuestHandlerService } from '../quest-handler.service';
@@ -7,13 +7,14 @@ import { GameobjectQueststarterService } from '../gameobject-queststarter/gameob
 import { GameobjectQuestenderService } from '../gameobject-questender/gameobject-questender.service';
 import { CreatureQueststarterService } from '../creature-queststarter/creature-queststarter.service';
 import { CreatureQuestenderService } from '../creature-questender/creature-questender.service';
-import { PreviewService } from '@keira-shared/abstract/service/editors/preview.service';
+import { PreviewHelperService } from '@keira-shared/services/preview-helper.service';
 
 @Injectable()
 export class QuestPreviewService {
   showPreview = true;
 
   constructor(
+    private readonly helperService: PreviewHelperService,
     private readonly questTemplate: QuestTemplateService,
     private readonly questRequestItem: QuestRequestItemsService,
     private readonly questHandler: QuestHandlerService,
@@ -22,7 +23,6 @@ export class QuestPreviewService {
     private readonly gameObjectQuestender: GameobjectQuestenderService,
     private readonly creatureQueststarter: CreatureQueststarterService,
     private readonly creatureQuestender: CreatureQuestenderService,
-    private readonly previewService: PreviewService,
   ) { }
 
   private questTemplateForm = this.questTemplate.form.controls;
@@ -30,6 +30,6 @@ export class QuestPreviewService {
   get title(): string { return this.questTemplateForm.LogTitle.value; }
   get level(): string | number { return this.questTemplateForm.QuestLevel.value; }
   get minLevel(): number | string { return this.questTemplateForm.MinLevel.value; }
-  get side(): string { return this.previewService.getFactionFromRace(this.questTemplateForm.AllowableRaces.value); }
-  get races(): string { return this.previewService.getRaceString(this.questTemplateForm.AllowableRaces.value)?.join(','); }
+  get side(): string { return this.helperService.getFactionFromRace(this.questTemplateForm.AllowableRaces.value); }
+  get races(): string { return this.helperService.getRaceString(this.questTemplateForm.AllowableRaces.value)?.join(','); }
 }

@@ -3,8 +3,7 @@ import { ITEM_CONSTANTS } from 'app/features/item/item-template/item-constants';
 import { RACE } from 'app/features/item/item-template/item-preview';
 
 @Injectable({ providedIn: 'root' })
-export class PreviewService {
-  private readonly ITEM_CONSTANTS = ITEM_CONSTANTS;
+export class PreviewHelperService {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
