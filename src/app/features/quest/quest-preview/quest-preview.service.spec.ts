@@ -40,8 +40,8 @@ describe('QuestPreviewService', () => {
     questTemplateService.form.controls.AllowableRaces.setValue(mockRaces);
 
     expect(service.title).toBe(mockTitle);
-    expect(service.level).toBe(questLevel);
-    expect(service.minLevel).toBe(minLevel);
+    expect(service.level).toBe(String(questLevel));
+    expect(service.minLevel).toBe(String(minLevel));
     expect(service.side).toBeNull();
     expect(service.races).toBe('Human,Orc,Night Elf,Undead,Tauren,Gnome');
 
