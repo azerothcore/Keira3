@@ -28,8 +28,8 @@ export class QuestPreviewService {
   private questTemplateForm = this.questTemplate.form.controls;
 
   get title(): string { return this.questTemplateForm.LogTitle.value; }
-  get level(): string | number { return this.questTemplateForm.QuestLevel.value; }
-  get minLevel(): number | string { return this.questTemplateForm.MinLevel.value; }
+  get level(): string { return String(this.questTemplateForm.QuestLevel.value); }
+  get minLevel(): string { return String(this.questTemplateForm.MinLevel.value); }
   get side(): string { return this.helperService.getFactionFromRace(this.questTemplateForm.AllowableRaces.value); }
   get races(): string { return this.helperService.getRaceString(this.questTemplateForm.AllowableRaces.value)?.join(','); }
 }
