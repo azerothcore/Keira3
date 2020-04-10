@@ -33,5 +33,5 @@ export class QuestPreviewService {
   get minLevel(): string { return String(this.questTemplateForm.MinLevel.value); }
   get side(): string { return this.helperService.getFactionFromRace(this.questTemplateForm.AllowableRaces.value); }
   get races(): string { return this.helperService.getRaceString(this.questTemplateForm.AllowableRaces.value)?.join(','); }
-  get sharable(): string { return this.questTemplateForm.Flags.value & QUEST_FLAG_SHARABLE ? 'Sharable' : ' Not sharable'; }
+  get sharable(): string { return this.questTemplateForm.Flags.value & QUEST_FLAG_SHARABLE ? 'Sharable' : 'Not sharable'; }
 }
