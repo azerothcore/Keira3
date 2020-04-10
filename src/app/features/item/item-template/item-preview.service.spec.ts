@@ -11,7 +11,6 @@ import { instance } from 'ts-mockito';
 import { ItemHandlerService } from '../item-handler.service';
 import { Lock } from './item-preview';
 import { ItemPreviewService } from './item-preview.service';
-import { ItemTemplateService } from './item-template.service';
 import { ITEM_FLAG } from '@keira-shared/constants/flags/item-flags';
 import { ITEM_TYPE } from '@keira-shared/constants/options/item-class';
 
