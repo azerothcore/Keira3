@@ -93,12 +93,12 @@
             <input [formControlName]="'spawntimesecs'" id="spawntimesecs" type="number" class="form-control form-control-sm">
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-            <label class="control-label" for="spawndist">spawndist</label>
+            <label class="control-label" for="wander_distance">wander_distance</label>
             <i
               class="fas fa-info-circle ml-1" [placement]="'auto'"
               [tooltip]="SPAWN_DIST_TOOLTIP"
             ></i>
-            <input [formControlName]="'spawndist'" id="spawndist" type="number" class="form-control form-control-sm">
+            <input [formControlName]="'wander_distance'" id="wander_distance" type="number" class="form-control form-control-sm">
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="currentwaypoint">currentwaypoint</label>
@@ -196,7 +196,7 @@
             <ngx-datatable-column name="position_z" prop="position_z" [minWidth]="90"></ngx-datatable-column>
             <ngx-datatable-column name="orient." prop="orientation" [minWidth]="90"></ngx-datatable-column>
             <ngx-datatable-column name="Time" prop="spawntimesecs" [minWidth]="50"></ngx-datatable-column>
-            <ngx-datatable-column name="Dist" prop="spawndist" [minWidth]="42"></ngx-datatable-column>
+            <ngx-datatable-column name="Dist" prop="wander_distance" [minWidth]="42"></ngx-datatable-column>
             <ngx-datatable-column name="CW" prop="currentwaypoint" [minWidth]="42"></ngx-datatable-column>
             <ngx-datatable-column name="Movement" prop="MovementType" [minWidth]="42"></ngx-datatable-column>
             <ngx-datatable-column name="npcFlags" prop="npcflag" [minWidth]="42"></ngx-datatable-column>

@@ -19,7 +19,7 @@ export class CreatureSpawn extends TableRow {
   position_z: number = 0;
   orientation: number = 0;
   spawntimesecs: number = 120;
-  spawndist: number = 0;
+  wander_distance: number = 0;
   currentwaypoint: number = 0;
   curhealth: number = 1;
   curmana: number = 0;
