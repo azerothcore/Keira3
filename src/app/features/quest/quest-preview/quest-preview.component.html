@@ -5,6 +5,15 @@
       <p *ngIf="!!service.minLevel">Requires level: {{ service.minLevel }}</p>
       <p *ngIf="!!service.side">Side: &nbsp;<span class="side {{ service.side.toLowerCase() }}"></span> {{ service.side }}</p>
       <p *ngIf="!service.side && service.races">Races: {{ service.races }}</p>
+      <p *ngIf="service.questGivenByItem | async as qitem">
+        <img src="assets/img/quest/quest_start.gif"> Start:
+        <keira-icon [size]="'small'" [itemId]="qitem"></keira-icon>
+        {{ service.questStarterItem | async }}
+      </p>
+
+      {{ service.test() }}
+
+
       <p>{{ service.sharable }}</p>
     </div>
   </perfect-scrollbar>
