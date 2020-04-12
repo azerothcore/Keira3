@@ -10,6 +10,7 @@ import { CreatureQuestenderService } from '../creature-questender/creature-quest
 import { PreviewHelperService } from '@keira-shared/services/preview-helper.service';
 import { QUEST_FLAG_SHARABLE } from '@keira-shared/constants/flags/quest-flags';
 import { EditorService } from '@keira-shared/abstract/service/editors/editor.service';
+import { TableRow } from '@keira-types/general';
 
 @Injectable()
 export class QuestPreviewService {
@@ -46,7 +47,7 @@ export class QuestPreviewService {
     this.initService(this.creatureQuestenderService);
   }
 
-  private initService(service: EditorService<any>) {
+  private initService<T extends TableRow>(service: EditorService<T>) {
     if (!!this.questHandlerService.selected && service.loadedEntityId !== this.questHandlerService.selected) {
       service.reload(this.questHandlerService.selected);
     }
