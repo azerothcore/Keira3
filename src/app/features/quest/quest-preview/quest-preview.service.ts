@@ -9,6 +9,7 @@ import { CreatureQueststarterService } from '../creature-queststarter/creature-q
 import { CreatureQuestenderService } from '../creature-questender/creature-questender.service';
 import { PreviewHelperService } from '@keira-shared/services/preview-helper.service';
 import { QUEST_FLAG_SHARABLE } from '@keira-shared/constants/flags/quest-flags';
+import { EditorService } from '@keira-shared/abstract/service/editors/editor.service';
 
 @Injectable()
 export class QuestPreviewService {
@@ -16,9 +17,9 @@ export class QuestPreviewService {
 
   constructor(
     private readonly helperService: PreviewHelperService,
+    private readonly questHandler: QuestHandlerService,
     private readonly questTemplate: QuestTemplateService,
     private readonly questRequestItem: QuestRequestItemsService,
-    private readonly questHandler: QuestHandlerService,
     private readonly questTemplateAddon: QuestTemplateAddonService,
     private readonly gameObjectQueststarter: GameobjectQueststarterService,
     private readonly gameObjectQuestender: GameobjectQuestenderService,
@@ -34,4 +35,21 @@ export class QuestPreviewService {
   get side(): string { return this.helperService.getFactionFromRace(this.questTemplateForm.AllowableRaces.value); }
   get races(): string { return this.helperService.getRaceString(this.questTemplateForm.AllowableRaces.value)?.join(','); }
   get sharable(): string { return this.questTemplateForm.Flags.value & QUEST_FLAG_SHARABLE ? 'Sharable' : 'Not sharable'; }
+
+  public initializeServices() {
+    this.initService(this.questTemplate);
+    this.initService(this.questRequestItem);
+    this.initService(this.questTemplateAddon);
+    this.initService(this.gameObjectQueststarter);
+    this.initService(this.gameObjectQuestender);
+    this.initService(this.creatureQueststarter);
+    this.initService(this.creatureQuestender);
+  }
+
+  private initService(service: EditorService<any>) {
+    if (!!this.questHandler.selected && service.loadedEntityId !== this.questHandler.selected) {
+      console.log(this.questHandler.selected);
+      service.reload(this.questHandler.selected);
+    }
+  }
 }

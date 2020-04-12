@@ -12,7 +12,7 @@ import { QuestModule } from '../quest.module';
 
 class GameobjectQuestenderPage extends MultiRowEditorPageObject<GameobjectQuestenderComponent> {}
 
-describe('GameobjectQuestender integration tests', () => {
+fdescribe('GameobjectQuestender integration tests', () => {
   let component: GameobjectQuestenderComponent;
   let fixture: ComponentFixture<GameobjectQuestenderComponent>;
   let queryService: MysqlQueryService;
