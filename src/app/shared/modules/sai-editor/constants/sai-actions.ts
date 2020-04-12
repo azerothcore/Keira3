@@ -386,7 +386,7 @@ SAI_ACTION_TOOLTIPS[SAI_ACTIONS.DIE] = 'Instantly kills the target';
 // SMART_ACTION_SET_IN_COMBAT_WITH_ZONE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_IN_COMBAT_WITH_ZONE] = 'Sets the creature in combat with its zone, can be used in instances and open world. Useful for creatures inside instances so all players will be set in combat until the fight ends.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_IN_COMBAT_WITH_ZONE] = 'Range';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_IN_COMBAT_WITH_ZONE] = 'Range in yards for all players to be forced into combat with the creature. Only used in the open world. Leave as 0 if used in an instance.'
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_IN_COMBAT_WITH_ZONE] = 'Range in yards for all players to be forced into combat with the creature. Only used in the open world. Leave as 0 if used in an instance.';
 
 // SMART_ACTION_CALL_FOR_HELP
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CALL_FOR_HELP] = 'Makes the creature cry/call for help, ' +
