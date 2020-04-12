@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { QuestPreviewService } from './quest-preview.service';
 
 @Component({
@@ -6,6 +6,10 @@ import { QuestPreviewService } from './quest-preview.service';
   templateUrl: './quest-preview.component.html',
   styleUrls: ['./quest-preview.component.scss']
 })
-export class QuestPreviewComponent {
-  constructor(public readonly service: QuestPreviewService) {}
+export class QuestPreviewComponent implements OnInit {
+  constructor(public readonly service: QuestPreviewService) { }
+
+  ngOnInit() {
+    this.service.initializeServices();
+  }
 }
