@@ -269,6 +269,7 @@ export class MysqlQueryService extends QueryService {
     grouped: boolean = false,   // whether the primaryKey2 is different for each row (e.g. primaryKey2='Item' in `creature_loot_template`)
                                 // or is the same for all rows (e.g. primaryKey='entryorguid', primaryKey2='source_type' in `smart_scripts`)
   ) {
+
     if (!rows || rows.length === 0) { return ''; }
 
     let deleteCondition: string = '';

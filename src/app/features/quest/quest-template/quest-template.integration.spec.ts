@@ -9,6 +9,7 @@ import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { QuestTemplate } from '@keira-types/quest-template.type';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestModule } from '../quest.module';
+import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 
 class QuestTemplatePage extends EditorPageObject<QuestTemplateComponent> {}
 
@@ -70,6 +71,12 @@ describe('QuestTemplate integration tests', () => {
     spyOn(queryService, 'selectAll').and.returnValue(of(
       creatingNew ? [] : [originalEntity]
     ));
+    // by default the other editor services should not be initialised, because the selectAll would return the wrong types for them
+    const initializeServicesSpy = spyOn(TestBed.inject(QuestPreviewService), 'initializeServices');
+    if (creatingNew) {
+      // when creatingNew, the selectAll will return an empty array, so it's fine
+      initializeServicesSpy.and.callThrough();
+    }
 
     fixture = TestBed.createComponent(QuestTemplateComponent);
     component = fixture.componentInstance;

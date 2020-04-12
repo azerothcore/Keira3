@@ -9,6 +9,8 @@ import { CreatureQueststarterService } from '../creature-queststarter/creature-q
 import { CreatureQuestenderService } from '../creature-questender/creature-questender.service';
 import { PreviewHelperService } from '@keira-shared/services/preview-helper.service';
 import { QUEST_FLAG_SHARABLE } from '@keira-shared/constants/flags/quest-flags';
+import { EditorService } from '@keira-shared/abstract/service/editors/editor.service';
+import { TableRow } from '@keira-types/general';
 
 @Injectable()
 export class QuestPreviewService {
@@ -16,17 +18,17 @@ export class QuestPreviewService {
 
   constructor(
     private readonly helperService: PreviewHelperService,
-    private readonly questTemplate: QuestTemplateService,
-    private readonly questRequestItem: QuestRequestItemsService,
-    private readonly questHandler: QuestHandlerService,
-    private readonly questTemplateAddon: QuestTemplateAddonService,
-    private readonly gameObjectQueststarter: GameobjectQueststarterService,
-    private readonly gameObjectQuestender: GameobjectQuestenderService,
-    private readonly creatureQueststarter: CreatureQueststarterService,
-    private readonly creatureQuestender: CreatureQuestenderService,
+    private readonly questHandlerService: QuestHandlerService,
+    private readonly questTemplateService: QuestTemplateService,
+    private readonly questRequestItemsService: QuestRequestItemsService,
+    private readonly questTemplateAddonService: QuestTemplateAddonService,
+    private readonly gameobjectQueststarterService: GameobjectQueststarterService,
+    private readonly gameobjectQuestenderService: GameobjectQuestenderService,
+    private readonly creatureQueststarterService: CreatureQueststarterService,
+    private readonly creatureQuestenderService: CreatureQuestenderService,
   ) { }
 
-  private questTemplateForm = this.questTemplate.form.controls;
+  private questTemplateForm = this.questTemplateService.form.controls;
 
   get title(): string { return this.questTemplateForm.LogTitle.value; }
   get level(): string { return String(this.questTemplateForm.QuestLevel.value); }
@@ -34,4 +36,20 @@ export class QuestPreviewService {
   get side(): string { return this.helperService.getFactionFromRace(this.questTemplateForm.AllowableRaces.value); }
   get races(): string { return this.helperService.getRaceString(this.questTemplateForm.AllowableRaces.value)?.join(','); }
   get sharable(): string { return this.questTemplateForm.Flags.value & QUEST_FLAG_SHARABLE ? 'Sharable' : 'Not sharable'; }
+
+  initializeServices() {
+    this.initService(this.questTemplateService);
+    this.initService(this.questRequestItemsService);
+    this.initService(this.questTemplateAddonService);
+    this.initService(this.gameobjectQueststarterService);
+    this.initService(this.gameobjectQuestenderService);
+    this.initService(this.creatureQueststarterService);
+    this.initService(this.creatureQuestenderService);
+  }
+
+  private initService<T extends TableRow>(service: EditorService<T>) {
+    if (!!this.questHandlerService.selected && service.loadedEntityId !== this.questHandlerService.selected) {
+      service.reload(this.questHandlerService.selected);
+    }
+  }
 }
