@@ -17,17 +17,17 @@ export class QuestPreviewService {
 
   constructor(
     private readonly helperService: PreviewHelperService,
-    private readonly questHandler: QuestHandlerService,
-    private readonly questTemplate: QuestTemplateService,
-    private readonly questRequestItem: QuestRequestItemsService,
-    private readonly questTemplateAddon: QuestTemplateAddonService,
-    private readonly gameObjectQueststarter: GameobjectQueststarterService,
-    private readonly gameObjectQuestender: GameobjectQuestenderService,
-    private readonly creatureQueststarter: CreatureQueststarterService,
-    private readonly creatureQuestender: CreatureQuestenderService,
+    private readonly questHandlerService: QuestHandlerService,
+    private readonly questTemplateService: QuestTemplateService,
+    private readonly questRequestItemsService: QuestRequestItemsService,
+    private readonly questTemplateAddonService: QuestTemplateAddonService,
+    private readonly gameobjectQueststarterService: GameobjectQueststarterService,
+    private readonly gameobjectQuestenderService: GameobjectQuestenderService,
+    private readonly creatureQueststarterService: CreatureQueststarterService,
+    private readonly creatureQuestenderService: CreatureQuestenderService,
   ) { }
 
-  private questTemplateForm = this.questTemplate.form.controls;
+  private questTemplateForm = this.questTemplateService.form.controls;
 
   get title(): string { return this.questTemplateForm.LogTitle.value; }
   get level(): string { return String(this.questTemplateForm.QuestLevel.value); }
@@ -37,18 +37,18 @@ export class QuestPreviewService {
   get sharable(): string { return this.questTemplateForm.Flags.value & QUEST_FLAG_SHARABLE ? 'Sharable' : 'Not sharable'; }
 
   initializeServices() {
-    this.initService(this.questTemplate);
-    this.initService(this.questRequestItem);
-    this.initService(this.questTemplateAddon);
-    this.initService(this.gameObjectQueststarter);
-    this.initService(this.gameObjectQuestender);
-    this.initService(this.creatureQueststarter);
-    this.initService(this.creatureQuestender);
+    this.initService(this.questTemplateService);
+    this.initService(this.questRequestItemsService);
+    this.initService(this.questTemplateAddonService);
+    this.initService(this.gameobjectQueststarterService);
+    this.initService(this.gameobjectQuestenderService);
+    this.initService(this.creatureQueststarterService);
+    this.initService(this.creatureQuestenderService);
   }
 
   private initService(service: EditorService<any>) {
-    if (!!this.questHandler.selected && service.loadedEntityId !== this.questHandler.selected) {
-      service.reload(this.questHandler.selected);
+    if (!!this.questHandlerService.selected && service.loadedEntityId !== this.questHandlerService.selected) {
+      service.reload(this.questHandlerService.selected);
     }
   }
 }

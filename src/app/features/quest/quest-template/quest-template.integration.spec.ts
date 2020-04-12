@@ -70,7 +70,8 @@ describe('QuestTemplate integration tests', () => {
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
       creatingNew ? [] : [originalEntity]
-    ));    // by default the other editor services should not be initialised, because the selectAll would return the wrong types for them
+    ));
+    // by default the other editor services should not be initialised, because the selectAll would return the wrong types for them
     const initializeServicesSpy = spyOn(TestBed.inject(QuestPreviewService), 'initializeServices');
     if (creatingNew) {
       // when creatingNew, the selectAll will return an empty array, so it's fine

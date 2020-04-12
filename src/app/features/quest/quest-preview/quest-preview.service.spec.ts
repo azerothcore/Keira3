@@ -4,6 +4,12 @@ import { QuestTemplateService } from '../quest-template/quest-template.service';
 import { QuestModule } from '../quest.module';
 import { QuestPreviewService } from './quest-preview.service';
 import Spy = jasmine.Spy;
+import { QuestRequestItemsService } from '../quest-request-items/quest-request-items.service';
+import { QuestTemplateAddonService } from '../quest-template-addon/quest-template-addon.service';
+import { GameobjectQueststarterService } from '../gameobject-queststarter/gameobject-queststarter.service';
+import { GameobjectQuestenderService } from '../gameobject-questender/gameobject-questender.service';
+import { CreatureQueststarterService } from '../creature-queststarter/creature-queststarter.service';
+import { CreatureQuestenderService } from '../creature-questender/creature-questender.service';
 
 describe('QuestPreviewService', () => {
 
@@ -59,13 +65,13 @@ describe('QuestPreviewService', () => {
   it('initializeService', () => {
     const { service, questTemplateService } = setup();
     const initServiceSpy: Spy = spyOn<any>(service, 'initService').and.callThrough();
-    const questTemplateLoadReloadSpy: Spy = spyOn(service['questTemplate'], 'reload');
-    const questRequestItemLoadReloadSpy: Spy = spyOn(service['questRequestItem'], 'reload');
-    const questTemplateAddonLoadReloadSpy: Spy = spyOn(service['questTemplateAddon'], 'reload');
-    const gameObjectQueststarterLoadReloadSpy: Spy = spyOn(service['gameObjectQueststarter'], 'reload');
-    const gameObjectQuestenderLoadReloadSpy: Spy = spyOn(service['gameObjectQuestender'], 'reload');
-    const creatureQueststarterLoadReloadSpy: Spy = spyOn(service['creatureQueststarter'], 'reload');
-    const creatureQuestenderLoadReloadSpy: Spy = spyOn(service['creatureQuestender'], 'reload');
+    const questTemplateLoadReloadSpy: Spy = spyOn(TestBed.inject(QuestTemplateService), 'reload');
+    const questRequestItemLoadReloadSpy: Spy = spyOn(TestBed.inject(QuestRequestItemsService), 'reload');
+    const questTemplateAddonLoadReloadSpy: Spy = spyOn(TestBed.inject(QuestTemplateAddonService), 'reload');
+    const gameObjectQueststarterLoadReloadSpy: Spy = spyOn(TestBed.inject(GameobjectQueststarterService), 'reload');
+    const gameObjectQuestenderLoadReloadSpy: Spy = spyOn(TestBed.inject(GameobjectQuestenderService), 'reload');
+    const creatureQueststarterLoadReloadSpy: Spy = spyOn(TestBed.inject(CreatureQueststarterService), 'reload');
+    const creatureQuestenderLoadReloadSpy: Spy = spyOn(TestBed.inject(CreatureQuestenderService), 'reload');
     const mockEntity = '123';
 
     questTemplateService['_loadedEntityId'] = mockEntity;
@@ -73,13 +79,13 @@ describe('QuestPreviewService', () => {
 
     service.initializeServices();
 
-    expect(initServiceSpy).toHaveBeenCalledWith(service['questTemplate']);
-    expect(initServiceSpy).toHaveBeenCalledWith(service['questRequestItem']);
-    expect(initServiceSpy).toHaveBeenCalledWith(service['questTemplateAddon']);
-    expect(initServiceSpy).toHaveBeenCalledWith(service['gameObjectQueststarter']);
-    expect(initServiceSpy).toHaveBeenCalledWith(service['gameObjectQuestender']);
-    expect(initServiceSpy).toHaveBeenCalledWith(service['creatureQueststarter']);
-    expect(initServiceSpy).toHaveBeenCalledWith(service['creatureQuestender']);
+    expect(initServiceSpy).toHaveBeenCalledWith(TestBed.inject(QuestTemplateService));
+    expect(initServiceSpy).toHaveBeenCalledWith(TestBed.inject(QuestRequestItemsService));
+    expect(initServiceSpy).toHaveBeenCalledWith(TestBed.inject(QuestTemplateAddonService));
+    expect(initServiceSpy).toHaveBeenCalledWith(TestBed.inject(GameobjectQueststarterService));
+    expect(initServiceSpy).toHaveBeenCalledWith(TestBed.inject(GameobjectQuestenderService));
+    expect(initServiceSpy).toHaveBeenCalledWith(TestBed.inject(CreatureQueststarterService));
+    expect(initServiceSpy).toHaveBeenCalledWith(TestBed.inject(CreatureQuestenderService));
     expect(initServiceSpy).toHaveBeenCalledTimes(7);
 
     // initService
