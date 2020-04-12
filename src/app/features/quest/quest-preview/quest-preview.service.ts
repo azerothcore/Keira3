@@ -9,6 +9,7 @@ import { CreatureQueststarterService } from '../creature-queststarter/creature-q
 import { CreatureQuestenderService } from '../creature-questender/creature-questender.service';
 import { PreviewHelperService } from '@keira-shared/services/preview-helper.service';
 import { QUEST_FLAG_SHARABLE } from '@keira-shared/constants/flags/quest-flags';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 
 @Injectable()
 export class QuestPreviewService {
@@ -16,6 +17,7 @@ export class QuestPreviewService {
 
   constructor(
     private readonly helperService: PreviewHelperService,
+    private readonly mysqlQueryService: MysqlQueryService,
     private readonly questTemplate: QuestTemplateService,
     private readonly questRequestItem: QuestRequestItemsService,
     private readonly questHandler: QuestHandlerService,
@@ -34,4 +36,21 @@ export class QuestPreviewService {
   get side(): string { return this.helperService.getFactionFromRace(this.questTemplateForm.AllowableRaces.value); }
   get races(): string { return this.helperService.getRaceString(this.questTemplateForm.AllowableRaces.value)?.join(','); }
   get sharable(): string { return this.questTemplateForm.Flags.value & QUEST_FLAG_SHARABLE ? 'Sharable' : 'Not sharable'; }
+
+  private async getPrevQuestList(id: number): Promise<number[]> {
+    const array: number[] = [];
+    let current = id;
+
+    while (!!current) {
+      const prev = await Number(this.mysqlQueryService.getPrevQuestById(current));
+
+      if (!!prev) {
+        array.push(prev);
+      }
+
+      current = prev;
+    }
+
+    return array;
+  }
 }
