@@ -9,10 +9,11 @@ import { GameobjectQuestender } from '@keira-types/gameobject-questender.type';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestModule } from '../quest.module';
+import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 
 class GameobjectQuestenderPage extends MultiRowEditorPageObject<GameobjectQuestenderComponent> {}
 
-fdescribe('GameobjectQuestender integration tests', () => {
+describe('GameobjectQuestender integration tests', () => {
   let component: GameobjectQuestenderComponent;
   let fixture: ComponentFixture<GameobjectQuestenderComponent>;
   let queryService: MysqlQueryService;
@@ -52,6 +53,13 @@ fdescribe('GameobjectQuestender integration tests', () => {
     spyOn(queryService, 'selectAll').and.returnValue(of(
       creatingNew ? [] : [originalRow0, originalRow1, originalRow2]
     ));
+
+    // by default the other editor services should not be initialised, because the selectAll would return the wrong types for them
+    const initializeServicesSpy = spyOn(TestBed.inject(QuestPreviewService), 'initializeServices');
+    if (creatingNew) {
+      // when creatingNew, the selectAll will return an empty array, so it's fine
+      initializeServicesSpy.and.callThrough();
+    }    // by default the other editor services should not be initialised, because the selectAll would return the wrong types for them
 
     fixture = TestBed.createComponent(GameobjectQuestenderComponent);
     component = fixture.componentInstance;

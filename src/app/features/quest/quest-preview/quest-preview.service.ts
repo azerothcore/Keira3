@@ -36,7 +36,7 @@ export class QuestPreviewService {
   get races(): string { return this.helperService.getRaceString(this.questTemplateForm.AllowableRaces.value)?.join(','); }
   get sharable(): string { return this.questTemplateForm.Flags.value & QUEST_FLAG_SHARABLE ? 'Sharable' : 'Not sharable'; }
 
-  public initializeServices() {
+  initializeServices() {
     this.initService(this.questTemplate);
     this.initService(this.questRequestItem);
     this.initService(this.questTemplateAddon);
@@ -48,7 +48,6 @@ export class QuestPreviewService {
 
   private initService(service: EditorService<any>) {
     if (!!this.questHandler.selected && service.loadedEntityId !== this.questHandler.selected) {
-      console.log(this.questHandler.selected);
       service.reload(this.questHandler.selected);
     }
   }

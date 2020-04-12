@@ -270,13 +270,6 @@ export class MysqlQueryService extends QueryService {
                                 // or is the same for all rows (e.g. primaryKey='entryorguid', primaryKey2='source_type' in `smart_scripts`)
   ) {
 
-    console.log('TEST');
-    console.log(tableName);
-    console.log(JSON.stringify(rows));
-    console.log(primaryKey);
-    console.log(primaryKey2);
-    console.log(grouped);
-
     if (!rows || rows.length === 0) { return ''; }
 
     let deleteCondition: string = '';
