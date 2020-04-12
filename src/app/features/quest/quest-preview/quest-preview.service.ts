@@ -12,6 +12,7 @@ import { QUEST_FLAG_SHARABLE } from '@keira-shared/constants/flags/quest-flags';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { EditorService } from '@keira-shared/abstract/service/editors/editor.service';
 import { TableRow } from '@keira-types/general';
+import { QuestSerieItem } from './quest-preview.model';
 
 @Injectable()
 export class QuestPreviewService {
@@ -55,18 +56,62 @@ export class QuestPreviewService {
     }
   }
 
+  async getQuestSerie(): Promise<QuestSerieItem[]> {
+    const array: QuestSerieItem[] = [];
+    const id = Number(this.questHandlerService.selected);
+    const prevList = await this.getPrevQuestList(id);
+    const nextList = await this.getNextQuestList(id);
+
+    for (const questId of prevList) {
+      array.push({
+        id: questId,
+        title: await this.mysqlQueryService.getQuestTitleById(questId),
+        isSelected: false,
+      });
+    }
+
+    array.push({
+      id,
+      title: this.title,
+      isSelected: true,
+    });
+
+    for (const questId of nextList) {
+      array.push({
+        id: questId,
+        title: await this.mysqlQueryService.getQuestTitleById(questId),
+        isSelected: false,
+      });
+    }
+
+    return array;
+  }
+
   private async getPrevQuestList(id: number): Promise<number[]> {
     const array: number[] = [];
     let current = id;
 
     while (!!current) {
       const prev = await Number(this.mysqlQueryService.getPrevQuestById(current));
-
       if (!!prev) {
         array.push(prev);
       }
-
       current = prev;
+    }
+
+    return array.reverse();
+  }
+
+  private async getNextQuestList(id: number): Promise<number[]> {
+    const array: number[] = [];
+    let current = id;
+
+    while (!!current) {
+      const next = await Number(this.mysqlQueryService.getNextQuestById(current));
+      if (!!next) {
+        array.push(next);
+      }
+      current = next;
     }
 
     return array;
