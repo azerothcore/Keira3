@@ -39,6 +39,22 @@ export class QuestPreviewService {
   get races(): string { return this.helperService.getRaceString(this.questTemplateForm.AllowableRaces.value)?.join(','); }
   get sharable(): string { return this.questTemplateForm.Flags.value & QUEST_FLAG_SHARABLE ? 'Sharable' : 'Not sharable'; }
 
+  initializeServices() {
+    this.initService(this.questTemplateService);
+    this.initService(this.questRequestItemsService);
+    this.initService(this.questTemplateAddonService);
+    this.initService(this.gameobjectQueststarterService);
+    this.initService(this.gameobjectQuestenderService);
+    this.initService(this.creatureQueststarterService);
+    this.initService(this.creatureQuestenderService);
+  }
+
+  private initService<T extends TableRow>(service: EditorService<T>) {
+    if (!!this.questHandlerService.selected && service.loadedEntityId !== this.questHandlerService.selected) {
+      service.reload(this.questHandlerService.selected);
+    }
+  }
+
   private async getPrevQuestList(id: number): Promise<number[]> {
     const array: number[] = [];
     let current = id;
@@ -54,21 +70,5 @@ export class QuestPreviewService {
     }
 
     return array;
-  }
-
-  initializeServices() {
-    this.initService(this.questTemplateService);
-    this.initService(this.questRequestItemsService);
-    this.initService(this.questTemplateAddonService);
-    this.initService(this.gameobjectQueststarterService);
-    this.initService(this.gameobjectQuestenderService);
-    this.initService(this.creatureQueststarterService);
-    this.initService(this.creatureQuestenderService);
-  }
-
-  private initService<T extends TableRow>(service: EditorService<T>) {
-    if (!!this.questHandlerService.selected && service.loadedEntityId !== this.questHandlerService.selected) {
-      service.reload(this.questHandlerService.selected);
-    }
   }
 }
