@@ -10,6 +10,7 @@ import { GameobjectQueststarterService } from '../gameobject-queststarter/gameob
 import { GameobjectQuestenderService } from '../gameobject-questender/gameobject-questender.service';
 import { CreatureQueststarterService } from '../creature-queststarter/creature-queststarter.service';
 import { CreatureQuestenderService } from '../creature-questender/creature-questender.service';
+import { QuestHandlerService } from '../quest-handler.service';
 
 describe('QuestPreviewService', () => {
 
@@ -75,7 +76,7 @@ describe('QuestPreviewService', () => {
     const mockEntity = '123';
 
     questTemplateService['_loadedEntityId'] = mockEntity;
-    service['questHandler']['_selected'] = mockEntity;
+    TestBed.inject(QuestHandlerService)['_selected'] = mockEntity;
 
     service.initializeServices();
 
