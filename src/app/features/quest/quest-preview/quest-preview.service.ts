@@ -10,7 +10,6 @@ import { CreatureQuestenderService } from '../creature-questender/creature-quest
 import { PreviewHelperService } from '@keira-shared/services/preview-helper.service';
 import { QUEST_FLAG_SHARABLE } from '@keira-shared/constants/flags/quest-flags';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { QuestTemplate } from '@keira-shared/types/quest-template.type';
 import { CreatureQueststarter } from '@keira-shared/types/creature-queststarter.type';
 import { EditorService } from '@keira-shared/abstract/service/editors/editor.service';
@@ -37,23 +36,23 @@ export class QuestPreviewService {
   ) { }
 
   // get QuestTemplate values
-  get title(): string { return this.questTemplateForm.LogTitle; }
-  get level(): string { return String(this.questTemplateForm.QuestLevel); }
-  get minLevel(): string { return String(this.questTemplateForm.MinLevel); }
-  get side(): string { return this.helperService.getFactionFromRace(this.questTemplateForm.AllowableRaces); }
-  get races(): string { return this.helperService.getRaceString(this.questTemplateForm.AllowableRaces)?.join(','); }
-  get sharable(): string { return this.questTemplateForm.Flags & QUEST_FLAG_SHARABLE ? 'Sharable' : 'Not sharable'; }
+  get title(): string { return this.questTemplate.LogTitle; }
+  get level(): string { return String(this.questTemplate.QuestLevel); }
+  get minLevel(): string { return String(this.questTemplate.MinLevel); }
+  get side(): string { return this.helperService.getFactionFromRace(this.questTemplate.AllowableRaces); }
+  get races(): string { return this.helperService.getRaceString(this.questTemplate.AllowableRaces)?.join(','); }
+  get sharable(): string { return this.questTemplate.Flags & QUEST_FLAG_SHARABLE ? 'Sharable' : 'Not sharable'; }
 
   // get form value
-  get questTemplateForm(): QuestTemplate { return this.questTemplateService.form.getRawValue(); }
-  get creatureQueststarterForm(): CreatureQueststarter[] { return this.creatureQueststarterService.newRows; }
-  get creatureQuestenderForm(): CreatureQuestender[] { return this.creatureQuestenderService.newRows; }
-  get gameobjectQueststarterForm(): GameobjectQueststarter[] { return this.gameobjectQueststarterService.newRows; }
-  get gameobjectQuestenderForm(): GameobjectQuestender[] { return this.gameobjectQuestenderService.newRows; }
+  get questTemplate(): QuestTemplate { return this.questTemplateService.form.getRawValue(); }
+  get creatureQueststarter(): CreatureQueststarter[] { return this.creatureQueststarterService.newRows; }
+  get creatureQuestender(): CreatureQuestender[] { return this.creatureQuestenderService.newRows; }
+  get gameobjectQueststarter(): GameobjectQueststarter[] { return this.gameobjectQueststarterService.newRows; }
+  get gameobjectQuestender(): GameobjectQuestender[] { return this.gameobjectQuestenderService.newRows; }
 
   // Item Quest Starter
-  get questGivenByItem(): Promise<string> { return this.mysqlQueryService.getItemByStartQuest(this.questTemplateForm.ID); }
-  get questStarterItem(): Promise<string> { return this.mysqlQueryService.getItemNameByStartQuest(this.questTemplateForm.ID); }
+  get questGivenByItem(): Promise<string> { return this.mysqlQueryService.getItemByStartQuest(this.questTemplate.ID); }
+  get questStarterItem(): Promise<string> { return this.mysqlQueryService.getItemNameByStartQuest(this.questTemplate.ID); }
 
   initializeServices() {
     this.initService(this.questTemplateService);

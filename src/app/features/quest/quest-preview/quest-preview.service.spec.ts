@@ -11,6 +11,8 @@ import { GameobjectQuestenderService } from '../gameobject-questender/gameobject
 import { CreatureQueststarterService } from '../creature-queststarter/creature-queststarter.service';
 import { CreatureQuestenderService } from '../creature-questender/creature-questender.service';
 import { QuestHandlerService } from '../quest-handler.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { of } from 'rxjs';
 
 describe('QuestPreviewService', () => {
 
@@ -28,9 +30,10 @@ describe('QuestPreviewService', () => {
 
   const setup = () => {
     const service = TestBed.inject(QuestPreviewService);
+    const mysqlQueryService = TestBed.inject(MysqlQueryService);
     const questTemplateService = TestBed.inject(QuestTemplateService);
 
-    return { service, questTemplateService };
+    return { service, mysqlQueryService, questTemplateService };
   };
 
   it('handle questTemplate values', () => {
@@ -61,6 +64,25 @@ describe('QuestPreviewService', () => {
 
     questTemplateService.form.controls.Flags.setValue(4);
     expect(service.sharable).toBe('Not sharable');
+  });
+
+  it('mysqlQuery', async() => {
+    const { service, mysqlQueryService, questTemplateService } = setup();
+    const mockID = 123;
+    const mockItem = '1234';
+    const mockItemName = 'Helias Item';
+
+    spyOn(mysqlQueryService, 'getItemByStartQuest').and.callFake(i => of(mockItem).toPromise());
+    spyOn(mysqlQueryService, 'getItemNameByStartQuest').and.callFake(i => of(mockItemName).toPromise());
+    questTemplateService.form.controls.ID.setValue(mockID);
+
+    expect(await service.questGivenByItem).toBe(mockItem);
+    expect(await service.questStarterItem).toBe(mockItemName);
+
+    expect(mysqlQueryService.getItemByStartQuest).toHaveBeenCalledTimes(1);
+    expect(mysqlQueryService.getItemByStartQuest).toHaveBeenCalledWith(mockID);
+    expect(mysqlQueryService.getItemNameByStartQuest).toHaveBeenCalledTimes(1);
+    expect(mysqlQueryService.getItemNameByStartQuest).toHaveBeenCalledWith(mockID);
   });
 
   it('initializeService', () => {
