@@ -828,6 +828,8 @@ describe('MysqlQueryService', () => {
       expect(service.queryValue).toHaveBeenCalledWith(
         `SELECT name AS v FROM creature_template WHERE entry = ${id}`
       );
+      expect(Object.keys(service['cache']).length).toBe(1);
+      expect(Object.keys(service['cache'])[0]).toBe('getCreatureNameById');
     });
 
     it('getCreatureNameByGuid', async () => {
@@ -837,6 +839,8 @@ describe('MysqlQueryService', () => {
       expect(service.queryValue).toHaveBeenCalledWith(
         `SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id WHERE c.guid = ${guid}`
       );
+      expect(Object.keys(service['cache']).length).toBe(1);
+      expect(Object.keys(service['cache'])[0]).toBe('getCreatureNameByGuid');
     });
 
     it('getGameObjectNameById', async () => {
@@ -846,6 +850,8 @@ describe('MysqlQueryService', () => {
       expect(service.queryValue).toHaveBeenCalledWith(
         `SELECT name AS v FROM gameobject_template WHERE entry = ${id}`
       );
+      expect(Object.keys(service['cache']).length).toBe(1);
+      expect(Object.keys(service['cache'])[0]).toBe('getGameObjectNameById');
     });
 
     it('getGameObjectNameByGuid', async () => {
@@ -855,6 +861,8 @@ describe('MysqlQueryService', () => {
       expect(service.queryValue).toHaveBeenCalledWith(
         `SELECT name AS v FROM gameobject_template AS gt INNER JOIN gameobject AS g ON gt.entry = g.id WHERE g.guid = ${guid}`
       );
+      expect(Object.keys(service['cache']).length).toBe(1);
+      expect(Object.keys(service['cache'])[0]).toBe('getGameObjectNameByGuid');
     });
 
     it('getQuestTitleById', async () => {
@@ -864,6 +872,8 @@ describe('MysqlQueryService', () => {
       expect(service.queryValue).toHaveBeenCalledWith(
         `SELECT LogTitle AS v FROM quest_template WHERE ID = ${id}`
       );
+      expect(Object.keys(service['cache']).length).toBe(1);
+      expect(Object.keys(service['cache'])[0]).toBe('getQuestTitleById');
     });
 
     it('getItemNameById', async () => {
@@ -873,6 +883,8 @@ describe('MysqlQueryService', () => {
       expect(service.queryValue).toHaveBeenCalledWith(
         `SELECT name AS v FROM item_template WHERE entry = ${id}`
       );
+      expect(Object.keys(service['cache']).length).toBe(1);
+      expect(Object.keys(service['cache'])[0]).toBe('getItemNameById');
     });
 
     it('getDisplayIdByItemId (case non-null)', () => {
@@ -882,6 +894,8 @@ describe('MysqlQueryService', () => {
       expect(service.queryValue).toHaveBeenCalledWith(
         `SELECT displayid AS v FROM item_template WHERE entry = ${id}`
       );
+      expect(Object.keys(service['cache']).length).toBe(1);
+      expect(Object.keys(service['cache'])[0]).toBe('getDisplayIdByItemId');
     });
 
     it('getDisplayIdByItemId (case null)', () => {
@@ -898,6 +912,13 @@ describe('MysqlQueryService', () => {
       );
     });
 
+    it('getQuestTitleByCriteria (case 2)', () => {
+      expect(service.getQuestTitleByCriteria(1, null, null, null)).toEqual(resultToPromise);
+      expect(service.queryValueToPromise).toHaveBeenCalledWith(
+        'SELECT `LogTitle` AS "v" FROM `quest_template` WHERE (RequiredNpcOrGo1 = 1)'
+      );
+    });
+
     it('getPrevQuestById', async () => {
       expect(await service.getPrevQuestById(id)).toEqual(result);
       expect(await service.getPrevQuestById(id)).toEqual(result); // check cache
@@ -905,6 +926,8 @@ describe('MysqlQueryService', () => {
       expect(service.queryValue).toHaveBeenCalledWith(
         `SELECT PrevQuestID AS v FROM quest_template_addon WHERE id = ${id}`,
       );
+      expect(Object.keys(service['cache']).length).toBe(1);
+      expect(Object.keys(service['cache'])[0]).toBe('getPrevQuestById');
     });
 
     it('getNextQuestById', async () => {
@@ -914,13 +937,19 @@ describe('MysqlQueryService', () => {
       expect(service.queryValue).toHaveBeenCalledWith(
         `SELECT NextQuestID AS v FROM quest_template_addon WHERE id = ${id}`,
       );
+      expect(Object.keys(service['cache']).length).toBe(1);
+      expect(Object.keys(service['cache'])[0]).toBe('getNextQuest2');
     });
 
-    it('getQuestTitleByCriteria (case 2)', () => {
-      expect(service.getQuestTitleByCriteria(1, null, null, null)).toEqual(resultToPromise);
-      expect(service.queryValueToPromise).toHaveBeenCalledWith(
-        'SELECT `LogTitle` AS "v" FROM `quest_template` WHERE (RequiredNpcOrGo1 = 1)'
+    it('getNextQuestById (usingPrev)', async () => {
+      expect(await service.getNextQuestById(id, true)).toEqual(result);
+      expect(await service.getNextQuestById(id, true)).toEqual(result); // check cache
+      expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
+      expect(service.queryValue).toHaveBeenCalledWith(
+        `SELECT id AS v FROM quest_template_addon WHERE PrevQuestID = ${id}`,
       );
+      expect(Object.keys(service['cache']).length).toBe(1);
+      expect(Object.keys(service['cache'])[0]).toBe('getNextQuest1');
     });
 
     it('getItemByStartQuest', async () => {
@@ -930,6 +959,8 @@ describe('MysqlQueryService', () => {
       expect(service.queryValue).toHaveBeenCalledWith(
         `SELECT entry AS v FROM item_template WHERE startquest = ${id}`,
       );
+      expect(Object.keys(service['cache']).length).toBe(1);
+      expect(Object.keys(service['cache'])[0]).toBe('itemByStartQuest');
     });
 
     it('getItemNameByStartQuest', async () => {
@@ -939,6 +970,8 @@ describe('MysqlQueryService', () => {
       expect(service.queryValue).toHaveBeenCalledWith(
         `SELECT name AS v FROM item_template WHERE startquest = ${id}`,
       );
+      expect(Object.keys(service['cache']).length).toBe(1);
+      expect(Object.keys(service['cache'])[0]).toBe('getItemNameByStartQuest');
     });
 
   });

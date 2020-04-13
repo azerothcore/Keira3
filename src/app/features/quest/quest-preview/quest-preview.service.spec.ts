@@ -14,7 +14,7 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { of } from 'rxjs';
 
-describe('QuestPreviewService', () => {
+fdescribe('QuestPreviewService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -32,8 +32,9 @@ describe('QuestPreviewService', () => {
     const service = TestBed.inject(QuestPreviewService);
     const mysqlQueryService = TestBed.inject(MysqlQueryService);
     const questTemplateService = TestBed.inject(QuestTemplateService);
+    const questTemplateAddonService = TestBed.inject(QuestTemplateAddonService);
 
-    return { service, mysqlQueryService, questTemplateService };
+    return { service, mysqlQueryService, questTemplateService, questTemplateAddonService };
   };
 
   it('handle questTemplate values', () => {
@@ -126,5 +127,9 @@ describe('QuestPreviewService', () => {
     expect(gameObjectQuestenderLoadReloadSpy).toHaveBeenCalledWith(mockEntity);
     expect(creatureQueststarterLoadReloadSpy).toHaveBeenCalledWith(mockEntity);
     expect(creatureQuestenderLoadReloadSpy).toHaveBeenCalledWith(mockEntity);
+  });
+
+  describe('prevQuestList', () => {
+
   });
 });
