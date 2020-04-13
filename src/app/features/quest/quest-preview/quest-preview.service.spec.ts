@@ -13,6 +13,7 @@ import { CreatureQuestenderService } from '../creature-questender/creature-quest
 import { QuestHandlerService } from '../quest-handler.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { of } from 'rxjs';
+import { DifficultyLevel } from './quest-preview.model';
 
 describe('QuestPreviewService', () => {
 
@@ -87,50 +88,52 @@ describe('QuestPreviewService', () => {
 
   it('difficultyLevels', () => {
     const { service, questTemplateService } = setup();
+    let difficulty: DifficultyLevel;
 
     // no QuestLevel
     questTemplateService.form.controls.QuestLevel.setValue(0);
-    expect(service.difficultyLevels()).toBeFalse();
+    difficulty = service.difficultyLevels();
+    expect(difficulty).toBeNull();
 
     // red colors undefined
     questTemplateService.form.controls.QuestLevel.setValue(50);
-    expect(service.difficultyLevels()).toBeTrue();
+    difficulty = service.difficultyLevels();
 
-    expect(service.difficulty['red']).toBeUndefined();
-    expect(service.difficulty['orange']).toBe(46);
-    expect(service.difficulty['yellow']).toBe(48);
-    expect(service.difficulty['green']).toBe(53);
-    expect(service.difficulty['grey']).toBe(61);
+    expect(difficulty.red).toBeUndefined();
+    expect(difficulty.orange).toBe(46);
+    expect(difficulty.yellow).toBe(48);
+    expect(difficulty.green).toBe(53);
+    expect(difficulty.grey).toBe(61);
 
     // red, orange and yellow
     questTemplateService.form.controls.QuestLevel.setValue(50);
     questTemplateService.form.controls.MinLevel.setValue(45);
 
-    expect(service.difficultyLevels()).toBeTrue();
+    difficulty = service.difficultyLevels();
 
-    expect(service.difficulty['red']).toBe(45);
-    expect(service.difficulty['orange']).toBe(46);
-    expect(service.difficulty['yellow']).toBe(48);
+    expect(difficulty.red).toBe(45);
+    expect(difficulty.orange).toBe(46);
+    expect(difficulty.yellow).toBe(48);
 
     // no red
     questTemplateService.form.controls.QuestLevel.setValue(50);
     questTemplateService.form.controls.MinLevel.setValue(47);
 
-    expect(service.difficultyLevels()).toBeTrue();
+    difficulty = service.difficultyLevels();
 
-    expect(service.difficulty['red']).toBeUndefined();
-    expect(service.difficulty['orange']).toBe(47);
-    expect(service.difficulty['yellow']).toBe(48);
+    expect(difficulty.red).toBeUndefined();
+    expect(difficulty.orange).toBe(47);
+    expect(difficulty.yellow).toBe(48);
 
     // no red and orange
     questTemplateService.form.controls.QuestLevel.setValue(50);
     questTemplateService.form.controls.MinLevel.setValue(49);
 
-    expect(service.difficultyLevels()).toBeTrue();
+    difficulty = service.difficultyLevels();
 
-    expect(service.difficulty['red']).toBeUndefined();
-    expect(service.difficulty['orange']).toBeUndefined();
-    expect(service.difficulty['yellow']).toBe(49);
+    expect(difficulty.red).toBeUndefined();
+    expect(difficulty.orange).toBeUndefined();
+    expect(difficulty.yellow).toBe(49);
   });
 
   it('initializeService', () => {

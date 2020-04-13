@@ -55,42 +55,38 @@ export class QuestPreviewService {
   get questGivenByItem(): Promise<string> { return this.mysqlQueryService.getItemByStartQuest(this.questTemplate.ID); }
   get questStarterItem(): Promise<string> { return this.mysqlQueryService.getItemNameByStartQuest(this.questTemplate.ID); }
 
-  public difficulty: DifficultyLevel = {};
-
-  difficultyLevels(): boolean {
-    const levels: DifficultyLevel = {};
+  difficultyLevels(): DifficultyLevel {
 
     if (this.questTemplate.QuestLevel > 0) {
+      const levels: DifficultyLevel = {};
 
       // red
       if (this.questTemplate.MinLevel && this.questTemplate.MinLevel < this.questTemplate.QuestLevel - 4) {
-        levels['red'] = this.questTemplate.MinLevel;
+        levels.red = this.questTemplate.MinLevel;
       }
 
       // orange
       if (!this.questTemplate.MinLevel || this.questTemplate.MinLevel < this.questTemplate.QuestLevel - 2) {
-        levels['orange'] = Object.keys(levels).length === 0 && this.questTemplate.MinLevel > this.questTemplate.QuestLevel - 4
+        levels.orange = Object.keys(levels).length === 0 && this.questTemplate.MinLevel > this.questTemplate.QuestLevel - 4
           ? this.questTemplate.MinLevel
           : this.questTemplate.QuestLevel - 4;
       }
 
       // yellow
-      levels['yellow'] = Object.keys(levels).length === 0 && this.questTemplate.MinLevel > this.questTemplate.QuestLevel - 2
+      levels.yellow = Object.keys(levels).length === 0 && this.questTemplate.MinLevel > this.questTemplate.QuestLevel - 2
         ? this.questTemplate.MinLevel
         : this.questTemplate.QuestLevel - 2;
 
       // green
-      levels['green'] = this.questTemplate.QuestLevel + 3;
+      levels.green = this.questTemplate.QuestLevel + 3;
 
       // grey (is about +/-1 level off)
-      levels['grey'] = this.questTemplate.QuestLevel + 3 + Math.ceil(12 * this.questTemplate.QuestLevel / 80);
+      levels.grey = this.questTemplate.QuestLevel + 3 + Math.ceil(12 * this.questTemplate.QuestLevel / 80);
 
-      this.difficulty = levels;
-      return true;
+      return levels;
     }
 
-    this.difficulty = levels;
-    return false;
+    return null;
   }
 
   initializeServices() {
