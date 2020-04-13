@@ -13,6 +13,13 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { EditorService } from '@keira-shared/abstract/service/editors/editor.service';
 import { TableRow } from '@keira-types/general';
 import { QuestSerie } from './quest-preview.model';
+import { QuestTemplate } from '@keira-shared/types/quest-template.type';
+import { CreatureQueststarter } from '@keira-shared/types/creature-queststarter.type';
+import { GameobjectQueststarter } from '@keira-shared/types/gameobject-queststarter.type';
+import { CreatureQuestender } from '@keira-shared/types/creature-questender.type';
+import { GameobjectQuestender } from '@keira-shared/types/gameobject-questender.type';
+import { QuestTemplateAddon } from '@keira-types/quest-template-addon.type';
+
 
 @Injectable()
 export class QuestPreviewService {
@@ -24,7 +31,7 @@ export class QuestPreviewService {
 
   constructor(
     private readonly helperService: PreviewHelperService,
-    private readonly mysqlQueryService: MysqlQueryService,
+    public readonly mysqlQueryService: MysqlQueryService,
     private readonly questHandlerService: QuestHandlerService,
     private readonly questTemplateService: QuestTemplateService,
     private readonly questRequestItemsService: QuestRequestItemsService,
@@ -35,16 +42,28 @@ export class QuestPreviewService {
     private readonly creatureQuestenderService: CreatureQuestenderService,
   ) { }
 
-  private get questTemplateCtrls() { return this.questTemplateService.form.controls; }
-  private get questTemplateAddonCtrls() { return this.questTemplateAddonService.form.controls; }
+  // get QuestTemplate values
+  get id(): number { return this.questTemplate.ID; }
+  get title(): string { return this.questTemplate.LogTitle; }
+  get level(): string { return String(this.questTemplate.QuestLevel); }
+  get minLevel(): string { return String(this.questTemplate.MinLevel); }
+  get side(): string { return this.helperService.getFactionFromRace(this.questTemplate.AllowableRaces); }
+  get races(): string { return this.helperService.getRaceString(this.questTemplate.AllowableRaces)?.join(','); }
+  get sharable(): string { return this.questTemplate.Flags & QUEST_FLAG_SHARABLE ? 'Sharable' : 'Not sharable'; }
 
-  get id(): number { return this.questTemplateCtrls.ID.value; }
-  get title(): string { return this.questTemplateCtrls.LogTitle.value; }
-  get level(): string { return String(this.questTemplateCtrls.QuestLevel.value); }
-  get minLevel(): string { return String(this.questTemplateCtrls.MinLevel.value); }
-  get side(): string { return this.helperService.getFactionFromRace(this.questTemplateCtrls.AllowableRaces.value); }
-  get races(): string { return this.helperService.getRaceString(this.questTemplateCtrls.AllowableRaces.value)?.join(','); }
-  get sharable(): string { return this.questTemplateCtrls.Flags.value & QUEST_FLAG_SHARABLE ? 'Sharable' : 'Not sharable'; }
+  // get form value
+  get questTemplate(): QuestTemplate { return this.questTemplateService.form.getRawValue(); }
+  get questTemplateAddon(): QuestTemplateAddon { return this.questTemplateAddonService.form.getRawValue(); }
+  get creatureQueststarterList(): CreatureQueststarter[] { return this.creatureQueststarterService.newRows; }
+  get creatureQuestenderList(): CreatureQuestender[] { return this.creatureQuestenderService.newRows; }
+  get gameobjectQueststarterList(): GameobjectQueststarter[] { return this.gameobjectQueststarterService.newRows; }
+  get gameobjectQuestenderList(): GameobjectQuestender[] { return this.gameobjectQuestenderService.newRows; }
+
+  // Item Quest Starter
+  get questGivenByItem(): Promise<string> { return this.mysqlQueryService.getItemByStartQuest(this.questTemplate.ID); }
+  get questStarterItem(): Promise<string> { return this.mysqlQueryService.getItemNameByStartQuest(this.questTemplate.ID); }
+
+  // Quest Serie
   get prevQuestList(): Promise<QuestSerie> { return this.getPrevQuestListCached(); }
   get nextQuestList(): Promise<QuestSerie> { return this.getNextQuestListCached(); }
   // get enabledBy() // TODO
@@ -81,7 +100,7 @@ export class QuestPreviewService {
   }
 
   private getPrevQuestListCached(): Promise<QuestSerie> {
-    const id = this.questTemplateAddonCtrls.PrevQuestID.value;
+    const id = this.questTemplateAddon.PrevQuestID;
 
     if (!this.prevSerieCache[id]) {
       this.prevSerieCache[id] = this.getPrevQuestList(id);
@@ -125,7 +144,7 @@ export class QuestPreviewService {
   }
 
   private getNextQuestListCached(): Promise<QuestSerie> {
-    const next = this.questTemplateAddonCtrls.NextQuestID.value;
+    const next = this.questTemplateAddon.NextQuestID;
 
     if (!!next) {
       // if a NextQuestID is specified, we calculate the chain using that

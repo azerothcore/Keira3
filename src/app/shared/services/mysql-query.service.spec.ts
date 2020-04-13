@@ -922,5 +922,24 @@ describe('MysqlQueryService', () => {
         'SELECT `LogTitle` AS "v" FROM `quest_template` WHERE (RequiredNpcOrGo1 = 1)'
       );
     });
+
+    it('getItemByStartQuest', async () => {
+      expect(await service.getItemByStartQuest(id)).toEqual(result);
+      expect(await service.getItemByStartQuest(id)).toEqual(result); // check cache
+      expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
+      expect(service.queryValue).toHaveBeenCalledWith(
+        `SELECT entry AS v FROM item_template WHERE startquest = ${id}`,
+      );
+    });
+
+    it('getItemNameByStartQuest', async () => {
+      expect(await service.getItemNameByStartQuest(id)).toEqual(result);
+      expect(await service.getItemNameByStartQuest(id)).toEqual(result); // check cache
+      expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
+      expect(service.queryValue).toHaveBeenCalledWith(
+        `SELECT name AS v FROM item_template WHERE startquest = ${id}`,
+      );
+    });
+
   });
 });
