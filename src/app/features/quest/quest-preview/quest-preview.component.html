@@ -35,6 +35,14 @@
         </p>
       </div>
       <p>{{ service.sharable }}</p>
+      <p *ngIf="service.difficultyLevels()">
+        Difficulty:
+        <span class="r0" *ngIf="!!service.difficulty['red']">    {{ service.difficulty['red'] }}    </span>
+        <span class="r1" *ngIf="!!service.difficulty['orange']"> {{ service.difficulty['orange'] }} </span>
+        <span class="r2" *ngIf="!!service.difficulty['yellow']"> {{ service.difficulty['yellow'] }} </span>
+        <span class="r3" *ngIf="!!service.difficulty['green']">  {{ service.difficulty['green'] }}  </span>
+        <span class="r4" *ngIf="!!service.difficulty['grey']">   {{ service.difficulty['grey'] }}   </span>
+      </p>
     </div>
   </perfect-scrollbar>
 </div>

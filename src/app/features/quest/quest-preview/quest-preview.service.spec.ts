@@ -85,6 +85,54 @@ describe('QuestPreviewService', () => {
     expect(mysqlQueryService.getItemNameByStartQuest).toHaveBeenCalledWith(mockID);
   });
 
+  it('difficultyLevels', () => {
+    const { service, questTemplateService } = setup();
+
+    // no QuestLevel
+    questTemplateService.form.controls.QuestLevel.setValue(0);
+    expect(service.difficultyLevels()).toBeFalse();
+
+    // red colors undefined
+    questTemplateService.form.controls.QuestLevel.setValue(50);
+    expect(service.difficultyLevels()).toBeTrue();
+
+    expect(service.difficulty['red']).toBeUndefined();
+    expect(service.difficulty['orange']).toBe(46);
+    expect(service.difficulty['yellow']).toBe(48);
+    expect(service.difficulty['green']).toBe(53);
+    expect(service.difficulty['grey']).toBe(61);
+
+    // red, orange and yellow
+    questTemplateService.form.controls.QuestLevel.setValue(50);
+    questTemplateService.form.controls.MinLevel.setValue(45);
+
+    expect(service.difficultyLevels()).toBeTrue();
+
+    expect(service.difficulty['red']).toBe(45);
+    expect(service.difficulty['orange']).toBe(46);
+    expect(service.difficulty['yellow']).toBe(48);
+
+    // no red
+    questTemplateService.form.controls.QuestLevel.setValue(50);
+    questTemplateService.form.controls.MinLevel.setValue(47);
+
+    expect(service.difficultyLevels()).toBeTrue();
+
+    expect(service.difficulty['red']).toBeUndefined();
+    expect(service.difficulty['orange']).toBe(47);
+    expect(service.difficulty['yellow']).toBe(48);
+
+    // no red and orange
+    questTemplateService.form.controls.QuestLevel.setValue(50);
+    questTemplateService.form.controls.MinLevel.setValue(49);
+
+    expect(service.difficultyLevels()).toBeTrue();
+
+    expect(service.difficulty['red']).toBeUndefined();
+    expect(service.difficulty['orange']).toBeUndefined();
+    expect(service.difficulty['yellow']).toBe(49);
+  });
+
   it('initializeService', () => {
     const { service, questTemplateService } = setup();
     const initServiceSpy: Spy = spyOn<any>(service, 'initService').and.callThrough();
