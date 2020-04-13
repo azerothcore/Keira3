@@ -34,6 +34,9 @@ fdescribe('QuestPreviewService', () => {
     const questTemplateService = TestBed.inject(QuestTemplateService);
     const questTemplateAddonService = TestBed.inject(QuestTemplateAddonService);
 
+    spyOn(mysqlQueryService, 'getPrevQuestById').and.callFake((id: number) => of(String(id > 0 ? (id - 1) : 0)).toPromise());
+    spyOn(mysqlQueryService, 'getNextQuestById').and.callFake((id: number) => of(String(id < 6 ? (id + 1) : 0)).toPromise());
+
     return { service, mysqlQueryService, questTemplateService, questTemplateAddonService };
   };
 
@@ -131,5 +134,9 @@ fdescribe('QuestPreviewService', () => {
 
   describe('prevQuestList', () => {
 
+  });
+
+  describe('nextQuestList', () => {
+    // TODO
   });
 });
