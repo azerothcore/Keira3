@@ -1,8 +1,26 @@
 .preview-content {
   color: white;
-  padding: 20px;
+  padding: 0 20px;
 
   p {
     margin-bottom: 0.1rem;
+  }
+
+  .title {
+    margin-top: 10px;
+    margin-bottom: 6px;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  ol {
+    padding: 0 0 0 17px;
+  }
+
+  .colored {
+    color: #ffd100;
+  }
+  .greyed {
+    color: #dbdbdb;
   }
 }

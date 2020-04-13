@@ -33,9 +33,58 @@ describe('QuestPreviewService', () => {
     const service = TestBed.inject(QuestPreviewService);
     const mysqlQueryService = TestBed.inject(MysqlQueryService);
     const questTemplateService = TestBed.inject(QuestTemplateService);
+    const questTemplateAddonService = TestBed.inject(QuestTemplateAddonService);
+    const questRequestItemsService = TestBed.inject(QuestRequestItemsService);
+    const gameobjectQueststarterService = TestBed.inject(GameobjectQueststarterService);
+    const gameobjectQuestenderService = TestBed.inject(GameobjectQuestenderService);
+    const creatureQueststarterService = TestBed.inject(CreatureQueststarterService);
+    const creatureQuestenderService = TestBed.inject(CreatureQuestenderService);
+    const MAX_NEXT_QUEST_ID = 7;
 
-    return { service, mysqlQueryService, questTemplateService };
+    spyOn(mysqlQueryService, 'getQuestTitleById').and.callFake(i => of('Title' + i).toPromise());
+    spyOn(mysqlQueryService, 'getPrevQuestById').and.callFake(
+      (id: number) => of(String(id > 0 ? (id - 1) : 0)).toPromise()
+    );
+    spyOn(mysqlQueryService, 'getNextQuestById').and.callFake(
+      (id: number) => of(String(id < MAX_NEXT_QUEST_ID ? (id + 1) : 0)).toPromise()
+    );
+
+    return {
+      service,
+      mysqlQueryService,
+      questTemplateService,
+      questTemplateAddonService,
+      questRequestItemsService,
+      gameobjectQueststarterService,
+      gameobjectQuestenderService,
+      creatureQueststarterService,
+      creatureQuestenderService,
+      MAX_NEXT_QUEST_ID,
+    };
   };
+
+  it('getters', () => {
+    const {
+      service,
+      creatureQueststarterService,
+      creatureQuestenderService,
+      gameobjectQueststarterService,
+      gameobjectQuestenderService,
+    } = setup();
+    creatureQueststarterService.addNewRow();
+    creatureQuestenderService.addNewRow();
+    gameobjectQueststarterService.addNewRow();
+    gameobjectQuestenderService.addNewRow();
+    creatureQueststarterService.newRows[0].id = 111;
+    creatureQuestenderService.newRows[0].id = 222;
+    gameobjectQueststarterService.newRows[0].id = 333;
+    gameobjectQuestenderService.newRows[0].id = 444;
+
+    expect(service.creatureQueststarterList).toEqual(creatureQueststarterService.newRows);
+    expect(service.creatureQuestenderList).toEqual(creatureQuestenderService.newRows);
+    expect(service.gameobjectQueststarterList).toEqual(gameobjectQueststarterService.newRows);
+    expect(service.gameobjectQuestenderList).toEqual(gameobjectQuestenderService.newRows);
+  });
 
   it('handle questTemplate values', () => {
     const { service, questTemplateService } = setup();
@@ -177,5 +226,83 @@ describe('QuestPreviewService', () => {
     expect(gameObjectQuestenderLoadReloadSpy).toHaveBeenCalledWith(mockEntity);
     expect(creatureQueststarterLoadReloadSpy).toHaveBeenCalledWith(mockEntity);
     expect(creatureQuestenderLoadReloadSpy).toHaveBeenCalledWith(mockEntity);
+  });
+
+  describe('prevQuestList', () => {
+    it('should correctly work when PrevQuestID is set', async () => {
+      const { service, mysqlQueryService, questTemplateService, questTemplateAddonService } = setup();
+      questTemplateService.form.controls.ID.setValue(4);
+      questTemplateAddonService.form.controls.PrevQuestID.setValue(3);
+
+      expect(await service.prevQuestList).toEqual([
+        { id: 1, title: 'Title1' },
+        { id: 2, title: 'Title2' },
+        { id: 3, title: 'Title3' },
+      ]);
+      expect(await service.prevQuestList).toEqual([ // check cache
+        { id: 1, title: 'Title1' },
+        { id: 2, title: 'Title2' },
+        { id: 3, title: 'Title3' },
+      ]);
+      expect(mysqlQueryService.getPrevQuestById).toHaveBeenCalledTimes(3);
+      expect(mysqlQueryService.getPrevQuestById).toHaveBeenCalledWith(3);
+      expect(mysqlQueryService.getPrevQuestById).toHaveBeenCalledWith(2);
+      expect(mysqlQueryService.getPrevQuestById).toHaveBeenCalledWith(1);
+    });
+
+    it('should correctly work when PrevQuestID is NOT set', async () => {
+      const { service, mysqlQueryService, questTemplateService, questTemplateAddonService } = setup();
+      questTemplateService.form.controls.ID.setValue(4);
+      questTemplateAddonService.form.controls.PrevQuestID.setValue(0);
+
+      expect(await service.prevQuestList).toEqual([]);
+      expect(await service.prevQuestList).toEqual([]); // check cache
+      expect(mysqlQueryService.getPrevQuestById).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe('nextQuestList', () => {
+    it('should correctly work when NextQuestID is set', async () => {
+      const { service, mysqlQueryService, questTemplateService, questTemplateAddonService } = setup();
+      questTemplateService.form.controls.ID.setValue(4);
+      questTemplateAddonService.form.controls.NextQuestID.setValue(5);
+
+      expect(await service.nextQuestList).toEqual([
+        { id: 5, title: 'Title5' },
+        { id: 6, title: 'Title6' },
+        { id: 7, title: 'Title7' },
+      ]);
+      expect(await service.nextQuestList).toEqual([ // check cache
+        { id: 5, title: 'Title5' },
+        { id: 6, title: 'Title6' },
+        { id: 7, title: 'Title7' },
+      ]);
+      expect(mysqlQueryService.getNextQuestById).toHaveBeenCalledTimes(3);
+      expect(mysqlQueryService.getNextQuestById).toHaveBeenCalledWith(5);
+      expect(mysqlQueryService.getNextQuestById).toHaveBeenCalledWith(6);
+      expect(mysqlQueryService.getNextQuestById).toHaveBeenCalledWith(7);
+    });
+
+    it('should correctly work when NextQuestID is NOT set', async () => {
+      const { service, mysqlQueryService, questTemplateService, questTemplateAddonService } = setup();
+      questTemplateService.form.controls.ID.setValue(4);
+      questTemplateAddonService.form.controls.NextQuestID.setValue(0);
+
+      expect(await service.nextQuestList).toEqual([
+        { id: 5, title: 'Title5' },
+        { id: 6, title: 'Title6' },
+        { id: 7, title: 'Title7' },
+      ]);
+      expect(await service.nextQuestList).toEqual([ // check cache
+        { id: 5, title: 'Title5' },
+        { id: 6, title: 'Title6' },
+        { id: 7, title: 'Title7' },
+      ]);
+      expect(mysqlQueryService.getNextQuestById).toHaveBeenCalledTimes(4);
+      expect(mysqlQueryService.getNextQuestById).toHaveBeenCalledWith(4, true);
+      expect(mysqlQueryService.getNextQuestById).toHaveBeenCalledWith(5, true);
+      expect(mysqlQueryService.getNextQuestById).toHaveBeenCalledWith(6, true);
+      expect(mysqlQueryService.getNextQuestById).toHaveBeenCalledWith(7, true);
+    });
   });
 });

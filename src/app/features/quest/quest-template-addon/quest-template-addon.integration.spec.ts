@@ -152,7 +152,7 @@ describe('QuestTemplateAddon integration tests', () => {
       page.clickExecuteQuery();
 
       page.expectDiffQueryToContain(expectedQuery);
-      expect(querySpy).toHaveBeenCalledTimes(1);
+      expect(querySpy).toHaveBeenCalledTimes(2); // 2 because the preview also calls it
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
 
