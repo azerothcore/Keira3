@@ -33,6 +33,11 @@ describe('QuestPreviewService', () => {
     const mysqlQueryService = TestBed.inject(MysqlQueryService);
     const questTemplateService = TestBed.inject(QuestTemplateService);
     const questTemplateAddonService = TestBed.inject(QuestTemplateAddonService);
+    const questRequestItemsService = TestBed.inject(QuestRequestItemsService);
+    const gameobjectQueststarterService = TestBed.inject(GameobjectQueststarterService);
+    const gameobjectQuestenderService = TestBed.inject(GameobjectQuestenderService);
+    const creatureQueststarterService = TestBed.inject(CreatureQueststarterService);
+    const creatureQuestenderService = TestBed.inject(CreatureQuestenderService);
     const MAX_NEXT_QUEST_ID = 7;
 
     spyOn(mysqlQueryService, 'getQuestTitleById').and.callFake(i => of('Title' + i).toPromise());
@@ -43,8 +48,42 @@ describe('QuestPreviewService', () => {
       (id: number) => of(String(id < MAX_NEXT_QUEST_ID ? (id + 1) : 0)).toPromise()
     );
 
-    return { service, mysqlQueryService, questTemplateService, questTemplateAddonService, MAX_NEXT_QUEST_ID };
+    return {
+      service,
+      mysqlQueryService,
+      questTemplateService,
+      questTemplateAddonService,
+      questRequestItemsService,
+      gameobjectQueststarterService,
+      gameobjectQuestenderService,
+      creatureQueststarterService,
+      creatureQuestenderService,
+      MAX_NEXT_QUEST_ID,
+    };
   };
+
+  it('getters', () => {
+    const {
+      service,
+      creatureQueststarterService,
+      creatureQuestenderService,
+      gameobjectQueststarterService,
+      gameobjectQuestenderService,
+    } = setup();
+    creatureQueststarterService.addNewRow();
+    creatureQuestenderService.addNewRow();
+    gameobjectQueststarterService.addNewRow();
+    gameobjectQuestenderService.addNewRow();
+    creatureQueststarterService.newRows[0].id = 111;
+    creatureQuestenderService.newRows[0].id = 222;
+    gameobjectQueststarterService.newRows[0].id = 333;
+    gameobjectQuestenderService.newRows[0].id = 444;
+
+    expect(service.creatureQueststarterList).toEqual(creatureQueststarterService.newRows);
+    expect(service.creatureQuestenderList).toEqual(creatureQuestenderService.newRows);
+    expect(service.gameobjectQueststarterList).toEqual(gameobjectQueststarterService.newRows);
+    expect(service.gameobjectQuestenderList).toEqual(gameobjectQuestenderService.newRows);
+  });
 
   it('handle questTemplate values', () => {
     const { service, questTemplateService } = setup();
