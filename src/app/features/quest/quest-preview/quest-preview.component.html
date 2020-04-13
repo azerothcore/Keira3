@@ -1,11 +1,26 @@
 <div class="preview-container" [ngClass]="service.showPreview ? 'show-preview' : 'hide-preview'">
   <perfect-scrollbar class="transparent">
     <div class="preview-content quest-preview">
+
       <h5 *ngIf="!!service.title">{{ service.title }}</h5>
       <p *ngIf="!!service.minLevel">Requires level: {{ service.minLevel }}</p>
       <p *ngIf="!!service.side">Side: &nbsp;<span class="side {{ service.side.toLowerCase() }}"></span> {{ service.side }}</p>
       <p *ngIf="!service.side && service.races">Races: {{ service.races }}</p>
       <p>{{ service.sharable }}</p>
+
+      <p class="title">Series</p>
+      <ol>
+        <li *ngFor="let quest of service.prevQuestList | async">
+          <span class="colored">{{ quest.title }}</span> <span class="greyed"> [{{ quest.id }}]</span>
+        </li>
+        <li>
+          <strong>{{ service.title }}</strong> <span class="greyed"> [{{ service.id }}]</span>
+        </li>
+        <li *ngFor="let quest of service.nextQuestList | async">
+          <span class="colored">{{ quest.title }}</span> <span class="greyed"> [{{ quest.id }}]</span>
+        </li>
+      </ol>
+
     </div>
   </perfect-scrollbar>
 </div>

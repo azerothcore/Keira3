@@ -12,11 +12,15 @@ import { QUEST_FLAG_SHARABLE } from '@keira-shared/constants/flags/quest-flags';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { EditorService } from '@keira-shared/abstract/service/editors/editor.service';
 import { TableRow } from '@keira-types/general';
-import { QuestSerieItem } from './quest-preview.model';
+import { QuestSerie } from './quest-preview.model';
 
 @Injectable()
 export class QuestPreviewService {
   showPreview = true;
+
+  private prevSerieCache: Promise<QuestSerie>[] = [];
+  private nextSerieCache: Promise<QuestSerie>[] = [];
+  private nextSerieUsingPrevCache: Promise<QuestSerie>[] = [];
 
   constructor(
     private readonly helperService: PreviewHelperService,
@@ -31,14 +35,19 @@ export class QuestPreviewService {
     private readonly creatureQuestenderService: CreatureQuestenderService,
   ) { }
 
-  private questTemplateForm = this.questTemplateService.form.controls;
+  private get questTemplateCtrls() { return this.questTemplateService.form.controls; }
+  private get questTemplateAddonCtrls() { return this.questTemplateAddonService.form.controls; }
 
-  get title(): string { return this.questTemplateForm.LogTitle.value; }
-  get level(): string { return String(this.questTemplateForm.QuestLevel.value); }
-  get minLevel(): string { return String(this.questTemplateForm.MinLevel.value); }
-  get side(): string { return this.helperService.getFactionFromRace(this.questTemplateForm.AllowableRaces.value); }
-  get races(): string { return this.helperService.getRaceString(this.questTemplateForm.AllowableRaces.value)?.join(','); }
-  get sharable(): string { return this.questTemplateForm.Flags.value & QUEST_FLAG_SHARABLE ? 'Sharable' : 'Not sharable'; }
+  get id(): number { return this.questTemplateCtrls.ID.value; }
+  get title(): string { return this.questTemplateCtrls.LogTitle.value; }
+  get level(): string { return String(this.questTemplateCtrls.QuestLevel.value); }
+  get minLevel(): string { return String(this.questTemplateCtrls.MinLevel.value); }
+  get side(): string { return this.helperService.getFactionFromRace(this.questTemplateCtrls.AllowableRaces.value); }
+  get races(): string { return this.helperService.getRaceString(this.questTemplateCtrls.AllowableRaces.value)?.join(','); }
+  get sharable(): string { return this.questTemplateCtrls.Flags.value & QUEST_FLAG_SHARABLE ? 'Sharable' : 'Not sharable'; }
+  get prevQuestList(): Promise<QuestSerie> { return this.getPrevQuestListCached(); }
+  get nextQuestList(): Promise<QuestSerie> { return this.getNextQuestListCached(); }
+  // get enabledBy() // TODO
 
   initializeServices() {
     this.initService(this.questTemplateService);
@@ -56,64 +65,84 @@ export class QuestPreviewService {
     }
   }
 
-  async getQuestSerie(): Promise<QuestSerieItem[]> {
-    const array: QuestSerieItem[] = [];
-    const id = Number(this.questHandlerService.selected);
-    const prevList = await this.getPrevQuestList(id);
-    const nextList = await this.getNextQuestList(id);
+  private async getPrevQuestList(prev: number): Promise<QuestSerie> {
+    const array: QuestSerie = [];
 
-    for (const questId of prevList) {
+    while (!!prev && prev > 0) { // when < 0 it's "enabled by"
       array.push({
-        id: questId,
-        title: await this.mysqlQueryService.getQuestTitleById(questId),
-        isSelected: false,
+        id: prev,
+        title: await this.mysqlQueryService.getQuestTitleById(prev),
       });
-    }
 
-    array.push({
-      id,
-      title: this.title,
-      isSelected: true,
-    });
-
-    for (const questId of nextList) {
-      array.push({
-        id: questId,
-        title: await this.mysqlQueryService.getQuestTitleById(questId),
-        isSelected: false,
-      });
-    }
-
-    return array;
-  }
-
-  private async getPrevQuestList(id: number): Promise<number[]> {
-    const array: number[] = [];
-    let current = id;
-
-    while (!!current) {
-      const prev = await Number(this.mysqlQueryService.getPrevQuestById(current));
-      if (!!prev) {
-        array.push(prev);
-      }
-      current = prev;
+      prev = Number(await this.mysqlQueryService.getPrevQuestById(prev));
     }
 
     return array.reverse();
   }
 
-  private async getNextQuestList(id: number): Promise<number[]> {
-    const array: number[] = [];
-    let current = id;
+  private getPrevQuestListCached(): Promise<QuestSerie> {
+    const id = this.questTemplateAddonCtrls.PrevQuestID.value;
+
+    if (!this.prevSerieCache[id]) {
+      this.prevSerieCache[id] = this.getPrevQuestList(id);
+    }
+
+    return this.prevSerieCache[id];
+  }
+
+  private async getNextQuestListUsingNext(next: number): Promise<QuestSerie> {
+    const array: QuestSerie = [];
+
+    while (!!next) {
+      array.push({
+        id: next,
+        title: await this.mysqlQueryService.getQuestTitleById(next),
+      });
+
+      next = Number(await this.mysqlQueryService.getNextQuestById(next));
+    }
+
+    return array;
+  }
+
+  private async getNextQuestListUsingPrev(current: number): Promise<QuestSerie> {
+    const array: QuestSerie = [];
 
     while (!!current) {
-      const next = await Number(this.mysqlQueryService.getNextQuestById(current));
+      const next = Number(await this.mysqlQueryService.getNextQuestById(current, true));
+
       if (!!next) {
-        array.push(next);
+        array.push({
+          id: next,
+          title: await this.mysqlQueryService.getQuestTitleById(next),
+        });
       }
+
       current = next;
     }
 
     return array;
+  }
+
+  private getNextQuestListCached(): Promise<QuestSerie> {
+    const next = this.questTemplateAddonCtrls.NextQuestID.value;
+
+    if (!!next) {
+      // if a NextQuestID is specified, we calculate the chain using that
+
+      if (!this.nextSerieCache[next]) {
+        this.nextSerieCache[next] = this.getNextQuestListUsingNext(next);
+      }
+
+      return this.nextSerieCache[next];
+    }
+
+    // otherwise, we calculate the chain using the PrevQuestID of the next
+    const id = this.id;
+    if (!this.nextSerieUsingPrevCache[id]) {
+      this.nextSerieUsingPrevCache[id] = this.getNextQuestListUsingPrev(id);
+    }
+
+    return this.nextSerieUsingPrevCache[id];
   }
 }
