@@ -13,6 +13,8 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { QuestTemplate } from '@keira-shared/types/quest-template.type';
 import { CreatureQueststarter } from '@keira-shared/types/creature-queststarter.type';
+import { EditorService } from '@keira-shared/abstract/service/editors/editor.service';
+import { TableRow } from '@keira-types/general';
 
 @Injectable()
 export class QuestPreviewService {
@@ -20,21 +22,17 @@ export class QuestPreviewService {
 
   constructor(
     private readonly helperService: PreviewHelperService,
-    private readonly questTemplate: QuestTemplateService,
-    private readonly questRequestItem: QuestRequestItemsService,
-    private readonly questHandler: QuestHandlerService,
-    private readonly questTemplateAddon: QuestTemplateAddonService,
-    private readonly gameObjectQueststarter: GameobjectQueststarterService,
-    private readonly gameObjectQuestender: GameobjectQuestenderService,
-    private readonly creatureQueststarter: CreatureQueststarterService,
-    private readonly creatureQuestender: CreatureQuestenderService,
+    private readonly questHandlerService: QuestHandlerService,
+    private readonly questTemplateService: QuestTemplateService,
+    private readonly questRequestItemsService: QuestRequestItemsService,
+    private readonly questTemplateAddonService: QuestTemplateAddonService,
+    private readonly gameobjectQueststarterService: GameobjectQueststarterService,
+    private readonly gameobjectQuestenderService: GameobjectQuestenderService,
+    private readonly creatureQueststarterService: CreatureQueststarterService,
+    private readonly creatureQuestenderService: CreatureQuestenderService,
     private readonly mysqlQueryService: MysqlQueryService,
     private readonly sqliteQueryService: SqliteQueryService,
   ) { }
-
-  // get form value
-  get questTemplateForm(): QuestTemplate { return this.questTemplate.form.getRawValue(); }
-  get creatureQueststarterForm(): CreatureQueststarter[] { return this.creatureQueststarter.newRows; }
 
   // get QuestTemplate values
   get title(): string { return this.questTemplateForm.LogTitle; }
@@ -43,6 +41,12 @@ export class QuestPreviewService {
   get side(): string { return this.helperService.getFactionFromRace(this.questTemplateForm.AllowableRaces); }
   get races(): string { return this.helperService.getRaceString(this.questTemplateForm.AllowableRaces)?.join(','); }
   get sharable(): string { return this.questTemplateForm.Flags & QUEST_FLAG_SHARABLE ? 'Sharable' : 'Not sharable'; }
+
+  // get form value
+  get questTemplateForm(): QuestTemplate { return this.questTemplateService.form.getRawValue(); }
+  get creatureQueststarterForm(): CreatureQueststarter[] { return this.creatureQueststarterService.newRows; }
+
+  // get from database
   get questGivenByItem(): Promise<string> { return this.mysqlQueryService.getItemByStartQuest(this.questTemplateForm.ID); }
 
   // get CreatureQueststarter values
@@ -52,5 +56,19 @@ export class QuestPreviewService {
   get questStarterItem(): Promise<string> { return this.mysqlQueryService.getItemNameByStartQuest(this.questTemplateForm.ID); }
   get questStarterCreature(): Promise<string> { return this.mysqlQueryService.getItemNameByStartQuest(this.questTemplateForm.ID); }
 
+  initializeServices() {
+    this.initService(this.questTemplateService);
+    this.initService(this.questRequestItemsService);
+    this.initService(this.questTemplateAddonService);
+    this.initService(this.gameobjectQueststarterService);
+    this.initService(this.gameobjectQuestenderService);
+    this.initService(this.creatureQueststarterService);
+    this.initService(this.creatureQuestenderService);
+  }
 
+  private initService<T extends TableRow>(service: EditorService<T>) {
+    if (!!this.questHandlerService.selected && service.loadedEntityId !== this.questHandlerService.selected) {
+      service.reload(this.questHandlerService.selected);
+    }
+  }
 }
