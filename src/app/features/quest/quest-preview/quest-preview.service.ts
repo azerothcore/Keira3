@@ -17,6 +17,7 @@ import { TableRow } from '@keira-types/general';
 import { GameobjectQueststarter } from '@keira-shared/types/gameobject-queststarter.type';
 import { CreatureQuestender } from '@keira-shared/types/creature-questender.type';
 import { GameobjectQuestender } from '@keira-shared/types/gameobject-questender.type';
+import { DifficultyLevel } from './quest-preview.model';
 
 @Injectable()
 export class QuestPreviewService {
@@ -53,6 +54,40 @@ export class QuestPreviewService {
   // Item Quest Starter
   get questGivenByItem(): Promise<string> { return this.mysqlQueryService.getItemByStartQuest(this.questTemplate.ID); }
   get questStarterItem(): Promise<string> { return this.mysqlQueryService.getItemNameByStartQuest(this.questTemplate.ID); }
+
+  difficultyLevels(): DifficultyLevel {
+
+    if (this.questTemplate.QuestLevel > 0) {
+      const levels: DifficultyLevel = {};
+
+      // red
+      if (this.questTemplate.MinLevel && this.questTemplate.MinLevel < this.questTemplate.QuestLevel - 4) {
+        levels.red = this.questTemplate.MinLevel;
+      }
+
+      // orange
+      if (!this.questTemplate.MinLevel || this.questTemplate.MinLevel < this.questTemplate.QuestLevel - 2) {
+        levels.orange = Object.keys(levels).length === 0 && this.questTemplate.MinLevel > this.questTemplate.QuestLevel - 4
+          ? this.questTemplate.MinLevel
+          : this.questTemplate.QuestLevel - 4;
+      }
+
+      // yellow
+      levels.yellow = Object.keys(levels).length === 0 && this.questTemplate.MinLevel > this.questTemplate.QuestLevel - 2
+        ? this.questTemplate.MinLevel
+        : this.questTemplate.QuestLevel - 2;
+
+      // green
+      levels.green = this.questTemplate.QuestLevel + 3;
+
+      // grey (is about +/-1 level off)
+      levels.grey = this.questTemplate.QuestLevel + 3 + Math.ceil(12 * this.questTemplate.QuestLevel / 80);
+
+      return levels;
+    }
+
+    return null;
+  }
 
   initializeServices() {
     this.initService(this.questTemplateService);
