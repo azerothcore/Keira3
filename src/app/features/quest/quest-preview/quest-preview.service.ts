@@ -15,6 +15,9 @@ import { QuestTemplate } from '@keira-shared/types/quest-template.type';
 import { CreatureQueststarter } from '@keira-shared/types/creature-queststarter.type';
 import { EditorService } from '@keira-shared/abstract/service/editors/editor.service';
 import { TableRow } from '@keira-types/general';
+import { GameobjectQueststarter } from '@keira-shared/types/gameobject-queststarter.type';
+import { CreatureQuestender } from '@keira-shared/types/creature-questender.type';
+import { GameobjectQuestender } from '@keira-shared/types/gameobject-questender.type';
 
 @Injectable()
 export class QuestPreviewService {
@@ -30,8 +33,7 @@ export class QuestPreviewService {
     private readonly gameobjectQuestenderService: GameobjectQuestenderService,
     private readonly creatureQueststarterService: CreatureQueststarterService,
     private readonly creatureQuestenderService: CreatureQuestenderService,
-    private readonly mysqlQueryService: MysqlQueryService,
-    private readonly sqliteQueryService: SqliteQueryService,
+    public readonly mysqlQueryService: MysqlQueryService,
   ) { }
 
   // get QuestTemplate values
@@ -45,16 +47,13 @@ export class QuestPreviewService {
   // get form value
   get questTemplateForm(): QuestTemplate { return this.questTemplateService.form.getRawValue(); }
   get creatureQueststarterForm(): CreatureQueststarter[] { return this.creatureQueststarterService.newRows; }
+  get creatureQuestenderForm(): CreatureQuestender[] { return this.creatureQuestenderService.newRows; }
+  get gameobjectQueststarterForm(): GameobjectQueststarter[] { return this.gameobjectQueststarterService.newRows; }
+  get gameobjectQuestenderForm(): GameobjectQuestender[] { return this.gameobjectQuestenderService.newRows; }
 
-  // get from database
+  // Item Quest Starter
   get questGivenByItem(): Promise<string> { return this.mysqlQueryService.getItemByStartQuest(this.questTemplateForm.ID); }
-
-  // get CreatureQueststarter values
-  test() { console.log('TEST'); console.log(this.creatureQueststarterForm); }
-
-  // Quest Starter
   get questStarterItem(): Promise<string> { return this.mysqlQueryService.getItemNameByStartQuest(this.questTemplateForm.ID); }
-  get questStarterCreature(): Promise<string> { return this.mysqlQueryService.getItemNameByStartQuest(this.questTemplateForm.ID); }
 
   initializeServices() {
     this.initService(this.questTemplateService);
