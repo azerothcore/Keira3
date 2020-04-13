@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+
 import { QuestTemplateService } from '../quest-template/quest-template.service';
 import { QuestRequestItemsService } from '../quest-request-items/quest-request-items.service';
 import { QuestHandlerService } from '../quest-handler.service';
@@ -19,6 +20,7 @@ import { GameobjectQueststarter } from '@keira-shared/types/gameobject-queststar
 import { CreatureQuestender } from '@keira-shared/types/creature-questender.type';
 import { GameobjectQuestender } from '@keira-shared/types/gameobject-questender.type';
 import { QuestTemplateAddon } from '@keira-types/quest-template-addon.type';
+import { DifficultyLevel } from './quest-preview.model';
 
 
 @Injectable()
@@ -67,6 +69,40 @@ export class QuestPreviewService {
   get prevQuestList(): Promise<QuestSerie> { return this.getPrevQuestListCached(); }
   get nextQuestList(): Promise<QuestSerie> { return this.getNextQuestListCached(); }
   // get enabledBy() // TODO
+
+  difficultyLevels(): DifficultyLevel {
+
+    if (this.questTemplate.QuestLevel > 0) {
+      const levels: DifficultyLevel = {};
+
+      // red
+      if (this.questTemplate.MinLevel && this.questTemplate.MinLevel < this.questTemplate.QuestLevel - 4) {
+        levels.red = this.questTemplate.MinLevel;
+      }
+
+      // orange
+      if (!this.questTemplate.MinLevel || this.questTemplate.MinLevel < this.questTemplate.QuestLevel - 2) {
+        levels.orange = Object.keys(levels).length === 0 && this.questTemplate.MinLevel > this.questTemplate.QuestLevel - 4
+          ? this.questTemplate.MinLevel
+          : this.questTemplate.QuestLevel - 4;
+      }
+
+      // yellow
+      levels.yellow = Object.keys(levels).length === 0 && this.questTemplate.MinLevel > this.questTemplate.QuestLevel - 2
+        ? this.questTemplate.MinLevel
+        : this.questTemplate.QuestLevel - 2;
+
+      // green
+      levels.green = this.questTemplate.QuestLevel + 3;
+
+      // grey (is about +/-1 level off)
+      levels.grey = this.questTemplate.QuestLevel + 3 + Math.ceil(12 * this.questTemplate.QuestLevel / 80);
+
+      return levels;
+    }
+
+    return null;
+  }
 
   initializeServices() {
     this.initService(this.questTemplateService);
