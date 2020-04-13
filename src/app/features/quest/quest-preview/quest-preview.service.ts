@@ -21,6 +21,7 @@ import { CreatureQuestender } from '@keira-shared/types/creature-questender.type
 import { GameobjectQuestender } from '@keira-shared/types/gameobject-questender.type';
 import { QuestTemplateAddon } from '@keira-types/quest-template-addon.type';
 import { DifficultyLevel } from './quest-preview.model';
+import { RACES_TEXT } from '@keira-shared/constants/preview';
 
 
 @Injectable()
@@ -44,13 +45,15 @@ export class QuestPreviewService {
     private readonly creatureQuestenderService: CreatureQuestenderService,
   ) { }
 
+  readonly RACES_TEXT = RACES_TEXT;
+
   // get QuestTemplate values
   get id(): number { return this.questTemplate.ID; }
   get title(): string { return this.questTemplate.LogTitle; }
   get level(): string { return String(this.questTemplate.QuestLevel); }
   get minLevel(): string { return String(this.questTemplate.MinLevel); }
   get side(): string { return this.helperService.getFactionFromRace(this.questTemplate.AllowableRaces); }
-  get races(): string { return this.helperService.getRaceString(this.questTemplate.AllowableRaces)?.join(','); }
+  get races(): number[] { return this.helperService.getRaceString(this.questTemplate.AllowableRaces); }
   get sharable(): string { return this.questTemplate.Flags & QUEST_FLAG_SHARABLE ? 'Sharable' : 'Not sharable'; }
 
   // get form value

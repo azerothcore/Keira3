@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { PreviewHelperService } from './preview-helper.service';
 import { RACE } from 'app/features/item/item-template/item-preview';
-import { ITEM_CONSTANTS } from 'app/features/item/item-template/item-constants';
+import { RACES_TEXT } from '@keira-shared/constants/preview';
 
 describe('PreviewHelperService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
@@ -13,8 +13,8 @@ describe('PreviewHelperService', () => {
 
   it('getFactionFromRace', () => {
     const { service } = setup();
-    expect(service.getFactionFromRace(RACE.MASK_HORDE)).toBe(ITEM_CONSTANTS.ra['-2']);
-    expect(service.getFactionFromRace(RACE.MASK_ALLIANCE)).toBe(ITEM_CONSTANTS.ra['-1']);
+    expect(service.getFactionFromRace(RACE.MASK_HORDE)).toBe(RACES_TEXT['-2']);
+    expect(service.getFactionFromRace(RACE.MASK_ALLIANCE)).toBe(RACES_TEXT['-1']);
     expect(service.getFactionFromRace(0)).toBeNull();
   });
 
@@ -23,7 +23,7 @@ describe('PreviewHelperService', () => {
 
     const mockRaces = 123;
     const resRaces = [ 'Human', 'Orc', 'Night Elf', 'Undead', 'Tauren', 'Gnome' ];
-    expect(service.getRaceString(mockRaces)).toEqual(resRaces);
+    expect(service.getRaceString(mockRaces).map(e => RACES_TEXT[e])).toEqual(resRaces);
 
     const mockFaction = 'test';
     spyOn(service, 'getFactionFromRace').and.returnValue(mockFaction);

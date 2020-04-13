@@ -4,26 +4,8 @@ export const ITEM_CONSTANTS = {
     pl: ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds', 'milliseconds'],
     ab: ['yr',    'mo',     'wk',    'day',  'hr',    'min',     'sec',     'ms'],
   },
-  'si':            { '-1': 'Alliance only', '-2': 'Horde only', 0: null, 1: 'Alliance', 2: 'Horde', 3: 'Both' },
   'resistances':   [/* null, */ 'Holy Resistance', 'Fire Resistance', 'Nature Resistance', 'Frost Resistance', 'Shadow Resistance', 'Arcane Resistance'],                         // RESISTANCE?_NAME
   'sc':            ['Physical', 'Holy', 'Fire', 'Nature', 'Frost', 'Shadow', 'Arcane'],                                                                                     // STRING_SCHOOL_*
-  'cl':            [null, 'Warrior', 'Paladin', 'Hunter', 'Rogue', 'Priest', 'Death Knight', 'Shaman', 'Mage', 'Warlock', null, 'Druid'],                                   // ChrClasses.dbc
-  'ra': {  // ChrRaces.dbc
-    '-2': 'Horde',
-    '-1': 'Alliance',
-    0:    null,
-    1:    'Human',
-    2:    'Orc',
-    3:    'Dwarf',
-    4:    'Night Elf',
-    5:    'Undead',
-    6:    'Tauren',
-    7:    'Gnome',
-    8:    'Troll',
-    9:    null,
-    10:   'Blood Elf',
-    11:   'Draenei',
-  },
   'armor':             '%s Armor',                      // ARMOR_TEMPLATE
   'block':             '%s Block',                      // SHIELD_BLOCK_TEMPLATE
   'charges':           '%d Charges', /* |4Charge: */    // ITEM_SPELL_CHARGES
