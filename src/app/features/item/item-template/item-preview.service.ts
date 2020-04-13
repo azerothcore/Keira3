@@ -9,6 +9,7 @@ import { ITEMS_QUALITY } from '@keira-shared/constants/options/item-quality';
 import { ItemTemplate } from '@keira-shared/types/item-template.type';
 import { PVP_RANK } from '@keira-shared/constants/options/item-honorrank';
 import { PreviewHelperService } from '@keira-shared/services/preview-helper.service';
+import { CLASSES_TEXT, RACES_TEXT } from '@keira-shared/constants/preview';
 
 @Injectable()
 export class ItemPreviewService {
@@ -155,7 +156,7 @@ export class ItemPreviewService {
     let i = 1;
     while (classMask) {
       if (classMask & (1 << (i - 1))) {
-        const tmpClass = ITEM_CONSTANTS.cl[i];
+        const tmpClass = CLASSES_TEXT[i];
         /* istanbul ignore else */
         if (!!tmpClass) {
           tmp.push(`<span class="c${i}">${tmpClass}</span>`);
@@ -878,8 +879,11 @@ export class ItemPreviewService {
     }
 
     // required races
-    const races = this.helperService.getRaceString(itemTemplate.AllowableRace);
+    let races = this.helperService.getRaceString(itemTemplate.AllowableRace);
     if (races) {
+      if (!isNaN(Number(races[0]))) {
+        races = races.map((el) => RACES_TEXT[el]);
+      }
       requiredText += `<br>Races: ${races.join(', ')}`;
     }
 

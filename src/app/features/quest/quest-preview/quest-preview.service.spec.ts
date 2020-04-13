@@ -103,10 +103,10 @@ describe('QuestPreviewService', () => {
     expect(service.level).toBe(String(questLevel));
     expect(service.minLevel).toBe(String(minLevel));
     expect(service.side).toBeNull();
-    expect(service.races).toBe('Human,Orc,Night Elf,Undead,Tauren,Gnome');
+    expect(service.races).toEqual([1, 2, 4, 5, 6, 7]);
 
     questTemplateService.form.controls.AllowableRaces.setValue(null);
-    expect(service.races).toBeUndefined();
+    expect(service.races).toBeNull();
 
     // check if quest is sharable
     questTemplateService.form.controls.Flags.setValue(8);

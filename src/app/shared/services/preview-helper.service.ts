@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ITEM_CONSTANTS } from 'app/features/item/item-template/item-constants';
 import { RACE } from 'app/features/item/item-template/item-preview';
+import { RACES_TEXT } from '@keira-shared/constants/preview';
 
 @Injectable({ providedIn: 'root' })
 export class PreviewHelperService {
@@ -11,17 +11,17 @@ export class PreviewHelperService {
 
   public getFactionFromRace(raceMask: number): string {
     if (raceMask === RACE.MASK_HORDE) {
-      return ITEM_CONSTANTS.ra['-2'];
+      return RACES_TEXT['-2'];
     }
 
     if (raceMask === RACE.MASK_ALLIANCE) {
-      return ITEM_CONSTANTS.ra['-1'];
+      return RACES_TEXT['-1'];
     }
 
     return null;
   }
 
-  public getRaceString(raceMask: number): string[] {
+  public getRaceString(raceMask: number): any[] {
     // clamp to available races
     raceMask &= RACE.MASK_ALL;
     // available to all races (we don't display 'both factions')
@@ -39,10 +39,9 @@ export class PreviewHelperService {
     let i = 1;
     while (raceMask) {
       if (raceMask & (1 << (i - 1))) {
-        const tmpRace = ITEM_CONSTANTS.ra[i];
         /* istanbul ignore else */
-        if (!!tmpRace) {
-          tmp.push(tmpRace);
+        if (!!i) {
+          tmp.push(i);
         }
         raceMask &= ~(1 << (i - 1));
       }
