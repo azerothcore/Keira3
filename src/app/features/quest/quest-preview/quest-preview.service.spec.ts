@@ -118,10 +118,10 @@ describe('QuestPreviewService', () => {
 
   it('handle questTemplateAddon values', () => {
     const { service, questTemplateAddonService } = setup();
-    const MaxLevel = 80;
+    const maxlevel = 80;
 
-    questTemplateAddonService.form.controls.MaxLevel.setValue(MaxLevel);
-    expect(service.maxlevel).toBe(String(MaxLevel));
+    questTemplateAddonService.form.controls.MaxLevel.setValue(maxlevel);
+    expect(service.maxlevel).toBe(String(maxlevel));
   });
 
   it('mysqlQuery', async() => {

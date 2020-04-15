@@ -9,6 +9,8 @@ import { QuestPreviewService } from './quest-preview.service';
 export class QuestPreviewComponent implements OnInit {
   constructor(public readonly service: QuestPreviewService) { }
 
+  get showMaxLevel(): boolean { return !!this.service.maxlevel && this.service.maxlevel !== '0'; }
+
   ngOnInit() {
     this.service.initializeServices();
   }
