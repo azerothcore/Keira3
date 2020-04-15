@@ -145,31 +145,6 @@ export class ItemPreviewService {
     return ITEM_CONSTANTS.trigger[1] + ITEM_CONSTANTS.statType[type].replace('%d', `<!--rtg${type}-->${value}${js}`);
   }
 
-  private getRequiredClass(classMask: number): string[] {
-    classMask &= CLASSES.MASK_ALL; // clamp to available classes..
-
-    if (classMask === CLASSES.MASK_ALL) { // available to all classes
-      return null;
-    }
-
-    const tmp = [];
-    let i = 1;
-    while (classMask) {
-      if (classMask & (1 << (i - 1))) {
-        const tmpClass = CLASSES_TEXT[i];
-        /* istanbul ignore else */
-        if (!!tmpClass) {
-          tmp.push(`<span class="c${i}">${tmpClass}</span>`);
-        }
-
-        classMask &= ~(1 << (i - 1));
-      }
-      i++;
-    }
-
-    return tmp;
-  }
-
   private formatMoney(qty: number): string {
     let money = '';
 
@@ -873,9 +848,9 @@ export class ItemPreviewService {
     let requiredText = '';
 
     // required classes
-    const classes = this.getRequiredClass(itemTemplate.AllowableClass);
+    const classes = this.helperService.getRequiredClass(itemTemplate.AllowableClass);
     if (classes != null && classes.length > 0) {
-      requiredText += `<br>Classes: ${classes.join(', ')}`;
+      requiredText += `<br>Classes: ${classes.map(i => `<span class="c${i}">${CLASSES_TEXT[i]}</span>`).join(', ')}`;
     }
 
     // required races

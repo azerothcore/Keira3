@@ -6,10 +6,16 @@
       <p *ngIf="!!service.level">Level: {{ service.level }}</p>
       <p *ngIf="!!service.minLevel">Requires level: {{ service.minLevel }} <span *ngIf="showMaxLevel">- {{ service.maxlevel }}</span></p>
       <p *ngIf="!!service.side">Side: &nbsp;<span class="side {{ service.side.toLowerCase() }}"></span> {{ service.side }}</p>
-      <p *ngIf="!service.side && service.races" class="races">Races:
+      <p *ngIf="!service.side && service.races && service.races.length > 0" class="list-req">Races:
         <span *ngFor="let r of service.races">
           <img [src]="'assets/img/race/' + r + '-0.gif'">
           {{ service.RACES_TEXT[r] }} &nbsp;
+        </span>
+      </p>
+      <p *ngIf="!!service.classes && service.classes.length > 0" class="list-req">Classes:
+        <span *ngFor="let c of service.classes" [ngClass]="'c' + c">
+          <img [src]="'assets/img/class/' + c + '.gif'">
+          {{ service.CLASSES_TEXT[c] }} &nbsp;
         </span>
       </p>
       <!-- Quest starter -->
