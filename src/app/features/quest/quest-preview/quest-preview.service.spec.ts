@@ -116,6 +116,14 @@ describe('QuestPreviewService', () => {
     expect(service.sharable).toBe('Not sharable');
   });
 
+  it('handle questTemplateAddon values', () => {
+    const { service, questTemplateAddonService } = setup();
+    const MaxLevel = 80;
+
+    questTemplateAddonService.form.controls.MaxLevel.setValue(MaxLevel);
+    expect(service.maxlevel).toBe(String(MaxLevel));
+  });
+
   it('mysqlQuery', async() => {
     const { service, mysqlQueryService, questTemplateService } = setup();
     const mockID = 123;
