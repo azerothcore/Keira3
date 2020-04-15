@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { RACE } from 'app/features/item/item-template/item-preview';
+import { RACE, CLASSES } from 'app/features/item/item-template/item-preview';
 import { RACES_TEXT } from '@keira-shared/constants/preview';
 
 @Injectable({ providedIn: 'root' })
@@ -50,5 +50,30 @@ export class PreviewHelperService {
 
     return tmp;
   }
+
+  public getRequiredClass(classMask: number): number[] {
+    classMask &= CLASSES.MASK_ALL; // clamp to available classes..
+
+    if (classMask === CLASSES.MASK_ALL) { // available to all classes
+      return null;
+    }
+
+    const tmp = [];
+    let i = 1;
+    while (classMask) {
+      if (classMask & (1 << (i - 1))) {
+        /* istanbul ignore else */
+        if (!!i) {
+          tmp.push(i);
+        }
+
+        classMask &= ~(1 << (i - 1));
+      }
+      i++;
+    }
+
+    return tmp;
+  }
+
 
 }

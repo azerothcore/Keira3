@@ -21,7 +21,7 @@ import { CreatureQuestender } from '@keira-shared/types/creature-questender.type
 import { GameobjectQuestender } from '@keira-shared/types/gameobject-questender.type';
 import { QuestTemplateAddon } from '@keira-types/quest-template-addon.type';
 import { DifficultyLevel } from './quest-preview.model';
-import { RACES_TEXT } from '@keira-shared/constants/preview';
+import { RACES_TEXT, CLASSES_TEXT } from '@keira-shared/constants/preview';
 
 
 @Injectable()
@@ -46,6 +46,7 @@ export class QuestPreviewService {
   ) { }
 
   readonly RACES_TEXT = RACES_TEXT;
+  readonly CLASSES_TEXT = CLASSES_TEXT;
 
   // get QuestTemplate values
   get id(): number { return this.questTemplate.ID; }
@@ -58,6 +59,7 @@ export class QuestPreviewService {
 
   // get QuestTemplateAddon values
   get maxlevel(): string { return String(this.questTemplateAddon.MaxLevel); }
+  get classes(): number[] { return this.helperService.getRequiredClass(this.questTemplateAddon.AllowableClasses); }
 
   // get form value
   get questTemplate(): QuestTemplate { return this.questTemplateService.form.getRawValue(); }
