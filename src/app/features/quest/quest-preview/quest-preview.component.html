@@ -4,7 +4,7 @@
 
       <h5 *ngIf="!!service.title">{{ service.title }}</h5>
       <p *ngIf="!!service.level">Level: {{ service.level }}</p>
-      <p *ngIf="!!service.minLevel">Requires level: {{ service.minLevel }}</p>
+      <p *ngIf="!!service.minLevel">Requires level: {{ service.minLevel }} <span *ngIf="showMaxLevel">- {{ service.maxlevel }}</span></p>
       <p *ngIf="!!service.side">Side: &nbsp;<span class="side {{ service.side.toLowerCase() }}"></span> {{ service.side }}</p>
       <p *ngIf="!service.side && service.races" class="races">Races:
         <span *ngFor="let r of service.races">

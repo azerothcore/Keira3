@@ -56,6 +56,9 @@ export class QuestPreviewService {
   get races(): number[] { return this.helperService.getRaceString(this.questTemplate.AllowableRaces); }
   get sharable(): string { return this.questTemplate.Flags & QUEST_FLAG_SHARABLE ? 'Sharable' : 'Not sharable'; }
 
+  // get QuestTemplateAddon values
+  get maxlevel(): string { return String(this.questTemplateAddon.MaxLevel); }
+
   // get form value
   get questTemplate(): QuestTemplate { return this.questTemplateService.form.getRawValue(); }
   get questTemplateAddon(): QuestTemplateAddon { return this.questTemplateAddonService.form.getRawValue(); }
