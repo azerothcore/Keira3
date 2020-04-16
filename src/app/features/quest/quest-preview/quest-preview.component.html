@@ -57,18 +57,22 @@
         <span class="r4" *ngIf="!!difficulty.grey">   {{ difficulty.grey }}   </span>
       </p>
 
-      <p class="title">Series</p>
-      <ol>
-        <li *ngFor="let quest of service.prevQuestList$ | async">
-          <span class="colored">{{ quest.title }}</span> <span class="greyed"> [{{ quest.id }}]</span>
-        </li>
-        <li>
-          <strong>{{ service.title }}</strong> <span class="greyed"> [{{ service.id }}]</span>
-        </li>
-        <li *ngFor="let quest of service.nextQuestList$ | async">
-          <span class="colored">{{ quest.title }}</span> <span class="greyed"> [{{ quest.id }}]</span>
-        </li>
-      </ol>
+      <ng-container *ngIf="{ prev: service.prevQuestList$ | async, next: service.nextQuestList$ | async } as questLists">
+        <ng-container *ngIf="questLists?.prev?.length > 0  || questLists?.next?.length > 0">
+          <p class="title">Series</p>
+          <ol>
+            <li *ngFor="let quest of questLists.prev">
+              <span class="colored">{{ quest.title }}</span> <span class="greyed"> [{{ quest.id }}]</span>
+            </li>
+            <li>
+              <strong>{{ service.title }}</strong> <span class="greyed"> [{{ service.id }}]</span>
+            </li>
+            <li *ngFor="let quest of questLists.next">
+              <span class="colored">{{ quest.title }}</span> <span class="greyed"> [{{ quest.id }}]</span>
+            </li>
+          </ol>
+        </ng-container>
+      </ng-container>
 
       <ng-container *ngIf="!!service.enabledByQuestId">
         <p class="title">Enabled by</p>
