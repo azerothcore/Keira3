@@ -97,7 +97,7 @@ describe('QuestTemplate integration tests', () => {
     it('should correctly update the unsaved status', () => {
       const field = 'QuestInfoID';
       expect(handlerService.isQuestTemplateUnsaved).toBe(false);
-      page.setInputValueById(field, 3);
+      page.setInputValueById(field, 81);
       expect(handlerService.isQuestTemplateUnsaved).toBe(true);
       page.setInputValueById(field, 0);
       expect(handlerService.isQuestTemplateUnsaved).toBe(false);
