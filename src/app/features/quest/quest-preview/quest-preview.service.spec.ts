@@ -15,7 +15,7 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { of } from 'rxjs';
 import { DifficultyLevel } from './quest-preview.model';
 
-describe('QuestPreviewService', () => {
+fdescribe('QuestPreviewService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
