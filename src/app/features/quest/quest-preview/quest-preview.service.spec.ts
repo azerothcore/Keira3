@@ -137,8 +137,8 @@ describe('QuestPreviewService', () => {
     spyOn(mysqlQueryService, 'getItemNameByStartQuest').and.callFake(i => of(mockItemName).toPromise());
     questTemplateService.form.controls.ID.setValue(mockID);
 
-    expect(await service.questGivenByItem).toBe(mockItem);
-    expect(await service.questStarterItem).toBe(mockItemName);
+    expect(await service.questGivenByItem$).toBe(mockItem);
+    expect(await service.questStarterItem$).toBe(mockItemName);
 
     expect(mysqlQueryService.getItemByStartQuest).toHaveBeenCalledTimes(1);
     expect(mysqlQueryService.getItemByStartQuest).toHaveBeenCalledWith(mockID);
@@ -152,12 +152,12 @@ describe('QuestPreviewService', () => {
 
     // no QuestLevel
     questTemplateService.form.controls.QuestLevel.setValue(0);
-    difficulty = service.difficultyLevels();
+    difficulty = service.difficultyLevels;
     expect(difficulty).toBeNull();
 
     // red colors undefined
     questTemplateService.form.controls.QuestLevel.setValue(50);
-    difficulty = service.difficultyLevels();
+    difficulty = service.difficultyLevels;
 
     expect(difficulty.red).toBeUndefined();
     expect(difficulty.orange).toBe(46);
@@ -169,7 +169,7 @@ describe('QuestPreviewService', () => {
     questTemplateService.form.controls.QuestLevel.setValue(50);
     questTemplateService.form.controls.MinLevel.setValue(45);
 
-    difficulty = service.difficultyLevels();
+    difficulty = service.difficultyLevels;
 
     expect(difficulty.red).toBe(45);
     expect(difficulty.orange).toBe(46);
@@ -179,7 +179,7 @@ describe('QuestPreviewService', () => {
     questTemplateService.form.controls.QuestLevel.setValue(50);
     questTemplateService.form.controls.MinLevel.setValue(47);
 
-    difficulty = service.difficultyLevels();
+    difficulty = service.difficultyLevels;
 
     expect(difficulty.red).toBeUndefined();
     expect(difficulty.orange).toBe(47);
@@ -189,7 +189,7 @@ describe('QuestPreviewService', () => {
     questTemplateService.form.controls.QuestLevel.setValue(50);
     questTemplateService.form.controls.MinLevel.setValue(49);
 
-    difficulty = service.difficultyLevels();
+    difficulty = service.difficultyLevels;
 
     expect(difficulty.red).toBeUndefined();
     expect(difficulty.orange).toBeUndefined();
@@ -245,12 +245,12 @@ describe('QuestPreviewService', () => {
       questTemplateService.form.controls.ID.setValue(4);
       questTemplateAddonService.form.controls.PrevQuestID.setValue(3);
 
-      expect(await service.prevQuestList).toEqual([
+      expect(await service.prevQuestList$).toEqual([
         { id: 1, title: 'Title1' },
         { id: 2, title: 'Title2' },
         { id: 3, title: 'Title3' },
       ]);
-      expect(await service.prevQuestList).toEqual([ // check cache
+      expect(await service.prevQuestList$).toEqual([ // check cache
         { id: 1, title: 'Title1' },
         { id: 2, title: 'Title2' },
         { id: 3, title: 'Title3' },
@@ -266,8 +266,8 @@ describe('QuestPreviewService', () => {
       questTemplateService.form.controls.ID.setValue(4);
       questTemplateAddonService.form.controls.PrevQuestID.setValue(0);
 
-      expect(await service.prevQuestList).toEqual([]);
-      expect(await service.prevQuestList).toEqual([]); // check cache
+      expect(await service.prevQuestList$).toEqual([]);
+      expect(await service.prevQuestList$).toEqual([]); // check cache
       expect(mysqlQueryService.getPrevQuestById).toHaveBeenCalledTimes(0);
     });
   });
@@ -278,12 +278,12 @@ describe('QuestPreviewService', () => {
       questTemplateService.form.controls.ID.setValue(4);
       questTemplateAddonService.form.controls.NextQuestID.setValue(5);
 
-      expect(await service.nextQuestList).toEqual([
+      expect(await service.nextQuestList$).toEqual([
         { id: 5, title: 'Title5' },
         { id: 6, title: 'Title6' },
         { id: 7, title: 'Title7' },
       ]);
-      expect(await service.nextQuestList).toEqual([ // check cache
+      expect(await service.nextQuestList$).toEqual([ // check cache
         { id: 5, title: 'Title5' },
         { id: 6, title: 'Title6' },
         { id: 7, title: 'Title7' },
@@ -299,12 +299,12 @@ describe('QuestPreviewService', () => {
       questTemplateService.form.controls.ID.setValue(4);
       questTemplateAddonService.form.controls.NextQuestID.setValue(0);
 
-      expect(await service.nextQuestList).toEqual([
+      expect(await service.nextQuestList$).toEqual([
         { id: 5, title: 'Title5' },
         { id: 6, title: 'Title6' },
         { id: 7, title: 'Title7' },
       ]);
-      expect(await service.nextQuestList).toEqual([ // check cache
+      expect(await service.nextQuestList$).toEqual([ // check cache
         { id: 5, title: 'Title5' },
         { id: 6, title: 'Title6' },
         { id: 7, title: 'Title7' },
