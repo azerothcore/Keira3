@@ -22,7 +22,7 @@ import { GameobjectQuestender } from '@keira-shared/types/gameobject-questender.
 import { QuestTemplateAddon } from '@keira-types/quest-template-addon.type';
 import { DifficultyLevel } from './quest-preview.model';
 import { RACES_TEXT, CLASSES_TEXT } from '@keira-shared/constants/preview';
-
+import { QUEST_FLAG_DAILY, QUEST_FLAG_WEEKLY, QUEST_FLAG_SPECIAL_MONTHLY, QUEST_INFO } from '@keira-shared/constants/quest-preview';
 
 @Injectable()
 export class QuestPreviewService {
@@ -47,6 +47,15 @@ export class QuestPreviewService {
 
   readonly RACES_TEXT = RACES_TEXT;
   readonly CLASSES_TEXT = CLASSES_TEXT;
+  readonly QUEST_INFO = QUEST_INFO;
+
+  // get form value
+  get questTemplate(): QuestTemplate { return this.questTemplateService.form.getRawValue(); }
+  get questTemplateAddon(): QuestTemplateAddon { return this.questTemplateAddonService.form.getRawValue(); }
+  get creatureQueststarterList(): CreatureQueststarter[] { return this.creatureQueststarterService.newRows; }
+  get creatureQuestenderList(): CreatureQuestender[] { return this.creatureQuestenderService.newRows; }
+  get gameobjectQueststarterList(): GameobjectQueststarter[] { return this.gameobjectQueststarterService.newRows; }
+  get gameobjectQuestenderList(): GameobjectQuestender[] { return this.gameobjectQuestenderService.newRows; }
 
   // get QuestTemplate values
   get id(): number { return this.questTemplate.ID; }
@@ -60,14 +69,6 @@ export class QuestPreviewService {
   // get QuestTemplateAddon values
   get maxlevel(): string { return String(this.questTemplateAddon.MaxLevel); }
   get classes(): number[] { return this.helperService.getRequiredClass(this.questTemplateAddon.AllowableClasses); }
-
-  // get form value
-  get questTemplate(): QuestTemplate { return this.questTemplateService.form.getRawValue(); }
-  get questTemplateAddon(): QuestTemplateAddon { return this.questTemplateAddonService.form.getRawValue(); }
-  get creatureQueststarterList(): CreatureQueststarter[] { return this.creatureQueststarterService.newRows; }
-  get creatureQuestenderList(): CreatureQuestender[] { return this.creatureQuestenderService.newRows; }
-  get gameobjectQueststarterList(): GameobjectQueststarter[] { return this.gameobjectQueststarterService.newRows; }
-  get gameobjectQuestenderList(): GameobjectQuestender[] { return this.gameobjectQuestenderService.newRows; }
 
   // Item Quest Starter
   get questGivenByItem(): Promise<string> { return this.mysqlQueryService.getItemByStartQuest(this.questTemplate.ID); }
@@ -107,6 +108,27 @@ export class QuestPreviewService {
       levels.grey = this.questTemplate.QuestLevel + 3 + Math.ceil(12 * this.questTemplate.QuestLevel / 80);
 
       return levels;
+    }
+
+    return null;
+  }
+
+  get periodQuest(): string { return this.getPerdioQues(); }
+
+  private getPerdioQues(): string {
+    const flags = this.questTemplate.Flags;
+    const specialFlags = this.questTemplateAddon.SpecialFlags;
+
+    if (flags & QUEST_FLAG_DAILY) {
+      return 'Daily';
+    }
+
+    if (flags & QUEST_FLAG_WEEKLY) {
+     return 'Weekly';
+    }
+
+    if (specialFlags & QUEST_FLAG_SPECIAL_MONTHLY) {
+      return 'Monthly';
     }
 
     return null;
