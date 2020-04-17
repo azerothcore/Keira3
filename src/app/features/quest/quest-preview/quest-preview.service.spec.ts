@@ -15,7 +15,7 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { of } from 'rxjs';
 import { DifficultyLevel } from './quest-preview.model';
 
-fdescribe('QuestPreviewService', () => {
+describe('QuestPreviewService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -133,8 +133,8 @@ fdescribe('QuestPreviewService', () => {
     const mockItem = '1234';
     const mockItemName = 'Helias Item';
 
-    spyOn(mysqlQueryService, 'getItemByStartQuest').and.callFake(i => of(mockItem).toPromise());
-    spyOn(mysqlQueryService, 'getItemNameByStartQuest').and.callFake(i => of(mockItemName).toPromise());
+    spyOn(mysqlQueryService, 'getItemByStartQuest').and.callFake(() => of(mockItem).toPromise());
+    spyOn(mysqlQueryService, 'getItemNameByStartQuest').and.callFake(() => of(mockItemName).toPromise());
     questTemplateService.form.controls.ID.setValue(mockID);
 
     expect(await service.questGivenByItem$).toBe(mockItem);
@@ -315,5 +315,32 @@ fdescribe('QuestPreviewService', () => {
       expect(mysqlQueryService.getNextQuestById).toHaveBeenCalledWith(6, true);
       expect(mysqlQueryService.getNextQuestById).toHaveBeenCalledWith(7, true);
     });
+  });
+
+  describe('enabledByQuestId', () => {
+    it('should return the PrevQuestID when negative', () => {
+      const id = 123;
+      const { service, questTemplateAddonService } = setup();
+      questTemplateAddonService.form.controls.PrevQuestID.setValue(-id);
+
+      expect(service.enabledByQuestId).toEqual(id);
+    });
+
+    it('should return 0 otherwise', () => {
+      const { service, questTemplateAddonService } = setup();
+      questTemplateAddonService.form.controls.PrevQuestID.setValue(123);
+
+      expect(service.enabledByQuestId).toEqual(0);
+    });
+  });
+
+  it('enabledByQuestTitle$ should return the quest name', async () => {
+    const id = 123;
+    const { service, questTemplateAddonService, mysqlQueryService } = setup();
+    questTemplateAddonService.form.controls.PrevQuestID.setValue(-id);
+
+    expect(await service.enabledByQuestTitle$).toEqual(`Title${id}`);
+    expect(mysqlQueryService.getQuestTitleById).toHaveBeenCalledTimes(1);
+    expect(mysqlQueryService.getQuestTitleById).toHaveBeenCalledWith(id);
   });
 });
