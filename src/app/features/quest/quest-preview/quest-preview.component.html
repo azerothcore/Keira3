@@ -28,7 +28,7 @@
         <img [src]="'assets/img/quest/' + questStartIcon">
         Start:
         <keira-icon [size]="'small'" [itemId]="qitem"></keira-icon>
-        <strong class="colored">{{ service.questStarterItem$ | async }}</strong> <span class="greyed"> [{{ qitem }}]</span>
+        <strong class="colored"> {{ service.questStarterItem$ | async }}</strong> <span class="greyed"> [{{ qitem }}]</span>
       </p>
       <div *ngIf="service.creatureQueststarterList.length > 0">
         <p *ngFor="let q of service.creatureQueststarterList">
