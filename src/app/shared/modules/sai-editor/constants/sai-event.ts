@@ -79,6 +79,8 @@ export enum SAI_EVENTS {
   DISTANCE_CREATURE = 75,
   DISTANCE_GAMEOBJECT = 76,
   COUNTER_SET = 77,
+  NEAR_PLAYERS = 101,
+  NEAR_PLAYERS_NEGATION = 102,
 }
 export const SAI_EVENTS_KEYS = getEnumKeys(SAI_EVENTS);
 export const SAI_EVENT_TOOLTIPS: string[] = [];
@@ -526,8 +528,30 @@ SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Min distance (in ya
 SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Timer to check for distance. It\'s not a good idea to leave this at 0, having a handful of events doing that can slow down your core';
 
 // SMART_EVENT_COUNTER_SET
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.COUNTER_SET] = 'If the value of specified CounterID is equal to a specified Value';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.COUNTER_SET] = 'If the value of specified CounterID is equal to a specified Value.';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.COUNTER_SET] = 'CounterID';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.COUNTER_SET] = 'Value';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.COUNTER_SET] = 'CooldownMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.COUNTER_SET] = 'CooldownMax';
+
+// SMART_EVENT_NEAR_PLAYERS
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS] = 'If the value of minPlayers is met.';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.NEAR_PLAYERS] = 'minPlayers';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.NEAR_PLAYERS] = 'Range';
+SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.NEAR_PLAYERS] = 'FirstCheck';
+SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.NEAR_PLAYERS] = 'RepeatCheck';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS] = 'How many players are needed for the event to trigger.';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS] = 'Range in yards to check for players.';
+SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS] = 'First check for players after X milliseconds (ms).';
+SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS] = 'Repeating check for players every X milliseconds (ms).';
+
+// SMART_EVENT_NEAR_PLAYERS_NEGATION
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'If the value of maxPlayers is met.';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'maxPlayers';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'Range';
+SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'FirstCheck';
+SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'RepeatCheck';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'Maximum amount of players for the event to trigger.';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'Range in yards to check for players.';
+SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'First check for players after X milliseconds (ms).';
+SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'Repeating check for players every X milliseconds (ms).';
