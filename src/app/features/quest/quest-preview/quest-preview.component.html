@@ -24,11 +24,11 @@
         </span>
       </p>
       <!-- Quest starter -->
-      <p *ngIf="service.questGivenByItem | async as qitem">
+      <p *ngIf="service.questGivenByItem$ | async as qitem">
         <img [src]="'assets/img/quest/' + questStartIcon">
-         Start:
+        Start:
         <keira-icon [size]="'small'" [itemId]="qitem"></keira-icon>
-        <strong class="colored">{{ service.questStarterItem | async }}</strong> <span class="greyed"> [{{ qitem }}]</span>
+        <strong class="colored">{{ service.questStarterItem$ | async }}</strong> <span class="greyed"> [{{ qitem }}]</span>
       </p>
       <div *ngIf="service.creatureQueststarterList.length > 0">
         <p *ngFor="let q of service.creatureQueststarterList">
@@ -53,20 +53,7 @@
       </div>
       <p>{{ service.sharable }}</p>
 
-      <p class="title">Series</p>
-      <ol>
-        <li *ngFor="let quest of service.prevQuestList | async">
-          <span class="colored">{{ quest.title }}</span> <span class="greyed"> [{{ quest.id }}]</span>
-        </li>
-        <li>
-          <strong>{{ service.title }}</strong> <span class="greyed"> [{{ service.id }}]</span>
-        </li>
-        <li *ngFor="let quest of service.nextQuestList | async">
-          <span class="colored">{{ quest.title }}</span> <span class="greyed"> [{{ quest.id }}]</span>
-        </li>
-      </ol>
-
-      <p id="difficulty" *ngIf="service.difficultyLevels(); let difficulty">
+      <p *ngIf="service.difficultyLevels; let difficulty">
         Difficulty:
         <span class="r0" *ngIf="!!difficulty.red">    {{ difficulty.red }}    </span>
         <span class="r1" *ngIf="!!difficulty.orange"> {{ difficulty.orange }} </span>
@@ -74,6 +61,32 @@
         <span class="r3" *ngIf="!!difficulty.green">  {{ difficulty.green }}  </span>
         <span class="r4" *ngIf="!!difficulty.grey">   {{ difficulty.grey }}   </span>
       </p>
+
+      <ng-container *ngIf="{ prev: service.prevQuestList$ | async, next: service.nextQuestList$ | async } as questLists">
+        <ng-container *ngIf="questLists?.prev?.length > 0  || questLists?.next?.length > 0">
+          <p class="title">Series</p>
+          <ol>
+            <li *ngFor="let quest of questLists.prev">
+              <span class="colored">{{ quest.title }}</span> <span class="greyed"> [{{ quest.id }}]</span>
+            </li>
+            <li>
+              <strong>{{ service.title }}</strong> <span class="greyed"> [{{ service.id }}]</span>
+            </li>
+            <li *ngFor="let quest of questLists.next">
+              <span class="colored">{{ quest.title }}</span> <span class="greyed"> [{{ quest.id }}]</span>
+            </li>
+          </ol>
+        </ng-container>
+      </ng-container>
+
+      <ng-container *ngIf="!!service.enabledByQuestId">
+        <p class="title">Enabled by</p>
+        <ul>
+          <li>
+            <span class="colored">{{ service.enabledByQuestTitle$ | async }}</span> <span class="greyed"> [{{ service.enabledByQuestId }}]</span>
+          </li>
+        </ul>
+      </ng-container>
     </div>
   </perfect-scrollbar>
 </div>

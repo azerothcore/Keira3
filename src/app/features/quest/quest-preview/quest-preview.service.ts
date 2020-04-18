@@ -13,7 +13,7 @@ import { QUEST_FLAG_SHARABLE } from '@keira-shared/constants/flags/quest-flags';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { EditorService } from '@keira-shared/abstract/service/editors/editor.service';
 import { TableRow } from '@keira-types/general';
-import { QuestSerie } from './quest-preview.model';
+import { Quest } from './quest-preview.model';
 import { QuestTemplate } from '@keira-shared/types/quest-template.type';
 import { CreatureQueststarter } from '@keira-shared/types/creature-queststarter.type';
 import { GameobjectQueststarter } from '@keira-shared/types/gameobject-queststarter.type';
@@ -28,9 +28,9 @@ import { QUEST_FLAG_DAILY, QUEST_FLAG_WEEKLY, QUEST_FLAG_SPECIAL_MONTHLY, QUEST_
 export class QuestPreviewService {
   showPreview = true;
 
-  private prevSerieCache: Promise<QuestSerie>[] = [];
-  private nextSerieCache: Promise<QuestSerie>[] = [];
-  private nextSerieUsingPrevCache: Promise<QuestSerie>[] = [];
+  private prevSerieCache: Promise<Quest[]>[] = [];
+  private nextSerieCache: Promise<Quest[]>[] = [];
+  private nextSerieUsingPrevCache: Promise<Quest[]>[] = [];
 
   constructor(
     private readonly helperService: PreviewHelperService,
@@ -71,15 +71,34 @@ export class QuestPreviewService {
   get classes(): number[] { return this.helperService.getRequiredClass(this.questTemplateAddon.AllowableClasses); }
 
   // Item Quest Starter
-  get questGivenByItem(): Promise<string> { return this.mysqlQueryService.getItemByStartQuest(this.questTemplate.ID); }
-  get questStarterItem(): Promise<string> { return this.mysqlQueryService.getItemNameByStartQuest(this.questTemplate.ID); }
+  get questGivenByItem$(): Promise<string> { return this.mysqlQueryService.getItemByStartQuest(this.questTemplate.ID); }
+  get questStarterItem$(): Promise<string> { return this.mysqlQueryService.getItemNameByStartQuest(this.questTemplate.ID); }
 
-  // Quest Serie
-  get prevQuestList(): Promise<QuestSerie> { return this.getPrevQuestListCached(); }
-  get nextQuestList(): Promise<QuestSerie> { return this.getNextQuestListCached(); }
-  // get enabledBy() // TODO
+  // Quest Serie & relations
+  get prevQuestList$(): Promise<Quest[]> { return this.getPrevQuestListCached(); }
+  get nextQuestList$(): Promise<Quest[]> { return this.getNextQuestListCached(); }
+  get enabledByQuestId(): number { return this.getEnabledByQuestId(); }
+  get enabledByQuestTitle$(): Promise<string> { return this.getEnabledByQuestName(); }
 
-  difficultyLevels(): DifficultyLevel {
+  get difficultyLevels(): DifficultyLevel { return this.getDifficultyLevels(); }
+
+  initializeServices() {
+    this.initService(this.questTemplateService);
+    this.initService(this.questRequestItemsService);
+    this.initService(this.questTemplateAddonService);
+    this.initService(this.gameobjectQueststarterService);
+    this.initService(this.gameobjectQuestenderService);
+    this.initService(this.creatureQueststarterService);
+    this.initService(this.creatureQuestenderService);
+  }
+
+  private initService<T extends TableRow>(service: EditorService<T>) {
+    if (!!this.questHandlerService.selected && service.loadedEntityId !== this.questHandlerService.selected) {
+      service.reload(this.questHandlerService.selected);
+    }
+  }
+
+  private getDifficultyLevels(): DifficultyLevel {
 
     if (this.questTemplate.QuestLevel > 0) {
       const levels: DifficultyLevel = {};
@@ -134,24 +153,8 @@ export class QuestPreviewService {
     return null;
   }
 
-  initializeServices() {
-    this.initService(this.questTemplateService);
-    this.initService(this.questRequestItemsService);
-    this.initService(this.questTemplateAddonService);
-    this.initService(this.gameobjectQueststarterService);
-    this.initService(this.gameobjectQuestenderService);
-    this.initService(this.creatureQueststarterService);
-    this.initService(this.creatureQuestenderService);
-  }
-
-  private initService<T extends TableRow>(service: EditorService<T>) {
-    if (!!this.questHandlerService.selected && service.loadedEntityId !== this.questHandlerService.selected) {
-      service.reload(this.questHandlerService.selected);
-    }
-  }
-
-  private async getPrevQuestList(prev: number): Promise<QuestSerie> {
-    const array: QuestSerie = [];
+  private async getPrevQuestList(prev: number): Promise<Quest[]> {
+    const array: Quest[] = [];
 
     while (!!prev && prev > 0) { // when < 0 it's "enabled by"
       array.push({
@@ -165,7 +168,7 @@ export class QuestPreviewService {
     return array.reverse();
   }
 
-  private getPrevQuestListCached(): Promise<QuestSerie> {
+  private getPrevQuestListCached(): Promise<Quest[]> {
     const id = this.questTemplateAddon.PrevQuestID;
 
     if (!this.prevSerieCache[id]) {
@@ -175,8 +178,8 @@ export class QuestPreviewService {
     return this.prevSerieCache[id];
   }
 
-  private async getNextQuestListUsingNext(next: number): Promise<QuestSerie> {
-    const array: QuestSerie = [];
+  private async getNextQuestListUsingNext(next: number): Promise<Quest[]> {
+    const array: Quest[] = [];
 
     while (!!next) {
       array.push({
@@ -190,8 +193,8 @@ export class QuestPreviewService {
     return array;
   }
 
-  private async getNextQuestListUsingPrev(current: number): Promise<QuestSerie> {
-    const array: QuestSerie = [];
+  private async getNextQuestListUsingPrev(current: number): Promise<Quest[]> {
+    const array: Quest[] = [];
 
     while (!!current) {
       const next = Number(await this.mysqlQueryService.getNextQuestById(current, true));
@@ -209,7 +212,7 @@ export class QuestPreviewService {
     return array;
   }
 
-  private getNextQuestListCached(): Promise<QuestSerie> {
+  private getNextQuestListCached(): Promise<Quest[]> {
     const next = this.questTemplateAddon.NextQuestID;
 
     if (!!next) {
@@ -229,5 +232,13 @@ export class QuestPreviewService {
     }
 
     return this.nextSerieUsingPrevCache[id];
+  }
+
+  private getEnabledByQuestId(): number {
+    return this.questTemplateAddon.PrevQuestID < 0 ? -this.questTemplateAddon.PrevQuestID : 0;
+  }
+
+  private getEnabledByQuestName(): Promise<string> {
+    return this.mysqlQueryService.getQuestTitleById(this.getEnabledByQuestId());
   }
 }

@@ -1,6 +1,4 @@
-export type QuestSerie = QuestSerieItem[];
-
-export interface QuestSerieItem {
+export interface Quest {
   id: number;
   title: string;
 }
