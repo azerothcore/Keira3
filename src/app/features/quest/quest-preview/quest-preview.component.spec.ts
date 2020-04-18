@@ -3,8 +3,15 @@ import Spy = jasmine.Spy;
 
 import { QuestPreviewComponent } from './quest-preview.component';
 import { QuestModule } from '../quest.module';
-import { RouterTestingModule, SpyNgModuleFactoryLoader } from '@angular/router/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { QuestPreviewService } from './quest-preview.service';
+import { PageObject } from '@keira-shared/testing/page-object';
+
+class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
+  get title() { return this.query<HTMLHeadElement>('#title'); }
+  get level() { return this.query<HTMLParagraphElement>('#level'); }
+  get minlevel() { return this.query<HTMLParagraphElement>('#minlevel'); }
+}
 
 describe('QuestPreviewComponent', () => {
   beforeEach(async(() => {

@@ -2,22 +2,22 @@
   <perfect-scrollbar class="transparent">
     <div class="preview-content quest-preview">
 
-      <h5 *ngIf="!!service.title">{{ service.title }}</h5>
-      <p *ngIf="!!service.level">Level: {{ service.level }}</p>
-      <p *ngIf="!!service.minLevel">Requires level: {{ service.minLevel }} <span *ngIf="showMaxLevel">- {{ service.maxlevel }}</span></p>
-      <p *ngIf="!!type">
+      <h5 id="title" *ngIf="!!service.title">{{ service.title }}</h5>
+      <p id="level" *ngIf="!!service.level">Level: {{ service.level }}</p>
+      <p id="minlevel" *ngIf="!!service.minLevel">Requires level: {{ service.minLevel }} <span *ngIf="showMaxLevel">- {{ service.maxlevel }}</span></p>
+      <p id="type" *ngIf="!!type">
         Type:
         <span *ngIf="this.service.periodQuest; let period">{{ period }} </span>
         <span *ngIf="questInfo; let qInfo">{{ qInfo }}</span>
       </p>
-      <p *ngIf="!!service.side">Side: &nbsp;<span class="side {{ service.side.toLowerCase() }}"></span> {{ service.side }}</p>
-      <p *ngIf="showRaces" class="list-req">Races:
+      <p id="side" *ngIf="!!service.side">Side: &nbsp;<span class="side {{ service.side.toLowerCase() }}"></span> {{ service.side }}</p>
+      <p id="races" *ngIf="showRaces" class="list-req">Races:
         <span *ngFor="let r of service.races">
           <img [src]="'assets/img/race/' + r + '-0.gif'">
           {{ service.RACES_TEXT[r] }} &nbsp;
         </span>
       </p>
-      <p *ngIf="showClasses" class="list-req">Classes:
+      <p id="classes" *ngIf="showClasses" class="list-req">Classes:
         <span *ngFor="let c of service.classes" [ngClass]="'c' + c">
           <img [src]="'assets/img/class/' + c + '.gif'">
           {{ service.CLASSES_TEXT[c] }} &nbsp;
@@ -66,7 +66,7 @@
         </li>
       </ol>
 
-      <p *ngIf="service.difficultyLevels(); let difficulty">
+      <p id="difficulty" *ngIf="service.difficultyLevels(); let difficulty">
         Difficulty:
         <span class="r0" *ngIf="!!difficulty.red">    {{ difficulty.red }}    </span>
         <span class="r1" *ngIf="!!difficulty.orange"> {{ difficulty.orange }} </span>
