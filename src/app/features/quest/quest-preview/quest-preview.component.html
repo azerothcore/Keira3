@@ -7,7 +7,7 @@
       <p id="minlevel" *ngIf="!!service.minLevel">Requires level: {{ service.minLevel }} <span *ngIf="showMaxLevel">- {{ service.maxlevel }}</span></p>
       <p id="type" *ngIf="!!type">
         Type:
-        <span *ngIf="this.service.periodQuest; let period">{{ period }} </span>
+        <span *ngIf="this.service.periodicQuest; let period">{{ period }} </span>
         <span *ngIf="questInfo; let qInfo">{{ qInfo }}</span>
       </p>
       <p id="side" *ngIf="!!service.side">Side: &nbsp;<span class="side {{ service.side.toLowerCase() }}"></span> {{ service.side }}</p>

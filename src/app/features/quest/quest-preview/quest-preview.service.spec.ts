@@ -197,19 +197,19 @@ describe('QuestPreviewService', () => {
     expect(difficulty.yellow).toBe(49);
   });
 
-  it('perdioQuest', () => {
+  it('periodicQuest', () => {
     const { service, questTemplateService, questTemplateAddonService } = setup();
 
-    expect(service.periodQuest).toBeNull();
+    expect(service.periodicQuest).toBeNull();
 
     questTemplateAddonService.form.controls.SpecialFlags.setValue(QUEST_FLAG_SPECIAL_MONTHLY);
-    expect(service.periodQuest).toBe('Monthly');
+    expect(service.periodicQuest).toBe('Monthly');
 
     questTemplateService.form.controls.Flags.setValue(QUEST_FLAG_WEEKLY);
-    expect(service.periodQuest).toBe('Weekly');
+    expect(service.periodicQuest).toBe('Weekly');
 
     questTemplateService.form.controls.Flags.setValue(QUEST_FLAG_DAILY);
-    expect(service.periodQuest).toBe('Daily');
+    expect(service.periodicQuest).toBe('Daily');
   });
 
   it('initializeService', () => {

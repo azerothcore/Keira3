@@ -132,9 +132,9 @@ export class QuestPreviewService {
     return null;
   }
 
-  get periodQuest(): string { return this.getPerdioQues(); }
+  get periodicQuest(): string { return this.getPeriodicQuest(); }
 
-  private getPerdioQues(): string {
+  private getPeriodicQuest(): string {
     const flags = this.questTemplate.Flags;
     const specialFlags = this.questTemplateAddon.SpecialFlags;
 
