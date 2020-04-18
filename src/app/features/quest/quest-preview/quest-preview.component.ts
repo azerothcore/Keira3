@@ -19,10 +19,18 @@ export class QuestPreviewComponent implements OnInit {
       : null;
   }
 
-  /* istanbul ignore next */ // TODO: test this properly using page object
-  get questStartIcon(): string { return this.service.periodQuest ? 'quest_start_daily.gif' : 'quest_start.gif'; }
-  /* istanbul ignore next */ // TODO: test this properly using page object
-  get questEndIcon(): string { return this.service.periodQuest ? 'quest_end_daily.gif' : 'quest_end.gif'; }
+  get questStartIcon(): string {
+    return this.service.periodQuest
+    /* istanbul ignore next */ // TODO: test this properly using page object
+    ? 'quest_start_daily.gif'
+    : 'quest_start.gif';
+  }
+  get questEndIcon(): string {
+    return this.service.periodQuest
+    /* istanbul ignore next */ // TODO: test this properly using page object
+    ? 'quest_end_daily.gif'
+    : 'quest_end.gif';
+  }
 
   ngOnInit() {
     this.service.initializeServices();
