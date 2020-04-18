@@ -14,6 +14,7 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { of } from 'rxjs';
 import { DifficultyLevel } from './quest-preview.model';
+import { QUEST_FLAG_DAILY, QUEST_FLAG_WEEKLY, QUEST_FLAG_SPECIAL_MONTHLY } from '@keira-shared/constants/quest-preview';
 
 describe('QuestPreviewService', () => {
 
@@ -194,6 +195,21 @@ describe('QuestPreviewService', () => {
     expect(difficulty.red).toBeUndefined();
     expect(difficulty.orange).toBeUndefined();
     expect(difficulty.yellow).toBe(49);
+  });
+
+  it('periodicQuest', () => {
+    const { service, questTemplateService, questTemplateAddonService } = setup();
+
+    expect(service.periodicQuest).toBeNull();
+
+    questTemplateAddonService.form.controls.SpecialFlags.setValue(QUEST_FLAG_SPECIAL_MONTHLY);
+    expect(service.periodicQuest).toBe('Monthly');
+
+    questTemplateService.form.controls.Flags.setValue(QUEST_FLAG_WEEKLY);
+    expect(service.periodicQuest).toBe('Weekly');
+
+    questTemplateService.form.controls.Flags.setValue(QUEST_FLAG_DAILY);
+    expect(service.periodicQuest).toBe('Daily');
   });
 
   it('initializeService', () => {

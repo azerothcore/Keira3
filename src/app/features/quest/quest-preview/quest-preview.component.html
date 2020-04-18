@@ -2,17 +2,22 @@
   <perfect-scrollbar class="transparent">
     <div class="preview-content quest-preview">
 
-      <h5 *ngIf="!!service.title">{{ service.title }}</h5>
-      <p *ngIf="!!service.level">Level: {{ service.level }}</p>
-      <p *ngIf="!!service.minLevel">Requires level: {{ service.minLevel }} <span *ngIf="showMaxLevel">- {{ service.maxlevel }}</span></p>
-      <p *ngIf="!!service.side">Side: &nbsp;<span class="side {{ service.side.toLowerCase() }}"></span> {{ service.side }}</p>
-      <p *ngIf="showRaces" class="list-req">Races:
+      <h5 id="title" *ngIf="!!service.title">{{ service.title }}</h5>
+      <p id="level" *ngIf="!!service.level">Level: {{ service.level }}</p>
+      <p id="minlevel" *ngIf="!!service.minLevel">Requires level: {{ service.minLevel }} <span *ngIf="showMaxLevel">- {{ service.maxlevel }}</span></p>
+      <p id="type" *ngIf="!!type">
+        Type:
+        <span *ngIf="this.service.periodicQuest; let period">{{ period }} </span>
+        <span *ngIf="questInfo; let qInfo">{{ qInfo }}</span>
+      </p>
+      <p id="side" *ngIf="!!service.side">Side: &nbsp;<span class="side {{ service.side.toLowerCase() }}"></span> {{ service.side }}</p>
+      <p id="races" *ngIf="showRaces" class="list-req">Races:
         <span *ngFor="let r of service.races">
           <img [src]="'assets/img/race/' + r + '-0.gif'">
           {{ service.RACES_TEXT[r] }} &nbsp;
         </span>
       </p>
-      <p *ngIf="showClasses" class="list-req">Classes:
+      <p id="classes" *ngIf="showClasses" class="list-req">Classes:
         <span *ngFor="let c of service.classes" [ngClass]="'c' + c">
           <img [src]="'assets/img/class/' + c + '.gif'">
           {{ service.CLASSES_TEXT[c] }} &nbsp;
@@ -20,30 +25,30 @@
       </p>
       <!-- Quest starter -->
       <p *ngIf="service.questGivenByItem$ | async as qitem">
-        <img src="assets/img/quest/quest_start.gif">
+        <img [src]="'assets/img/quest/' + questStartIcon">
         Start:
         <keira-icon [size]="'small'" [itemId]="qitem"></keira-icon>
-        <strong class="colored">{{ service.questStarterItem$ | async }}</strong>
+        <strong class="colored"> {{ service.questStarterItem$ | async }}</strong> <span class="greyed"> [{{ qitem }}]</span>
       </p>
       <div *ngIf="service.creatureQueststarterList.length > 0">
         <p *ngFor="let q of service.creatureQueststarterList">
-          <img src="assets/img/quest/quest_start.gif"> NPC Start: <strong class="colored">{{ service.mysqlQueryService.getCreatureNameById(q.id) | async }}</strong>
+          <img [src]="'assets/img/quest/' + questStartIcon"> NPC Start: <strong class="colored">{{ service.mysqlQueryService.getCreatureNameById(q.id) | async }}</strong> <span class="greyed"> [{{ q.id }}]</span>
         </p>
       </div>
       <div *ngIf="service.gameobjectQueststarterList.length > 0">
         <p *ngFor="let q of service.gameobjectQueststarterList">
-          <img src="assets/img/quest/quest_start.gif"> GO Start: <strong class="colored">{{ service.mysqlQueryService.getGameObjectNameById(q.id) | async }}</strong>
+          <img [src]="'assets/img/quest/' + questStartIcon"> GO Start: <strong class="colored">{{ service.mysqlQueryService.getGameObjectNameById(q.id) | async }}</strong> <span class="greyed"> [{{ q.id }}]</span>
         </p>
       </div>
       <!-- Quest ender -->
       <div *ngIf="service.creatureQuestenderList.length > 0">
         <p *ngFor="let q of service.creatureQuestenderList">
-          <img src="assets/img/quest/quest_end.gif"> NPC End: <strong class="colored">{{ service.mysqlQueryService.getCreatureNameById(q.id) | async }}</strong>
+          <img [src]="'assets/img/quest/' + questEndIcon"> NPC End: <strong class="colored">{{ service.mysqlQueryService.getCreatureNameById(q.id) | async }}</strong> <span class="greyed"> [{{ q.id }}]</span>
         </p>
       </div>
       <div *ngIf="service.gameobjectQuestenderList.length > 0">
         <p *ngFor="let q of service.gameobjectQuestenderList">
-          <img src="assets/img/quest/quest_end.gif"> GO End: <strong class="colored">{{ service.mysqlQueryService.getGameObjectNameById(q.id) | async }}</strong>
+          <img [src]="'assets/img/quest/' + questEndIcon"> GO End: <strong class="colored">{{ service.mysqlQueryService.getGameObjectNameById(q.id) | async }}</strong> <span class="greyed"> [{{ q.id }}]</span>
         </p>
       </div>
       <p>{{ service.sharable }}</p>
