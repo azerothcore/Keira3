@@ -23,6 +23,11 @@
           {{ service.CLASSES_TEXT[c] }} &nbsp;
         </span>
       </p>
+      <p *ngIf="service.getRequiredSkill() | async as skill">
+        Profession: <keira-icon *ngIf="!!service.ICON_SKILLS[service.questTemplateAddon.RequiredSkillID]" [skillId]="service.questTemplateAddon.RequiredSkillID" [size]="'small'"></keira-icon> {{ skill }} {{ reqSkillPoint }}
+      </p>
+      <ng-container *ngIf="{ prev: service.prevQuestList$ | async, next: service.nextQuestList$ | async } as questLists">
+      </ng-container>
       <!-- Quest starter -->
       <p *ngIf="service.questGivenByItem$ | async as qitem">
         <img [src]="'assets/img/quest/' + questStartIcon">
@@ -51,6 +56,7 @@
           <img [src]="'assets/img/quest/' + questEndIcon"> GO End: <strong class="colored">{{ service.mysqlQueryService.getGameObjectNameById(q.id) | async }}</strong> <span class="greyed"> [{{ q.id }}]</span>
         </p>
       </div>
+      <p *ngIf="service.isRepeatable()">Repeatable</p>
       <p>{{ service.sharable }}</p>
 
       <p *ngIf="service.difficultyLevels; let difficulty">
