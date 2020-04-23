@@ -23,7 +23,7 @@
           {{ service.CLASSES_TEXT[c] }} &nbsp;
         </span>
       </p>
-      <p *ngIf="service.getRequiredSkill() | async as skill">
+      <p *ngIf="service.requiredSkill$ | async as skill">
         Profession: <keira-icon *ngIf="!!service.ICON_SKILLS[service.questTemplateAddon.RequiredSkillID]" [skillId]="service.questTemplateAddon.RequiredSkillID" [size]="'small'"></keira-icon> {{ skill }} {{ reqSkillPoint }}
       </p>
       <ng-container *ngIf="{ prev: service.prevQuestList$ | async, next: service.nextQuestList$ | async } as questLists">

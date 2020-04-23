@@ -252,7 +252,7 @@ export class QuestPreviewService {
     return !!(this.questTemplate.Flags & QUEST_FLAG_REPEATABLE || this.questTemplateAddon.SpecialFlags & QUEST_FLAG_SPECIAL_REPEATABLE);
   }
 
-  public getRequiredSkill() {
+  get requiredSkill$(): Promise<string> {
     return this.sqliteQueryService.getSkillNameById(Number(this.questTemplateAddon.RequiredSkillID));
   }
 

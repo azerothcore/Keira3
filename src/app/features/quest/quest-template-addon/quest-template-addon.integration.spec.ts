@@ -108,7 +108,7 @@ describe('QuestTemplateAddon integration tests', () => {
       expect(handlerService.isQuestTemplateAddonUnsaved).toBe(false);
     });
 
-    it('changing a property and executing the query should correctly work', () => {
+    fit('changing a property and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, `PrevQuestID`, `NextQuestID`,' +
         ' `ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`,' +
