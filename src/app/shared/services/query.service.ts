@@ -13,11 +13,7 @@ export abstract class QueryService {
 
   // Input query format must be: SELECT something AS v FROM ...
   queryValue<T extends string | number>(query: string): Observable<T | null> {
-    console.log(query);
-    const test = this.query(query);
-    console.log('TEST');
-    console.log(test);
-    return test.pipe(
+    return this.query(query).pipe(
       map(data => data && data[0] ? data[0].v as T : null),
     );
 

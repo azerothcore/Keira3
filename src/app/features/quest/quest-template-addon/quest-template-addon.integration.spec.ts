@@ -17,10 +17,11 @@ import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 
 class QuestTemplateAddonPage extends EditorPageObject<QuestTemplateAddonComponent> {}
 
-describe('QuestTemplateAddon integration tests', () => {
+fdescribe('QuestTemplateAddon integration tests', () => {
   let component: QuestTemplateAddonComponent;
   let fixture: ComponentFixture<QuestTemplateAddonComponent>;
   let queryService: MysqlQueryService;
+  let sqliteQueryService: SqliteQueryService;
   let querySpy: Spy;
   let handlerService: QuestHandlerService;
   let page: QuestTemplateAddonPage;
@@ -70,8 +71,10 @@ describe('QuestTemplateAddon integration tests', () => {
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
+    sqliteQueryService = TestBed.inject(SqliteQueryService);
     queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of());
+    querySpy = spyOn(queryService, 'query').and.returnValue(of( [{ name: 'Mock SkillName', ID: 123, spellName: 'Mock Spell' }]));
+    spyOn(sqliteQueryService, 'query').and.returnValue(of( [{ name: 'Mock Skill' }]));
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
       creatingNew ? [] : [originalEntity]
@@ -108,7 +111,7 @@ describe('QuestTemplateAddon integration tests', () => {
       expect(handlerService.isQuestTemplateAddonUnsaved).toBe(false);
     });
 
-    fit('changing a property and executing the query should correctly work', () => {
+    it('changing a property and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, `PrevQuestID`, `NextQuestID`,' +
         ' `ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`,' +
@@ -216,11 +219,6 @@ describe('QuestTemplateAddon integration tests', () => {
       //  https://stackoverflow.com/questions/57336982/how-to-make-angular-tests-wait-for-previous-async-operation-to-complete-before-e
 
       const field = 'SourceSpellID';
-      const sqliteQueryService = TestBed.inject(SqliteQueryService);
-      spyOn(sqliteQueryService, 'query').and.returnValue(of(
-        [{ ID: 123, spellName: 'Mock Spell' }]
-      ));
-
       page.clickElement(page.getSelectorBtn(field));
       await page.whenReady();
       page.expectModalDisplayed();
