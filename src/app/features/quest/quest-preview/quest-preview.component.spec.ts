@@ -33,13 +33,20 @@ describe('QuestPreviewComponent', () => {
     return { fixture, component, service };
   }
 
-  it('ngOnInit', async() => {
+  it('ngOnInit should initialise services', () => {
     const { fixture, service } = setup();
     const initializeServicesSpy: Spy = spyOn(service, 'initializeServices');
 
     fixture.detectChanges();
-    await fixture.whenStable();
 
     expect(initializeServicesSpy).toHaveBeenCalledTimes(1);
+    fixture.debugElement.nativeElement.remove();
+  });
+
+  it('should show title, level and required level', () => {
+    const { fixture, service } = setup();
+
+    fixture.detectChanges();
+    fixture.debugElement.nativeElement.remove();
   });
 });
