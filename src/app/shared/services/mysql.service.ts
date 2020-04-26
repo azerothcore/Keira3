@@ -114,8 +114,8 @@ export class MysqlService {
 
       if (this._connection) {
         this._connection.query(queryString, values, this.getQueryCallback<T>(subscriber));
-        /* istanbul ignore next */
-      } else if (this.electronService.isElectron()) {
+        /* istanbul ignore else */
+      } else /* istanbul ignore next */ if (this.electronService.isElectron()) {
         console.error(`_connection was not defined when trying to run query: ${queryString}`);
       }
     });
