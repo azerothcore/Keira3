@@ -32,6 +32,7 @@ export class SqliteService {
     return new Observable<T[]>(subscriber => {
       if (this.db) {
         this.db.all(queryString, this.getQueryCallback(subscriber));
+        /* istanbul ignore next */
       } else if (this.electronService.isElectron()) {
         console.error(`sqite db was not defined when trying to run query: ${queryString}`);
       }
