@@ -4,7 +4,7 @@
 
       <h5 id="title" *ngIf="!!service.title">{{ service.title }}</h5>
       <p id="level" *ngIf="!!service.level">Level: {{ service.level }}</p>
-      <p id="minlevel" *ngIf="!!service.minLevel">Requires level: {{ service.minLevel }} <span *ngIf="showMaxLevel">- {{ service.maxlevel }}</span></p>
+      <p id="minlevel" *ngIf="!!service.minLevel">Requires level: {{ service.minLevel }} <span *ngIf="showMaxLevel">- {{ service.maxLevel }}</span></p>
       <p id="type" *ngIf="!!type">
         Type:
         <span *ngIf="this.service.periodicQuest; let period">{{ period }} </span>

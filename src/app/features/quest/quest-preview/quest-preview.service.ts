@@ -73,7 +73,7 @@ export class QuestPreviewService {
   get sharable(): string { return this.questTemplate.Flags & QUEST_FLAG_SHARABLE ? 'Sharable' : 'Not sharable'; }
 
   // get QuestTemplateAddon values
-  get maxlevel(): string { return String(this.questTemplateAddon.MaxLevel); }
+  get maxLevel(): string { return String(this.questTemplateAddon.MaxLevel); }
   get classes(): number[] { return this.helperService.getRequiredClass(this.questTemplateAddon.AllowableClasses); }
 
   // Item Quest Starter
