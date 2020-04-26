@@ -17,7 +17,7 @@ import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 
 class QuestTemplateAddonPage extends EditorPageObject<QuestTemplateAddonComponent> {}
 
-fdescribe('QuestTemplateAddon integration tests', () => {
+describe('QuestTemplateAddon integration tests', () => {
   let component: QuestTemplateAddonComponent;
   let fixture: ComponentFixture<QuestTemplateAddonComponent>;
   let queryService: MysqlQueryService;
@@ -64,6 +64,7 @@ fdescribe('QuestTemplateAddon integration tests', () => {
       ]
     })
       .compileComponents();
+
   }));
 
   function setup(creatingNew: boolean) {
@@ -73,8 +74,10 @@ fdescribe('QuestTemplateAddon integration tests', () => {
 
     sqliteQueryService = TestBed.inject(SqliteQueryService);
     queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of( [{ name: 'Mock SkillName', ID: 123, spellName: 'Mock Spell' }]));
-    spyOn(sqliteQueryService, 'query').and.returnValue(of( [{ name: 'Mock Skill' }]));
+    querySpy = spyOn(queryService, 'query').and.returnValue(of());
+    spyOn(sqliteQueryService, 'query').and.returnValue(of(
+      [{ ID: 123, spellName: 'Mock Spell' }]
+    ));
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
       creatingNew ? [] : [originalEntity]

@@ -32,6 +32,7 @@ export class QuestPreviewComponent implements OnInit {
     : 'quest_end.gif';
   }
 
+
   get reqSkillPoint() {
     return !!this.service.questTemplateAddon.RequiredSkillPoints && this.service.questTemplateAddon.RequiredSkillPoints > 1
     ? `(${this.service.questTemplateAddon.RequiredSkillPoints})`
