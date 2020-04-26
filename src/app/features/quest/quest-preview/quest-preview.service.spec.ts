@@ -122,7 +122,7 @@ describe('QuestPreviewService', () => {
 
     const maxlevel = 80;
     questTemplateAddonService.form.controls.MaxLevel.setValue(maxlevel);
-    expect(service.maxlevel).toBe(String(maxlevel));
+    expect(service.maxLevel).toBe(String(maxlevel));
 
     questTemplateAddonService.form.controls.AllowableClasses.setValue(240);
     expect(service.classes).toEqual([5, 6, 7, 8]);

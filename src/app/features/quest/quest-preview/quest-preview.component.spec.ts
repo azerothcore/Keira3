@@ -10,7 +10,7 @@ import { PageObject } from '@keira-shared/testing/page-object';
 class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   get title() { return this.query<HTMLHeadElement>('#title'); }
   get level() { return this.query<HTMLParagraphElement>('#level'); }
-  get minlevel() { return this.query<HTMLParagraphElement>('#minlevel'); }
+  get minLevel() { return this.query<HTMLParagraphElement>('#minlevel'); }
 }
 
 describe('QuestPreviewComponent', () => {
@@ -29,8 +29,9 @@ describe('QuestPreviewComponent', () => {
     const service = TestBed.inject(QuestPreviewService);
     const fixture: ComponentFixture<QuestPreviewComponent> = TestBed.createComponent(QuestPreviewComponent);
     const component: QuestPreviewComponent = fixture.componentInstance;
+    const page = new QuestPreviewComponentPage(fixture);
 
-    return { fixture, component, service };
+    return { fixture, component, service, page };
   }
 
   it('ngOnInit should initialise services', () => {
@@ -44,9 +45,21 @@ describe('QuestPreviewComponent', () => {
   });
 
   it('should show title, level and required level', () => {
-    const { fixture, service } = setup();
+    const title = 'MyTitle';
+    const level = '77';
+    const minLevel = '75';
+    const maxLevel = '80';
+    const { fixture, service, page } = setup();
+    spyOnProperty(service, 'title', 'get').and.returnValue(title);
+    spyOnProperty(service, 'level', 'get').and.returnValue(level);
+    spyOnProperty(service, 'minLevel', 'get').and.returnValue(minLevel);
+    spyOnProperty(service, 'maxLevel', 'get').and.returnValue(maxLevel);
 
     fixture.detectChanges();
+
+    expect(page.title.innerText).toContain(title);
+    expect(page.level.innerText).toContain(level);
+    expect(page.minLevel.innerText).toContain(`${minLevel} - ${maxLevel}`);
     fixture.debugElement.nativeElement.remove();
   });
 });
