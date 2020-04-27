@@ -91,6 +91,10 @@
           </li>
         </ul>
       </ng-container>
+
+      <div id="gains">
+        <p id="rewardXP" *ngIf="service.rewardXP | async as xp">- {{ xp }} experience</p>
+      </div>
     </div>
   </perfect-scrollbar>
 </div>

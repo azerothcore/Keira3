@@ -256,4 +256,60 @@ export class QuestPreviewService {
     return this.sqliteQueryService.getSkillNameById(Number(this.questTemplateAddon.RequiredSkillID));
   }
 
+  get rewardXP(): Promise<string> {
+    return this.sqliteQueryService.getRewardXP(this.questTemplate.RewardXPDifficulty, this.questTemplate.QuestLevel);
+  }
+
+  // get gains() {
+  //     $gains = [];
+
+  //     // xp
+  //     if ($_ = $this->subject->getField('rewardXP'))
+  //         $gains['xp'] = $_;
+
+  //     // talent points
+  //     if ($_ = $this->subject->getField('rewardTalents'))
+  //         $gains['tp'] = $_;
+
+  //     // reputation
+  //     for ($i = 1; $i < 6; $i++)
+  //     {
+  //         $fac = $this->subject->getField('rewardFactionId'.$i);
+  //         $qty = $this->subject->getField('rewardFactionValue'.$i);
+  //         if (!$fac || !$qty)
+  //             continue;
+
+  //         $rep = array(
+  //             'qty'  => [$qty, 0],
+  //             'id'   => $fac,
+  //             'name' => FactionList::getName($fac)
+  //         );
+
+  //         if ($cuRates = DB::World()->selectRow('SELECT * FROM reputation_reward_rate WHERE faction = ?d', $fac))
+  //         {
+  //             if ($dailyType = $this->subject->isDaily())
+  //             {
+  //                 if ($dailyType == 1 && $cuRates['quest_daily_rate'] != 1.0)
+  //                     $rep['qty'][1] = $rep['qty'][0] * ($cuRates['quest_daily_rate'] - 1);
+  //                 else if ($dailyType == 2 && $cuRates['quest_weekly_rate'] != 1.0)
+  //                     $rep['qty'][1] = $rep['qty'][0] * ($cuRates['quest_weekly_rate'] - 1);
+  //                 else if ($dailyType == 3 && $cuRates['quest_monthly_rate'] != 1.0)
+  //                     $rep['qty'][1] = $rep['qty'][0] * ($cuRates['quest_monthly_rate'] - 1);
+  //             }
+  //             else if ($this->subject->isRepeatable() && $cuRates['quest_repeatable_rate'] != 1.0)
+  //                 $rep['qty'][1] = $rep['qty'][0] * ($cuRates['quest_repeatable_rate'] - 1);
+  //             else if ($cuRates['quest_rate'] != 1.0)
+  //                 $rep['qty'][1] = $rep['qty'][0] * ($cuRates['quest_rate'] - 1);
+  //         }
+
+  //         $gains['rep'][] = $rep;
+  //     }
+
+  //     // title
+  //     if ($_ = (new TitleList(array(['id', $this->subject->getField('rewardTitleId')])))->getHtmlizedName())
+  //         $gains['title'] = $_;
+
+  //     return $gains;
+  // }
+
 }
