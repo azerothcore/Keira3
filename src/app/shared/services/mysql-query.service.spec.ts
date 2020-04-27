@@ -821,71 +821,28 @@ describe('MysqlQueryService', () => {
       expect(service.queryValue).toHaveBeenCalledTimes(2);
     });
 
-    it('getCreatureNameById', async () => {
-      expect(await service.getCreatureNameById(id)).toEqual(result);
-      expect(await service.getCreatureNameById(id)).toEqual(result); // check cache
-      expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
-      expect(service.queryValue).toHaveBeenCalledWith(
-        `SELECT name AS v FROM creature_template WHERE entry = ${id}`
-      );
-      expect(Object.keys(service['cache']).length).toBe(1);
-      expect(Object.keys(service['cache'])[0]).toBe('getCreatureNameById');
-    });
-
-    it('getCreatureNameByGuid', async () => {
-      expect(await service.getCreatureNameByGuid(guid)).toEqual(result);
-      expect(await service.getCreatureNameByGuid(guid)).toEqual(result); // check cache
-      expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
-      expect(service.queryValue).toHaveBeenCalledWith(
-        `SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id WHERE c.guid = ${guid}`
-      );
-      expect(Object.keys(service['cache']).length).toBe(1);
-      expect(Object.keys(service['cache'])[0]).toBe('getCreatureNameByGuid');
-    });
-
-    it('getGameObjectNameById', async () => {
-      expect(await service.getGameObjectNameById(id)).toEqual(result);
-      expect(await service.getGameObjectNameById(id)).toEqual(result); // check cache
-      expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
-      expect(service.queryValue).toHaveBeenCalledWith(
-        `SELECT name AS v FROM gameobject_template WHERE entry = ${id}`
-      );
-      expect(Object.keys(service['cache']).length).toBe(1);
-      expect(Object.keys(service['cache'])[0]).toBe('getGameObjectNameById');
-    });
-
-    it('getGameObjectNameByGuid', async () => {
-      expect(await service.getGameObjectNameByGuid(guid)).toEqual(result);
-      expect(await service.getGameObjectNameByGuid(guid)).toEqual(result); // check cache
-      expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
-      expect(service.queryValue).toHaveBeenCalledWith(
-        `SELECT name AS v FROM gameobject_template AS gt INNER JOIN gameobject AS g ON gt.entry = g.id WHERE g.guid = ${guid}`
-      );
-      expect(Object.keys(service['cache']).length).toBe(1);
-      expect(Object.keys(service['cache'])[0]).toBe('getGameObjectNameByGuid');
-    });
-
-    it('getQuestTitleById', async () => {
-      expect(await service.getQuestTitleById(id)).toEqual(result);
-      expect(await service.getQuestTitleById(id)).toEqual(result); // check cache
-      expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
-      expect(service.queryValue).toHaveBeenCalledWith(
-        `SELECT LogTitle AS v FROM quest_template WHERE ID = ${id}`
-      );
-      expect(Object.keys(service['cache']).length).toBe(1);
-      expect(Object.keys(service['cache'])[0]).toBe('getQuestTitleById');
-    });
-
-    it('getItemNameById', async () => {
-      expect(await service.getItemNameById(id)).toEqual(result);
-      expect(await service.getItemNameById(id)).toEqual(result); // check cache
-      expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
-      expect(service.queryValue).toHaveBeenCalledWith(
-        `SELECT name AS v FROM item_template WHERE entry = ${id}`
-      );
-      expect(Object.keys(service['cache']).length).toBe(1);
-      expect(Object.keys(service['cache'])[0]).toBe('getItemNameById');
-    });
+    for (const test of [
+      { name: 'getCreatureNameById',     query: `SELECT name AS v FROM creature_template WHERE entry = ${id}` },
+      { name: 'getCreatureNameByGuid',   query: `SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id WHERE c.guid = ${guid}` },
+      { name: 'getGameObjectNameById',   query: `SELECT name AS v FROM gameobject_template WHERE entry = ${id}` },
+      { name: 'getGameObjectNameByGuid', query: `SELECT name AS v FROM gameobject_template AS gt INNER JOIN gameobject AS g ON gt.entry = g.id WHERE g.guid = ${guid}` },
+      { name: 'getQuestTitleById',       query: `SELECT LogTitle AS v FROM quest_template WHERE ID = ${id}` },
+      { name: 'getItemNameById',         query: `SELECT name AS v FROM item_template WHERE entry = ${id}` },
+      { name: 'getPrevQuestById',        query: `SELECT PrevQuestID AS v FROM quest_template_addon WHERE id = ${id}` },
+      { name: 'getItemByStartQuest',     query: `SELECT entry AS v FROM item_template WHERE startquest = ${id}` },
+      { name: 'getItemNameByStartQuest', query: `SELECT name AS v FROM item_template WHERE startquest = ${id}` },
+    ]) {
+      it(test.name, async () => {
+        expect(await service[test.name](id)).toEqual(result);
+        expect(await service[test.name](id)).toEqual(result); // check cache
+        expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
+        expect(service.queryValue).toHaveBeenCalledWith(
+          test.query
+        );
+        expect(Object.keys(service['cache']).length).toBe(1);
+        expect(Object.keys(service['cache'])[0]).toBe(test.name);
+      });
+    }
 
     it('getDisplayIdByItemId (case non-null)', () => {
       service.getDisplayIdByItemId(id).subscribe(res => {
@@ -919,17 +876,6 @@ describe('MysqlQueryService', () => {
       );
     });
 
-    it('getPrevQuestById', async () => {
-      expect(await service.getPrevQuestById(id)).toEqual(result);
-      expect(await service.getPrevQuestById(id)).toEqual(result); // check cache
-      expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
-      expect(service.queryValue).toHaveBeenCalledWith(
-        `SELECT PrevQuestID AS v FROM quest_template_addon WHERE id = ${id}`,
-      );
-      expect(Object.keys(service['cache']).length).toBe(1);
-      expect(Object.keys(service['cache'])[0]).toBe('getPrevQuestById');
-    });
-
     it('getNextQuestById', async () => {
       expect(await service.getNextQuestById(id)).toEqual(result);
       expect(await service.getNextQuestById(id)).toEqual(result); // check cache
@@ -950,28 +896,6 @@ describe('MysqlQueryService', () => {
       );
       expect(Object.keys(service['cache']).length).toBe(1);
       expect(Object.keys(service['cache'])[0]).toBe('getNextQuest1');
-    });
-
-    it('getItemByStartQuest', async () => {
-      expect(await service.getItemByStartQuest(id)).toEqual(result);
-      expect(await service.getItemByStartQuest(id)).toEqual(result); // check cache
-      expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
-      expect(service.queryValue).toHaveBeenCalledWith(
-        `SELECT entry AS v FROM item_template WHERE startquest = ${id}`,
-      );
-      expect(Object.keys(service['cache']).length).toBe(1);
-      expect(Object.keys(service['cache'])[0]).toBe('itemByStartQuest');
-    });
-
-    it('getItemNameByStartQuest', async () => {
-      expect(await service.getItemNameByStartQuest(id)).toEqual(result);
-      expect(await service.getItemNameByStartQuest(id)).toEqual(result); // check cache
-      expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
-      expect(service.queryValue).toHaveBeenCalledWith(
-        `SELECT name AS v FROM item_template WHERE startquest = ${id}`,
-      );
-      expect(Object.keys(service['cache']).length).toBe(1);
-      expect(Object.keys(service['cache'])[0]).toBe('getItemNameByStartQuest');
     });
 
   });
