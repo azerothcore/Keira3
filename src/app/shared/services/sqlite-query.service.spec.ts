@@ -3,7 +3,7 @@ import { of } from 'rxjs';
 
 import { SqliteQueryService } from './sqlite-query.service';
 
-fdescribe('SqliteQueryService', () => {
+describe('SqliteQueryService', () => {
   let service: SqliteQueryService;
 
   beforeEach(() => {
@@ -72,6 +72,8 @@ fdescribe('SqliteQueryService', () => {
         expect(await service[test.name](id)).toEqual(mockResult); // check cache
         expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
         expect(service.queryValue).toHaveBeenCalledWith(test.query);
+        expect(Object.keys(service['cache']).length).toBe(1);
+        expect(Object.keys(service['cache'])[0]).toBe(test.name);
       });
     }
 
