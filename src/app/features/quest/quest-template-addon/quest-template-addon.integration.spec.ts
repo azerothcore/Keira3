@@ -21,6 +21,7 @@ describe('QuestTemplateAddon integration tests', () => {
   let component: QuestTemplateAddonComponent;
   let fixture: ComponentFixture<QuestTemplateAddonComponent>;
   let queryService: MysqlQueryService;
+  let sqliteQueryService: SqliteQueryService;
   let querySpy: Spy;
   let handlerService: QuestHandlerService;
   let page: QuestTemplateAddonPage;
@@ -63,6 +64,7 @@ describe('QuestTemplateAddon integration tests', () => {
       ]
     })
       .compileComponents();
+
   }));
 
   function setup(creatingNew: boolean) {
@@ -70,8 +72,12 @@ describe('QuestTemplateAddon integration tests', () => {
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
+    sqliteQueryService = TestBed.inject(SqliteQueryService);
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
+    spyOn(sqliteQueryService, 'query').and.returnValue(of(
+      [{ ID: 123, spellName: 'Mock Spell' }]
+    ));
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
       creatingNew ? [] : [originalEntity]
@@ -216,11 +222,6 @@ describe('QuestTemplateAddon integration tests', () => {
       //  https://stackoverflow.com/questions/57336982/how-to-make-angular-tests-wait-for-previous-async-operation-to-complete-before-e
 
       const field = 'SourceSpellID';
-      const sqliteQueryService = TestBed.inject(SqliteQueryService);
-      spyOn(sqliteQueryService, 'query').and.returnValue(of(
-        [{ ID: 123, spellName: 'Mock Spell' }]
-      ));
-
       page.clickElement(page.getSelectorBtn(field));
       await page.whenReady();
       page.expectModalDisplayed();

@@ -22,7 +22,11 @@ import { GameobjectQuestender } from '@keira-shared/types/gameobject-questender.
 import { QuestTemplateAddon } from '@keira-types/quest-template-addon.type';
 import { DifficultyLevel } from './quest-preview.model';
 import { RACES_TEXT, CLASSES_TEXT } from '@keira-shared/constants/preview';
-import { QUEST_FLAG_DAILY, QUEST_FLAG_WEEKLY, QUEST_FLAG_SPECIAL_MONTHLY, QUEST_INFO } from '@keira-shared/constants/quest-preview';
+import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import {
+  QUEST_FLAG_DAILY, QUEST_FLAG_WEEKLY, QUEST_FLAG_SPECIAL_MONTHLY, QUEST_INFO,
+  QUEST_FLAG_REPEATABLE, QUEST_FLAG_SPECIAL_REPEATABLE, ICON_SKILLS
+} from '@keira-shared/constants/quest-preview';
 
 @Injectable()
 export class QuestPreviewService {
@@ -35,6 +39,7 @@ export class QuestPreviewService {
   constructor(
     private readonly helperService: PreviewHelperService,
     public readonly mysqlQueryService: MysqlQueryService,
+    private readonly sqliteQueryService: SqliteQueryService,
     private readonly questHandlerService: QuestHandlerService,
     private readonly questTemplateService: QuestTemplateService,
     private readonly questRequestItemsService: QuestRequestItemsService,
@@ -48,6 +53,7 @@ export class QuestPreviewService {
   readonly RACES_TEXT = RACES_TEXT;
   readonly CLASSES_TEXT = CLASSES_TEXT;
   readonly QUEST_INFO = QUEST_INFO;
+  readonly ICON_SKILLS = ICON_SKILLS;
 
   // get form value
   get questTemplate(): QuestTemplate { return this.questTemplateService.form.getRawValue(); }
@@ -241,4 +247,13 @@ export class QuestPreviewService {
   private getEnabledByQuestName(): Promise<string> {
     return this.mysqlQueryService.getQuestTitleById(this.getEnabledByQuestId());
   }
+
+  public isRepeatable(): boolean {
+    return !!(this.questTemplate.Flags & QUEST_FLAG_REPEATABLE || this.questTemplateAddon.SpecialFlags & QUEST_FLAG_SPECIAL_REPEATABLE);
+  }
+
+  get requiredSkill$(): Promise<string> {
+    return this.sqliteQueryService.getSkillNameById(Number(this.questTemplateAddon.RequiredSkillID));
+  }
+
 }

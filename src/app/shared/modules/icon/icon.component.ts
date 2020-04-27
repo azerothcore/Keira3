@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { IconService } from '@keira-shared/modules/icon/icon.service';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
+import { ICON_SKILLS } from '@keira-shared/constants/quest-preview';
 
 @Component({
   selector: 'keira-icon',
@@ -21,6 +22,11 @@ export class IconComponent extends SubscriptionHandler {
   @Input() set itemDisplayId(displayId: string | number) {
     if (!!displayId) {
       this.subscriptions.push(this.service.getIconByItemDisplayId(displayId).subscribe(this.setIcon.bind(this)));
+    }
+  }
+  @Input() set skillId(skillId: string | number) {
+    if (!!skillId && !!ICON_SKILLS[skillId]) {
+      this.setIcon(ICON_SKILLS[skillId]);
     }
   }
 
