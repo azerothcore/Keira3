@@ -84,6 +84,18 @@ describe('SqliteQueryService', () => {
       expect(service.query).toHaveBeenCalledTimes(1); // check cache
       expect(service.query).toHaveBeenCalledWith(`SELECT * FROM lock WHERE id = ${id}`);
     });
+
+    it('getRewardXP', async () => {
+      expect(await service.getRewardXP(id, 2)).toEqual(mockResult);
+      expect(await service.getRewardXP(id, 2)).toEqual(mockResult); // check cache
+      expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
+      expect(service.queryValue).toHaveBeenCalledWith(
+        `SELECT field${Number(id) + 1} AS v FROM questxp WHERE id = 2`
+      );
+      expect(Object.keys(service['cache']).length).toBe(1);
+      expect(Object.keys(service['cache'])[0]).toBe('getRewardXP');
+    });
+
   });
 
 });
