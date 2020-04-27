@@ -836,9 +836,7 @@ describe('MysqlQueryService', () => {
         expect(await service[test.name](id)).toEqual(result);
         expect(await service[test.name](id)).toEqual(result); // check cache
         expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
-        expect(service.queryValue).toHaveBeenCalledWith(
-          test.query
-        );
+        expect(service.queryValue).toHaveBeenCalledWith(test.query);
         expect(Object.keys(service['cache']).length).toBe(1);
         expect(Object.keys(service['cache'])[0]).toBe(test.name);
       });
