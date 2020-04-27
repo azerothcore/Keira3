@@ -7,12 +7,14 @@ import { PageObject } from '@keira-testing/page-object';
 import { IconService } from '@keira-shared/modules/icon/icon.service';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
+import { ICON_SKILLS } from '@keira-shared/constants/quest-preview';
 
 @Component({
   template: `<keira-icon
     [size]="size"
     [itemId]="itemId"
     [itemDisplayId]="itemDisplayId"
+    [skillId]="skillId"
   ></keira-icon>`
 })
 class TestHostComponent {
@@ -20,6 +22,7 @@ class TestHostComponent {
   size: string;
   itemId: string;
   itemDisplayId: string;
+  skillId: string;
 }
 
 class IconComponentPage extends PageObject<TestHostComponent> {
@@ -70,6 +73,18 @@ describe('ItemIconComponent', () => {
 
       expect(page.img.src).toEqual('https://wow.zamimg.com/images/wow/icons/large/getIconByItemDisplayId-5678.jpg');
     });
+
+    it('skillId', () => {
+      const { page, host } = setup();
+      const skillId = 755; // Jewelcrafting
+      host.size = 'large';
+      host.skillId = String(skillId);
+
+      page.detectChanges();
+
+      expect(page.img.src).toEqual(`https://wow.zamimg.com/images/wow/icons/large/${ICON_SKILLS[skillId]}.jpg`);
+    });
+
 
     it('empty', () => {
       const { page, host, service } = setup();
