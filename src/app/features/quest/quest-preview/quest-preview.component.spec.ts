@@ -20,6 +20,8 @@ class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   get classes() { return this.query<HTMLParagraphElement>('#classes'); }
   get requiredSkill() { return this.query<HTMLParagraphElement>('#requiredSkill'); }
   get racesElement() { return this.fixture.nativeElement.querySelector('#races'); }
+  get rewardXP() { return this.query<HTMLParagraphElement>('#rewardXP'); }
+  get rewardTalents() { return this.query<HTMLParagraphElement>('#rewardTalents'); }
 }
 
 describe('QuestPreviewComponent', () => {
@@ -155,4 +157,31 @@ describe('QuestPreviewComponent', () => {
 
     fixture.debugElement.nativeElement.remove();
   });
+
+  it('should show rewardXP', async() => {
+    const { fixture, service, page, questTemplateService } = setup();
+    spyOnProperty(service, 'rewardXP$', 'get').and.returnValue(Promise.resolve('200'));
+    questTemplateService.form.controls.RewardXPDifficulty.setValue(2);
+    questTemplateService.form.controls.QuestLevel.setValue(10);
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(page.rewardXP.innerText).toContain('200');
+
+    fixture.debugElement.nativeElement.remove();
+  });
+
+  it('should show RewardTalents', () => {
+    const { fixture, page, questTemplateService } = setup();
+    questTemplateService.form.controls.RewardTalents.setValue(2);
+
+    fixture.detectChanges();
+
+    expect(page.rewardTalents.innerText).toContain('2 talent points');
+
+    fixture.debugElement.nativeElement.remove();
+  });
+
 });

@@ -83,4 +83,10 @@ export class SqliteQueryService extends QueryService {
   getLockById(id: string | number): Promise<Lock[]> {
     return this.queryToPromiseCached<Lock>('getLockById', String(id), `SELECT * FROM lock WHERE id = ${id}`);
   }
+
+  getRewardXP(RewardXPDifficulty: string | number, QuestLevel: string | number): Promise<string> {
+    return this.queryValueToPromiseCached<string>(
+      'getRewardXP', String(RewardXPDifficulty) + String(QuestLevel), `SELECT field${Number(RewardXPDifficulty) + 1} AS v FROM questxp WHERE id = ${QuestLevel}`
+    );
+  }
 }

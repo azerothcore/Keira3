@@ -93,7 +93,9 @@
       </ng-container>
 
       <div id="gains">
-        <p id="rewardXP" *ngIf="service.rewardXP | async as xp">- {{ xp }} experience</p>
+        <p class="title">Gains</p>
+        <p id="rewardXP" *ngIf="service.rewardXP$ | async as xp">• {{ xp }} experience</p>
+        <p id="rewardTalents" *ngIf="service.questTemplate.RewardTalents">• {{ service.questTemplate.RewardTalents }} talent points</p>
       </div>
     </div>
   </perfect-scrollbar>

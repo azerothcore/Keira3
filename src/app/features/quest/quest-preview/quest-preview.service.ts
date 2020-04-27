@@ -256,7 +256,7 @@ export class QuestPreviewService {
     return this.sqliteQueryService.getSkillNameById(Number(this.questTemplateAddon.RequiredSkillID));
   }
 
-  get rewardXP(): Promise<string> {
+  get rewardXP$(): Promise<string> {
     return this.sqliteQueryService.getRewardXP(this.questTemplate.RewardXPDifficulty, this.questTemplate.QuestLevel);
   }
 

@@ -14,7 +14,8 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { of } from 'rxjs';
 import { DifficultyLevel } from './quest-preview.model';
-import { QUEST_FLAG_DAILY, QUEST_FLAG_WEEKLY, QUEST_FLAG_SPECIAL_MONTHLY } from '@keira-shared/constants/quest-preview';
+import { QUEST_FLAG_DAILY, QUEST_FLAG_WEEKLY, QUEST_FLAG_SPECIAL_MONTHLY, QUEST_FLAG_SPECIAL_REPEATABLE, QUEST_FLAG_REPEATABLE } from '@keira-shared/constants/quest-preview';
+import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 
 describe('QuestPreviewService', () => {
 
@@ -33,6 +34,7 @@ describe('QuestPreviewService', () => {
   const setup = () => {
     const service = TestBed.inject(QuestPreviewService);
     const mysqlQueryService = TestBed.inject(MysqlQueryService);
+    const sqliteQueryService = TestBed.inject(SqliteQueryService);
     const questTemplateService = TestBed.inject(QuestTemplateService);
     const questTemplateAddonService = TestBed.inject(QuestTemplateAddonService);
     const questRequestItemsService = TestBed.inject(QuestRequestItemsService);
@@ -53,6 +55,7 @@ describe('QuestPreviewService', () => {
     return {
       service,
       mysqlQueryService,
+      sqliteQueryService,
       questTemplateService,
       questTemplateAddonService,
       questRequestItemsService,
@@ -145,6 +148,29 @@ describe('QuestPreviewService', () => {
     expect(mysqlQueryService.getItemByStartQuest).toHaveBeenCalledWith(mockID);
     expect(mysqlQueryService.getItemNameByStartQuest).toHaveBeenCalledTimes(1);
     expect(mysqlQueryService.getItemNameByStartQuest).toHaveBeenCalledWith(mockID);
+  });
+
+  it('sqliteQuery', async() => {
+    const { service, sqliteQueryService, questTemplateService, questTemplateAddonService } = setup();
+    const mockSkillName = 'Mock Skill';
+    const mockSkill = 755;
+    const mockRewardXP = '450';
+    const mockDifficulty = 1;
+    const mockQuestLevel = 2;
+    questTemplateAddonService.form.controls.RequiredSkillID.setValue(mockSkill);
+    questTemplateService.form.controls.RewardXPDifficulty.setValue(mockDifficulty);
+    questTemplateService.form.controls.QuestLevel.setValue(mockQuestLevel);
+
+    spyOn(sqliteQueryService, 'getSkillNameById').and.callFake(() => Promise.resolve(mockSkillName));
+    spyOn(sqliteQueryService, 'getRewardXP').and.callFake(() => Promise.resolve(mockRewardXP));
+
+    expect(await service.requiredSkill$).toBe(mockSkillName);
+    expect(await service.rewardXP$).toBe(mockRewardXP);
+
+    expect(sqliteQueryService.getSkillNameById).toHaveBeenCalledTimes(1);
+    expect(sqliteQueryService.getSkillNameById).toHaveBeenCalledWith(mockSkill);
+    expect(sqliteQueryService.getRewardXP).toHaveBeenCalledTimes(1);
+    expect(sqliteQueryService.getRewardXP).toHaveBeenCalledWith(mockDifficulty, mockQuestLevel);
   });
 
   it('difficultyLevels', () => {
@@ -358,5 +384,17 @@ describe('QuestPreviewService', () => {
     expect(await service.enabledByQuestTitle$).toEqual(`Title${id}`);
     expect(mysqlQueryService.getQuestTitleById).toHaveBeenCalledTimes(1);
     expect(mysqlQueryService.getQuestTitleById).toHaveBeenCalledWith(id);
+  });
+
+  it('isRepeatable', () => {
+    const { service, questTemplateService, questTemplateAddonService } = setup();
+
+    expect(service.isRepeatable()).toBe(false);
+
+    questTemplateAddonService.form.controls.SpecialFlags.setValue(QUEST_FLAG_SPECIAL_REPEATABLE);
+    expect(service.isRepeatable()).toBe(true);
+
+    questTemplateService.form.controls.Flags.setValue(QUEST_FLAG_REPEATABLE);
+    expect(service.isRepeatable()).toBe(true);
   });
 });
