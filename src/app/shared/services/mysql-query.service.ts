@@ -384,7 +384,9 @@ export class MysqlQueryService extends QueryService {
   }
 
   getItemByStartQuest(id: string|number): Promise<string> {
-    return this.queryValueToPromiseCached('itemByStartQuest', String(id), `SELECT entry AS v FROM item_template WHERE startquest = ${id}`);
+    return this.queryValueToPromiseCached(
+      'getItemByStartQuest', String(id), `SELECT entry AS v FROM item_template WHERE startquest = ${id}`
+    );
   }
 
   getItemNameByStartQuest(id: string|number): Promise<string> {
