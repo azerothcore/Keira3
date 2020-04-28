@@ -46,13 +46,13 @@ describe('QuestPreviewComponent', () => {
   }
 
   it('ngOnInit should initialise services', () => {
-    const { fixture, service } = setup();
+    const { fixture, service, page } = setup();
     const initializeServicesSpy: Spy = spyOn(service, 'initializeServices');
 
     fixture.detectChanges();
 
     expect(initializeServicesSpy).toHaveBeenCalledTimes(1);
-    fixture.debugElement.nativeElement.remove();
+    page.removeElement();
   });
 
   it('should show title, level and required level', () => {
@@ -71,7 +71,7 @@ describe('QuestPreviewComponent', () => {
     expect(page.title.innerText).toContain(title);
     expect(page.level.innerText).toContain(level);
     expect(page.minLevel.innerText).toContain(`${minLevel} - ${maxLevel}`);
-    fixture.debugElement.nativeElement.remove();
+    page.removeElement();
   });
 
   it('should show questStart and questEnd icons', () => {
@@ -91,8 +91,7 @@ describe('QuestPreviewComponent', () => {
 
     expect(page.startIcon.src).toContain('assets/img/quest/quest_start_daily.gif');
     expect(page.endIcon.src).toContain('assets/img/quest/quest_end_daily.gif');
-
-    fixture.debugElement.nativeElement.remove();
+    page.removeElement();
   });
 
   it('should show questType', () => {
@@ -104,8 +103,7 @@ describe('QuestPreviewComponent', () => {
 
     expect(page.questType.innerText).toContain('Daily');
     expect(page.questType.innerText).toContain('PvP');
-
-    fixture.debugElement.nativeElement.remove();
+    page.removeElement();
   });
 
   it('should show showRaces', () => {
@@ -122,8 +120,7 @@ describe('QuestPreviewComponent', () => {
     sideSpy.and.returnValue('Alliance');
     fixture.detectChanges();
     expect(page.racesElement).toBeFalsy();
-
-    fixture.debugElement.nativeElement.remove();
+    page.removeElement();
   });
 
   it('should show showClasses', () => {
@@ -134,8 +131,7 @@ describe('QuestPreviewComponent', () => {
 
     expect(page.classes.innerText).toContain('Paladin');
     expect(page.classes.innerText).toContain('Rogue');
-
-    fixture.debugElement.nativeElement.remove();
+    page.removeElement();
   });
 
   it('should show required skill', async() => {
@@ -152,7 +148,6 @@ describe('QuestPreviewComponent', () => {
     questTemplateAddonService.form.controls.RequiredSkillPoints.setValue(10);
     fixture.detectChanges();
     expect(page.requiredSkill.innerText).toContain('(10)');
-
-    fixture.debugElement.nativeElement.remove();
+    page.removeElement();
   });
 });

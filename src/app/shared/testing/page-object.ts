@@ -25,6 +25,10 @@ export abstract class PageObject<ComponentType> {
     this.fixture.detectChanges();
   }
 
+  removeElement() {
+    this.fixture.debugElement.nativeElement.remove();
+  }
+
   query<T extends HTMLElement>(selector: string, assert = true): T {
     const element: T = this.fixture.nativeElement.querySelector(selector);
 
