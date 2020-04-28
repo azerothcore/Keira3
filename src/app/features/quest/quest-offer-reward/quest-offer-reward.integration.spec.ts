@@ -1,7 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import Spy = jasmine.Spy;
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { QuestOfferRewardComponent } from './quest-offer-reward.component';
@@ -14,12 +13,6 @@ import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 class QuestOfferRewardPage extends EditorPageObject<QuestOfferRewardComponent> {}
 
 describe('QuestOfferReward integration tests', () => {
-  let component: QuestOfferRewardComponent;
-  let fixture: ComponentFixture<QuestOfferRewardComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: QuestHandlerService;
-  let page: QuestOfferRewardPage;
 
   const id = 1234;
   const expectedFullCreateQuery = 'DELETE FROM `quest_offer_reward` WHERE (`ID` = 1234);\n' +
@@ -50,12 +43,12 @@ describe('QuestOfferReward integration tests', () => {
   }));
 
   function setup(creatingNew: boolean) {
-    handlerService = TestBed.inject(QuestHandlerService);
+    const handlerService = TestBed.inject(QuestHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of());
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
       creatingNew ? [] : [originalEntity]
@@ -67,32 +60,38 @@ describe('QuestOfferReward integration tests', () => {
       initializeServicesSpy.and.callThrough();
     }
 
-    fixture = TestBed.createComponent(QuestOfferRewardComponent);
-    component = fixture.componentInstance;
-    page = new QuestOfferRewardPage(fixture);
+    const fixture = TestBed.createComponent(QuestOfferRewardComponent);
+    const component = fixture.componentInstance;
+    const page = new QuestOfferRewardPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+
+    return { originalEntity, handlerService, queryService, querySpy, initializeServicesSpy, fixture, component, page };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
 
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
+      page.removeElement();
     });
 
     it('should correctly update the unsaved status', () => {
+      const { page, handlerService } = setup(true);
       const field = 'Emote1';
       expect(handlerService.isQuestOfferRewardUnsaved).toBe(false);
       page.setInputValueById(field, 3);
       expect(handlerService.isQuestOfferRewardUnsaved).toBe(true);
       page.setInputValueById(field, 0);
       expect(handlerService.isQuestOfferRewardUnsaved).toBe(false);
+      page.removeElement();
     });
 
     it('changing a property and executing the query should correctly work', () => {
+      const { page, querySpy } = setup(true);
       const expectedQuery = 'DELETE FROM `quest_offer_reward` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `quest_offer_reward` (`ID`, `Emote1`, `Emote2`, `Emote3`, `Emote4`, ' +
         '`EmoteDelay1`, `EmoteDelay2`, `EmoteDelay3`, `EmoteDelay4`, `RewardText`, `VerifiedBuild`) VALUES\n' +
@@ -105,22 +104,25 @@ describe('QuestOfferReward integration tests', () => {
       page.expectFullQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      page.removeElement();
     });
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
 
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain('DELETE FROM `quest_offer_reward` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `quest_offer_reward` (`ID`, `Emote1`, `Emote2`, `Emote3`, `Emote4`, ' +
         '`EmoteDelay1`, `EmoteDelay2`, `EmoteDelay3`, `EmoteDelay4`, `RewardText`, `VerifiedBuild`) VALUES\n' +
         '(1234, 2, 3, 4, 5, 6, 7, 8, 9, \'10\', 0);');
+      page.removeElement();
     });
 
     it('changing all properties and executing the query should correctly work', () => {
+      const { page, querySpy } = setup(false);
       const expectedQuery = 'UPDATE `quest_offer_reward` SET `Emote1` = 0, `Emote2` = 1, `Emote3` = 2, `Emote4` = 3, ' +
         '`EmoteDelay1` = 4, `EmoteDelay2` = 5, `EmoteDelay3` = 6, `EmoteDelay4` = 7, `RewardText` = \'8\' WHERE (`ID` = 1234);';
       querySpy.calls.reset();
@@ -131,9 +133,11 @@ describe('QuestOfferReward integration tests', () => {
       page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      page.removeElement();
     });
 
     it('changing values should correctly update the queries', () => {
+      const { page } = setup(false);
       page.setInputValueById('Emote1', '11');
       page.expectDiffQueryToContain(
         'UPDATE `quest_offer_reward` SET `Emote1` = 11 WHERE (`ID` = 1234);'
@@ -155,9 +159,11 @@ describe('QuestOfferReward integration tests', () => {
         '`EmoteDelay1`, `EmoteDelay2`, `EmoteDelay3`, `EmoteDelay4`, `RewardText`, `VerifiedBuild`) VALUES\n' +
         '(1234, 11, 22, 4, 5, 6, 7, 8, 9, \'10\', 0);'
       );
+      page.removeElement();
     });
 
     it('changing a value via SingleValueSelector should correctly work', async () => {
+      const { page } = setup(false);
       const field = 'Emote1';
       page.clickElement(page.getSelectorBtn(field));
 
@@ -180,6 +186,7 @@ describe('QuestOfferReward integration tests', () => {
         '`EmoteDelay1`, `EmoteDelay2`, `EmoteDelay3`, `EmoteDelay4`, `RewardText`, `VerifiedBuild`) VALUES\n' +
         '(1234, 4, 3, 4, 5, 6, 7, 8, 9, \'10\', 0);'
       );
+      page.removeElement();
     });
   });
 });
