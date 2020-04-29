@@ -1,7 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import Spy = jasmine.Spy;
 
 import { CreatureQuestenderComponent } from './creature-questender.component';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
@@ -14,22 +13,7 @@ import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 class CreatureQuestenderPage extends MultiRowEditorPageObject<CreatureQuestenderComponent> {}
 
 describe('CreatureQuestender integration tests', () => {
-  let component: CreatureQuestenderComponent;
-  let fixture: ComponentFixture<CreatureQuestenderComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: QuestHandlerService;
-  let page: CreatureQuestenderPage;
-
   const id = 1234;
-
-  const originalRow0 = new CreatureQuestender();
-  const originalRow1 = new CreatureQuestender();
-  const originalRow2 = new CreatureQuestender();
-  originalRow0.quest = originalRow1.quest = originalRow2.quest = id;
-  originalRow0.id = 0;
-  originalRow1.id = 1;
-  originalRow2.id = 2;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -42,12 +26,20 @@ describe('CreatureQuestender integration tests', () => {
   }));
 
   function setup(creatingNew: boolean) {
-    handlerService = TestBed.inject(QuestHandlerService);
+    const originalRow0 = new CreatureQuestender();
+    const originalRow1 = new CreatureQuestender();
+    const originalRow2 = new CreatureQuestender();
+    originalRow0.quest = originalRow1.quest = originalRow2.quest = id;
+    originalRow0.id = 0;
+    originalRow1.id = 1;
+    originalRow2.id = 2;
+
+    const handlerService = TestBed.inject(QuestHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of());
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of());
     spyOn(queryService, 'queryValue').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
@@ -60,18 +52,18 @@ describe('CreatureQuestender integration tests', () => {
       initializeServicesSpy.and.callThrough();
     }
 
-    fixture = TestBed.createComponent(CreatureQuestenderComponent);
-    component = fixture.componentInstance;
-    page = new CreatureQuestenderPage(fixture);
+    const fixture = TestBed.createComponent(CreatureQuestenderComponent);
+    const component = fixture.componentInstance;
+    const page = new CreatureQuestenderPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+
+    return { handlerService, queryService, querySpy, fixture, component, page };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
-
-
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.formError.hidden).toBe(true);
@@ -79,17 +71,21 @@ describe('CreatureQuestender integration tests', () => {
       expect(page.deleteSelectedRowBtn.disabled).toBe(true);
       expect(page.getInputById('id').disabled).toBe(true);
       expect(page.getEditorTableRowsCount()).toBe(0);
+      page.removeElement();
     });
 
     it('should correctly update the unsaved status', () => {
+      const { page, handlerService } = setup(true);
       expect(handlerService.isCreatureQuestenderUnsaved).toBe(false);
       page.addNewRow();
       expect(handlerService.isCreatureQuestenderUnsaved).toBe(true);
       page.deleteRow();
       expect(handlerService.isCreatureQuestenderUnsaved).toBe(false);
+      page.removeElement();
     });
 
     it('adding new rows and executing the query should correctly work', () => {
+      const { page, querySpy } = setup(true);
       const expectedQuery = 'DELETE FROM `creature_questender` WHERE (`quest` = 1234) AND (`id` IN (0, 1, 2));\n' +
         'INSERT INTO `creature_questender` (`id`, `quest`) VALUES\n' +
         '(0, 1234),\n' +
@@ -108,9 +104,11 @@ describe('CreatureQuestender integration tests', () => {
       page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      page.removeElement();
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_questender` WHERE (`quest` = 1234) AND (`id` IN (0));\n' +
@@ -134,13 +132,13 @@ describe('CreatureQuestender integration tests', () => {
         'INSERT INTO `creature_questender` (`id`, `quest`) VALUES\n' +
         '(1, 1234);'
       );
+      page.removeElement();
     });
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
@@ -150,9 +148,11 @@ describe('CreatureQuestender integration tests', () => {
         '(1, 1234),\n' +
         '(2, 1234);\n');
       expect(page.getEditorTableRowsCount()).toBe(3);
+      page.removeElement();
     });
 
     it('deleting rows should correctly work', () => {
+      const { page } = setup(false);
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.expectDiffQueryToContain(
@@ -182,9 +182,11 @@ describe('CreatureQuestender integration tests', () => {
         'DELETE FROM `creature_questender` WHERE `quest` = 1234;'
       );
       page.expectFullQueryToBeEmpty();
+      page.removeElement();
     });
 
     it('editing existing rows should correctly work', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(1);
       page.setInputValueById('id', 111);
 
@@ -200,9 +202,11 @@ describe('CreatureQuestender integration tests', () => {
         '(111, 1234),\n' +
         '(2, 1234);\n'
       );
+      page.removeElement();
     });
 
     it('combining add, edit and delete should correctly work', () => {
+      const { page } = setup(false);
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
 
@@ -226,13 +230,16 @@ describe('CreatureQuestender integration tests', () => {
         '(10, 1234),\n' +
         '(3, 1234);\n'
       );
+      page.removeElement();
     });
 
     it('using the same row id for multiple rows should correctly show an error', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(2);
       page.setInputValueById('id', 0);
 
       page.expectUniqueError();
+      page.removeElement();
     });
   });
 });
