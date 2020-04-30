@@ -13,7 +13,7 @@ import { QUEST_FLAG_SHARABLE } from '@keira-shared/constants/flags/quest-flags';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { EditorService } from '@keira-shared/abstract/service/editors/editor.service';
 import { TableRow } from '@keira-types/general';
-import { Quest } from './quest-preview.model';
+import { Quest, QuestReputationReward } from './quest-preview.model';
 import { QuestTemplate } from '@keira-shared/types/quest-template.type';
 import { CreatureQueststarter } from '@keira-shared/types/creature-queststarter.type';
 import { GameobjectQueststarter } from '@keira-shared/types/gameobject-queststarter.type';
@@ -25,8 +25,10 @@ import { RACES_TEXT, CLASSES_TEXT } from '@keira-shared/constants/preview';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import {
   QUEST_FLAG_DAILY, QUEST_FLAG_WEEKLY, QUEST_FLAG_SPECIAL_MONTHLY, QUEST_INFO,
-  QUEST_FLAG_REPEATABLE, QUEST_FLAG_SPECIAL_REPEATABLE, ICON_SKILLS
+  QUEST_FLAG_REPEATABLE, QUEST_FLAG_SPECIAL_REPEATABLE, ICON_SKILLS, QUEST_PERIOD
 } from '@keira-shared/constants/quest-preview';
+import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
 
 @Injectable()
 export class QuestPreviewService {
@@ -39,7 +41,7 @@ export class QuestPreviewService {
   constructor(
     private readonly helperService: PreviewHelperService,
     public readonly mysqlQueryService: MysqlQueryService,
-    private readonly sqliteQueryService: SqliteQueryService,
+    public readonly sqliteQueryService: SqliteQueryService,
     private readonly questHandlerService: QuestHandlerService,
     private readonly questTemplateService: QuestTemplateService,
     private readonly questRequestItemsService: QuestRequestItemsService,
@@ -140,20 +142,20 @@ export class QuestPreviewService {
 
   get periodicQuest(): string { return this.getPeriodicQuest(); }
 
-  private getPeriodicQuest(): string {
+  private getPeriodicQuest(): QUEST_PERIOD {
     const flags = this.questTemplate.Flags;
     const specialFlags = this.questTemplateAddon.SpecialFlags;
 
     if (flags & QUEST_FLAG_DAILY) {
-      return 'Daily';
+      return QUEST_PERIOD.DAILY;
     }
 
     if (flags & QUEST_FLAG_WEEKLY) {
-     return 'Weekly';
+     return QUEST_PERIOD.WEEKLY;
     }
 
     if (specialFlags & QUEST_FLAG_SPECIAL_MONTHLY) {
-      return 'Monthly';
+      return QUEST_PERIOD.MONTHLY;
     }
 
     return null;
@@ -260,56 +262,45 @@ export class QuestPreviewService {
     return this.sqliteQueryService.getRewardXP(this.questTemplate.RewardXPDifficulty, this.questTemplate.QuestLevel);
   }
 
-  // get gains() {
-  //     $gains = [];
+  getRewardReputation(field: string | number): Observable<number> {
+    console.log('TEST');
+    const faction = this.questTemplate[`RewardFactionID${field}`];
+    const value = this.questTemplate[`RewardFactionValue${field}`];
 
-  //     // xp
-  //     if ($_ = $this->subject->getField('rewardXP'))
-  //         $gains['xp'] = $_;
+    if (!faction || !value) {
+      return null;
+    }
 
-  //     // talent points
-  //     if ($_ = $this->subject->getField('rewardTalents'))
-  //         $gains['tp'] = $_;
+    return this.mysqlQueryService.getReputationRewardByFaction(faction).pipe(
+      map((reputationReward: QuestReputationReward[]) => {
 
-  //     // reputation
-  //     for ($i = 1; $i < 6; $i++)
-  //     {
-  //         $fac = $this->subject->getField('rewardFactionId'.$i);
-  //         $qty = $this->subject->getField('rewardFactionValue'.$i);
-  //         if (!$fac || !$qty)
-  //             continue;
+        const dailyType = this.getPeriodicQuest();
 
-  //         $rep = array(
-  //             'qty'  => [$qty, 0],
-  //             'id'   => $fac,
-  //             'name' => FactionList::getName($fac)
-  //         );
+        if (!!dailyType) {
+          if (dailyType === QUEST_PERIOD.DAILY  && reputationReward[0].quest_daily_rate !== 1) {
+            return (Number(value) * (reputationReward[0].quest_daily_rate - 1));
+          }
 
-  //         if ($cuRates = DB::World()->selectRow('SELECT * FROM reputation_reward_rate WHERE faction = ?d', $fac))
-  //         {
-  //             if ($dailyType = $this->subject->isDaily())
-  //             {
-  //                 if ($dailyType == 1 && $cuRates['quest_daily_rate'] != 1.0)
-  //                     $rep['qty'][1] = $rep['qty'][0] * ($cuRates['quest_daily_rate'] - 1);
-  //                 else if ($dailyType == 2 && $cuRates['quest_weekly_rate'] != 1.0)
-  //                     $rep['qty'][1] = $rep['qty'][0] * ($cuRates['quest_weekly_rate'] - 1);
-  //                 else if ($dailyType == 3 && $cuRates['quest_monthly_rate'] != 1.0)
-  //                     $rep['qty'][1] = $rep['qty'][0] * ($cuRates['quest_monthly_rate'] - 1);
-  //             }
-  //             else if ($this->subject->isRepeatable() && $cuRates['quest_repeatable_rate'] != 1.0)
-  //                 $rep['qty'][1] = $rep['qty'][0] * ($cuRates['quest_repeatable_rate'] - 1);
-  //             else if ($cuRates['quest_rate'] != 1.0)
-  //                 $rep['qty'][1] = $rep['qty'][0] * ($cuRates['quest_rate'] - 1);
-  //         }
+          if (dailyType === QUEST_PERIOD.WEEKLY && reputationReward[0].quest_weekly_rate !== 1) {
+            return Number(value) * (reputationReward[0].quest_weekly_rate - 1);
+          }
 
-  //         $gains['rep'][] = $rep;
-  //     }
+          if (dailyType === QUEST_PERIOD.MONTHLY && reputationReward[0].quest_monthly_rate !== 1) {
+            return Number(value) * (reputationReward[0].quest_monthly_rate - 1);
+          }
+        }
 
-  //     // title
-  //     if ($_ = (new TitleList(array(['id', $this->subject->getField('rewardTitleId')])))->getHtmlizedName())
-  //         $gains['title'] = $_;
+        if (this.isRepeatable() && reputationReward[0].quest_repeatable_rate !== 1) {
+          return Number(value) * (reputationReward[0].quest_repeatable_rate - 1);
+        }
 
-  //     return $gains;
-  // }
+        if (reputationReward[0].quest_rate !== 1) {
+          return Number(value) * (reputationReward[0].quest_rate - 1);
+        }
+
+        return Number(value);
+      })
+    );
+  }
 
 }

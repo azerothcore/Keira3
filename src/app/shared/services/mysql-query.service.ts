@@ -10,6 +10,7 @@ import { ConfigService } from './config.service';
 import { QueryService } from '@keira-shared/services/query.service';
 import { SmartScripts } from '@keira-types/smart-scripts.type';
 import { fromPromise } from 'rxjs/internal-compatibility';
+import { QuestReputationReward } from 'app/features/quest/quest-preview/quest-preview.model';
 
 declare const squel: Squel & {flavour: null};
 
@@ -435,4 +436,11 @@ export class MysqlQueryService extends QueryService {
 
     return this.queryValueToPromise(query.toString());
   }
+
+  getReputationRewardByFaction(id: string | number): Observable<QuestReputationReward[]> {
+    return this.query<QuestReputationReward>(
+      `SELECT * FROM reputation_reward_rate WHERE faction = ${id}`
+    );
+  }
+
 }

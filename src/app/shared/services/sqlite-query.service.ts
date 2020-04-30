@@ -86,7 +86,7 @@ export class SqliteQueryService extends QueryService {
 
   getRewardXP(RewardXPDifficulty: string | number, QuestLevel: string | number): Promise<string> {
     return this.queryValueToPromiseCached<string>(
-      'getRewardXP', String(RewardXPDifficulty) + String(QuestLevel), `SELECT field${Number(RewardXPDifficulty) + 1} AS v FROM questxp WHERE id = ${QuestLevel}`
+      'getRewardXP', String(RewardXPDifficulty) + '_' + String(QuestLevel), `SELECT field${Number(RewardXPDifficulty) + 1} AS v FROM questxp WHERE id = ${QuestLevel}`
     );
   }
 }

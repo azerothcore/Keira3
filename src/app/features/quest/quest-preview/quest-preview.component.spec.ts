@@ -180,7 +180,6 @@ describe('QuestPreviewComponent', () => {
     fixture.detectChanges();
 
     expect(page.rewardTalents.innerText).toContain('2 talent points');
-
     fixture.debugElement.nativeElement.remove();
   });
 
