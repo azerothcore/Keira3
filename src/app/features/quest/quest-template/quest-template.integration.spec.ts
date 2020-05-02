@@ -10,7 +10,9 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { QuestModule } from '../quest.module';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 
-class QuestTemplatePage extends EditorPageObject<QuestTemplateComponent> {}
+class QuestTemplatePage extends EditorPageObject<QuestTemplateComponent> {
+  get questPreviewTitle() { return this.query(`${this.PREVIEW_CONTAINER_SELECTOR} #title`); }
+}
 
 describe('QuestTemplate integration tests', () => {
 
@@ -112,6 +114,16 @@ describe('QuestTemplate integration tests', () => {
       page.expectFullQueryToContain('Shin');
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain('Shin');
+      page.removeElement();
+    });
+
+    it('changing a property should be reflected in the quest preview', () => {
+      const { page } = setup(true);
+      const value = 'Fix all AzerothCore bugs';
+
+      page.setInputValueById('LogTitle', value);
+
+      expect(page.questPreviewTitle.innerText).toContain(value);
       page.removeElement();
     });
   });
