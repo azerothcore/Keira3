@@ -92,7 +92,7 @@
     "sqlstring": "2.3.2",
     "squel": "5.13.0",
     "ts-mockito": "2.5.0",
-    "ts-node": "8.9.1",
+    "ts-node": "8.10.1",
     "tslint": "6.1.2",
     "typescript": "3.8.3",
     "wait-on": "4.0.2",
