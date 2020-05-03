@@ -15,7 +15,9 @@ import { SqliteService } from '@keira-shared/services/sqlite.service';
 import { QuestModule } from '../quest.module';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 
-class QuestTemplateAddonPage extends EditorPageObject<QuestTemplateAddonComponent> {}
+class QuestTemplateAddonPage extends EditorPageObject<QuestTemplateAddonComponent> {
+  get questPreviewReqLevel() { return this.query(`${this.PREVIEW_CONTAINER_SELECTOR} #minlevel`); }
+}
 
 describe('QuestTemplateAddon integration tests', () => {
 
@@ -128,6 +130,16 @@ describe('QuestTemplateAddon integration tests', () => {
       page.expectFullQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      page.removeElement();
+    });
+
+    it('changing a property should be reflected in the quest preview', () => {
+      const { page } = setup(true);
+      const value = 80;
+
+      page.setInputValueById('MaxLevel', value);
+
+      expect(page.questPreviewReqLevel.innerText).toContain(`0 - ${value}`);
       page.removeElement();
     });
   });

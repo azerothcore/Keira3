@@ -10,7 +10,9 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { QuestModule } from '../quest.module';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 
-class GameobjectQuestenderPage extends MultiRowEditorPageObject<GameobjectQuestenderComponent> {}
+class GameobjectQuestenderPage extends MultiRowEditorPageObject<GameobjectQuestenderComponent>  {
+  get questPreviewGoEnd() { return this.query(`${this.PREVIEW_CONTAINER_SELECTOR} #go-end`); }
+}
 
 describe('GameobjectQuestender integration tests', () => {
   const id = 1234;
@@ -134,6 +136,18 @@ describe('GameobjectQuestender integration tests', () => {
         'INSERT INTO `gameobject_questender` (`id`, `quest`) VALUES\n' +
         '(1, 1234);'
       );
+      page.removeElement();
+    });
+
+    it('changing a property should be reflected in the quest preview', () => {
+      const { page } = setup(true);
+      const value = 1234;
+
+      page.addNewRow();
+      page.clickRowOfDatatable(0);
+      page.setInputValueById('id', value);
+
+      expect(page.questPreviewGoEnd.innerText).toContain(`[${value}]`);
       page.removeElement();
     });
   });

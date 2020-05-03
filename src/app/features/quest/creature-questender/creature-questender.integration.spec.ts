@@ -10,7 +10,9 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { QuestModule } from '../quest.module';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 
-class CreatureQuestenderPage extends MultiRowEditorPageObject<CreatureQuestenderComponent> {}
+class CreatureQuestenderPage extends MultiRowEditorPageObject<CreatureQuestenderComponent> {
+  get questPreviewNpcEnd() { return this.query(`${this.PREVIEW_CONTAINER_SELECTOR} #npc-end`); }
+}
 
 describe('CreatureQuestender integration tests', () => {
   const id = 1234;
@@ -132,6 +134,18 @@ describe('CreatureQuestender integration tests', () => {
         'INSERT INTO `creature_questender` (`id`, `quest`) VALUES\n' +
         '(1, 1234);'
       );
+      page.removeElement();
+    });
+
+    it('changing a property should be reflected in the quest preview', () => {
+      const { page } = setup(true);
+      const value = 1234;
+
+      page.addNewRow();
+      page.clickRowOfDatatable(0);
+      page.setInputValueById('id', value);
+
+      expect(page.questPreviewNpcEnd.innerText).toContain(`[${value}]`);
       page.removeElement();
     });
   });
