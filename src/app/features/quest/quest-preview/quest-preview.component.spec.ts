@@ -6,8 +6,9 @@ import { QuestModule } from '../quest.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { QuestPreviewService } from './quest-preview.service';
 import { PageObject } from '@keira-shared/testing/page-object';
-import { QuestTemplateService } from '../quest-template/quest-template.service';
-import { QuestTemplateAddonService } from '../quest-template-addon/quest-template-addon.service';
+import { Class } from '@keira-shared/types/general';
+import { QuestTemplate } from '@keira-shared/types/quest-template.type';
+import { QuestTemplateAddon } from '@keira-shared/types/quest-template-addon.type';
 
 class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   get title() { return this.query<HTMLHeadElement>('#title'); }
@@ -38,15 +39,17 @@ describe('QuestPreviewComponent', () => {
     .compileComponents();
   }));
 
+  function createMock(partial: Partial<Class>, c: Class) {
+    return Object.assign(new c(), partial);
+  }
+
   function setup() {
     const service = TestBed.inject(QuestPreviewService);
-    const questTemplateService = TestBed.inject(QuestTemplateService);
-    const questTemplateAddonService = TestBed.inject(QuestTemplateAddonService);
     const fixture: ComponentFixture<QuestPreviewComponent> = TestBed.createComponent(QuestPreviewComponent);
     const component: QuestPreviewComponent = fixture.componentInstance;
     const page = new QuestPreviewComponentPage(fixture);
 
-    return { fixture, component, service, page, questTemplateService, questTemplateAddonService };
+    return { fixture, component, service, page };
   }
 
   it('ngOnInit should initialise services', () => {
@@ -99,9 +102,10 @@ describe('QuestPreviewComponent', () => {
   });
 
   it('should show questType', () => {
-    const { fixture, service, page, questTemplateService } = setup();
+    const { fixture, service, page } = setup();
+    const questTemplate = createMock({ QuestInfoID: 41 }, QuestTemplate);
     spyOnProperty(service, 'periodicQuest', 'get').and.returnValue('Daily');
-    questTemplateService.form.controls.QuestInfoID.setValue(41);
+    spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
 
     fixture.detectChanges();
 
@@ -139,7 +143,9 @@ describe('QuestPreviewComponent', () => {
   });
 
   it('should show required skill', async() => {
-    const { fixture, service, page, questTemplateAddonService } = setup();
+    const { fixture, service, page } = setup();
+    const questTemplateAddon = createMock({ RequiredSkillPoints: 10 }, QuestTemplateAddon);
+    spyOnProperty(service, 'questTemplateAddon', 'get').and.returnValue(questTemplateAddon);
     spyOnProperty(service, 'requiredSkill$', 'get').and.returnValue(Promise.resolve('Jewelcrafting'));
 
     fixture.detectChanges();
@@ -148,7 +154,6 @@ describe('QuestPreviewComponent', () => {
 
     expect(page.requiredSkill.innerText).toContain('Jewelcrafting');
 
-    questTemplateAddonService.form.controls.RequiredSkillPoints.setValue(10);
     fixture.detectChanges();
     expect(page.requiredSkill.innerText).toContain('(10)');
     page.removeElement();
@@ -171,10 +176,10 @@ describe('QuestPreviewComponent', () => {
   });
 
   it('should show rewardXP', async() => {
-    const { fixture, service, page, questTemplateService } = setup();
+    const { fixture, service, page } = setup();
+    const questTemplate = createMock({ RewardXPDifficulty: 2, QuestLevel: 10 }, QuestTemplate);
     spyOnProperty(service, 'rewardXP$', 'get').and.returnValue(Promise.resolve('200'));
-    questTemplateService.form.controls.RewardXPDifficulty.setValue(2);
-    questTemplateService.form.controls.QuestLevel.setValue(10);
+    spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
 
     fixture.detectChanges();
     await fixture.whenStable();
@@ -186,8 +191,9 @@ describe('QuestPreviewComponent', () => {
   });
 
   it('should show RewardTalents', () => {
-    const { fixture, page, questTemplateService } = setup();
-    questTemplateService.form.controls.RewardTalents.setValue(2);
+    const { fixture, page, service } = setup();
+    const questTemplate = createMock({ RewardTalents: 2 }, QuestTemplate);
+    spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
 
     fixture.detectChanges();
 
@@ -196,9 +202,9 @@ describe('QuestPreviewComponent', () => {
   });
 
   it('should show rewardReputations', () => {
-    const { fixture, page, questTemplateService } = setup();
-    questTemplateService.form.controls.RewardFactionID1.setValue(72);
-    questTemplateService.form.controls.RewardFactionValue1.setValue(123);
+    const { fixture, page, service } = setup();
+    const questTemplate = createMock({ RewardFactionID1: 72, RewardFactionValue1: 123 }, QuestTemplate);
+    spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
 
     fixture.detectChanges();
 
