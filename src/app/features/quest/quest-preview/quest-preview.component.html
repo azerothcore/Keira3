@@ -97,8 +97,10 @@
         <p id="rewardXP" *ngIf="service.rewardXP$ | async as xp">• {{ xp }} experience</p>
         <p id="rewardTalents" *ngIf="service.questTemplate.RewardTalents">• {{ service.questTemplate.RewardTalents }} talent points</p>
 
-        <div *ngFor="let i of [1,2,3,4,5]">
-          <p> - WIP reputation with {{ service.sqliteQueryService.getFactionNameById(service.questTemplate['RewardFactionID' + i]) | async }}</p>
+        <div id="rewardReputations" *ngFor="let i of [1,2,3,4,5]">
+          <p *ngIf="service.getRewardReputation(i, service.getRepReward$(i) | async); let repReward">
+            - {{ repReward }} reputation with {{ service.sqliteQueryService.getFactionNameById(service.questTemplate['RewardFactionID' + i]) | async }}
+          </p>
         </div>
 
       </div>

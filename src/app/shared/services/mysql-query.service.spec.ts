@@ -896,5 +896,17 @@ describe('MysqlQueryService', () => {
       expect(Object.keys(service['cache'])[0]).toBe('getNextQuest1');
     });
 
+    it('getReputationRewardByFaction (usingPrev)', async () => {
+      spyOn(service, 'query').and.returnValue(of([]));
+      expect(await service.getReputationRewardByFaction(id)).toEqual([]);
+      expect(await service.getReputationRewardByFaction(id)).toEqual([]); // check cache
+      expect(service.query).toHaveBeenCalledTimes(1); // check cache
+      expect(service.query).toHaveBeenCalledWith(
+        `SELECT * FROM reputation_reward_rate WHERE faction = ${id}`,
+      );
+      expect(Object.keys(service['cache']).length).toBe(1);
+      expect(Object.keys(service['cache'])[0]).toBe('getReputationRewardByFaction');
+    });
+
   });
 });

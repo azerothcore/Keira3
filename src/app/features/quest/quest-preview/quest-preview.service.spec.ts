@@ -14,7 +14,9 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { of } from 'rxjs';
 import { DifficultyLevel } from './quest-preview.model';
-import { QUEST_FLAG_DAILY, QUEST_FLAG_WEEKLY, QUEST_FLAG_SPECIAL_MONTHLY, QUEST_FLAG_SPECIAL_REPEATABLE, QUEST_FLAG_REPEATABLE } from '@keira-shared/constants/quest-preview';
+import { QUEST_FLAG_DAILY, QUEST_FLAG_WEEKLY, QUEST_FLAG_SPECIAL_MONTHLY,
+         QUEST_FLAG_SPECIAL_REPEATABLE, QUEST_FLAG_REPEATABLE, QUEST_PERIOD
+} from '@keira-shared/constants/quest-preview';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 
 describe('QuestPreviewService', () => {
@@ -136,18 +138,32 @@ describe('QuestPreviewService', () => {
     const mockID = 123;
     const mockItem = '1234';
     const mockItemName = 'Helias Item';
+    const mockQuestReputationReward = {
+      faction: 1,
+      quest_rate: 1,
+      quest_daily_rate: 1,
+      quest_weekly_rate: 1,
+      quest_monthly_rate: 1,
+      quest_repeatable_rate: 1,
+      creature_rate: 1,
+      spell_rate: 1,
+    };
 
-    spyOn(mysqlQueryService, 'getItemByStartQuest').and.callFake(() => of(mockItem).toPromise());
-    spyOn(mysqlQueryService, 'getItemNameByStartQuest').and.callFake(() => of(mockItemName).toPromise());
+    spyOn(mysqlQueryService, 'getItemByStartQuest').and.callFake(() => Promise.resolve(mockItem));
+    spyOn(mysqlQueryService, 'getItemNameByStartQuest').and.callFake(() => Promise.resolve(mockItemName));
+    spyOn(mysqlQueryService, 'getReputationRewardByFaction').and.callFake(() => Promise.resolve([mockQuestReputationReward]));
     questTemplateService.form.controls.ID.setValue(mockID);
 
     expect(await service.questGivenByItem$).toBe(mockItem);
     expect(await service.questStarterItem$).toBe(mockItemName);
+    expect(await service.getRepReward$(1)).toEqual([mockQuestReputationReward]);
 
     expect(mysqlQueryService.getItemByStartQuest).toHaveBeenCalledTimes(1);
     expect(mysqlQueryService.getItemByStartQuest).toHaveBeenCalledWith(mockID);
     expect(mysqlQueryService.getItemNameByStartQuest).toHaveBeenCalledTimes(1);
     expect(mysqlQueryService.getItemNameByStartQuest).toHaveBeenCalledWith(mockID);
+    expect(mysqlQueryService.getReputationRewardByFaction).toHaveBeenCalledTimes(1);
+    expect(mysqlQueryService.getReputationRewardByFaction).toHaveBeenCalledWith(null);
   });
 
   it('sqliteQuery', async() => {
@@ -396,5 +412,49 @@ describe('QuestPreviewService', () => {
 
     questTemplateService.form.controls.Flags.setValue(QUEST_FLAG_REPEATABLE);
     expect(service.isRepeatable()).toBe(true);
+  });
+
+  it('getRewardReputation', () => {
+    const { service, questTemplateService } = setup();
+    const mockRepValue = 123;
+    const mockRepFaction = 1;
+    const dailyRate = 3;
+    const weeklyRate = 4;
+    const monthlyRate = 5;
+    const repeatableRate = 6;
+    const questRate = 7;
+
+    expect(service.getRewardReputation(1, [])).toBe(null);
+
+    questTemplateService.form.controls.RewardFactionID1.setValue(mockRepFaction);
+    questTemplateService.form.controls.RewardFactionValue1.setValue(mockRepValue);
+    expect(service.getRewardReputation(1, [])).toBe(mockRepValue);
+
+    const getPeriodicQuestSpy: Spy = spyOn<any>(service, 'getPeriodicQuest');
+    const mockQuestReputationReward1 = {
+      faction: 1, quest_rate: 1, quest_daily_rate: 1, quest_weekly_rate: 1,
+      quest_monthly_rate: 1, quest_repeatable_rate: 1, creature_rate: 1, spell_rate: 1,
+    };
+    const mockQuestReputationReward2 = {
+      faction: 2, quest_rate: questRate, quest_daily_rate: dailyRate, quest_weekly_rate: weeklyRate,
+      quest_monthly_rate: monthlyRate, quest_repeatable_rate: repeatableRate, creature_rate: 2, spell_rate: 2,
+    };
+
+    expect(service.getRewardReputation(1, [mockQuestReputationReward1])).toBe(mockRepValue);
+
+    expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockRepValue * (questRate - 1));
+
+    getPeriodicQuestSpy.and.returnValue(QUEST_PERIOD.DAILY);
+    expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockRepValue * (dailyRate - 1));
+
+    getPeriodicQuestSpy.and.returnValue(QUEST_PERIOD.WEEKLY);
+    expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockRepValue * (weeklyRate - 1));
+
+    getPeriodicQuestSpy.and.returnValue(QUEST_PERIOD.MONTHLY);
+    expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockRepValue * (monthlyRate - 1));
+
+    getPeriodicQuestSpy.and.returnValue('mockPeriod');
+    spyOn(service, 'isRepeatable').and.returnValue(true);
+    expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockRepValue * (repeatableRate - 1));
   });
 });

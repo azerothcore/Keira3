@@ -27,8 +27,6 @@ import {
   QUEST_FLAG_DAILY, QUEST_FLAG_WEEKLY, QUEST_FLAG_SPECIAL_MONTHLY, QUEST_INFO,
   QUEST_FLAG_REPEATABLE, QUEST_FLAG_SPECIAL_REPEATABLE, ICON_SKILLS, QUEST_PERIOD
 } from '@keira-shared/constants/quest-preview';
-import { map } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
 
 @Injectable()
 export class QuestPreviewService {
@@ -262,8 +260,11 @@ export class QuestPreviewService {
     return this.sqliteQueryService.getRewardXP(this.questTemplate.RewardXPDifficulty, this.questTemplate.QuestLevel);
   }
 
-  getRewardReputation(field: string | number): Observable<number> {
-    console.log('TEST');
+  getRepReward$(field: number | string): Promise<QuestReputationReward[]> {
+    return this.mysqlQueryService.getReputationRewardByFaction( this.questTemplate[`RewardFactionID${field}`] );
+  }
+
+  getRewardReputation(field: string | number, reputationReward: QuestReputationReward[]): number {
     const faction = this.questTemplate[`RewardFactionID${field}`];
     const value = this.questTemplate[`RewardFactionValue${field}`];
 
@@ -271,36 +272,34 @@ export class QuestPreviewService {
       return null;
     }
 
-    return this.mysqlQueryService.getReputationRewardByFaction(faction).pipe(
-      map((reputationReward: QuestReputationReward[]) => {
+    if (!!reputationReward && !!reputationReward[0]) {
 
-        const dailyType = this.getPeriodicQuest();
+      const dailyType = this.getPeriodicQuest();
 
-        if (!!dailyType) {
-          if (dailyType === QUEST_PERIOD.DAILY  && reputationReward[0].quest_daily_rate !== 1) {
-            return (Number(value) * (reputationReward[0].quest_daily_rate - 1));
-          }
-
-          if (dailyType === QUEST_PERIOD.WEEKLY && reputationReward[0].quest_weekly_rate !== 1) {
-            return Number(value) * (reputationReward[0].quest_weekly_rate - 1);
-          }
-
-          if (dailyType === QUEST_PERIOD.MONTHLY && reputationReward[0].quest_monthly_rate !== 1) {
-            return Number(value) * (reputationReward[0].quest_monthly_rate - 1);
-          }
+      if (!!dailyType) {
+        if (dailyType === QUEST_PERIOD.DAILY  && reputationReward[0].quest_daily_rate !== 1) {
+          return (Number(value) * (reputationReward[0].quest_daily_rate - 1));
         }
 
-        if (this.isRepeatable() && reputationReward[0].quest_repeatable_rate !== 1) {
-          return Number(value) * (reputationReward[0].quest_repeatable_rate - 1);
+        if (dailyType === QUEST_PERIOD.WEEKLY && reputationReward[0].quest_weekly_rate !== 1) {
+          return Number(value) * (reputationReward[0].quest_weekly_rate - 1);
         }
 
-        if (reputationReward[0].quest_rate !== 1) {
-          return Number(value) * (reputationReward[0].quest_rate - 1);
+        if (dailyType === QUEST_PERIOD.MONTHLY && reputationReward[0].quest_monthly_rate !== 1) {
+          return Number(value) * (reputationReward[0].quest_monthly_rate - 1);
         }
+      }
 
-        return Number(value);
-      })
-    );
+      if (this.isRepeatable() && reputationReward[0].quest_repeatable_rate !== 1) {
+        return Number(value) * (reputationReward[0].quest_repeatable_rate - 1);
+      }
+
+      if (reputationReward[0].quest_rate !== 1) {
+        return Number(value) * (reputationReward[0].quest_rate - 1);
+      }
+    }
+
+    return Number(value);
   }
 
 }

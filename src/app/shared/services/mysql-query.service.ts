@@ -437,10 +437,8 @@ export class MysqlQueryService extends QueryService {
     return this.queryValueToPromise(query.toString());
   }
 
-  getReputationRewardByFaction(id: string | number): Observable<QuestReputationReward[]> {
-    return this.query<QuestReputationReward>(
-      `SELECT * FROM reputation_reward_rate WHERE faction = ${id}`
-    );
+  getReputationRewardByFaction(id: string | number): Promise<QuestReputationReward[]> {
+    return this.queryToPromiseCached<QuestReputationReward>('getReputationRewardByFaction', String(id), `SELECT * FROM reputation_reward_rate WHERE faction = ${id}`);
   }
 
 }

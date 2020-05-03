@@ -22,6 +22,7 @@ class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   get racesElement() { return this.fixture.nativeElement.querySelector('#races'); }
   get rewardXP() { return this.query<HTMLParagraphElement>('#rewardXP'); }
   get rewardTalents() { return this.query<HTMLParagraphElement>('#rewardTalents'); }
+  get rewardReputations() { return this.query<HTMLParagraphElement>('#rewardReputations'); }
 }
 
 describe('QuestPreviewComponent', () => {
@@ -180,6 +181,17 @@ describe('QuestPreviewComponent', () => {
     fixture.detectChanges();
 
     expect(page.rewardTalents.innerText).toContain('2 talent points');
+    fixture.debugElement.nativeElement.remove();
+  });
+
+  it('should show rewardReputations', () => {
+    const { fixture, page, questTemplateService } = setup();
+    questTemplateService.form.controls.RewardFactionID1.setValue(72);
+    questTemplateService.form.controls.RewardFactionValue1.setValue(123);
+
+    fixture.detectChanges();
+
+    expect(page.rewardReputations.innerText).toContain('123');
     fixture.debugElement.nativeElement.remove();
   });
 
