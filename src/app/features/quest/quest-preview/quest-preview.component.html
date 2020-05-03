@@ -66,6 +66,13 @@
         <span class="r4" *ngIf="!!difficulty.grey">   {{ difficulty.grey }}   </span>
       </p>
 
+      <p *ngIf="!!service.startItem" id="provided-item">
+        Provided item:<br>
+        <keira-icon [size]="'small'" [itemId]="service.startItem"></keira-icon>
+        <strong class="colored"> {{ service.startItemName$ | async }}</strong>
+        <span class="greyed"> [{{ service.startItem }}]</span>
+      </p>
+
       <ng-container *ngIf="{ prev: service.prevQuestList$ | async, next: service.nextQuestList$ | async } as questLists">
         <ng-container *ngIf="questLists?.prev?.length > 0  || questLists?.next?.length > 0">
           <p class="title">Series</p>
