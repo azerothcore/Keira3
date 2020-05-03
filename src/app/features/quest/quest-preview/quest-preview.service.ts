@@ -71,6 +71,8 @@ export class QuestPreviewService {
   get side(): string { return this.helperService.getFactionFromRace(this.questTemplate.AllowableRaces); }
   get races(): number[] { return this.helperService.getRaceString(this.questTemplate.AllowableRaces); }
   get sharable(): string { return this.questTemplate.Flags & QUEST_FLAG_SHARABLE ? 'Sharable' : 'Not sharable'; }
+  get startItem(): number { return this.questTemplate.StartItem; }
+  get startItemName$(): Promise<string> { return this.mysqlQueryService.getItemNameById(this.startItem); }
 
   // get QuestTemplateAddon values
   get maxLevel(): string { return String(this.questTemplateAddon.MaxLevel); }

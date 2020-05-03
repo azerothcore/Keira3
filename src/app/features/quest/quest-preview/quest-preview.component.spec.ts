@@ -16,13 +16,14 @@ class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   get startIcon() { return this.query<HTMLImageElement>('#questStartIcon'); }
   get endIcon() { return this.query<HTMLImageElement>('#questEndIcon'); }
   get questType() { return this.query<HTMLParagraphElement>('#type'); }
-  get races() { return this.query<HTMLParagraphElement>('#races'); }
   get classes() { return this.query<HTMLParagraphElement>('#classes'); }
   get requiredSkill() { return this.query<HTMLParagraphElement>('#requiredSkill'); }
-  get racesElement() { return this.fixture.nativeElement.querySelector('#races'); }
   get rewardXP() { return this.query<HTMLParagraphElement>('#rewardXP'); }
   get rewardTalents() { return this.query<HTMLParagraphElement>('#rewardTalents'); }
   get rewardReputations() { return this.query<HTMLParagraphElement>('#rewardReputations'); }
+  get providedItem() { return this.query<HTMLParagraphElement>('#provided-item'); }
+
+  getRaces(assert = true) { return this.query<HTMLParagraphElement>('#races', assert); }
 }
 
 describe('QuestPreviewComponent', () => {
@@ -49,13 +50,13 @@ describe('QuestPreviewComponent', () => {
   }
 
   it('ngOnInit should initialise services', () => {
-    const { fixture, service } = setup();
+    const { fixture, service, page } = setup();
     const initializeServicesSpy: Spy = spyOn(service, 'initializeServices');
 
     fixture.detectChanges();
 
     expect(initializeServicesSpy).toHaveBeenCalledTimes(1);
-    fixture.debugElement.nativeElement.remove();
+    page.removeElement();
   });
 
   it('should show title, level and required level', () => {
@@ -74,7 +75,7 @@ describe('QuestPreviewComponent', () => {
     expect(page.title.innerText).toContain(title);
     expect(page.level.innerText).toContain(level);
     expect(page.minLevel.innerText).toContain(`${minLevel} - ${maxLevel}`);
-    fixture.debugElement.nativeElement.remove();
+    page.removeElement();
   });
 
   it('should show questStart and questEnd icons', () => {
@@ -94,8 +95,7 @@ describe('QuestPreviewComponent', () => {
 
     expect(page.startIcon.src).toContain('assets/img/quest/quest_start_daily.gif');
     expect(page.endIcon.src).toContain('assets/img/quest/quest_end_daily.gif');
-
-    fixture.debugElement.nativeElement.remove();
+    page.removeElement();
   });
 
   it('should show questType', () => {
@@ -107,8 +107,7 @@ describe('QuestPreviewComponent', () => {
 
     expect(page.questType.innerText).toContain('Daily');
     expect(page.questType.innerText).toContain('PvP');
-
-    fixture.debugElement.nativeElement.remove();
+    page.removeElement();
   });
 
   it('should show showRaces', () => {
@@ -118,15 +117,14 @@ describe('QuestPreviewComponent', () => {
 
     fixture.detectChanges();
 
-    expect(page.races.innerText).toContain('Orc');
-    expect(page.races.innerText).toContain('Night Elf');
+    expect(page.getRaces().innerText).toContain('Orc');
+    expect(page.getRaces().innerText).toContain('Night Elf');
 
     // in case of "Side"
     sideSpy.and.returnValue('Alliance');
     fixture.detectChanges();
-    expect(page.racesElement).toBeFalsy();
-
-    fixture.debugElement.nativeElement.remove();
+    expect(page.getRaces(false)).toBeFalsy();
+    page.removeElement();
   });
 
   it('should show showClasses', () => {
@@ -137,14 +135,12 @@ describe('QuestPreviewComponent', () => {
 
     expect(page.classes.innerText).toContain('Paladin');
     expect(page.classes.innerText).toContain('Rogue');
-
-    fixture.debugElement.nativeElement.remove();
+    page.removeElement();
   });
 
   it('should show required skill', async() => {
     const { fixture, service, page, questTemplateAddonService } = setup();
     spyOnProperty(service, 'requiredSkill$', 'get').and.returnValue(Promise.resolve('Jewelcrafting'));
-    questTemplateAddonService.form.controls.RequiredSkillID.setValue(755);
 
     fixture.detectChanges();
     await fixture.whenStable();
@@ -155,8 +151,23 @@ describe('QuestPreviewComponent', () => {
     questTemplateAddonService.form.controls.RequiredSkillPoints.setValue(10);
     fixture.detectChanges();
     expect(page.requiredSkill.innerText).toContain('(10)');
+    page.removeElement();
+  });
 
-    fixture.debugElement.nativeElement.remove();
+  it('should show provided item (start item)', async() => {
+    const { fixture, service, page } = setup();
+    const mockStartItem = 123456;
+    const mockStartItemName = 'Sword of AzerothCore';
+    spyOnProperty(service, 'startItem', 'get').and.returnValue(mockStartItem);
+    spyOnProperty(service, 'startItemName$', 'get').and.returnValue(Promise.resolve(mockStartItemName));
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(page.providedItem.innerText).toContain(`[${mockStartItem}]`);
+    expect(page.providedItem.innerText).toContain(mockStartItemName);
+    page.removeElement();
   });
 
   it('should show rewardXP', async() => {

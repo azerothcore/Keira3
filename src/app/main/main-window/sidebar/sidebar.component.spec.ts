@@ -105,7 +105,7 @@ describe('SidebarComponent', () => {
   });
 
   afterEach(() => {
-    fixture.debugElement.nativeElement.remove();
+    page.removeElement();
     reset(MockedElectronService);
     reset(MockedMysqlService);
   });
