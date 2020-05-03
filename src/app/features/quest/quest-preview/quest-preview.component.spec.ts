@@ -6,16 +6,16 @@ import { QuestModule } from '../quest.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { QuestPreviewService } from './quest-preview.service';
 import { PageObject } from '@keira-shared/testing/page-object';
-import { Class } from '@keira-shared/types/general';
 import { QuestTemplate } from '@keira-shared/types/quest-template.type';
 import { QuestTemplateAddon } from '@keira-shared/types/quest-template-addon.type';
+import { createMockObject } from '@keira-shared/utils/helpers';
 
 class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   get title() { return this.query<HTMLHeadElement>('#title'); }
   get level() { return this.query<HTMLParagraphElement>('#level'); }
   get minLevel() { return this.query<HTMLParagraphElement>('#minlevel'); }
-  get startIcon() { return this.query<HTMLImageElement>('#questStartIcon'); }
-  get endIcon() { return this.query<HTMLImageElement>('#questEndIcon'); }
+  get creatureQuestStartIcon() { return this.query<HTMLImageElement>('#creatureQuestStartIcon'); }
+  get creatureQuestEndIcon() { return this.query<HTMLImageElement>('#creatureQuestEndIcon'); }
   get questType() { return this.query<HTMLParagraphElement>('#type'); }
   get classes() { return this.query<HTMLParagraphElement>('#classes'); }
   get requiredSkill() { return this.query<HTMLParagraphElement>('#requiredSkill'); }
@@ -38,10 +38,6 @@ describe('QuestPreviewComponent', () => {
     })
     .compileComponents();
   }));
-
-  function createMock(partial: Partial<Class>, c: Class) {
-    return Object.assign(new c(), partial);
-  }
 
   function setup() {
     const service = TestBed.inject(QuestPreviewService);
@@ -89,21 +85,21 @@ describe('QuestPreviewComponent', () => {
 
     fixture.detectChanges();
 
-    expect(page.startIcon.src).toContain('assets/img/quest/quest_start.gif');
-    expect(page.endIcon.src).toContain('assets/img/quest/quest_end.gif');
+    expect(page.creatureQuestStartIcon.src).toContain('assets/img/quest/quest_start.gif');
+    expect(page.creatureQuestEndIcon.src).toContain('assets/img/quest/quest_end.gif');
 
     periodicQuestSpy.and.returnValue('Daily');
 
     fixture.detectChanges();
 
-    expect(page.startIcon.src).toContain('assets/img/quest/quest_start_daily.gif');
-    expect(page.endIcon.src).toContain('assets/img/quest/quest_end_daily.gif');
+    expect(page.creatureQuestStartIcon.src).toContain('assets/img/quest/quest_start_daily.gif');
+    expect(page.creatureQuestEndIcon.src).toContain('assets/img/quest/quest_end_daily.gif');
     page.removeElement();
   });
 
   it('should show questType', () => {
     const { fixture, service, page } = setup();
-    const questTemplate = createMock({ QuestInfoID: 41 }, QuestTemplate);
+    const questTemplate = createMockObject({ QuestInfoID: 41 }, QuestTemplate);
     spyOnProperty(service, 'periodicQuest', 'get').and.returnValue('Daily');
     spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
 
@@ -152,7 +148,7 @@ describe('QuestPreviewComponent', () => {
 
     expect(page.requiredSkill.innerText).toContain('Jewelcrafting');
 
-    const questTemplateAddon = createMock({ RequiredSkillPoints: 10 }, QuestTemplateAddon);
+    const questTemplateAddon = createMockObject({ RequiredSkillPoints: 10 }, QuestTemplateAddon);
     spyOnProperty(service, 'questTemplateAddon', 'get').and.returnValue(questTemplateAddon);
 
     fixture.detectChanges();
@@ -178,7 +174,7 @@ describe('QuestPreviewComponent', () => {
 
   it('should show rewardXP', async() => {
     const { fixture, service, page } = setup();
-    const questTemplate = createMock({ RewardXPDifficulty: 2, QuestLevel: 10 }, QuestTemplate);
+    const questTemplate = createMockObject({ RewardXPDifficulty: 2, QuestLevel: 10 }, QuestTemplate);
     spyOnProperty(service, 'rewardXP$', 'get').and.returnValue(Promise.resolve('200'));
     spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
 
@@ -193,7 +189,7 @@ describe('QuestPreviewComponent', () => {
 
   it('should show RewardTalents', () => {
     const { fixture, page, service } = setup();
-    const questTemplate = createMock({ RewardTalents: 2 }, QuestTemplate);
+    const questTemplate = createMockObject({ RewardTalents: 2 }, QuestTemplate);
     spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
 
     fixture.detectChanges();
@@ -204,7 +200,7 @@ describe('QuestPreviewComponent', () => {
 
   it('should show rewardReputations', () => {
     const { fixture, page, service } = setup();
-    const questTemplate = createMock({ RewardFactionID1: 72, RewardFactionValue1: 123 }, QuestTemplate);
+    const questTemplate = createMockObject({ RewardFactionID1: 72, RewardFactionValue1: 123 }, QuestTemplate);
     spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
 
     fixture.detectChanges();

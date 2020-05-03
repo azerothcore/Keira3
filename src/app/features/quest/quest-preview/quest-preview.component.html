@@ -28,30 +28,30 @@
       </p>
       <!-- Quest starter -->
       <p *ngIf="service.questGivenByItem$ | async as qitem">
-        <img [src]="'assets/img/quest/' + questStartIcon" id="questStartIcon">
+        <img [src]="'assets/img/quest/' + questStartIcon" id="itemQuestStartIcon">
         Start:
         <keira-icon [size]="'small'" [itemId]="qitem"></keira-icon>
         <strong class="colored"> {{ service.questStarterItem$ | async }}</strong> <span class="greyed"> [{{ qitem }}]</span>
       </p>
       <div *ngIf="service.creatureQueststarterList.length > 0" id="npc-start">
         <p *ngFor="let q of service.creatureQueststarterList">
-          <img [src]="'assets/img/quest/' + questStartIcon" id="questStartIcon"> NPC Start: <strong class="colored">{{ service.mysqlQueryService.getCreatureNameById(q.id) | async }}</strong> <span class="greyed"> [{{ q.id }}]</span>
+          <img [src]="'assets/img/quest/' + questStartIcon" id="creatureQuestStartIcon"> NPC Start: <strong class="colored">{{ service.mysqlQueryService.getCreatureNameById(q.id) | async }}</strong> <span class="greyed"> [{{ q.id }}]</span>
         </p>
       </div>
       <div *ngIf="service.gameobjectQueststarterList.length > 0" id="go-start">
         <p *ngFor="let q of service.gameobjectQueststarterList">
-          <img [src]="'assets/img/quest/' + questStartIcon" id="questStartIcon"> GO Start: <strong class="colored">{{ service.mysqlQueryService.getGameObjectNameById(q.id) | async }}</strong> <span class="greyed"> [{{ q.id }}]</span>
+          <img [src]="'assets/img/quest/' + questStartIcon" id="gameobjectQuestStartIcon"> GO Start: <strong class="colored">{{ service.mysqlQueryService.getGameObjectNameById(q.id) | async }}</strong> <span class="greyed"> [{{ q.id }}]</span>
         </p>
       </div>
       <!-- Quest ender -->
       <div *ngIf="service.creatureQuestenderList.length > 0" id="npc-end">
         <p *ngFor="let q of service.creatureQuestenderList">
-          <img [src]="'assets/img/quest/' + questEndIcon" id="questEndIcon"> NPC End: <strong class="colored">{{ service.mysqlQueryService.getCreatureNameById(q.id) | async }}</strong> <span class="greyed"> [{{ q.id }}]</span>
+          <img [src]="'assets/img/quest/' + questEndIcon" id="creatureQuestEndIcon"> NPC End: <strong class="colored">{{ service.mysqlQueryService.getCreatureNameById(q.id) | async }}</strong> <span class="greyed"> [{{ q.id }}]</span>
         </p>
       </div>
       <div *ngIf="service.gameobjectQuestenderList.length > 0" id="go-end">
         <p *ngFor="let q of service.gameobjectQuestenderList">
-          <img [src]="'assets/img/quest/' + questEndIcon" id="questEndIcon"> GO End: <strong class="colored">{{ service.mysqlQueryService.getGameObjectNameById(q.id) | async }}</strong> <span class="greyed"> [{{ q.id }}]</span>
+          <img [src]="'assets/img/quest/' + questEndIcon" id="gameobjectQuestEndIcon"> GO End: <strong class="colored">{{ service.mysqlQueryService.getGameObjectNameById(q.id) | async }}</strong> <span class="greyed"> [{{ q.id }}]</span>
         </p>
       </div>
       <p *ngIf="service.isRepeatable()">Repeatable</p>
