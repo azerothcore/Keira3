@@ -140,7 +140,7 @@ describe('QuestTemplateAddon integration tests', () => {
       page.setInputValueById('MaxLevel', value);
 
       expect(page.questPreviewReqLevel.innerText).toContain(`0 - ${value}`);
-      // page.removeElement();
+      page.removeElement();
     });
   });
 
