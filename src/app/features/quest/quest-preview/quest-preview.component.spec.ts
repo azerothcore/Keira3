@@ -144,8 +144,6 @@ describe('QuestPreviewComponent', () => {
 
   it('should show required skill', async() => {
     const { fixture, service, page } = setup();
-    const questTemplateAddon = createMock({ RequiredSkillPoints: 10 }, QuestTemplateAddon);
-    spyOnProperty(service, 'questTemplateAddon', 'get').and.returnValue(questTemplateAddon);
     spyOnProperty(service, 'requiredSkill$', 'get').and.returnValue(Promise.resolve('Jewelcrafting'));
 
     fixture.detectChanges();
@@ -153,6 +151,9 @@ describe('QuestPreviewComponent', () => {
     fixture.detectChanges();
 
     expect(page.requiredSkill.innerText).toContain('Jewelcrafting');
+
+    const questTemplateAddon = createMock({ RequiredSkillPoints: 10 }, QuestTemplateAddon);
+    spyOnProperty(service, 'questTemplateAddon', 'get').and.returnValue(questTemplateAddon);
 
     fixture.detectChanges();
     expect(page.requiredSkill.innerText).toContain('(10)');

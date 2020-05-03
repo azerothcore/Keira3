@@ -427,8 +427,7 @@ describe('QuestPreviewService', () => {
     expect(service.isRepeatable()).toBe(true);
   });
 
-  it('getRewardReputation', () => {
-    const { service, questTemplateService } = setup();
+  describe('getRewardReputation', () => {
     const mockRepValue = 123;
     const mockRepFaction = 1;
     const dailyRate = 3;
@@ -436,14 +435,6 @@ describe('QuestPreviewService', () => {
     const monthlyRate = 5;
     const repeatableRate = 6;
     const questRate = 7;
-
-    expect(service.getRewardReputation(1, [])).toBe(null);
-
-    questTemplateService.form.controls.RewardFactionID1.setValue(mockRepFaction);
-    questTemplateService.form.controls.RewardFactionValue1.setValue(mockRepValue);
-    expect(service.getRewardReputation(1, [])).toBe(mockRepValue);
-
-    const getPeriodicQuestSpy: Spy = spyOn<any>(service, 'getPeriodicQuest');
     const mockQuestReputationReward1 = {
       faction: 1, quest_rate: 1, quest_daily_rate: 1, quest_weekly_rate: 1,
       quest_monthly_rate: 1, quest_repeatable_rate: 1, creature_rate: 1, spell_rate: 1,
@@ -453,21 +444,48 @@ describe('QuestPreviewService', () => {
       quest_monthly_rate: monthlyRate, quest_repeatable_rate: repeatableRate, creature_rate: 2, spell_rate: 2,
     };
 
-    expect(service.getRewardReputation(1, [mockQuestReputationReward1])).toBe(mockRepValue);
+    it('with empty QuestReputationReward', () => {
+      const { service } = setup();
+      expect(service.getRewardReputation(1, [])).toBe(null);
+    });
 
-    expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockRepValue * (questRate - 1));
+    it('QuestReputation values 1', () => {
+      const { service, questTemplateService } = setup();
+      questTemplateService.form.controls.RewardFactionID1.setValue(mockRepFaction);
+      questTemplateService.form.controls.RewardFactionValue1.setValue(mockRepValue);
 
-    getPeriodicQuestSpy.and.returnValue(QUEST_PERIOD.DAILY);
-    expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockRepValue * (dailyRate - 1));
+      expect(service.getRewardReputation(1, [])).toBe(mockRepValue);
+      expect(service.getRewardReputation(1, [mockQuestReputationReward1])).toBe(mockRepValue);
+    });
 
-    getPeriodicQuestSpy.and.returnValue(QUEST_PERIOD.WEEKLY);
-    expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockRepValue * (weeklyRate - 1));
+    it('all dailyType and normal quest_rate', () => {
+      const { service, questTemplateService } = setup();
+      const getPeriodicQuestSpy: Spy = spyOn<any>(service, 'getPeriodicQuest');
+      questTemplateService.form.controls.RewardFactionID1.setValue(mockRepFaction);
+      questTemplateService.form.controls.RewardFactionValue1.setValue(mockRepValue);
 
-    getPeriodicQuestSpy.and.returnValue(QUEST_PERIOD.MONTHLY);
-    expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockRepValue * (monthlyRate - 1));
+      getPeriodicQuestSpy.and.returnValue(QUEST_PERIOD.DAILY);
+      expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockRepValue * (dailyRate - 1));
 
-    getPeriodicQuestSpy.and.returnValue('mockPeriod');
-    spyOn(service, 'isRepeatable').and.returnValue(true);
-    expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockRepValue * (repeatableRate - 1));
+      getPeriodicQuestSpy.and.returnValue(QUEST_PERIOD.WEEKLY);
+      expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockRepValue * (weeklyRate - 1));
+
+      getPeriodicQuestSpy.and.returnValue(QUEST_PERIOD.MONTHLY);
+      expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockRepValue * (monthlyRate - 1));
+
+      getPeriodicQuestSpy.and.returnValue('mockPeriod');
+      expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockRepValue * (questRate - 1));
+    });
+
+    it('in case of repeatable quest', () => {
+      const { service, questTemplateService } = setup();
+      spyOn(service, 'isRepeatable').and.returnValue(true);
+      questTemplateService.form.controls.RewardFactionID1.setValue(mockRepFaction);
+      questTemplateService.form.controls.RewardFactionValue1.setValue(mockRepValue);
+
+      expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockRepValue * (repeatableRate - 1));
+    });
+
   });
+
 });
