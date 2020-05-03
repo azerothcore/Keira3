@@ -117,6 +117,19 @@ describe('QuestPreviewService', () => {
     expect(service.sharable).toBe('Not sharable');
   });
 
+  it('start item', async () => {
+    const { service, questTemplateService, mysqlQueryService } = setup();
+    const mockStartItem = 123456;
+    const mockStartItemName = 'Sword of AzerothCore';
+    spyOn(mysqlQueryService, 'getItemNameById').and.callFake(() => of(mockStartItemName).toPromise());
+
+    questTemplateService.form.controls.StartItem.setValue(mockStartItem);
+
+    expect(service.startItem).toEqual(mockStartItem);
+    expect(await service.startItemName$).toEqual(mockStartItemName);
+    expect(mysqlQueryService.getItemNameById).toHaveBeenCalledWith(mockStartItem);
+  });
+
   it('handle questTemplateAddon values', () => {
     const { service, questTemplateAddonService } = setup();
 

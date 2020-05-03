@@ -16,10 +16,11 @@ class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   get startIcon() { return this.query<HTMLImageElement>('#questStartIcon'); }
   get endIcon() { return this.query<HTMLImageElement>('#questEndIcon'); }
   get questType() { return this.query<HTMLParagraphElement>('#type'); }
-  get races() { return this.query<HTMLParagraphElement>('#races'); }
   get classes() { return this.query<HTMLParagraphElement>('#classes'); }
   get requiredSkill() { return this.query<HTMLParagraphElement>('#requiredSkill'); }
-  get racesElement() { return this.fixture.nativeElement.querySelector('#races'); }
+  get providedItem() { return this.query<HTMLParagraphElement>('#provided-item'); }
+
+  getRaces(assert = true) { return this.query<HTMLParagraphElement>('#races', assert); }
 }
 
 describe('QuestPreviewComponent', () => {
@@ -113,13 +114,13 @@ describe('QuestPreviewComponent', () => {
 
     fixture.detectChanges();
 
-    expect(page.races.innerText).toContain('Orc');
-    expect(page.races.innerText).toContain('Night Elf');
+    expect(page.getRaces().innerText).toContain('Orc');
+    expect(page.getRaces().innerText).toContain('Night Elf');
 
     // in case of "Side"
     sideSpy.and.returnValue('Alliance');
     fixture.detectChanges();
-    expect(page.racesElement).toBeFalsy();
+    expect(page.getRaces(false)).toBeFalsy();
     page.removeElement();
   });
 
@@ -137,7 +138,6 @@ describe('QuestPreviewComponent', () => {
   it('should show required skill', async() => {
     const { fixture, service, page, questTemplateAddonService } = setup();
     spyOnProperty(service, 'requiredSkill$', 'get').and.returnValue(Promise.resolve('Jewelcrafting'));
-    questTemplateAddonService.form.controls.RequiredSkillID.setValue(755);
 
     fixture.detectChanges();
     await fixture.whenStable();
@@ -148,6 +148,22 @@ describe('QuestPreviewComponent', () => {
     questTemplateAddonService.form.controls.RequiredSkillPoints.setValue(10);
     fixture.detectChanges();
     expect(page.requiredSkill.innerText).toContain('(10)');
+    page.removeElement();
+  });
+
+  it('should show provided item (start item)', async() => {
+    const { fixture, service, page } = setup();
+    const mockStartItem = 123456;
+    const mockStartItemName = 'Sword of AzerothCore';
+    spyOnProperty(service, 'startItem', 'get').and.returnValue(mockStartItem);
+    spyOnProperty(service, 'startItemName$', 'get').and.returnValue(Promise.resolve(mockStartItemName));
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(page.providedItem.innerText).toContain(`[${mockStartItem}]`);
+    expect(page.providedItem.innerText).toContain(mockStartItemName);
     page.removeElement();
   });
 });
