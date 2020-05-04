@@ -13,7 +13,7 @@ import { QUEST_FLAG_SHARABLE } from '@keira-shared/constants/flags/quest-flags';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { EditorService } from '@keira-shared/abstract/service/editors/editor.service';
 import { TableRow } from '@keira-types/general';
-import { Quest } from './quest-preview.model';
+import { Quest, QuestReputationReward } from './quest-preview.model';
 import { QuestTemplate } from '@keira-shared/types/quest-template.type';
 import { CreatureQueststarter } from '@keira-shared/types/creature-queststarter.type';
 import { GameobjectQueststarter } from '@keira-shared/types/gameobject-queststarter.type';
@@ -25,7 +25,7 @@ import { RACES_TEXT, CLASSES_TEXT } from '@keira-shared/constants/preview';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import {
   QUEST_FLAG_DAILY, QUEST_FLAG_WEEKLY, QUEST_FLAG_SPECIAL_MONTHLY, QUEST_INFO,
-  QUEST_FLAG_REPEATABLE, QUEST_FLAG_SPECIAL_REPEATABLE, ICON_SKILLS
+  QUEST_FLAG_REPEATABLE, QUEST_FLAG_SPECIAL_REPEATABLE, ICON_SKILLS, QUEST_PERIOD
 } from '@keira-shared/constants/quest-preview';
 
 @Injectable()
@@ -39,7 +39,7 @@ export class QuestPreviewService {
   constructor(
     private readonly helperService: PreviewHelperService,
     public readonly mysqlQueryService: MysqlQueryService,
-    private readonly sqliteQueryService: SqliteQueryService,
+    public readonly sqliteQueryService: SqliteQueryService,
     private readonly questHandlerService: QuestHandlerService,
     private readonly questTemplateService: QuestTemplateService,
     private readonly questRequestItemsService: QuestRequestItemsService,
@@ -142,20 +142,20 @@ export class QuestPreviewService {
 
   get periodicQuest(): string { return this.getPeriodicQuest(); }
 
-  private getPeriodicQuest(): string {
+  private getPeriodicQuest(): QUEST_PERIOD {
     const flags = this.questTemplate.Flags;
     const specialFlags = this.questTemplateAddon.SpecialFlags;
 
     if (flags & QUEST_FLAG_DAILY) {
-      return 'Daily';
+      return QUEST_PERIOD.DAILY;
     }
 
     if (flags & QUEST_FLAG_WEEKLY) {
-     return 'Weekly';
+     return QUEST_PERIOD.WEEKLY;
     }
 
     if (specialFlags & QUEST_FLAG_SPECIAL_MONTHLY) {
-      return 'Monthly';
+      return QUEST_PERIOD.MONTHLY;
     }
 
     return null;
@@ -256,6 +256,52 @@ export class QuestPreviewService {
 
   get requiredSkill$(): Promise<string> {
     return this.sqliteQueryService.getSkillNameById(Number(this.questTemplateAddon.RequiredSkillID));
+  }
+
+  get rewardXP$(): Promise<string> {
+    return this.sqliteQueryService.getRewardXP(this.questTemplate.RewardXPDifficulty, this.questTemplate.QuestLevel);
+  }
+
+  getRepReward$(field: number | string): Promise<QuestReputationReward[]> {
+    return this.mysqlQueryService.getReputationRewardByFaction( this.questTemplate[`RewardFactionID${field}`] );
+  }
+
+  getRewardReputation(field: string | number, reputationReward: QuestReputationReward[]): number {
+    const faction = this.questTemplate[`RewardFactionID${field}`];
+    const value = this.questTemplate[`RewardFactionValue${field}`];
+
+    if (!faction || !value) {
+      return null;
+    }
+
+    if (!!reputationReward && !!reputationReward[0]) {
+
+      const dailyType = this.getPeriodicQuest();
+
+      if (!!dailyType) {
+        if (dailyType === QUEST_PERIOD.DAILY  && reputationReward[0].quest_daily_rate !== 1) {
+          return (Number(value) * (reputationReward[0].quest_daily_rate - 1));
+        }
+
+        if (dailyType === QUEST_PERIOD.WEEKLY && reputationReward[0].quest_weekly_rate !== 1) {
+          return Number(value) * (reputationReward[0].quest_weekly_rate - 1);
+        }
+
+        if (dailyType === QUEST_PERIOD.MONTHLY && reputationReward[0].quest_monthly_rate !== 1) {
+          return Number(value) * (reputationReward[0].quest_monthly_rate - 1);
+        }
+      }
+
+      if (this.isRepeatable() && reputationReward[0].quest_repeatable_rate !== 1) {
+        return Number(value) * (reputationReward[0].quest_repeatable_rate - 1);
+      }
+
+      if (reputationReward[0].quest_rate !== 1) {
+        return Number(value) * (reputationReward[0].quest_rate - 1);
+      }
+    }
+
+    return Number(value);
   }
 
 }

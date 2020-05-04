@@ -36,3 +36,9 @@ export const ICON_SKILLS = {
   356: 'trade_fishing',                 // Fishing
   762: 'spell_nature_swiftness',        // Riding
 };
+
+export enum QUEST_PERIOD {
+  DAILY = 'Daily',
+  WEEKLY = 'Weekly',
+  MONTHLY = 'Monthly',
+}

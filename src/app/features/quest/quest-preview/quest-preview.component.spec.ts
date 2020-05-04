@@ -6,18 +6,22 @@ import { QuestModule } from '../quest.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { QuestPreviewService } from './quest-preview.service';
 import { PageObject } from '@keira-shared/testing/page-object';
-import { QuestTemplateService } from '../quest-template/quest-template.service';
-import { QuestTemplateAddonService } from '../quest-template-addon/quest-template-addon.service';
+import { QuestTemplate } from '@keira-shared/types/quest-template.type';
+import { QuestTemplateAddon } from '@keira-shared/types/quest-template-addon.type';
+import { createMockObject } from '@keira-shared/utils/helpers';
 
 class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   get title() { return this.query<HTMLHeadElement>('#title'); }
   get level() { return this.query<HTMLParagraphElement>('#level'); }
   get minLevel() { return this.query<HTMLParagraphElement>('#minlevel'); }
-  get startIcon() { return this.query<HTMLImageElement>('#questStartIcon'); }
-  get endIcon() { return this.query<HTMLImageElement>('#questEndIcon'); }
+  get creatureQuestStartIcon() { return this.query<HTMLImageElement>('#creatureQuestStartIcon'); }
+  get creatureQuestEndIcon() { return this.query<HTMLImageElement>('#creatureQuestEndIcon'); }
   get questType() { return this.query<HTMLParagraphElement>('#type'); }
   get classes() { return this.query<HTMLParagraphElement>('#classes'); }
   get requiredSkill() { return this.query<HTMLParagraphElement>('#requiredSkill'); }
+  get rewardXP() { return this.query<HTMLParagraphElement>('#rewardXP'); }
+  get rewardTalents() { return this.query<HTMLParagraphElement>('#rewardTalents'); }
+  get rewardReputations() { return this.query<HTMLParagraphElement>('#rewardReputations'); }
   get providedItem() { return this.query<HTMLParagraphElement>('#provided-item'); }
 
   getRaces(assert = true) { return this.query<HTMLParagraphElement>('#races', assert); }
@@ -37,13 +41,11 @@ describe('QuestPreviewComponent', () => {
 
   function setup() {
     const service = TestBed.inject(QuestPreviewService);
-    const questTemplateService = TestBed.inject(QuestTemplateService);
-    const questTemplateAddonService = TestBed.inject(QuestTemplateAddonService);
     const fixture: ComponentFixture<QuestPreviewComponent> = TestBed.createComponent(QuestPreviewComponent);
     const component: QuestPreviewComponent = fixture.componentInstance;
     const page = new QuestPreviewComponentPage(fixture);
 
-    return { fixture, component, service, page, questTemplateService, questTemplateAddonService };
+    return { fixture, component, service, page };
   }
 
   it('ngOnInit should initialise services', () => {
@@ -83,22 +85,23 @@ describe('QuestPreviewComponent', () => {
 
     fixture.detectChanges();
 
-    expect(page.startIcon.src).toContain('assets/img/quest/quest_start.gif');
-    expect(page.endIcon.src).toContain('assets/img/quest/quest_end.gif');
+    expect(page.creatureQuestStartIcon.src).toContain('assets/img/quest/quest_start.gif');
+    expect(page.creatureQuestEndIcon.src).toContain('assets/img/quest/quest_end.gif');
 
     periodicQuestSpy.and.returnValue('Daily');
 
     fixture.detectChanges();
 
-    expect(page.startIcon.src).toContain('assets/img/quest/quest_start_daily.gif');
-    expect(page.endIcon.src).toContain('assets/img/quest/quest_end_daily.gif');
+    expect(page.creatureQuestStartIcon.src).toContain('assets/img/quest/quest_start_daily.gif');
+    expect(page.creatureQuestEndIcon.src).toContain('assets/img/quest/quest_end_daily.gif');
     page.removeElement();
   });
 
   it('should show questType', () => {
-    const { fixture, service, page, questTemplateService } = setup();
+    const { fixture, service, page } = setup();
+    const questTemplate = createMockObject({ QuestInfoID: 41 }, QuestTemplate);
     spyOnProperty(service, 'periodicQuest', 'get').and.returnValue('Daily');
-    questTemplateService.form.controls.QuestInfoID.setValue(41);
+    spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
 
     fixture.detectChanges();
 
@@ -136,7 +139,7 @@ describe('QuestPreviewComponent', () => {
   });
 
   it('should show required skill', async() => {
-    const { fixture, service, page, questTemplateAddonService } = setup();
+    const { fixture, service, page } = setup();
     spyOnProperty(service, 'requiredSkill$', 'get').and.returnValue(Promise.resolve('Jewelcrafting'));
 
     fixture.detectChanges();
@@ -145,7 +148,9 @@ describe('QuestPreviewComponent', () => {
 
     expect(page.requiredSkill.innerText).toContain('Jewelcrafting');
 
-    questTemplateAddonService.form.controls.RequiredSkillPoints.setValue(10);
+    const questTemplateAddon = createMockObject({ RequiredSkillPoints: 10 }, QuestTemplateAddon);
+    spyOnProperty(service, 'questTemplateAddon', 'get').and.returnValue(questTemplateAddon);
+
     fixture.detectChanges();
     expect(page.requiredSkill.innerText).toContain('(10)');
     page.removeElement();
@@ -166,4 +171,42 @@ describe('QuestPreviewComponent', () => {
     expect(page.providedItem.innerText).toContain(mockStartItemName);
     page.removeElement();
   });
+
+  it('should show rewardXP', async() => {
+    const { fixture, service, page } = setup();
+    const questTemplate = createMockObject({ RewardXPDifficulty: 2, QuestLevel: 10 }, QuestTemplate);
+    spyOnProperty(service, 'rewardXP$', 'get').and.returnValue(Promise.resolve('200'));
+    spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(page.rewardXP.innerText).toContain('200');
+
+    fixture.debugElement.nativeElement.remove();
+  });
+
+  it('should show RewardTalents', () => {
+    const { fixture, page, service } = setup();
+    const questTemplate = createMockObject({ RewardTalents: 2 }, QuestTemplate);
+    spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
+
+    fixture.detectChanges();
+
+    expect(page.rewardTalents.innerText).toContain('2 talent points');
+    fixture.debugElement.nativeElement.remove();
+  });
+
+  it('should show rewardReputations', () => {
+    const { fixture, page, service } = setup();
+    const questTemplate = createMockObject({ RewardFactionID1: 72, RewardFactionValue1: 123 }, QuestTemplate);
+    spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
+
+    fixture.detectChanges();
+
+    expect(page.rewardReputations.innerText).toContain('123');
+    fixture.debugElement.nativeElement.remove();
+  });
+
 });
