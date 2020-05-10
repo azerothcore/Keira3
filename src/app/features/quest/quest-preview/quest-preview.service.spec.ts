@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { QuestTemplateService } from '../quest-template/quest-template.service';
 import { QuestModule } from '../quest.module';
@@ -46,13 +46,15 @@ describe('QuestPreviewService', () => {
     const creatureQuestenderService = TestBed.inject(CreatureQuestenderService);
     const MAX_NEXT_QUEST_ID = 7;
 
-    spyOn(mysqlQueryService, 'getQuestTitleById').and.callFake(i => of('Title' + i).toPromise());
+    spyOn(mysqlQueryService, 'getQuestTitleById').and.callFake(i => Promise.resolve('Title' + i));
     spyOn(mysqlQueryService, 'getPrevQuestById').and.callFake(
-      (id: number) => of(String(id > 0 ? (id - 1) : 0)).toPromise()
+      (id: number) => Promise.resolve(String(id > 0 ? (id - 1) : 0))
     );
     spyOn(mysqlQueryService, 'getNextQuestById').and.callFake(
-      (id: number) => of(String(id < MAX_NEXT_QUEST_ID ? (id + 1) : 0)).toPromise()
+      (id: number) => Promise.resolve(String(id < MAX_NEXT_QUEST_ID ? (id + 1) : 0))
     );
+    spyOn(mysqlQueryService, 'getGameObjectNameById').and.callFake(() => Promise.resolve('Helias Gameobject'));
+    spyOn(mysqlQueryService, 'getCreatureNameById').and.callFake(() => Promise.resolve('Helias Creature'));
 
     return {
       service,
@@ -485,6 +487,97 @@ describe('QuestPreviewService', () => {
 
       expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockRepValue * (repeatableRate - 1));
     });
+
+    it('getObjective$', async() => {
+      const { service, questTemplateService, mysqlQueryService } = setup();
+
+      questTemplateService.form.controls.RequiredNpcOrGo1.setValue(0);
+      expect(await service.getObjective$(1)).toBeUndefined();
+
+      questTemplateService.form.controls.RequiredNpcOrGo1.setValue(-1);
+      expect(await service.getObjective$(1)).toBe('Helias Gameobject');
+      expect(mysqlQueryService.getGameObjectNameById).toHaveBeenCalledTimes(1);
+      expect(mysqlQueryService.getGameObjectNameById).toHaveBeenCalledWith(1);
+
+
+      questTemplateService.form.controls.RequiredNpcOrGo1.setValue(1);
+      expect(await service.getObjective$(1)).toBe('Helias Creature');
+      expect(mysqlQueryService.getCreatureNameById).toHaveBeenCalledTimes(1);
+      expect(mysqlQueryService.getCreatureNameById).toHaveBeenCalledWith(1);
+    });
+
+
+    it('getObjectiveCount', () => {
+      const { service, questTemplateService } = setup();
+
+      questTemplateService.form.controls.RequiredNpcOrGoCount1.setValue(0);
+      expect(service.getObjectiveCount(1)).toBe('');
+
+      questTemplateService.form.controls.RequiredNpcOrGoCount1.setValue(2);
+      expect(service.getObjectiveCount(1)).toBe('(2)');
+    });
+
+    it('isNpcOrGo', () => {
+      const { service, questTemplateService } = setup();
+
+      questTemplateService.form.controls.RequiredNpcOrGoCount1.setValue(0);
+      expect(service.isNpcOrGoObj(1)).toBeFalse();
+
+      questTemplateService.form.controls.RequiredNpcOrGoCount1.setValue(1);
+      expect(service.isNpcOrGoObj(1)).toBeTrue();
+    });
+
+
+    it('getObjItemCount', () => {
+      const { service, questTemplateService } = setup();
+
+      questTemplateService.form.controls.RequiredItemCount1.setValue(0);
+      expect(service.getObjItemCount(1)).toBe('');
+
+      questTemplateService.form.controls.RequiredItemCount1.setValue(2);
+      expect(service.getObjItemCount(1)).toBe('(2)');
+    });
+
+
+    it('getFactionByValue', () => {
+      const { service, questTemplateService } = setup();
+
+      questTemplateService.form.controls.RequiredFactionValue1.setValue(0);
+      expect(service.getFactionByValue(1)).toBe('');
+
+      questTemplateService.form.controls.RequiredFactionValue1.setValue(900);
+      expect(service.getFactionByValue(1)).toBe('(Neutral)');
+
+      questTemplateService.form.controls.RequiredFactionValue1.setValue(2100);
+      expect(service.getFactionByValue(1)).toBe('(Neutral)');
+
+      questTemplateService.form.controls.RequiredFactionValue1.setValue(3000);
+      expect(service.getFactionByValue(1)).toBe('(Friendly)');
+
+      questTemplateService.form.controls.RequiredFactionValue1.setValue(9000);
+      expect(service.getFactionByValue(1)).toBe('(Honored)');
+
+      questTemplateService.form.controls.RequiredFactionValue1.setValue(21000);
+      expect(service.getFactionByValue(1)).toBe('(Revered)');
+
+      questTemplateService.form.controls.RequiredFactionValue1.setValue(42000);
+      expect(service.getFactionByValue(1)).toBe('(Exalted)');
+    });
+
+    it('getObjText', () => {
+      const { service, questTemplateService } = setup();
+
+      questTemplateService.form.controls.ObjectiveText1.setValue('mock objective');
+      expect(service.getObjText(1)).toBe('mock objective');
+    });
+
+    it('get objectiveText', () => {
+      const { service, questTemplateService } = setup();
+
+      questTemplateService.form.controls.LogDescription.setValue('mock objective text');
+      expect(service.objectiveText).toBe('mock objective text');
+    });
+
 
   });
 
