@@ -1,4 +1,4 @@
-import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { QuestTemplateService } from '../quest-template/quest-template.service';
 import { QuestModule } from '../quest.module';
@@ -12,7 +12,6 @@ import { CreatureQueststarterService } from '../creature-queststarter/creature-q
 import { CreatureQuestenderService } from '../creature-questender/creature-questender.service';
 import { QuestHandlerService } from '../quest-handler.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { of } from 'rxjs';
 import { DifficultyLevel } from './quest-preview.model';
 import { QUEST_FLAG_DAILY, QUEST_FLAG_WEEKLY, QUEST_FLAG_SPECIAL_MONTHLY,
          QUEST_FLAG_SPECIAL_REPEATABLE, QUEST_FLAG_REPEATABLE, QUEST_PERIOD
