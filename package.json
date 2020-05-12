@@ -79,7 +79,7 @@
     "karma-chrome-launcher": "3.1.0",
     "karma-coverage-istanbul-reporter": "3.0.2",
     "karma-jasmine": "3.1.1",
-    "karma-jasmine-html-reporter": "1.5.3",
+    "karma-jasmine-html-reporter": "1.5.4",
     "mocha": "7.1.2",
     "ngx-bootstrap": "5.6.1",
     "ngx-clipboard": "13.0.1",
