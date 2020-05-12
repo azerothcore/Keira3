@@ -73,6 +73,7 @@ export class QuestPreviewService {
   get sharable(): string { return this.questTemplate.Flags & QUEST_FLAG_SHARABLE ? 'Sharable' : 'Not sharable'; }
   get startItem(): number { return this.questTemplate.StartItem; }
   get startItemName$(): Promise<string> { return this.mysqlQueryService.getItemNameById(this.startItem); }
+  get objectiveText(): string { return this.questTemplate.LogDescription; }
 
   // get QuestTemplateAddon values
   get maxLevel(): string { return String(this.questTemplateAddon.MaxLevel); }
@@ -302,6 +303,56 @@ export class QuestPreviewService {
     }
 
     return Number(value);
+  }
+
+  getObjText(field: string | number) {
+    return this.questTemplate[`ObjectiveText${field}`];
+  }
+
+  getObjective$(field: string | number): Promise<string> {
+
+    const RequiredNpcOrGo = Number(this.questTemplate[`RequiredNpcOrGo${field}`]);
+    if (!!RequiredNpcOrGo) {
+      if (RequiredNpcOrGo > 0) {
+        return this.mysqlQueryService.getCreatureNameById(RequiredNpcOrGo);
+      }
+
+      return this.mysqlQueryService.getGameObjectNameById(Math.abs(RequiredNpcOrGo));
+    }
+
+  }
+
+  getObjectiveCount(field: string | number): string {
+    const reqNpcOrGo = this.questTemplate[`RequiredNpcOrGoCount${field}`];
+    return !!reqNpcOrGo && reqNpcOrGo > 1 ? `(${reqNpcOrGo})` : '';
+  }
+
+  isNpcOrGoObj(field: string | number): boolean {
+    return !!this.questTemplate[`RequiredNpcOrGoCount${field}`];
+    // return !!this.questTemplate[`ObjectiveText${field}`] || !!this.questTemplate[`RequiredNpcOrGo${field}`];
+  }
+
+  getObjItemCount(field: string | number) {
+    const reqItemCount = this.questTemplate[`RequiredItemCount${field}`];
+    return !!reqItemCount && reqItemCount > 1 ? `(${reqItemCount})` : '';
+  }
+
+  getFactionByValue(field: string | number) {
+    switch (Number(this.questTemplate[`RequiredFactionValue${field}`])) {
+      case 900:
+      case 2100:
+        return '(Neutral)';
+      case 3000:
+        return '(Friendly)';
+      case 9000:
+        return '(Honored)';
+      case 21000:
+        return '(Revered)';
+      case 42000:
+        return '(Exalted)';
+      default:
+        return '';
+    }
   }
 
 }

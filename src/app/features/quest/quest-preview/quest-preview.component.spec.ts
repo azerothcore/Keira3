@@ -9,6 +9,8 @@ import { PageObject } from '@keira-shared/testing/page-object';
 import { QuestTemplate } from '@keira-shared/types/quest-template.type';
 import { QuestTemplateAddon } from '@keira-shared/types/quest-template-addon.type';
 import { createMockObject } from '@keira-shared/utils/helpers';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 
 class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   get title() { return this.query<HTMLHeadElement>('#title'); }
@@ -23,6 +25,10 @@ class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   get rewardTalents() { return this.query<HTMLParagraphElement>('#rewardTalents'); }
   get rewardReputations() { return this.query<HTMLParagraphElement>('#rewardReputations'); }
   get providedItem() { return this.query<HTMLParagraphElement>('#provided-item'); }
+  get areaDescription() { return this.query<HTMLParagraphElement>('#areaDescription'); }
+  get npcOrGoObjectives() { return this.query<HTMLParagraphElement>('#npcOrGoObjectives'); }
+  get itemObjectives() { return this.query<HTMLParagraphElement>('#itemObjectives'); }
+  get RequiredFaction() { return this.query<HTMLParagraphElement>('#RequiredFaction'); }
 
   getRaces(assert = true) { return this.query<HTMLParagraphElement>('#races', assert); }
 }
@@ -44,8 +50,10 @@ describe('QuestPreviewComponent', () => {
     const fixture: ComponentFixture<QuestPreviewComponent> = TestBed.createComponent(QuestPreviewComponent);
     const component: QuestPreviewComponent = fixture.componentInstance;
     const page = new QuestPreviewComponentPage(fixture);
+    const mysqlQueryService = TestBed.inject(MysqlQueryService);
+    const sqliteQueryService = TestBed.inject(SqliteQueryService);
 
-    return { fixture, component, service, page };
+    return { fixture, component, service, page, mysqlQueryService, sqliteQueryService };
   }
 
   it('ngOnInit should initialise services', () => {
@@ -206,6 +214,78 @@ describe('QuestPreviewComponent', () => {
     fixture.detectChanges();
 
     expect(page.rewardReputations.innerText).toContain('123');
+    fixture.debugElement.nativeElement.remove();
+  });
+
+  it('should show areaDescription', () => {
+    const { fixture, page, service } = setup();
+    const questTemplate = createMockObject({ AreaDescription: 'Area Desc', }, QuestTemplate);
+    spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
+
+    fixture.detectChanges();
+
+    expect(page.areaDescription.innerText).toContain('Area Desc');
+    fixture.debugElement.nativeElement.remove();
+  });
+
+  it('should show npcOrGoObjectives', async() => {
+    const { fixture, page, service } = setup();
+    const getObjectiveCountSpy: Spy = spyOn(service, 'getObjectiveCount').and.returnValue('(1)');
+    const getObjTextSpy: Spy = spyOn(service, 'getObjText').and.returnValue('Mock Objective');
+    spyOn(service, 'getObjective$').and.returnValue(Promise.resolve('Riverpaw Gnoll'));
+    spyOn(service, 'isNpcOrGoObj').and.returnValue(true);
+
+    fixture.detectChanges();
+    expect(page.npcOrGoObjectives.innerText).toContain('Mock Objective (1)');
+
+    getObjectiveCountSpy.and.returnValue('');
+
+    fixture.detectChanges();
+    expect(page.npcOrGoObjectives.innerText).toContain('Mock Objective');
+
+    getObjTextSpy.and.returnValue('');
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(page.npcOrGoObjectives.innerText).toContain('Riverpaw Gnoll');
+
+    fixture.debugElement.nativeElement.remove();
+  });
+
+
+  it('should show itemObjectives', async() => {
+    const { fixture, page, service, mysqlQueryService } = setup();
+    const getObjItemCountSpy: Spy = spyOn(service, 'getObjItemCount').and.returnValue('(2)');
+    const questTemplate = createMockObject({ RequiredItemId1: 1 }, QuestTemplate);
+    spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
+    spyOn(mysqlQueryService, 'getItemNameById').and.returnValue(Promise.resolve('Mock Item'));
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(page.itemObjectives.innerText).toContain('Mock Item (2)');
+
+    getObjItemCountSpy.and.returnValue('');
+
+    fixture.detectChanges();
+    expect(page.itemObjectives.innerText).toContain('Mock Item');
+
+    fixture.debugElement.nativeElement.remove();
+  });
+
+  it('should show RequiredFaction', async() => {
+    const { fixture, page, service, sqliteQueryService } = setup();
+    const questTemplate = createMockObject({ RequiredFactionId1: 1, RequiredFactionValue1: 900 }, QuestTemplate);
+    spyOn(service, 'getFactionByValue').and.returnValue('(Neutral)');
+    spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
+    spyOn(sqliteQueryService, 'getFactionNameById').and.returnValue(Promise.resolve('Mock Faction'));
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(page.RequiredFaction.innerText).toContain('Mock Faction (Neutral)');
+
     fixture.debugElement.nativeElement.remove();
   });
 
