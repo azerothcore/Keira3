@@ -40,6 +40,7 @@ import { GameobjectQuestenderService } from './gameobject-questender/gameobject-
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { ItemSelectorModule } from '@keira-shared/modules/selectors/item-selector/item-selector.module';
 import { GameobjectQuestenderComponent } from './gameobject-questender/gameobject-questender.component';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
 
 const components = [
   CreatureQuestenderComponent,
@@ -77,6 +78,7 @@ const components = [
     ItemSelectorModule,
     IconModule,
     PerfectScrollbarModule,
+    CollapseModule,
   ],
   providers: [
     QuestHandlerService,

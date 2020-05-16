@@ -27,6 +27,9 @@ import {
   QUEST_FLAG_DAILY, QUEST_FLAG_WEEKLY, QUEST_FLAG_SPECIAL_MONTHLY, QUEST_INFO,
   QUEST_FLAG_REPEATABLE, QUEST_FLAG_SPECIAL_REPEATABLE, ICON_SKILLS, QUEST_PERIOD
 } from '@keira-shared/constants/quest-preview';
+import { QuestOfferRewardService } from '../quest-offer-reward/quest-offer-reward.service';
+import { QuestOfferReward } from '@keira-types/quest-offer-reward.type';
+import { QuestRequestItems } from '@keira-types/quest-request-items.type';
 
 @Injectable()
 export class QuestPreviewService {
@@ -44,6 +47,7 @@ export class QuestPreviewService {
     private readonly questTemplateService: QuestTemplateService,
     private readonly questRequestItemsService: QuestRequestItemsService,
     private readonly questTemplateAddonService: QuestTemplateAddonService,
+    private readonly questOfferRewardService: QuestOfferRewardService,
     private readonly gameobjectQueststarterService: GameobjectQueststarterService,
     private readonly gameobjectQuestenderService: GameobjectQuestenderService,
     private readonly creatureQueststarterService: CreatureQueststarterService,
@@ -58,6 +62,8 @@ export class QuestPreviewService {
   // get form value
   get questTemplate(): QuestTemplate { return this.questTemplateService.form.getRawValue(); }
   get questTemplateAddon(): QuestTemplateAddon { return this.questTemplateAddonService.form.getRawValue(); }
+  get questOfferReward(): QuestOfferReward { return this.questOfferRewardService.form.getRawValue(); }
+  get questRequestItems(): QuestRequestItems { return this.questRequestItemsService.form.getRawValue(); }
   get creatureQueststarterList(): CreatureQueststarter[] { return this.creatureQueststarterService.newRows; }
   get creatureQuestenderList(): CreatureQuestender[] { return this.creatureQuestenderService.newRows; }
   get gameobjectQueststarterList(): GameobjectQueststarter[] { return this.gameobjectQueststarterService.newRows; }
@@ -94,6 +100,7 @@ export class QuestPreviewService {
   initializeServices() {
     this.initService(this.questTemplateService);
     this.initService(this.questRequestItemsService);
+    this.initService(this.questOfferRewardService);
     this.initService(this.questTemplateAddonService);
     this.initService(this.gameobjectQueststarterService);
     this.initService(this.gameobjectQuestenderService);
