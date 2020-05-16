@@ -9,9 +9,9 @@ import { QuestPreviewService } from './quest-preview.service';
 export class QuestPreviewComponent implements OnInit {
   constructor(public readonly service: QuestPreviewService) { }
 
-  isDescriptionCollapsed = true;
-  isProgressCollapsed = true;
-  isCompletionCollapsed = true;
+  descriptionToggle = true;
+  progressToggle = true;
+  completionToggle = true;
 
   get showMaxLevel(): boolean { return !!this.service.maxLevel && this.service.maxLevel !== '0'; }
   get showRaces(): boolean { return !this.service.side && this.service.races && this.service.races.length > 0; }

@@ -11,6 +11,9 @@ import { QuestTemplateAddon } from '@keira-shared/types/quest-template-addon.typ
 import { createMockObject } from '@keira-shared/utils/helpers';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { QuestRequestItems } from '@keira-types/quest-request-items.type';
+import { QuestOfferReward } from '@keira-types/quest-offer-reward.type';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   get title() { return this.query<HTMLHeadElement>('#title'); }
@@ -29,6 +32,10 @@ class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   get npcOrGoObjectives() { return this.query<HTMLParagraphElement>('#npcOrGoObjectives'); }
   get itemObjectives() { return this.query<HTMLParagraphElement>('#itemObjectives'); }
   get RequiredFaction() { return this.query<HTMLParagraphElement>('#RequiredFaction'); }
+
+  get descriptionText() { return this.query<HTMLDivElement>('#description-text'); }
+  get progressText() { return this.query<HTMLDivElement>('#progress-text'); }
+  get completionText() { return this.query<HTMLDivElement>('#completion-text'); }
 
   getRaces(assert = true) { return this.query<HTMLParagraphElement>('#races', assert); }
 }
@@ -289,4 +296,25 @@ describe('QuestPreviewComponent', () => {
     fixture.debugElement.nativeElement.remove();
   });
 
+  it('should show texts (description/progress/completion)', () => {
+    const { fixture, service, page } = setup();
+    const description = 'My description text';
+    const progress = 'My progress text';
+    const completion = 'My completion text';
+
+    const questTemplate = createMockObject({ QuestDescription: description }, QuestTemplate);
+    const questRequestItems = createMockObject({ CompletionText: progress }, QuestRequestItems);
+    const questOfferReward = createMockObject({ RewardText: completion }, QuestOfferReward);
+
+    spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
+    spyOnProperty(service, 'questRequestItems', 'get').and.returnValue(questRequestItems);
+    spyOnProperty(service, 'questOfferReward', 'get').and.returnValue(questOfferReward);
+
+    fixture.detectChanges();
+
+    expect(page.descriptionText.innerText).toContain(description);
+    expect(page.progressText.innerText).toContain(progress);
+    expect(page.completionText.innerText).toContain(completion);
+    page.removeElement();
+  });
 });
