@@ -13,7 +13,6 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { QuestRequestItems } from '@keira-types/quest-request-items.type';
 import { QuestOfferReward } from '@keira-types/quest-offer-reward.type';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   get title() { return this.query<HTMLHeadElement>('#title'); }
@@ -36,6 +35,16 @@ class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   get descriptionText() { return this.query<HTMLDivElement>('#description-text'); }
   get progressText() { return this.query<HTMLDivElement>('#progress-text'); }
   get completionText() { return this.query<HTMLDivElement>('#completion-text'); }
+  get descriptionToggle() { return this.query<HTMLParagraphElement>('#description-toggle'); }
+  get progressToggle() { return this.query<HTMLParagraphElement>('#progress-toggle'); }
+  get completionToggle() { return this.query<HTMLParagraphElement>('#completion-toggle'); }
+
+  expectCollapsed(element: HTMLElement) {
+    expect(this.queryInsideElement(element, 'i')).toHaveClass('fa-caret-right');
+  }
+  expectNotCollapsed(element: HTMLElement) {
+    expect(this.queryInsideElement(element, 'i')).toHaveClass('fa-caret-down');
+  }
 
   getRaces(assert = true) { return this.query<HTMLParagraphElement>('#races', assert); }
 }
@@ -296,25 +305,48 @@ describe('QuestPreviewComponent', () => {
     fixture.debugElement.nativeElement.remove();
   });
 
-  it('should show texts (description/progress/completion)', () => {
-    const { fixture, service, page } = setup();
-    const description = 'My description text';
-    const progress = 'My progress text';
-    const completion = 'My completion text';
+  describe('description/progress/completion', () => {
+    it('should contain the correct text', () => {
+      const { fixture, service, page } = setup();
+      const description = 'My description text';
+      const progress = 'My progress text';
+      const completion = 'My completion text';
 
-    const questTemplate = createMockObject({ QuestDescription: description }, QuestTemplate);
-    const questRequestItems = createMockObject({ CompletionText: progress }, QuestRequestItems);
-    const questOfferReward = createMockObject({ RewardText: completion }, QuestOfferReward);
+      const questTemplate = createMockObject({ QuestDescription: description }, QuestTemplate);
+      const questRequestItems = createMockObject({ CompletionText: progress }, QuestRequestItems);
+      const questOfferReward = createMockObject({ RewardText: completion }, QuestOfferReward);
 
-    spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
-    spyOnProperty(service, 'questRequestItems', 'get').and.returnValue(questRequestItems);
-    spyOnProperty(service, 'questOfferReward', 'get').and.returnValue(questOfferReward);
+      spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
+      spyOnProperty(service, 'questRequestItems', 'get').and.returnValue(questRequestItems);
+      spyOnProperty(service, 'questOfferReward', 'get').and.returnValue(questOfferReward);
 
-    fixture.detectChanges();
+      fixture.detectChanges();
 
-    expect(page.descriptionText.innerText).toContain(description);
-    expect(page.progressText.innerText).toContain(progress);
-    expect(page.completionText.innerText).toContain(completion);
-    page.removeElement();
+      expect(page.descriptionText.innerText).toContain(description);
+      expect(page.progressText.innerText).toContain(progress);
+      expect(page.completionText.innerText).toContain(completion);
+      page.removeElement();
+    });
+
+    it('should correctly toggle', () => {
+      const { fixture, page } = setup();
+
+      fixture.detectChanges();
+
+      page.expectCollapsed(page.descriptionToggle);
+      page.expectCollapsed(page.progressToggle);
+      page.expectCollapsed(page.completionToggle);
+
+      page.clickElement(page.descriptionToggle);
+      page.expectNotCollapsed(page.descriptionToggle);
+
+      page.clickElement(page.progressToggle);
+      page.expectNotCollapsed(page.progressToggle);
+
+      page.clickElement(page.completionToggle);
+      page.expectNotCollapsed(page.completionToggle);
+
+      page.removeElement();
+    });
   });
 });
