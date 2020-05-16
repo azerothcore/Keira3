@@ -10,7 +10,9 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { QuestModule } from '../quest.module';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 
-class QuestRequestItemsPage extends EditorPageObject<QuestRequestItemsComponent> {}
+class QuestRequestItemsPage extends EditorPageObject<QuestRequestItemsComponent> {
+  get progressText() { return this.query<HTMLDivElement>('#progress-text'); }
+}
 
 describe('QuestRequestItems integration tests', () => {
   const id = 1234;
@@ -95,6 +97,16 @@ describe('QuestRequestItems integration tests', () => {
       page.expectFullQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      page.removeElement();
+    });
+
+    it('changing a property should be reflected in the quest preview', () => {
+      const { page } = setup(true);
+      const value = 'Fix all AzerothCore bugs';
+
+      page.setInputValueById('CompletionText', value);
+
+      expect(page.progressText.innerText).toContain(value);
       page.removeElement();
     });
   });

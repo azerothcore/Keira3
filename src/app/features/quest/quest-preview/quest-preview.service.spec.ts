@@ -17,6 +17,7 @@ import { QUEST_FLAG_DAILY, QUEST_FLAG_WEEKLY, QUEST_FLAG_SPECIAL_MONTHLY,
          QUEST_FLAG_SPECIAL_REPEATABLE, QUEST_FLAG_REPEATABLE, QUEST_PERIOD
 } from '@keira-shared/constants/quest-preview';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { QuestOfferRewardService } from '../quest-offer-reward/quest-offer-reward.service';
 
 describe('QuestPreviewService', () => {
 
@@ -278,6 +279,7 @@ describe('QuestPreviewService', () => {
     const gameObjectQuestenderLoadReloadSpy: Spy = spyOn(TestBed.inject(GameobjectQuestenderService), 'reload');
     const creatureQueststarterLoadReloadSpy: Spy = spyOn(TestBed.inject(CreatureQueststarterService), 'reload');
     const creatureQuestenderLoadReloadSpy: Spy = spyOn(TestBed.inject(CreatureQuestenderService), 'reload');
+    const questOfferRewardServiceLoadReloadSpy: Spy = spyOn(TestBed.inject(QuestOfferRewardService), 'reload');
     const mockEntity = '123';
 
     questTemplateService['_loadedEntityId'] = mockEntity;
@@ -292,7 +294,8 @@ describe('QuestPreviewService', () => {
     expect(initServiceSpy).toHaveBeenCalledWith(TestBed.inject(GameobjectQuestenderService));
     expect(initServiceSpy).toHaveBeenCalledWith(TestBed.inject(CreatureQueststarterService));
     expect(initServiceSpy).toHaveBeenCalledWith(TestBed.inject(CreatureQuestenderService));
-    expect(initServiceSpy).toHaveBeenCalledTimes(7);
+    expect(initServiceSpy).toHaveBeenCalledWith(TestBed.inject(QuestOfferRewardService));
+    expect(initServiceSpy).toHaveBeenCalledTimes(8);
 
     // initService
     expect(questTemplateLoadReloadSpy).toHaveBeenCalledTimes(0);
@@ -309,6 +312,7 @@ describe('QuestPreviewService', () => {
     expect(gameObjectQuestenderLoadReloadSpy).toHaveBeenCalledWith(mockEntity);
     expect(creatureQueststarterLoadReloadSpy).toHaveBeenCalledWith(mockEntity);
     expect(creatureQuestenderLoadReloadSpy).toHaveBeenCalledWith(mockEntity);
+    expect(questOfferRewardServiceLoadReloadSpy).toHaveBeenCalledWith(mockEntity);
   });
 
   describe('prevQuestList', () => {
