@@ -10,7 +10,9 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { QuestModule } from '../quest.module';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 
-class QuestOfferRewardPage extends EditorPageObject<QuestOfferRewardComponent> {}
+class QuestOfferRewardPage extends EditorPageObject<QuestOfferRewardComponent> {
+  get completionText() { return this.query<HTMLDivElement>('#completion-text'); }
+}
 
 describe('QuestOfferReward integration tests', () => {
 
@@ -104,6 +106,16 @@ describe('QuestOfferReward integration tests', () => {
       page.expectFullQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      page.removeElement();
+    });
+
+    it('changing a property should be reflected in the quest preview', () => {
+      const { page } = setup(true);
+      const value = 'Fix all AzerothCore bugs';
+
+      page.setInputValueById('RewardText', value);
+
+      expect(page.completionText.innerText).toContain(value);
       page.removeElement();
     });
   });
