@@ -135,19 +135,6 @@
 
       </div>
 
-      <div id="gains">
-        <p class="title">Gains</p>
-        <p id="rewardXP" *ngIf="service.rewardXP$ | async as xp">• {{ xp }} experience</p>
-        <p id="rewardTalents" *ngIf="service.questTemplate.RewardTalents">• {{ service.questTemplate.RewardTalents }} talent points</p>
-
-        <div id="rewardReputations" *ngFor="let i of [1,2,3,4,5]">
-          <p *ngIf="service.getRewardReputation(i, service.getRepReward$(i) | async); let repReward">
-            • {{ repReward }} reputation with {{ service.sqliteQueryService.getFactionNameById(service.questTemplate['RewardFactionID' + i]) | async }}
-          </p>
-        </div>
-
-      </div>
-
       <p class="title text-left cursor-pointer mt-3" (click)="descriptionToggle = !descriptionToggle" id="description-toggle">
         <i class="fa" [ngClass]="getCollapseClass(descriptionToggle)"></i> Description
       </p>
@@ -167,6 +154,62 @@
       </p>
       <div [collapse]="completionToggle" class="greyed text-sm" id="completion-text">
         {{ service.questOfferReward.RewardText }}
+      </div>
+
+      <div id="rewards" *ngIf="service.isReward()">
+
+        <p class="title">Rewards</p>
+
+        <!-- Reward Spell -->
+        <div id="rewardSpell" *ngIf="service.rewardSpell(); let spell" class="mt-3">
+          <p>You will learn:</p>
+          <keira-icon [size]="'small'" [spellId]="spell"></keira-icon>
+          <span class="colored"> {{ service.sqliteQueryService.getSpellNameById(spell) | async }}</span>
+          <span class="greyed"> [{{ spell }}]</span>
+        </div>
+
+        <!-- Reward Item -->
+        <div *ngIf="service.isRewardItems()" class="mt-3">
+          <p>You will receive: </p>
+          <div *ngFor="let i of [1,2,3,4]">
+            <p *ngIf="service.isFieldAvailable('RewardItem', 'RewardAmount', i)">
+              <keira-icon [size]="'small'" [itemId]="service.questTemplate['RewardItem' + i]"></keira-icon>
+              <span class="colored"> {{ service.mysqlQueryService.getItemNameById(service.questTemplate['RewardItem' + i]) | async }}</span>
+              <span class="greyed"> [{{ service.questTemplate['RewardItem' + i] }}]</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Reward Choice Item -->
+        <div *ngIf="service.isRewardChoiceItems()" class="mt-3">
+          <p>You will be able to choose one of these rewards:</p>
+
+          <div *ngFor="let i of [1,2,3,4]">
+            <p *ngIf="service.isFieldAvailable('RewardChoiceItemID', 'RewardChoiceItemQuantity', i)">
+              <keira-icon [size]="'small'" [itemId]="service.questTemplate['RewardChoiceItemID' + i]"></keira-icon>
+              <span class="colored"> {{ service.mysqlQueryService.getItemNameById(service.questTemplate['RewardChoiceItemID' + i]) | async }}</span>
+              <span class="greyed"> [{{ service.questTemplate['RewardChoiceItemID' + i] }}]</span>
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <div id="gains" *ngIf="service.isGains()">
+        <p class="title">Gains</p>
+        <p id="rewardXP" *ngIf="service.rewardXP$ | async as xp">• {{ xp }} experience</p>
+        <p id="rewardTalents" *ngIf="service.questTemplate.RewardTalents">• {{ service.questTemplate.RewardTalents }} talent points</p>
+
+        <div *ngIf="service.isRewardReputation()">
+          <div id="rewardReputations" *ngFor="let i of [1,2,3,4,5]">
+            <div *ngIf="service.isFieldAvailable('RewardFactionID', 'RewardFactionValue', i)">
+              <p *ngIf="service.getRewardReputation(i, service.getRepReward$(i) | async); let repReward">
+                • {{ repReward }} reputation with {{ service.sqliteQueryService.getFactionNameById(service.questTemplate['RewardFactionID' + i]) | async }}
+              </p>
+            </div>
+          </div>
+        </div>
+
       </div>
 
     </div>

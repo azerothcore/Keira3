@@ -29,6 +29,13 @@ export class IconComponent extends SubscriptionHandler {
       this.setIcon(ICON_SKILLS[skillId]);
     }
   }
+  @Input() set spellId(spellId: string | number) {
+    if (!!spellId) {
+      console.log('spell');
+      this.subscriptions.push(this.service.getIconBySpellId(spellId).subscribe(this.setIcon.bind(this)));
+    }
+  }
+
 
   get iconLink(): string {
     return `https://wow.zamimg.com/images/wow/icons/${this.size}/${this._iconId}.jpg`;
@@ -42,6 +49,7 @@ export class IconComponent extends SubscriptionHandler {
   }
 
   private setIcon(icon: string) {
+    console.log(icon);
     this._iconId = !!icon ? icon : this.DEFAULT_ICON;
     this.cd.markForCheck();
   }
