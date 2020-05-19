@@ -31,7 +31,6 @@ export class IconComponent extends SubscriptionHandler {
   }
   @Input() set spellId(spellId: string | number) {
     if (!!spellId) {
-      console.log('spell');
       this.subscriptions.push(this.service.getIconBySpellId(spellId).subscribe(this.setIcon.bind(this)));
     }
   }
@@ -49,7 +48,6 @@ export class IconComponent extends SubscriptionHandler {
   }
 
   private setIcon(icon: string) {
-    console.log(icon);
     this._iconId = !!icon ? icon : this.DEFAULT_ICON;
     this.cd.markForCheck();
   }
