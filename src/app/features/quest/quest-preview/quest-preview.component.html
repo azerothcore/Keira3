@@ -161,13 +161,13 @@
         <p class="title mt-3 mb-2">Rewards</p>
 
         <!-- Reward Money -->
-        <div *ngIf="service.isRewardMoney()" class="mt-1" id="reward-bonus-money">
-          You will receive: <span [innerHTML]="helper.formatMoney(service.questTemplate.RewardMoney)"></span>
+        <div *ngIf="service.isRewardMoney()" class="mt-1" id="reward-money">
+          You will receive: <span [innerHTML]="helper.formatMoney(service.rewardMoney)"></span>
         </div>
 
         <!-- Reward Bonus Money -->
-        <div *ngIf="service.isRewardBonusMoney()" class="mt-1" id="reward-money">
-          Level 80 bonus: <span [innerHTML]="helper.formatMoney(service.questTemplate.RewardBonusMoney)"></span>
+        <div *ngIf="service.isRewardBonusMoney()" class="mt-1" id="reward-bonus-money">
+          Level 80 bonus: <span [innerHTML]="helper.formatMoney(service.rewardBonusMoney)"></span>
         </div>
 
         <!-- Reward Spell -->

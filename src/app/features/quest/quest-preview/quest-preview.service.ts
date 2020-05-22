@@ -80,6 +80,8 @@ export class QuestPreviewService {
   get startItem(): number { return this.questTemplate.StartItem; }
   get startItemName$(): Promise<string> { return this.mysqlQueryService.getItemNameById(this.startItem); }
   get objectiveText(): string { return this.questTemplate.LogDescription; }
+  get rewardMoney(): number { return this.questTemplate.RewardMoney; }
+  get rewardBonusMoney(): number { return this.questTemplate.RewardBonusMoney; }
 
   // get QuestTemplateAddon values
   get maxLevel(): string { return String(this.questTemplateAddon.MaxLevel); }
@@ -394,11 +396,11 @@ export class QuestPreviewService {
   }
 
   isRewardMoney(): boolean {
-    return this.questTemplate.RewardMoney > 0;
+    return this.rewardMoney > 0;
   }
 
   isRewardBonusMoney(): boolean {
-    return this.questTemplate.RewardBonusMoney > 0;
+    return this.rewardBonusMoney > 0;
   }
 
   isReward(): boolean {

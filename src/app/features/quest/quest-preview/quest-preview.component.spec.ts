@@ -31,6 +31,8 @@ class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   get npcOrGoObjectives() { return this.query<HTMLParagraphElement>('#npcOrGoObjectives'); }
   get itemObjectives() { return this.query<HTMLParagraphElement>('#itemObjectives'); }
   get RequiredFaction() { return this.query<HTMLParagraphElement>('#RequiredFaction'); }
+  get rewardMoney() { return this.query<HTMLDivElement>('#reward-money', false); }
+  get rewardBonusMoney() { return this.query<HTMLDivElement>('#reward-bonus-money', false); }
 
   get descriptionText() { return this.query<HTMLDivElement>('#description-text'); }
   get progressText() { return this.query<HTMLDivElement>('#progress-text'); }
@@ -345,6 +347,44 @@ describe('QuestPreviewComponent', () => {
 
       page.clickElement(page.completionToggle);
       page.expectNotCollapsed(page.completionToggle);
+
+      page.removeElement();
+    });
+
+    it('should correctly show the reward money', () => {
+      const { fixture, service, page } = setup();
+      const spy = spyOnProperty(service, 'rewardMoney', 'get');
+      spy.and.returnValue(0);
+      fixture.detectChanges();
+
+      expect(page.rewardMoney).toBe(null);
+
+      spy.and.returnValue(123456);
+      fixture.detectChanges();
+
+      expect(page.rewardMoney).toBeDefined();
+      expect(page.rewardMoney.innerHTML).toContain('<span class="moneygold">12</span>');
+      expect(page.rewardMoney.innerHTML).toContain('<span class="moneysilver">34</span>');
+      expect(page.rewardMoney.innerHTML).toContain('<span class="moneycopper">56</span>');
+
+      page.removeElement();
+    });
+
+    it('should correctly show the reward money', () => {
+      const { fixture, service, page } = setup();
+      const spy = spyOnProperty(service, 'rewardBonusMoney', 'get');
+      spy.and.returnValue(0);
+      fixture.detectChanges();
+
+      expect(page.rewardBonusMoney).toBe(null);
+
+      spy.and.returnValue(123456);
+      fixture.detectChanges();
+
+      expect(page.rewardBonusMoney).toBeDefined();
+      expect(page.rewardBonusMoney.innerHTML).toContain('<span class="moneygold">12</span>');
+      expect(page.rewardBonusMoney.innerHTML).toContain('<span class="moneysilver">34</span>');
+      expect(page.rewardBonusMoney.innerHTML).toContain('<span class="moneycopper">56</span>');
 
       page.removeElement();
     });
