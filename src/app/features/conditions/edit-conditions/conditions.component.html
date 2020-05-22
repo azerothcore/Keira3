@@ -103,6 +103,12 @@
               class="fas fa-info-circle ml-1" [placement]="'auto'"
               [tooltip]="CONDITION_VALUE_2_TOOLTIPS[conditionType]"
             ></i>
+            <keira-flags-selector-btn
+              *ngIf="showQuestState"
+              [control]="editorService.form.controls.ConditionValue2"
+              [config]="{ flags: QUEST_STATE, name: 'ConditionValue2' }"
+              [modalClass]="'modal-lg'"
+            ></keira-flags-selector-btn>
             <input [formControlName]="'ConditionValue2'" id="ConditionValue2" type="number" class="form-control form-control-sm">
           </div>
 
