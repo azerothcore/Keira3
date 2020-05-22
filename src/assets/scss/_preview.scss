@@ -52,12 +52,14 @@ $preview-width: 240px;
 .c9  { color: #9382C9; } /* Warlock */
 .c11 { color: #FF7C0A; } /* Druid */
 
-.moneygold, .moneysilver, .moneycopper {
+.moneygold,
+.moneysilver,
+.moneycopper {
   background: no-repeat right center;
   color: white;
   padding-right: 15px;
 }
 
-.moneygold   { background-image: url(../img/money/gold.gif);   }
+.moneygold { background-image: url(../img/money/gold.gif); }
 .moneysilver { background-image: url(../img/money/silver.gif); }
 .moneycopper { background-image: url(../img/money/copper.gif); }
