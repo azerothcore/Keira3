@@ -5,9 +5,25 @@ import { RACES_TEXT } from '@keira-shared/constants/preview';
 @Injectable({ providedIn: 'root' })
 export class PreviewHelperService {
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-  ) { }
+  public formatMoney(qty: number): string {
+    let money = '';
+
+    if (qty >= 10000) {
+      const g = Math.floor(qty / 10000);
+      money += `<span class="moneygold">${g}</span> &nbsp;`;
+      qty -= g * 10000;
+    }
+
+    if (qty >= 100) {
+      const s = Math.floor(qty / 100);
+      money += `<span class="moneysilver">${s}</span> &nbsp;`;
+      qty -= s * 100;
+    }
+
+    money += `<span class="moneycopper">${qty}</span> &nbsp;`;
+
+    return money;
+  }
 
   public getFactionFromRace(raceMask: number): string {
     if (raceMask === RACE.MASK_HORDE) {

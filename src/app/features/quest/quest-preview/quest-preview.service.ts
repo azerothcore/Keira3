@@ -393,8 +393,16 @@ export class QuestPreviewService {
            this.isFieldAvailable('RewardChoiceItemID', 'RewardChoiceItemQuantity', 4);
   }
 
+  isRewardMoney(): boolean {
+    return this.questTemplate.RewardMoney > 0;
+  }
+
+  isRewardBonusMoney(): boolean {
+    return this.questTemplate.RewardBonusMoney > 0;
+  }
+
   isReward(): boolean {
-    return this.isRewardItems() || this.isRewardChoiceItems() || !!this.rewardSpell();
+    return this.isRewardItems() || this.isRewardChoiceItems() || !!this.rewardSpell() || this.isRewardMoney() || this.isRewardBonusMoney();
   }
 
   rewardSpell(): number {

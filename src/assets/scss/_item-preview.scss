@@ -39,14 +39,14 @@
   .socket2 { background: url(../img/sockets/yellow.gif) no-repeat left center;    } /* yellow */
   .socket3 { background: url(../img/sockets/blue.gif) no-repeat left center;      } /* blue */
   .socket4 { background: url(../img/sockets/prismatic.gif) no-repeat left center; } /* prismatic */
-
-  .moneygold, .moneysilver, .moneycopper {
-    background: no-repeat right center;
-    color: white;
-    padding-right: 15px;
-  }
-
-  .moneygold   { background-image: url(../img/money/gold.gif);   }
-  .moneysilver { background-image: url(../img/money/silver.gif); }
-  .moneycopper { background-image: url(../img/money/copper.gif); }
 }
+
+.moneygold, .moneysilver, .moneycopper {
+  background: no-repeat right center;
+  color: white;
+  padding-right: 15px;
+}
+
+.moneygold   { background-image: url(../img/money/gold.gif);   }
+.moneysilver { background-image: url(../img/money/silver.gif); }
+.moneycopper { background-image: url(../img/money/copper.gif); }

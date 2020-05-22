@@ -158,7 +158,17 @@
 
       <div id="rewards" *ngIf="service.isReward()">
 
-        <p class="title">Rewards</p>
+        <p class="title mt-3 mb-2">Rewards</p>
+
+        <!-- Reward Money -->
+        <div *ngIf="service.isRewardMoney()" class="mt-1" id="reward-bonus-money">
+          You will receive: <span [innerHTML]="helper.formatMoney(service.questTemplate.RewardMoney)"></span>
+        </div>
+
+        <!-- Reward Bonus Money -->
+        <div *ngIf="service.isRewardBonusMoney()" class="mt-1" id="reward-money">
+          Level 80 bonus: <span [innerHTML]="helper.formatMoney(service.questTemplate.RewardBonusMoney)"></span>
+        </div>
 
         <!-- Reward Spell -->
         <div id="rewardSpell" *ngIf="service.rewardSpell(); let spell" class="mt-3">
@@ -196,7 +206,7 @@
       </div>
 
       <div id="gains" *ngIf="service.isGains()">
-        <p class="title">Gains</p>
+        <p class="title mt-3">Gains</p>
         <p id="rewardXP" *ngIf="service.rewardXP$ | async as xp">• {{ xp }} experience</p>
         <p id="rewardTalents" *ngIf="service.questTemplate.RewardTalents">• {{ service.questTemplate.RewardTalents }} talent points</p>
 
