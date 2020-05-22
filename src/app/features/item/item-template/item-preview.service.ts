@@ -145,26 +145,6 @@ export class ItemPreviewService {
     return ITEM_CONSTANTS.trigger[1] + ITEM_CONSTANTS.statType[type].replace('%d', `<!--rtg${type}-->${value}${js}`);
   }
 
-  private formatMoney(qty: number): string {
-    let money = '';
-
-    if (qty >= 10000) {
-      const g = Math.floor(qty / 10000);
-      money += `<span class="moneygold">${g}</span> &nbsp;`;
-      qty -= g * 10000;
-    }
-
-    if (qty >= 100) {
-      const s = Math.floor(qty / 100);
-      money += `<span class="moneysilver">${s}</span> &nbsp;`;
-      qty -= s * 100;
-    }
-
-    money += `<span class="moneycopper">${qty}</span> &nbsp;`;
-
-    return money;
-  }
-
   private parseTime(sec: number) {
     const time = {
       d: 0,
@@ -1347,7 +1327,7 @@ export class ItemPreviewService {
 
     const sellPrice = itemTemplate.SellPrice;
     if (!!sellPrice && sellPrice > 0) {
-      tmpItemPreview += '<br>Sell Price: ' + this.formatMoney(sellPrice);
+      tmpItemPreview += '<br>Sell Price: ' + this.helperService.formatMoney(sellPrice);
     }
 
     return tmpItemPreview;
