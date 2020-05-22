@@ -362,4 +362,51 @@ export class QuestPreviewService {
     }
   }
 
+
+  isFieldAvailable(field: string, fieldAmount: string, idx: string | number): boolean {
+    return !!this.questTemplate[`${field}${idx}`] && this.questTemplate[`${fieldAmount}${idx}`] > 0;
+  }
+
+  isRewardReputation(): boolean {
+    return this.isFieldAvailable('RewardFactionID', 'RewardFactionValue', 1) ||
+           this.isFieldAvailable('RewardFactionID', 'RewardFactionValue', 2) ||
+           this.isFieldAvailable('RewardFactionID', 'RewardFactionValue', 3) ||
+           this.isFieldAvailable('RewardFactionID', 'RewardFactionValue', 4) ||
+           this.isFieldAvailable('RewardFactionID', 'RewardFactionValue', 5);
+  }
+
+  isGains(): boolean {
+    return !!this.questTemplate.RewardXPDifficulty || !!this.questTemplate.RewardTalents || this.isRewardReputation();
+  }
+
+  isRewardItems(): boolean {
+    return this.isFieldAvailable('RewardItem', 'RewardAmount', 1) ||
+           this.isFieldAvailable('RewardItem', 'RewardAmount', 2) ||
+           this.isFieldAvailable('RewardItem', 'RewardAmount', 3) ||
+           this.isFieldAvailable('RewardItem', 'RewardAmount', 4);
+  }
+
+  isRewardChoiceItems(): boolean {
+    return this.isFieldAvailable('RewardChoiceItemID', 'RewardChoiceItemQuantity', 1) ||
+           this.isFieldAvailable('RewardChoiceItemID', 'RewardChoiceItemQuantity', 2) ||
+           this.isFieldAvailable('RewardChoiceItemID', 'RewardChoiceItemQuantity', 3) ||
+           this.isFieldAvailable('RewardChoiceItemID', 'RewardChoiceItemQuantity', 4);
+  }
+
+  isReward(): boolean {
+    return this.isRewardItems() || this.isRewardChoiceItems() || !!this.rewardSpell();
+  }
+
+  rewardSpell(): number {
+    if (!!this.questTemplate.RewardDisplaySpell) {
+      return this.questTemplate.RewardDisplaySpell;
+    }
+
+    if (!!this.questTemplate.RewardSpell) {
+      return this.questTemplate.RewardSpell;
+    }
+
+    return null;
+  }
+
 }

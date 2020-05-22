@@ -581,6 +581,98 @@ describe('QuestPreviewService', () => {
       expect(service.objectiveText).toBe('mock objective text');
     });
 
+    it('isFieldAvailable', () => {
+      const { service, questTemplateService } = setup();
+
+      expect(service.isFieldAvailable('RewardFactionID', 'RewardFactionValue', 1)).toBeFalse();
+
+      questTemplateService.form.controls.RewardFactionID1.setValue(123);
+      questTemplateService.form.controls.RewardFactionValue1.setValue(10);
+
+      expect(service.isFieldAvailable('RewardFactionID', 'RewardFactionValue', 1)).toBeTrue();
+    });
+
+    it('isRewardReputation', () => {
+      const { service } = setup();
+      const isFieldAvailableSpy = spyOn(service, 'isFieldAvailable').and.returnValue(false);
+
+      expect(service.isRewardReputation()).toBeFalse();
+
+      isFieldAvailableSpy.and.callFake((f1, f2, idx) => (idx === 5)); // return true in the last condition
+      expect(service.isRewardReputation()).toBeTrue();
+
+      expect(isFieldAvailableSpy).toHaveBeenCalledTimes(10);
+    });
+
+    it('isRewardItems', () => {
+      const { service } = setup();
+      const isFieldAvailableSpy = spyOn(service, 'isFieldAvailable').and.returnValue(false);
+
+      expect(service.isRewardItems()).toBeFalse();
+
+      isFieldAvailableSpy.and.callFake((f1, f2, idx) => (idx === 4)); // return true in the last condition
+      expect(service.isRewardItems()).toBeTrue();
+
+      expect(isFieldAvailableSpy).toHaveBeenCalledTimes(8);
+    });
+
+    it('isRewardChoiceItems', () => {
+      const { service } = setup();
+      const isFieldAvailableSpy = spyOn(service, 'isFieldAvailable').and.returnValue(false);
+
+      expect(service.isRewardChoiceItems()).toBeFalse();
+
+      isFieldAvailableSpy.and.callFake((f1, f2, idx) => (idx === 4)); // return true in the last condition
+      expect(service.isRewardChoiceItems()).toBeTrue();
+
+      expect(isFieldAvailableSpy).toHaveBeenCalledTimes(8);
+    });
+
+    it('isGains', () => {
+      const { service, questTemplateService } = setup();
+
+      expect(service.isGains()).toBeFalse();
+
+      questTemplateService.form.controls.RewardXPDifficulty.setValue(1);
+      expect(service.isGains()).toBeTrue();
+
+      questTemplateService.form.controls.RewardXPDifficulty.setValue(0);
+      questTemplateService.form.controls.RewardTalents.setValue(1);
+      expect(service.isGains()).toBeTrue();
+
+      questTemplateService.form.controls.RewardTalents.setValue(0);
+      spyOn(service, 'isRewardReputation').and.returnValue(true);
+      expect(service.isGains()).toBeTrue();
+    });
+
+
+    it('isReward', () => {
+      const { service } = setup();
+      spyOn(service, 'isRewardItems').and.returnValue(false);
+      spyOn(service, 'isRewardChoiceItems').and.returnValue(false);
+      const rewardSpellSpy = spyOn(service, 'rewardSpell').and.returnValue(0);
+
+      expect(service.isReward()).toBeFalse();
+
+      rewardSpellSpy.and.returnValue(1);
+      expect(service.isReward()).toBeTrue();
+
+      expect(service.isRewardItems).toHaveBeenCalledTimes(2);
+      expect(service.isRewardChoiceItems).toHaveBeenCalledTimes(2);
+      expect(rewardSpellSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it('rewardSpell', () => {
+      const { service, questTemplateService } = setup();
+
+      expect(service.rewardSpell()).toBeNull();
+
+      questTemplateService.form.controls.RewardSpell.setValue(124);
+      expect(service.rewardSpell()).toBe(124);
+
+      questTemplateService.form.controls.RewardDisplaySpell.setValue(123);
+      expect(service.rewardSpell()).toBe(123);
+    });
 
   });
 

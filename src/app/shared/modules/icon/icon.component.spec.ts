@@ -15,6 +15,7 @@ import { ICON_SKILLS } from '@keira-shared/constants/quest-preview';
     [itemId]="itemId"
     [itemDisplayId]="itemDisplayId"
     [skillId]="skillId"
+    [spellId]="spellId"
   ></keira-icon>`
 })
 class TestHostComponent {
@@ -23,6 +24,7 @@ class TestHostComponent {
   itemId: string;
   itemDisplayId: string;
   skillId: string;
+  spellId: string;
 }
 
 class IconComponentPage extends PageObject<TestHostComponent> {
@@ -47,6 +49,7 @@ describe('ItemIconComponent', () => {
 
     spyOn(service, 'getIconByItemId').and.callFake(id => of(`getIconByItemId-${id}`));
     spyOn(service, 'getIconByItemDisplayId').and.callFake(id => of(`getIconByItemDisplayId-${id}`));
+    spyOn(service, 'getIconBySpellId').and.callFake(id => of(`getIconBySpellId-${id}`));
 
     fixture.detectChanges();
 
@@ -85,6 +88,16 @@ describe('ItemIconComponent', () => {
       expect(page.img.src).toEqual(`https://wow.zamimg.com/images/wow/icons/large/${ICON_SKILLS[skillId]}.jpg`);
     });
 
+    it('spellId', () => {
+      const { page, host } = setup();
+      const spellId = 123;
+      host.size = 'large';
+      host.spellId = String(spellId);
+
+      page.detectChanges();
+
+      expect(page.img.src).toEqual('https://wow.zamimg.com/images/wow/icons/large/getIconBySpellId-123.jpg');
+    });
 
     it('empty', () => {
       const { page, host, service } = setup();

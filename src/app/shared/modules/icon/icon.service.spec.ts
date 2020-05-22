@@ -70,4 +70,29 @@ describe('IconService', () => {
     expect(mysqlQueryService.getDisplayIdByItemId).toHaveBeenCalledWith(mockArgument);
     expect(service.getIconByItemDisplayId).toHaveBeenCalledTimes(0);
   });
+
+  it('getIconBySpellId() should correctly work [case sqliteQuery return non-null]', () => {
+    const service = TestBed.inject(IconService);
+    const sqliteQueryService = TestBed.inject(SqliteQueryService);
+    const mockIntermediateResult = 'some intermediate result';
+    spyOn(sqliteQueryService, 'getDisplayIdBySpellId').and.returnValue(of(mockIntermediateResult));
+
+    service.getIconBySpellId(mockArgument).subscribe(result => {
+      expect(result).toEqual(mockResult);
+    });
+    expect(sqliteQueryService.getDisplayIdBySpellId).toHaveBeenCalledTimes(1);
+    expect(sqliteQueryService.getDisplayIdBySpellId).toHaveBeenCalledWith(mockArgument);
+  });
+
+  it('getIconBySpellId() should correctly work [case sqliteQuery return null]', () => {
+    const service = TestBed.inject(IconService);
+    const sqliteQueryService = TestBed.inject(SqliteQueryService);
+    spyOn(sqliteQueryService, 'getDisplayIdBySpellId').and.returnValue(of(null));
+
+    service.getIconBySpellId(mockArgument).subscribe(result => {
+      expect(result).toEqual(null);
+    });
+    expect(sqliteQueryService.getDisplayIdBySpellId).toHaveBeenCalledTimes(1);
+    expect(sqliteQueryService.getDisplayIdBySpellId).toHaveBeenCalledWith(mockArgument);
+  });
 });

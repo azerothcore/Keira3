@@ -42,9 +42,10 @@ describe('SqliteQueryService', () => {
 
     beforeEach(() => {
       spyOn(service, 'queryValue').and.returnValue(of(mockResult));
+      spyOn(service, 'queryValueToPromise').and.returnValue(Promise.resolve(mockResult));
     });
 
-    it('getDisplayIdIcon', () => {
+    it('getItemDisplayIdIcon', () => {
       service.getIconByItemDisplayId(id).subscribe(res => {
         expect(res).toEqual(mockResult);
       });
@@ -55,6 +56,37 @@ describe('SqliteQueryService', () => {
       expect(service.queryValue).toHaveBeenCalledWith(
         `SELECT icon AS v FROM display_icons WHERE displayId = ${id}`
       );
+    });
+
+    it('getSpellDisplayIcon', () => {
+      service.getIconBySpellDisplayId(id).subscribe(res => {
+        expect(res).toEqual(mockResult);
+      });
+      service.getIconBySpellDisplayId(id).subscribe(res => {
+        expect(res).toEqual(mockResult);
+      });
+      expect(service.queryValue).toHaveBeenCalledTimes(1);
+      expect(service.queryValue).toHaveBeenCalledWith(
+        `SELECT icon AS v FROM spells_icon WHERE ID = ${id}`
+      );
+    });
+
+    it('getDisplayIdBySpellId (case non-null)', () => {
+      service.getDisplayIdBySpellId(id).subscribe(res => {
+        expect(res).toEqual(mockResult);
+      });
+      expect(service.queryValue).toHaveBeenCalledWith(
+        `SELECT spellIconID AS v FROM spells WHERE ID = ${id}`
+      );
+      expect(Object.keys(service['cache']).length).toBe(1);
+      expect(Object.keys(service['cache'])[0]).toBe('getDisplayIdBySpellId');
+    });
+
+    it('getDisplayIdBySpellId (case null)', () => {
+      service.getDisplayIdBySpellId(null).subscribe(res => {
+        expect(res).toEqual(null);
+      });
+      expect(service.queryValue).toHaveBeenCalledTimes(0);
     });
 
     for (const test of [

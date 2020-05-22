@@ -29,6 +29,12 @@ export class IconComponent extends SubscriptionHandler {
       this.setIcon(ICON_SKILLS[skillId]);
     }
   }
+  @Input() set spellId(spellId: string | number) {
+    if (!!spellId) {
+      this.subscriptions.push(this.service.getIconBySpellId(spellId).subscribe(this.setIcon.bind(this)));
+    }
+  }
+
 
   get iconLink(): string {
     return `https://wow.zamimg.com/images/wow/icons/${this.size}/${this._iconId}.jpg`;
