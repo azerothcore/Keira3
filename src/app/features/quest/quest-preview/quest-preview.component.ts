@@ -24,7 +24,7 @@ export class QuestPreviewComponent implements OnInit {
   get type(): boolean { return !!this.questInfo || !!this.service.periodicQuest; }
   get questInfo(): string {
     const qInfo = this.service.QUEST_INFO.find(q => q.value === this.service.questTemplate.QuestInfoID);
-    return this.service.questTemplate.QuestInfoID > 0  && !!qInfo ? qInfo.name : null;
+    return this.service.questTemplate.QuestInfoID > 0  && qInfo?.name;
   }
 
   get questStartIcon(): string {
