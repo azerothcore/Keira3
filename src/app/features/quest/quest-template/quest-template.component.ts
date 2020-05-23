@@ -8,6 +8,7 @@ import { ALLOWABLE_RACES } from '@keira-constants/flags/allowable-races';
 import { QUEST_FLAGS } from '@keira-constants/flags/quest-flags';
 import { QUEST_TYPE } from '@keira-constants/options/quest-type';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
+import { QUEST_INFO } from '@keira-shared/constants/options/quest-info';
 
 @Component({
   selector: 'keira-quest-template',
@@ -19,6 +20,7 @@ export class QuestTemplateComponent extends SingleRowEditorComponent<QuestTempla
   public readonly QUEST_FLAGS = QUEST_FLAGS;
   public readonly QUEST_TYPE = QUEST_TYPE;
   public readonly ALLOWABLE_RACES = ALLOWABLE_RACES;
+  public readonly QUEST_INFO = QUEST_INFO;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
