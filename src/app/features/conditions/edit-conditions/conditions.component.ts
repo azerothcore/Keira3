@@ -16,7 +16,8 @@ import {
   SOURCE_ENTRY_TOOLTIPS,
   SOURCE_GROUP_TOOLTIPS
 } from './conditions-constants';
-import { QUEST_STATE } from '@keira-constants/flags/quest-state';
+import { QUEST_STATE } from '@keira-constants/flags/conditions';
+import { RANKMASK } from '@keira-constants/flags/conditions';
 
 @Component({
   selector: 'keira-conditions',
@@ -38,6 +39,7 @@ export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
   public readonly CONDITION_VALUE_3_TOOLTIPS = CONDITION_VALUE_3_TOOLTIPS;
 
   public readonly QUEST_STATE = QUEST_STATE;
+  public readonly RANKMASK = RANKMASK;
 
   get selectedSourceType(): number {
    return this.editorService.form.controls.SourceTypeOrReferenceId.value;
@@ -49,6 +51,10 @@ export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
 
   get showQuestState(): boolean {
     return this.conditionType === CONDITION_TYPES.CONDITION_QUESTSTATE;
+  }
+  
+  get showReactionTo(): boolean {
+	  return this.conditionType === CONDITION_TYPES.CONDITION_REACTION_TO;
   }
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

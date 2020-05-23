@@ -9,3 +9,14 @@ export const QUEST_STATE: Flag[] = [
   { bit: 5, name: 'FAILED', },
   { bit: 6, name: 'REWARDED', },
 ];
+
+export const RANKMASK: Flag[] = [
+  { bit: 0, name: 'HATED', },
+  { bit: 1, name: 'HOSTILE', },
+  { bit: 2, name: 'UNFRIENDLY', },
+  { bit: 3, name: 'NEUTRAL', },
+  { bit: 4, name: 'FRIENDLY', },
+  { bit: 5, name: 'HONORED', },
+  { bit: 6, name: 'REVERED', },
+  { bit: 7, name: 'EXALTED', },
+];
