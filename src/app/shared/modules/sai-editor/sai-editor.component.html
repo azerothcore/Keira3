@@ -425,7 +425,13 @@
 
             <div class="form-row">
               <div class="form-group col-5">
-                <label class="control-label">TargetX</label>
+                <label class="control-label" id="label-target-x">
+                  {{ getName('TargetX', TARGET_X_NAMES[selectedTarget]) }} <i
+                  class="fas fa-info-circle ml-1" [placement]="'auto'"
+                  [hidden]="!TARGET_X_TOOLTIPS[selectedTarget]"
+                  [tooltip]="TARGET_X_TOOLTIPS[selectedTarget]"
+                ></i>
+                </label>
               </div>
 
               <div class="form-group col-7">
@@ -435,7 +441,13 @@
 
             <div class="form-row">
               <div class="form-group col-5">
-                <label class="control-label">TargetY</label>
+                <label class="control-label" id="label-target-y">
+                  {{ getName('TargetY', TARGET_Y_NAMES[selectedTarget]) }} <i
+                  class="fas fa-info-circle ml-1" [placement]="'auto'"
+                  [hidden]="!TARGET_Y_TOOLTIPS[selectedTarget]"
+                  [tooltip]="TARGET_Y_TOOLTIPS[selectedTarget]"
+                ></i>
+                </label>
               </div>
 
               <div class="form-group col-7">
@@ -445,7 +457,13 @@
 
             <div class="form-row">
               <div class="form-group col-5">
-                <label class="control-label">TargetZ</label>
+                <label class="control-label" id="label-target-z">
+                  {{ getName('TargetZ', TARGET_Z_NAMES[selectedTarget]) }} <i
+                  class="fas fa-info-circle ml-1" [placement]="'auto'"
+                  [hidden]="!TARGET_Z_TOOLTIPS[selectedTarget]"
+                  [tooltip]="TARGET_Z_TOOLTIPS[selectedTarget]"
+                ></i>
+                </label>
               </div>
 
               <div class="form-group col-7">
@@ -455,7 +473,13 @@
 
             <div class="form-row">
               <div class="form-group col-5">
-                <label class="control-label">TargetO</label>
+                <label class="control-label" id="label-target-o">
+                  {{ getName('TargetO', TARGET_O_NAMES[selectedTarget]) }} <i
+                  class="fas fa-info-circle ml-1" [placement]="'auto'"
+                  [hidden]="!TARGET_O_TOOLTIPS[selectedTarget]"
+                  [tooltip]="TARGET_O_TOOLTIPS[selectedTarget]"
+                ></i>
+                </label>
               </div>
 
               <div class="form-group col-7">

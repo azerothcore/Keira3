@@ -30,7 +30,9 @@ import {
   SAI_TARGET_PARAM2_TOOLTIPS, SAI_TARGET_PARAM3_NAMES,
   SAI_TARGET_PARAM3_TOOLTIPS,
   SAI_TARGET_PARAM4_NAMES,
-  SAI_TARGET_PARAM4_TOOLTIPS, SAI_TARGET_TOOLTIPS, SAI_TARGETS, SAI_TARGETS_KEYS
+  SAI_TARGET_PARAM4_TOOLTIPS, SAI_TARGET_TOOLTIPS, SAI_TARGETS, SAI_TARGETS_KEYS,
+  SAI_TARGET_X_NAMES, SAI_TARGET_Y_NAMES, SAI_TARGET_Z_NAMES, SAI_TARGET_O_NAMES,
+  SAI_TARGET_X_TOOLTIPS, SAI_TARGET_Y_TOOLTIPS, SAI_TARGET_Z_TOOLTIPS, SAI_TARGET_O_TOOLTIPS,
 } from './constants/sai-targets';
 import { EVENT_PHASE_MASK } from '../../constants/flags/event-phase-mask';
 import { SMART_EVENT_FLAGS } from '../../constants/flags/smart-event-flags';
@@ -68,6 +70,10 @@ export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> im
   public readonly TARGET_PARAM2_NAMES     = SAI_TARGET_PARAM2_NAMES;
   public readonly TARGET_PARAM3_NAMES     = SAI_TARGET_PARAM3_NAMES;
   public readonly TARGET_PARAM4_NAMES     = SAI_TARGET_PARAM4_NAMES;
+  public readonly TARGET_X_NAMES          = SAI_TARGET_X_NAMES;
+  public readonly TARGET_Y_NAMES          = SAI_TARGET_Y_NAMES;
+  public readonly TARGET_Z_NAMES          = SAI_TARGET_Z_NAMES;
+  public readonly TARGET_O_NAMES          = SAI_TARGET_O_NAMES;
   public readonly EVENT_PARAM1_TOOLTIPS   = SAI_EVENT_PARAM1_TOOLTIPS;
   public readonly EVENT_PARAM2_TOOLTIPS   = SAI_EVENT_PARAM2_TOOLTIPS;
   public readonly EVENT_PARAM3_TOOLTIPS   = SAI_EVENT_PARAM3_TOOLTIPS;
@@ -83,6 +89,10 @@ export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> im
   public readonly TARGET_PARAM2_TOOLTIPS  = SAI_TARGET_PARAM2_TOOLTIPS;
   public readonly TARGET_PARAM3_TOOLTIPS  = SAI_TARGET_PARAM3_TOOLTIPS;
   public readonly TARGET_PARAM4_TOOLTIPS  = SAI_TARGET_PARAM4_TOOLTIPS;
+  public readonly TARGET_X_TOOLTIPS  = SAI_TARGET_X_TOOLTIPS;
+  public readonly TARGET_Y_TOOLTIPS  = SAI_TARGET_Y_TOOLTIPS;
+  public readonly TARGET_Z_TOOLTIPS  = SAI_TARGET_Z_TOOLTIPS;
+  public readonly TARGET_O_TOOLTIPS  = SAI_TARGET_O_TOOLTIPS;
 
   get selectedEvent(): number {
     return this.editorService.form.controls.event_type.value;
