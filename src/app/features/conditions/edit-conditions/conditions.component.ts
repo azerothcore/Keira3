@@ -51,9 +51,9 @@ export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
   get showQuestState(): boolean {
     return this.conditionType === CONDITION_TYPES.CONDITION_QUESTSTATE;
   }
-  
+
   get showReactionTo(): boolean {
-	  return this.conditionType === CONDITION_TYPES.CONDITION_REACTION_TO;
+    return this.conditionType === CONDITION_TYPES.CONDITION_REACTION_TO;
   }
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
