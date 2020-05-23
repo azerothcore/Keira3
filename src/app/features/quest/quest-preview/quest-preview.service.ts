@@ -24,12 +24,13 @@ import { DifficultyLevel } from './quest-preview.model';
 import { RACES_TEXT, CLASSES_TEXT } from '@keira-shared/constants/preview';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import {
-  QUEST_FLAG_DAILY, QUEST_FLAG_WEEKLY, QUEST_FLAG_SPECIAL_MONTHLY, QUEST_INFO,
+  QUEST_FLAG_DAILY, QUEST_FLAG_WEEKLY, QUEST_FLAG_SPECIAL_MONTHLY,
   QUEST_FLAG_REPEATABLE, QUEST_FLAG_SPECIAL_REPEATABLE, ICON_SKILLS, QUEST_PERIOD
 } from '@keira-shared/constants/quest-preview';
 import { QuestOfferRewardService } from '../quest-offer-reward/quest-offer-reward.service';
 import { QuestOfferReward } from '@keira-types/quest-offer-reward.type';
 import { QuestRequestItems } from '@keira-types/quest-request-items.type';
+import { QUEST_INFO } from '@keira-shared/constants/options/quest-info';
 
 @Injectable()
 export class QuestPreviewService {
