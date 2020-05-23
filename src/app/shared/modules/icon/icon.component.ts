@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { IconService } from '@keira-shared/modules/icon/icon.service';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
+import { ICON_SKILLS } from '@keira-shared/constants/quest-preview';
 
 @Component({
   selector: 'keira-icon',
@@ -23,6 +24,17 @@ export class IconComponent extends SubscriptionHandler {
       this.subscriptions.push(this.service.getIconByItemDisplayId(displayId).subscribe(this.setIcon.bind(this)));
     }
   }
+  @Input() set skillId(skillId: string | number) {
+    if (!!skillId && !!ICON_SKILLS[skillId]) {
+      this.setIcon(ICON_SKILLS[skillId]);
+    }
+  }
+  @Input() set spellId(spellId: string | number) {
+    if (!!spellId) {
+      this.subscriptions.push(this.service.getIconBySpellId(spellId).subscribe(this.setIcon.bind(this)));
+    }
+  }
+
 
   get iconLink(): string {
     return `https://wow.zamimg.com/images/wow/icons/${this.size}/${this._iconId}.jpg`;

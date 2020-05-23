@@ -26,4 +26,11 @@ export class IconService {
       mergeMap(displayId => !!displayId ? this.getIconByItemDisplayId(displayId) : of(null)),
     );
   }
+
+  getIconBySpellId(spellId: string | number): Observable<string> {
+    return this.sqliteQueryService.getDisplayIdBySpellId(spellId).pipe(
+      mergeMap(displayId => !!displayId ? this.sqliteQueryService.getIconBySpellDisplayId(displayId) : of(null)),
+    );
+  }
+
 }

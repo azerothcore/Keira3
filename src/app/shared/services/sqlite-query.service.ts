@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { shareReplay, tap } from 'rxjs/operators';
 
 import { SqliteService } from '@keira-shared/services/sqlite.service';
@@ -7,6 +7,7 @@ import { ConfigService } from '@keira-shared/services/config.service';
 import { TableRow } from '@keira-types/general';
 import { QueryService } from '@keira-shared/services/query.service';
 import { Lock } from '@keira-types/lock.type';
+import { fromPromise } from 'rxjs/internal-compatibility';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,7 @@ import { Lock } from '@keira-types/lock.type';
 export class SqliteQueryService extends QueryService {
 
   private itemDisplayIdCache: Observable<string>[] = [];
+  private spellDisplayIdCache: Observable<string>[] = [];
 
   constructor(
     private sqliteService: SqliteService,
@@ -50,6 +52,28 @@ export class SqliteQueryService extends QueryService {
     return this.queryValueToPromiseCached('getSpellNameById', String(spellId), `SELECT spellName AS v FROM spells WHERE id = ${spellId}`);
   }
 
+  getIconBySpellDisplayId(displayId: string | number): Observable<string> {
+    displayId = Number(displayId);
+
+    if (!this.spellDisplayIdCache[displayId]) {
+      this.spellDisplayIdCache[displayId] = this.queryValue<string>(
+        `SELECT icon AS v FROM spells_icon WHERE ID = ${displayId}`
+      ).pipe(shareReplay());
+    }
+
+    return this.spellDisplayIdCache[displayId];
+  }
+
+  getDisplayIdBySpellId(id: string|number): Observable<string> {
+    return !!id
+      ? fromPromise(this.queryValueToPromiseCached(
+        'getDisplayIdBySpellId',
+        String(id),
+        `SELECT spellIconID AS v FROM spells WHERE ID = ${id}`,
+      ))
+      : of(null);
+  }
+
   getSkillNameById(skillId: string | number): Promise<string> {
     return this.queryValueToPromiseCached<string>(
       'getSkillNameById', String(skillId), `SELECT name AS v FROM skills WHERE id = ${skillId}`
@@ -82,5 +106,11 @@ export class SqliteQueryService extends QueryService {
 
   getLockById(id: string | number): Promise<Lock[]> {
     return this.queryToPromiseCached<Lock>('getLockById', String(id), `SELECT * FROM lock WHERE id = ${id}`);
+  }
+
+  getRewardXP(RewardXPDifficulty: string | number, QuestLevel: string | number): Promise<string> {
+    return this.queryValueToPromiseCached<string>(
+      'getRewardXP', String(RewardXPDifficulty) + '_' + String(QuestLevel), `SELECT field${Number(RewardXPDifficulty) + 1} AS v FROM questxp WHERE id = ${QuestLevel}`
+    );
   }
 }

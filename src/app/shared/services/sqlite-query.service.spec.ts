@@ -42,9 +42,10 @@ describe('SqliteQueryService', () => {
 
     beforeEach(() => {
       spyOn(service, 'queryValue').and.returnValue(of(mockResult));
+      spyOn(service, 'queryValueToPromise').and.returnValue(Promise.resolve(mockResult));
     });
 
-    it('getDisplayIdIcon', () => {
+    it('getItemDisplayIdIcon', () => {
       service.getIconByItemDisplayId(id).subscribe(res => {
         expect(res).toEqual(mockResult);
       });
@@ -57,77 +58,56 @@ describe('SqliteQueryService', () => {
       );
     });
 
-    it('getSpellNameById', async () => {
-      expect(await service.getSpellNameById(id)).toEqual(mockResult);
-      expect(await service.getSpellNameById(id)).toEqual(mockResult); // check cache
-      expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
+    it('getSpellDisplayIcon', () => {
+      service.getIconBySpellDisplayId(id).subscribe(res => {
+        expect(res).toEqual(mockResult);
+      });
+      service.getIconBySpellDisplayId(id).subscribe(res => {
+        expect(res).toEqual(mockResult);
+      });
+      expect(service.queryValue).toHaveBeenCalledTimes(1);
       expect(service.queryValue).toHaveBeenCalledWith(
-        `SELECT spellName AS v FROM spells WHERE id = ${id}`
+        `SELECT icon AS v FROM spells_icon WHERE ID = ${id}`
       );
     });
 
-    it('getSkillNameById', async () => {
-      expect(await service.getSkillNameById(id)).toEqual(mockResult);
-      expect(await service.getSkillNameById(id)).toEqual(mockResult); // check cache
-      expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
+    it('getDisplayIdBySpellId (case non-null)', () => {
+      service.getDisplayIdBySpellId(id).subscribe(res => {
+        expect(res).toEqual(mockResult);
+      });
       expect(service.queryValue).toHaveBeenCalledWith(
-        `SELECT name AS v FROM skills WHERE id = ${id}`
+        `SELECT spellIconID AS v FROM spells WHERE ID = ${id}`
       );
+      expect(Object.keys(service['cache']).length).toBe(1);
+      expect(Object.keys(service['cache'])[0]).toBe('getDisplayIdBySpellId');
     });
 
-    it('getFactionNameById', async () => {
-      expect(await service.getFactionNameById(id)).toEqual(mockResult);
-      expect(await service.getFactionNameById(id)).toEqual(mockResult); // check cache
-      expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
-      expect(service.queryValue).toHaveBeenCalledWith(
-        `SELECT m_name_lang_1 AS v FROM factions WHERE m_ID = ${id}`
-      );
+    it('getDisplayIdBySpellId (case null)', () => {
+      service.getDisplayIdBySpellId(null).subscribe(res => {
+        expect(res).toEqual(null);
+      });
+      expect(service.queryValue).toHaveBeenCalledTimes(0);
     });
 
-    it('getMapNameById', async () => {
-      expect(await service.getMapNameById(id)).toEqual(mockResult);
-      expect(await service.getMapNameById(id)).toEqual(mockResult); // check cache
-      expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
-      expect(service.queryValue).toHaveBeenCalledWith(
-        `SELECT m_MapName_lang1 AS v FROM maps WHERE m_ID = ${id}`
-      );
-    });
-
-    it('getAreaNameById', async () => {
-      expect(await service.getAreaNameById(id)).toEqual(mockResult);
-      expect(await service.getAreaNameById(id)).toEqual(mockResult); // check cache
-      expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
-      expect(service.queryValue).toHaveBeenCalledWith(
-        `SELECT m_AreaName_lang AS v FROM areas_and_zones WHERE m_ID = ${id}`
-      );
-    });
-
-    it('getEventNameByHolidayId', async () => {
-      expect(await service.getEventNameByHolidayId(id)).toEqual(mockResult);
-      expect(await service.getEventNameByHolidayId(id)).toEqual(mockResult); // check cache
-      expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
-      expect(service.queryValue).toHaveBeenCalledWith(
-        `SELECT name AS v FROM holiday WHERE id = ${id}`
-      );
-    });
-
-    it('getSocketBonusById', async () => {
-      expect(await service.getSocketBonusById(id)).toEqual(mockResult);
-      expect(await service.getSocketBonusById(id)).toEqual(mockResult); // check cache
-      expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
-      expect(service.queryValue).toHaveBeenCalledWith(
-        `SELECT name AS v FROM item_enchantment WHERE id = ${id}`
-      );
-    });
-
-    it('getSpellDescriptionById', async () => {
-      expect(await service.getSpellDescriptionById(id)).toEqual(mockResult);
-      expect(await service.getSpellDescriptionById(id)).toEqual(mockResult); // check cache
-      expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
-      expect(service.queryValue).toHaveBeenCalledWith(
-        `SELECT Description AS v FROM spells WHERE id = ${id}`
-      );
-    });
+    for (const test of [
+      { name: 'getSpellNameById',        query: `SELECT spellName AS v FROM spells WHERE id = ${id}` },
+      { name: 'getSkillNameById',        query: `SELECT name AS v FROM skills WHERE id = ${id}` },
+      { name: 'getFactionNameById',      query: `SELECT m_name_lang_1 AS v FROM factions WHERE m_ID = ${id}` },
+      { name: 'getMapNameById',          query: `SELECT m_MapName_lang1 AS v FROM maps WHERE m_ID = ${id}` },
+      { name: 'getAreaNameById',         query: `SELECT m_AreaName_lang AS v FROM areas_and_zones WHERE m_ID = ${id}` },
+      { name: 'getEventNameByHolidayId', query: `SELECT name AS v FROM holiday WHERE id = ${id}` },
+      { name: 'getSocketBonusById',      query: `SELECT name AS v FROM item_enchantment WHERE id = ${id}` },
+      { name: 'getSpellDescriptionById', query: `SELECT Description AS v FROM spells WHERE id = ${id}` },
+    ]) {
+      it(test.name, async () => {
+        expect(await service[test.name](id)).toEqual(mockResult);
+        expect(await service[test.name](id)).toEqual(mockResult); // check cache
+        expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
+        expect(service.queryValue).toHaveBeenCalledWith(test.query);
+        expect(Object.keys(service['cache']).length).toBe(1);
+        expect(Object.keys(service['cache'])[0]).toBe(test.name);
+      });
+    }
 
     it('getLockById', async () => {
       spyOn(service, 'query').and.returnValue(of([]));
@@ -136,6 +116,18 @@ describe('SqliteQueryService', () => {
       expect(service.query).toHaveBeenCalledTimes(1); // check cache
       expect(service.query).toHaveBeenCalledWith(`SELECT * FROM lock WHERE id = ${id}`);
     });
+
+    it('getRewardXP', async () => {
+      expect(await service.getRewardXP(id, 2)).toEqual(mockResult);
+      expect(await service.getRewardXP(id, 2)).toEqual(mockResult); // check cache
+      expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
+      expect(service.queryValue).toHaveBeenCalledWith(
+        `SELECT field${Number(id) + 1} AS v FROM questxp WHERE id = 2`
+      );
+      expect(Object.keys(service['cache']).length).toBe(1);
+      expect(Object.keys(service['cache'])[0]).toBe('getRewardXP');
+    });
+
   });
 
 });

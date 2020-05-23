@@ -16,6 +16,7 @@ export abstract class QueryService {
     return this.query(query).pipe(
       map(data => data && data[0] ? data[0].v as T : null),
     );
+
   }
 
   queryValueToPromise<T extends string | number>(query: string): Promise<T> {

@@ -3,11 +3,13 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { ITEM_TYPE, ITEM_MOD } from '@keira-shared/constants/options/item-class';
 import { ITEM_CONSTANTS } from './item-constants';
-import { MAX_LEVEL, lvlIndepRating, gtCombatRatings, CLASSES, RACE, resistanceFields } from './item-preview';
+import { MAX_LEVEL, lvlIndepRating, gtCombatRatings, CLASSES, resistanceFields } from './item-preview';
 import { ITEM_FLAG } from '@keira-shared/constants/flags/item-flags';
 import { ITEMS_QUALITY } from '@keira-shared/constants/options/item-quality';
 import { ItemTemplate } from '@keira-shared/types/item-template.type';
 import { PVP_RANK } from '@keira-shared/constants/options/item-honorrank';
+import { PreviewHelperService } from '@keira-shared/services/preview-helper.service';
+import { CLASSES_TEXT, RACES_TEXT } from '@keira-shared/constants/preview';
 
 @Injectable()
 export class ItemPreviewService {
@@ -17,6 +19,7 @@ export class ItemPreviewService {
   constructor(
     private readonly sqliteQueryService: SqliteQueryService,
     private readonly mysqlQueryService: MysqlQueryService,
+    private readonly helperService: PreviewHelperService,
   ) { }
 
   /**
@@ -140,84 +143,6 @@ export class ItemPreviewService {
      // rating-Bonuses
     const js = `&nbsp;<small>(${this.setRatingLevel(level, type, value)})</small>`;
     return ITEM_CONSTANTS.trigger[1] + ITEM_CONSTANTS.statType[type].replace('%d', `<!--rtg${type}-->${value}${js}`);
-  }
-
-  private getRequiredClass(classMask: number): string[] {
-    classMask &= CLASSES.MASK_ALL; // clamp to available classes..
-
-    if (classMask === CLASSES.MASK_ALL) { // available to all classes
-      return null;
-    }
-
-    const tmp = [];
-    let i = 1;
-    while (classMask) {
-      if (classMask & (1 << (i - 1))) {
-        const tmpClass = ITEM_CONSTANTS.cl[i];
-        /* istanbul ignore else */
-        if (!!tmpClass) {
-          tmp.push(`<span class="c${i}">${tmpClass}</span>`);
-        }
-
-        classMask &= ~(1 << (i - 1));
-      }
-      i++;
-    }
-
-    return tmp;
-  }
-
-  private getRaceString(raceMask: number): string[] {
-    // clamp to available races
-    raceMask &= RACE.MASK_ALL;
-    // available to all races (we don't display 'both factions')
-    if (!raceMask || raceMask === RACE.MASK_ALL) {
-      return null;
-    }
-
-    if (raceMask === RACE.MASK_HORDE) {
-      return [ITEM_CONSTANTS.ra['-2']];
-    }
-
-    if (raceMask === RACE.MASK_ALLIANCE) {
-      return [ITEM_CONSTANTS.ra['-1']];
-    }
-
-    const tmp  = [];
-    let i = 1;
-    while (raceMask) {
-      if (raceMask & (1 << (i - 1))) {
-        const tmpRace = ITEM_CONSTANTS.ra[i];
-        /* istanbul ignore else */
-        if (!!tmpRace) {
-          tmp.push(tmpRace);
-        }
-        raceMask &= ~(1 << (i - 1));
-      }
-      i++;
-    }
-
-    return tmp;
-  }
-
-  private formatMoney(qty: number): string {
-    let money = '';
-
-    if (qty >= 10000) {
-      const g = Math.floor(qty / 10000);
-      money += `<span class="moneygold">${g}</span> &nbsp;`;
-      qty -= g * 10000;
-    }
-
-    if (qty >= 100) {
-      const s = Math.floor(qty / 100);
-      money += `<span class="moneysilver">${s}</span> &nbsp;`;
-      qty -= s * 100;
-    }
-
-    money += `<span class="moneycopper">${qty}</span> &nbsp;`;
-
-    return money;
   }
 
   private parseTime(sec: number) {
@@ -903,14 +828,17 @@ export class ItemPreviewService {
     let requiredText = '';
 
     // required classes
-    const classes = this.getRequiredClass(itemTemplate.AllowableClass);
+    const classes = this.helperService.getRequiredClass(itemTemplate.AllowableClass);
     if (classes != null && classes.length > 0) {
-      requiredText += `<br>Classes: ${classes.join(', ')}`;
+      requiredText += `<br>Classes: ${classes.map(i => `<span class="c${i}">${CLASSES_TEXT[i]}</span>`).join(', ')}`;
     }
 
     // required races
-    const races = this.getRaceString(itemTemplate.AllowableRace);
+    let races = this.helperService.getRaceString(itemTemplate.AllowableRace);
     if (races) {
+      if (!isNaN(Number(races[0]))) {
+        races = races.map((el) => RACES_TEXT[el]);
+      }
       requiredText += `<br>Races: ${races.join(', ')}`;
     }
 
@@ -1399,7 +1327,7 @@ export class ItemPreviewService {
 
     const sellPrice = itemTemplate.SellPrice;
     if (!!sellPrice && sellPrice > 0) {
-      tmpItemPreview += '<br>Sell Price: ' + this.formatMoney(sellPrice);
+      tmpItemPreview += '<br>Sell Price: ' + this.helperService.formatMoney(sellPrice);
     }
 
     return tmpItemPreview;

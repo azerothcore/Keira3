@@ -222,7 +222,7 @@ describe('GameobjectQuestitem integration tests', () => {
       page.deleteRow(2);
       expect(page.getEditorTableRowsCount()).toBe(3);
 
-      await fixture.detectChanges();
+      fixture.detectChanges();
 
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234) AND (`Idx` IN (1, 2, 3));\n' +

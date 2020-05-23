@@ -10,6 +10,7 @@ import { ConfigService } from './config.service';
 import { QueryService } from '@keira-shared/services/query.service';
 import { SmartScripts } from '@keira-types/smart-scripts.type';
 import { fromPromise } from 'rxjs/internal-compatibility';
+import { QuestReputationReward } from 'app/features/quest/quest-preview/quest-preview.model';
 
 declare const squel: Squel & {flavour: null};
 
@@ -269,6 +270,7 @@ export class MysqlQueryService extends QueryService {
     grouped: boolean = false,   // whether the primaryKey2 is different for each row (e.g. primaryKey2='Item' in `creature_loot_template`)
                                 // or is the same for all rows (e.g. primaryKey='entryorguid', primaryKey2='source_type' in `smart_scripts`)
   ) {
+
     if (!rows || rows.length === 0) { return ''; }
 
     let deleteCondition: string = '';
@@ -376,8 +378,20 @@ export class MysqlQueryService extends QueryService {
     return this.queryValueToPromiseCached('getPrevQuestById', String(id), `SELECT PrevQuestID AS v FROM quest_template_addon WHERE id = ${id}`);
   }
 
-  getNextQuestById(id: string|number): Promise<string> {
-    return this.queryValueToPromiseCached('getNextQuestById', String(id), `SELECT NextQuestID AS v FROM quest_template_addon WHERE id = ${id}`);
+  getNextQuestById(id: string|number, usingPrev = false): Promise<string> {
+    return usingPrev
+      ? this.queryValueToPromiseCached('getNextQuest1', String(id), `SELECT id AS v FROM quest_template_addon WHERE PrevQuestID = ${id}`)
+      : this.queryValueToPromiseCached('getNextQuest2', String(id), `SELECT NextQuestID AS v FROM quest_template_addon WHERE id = ${id}`);
+  }
+
+  getItemByStartQuest(id: string|number): Promise<string> {
+    return this.queryValueToPromiseCached(
+      'getItemByStartQuest', String(id), `SELECT entry AS v FROM item_template WHERE startquest = ${id}`
+    );
+  }
+
+  getItemNameByStartQuest(id: string|number): Promise<string> {
+    return this.queryValueToPromiseCached('getItemNameByStartQuest', String(id), `SELECT name AS v FROM item_template WHERE startquest = ${id}`);
   }
 
   getItemNameById(id: string|number): Promise<string> {
@@ -422,4 +436,9 @@ export class MysqlQueryService extends QueryService {
 
     return this.queryValueToPromise(query.toString());
   }
+
+  getReputationRewardByFaction(id: string | number): Promise<QuestReputationReward[]> {
+    return this.queryToPromiseCached<QuestReputationReward>('getReputationRewardByFaction', String(id), `SELECT * FROM reputation_reward_rate WHERE faction = ${id}`);
+  }
+
 }

@@ -7,12 +7,15 @@ import { PageObject } from '@keira-testing/page-object';
 import { IconService } from '@keira-shared/modules/icon/icon.service';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
+import { ICON_SKILLS } from '@keira-shared/constants/quest-preview';
 
 @Component({
   template: `<keira-icon
     [size]="size"
     [itemId]="itemId"
     [itemDisplayId]="itemDisplayId"
+    [skillId]="skillId"
+    [spellId]="spellId"
   ></keira-icon>`
 })
 class TestHostComponent {
@@ -20,6 +23,8 @@ class TestHostComponent {
   size: string;
   itemId: string;
   itemDisplayId: string;
+  skillId: string;
+  spellId: string;
 }
 
 class IconComponentPage extends PageObject<TestHostComponent> {
@@ -44,6 +49,7 @@ describe('ItemIconComponent', () => {
 
     spyOn(service, 'getIconByItemId').and.callFake(id => of(`getIconByItemId-${id}`));
     spyOn(service, 'getIconByItemDisplayId').and.callFake(id => of(`getIconByItemDisplayId-${id}`));
+    spyOn(service, 'getIconBySpellId').and.callFake(id => of(`getIconBySpellId-${id}`));
 
     fixture.detectChanges();
 
@@ -69,6 +75,28 @@ describe('ItemIconComponent', () => {
       page.detectChanges();
 
       expect(page.img.src).toEqual('https://wow.zamimg.com/images/wow/icons/large/getIconByItemDisplayId-5678.jpg');
+    });
+
+    it('skillId', () => {
+      const { page, host } = setup();
+      const skillId = 755; // Jewelcrafting
+      host.size = 'large';
+      host.skillId = String(skillId);
+
+      page.detectChanges();
+
+      expect(page.img.src).toEqual(`https://wow.zamimg.com/images/wow/icons/large/${ICON_SKILLS[skillId]}.jpg`);
+    });
+
+    it('spellId', () => {
+      const { page, host } = setup();
+      const spellId = 123;
+      host.size = 'large';
+      host.spellId = String(spellId);
+
+      page.detectChanges();
+
+      expect(page.img.src).toEqual('https://wow.zamimg.com/images/wow/icons/large/getIconBySpellId-123.jpg');
     });
 
     it('empty', () => {

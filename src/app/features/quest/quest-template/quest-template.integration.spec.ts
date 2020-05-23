@@ -1,7 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import Spy = jasmine.Spy;
 
 import { QuestTemplateComponent } from './quest-template.component';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
@@ -9,16 +8,13 @@ import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { QuestTemplate } from '@keira-types/quest-template.type';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestModule } from '../quest.module';
+import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 
-class QuestTemplatePage extends EditorPageObject<QuestTemplateComponent> {}
+class QuestTemplatePage extends EditorPageObject<QuestTemplateComponent> {
+  get questPreviewTitle() { return this.query(`${this.PREVIEW_CONTAINER_SELECTOR} #title`); }
+}
 
 describe('QuestTemplate integration tests', () => {
-  let component: QuestTemplateComponent;
-  let fixture: ComponentFixture<QuestTemplateComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: QuestHandlerService;
-  let page: QuestTemplatePage;
 
   const id = 1234;
   const expectedFullCreateQuery = 'DELETE FROM `quest_template` WHERE (`ID` = 1234);\n' +
@@ -45,9 +41,6 @@ describe('QuestTemplate integration tests', () => {
     '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', \'\', \'\', ' +
     '\'\', \'\', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', \'\', \'\', \'\', 0);\n';
 
-  const originalEntity = new QuestTemplate();
-  originalEntity.ID = id;
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -59,44 +52,59 @@ describe('QuestTemplate integration tests', () => {
   }));
 
   function setup(creatingNew: boolean) {
-    handlerService = TestBed.inject(QuestHandlerService);
+    const originalEntity = new QuestTemplate();
+    originalEntity.ID = id;
+
+    const handlerService = TestBed.inject(QuestHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of());
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of());
     spyOn(queryService, 'queryValue').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
       creatingNew ? [] : [originalEntity]
     ));
+    // by default the other editor services should not be initialised, because the selectAll would return the wrong types for them
+    const initializeServicesSpy = spyOn(TestBed.inject(QuestPreviewService), 'initializeServices');
+    if (creatingNew) {
+      // when creatingNew, the selectAll will return an empty array, so it's fine
+      initializeServicesSpy.and.callThrough();
+    }
 
-    fixture = TestBed.createComponent(QuestTemplateComponent);
-    component = fixture.componentInstance;
-    page = new QuestTemplatePage(fixture);
+    const fixture = TestBed.createComponent(QuestTemplateComponent);
+    const component = fixture.componentInstance;
+    const page = new QuestTemplatePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+
+    return { originalEntity, handlerService, queryService, querySpy, initializeServicesSpy, fixture, component, page };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
 
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
+      page.removeElement();
     });
 
     it('should correctly update the unsaved status', () => {
+      const { page, handlerService } = setup(true);
       const field = 'QuestInfoID';
       expect(handlerService.isQuestTemplateUnsaved).toBe(false);
-      page.setInputValueById(field, 3);
+      page.setInputValueById(field, 81);
       expect(handlerService.isQuestTemplateUnsaved).toBe(true);
       page.setInputValueById(field, 0);
       expect(handlerService.isQuestTemplateUnsaved).toBe(false);
+      page.removeElement();
     });
 
     it('changing a property and executing the query should correctly work', () => {
+      const { page, querySpy } = setup(true);
       querySpy.calls.reset();
 
       page.setInputValueById('LogTitle', 'Shin');
@@ -106,19 +114,32 @@ describe('QuestTemplate integration tests', () => {
       page.expectFullQueryToContain('Shin');
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain('Shin');
+      page.removeElement();
+    });
+
+    it('changing a property should be reflected in the quest preview', () => {
+      const { page } = setup(true);
+      const value = 'Fix all AzerothCore bugs';
+
+      page.setInputValueById('LogTitle', value);
+
+      expect(page.questPreviewTitle.innerText).toContain(value);
+      page.removeElement();
     });
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
 
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(expectedFullCreateQuery);
+      page.removeElement();
     });
 
     it('changing all properties and executing the query should correctly work', () => {
+      const { page, querySpy, originalEntity } = setup(false);
       const expectedQuery = 'UPDATE `quest_template` SET ' +
         '`QuestLevel` = 1, `MinLevel` = 2, `QuestSortID` = 3, `QuestInfoID` = 4, `SuggestedGroupNum` = 5, ' +
         '`RequiredFactionId1` = 6, `RequiredFactionId2` = 7, `RequiredFactionValue1` = 8, `RequiredFactionValue2` = 9, ' +
@@ -150,11 +171,13 @@ describe('QuestTemplate integration tests', () => {
       page.clickExecuteQuery();
 
       page.expectDiffQueryToContain(expectedQuery);
-      expect(querySpy).toHaveBeenCalledTimes(1);
+      expect(querySpy).toHaveBeenCalledTimes(6);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      page.removeElement();
     });
 
     it('changing values should correctly update the queries', () => {
+      const { page } = setup(false);
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
 
       page.setInputValueById('LogTitle', 'Shin');
@@ -169,9 +192,11 @@ describe('QuestTemplate integration tests', () => {
       );
       page.expectFullQueryToContain('Shin');
       page.expectFullQueryToContain('22');
+      page.removeElement();
     });
 
     it('changing a value via FlagsSelector should correctly work', async () => {
+      const { page } = setup(false);
       const field = 'Flags';
       page.clickElement(page.getSelectorBtn(field));
       await page.whenReady();
@@ -191,6 +216,7 @@ describe('QuestTemplate integration tests', () => {
 
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('4100');
+      page.removeElement();
     });
   });
 });
