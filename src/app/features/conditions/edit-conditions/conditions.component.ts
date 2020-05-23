@@ -16,8 +16,7 @@ import {
   SOURCE_ENTRY_TOOLTIPS,
   SOURCE_GROUP_TOOLTIPS
 } from './conditions-constants';
-import { QUEST_STATE } from '@keira-constants/flags/conditions';
-import { RANKMASK } from '@keira-constants/flags/conditions';
+import { QUEST_STATE, RANKMASK } from '@keira-constants/flags/conditions';
 
 @Component({
   selector: 'keira-conditions',
