@@ -3,6 +3,7 @@
     <div class="preview-content quest-preview">
 
       <h5 id="title" *ngIf="!!service.title">{{ service.title }}</h5>
+      <p id="unavailable" *ngIf="service.isUnavailable()" class="text-center font-weight-bold red">Unavailable</p>
       <p id="level" *ngIf="!!service.level">Level: {{ service.level }}</p>
       <p id="minlevel" *ngIf="!!service.minLevel">
         Req. level: {{ service.minLevel }} <span *ngIf="showMaxLevel">- {{ service.maxLevel }}</span>

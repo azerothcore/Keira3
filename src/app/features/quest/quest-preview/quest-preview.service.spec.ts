@@ -674,6 +674,23 @@ describe('QuestPreviewService', () => {
       expect(service.rewardSpell()).toBe(123);
     });
 
+    it('isUnavailable() should correctly work', () => {
+      const { service, questTemplateService } = setup();
+      const UNAVAILABLE = 0x04000;
+
+      questTemplateService.form.controls.Flags.setValue(0);
+      expect(service.isUnavailable()).toBeFalse();
+
+      questTemplateService.form.controls.Flags.setValue(UNAVAILABLE);
+      expect(service.isUnavailable()).toBeTrue();
+
+      questTemplateService.form.controls.Flags.setValue(UNAVAILABLE + 2);
+      expect(service.isUnavailable()).toBeTrue();
+
+      questTemplateService.form.controls.Flags.setValue(UNAVAILABLE - 2);
+      expect(service.isUnavailable()).toBeFalse();
+    });
+
   });
 
 });
