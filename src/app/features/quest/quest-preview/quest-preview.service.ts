@@ -260,6 +260,11 @@ export class QuestPreviewService {
     return this.mysqlQueryService.getQuestTitleById(this.getEnabledByQuestId());
   }
 
+  public isUnavailable(): boolean {
+    const UNAVAILABLE = 0x04000;
+    return (this.questTemplate.Flags & UNAVAILABLE) === UNAVAILABLE;
+  }
+
   public isRepeatable(): boolean {
     return !!(this.questTemplate.Flags & QUEST_FLAG_REPEATABLE || this.questTemplateAddon.SpecialFlags & QUEST_FLAG_SPECIAL_REPEATABLE);
   }
