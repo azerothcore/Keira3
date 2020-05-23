@@ -34,6 +34,9 @@ class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   get requiredMoney() { return this.query<HTMLDivElement>('#required-money', false); }
   get rewardMoney() { return this.query<HTMLDivElement>('#reward-money', false); }
   get rewardBonusMoney() { return this.query<HTMLDivElement>('#reward-bonus-money', false); }
+  get rewardSpell() { return this.query<HTMLDivElement>('#rewardSpell', false); }
+  get rewardItems() { return this.query<HTMLDivElement>('#reward-items', false); }
+  get rewardChoiceItems() { return this.query<HTMLDivElement>('#reward-choice-items', false); }
 
   get descriptionText() { return this.query<HTMLDivElement>('#description-text'); }
   get progressText() { return this.query<HTMLDivElement>('#progress-text'); }
@@ -412,5 +415,81 @@ describe('QuestPreviewComponent', () => {
 
       page.removeElement();
     });
+
+    it('should correctly show the reward spell', async() => {
+      const { fixture, service, page, sqliteQueryService } = setup();
+      const rewardSpellSpy = spyOn(service, 'rewardSpell');
+      const questTemplate = createMockObject({ rewardSpell: 123 }, QuestTemplate);
+      spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
+      spyOn(sqliteQueryService, 'getSpellNameById').and.returnValue(Promise.resolve('Mock Spell'));
+
+      rewardSpellSpy.and.returnValue(null);
+      fixture.detectChanges();
+
+      expect(page.rewardSpell).toBeNull();
+
+      rewardSpellSpy.and.returnValue(123);
+
+      fixture.detectChanges();
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      expect(page.rewardSpell).toBeDefined();
+      expect(page.rewardSpell.innerText).toContain('You will learn:');
+      expect(page.rewardSpell.innerText).toContain('Mock Spell');
+
+      page.removeElement();
+    });
+
+    it('should correctly show the reward items', async() => {
+      const { fixture, service, page, mysqlQueryService } = setup();
+      const isRewardItemsSpy = spyOn(service, 'isRewardItems');
+      const questTemplate = createMockObject({ RewardItem1: 123, RewardAmount1: 1 }, QuestTemplate);
+      spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
+      spyOn(mysqlQueryService, 'getItemNameById').and.returnValue(Promise.resolve('Mock Item'));
+
+      isRewardItemsSpy.and.returnValue(false);
+      fixture.detectChanges();
+
+      expect(page.rewardItems).toBe(null);
+
+      isRewardItemsSpy.and.returnValue(true);
+
+      fixture.detectChanges();
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      expect(page.rewardItems).toBeDefined();
+      expect(page.rewardItems.innerText).toContain('You will receive:');
+      expect(page.rewardItems.innerText).toContain('Mock Item');
+
+      page.removeElement();
+    });
+
+    it('should correctly show the reward choice items', async() => {
+      const { fixture, service, page, mysqlQueryService } = setup();
+      const isRewardChoiceItemsSpy = spyOn(service, 'isRewardChoiceItems');
+      const questTemplate = createMockObject({ RewardChoiceItemID1: 123, RewardChoiceItemQuantity1: 1 }, QuestTemplate);
+      spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
+      spyOn(mysqlQueryService, 'getItemNameById').and.returnValue(Promise.resolve('Mock Item'));
+
+      isRewardChoiceItemsSpy.and.returnValue(false);
+      fixture.detectChanges();
+
+      expect(page.rewardChoiceItems).toBe(null);
+
+      isRewardChoiceItemsSpy.and.returnValue(true);
+
+      fixture.detectChanges();
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      expect(page.rewardChoiceItems).toBeDefined();
+      expect(page.rewardChoiceItems.innerText).toContain('You will be able to choose one of these rewards');
+      expect(page.rewardChoiceItems.innerText).toContain('Mock Item');
+
+      page.removeElement();
+    });
+
   });
 });
