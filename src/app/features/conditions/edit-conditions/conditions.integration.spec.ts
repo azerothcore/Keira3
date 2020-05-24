@@ -11,7 +11,10 @@ import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { Conditions } from '@keira-types/conditions.type';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 
-class ConditionsPage extends EditorPageObject<ConditionsComponent> {}
+class ConditionsPage extends EditorPageObject<ConditionsComponent> {
+  get questStateFlagSelector() { return this.query(`#queststate-flag-selector`, false); }
+  get rankMaskFlagSelector() { return this.query(`#rankmask-flag-selector`, false); }
+}
 
 describe('Conditions integration tests', () => {
   let component: ConditionsComponent;
@@ -115,6 +118,18 @@ describe('Conditions integration tests', () => {
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
 
+    it('should correctly toggle flag selector according to the selected condition type', () => {
+      expect(page.questStateFlagSelector).toBeFalsy();
+      expect(page.rankMaskFlagSelector).toBeFalsy();
+
+      page.setSelectValueById('ConditionTypeOrReference', 5); // CONDITION_REPUTATION_RANK
+      expect(page.questStateFlagSelector).toBeFalsy();
+      expect(page.rankMaskFlagSelector).toBeTruthy();
+
+      page.setSelectValueById('ConditionTypeOrReference', 47); // CONDITION_QUESTSTATE
+      expect(page.questStateFlagSelector).toBeTruthy();
+      expect(page.rankMaskFlagSelector).toBeFalsy();
+    });
   });
 
 
