@@ -29,13 +29,11 @@ export class QuestPreviewComponent implements OnInit {
 
   get questStartIcon(): string {
     return this.service.periodicQuest
-    /* istanbul ignore next */ // TODO: test this properly using page object
     ? 'quest_start_daily.gif'
     : 'quest_start.gif';
   }
   get questEndIcon(): string {
     return this.service.periodicQuest
-    /* istanbul ignore next */ // TODO: test this properly using page object
     ? 'quest_end_daily.gif'
     : 'quest_end.gif';
   }
