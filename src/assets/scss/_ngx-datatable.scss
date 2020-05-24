@@ -28,7 +28,7 @@
 
   .datatable-body {
     border-collapse: collapse;
-    
+
     .datatable-body-row {
       vertical-align: top;
       border-top: 1px solid #e7e7e7;
@@ -37,7 +37,7 @@
       &.datatable-row-even {
         background-color: $content-block-bg-color;
       }
-      
+
       &:hover {
         background-color: #eee;
       }
@@ -45,7 +45,7 @@
         //background-color: blue;
         //font-weight: 600;
       // }
-      
+
       .datatable-body-cell {
         text-align: left;
         vertical-align: top;
@@ -54,15 +54,15 @@
         word-wrap: break-word;
       }
     }
-    
+
     .datatable-body-row .datatable-body-cell:first-child {
       border-left: 0;
     }
-    
+
     .datatable-scroll {
       border-bottom: 1px solid #e7e7e7;
     }
-    
+
     .empty-row {
       border-top: 1px solid #e7e7e7;
       border-bottom: 1px solid #e7e7e7;
@@ -71,18 +71,18 @@
       background-color: #f7f7f7;
     }
   }
-  
+
   .datatable-footer {
     background-color: $content-block-bg-color;
     color: #666;
     margin-top: -3px;
-    
+
     .page-count {
       line-height: 50px;
       height: 50px;
       padding: 0 1.2rem;
     }
-    
+
     .datatable-pager {
       margin: 0 10px;
       vertical-align: top;
@@ -103,34 +103,34 @@
           }
         }
       }
-      
+
       .pager li:first-child a,
       .pager li:nth-child(2) a,
       .pager li:nth-last-child(2) a,
       .pager li:last-child a {
         padding: 3px 9px;
       }
-      
+
       .pager li:first-child a,
       .pager li:nth-child(2) a {
         margin-right: -4px;
       }
-      
+
       .pager li:nth-last-child(2) a,
       .pager li:last-child a {
         margin-left: -5px;
       }
-      
+
       .pager li:first-child a {
         border-top-left-radius: 6px;
         border-bottom-left-radius: 6px;
       }
-      
+
       .pager li:last-child a {
         border-top-right-radius: 6px;
         border-bottom-right-radius: 6px;
       }
-      
+
       a {
         padding: 6px 12px;
         line-height: 1.42857143;
@@ -141,7 +141,7 @@
         vertical-align: bottom;
         color: #5d176a;
       }
-      
+
       .datatable-icon-left,
       .datatable-icon-skip,
       .datatable-icon-right,
