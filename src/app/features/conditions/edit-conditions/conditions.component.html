@@ -94,6 +94,12 @@
               class="fas fa-info-circle ml-1" [placement]="'auto'"
               [tooltip]="CONDITION_VALUE_1_TOOLTIPS[conditionType]"
             ></i>
+						<keira-flags-selector-btn
+              *ngIf="showTypeMask"
+			        [control]="editorService.form.controls.ConditionValue1"
+			        [config]="{ flags: TYPEMASK, name: 'ConditionValue1' }"
+			        [modalClass]="'modal-lg'"
+            ></keira-flags-selector-btn>
             <input [formControlName]="'ConditionValue1'" id="ConditionValue1" type="number" class="form-control form-control-sm">
           </div>
 
@@ -115,7 +121,6 @@
               [config]="{ flags: RANKMASK, name: 'ConditionValue2' }"
               [modalClass]="'modal-lg'"
             ></keira-flags-selector-btn>
-
             <input [formControlName]="'ConditionValue2'" id="ConditionValue2" type="number" class="form-control form-control-sm">
           </div>
 
