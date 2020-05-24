@@ -40,10 +40,18 @@ export const SAI_TARGET_PARAM1_NAMES = [];
 export const SAI_TARGET_PARAM2_NAMES = [];
 export const SAI_TARGET_PARAM3_NAMES = [];
 export const SAI_TARGET_PARAM4_NAMES = [];
+export const SAI_TARGET_X_NAMES = [];
+export const SAI_TARGET_Y_NAMES = [];
+export const SAI_TARGET_Z_NAMES = [];
+export const SAI_TARGET_O_NAMES = [];
 export const SAI_TARGET_PARAM1_TOOLTIPS = [];
 export const SAI_TARGET_PARAM2_TOOLTIPS = [];
 export const SAI_TARGET_PARAM3_TOOLTIPS = [];
 export const SAI_TARGET_PARAM4_TOOLTIPS = [];
+export const SAI_TARGET_X_TOOLTIPS = [];
+export const SAI_TARGET_Y_TOOLTIPS = [];
+export const SAI_TARGET_Z_TOOLTIPS = [];
+export const SAI_TARGET_O_TOOLTIPS = [];
 
 // SMART_TARGET_NONE
 SAI_TARGET_TOOLTIPS[SAI_TARGETS.NONE] = 'No specified target. Only use this if you\'re sure the action type does not use targets at all (and event then it could not be safe. It\'s usually smart to default to SMART_TARGET_SELF (1)).';
@@ -194,3 +202,5 @@ SAI_TARGET_PARAM2_NAMES[SAI_TARGETS.PLAYER_WITH_AURA] = 'Negation';
 SAI_TARGET_PARAM3_NAMES[SAI_TARGETS.PLAYER_WITH_AURA] = 'distMax';
 SAI_TARGET_PARAM4_NAMES[SAI_TARGETS.PLAYER_WITH_AURA] = 'distMin';
 SAI_TARGET_PARAM2_TOOLTIPS[SAI_TARGETS.PLAYER_WITH_AURA] = '(0/1) makes it inverted.';
+SAI_TARGET_O_NAMES[SAI_TARGETS.PLAYER_WITH_AURA] = 'Resize';
+SAI_TARGET_O_TOOLTIPS[SAI_TARGETS.PLAYER_WITH_AURA] = 'if set, it will resize the list of targets to this value';
