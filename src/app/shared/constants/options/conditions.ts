@@ -38,7 +38,7 @@ export const CONDITION_HP_VAL_CV2: Option[] = [
   { value: 1,	name: 'HP must be higher' },
   { value: 2,	name: 'HP must be lower' },
   { value: 3,	name: 'HP must be equal or higher' },
-  { value: 3,	name: 'HP must be equal or lower' },
+  { value: 4,	name: 'HP must be equal or lower' },
 ];
 
 export const CONDITION_HP_PCT_CV2: Option[] = [
@@ -46,7 +46,7 @@ export const CONDITION_HP_PCT_CV2: Option[] = [
   { value: 1,	name: 'Percentage of max HP must be higher' },
   { value: 2,	name: 'Percentage of max HP must be lower' },
   { value: 3,	name: 'Percentage of max HP must be equal or higher' },
-  { value: 3,	name: 'Percentage of max HP must be equal or lower' },
+  { value: 4,	name: 'Percentage of max HP must be equal or lower' },
 ];
 
 export const CONDITION_STAND_STATE_CV2: Option[] = [
@@ -61,7 +61,7 @@ export const CONDITION_DISTANCE_TO_CV3: Option[] = [
   { value: 1,	name: 'Distance must be higher than ConditionValue2' },
   { value: 2,	name: 'Distance must be lower than ConditionValue2' },
   { value: 3,	name: 'distance must be equal to or higher than ConditionValue2' },
-  { value: 3,	name: 'distance must be equal to or lower than ConditionValue2' },
+  { value: 4,	name: 'distance must be equal to or lower than ConditionValue2' },
 ];
 
 export const CONDITION_NEAR_CREATURE_CV3: Option[] = [
