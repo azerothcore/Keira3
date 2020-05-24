@@ -22,7 +22,7 @@ import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/singl
     TooltipModule.forRoot(),
     ToastrModule.forRoot(toastrConfig),
     FlagsSelectorModule,
-	SingleValueSelectorModule,
+    SingleValueSelectorModule,
   ],
   exports: [
     ConditionsComponent,
