@@ -53,6 +53,7 @@ export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
   }
 
   get showReactionTo(): boolean {
+    /* istanbul ignore next */ // TODO
     switch (this.conditionType) {
       case CONDITION_TYPES.CONDITION_REPUTATION_RANK:
       case CONDITION_TYPES.CONDITION_REACTION_TO:
