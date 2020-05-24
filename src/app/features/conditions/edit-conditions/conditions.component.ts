@@ -17,6 +17,18 @@ import {
   SOURCE_GROUP_TOOLTIPS
 } from './conditions-constants';
 import { QUEST_STATE, RANKMASK } from '@keira-constants/flags/conditions';
+import {
+  CONDITION_INSTANCE_INFO_CV3,
+  CONDITION_LEVEL_CV2,
+  CONDITION_NEAR_CREATURE_CV3,
+  CONDITION_OBJECT_ENTRY_GUID_CV1,
+  CONDITION_RELATION_TO_CV2,
+  CONDITION_DISTANCE_TO_CV3,
+  CONDITION_HP_VAL_CV2,
+  CONDITION_HP_PCT_CV2,
+  CONDITION_STAND_STATE_CV1,
+  CONDITION_STAND_STATE_CV2,
+} from '@keira-constants/options/conditions';
 
 @Component({
   selector: 'keira-conditions',
@@ -37,8 +49,21 @@ export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
   public readonly CONDITION_VALUE_2_TOOLTIPS = CONDITION_VALUE_2_TOOLTIPS;
   public readonly CONDITION_VALUE_3_TOOLTIPS = CONDITION_VALUE_3_TOOLTIPS;
 
+  // Flag Select
   public readonly QUEST_STATE = QUEST_STATE;
   public readonly RANKMASK = RANKMASK;
+
+  // Option Select
+  public readonly CONDITION_INSTANCE_INFO_CV3 = CONDITION_INSTANCE_INFO_CV3;
+  public readonly CONDITION_LEVEL_CV2 = CONDITION_LEVEL_CV2;
+  public readonly CONDITION_NEAR_CREATURE_CV3 = CONDITION_NEAR_CREATURE_CV3;
+  public readonly CONDITION_OBJECT_ENTRY_GUID_CV1 = CONDITION_OBJECT_ENTRY_GUID_CV1;
+  public readonly CONDITION_RELATION_TO_CV2 = CONDITION_RELATION_TO_CV2;
+  public readonly CONDITION_DISTANCE_TO_CV3 = CONDITION_DISTANCE_TO_CV3;
+  public readonly CONDITION_HP_VAL_CV2 = CONDITION_HP_VAL_CV2;
+  public readonly CONDITION_HP_PCT_CV2 = CONDITION_HP_PCT_CV2;
+  public readonly CONDITION_STAND_STATE_CV1 = CONDITION_STAND_STATE_CV1;
+  public readonly CONDITION_STAND_STATE_CV2 = CONDITION_STAND_STATE_CV2;
 
   get selectedSourceType(): number {
    return this.editorService.form.controls.SourceTypeOrReferenceId.value;

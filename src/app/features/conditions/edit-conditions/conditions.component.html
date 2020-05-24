@@ -94,6 +94,16 @@
               class="fas fa-info-circle ml-1" [placement]="'auto'"
               [tooltip]="CONDITION_VALUE_1_TOOLTIPS[conditionType]"
             ></i>
+			<keira-single-value-selector-btn
+              [control]="editorService.form.controls.ConditionValue1"
+              [config]="{ options: CONDITION_OBJECT_ENTRY_GUID_CV1, name: 'ConditionValue1' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
+			<keira-single-value-selector-btn
+              [control]="editorService.form.controls.ConditionValue1"
+              [config]="{ options: CONDITION_STAND_STATE_CV1, name: 'ConditionValue1' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
             <input [formControlName]="'ConditionValue1'" id="ConditionValue1" type="number" class="form-control form-control-sm">
           </div>
 
@@ -115,7 +125,31 @@
               [config]="{ flags: RANKMASK, name: 'ConditionValue2' }"
               [modalClass]="'modal-lg'"
             ></keira-flags-selector-btn>
-
+			<keira-single-value-selector-btn
+              [control]="editorService.form.controls.ConditionValue2"
+              [config]="{ options: CONDITION_LEVEL_CV2, name: 'ConditionValue2' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
+			<keira-single-value-selector-btn
+              [control]="editorService.form.controls.ConditionValue2"
+              [config]="{ options: CONDITION_RELATION_TO_CV2, name: 'ConditionValue2' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
+			<keira-single-value-selector-btn
+              [control]="editorService.form.controls.ConditionValue2"
+              [config]="{ options: CONDITION_HP_VAL_CV2, name: 'ConditionValue2' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
+			<keira-single-value-selector-btn
+              [control]="editorService.form.controls.ConditionValue2"
+              [config]="{ options: CONDITION_HP_PCT_CV2, name: 'ConditionValue2' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
+			<keira-single-value-selector-btn
+              [control]="editorService.form.controls.ConditionValue2"
+              [config]="{ options: CONDITION_STAND_STATE_CV2, name: 'ConditionValue2' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
             <input [formControlName]="'ConditionValue2'" id="ConditionValue2" type="number" class="form-control form-control-sm">
           </div>
 
@@ -125,6 +159,21 @@
               class="fas fa-info-circle ml-1" [placement]="'auto'"
               [tooltip]="CONDITION_VALUE_3_TOOLTIPS[conditionType]"
             ></i>
+			<keira-single-value-selector-btn
+              [control]="editorService.form.controls.ConditionValue3"
+              [config]="{ options: CONDITION_INSTANCE_INFO_CV3, name: 'ConditionValue3' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
+			<keira-single-value-selector-btn
+              [control]="editorService.form.controls.ConditionValue3"
+              [config]="{ options: CONDITION_NEAR_CREATURE_CV3, name: 'ConditionValue3' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
+			<keira-single-value-selector-btn
+              [control]="editorService.form.controls.ConditionValue3"
+              [config]="{ options: CONDITION_DISTANCE_TO_CV3, name: 'ConditionValue3' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
             <input [formControlName]="'ConditionValue3'" id="ConditionValue3" type="number" class="form-control form-control-sm">
           </div>
 
