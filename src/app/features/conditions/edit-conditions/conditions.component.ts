@@ -53,7 +53,13 @@ export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
   }
 
   get showReactionTo(): boolean {
-    return this.conditionType === CONDITION_TYPES.CONDITION_REACTION_TO;
+    switch (this.conditionType) {
+      case CONDITION_TYPES.CONDITION_REPUTATION_RANK:
+      case CONDITION_TYPES.CONDITION_REACTION_TO:
+        return true;
+      default:
+        return false;
+    }
   }
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
