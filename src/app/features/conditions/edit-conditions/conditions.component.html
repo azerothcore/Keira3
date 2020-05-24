@@ -110,12 +110,14 @@
               [tooltip]="CONDITION_VALUE_2_TOOLTIPS[conditionType]"
             ></i>
             <keira-flags-selector-btn
+              id="queststate-flag-selector"
               *ngIf="showQuestState"
               [control]="editorService.form.controls.ConditionValue2"
               [config]="{ flags: QUEST_STATE, name: 'ConditionValue2' }"
               [modalClass]="'modal-lg'"
             ></keira-flags-selector-btn>
 			      <keira-flags-selector-btn
+              id="rankmask-flag-selector"
 			        *ngIf="showReactionTo"
               [control]="editorService.form.controls.ConditionValue2"
               [config]="{ flags: RANKMASK, name: 'ConditionValue2' }"
