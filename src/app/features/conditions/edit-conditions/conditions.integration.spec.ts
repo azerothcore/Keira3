@@ -12,8 +12,8 @@ import { Conditions } from '@keira-types/conditions.type';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 
 class ConditionsPage extends EditorPageObject<ConditionsComponent> {
-  get questStateFlagSelector() { return this.query(`#queststate-flag-selector`, false); }
-  get rankMaskFlagSelector() { return this.query(`#rankmask-flag-selector`, false); }
+  getQuestStateFlagSelector(assert = true) { return this.query(`#queststate-flag-selector`, assert); }
+  getRankMaskFlagSelector(assert = true) { return this.query(`#rankmask-flag-selector`, assert); }
 }
 
 describe('Conditions integration tests', () => {
@@ -119,16 +119,16 @@ describe('Conditions integration tests', () => {
     });
 
     it('should correctly toggle flag selector according to the selected condition type', () => {
-      expect(page.questStateFlagSelector).toBeFalsy();
-      expect(page.rankMaskFlagSelector).toBeFalsy();
+      expect(page.getQuestStateFlagSelector(false)).toBeFalsy();
+      expect(page.getRankMaskFlagSelector(false)).toBeFalsy();
 
       page.setSelectValueById('ConditionTypeOrReference', 5); // CONDITION_REPUTATION_RANK
-      expect(page.questStateFlagSelector).toBeFalsy();
-      expect(page.rankMaskFlagSelector).toBeTruthy();
+      expect(page.getQuestStateFlagSelector(false)).toBeFalsy();
+      expect(page.getRankMaskFlagSelector).toBeTruthy();
 
       page.setSelectValueById('ConditionTypeOrReference', 47); // CONDITION_QUESTSTATE
-      expect(page.questStateFlagSelector).toBeTruthy();
-      expect(page.rankMaskFlagSelector).toBeFalsy();
+      expect(page.getQuestStateFlagSelector).toBeTruthy();
+      expect(page.getRankMaskFlagSelector(false)).toBeFalsy();
     });
   });
 
