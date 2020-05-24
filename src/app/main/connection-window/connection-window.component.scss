@@ -165,8 +165,8 @@ $secondary-color-green: #b7e2ad;
       left: 50%;
       transform: translateX(-50%);
 
-      a,
-      a:hover {
+      a:hover,
+      a {
         font-weight: bold;
         text-decoration: none;
       }
