@@ -20,3 +20,10 @@ export const RANKMASK: Flag[] = [
   { bit: 6, name: 'REVERED', },
   { bit: 7, name: 'EXALTED', },
 ];
+
+export const TYPEMASK: Flag[] = [
+  { bit: 3, name: 'TYPEMASK_UNIT', },
+  { bit: 4, name: 'TYPEMASK_PLAYER', },
+  { bit: 5, name: 'TYPEMASK_GAMEOBJECT', },
+  { bit: 7, name: 'TYPEMASK_CORPSE (after spirit release)', },
+];
