@@ -16,7 +16,8 @@ import {
   SOURCE_ENTRY_TOOLTIPS,
   SOURCE_GROUP_TOOLTIPS
 } from './conditions-constants';
-import { QUEST_STATE, RANKMASK } from '@keira-constants/flags/conditions';
+
+import { QUEST_STATE, RANKMASK, TYPEMASK } from '@keira-constants/flags/conditions';
 import {
   CONDITION_INSTANCE_INFO_CV3,
   CONDITION_LEVEL_CV2,
@@ -52,6 +53,7 @@ export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
   // Flag Select
   public readonly QUEST_STATE = QUEST_STATE;
   public readonly RANKMASK = RANKMASK;
+  public readonly TYPEMASK = TYPEMASK;
 
   // Option Select
   public readonly CONDITION_INSTANCE_INFO_CV3 = CONDITION_INSTANCE_INFO_CV3;
@@ -75,6 +77,10 @@ export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
 
   get showQuestState(): boolean {
     return this.conditionType === CONDITION_TYPES.CONDITION_QUESTSTATE;
+  }
+
+  get showTypeMask(): boolean {
+    return this.conditionType === CONDITION_TYPES.CONDITION_TYPE_MASK;
   }
 
   get showReactionTo(): boolean {

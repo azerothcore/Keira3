@@ -94,6 +94,12 @@
               class="fas fa-info-circle ml-1" [placement]="'auto'"
               [tooltip]="CONDITION_VALUE_1_TOOLTIPS[conditionType]"
             ></i>
+            <keira-flags-selector-btn
+              *ngIf="showTypeMask"
+			        [control]="editorService.form.controls.ConditionValue1"
+			        [config]="{ flags: TYPEMASK, name: 'ConditionValue1' }"
+			        [modalClass]="'modal-lg'"
+            ></keira-flags-selector-btn>
             <keira-single-value-selector-btn
 			        *ngIf="showObjectEntryGuid"
               [control]="editorService.form.controls.ConditionValue1"
