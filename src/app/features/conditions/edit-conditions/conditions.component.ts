@@ -100,27 +100,27 @@ export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
     return this.conditionType === CONDITION_TYPES.CONDITION_NEAR_CREATURE;
   }
 
-  get ShowObjectEntryGuid(): boolean {
+  get showObjectEntryGuid(): boolean {
     return this.conditionType === CONDITION_TYPES.CONDITION_OBJECT_ENTRY_GUID;
   }
 
-  get ShowRelationTo(): boolean {
+  get showRelationTo(): boolean {
     return this.conditionType === CONDITION_TYPES.CONDITION_RELATION_TO;
   }
 
-  get ShowDistanceTo(): boolean {
+  get showDistanceTo(): boolean {
     return this.conditionType === CONDITION_TYPES.CONDITION_DISTANCE_TO;
   }
 
-  get ShowHPVal(): boolean {
+  get showHPVal(): boolean {
     return this.conditionType === CONDITION_TYPES.CONDITION_HP_VAL;
   }
 
-  get ShowHPPct(): boolean {
+  get showHPPct(): boolean {
     return this.conditionType === CONDITION_TYPES.CONDITION_HP_PCT;
   }
 
-  get ShowStandState(): boolean {
+  get showStandState(): boolean {
     return this.conditionType === CONDITION_TYPES.CONDITION_STAND_STATE;
   }
 
