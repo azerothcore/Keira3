@@ -54,7 +54,7 @@ export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
   }
 
   get showTypeMask(): boolean {
-    return this.conditionType == CONDITION_TYPES.CONDITION_TYPE_MASK;
+    return this.conditionType === CONDITION_TYPES.CONDITION_TYPE_MASK;
   }
 
   get showReactionTo(): boolean {
