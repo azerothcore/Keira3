@@ -88,6 +88,42 @@ export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
     }
   }
 
+  get showInstanceInfo(): boolean {
+	  return this.conditionType === CONDITION_TYPES.CONDITION_INSTANCE_INFO;
+  }
+
+  get showLevel(): boolean {
+	  return this.conditionType === CONDITION_TYPES.CONDITION_LEVEL;
+  }
+
+  get showNearCreature(): boolean {
+	  return this.conditionType === CONDITION_TYPES.CONDITION_NEAR_CREATURE;
+  }
+
+  get ShowObjectEntryGuid(): boolean {
+	  return this.conditionType === CONDITION_TYPES.CONDITION_OBJECT_ENTRY_GUID;
+  }
+
+  get ShowRelationTo(): boolean {
+	  return this.conditionType === CONDITION_TYPES.CONDITION_RELATION_TO;
+  }
+
+  get ShowDistanceTo(): boolean {
+	  return this.conditionType === CONDITION_TYPES.CONDITION_DISTANCE_TO;
+  }
+
+  get ShowHPVal(): boolean {
+	  return this.conditionType === CONDITION_TYPES.CONDITION_HP_VAL;
+  }
+
+  get ShowHPPct(): boolean {
+	  return this.conditionType === CONDITION_TYPES.CONDITION_HP_PCT;
+  }
+
+  get ShowStandState(): boolean {
+	  return this.conditionType === CONDITION_TYPES.CONDITION_STAND_STATE;
+  }
+
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: ConditionsService,
