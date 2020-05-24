@@ -12,8 +12,7 @@
     min-height: 100vh;
     display: inline-block;
     width: 100%;
-    transition: padding-left .3s ease;
-
+    transition: padding-left 0.3s ease;
     padding-left: $sidebar-width;
 
     .content-block {
@@ -31,7 +30,6 @@
   }
 
   &.toggled {
-
     .page-content {
       padding-left: 0;
     }
