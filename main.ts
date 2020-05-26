@@ -23,7 +23,7 @@ function createWindow() {
     },
     icon: 'src/assets/img/ac.png',
   });
-
+  win.setMenuBarVisibility(false)
   if (serve) {
     require('electron-reload')(__dirname, {
       electron: require(`${__dirname}/node_modules/electron`)
