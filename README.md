@@ -17,6 +17,10 @@ With Keira3 you don't have to know the SQL language in order to change contents:
 
 Made with ❤ and [TypeScript](http://www.typescriptlang.org/), [Electron](https://electronjs.org/), [Angular](https://angular.io/), [Bootstrap](https://getbootstrap.com/).
 
+## Download and run
+
+To use Keira3, you don't need to install any dependency. Just [download](https://github.com/azerothcore/Keira3/releases) and run it.
+
 ## Support us
 
 You can support the Keira3 development by [donating with PayPal](https://www.paypal.me/francesco92dev).
@@ -38,6 +42,8 @@ Alternatively, you can use a public database of AzerothCore with read-only acces
 ## Development
 
 ### Dependencies
+
+**Note:** these are the dependencies if you want to run Keira3 in development mode. If you just want to use Keira3, download it from the [releases page](https://github.com/azerothcore/Keira3/releases).
 
 You need to first install [node](https://nodejs.org) in order to have `npm` available in your system.
 
