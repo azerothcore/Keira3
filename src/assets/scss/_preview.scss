@@ -1,7 +1,7 @@
 $preview-width: 240px;
 
 .editor-with-preview {
-  transition: padding-right .3s ease;
+  transition: padding-right 0.3s ease;
 
   &.show-preview {
     padding-right: $preview-width + 15px;
@@ -17,7 +17,7 @@ $preview-width: 240px;
 }
 
 .preview-container {
-  transition: width .3s ease;
+  transition: width 0.3s ease;
   position: fixed;
   top: 0;
   right: 0;
@@ -41,16 +41,16 @@ $preview-width: 240px;
 }
 
 /* Classes */
-.c1  { color: #C69B6D; } /* Warrior */
-.c2  { color: #F48CBA; } /* Paladin */
-.c3  { color: #AAD372; } /* Hunter */
-.c4  { color: #FFF468; } /* Rogue */
-.c5  { color: #FFFFFF; } /* Priest */
-.c6  { color: #C41E3B; } /* Death Knight */
-.c7  { color: #2359FF; } /* Shaman */
-.c8  { color: #68CCEF; } /* Mage */
-.c9  { color: #9382C9; } /* Warlock */
-.c11 { color: #FF7C0A; } /* Druid */
+.c1  { color: #c69b6d; } /* Warrior */
+.c2  { color: #f48cba; } /* Paladin */
+.c3  { color: #aad372; } /* Hunter */
+.c4  { color: #fff468; } /* Rogue */
+.c5  { color: #fff; }    /* Priest */
+.c6  { color: #c41d3b; } /* Death Knight */
+.c7  { color: #2359ff; } /* Shaman */
+.c8  { color: #68ccef; } /* Mage */
+.c9  { color: #9382c9; } /* Warlock */
+.c11 { color: #ff7c0a; } /* Druid */
 
 .moneygold,
 .moneysilver,
