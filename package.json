@@ -60,7 +60,7 @@
     "@types/jasminewd2": "2.0.8",
     "@types/mocha": "7.0.2",
     "@types/mysql": "2.15.13",
-    "@types/node": "12.12.43",
+    "@types/node": "12.12.44",
     "@types/sqlite3": "3.1.6",
     "@types/sqlstring": "2.2.1",
     "bootstrap": "4.5.0",
