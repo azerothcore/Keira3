@@ -123,7 +123,9 @@
             [columnMode]="DTCFG.columnMode"
             [rowHeight]="DTCFG.rowHeightWithIcon"
             [selectionType]="DTCFG.selectionType"
-            (select)='editorService.onRowSelection($event)'>
+            (select)='editorService.onRowSelection($event)'
+            (keydown.delete)="editorService.deleteSelectedRow()"
+          >
             <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
               <ng-template let-row="row" ngx-datatable-cell-template>
                 <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
