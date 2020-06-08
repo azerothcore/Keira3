@@ -91,7 +91,7 @@
     "spectron": "10.0.1",
     "sqlstring": "2.3.2",
     "squel": "5.13.0",
-    "ts-mockito": "2.5.0",
+    "ts-mockito": "2.6.1",
     "ts-node": "8.10.2",
     "tslint": "6.1.2",
     "typescript": "3.8.3",
