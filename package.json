@@ -80,7 +80,7 @@
     "karma-coverage-istanbul-reporter": "3.0.3",
     "karma-jasmine": "3.3.1",
     "karma-jasmine-html-reporter": "1.5.4",
-    "mocha": "7.2.0",
+    "mocha": "8.0.1",
     "ngx-bootstrap": "5.6.1",
     "ngx-clipboard": "13.0.1",
     "ngx-highlightjs": "3.0.3",
