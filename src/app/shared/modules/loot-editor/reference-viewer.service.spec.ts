@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 import { ReferenceViewerService } from './reference-viewer.service';
-import { ReferenceViewerModule } from '@keira-shared/modules/reference-viewer/reference-viewer.module';
+import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.module';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { ReferenceLootTemplate } from '@keira-types/reference-loot-template.type';
 import { TableRow } from '@keira-types/general';
@@ -12,7 +12,7 @@ fdescribe('ReferenceViewerService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        ReferenceViewerModule,
+        LootEditorModule,
       ]
     });
   });

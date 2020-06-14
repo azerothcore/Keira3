@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges } from '@angular/core';
 
-import { ReferenceViewerService } from '@keira-shared/modules/reference-viewer/reference-viewer.service';
+import { ReferenceViewerService } from '@keira-shared/modules/loot-editor/reference-viewer.service';
 import { ReferenceLootTemplate } from '@keira-types/reference-loot-template.type';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
