@@ -1,15 +1,18 @@
-<div class="content-block" *ngIf="!!referenceLootRows">
+<div class="content-block text-center" *ngIf="!!referenceLootRows">
 
-  Reference <strong>{{ referenceId }}</strong>
-  <i
+  <span class="h6">
+    Referenced loot <strong>{{ referenceId }}</strong> (read-only) <i
     class="fas fa-info-circle ml-1" [placement]="'auto'"
-    [tooltip]="'Showing the content of this reference_loot_template in read-only mode. To edit reference loots, use the Reference Loot Editor'"
+    [tooltip]="'Showing the content of this reference_loot_template in read-only mode. To edit edit it, open it using the Reference Loot Editor'"
   ></i>
+  </span>
+
+  <hr>
 
   <div class="row">
     <div class="col-12">
       <ngx-datatable
-        class="bootstrap table table-striped text-center datatable-select datatable-icon-list"
+        class="bootstrap table table-striped text-center datatable-select datatable-icon-list mb-0"
         [rows]="referenceLootRows"
         [headerHeight]="DTCFG.headerHeight"
         [footerHeight]="DTCFG.footerHeight"
