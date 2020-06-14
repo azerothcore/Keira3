@@ -1,5 +1,11 @@
 <div class="content-block" *ngIf="!!referenceLootRows">
 
+  Reference <strong>{{ referenceId }}</strong>
+  <i
+    class="fas fa-info-circle ml-1" [placement]="'auto'"
+    [tooltip]="'Showing the content of this reference_loot_template in read-only mode. To edit reference loots, use the Reference Loot Editor'"
+  ></i>
+
   <div class="row">
     <div class="col-12">
       <ngx-datatable

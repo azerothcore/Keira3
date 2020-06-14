@@ -5,6 +5,7 @@ import { ReferenceViewerComponent } from './reference-viewer.component';
 import { ReferenceViewerService } from '@keira-shared/modules/reference-viewer/reference-viewer.service';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { IconModule } from '@keira-shared/modules/icon/icon.module';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 
 
@@ -14,7 +15,8 @@ import { IconModule } from '@keira-shared/modules/icon/icon.module';
   imports: [
     CommonModule,
     NgxDatatableModule,
-    IconModule
+    IconModule,
+    TooltipModule
   ],
   providers: [ReferenceViewerService],
 })

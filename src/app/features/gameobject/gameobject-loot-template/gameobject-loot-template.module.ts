@@ -15,6 +15,7 @@ import { GameobjectLootTemplateService } from './gameobject-loot-template.servic
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { IconModule } from '@keira-shared/modules/icon/icon.module';
 import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
+import { ReferenceViewerModule } from '@keira-shared/modules/reference-viewer/reference-viewer.module';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
     NgxDatatableModule,
     IconModule,
     EditorButtonsModule,
+    ReferenceViewerModule,
   ],
   exports: [
     GameobjectLootTemplateComponent,
