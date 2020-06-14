@@ -7,7 +7,7 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { ReferenceLootTemplate } from '@keira-types/reference-loot-template.type';
 import { TableRow } from '@keira-types/general';
 
-fdescribe('ReferenceViewerService', () => {
+describe('ReferenceViewerService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
