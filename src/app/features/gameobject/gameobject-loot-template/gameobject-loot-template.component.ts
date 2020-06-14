@@ -4,14 +4,14 @@ import { MysqlError } from 'mysql';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectLootTemplate } from '@keira-types/gameobject-loot-template.type';
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
-import { LootTemplateComponent } from '@keira-abstract/components/editors/loot-template/loot-template.component';
+import { LootTemplateIdComponent } from '@keira-abstract/components/editors/loot-template/loot-template-id.component';
 
 @Component({
   selector: 'keira-gameobject-loot-template',
   templateUrl: './gameobject-loot-template.component.html',
   styleUrls: ['./gameobject-loot-template.component.scss']
 })
-export class GameobjectLootTemplateComponent extends LootTemplateComponent<GameobjectLootTemplate> implements OnInit {
+export class GameobjectLootTemplateComponent extends LootTemplateIdComponent<GameobjectLootTemplate> implements OnInit {
 
   private _type: number;
   get type(): number { return this._type; }

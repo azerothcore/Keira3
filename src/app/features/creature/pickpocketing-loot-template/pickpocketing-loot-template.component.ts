@@ -3,14 +3,14 @@ import { Component } from '@angular/core';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { PickpocketingLootTemplate } from '@keira-types/pickpocketing-loot-template.type';
 import { PickpocketingLootTemplateService } from './pickpocketing-loot-template.service';
-import { LootTemplateComponent } from '@keira-abstract/components/editors/loot-template/loot-template.component';
+import { LootTemplateIdComponent } from '@keira-abstract/components/editors/loot-template/loot-template-id.component';
 
 @Component({
   selector: 'keira-pickpocketing-loot-template',
   templateUrl: '../../../shared/abstract/components/editors/loot-template/loot-template.component.html',
   styleUrls: ['../../../shared/abstract/components/editors/loot-template/loot-template.component.scss']
 })
-export class PickpocketingLootTemplateComponent extends LootTemplateComponent<PickpocketingLootTemplate> {
+export class PickpocketingLootTemplateComponent extends LootTemplateIdComponent<PickpocketingLootTemplate> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
