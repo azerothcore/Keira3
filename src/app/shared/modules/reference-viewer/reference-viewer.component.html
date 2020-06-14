@@ -1,1 +1,41 @@
-<p>reference-viewer works!</p>
+<div class="content-block" *ngIf="!!referenceLootRows">
+
+  <div class="row">
+    <div class="col-12">
+      <ngx-datatable
+        class="bootstrap table table-striped text-center datatable-select datatable-icon-list"
+        [rows]="referenceLootRows"
+        [headerHeight]="DTCFG.headerHeight"
+        [footerHeight]="DTCFG.footerHeight"
+        [columnMode]="DTCFG.columnMode"
+        [rowHeight]="DTCFG.rowHeightWithIcon"
+        [selectionType]="DTCFG.selectionType"
+      >
+        <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false"></ngx-datatable-column>
+        <ngx-datatable-column [minWidth]="42" [maxWidth]="42" [sortable]="false">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <keira-icon [itemId]="row.Item"></keira-icon>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Item" prop="Item" [minWidth]="80"></ngx-datatable-column>
+        <ngx-datatable-column name="Name" [minWidth]="200">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ queryService.getItemNameById(row.Item) | async }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Reference" prop="Reference"></ngx-datatable-column>
+        <ngx-datatable-column name="Chance" prop="Chance"></ngx-datatable-column>
+        <ngx-datatable-column name="QuestRequired" prop="QuestRequired"></ngx-datatable-column>
+        <ngx-datatable-column name="LootMode" prop="LootMode"></ngx-datatable-column>
+        <ngx-datatable-column name="GroupId" prop="GroupId"></ngx-datatable-column>
+        <ngx-datatable-column name="MinCount" prop="MinCount"></ngx-datatable-column>
+        <ngx-datatable-column name="MaxCount" prop="MaxCount"></ngx-datatable-column>
+      </ngx-datatable>
+
+    </div>
+  </div>
+</div>
+
+<ng-container *ngIf="!!referenceLootRows && !!nestedReferenceIds && referenceLootRows.length > 0">
+  <keira-reference-viewer *ngFor="let id of nestedReferenceIds" [referenceId]="id"></keira-reference-viewer>
+</ng-container>
