@@ -7,11 +7,11 @@ import {
   DISENCHANT_LOOT_TEMPLATE_TABLE,
   DisenchantLootTemplate,
 } from '@keira-types/disenchant-loot-template.type';
-import { LootEditorService } from '@keira-abstract/service/editors/loot-editor.service';
+import { LootEditorIdService } from '@keira-abstract/service/editors/loot-editor-id.service';
 import { DISENCHANT_TEMPLATE_LOOT_ID, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_TABLE } from '@keira-types/item-template.type';
 
 @Injectable()
-export class DisenchantLootTemplateService extends LootEditorService<DisenchantLootTemplate> {
+export class DisenchantLootTemplateService extends LootEditorIdService<DisenchantLootTemplate> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

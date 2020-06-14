@@ -7,7 +7,7 @@ import {
   GAMEOBJECT_LOOT_TEMPLATE_TABLE,
   GameobjectLootTemplate
 } from '@keira-types/gameobject-loot-template.type';
-import { LootEditorService } from '@keira-abstract/service/editors/loot-editor.service';
+import { LootEditorIdService } from '@keira-abstract/service/editors/loot-editor-id.service';
 import {
   GAMEOBJECT_TEMPLATE_ID, GAMEOBJECT_TEMPLATE_LOOT_ID, GAMEOBJECT_TEMPLATE_TYPE,
   GAMEOBJECT_TEMPLATE_TABLE
@@ -15,7 +15,7 @@ import {
 import { Observable } from 'rxjs';
 
 @Injectable()
-export class GameobjectLootTemplateService extends LootEditorService<GameobjectLootTemplate> {
+export class GameobjectLootTemplateService extends LootEditorIdService<GameobjectLootTemplate> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

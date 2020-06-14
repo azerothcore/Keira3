@@ -7,7 +7,8 @@ import { Class } from '@keira-types/general';
 import { HandlerService } from '../handlers/handler.service';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
 
-export abstract class LootEditorService<T extends LootTemplate> extends MultiRowEditorService<T> {
+// Extended only by the loot tables that require a template loot id
+export abstract class LootEditorIdService<T extends LootTemplate> extends MultiRowEditorService<T> {
   get entityTemplateTable(): string { return this._entityTemplateTable; }
   get entityTemplateLootField(): string { return this._entityTemplateLootField; }
 

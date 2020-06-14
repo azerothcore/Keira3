@@ -7,7 +7,7 @@ import { of } from 'rxjs';
 
 import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
-import { LootEditorService } from './loot-editor.service';
+import { LootEditorIdService } from './loot-editor-id.service';
 import { CreatureLootTemplate } from '@keira-types/creature-loot-template.type';
 import { CreatureLootTemplateService } from '../../../../features/creature/creature-loot-template/creature-loot-template.service';
 import { CreatureHandlerService } from '../../../../features/creature/creature-handler.service';
@@ -15,7 +15,7 @@ import { SaiCreatureHandlerService } from '../../../../features/creature/sai-cre
 
 
 describe('LootEditorService', () => {
-  let service: LootEditorService<CreatureLootTemplate>;
+  let service: LootEditorIdService<CreatureLootTemplate>;
 
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
