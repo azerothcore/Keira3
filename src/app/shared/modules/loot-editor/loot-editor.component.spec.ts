@@ -3,8 +3,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { LootEditorComponent } from './loot-editor.component';
 
 describe('LootEditorComponent', () => {
-  let component: LootEditorComponent;
-  let fixture: ComponentFixture<LootEditorComponent>;
+  let component: LootEditorComponent<any>;
+  let fixture: ComponentFixture<LootEditorComponent<any>>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
