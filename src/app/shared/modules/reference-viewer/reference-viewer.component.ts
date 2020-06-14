@@ -1,4 +1,5 @@
 import { Component, Input, OnChanges } from '@angular/core';
+
 import { ReferenceViewerService } from '@keira-shared/modules/reference-viewer/reference-viewer.service';
 import { ReferenceLootTemplate } from '@keira-types/reference-loot-template.type';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
@@ -25,7 +26,8 @@ export class ReferenceViewerComponent extends SubscriptionHandler implements OnC
     super();
   }
 
-  ngOnChanges() {
+  ngOnChanges(): void {
+    console.log('***************************** qui');
     this.referenceLootRows = null;
     this.nestedReferenceIds = [];
 

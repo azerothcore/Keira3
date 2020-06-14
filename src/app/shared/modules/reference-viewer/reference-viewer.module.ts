@@ -10,6 +10,7 @@ import { IconModule } from '@keira-shared/modules/icon/icon.module';
 
 @NgModule({
   declarations: [ReferenceViewerComponent],
+  exports: [ReferenceViewerComponent],
   imports: [
     CommonModule,
     NgxDatatableModule,

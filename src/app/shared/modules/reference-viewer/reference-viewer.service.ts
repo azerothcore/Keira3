@@ -11,7 +11,7 @@ export class ReferenceViewerService {
 
   getReferenceById(referenceId: number): Observable<ReferenceLootTemplate[]> {
     return this.queryService.query<ReferenceLootTemplate>(
-      `SELECT * FROM reference_loot WHERE Entry = ${referenceId}`
+      `SELECT * FROM reference_loot_template WHERE Entry = ${referenceId}`
     );
   }
 }

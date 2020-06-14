@@ -14,4 +14,15 @@ export abstract class LootTemplateComponent<T extends LootTemplate> extends Mult
     return this.WIKI_BASE_URL + 'loot_template';
   }
 
+  public get referenceIds(): number[] {
+    const referenceIds: number[] = [];
+
+    for (const row of this.editorService.newRows) {
+      if (row.Reference > 0) {
+        referenceIds.push(row.Reference);
+      }
+    }
+
+    return referenceIds;
+  }
 }

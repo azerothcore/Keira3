@@ -14,6 +14,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { CreatureLootTemplateService } from './creature-loot-template.service';
 import { IconModule } from '@keira-shared/modules/icon/icon.module';
 import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
+import { ReferenceViewerModule } from '@keira-shared/modules/reference-viewer/reference-viewer.module';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
     FlagsSelectorModule,
     IconModule,
     EditorButtonsModule,
+    ReferenceViewerModule,
   ],
   exports: [
     CreatureLootTemplateComponent,

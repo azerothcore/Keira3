@@ -34,7 +34,7 @@ fdescribe('ReferenceViewerService', () => {
       expect(result).toEqual(mockReferenceLoot);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy).toHaveBeenCalledWith(
-        `SELECT * FROM reference_loot WHERE Entry = ${referenceId}`
+        `SELECT * FROM reference_loot_template WHERE Entry = ${referenceId}`
       );
       done();
     });
