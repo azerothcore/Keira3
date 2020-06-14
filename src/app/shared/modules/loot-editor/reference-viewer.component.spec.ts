@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ReferenceViewerComponent } from './reference-viewer.component';
+import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.module';
 
 describe('ReferenceViewerComponent', () => {
   let component: ReferenceViewerComponent;
@@ -8,7 +9,7 @@ describe('ReferenceViewerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ReferenceViewerComponent ]
+      imports: [LootEditorModule],
     })
     .compileComponents();
   }));

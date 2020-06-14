@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LootEditorComponent } from './loot-editor.component';
+import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.module';
 
 describe('LootEditorComponent', () => {
   let component: LootEditorComponent<any>;
@@ -8,7 +9,7 @@ describe('LootEditorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LootEditorComponent ]
+      imports: [LootEditorModule],
     })
     .compileComponents();
   }));
