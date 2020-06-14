@@ -27,7 +27,6 @@ export class ReferenceViewerComponent extends SubscriptionHandler implements OnC
   }
 
   ngOnChanges(): void {
-    console.log('***************************** qui');
     this.referenceLootRows = null;
     this.nestedReferenceIds = [];
 

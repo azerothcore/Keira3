@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 import { DisenchantLootTemplateComponent } from './disenchant-loot-template.component';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -11,6 +12,7 @@ import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
     DisenchantLootTemplateComponent,
   ],
   imports: [
+    CommonModule,
     TooltipModule.forRoot(),
     LootEditorModule,
     TopBarModule,
