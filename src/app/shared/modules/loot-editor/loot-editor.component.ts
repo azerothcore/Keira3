@@ -9,6 +9,7 @@ import { DTCFG } from '@keira-config/datatable.config';
 @Component({
   selector: 'keira-loot-editor',
   templateUrl: './loot-editor.component.html',
+  styleUrls: ['./loot-editor.component.scss'],
 })
 export class LootEditorComponent<T extends LootTemplate> {
 
@@ -32,5 +33,9 @@ export class LootEditorComponent<T extends LootTemplate> {
     }
 
     return referenceIds;
+  }
+
+  isReference(row) {
+    return row.Reference !== 0;
   }
 }

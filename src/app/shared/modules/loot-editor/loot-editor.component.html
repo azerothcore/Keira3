@@ -68,7 +68,7 @@
           <label class="control-label" for="MinCount">MinCount</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'The minimum number of copies of the item that can drop in a single loot'"
+            [tooltip]="'The minimum number of copies of the item that can drop in a single loot. For references, this is ignored.'"
           ></i>
           <input [formControlName]="'MinCount'" id="MinCount" type="number" class="form-control form-control-sm">
         </div>
@@ -76,7 +76,7 @@
           <label class="control-label" for="MaxCount">MaxCount</label>
           <i
             class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'The maximum number of copies of the item that can drop in a single loot'"
+            [tooltip]="'The maximum number of copies of the item that can drop in a single loot. For references, this is the EXACT count value.'"
           ></i>
           <input [formControlName]="'MaxCount'" id="MaxCount" type="number" class="form-control form-control-sm">
         </div>
@@ -122,21 +122,34 @@
           </ngx-datatable-column>
           <ngx-datatable-column [minWidth]="42" [maxWidth]="42" [sortable]="false">
             <ng-template let-row="row" ngx-datatable-cell-template>
-              <keira-icon [itemId]="row.Item"></keira-icon>
+              <keira-icon *ngIf="!isReference(row)" [itemId]="row.Item"></keira-icon>
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column name="Item" prop="Item" [minWidth]="80"></ngx-datatable-column>
-          <ngx-datatable-column name="Name" [minWidth]="200">
+          <ngx-datatable-column name="Name" [minWidth]="200" [sortable]="false">
             <ng-template let-row="row" ngx-datatable-cell-template>
-              {{ editorService.queryService.getItemNameById(row.Item) | async }}
+              <span *ngIf="!isReference(row)">{{ editorService.queryService.getItemNameById(row.Item) | async }}</span>
+              <span *ngIf="isReference(row)" class="reference">REFERENCE</span>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="Reference" prop="Reference"></ngx-datatable-column>
+          <ngx-datatable-column name="Reference" prop="Reference">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <span [ngClass]="{ 'reference': isReference(row) }">{{ row.Reference }}</span>
+            </ng-template>
+          </ngx-datatable-column>
           <ngx-datatable-column name="Chance" prop="Chance"></ngx-datatable-column>
           <ngx-datatable-column name="QuestRequired" prop="QuestRequired"></ngx-datatable-column>
           <ngx-datatable-column name="LootMode" prop="LootMode"></ngx-datatable-column>
-          <ngx-datatable-column name="GroupId" prop="GroupId"></ngx-datatable-column>
-          <ngx-datatable-column name="MinCount" prop="MinCount"></ngx-datatable-column>
+          <ngx-datatable-column name="GroupId" prop="GroupId">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <span class="group-{{ row.GroupId }}">{{ row.GroupId }}</span>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="MinCount" prop="MinCount">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <span *ngIf="!isReference(row)">{{ row.MinCount }}</span>
+            </ng-template>
+          </ngx-datatable-column>
           <ngx-datatable-column name="MaxCount" prop="MaxCount"></ngx-datatable-column>
         </ngx-datatable>
 

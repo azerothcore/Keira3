@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReferenceViewerComponent } from './reference-viewer.component';
 import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.module';
 
-describe('ReferenceViewerComponent', () => {
+fdescribe('ReferenceViewerComponent', () => {
   let component: ReferenceViewerComponent;
   let fixture: ComponentFixture<ReferenceViewerComponent>;
 
@@ -11,7 +11,7 @@ describe('ReferenceViewerComponent', () => {
     TestBed.configureTestingModule({
       imports: [LootEditorModule],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

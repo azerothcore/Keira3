@@ -9,7 +9,7 @@ import { DTCFG } from '@keira-config/datatable.config';
 @Component({
   selector: 'keira-reference-viewer',
   templateUrl: './reference-viewer.component.html',
-  styleUrls: ['./reference-viewer.component.scss'],
+  styleUrls: ['./loot-editor.component.scss'],
 })
 export class ReferenceViewerComponent extends SubscriptionHandler implements OnChanges {
 
@@ -40,5 +40,9 @@ export class ReferenceViewerComponent extends SubscriptionHandler implements OnC
         }
       }),
     );
+  }
+
+  isReference(row) {
+    return row.Reference !== 0;
   }
 }
