@@ -69,7 +69,7 @@
     "conventional-changelog-cli": "2.0.34",
     "coveralls": "3.1.0",
     "cross-env": "7.0.2",
-    "electron": "8.3.1",
+    "electron": "8.3.2",
     "electron-builder": "22.7.0",
     "electron-reload": "1.5.0",
     "highlight.js": "9.18.1",
