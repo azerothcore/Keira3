@@ -30,7 +30,7 @@ export class ReferenceViewerComponent extends SubscriptionHandler implements OnC
     this.referenceLootRows = null;
     this.nestedReferenceIds = [];
 
-    this.subscriptions.push(this.service.getReferenceById(this.referenceId).subscribe((result: ReferenceLootTemplate[]) => {
+    this.subscriptions.push(this.service.getReferenceById(this.referenceId)?.subscribe((result: ReferenceLootTemplate[]) => {
         this.referenceLootRows = result;
 
         for (const referenceLootRow of this.referenceLootRows) {

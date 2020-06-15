@@ -1,30 +1,57 @@
 import { async, TestBed } from '@angular/core/testing';
+import { Component, ViewChild } from '@angular/core';
 
 import { ReferenceViewerComponent } from './reference-viewer.component';
 import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.module';
 import { PageObject } from '@keira-testing/page-object';
+import { ReferenceViewerService } from '@keira-shared/modules/loot-editor/reference-viewer.service';
+import { of } from 'rxjs';
+import { LootTemplate } from '@keira-types/loot-template.type';
 
-class ReferenceViewerComponentPage extends PageObject<ReferenceViewerComponent> {}
+class ReferenceViewerComponentPage extends PageObject<TestHostComponent> {
+  get referenceViewers() { return this.queryAll('keira-reference-viewer'); }
+}
 
-fdescribe('ReferenceViewerComponent', () => {
+@Component({
+  template: '<keira-reference-viewer [referenceId]="referenceId"></keira-reference-viewer>'
+})
+class TestHostComponent {
+  @ViewChild(ReferenceViewerComponent) child: ReferenceViewerComponent;
+  referenceId: number;
+}
+
+describe('ReferenceViewerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      declarations: [TestHostComponent, ReferenceViewerComponent],
       imports: [LootEditorModule],
     })
       .compileComponents();
   }));
 
   const setup = () => {
-    const fixture = TestBed.createComponent(ReferenceViewerComponent);
+    const fixture = TestBed.createComponent(TestHostComponent);
     const page = new ReferenceViewerComponentPage(fixture);
-    const component = fixture.componentInstance;
+    const host = fixture.componentInstance;
+    const service = TestBed.inject(ReferenceViewerService);
 
-    return { page, fixture, component };
+    return { page, fixture, host, service };
   };
 
-  it('should create', () => {
-    const { component } = setup();
-    expect(component).toBeTruthy();
+  it('should correctly show the nested references', () => {
+    const { page, host, fixture, service } = setup();
+    const id = 1234;
+    host.referenceId = id;
+    const mockLootRows: LootTemplate[] = [ new LootTemplate(), new LootTemplate(), new LootTemplate() ];
+    mockLootRows[0].Reference = 111;
+    mockLootRows[1].Reference = 222;
+    const getReferenceByIdSpy = spyOn(service, 'getReferenceById').and.returnValues(of(mockLootRows), of([]));
+
+    fixture.detectChanges();
+
+    expect(getReferenceByIdSpy).toHaveBeenCalledWith(id);
+    expect(getReferenceByIdSpy).toHaveBeenCalledTimes(2); // because of recursion 1 with mockLootRows, 1 with []
+    expect(page.referenceViewers.length).toEqual(2);
   });
 });
