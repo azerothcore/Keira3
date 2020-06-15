@@ -1,11 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, TestBed } from '@angular/core/testing';
 
 import { ReferenceViewerComponent } from './reference-viewer.component';
 import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.module';
 
 fdescribe('ReferenceViewerComponent', () => {
-  let component: ReferenceViewerComponent;
-  let fixture: ComponentFixture<ReferenceViewerComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -14,13 +12,15 @@ fdescribe('ReferenceViewerComponent', () => {
       .compileComponents();
   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ReferenceViewerComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  const setup = () => {
+    const fixture = TestBed.createComponent(ReferenceViewerComponent);
+    const component = fixture.componentInstance;
+
+    return { fixture, component };
+  };
 
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });

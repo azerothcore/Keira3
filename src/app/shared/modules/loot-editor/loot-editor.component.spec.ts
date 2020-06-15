@@ -1,11 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, TestBed } from '@angular/core/testing';
 
 import { LootEditorComponent } from './loot-editor.component';
 import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.module';
 
 fdescribe('LootEditorComponent', () => {
-  let component: LootEditorComponent<any>;
-  let fixture: ComponentFixture<LootEditorComponent<any>>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -14,13 +12,15 @@ fdescribe('LootEditorComponent', () => {
       .compileComponents();
   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(LootEditorComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  const setup = () => {
+    const fixture = TestBed.createComponent(LootEditorComponent);
+    const component = fixture.componentInstance;
+
+    return { fixture, component };
+  };
 
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });
