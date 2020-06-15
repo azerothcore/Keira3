@@ -24,18 +24,12 @@ export class LootEditorComponent<T extends LootTemplate> {
   }
 
   public get referenceIds(): number[] {
-    const referenceIds: number[] = [];
-
-    for (const row of this.editorService.newRows) {
-      if (row.Reference > 0) {
-        referenceIds.push(row.Reference);
-      }
-    }
-
-    return referenceIds;
+    return this.editorService.newRows
+      .filter(row => row.Reference > 0)
+      .map(row => row.Reference);
   }
 
-  isReference(row) {
+  isReference(row): boolean {
     return row.Reference !== 0;
   }
 }

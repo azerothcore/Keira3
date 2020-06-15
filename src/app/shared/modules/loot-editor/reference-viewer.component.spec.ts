@@ -1,11 +1,11 @@
 import { async, TestBed } from '@angular/core/testing';
 import { Component, ViewChild } from '@angular/core';
+import { of } from 'rxjs';
 
 import { ReferenceViewerComponent } from './reference-viewer.component';
 import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.module';
 import { PageObject } from '@keira-testing/page-object';
 import { ReferenceViewerService } from '@keira-shared/modules/loot-editor/reference-viewer.service';
-import { of } from 'rxjs';
 import { LootTemplate } from '@keira-types/loot-template.type';
 
 class ReferenceViewerComponentPage extends PageObject<TestHostComponent> {
