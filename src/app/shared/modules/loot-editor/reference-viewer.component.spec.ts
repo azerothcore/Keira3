@@ -51,7 +51,7 @@ describe('ReferenceViewerComponent', () => {
     fixture.detectChanges();
 
     expect(getReferenceByIdSpy).toHaveBeenCalledWith(id);
-    expect(getReferenceByIdSpy).toHaveBeenCalledTimes(2); // because of recursion 1 with mockLootRows, 1 with []
-    expect(page.referenceViewers.length).toEqual(2);
+    expect(getReferenceByIdSpy).toHaveBeenCalledTimes(3); // because of recursion 1 with mockLootRows, 1 with [], 1 undefined
+    expect(page.referenceViewers.length).toEqual(3);
   });
 });
