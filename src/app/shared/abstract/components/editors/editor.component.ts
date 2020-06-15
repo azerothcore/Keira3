@@ -8,7 +8,7 @@ import { SubscriptionHandler } from '../../../utils/subscription-handler/subscri
 
 export abstract class EditorComponent<T extends TableRow> extends SubscriptionHandler implements OnInit {
   public readonly WIKI_BASE_URL = WIKI_BASE_URL;
-  public get docUrl() {
+  public get docUrl(): string {
     return this.WIKI_BASE_URL + this.editorService.entityTable;
   }
 
