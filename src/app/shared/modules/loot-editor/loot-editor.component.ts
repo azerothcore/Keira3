@@ -18,7 +18,7 @@ export class LootEditorComponent<T extends LootTemplate> {
   public readonly LOOT_MODE = LOOT_MODE;
   public readonly DTCFG = DTCFG;
 
-  public get docUrl() {
+  public get docUrl(): string {
     // all loot tables have the same documentation page
     return WIKI_BASE_URL + 'loot_template';
   }
