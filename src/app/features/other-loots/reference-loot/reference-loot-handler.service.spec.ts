@@ -5,16 +5,11 @@ import { ReferenceLootHandlerService } from './reference-loot-handler.service';
 
 describe('ReferenceLootHandlerService', () => {
   beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      ReferenceLootHandlerService,
-    ],
+    imports: [RouterTestingModule],
+    providers: [ReferenceLootHandlerService],
   }));
 
   it('should be created', () => {
-    const service: ReferenceLootHandlerService = TestBed.inject(ReferenceLootHandlerService);
-    expect(service).toBeTruthy();
+    expect(TestBed.inject(ReferenceLootHandlerService)).toBeTruthy();
   });
 });

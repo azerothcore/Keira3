@@ -20,7 +20,6 @@ describe('SelectReferenceLootService', () => {
   }));
 
   it('should be created', () => {
-    const service: SelectReferenceLootService = TestBed.inject(SelectReferenceLootService);
-    expect(service).toBeTruthy();
+    expect(TestBed.inject(SelectReferenceLootService)).toBeTruthy();
   });
 });

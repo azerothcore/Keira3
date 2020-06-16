@@ -22,7 +22,6 @@ describe('ReferenceLootTemplateService', () => {
   }));
 
   it('should be created', () => {
-    const service: ReferenceLootTemplateService = TestBed.inject(ReferenceLootTemplateService);
-    expect(service).toBeTruthy();
+    expect(TestBed.inject(ReferenceLootTemplateService)).toBeTruthy();
   });
 });
