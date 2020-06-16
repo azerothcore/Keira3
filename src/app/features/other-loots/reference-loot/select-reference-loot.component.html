@@ -1,0 +1,55 @@
+<keira-top-bar [handler]="handlerService"></keira-top-bar>
+
+<div class="container-fluid">
+
+  <div class="content-block">
+    <keira-create
+      [entityTable]="entityTable"
+      [entityIdField]="entityIdField"
+      [customStartingId]="customStartingId"
+      [handlerService]="handlerService"
+      [queryService]="queryService"
+    ></keira-create>
+  </div>
+
+  <div class="content-block">
+    <p class="lead">Select existing</p>
+    <form [formGroup]="selectService.queryForm" class="mb-2">
+      <div class="row">
+        <ng-container [formGroup]="selectService.fields">
+          <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <input [formControlName]="'Entry'" type="number" class="form-control form-control-sm" id="search-id" placeholder="Entry">
+          </div>
+        </ng-container>
+        <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Limit">
+        </div>
+        <div class="mb-2 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <keira-search-button [searchService]="selectService"></keira-search-button>
+        </div>
+      </div>
+      <code [highlight]="selectService.query"></code>
+    </form>
+
+    <div *ngIf="selectService.rows">
+
+      <ngx-datatable
+        class="bootstrap table table-striped text-center datatable-select"
+        [rows]="selectService.rows"
+        [headerHeight]="DTCFG.headerHeight"
+        [footerHeight]="DTCFG.footerHeight"
+        [columnMode]="DTCFG.columnMode"
+        [rowHeight]="DTCFG.rowHeight"
+        [limit]="DTCFG.limit"
+        [selectionType]="DTCFG.selectionType"
+        (select)='selectService.onSelect($event)'
+      >
+        <ngx-datatable-column name="Entry" prop="Entry" [minWidth]="100">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.Entry }}
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+  </div>
+</div>
