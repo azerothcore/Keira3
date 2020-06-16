@@ -18,7 +18,7 @@ import { ConditionsHandlerService } from '../../features/conditions/conditions-h
 import { ReferenceLootHandlerService } from '../../features/other-loots/reference-loot/reference-loot-handler.service';
 import { SpellLootHandlerService } from '../../features/other-loots/spell-loot/spell-loot-handler.service';
 import { FishingLootHandlerService } from '../../features/other-loots/fishing-loot/fishing-loot-handler.service';
-import { MailLootHandlerService } from '../../features/other-loots/mail-loot/spell-loot-handler.service';
+import { MailLootHandlerService } from '../../features/other-loots/mail-loot/mail-loot-handler.service';
 
 describe('MainWindowComponent', () => {
   let component: MainWindowComponent;

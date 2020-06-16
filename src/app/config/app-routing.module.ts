@@ -73,9 +73,9 @@ import { SelectSpellLootComponent } from '../features/other-loots/spell-loot/sel
 import { SelectFishingLootComponent } from '../features/other-loots/fishing-loot/select-fishing-loot.component';
 import { FishingLootTemplateComponent } from '../features/other-loots/fishing-loot/fishing-loot-template.component';
 import { FishingLootHandlerService } from '../features/other-loots/fishing-loot/fishing-loot-handler.service';
-import { SelectMailLootComponent } from '../features/other-loots/mail-loot/select-spell-loot.component';
-import { MailLootTemplateComponent } from '../features/other-loots/mail-loot/spell-loot-template.component';
-import { MailLootHandlerService } from '../features/other-loots/mail-loot/spell-loot-handler.service';
+import { SelectMailLootComponent } from '../features/other-loots/mail-loot/select-mail-loot.component';
+import { MailLootTemplateComponent } from '../features/other-loots/mail-loot/mail-loot-template.component';
+import { MailLootHandlerService } from '../features/other-loots/mail-loot/mail-loot-handler.service';
 
 const routes: Routes = [
   {
