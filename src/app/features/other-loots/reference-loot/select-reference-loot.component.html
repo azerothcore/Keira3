@@ -35,7 +35,7 @@
 
       <ngx-datatable
         class="bootstrap table table-striped text-center datatable-select"
-        style="width: 200px"
+        style="width: 500px"
         [rows]="selectService.rows"
         [headerHeight]="DTCFG.headerHeight"
         [footerHeight]="DTCFG.footerHeight"
@@ -45,9 +45,9 @@
         [selectionType]="DTCFG.selectionType"
         (select)='selectService.onSelect($event)'
       >
-        <ngx-datatable-column name="Entry" prop="Entry" [minWidth]="100">
+        <ngx-datatable-column name="Entry" prop="Entry" [minWidth]="500">
           <ng-template let-row="row" ngx-datatable-cell-template>
-            {{ row.Entry }}
+            {{ entityTable }} #{{ row.Entry }}
           </ng-template>
         </ngx-datatable-column>
       </ngx-datatable>

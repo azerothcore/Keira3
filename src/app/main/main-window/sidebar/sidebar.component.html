@@ -304,6 +304,29 @@
             </div>
           </li>
 
+          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.otherLoot === 'down' }">
+            <a (click)="toggleState('otherLoot')">
+              <i class="fa fa-coins"></i>
+              <span>Other Loots</span>
+            </a>
+            <div class="sidebar-submenu" [@slide]="menuStates.otherLoot">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'other-loots/select-reference'">
+                    Select Reference Loot
+                  </a>
+                </li>
+                <ng-container *ngIf="referenceLootHandlerService.selected">
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'other-loots/reference'">
+                      Reference Loot Template <keira-unsaved-icon *ngIf="referenceLootHandlerService.isUnsaved"></keira-unsaved-icon>
+                    </a>
+                  </li>
+                </ng-container>
+              </ul>
+            </div>
+          </li>
+
           <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.gossip === 'down' }">
             <a (click)="toggleState('gossip')">
               <i class="fa fa-comments"></i>

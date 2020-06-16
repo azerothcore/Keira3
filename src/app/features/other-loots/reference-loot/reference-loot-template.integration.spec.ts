@@ -85,11 +85,11 @@ describe('ReferenceLootTemplate integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isReferenceLootTemplateUnsaved).toBe(false);
+      expect(handlerService.isUnsaved).toBe(false);
       page.addNewRow();
-      expect(handlerService.isReferenceLootTemplateUnsaved).toBe(true);
+      expect(handlerService.isUnsaved).toBe(true);
       page.deleteRow();
-      expect(handlerService.isReferenceLootTemplateUnsaved).toBe(false);
+      expect(handlerService.isUnsaved).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {
