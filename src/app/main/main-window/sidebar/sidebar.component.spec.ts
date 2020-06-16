@@ -21,7 +21,7 @@ import { ConditionsHandlerService } from '../../../features/conditions/condition
 import { ReferenceLootHandlerService } from '../../../features/other-loots/reference-loot/reference-loot-handler.service';
 import { SpellLootHandlerService } from '../../../features/other-loots/spell-loot/spell-loot-handler.service';
 import { FishingLootHandlerService } from '../../../features/other-loots/fishing-loot/fishing-loot-handler.service';
-import { MailLootHandlerService } from '../../../features/other-loots/mail-loot/spell-loot-handler.service';
+import { MailLootHandlerService } from '../../../features/other-loots/mail-loot/mail-loot-handler.service';
 
 class SidebarComponentPage extends PageObject<SidebarComponent> {
   get toggleSidebarBtn() { return this.query<HTMLButtonElement>('.sidebar-button'); }
