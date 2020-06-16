@@ -18,6 +18,7 @@ import { GameobjectHandlerService } from '../../../features/gameobject/gameobjec
 import { SaiGameobjectHandlerService } from '../../../features/gameobject/sai-gameobject-handler.service';
 import { GossipHandlerService } from '../../../features/gossip/gossip-handler.service';
 import { ConditionsHandlerService } from '../../../features/conditions/conditions-handler.service';
+import { ReferenceLootHandlerService } from '../../../features/other-loots/reference-loot/reference-loot-handler.service';
 
 class SidebarComponentPage extends PageObject<SidebarComponent> {
   get toggleSidebarBtn() { return this.query<HTMLButtonElement>('.sidebar-button'); }
@@ -48,6 +49,7 @@ describe('SidebarComponent', () => {
         SaiGameobjectHandlerService,
         GossipHandlerService,
         ConditionsHandlerService,
+        ReferenceLootHandlerService,
       ]
     })
     .compileComponents();
