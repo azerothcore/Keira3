@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { HandlerService } from '@keira-abstract/service/handlers/handler.service';
-import { ReferenceLootTemplate } from '@keira-types/creature-template.type';
-import { REFERENCE_LOOT_TEMPLATE_TABLE } from '@keira-types/reference-loot-template.type';
+import { REFERENCE_LOOT_TEMPLATE_TABLE, ReferenceLootTemplate } from '@keira-types/reference-loot-template.type';
 
 @Injectable()
 export class ReferenceLootHandlerService extends HandlerService<ReferenceLootTemplate> {
@@ -19,7 +18,7 @@ export class ReferenceLootHandlerService extends HandlerService<ReferenceLootTem
     protected router: Router,
   ) {
     super(
-      'creature/creature-template',
+      'other-loots/reference',
       router,
     );
   }

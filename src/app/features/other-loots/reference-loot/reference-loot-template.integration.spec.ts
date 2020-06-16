@@ -7,8 +7,8 @@ import { ReferenceLootTemplateComponent } from './reference-loot-template.compon
 import { ReferenceLootTemplateModule } from './reference-loot-template.module';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { ReferenceLootTemplate } from '@keira-types/reference-loot-template.type';
-import { ItemHandlerService } from '../item-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
+import { ReferenceLootHandlerService } from './reference-loot-handler.service';
 
 class ReferenceLootTemplatePage extends MultiRowEditorPageObject<ReferenceLootTemplateComponent> {}
 
@@ -17,7 +17,7 @@ describe('ReferenceLootTemplate integration tests', () => {
   let fixture: ComponentFixture<ReferenceLootTemplateComponent>;
   let queryService: MysqlQueryService;
   let querySpy: Spy;
-  let handlerService: ItemHandlerService;
+  let handlerService: ReferenceLootHandlerService;
   let page: ReferenceLootTemplatePage;
 
   const id = 1234;
@@ -37,14 +37,14 @@ describe('ReferenceLootTemplate integration tests', () => {
         RouterTestingModule,
       ],
       providers: [
-        ItemHandlerService,
+        ReferenceLootHandlerService,
       ]
     })
       .compileComponents();
   }));
 
   function setup(creatingNew: boolean) {
-    handlerService = TestBed.inject(ItemHandlerService);
+    handlerService = TestBed.inject(ReferenceLootHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 

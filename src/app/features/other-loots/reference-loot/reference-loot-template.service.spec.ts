@@ -6,7 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { ReferenceLootTemplateService } from './reference-loot-template.service';
-import { ItemHandlerService } from '../item-handler.service';
+import { ReferenceLootHandlerService } from './reference-loot-handler.service';
 
 describe('ReferenceLootTemplateService', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -16,7 +16,7 @@ describe('ReferenceLootTemplateService', () => {
     providers: [
       { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
       { provide: ToastrService, useValue: instance(MockedToastrService) },
-      ItemHandlerService,
+      ReferenceLootHandlerService,
       ReferenceLootTemplateService,
     ]
   }));

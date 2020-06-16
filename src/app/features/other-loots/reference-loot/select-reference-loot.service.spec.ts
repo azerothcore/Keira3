@@ -5,8 +5,9 @@ import { instance } from 'ts-mockito';
 import { SelectReferenceLootService } from './select-reference-loot.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
+import { ReferenceLootHandlerService } from './reference-loot-handler.service';
 
-describe('SelectCreatureService', () => {
+describe('SelectReferenceLootService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       RouterTestingModule,
@@ -14,6 +15,7 @@ describe('SelectCreatureService', () => {
     providers: [
       { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
       SelectReferenceLootService,
+      ReferenceLootHandlerService,
     ],
   }));
 
