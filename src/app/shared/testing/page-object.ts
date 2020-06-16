@@ -147,7 +147,6 @@ export abstract class PageObject<ComponentType> {
   getDatatableRowExternal(rowIndex: number, assert = true, datatableSelector?: string): HTMLElement {
     datatableSelector = this.getDefaultSelectorIfNull(datatableSelector);
     const element: HTMLElement = document.querySelector(this.getDatatableRowSelector(datatableSelector, rowIndex));
-    console.log(this.getDatatableRowSelector(datatableSelector, rowIndex));
     if (assert) {
       expect(element).toBeTruthy(`Unable to find row ${rowIndex} of ${datatableSelector}`);
     }
