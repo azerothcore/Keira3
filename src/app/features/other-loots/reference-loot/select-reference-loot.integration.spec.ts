@@ -16,7 +16,7 @@ class SelectReferenceLootComponentPage extends SelectPageObject<SelectReferenceL
   ID_FIELD = 'Entry';
 }
 
-xdescribe('SelectReferenceLoot integration tests', () => {
+describe('SelectReferenceLoot integration tests', () => {
   let component: SelectReferenceLootComponent;
   let fixture: ComponentFixture<SelectReferenceLootComponent>;
   let selectService: SelectReferenceLootService;
@@ -64,7 +64,7 @@ xdescribe('SelectReferenceLoot integration tests', () => {
       'SELECT MAX(Entry) AS max FROM reference_loot_template;'
     );
     expect(page.queryWrapper.innerText).toContain(
-      'SELECT * FROM `reference_loot_template` LIMIT 50'
+      'SELECT `Entry` FROM `reference_loot_template` GROUP BY Entry LIMIT 50'
     );
   });
 
@@ -106,8 +106,8 @@ xdescribe('SelectReferenceLoot integration tests', () => {
   for (const { id, entry, limit, expectedQuery } of [
     {
       id: 1, entry: 1200, limit: '100', expectedQuery:
-        'SELECT * FROM `reference_loot_template` ' +
-        'WHERE (`Entry` LIKE \'%1200%\') LIMIT 100'
+        'SELECT `Entry` FROM `reference_loot_template` ' +
+        'WHERE (`Entry` LIKE \'%1200%\') GROUP BY Entry LIMIT 100'
     },
   ]) {
     it(`searching an existing entity should correctly work [${id}]`, () => {
@@ -137,19 +137,19 @@ xdescribe('SelectReferenceLoot integration tests', () => {
 
     page.clickElement(page.searchBtn);
 
-    const row0 = page.getDatatableRowExternal(0);
-    const row1 = page.getDatatableRowExternal(1);
-    const row2 = page.getDatatableRowExternal(2);
+    const row0 = page.getDatatableRow(0);
+    const row1 = page.getDatatableRow(1);
+    const row2 = page.getDatatableRow(2);
 
     expect(row0.innerText).toContain(String(results[0].Entry));
     expect(row1.innerText).toContain(String(results[1].Entry));
     expect(row2.innerText).toContain(String(results[2].Entry));
 
-    page.clickElement(page.getDatatableCellExternal(1, 1));
+    page.clickElement(page.getDatatableCell(0, 0));
 
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith(['other-loots/reference']);
     // Note: this is different than in other editors
-    expect(page.topBar.innerText).toContain(`Editing: reference_loot_template (${results[1].Entry})`);
+    expect(page.topBar.innerText).toContain(`Editing: reference_loot_template (${results[0].Entry})`);
   });
 });
