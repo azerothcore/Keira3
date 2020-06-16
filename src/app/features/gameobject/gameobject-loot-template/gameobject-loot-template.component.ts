@@ -9,7 +9,6 @@ import { LootTemplateIdComponent } from '@keira-abstract/components/editors/loot
 @Component({
   selector: 'keira-gameobject-loot-template',
   templateUrl: './gameobject-loot-template.component.html',
-  styleUrls: ['./gameobject-loot-template.component.scss']
 })
 export class GameobjectLootTemplateComponent extends LootTemplateIdComponent<GameobjectLootTemplate> implements OnInit {
 

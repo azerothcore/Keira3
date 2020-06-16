@@ -64,6 +64,9 @@ import { SaiFullEditorComponent } from '../features/smart-scripts/sai-full-edito
 import { SaiGameobjectComponent } from '../features/gameobject/sai-gameobject/sai-gameobject.component';
 import { ConditionsComponent } from '../features/conditions/edit-conditions/conditions.component';
 import { SqlEditorComponent } from '../features/sql-editor/sql-editor.component';
+import { SelectReferenceLootComponent } from '../features/other-loots/reference-loot/select-reference-loot.component';
+import { ReferenceLootTemplateComponent } from '../features/other-loots/reference-loot/reference-loot-template.component';
+import { ReferenceLootHandlerService } from '../features/other-loots/reference-loot/reference-loot-handler.service';
 
 const routes: Routes = [
   {
@@ -272,6 +275,20 @@ const routes: Routes = [
         path: 'milling-loot-template',
         component: MillingLootTemplateComponent,
         canActivate: [ItemHandlerService],
+      },
+    ]
+  },
+  {
+    path: 'other-loots',
+    children: [
+      {
+        path: 'select-reference',
+        component: SelectReferenceLootComponent,
+      },
+      {
+        path: 'reference',
+        component: ReferenceLootTemplateComponent,
+        canActivate: [ReferenceLootHandlerService],
       },
     ]
   },
