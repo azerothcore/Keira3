@@ -14,7 +14,6 @@ import { ReferenceLootHandlerService } from './reference-loot-handler.service';
 @Component({
   selector: 'keira-select-creature',
   templateUrl: './select-reference-loot.component.html',
-  styleUrls: ['./select-creature.component.scss']
 })
 export class SelectReferenceLootComponent extends SelectComponent<ReferenceLootTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

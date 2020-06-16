@@ -7,7 +7,7 @@ import { ReferenceLootHandlerService } from './reference-loot-handler.service';
 
 @Component({
   selector: 'keira-reference-loot-template',
-  templateUrl: '../item-loot-template/item-loot-template.component.html',
+  templateUrl: '../../../shared/abstract/components/editors/loot-template/loot-template.component.html',
 })
 export class ReferenceLootTemplateComponent extends LootTemplateComponent<ReferenceLootTemplate> {
 
