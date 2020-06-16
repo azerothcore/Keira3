@@ -1,8 +1,7 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
-import Spy = jasmine.Spy;
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SelectReferenceLootComponent } from './select-reference-loot.component';
@@ -17,13 +16,6 @@ class SelectReferenceLootComponentPage extends SelectPageObject<SelectReferenceL
 }
 
 describe('SelectReferenceLoot integration tests', () => {
-  let component: SelectReferenceLootComponent;
-  let fixture: ComponentFixture<SelectReferenceLootComponent>;
-  let selectService: SelectReferenceLootService;
-  let page: SelectReferenceLootComponentPage;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let navigateSpy: Spy;
 
   const value = 1200;
 
@@ -40,23 +32,27 @@ describe('SelectReferenceLoot integration tests', () => {
       .compileComponents();
   }));
 
-  beforeEach(() => {
-    navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of(
-      [{ max: 1 }]
+  function setup() {
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of(
+      [{max: 1}]
     ));
 
-    selectService = TestBed.inject(SelectReferenceLootService);
+    const selectService = TestBed.inject(SelectReferenceLootService);
 
-    fixture = TestBed.createComponent(SelectReferenceLootComponent);
-    page = new SelectReferenceLootComponentPage(fixture);
-    component = fixture.componentInstance;
+    const fixture = TestBed.createComponent(SelectReferenceLootComponent);
+    const page = new SelectReferenceLootComponentPage(fixture);
+    const component = fixture.componentInstance;
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
-  });
+
+    return { component, fixture, selectService, page, queryService, querySpy, navigateSpy };
+  }
 
   it('should correctly initialise', async () => {
+    const { fixture, page, querySpy, component } = setup();
+
     await fixture.whenStable();
     expect(page.createInput.value).toEqual(`${component.customStartingId}`);
     page.expectNewEntityFree();
@@ -69,6 +65,8 @@ describe('SelectReferenceLoot integration tests', () => {
   });
 
   it('should correctly behave when inserting and selecting free entry', async () => {
+    const { fixture, page, querySpy, navigateSpy } = setup();
+
     await fixture.whenStable();
     querySpy.calls.reset();
     querySpy.and.returnValue(of([]));
@@ -90,9 +88,11 @@ describe('SelectReferenceLoot integration tests', () => {
   });
 
   it('should correctly behave when inserting an existing entity', async () => {
+    const { fixture, page, querySpy } = setup();
+
     await fixture.whenStable();
     querySpy.calls.reset();
-    querySpy.and.returnValue(of(['mock value']));
+    querySpy.and.returnValue(of([{}]));
 
     page.setInputValue(page.createInput, value);
 
@@ -111,6 +111,8 @@ describe('SelectReferenceLoot integration tests', () => {
     },
   ]) {
     it(`searching an existing entity should correctly work [${id}]`, () => {
+      const { page, querySpy } = setup();
+
       querySpy.calls.reset();
       if (entry) {
         page.setInputValue(page.searchIdInput, entry);
@@ -127,6 +129,8 @@ describe('SelectReferenceLoot integration tests', () => {
   }
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
+    const { navigateSpy, page, querySpy } = setup();
+
     const results: Partial<ReferenceLootTemplate>[] = [
       { Entry: 1 },
       { Entry: 2 },

@@ -1,7 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import Spy = jasmine.Spy;
 
 import { ReferenceLootTemplateComponent } from './reference-loot-template.component';
 import { ReferenceLootTemplateModule } from './reference-loot-template.module';
@@ -13,13 +12,6 @@ import { ReferenceLootHandlerService } from './reference-loot-handler.service';
 class ReferenceLootTemplatePage extends MultiRowEditorPageObject<ReferenceLootTemplateComponent> {}
 
 describe('ReferenceLootTemplate integration tests', () => {
-  let component: ReferenceLootTemplateComponent;
-  let fixture: ComponentFixture<ReferenceLootTemplateComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: ReferenceLootHandlerService;
-  let page: ReferenceLootTemplatePage;
-
   const id = 1234;
 
   const originalRow0 = new ReferenceLootTemplate();
@@ -44,29 +36,30 @@ describe('ReferenceLootTemplate integration tests', () => {
   }));
 
   function setup(creatingNew: boolean) {
-    handlerService = TestBed.inject(ReferenceLootHandlerService);
+    const handlerService = TestBed.inject(ReferenceLootHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of());
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of());
     spyOn(queryService, 'queryValue').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(
       creatingNew ? [] : [originalRow0, originalRow1, originalRow2]
     ));
 
-    fixture = TestBed.createComponent(ReferenceLootTemplateComponent);
-    component = fixture.componentInstance;
-    page = new ReferenceLootTemplatePage(fixture);
+    const fixture = TestBed.createComponent(ReferenceLootTemplateComponent);
+    const page = new ReferenceLootTemplatePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+
+    return { page, querySpy, handlerService };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
 
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.formError.hidden).toBe(true);
@@ -85,6 +78,7 @@ describe('ReferenceLootTemplate integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
+      const { page, handlerService } = setup(true);
       expect(handlerService.isUnsaved).toBe(false);
       page.addNewRow();
       expect(handlerService.isUnsaved).toBe(true);
@@ -93,6 +87,7 @@ describe('ReferenceLootTemplate integration tests', () => {
     });
 
     it('adding new rows and executing the query should correctly work', () => {
+      const { page, querySpy } = setup(true);
       const expectedQuery = 'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0, 1, 2));\n' +
         'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
         '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
@@ -115,6 +110,7 @@ describe('ReferenceLootTemplate integration tests', () => {
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.expectDiffQueryToContain(
         'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
@@ -174,9 +170,9 @@ describe('ReferenceLootTemplate integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
 
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
@@ -191,6 +187,7 @@ describe('ReferenceLootTemplate integration tests', () => {
     });
 
     it('deleting rows should correctly work', () => {
+      const { page } = setup(false);
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.expectDiffQueryToContain(
@@ -225,6 +222,7 @@ describe('ReferenceLootTemplate integration tests', () => {
     });
 
     it('editing existing rows should correctly work', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(1);
       page.setInputValueById('LootMode', 1);
 
@@ -248,6 +246,7 @@ describe('ReferenceLootTemplate integration tests', () => {
     });
 
     it('combining add, edit and delete should correctly work', () => {
+      const { page } = setup(false);
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
 
@@ -276,6 +275,7 @@ describe('ReferenceLootTemplate integration tests', () => {
     });
 
     it('using the same row id for multiple rows should correctly show an error', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(2);
       page.setInputValueById('Item', 0);
 
