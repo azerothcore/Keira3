@@ -12,6 +12,7 @@ import { ConditionsHandlerService } from '../../../features/conditions/condition
 import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
 import { LocationService } from '@keira-shared/services/location.service';
 import { ReferenceLootHandlerService } from '../../../features/other-loots/reference-loot/reference-loot-handler.service';
+import { SpellLootHandlerService } from '../../../features/other-loots/spell-loot/spell-loot-handler.service';
 
 const animationTime = 200;
 
@@ -54,6 +55,7 @@ export class SidebarComponent {
     public conditionsHandlerService: ConditionsHandlerService,
     public saiHandlerService: SaiHandlerService,
     public referenceLootHandlerService: ReferenceLootHandlerService,
+    public spellLootHandlerService: SpellLootHandlerService,
     private locationService: LocationService,
   ) { }
 

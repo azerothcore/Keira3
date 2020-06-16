@@ -67,6 +67,9 @@ import { SqlEditorComponent } from '../features/sql-editor/sql-editor.component'
 import { SelectReferenceLootComponent } from '../features/other-loots/reference-loot/select-reference-loot.component';
 import { ReferenceLootTemplateComponent } from '../features/other-loots/reference-loot/reference-loot-template.component';
 import { ReferenceLootHandlerService } from '../features/other-loots/reference-loot/reference-loot-handler.service';
+import { SpellLootTemplateComponent } from '../features/other-loots/spell-loot/spell-loot-template.component';
+import { SpellLootHandlerService } from '../features/other-loots/spell-loot/spell-loot-handler.service';
+import { SelectSpellLootComponent } from '../features/other-loots/spell-loot/select-spell-loot.component';
 
 const routes: Routes = [
   {
@@ -289,6 +292,15 @@ const routes: Routes = [
         path: 'reference',
         component: ReferenceLootTemplateComponent,
         canActivate: [ReferenceLootHandlerService],
+      },
+      {
+        'path': 'select-spell',
+        'component': SelectSpellLootComponent,
+      },
+      {
+        path: 'spell',
+        component: SpellLootTemplateComponent,
+        canActivate: [SpellLootHandlerService],
       },
     ]
   },
