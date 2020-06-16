@@ -8,13 +8,11 @@ import { SAI_ID_FIELDS, SAI_SEARCH_FIELDS, SAI_TABLE, SmartScripts } from '../..
   providedIn: 'root'
 })
 export class SaiSearchService extends SearchService<SmartScripts> {
-  selectFields = SAI_ID_FIELDS;
-  groupFields = SAI_ID_FIELDS;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public readonly queryService: MysqlQueryService,
   ) {
-    super(queryService, SAI_TABLE, SAI_SEARCH_FIELDS);
+    super(queryService, SAI_TABLE, SAI_SEARCH_FIELDS, SAI_ID_FIELDS, SAI_ID_FIELDS);
   }
 }

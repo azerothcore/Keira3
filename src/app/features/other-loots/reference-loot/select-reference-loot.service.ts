@@ -8,6 +8,7 @@ import { LOOT_TEMPLATE_ID } from '@keira-types/loot-template.type';
 
 @Injectable()
 export class SelectReferenceLootService extends SelectService<ReferenceLootTemplate> {
+
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public readonly queryService: MysqlQueryService,
@@ -19,6 +20,8 @@ export class SelectReferenceLootService extends SelectService<ReferenceLootTempl
       REFERENCE_LOOT_TEMPLATE_TABLE,
       LOOT_TEMPLATE_ID,
       null,
+      [LOOT_TEMPLATE_ID],
+      [LOOT_TEMPLATE_ID],
       [LOOT_TEMPLATE_ID],
     );
   }
