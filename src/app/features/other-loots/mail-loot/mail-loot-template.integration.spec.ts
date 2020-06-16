@@ -66,7 +66,7 @@ describe('MailLootTemplate integration tests', () => {
       expect(page.addNewRowBtn.disabled).toBe(false);
       expect(page.deleteSelectedRowBtn.disabled).toBe(true);
       expect(page.getInputById('Item').disabled).toBe(true);
-      expect(page.getInputById('Mail').disabled).toBe(true);
+      expect(page.getInputById('Reference').disabled).toBe(true);
       expect(page.getInputById('Chance').disabled).toBe(true);
       expect(page.getInputById('QuestRequired').disabled).toBe(true);
       expect(page.getInputById('LootMode').disabled).toBe(true);
@@ -89,7 +89,7 @@ describe('MailLootTemplate integration tests', () => {
     it('adding new rows and executing the query should correctly work', () => {
       const { page, querySpy } = setup(true);
       const expectedQuery = 'DELETE FROM `mail_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0, 1, 2));\n' +
-        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Mail`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
         '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
         '(1234, 1, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
@@ -114,13 +114,13 @@ describe('MailLootTemplate integration tests', () => {
       page.addNewRow();
       page.expectDiffQueryToContain(
         'DELETE FROM `mail_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
-        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Mail`, `Chance`, `QuestRequired`, `LootMode`, ' +
+        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\');'
       );
       page.expectFullQueryToContain(
         'DELETE FROM `mail_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Mail`, `Chance`, `QuestRequired`, `LootMode`, ' +
+        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\');'
       );
@@ -128,13 +128,13 @@ describe('MailLootTemplate integration tests', () => {
       page.setInputValueById('Chance', '1');
       page.expectDiffQueryToContain(
         'DELETE FROM `mail_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
-        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Mail`, `Chance`, `QuestRequired`, `LootMode`, ' +
+        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 1, 0, 1, 0, 1, 1, \'\');'
       );
       page.expectFullQueryToContain(
         'DELETE FROM `mail_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Mail`, `Chance`, `QuestRequired`, `LootMode`, ' +
+        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 1, 0, 1, 0, 1, 1, \'\');'
       );
@@ -142,13 +142,13 @@ describe('MailLootTemplate integration tests', () => {
       page.setInputValueById('QuestRequired', '2');
       page.expectDiffQueryToContain(
         'DELETE FROM `mail_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
-        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Mail`, `Chance`, `QuestRequired`, `LootMode`, ' +
+        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 1, 2, 1, 0, 1, 1, \'\');'
       );
       page.expectFullQueryToContain(
         'DELETE FROM `mail_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Mail`, `Chance`, `QuestRequired`, `LootMode`, ' +
+        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 1, 2, 1, 0, 1, 1, \'\');'
       );
@@ -156,13 +156,13 @@ describe('MailLootTemplate integration tests', () => {
       page.setInputValueById('Item', '123');
       page.expectDiffQueryToContain(
         'DELETE FROM `mail_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (123));\n' +
-        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Mail`, `Chance`, `QuestRequired`, `LootMode`, ' +
+        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 123, 0, 1, 2, 1, 0, 1, 1, \'\');'
       );
       page.expectFullQueryToContain(
         'DELETE FROM `mail_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Mail`, `Chance`, `QuestRequired`, `LootMode`, ' +
+        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 123, 0, 1, 2, 1, 0, 1, 1, \'\');'
       );
@@ -178,7 +178,7 @@ describe('MailLootTemplate integration tests', () => {
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain('' +
         'DELETE FROM `mail_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Mail`, `Chance`, `QuestRequired`, `LootMode`, ' +
+        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
         '(1234, 1, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
@@ -195,7 +195,7 @@ describe('MailLootTemplate integration tests', () => {
       );
       page.expectFullQueryToContain(
         'DELETE FROM `mail_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Mail`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
         '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
         '(1234, 2, 0, 100, 0, 1, 0, 1, 1, \'\');'
@@ -208,7 +208,7 @@ describe('MailLootTemplate integration tests', () => {
       );
       page.expectFullQueryToContain(
         'DELETE FROM `mail_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Mail`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
         '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\');'
       );
@@ -231,13 +231,13 @@ describe('MailLootTemplate integration tests', () => {
 
       page.expectDiffQueryToContain(
         'DELETE FROM `mail_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (2));\n' +
-        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Mail`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
         '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 2, 0, 100, 0, 1, 2, 1, 1, \'\');'
       );
       page.expectFullQueryToContain(
         'DELETE FROM `mail_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Mail`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
         '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
         '(1234, 1, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
@@ -259,14 +259,14 @@ describe('MailLootTemplate integration tests', () => {
 
       page.expectDiffQueryToContain(
         'DELETE FROM `mail_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2, 3));\n' +
-        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Mail`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
         '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 1, 0, 10, 0, 1, 0, 1, 1, \'\'),\n' +
         '(1234, 3, 0, 100, 0, 1, 0, 1, 1, \'\');'
       );
       page.expectFullQueryToContain(
         'DELETE FROM `mail_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Mail`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+        'INSERT INTO `mail_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
         '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
         '(1234, 1, 0, 10, 0, 1, 0, 1, 1, \'\'),\n' +
