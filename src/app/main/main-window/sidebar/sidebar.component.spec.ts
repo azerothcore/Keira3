@@ -19,6 +19,9 @@ import { SaiGameobjectHandlerService } from '../../../features/gameobject/sai-ga
 import { GossipHandlerService } from '../../../features/gossip/gossip-handler.service';
 import { ConditionsHandlerService } from '../../../features/conditions/conditions-handler.service';
 import { ReferenceLootHandlerService } from '../../../features/other-loots/reference-loot/reference-loot-handler.service';
+import { SpellLootHandlerService } from '../../../features/other-loots/spell-loot/spell-loot-handler.service';
+import { FishingLootHandlerService } from '../../../features/other-loots/fishing-loot/fishing-loot-handler.service';
+import { MailLootHandlerService } from '../../../features/other-loots/mail-loot/spell-loot-handler.service';
 
 class SidebarComponentPage extends PageObject<SidebarComponent> {
   get toggleSidebarBtn() { return this.query<HTMLButtonElement>('.sidebar-button'); }
@@ -50,6 +53,9 @@ describe('SidebarComponent', () => {
         GossipHandlerService,
         ConditionsHandlerService,
         ReferenceLootHandlerService,
+        SpellLootHandlerService,
+        FishingLootHandlerService,
+        MailLootHandlerService,
       ]
     })
     .compileComponents();

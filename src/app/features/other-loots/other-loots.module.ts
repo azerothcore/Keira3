@@ -2,10 +2,12 @@ import { NgModule } from '@angular/core';
 
 import { ReferenceLootTemplateModule } from './reference-loot/reference-loot-template.module';
 import { SpellLootTemplateModule } from './spell-loot/spell-loot-template.module';
+import { FishingLootTemplateModule } from './fishing-loot/fishing-loot-template.module';
 
 const modules = [
   ReferenceLootTemplateModule,
   SpellLootTemplateModule,
+  FishingLootTemplateModule,
 ];
 
 @NgModule({
