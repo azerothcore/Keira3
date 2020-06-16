@@ -7,8 +7,7 @@ import { LootTemplateIdComponent } from '@keira-abstract/components/editors/loot
 
 @Component({
   selector: 'keira-creature-loot-template',
-  templateUrl: '../../../shared/abstract/components/editors/loot-template/loot-template.component.html',
-  styleUrls: ['../../../shared/abstract/components/editors/loot-template/loot-template.component.scss']
+  templateUrl: '../../../shared/abstract/components/editors/loot-template/loot-template-id.component.html',
 })
 export class CreatureLootTemplateComponent extends LootTemplateIdComponent<CreatureLootTemplate> {
 

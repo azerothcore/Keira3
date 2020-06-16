@@ -7,8 +7,7 @@ import { LootTemplateComponent } from '@keira-abstract/components/editors/loot-t
 
 @Component({
   selector: 'keira-milling-loot-template',
-  templateUrl: '../item-loot-template/item-loot-template.component.html',
-  styleUrls: ['../item-loot-template/item-loot-template.component.scss']
+  templateUrl: '../../../shared/abstract/components/editors/loot-template/loot-template.component.html',
 })
 export class MillingLootTemplateComponent extends LootTemplateComponent<MillingLootTemplate> {
 
