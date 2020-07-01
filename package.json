@@ -37,7 +37,7 @@
     "ngx-toastr": "12.1.0",
     "ngx-ui-switch": "9.0.2",
     "serialize-javascript": "4.0.0",
-    "sqlite3": "4.2.0",
+    "sqlite3": "5.0.0",
     "tslib": "2.0.0",
     "acorn": "7.3.1"
   },
