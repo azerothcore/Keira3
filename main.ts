@@ -180,7 +180,7 @@ try {
     ctxMenu.append(new MenuItem({ type: 'separator' }))
     ctxMenu.append(new MenuItem({ role: 'toggleDevTools' }))
 
-    win.webContents.on('context-menu', function(){
+    win.webContents.on('context-menu', function () {
       ctxMenu.popup(win)
     })
   });
