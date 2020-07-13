@@ -9,12 +9,12 @@ import { ElectronService } from './electron.service';
 import { MockedElectronService } from '../testing/mocks';
 
 class MockMySql {
-  createConnection() {}
+  createConnection() { }
 }
 
 class MockConnection {
-  query() {}
-  connect() {}
+  query() { }
+  connect() { }
 }
 
 describe('MysqlService', () => {
@@ -25,7 +25,7 @@ describe('MysqlService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
       MysqlService,
-      { provide : ElectronService, useValue: instance(MockedElectronService) },
+      { provide: ElectronService, useValue: instance(MockedElectronService) },
     ]
   }));
 
@@ -42,7 +42,7 @@ describe('MysqlService', () => {
     (service as any)._connection = null;
     expect(service.getConnectionState()).toBeNull();
 
-    const connection: Partial<Connection> = { state:  'connected' };
+    const connection: Partial<Connection> = { state: 'connected' };
     (service as any)._connection = connection;
     expect(service.getConnectionState()).toEqual(connection.state);
   });
@@ -234,7 +234,7 @@ describe('MysqlService', () => {
       spyOn<any>(service, 'reconnect');
       service['_connection'] = { on: jasmine.createSpy() } as any;
 
-      service['reconnectCallback']({ code: 'mock-error'} as unknown as MysqlError);
+      service['reconnectCallback']({ code: 'mock-error' } as unknown as MysqlError);
 
       expect(service['reconnect']).toHaveBeenCalledTimes(1);
       expect(service['_reconnecting']).toBe(true);

@@ -40,7 +40,7 @@ describe('MysqlQueryService', () => {
 
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
-      { provide : MysqlService, useValue: instance(MockedMysqlService) },
+      { provide: MysqlService, useValue: instance(MockedMysqlService) },
     ]
   }));
 
@@ -158,7 +158,7 @@ describe('MysqlQueryService', () => {
   });
 
   it('selectAll() should correctly work', async(() => {
-    const data: TableRow[] = [{ key: 'value'}];
+    const data: TableRow[] = [{ key: 'value' }];
     const querySpy = spyOn(service, 'query').and.returnValue(of(data));
 
     service.selectAll('my_ac', 'param', 'value').subscribe((res) => {
@@ -170,9 +170,9 @@ describe('MysqlQueryService', () => {
   }));
 
   it('selectAllMultipleKeys() should correctly work', async(() => {
-    const data: TableRow[] = [{ key: 'value'}];
+    const data: TableRow[] = [{ key: 'value' }];
     const querySpy = spyOn(service, 'query').and.returnValue(of(data));
-    const row: TableRow = { k1: 1, k2: 2};
+    const row: TableRow = { k1: 1, k2: 2 };
 
     service.selectAllMultipleKeys('my_ac', row).subscribe((res) => {
       expect(res).toEqual(data);
@@ -196,7 +196,7 @@ describe('MysqlQueryService', () => {
 
   it('getTimedActionlists() should correctly work', async(() => {
     const id = 1234;
-    const data: SmartScripts[] = [{ entryorguid: 1111} as SmartScripts];
+    const data: SmartScripts[] = [{ entryorguid: 1111 } as SmartScripts];
     const querySpy = spyOn(service, 'query').and.returnValue(of(data));
 
     service.getTimedActionlists(id).subscribe((res) => {
@@ -224,17 +224,17 @@ describe('MysqlQueryService', () => {
 
         for (const { newRow, expectedQuery } of [
           {
-            newRow: { entry: 1234, name: 'Helias', subname: 'AC-Dev', attribute1: 25, attribute2: 4 } ,
+            newRow: { entry: 1234, name: 'Helias', subname: 'AC-Dev', attribute1: 25, attribute2: 4 },
             expectedQuery:
               'UPDATE `my_table` SET `name` = \'Helias\' WHERE (`entry` = 1234);',
           },
           {
-            newRow: { entry: 1234, name: 'Shin', subname: 'AC-Web-Dev', attribute1: 25, attribute2: 14 } ,
+            newRow: { entry: 1234, name: 'Shin', subname: 'AC-Web-Dev', attribute1: 25, attribute2: 14 },
             expectedQuery:
               'UPDATE `my_table` SET `subname` = \'AC-Web-Dev\', `attribute2` = 14 WHERE (`entry` = 1234);',
           },
           {
-            newRow: { entry: 1234, name: 'Helias', subname: 'AC-Web-Dev', attribute1: 25, attribute2: 14 } ,
+            newRow: { entry: 1234, name: 'Helias', subname: 'AC-Web-Dev', attribute1: 25, attribute2: 14 },
             expectedQuery:
               'UPDATE `my_table` SET `name` = \'Helias\', `subname` = \'AC-Web-Dev\', `attribute2` = 14 WHERE (`entry` = 1234);',
           },
@@ -317,7 +317,7 @@ describe('MysqlQueryService', () => {
         });
 
         it('should correctly work when removing rows', () => {
-          const newRows = [ { ...myRows[0] }, { ...myRows[2] }]; // delete second row
+          const newRows = [{ ...myRows[0] }, { ...myRows[2] }]; // delete second row
 
           expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, myRows, newRows)).toEqual(
             'DELETE' + ' FROM `my_table` WHERE (`pk1` = 1234) AND (`pk2` IN (2));\n'
@@ -325,7 +325,7 @@ describe('MysqlQueryService', () => {
         });
 
         it('should correctly work when removing, editing and adding rows all together', () => {
-          const newRows = [ { ...myRows[0] }, { ...myRows[2] }]; // delete second row
+          const newRows = [{ ...myRows[0] }, { ...myRows[2] }]; // delete second row
           newRows[1].name = 'Kalhac2'; // edit row
           newRows.push({ pk1: 1234, pk2: 4, name: 'Yehonal', attribute1: 99, attribute2: 0 }); // add a new row
 
@@ -384,7 +384,7 @@ describe('MysqlQueryService', () => {
         });
 
         it('should correctly work when removing rows', () => {
-          const newRows = [ { ...myRows[0] }, { ...myRows[2] }]; // delete second row
+          const newRows = [{ ...myRows[0] }, { ...myRows[2] }]; // delete second row
 
           expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, null, primaryKey2, myRows, newRows)).toEqual(
             'DELETE' + ' FROM `my_table` WHERE (`pk2` IN (2));\n'
@@ -392,7 +392,7 @@ describe('MysqlQueryService', () => {
         });
 
         it('should correctly work when removing, editing and adding rows all together', () => {
-          const newRows = [ { ...myRows[0] }, { ...myRows[2] }]; // delete second row
+          const newRows = [{ ...myRows[0] }, { ...myRows[2] }]; // delete second row
           newRows[1].name = 'Kalhac2'; // edit row
           newRows.push({ pk1: 1234, pk2: 4, name: 'Yehonal', attribute1: 99, attribute2: 0 }); // add a new row
 
@@ -458,7 +458,7 @@ describe('MysqlQueryService', () => {
         });
 
         it('should correctly work when removing rows', () => {
-          const newRows = [ { ...myComplexRows[0] }, { ...myComplexRows[2] }]; // delete second row
+          const newRows = [{ ...myComplexRows[0] }, { ...myComplexRows[2] }]; // delete second row
 
           expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryComplexKey1, primaryKey2, myComplexRows, newRows)).toEqual(
             'DELETE' + ' FROM `my_table` WHERE (`pk11` = 1234) AND (`pk12` = 5678) AND (`pk2` IN (2));\n'
@@ -466,7 +466,7 @@ describe('MysqlQueryService', () => {
         });
 
         it('should correctly work when removing, editing and adding rows all together', () => {
-          const newRows = [ { ...myComplexRows[0] }, { ...myComplexRows[2] }]; // delete second row
+          const newRows = [{ ...myComplexRows[0] }, { ...myComplexRows[2] }]; // delete second row
           newRows[1].name = 'Kalhac2'; // edit row
           newRows.push({ pk11: 1234, pk12: 5678, pk2: 4, name: 'Yehonal', attribute1: 99, attribute2: 0 }); // add a new row
 
@@ -545,7 +545,7 @@ describe('MysqlQueryService', () => {
       });
 
       it('should correctly work when removing rows', () => {
-        const newRows = [ { ...myRows[0] }, { ...myRows[2] }]; // delete second row
+        const newRows = [{ ...myRows[0] }, { ...myRows[2] }]; // delete second row
 
         expect(service.getDiffDeleteInsertOneKeyQuery(tableName, primaryKey, myRows, newRows)).toEqual(
           'DELETE' + ' FROM `my_table` WHERE (`entry` IN (2));\n'
@@ -553,7 +553,7 @@ describe('MysqlQueryService', () => {
       });
 
       it('should correctly work when removing, editing and adding rows all together', () => {
-        const newRows = [ { ...myRows[0] }, { ...myRows[2] }]; // delete second row
+        const newRows = [{ ...myRows[0] }, { ...myRows[2] }]; // delete second row
         newRows[1].name = 'Kalhac2'; // edit row
         newRows.push({ entry: 4, name: 'Yehonal', subname: 'AC-Dev', attribute1: 99, attribute2: 0 }); // add a new row
 
@@ -732,15 +732,21 @@ describe('MysqlQueryService', () => {
     });
 
     describe('getUpdateMultipleKeysQuery', () => {
-      for (const {id, currentRow, newRow, keys, query} of [
+      for (const { id, currentRow, newRow, keys, query } of [
         { id: 0, currentRow: {}, newRow: {}, keys: [], query: '' },
         { id: 1, currentRow: { k1: 1 }, newRow: { k1: 1 }, keys: ['k1'], query: '' },
-        { id: 2, currentRow: { k1: 1, k2: 2 }, newRow: { k1: 11, k2: 2 }, keys: ['k1', 'k2'],
-          query: 'UPDATE `my_table` SET `k1` = 11 WHERE (`k1` = 1) AND (`k2` = 2)' },
-        { id: 3, currentRow: { k1: 1, k2: 2, k3: 3, n1: 1 }, newRow: { k1: 1, k2: 2, k3: 3, n1: 11 }, keys: ['k1', 'k2', 'k3'],
-          query: 'UPDATE `my_table` SET `n1` = 11 WHERE (`k1` = 1) AND (`k2` = 2) AND (`k3` = 3)' },
-        { id: 4, currentRow: { k1: 1, k2: 2, k3: 3, n1: 1 }, newRow: { k1: 1, k2: 2, k3: 33, n1: 11 }, keys: ['k1', 'k2', 'k3'],
-          query: 'UPDATE `my_table` SET `k3` = 33, `n1` = 11 WHERE (`k1` = 1) AND (`k2` = 2) AND (`k3` = 3)' },
+        {
+          id: 2, currentRow: { k1: 1, k2: 2 }, newRow: { k1: 11, k2: 2 }, keys: ['k1', 'k2'],
+          query: 'UPDATE `my_table` SET `k1` = 11 WHERE (`k1` = 1) AND (`k2` = 2)'
+        },
+        {
+          id: 3, currentRow: { k1: 1, k2: 2, k3: 3, n1: 1 }, newRow: { k1: 1, k2: 2, k3: 3, n1: 11 }, keys: ['k1', 'k2', 'k3'],
+          query: 'UPDATE `my_table` SET `n1` = 11 WHERE (`k1` = 1) AND (`k2` = 2) AND (`k3` = 3)'
+        },
+        {
+          id: 4, currentRow: { k1: 1, k2: 2, k3: 3, n1: 1 }, newRow: { k1: 1, k2: 2, k3: 33, n1: 11 }, keys: ['k1', 'k2', 'k3'],
+          query: 'UPDATE `my_table` SET `k3` = 33, `n1` = 11 WHERE (`k1` = 1) AND (`k2` = 2) AND (`k3` = 3)'
+        },
       ]) {
         it(`should correctly generate the query [${id}]`, () => {
           expect(service.getUpdateMultipleKeysQuery(tableName, currentRow, newRow, keys)).toEqual(query);
@@ -749,7 +755,7 @@ describe('MysqlQueryService', () => {
     });
 
     describe('getDeleteMultipleKeysQuery', () => {
-      for (const {id, row, keys, query} of [
+      for (const { id, row, keys, query } of [
         { id: 0, row: {}, keys: [], query: 'DELETE FROM `my_table`' },
         { id: 1, row: { k1: 1 }, keys: ['k1'], query: 'DELETE FROM `my_table` WHERE (`k1` = 1)' },
         { id: 2, row: { k1: 1, k2: 2 }, keys: ['k1', 'k2'], query: 'DELETE FROM `my_table` WHERE (`k1` = 1) AND (`k2` = 2)' },
@@ -762,15 +768,19 @@ describe('MysqlQueryService', () => {
     });
 
     describe('getFullDeleteInsertMultipleKeysQuery', () => {
-      for (const {id, currentRow, newRow, keys, query} of [
-        { id: 1, currentRow: { k1: 1, n1: 33 }, newRow: { k1: 1, n1: 22 }, keys: ['k1'],
+      for (const { id, currentRow, newRow, keys, query } of [
+        {
+          id: 1, currentRow: { k1: 1, n1: 33 }, newRow: { k1: 1, n1: 22 }, keys: ['k1'],
           query: 'DELETE FROM `my_table` WHERE (`k1` = 1);\n' +
             'INSERT INTO `my_table` (`k1`, `n1`) VALUES\n' +
-            '(1, 22);\n' },
-        { id: 2, currentRow: { k1: 1, n1: 33 }, newRow: { k1: 2, n1: 22 }, keys: ['k1'],
+            '(1, 22);\n'
+        },
+        {
+          id: 2, currentRow: { k1: 1, n1: 33 }, newRow: { k1: 2, n1: 22 }, keys: ['k1'],
           query: 'DELETE FROM `my_table` WHERE (`k1` = 1);\n' +
             'INSERT INTO `my_table` (`k1`, `n1`) VALUES\n' +
-            '(2, 22);\n' },
+            '(2, 22);\n'
+        },
       ]) {
         it(`should correctly generate the query [${id}]`, () => {
           expect(service.getFullDeleteInsertMultipleKeysQuery(tableName, currentRow, newRow, keys)).toEqual(query);
@@ -782,7 +792,7 @@ describe('MysqlQueryService', () => {
   describe('queryValue()', () => {
     it('should correctly work', async () => {
       const value = 'mock result value';
-      spyOn(service, 'query').and.returnValue(of([ { v: value }]));
+      spyOn(service, 'query').and.returnValue(of([{ v: value }]));
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
 
       expect(await service.queryValueToPromise(query)).toEqual(value);
@@ -822,14 +832,14 @@ describe('MysqlQueryService', () => {
     });
 
     for (const test of [
-      { name: 'getCreatureNameById',     query: `SELECT name AS v FROM creature_template WHERE entry = ${id}` },
-      { name: 'getCreatureNameByGuid',   query: `SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id WHERE c.guid = ${guid}` },
-      { name: 'getGameObjectNameById',   query: `SELECT name AS v FROM gameobject_template WHERE entry = ${id}` },
+      { name: 'getCreatureNameById', query: `SELECT name AS v FROM creature_template WHERE entry = ${id}` },
+      { name: 'getCreatureNameByGuid', query: `SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id WHERE c.guid = ${guid}` },
+      { name: 'getGameObjectNameById', query: `SELECT name AS v FROM gameobject_template WHERE entry = ${id}` },
       { name: 'getGameObjectNameByGuid', query: `SELECT name AS v FROM gameobject_template AS gt INNER JOIN gameobject AS g ON gt.entry = g.id WHERE g.guid = ${guid}` },
-      { name: 'getQuestTitleById',       query: `SELECT LogTitle AS v FROM quest_template WHERE ID = ${id}` },
-      { name: 'getItemNameById',         query: `SELECT name AS v FROM item_template WHERE entry = ${id}` },
-      { name: 'getPrevQuestById',        query: `SELECT PrevQuestID AS v FROM quest_template_addon WHERE id = ${id}` },
-      { name: 'getItemByStartQuest',     query: `SELECT entry AS v FROM item_template WHERE startquest = ${id}` },
+      { name: 'getQuestTitleById', query: `SELECT LogTitle AS v FROM quest_template WHERE ID = ${id}` },
+      { name: 'getItemNameById', query: `SELECT name AS v FROM item_template WHERE entry = ${id}` },
+      { name: 'getPrevQuestById', query: `SELECT PrevQuestID AS v FROM quest_template_addon WHERE id = ${id}` },
+      { name: 'getItemByStartQuest', query: `SELECT entry AS v FROM item_template WHERE startquest = ${id}` },
       { name: 'getItemNameByStartQuest', query: `SELECT name AS v FROM item_template WHERE startquest = ${id}` },
     ]) {
       it(test.name, async () => {

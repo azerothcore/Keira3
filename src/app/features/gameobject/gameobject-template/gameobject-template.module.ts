@@ -31,4 +31,4 @@ import { GameobjectTemplateService } from './gameobject-template.service';
     GameobjectTemplateService,
   ],
 })
-export class GameobjectTemplateModule {}
+export class GameobjectTemplateModule { }

@@ -10,7 +10,7 @@ import { ProspectingLootTemplate } from '@keira-types/prospecting-loot-template.
 import { ItemHandlerService } from '../item-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 
-class ProspectingLootTemplatePage extends MultiRowEditorPageObject<ProspectingLootTemplateComponent> {}
+class ProspectingLootTemplatePage extends MultiRowEditorPageObject<ProspectingLootTemplateComponent> { }
 
 describe('ProspectingLootTemplate integration tests', () => {
   let component: ProspectingLootTemplateComponent;

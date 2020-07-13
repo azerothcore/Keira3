@@ -20,7 +20,7 @@ import { SqlEditorModule } from './features/sql-editor/sql-editor.module';
 import { OtherLootsModule } from './features/other-loots/other-loots.module';
 
 @NgModule({
-  declarations: [ AppComponent ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -40,6 +40,6 @@ import { OtherLootsModule } from './features/other-loots/other-loots.module';
     ConditionsModule,
     SmartScriptsModule,
   ],
-  bootstrap: [ AppComponent ]
+  bootstrap: [AppComponent]
 })
 export class AppModule { }

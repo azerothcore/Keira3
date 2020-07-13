@@ -19,7 +19,7 @@ class LootEditorComponentPage extends PageObject<TestHostComponent> {
 })
 class TestHostComponent {
   @ViewChild(LootEditorComponent) child: LootEditorComponent<any>;
-  constructor(public editorService: CreatureLootTemplateService) {}
+  constructor(public editorService: CreatureLootTemplateService) { }
 }
 
 describe('LootEditorComponent', () => {
@@ -50,7 +50,7 @@ describe('LootEditorComponent', () => {
 
   it('should correctly show the references', () => {
     const { page, fixture, editorService } = setup();
-    const mockLootRows: LootTemplate[] = [ new LootTemplate(), new LootTemplate(), new LootTemplate() ];
+    const mockLootRows: LootTemplate[] = [new LootTemplate(), new LootTemplate(), new LootTemplate()];
     mockLootRows[0].Reference = 111;
     mockLootRows[1].Reference = 222;
     spyOnProperty(editorService, 'newRows').and.returnValue(mockLootRows);

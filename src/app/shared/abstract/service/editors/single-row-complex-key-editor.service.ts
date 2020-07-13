@@ -37,7 +37,7 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
     );
   }
 
-  protected disableEntityIdField() {}
+  protected disableEntityIdField() { }
 
   protected selectQuery(): Observable<T[]> {
     return this.queryService.selectAllMultipleKeys<T>(this._entityTable, JSON.parse(this.handlerService.selected));

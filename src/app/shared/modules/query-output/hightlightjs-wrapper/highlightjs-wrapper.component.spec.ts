@@ -22,7 +22,7 @@ describe('HighlightjsWrapperComponent', () => {
         HighlightModule.forRoot(highlightOptions),
       ],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

@@ -42,7 +42,7 @@ export class ItemPreviewService {
     return this.sqliteQueryService.query(`SELECT * FROM item_limit_category WHERE id = ${id}`).toPromise();
   }
 
-  private getGemEnchantmentIdById(id: number | string): Promise<string|number> {
+  private getGemEnchantmentIdById(id: number | string): Promise<string | number> {
     return this.sqliteQueryService.queryValue(`SELECT gemEnchantmentId AS v FROM items WHERE id = ${id};`).toPromise();
   }
 
@@ -140,7 +140,7 @@ export class ItemPreviewService {
       return ITEM_CONSTANTS.trigger[1] + ITEM_CONSTANTS.statType[type].replace('%d', `<!--rtg${type}-->${value}`);
     }
 
-     // rating-Bonuses
+    // rating-Bonuses
     const js = `&nbsp;<small>(${this.setRatingLevel(level, type, value)})</small>`;
     return ITEM_CONSTANTS.trigger[1] + ITEM_CONSTANTS.statType[type].replace('%d', `<!--rtg${type}-->${value}${js}`);
   }
@@ -190,25 +190,25 @@ export class ItemPreviewService {
       return Math.round((s.d + s.h / 24) / 364) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.d / 364) === 1 && !s.h ? 'sg' : 'pl'][0];
     }
     if (tmp > 1 && !(tmp % 30)) {                       // whole month
-      return Math.round((s.d + s.h / 24) /  30) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.d /  30) === 1 && !s.h ? 'sg' : 'pl'][1];
+      return Math.round((s.d + s.h / 24) / 30) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.d / 30) === 1 && !s.h ? 'sg' : 'pl'][1];
     }
     if (tmp > 1 && !(tmp % 7)) {                        // whole weeks
-      return Math.round((s.d + s.h / 24) /   7) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.d / 7) === 1 && !s.h ? 'sg' : 'pl'][2];
+      return Math.round((s.d + s.h / 24) / 7) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.d / 7) === 1 && !s.h ? 'sg' : 'pl'][2];
     }
     if (s.d !== 0) {
-      return Math.round(s.d + s.h  /   24) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.d) === 1 && !s.h  ? 'sg' : 'pl'][3];
+      return Math.round(s.d + s.h / 24) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.d) === 1 && !s.h ? 'sg' : 'pl'][3];
     }
     if (s.h !== 0) {
-      return Math.round(s.h + s.m  /   60) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.h) === 1 && !s.m  ? 'sg' : 'pl'][4];
+      return Math.round(s.h + s.m / 60) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.h) === 1 && !s.m ? 'sg' : 'pl'][4];
     }
     if (s.m !== 0) {
-      return Math.round(s.m + s.s  /   60) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.m) === 1 && !s.s  ? 'sg' : 'pl'][5];
+      return Math.round(s.m + s.s / 60) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.m) === 1 && !s.s ? 'sg' : 'pl'][5];
     }
     if (s.s !== 0) {
       return Math.round(s.s + s.ms / 1000) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.s) === 1 && !s.ms ? 'sg' : 'pl'][6];
     }
     if (s.ms !== 0) {
-      return s.ms + ' ' + ITEM_CONSTANTS.timeUnits[ Math.abs(s.ms) === 1 ? 'sg' : 'pl'][7];
+      return s.ms + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.ms) === 1 ? 'sg' : 'pl'][7];
     }
 
     return '0 ' + ITEM_CONSTANTS.timeUnits.pl[6];
@@ -322,7 +322,7 @@ export class ItemPreviewService {
       }
     }
 
-      if (
+    if (
       /* istanbul ignore next */
       !!xCostData
       && xCostData.length > 0) {
@@ -337,8 +337,8 @@ export class ItemPreviewService {
           xCostDataArr[xCost.id] = xCost;
         }
       } else {
-      /* istanbul ignore next */
-      return [];
+        /* istanbul ignore next */
+        return [];
       }
     }
 
@@ -349,25 +349,25 @@ export class ItemPreviewService {
         for (const [m, vInfo] of Object.entries(vendor)) {
 
           let costs = [];
-        /* istanbul ignore else */
-        if (xCostDataArr[vInfo['extendedCost']] && Object.keys(xCostDataArr[vInfo['extendedCost']]).length > 0) {
+          /* istanbul ignore else */
+          if (xCostDataArr[vInfo['extendedCost']] && Object.keys(xCostDataArr[vInfo['extendedCost']]).length > 0) {
             costs = xCostDataArr[vInfo['extendedCost']];
           }
 
           const data = {
-            stock:      vInfo['maxcount'] ??
-            /* istanbul ignore next */
-            -1,
-            event:      vInfo['eventId'],
-            reqRating:  costs
-            ? costs['reqPersonalRating']
-            /* istanbul ignore next */
-            : 0,
+            stock: vInfo['maxcount'] ??
+              /* istanbul ignore next */
+              -1,
+            event: vInfo['eventId'],
+            reqRating: costs
+              ? costs['reqPersonalRating']
+              /* istanbul ignore next */
+              : 0,
             /* istanbul ignore next */
             reqBracket: costs
-            ? costs['reqArenaSlot']
-            /* istanbul ignore next */
-            : 0
+              ? costs['reqArenaSlot']
+              /* istanbul ignore next */
+              : 0
           };
 
           // hardcode arena(103) & honor(104)
@@ -381,7 +381,7 @@ export class ItemPreviewService {
 
           for (let i = 1; i < 6; i++) {
             if (costs['reqItemId' + i] /* && costs['reqItemId' + i].length > 0 */
-            && costs['itemCount' + i] && costs['itemCount' + i] > 0) {
+              && costs['itemCount' + i] && costs['itemCount' + i] > 0) {
               data[costs['reqItemId' + i]] = costs['itemCount' + i];
               cItems.push(costs['reqItemId' + i]);
             }
@@ -403,8 +403,8 @@ export class ItemPreviewService {
     }
 
     // convert items to currency if possible
-      /* istanbul ignore else */
-      if (!!cItems) {
+    /* istanbul ignore else */
+    if (!!cItems) {
 
       for (const [itemId, vendors] of Object.entries(itemz)) {
         for (const [npcId, costData] of Object.entries(vendors)) {
@@ -440,9 +440,9 @@ export class ItemPreviewService {
           // reqRating isn't really a cost .. so pass it by ref instead of return
           // use highest total value
           if (data[npcId] &&
-                costs['reqRating'] &&
-                /* istanbul ignore next */
-                (reqRating.length === 0 || (reqRating && reqRating[0] < costs['reqRating']))
+            costs['reqRating'] &&
+            /* istanbul ignore next */
+            (reqRating.length === 0 || (reqRating && reqRating[0] < costs['reqRating']))
           ) {
             reqRating = [costs['reqRating'], costs['reqBracket']];
           }
@@ -658,68 +658,68 @@ export class ItemPreviewService {
       .replace('%d', itemsName.length.toString())
       + '</span>';
 
-      // if require skill
-      if (!!itemsetAttr['skillId']) {
-        itemsetText += `<br>Requires ${await this.sqliteQueryService.getSkillNameById(itemsetAttr['skillId'])}`;
+    // if require skill
+    if (!!itemsetAttr['skillId']) {
+      itemsetText += `<br>Requires ${await this.sqliteQueryService.getSkillNameById(itemsetAttr['skillId'])}`;
 
-        if (!!itemsetAttr['skillLevel']) {
-          itemsetText += ` (${itemsetAttr['skillLevel']})`;
+      if (!!itemsetAttr['skillLevel']) {
+        itemsetText += ` (${itemsetAttr['skillLevel']})`;
+      }
+    }
+
+    // list pieces
+    itemsetText += `<br><div class="q0" style="padding-left: .6em">${itemsName.join('<br>')}</div>`;
+
+    // get bonuses
+    const setSpellsAndIdx = [];
+
+    for (let j = 1; j <= 8; j++) {
+      const spell = itemsetAttr['spell' + j];
+
+      if (!!spell) {
+        setSpellsAndIdx[spell] = j;
+      }
+    }
+
+    const setSpells = [];
+    if (setSpellsAndIdx && setSpellsAndIdx.length > 0) {
+      const spellsIDs = Object.keys(setSpellsAndIdx);
+      for (const s of spellsIDs) {
+        setSpells.push({
+          tooltip: await this.sqliteQueryService.getSpellDescriptionById(s),
+          entry: itemsetAttr['spell' + setSpellsAndIdx[s]],
+          bonus: itemsetAttr['bonus' + setSpellsAndIdx[s]],
+        });
+      }
+    }
+
+    // sort and list bonuses
+    let tmpBonus = '';
+    for (let i = 0; i < setSpells.length; i++) {
+      for (let j = i; j < setSpells.length; j++) {
+        if (setSpells[j]['bonus'] >= setSpells[i]['bonus']) {
+          continue;
         }
+
+        const tmp = setSpells[i];
+        setSpells[i] = setSpells[j];
+        setSpells[j] = tmp;
       }
 
-      // list pieces
-      itemsetText += `<br><div class="q0" style="padding-left: .6em">${itemsName.join('<br>')}</div>`;
-
-      // get bonuses
-      const setSpellsAndIdx = [];
-
-      for (let j = 1; j <= 8; j++) {
-        const spell = itemsetAttr['spell' + j];
-
-        if (!!spell) {
-          setSpellsAndIdx[spell] = j;
-        }
-      }
-
-      const setSpells = [];
-      if (setSpellsAndIdx && setSpellsAndIdx.length > 0) {
-        const spellsIDs = Object.keys(setSpellsAndIdx);
-        for (const s of spellsIDs) {
-          setSpells.push({
-            tooltip: await this.sqliteQueryService.getSpellDescriptionById(s),
-            entry: itemsetAttr['spell' + setSpellsAndIdx[s]],
-            bonus: itemsetAttr['bonus' + setSpellsAndIdx[s]],
-          });
-        }
-      }
-
-      // sort and list bonuses
-      let tmpBonus = '';
-      for (let i = 0; i < setSpells.length; i++) {
-        for (let j = i; j < setSpells.length; j++) {
-          if (setSpells[j]['bonus'] >= setSpells[i]['bonus']) {
-            continue;
-          }
-
-          const tmp = setSpells[i];
-          setSpells[i] = setSpells[j];
-          setSpells[j] = tmp;
-        }
-
-        const bonusText = setSpells[i]['bonus'] && setSpells[i]['tooltip']
+      const bonusText = setSpells[i]['bonus'] && setSpells[i]['tooltip']
         ? ITEM_CONSTANTS.setBonus
           .replace('%d', setSpells[i]['bonus'])
           .replace('%s', setSpells[i]['tooltip'])
         : '';
 
-        if (!!bonusText) {
-          tmpBonus += `<br><span>${bonusText}</span>`;
-        }
+      if (!!bonusText) {
+        tmpBonus += `<br><span>${bonusText}</span>`;
       }
+    }
 
-      if (tmpBonus !== '') {
-        itemsetText += `<span class="q0">${tmpBonus}</span>`;
-      }
+    if (tmpBonus !== '') {
+      itemsetText += `<span class="q0">${tmpBonus}</span>`;
+    }
 
     return itemsetText;
   }
@@ -754,9 +754,8 @@ export class ItemPreviewService {
         limit = limit[0];
 
         const index = limit && limit.isGem ? 'uniqueEquipped' : 'unique';
-        bondingText += `<br><!-- unique isGem -->${
-          ITEM_CONSTANTS[index][2].replace('%s', limit.name).replace('%d', limit.count)
-        }`;
+        bondingText += `<br><!-- unique isGem -->${ITEM_CONSTANTS[index][2].replace('%s', limit.name).replace('%d', limit.count)
+          }`;
       }
     }
 
@@ -784,7 +783,7 @@ export class ItemPreviewService {
         classTmpText += ITEM_CONSTANTS.weaponSubClass[subclass] ? `<th${textRight}>${ITEM_CONSTANTS.weaponSubClass[subclass]}</th>` : '';
       } else if (itemClass === ITEM_TYPE.AMMUNITION) {
         classTmpText += ITEM_CONSTANTS.projectileSubClass[subclass]
-         ? `<th${textRight}>${ITEM_CONSTANTS.projectileSubClass[subclass]}</th>`
+          ? `<th${textRight}>${ITEM_CONSTANTS.projectileSubClass[subclass]}</th>`
           : '';
       }
 
@@ -1040,17 +1039,17 @@ export class ItemPreviewService {
             switch (gemCndComparator) {
               case 2:                         // requires less <color> than (<value> || <comparecolor>) gems
               case 5:                         // requires at least <color> than (<value> || <comparecolor>) gems
-              vspfArgs = [
-                gemCndValue,
-                ITEM_CONSTANTS['gemColors'][gemCndColor - 1],
-              ];
-              break;
+                vspfArgs = [
+                  gemCndValue,
+                  ITEM_CONSTANTS['gemColors'][gemCndColor - 1],
+                ];
+                break;
               case 3:                         // requires more <color> than (<value> || <comparecolor>) gems
                 vspfArgs = [
                   ITEM_CONSTANTS['gemColors'][gemCndColor - 1],
                   ITEM_CONSTANTS['gemColors'][gemCndCmpColor - 1],
                 ];
-              break;
+                break;
               default:
                 break;
             }

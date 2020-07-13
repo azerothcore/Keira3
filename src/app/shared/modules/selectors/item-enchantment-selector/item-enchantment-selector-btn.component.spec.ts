@@ -9,9 +9,9 @@ describe('ItemEnchantmentSelectorBtnComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ ItemEnchantmentSelectorModule ],
+      imports: [ItemEnchantmentSelectorModule],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

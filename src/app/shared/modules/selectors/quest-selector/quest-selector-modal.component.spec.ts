@@ -15,13 +15,13 @@ describe('QuestSelectorModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ QuestSelectorModule ],
+      imports: [QuestSelectorModule],
       providers: [
         BsModalRef,
         { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
       ],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

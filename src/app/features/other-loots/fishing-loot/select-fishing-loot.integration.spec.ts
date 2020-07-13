@@ -36,7 +36,7 @@ describe('SelectFishingLoot integration tests', () => {
     const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     const queryService = TestBed.inject(MysqlQueryService);
     const querySpy = spyOn(queryService, 'query').and.returnValue(of(
-      [{max: 1}]
+      [{ max: 1 }]
     ));
 
     const selectService = TestBed.inject(SelectFishingLootService);

@@ -5,19 +5,9 @@
 <div class="row">
   <div class="form-inline">
     <div class="form-group col-12">
-      <input
-        type="number"
-        class="form-control form-control-sm"
-        id="id"
-        [(ngModel)]="idModel"
-        (input)="checkId()"
-      >
-      <button
-        class="btn btn-success btn-sm ml-2"
-        id="select-button"
-        [disabled]="!isIdFree || !idModel"
-        (click)="handlerService.select(true, idModel)"
-      ><i class="fa fa-plus"></i> Select</button>
+      <input type="number" class="form-control form-control-sm" id="id" [(ngModel)]="idModel" (input)="checkId()">
+      <button class="btn btn-success btn-sm ml-2" id="select-button" [disabled]="!isIdFree || !idModel"
+        (click)="handlerService.select(true, idModel)"><i class="fa fa-plus"></i> Select</button>
     </div>
   </div>
   <div class="col-12 mt-1" [hidden]="!idModel" id="id-free-status">

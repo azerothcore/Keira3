@@ -14,8 +14,8 @@ export class LogoutBtnComponent extends SubscriptionHandler {
 
   public modalRef: BsModalRef;
   constructor(
-      private modalService: BsModalService,
-      private locationService: LocationService
+    private modalService: BsModalService,
+    private locationService: LocationService
   ) {
     super();
   }

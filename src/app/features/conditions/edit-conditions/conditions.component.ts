@@ -68,7 +68,7 @@ export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
   public readonly CONDITION_STAND_STATE_CV2 = CONDITION_STAND_STATE_CV2;
 
   get selectedSourceType(): number {
-   return this.editorService.form.controls.SourceTypeOrReferenceId.value;
+    return this.editorService.form.controls.SourceTypeOrReferenceId.value;
   }
 
   get conditionType(): number {

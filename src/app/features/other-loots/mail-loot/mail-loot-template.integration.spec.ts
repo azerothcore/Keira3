@@ -9,7 +9,7 @@ import { MailLootTemplate } from '@keira-types/mail-loot-template.type';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { MailLootHandlerService } from './mail-loot-handler.service';
 
-class MailLootTemplatePage extends MultiRowEditorPageObject<MailLootTemplateComponent> {}
+class MailLootTemplatePage extends MultiRowEditorPageObject<MailLootTemplateComponent> { }
 
 describe('MailLootTemplate integration tests', () => {
   const id = 1234;

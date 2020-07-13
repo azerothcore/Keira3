@@ -15,13 +15,13 @@ describe('ItemLimitCategorySelectorModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ ItemLimitCategorySelectorModule ],
+      imports: [ItemLimitCategorySelectorModule],
       providers: [
         BsModalRef,
         { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
       ],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

@@ -32,7 +32,7 @@ const animationTime = 200;
 })
 export class SidebarComponent {
 
-  menuStates: { [key: string]: 'down'|'up' } = {
+  menuStates: { [key: string]: 'down' | 'up' } = {
     creature: 'up',
     quest: 'up',
     gameobject: 'up',

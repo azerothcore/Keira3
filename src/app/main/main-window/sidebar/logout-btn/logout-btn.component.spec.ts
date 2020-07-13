@@ -9,11 +9,11 @@ import { ModalConfirmComponent } from '@keira-shared/modules/modal-confirm/modal
 import { closeModalsAfterEach } from '@keira-testing/test-helpers';
 
 @NgModule({
-  declarations: [ ModalConfirmComponent ],
-  entryComponents: [ ModalConfirmComponent ],
-  imports: [ ],
+  declarations: [ModalConfirmComponent],
+  entryComponents: [ModalConfirmComponent],
+  imports: [],
 })
-class TestModule {}
+class TestModule { }
 
 describe('LogoutBtnComponent', () => {
   let component: LogoutBtnComponent;
@@ -21,13 +21,13 @@ describe('LogoutBtnComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LogoutBtnComponent ],
+      declarations: [LogoutBtnComponent],
       imports: [
         ModalModule.forRoot(),
         TestModule,
       ],
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(LogoutBtnComponent);
     component = fixture.componentInstance;

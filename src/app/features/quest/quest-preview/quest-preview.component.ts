@@ -24,24 +24,24 @@ export class QuestPreviewComponent implements OnInit {
   get type(): boolean { return !!this.questInfo || !!this.service.periodicQuest; }
   get questInfo(): string {
     const qInfo = this.service.QUEST_INFO.find(q => q.value === this.service.questTemplate.QuestInfoID);
-    return this.service.questTemplate.QuestInfoID > 0  && qInfo?.name;
+    return this.service.questTemplate.QuestInfoID > 0 && qInfo?.name;
   }
 
   get questStartIcon(): string {
     return this.service.periodicQuest
-    ? 'quest_start_daily.gif'
-    : 'quest_start.gif';
+      ? 'quest_start_daily.gif'
+      : 'quest_start.gif';
   }
   get questEndIcon(): string {
     return this.service.periodicQuest
-    ? 'quest_end_daily.gif'
-    : 'quest_end.gif';
+      ? 'quest_end_daily.gif'
+      : 'quest_end.gif';
   }
 
   get reqSkillPoint() {
     return !!this.service.questTemplateAddon.RequiredSkillPoints && this.service.questTemplateAddon.RequiredSkillPoints > 1
-    ? `(${this.service.questTemplateAddon.RequiredSkillPoints})`
-    : '';
+      ? `(${this.service.questTemplateAddon.RequiredSkillPoints})`
+      : '';
   }
 
   ngOnInit() {

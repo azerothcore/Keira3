@@ -41,4 +41,4 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
     CreatureSpawnService,
   ],
 })
-export class CreatureSpawnModule {}
+export class CreatureSpawnModule { }

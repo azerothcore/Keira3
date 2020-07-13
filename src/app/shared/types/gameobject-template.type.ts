@@ -45,7 +45,7 @@ export class GameobjectTemplate extends TableRow {
   Data21: number = 0;
   Data22: number = 0;
   Data23: number = 0;
-  AIName: string   = '';
+  AIName: string = '';
   ScriptName: string = '';
   VerifiedBuild: number = 0;
 }

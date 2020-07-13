@@ -11,7 +11,7 @@ export abstract class SelectComplexKeyComponent<T extends TableRow> {
   constructor(
     public selectService: SearchService<T>,
     protected handlerService: ComplexKeyHandlerService<T>,
-  ) {}
+  ) { }
 
   onSelect(event) {
     this.handlerService.select(false, event.selected[0]);

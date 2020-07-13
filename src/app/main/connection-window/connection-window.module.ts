@@ -24,4 +24,4 @@ import { QueryOutputModule } from '../../shared/modules/query-output/query-outpu
     ConnectionWindowComponent,
   ],
 })
-export class ConnectionWindowModule {}
+export class ConnectionWindowModule { }

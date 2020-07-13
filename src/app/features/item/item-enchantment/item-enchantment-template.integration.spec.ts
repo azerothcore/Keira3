@@ -10,7 +10,7 @@ import { ItemEnchantmentTemplate } from '@keira-types/item-enchantment-template.
 import { ItemHandlerService } from '../item-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 
-class ItemEnchantmentTemplatePage extends MultiRowEditorPageObject<ItemEnchantmentTemplateComponent> {}
+class ItemEnchantmentTemplatePage extends MultiRowEditorPageObject<ItemEnchantmentTemplateComponent> { }
 
 describe('ItemEnchantmentTemplate integration tests', () => {
   let component: ItemEnchantmentTemplateComponent;

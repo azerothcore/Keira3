@@ -63,7 +63,7 @@ describe('SelectConditions integration tests', () => {
     fixture.detectChanges();
   });
 
-  it('should correctly initialise', async  () => {
+  it('should correctly initialise', async () => {
     await fixture.whenStable();
     expect(page.queryWrapper.innerText).toContain(
       'SELECT * FROM `conditions` LIMIT 50'
@@ -129,11 +129,13 @@ describe('SelectConditions integration tests', () => {
         ConditionTypeOrReference: 0, ConditionTarget: 0, ConditionValue1: 0, ConditionValue2: 0,
         ConditionValue3: 0, NegativeCondition: 0, ErrorType: 0, ErrorTextId: 0, ScriptName: '', Comment: ''
       },
-      { SourceTypeOrReferenceId: 2, SourceGroup: 5, SourceEntry: 8, SourceId: 0, ElseGroup: 0,
+      {
+        SourceTypeOrReferenceId: 2, SourceGroup: 5, SourceEntry: 8, SourceId: 0, ElseGroup: 0,
         ConditionTypeOrReference: 0, ConditionTarget: 0, ConditionValue1: 0, ConditionValue2: 0,
         ConditionValue3: 0, NegativeCondition: 0, ErrorType: 0, ErrorTextId: 0, ScriptName: '', Comment: ''
       },
-      { SourceTypeOrReferenceId: 3, SourceGroup: 6, SourceEntry: 9, SourceId: 0, ElseGroup: 0,
+      {
+        SourceTypeOrReferenceId: 3, SourceGroup: 6, SourceEntry: 9, SourceId: 0, ElseGroup: 0,
         ConditionTypeOrReference: 0, ConditionTarget: 0, ConditionValue1: 0, ConditionValue2: 0,
         ConditionValue3: 0, NegativeCondition: 0, ErrorType: 0, ErrorTextId: 0, ScriptName: '', Comment: ''
       },

@@ -24,4 +24,4 @@ import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
     DisenchantLootTemplateService,
   ],
 })
-export class DisenchantLootTemplateModule {}
+export class DisenchantLootTemplateModule { }

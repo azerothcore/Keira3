@@ -31,4 +31,4 @@ import { IconModule } from '@keira-shared/modules/icon/icon.module';
     CreatureEquipTemplateService,
   ],
 })
-export class CreatureEquipTemplateModule {}
+export class CreatureEquipTemplateModule { }

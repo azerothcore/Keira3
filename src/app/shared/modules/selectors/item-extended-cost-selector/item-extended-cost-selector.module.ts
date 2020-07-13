@@ -30,4 +30,4 @@ import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-
     ItemExtendedCostSelectorBtnComponent,
   ],
 })
-export class ItemExtendedCostSelectorModule {}
+export class ItemExtendedCostSelectorModule { }

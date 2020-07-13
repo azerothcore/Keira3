@@ -15,13 +15,13 @@ describe('FactionSelectorModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ FactionSelectorModule ],
+      imports: [FactionSelectorModule],
       providers: [
         BsModalRef,
         { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
       ],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

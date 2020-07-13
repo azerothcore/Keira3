@@ -17,4 +17,4 @@ const modules = [
     GossipHandlerService,
   ],
 })
-export class GossipModule {}
+export class GossipModule { }

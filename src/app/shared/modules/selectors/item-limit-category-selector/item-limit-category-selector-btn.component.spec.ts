@@ -9,9 +9,9 @@ describe('ItemLimitCategorySelectorBtnComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ ItemLimitCategorySelectorModule ],
+      imports: [ItemLimitCategorySelectorModule],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

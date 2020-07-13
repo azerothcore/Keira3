@@ -43,7 +43,7 @@ describe('LootEditorService', () => {
       expect(data).toEqual(mockData);
     });
     expect(querySpy).toHaveBeenCalledWith(`SELECT ${service.entityTemplateLootField} AS lootId `
-    + `FROM ${service.entityTemplateTable} `
-    + `WHERE ${service['_entityTemplateIdField']} = ${service['handlerService.selected']}`);
+      + `FROM ${service.entityTemplateTable} `
+      + `WHERE ${service['_entityTemplateIdField']} = ${service['handlerService.selected']}`);
   });
 });

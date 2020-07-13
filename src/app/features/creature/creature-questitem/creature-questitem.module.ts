@@ -35,4 +35,4 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
     CreatureQuestitemService,
   ],
 })
-export class CreatureQuestitemModule {}
+export class CreatureQuestitemModule { }

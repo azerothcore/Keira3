@@ -15,13 +15,13 @@ describe('HolidaySelectorModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ HolidaySelectorModule ],
+      imports: [HolidaySelectorModule],
       providers: [
         BsModalRef,
         { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
       ],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

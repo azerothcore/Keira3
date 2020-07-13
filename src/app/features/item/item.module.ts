@@ -26,4 +26,4 @@ const modules = [
     ItemHandlerService,
   ]
 })
-export class ItemModule {}
+export class ItemModule { }

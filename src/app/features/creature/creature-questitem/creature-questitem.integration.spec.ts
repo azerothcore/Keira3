@@ -11,7 +11,7 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
-class CreatureQuestitemPage extends MultiRowEditorPageObject<CreatureQuestitemComponent> {}
+class CreatureQuestitemPage extends MultiRowEditorPageObject<CreatureQuestitemComponent> { }
 
 describe('CreatureQuestitem integration tests', () => {
   let component: CreatureQuestitemComponent;

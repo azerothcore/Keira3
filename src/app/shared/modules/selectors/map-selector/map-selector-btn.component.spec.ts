@@ -9,9 +9,9 @@ describe('MapSelectorBtnComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ MapSelectorModule ],
+      imports: [MapSelectorModule],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

@@ -23,4 +23,4 @@ import { SingleValueSelectorBtnComponent } from './single-value-selector-btn.com
     SingleValueSelectorBtnComponent,
   ],
 })
-export class SingleValueSelectorModule {}
+export class SingleValueSelectorModule { }

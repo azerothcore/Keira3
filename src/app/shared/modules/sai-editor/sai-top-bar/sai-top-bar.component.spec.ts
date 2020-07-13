@@ -19,7 +19,7 @@ class SaiTopBarComponentPage extends PageObject<TestHostComponent> {
 })
 class TestHostComponent {
   @ViewChild(SaiTopBarComponent, { static: true }) child: SaiTopBarComponent;
-  constructor(public handlerService: SaiHandlerService) {}
+  constructor(public handlerService: SaiHandlerService) { }
 }
 
 describe('SaiTopBarComponent', () => {
@@ -35,7 +35,7 @@ describe('SaiTopBarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TestHostComponent, SaiTopBarComponent ],
+      declarations: [TestHostComponent, SaiTopBarComponent],
       imports: [
         RouterTestingModule,
       ]

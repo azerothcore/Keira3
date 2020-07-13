@@ -19,7 +19,7 @@ describe('Helpers', () => {
   describe('getPartial(value, conditions)', () => {
 
     it('should correctly work', () => {
-      const fields = ['a' , 'b', 'c'];
+      const fields = ['a', 'b', 'c'];
       const input: Partial<Conditions> = {
         a: 1,
         b: 2,

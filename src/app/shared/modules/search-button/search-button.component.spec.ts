@@ -20,7 +20,7 @@ describe('EditorButtonsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SearchButtonComponent, TestHostComponent ]
+      declarations: [SearchButtonComponent, TestHostComponent]
     })
       .compileComponents();
   }));

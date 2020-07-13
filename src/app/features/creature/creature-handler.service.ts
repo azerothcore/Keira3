@@ -60,7 +60,7 @@ export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
     );
   }
 
-  select(isNew: boolean, id: string|number|Partial<CreatureTemplate>, name?: string) {
+  select(isNew: boolean, id: string | number | Partial<CreatureTemplate>, name?: string) {
     this.saiCreatureHandler.select(isNew, { entryorguid: +id, source_type: 0 }, null, false);
     super.select(isNew, id, name);
   }

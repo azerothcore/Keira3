@@ -128,7 +128,7 @@ export class MysqlService {
           console.log(`Error when executing query: \n\n${err.sql}`);
           subscriber.error(err);
         } else {
-          subscriber.next({results, fields});
+          subscriber.next({ results, fields });
         }
         subscriber.complete();
       });

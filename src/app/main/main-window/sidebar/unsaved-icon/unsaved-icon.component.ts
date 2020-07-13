@@ -5,4 +5,4 @@ import { Component } from '@angular/core';
   templateUrl: './unsaved-icon.component.html',
   styleUrls: ['./unsaved-icon.component.scss']
 })
-export class UnsavedIconComponent {}
+export class UnsavedIconComponent { }

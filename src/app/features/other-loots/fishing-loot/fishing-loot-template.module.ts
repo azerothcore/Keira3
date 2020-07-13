@@ -38,4 +38,4 @@ const components = [
     FishingLootHandlerService,
   ],
 })
-export class FishingLootTemplateModule {}
+export class FishingLootTemplateModule { }

@@ -51,7 +51,7 @@ export class PreviewHelperService {
       return [faction];
     }
 
-    const tmp  = [];
+    const tmp = [];
     let i = 1;
     while (raceMask) {
       if (raceMask & (1 << (i - 1))) {

@@ -15,13 +15,13 @@ describe('SkillSelectorModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ SkillSelectorModule ],
+      imports: [SkillSelectorModule],
       providers: [
         BsModalRef,
         { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
       ],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

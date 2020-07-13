@@ -10,7 +10,7 @@ import { MillingLootTemplate } from '@keira-types/milling-loot-template.type';
 import { ItemHandlerService } from '../item-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 
-class MillingLootTemplatePage extends MultiRowEditorPageObject<MillingLootTemplateComponent> {}
+class MillingLootTemplatePage extends MultiRowEditorPageObject<MillingLootTemplateComponent> { }
 
 describe('MillingLootTemplate integration tests', () => {
   let component: MillingLootTemplateComponent;

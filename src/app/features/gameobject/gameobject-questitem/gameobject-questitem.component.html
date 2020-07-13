@@ -7,15 +7,13 @@
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
 
     <div class="content-block">
-      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
+      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)">
+      </keira-query-output>
     </div>
 
     <div class="content-block">
 
-      <form
-        [formGroup]="editorService.form"
-        class="form-group edit-form"
-      >
+      <form [formGroup]="editorService.form" class="form-group edit-form">
 
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
@@ -23,10 +21,8 @@
               <keira-icon [itemId]="editorService.form.controls.ItemId.value"></keira-icon>
               ItemId
             </label>
-            <keira-item-selector-btn
-              [control]="editorService.form.controls.ItemId"
-              [config]="{  name: 'ItemId' }"
-            ></keira-item-selector-btn>
+            <keira-item-selector-btn [control]="editorService.form.controls.ItemId" [config]="{  name: 'ItemId' }">
+            </keira-item-selector-btn>
             <input [formControlName]="'ItemId'" id="ItemId" type="number" class="form-control form-control-sm">
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
@@ -48,18 +44,11 @@
 
           <keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>
 
-          <ngx-datatable
-            id="editor-table"
+          <ngx-datatable id="editor-table"
             class="bootstrap table table-striped text-center datatable-select datatable-icon-list"
-            [rows]="editorService.newRows"
-            [headerHeight]="DTCFG.headerHeight"
-            [footerHeight]="DTCFG.footerHeight"
-            [columnMode]="DTCFG.columnMode"
-            [rowHeight]="DTCFG.rowHeightWithIcon"
-            [selectionType]="DTCFG.selectionType"
-            (select)='editorService.onRowSelection($event)'
-            (keydown.delete)="editorService.deleteSelectedRow()"
-          >
+            [rows]="editorService.newRows" [headerHeight]="DTCFG.headerHeight" [footerHeight]="DTCFG.footerHeight"
+            [columnMode]="DTCFG.columnMode" [rowHeight]="DTCFG.rowHeightWithIcon" [selectionType]="DTCFG.selectionType"
+            (select)='editorService.onRowSelection($event)' (keydown.delete)="editorService.deleteSelectedRow()">
             <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
               <ng-template let-row="row" ngx-datatable-cell-template>
                 <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>

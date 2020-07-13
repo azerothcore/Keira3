@@ -20,7 +20,7 @@ describe('SearchService', () => {
     ]
   }));
 
-  beforeEach( () => {
+  beforeEach(() => {
     service = TestBed.inject(ItemSearchService);
   });
 
@@ -40,7 +40,7 @@ describe('SearchService', () => {
     });
 
     it('should not update the query if the form is invalid', () => {
-      service.queryForm.controls.fields.setErrors({ error: 'some error'} );
+      service.queryForm.controls.fields.setErrors({ error: 'some error' });
 
       service.queryForm.controls.limit.setValue(123);
 
@@ -50,7 +50,7 @@ describe('SearchService', () => {
   });
 
   it('onSearch() should execute the query and update the rows with the result', () => {
-    const newRows = [ { entry: 1 }, { entry: 2 } ] as ItemTemplate[];
+    const newRows = [{ entry: 1 }, { entry: 2 }] as ItemTemplate[];
     const spy = spyOn(TestBed.inject(MysqlQueryService), 'query').and.returnValue(of(newRows));
     service.rows = null;
     service.query = newQuery;

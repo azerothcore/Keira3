@@ -9,9 +9,9 @@ describe('SkillSelectorBtnComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ SkillSelectorModule ],
+      imports: [SkillSelectorModule],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

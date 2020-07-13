@@ -38,4 +38,4 @@ const components = [
     ReferenceLootHandlerService,
   ],
 })
-export class ReferenceLootTemplateModule {}
+export class ReferenceLootTemplateModule { }

@@ -17,8 +17,8 @@ import { MockedMysqlService } from '@keira-testing/mocks';
 import { closeModalsAfterEach } from '@keira-testing/test-helpers';
 
 @NgModule({
-  declarations: [ ItemSelectorModalComponent ],
-  entryComponents: [ ItemSelectorModalComponent ],
+  declarations: [ItemSelectorModalComponent],
+  entryComponents: [ItemSelectorModalComponent],
   imports: [
     CommonModule,
     BrowserModule,
@@ -28,10 +28,10 @@ import { closeModalsAfterEach } from '@keira-testing/test-helpers';
     HighlightModule.forRoot(highlightOptions),
   ],
   providers: [
-    { provide : MysqlService, useValue: instance(MockedMysqlService) },
+    { provide: MysqlService, useValue: instance(MockedMysqlService) },
   ]
 })
-class TestModule {}
+class TestModule { }
 
 describe('BaseSelectorBtnComponent', () => {
   let component: BaseSelectorBtnComponent;
@@ -41,13 +41,13 @@ describe('BaseSelectorBtnComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ItemSelectorBtnComponent ],
+      declarations: [ItemSelectorBtnComponent],
       imports: [
         ModalModule.forRoot(),
         TestModule,
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

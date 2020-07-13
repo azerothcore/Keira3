@@ -7,40 +7,31 @@
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
 
     <div class="content-block">
-      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
+      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)">
+      </keira-query-output>
     </div>
 
     <div class="content-block">
 
-      <form
-        [formGroup]="editorService.form"
-        class="form-group edit-form"
-      >
+      <form [formGroup]="editorService.form" class="form-group edit-form">
 
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="entry">entry</label>
-            <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
-              [tooltip]="'The unique ID of the gameobject'"
-            ></i>
+            <i class="fas fa-info-circle ml-1" [placement]="'auto'" [tooltip]="'The unique ID of the gameobject'"></i>
             <input [formControlName]="'entry'" id="entry" type="number" class="form-control form-control-sm">
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="faction">faction</label>
-            <keira-faction-selector-btn
-              [config]="{ name: 'faction' }"
-              [control]="editorService.form.controls.faction"
-            ></keira-faction-selector-btn>
+            <keira-faction-selector-btn [config]="{ name: 'faction' }" [control]="editorService.form.controls.faction">
+            </keira-faction-selector-btn>
             <input [formControlName]="'faction'" id="faction" type="number" class="form-control form-control-sm">
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="flags">flags</label>
-            <keira-flags-selector-btn
-              [control]="editorService.form.controls.flags"
-              [config]="{ flags: GAMEOBJECT_FLAGS, name: 'flags' }"
-              [modalClass]="'modal-lg'"
-            ></keira-flags-selector-btn>
+            <keira-flags-selector-btn [control]="editorService.form.controls.flags"
+              [config]="{ flags: GAMEOBJECT_FLAGS, name: 'flags' }" [modalClass]="'modal-lg'">
+            </keira-flags-selector-btn>
             <input [formControlName]="'flags'" id="flags" type="number" class="form-control form-control-sm">
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">

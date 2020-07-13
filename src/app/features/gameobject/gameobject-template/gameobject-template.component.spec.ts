@@ -31,7 +31,7 @@ describe('GameobjectComponent', () => {
         SaiGameobjectHandlerService,
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

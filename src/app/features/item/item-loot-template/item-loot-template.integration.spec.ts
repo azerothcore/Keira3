@@ -10,7 +10,7 @@ import { ItemLootTemplate } from '@keira-types/item-loot-template.type';
 import { ItemHandlerService } from '../item-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 
-class ItemLootTemplatePage extends MultiRowEditorPageObject<ItemLootTemplateComponent> {}
+class ItemLootTemplatePage extends MultiRowEditorPageObject<ItemLootTemplateComponent> { }
 
 describe('ItemLootTemplate integration tests', () => {
   let component: ItemLootTemplateComponent;

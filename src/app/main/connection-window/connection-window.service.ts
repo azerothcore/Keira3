@@ -47,9 +47,9 @@ export class ConnectionWindowService {
 
   private isSameConfig(config1: Config, config2: Config): boolean {
     return config1.host === config2.host
-        && config1.port === config2.port
-        && config1.user === config2.user
-        && config1.database === config2.database;
+      && config1.port === config2.port
+      && config1.user === config2.user
+      && config1.database === config2.database;
   }
 
   private setConfigsToStorage(configs: Config[]): void {

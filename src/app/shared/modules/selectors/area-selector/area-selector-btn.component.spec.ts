@@ -9,9 +9,9 @@ describe('AreaSelectorBtnComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ AreaSelectorModule ],
+      imports: [AreaSelectorModule],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

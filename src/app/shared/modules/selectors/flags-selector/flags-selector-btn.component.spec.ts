@@ -9,9 +9,9 @@ describe('FlagsSelectorBtnComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ FlagsSelectorModule ],
+      imports: [FlagsSelectorModule],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

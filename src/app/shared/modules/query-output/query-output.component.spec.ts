@@ -62,7 +62,7 @@ describe('QueryOutputComponent', () => {
         HighlightModule.forRoot(highlightOptions),
       ],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

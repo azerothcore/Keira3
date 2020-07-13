@@ -9,9 +9,9 @@ describe('LanguageSelectorBtnComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ LanguageSelectorModule ],
+      imports: [LanguageSelectorModule],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

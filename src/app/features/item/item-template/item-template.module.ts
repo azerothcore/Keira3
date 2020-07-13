@@ -60,4 +60,4 @@ import { IconModule } from '@keira-shared/modules/icon/icon.module';
     ItemPreviewService,
   ],
 })
-export class ItemTemplateModule {}
+export class ItemTemplateModule { }

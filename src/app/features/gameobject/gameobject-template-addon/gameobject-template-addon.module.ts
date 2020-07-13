@@ -35,4 +35,4 @@ import { FactionSelectorModule } from '@keira-shared/modules/selectors/faction-s
     GameobjectTemplateAddonService,
   ],
 })
-export class GameobjectTemplateAddonModule {}
+export class GameobjectTemplateAddonModule { }

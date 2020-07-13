@@ -3,13 +3,8 @@
 <div class="container-fluid">
 
   <div class="content-block">
-    <keira-create
-      [entityTable]="entityTable"
-      [entityIdField]="entityIdField"
-      [customStartingId]="customStartingId"
-      [handlerService]="handlerService"
-      [queryService]="queryService"
-    ></keira-create>
+    <keira-create [entityTable]="entityTable" [entityIdField]="entityIdField" [customStartingId]="customStartingId"
+      [handlerService]="handlerService" [queryService]="queryService"></keira-create>
   </div>
 
   <div class="content-block">
@@ -18,7 +13,8 @@
       <div class="row">
         <ng-container [formGroup]="selectService.fields">
           <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
-            <input [formControlName]="'Entry'" type="number" class="form-control form-control-sm" id="search-id" placeholder="Entry">
+            <input [formControlName]="'Entry'" type="number" class="form-control form-control-sm" id="search-id"
+              placeholder="Entry">
           </div>
         </ng-container>
         <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -33,18 +29,10 @@
 
     <div *ngIf="selectService.rows">
 
-      <ngx-datatable
-        class="bootstrap table table-striped text-center datatable-select"
-        style="max-width: 500px"
-        [rows]="selectService.rows"
-        [headerHeight]="DTCFG.headerHeight"
-        [footerHeight]="DTCFG.footerHeight"
-        [columnMode]="DTCFG.columnMode"
-        [rowHeight]="DTCFG.rowHeight"
-        [limit]="DTCFG.limit"
-        [selectionType]="DTCFG.selectionType"
-        (select)='selectService.onSelect($event)'
-      >
+      <ngx-datatable class="bootstrap table table-striped text-center datatable-select" style="max-width: 500px"
+        [rows]="selectService.rows" [headerHeight]="DTCFG.headerHeight" [footerHeight]="DTCFG.footerHeight"
+        [columnMode]="DTCFG.columnMode" [rowHeight]="DTCFG.rowHeight" [limit]="DTCFG.limit"
+        [selectionType]="DTCFG.selectionType" (select)='selectService.onSelect($event)'>
         <ngx-datatable-column name="Entry" prop="Entry" [minWidth]="500">
           <ng-template let-row="row" ngx-datatable-cell-template>
             {{ entityTable }} <strong>#{{ row.Entry }}</strong>

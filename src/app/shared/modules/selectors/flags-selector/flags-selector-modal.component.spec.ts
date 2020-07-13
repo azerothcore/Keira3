@@ -13,12 +13,12 @@ describe('FlagsSelectorModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ FlagsSelectorModule ],
+      imports: [FlagsSelectorModule],
       providers: [
         BsModalRef,
       ],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

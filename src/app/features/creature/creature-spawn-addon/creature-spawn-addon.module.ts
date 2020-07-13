@@ -33,4 +33,4 @@ import { CreatureSpawnAddonService } from './creature-spawn-addon.service';
     CreatureSpawnAddonService,
   ],
 })
-export class CreatureSpawnAddonModule {}
+export class CreatureSpawnAddonModule { }

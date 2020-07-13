@@ -13,7 +13,7 @@ export class IconService {
   constructor(
     private sqliteQueryService: SqliteQueryService,
     private mysqlQueryService: MysqlQueryService,
-  ) {}
+  ) { }
 
   getIconByItemDisplayId(displayId: string | number): Observable<string> {
     return this.sqliteQueryService.getIconByItemDisplayId(displayId).pipe(

@@ -9,7 +9,8 @@
           <input [formControlName]="'ID'" type="number" class="form-control form-control-sm" id="ID" placeholder="ID">
         </div>
         <div class="form-group col-5">
-          <input [formControlName]="'spellName'" class="form-control form-control-sm" id="spellName" placeholder="Spell Name">
+          <input [formControlName]="'spellName'" class="form-control form-control-sm" id="spellName"
+            placeholder="Spell Name">
         </div>
       </ng-container>
       <div class="form-group col-2">
@@ -24,17 +25,10 @@
 
   <div *ngIf="searchService.rows">
 
-    <ngx-datatable
-      class="bootstrap table table-striped text-center datatable-select highlight-select"
-      [rows]="searchService.rows"
-      [headerHeight]="DTCFG.headerHeight"
-      [footerHeight]="DTCFG.footerHeight"
-      [columnMode]="DTCFG.columnMode"
-      [rowHeight]="DTCFG.rowHeight"
-      [limit]="DTCFG.limit"
-      [selectionType]="DTCFG.selectionType"
-      (select)='onSelect($event)'
-    >
+    <ngx-datatable class="bootstrap table table-striped text-center datatable-select highlight-select"
+      [rows]="searchService.rows" [headerHeight]="DTCFG.headerHeight" [footerHeight]="DTCFG.footerHeight"
+      [columnMode]="DTCFG.columnMode" [rowHeight]="DTCFG.rowHeight" [limit]="DTCFG.limit"
+      [selectionType]="DTCFG.selectionType" (select)='onSelect($event)'>
       <ngx-datatable-column name="ID" prop="ID" [minWidth]="100">
         <ng-template let-row="row" ngx-datatable-cell-template>
           {{ row.ID }}

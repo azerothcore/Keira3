@@ -9,9 +9,9 @@ describe('QuestSelectorBtnComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ QuestSelectorModule ],
+      imports: [QuestSelectorModule],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

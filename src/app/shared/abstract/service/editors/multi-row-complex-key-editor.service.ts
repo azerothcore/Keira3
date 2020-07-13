@@ -34,7 +34,7 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
     );
   }
 
-  protected disableEntityIdField() {}
+  protected disableEntityIdField() { }
 
   protected updateDiffQuery(): void {
     this._diffQuery = this.queryService.getDiffDeleteInsertTwoKeysQuery<T>(

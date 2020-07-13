@@ -33,4 +33,4 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
     GossipMenuService,
   ],
 })
-export class GossipMenuModule {}
+export class GossipMenuModule { }

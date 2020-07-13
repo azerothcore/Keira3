@@ -31,8 +31,8 @@ describe('MainWindowComponent', () => {
         RouterTestingModule,
       ],
       providers: [
-        { provide : ElectronService, useValue: instance(MockedElectronService) },
-        { provide : MysqlService, useValue: instance(MockedMysqlService) },
+        { provide: ElectronService, useValue: instance(MockedElectronService) },
+        { provide: MysqlService, useValue: instance(MockedMysqlService) },
         CreatureHandlerService,
         SaiCreatureHandlerService,
         QuestHandlerService,
@@ -47,7 +47,7 @@ describe('MainWindowComponent', () => {
         MailLootHandlerService,
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

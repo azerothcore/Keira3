@@ -30,7 +30,7 @@ export abstract class MultiRowExternalEditorService<T extends TableRow> extends 
     );
   }
 
-  disableEntityIdField() {}
+  disableEntityIdField() { }
 
   protected updateFullQuery(): void {
     this._fullQuery = this.queryService.getFullDeleteInsertQuery<T>(
@@ -53,5 +53,5 @@ export abstract class MultiRowExternalEditorService<T extends TableRow> extends 
     );
   }
 
-  abstract selectQuery(id: string|number);
+  abstract selectQuery(id: string | number);
 }

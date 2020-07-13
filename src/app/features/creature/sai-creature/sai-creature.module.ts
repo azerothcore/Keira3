@@ -39,4 +39,4 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
     SaiCreatureEditorService,
   ],
 })
-export class SaiCreatureModule {}
+export class SaiCreatureModule { }

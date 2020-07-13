@@ -11,7 +11,7 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateAddon } from '@keira-types/creature-template-addon.type';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
-class CreatureTemplateAddonPage extends EditorPageObject<CreatureTemplateAddonComponent> {}
+class CreatureTemplateAddonPage extends EditorPageObject<CreatureTemplateAddonComponent> { }
 
 describe('CreatureTemplateAddon integration tests', () => {
   let component: CreatureTemplateAddonComponent;

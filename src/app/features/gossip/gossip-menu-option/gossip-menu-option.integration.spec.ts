@@ -10,7 +10,7 @@ import { GossipMenuOption } from '@keira-types/gossip-menu-option.type';
 import { GossipHandlerService } from '../gossip-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 
-class GossipMenuOptionPage extends MultiRowEditorPageObject<GossipMenuOptionComponent> {}
+class GossipMenuOptionPage extends MultiRowEditorPageObject<GossipMenuOptionComponent> { }
 
 describe('GossipMenu integration tests', () => {
   let component: GossipMenuOptionComponent;

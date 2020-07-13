@@ -5,7 +5,7 @@
     <p class="lead mt-3 mb-2">
       SQL Editor
       <i class="fas fa-info-circle ml-1" [placement]="'auto'"
-         [tooltip]="'A minimalistic SQL Editor to run custom queries'"></i>
+        [tooltip]="'A minimalistic SQL Editor to run custom queries'"></i>
     </p>
 
     <textarea id="code" class="mb-1" [(ngModel)]="service.code" (keydown.f9)="execute()" rows="6"></textarea>
@@ -38,22 +38,11 @@
       <!--    Display: <select [(ngModel)]="displayLimit" class="select-limit">-->
       <!--      <option *ngFor="let option of displayLimitOptions" [value]="option">{{ option }}</option>-->
       <!--    </select>-->
-      <ngx-datatable
-        id="editor-table"
-        class="bootstrap table table-striped text-center mt-1"
-        [rows]="rows"
-        [headerHeight]="DTCFG.headerHeight"
-        [footerHeight]="DTCFG.footerHeight"
-        [columnMode]="DTCFG.columnMode"
-        [rowHeight]="DTCFG.rowHeight"
-        [limit]="20"
-      >
-        <ngx-datatable-column
-          *ngFor="let col of columns"
-          [prop]="col"
-          [minWidth]="columns.length === 1 ? 300 : 100"
-          [resizeable]="true"
-        ></ngx-datatable-column>
+      <ngx-datatable id="editor-table" class="bootstrap table table-striped text-center mt-1" [rows]="rows"
+        [headerHeight]="DTCFG.headerHeight" [footerHeight]="DTCFG.footerHeight" [columnMode]="DTCFG.columnMode"
+        [rowHeight]="DTCFG.rowHeight" [limit]="20">
+        <ngx-datatable-column *ngFor="let col of columns" [prop]="col" [minWidth]="columns.length === 1 ? 300 : 100"
+          [resizeable]="true"></ngx-datatable-column>
       </ngx-datatable>
     </ng-template>
 

@@ -35,4 +35,4 @@ import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-
     SelectItemService,
   ],
 })
-export class SelectItemModule {}
+export class SelectItemModule { }

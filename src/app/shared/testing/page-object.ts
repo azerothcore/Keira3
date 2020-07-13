@@ -63,7 +63,7 @@ export abstract class PageObject<ComponentType> {
     return children;
   }
 
-  public setInputValue(inputElement: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement, value: string|number) {
+  public setInputValue(inputElement: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement, value: string | number) {
     inputElement.value = `${value}`;
     inputElement.dispatchEvent(new Event('input'));
     inputElement.dispatchEvent(new Event('change'));
@@ -109,7 +109,7 @@ export abstract class PageObject<ComponentType> {
   private getDatatableCellSelector(datatableSelector: string, rowIndex: number, colIndex: number): string {
     return `${datatableSelector} .datatable-row-wrapper:nth-child(${rowIndex + 1}) .datatable-body-cell:nth-child(${colIndex + 1})`;
   }
-  private getDefaultSelectorIfNull(datatableSelector: string|null) {
+  private getDefaultSelectorIfNull(datatableSelector: string | null) {
     return datatableSelector ? datatableSelector : this.DT_SELECTOR;
   }
 

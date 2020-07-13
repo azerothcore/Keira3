@@ -31,4 +31,4 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
     ItemEnchantmentTemplateService,
   ],
 })
-export class ItemEnchantmentTemplateModule {}
+export class ItemEnchantmentTemplateModule { }

@@ -12,7 +12,7 @@ import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-o
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
-class GameobjectLootTemplatePage extends MultiRowEditorPageObject<GameobjectLootTemplateComponent> {}
+class GameobjectLootTemplatePage extends MultiRowEditorPageObject<GameobjectLootTemplateComponent> { }
 
 describe('GameobjectLootTemplate integration tests', () => {
   let component: GameobjectLootTemplateComponent;
@@ -47,7 +47,7 @@ describe('GameobjectLootTemplate integration tests', () => {
       .compileComponents();
   }));
 
-  function setup(creatingNew: boolean, lootId = id, type = _type)  {
+  function setup(creatingNew: boolean, lootId = id, type = _type) {
     spyOn(TestBed.inject(GameobjectLootTemplateService), 'getLootId').and.returnValue(of(
       [{ lootId }]
     ));

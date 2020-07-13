@@ -9,7 +9,7 @@ import {
 } from '@keira-types/skinning-loot-template.type';
 import { LootEditorIdService } from '@keira-abstract/service/editors/loot-editor-id.service';
 import {
-    CreatureLootTemplate
+  CreatureLootTemplate
 } from '@keira-types/creature-loot-template.type';
 import {
   CREATURE_TEMPLATE_ID,

@@ -273,7 +273,7 @@ describe('MultiRowEditorService', () => {
       expect(updateDiffQuerySpy).toHaveBeenCalledTimes(1);
       expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
       expect(onRowSelectionSpy).toHaveBeenCalledTimes(1);
-      expect(onRowSelectionSpy).toHaveBeenCalledWith({ selected:  [newRow] });
+      expect(onRowSelectionSpy).toHaveBeenCalledWith({ selected: [newRow] });
       expect(service.newRows).toEqual([{ ...newRow }]);
       expect(service['_nextRowId']).toEqual(nextRowId);
     });
@@ -286,7 +286,7 @@ describe('MultiRowEditorService', () => {
       expect(updateDiffQuerySpy).toHaveBeenCalledTimes(1);
       expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
       expect(onRowSelectionSpy).toHaveBeenCalledTimes(1);
-      expect(onRowSelectionSpy).toHaveBeenCalledWith({ selected:  [newRow] });
+      expect(onRowSelectionSpy).toHaveBeenCalledWith({ selected: [newRow] });
       expect(service.newRows).toEqual([{ ...newRow }]);
       expect(service['_nextRowId']).toEqual(nextRowId);
     });

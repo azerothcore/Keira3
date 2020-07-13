@@ -12,7 +12,7 @@ import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-o
 import { SkinningLootTemplateService } from './skinning-loot-template.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
-class SkinningLootTemplatePage extends MultiRowEditorPageObject<SkinningLootTemplateComponent> {}
+class SkinningLootTemplatePage extends MultiRowEditorPageObject<SkinningLootTemplateComponent> { }
 
 describe('SkinningLootTemplate integration tests', () => {
   let component: SkinningLootTemplateComponent;

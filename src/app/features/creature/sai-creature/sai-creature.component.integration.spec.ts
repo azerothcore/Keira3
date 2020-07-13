@@ -10,7 +10,7 @@ import { SAI_TYPES, SmartScripts } from '@keira-types/smart-scripts.type';
 import { SaiCreatureComponent } from './sai-creature.component';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
-class SaiCreaturePage extends MultiRowEditorPageObject<SaiCreatureComponent> {}
+class SaiCreaturePage extends MultiRowEditorPageObject<SaiCreatureComponent> { }
 
 describe('SaiCreatureComponent integration tests', () => {
   let component: SaiCreatureComponent;

@@ -24,4 +24,4 @@ import { uiSwitchConfig } from '@keira-config/ui-switch.config';
     FlagsSelectorBtnComponent,
   ],
 })
-export class FlagsSelectorModule {}
+export class FlagsSelectorModule { }

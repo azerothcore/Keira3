@@ -58,52 +58,52 @@ describe('SelectQuest integration tests', () => {
 
   it('should correctly initialise', async () => {
     await fixture.whenStable();
-      expect(page.createInput.value).toEqual(`${component.customStartingId}`);
-      page.expectNewEntityFree();
-      expect(querySpy).toHaveBeenCalledWith(
-        'SELECT MAX(ID) AS max FROM quest_template;'
-      );
-      expect(page.queryWrapper.innerText).toContain(
-        'SELECT * FROM `quest_template` LIMIT 50'
-      );
+    expect(page.createInput.value).toEqual(`${component.customStartingId}`);
+    page.expectNewEntityFree();
+    expect(querySpy).toHaveBeenCalledWith(
+      'SELECT MAX(ID) AS max FROM quest_template;'
+    );
+    expect(page.queryWrapper.innerText).toContain(
+      'SELECT * FROM `quest_template` LIMIT 50'
+    );
   });
 
   it('should correctly behave when inserting and selecting free id', async () => {
     await fixture.whenStable();
-      querySpy.calls.reset();
-      querySpy.and.returnValue(of(
-        []
-      ));
+    querySpy.calls.reset();
+    querySpy.and.returnValue(of(
+      []
+    ));
 
-      page.setInputValue(page.createInput, value);
+    page.setInputValue(page.createInput, value);
 
-      expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy).toHaveBeenCalledWith(
-        `SELECT * FROM \`quest_template\` WHERE (ID = ${value})`
-      );
-      page.expectNewEntityFree();
+    expect(querySpy).toHaveBeenCalledTimes(1);
+    expect(querySpy).toHaveBeenCalledWith(
+      `SELECT * FROM \`quest_template\` WHERE (ID = ${value})`
+    );
+    page.expectNewEntityFree();
 
-      page.clickElement(page.selectNewBtn);
+    page.clickElement(page.selectNewBtn);
 
-      expect(navigateSpy).toHaveBeenCalledTimes(1);
-      expect(navigateSpy).toHaveBeenCalledWith(['quest/quest-template']);
-      page.expectTopBarCreatingNew(value);
+    expect(navigateSpy).toHaveBeenCalledTimes(1);
+    expect(navigateSpy).toHaveBeenCalledWith(['quest/quest-template']);
+    page.expectTopBarCreatingNew(value);
   });
 
   it('should correctly behave when inserting an existing entity', async () => {
     await fixture.whenStable();
-      querySpy.calls.reset();
-      querySpy.and.returnValue(of(
-        ['mock value']
-      ));
+    querySpy.calls.reset();
+    querySpy.and.returnValue(of(
+      ['mock value']
+    ));
 
-      page.setInputValue(page.createInput, value);
+    page.setInputValue(page.createInput, value);
 
-      expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy).toHaveBeenCalledWith(
-        `SELECT * FROM \`quest_template\` WHERE (ID = ${value})`
-      );
-      page.expectEntityAlreadyInUse();
+    expect(querySpy).toHaveBeenCalledTimes(1);
+    expect(querySpy).toHaveBeenCalledWith(
+      `SELECT * FROM \`quest_template\` WHERE (ID = ${value})`
+    );
+    page.expectEntityAlreadyInUse();
   });
 
   for (const { testId, id, name, limit, expectedQuery } of [
@@ -141,9 +141,9 @@ describe('SelectQuest integration tests', () => {
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
     const results: Partial<QuestTemplate>[] = [
-      { id: 1, LogTitle: 'An awesome Quest 1', QuestType: 0, QuestLevel: 1, MinLevel: 10, QuestDescription: ''   },
-      { id: 2, LogTitle: 'An awesome Quest 2', QuestType: 0, QuestLevel: 2, MinLevel: 20, QuestDescription: ''   },
-      { id: 3, LogTitle: 'An awesome Quest 3', QuestType: 0, QuestLevel: 3, MinLevel: 30, QuestDescription: ''   },
+      { id: 1, LogTitle: 'An awesome Quest 1', QuestType: 0, QuestLevel: 1, MinLevel: 10, QuestDescription: '' },
+      { id: 2, LogTitle: 'An awesome Quest 2', QuestType: 0, QuestLevel: 2, MinLevel: 20, QuestDescription: '' },
+      { id: 3, LogTitle: 'An awesome Quest 3', QuestType: 0, QuestLevel: 3, MinLevel: 30, QuestDescription: '' },
     ];
     querySpy.calls.reset();
     querySpy.and.returnValue(of(results));

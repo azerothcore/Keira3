@@ -12,7 +12,7 @@ import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-o
 import { CreatureLootTemplateService } from './creature-loot-template.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
-class CreatureLootTemplatePage extends MultiRowEditorPageObject<CreatureLootTemplateComponent> {}
+class CreatureLootTemplatePage extends MultiRowEditorPageObject<CreatureLootTemplateComponent> { }
 
 describe('CreatureLootTemplate integration tests', () => {
   let component: CreatureLootTemplateComponent;

@@ -64,7 +64,7 @@ export class SqliteQueryService extends QueryService {
     return this.spellDisplayIdCache[displayId];
   }
 
-  getDisplayIdBySpellId(id: string|number): Observable<string> {
+  getDisplayIdBySpellId(id: string | number): Observable<string> {
     return !!id
       ? fromPromise(this.queryValueToPromiseCached(
         'getDisplayIdBySpellId',

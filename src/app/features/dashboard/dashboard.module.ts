@@ -18,4 +18,4 @@ import { DashboardComponent } from './dashboard.component';
     DashboardComponent,
   ],
 })
-export class DashboardModule {}
+export class DashboardModule { }

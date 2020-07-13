@@ -45,7 +45,7 @@ describe('SqlEditorComponent', () => {
     return { page, mysqlQueryService, component };
   };
 
-  it('should correctly query', async() => {
+  it('should correctly query', async () => {
     const { page, mysqlQueryService } = setup();
     await page.whenStable();
 
@@ -61,7 +61,7 @@ describe('SqlEditorComponent', () => {
     expect(page.getDatatableCell(1, 2).innerText).toEqual(mockRows[1].col3);
   });
 
-  it('should allow the user to insert a custom query', async() => {
+  it('should allow the user to insert a custom query', async () => {
     const { page, mysqlQueryService } = setup();
     await page.whenStable();
     const customQuery = 'SELECT col FROM table WHERE col > 10';
@@ -73,7 +73,7 @@ describe('SqlEditorComponent', () => {
     expect(mysqlQueryService.query).toHaveBeenCalledTimes(1);
   });
 
-  it('should show an error if the query fails', async() => {
+  it('should show an error if the query fails', async () => {
     const { page, mysqlQueryService } = setup();
     const error = {
       code: 'some error happened',
@@ -93,7 +93,7 @@ describe('SqlEditorComponent', () => {
     expect(page.errorElement.innerHTML).toContain(`${error.errno}`);
   });
 
-  it('should have no colums if the result is an empty set', async() => {
+  it('should have no colums if the result is an empty set', async () => {
     const { page, mysqlQueryService, component } = setup();
     (mysqlQueryService.query as Spy).and.returnValue(of([]));
     await page.whenStable();
@@ -103,7 +103,7 @@ describe('SqlEditorComponent', () => {
     expect(component.columns.length).toBe(0);
   });
 
-  it('should display the affected rows box when necessary', async() => {
+  it('should display the affected rows box when necessary', async () => {
     const { page, mysqlQueryService } = setup();
     const affectedRows = 12012;
     const message = '- Some message';
@@ -116,7 +116,7 @@ describe('SqlEditorComponent', () => {
     expect(page.affectedRows.innerText).toContain(message);
   });
 
-  it('should cut the columns amount when there are too many', async() => {
+  it('should cut the columns amount when there are too many', async () => {
     const { page, mysqlQueryService, component } = setup();
     (mysqlQueryService.query as Spy).and.returnValue(of([{
       a: 1, b: 1, c: 1, d: 1, e: 1, f: 1, g: 1, h: 1, i: 1, j: 1, k: 1, l: 1, m: 1, n: 1, o: 1, p: 1, q: 1, r: 1, s: 1, t: 1, u: 1

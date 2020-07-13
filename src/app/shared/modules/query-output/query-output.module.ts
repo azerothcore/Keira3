@@ -24,4 +24,4 @@ import { highlightOptions } from '@keira-config/highlight.config';
     QueryErrorComponent,
   ],
 })
-export class QueryOutputModule {}
+export class QueryOutputModule { }

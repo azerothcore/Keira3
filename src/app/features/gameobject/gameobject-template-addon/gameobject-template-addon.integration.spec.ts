@@ -11,7 +11,7 @@ import { GameobjectTemplateAddon } from '@keira-types/gameobject-template-addon.
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
-class GameobjectTemplateAddonPage extends EditorPageObject<GameobjectTemplateAddonComponent> {}
+class GameobjectTemplateAddonPage extends EditorPageObject<GameobjectTemplateAddonComponent> { }
 
 describe('GameobjectTemplateAddon integration tests', () => {
   let component: GameobjectTemplateAddonComponent;
@@ -23,8 +23,8 @@ describe('GameobjectTemplateAddon integration tests', () => {
 
   const id = 1234;
   const expectedFullCreateQuery = 'DELETE FROM `gameobject_template_addon` WHERE (`entry` = ' + id + ');\n' +
-  'INSERT INTO `gameobject_template_addon` (`entry`, `faction`, `flags`, `mingold`, `maxgold`) VALUES\n' +
-  '(' + id + ', 0, 0, 0, 0);';
+    'INSERT INTO `gameobject_template_addon` (`entry`, `faction`, `flags`, `mingold`, `maxgold`) VALUES\n' +
+    '(' + id + ', 0, 0, 0, 0);';
 
   const originalEntity = new GameobjectTemplateAddon();
   originalEntity.entry = id;
@@ -82,8 +82,8 @@ describe('GameobjectTemplateAddon integration tests', () => {
 
     it('changing a property and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `gameobject_template_addon` WHERE (`entry` = ' + id + ');\n' +
-      'INSERT INTO `gameobject_template_addon` (`entry`, `faction`, `flags`, `mingold`, `maxgold`) VALUES\n' +
-      '(' + id + ', 35, 0, 0, 0);';
+        'INSERT INTO `gameobject_template_addon` (`entry`, `faction`, `flags`, `mingold`, `maxgold`) VALUES\n' +
+        '(' + id + ', 35, 0, 0, 0);';
 
       querySpy.calls.reset();
 
@@ -107,7 +107,7 @@ describe('GameobjectTemplateAddon integration tests', () => {
 
     it('changing all properties and executing the query should correctly work', () => {
       const expectedQuery = 'UPDATE `gameobject_template_addon` SET ' +
-      '`flags` = 1, `mingold` = 2, `maxgold` = 3 WHERE (`entry` = ' + id + ');';
+        '`flags` = 1, `mingold` = 2, `maxgold` = 3 WHERE (`entry` = ' + id + ');';
 
       querySpy.calls.reset();
 

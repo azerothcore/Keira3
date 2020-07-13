@@ -3,16 +3,16 @@ import { OnInit, Component } from '@angular/core';
 import { Subject } from 'rxjs';
 
 @Component({
-  selector: 'keira-modal-confirm',
-  templateUrl: './modal-confirm.component.html',
+    selector: 'keira-modal-confirm',
+    templateUrl: './modal-confirm.component.html',
 })
 export class ModalConfirmComponent implements OnInit {
 
-    public onClose: Subject <boolean>;
+    public onClose: Subject<boolean>;
     title: string;
     content: string;
 
-    constructor(private _bsModalRef: BsModalRef) {}
+    constructor(private _bsModalRef: BsModalRef) { }
 
     public ngOnInit(): void {
         this.onClose = new Subject();

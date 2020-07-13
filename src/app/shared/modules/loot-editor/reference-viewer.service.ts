@@ -7,7 +7,7 @@ import { ReferenceLootTemplate } from '@keira-types/reference-loot-template.type
 @Injectable()
 export class ReferenceViewerService {
 
-  constructor(public queryService: MysqlQueryService) {}
+  constructor(public queryService: MysqlQueryService) { }
 
   getReferenceById(referenceId: number): Observable<ReferenceLootTemplate[]> {
     return this.queryService.query<ReferenceLootTemplate>(

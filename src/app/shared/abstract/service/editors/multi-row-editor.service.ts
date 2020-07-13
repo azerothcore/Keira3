@@ -9,12 +9,12 @@ import { MysqlQueryService } from '../../../services/mysql-query.service';
 export abstract class MultiRowEditorService<T extends TableRow> extends EditorService<T> {
   protected _originalRows: T[] = [];
   protected _newRows: T[] = [];
-  protected _selectedRowId: string|number;
+  protected _selectedRowId: string | number;
   protected _nextRowId = 0;
   protected _errors: string[] = [];
 
   get newRows(): T[] { return this._newRows; }
-  get selectedRowId(): string|number { return this._selectedRowId; }
+  get selectedRowId(): string | number { return this._selectedRowId; }
   get entitySecondIdField(): string { return this._entitySecondIdField; }
   get errors(): string[] { return this._errors; }
 
@@ -49,7 +49,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
         if (!this._loading) {
           if (this._form.dirty && this.isFormIdUnique()) {
             this._newRows[this.getSelectedRowIndex()] = this._form.getRawValue();
-            this._newRows = [ ...this._newRows ];
+            this._newRows = [...this._newRows];
             this._selectedRowId = this.form.controls[this._entitySecondIdField].value;
             this.checkRowsCorrectness();
             this.updateDiffQuery();
@@ -60,9 +60,9 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     );
   }
 
-  protected checkRowsCorrectness(): void {}
+  protected checkRowsCorrectness(): void { }
 
-  private getRowIndex(id: string|number): number {
+  private getRowIndex(id: string | number): number {
     for (let i = 0; i < this._newRows.length; i++) {
       if (id === this._newRows[i][this._entitySecondIdField]) {
         return i;
@@ -76,7 +76,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     return this.getRowIndex(this._selectedRowId);
   }
 
-  protected onReloadSuccessful(data: T[], id: string|number) {
+  protected onReloadSuccessful(data: T[], id: string | number) {
     this.loadNewData(data);
     this._loadedEntityId = id;
     this.updateFullQuery();
@@ -133,7 +133,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     return false;
   }
 
-  onRowSelection({ selected }: { selected: T[]} ): void {
+  onRowSelection({ selected }: { selected: T[] }): void {
     const newId = selected[0][this._entitySecondIdField];
 
     if (newId === this._selectedRowId) {
@@ -170,7 +170,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     this._loading = false;
   }
 
-  protected onRowSelected() {}
+  protected onRowSelected() { }
 
   isRowSelected(row: T): boolean {
     return row[this._entitySecondIdField] === this._selectedRowId;
@@ -182,7 +182,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     }
 
     this._newRows.splice(this.getSelectedRowIndex(), 1);
-    this._newRows = [ ...this._newRows ];
+    this._newRows = [...this._newRows];
 
     this._selectedRowId = null;
     this._form.reset();
@@ -202,7 +202,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
       this.addIdToNewRow(newRow);
     }
     newRow[this._entitySecondIdField] = this.getNextFreeRowId();
-    this._newRows = [ ...this._newRows, { ...newRow }];
+    this._newRows = [...this._newRows, { ...newRow }];
 
     this.updateDiffQuery();
     this.updateFullQuery();
@@ -224,6 +224,6 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   }
 
   refreshDatatable() {
-    this._newRows = [ ...this._newRows ];
+    this._newRows = [...this._newRows];
   }
 }

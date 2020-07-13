@@ -12,7 +12,7 @@ import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-o
 import { PickpocketingLootTemplateService } from './pickpocketing-loot-template.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
-class PickpocketingLootTemplatePage extends MultiRowEditorPageObject<PickpocketingLootTemplateComponent> {}
+class PickpocketingLootTemplatePage extends MultiRowEditorPageObject<PickpocketingLootTemplateComponent> { }
 
 describe('PickpocketingLootTemplate integration tests', () => {
   let component: PickpocketingLootTemplateComponent;

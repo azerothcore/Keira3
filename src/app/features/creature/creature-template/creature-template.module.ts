@@ -39,4 +39,4 @@ import { CreatureSelectorModule } from '@keira-shared/modules/selectors/creature
     CreatureTemplateService,
   ],
 })
-export class CreatureTemplateModule {}
+export class CreatureTemplateModule { }

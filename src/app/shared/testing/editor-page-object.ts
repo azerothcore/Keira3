@@ -19,7 +19,7 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
     this.queryPo = new QueryOutputComponentPage(fixture as ComponentFixture<any>);
   }
 
-  changeAllFields<E extends TableRow>(entity: E, excludedFields: string[] = [] ) {
+  changeAllFields<E extends TableRow>(entity: E, excludedFields: string[] = []) {
     let i = 0;
     for (const field of Object.getOwnPropertyNames(entity)) {
       if (!excludedFields.includes(field)) {

@@ -12,7 +12,7 @@ describe('SingleValueSelectorModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ SingleValueSelectorModule ],
+      imports: [SingleValueSelectorModule],
       providers: [
         BsModalRef,
       ],
@@ -46,7 +46,7 @@ describe('SingleValueSelectorModalComponent', () => {
   });
 
   it('onSelect() should properly set the value', () => {
-    component.onSelect({ selected: [ { value }]});
+    component.onSelect({ selected: [{ value }] });
     expect(component.value).toEqual(value);
   });
 });

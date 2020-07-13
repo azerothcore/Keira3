@@ -9,7 +9,7 @@ import { SpellLootTemplate } from '@keira-types/spell-loot-template.type';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { SpellLootHandlerService } from './spell-loot-handler.service';
 
-class SpellLootTemplatePage extends MultiRowEditorPageObject<SpellLootTemplateComponent> {}
+class SpellLootTemplatePage extends MultiRowEditorPageObject<SpellLootTemplateComponent> { }
 
 describe('SpellLootTemplate integration tests', () => {
   const id = 1234;

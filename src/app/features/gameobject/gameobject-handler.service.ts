@@ -40,7 +40,7 @@ export class GameobjectHandlerService extends HandlerService<GameobjectTemplate>
     );
   }
 
-  select(isNew: boolean, id: string|number|Partial<GameobjectTemplate>, name?: string) {
+  select(isNew: boolean, id: string | number | Partial<GameobjectTemplate>, name?: string) {
     this.saiGameobjectHandler.select(isNew, { entryorguid: +id, source_type: 1 }, null, false);
     super.select(isNew, id, name);
   }

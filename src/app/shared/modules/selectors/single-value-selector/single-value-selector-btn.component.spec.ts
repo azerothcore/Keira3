@@ -9,9 +9,9 @@ describe('SingleValueSelectorBtnComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ SingleValueSelectorModule ],
+      imports: [SingleValueSelectorModule],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

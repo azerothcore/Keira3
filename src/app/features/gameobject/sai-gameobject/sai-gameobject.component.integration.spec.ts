@@ -10,7 +10,7 @@ import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { SaiGameobjectModule } from './sai-gameobject.module';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 
-class SaiGameobjectPage extends MultiRowEditorPageObject<SaiGameobjectComponent> {}
+class SaiGameobjectPage extends MultiRowEditorPageObject<SaiGameobjectComponent> { }
 
 describe('SaiGameobjectComponent integration tests', () => {
   let component: SaiGameobjectComponent;

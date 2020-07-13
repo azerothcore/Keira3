@@ -119,7 +119,7 @@ describe('MultiRowComplexKeyEditorService', () => {
     service['onReloadSuccessful'](mockData);
 
     expect(service.newRows).toEqual(res);
-    expect(service['_newRows']).toEqual([...res ]);
+    expect(service['_newRows']).toEqual([...res]);
     expect(service['_selectedRowId']).toBe(null);
     expect(disableFormSpy).toHaveBeenCalledTimes(1);
     expect(service['_loadedEntityId']).toEqual(handlerService.selected);

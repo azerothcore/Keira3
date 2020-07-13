@@ -11,7 +11,8 @@
 
   <span *ngIf="editorService.loading">Loading...</span>
 
-  <div *ngIf="(lootId > 0 && (type === 3 || type === 25)) && editorService.form && !!editorService.loadedEntityId && !editorService.loading">
+  <div
+    *ngIf="(lootId > 0 && (type === 3 || type === 25)) && editorService.form && !!editorService.loadedEntityId && !editorService.loading">
 
     <keira-loot-editor [editorService]="editorService"></keira-loot-editor>
 

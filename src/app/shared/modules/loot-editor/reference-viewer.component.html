@@ -1,24 +1,18 @@
 <div class="content-block text-center" *ngIf="!!referenceLootRows">
 
   <span class="h6">
-    Referenced loot <strong>{{ referenceId }}</strong> (read-only) <i
-    class="fas fa-info-circle ml-1" [placement]="'auto'"
-    [tooltip]="'Showing the content of this reference_loot_template in read-only mode. To edit edit it, open it using the Reference Loot Editor'"
-  ></i>
+    Referenced loot <strong>{{ referenceId }}</strong> (read-only) <i class="fas fa-info-circle ml-1"
+      [placement]="'auto'"
+      [tooltip]="'Showing the content of this reference_loot_template in read-only mode. To edit edit it, open it using the Reference Loot Editor'"></i>
   </span>
 
   <hr>
 
   <div class="row">
     <div class="col-12">
-      <ngx-datatable
-        class="bootstrap table table-striped text-center datatable-select datatable-icon-list mb-0"
-        [rows]="referenceLootRows"
-        [headerHeight]="DTCFG.headerHeight"
-        [footerHeight]="DTCFG.footerHeight"
-        [columnMode]="DTCFG.columnMode"
-        [rowHeight]="DTCFG.rowHeightWithIcon"
-      >
+      <ngx-datatable class="bootstrap table table-striped text-center datatable-select datatable-icon-list mb-0"
+        [rows]="referenceLootRows" [headerHeight]="DTCFG.headerHeight" [footerHeight]="DTCFG.footerHeight"
+        [columnMode]="DTCFG.columnMode" [rowHeight]="DTCFG.rowHeightWithIcon">
         <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false"></ngx-datatable-column>
         <ngx-datatable-column [minWidth]="42" [maxWidth]="42" [sortable]="false">
           <ng-template let-row="row" ngx-datatable-cell-template>

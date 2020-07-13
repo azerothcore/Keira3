@@ -11,7 +11,7 @@ import { ItemHandlerService } from '../item-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { DisenchantLootTemplateService } from './disenchant-loot-template.service';
 
-class DisenchantLootTemplatePage extends MultiRowEditorPageObject<DisenchantLootTemplateComponent> {}
+class DisenchantLootTemplatePage extends MultiRowEditorPageObject<DisenchantLootTemplateComponent> { }
 
 describe('DisenchantLootTemplate integration tests', () => {
   let component: DisenchantLootTemplateComponent;

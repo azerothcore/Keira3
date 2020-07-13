@@ -14,4 +14,4 @@ const modules = [
   imports: [modules],
   exports: [modules],
 })
-export class SmartScriptsModule {}
+export class SmartScriptsModule { }

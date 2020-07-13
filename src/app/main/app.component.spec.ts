@@ -44,8 +44,8 @@ describe('AppComponent', () => {
         ToastrModule.forRoot(),
       ],
       providers: [
-        { provide : ElectronService, useValue: instance(MockedElectronService) },
-        { provide : MysqlService, useValue: instance(MockedMysqlService) },
+        { provide: ElectronService, useValue: instance(MockedElectronService) },
+        { provide: MysqlService, useValue: instance(MockedMysqlService) },
       ]
     }).compileComponents();
   }));

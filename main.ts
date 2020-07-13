@@ -41,7 +41,7 @@ function createWindow() {
     win.webContents.openDevTools();
   }
 
-  win.on('close', function(e) {
+  win.on('close', function (e) {
     if (!process.env.RUNNING_IN_SPECTRON) {
       const choice = require('electron').dialog.showMessageBoxSync(this,
         {
@@ -65,7 +65,7 @@ function createWindow() {
   });
 
   // open links in the default browser
-  win.webContents.on('new-window', function(event, link) {
+  win.webContents.on('new-window', function (event, link) {
     event.preventDefault();
     shell.openExternal(link);
   });

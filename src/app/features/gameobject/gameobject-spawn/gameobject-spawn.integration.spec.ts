@@ -12,7 +12,7 @@ import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-o
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 
-class GameobjectSpawnPage extends MultiRowEditorPageObject<GameobjectSpawnComponent> {}
+class GameobjectSpawnPage extends MultiRowEditorPageObject<GameobjectSpawnComponent> { }
 
 describe('GameobjectSpawn integration tests', () => {
   let component: GameobjectSpawnComponent;
@@ -105,12 +105,12 @@ describe('GameobjectSpawn integration tests', () => {
 
     it('adding new rows and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `gameobject` WHERE (`id` = ' + id + ') AND (`guid` IN (0, 1, 2));\n' +
-      'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-      '`position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, ' +
-      '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-      '(0, ' + id + ', 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', 0),\n' +
-      '(1, ' + id + ', 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', 0),\n' +
-      '(2, ' + id + ', 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', 0);\n';
+        'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
+        '`position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, ' +
+        '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+        '(0, ' + id + ', 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', 0),\n' +
+        '(1, ' + id + ', 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', 0),\n' +
+        '(2, ' + id + ', 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', 0);\n';
 
       querySpy.calls.reset();
 

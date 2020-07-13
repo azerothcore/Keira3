@@ -257,7 +257,7 @@ describe('SaiEditorComponent integration tests', () => {
       );
     });
 
-    it('generating comments should correctly work', async() => {
+    it('generating comments should correctly work', async () => {
       const saiColIndex = 9;
       const name = 'Shin';
       spyOn(handlerService, 'getName').and.returnValue(of(name));
@@ -451,7 +451,7 @@ describe('SaiEditorComponent integration tests', () => {
     it('shows error on wrong linked event', () => {
 
       const mockRows: Partial<SmartScripts>[] = [
-        { entryorguid: 0, source_type: 0, id: 0, link: 1, event_type: 0  },
+        { entryorguid: 0, source_type: 0, id: 0, link: 1, event_type: 0 },
         { entryorguid: 0, source_type: 0, id: 1, link: 0, event_type: 61 }
       ];
 

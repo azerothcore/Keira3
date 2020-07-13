@@ -30,4 +30,4 @@ import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-
     ItemLimitCategorySelectorBtnComponent,
   ],
 })
-export class ItemLimitCategorySelectorModule {}
+export class ItemLimitCategorySelectorModule { }

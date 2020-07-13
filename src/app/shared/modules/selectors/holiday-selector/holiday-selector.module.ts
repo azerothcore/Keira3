@@ -30,4 +30,4 @@ import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-
     HolidaySelectorBtnComponent,
   ],
 })
-export class HolidaySelectorModule {}
+export class HolidaySelectorModule { }

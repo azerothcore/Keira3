@@ -28,4 +28,4 @@ const modules = [
     SaiGameobjectHandlerService,
   ],
 })
-export class GameobjectModule {}
+export class GameobjectModule { }

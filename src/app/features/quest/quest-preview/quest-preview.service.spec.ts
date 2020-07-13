@@ -13,8 +13,9 @@ import { CreatureQuestenderService } from '../creature-questender/creature-quest
 import { QuestHandlerService } from '../quest-handler.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { DifficultyLevel } from './quest-preview.model';
-import { QUEST_FLAG_DAILY, QUEST_FLAG_WEEKLY, QUEST_FLAG_SPECIAL_MONTHLY,
-         QUEST_FLAG_SPECIAL_REPEATABLE, QUEST_FLAG_REPEATABLE, QUEST_PERIOD
+import {
+  QUEST_FLAG_DAILY, QUEST_FLAG_WEEKLY, QUEST_FLAG_SPECIAL_MONTHLY,
+  QUEST_FLAG_SPECIAL_REPEATABLE, QUEST_FLAG_REPEATABLE, QUEST_PERIOD
 } from '@keira-shared/constants/quest-preview';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { QuestOfferRewardService } from '../quest-offer-reward/quest-offer-reward.service';
@@ -148,7 +149,7 @@ describe('QuestPreviewService', () => {
     expect(service.classes).toEqual([5, 6, 7, 8]);
   });
 
-  it('mysqlQuery', async() => {
+  it('mysqlQuery', async () => {
     const { service, mysqlQueryService, questTemplateService } = setup();
     const mockID = 123;
     const mockItem = '1234';
@@ -181,7 +182,7 @@ describe('QuestPreviewService', () => {
     expect(mysqlQueryService.getReputationRewardByFaction).toHaveBeenCalledWith(null);
   });
 
-  it('sqliteQuery', async() => {
+  it('sqliteQuery', async () => {
     const { service, sqliteQueryService, questTemplateService, questTemplateAddonService } = setup();
     const mockSkillName = 'Mock Skill';
     const mockSkill = 755;
@@ -491,7 +492,7 @@ describe('QuestPreviewService', () => {
       expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockRepValue * (repeatableRate - 1));
     });
 
-    it('getObjective$', async() => {
+    it('getObjective$', async () => {
       const { service, questTemplateService, mysqlQueryService } = setup();
 
       questTemplateService.form.controls.RequiredNpcOrGo1.setValue(0);

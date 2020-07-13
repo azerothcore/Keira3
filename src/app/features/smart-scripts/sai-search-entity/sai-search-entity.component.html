@@ -6,12 +6,7 @@
 
       <div class="radio-container" *ngFor="let key of SAI_SEARCH_TYPES_KEYS">
         <label class="cursor-pointer" [id]="SAI_SEARCH_TYPES[key]">
-          <input
-            [value]="key"
-            [formControlName]="'source_type'"
-            (change)="onSelectedTypeChange()"
-            type="radio"
-          >
+          <input [value]="key" [formControlName]="'source_type'" (change)="onSelectedTypeChange()" type="radio">
           <span class="radio-text">{{ SAI_SEARCH_TYPES[key] }}</span>
         </label>
       </div>
@@ -36,20 +31,15 @@
               Insert the Areatrigger ID
             </ng-container>
             <ng-container *ngIf="isTypeTimedActionlistsSelected">
-              TimedActionlists IDs are composed by the <strong>Creature's Entry</strong> followed by a <strong>2-digits number</strong>
+              TimedActionlists IDs are composed by the <strong>Creature's Entry</strong> followed by a <strong>2-digits
+                number</strong>
             </ng-container>
           </label>
 
-          <keira-creature-selector-btn
-            *ngIf="isTypeCreatureSelected"
-            [control]="entryOrGuidControl"
-            [config]="{  name: 'entryorguid' }"
-          ></keira-creature-selector-btn>
-          <keira-gameobject-selector-btn
-            *ngIf="isTypeGameobjectSelected"
-            [control]="entryOrGuidControl"
-            [config]="{  name: 'entryorguid' }"
-          ></keira-gameobject-selector-btn>
+          <keira-creature-selector-btn *ngIf="isTypeCreatureSelected" [control]="entryOrGuidControl"
+            [config]="{  name: 'entryorguid' }"></keira-creature-selector-btn>
+          <keira-gameobject-selector-btn *ngIf="isTypeGameobjectSelected" [control]="entryOrGuidControl"
+            [config]="{  name: 'entryorguid' }"></keira-gameobject-selector-btn>
 
           <input [formControlName]="'entryorguid'" id="entryorguid" type="number" class="form-control form-control-sm">
 
@@ -61,12 +51,8 @@
 
       <div class="row mt-3">
         <div class="col-12">
-          <button
-            class="btn btn-success float-right"
-            [disabled]="entryOrGuidControl.invalid"
-            (click)="onEdit()"
-            id="edit-btn"
-          >Edit SmartAI</button>
+          <button class="btn btn-success float-right" [disabled]="entryOrGuidControl.invalid" (click)="onEdit()"
+            id="edit-btn">Edit SmartAI</button>
         </div>
       </div>
 

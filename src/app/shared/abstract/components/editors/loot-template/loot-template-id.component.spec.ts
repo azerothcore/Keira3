@@ -35,12 +35,12 @@ describe('LootTemplateComponent', () => {
         ToastrModule.forRoot(),
       ],
       providers: [
-        { provide : MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
         CreatureHandlerService,
         SaiCreatureHandlerService,
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -48,7 +48,7 @@ describe('LootTemplateComponent', () => {
     editorService = TestBed.inject(CreatureLootTemplateService);
     reloadSpy = spyOn(editorService, 'reload');
     getLootIdSpy = spyOn(editorService, 'getLootId');
-    getLootIdSpy.and.returnValue(of([ { lootId } ]));
+    getLootIdSpy.and.returnValue(of([{ lootId }]));
 
     fixture = TestBed.createComponent(CreatureLootTemplateComponent);
     component = fixture.componentInstance;
@@ -63,7 +63,7 @@ describe('LootTemplateComponent', () => {
   it('it should not reload if the lootId is 0', () => {
     getLootIdSpy.calls.reset();
     reloadSpy.calls.reset();
-    getLootIdSpy.and.returnValue(of([ { lootId: 0 } ]));
+    getLootIdSpy.and.returnValue(of([{ lootId: 0 }]));
 
     component.ngOnInit();
 

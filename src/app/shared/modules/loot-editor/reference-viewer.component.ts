@@ -31,12 +31,12 @@ export class ReferenceViewerComponent extends SubscriptionHandler implements OnC
     this.nestedReferenceIds = [];
 
     this.subscriptions.push(this.service.getReferenceById(this.referenceId)?.subscribe((result: ReferenceLootTemplate[]) => {
-        this.referenceLootRows = result;
+      this.referenceLootRows = result;
 
-        this.nestedReferenceIds = this.referenceLootRows
-          .filter(referenceLootRow => referenceLootRow.Reference > 0)
-          .map(referenceLootRow => referenceLootRow.Reference);
-      }),
+      this.nestedReferenceIds = this.referenceLootRows
+        .filter(referenceLootRow => referenceLootRow.Reference > 0)
+        .map(referenceLootRow => referenceLootRow.Reference);
+    }),
     );
   }
 

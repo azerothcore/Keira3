@@ -17,7 +17,7 @@ describe('SaiEditorComponent', () => {
         RouterTestingModule,
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

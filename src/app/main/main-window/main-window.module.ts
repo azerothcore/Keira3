@@ -18,4 +18,4 @@ import { SidebarModule } from './sidebar/sidebar.module';
     MainWindowComponent,
   ],
 })
-export class MainWindowModule {}
+export class MainWindowModule { }

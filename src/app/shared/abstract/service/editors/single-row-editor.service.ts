@@ -85,7 +85,7 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     }
   }
 
-  protected onCreatingNewEntity(id: string|number) {
+  protected onCreatingNewEntity(id: string | number) {
     this._originalValue = new this._entityClass();
 
     // TODO: get rid of this type hack, see: https://github.com/microsoft/TypeScript/issues/32704
@@ -118,7 +118,7 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     this._loading = false;
   }
 
-  protected onReloadSuccessful(data: T[], id: string|number) {
+  protected onReloadSuccessful(data: T[], id: string | number) {
     if (data.length > 0) {
       // we are loading an existing entity
       this.onLoadedExistingEntity(data[0]);

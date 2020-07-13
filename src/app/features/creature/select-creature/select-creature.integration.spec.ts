@@ -149,8 +149,8 @@ describe('SelectCreature integration tests', () => {
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
     const results: Partial<CreatureTemplate>[] = [
-      { entry: 1, name: 'Shin',   subname: 'Developer',    minlevel: 1, maxlevel: 80, AIName: '', ScriptName: 'Shin.cpp'   },
-      { entry: 2, name: 'Helias', subname: 'Developer',    minlevel: 1, maxlevel: 80, AIName: '', ScriptName: 'Helias.cpp' },
+      { entry: 1, name: 'Shin', subname: 'Developer', minlevel: 1, maxlevel: 80, AIName: '', ScriptName: 'Shin.cpp' },
+      { entry: 2, name: 'Helias', subname: 'Developer', minlevel: 1, maxlevel: 80, AIName: '', ScriptName: 'Helias.cpp' },
       { entry: 3, name: 'Kalhac', subname: 'Mathmatician', minlevel: 1, maxlevel: 80, AIName: '', ScriptName: 'Kalhac.cpp' },
     ];
     querySpy.calls.reset();

@@ -41,4 +41,4 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
     GameobjectSpawnService,
   ],
 })
-export class GameobjectSpawnModule {}
+export class GameobjectSpawnModule { }

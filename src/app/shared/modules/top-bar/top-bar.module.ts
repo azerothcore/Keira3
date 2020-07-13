@@ -14,4 +14,4 @@ import { TopBarComponent } from './top-bar.component';
     TopBarComponent,
   ],
 })
-export class TopBarModule {}
+export class TopBarModule { }

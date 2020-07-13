@@ -8,9 +8,9 @@ describe('UnsavedIconComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UnsavedIconComponent ]
+      declarations: [UnsavedIconComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

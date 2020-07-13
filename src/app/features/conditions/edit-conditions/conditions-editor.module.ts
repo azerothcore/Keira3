@@ -31,4 +31,4 @@ import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/singl
     ConditionsService,
   ],
 })
-export class ConditionsEditorModule {}
+export class ConditionsEditorModule { }

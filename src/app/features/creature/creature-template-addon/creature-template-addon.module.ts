@@ -31,4 +31,4 @@ import { CreatureTemplateAddonService } from './creature-template-addon.service'
     CreatureTemplateAddonService,
   ],
 })
-export class CreatureTemplateAddonModule {}
+export class CreatureTemplateAddonModule { }

@@ -29,4 +29,4 @@ import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-
     SelectConditionsComponent,
   ],
 })
-export class SelectConditionsModule {}
+export class SelectConditionsModule { }

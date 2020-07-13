@@ -58,13 +58,13 @@ class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
 describe('QuestPreviewComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ QuestPreviewComponent ],
+      declarations: [QuestPreviewComponent],
       imports: [
         RouterTestingModule,
         QuestModule,
       ],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   function setup() {
@@ -168,7 +168,7 @@ describe('QuestPreviewComponent', () => {
     page.removeElement();
   });
 
-  it('should show required skill', async() => {
+  it('should show required skill', async () => {
     const { fixture, service, page } = setup();
     spyOnProperty(service, 'requiredSkill$', 'get').and.returnValue(Promise.resolve('Jewelcrafting'));
 
@@ -186,7 +186,7 @@ describe('QuestPreviewComponent', () => {
     page.removeElement();
   });
 
-  it('should show provided item (start item)', async() => {
+  it('should show provided item (start item)', async () => {
     const { fixture, service, page } = setup();
     const mockStartItem = 123456;
     const mockStartItemName = 'Sword of AzerothCore';
@@ -202,7 +202,7 @@ describe('QuestPreviewComponent', () => {
     page.removeElement();
   });
 
-  it('should show rewardXP', async() => {
+  it('should show rewardXP', async () => {
     const { fixture, service, page } = setup();
     const questTemplate = createMockObject({ RewardXPDifficulty: 2, QuestLevel: 10 }, QuestTemplate);
     spyOnProperty(service, 'rewardXP$', 'get').and.returnValue(Promise.resolve('200'));
@@ -250,7 +250,7 @@ describe('QuestPreviewComponent', () => {
     fixture.debugElement.nativeElement.remove();
   });
 
-  it('should show npcOrGoObjectives', async() => {
+  it('should show npcOrGoObjectives', async () => {
     const { fixture, page, service } = setup();
     const getObjectiveCountSpy: Spy = spyOn(service, 'getObjectiveCount').and.returnValue('(1)');
     const getObjTextSpy: Spy = spyOn(service, 'getObjText').and.returnValue('Mock Objective');
@@ -276,7 +276,7 @@ describe('QuestPreviewComponent', () => {
   });
 
 
-  it('should show itemObjectives', async() => {
+  it('should show itemObjectives', async () => {
     const { fixture, page, service, mysqlQueryService } = setup();
     const getObjItemCountSpy: Spy = spyOn(service, 'getObjItemCount').and.returnValue('(2)');
     const questTemplate = createMockObject({ RequiredItemId1: 1 }, QuestTemplate);
@@ -296,7 +296,7 @@ describe('QuestPreviewComponent', () => {
     fixture.debugElement.nativeElement.remove();
   });
 
-  it('should show RequiredFaction', async() => {
+  it('should show RequiredFaction', async () => {
     const { fixture, page, service, sqliteQueryService } = setup();
     const questTemplate = createMockObject({ RequiredFactionId1: 1, RequiredFactionValue1: 900 }, QuestTemplate);
     spyOn(service, 'getFactionByValue').and.returnValue('(Neutral)');
@@ -416,7 +416,7 @@ describe('QuestPreviewComponent', () => {
       page.removeElement();
     });
 
-    it('should correctly show the reward spell', async() => {
+    it('should correctly show the reward spell', async () => {
       const { fixture, service, page, sqliteQueryService } = setup();
       const rewardSpellSpy = spyOn(service, 'rewardSpell');
       const questTemplate = createMockObject({ rewardSpell: 123 }, QuestTemplate);
@@ -441,7 +441,7 @@ describe('QuestPreviewComponent', () => {
       page.removeElement();
     });
 
-    it('should correctly show the reward items', async() => {
+    it('should correctly show the reward items', async () => {
       const { fixture, service, page, mysqlQueryService } = setup();
       const isRewardItemsSpy = spyOn(service, 'isRewardItems');
       const questTemplate = createMockObject({ RewardItem1: 123, RewardAmount1: 1 }, QuestTemplate);
@@ -466,7 +466,7 @@ describe('QuestPreviewComponent', () => {
       page.removeElement();
     });
 
-    it('should correctly show the reward choice items', async() => {
+    it('should correctly show the reward choice items', async () => {
       const { fixture, service, page, mysqlQueryService } = setup();
       const isRewardChoiceItemsSpy = spyOn(service, 'isRewardChoiceItems');
       const questTemplate = createMockObject({ RewardChoiceItemID1: 123, RewardChoiceItemQuantity1: 1 }, QuestTemplate);

@@ -43,7 +43,7 @@ describe('SearchSelectorModalComponent', () => {
     const value = 'mock-value';
     component['entityIdField'] = field;
 
-    component.onSelect({ selected: [{ [field]: value }]});
+    component.onSelect({ selected: [{ [field]: value }] });
 
     expect(component.value).toEqual(value);
   });

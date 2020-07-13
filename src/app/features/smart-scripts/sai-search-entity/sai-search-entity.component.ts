@@ -46,7 +46,7 @@ export class SaiSearchEntityComponent {
 
   constructor(
     private handlerService: SaiHandlerService,
-  ) {}
+  ) { }
 
   onSelectedTypeChange() {
     this.entryOrGuidControl.setValue(null);

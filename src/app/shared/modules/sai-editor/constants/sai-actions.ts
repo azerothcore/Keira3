@@ -184,7 +184,7 @@ SAI_ACTION_TOOLTIPS[SAI_ACTIONS.TALK] = 'Creature says a creature_text line';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.TALK] = 'GroupId';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.TALK] = 'Duration';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.TALK] = 'Target';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.TALK]  = 'This is creature_text.GroupID';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.TALK] = 'This is creature_text.GroupID';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.TALK] = 'Duration (milliseconds) to wait before SMART_EVENT_TEXT_OVER event is triggered';
 SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.TALK] = '0 = Try to trigger talk of the target; ' +
   '1 = Set target as talk target (used for $vars in texts and whisper target)';
@@ -203,7 +203,7 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.MORPH_TO_ENTRY_OR_MODEL] = 'ModelId';
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SOUND] = 'Play a sound';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SOUND] = 'SoundId';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SOUND] = 'OnlySelf';
-SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SOUND]  = '0 = sends sound to everyone in visibility range; 1 = sends sound to self';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SOUND] = '0 = sends sound to everyone in visibility range; 1 = sends sound to self';
 
 // SMART_ACTION_PLAY_EMOTE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.PLAY_EMOTE] = 'Play en emote';
@@ -287,12 +287,12 @@ SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.REMOVE_UNIT_FLAG] = SAI_ACTION_PARAM2_TOO
 // SMART_ACTION_AUTO_ATTACK
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.AUTO_ATTACK] = 'Stop or Continue Automatic Attack.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.AUTO_ATTACK] = 'StartOrStop';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.AUTO_ATTACK]  = '0 = the creature will stop attacking its current target. 1 = starts/continues to attack its target';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.AUTO_ATTACK] = '0 = the creature will stop attacking its current target. 1 = starts/continues to attack its target';
 
 // SMART_ACTION_ALLOW_COMBAT_MOVEMENT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ALLOW_COMBAT_MOVEMENT] = 'Allow or disallow moving while the creature is in combat';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ALLOW_COMBAT_MOVEMENT] = 'Allow';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.ALLOW_COMBAT_MOVEMENT]  = '0 = the creature is no longer able to move AT ALL during combat; 1 = it\'s allowed to normally walk during combat';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.ALLOW_COMBAT_MOVEMENT] = '0 = the creature is no longer able to move AT ALL during combat; 1 = it\'s allowed to normally walk during combat';
 
 // SMART_ACTION_SET_EVENT_PHASE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_EVENT_PHASE] = 'Set the creature\'s event phasemask to a new value (warning: this is NOT the creature\'s actual phase!)';
@@ -310,7 +310,7 @@ SAI_ACTION_TOOLTIPS[SAI_ACTIONS.EVADE] = 'Makes the creature evade and therefore
 // SMART_ACTION_FLEE_FOR_ASSIST
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.FLEE_FOR_ASSIST] = 'Makes the creature flee for assistance of nearby friendly units';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.FLEE_FOR_ASSIST] = 'SayFleeText';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.FLEE_FOR_ASSIST]  = '0 or 1 - determines whether or not the creature should say something along the lines of "NAME starts fleeing ..." when it flees';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.FLEE_FOR_ASSIST] = '0 or 1 - determines whether or not the creature should say something along the lines of "NAME starts fleeing ..." when it flees';
 
 // SMART_ACTION_CALL_GROUPEVENTHAPPENS
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CALL_GROUPEVENTHAPPENS] = 'Complete a quest requirement (by entry) of our current (player) target.';
@@ -377,7 +377,7 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_INST_DATA64] = 'Data';
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.UPDATE_TEMPLATE] = 'Updates the creature\'s entry to a new one, making it become a completely different unit.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.UPDATE_TEMPLATE] = 'CreatureId';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.UPDATE_TEMPLATE] = 'UpdateLevel';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.UPDATE_TEMPLATE]  = 'The creature entry we want to become (creature_template.entry)';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.UPDATE_TEMPLATE] = 'The creature entry we want to become (creature_template.entry)';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.UPDATE_TEMPLATE] = ''; // TODO
 
 // SMART_ACTION_DIE
@@ -393,7 +393,7 @@ SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CALL_FOR_HELP] = 'Makes the creature cry/call fo
   'which makes nearby creatures that are not yet in combat and are able to assist this creature, run to this creature and attack its attackers.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_FOR_HELP] = 'Radius';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.CALL_FOR_HELP] = 'SayText';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.CALL_FOR_HELP]  = 'Radius in yards that other creatures must be to acknowledge the cry for help';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.CALL_FOR_HELP] = 'Radius in yards that other creatures must be to acknowledge the cry for help';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.CALL_FOR_HELP] = '0 or 1: whether or not we should automatically make the creature emote "NAME calls for help!"';
 
 // SMART_ACTION_SET_SHEATH
@@ -472,7 +472,7 @@ SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.WP_START] = 'Repeat';
 SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.WP_START] = 'QuestId';
 SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.WP_START] = 'DespawnTime';
 SAI_ACTION_PARAM6_NAMES[SAI_ACTIONS.WP_START] = 'ReactState';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.WP_START]  = '0 = the creature will follow the path walking at a normal speed; 1 = it will be running at a higher speed';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.WP_START] = '0 = the creature will follow the path walking at a normal speed; 1 = it will be running at a higher speed';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.WP_START] = 'waypoints.entry';
 SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.WP_START] = 'Repeat the path when the it\'s finished';
 SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.WP_START] = 'Quest entry to give credit for once the path has finished. Will use the target type and take all player entities from this list';
@@ -489,7 +489,7 @@ SAI_ACTION_TOOLTIPS[SAI_ACTIONS.WP_STOP] = 'Stops the waypoint path the creature
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.WP_STOP] = 'DespawnTime';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.WP_STOP] = 'QuestId';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.WP_STOP] = 'FailQuest';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.WP_STOP]  = 'Time in milliseconds after which the creature despawns when the path was stopped';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.WP_STOP] = 'Time in milliseconds after which the creature despawns when the path was stopped';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.WP_STOP] = 'Quest entry to count as \'failed\' (based on third parameter). Does not have to be set if third parameter is set to 0.';
 SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.WP_STOP] = 'If set to 1, we will mark the quest in parameter 2 to failed for our player targets.';
 
@@ -581,7 +581,7 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.EQUIP] = 'Slotmask';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.EQUIP] = 'ItemId 1';
 SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.EQUIP] = 'ItemId 2';
 SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.EQUIP] = 'ItemId 3';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.EQUIP]  = 'Entry of creature_equip_template. If left at 0, either parameter 3, 4 or 5 (or all, or just two) must be filled in with item entries to equip.';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.EQUIP] = 'Entry of creature_equip_template. If left at 0, either parameter 3, 4 or 5 (or all, or just two) must be filled in with item entries to equip.';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.EQUIP] = 'Slotmask we show. Default is 0 and means all items are shown. If you only want to show one specific item (or two instead of all three), this field should be used as a bitmask starting at 1. Possible bits are 1, 2 and 4.';
 SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.EQUIP] = 'ItemId one (main hand slot) (only has use if the first parameter is 0)';
 SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.EQUIP] = 'ItemId two (off hand slot) (only has use if the first parameter is 0)';

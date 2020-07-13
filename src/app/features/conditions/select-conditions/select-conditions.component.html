@@ -13,21 +13,25 @@
         <div class="form-group row">
           <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="SourceTypeOrReferenceId">Source Type:</label>
           <div class="col-sm-8 col-md-9 col-lg-10">
-            <select [formControlName]="'SourceTypeOrReferenceId'" class="form-control form-control-sm" id="SourceTypeOrReferenceId">
-              <option *ngFor="let key of CONDITION_SOURCE_TYPES_KEYS" [ngValue]="key" [label]="CONDITION_SOURCE_TYPES[key]"></option>
+            <select [formControlName]="'SourceTypeOrReferenceId'" class="form-control form-control-sm"
+              id="SourceTypeOrReferenceId">
+              <option *ngFor="let key of CONDITION_SOURCE_TYPES_KEYS" [ngValue]="key"
+                [label]="CONDITION_SOURCE_TYPES[key]"></option>
             </select>
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="SourceGroup">Source Group:</label>
           <div class="col-sm-8 col-md-9 col-lg-10">
-            <input [formControlName]="'SourceGroup'" type="number" class="form-control form-control-sm" id="SourceGroup" placeholder="SourceGroup">
+            <input [formControlName]="'SourceGroup'" type="number" class="form-control form-control-sm" id="SourceGroup"
+              placeholder="SourceGroup">
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="SourceEntry">Source Entry:</label>
           <div class="col-sm-8 col-md-9 col-lg-10">
-            <input [formControlName]="'SourceEntry'" type="number" class="form-control form-control-sm" id="SourceEntry" placeholder="SourceEntry">
+            <input [formControlName]="'SourceEntry'" type="number" class="form-control form-control-sm" id="SourceEntry"
+              placeholder="SourceEntry">
           </div>
         </div>
       </ng-container>
@@ -38,12 +42,8 @@
         </div>
         <div class="col-sm-12 col-md-6 mt-1 mt-md-0">
           <keira-search-button [searchService]="selectService"></keira-search-button>
-          <button
-            class="btn btn-success btn-sm mt-1 ml-2 mt-sm-0"
-            id="create-new-btn"
-            [disabled]="selectService.queryForm.invalid"
-            (click)="onCreateNew()"
-          >Create new</button>
+          <button class="btn btn-success btn-sm mt-1 ml-2 mt-sm-0" id="create-new-btn"
+            [disabled]="selectService.queryForm.invalid" (click)="onCreateNew()">Create new</button>
         </div>
       </div>
       <code [highlight]="selectService.query"></code>
@@ -51,17 +51,10 @@
 
     <div *ngIf="selectService.rows">
 
-      <ngx-datatable
-        class="bootstrap table table-striped text-center datatable-select"
-        [rows]="selectService.rows"
-        [headerHeight]="DTCFG.headerHeight"
-        [footerHeight]="DTCFG.footerHeight"
-        [columnMode]="DTCFG.columnMode"
-        [rowHeight]="DTCFG.rowHeight"
-        [limit]="DTCFG.limit"
-        [selectionType]="DTCFG.selectionType"
-        (select)='onSelect($event)'
-      >
+      <ngx-datatable class="bootstrap table table-striped text-center datatable-select" [rows]="selectService.rows"
+        [headerHeight]="DTCFG.headerHeight" [footerHeight]="DTCFG.footerHeight" [columnMode]="DTCFG.columnMode"
+        [rowHeight]="DTCFG.rowHeight" [limit]="DTCFG.limit" [selectionType]="DTCFG.selectionType"
+        (select)='onSelect($event)'>
         <ngx-datatable-column name="Type" prop="SourceTypeOrReferenceId" [minWidth]="60"></ngx-datatable-column>
         <ngx-datatable-column name="Group" prop="SourceGroup"></ngx-datatable-column>
         <ngx-datatable-column name="Entry" prop="SourceEntry"></ngx-datatable-column>

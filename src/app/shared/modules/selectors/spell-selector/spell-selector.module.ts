@@ -30,4 +30,4 @@ import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-
     SpellSelectorBtnComponent,
   ],
 })
-export class SpellSelectorModule {}
+export class SpellSelectorModule { }

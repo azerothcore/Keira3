@@ -1,13 +1,13 @@
 import { Option } from '../../types/general';
 
 export const STAT_TYPE: Option[] = [
-  { value: 0,  name: 'MANA' },
-  { value: 1,  name: 'HEALTH' },
-  { value: 3,  name: 'AGILITY' },
-  { value: 4,  name: 'STRENGTH' },
-  { value: 5,  name: 'INTELLECT' },
-  { value: 6,  name: 'SPIRIT' },
-  { value: 7,  name: 'STAMINA' },
+  { value: 0, name: 'MANA' },
+  { value: 1, name: 'HEALTH' },
+  { value: 3, name: 'AGILITY' },
+  { value: 4, name: 'STRENGTH' },
+  { value: 5, name: 'INTELLECT' },
+  { value: 6, name: 'SPIRIT' },
+  { value: 7, name: 'STAMINA' },
   { value: 12, name: 'DEFENSE_SKILL_RATING' },
   { value: 13, name: 'DODGE_RATING' },
   { value: 14, name: 'PARRY_RATING' },

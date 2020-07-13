@@ -33,4 +33,4 @@ import { FactionSelectorModule } from '@keira-shared/modules/selectors/faction-s
     CreatureOnkillReputationService,
   ],
 })
-export class CreatureOnkillReputationModule {}
+export class CreatureOnkillReputationModule { }

@@ -5,10 +5,10 @@ import { MultiRowEditorService } from '@keira-abstract/service/editors/multi-row
 import { CreatureHandlerService } from '../creature-handler.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import {
-NPC_VENDOR_ID,
-NPC_VENDOR_ID_2,
-NPC_VENDOR_TABLE,
-NpcVendor
+  NPC_VENDOR_ID,
+  NPC_VENDOR_ID_2,
+  NPC_VENDOR_TABLE,
+  NpcVendor
 } from '@keira-types/npc-vendor.type';
 
 @Injectable()

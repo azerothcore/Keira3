@@ -101,28 +101,28 @@ describe('SaiHandlerService', () => {
     // TODO: this test case should be refactored and split in several cases
     for (const test of [
       {
-        source_type: SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST,  entryorguid: 123, name: mockName,
-        returnValue: [ { name: mockName } ],
+        source_type: SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST, entryorguid: 123, name: mockName,
+        returnValue: [{ name: mockName }],
         expected: mockName,
       },
       {
-        source_type: SAI_TYPES.SAI_TYPE_CREATURE,  entryorguid: -123, name: mockName,
-        returnValue: [ { name: mockName } ],
+        source_type: SAI_TYPES.SAI_TYPE_CREATURE, entryorguid: -123, name: mockName,
+        returnValue: [{ name: mockName }],
         expected: mockName,
       },
       {
-        source_type: SAI_TYPES.SAI_TYPE_CREATURE,  entryorguid: 123, name: mockName,
+        source_type: SAI_TYPES.SAI_TYPE_CREATURE, entryorguid: 123, name: mockName,
         returnValue: [],
         expected: null,
       },
       {
-        source_type: SAI_TYPES.SAI_TYPE_GAMEOBJECT,  entryorguid: -123, name: mockName,
-        returnValue: [ { name: mockName } ],
+        source_type: SAI_TYPES.SAI_TYPE_GAMEOBJECT, entryorguid: -123, name: mockName,
+        returnValue: [{ name: mockName }],
         expected: mockName,
       },
       {
-        source_type: SAI_TYPES.SAI_TYPE_GAMEOBJECT,  entryorguid: 123, name: mockName,
-        returnValue: [ { name: mockName } ],
+        source_type: SAI_TYPES.SAI_TYPE_GAMEOBJECT, entryorguid: 123, name: mockName,
+        returnValue: [{ name: mockName }],
         expected: mockName,
       },
     ]) {

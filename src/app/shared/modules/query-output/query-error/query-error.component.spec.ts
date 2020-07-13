@@ -8,9 +8,9 @@ describe('QueryErrorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ QueryErrorComponent ]
+      declarations: [QueryErrorComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

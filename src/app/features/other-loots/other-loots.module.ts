@@ -16,4 +16,4 @@ const modules = [
   imports: [modules],
   exports: [modules],
 })
-export class OtherLootsModule {}
+export class OtherLootsModule { }

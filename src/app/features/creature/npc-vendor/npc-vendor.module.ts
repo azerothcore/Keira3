@@ -39,4 +39,4 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
     NpcVendorService,
   ],
 })
-export class NpcVendorModule {}
+export class NpcVendorModule { }

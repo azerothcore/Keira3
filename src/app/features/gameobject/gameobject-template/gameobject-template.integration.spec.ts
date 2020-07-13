@@ -11,7 +11,7 @@ import { GameobjectTemplate } from '@keira-types/gameobject-template.type';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
-class GameobjectTemplatePage extends EditorPageObject<GameobjectTemplateComponent> {}
+class GameobjectTemplatePage extends EditorPageObject<GameobjectTemplateComponent> { }
 
 describe('GameobjectTemplate integration tests', () => {
   let component: GameobjectTemplateComponent;
@@ -23,12 +23,12 @@ describe('GameobjectTemplate integration tests', () => {
 
   const id = 1234;
   const expectedFullCreateQuery = 'DELETE FROM `gameobject_template` WHERE (`entry` = ' + id + ');\n' +
-  'INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, ' +
-  '`unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, ' +
-  '`Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, ' +
-  '`Data21`, `Data22`, `Data23`, `AIName`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-  '(' + id + ', 0, 0, \'\', \'\', \'\', \'\', 1, 0, 0, 0, 0, 0, 0, 0, ' +
-  '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', \'\', 0);';
+    'INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, ' +
+    '`unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, ' +
+    '`Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, ' +
+    '`Data21`, `Data22`, `Data23`, `AIName`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+    '(' + id + ', 0, 0, \'\', \'\', \'\', \'\', 1, 0, 0, 0, 0, 0, 0, 0, ' +
+    '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', \'\', 0);';
 
   const originalEntity = new GameobjectTemplate();
   originalEntity.entry = id;
@@ -86,12 +86,12 @@ describe('GameobjectTemplate integration tests', () => {
 
     it('changing a property and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `gameobject_template` WHERE (`entry` = ' + id + ');\n' +
-      'INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, ' +
-      '`unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, ' +
-      '`Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, ' +
-      '`Data21`, `Data22`, `Data23`, `AIName`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-      '(' + id + ', 0, 0, \'Helias\', \'\', \'\', \'\', 1, 0, 0, 0, 0, 0, 0, 0, ' +
-      '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', \'\', 0);';
+        'INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, ' +
+        '`unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, ' +
+        '`Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, ' +
+        '`Data21`, `Data22`, `Data23`, `AIName`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+        '(' + id + ', 0, 0, \'Helias\', \'\', \'\', \'\', 1, 0, 0, 0, 0, 0, 0, 0, ' +
+        '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', \'\', 0);';
 
       querySpy.calls.reset();
 
@@ -115,11 +115,11 @@ describe('GameobjectTemplate integration tests', () => {
 
     it('changing all properties and executing the query should correctly work', () => {
       const expectedQuery = 'UPDATE `gameobject_template` SET `displayId` = 1, `name` = \'2\', `IconName` = \'3\', ' +
-      '`castBarCaption` = \'4\', `unk1` = \'5\', `size` = 6, `Data0` = 7, `Data1` = 8, `Data2` = 9, `Data3` = 10, ' +
-      '`Data4` = 11, `Data5` = 12, `Data6` = 13, `Data7` = 14, `Data8` = 15, `Data9` = 16, `Data10` = 17, `Data11` = 18, ' +
-      '`Data12` = 19, `Data13` = 20, `Data14` = 21, `Data15` = 22, `Data16` = 23, `Data17` = 24, `Data18` = 25, ' +
-      '`Data19` = 26, `Data20` = 27, `Data21` = 28, `Data22` = 29, `Data23` = 30, `AIName` = \'31\', ' +
-      '`ScriptName` = \'32\' WHERE (`entry` = 1234);';
+        '`castBarCaption` = \'4\', `unk1` = \'5\', `size` = 6, `Data0` = 7, `Data1` = 8, `Data2` = 9, `Data3` = 10, ' +
+        '`Data4` = 11, `Data5` = 12, `Data6` = 13, `Data7` = 14, `Data8` = 15, `Data9` = 16, `Data10` = 17, `Data11` = 18, ' +
+        '`Data12` = 19, `Data13` = 20, `Data14` = 21, `Data15` = 22, `Data16` = 23, `Data17` = 24, `Data18` = 25, ' +
+        '`Data19` = 26, `Data20` = 27, `Data21` = 28, `Data22` = 29, `Data23` = 30, `AIName` = \'31\', ' +
+        '`ScriptName` = \'32\' WHERE (`entry` = 1234);';
 
       querySpy.calls.reset();
 

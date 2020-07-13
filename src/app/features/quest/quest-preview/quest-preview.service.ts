@@ -162,7 +162,7 @@ export class QuestPreviewService {
     }
 
     if (flags & QUEST_FLAG_WEEKLY) {
-     return QUEST_PERIOD.WEEKLY;
+      return QUEST_PERIOD.WEEKLY;
     }
 
     if (specialFlags & QUEST_FLAG_SPECIAL_MONTHLY) {
@@ -279,7 +279,7 @@ export class QuestPreviewService {
   }
 
   getRepReward$(field: number | string): Promise<QuestReputationReward[]> {
-    return this.mysqlQueryService.getReputationRewardByFaction( this.questTemplate[`RewardFactionID${field}`] );
+    return this.mysqlQueryService.getReputationRewardByFaction(this.questTemplate[`RewardFactionID${field}`]);
   }
 
   getRewardReputation(field: string | number, reputationReward: QuestReputationReward[]): number {
@@ -295,7 +295,7 @@ export class QuestPreviewService {
       const dailyType = this.getPeriodicQuest();
 
       if (!!dailyType) {
-        if (dailyType === QUEST_PERIOD.DAILY  && reputationReward[0].quest_daily_rate !== 1) {
+        if (dailyType === QUEST_PERIOD.DAILY && reputationReward[0].quest_daily_rate !== 1) {
           return (Number(value) * (reputationReward[0].quest_daily_rate - 1));
         }
 
@@ -377,10 +377,10 @@ export class QuestPreviewService {
 
   isRewardReputation(): boolean {
     return this.isFieldAvailable('RewardFactionID', 'RewardFactionValue', 1) ||
-           this.isFieldAvailable('RewardFactionID', 'RewardFactionValue', 2) ||
-           this.isFieldAvailable('RewardFactionID', 'RewardFactionValue', 3) ||
-           this.isFieldAvailable('RewardFactionID', 'RewardFactionValue', 4) ||
-           this.isFieldAvailable('RewardFactionID', 'RewardFactionValue', 5);
+      this.isFieldAvailable('RewardFactionID', 'RewardFactionValue', 2) ||
+      this.isFieldAvailable('RewardFactionID', 'RewardFactionValue', 3) ||
+      this.isFieldAvailable('RewardFactionID', 'RewardFactionValue', 4) ||
+      this.isFieldAvailable('RewardFactionID', 'RewardFactionValue', 5);
   }
 
   isGains(): boolean {
@@ -389,16 +389,16 @@ export class QuestPreviewService {
 
   isRewardItems(): boolean {
     return this.isFieldAvailable('RewardItem', 'RewardAmount', 1) ||
-           this.isFieldAvailable('RewardItem', 'RewardAmount', 2) ||
-           this.isFieldAvailable('RewardItem', 'RewardAmount', 3) ||
-           this.isFieldAvailable('RewardItem', 'RewardAmount', 4);
+      this.isFieldAvailable('RewardItem', 'RewardAmount', 2) ||
+      this.isFieldAvailable('RewardItem', 'RewardAmount', 3) ||
+      this.isFieldAvailable('RewardItem', 'RewardAmount', 4);
   }
 
   isRewardChoiceItems(): boolean {
     return this.isFieldAvailable('RewardChoiceItemID', 'RewardChoiceItemQuantity', 1) ||
-           this.isFieldAvailable('RewardChoiceItemID', 'RewardChoiceItemQuantity', 2) ||
-           this.isFieldAvailable('RewardChoiceItemID', 'RewardChoiceItemQuantity', 3) ||
-           this.isFieldAvailable('RewardChoiceItemID', 'RewardChoiceItemQuantity', 4);
+      this.isFieldAvailable('RewardChoiceItemID', 'RewardChoiceItemQuantity', 2) ||
+      this.isFieldAvailable('RewardChoiceItemID', 'RewardChoiceItemQuantity', 3) ||
+      this.isFieldAvailable('RewardChoiceItemID', 'RewardChoiceItemQuantity', 4);
   }
 
   isRewardMoney(): boolean {

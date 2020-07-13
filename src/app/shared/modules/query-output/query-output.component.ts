@@ -13,11 +13,11 @@ export class QueryOutputComponent<T extends TableRow> {
   @Input() docUrl: string;
   @Input() editorService: EditorService<T>;
   @Output() executeQuery = new EventEmitter<string>();
-  selectedQuery: 'diff'|'full' = 'diff';
+  selectedQuery: 'diff' | 'full' = 'diff';
 
   constructor(
     private clipboardService: ClipboardService,
-  ) {}
+  ) { }
 
   showFullQuery(): boolean {
     if (this.editorService.isNew) {

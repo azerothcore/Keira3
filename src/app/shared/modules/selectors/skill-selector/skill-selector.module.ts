@@ -30,4 +30,4 @@ import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-
     SkillSelectorBtnComponent,
   ],
 })
-export class SkillSelectorModule {}
+export class SkillSelectorModule { }

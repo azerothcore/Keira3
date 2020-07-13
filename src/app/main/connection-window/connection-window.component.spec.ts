@@ -61,10 +61,11 @@ describe('ConnectionWindowComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ ConnectionWindowModule ],
+      imports: [ConnectionWindowModule],
       providers: [
-        { provide : MysqlService, useValue: instance(MockedMysqlService) },
-        { provide : ConnectionWindowService, useValue: jasmine.createSpyObj('ConnectionWindowService', [
+        { provide: MysqlService, useValue: instance(MockedMysqlService) },
+        {
+          provide: ConnectionWindowService, useValue: jasmine.createSpyObj('ConnectionWindowService', [
             'getConfigs', 'removeAllConfigs', 'saveNewConfig'
           ]),
         },

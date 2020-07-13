@@ -22,4 +22,4 @@ import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.
     PickpocketingLootTemplateService,
   ],
 })
-export class PickpocketingLootTemplateModule {}
+export class PickpocketingLootTemplateModule { }

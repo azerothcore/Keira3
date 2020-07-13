@@ -128,6 +128,6 @@ export class MockMultiRowComplexKeyEditorService extends MultiRowComplexKeyEdito
     );
   }
 
-  protected updateFullQuery(): void {}
+  protected updateFullQuery(): void { }
 
 }

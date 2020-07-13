@@ -16,4 +16,4 @@ export const MockedMysqlService = mock(MysqlService);
 export const MockedElectronService = mock(ElectronService);
 
 // tslint:disable-next-line:no-empty-interface
-export interface MockType extends TableRow {}
+export interface MockType extends TableRow { }

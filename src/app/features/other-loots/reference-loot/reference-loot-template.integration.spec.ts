@@ -9,7 +9,7 @@ import { ReferenceLootTemplate } from '@keira-types/reference-loot-template.type
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { ReferenceLootHandlerService } from './reference-loot-handler.service';
 
-class ReferenceLootTemplatePage extends MultiRowEditorPageObject<ReferenceLootTemplateComponent> {}
+class ReferenceLootTemplatePage extends MultiRowEditorPageObject<ReferenceLootTemplateComponent> { }
 
 describe('ReferenceLootTemplate integration tests', () => {
   const id = 1234;

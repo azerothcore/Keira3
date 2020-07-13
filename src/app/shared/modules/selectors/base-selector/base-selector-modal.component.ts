@@ -4,14 +4,14 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 export abstract class BaseSelectorModalComponent {
 
   // will be injected by the component that creates the modal
-  public value: string|number;
+  public value: string | number;
   public config;
 
-  public onValueSelected = new Subject<string|number>();
+  public onValueSelected = new Subject<string | number>();
 
   constructor(
     protected bsModalRef: BsModalRef,
-  ) {}
+  ) { }
 
   onCancel() {
     this.bsModalRef.hide();

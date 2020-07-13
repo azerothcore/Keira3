@@ -24,4 +24,4 @@ import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.
     GameobjectHandlerService,
   ],
 })
-export class GameobjectLootTemplateModule {}
+export class GameobjectLootTemplateModule { }

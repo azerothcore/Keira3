@@ -16,4 +16,4 @@ const modules = [
     ConditionsHandlerService,
   ],
 })
-export class ConditionsModule {}
+export class ConditionsModule { }

@@ -47,7 +47,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
 
   protected abstract updateDiffQuery();
   protected abstract updateFullQuery();
-  protected abstract onReloadSuccessful(data: T[], id: string|number);
+  protected abstract onReloadSuccessful(data: T[], id: string | number);
 
   protected updateEditorStatus() {
     this.handlerService.statusMap[this._entityTable] = !!this._diffQuery;
@@ -72,11 +72,11 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     this.disableEntityIdField();
   }
 
-  protected selectQuery(id: string|number): Observable<T[]> {
+  protected selectQuery(id: string | number): Observable<T[]> {
     return this.queryService.selectAll<T>(this._entityTable, this._entityIdField, id);
   }
 
-  protected reloadEntity(id: string|number) {
+  protected reloadEntity(id: string | number) {
     this.subscriptions.push(
       this.selectQuery(id).subscribe((data) => {
         this._error = null;
@@ -96,7 +96,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     this.updateEditorStatus();
   }
 
-  reload(id: string|number) {
+  reload(id: string | number) {
     this._loading = true;
     this.reset();
     this.reloadEntity(id);

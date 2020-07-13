@@ -42,4 +42,4 @@ const modules = [
     SaiCreatureHandlerService,
   ],
 })
-export class CreatureModule {}
+export class CreatureModule { }

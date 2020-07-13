@@ -16,7 +16,7 @@ export class FlagsService {
 
     const binaryStr: string = value.toString(2).split('').reverse().join('');
 
-    for (let i = 0; i < bitsCount; i++)  {
+    for (let i = 0; i < bitsCount; i++) {
       bits[i] = parseInt(binaryStr[i], 10) === 1;
     }
 

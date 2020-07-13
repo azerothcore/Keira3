@@ -30,7 +30,7 @@ describe('SaiSearchEntityComponent', () => {
         RouterTestingModule,
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

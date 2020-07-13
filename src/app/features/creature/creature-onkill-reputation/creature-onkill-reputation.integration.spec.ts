@@ -12,7 +12,7 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 
-class CreatureOnkillReputationPage extends EditorPageObject<CreatureOnkillReputationComponent> {}
+class CreatureOnkillReputationPage extends EditorPageObject<CreatureOnkillReputationComponent> { }
 
 describe('CreatureOnkillReputation integration tests', () => {
   let component: CreatureOnkillReputationComponent;
@@ -24,9 +24,9 @@ describe('CreatureOnkillReputation integration tests', () => {
 
   const id = 1234;
   const expectedFullCreateQuery = 'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
-  'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +
-  ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, '  +
-  '`MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n'  +
+    'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +
+    ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, ' +
+    '`MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n' +
     '(1234, 0, 0, 0, 0, 0, 0, 0, 0, 0);';
 
   const originalEntity = new CreatureOnkillReputation();
@@ -85,9 +85,9 @@ describe('CreatureOnkillReputation integration tests', () => {
 
     it('changing a property and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
-      'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +
-      ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, '  +
-      '`MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n'  +
+        'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +
+        ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, ' +
+        '`MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n' +
         '(1234, 2, 0, 0, 0, 0, 0, 0, 0, 0);';
       querySpy.calls.reset();
 
@@ -131,8 +131,8 @@ describe('CreatureOnkillReputation integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
         'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +
-        ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, '  +
-        '`MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n'  +
+        ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, ' +
+        '`MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n' +
         '(1234, 0, 1, 0, 0, 0, 0, 0, 0, 0);'
       );
 
@@ -143,8 +143,8 @@ describe('CreatureOnkillReputation integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
         'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +
-        ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, '  +
-        '`MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n'  +
+        ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, ' +
+        '`MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n' +
         '(1234, 0, 1, 0, 3, 0, 0, 0, 0, 0);'
       );
     });
@@ -167,8 +167,8 @@ describe('CreatureOnkillReputation integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
         'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +
-        ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, '  +
-        '`MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n'  +
+        ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, ' +
+        '`MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n' +
         '(1234, 0, 0, 7, 0, 0, 0, 0, 0, 0);'
       );
     });

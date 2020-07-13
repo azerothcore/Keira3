@@ -95,4 +95,4 @@ const components = [
     QuestTemplateAddonService,
   ],
 })
-export class QuestModule {}
+export class QuestModule { }

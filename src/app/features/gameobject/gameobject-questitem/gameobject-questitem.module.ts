@@ -35,4 +35,4 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
     GameobjectQuestitemService,
   ],
 })
-export class GameobjectQuestitemModule {}
+export class GameobjectQuestitemModule { }

@@ -9,7 +9,7 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { GossipMenu } from '@keira-types/gossip-menu.type';
 import { GossipHandlerService } from '../gossip-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
-class GossipMenuPage extends MultiRowEditorPageObject<GossipMenuComponent> {}
+class GossipMenuPage extends MultiRowEditorPageObject<GossipMenuComponent> { }
 
 describe('GossipMenu integration tests', () => {
   let component: GossipMenuComponent;

@@ -9,9 +9,9 @@ describe('GameobjectSelectorBtnComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ GameobjectSelectorModule ],
+      imports: [GameobjectSelectorModule],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

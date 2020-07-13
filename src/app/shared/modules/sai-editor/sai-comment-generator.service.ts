@@ -19,7 +19,7 @@ export class SaiCommentGeneratorService {
   constructor(
     private queryService: MysqlQueryService,
     private sqliteQueryService: SqliteQueryService,
-  ) {}
+  ) { }
 
   private async getStringByTargetType(smartScript: SmartScripts): Promise<string> {
     switch (Number(smartScript.target_type)) {
@@ -142,10 +142,10 @@ export class SaiCommentGeneratorService {
 
     eventLine = eventLine.replace('_previousLineComment_', 'MISSING LINK');
 
-    eventLine = eventLine.replace('_eventParamOne_',   `${smartScript.event_param1}`);
-    eventLine = eventLine.replace('_eventParamTwo_',   `${smartScript.event_param2}`);
+    eventLine = eventLine.replace('_eventParamOne_', `${smartScript.event_param1}`);
+    eventLine = eventLine.replace('_eventParamTwo_', `${smartScript.event_param2}`);
     eventLine = eventLine.replace('_eventParamThree_', `${smartScript.event_param3}`);
-    eventLine = eventLine.replace('_eventParamFour_',  `${smartScript.event_param4}`);
+    eventLine = eventLine.replace('_eventParamFour_', `${smartScript.event_param4}`);
 
     if (eventLine.indexOf('_questNameEventParamOne_') > -1) {
       eventLine = eventLine.replace('_questNameEventParamOne_', await this.queryService.getQuestTitleById(smartScript.event_param1));
@@ -175,12 +175,12 @@ export class SaiCommentGeneratorService {
       return error;
     }
 
-    actionLine = actionLine.replace('_actionParamOne_',   `${smartScript.action_param1}`);
-    actionLine = actionLine.replace('_actionParamTwo_',   `${smartScript.action_param2}`);
+    actionLine = actionLine.replace('_actionParamOne_', `${smartScript.action_param1}`);
+    actionLine = actionLine.replace('_actionParamTwo_', `${smartScript.action_param2}`);
     actionLine = actionLine.replace('_actionParamThree_', `${smartScript.action_param3}`);
-    actionLine = actionLine.replace('_actionParamFour_',  `${smartScript.action_param4}`);
-    actionLine = actionLine.replace('_actionParamFive_',  `${smartScript.action_param5}`);
-    actionLine = actionLine.replace('_actionParamSix_',   `${smartScript.action_param6}`);
+    actionLine = actionLine.replace('_actionParamFour_', `${smartScript.action_param4}`);
+    actionLine = actionLine.replace('_actionParamFive_', `${smartScript.action_param5}`);
+    actionLine = actionLine.replace('_actionParamSix_', `${smartScript.action_param6}`);
 
     if (actionLine.indexOf('_questNameActionParamOne_') > -1) {
       actionLine = actionLine.replace('_questNameActionParamOne_', await this.queryService.getQuestTitleById(smartScript.action_param1));
@@ -257,29 +257,29 @@ export class SaiCommentGeneratorService {
       const unitFlags = smartScript.action_param1;
 
       if ((unitFlags & UNIT_FLAGS.SERVER_CONTROLLED) !== 0) { commentUnitFlag += 'Server Controlled & '; }
-      if ((unitFlags & UNIT_FLAGS.NON_ATTACKABLE) !== 0)    { commentUnitFlag += 'Not Attackable & '; }
-      if ((unitFlags & UNIT_FLAGS.DISABLE_MOVE) !== 0)      { commentUnitFlag += 'Disable Movement & '; }
-      if ((unitFlags & UNIT_FLAGS.PVP_ATTACKABLE) !== 0)    { commentUnitFlag += 'PvP Attackable & '; }
-      if ((unitFlags & UNIT_FLAGS.RENAME) !== 0)            { commentUnitFlag += 'Rename & '; }
-      if ((unitFlags & UNIT_FLAGS.PREPARATION) !== 0)       { commentUnitFlag += 'Preparation & '; }
-      if ((unitFlags & UNIT_FLAGS.NOT_ATTACKABLE_1) !== 0)  { commentUnitFlag += 'Not Attackable & '; }
-      if ((unitFlags & UNIT_FLAGS.IMMUNE_TO_PC) !== 0)      { commentUnitFlag += 'Immune To Players & '; }
-      if ((unitFlags & UNIT_FLAGS.IMMUNE_TO_NPC) !== 0)     { commentUnitFlag += 'Immune To NPC\'s & '; }
-      if ((unitFlags & UNIT_FLAGS.LOOTING) !== 0)           { commentUnitFlag += 'Looting & '; }
-      if ((unitFlags & UNIT_FLAGS.PET_IN_COMBAT) !== 0)     { commentUnitFlag += 'Pet In Combat & '; }
-      if ((unitFlags & UNIT_FLAGS.PVP) !== 0)               { commentUnitFlag += 'PvP & '; }
-      if ((unitFlags & UNIT_FLAGS.SILENCED) !== 0)          { commentUnitFlag += 'Silenced & '; }
-      if ((unitFlags & UNIT_FLAGS.PACIFIED) !== 0)          { commentUnitFlag += 'Pacified & '; }
-      if ((unitFlags & UNIT_FLAGS.STUNNED) !== 0)           { commentUnitFlag += 'Stunned & '; }
-      if ((unitFlags & UNIT_FLAGS.IN_COMBAT) !== 0)         { commentUnitFlag += 'In Combat & '; }
-      if ((unitFlags & UNIT_FLAGS.DISARMED) !== 0)          { commentUnitFlag += 'Disarmed & '; }
-      if ((unitFlags & UNIT_FLAGS.CONFUSED) !== 0)          { commentUnitFlag += 'Confused & '; }
-      if ((unitFlags & UNIT_FLAGS.FLEEING) !== 0)           { commentUnitFlag += 'Fleeing & '; }
+      if ((unitFlags & UNIT_FLAGS.NON_ATTACKABLE) !== 0) { commentUnitFlag += 'Not Attackable & '; }
+      if ((unitFlags & UNIT_FLAGS.DISABLE_MOVE) !== 0) { commentUnitFlag += 'Disable Movement & '; }
+      if ((unitFlags & UNIT_FLAGS.PVP_ATTACKABLE) !== 0) { commentUnitFlag += 'PvP Attackable & '; }
+      if ((unitFlags & UNIT_FLAGS.RENAME) !== 0) { commentUnitFlag += 'Rename & '; }
+      if ((unitFlags & UNIT_FLAGS.PREPARATION) !== 0) { commentUnitFlag += 'Preparation & '; }
+      if ((unitFlags & UNIT_FLAGS.NOT_ATTACKABLE_1) !== 0) { commentUnitFlag += 'Not Attackable & '; }
+      if ((unitFlags & UNIT_FLAGS.IMMUNE_TO_PC) !== 0) { commentUnitFlag += 'Immune To Players & '; }
+      if ((unitFlags & UNIT_FLAGS.IMMUNE_TO_NPC) !== 0) { commentUnitFlag += 'Immune To NPC\'s & '; }
+      if ((unitFlags & UNIT_FLAGS.LOOTING) !== 0) { commentUnitFlag += 'Looting & '; }
+      if ((unitFlags & UNIT_FLAGS.PET_IN_COMBAT) !== 0) { commentUnitFlag += 'Pet In Combat & '; }
+      if ((unitFlags & UNIT_FLAGS.PVP) !== 0) { commentUnitFlag += 'PvP & '; }
+      if ((unitFlags & UNIT_FLAGS.SILENCED) !== 0) { commentUnitFlag += 'Silenced & '; }
+      if ((unitFlags & UNIT_FLAGS.PACIFIED) !== 0) { commentUnitFlag += 'Pacified & '; }
+      if ((unitFlags & UNIT_FLAGS.STUNNED) !== 0) { commentUnitFlag += 'Stunned & '; }
+      if ((unitFlags & UNIT_FLAGS.IN_COMBAT) !== 0) { commentUnitFlag += 'In Combat & '; }
+      if ((unitFlags & UNIT_FLAGS.DISARMED) !== 0) { commentUnitFlag += 'Disarmed & '; }
+      if ((unitFlags & UNIT_FLAGS.CONFUSED) !== 0) { commentUnitFlag += 'Confused & '; }
+      if ((unitFlags & UNIT_FLAGS.FLEEING) !== 0) { commentUnitFlag += 'Fleeing & '; }
       if ((unitFlags & UNIT_FLAGS.PLAYER_CONTROLLED) !== 0) { commentUnitFlag += 'Player Controlled & '; }
-      if ((unitFlags & UNIT_FLAGS.NOT_SELECTABLE) !== 0)    { commentUnitFlag += 'Not Selectable & '; }
-      if ((unitFlags & UNIT_FLAGS.SKINNABLE) !== 0)         { commentUnitFlag += 'Skinnable & '; }
-      if ((unitFlags & UNIT_FLAGS.MOUNT) !== 0)             { commentUnitFlag += 'Mounted & '; }
-      if ((unitFlags & UNIT_FLAGS.SHEATHE) !== 0)           { commentUnitFlag += 'Sheathed & '; }
+      if ((unitFlags & UNIT_FLAGS.NOT_SELECTABLE) !== 0) { commentUnitFlag += 'Not Selectable & '; }
+      if ((unitFlags & UNIT_FLAGS.SKINNABLE) !== 0) { commentUnitFlag += 'Skinnable & '; }
+      if ((unitFlags & UNIT_FLAGS.MOUNT) !== 0) { commentUnitFlag += 'Mounted & '; }
+      if ((unitFlags & UNIT_FLAGS.SHEATHE) !== 0) { commentUnitFlag += 'Sheathed & '; }
 
       if (commentUnitFlag.indexOf('&') > -1) {
         // ! Trim last ' & ' from the comment..
@@ -295,32 +295,32 @@ export class SaiCommentGeneratorService {
       let commentNpcFlag = '';
       const npcFlags = smartScript.action_param1;
 
-      if ((npcFlags & NPC_FLAGS.GOSSIP) !== 0)             { commentNpcFlag += 'Gossip & '; }
-      if ((npcFlags & NPC_FLAGS.QUESTGIVER) !== 0)         { commentNpcFlag += 'Questgiver & '; }
-      if ((npcFlags & NPC_FLAGS.UNK1) !== 0)               { commentNpcFlag += 'Unknown 1 & '; }
-      if ((npcFlags & NPC_FLAGS.UNK2) !== 0)               { commentNpcFlag += 'Unknown 2 & '; }
-      if ((npcFlags & NPC_FLAGS.TRAINER) !== 0)            { commentNpcFlag += 'Trainer & '; }
-      if ((npcFlags & NPC_FLAGS.TRAINER_CLASS) !== 0)      { commentNpcFlag += 'Class Trainer & '; }
+      if ((npcFlags & NPC_FLAGS.GOSSIP) !== 0) { commentNpcFlag += 'Gossip & '; }
+      if ((npcFlags & NPC_FLAGS.QUESTGIVER) !== 0) { commentNpcFlag += 'Questgiver & '; }
+      if ((npcFlags & NPC_FLAGS.UNK1) !== 0) { commentNpcFlag += 'Unknown 1 & '; }
+      if ((npcFlags & NPC_FLAGS.UNK2) !== 0) { commentNpcFlag += 'Unknown 2 & '; }
+      if ((npcFlags & NPC_FLAGS.TRAINER) !== 0) { commentNpcFlag += 'Trainer & '; }
+      if ((npcFlags & NPC_FLAGS.TRAINER_CLASS) !== 0) { commentNpcFlag += 'Class Trainer & '; }
       if ((npcFlags & NPC_FLAGS.TRAINER_PROFESSION) !== 0) { commentNpcFlag += 'Profession Trainer & '; }
-      if ((npcFlags & NPC_FLAGS.VENDOR) !== 0)             { commentNpcFlag += 'Vendor & '; }
-      if ((npcFlags & NPC_FLAGS.VENDOR_AMMO) !== 0)        { commentNpcFlag += 'Ammo Vendor & '; }
-      if ((npcFlags & NPC_FLAGS.VENDOR_FOOD) !== 0)        { commentNpcFlag += 'Food Vendor & '; }
-      if ((npcFlags & NPC_FLAGS.VENDOR_POISON) !== 0)      { commentNpcFlag += 'Poison Vendor & '; }
-      if ((npcFlags & NPC_FLAGS.VENDOR_REAGENT) !== 0)     { commentNpcFlag += 'Reagent Vendor & '; }
-      if ((npcFlags & NPC_FLAGS.REPAIR) !== 0)             { commentNpcFlag += 'Repair Vendor & '; }
-      if ((npcFlags & NPC_FLAGS.FLIGHTMASTER) !== 0)       { commentNpcFlag += 'Flightmaster & '; }
-      if ((npcFlags & NPC_FLAGS.SPIRITHEALER) !== 0)       { commentNpcFlag += 'Spirithealer & '; }
-      if ((npcFlags & NPC_FLAGS.SPIRITGUIDE) !== 0)        { commentNpcFlag += 'Spiritguide & '; }
-      if ((npcFlags & NPC_FLAGS.INNKEEPER) !== 0)          { commentNpcFlag += 'Innkeeper & '; }
-      if ((npcFlags & NPC_FLAGS.BANKER) !== 0)             { commentNpcFlag += 'Banker & '; }
-      if ((npcFlags & NPC_FLAGS.PETITIONER) !== 0)         { commentNpcFlag += 'Petitioner & '; }
-      if ((npcFlags & NPC_FLAGS.TABARDDESIGNER) !== 0)     { commentNpcFlag += 'Tabard Designer & '; }
-      if ((npcFlags & NPC_FLAGS.BATTLEMASTER) !== 0)       { commentNpcFlag += 'Battlemaster & '; }
-      if ((npcFlags & NPC_FLAGS.AUCTIONEER) !== 0)         { commentNpcFlag += 'Auctioneer & '; }
-      if ((npcFlags & NPC_FLAGS.STABLEMASTER) !== 0)       { commentNpcFlag += 'Stablemaster & '; }
-      if ((npcFlags & NPC_FLAGS.GUILD_BANKER) !== 0)       { commentNpcFlag += 'Guild Banker & '; }
-      if ((npcFlags & NPC_FLAGS.SPELLCLICK) !== 0)         { commentNpcFlag += 'Spellclick & '; }
-      if ((npcFlags & NPC_FLAGS.PLAYER_VEHICLE) !== 0)     { commentNpcFlag += 'Player Vehicle & '; }
+      if ((npcFlags & NPC_FLAGS.VENDOR) !== 0) { commentNpcFlag += 'Vendor & '; }
+      if ((npcFlags & NPC_FLAGS.VENDOR_AMMO) !== 0) { commentNpcFlag += 'Ammo Vendor & '; }
+      if ((npcFlags & NPC_FLAGS.VENDOR_FOOD) !== 0) { commentNpcFlag += 'Food Vendor & '; }
+      if ((npcFlags & NPC_FLAGS.VENDOR_POISON) !== 0) { commentNpcFlag += 'Poison Vendor & '; }
+      if ((npcFlags & NPC_FLAGS.VENDOR_REAGENT) !== 0) { commentNpcFlag += 'Reagent Vendor & '; }
+      if ((npcFlags & NPC_FLAGS.REPAIR) !== 0) { commentNpcFlag += 'Repair Vendor & '; }
+      if ((npcFlags & NPC_FLAGS.FLIGHTMASTER) !== 0) { commentNpcFlag += 'Flightmaster & '; }
+      if ((npcFlags & NPC_FLAGS.SPIRITHEALER) !== 0) { commentNpcFlag += 'Spirithealer & '; }
+      if ((npcFlags & NPC_FLAGS.SPIRITGUIDE) !== 0) { commentNpcFlag += 'Spiritguide & '; }
+      if ((npcFlags & NPC_FLAGS.INNKEEPER) !== 0) { commentNpcFlag += 'Innkeeper & '; }
+      if ((npcFlags & NPC_FLAGS.BANKER) !== 0) { commentNpcFlag += 'Banker & '; }
+      if ((npcFlags & NPC_FLAGS.PETITIONER) !== 0) { commentNpcFlag += 'Petitioner & '; }
+      if ((npcFlags & NPC_FLAGS.TABARDDESIGNER) !== 0) { commentNpcFlag += 'Tabard Designer & '; }
+      if ((npcFlags & NPC_FLAGS.BATTLEMASTER) !== 0) { commentNpcFlag += 'Battlemaster & '; }
+      if ((npcFlags & NPC_FLAGS.AUCTIONEER) !== 0) { commentNpcFlag += 'Auctioneer & '; }
+      if ((npcFlags & NPC_FLAGS.STABLEMASTER) !== 0) { commentNpcFlag += 'Stablemaster & '; }
+      if ((npcFlags & NPC_FLAGS.GUILD_BANKER) !== 0) { commentNpcFlag += 'Guild Banker & '; }
+      if ((npcFlags & NPC_FLAGS.SPELLCLICK) !== 0) { commentNpcFlag += 'Spellclick & '; }
+      if ((npcFlags & NPC_FLAGS.PLAYER_VEHICLE) !== 0) { commentNpcFlag += 'Player Vehicle & '; }
 
       if (commentNpcFlag.indexOf('&') > -1) {
         // ! Trim last ' & ' from the comment..
@@ -507,15 +507,15 @@ export class SaiCommentGeneratorService {
       let commentGoFlag = '';
       const goFlags = smartScript.action_param1;
 
-      if ((goFlags & GO_FLAGS.IN_USE) !== 0)         { commentGoFlag += 'In Use & '; }
-      if ((goFlags & GO_FLAGS.LOCKED) !== 0)         { commentGoFlag += 'Locked & '; }
-      if ((goFlags & GO_FLAGS.INTERACT_COND) !== 0)  { commentGoFlag += 'Interact Condition & '; }
-      if ((goFlags & GO_FLAGS.TRANSPORT) !== 0)      { commentGoFlag += 'Transport & '; }
+      if ((goFlags & GO_FLAGS.IN_USE) !== 0) { commentGoFlag += 'In Use & '; }
+      if ((goFlags & GO_FLAGS.LOCKED) !== 0) { commentGoFlag += 'Locked & '; }
+      if ((goFlags & GO_FLAGS.INTERACT_COND) !== 0) { commentGoFlag += 'Interact Condition & '; }
+      if ((goFlags & GO_FLAGS.TRANSPORT) !== 0) { commentGoFlag += 'Transport & '; }
       if ((goFlags & GO_FLAGS.NOT_SELECTABLE) !== 0) { commentGoFlag += 'Not Selectable & '; }
-      if ((goFlags & GO_FLAGS.NODESPAWN) !== 0)      { commentGoFlag += 'No Despawn & '; }
-      if ((goFlags & GO_FLAGS.TRIGGERED) !== 0)      { commentGoFlag += 'Triggered & '; }
-      if ((goFlags & GO_FLAGS.DAMAGED) !== 0)        { commentGoFlag += 'Damaged & '; }
-      if ((goFlags & GO_FLAGS.DESTROYED) !== 0)      { commentGoFlag += 'Destroyed & '; }
+      if ((goFlags & GO_FLAGS.NODESPAWN) !== 0) { commentGoFlag += 'No Despawn & '; }
+      if ((goFlags & GO_FLAGS.TRIGGERED) !== 0) { commentGoFlag += 'Triggered & '; }
+      if ((goFlags & GO_FLAGS.DAMAGED) !== 0) { commentGoFlag += 'Damaged & '; }
+      if ((goFlags & GO_FLAGS.DESTROYED) !== 0) { commentGoFlag += 'Destroyed & '; }
 
       if (commentGoFlag.indexOf('&') > -1) {
         // ! Trim last ' & ' from the comment..
@@ -532,13 +532,13 @@ export class SaiCommentGeneratorService {
       let commentDynamicFlag = '';
       const dynamicFlags = smartScript.action_param1;
 
-      if ((dynamicFlags & DYNAMIC_FLAGS.LOOTABLE) !== 0)                  { commentDynamicFlag += 'Lootable & '; }
-      if ((dynamicFlags & DYNAMIC_FLAGS.TRACK_UNIT) !== 0)                { commentDynamicFlag += 'Track Units & '; }
-      if ((dynamicFlags & DYNAMIC_FLAGS.TAPPED) !== 0)                    { commentDynamicFlag += 'Tapped & '; }
-      if ((dynamicFlags & DYNAMIC_FLAGS.TAPPED_BY_PLAYER) !== 0)          { commentDynamicFlag += 'Tapped By Player & '; }
-      if ((dynamicFlags & DYNAMIC_FLAGS.SPECIALINFO) !== 0)               { commentDynamicFlag += 'Special Info & '; }
-      if ((dynamicFlags & DYNAMIC_FLAGS.DEAD) !== 0)                      { commentDynamicFlag += 'Dead & '; }
-      if ((dynamicFlags & DYNAMIC_FLAGS.REFER_A_FRIEND) !== 0)            { commentDynamicFlag += 'Refer A Friend & '; }
+      if ((dynamicFlags & DYNAMIC_FLAGS.LOOTABLE) !== 0) { commentDynamicFlag += 'Lootable & '; }
+      if ((dynamicFlags & DYNAMIC_FLAGS.TRACK_UNIT) !== 0) { commentDynamicFlag += 'Track Units & '; }
+      if ((dynamicFlags & DYNAMIC_FLAGS.TAPPED) !== 0) { commentDynamicFlag += 'Tapped & '; }
+      if ((dynamicFlags & DYNAMIC_FLAGS.TAPPED_BY_PLAYER) !== 0) { commentDynamicFlag += 'Tapped By Player & '; }
+      if ((dynamicFlags & DYNAMIC_FLAGS.SPECIALINFO) !== 0) { commentDynamicFlag += 'Special Info & '; }
+      if ((dynamicFlags & DYNAMIC_FLAGS.DEAD) !== 0) { commentDynamicFlag += 'Dead & '; }
+      if ((dynamicFlags & DYNAMIC_FLAGS.REFER_A_FRIEND) !== 0) { commentDynamicFlag += 'Refer A Friend & '; }
       if ((dynamicFlags & DYNAMIC_FLAGS.TAPPED_BY_ALL_THREAT_LIST) !== 0) { commentDynamicFlag += 'Tapped By Threatlist & '; }
 
       if (commentDynamicFlag.indexOf('&') > -1) {
@@ -736,7 +736,7 @@ export class SaiCommentGeneratorService {
 
       if (((event_flags & EVENT_FLAGS.NORMAL_DUNGEON) !== 0) &&
         ((event_flags & EVENT_FLAGS.HEROIC_DUNGEON) !== 0) &&
-        ((event_flags & EVENT_FLAGS.NORMAL_RAID) !== 0)    &&
+        ((event_flags & EVENT_FLAGS.NORMAL_RAID) !== 0) &&
         ((event_flags & EVENT_FLAGS.HEROIC_RAID) !== 0)) {
         actionLine += ' (Dungeon & Raid)';
       } else {

@@ -30,4 +30,4 @@ import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-
     GameobjectSelectorBtnComponent,
   ],
 })
-export class GameobjectSelectorModule {}
+export class GameobjectSelectorModule { }

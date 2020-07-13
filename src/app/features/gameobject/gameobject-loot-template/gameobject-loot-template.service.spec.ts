@@ -41,7 +41,7 @@ describe('GameobjectLootTemplateService', () => {
     });
 
     expect(querySpy).toHaveBeenCalledWith(`SELECT ${GAMEOBJECT_TEMPLATE_TYPE} `
-    + `FROM ${service.entityTemplateTable} `
-    + `WHERE ${service['_entityTemplateIdField']} = ${service['handlerService.selected']}`);
+      + `FROM ${service.entityTemplateTable} `
+      + `WHERE ${service['_entityTemplateIdField']} = ${service['handlerService.selected']}`);
   });
 });

@@ -22,7 +22,7 @@ describe('PreviewHelperService', () => {
     const { service } = setup();
 
     const mockRaces = 123;
-    const resRaces = [ 'Human', 'Orc', 'Night Elf', 'Undead', 'Tauren', 'Gnome' ];
+    const resRaces = ['Human', 'Orc', 'Night Elf', 'Undead', 'Tauren', 'Gnome'];
     expect(service.getRaceString(mockRaces).map(e => RACES_TEXT[e])).toEqual(resRaces);
 
     const mockFaction = 'test';

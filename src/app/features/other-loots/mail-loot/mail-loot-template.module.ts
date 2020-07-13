@@ -38,4 +38,4 @@ const components = [
     MailLootHandlerService,
   ],
 })
-export class MailLootTemplateModule {}
+export class MailLootTemplateModule { }

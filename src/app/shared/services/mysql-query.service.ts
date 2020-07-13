@@ -12,7 +12,7 @@ import { SmartScripts } from '@keira-types/smart-scripts.type';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { QuestReputationReward } from 'app/features/quest/quest-preview/quest-preview.model';
 
-declare const squel: Squel & {flavour: null};
+declare const squel: Squel & { flavour: null };
 
 @Injectable({
   providedIn: 'root'
@@ -45,7 +45,7 @@ export class MysqlQueryService extends QueryService {
   selectAll<T extends TableRow>(
     table: string,
     idField: string,
-    idValue: string|number,
+    idValue: string | number,
   ): Observable<T[]> {
     return this.query<T>(
       squel.select(squelConfig).from(table).where(`${idField} = ${idValue}`).toString()
@@ -131,7 +131,7 @@ export class MysqlQueryService extends QueryService {
     key: string,
     currentRows: T[],
     newRows: T[],
-    involvedRows: (string|number)[],
+    involvedRows: (string | number)[],
     addedOrEditedRows: T[],
   ): void {
     for (let i = 0; i < currentRows.length; i++) {
@@ -151,7 +151,7 @@ export class MysqlQueryService extends QueryService {
     key: string,
     currentRows: T[],
     newRows: T[],
-    involvedRows: (string|number)[],
+    involvedRows: (string | number)[],
     addedOrEditedRows: T[],
   ): void {
     for (let i = 0; i < newRows.length; i++) {
@@ -185,7 +185,7 @@ export class MysqlQueryService extends QueryService {
   // Tracks difference between two groups of rows (with TWO keys) and generate DELETE/INSERT query
   getDiffDeleteInsertTwoKeysQuery<T extends TableRow>(
     tableName: string,            // the name of the table (example: 'creature_loot_template')
-    primaryKey1: string|string[], // first  primary key (example: 'Entry' or ['source_type', 'entryorguid'])
+    primaryKey1: string | string[], // first  primary key (example: 'Entry' or ['source_type', 'entryorguid'])
     primaryKey2: string,          // second primary key (example: 'Item')
     currentRows: T[],             // object of the original rows
     newRows: T[],                 // array of the new rows
@@ -208,13 +208,13 @@ export class MysqlQueryService extends QueryService {
       }
     }
 
-    const involvedRows: (string|number)[] = []; // -> needed for DELETE query
+    const involvedRows: (string | number)[] = []; // -> needed for DELETE query
     const addedOrEditedRows: T[] = [];          // -> needed for INSERT query
 
     this.findEditedAndDeletedRows(primaryKey2, currentRows, newRows, involvedRows, addedOrEditedRows);
     this.findAddedRows(primaryKey2, currentRows, newRows, involvedRows, addedOrEditedRows);
 
-    if ( involvedRows.length === 0 ) {
+    if (involvedRows.length === 0) {
       return '';
     }
     const insertQuery: Insert = squel.insert(squelConfig).into(tableName);
@@ -242,13 +242,13 @@ export class MysqlQueryService extends QueryService {
   ): string {
     if (!newRows || !currentRows) { return ''; }
 
-    const involvedRows: (string|number)[] = []; // -> needed for DELETE query
+    const involvedRows: (string | number)[] = []; // -> needed for DELETE query
     const addedOrEditedRows: T[] = [];          // -> needed for INSERT query
 
     this.findEditedAndDeletedRows(primaryKey, currentRows, newRows, involvedRows, addedOrEditedRows);
     this.findAddedRows(primaryKey, currentRows, newRows, involvedRows, addedOrEditedRows);
 
-    if ( involvedRows.length === 0 ) {
+    if (involvedRows.length === 0) {
       return '';
     }
 
@@ -268,7 +268,7 @@ export class MysqlQueryService extends QueryService {
     primaryKey: string = null,  // first primary key (example: 'Entry'), it will be used to generate the DELETE statement for ALL rows
     primaryKey2: string = null, // the second primary key, it will be used to generate the DELETE statement for SPECIFIC rows
     grouped: boolean = false,   // whether the primaryKey2 is different for each row (e.g. primaryKey2='Item' in `creature_loot_template`)
-                                // or is the same for all rows (e.g. primaryKey='entryorguid', primaryKey2='source_type' in `smart_scripts`)
+    // or is the same for all rows (e.g. primaryKey='entryorguid', primaryKey2='source_type' in `smart_scripts`)
   ) {
 
     if (!rows || rows.length === 0) { return ''; }
@@ -354,51 +354,51 @@ export class MysqlQueryService extends QueryService {
     );
   }
 
-  getCreatureNameById(id: string|number): Promise<string> {
+  getCreatureNameById(id: string | number): Promise<string> {
     return this.queryValueToPromiseCached('getCreatureNameById', String(id), `SELECT name AS v FROM creature_template WHERE entry = ${id}`);
   }
 
-  getCreatureNameByGuid(guid: string|number): Promise<string> {
+  getCreatureNameByGuid(guid: string | number): Promise<string> {
     return this.queryValueToPromiseCached('getCreatureNameByGuid', String(guid), `SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id WHERE c.guid = ${guid}`);
   }
 
-  getGameObjectNameById(id: string|number): Promise<string> {
+  getGameObjectNameById(id: string | number): Promise<string> {
     return this.queryValueToPromiseCached('getGameObjectNameById', String(id), `SELECT name AS v FROM gameobject_template WHERE entry = ${id}`);
   }
 
-  getGameObjectNameByGuid(guid: string|number): Promise<string> {
+  getGameObjectNameByGuid(guid: string | number): Promise<string> {
     return this.queryValueToPromiseCached('getGameObjectNameByGuid', String(guid), `SELECT name AS v FROM gameobject_template AS gt INNER JOIN gameobject AS g ON gt.entry = g.id WHERE g.guid = ${guid}`);
   }
 
-  getQuestTitleById(id: string|number): Promise<string> {
+  getQuestTitleById(id: string | number): Promise<string> {
     return this.queryValueToPromiseCached('getQuestTitleById', String(id), `SELECT LogTitle AS v FROM quest_template WHERE ID = ${id}`);
   }
 
-  getPrevQuestById(id: string|number): Promise<string> {
+  getPrevQuestById(id: string | number): Promise<string> {
     return this.queryValueToPromiseCached('getPrevQuestById', String(id), `SELECT PrevQuestID AS v FROM quest_template_addon WHERE id = ${id}`);
   }
 
-  getNextQuestById(id: string|number, usingPrev = false): Promise<string> {
+  getNextQuestById(id: string | number, usingPrev = false): Promise<string> {
     return usingPrev
       ? this.queryValueToPromiseCached('getNextQuest1', String(id), `SELECT id AS v FROM quest_template_addon WHERE PrevQuestID = ${id}`)
       : this.queryValueToPromiseCached('getNextQuest2', String(id), `SELECT NextQuestID AS v FROM quest_template_addon WHERE id = ${id}`);
   }
 
-  getItemByStartQuest(id: string|number): Promise<string> {
+  getItemByStartQuest(id: string | number): Promise<string> {
     return this.queryValueToPromiseCached(
       'getItemByStartQuest', String(id), `SELECT entry AS v FROM item_template WHERE startquest = ${id}`
     );
   }
 
-  getItemNameByStartQuest(id: string|number): Promise<string> {
+  getItemNameByStartQuest(id: string | number): Promise<string> {
     return this.queryValueToPromiseCached('getItemNameByStartQuest', String(id), `SELECT name AS v FROM item_template WHERE startquest = ${id}`);
   }
 
-  getItemNameById(id: string|number): Promise<string> {
+  getItemNameById(id: string | number): Promise<string> {
     return this.queryValueToPromiseCached('getItemNameById', String(id), `SELECT name AS v FROM item_template WHERE entry = ${id}`);
   }
 
-  getDisplayIdByItemId(id: string|number): Observable<string> {
+  getDisplayIdByItemId(id: string | number): Observable<string> {
     return !!id
       ? fromPromise(this.queryValueToPromiseCached(
         'getDisplayIdByItemId',
@@ -410,11 +410,11 @@ export class MysqlQueryService extends QueryService {
 
   // Note: at least one param should be defined
   getQuestTitleByCriteria(
-    requiredNpcOrGo1: string|number|null,
-    requiredNpcOrGo2: string|number|null,
-    requiredNpcOrGo3: string|number|null,
-    requiredNpcOrGo4: string|number|null,
-    requiredSpellCast1: string|number|null = null,
+    requiredNpcOrGo1: string | number | null,
+    requiredNpcOrGo2: string | number | null,
+    requiredNpcOrGo3: string | number | null,
+    requiredNpcOrGo4: string | number | null,
+    requiredSpellCast1: string | number | null = null,
   ): Promise<string> {
     const query = squel.select(squelConfig).fields({ LogTitle: 'v' }).from('quest_template');
 

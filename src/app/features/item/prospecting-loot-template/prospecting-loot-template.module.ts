@@ -22,4 +22,4 @@ import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.
     ProspectingLootTemplateService,
   ],
 })
-export class ProspectingLootTemplateModule {}
+export class ProspectingLootTemplateModule { }

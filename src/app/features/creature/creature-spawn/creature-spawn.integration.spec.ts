@@ -12,7 +12,7 @@ import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-o
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 
-class CreatureSpawnPage extends MultiRowEditorPageObject<CreatureSpawnComponent> {}
+class CreatureSpawnPage extends MultiRowEditorPageObject<CreatureSpawnComponent> { }
 
 describe('CreatureSpawn integration tests', () => {
   let component: CreatureSpawnComponent;

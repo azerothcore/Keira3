@@ -38,7 +38,7 @@ describe('DashboardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ DashboardModule ],
+      imports: [DashboardModule],
       providers: [
         { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
       ]

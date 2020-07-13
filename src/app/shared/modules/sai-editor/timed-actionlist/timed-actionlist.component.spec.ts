@@ -16,7 +16,7 @@ class TestHostComponent {
   creatureId: string;
 }
 
-class TimedActionlistPage extends PageObject<TestHostComponent> {}
+class TimedActionlistPage extends PageObject<TestHostComponent> { }
 
 describe('TimedActionlistComponent', () => {
 
@@ -25,7 +25,7 @@ describe('TimedActionlistComponent', () => {
       declarations: [TimedActionlistComponent, TestHostComponent],
       imports: [NgxDatatableModule],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   const setup = () => {

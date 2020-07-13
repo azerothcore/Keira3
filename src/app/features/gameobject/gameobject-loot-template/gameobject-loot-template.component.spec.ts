@@ -34,12 +34,12 @@ describe('GameobjectTemplateComponent', () => {
         ToastrModule.forRoot(),
       ],
       providers: [
-        { provide : MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
         GameobjectHandlerService,
         SaiGameobjectHandlerService,
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -48,10 +48,10 @@ describe('GameobjectTemplateComponent', () => {
     reloadSpy = spyOn(editorService, 'reload');
 
     getLootIdSpy = spyOn(editorService, 'getLootId');
-    getLootIdSpy.and.returnValue(of([ { lootId } ]));
+    getLootIdSpy.and.returnValue(of([{ lootId }]));
 
     getTypeSpy = spyOn(editorService, 'getType');
-    getTypeSpy.and.returnValue(of([ { type } ]));
+    getTypeSpy.and.returnValue(of([{ type }]));
 
     fixture = TestBed.createComponent(GameobjectLootTemplateComponent);
     component = fixture.componentInstance;
@@ -69,8 +69,8 @@ describe('GameobjectTemplateComponent', () => {
     getTypeSpy.calls.reset();
     reloadSpy.calls.reset();
 
-    getLootIdSpy.and.returnValue(of([ { lootId: 0 } ]));
-    getTypeSpy.and.returnValue(of([ { lootId: 0 } ]));
+    getLootIdSpy.and.returnValue(of([{ lootId: 0 }]));
+    getTypeSpy.and.returnValue(of([{ lootId: 0 }]));
 
     component.ngOnInit();
 

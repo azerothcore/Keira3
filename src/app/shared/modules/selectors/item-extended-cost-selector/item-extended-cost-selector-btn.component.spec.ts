@@ -9,9 +9,9 @@ describe('ItemExtendedCostSelectorBtnComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ ItemExtendedCostSelectorModule ],
+      imports: [ItemExtendedCostSelectorModule],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

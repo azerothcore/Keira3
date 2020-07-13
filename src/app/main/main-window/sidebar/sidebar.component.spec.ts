@@ -42,8 +42,8 @@ describe('SidebarComponent', () => {
         RouterTestingModule,
       ],
       providers: [
-        { provide : ElectronService, useValue: instance(MockedElectronService) },
-        { provide : MysqlService, useValue: instance(MockedMysqlService) },
+        { provide: ElectronService, useValue: instance(MockedElectronService) },
+        { provide: MysqlService, useValue: instance(MockedMysqlService) },
         CreatureHandlerService,
         SaiCreatureHandlerService,
         QuestHandlerService,
@@ -58,7 +58,7 @@ describe('SidebarComponent', () => {
         MailLootHandlerService,
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

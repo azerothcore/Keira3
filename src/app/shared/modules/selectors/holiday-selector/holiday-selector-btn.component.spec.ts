@@ -9,9 +9,9 @@ describe('HolidaySelectorBtnComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ HolidaySelectorModule ],
+      imports: [HolidaySelectorModule],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

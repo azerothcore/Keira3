@@ -37,4 +37,4 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
     NpcTrainerService,
   ],
 })
-export class NpcTrainerModule {}
+export class NpcTrainerModule { }

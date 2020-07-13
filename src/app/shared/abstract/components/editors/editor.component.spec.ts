@@ -3,12 +3,12 @@ import { MockEntity } from '@keira-testing/mock-services';
 import { EditorService } from '../../service/editors/editor.service';
 import { HandlerService } from '../../service/handlers/handler.service';
 
-class MockComponent extends EditorComponent<MockEntity> {}
+class MockComponent extends EditorComponent<MockEntity> { }
 
 describe('EditorComponent', () => {
 
   const setup = () => {
-    const editorService = { loadedEntityId: 0, reload: jasmine.createSpy('reload'), clearCache: jasmine.createSpy('clearCache')  };
+    const editorService = { loadedEntityId: 0, reload: jasmine.createSpy('reload'), clearCache: jasmine.createSpy('clearCache') };
     const handlerService = { selected: 0 };
 
     const component = new MockComponent(

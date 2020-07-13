@@ -22,4 +22,4 @@ import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.
     SkinningLootTemplateService,
   ],
 })
-export class SkinningLootTemplateModule {}
+export class SkinningLootTemplateModule { }

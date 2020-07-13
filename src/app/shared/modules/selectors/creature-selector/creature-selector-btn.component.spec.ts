@@ -9,9 +9,9 @@ describe('CreatureSelectorBtnComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ CreatureSelectorModule ],
+      imports: [CreatureSelectorModule],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

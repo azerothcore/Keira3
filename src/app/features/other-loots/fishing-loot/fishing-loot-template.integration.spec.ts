@@ -9,7 +9,7 @@ import { FishingLootTemplate } from '@keira-types/fishing-loot-template.type';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { FishingLootHandlerService } from './fishing-loot-handler.service';
 
-class FishingLootTemplatePage extends MultiRowEditorPageObject<FishingLootTemplateComponent> {}
+class FishingLootTemplatePage extends MultiRowEditorPageObject<FishingLootTemplateComponent> { }
 
 describe('FishingLootTemplate integration tests', () => {
   const id = 1234;

@@ -38,4 +38,4 @@ const components = [
     SpellLootHandlerService,
   ],
 })
-export class SpellLootTemplateModule {}
+export class SpellLootTemplateModule { }
