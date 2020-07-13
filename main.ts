@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, screen } from 'electron';
+import { app, BrowserWindow, shell, screen, Menu, MenuItem, Accelerator } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 
@@ -41,7 +41,7 @@ function createWindow() {
     win.webContents.openDevTools();
   }
 
-  win.on('close', function(e) {
+  win.on('close', function (e) {
     if (!process.env.RUNNING_IN_SPECTRON) {
       const choice = require('electron').dialog.showMessageBoxSync(this,
         {
@@ -65,7 +65,7 @@ function createWindow() {
   });
 
   // open links in the default browser
-  win.webContents.on('new-window', function(event, link) {
+  win.webContents.on('new-window', function (event, link) {
     event.preventDefault();
     shell.openExternal(link);
   });
@@ -76,7 +76,114 @@ try {
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.
-  app.on('ready', createWindow);
+  app.on('ready', function () {
+    createWindow()
+
+    // Navigation Top Bar
+    const navigation: Electron.MenuItemConstructorOptions[] = [
+      {
+        label: app.name,
+        submenu: [
+          { role: 'quit' },
+        ]
+      },
+      {
+        label: 'Edit',
+        submenu: [
+          { role: 'undo' },
+          { role: 'redo' },
+          { type: 'separator' },
+          { role: 'cut' },
+          { role: 'copy' },
+          { role: 'paste' },
+          { role: 'delete' },
+          { type: 'separator' },
+          { role: 'selectAll' }
+        ]
+      },
+      {
+        label: 'Window',
+        submenu: [
+          { role: 'reload' },
+          { role: 'forceReload' },
+          { type: 'separator' },
+          { role: 'toggleDevTools' },
+          { type: 'separator' },
+          { role: 'zoomIn' },
+          { role: 'zoomOut' },
+          { role: 'resetZoom' },
+          { type: 'separator' },
+          { role: 'togglefullscreen' },
+          { role: 'minimize' },
+          { role: 'close' }
+        ]
+      },
+      {
+        label: 'Help',
+        submenu: [
+          {
+            label: 'Keira3',
+            submenu: [
+              {
+                label: 'Keira3 Repository',
+                click: function () {
+                  shell.openExternal('https://github.com/AzerothCore/Keira3/')
+                }
+              },
+              {
+                label: 'Report a Bug',
+                click: function () {
+                  shell.openExternal('https://github.com/AzerothCore/Keira3/issues/new')
+                }
+              },
+            ]
+          },
+          {
+            label: 'AzerothCore',
+            submenu: [
+              {
+                label: 'AzerothCore Repository',
+                click: function () {
+                  shell.openExternal('https://github.com/AzerothCore/AzerothCore/')
+                }
+              },
+              {
+                label: 'Report a Bug',
+                click: function () {
+                  shell.openExternal('https://github.com/AzerothCore/AzerothCore/issues/new')
+                }
+              },
+            ]
+          },
+          {
+            label: 'Join our Discord',
+            click: function () {
+              shell.openExternal('https://discordapp.com/channels/217589275766685707/284406375495368704')
+            },
+          }
+        ]
+      },
+    ]
+
+    const menu = Menu.buildFromTemplate(navigation)
+    Menu.setApplicationMenu(menu)
+
+    // Right-Click Menu
+    const ctxMenu = new Menu()
+    ctxMenu.append(new MenuItem({ role: 'undo' }))
+    ctxMenu.append(new MenuItem({ role: 'redo' }))
+    ctxMenu.append(new MenuItem({ type: 'separator' }))
+    ctxMenu.append(new MenuItem({ role: 'cut' }))
+    ctxMenu.append(new MenuItem({ role: 'copy' }))
+    ctxMenu.append(new MenuItem({ role: 'paste' }))
+    ctxMenu.append(new MenuItem({ role: 'selectAll' }))
+    ctxMenu.append(new MenuItem({ type: 'separator' }))
+    ctxMenu.append(new MenuItem({ role: 'toggleDevTools' }))
+
+    win.webContents.on('context-menu', function(){
+      ctxMenu.popup(win)
+    })
+  });
 
   // Quit when all windows are closed.
   app.on('window-all-closed', () => {
