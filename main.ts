@@ -80,7 +80,7 @@ try {
     createWindow()
 
     // Navigation Top Bar
-    const navigation: Electron.MenuItemConstructorOptions[] = [
+    const navMenu: Electron.MenuItemConstructorOptions[] = [
       {
         label: app.name,
         submenu: [
@@ -165,7 +165,7 @@ try {
       },
     ]
 
-    const menu = Menu.buildFromTemplate(navigation)
+    const menu = Menu.buildFromTemplate(navMenu)
     Menu.setApplicationMenu(menu)
 
     // Right-Click Menu
