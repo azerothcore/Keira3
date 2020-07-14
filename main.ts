@@ -127,14 +127,14 @@ try {
               {
                 label: 'Keira3 Repository',
                 click: function () {
-                  shell.openExternal('https://github.com/AzerothCore/Keira3/')
+                  shell.openExternal('https://github.com/AzerothCore/Keira3/');
                 },
                 accelerator: process.platform === 'darwin' ? 'Cmd+F+1' : 'F1',
               },
               {
                 label: 'Report a Bug',
                 click: function () {
-                  shell.openExternal('https://github.com/AzerothCore/Keira3/issues/new')
+                  shell.openExternal('https://github.com/AzerothCore/Keira3/issues/new');
                 }
               },
             ]
@@ -145,13 +145,13 @@ try {
               {
                 label: 'AzerothCore Repository',
                 click: function () {
-                  shell.openExternal('https://github.com/AzerothCore/AzerothCore/')
+                  shell.openExternal('https://github.com/AzerothCore/AzerothCore/');
                 }
               },
               {
                 label: 'Report a Bug',
                 click: function () {
-                  shell.openExternal('https://github.com/AzerothCore/AzerothCore/issues/new')
+                  shell.openExternal('https://github.com/AzerothCore/AzerothCore/issues/new');
                 }
               },
             ]
@@ -159,14 +159,14 @@ try {
           {
             label: 'Wiki',
             click: function () {
-              shell.openExternal('https://www.azerothcore.org/wiki/database-world')
+              shell.openExternal('https://www.azerothcore.org/wiki/database-world');
             },
             accelerator: 'CmdorCtrl+H',
           },
           {
             label: 'Join our Discord',
             click: function () {
-              shell.openExternal('https://discordapp.com/channels/217589275766685707/284406375495368704')
+              shell.openExternal('https://discordapp.com/channels/217589275766685707/284406375495368704');
             },
           }
         ]
@@ -178,15 +178,15 @@ try {
 
     // Right-Click Menu
     const ctxMenu = new Menu()
-    ctxMenu.append(new MenuItem({ role: 'undo' }))
-    ctxMenu.append(new MenuItem({ role: 'redo' }))
-    ctxMenu.append(new MenuItem({ type: 'separator' }))
-    ctxMenu.append(new MenuItem({ role: 'cut' }))
-    ctxMenu.append(new MenuItem({ role: 'copy' }))
-    ctxMenu.append(new MenuItem({ role: 'paste' }))
-    ctxMenu.append(new MenuItem({ role: 'selectAll' }))
-    ctxMenu.append(new MenuItem({ type: 'separator' }))
-    ctxMenu.append(new MenuItem({ role: 'toggleDevTools' }))
+    ctxMenu.append(new MenuItem({ role: 'undo' }));
+    ctxMenu.append(new MenuItem({ role: 'redo' }));
+    ctxMenu.append(new MenuItem({ type: 'separator' }));
+    ctxMenu.append(new MenuItem({ role: 'cut' }));
+    ctxMenu.append(new MenuItem({ role: 'copy' }));
+    ctxMenu.append(new MenuItem({ role: 'paste' }));
+    ctxMenu.append(new MenuItem({ role: 'selectAll' }));
+    ctxMenu.append(new MenuItem({ type: 'separator' }));
+    ctxMenu.append(new MenuItem({ role: 'toggleDevTools' }));
 
     win.webContents.on('context-menu', function () {
       ctxMenu.popup(win)
