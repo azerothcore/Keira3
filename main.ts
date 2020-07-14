@@ -129,7 +129,7 @@ try {
                 click: function () {
                   shell.openExternal('https://github.com/AzerothCore/Keira3/')
                 },
-                accelerator: process.platform === 'darwin' ? 'Cmd+F+1' : 'F1'
+                accelerator: process.platform === 'darwin' ? 'Cmd+F+1' : 'F1',
               },
               {
                 label: 'Report a Bug',
@@ -161,7 +161,7 @@ try {
             click: function () {
               shell.openExternal('https://www.azerothcore.org/wiki/database-world')
             },
-            accelerator: 'CmdorCtrl+H'
+            accelerator: 'CmdorCtrl+H',
           },
           {
             label: 'Join our Discord',
