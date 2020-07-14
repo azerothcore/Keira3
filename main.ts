@@ -126,14 +126,14 @@ try {
             submenu: [
               {
                 label: 'Keira3 Repository',
-                click: function () {
+                click: () => {
                   shell.openExternal('https://github.com/AzerothCore/Keira3/');
                 },
                 accelerator: process.platform === 'darwin' ? 'Cmd+F+1' : 'F1',
               },
               {
                 label: 'Report a Bug',
-                click: function () {
+                click: () => {
                   shell.openExternal('https://github.com/AzerothCore/Keira3/issues/new');
                 }
               },
