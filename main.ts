@@ -144,13 +144,13 @@ try {
             submenu: [
               {
                 label: 'AzerothCore Repository',
-                click: function () {
+                click: () => {
                   shell.openExternal('https://github.com/AzerothCore/AzerothCore/');
                 }
               },
               {
                 label: 'Report a Bug',
-                click: function () {
+                click: () => {
                   shell.openExternal('https://github.com/AzerothCore/AzerothCore/issues/new');
                 }
               },
@@ -158,15 +158,15 @@ try {
           },
           {
             label: 'Wiki',
-            click: function () {
+            click: () => {
               shell.openExternal('https://www.azerothcore.org/wiki/database-world');
             },
             accelerator: 'CmdorCtrl+H',
           },
           {
             label: 'Join our Discord',
-            click: function () {
-              shell.openExternal('https://discordapp.com/channels/217589275766685707/284406375495368704');
+            click: () => {
+              shell.openExternal('https://discord.com/channels/217589275766685707/536630256048799744');
             },
           }
         ]
