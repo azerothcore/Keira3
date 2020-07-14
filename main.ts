@@ -77,7 +77,7 @@ try {
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.
   app.on('ready', function () {
-    createWindow()
+    createWindow();
 
     // Navigation Top Bar
     const navMenu: Electron.MenuItemConstructorOptions[] = [
@@ -171,13 +171,13 @@ try {
           }
         ]
       },
-    ]
+    ];
 
-    const menu = Menu.buildFromTemplate(navMenu)
-    Menu.setApplicationMenu(menu)
+    const menu = Menu.buildFromTemplate(navMenu);
+    Menu.setApplicationMenu(menu);
 
     // Right-Click Menu
-    const ctxMenu = new Menu()
+    const ctxMenu = new Menu();
     ctxMenu.append(new MenuItem({ role: 'undo' }));
     ctxMenu.append(new MenuItem({ role: 'redo' }));
     ctxMenu.append(new MenuItem({ type: 'separator' }));
@@ -189,8 +189,8 @@ try {
     ctxMenu.append(new MenuItem({ role: 'toggleDevTools' }));
 
     win.webContents.on('context-menu', function () {
-      ctxMenu.popup(win)
-    })
+      ctxMenu.popup(win);
+    });
   });
 
   // Quit when all windows are closed.
