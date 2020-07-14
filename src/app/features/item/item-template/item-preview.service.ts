@@ -754,7 +754,8 @@ export class ItemPreviewService {
         limit = limit[0];
 
         const index = limit && limit.isGem ? 'uniqueEquipped' : 'unique';
-        bondingText += `<br><!-- unique isGem -->${ITEM_CONSTANTS[index][2].replace('%s', limit.name).replace('%d', limit.count)
+        bondingText += `<br><!-- unique isGem -->${
+          ITEM_CONSTANTS[index][2].replace('%s', limit.name).replace('%d', limit.count)
           }`;
       }
     }
