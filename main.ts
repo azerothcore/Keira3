@@ -127,7 +127,7 @@ try {
               {
                 label: 'Keira3 Repository',
                 click: () => {
-                  shell.openExternal('https://github.com/AzerothCore/Keira3/');
+                  shell.openExternal('https://github.com/AzerothCore/Keira3');
                 },
                 accelerator: process.platform === 'darwin' ? 'Cmd+F+1' : 'F1',
               },
@@ -145,13 +145,13 @@ try {
               {
                 label: 'AzerothCore Repository',
                 click: () => {
-                  shell.openExternal('https://github.com/AzerothCore/AzerothCore/');
+                  shell.openExternal('https://github.com/AzerothCore/AzerothCore');
                 }
               },
               {
                 label: 'Report a Bug',
                 click: () => {
-                  shell.openExternal('https://github.com/AzerothCore/AzerothCore/issues/new');
+                  shell.openExternal('https://github.com/azerothcore/azerothcore-wotlk/issues/new/choose');
                 }
               },
             ]
