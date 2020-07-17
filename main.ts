@@ -145,7 +145,7 @@ try {
               {
                 label: 'AzerothCore Repository',
                 click: () => {
-                  shell.openExternal('https://github.com/AzerothCore/AzerothCore');
+                  shell.openExternal('https://github.com/azerothcore/azerothcore-wotlk');
                 }
               },
               {
