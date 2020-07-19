@@ -19,7 +19,6 @@ import { ITEM_QUALITY } from '@keira-constants/options/item-quality';
 import { ITEM_SHEAT } from '@keira-constants/options/item-sheath';
 import { STAT_TYPE } from '@keira-constants/options/stat-type';
 import { TOTEM_CATEGORY } from '@keira-constants/options/totem-category';
-import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { ItemTemplate } from '@keira-types/item-template.type';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ItemHandlerService } from '../item-handler.service';
@@ -61,7 +60,6 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   constructor(
     public editorService: ItemTemplateService,
     public handlerService: ItemHandlerService,
-    private readonly sqliteQueryService: SqliteQueryService,
     private readonly itemPreviewService: ItemPreviewService,
     private readonly sanitizer: DomSanitizer,
   ) {
