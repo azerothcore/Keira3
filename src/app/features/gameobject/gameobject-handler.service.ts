@@ -8,7 +8,6 @@ import { GAMEOBJECT_TEMPLATE_ADDON_TABLE } from '@keira-types/gameobject-templat
 import { GAMEOBJECT_QUESTITEM_TABLE } from '@keira-types/gameobject-questitem.type';
 import { GAMEOBJECT_LOOT_TEMPLATE_TABLE } from '@keira-types/gameobject-loot-template.type';
 import { GAMEOBJECT_SPAWN_TABLE } from '@keira-types/gameobject-spawn.type';
-import { CREATURE_TEMPLATE_TABLE } from '@keira-types/creature-template.type';
 import { SAI_TABLE } from '@keira-types/smart-scripts.type';
 
 @Injectable()

@@ -3,7 +3,7 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { ITEM_TYPE, ITEM_MOD } from '@keira-shared/constants/options/item-class';
 import { ITEM_CONSTANTS } from './item-constants';
-import { MAX_LEVEL, lvlIndepRating, gtCombatRatings, CLASSES, resistanceFields } from './item-preview';
+import { MAX_LEVEL, lvlIndepRating, gtCombatRatings, resistanceFields } from './item-preview';
 import { ITEM_FLAG } from '@keira-shared/constants/flags/item-flags';
 import { ITEMS_QUALITY } from '@keira-shared/constants/options/item-quality';
 import { ItemTemplate } from '@keira-shared/types/item-template.type';

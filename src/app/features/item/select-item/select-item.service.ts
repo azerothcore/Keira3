@@ -9,8 +9,6 @@ import {
 } from '@keira-types/item-template.type';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { ItemHandlerService } from '../item-handler.service';
-import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
-import { IconService } from '@keira-shared/modules/icon/icon.service';
 
 @Injectable()
 export class SelectItemService extends SelectService<ItemTemplate> {
@@ -18,7 +16,6 @@ export class SelectItemService extends SelectService<ItemTemplate> {
   constructor(
     public readonly queryService: MysqlQueryService,
     public handlerService: ItemHandlerService,
-    private itemIconService: IconService,
   ) {
     super(
       queryService,
