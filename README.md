@@ -68,7 +68,6 @@ This installation will take time and probably your PC will **reboot** during the
 
 ### Build
 
-
 To run the app in local development with hot reload:
 
 ```bash
@@ -90,3 +89,7 @@ More commands:
 |`npm run test`|  Run unit tests in watch mode |
 
 **Note: Only /dist folder and node dependencies will be included in the executable.**
+
+### Learn
+
+- An overview of Keira3 internals is available [here](https://www.azerothcore.org/wiki/keira3-internals)
