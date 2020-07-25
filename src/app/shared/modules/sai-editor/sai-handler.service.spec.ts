@@ -160,9 +160,9 @@ describe('SaiHandlerService', () => {
         service.select(false, { source_type: source_type, entryorguid }, name, false);
 
         querySpy.and.returnValue(of(returnValue));
-        service.getName().subscribe((name) => {
+        service.getName().subscribe((actualName) => {
           // TODO: this should not be inside subscribe
-          expect(name).toEqual(expectedName);
+          expect(actualName).toEqual(expectedName);
           expect(navigateSpy).toHaveBeenCalledTimes(0);
           expect(querySpy).toHaveBeenCalledTimes(1);
           expect(querySpy).toHaveBeenCalledWith(expectedQuery);
