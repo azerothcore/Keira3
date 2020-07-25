@@ -91,57 +91,91 @@ describe('SaiHandlerService', () => {
     expect(spy).toHaveBeenCalledTimes(0);
   });
 
-  it('getName() should work correctly', fakeAsync(() => {
-    const service: SaiHandlerService = TestBed.inject(SaiHandlerService);
-    const spy = spyOn(TestBed.inject(Router), 'navigate');
-    const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query');
+  describe('getName() should work correctly', () => {
     const mockName = 'Mock Name';
 
-    // TODO: this test case should be refactored and split in several cases
-    for (const test of [
+    const cases: {
+      testId: number,
+      source_type: number,
+      entryorguid: number,
+      name: string,
+      returnValue: { name: string }[],
+      expectedName: string,
+      expectedQuery: string,
+    }[] = [
       {
-        source_type: SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST,  entryorguid: 123, name: mockName,
+        testId: 1,
+        source_type: SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST,
+        entryorguid: 12301,
+        name: mockName,
         returnValue: [ { name: mockName } ],
-        expected: mockName,
+        expectedName: mockName,
+        expectedQuery: 'SELECT name FROM creature_template WHERE entry = 123',
       },
       {
-        source_type: SAI_TYPES.SAI_TYPE_CREATURE,  entryorguid: -123, name: mockName,
+        testId: 2,
+        source_type: SAI_TYPES.SAI_TYPE_CREATURE,
+        entryorguid: -123,
+        name: mockName,
         returnValue: [ { name: mockName } ],
-        expected: mockName,
+        expectedName: mockName,
+        expectedQuery: 'SELECT ct.name FROM creature_template AS ct INNER JOIN creature AS c ON c.id = ct.entry WHERE c.guid = 123',
       },
       {
-        source_type: SAI_TYPES.SAI_TYPE_CREATURE,  entryorguid: 123, name: mockName,
+        testId: 3,
+        source_type: SAI_TYPES.SAI_TYPE_CREATURE,
+        entryorguid: 123,
+        name: mockName,
         returnValue: [],
-        expected: null,
+        expectedName: null,
+        expectedQuery: 'SELECT name FROM creature_template WHERE entry = 123',
       },
       {
-        source_type: SAI_TYPES.SAI_TYPE_GAMEOBJECT,  entryorguid: -123, name: mockName,
+        testId: 4,
+        source_type: SAI_TYPES.SAI_TYPE_GAMEOBJECT,
+        entryorguid: -123, name: mockName,
         returnValue: [ { name: mockName } ],
-        expected: mockName,
+        expectedName: mockName,
+        expectedQuery: 'SELECT ct.name FROM gameobject_template AS ct INNER JOIN gameobject AS c ON c.id = ct.entry WHERE c.guid = 123',
       },
       {
-        source_type: SAI_TYPES.SAI_TYPE_GAMEOBJECT,  entryorguid: 123, name: mockName,
+        testId: 5,
+        source_type: SAI_TYPES.SAI_TYPE_GAMEOBJECT,
+        entryorguid: 123,
+        name: mockName,
         returnValue: [ { name: mockName } ],
-        expected: mockName,
+        expectedName: mockName,
+        expectedQuery: 'SELECT name FROM gameobject_template WHERE entry = 123',
       },
-    ]) {
-      service.select(false, { source_type: test.source_type, entryorguid: test.entryorguid }, test.name, false);
+    ];
 
-      querySpy.and.returnValue(of(test.returnValue));
-      service.getName().subscribe((name) => {
-        expect(name).toEqual(test.expected);
-      });
+    for (const { testId, source_type, entryorguid, name, returnValue, expectedName, expectedQuery } of cases) {
+
+      it(`${testId}`, fakeAsync(() => {
+        const service: SaiHandlerService = TestBed.inject(SaiHandlerService);
+        const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+        const queryService = TestBed.inject(MysqlQueryService);
+        const querySpy = spyOn(queryService, 'query');
+
+        service.select(false, { source_type: source_type, entryorguid }, name, false);
+
+        querySpy.and.returnValue(of(returnValue));
+        service.getName().subscribe((name) => {
+          // TODO: this should not be inside subscribe
+          expect(name).toEqual(expectedName);
+          expect(navigateSpy).toHaveBeenCalledTimes(0);
+          expect(querySpy).toHaveBeenCalledTimes(1);
+          expect(querySpy).toHaveBeenCalledWith(expectedQuery);
+        });
+
+        service.select(false, { source_type: null, entryorguid: -123 }, mockName, false);
+
+        querySpy.and.returnValue(of());
+        expect(service.getName()).toBeUndefined();
+
+        tick();
+      }));
     }
-
-    service.select(false, { source_type: null, entryorguid: -123 }, mockName, false);
-
-    querySpy.and.returnValue(of());
-    expect(service.getName()).toBeUndefined();
-
-    tick();
-
-    expect(spy).toHaveBeenCalledTimes(0);
-  }));
-
+  });
 });
+
