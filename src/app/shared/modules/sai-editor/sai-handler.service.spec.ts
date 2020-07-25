@@ -97,7 +97,7 @@ describe('SaiHandlerService', () => {
 
     const cases: {
       testId: number,
-      source_type: number,
+      sourceType: number,
       entryorguid: number,
       name: string,
       returnValue: { name: string }[],
@@ -106,7 +106,7 @@ describe('SaiHandlerService', () => {
     }[] = [
       {
         testId: 1,
-        source_type: SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST,
+        sourceType: SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST,
         entryorguid: 12301,
         name: mockName,
         returnValue: [ { name: mockName } ],
@@ -115,7 +115,7 @@ describe('SaiHandlerService', () => {
       },
       {
         testId: 2,
-        source_type: SAI_TYPES.SAI_TYPE_CREATURE,
+        sourceType: SAI_TYPES.SAI_TYPE_CREATURE,
         entryorguid: -123,
         name: mockName,
         returnValue: [ { name: mockName } ],
@@ -124,7 +124,7 @@ describe('SaiHandlerService', () => {
       },
       {
         testId: 3,
-        source_type: SAI_TYPES.SAI_TYPE_CREATURE,
+        sourceType: SAI_TYPES.SAI_TYPE_CREATURE,
         entryorguid: 123,
         name: mockName,
         returnValue: [],
@@ -133,7 +133,7 @@ describe('SaiHandlerService', () => {
       },
       {
         testId: 4,
-        source_type: SAI_TYPES.SAI_TYPE_GAMEOBJECT,
+        sourceType: SAI_TYPES.SAI_TYPE_GAMEOBJECT,
         entryorguid: -123, name: mockName,
         returnValue: [ { name: mockName } ],
         expectedName: mockName,
@@ -141,7 +141,7 @@ describe('SaiHandlerService', () => {
       },
       {
         testId: 5,
-        source_type: SAI_TYPES.SAI_TYPE_GAMEOBJECT,
+        sourceType: SAI_TYPES.SAI_TYPE_GAMEOBJECT,
         entryorguid: 123,
         name: mockName,
         returnValue: [ { name: mockName } ],
@@ -150,7 +150,7 @@ describe('SaiHandlerService', () => {
       },
     ];
 
-    for (const { testId, source_type, entryorguid, name, returnValue, expectedName, expectedQuery } of cases) {
+    for (const { testId, sourceType, entryorguid, name, returnValue, expectedName, expectedQuery } of cases) {
 
       it(`${testId}`, fakeAsync(() => {
         const service: SaiHandlerService = TestBed.inject(SaiHandlerService);
@@ -158,7 +158,7 @@ describe('SaiHandlerService', () => {
         const queryService = TestBed.inject(MysqlQueryService);
         const querySpy = spyOn(queryService, 'query');
 
-        service.select(false, { source_type, entryorguid }, name, false);
+        service.select(false, { source_type: sourceType, entryorguid }, name, false);
 
         querySpy.and.returnValue(of(returnValue));
         service.getName().subscribe((actualName) => {
