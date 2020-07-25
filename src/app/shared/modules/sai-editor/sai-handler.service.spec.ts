@@ -1,3 +1,4 @@
+/*eslint camelcase: ["error", {properties: "never"}]*/
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
@@ -157,7 +158,7 @@ describe('SaiHandlerService', () => {
         const queryService = TestBed.inject(MysqlQueryService);
         const querySpy = spyOn(queryService, 'query');
 
-        service.select(false, { source_type: source_type, entryorguid }, name, false);
+        service.select(false, { source_type, entryorguid }, name, false);
 
         querySpy.and.returnValue(of(returnValue));
         service.getName().subscribe((actualName) => {
