@@ -70,7 +70,7 @@
     "coveralls": "3.1.0",
     "cross-env": "7.0.2",
     "electron": "8.4.1",
-    "electron-builder": "22.7.0",
+    "electron-builder": "22.8.0",
     "electron-reload": "1.5.0",
     "highlight.js": "9.18.1",
     "jasmine-core": "3.6.0",
