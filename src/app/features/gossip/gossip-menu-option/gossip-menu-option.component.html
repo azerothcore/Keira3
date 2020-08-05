@@ -1,6 +1,6 @@
 <keira-top-bar [handler]="handlerService"></keira-top-bar>
 
-<div class="container-fluid">
+<div class="container-fluid editor-with-preview" [ngClass]="{'show-preview': showGossipPreview }">
 
   <span *ngIf="editorService.loading">Loading...</span>
 
@@ -167,5 +167,22 @@
       </div>
 
     </div>
+
+    <div class="preview-container" [ngClass]="showGossipPreview ? 'show-preview' : 'hide-preview'">
+      <perfect-scrollbar class="transparent">
+        <div class="gossip-preview">
+
+          <p *ngFor="let row of editorService.newRows">
+            <img *ngIf="OPTION_IMG[row.OptionIcon]" [src]="'assets/img/gossip/' + OPTION_IMG[row.OptionIcon]"> {{ row.OptionText }}
+          </p>
+
+        </div>
+      </perfect-scrollbar>
+    </div>
+
+    <button class="btn btn-secondary btn-sm toggle-preview-button" (click)="showGossipPreview = !showGossipPreview">
+      <i class="fas {{ showGossipPreview ? 'fa-angle-double-right' : 'fa-angle-double-left' }}"></i>
+    </button>
+
   </div>
 </div>
