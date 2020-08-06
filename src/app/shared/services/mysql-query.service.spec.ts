@@ -831,6 +831,8 @@ describe('MysqlQueryService', () => {
       { name: 'getPrevQuestById',        query: `SELECT PrevQuestID AS v FROM quest_template_addon WHERE id = ${id}` },
       { name: 'getItemByStartQuest',     query: `SELECT entry AS v FROM item_template WHERE startquest = ${id}` },
       { name: 'getItemNameByStartQuest', query: `SELECT name AS v FROM item_template WHERE startquest = ${id}` },
+      { name: 'getText0ById',            query: `SELECT text0_0 AS v FROM npc_text WHERE ID = ${id}` },
+      { name: 'getText1ById',            query: `SELECT text0_1 AS v FROM npc_text WHERE ID = ${id}` },
     ]) {
       it(test.name, async () => {
         expect(await service[test.name](id)).toEqual(result);

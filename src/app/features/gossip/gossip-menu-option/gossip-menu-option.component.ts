@@ -4,7 +4,7 @@ import { MultiRowEditorComponent } from '@keira-abstract/components/editors/mult
 import { GossipMenuOption } from '@keira-types/gossip-menu-option.type';
 import { GossipMenuOptionService } from './gossip-menu-option.service';
 import { GossipHandlerService } from '../gossip-handler.service';
-import { OPTION_ICON, OPTION_IMG } from '@keira-constants/options/gossip-option-icon';
+import { OPTION_ICON } from '@keira-constants/options/gossip-option-icon';
 import { OPTION_TYPE } from '@keira-constants/options/gossip-option-type';
 
 @Component({
@@ -16,7 +16,6 @@ export class GossipMenuOptionComponent extends MultiRowEditorComponent<GossipMen
 
   public readonly OPTION_ICON = OPTION_ICON;
   public readonly OPTION_TYPE = OPTION_TYPE;
-  public readonly OPTION_IMG = OPTION_IMG;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
