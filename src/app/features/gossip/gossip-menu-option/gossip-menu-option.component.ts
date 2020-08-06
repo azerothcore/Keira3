@@ -6,7 +6,6 @@ import { GossipMenuOptionService } from './gossip-menu-option.service';
 import { GossipHandlerService } from '../gossip-handler.service';
 import { OPTION_ICON, OPTION_IMG } from '@keira-constants/options/gossip-option-icon';
 import { OPTION_TYPE } from '@keira-constants/options/gossip-option-type';
-import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'keira-gossip-menu-option',
@@ -23,7 +22,6 @@ export class GossipMenuOptionComponent extends MultiRowEditorComponent<GossipMen
   constructor(
     public editorService: GossipMenuOptionService,
     public handlerService: GossipHandlerService,
-    private readonly sanitizer: DomSanitizer,
   ) {
     super(editorService, handlerService);
   }

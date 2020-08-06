@@ -1,21 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ItemSelectorBtnComponent } from './item-selector-btn.component';
-import { ItemSelectorModule } from './item-selector.module';
+import { NpcTextSelectorBtnComponent } from './npc-text-selector-btn.component';
+import { NpcTextSelectorModule } from './npc-text-selector.module';
 
-describe('ItemSelectorBtnComponent', () => {
-  let component: ItemSelectorBtnComponent;
-  let fixture: ComponentFixture<ItemSelectorBtnComponent>;
+describe('NpcTextSelectorBtnComponent', () => {
+  let component: NpcTextSelectorBtnComponent;
+  let fixture: ComponentFixture<NpcTextSelectorBtnComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ ItemSelectorModule ],
+      imports: [ NpcTextSelectorModule ],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ItemSelectorBtnComponent);
+    fixture = TestBed.createComponent(NpcTextSelectorBtnComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

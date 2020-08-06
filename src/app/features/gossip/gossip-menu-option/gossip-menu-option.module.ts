@@ -13,6 +13,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { GossipMenuOptionService } from './gossip-menu-option.service';
 import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+import { GossipMenuOptionPreviewModule } from '../gossip-menu-option-preview/gossip-menu-option-preview.module';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
     SingleValueSelectorModule,
     EditorButtonsModule,
     PerfectScrollbarModule,
+    GossipMenuOptionPreviewModule,
   ],
   exports: [
     GossipMenuOptionComponent,
