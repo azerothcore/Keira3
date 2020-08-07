@@ -38,7 +38,7 @@
     "ngx-ui-switch": "10.0.1",
     "serialize-javascript": "4.0.0",
     "sqlite3": "5.0.0",
-    "tslib": "2.0.0",
+    "tslib": "2.0.1",
     "acorn": "7.4.0"
   },
   "devDependencies": {
