@@ -35,7 +35,7 @@
   "dependencies": {
     "mysql": "2.18.1",
     "ngx-toastr": "12.1.0",
-    "ngx-ui-switch": "10.0.1",
+    "ngx-ui-switch": "10.0.2",
     "serialize-javascript": "4.0.0",
     "sqlite3": "5.0.0",
     "tslib": "2.0.1",
