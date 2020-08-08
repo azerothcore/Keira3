@@ -10,7 +10,7 @@ import { OPTION_IMG } from '@keira-constants/options/gossip-option-icon';
 })
 export class GossipMenuOptionPreviewComponent {
   @Input() options: GossipMenuOption[];
-  @Input() show: boolean = true;
+  @Input() show = true;
 
   public readonly OPTION_IMG = OPTION_IMG;
 }

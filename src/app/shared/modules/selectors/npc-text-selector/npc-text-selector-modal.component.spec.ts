@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, TestBed } from '@angular/core/testing';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance } from 'ts-mockito';
 
@@ -8,11 +8,7 @@ import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { NpcTextSearchService } from '../../search/npc-text-search.service';
 import { NpcTextSelectorModule } from './npc-text-selector.module';
 
-describe('ItemSelectorModalComponent', () => {
-  let component: NpcTextSelectorModalComponent;
-  let fixture: ComponentFixture<NpcTextSelectorModalComponent>;
-  let searchService: NpcTextSearchService;
-
+describe('NpcTextSelectorModalComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ NpcTextSelectorModule ],
@@ -24,16 +20,19 @@ describe('ItemSelectorModalComponent', () => {
     .compileComponents();
   }));
 
-  beforeEach(() => {
-    searchService = TestBed.inject(NpcTextSearchService);
+  function setup() {
+    const fixture = TestBed.createComponent(NpcTextSelectorModalComponent);
+    const component = fixture.componentInstance;
+    const searchService = TestBed.inject(NpcTextSearchService);
     searchService.query = '--mock query';
 
-    fixture = TestBed.createComponent(NpcTextSelectorModalComponent);
-    component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+
+    return { component, fixture, searchService };
+  }
 
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });

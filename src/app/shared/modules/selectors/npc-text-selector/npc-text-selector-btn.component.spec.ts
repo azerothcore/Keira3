@@ -1,12 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, TestBed } from '@angular/core/testing';
 
 import { NpcTextSelectorBtnComponent } from './npc-text-selector-btn.component';
 import { NpcTextSelectorModule } from './npc-text-selector.module';
 
 describe('NpcTextSelectorBtnComponent', () => {
-  let component: NpcTextSelectorBtnComponent;
-  let fixture: ComponentFixture<NpcTextSelectorBtnComponent>;
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ NpcTextSelectorModule ],
@@ -14,13 +11,16 @@ describe('NpcTextSelectorBtnComponent', () => {
     .compileComponents();
   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(NpcTextSelectorBtnComponent);
-    component = fixture.componentInstance;
+  function setup() {
+    const fixture = TestBed.createComponent(NpcTextSelectorBtnComponent);
+    const component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+
+    return { component, fixture };
+  }
 
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });
