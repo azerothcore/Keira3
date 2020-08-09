@@ -11,6 +11,7 @@ import { GossipMenuComponent } from './gossip-menu.component';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { GossipMenuService } from './gossip-menu.service';
 import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
+import { NpcTextSelectorModule } from '@keira-shared/modules/selectors/npc-text-selector/npc-text-selector.module';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
     ToastrModule.forRoot(toastrConfig),
     NgxDatatableModule,
     EditorButtonsModule,
+    NpcTextSelectorModule,
   ],
   exports: [
     GossipMenuComponent,

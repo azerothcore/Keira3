@@ -13,3 +13,17 @@ export const OPTION_ICON: Option[] = [
   { value: 9,  name: 'BATTLE (Two swords)' },
   { value: 10, name: 'DOT (Yellow dot)' },
 ];
+
+export const OPTION_IMG = [
+  'chat.png',
+  'vendor.png',
+  'taxi.png',
+  'trainer.png',
+  'interaction_wheel_1.png',
+  'interaction_wheel_2.png',
+  'money_bag.png',
+  'talk.png',
+  'tabard.png',
+  'battle.png',
+  'chat.png',
+];

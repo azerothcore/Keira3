@@ -135,7 +135,7 @@ describe('SelectGossip integration tests', () => {
 
       page.clickElement(page.searchBtn);
 
-      expect(querySpy).toHaveBeenCalledTimes(1);
+      expect(querySpy).toHaveBeenCalled();
       expect(querySpy).toHaveBeenCalledWith(expectedQuery);
     });
   }

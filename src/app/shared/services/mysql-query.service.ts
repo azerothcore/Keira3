@@ -441,4 +441,12 @@ export class MysqlQueryService extends QueryService {
     return this.queryToPromiseCached<QuestReputationReward>('getReputationRewardByFaction', String(id), `SELECT * FROM reputation_reward_rate WHERE faction = ${id}`);
   }
 
+  getText0ById(id: string|number): Promise<string> {
+    return this.queryValueToPromiseCached('getText0ById', String(id), `SELECT text0_0 AS v FROM npc_text WHERE ID = ${id}`);
+  }
+
+  getText1ById(id: string|number): Promise<string> {
+    return this.queryValueToPromiseCached('getText1ById', String(id), `SELECT text0_1 AS v FROM npc_text WHERE ID = ${id}`);
+  }
+
 }

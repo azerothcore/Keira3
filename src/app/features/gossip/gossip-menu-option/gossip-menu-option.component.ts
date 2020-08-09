@@ -24,4 +24,6 @@ export class GossipMenuOptionComponent extends MultiRowEditorComponent<GossipMen
   ) {
     super(editorService, handlerService);
   }
+
+  showGossipPreview = true;
 }
