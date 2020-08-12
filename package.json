@@ -39,7 +39,7 @@
     "serialize-javascript": "4.0.0",
     "sqlite3": "5.0.0",
     "tslib": "2.0.1",
-    "acorn": "7.4.0"
+    "acorn": "8.0.1"
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "10.0.0",
