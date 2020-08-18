@@ -10,7 +10,6 @@ import { closeModalsAfterEach } from '@keira-testing/test-helpers';
 
 @NgModule({
   declarations: [ ModalConfirmComponent ],
-  entryComponents: [ ModalConfirmComponent ],
   imports: [ ],
 })
 class TestModule {}

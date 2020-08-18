@@ -12,9 +12,6 @@ import { IconModule } from '@keira-shared/modules/icon/icon.module';
 import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 
 @NgModule({
-  entryComponents: [
-    NpcTextSelectorModalComponent,
-  ],
   declarations: [
     NpcTextSelectorBtnComponent,
     NpcTextSelectorModalComponent,
