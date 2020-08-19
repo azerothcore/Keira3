@@ -1,7 +1,7 @@
 import { LootTemplate } from '@keira-types/loot-template.type';
 import { MultiRowEditorComponent } from '../multi-row-editor.component';
-import { Directive } from "@angular/core";
+import { Component } from '@angular/core';
 
 /* istanbul ignore next */ // TODO: for some reason the next line gives coverage issues...
-@Directive()
+@Component({ template: '' })
 export abstract class LootTemplateComponent<T extends LootTemplate> extends MultiRowEditorComponent<T> {}

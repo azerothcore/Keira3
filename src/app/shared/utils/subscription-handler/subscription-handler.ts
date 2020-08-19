@@ -1,11 +1,11 @@
-import { OnDestroy } from '@angular/core';
+import { OnDestroy, Injectable } from '@angular/core';
 import { Subscription } from 'rxjs';
 
-// TODO: Add Angular decorator.
+@Injectable()
 export abstract class SubscriptionHandler implements OnDestroy {
   protected subscriptions: Subscription[] = [];
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 }

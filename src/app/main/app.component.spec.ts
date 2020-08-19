@@ -78,7 +78,7 @@ describe('AppComponent', () => {
       expect(toastrService.error).toHaveBeenCalledWith('Database connection lost');
     });
 
-    it('should correctly react on connectionLost$ [reconnected]', () => {
+    fit('should correctly react on connectionLost$ [reconnected]', () => {
       const { fixture, connectionLostSubject, toastrService } = setup();
       fixture.detectChanges();
       spyOnAllFunctions(toastrService);
