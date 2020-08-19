@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "mysql": "2.18.1",
-    "ngx-toastr": "12.1.0",
+    "ngx-toastr": "13.0.0",
     "ngx-ui-switch": "9.0.2",
     "serialize-javascript": "4.0.0",
     "sqlite3": "5.0.0",
