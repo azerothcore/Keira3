@@ -2,7 +2,9 @@ import { EditorComponent } from './editor.component';
 import { MockEntity } from '@keira-testing/mock-services';
 import { EditorService } from '../../service/editors/editor.service';
 import { HandlerService } from '../../service/handlers/handler.service';
+import { Directive } from "@angular/core";
 
+@Directive()
 class MockComponent extends EditorComponent<MockEntity> {}
 
 describe('EditorComponent', () => {

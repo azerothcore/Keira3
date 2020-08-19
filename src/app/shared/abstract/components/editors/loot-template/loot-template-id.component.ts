@@ -1,4 +1,4 @@
-import { OnInit } from '@angular/core';
+import { OnInit, Directive } from '@angular/core';
 import { MysqlError } from 'mysql';
 
 import { LootTemplate } from '@keira-types/loot-template.type';
@@ -7,6 +7,7 @@ import { LootEditorIdService } from '../../../service/editors/loot-editor-id.ser
 import { LootTemplateComponent } from '@keira-abstract/components/editors/loot-template/loot-template.component';
 
 // Extended only by the loot tables that require a template loot id
+@Directive()
 export abstract class LootTemplateIdComponent<T extends LootTemplate> extends LootTemplateComponent<T> implements OnInit {
 
   protected _lootId: number;
