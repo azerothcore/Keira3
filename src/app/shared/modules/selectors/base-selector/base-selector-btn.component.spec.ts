@@ -18,7 +18,6 @@ import { closeModalsAfterEach } from '@keira-testing/test-helpers';
 
 @NgModule({
   declarations: [ ItemSelectorModalComponent ],
-  entryComponents: [ ItemSelectorModalComponent ],
   imports: [
     CommonModule,
     BrowserModule,

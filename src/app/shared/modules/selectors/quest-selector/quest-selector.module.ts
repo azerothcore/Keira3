@@ -11,9 +11,6 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 
 @NgModule({
-  entryComponents: [
-    QuestSelectorModalComponent,
-  ],
   declarations: [
     QuestSelectorBtnComponent,
     QuestSelectorModalComponent,
