@@ -8,6 +8,7 @@ import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
 import { QueryOutputModule } from '@keira-shared/modules/query-output/query-output.module';
 import { SelectGossipComponent } from './select-gossip.component';
 import { CreateModule } from '@keira-shared/modules/create/create.module';
+import { highlightOptions } from '@keira-config/highlight.config';
 import { SelectGossipService } from './select-gossip.service';
 import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 
@@ -21,7 +22,7 @@ import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-
     TopBarModule,
     QueryOutputModule,
     CreateModule,
-    HighlightModule,
+    HighlightModule.forRoot(highlightOptions),
     NgxDatatableModule,
     SearchButtonsModule,
   ],

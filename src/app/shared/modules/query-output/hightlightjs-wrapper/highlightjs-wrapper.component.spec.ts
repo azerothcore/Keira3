@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { HighlightModule } from 'ngx-highlightjs';
 
 import { HighlightjsWrapperComponent } from './highlightjs-wrapper.component';
+import { highlightOptions } from '@keira-config/highlight.config';
+
 
 describe('HighlightjsWrapperComponent', () => {
   let component: HighlightjsWrapperComponent;
@@ -17,7 +19,7 @@ describe('HighlightjsWrapperComponent', () => {
       imports: [
         BrowserModule,
         FormsModule,
-        HighlightModule,
+        HighlightModule.forRoot(highlightOptions),
       ],
     })
     .compileComponents();

@@ -6,6 +6,7 @@ import { HighlightModule } from 'ngx-highlightjs';
 import { QueryOutputComponent } from './query-output.component';
 import { HighlightjsWrapperComponent } from './hightlightjs-wrapper/highlightjs-wrapper.component';
 import { QueryErrorComponent } from './query-error/query-error.component';
+import { highlightOptions } from '@keira-config/highlight.config';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,7 @@ import { QueryErrorComponent } from './query-error/query-error.component';
   imports: [
     BrowserModule,
     FormsModule,
-    HighlightModule,
+    HighlightModule.forRoot(highlightOptions),
   ],
   exports: [
     QueryOutputComponent,
