@@ -1,0 +1,52 @@
+<div class="modal-body">
+
+  <p class="lead text-center mb-1">Npc Text selector</p>
+
+  <form [formGroup]="searchService.queryForm">
+    <div class="row">
+      <ng-container [formGroup]="searchService.fields">
+        <div class="form-group col-2">
+          <input [formControlName]="'ID'" type="number" class="form-control form-control-sm" id="ID" placeholder="ID">
+        </div>
+        <div class="form-group col-3">
+          <input [formControlName]="'text0_0'" class="form-control form-control-sm" id="text0_0" placeholder="text0_0">
+        </div>
+        <div class="form-group col-3">
+          <input [formControlName]="'text0_1'" class="form-control form-control-sm" id="text0_1" placeholder="text0_1">
+        </div>
+      </ng-container>
+      <div class="form-group col-2">
+        <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Unlimited">
+      </div>
+      <div class="col-2">
+        <keira-search-button [searchService]="searchService"></keira-search-button>
+      </div>
+    </div>
+    <code [highlight]="searchService.query"></code>
+  </form>
+
+  <div *ngIf="searchService.rows">
+
+    <ngx-datatable
+      class="bootstrap table table-striped text-center datatable-select highlight-select datatable-icon-list"
+      [rows]="searchService.rows"
+      [headerHeight]="DTCFG.headerHeight"
+      [footerHeight]="DTCFG.footerHeight"
+      [columnMode]="DTCFG.columnMode"
+      [rowHeight]="DTCFG.rowHeightWithIcon"
+      [limit]="DTCFG.limit"
+      [selectionType]="DTCFG.selectionType"
+      (select)='onSelect($event)'
+    >
+      <ngx-datatable-column name="ID" prop="ID" [minWidth]="50" [maxWidth]="50"></ngx-datatable-column>
+      <ngx-datatable-column name="text0_0" prop="text0_0"></ngx-datatable-column>
+      <ngx-datatable-column name="text0_1" prop="text0_1"></ngx-datatable-column>
+    </ngx-datatable>
+
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-danger" id="modal-cancel-btn" (click)="onCancel()">Cancel</button>
+  <button type="button" class="btn btn-success" id="modal-select-btn" (click)="onSave()">Select</button>
+</div>

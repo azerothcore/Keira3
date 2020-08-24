@@ -3,6 +3,7 @@
     <div class="preview-content quest-preview">
 
       <h5 id="title" *ngIf="!!service.title">{{ service.title }}</h5>
+      <p id="unavailable" *ngIf="service.isUnavailable()" class="text-center font-weight-bold red">Unavailable</p>
       <p id="level" *ngIf="!!service.level">Level: {{ service.level }}</p>
       <p id="minlevel" *ngIf="!!service.minLevel">
         Req. level: {{ service.minLevel }} <span *ngIf="showMaxLevel">- {{ service.maxLevel }}</span>
@@ -184,7 +185,7 @@
         </div>
 
         <!-- Reward Item -->
-        <div *ngIf="service.isRewardItems()" class="mt-3">
+        <div id="reward-items" *ngIf="service.isRewardItems()" class="mt-3">
           <p>You will receive: </p>
           <div *ngFor="let i of [1,2,3,4]">
             <p *ngIf="service.isFieldAvailable('RewardItem', 'RewardAmount', i)">
@@ -196,7 +197,7 @@
         </div>
 
         <!-- Reward Choice Item -->
-        <div *ngIf="service.isRewardChoiceItems()" class="mt-3">
+        <div id="reward-choice-items" *ngIf="service.isRewardChoiceItems()" class="mt-3">
           <p>You will be able to choose one of these rewards:</p>
 
           <div *ngFor="let i of [1,2,3,4]">

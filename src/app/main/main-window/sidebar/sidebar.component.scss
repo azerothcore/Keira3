@@ -30,6 +30,12 @@ $img-border-color: rgba(255, 255, 255, 0.1);
   z-index: 999;
   transition: left .3s ease;
 
+  hr {
+    color: #fff;
+    border-top: 1px solid rgba(255, 255, 255, 0.6);
+    margin: 4px 10px;
+  }
+
   a {
     text-decoration: none;
     transition: color .3s ease;
@@ -88,7 +94,7 @@ $img-border-color: rgba(255, 255, 255, 0.1);
         }
 
         .db-host {
-          font-size: .8rem;
+          font-size: 0.8rem;
           .port {
             color: lightgray;
           }
@@ -149,9 +155,9 @@ $img-border-color: rgba(255, 255, 255, 0.1);
             border-radius: 4px;
           }
 
-          &:hover>i::before {
+          &:hover > i::before {
             display: inline-block;
-            animation: swing ease-in-out .5s 1 alternate;
+            animation: swing ease-in-out 0.5s 1 alternate;
           }
 
           span.label,
@@ -164,7 +170,7 @@ $img-border-color: rgba(255, 255, 255, 0.1);
       }
 
       .sidebar-dropdown {
-        >a:after {
+        > a:after {
           font-family: "Font Awesome 5 Free", serif;
           font-weight: 900;
           content: "\f105";
@@ -179,7 +185,7 @@ $img-border-color: rgba(255, 255, 255, 0.1);
           position: absolute;
           right: 15px;
           top: 14px;
-          transition: transform .3s ease;
+          transition: transform 0.3s ease;
         }
 
         .sidebar-submenu {
@@ -198,6 +204,7 @@ $img-border-color: rgba(255, 255, 255, 0.1);
                 float: right;
                 margin-top: 0;
               }
+
               &.active {
                 font-weight: bold;
                 color: #fff;
@@ -206,7 +213,7 @@ $img-border-color: rgba(255, 255, 255, 0.1);
           }
         }
 
-        &.active>a:after {
+        &.active > a:after {
           transform: rotate(90deg);
           right: 15px;
         }
@@ -216,7 +223,6 @@ $img-border-color: rgba(255, 255, 255, 0.1);
 }
 
 .sidebar {
-
   background-color: $bg-sidebar-wrapper;
 
   .sidebar-profile,
@@ -226,14 +232,14 @@ $img-border-color: rgba(255, 255, 255, 0.1);
 
   .sidebar-profile .user-info .db-user,
   .sidebar-profile .user-info .user-status,
-  .sidebar-header>a,
+  .sidebar-header > a,
   .sidebar-menu ul li a,
   #close-sidebar {
     color: $color;
   }
 
-  .sidebar-menu ul li:hover>a,
-  .sidebar-menu .sidebar-dropdown.active>a,
+  .sidebar-menu ul li:hover > a,
+  .sidebar-menu .sidebar-dropdown.active > a,
   .sidebar-profile .user-info,
   .sidebar-header>a:hover,
   #close-sidebar:hover {
@@ -258,7 +264,6 @@ $img-border-color: rgba(255, 255, 255, 0.1);
   }
 
   &.sidebar-bg {
-
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

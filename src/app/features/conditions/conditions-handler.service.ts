@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 
 import { Conditions, CONDITIONS_ID_FIELDS, CONDITIONS_TABLE } from '@keira-types/conditions.type';
 import { ComplexKeyHandlerService } from '@keira-abstract/service/handlers/complex-key.handler.service';
-import { QUEST_TEMPLATE_TABLE } from '@keira-types/quest-template.type';
 
 @Injectable()
 export class ConditionsHandlerService extends ComplexKeyHandlerService<Conditions> {

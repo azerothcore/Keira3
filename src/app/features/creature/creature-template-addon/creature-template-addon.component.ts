@@ -16,7 +16,7 @@ import { CREATURE_ADDON_BYTES_2 } from '@keira-constants/options/creature-addon-
 })
 export class CreatureTemplateAddonComponent extends SingleRowEditorComponent<CreatureTemplateAddon> {
 
-  public get docUrl() {
+  public get docUrl(): string {
     return this.WIKI_BASE_URL + CREATURE_SPAWN_ADDON_TABLE; // they share the same doc page
   }
 

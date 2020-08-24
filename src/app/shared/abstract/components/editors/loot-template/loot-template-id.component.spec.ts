@@ -5,11 +5,11 @@ import { of, throwError } from 'rxjs';
 import Spy = jasmine.Spy;
 
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
-import { LootTemplateComponent } from './loot-template.component';
+import { LootTemplateIdComponent } from './loot-template-id.component';
 import { CreatureLootTemplate } from '@keira-types/creature-loot-template.type';
 import { CreatureLootTemplateComponent } from '../../../../../features/creature/creature-loot-template/creature-loot-template.component';
 import { CreatureLootTemplateService } from '../../../../../features/creature/creature-loot-template/creature-loot-template.service';
-import { LootEditorService } from '../../../service/editors/loot-editor.service';
+import { LootEditorIdService } from '../../../service/editors/loot-editor-id.service';
 import { CreatureLootTemplateModule } from '../../../../../features/creature/creature-loot-template/creature-loot-template.module';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
@@ -18,9 +18,9 @@ import { CreatureHandlerService } from '../../../../../features/creature/creatur
 import { SaiCreatureHandlerService } from '../../../../../features/creature/sai-creature-handler.service';
 
 describe('LootTemplateComponent', () => {
-  let component: LootTemplateComponent<CreatureLootTemplate>;
+  let component: LootTemplateIdComponent<CreatureLootTemplate>;
   let fixture: ComponentFixture<CreatureLootTemplateComponent>;
-  let editorService: LootEditorService<CreatureLootTemplate>;
+  let editorService: LootEditorIdService<CreatureLootTemplate>;
   let getLootIdSpy: Spy;
   let reloadSpy: Spy;
 

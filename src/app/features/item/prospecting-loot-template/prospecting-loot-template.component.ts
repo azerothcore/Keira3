@@ -3,17 +3,13 @@ import { Component } from '@angular/core';
 import { ItemHandlerService } from '../item-handler.service';
 import { ProspectingLootTemplate } from '@keira-types/prospecting-loot-template.type';
 import { ProspectingLootTemplateService } from './prospecting-loot-template.service';
-import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
-import { LOOT_MODE } from '@keira-constants/flags/loot-mode';
+import { LootTemplateComponent } from '@keira-abstract/components/editors/loot-template/loot-template.component';
 
 @Component({
   selector: 'keira-prospecting-loot-template',
-  templateUrl: '../item-loot-template/item-loot-template.component.html',
-  styleUrls: ['../item-loot-template/item-loot-template.component.scss']
+  templateUrl: '../../../shared/abstract/components/editors/loot-template/loot-template.component.html',
 })
-export class ProspectingLootTemplateComponent extends MultiRowEditorComponent<ProspectingLootTemplate> {
-
-  public readonly LOOT_MODE = LOOT_MODE;
+export class ProspectingLootTemplateComponent extends LootTemplateComponent<ProspectingLootTemplate> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

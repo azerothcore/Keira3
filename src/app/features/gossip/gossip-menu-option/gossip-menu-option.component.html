@@ -1,6 +1,6 @@
 <keira-top-bar [handler]="handlerService"></keira-top-bar>
 
-<div class="container-fluid">
+<div class="container-fluid editor-with-preview" [ngClass]="{'show-preview': showGossipPreview }">
 
   <span *ngIf="editorService.loading">Loading...</span>
 
@@ -141,7 +141,9 @@
             [columnMode]="DTCFG.columnMode"
             [rowHeight]="DTCFG.rowHeight"
             [selectionType]="DTCFG.selectionType"
-            (select)='editorService.onRowSelection($event)'>
+            (select)='editorService.onRowSelection($event)'
+            (keydown.delete)="editorService.deleteSelectedRow()"
+          >
             <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
               <ng-template let-row="row" ngx-datatable-cell-template>
                 <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
@@ -165,5 +167,15 @@
       </div>
 
     </div>
+
+    <keira-gossip-menu-option-preview
+      [options]="editorService.newRows"
+      [show]="showGossipPreview"
+    ></keira-gossip-menu-option-preview>
+
+    <button class="btn btn-secondary btn-sm toggle-preview-button" (click)="showGossipPreview = !showGossipPreview">
+      <i class="fas {{ showGossipPreview ? 'fa-angle-double-right' : 'fa-angle-double-left' }}"></i>
+    </button>
+
   </div>
 </div>

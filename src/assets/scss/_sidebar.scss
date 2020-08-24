@@ -3,22 +3,21 @@
 /* Custom global code coming from the sidebar lib */
 
 body {
-  font-size: .9rem;
+  font-size: 0.9rem;
 }
 
 .page-wrapper.toggled .sidebar {
   left: -$sidebar-width;
 }
 
-.sidebar .ps.ps--active-y>.ps__rail-y:hover,
-.sidebar>.ps.ps--active-y>.ps__rail-y.ps--clicking {
+.sidebar .ps.ps--active-y > .ps__rail-y:hover,
+.sidebar>.ps.ps--active-y > .ps__rail-y.ps--clicking {
   width: 10px !important;
 }
 
 .ps__thumb-y {
   background-color: #fff !important;
-  width: 6px!important;
-  border-radius: 0px!important;
-  opacity: .5;
-
+  width: 6px !important;
+  border-radius: 0 !important;
+  opacity: 0.5;
 }

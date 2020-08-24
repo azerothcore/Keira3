@@ -12,8 +12,10 @@ export abstract class SelectService<T extends TableRow> extends SearchService<T>
     protected entityIdField: string,
     protected entityNameField: string,
     protected fieldList: StringKeys<T>[],
+    protected selectFields: string[] = null,
+    protected groupFields: string[] = null,
   ) {
-    super(queryService, entityTable, fieldList);
+    super(queryService, entityTable, fieldList, selectFields, groupFields);
   }
 
   onSelect({ selected }) {

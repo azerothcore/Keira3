@@ -20,6 +20,10 @@
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="TextID">TextID</label>
+            <keira-npc-text-selector-btn
+              [control]="editorService.form.controls.TextID"
+              [config]="{  name: 'TextID' }"
+            ></keira-npc-text-selector-btn>
             <i
               class="fas fa-info-circle ml-1" [placement]="'auto'"
               [tooltip]="'The npc_text.ID for the gossip you want to be initially displayed. Also this tells the NPC what to say at the top of the options menu when it is displayed.'"
@@ -50,13 +54,25 @@
             [columnMode]="DTCFG.columnMode"
             [rowHeight]="DTCFG.rowHeight"
             [selectionType]="DTCFG.selectionType"
-            (select)='editorService.onRowSelection($event)'>
+            (select)='editorService.onRowSelection($event)'
+            (keydown.delete)="editorService.deleteSelectedRow()"
+          >
             <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
               <ng-template let-row="row" ngx-datatable-cell-template>
                 <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
               </ng-template>
             </ngx-datatable-column>
             <ngx-datatable-column name="TextID" prop="TextID" [minWidth]="80"></ngx-datatable-column>
+            <ngx-datatable-column name="Text0_0" [minWidth]="80">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{ queryService.getText0ById(row.TextID) | async }}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Text0_1" [minWidth]="80">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{ queryService.getText1ById(row.TextID) | async }}
+              </ng-template>
+            </ngx-datatable-column>
           </ngx-datatable>
 
         </div>

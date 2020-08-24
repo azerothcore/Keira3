@@ -77,6 +77,11 @@
 
           <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="QuestInfoID">QuestInfoID</label>
+            <keira-single-value-selector-btn
+              [control]="editorService.form.controls.QuestInfoID"
+              [config]="{ options: QUEST_INFO, name: 'QuestInfoID' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
             <i
               class="fas fa-info-circle ml-1" [placement]="'auto'"
               [tooltip]="'These values are ID taken from QuestInfo.dbc'"

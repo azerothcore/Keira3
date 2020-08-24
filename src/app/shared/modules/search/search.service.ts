@@ -12,13 +12,13 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
     'limit': new FormControl(50),
     'fields': this.fields,
   });
-  selectFields: string[] = null;
-  groupFields: string[] = null;
 
   constructor(
     protected queryService: QueryService,
     protected entityTable: string,
     protected fieldList: StringKeys<T>[],
+    protected selectFields: string[] = null,
+    protected groupFields: string[] = null,
   ) {
     super();
 

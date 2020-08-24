@@ -7,9 +7,6 @@ import { SingleValueSelectorModalComponent } from './single-value-selector-modal
 import { SingleValueSelectorBtnComponent } from './single-value-selector-btn.component';
 
 @NgModule({
-  entryComponents: [
-    SingleValueSelectorModalComponent,
-  ],
   declarations: [
     SingleValueSelectorModalComponent,
     SingleValueSelectorBtnComponent,

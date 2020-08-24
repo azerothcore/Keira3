@@ -11,6 +11,10 @@ import { GossipHandlerService } from '../../../features/gossip/gossip-handler.se
 import { ConditionsHandlerService } from '../../../features/conditions/conditions-handler.service';
 import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
 import { LocationService } from '@keira-shared/services/location.service';
+import { ReferenceLootHandlerService } from '../../../features/other-loots/reference-loot/reference-loot-handler.service';
+import { SpellLootHandlerService } from '../../../features/other-loots/spell-loot/spell-loot-handler.service';
+import { FishingLootHandlerService } from '../../../features/other-loots/fishing-loot/fishing-loot-handler.service';
+import { MailLootHandlerService } from '../../../features/other-loots/mail-loot/mail-loot-handler.service';
 
 const animationTime = 200;
 
@@ -33,6 +37,7 @@ export class SidebarComponent {
     quest: 'up',
     gameobject: 'up',
     item: 'up',
+    otherLoot: 'up',
     smartAi: 'up',
     conditions: 'up',
     gossip: 'up',
@@ -51,6 +56,10 @@ export class SidebarComponent {
     public gossipHandlerService: GossipHandlerService,
     public conditionsHandlerService: ConditionsHandlerService,
     public saiHandlerService: SaiHandlerService,
+    public referenceLootHandlerService: ReferenceLootHandlerService,
+    public spellLootHandlerService: SpellLootHandlerService,
+    public fishingLootHandlerService: FishingLootHandlerService,
+    public mailLootHandlerService: MailLootHandlerService,
     private locationService: LocationService,
   ) { }
 

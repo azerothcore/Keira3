@@ -4,6 +4,7 @@ import { MultiRowEditorComponent } from '@keira-abstract/components/editors/mult
 import { GossipMenu } from '@keira-types/gossip-menu.type';
 import { GossipMenuService } from './gossip-menu.service';
 import { GossipHandlerService } from '../gossip-handler.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 
 @Component({
   selector: 'keira-gossip-menu',
@@ -15,6 +16,7 @@ export class GossipMenuComponent extends MultiRowEditorComponent<GossipMenu> {
   constructor(
     public editorService: GossipMenuService,
     public handlerService: GossipHandlerService,
+    public readonly queryService: MysqlQueryService,
   ) {
     super(editorService, handlerService);
   }

@@ -28,6 +28,10 @@ class SaiEditorPage extends MultiRowEditorPageObject<SaiEditorComponent> {
   get target2Name() { return this.query<HTMLLabelElement>('label#label-target-param2'); }
   get target3Name() { return this.query<HTMLLabelElement>('label#label-target-param3'); }
   get target4Name() { return this.query<HTMLLabelElement>('label#label-target-param4'); }
+  get targetXName() { return this.query<HTMLLabelElement>('label#label-target-x'); }
+  get targetYName() { return this.query<HTMLLabelElement>('label#label-target-y'); }
+  get targetZName() { return this.query<HTMLLabelElement>('label#label-target-z'); }
+  get targetOName() { return this.query<HTMLLabelElement>('label#label-target-o'); }
   get errors() { return this.query<HTMLElement>('#errors'); }
   get eventType() { return this.getInputById('event_type'); }
   get generateCommentsBtn() { return this.query<HTMLButtonElement>('#generate-comments-btn'); }
@@ -542,6 +546,10 @@ describe('SaiEditorComponent integration tests', () => {
       expect(page.target2Name.innerText).toContain('param2');
       expect(page.target3Name.innerText).toContain('param3');
       expect(page.target4Name.innerText).toContain('param4');
+      expect(page.targetXName.innerText).toContain('TargetX');
+      expect(page.targetYName.innerText).toContain('TargetY');
+      expect(page.targetZName.innerText).toContain('TargetZ');
+      expect(page.targetOName.innerText).toContain('TargetO');
 
       page.setSelectValueById('target_type', 9);
 
@@ -549,6 +557,11 @@ describe('SaiEditorComponent integration tests', () => {
       expect(page.target2Name.innerText).toContain('MinDistance');
       expect(page.target3Name.innerText).toContain('MaxDistance');
       expect(page.target4Name.innerText).toContain('AliveState');
+
+      page.setInputValueById('target_type', '28: 201'); // need this hack because option values are no longer in sequence at this point
+      expect(page.targetOName.innerText).toContain('Resize');
+
+      // TODO: add tests for target X, Y, Z dynamic names when they will be in use
     });
   });
 });

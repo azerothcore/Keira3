@@ -64,6 +64,18 @@ import { SaiFullEditorComponent } from '../features/smart-scripts/sai-full-edito
 import { SaiGameobjectComponent } from '../features/gameobject/sai-gameobject/sai-gameobject.component';
 import { ConditionsComponent } from '../features/conditions/edit-conditions/conditions.component';
 import { SqlEditorComponent } from '../features/sql-editor/sql-editor.component';
+import { SelectReferenceLootComponent } from '../features/other-loots/reference-loot/select-reference-loot.component';
+import { ReferenceLootTemplateComponent } from '../features/other-loots/reference-loot/reference-loot-template.component';
+import { ReferenceLootHandlerService } from '../features/other-loots/reference-loot/reference-loot-handler.service';
+import { SpellLootTemplateComponent } from '../features/other-loots/spell-loot/spell-loot-template.component';
+import { SpellLootHandlerService } from '../features/other-loots/spell-loot/spell-loot-handler.service';
+import { SelectSpellLootComponent } from '../features/other-loots/spell-loot/select-spell-loot.component';
+import { SelectFishingLootComponent } from '../features/other-loots/fishing-loot/select-fishing-loot.component';
+import { FishingLootTemplateComponent } from '../features/other-loots/fishing-loot/fishing-loot-template.component';
+import { FishingLootHandlerService } from '../features/other-loots/fishing-loot/fishing-loot-handler.service';
+import { SelectMailLootComponent } from '../features/other-loots/mail-loot/select-mail-loot.component';
+import { MailLootTemplateComponent } from '../features/other-loots/mail-loot/mail-loot-template.component';
+import { MailLootHandlerService } from '../features/other-loots/mail-loot/mail-loot-handler.service';
 
 const routes: Routes = [
   {
@@ -272,6 +284,47 @@ const routes: Routes = [
         path: 'milling-loot-template',
         component: MillingLootTemplateComponent,
         canActivate: [ItemHandlerService],
+      },
+    ]
+  },
+  {
+    path: 'other-loots',
+    children: [
+      {
+        path: 'select-reference',
+        component: SelectReferenceLootComponent,
+      },
+      {
+        path: 'reference',
+        component: ReferenceLootTemplateComponent,
+        canActivate: [ReferenceLootHandlerService],
+      },
+      {
+        'path': 'select-spell',
+        'component': SelectSpellLootComponent,
+      },
+      {
+        path: 'spell',
+        component: SpellLootTemplateComponent,
+        canActivate: [SpellLootHandlerService],
+      },
+      {
+        'path': 'select-fishing',
+        'component': SelectFishingLootComponent,
+      },
+      {
+        path: 'fishing',
+        component: FishingLootTemplateComponent,
+        canActivate: [FishingLootHandlerService],
+      },
+      {
+        'path': 'select-mail',
+        'component': SelectMailLootComponent,
+      },
+      {
+        path: 'mail',
+        component: MailLootTemplateComponent,
+        canActivate: [MailLootHandlerService],
       },
     ]
   },

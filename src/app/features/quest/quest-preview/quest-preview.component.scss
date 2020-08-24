@@ -13,15 +13,21 @@
     font-weight: bold;
   }
 
-  ol, ul {
+  ol,
+  ul {
     padding: 0 0 0 17px;
   }
 
   .colored {
     color: #ffd100;
   }
+
   .greyed {
     color: #dbdbdb;
+  }
+
+  .red {
+    color: #f00;
   }
 
   .text-sm {

@@ -17,6 +17,7 @@ import { GossipModule } from './features/gossip/gossip.module';
 import { ConditionsModule } from './features/conditions/conditions.module';
 import { SmartScriptsModule } from './features/smart-scripts/smart-scripts.module';
 import { SqlEditorModule } from './features/sql-editor/sql-editor.module';
+import { OtherLootsModule } from './features/other-loots/other-loots.module';
 
 @NgModule({
   declarations: [ AppComponent ],
@@ -34,6 +35,7 @@ import { SqlEditorModule } from './features/sql-editor/sql-editor.module';
     QuestModule,
     GameobjectModule,
     ItemModule,
+    OtherLootsModule,
     GossipModule,
     ConditionsModule,
     SmartScriptsModule,

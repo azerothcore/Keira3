@@ -7,7 +7,7 @@ import {
   SKINNING_LOOT_TEMPLATE_TABLE,
   SkinningLootTemplate
 } from '@keira-types/skinning-loot-template.type';
-import { LootEditorService } from '@keira-abstract/service/editors/loot-editor.service';
+import { LootEditorIdService } from '@keira-abstract/service/editors/loot-editor-id.service';
 import {
     CreatureLootTemplate
 } from '@keira-types/creature-loot-template.type';
@@ -18,7 +18,7 @@ import {
 } from '@keira-types/creature-template.type';
 
 @Injectable()
-export class SkinningLootTemplateService extends LootEditorService<SkinningLootTemplate> {
+export class SkinningLootTemplateService extends LootEditorIdService<SkinningLootTemplate> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

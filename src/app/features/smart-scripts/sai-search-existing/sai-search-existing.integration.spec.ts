@@ -58,7 +58,7 @@ describe('SaiSearchExisting integration tests', () => {
   it('should correctly initialise', async () => {
     await fixture.whenStable();
       expect(page.queryWrapper.innerText).toContain(
-        'SELECT * FROM `smart_scripts` LIMIT 50'
+        'SELECT `entryorguid`, `source_type` FROM `smart_scripts` GROUP BY entryorguid, source_type LIMIT 50'
       );
   });
 
