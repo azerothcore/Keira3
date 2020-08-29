@@ -8,7 +8,7 @@ jobs:
         node-version: [12.x]
         os: [ubuntu-20.04]
     runs-on: ${{ matrix.os }}
-    name: ${{ matrix.os }}-${{ matrix.node-version }}
+    name: ${{ matrix.os }}-node-${{ matrix.node-version }}
 
     steps:
       - uses: actions/checkout@v2
