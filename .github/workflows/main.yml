@@ -31,9 +31,7 @@ jobs:
         run: npm run lint
       - name: Unit and Integration tests
         run: npm run test-ci
-      - name: Build
-        run: npm run build
-      - name: Headless End-to-End tests
+      - name: End-to-End tests
         uses: GabrielBB/xvfb-action@v1
         with:
           run: npm run e2e
