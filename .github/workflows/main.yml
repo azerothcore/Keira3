@@ -6,7 +6,7 @@ jobs:
     strategy:
       matrix:
         node-version: [12.x]
-        os: [ubuntu 20.04]
+        os: [ubuntu-20.04]
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }}-${{ matrix.compiler }}-${{ matrix.modules }}-modules
 
