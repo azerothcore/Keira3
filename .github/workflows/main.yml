@@ -33,8 +33,8 @@ jobs:
         run: npm run test-ci
       - name: Build
         run: npm run build
-      - name: Run headless test
+      - name: Headless End-to-End tests
         uses: GabrielBB/xvfb-action@v1
-      - name: End-to-End tests
-        run: npm run e2e
+        with:
+          run: npm run e2e
 
