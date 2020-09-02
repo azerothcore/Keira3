@@ -87,6 +87,7 @@ More commands:
 |`npm run electron:mac`|  On a MAC OS, builds your application and generates a `.app` file of your application that can be run on Mac |
 |`npm run test-ci`|  Run unit tests once |
 |`npm run test`|  Run unit tests in watch mode |
+|`npm run e2e`|  Run e2e tests. It requires to run `npm run build:prod` first |
 
 **Note: Only /dist folder and node dependencies will be included in the executable.**
 
