@@ -32,7 +32,7 @@ export default function setup() {
     const browser = this.app.client;
     await browser.waitUntilWindowLoaded();
 
-    browser.timeouts('script', 15000);
+    browser.setTimeout({ 'script': 150000 });
   });
 
   afterEach(function () {
