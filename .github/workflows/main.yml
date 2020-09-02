@@ -36,6 +36,8 @@ jobs:
           max_attempts: 3
           command: npm run test-ci
           timeout_minutes: 20
+      - name: Build
+        run: npm run build:prod
       - name: End-to-End tests
         uses: GabrielBB/xvfb-action@v1
         with:
