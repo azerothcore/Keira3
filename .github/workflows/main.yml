@@ -31,7 +31,10 @@ jobs:
       - name: Lint
         run: npm run lint
       - name: Unit and Integration tests
-        run: npm run test-ci
+        uses: nick-invision/retry@v1
+        with:
+          max_attempts: 3
+          command: npm run test-ci
       - name: End-to-End tests
         uses: GabrielBB/xvfb-action@v1
         with:
