@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, screen, Menu, MenuItem } from 'electron';
+import { app, BrowserWindow, shell, screen, Menu, MenuItem, nativeImage } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 
@@ -21,7 +21,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
     },
-    icon: 'src/assets/img/ac.png',
+    icon: nativeImage.createFromPath('src/assets/img/ac.png'),
   });
 
   if (serve) {
