@@ -835,10 +835,12 @@
     <div class="preview-container" [ngClass]="showItemPreview ? 'show-preview' : 'hide-preview'">
       <perfect-scrollbar class="transparent">
         <div class="item-preview">
-          <div>
+          <div class="icon-container">
             <keira-icon [size]="'large'" [itemDisplayId]="editorService.form.controls.displayid.value" class="icon"></keira-icon>
-            <span class="item-stock q1 stackable" *ngIf="editorService.form.controls.stackable.value > 1 && editorService.form.controls.stackable.value < 100">{{ editorService.form.controls.stackable.value }}</span>
-            <span class="item-stock q1 stackable stackable-100" *ngIf="editorService.form.controls.stackable.value >= 100">{{ editorService.form.controls.stackable.value }}</span>
+            <div class="item-stock-container">
+              <span class="item-stock q1 stackable" *ngIf="editorService.form.controls.stackable.value > 1 && editorService.form.controls.stackable.value < 100">{{ editorService.form.controls.stackable.value }}</span>
+              <span class="item-stock q1 stackable stackable-100" *ngIf="editorService.form.controls.stackable.value >= 100">{{ editorService.form.controls.stackable.value }}</span>
+            </div>
           </div>
 
           <div class="item-stats">

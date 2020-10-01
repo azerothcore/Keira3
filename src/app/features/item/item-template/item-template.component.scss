@@ -14,10 +14,19 @@
     color: #ccc;
   }
 
+  .icon-container {
+    height: 100px;
+  }
+
+  .item-stock-container {
+    position: relative;
+    height: 25px;
+    margin-top: -30px;
+  }
+
   .stackable {
-    position: absolute;
-    margin-left: -40px;
-    margin-top: 60px;
+    position: sticky;
+    margin-right: -50px;
     font-weight: 700;
     font-size: 30px;
     white-space: nowrap;
@@ -25,6 +34,6 @@
   }
 
   .stackable-100 {
-    margin-left: -55px;
+    margin-right: -35px;
   }
 }
