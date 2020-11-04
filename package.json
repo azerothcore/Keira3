@@ -57,7 +57,7 @@
     "@angular/router": "10.2.1",
     "@fortawesome/fontawesome-free": "5.15.1",
     "@swimlane/ngx-datatable": "18.0.0",
-    "@types/jasmine": "3.6.0",
+    "@types/jasmine": "3.6.1",
     "@types/jasminewd2": "2.0.8",
     "@types/mocha": "8.0.3",
     "@types/mysql": "2.15.15",
