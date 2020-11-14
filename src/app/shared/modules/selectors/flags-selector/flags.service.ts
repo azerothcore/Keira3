@@ -8,12 +8,6 @@ export class FlagsService {
 
   getBitsFromValue(value: number, bitsCount: number): boolean[] {
     const bits = new Array<boolean>(bitsCount);
-
-    if (value === -1) {
-      for (let i = 0; i < bitsCount; i++) { bits[i] = true; }
-      return bits;
-    }
-
     const binaryStr: string = value.toString(2).split('').reverse().join('');
 
     for (let i = 0; i < bitsCount; i++)  {
@@ -30,10 +24,6 @@ export class FlagsService {
       if (bits[i]) {
         result += Math.pow(2, i);
       }
-    }
-
-    if (result === Math.pow(2, bits.length) - 1) {
-      return -1;
     }
 
     return result;
