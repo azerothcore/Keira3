@@ -15,7 +15,7 @@ import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 class CreatureQuestitemPage extends MultiRowEditorPageObject<CreatureQuestitemComponent> {}
 
-describe('CreatureQuestitem integration tests', () => {
+xdescribe('CreatureQuestitem integration tests', () => {
   let component: CreatureQuestitemComponent;
   let fixture: ComponentFixture<CreatureQuestitemComponent>;
   let queryService: MysqlQueryService;

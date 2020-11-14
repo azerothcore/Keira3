@@ -27,7 +27,7 @@ class SelectConditionsComponentPage extends PageObject<SelectConditionsComponent
   get topBar() { return this.query<HTMLElement>('keira-top-bar'); }
 }
 
-describe('SelectConditions integration tests', () => {
+xdescribe('SelectConditions integration tests', () => {
   let component: SelectConditionsComponent;
   let fixture: ComponentFixture<SelectConditionsComponent>;
   let selectService: ConditionsSearchService;

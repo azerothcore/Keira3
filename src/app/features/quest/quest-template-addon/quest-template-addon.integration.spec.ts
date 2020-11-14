@@ -21,7 +21,7 @@ class QuestTemplateAddonPage extends EditorPageObject<QuestTemplateAddonComponen
   get questPreviewReqLevel() { return this.query(`${this.PREVIEW_CONTAINER_SELECTOR} #minlevel`); }
 }
 
-xdescribe('QuestTemplateAddon integration tests', () => {
+describe('QuestTemplateAddon integration tests', () => {
 
   const id = 1234;
   const expectedFullCreateQuery = 'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
@@ -174,9 +174,9 @@ xdescribe('QuestTemplateAddon integration tests', () => {
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.clickExecuteQuery();
 
-      await page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(2); // 2 because the preview also calls it
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      await page.expectDiffQueryToContain(expectedQuery);
       page.removeElement();
     }));
 

@@ -109,8 +109,7 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
     this.queryPo.expectDiffQueryToBeShown();
   }
 
-  async expectFullQueryToContain(expectedQuery: string) {
-    await this.whenReady();
+  expectFullQueryToContain(expectedQuery: string) {
     expect(this.queryPo.fullQueryWrapper.innerText).toContain(expectedQuery);
   }
 

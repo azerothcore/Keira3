@@ -1,8 +1,7 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
-import Spy = jasmine.Spy;
 
 import { ConditionsComponent } from './conditions.component';
 import { ConditionsEditorModule } from './conditions-editor.module';
@@ -19,13 +18,6 @@ class ConditionsPage extends EditorPageObject<ConditionsComponent> {
 }
 
 xdescribe('Conditions integration tests', () => {
-  let component: ConditionsComponent;
-  let fixture: ComponentFixture<ConditionsComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: ConditionsHandlerService;
-  let page: ConditionsPage;
-  let navigateSpy: Spy;
 
   const sourceTypeOrReferenceId = 1;
   const sourceGroup = 2;
@@ -68,35 +60,42 @@ xdescribe('Conditions integration tests', () => {
   }));
 
   function setup(creatingNew: boolean) {
-    navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
-    handlerService = TestBed.inject(ConditionsHandlerService);
+    spyOn(TestBed.inject(Router), 'navigate');
+    const handlerService = TestBed.inject(ConditionsHandlerService);
     handlerService['_selected'] = JSON.stringify(id);
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of());
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(of(
       creatingNew ? [] : [originalEntity]
     ));
 
-    fixture = TestBed.createComponent(ConditionsComponent);
-    component = fixture.componentInstance;
-    page = new ConditionsPage(fixture);
+    const fixture = TestBed.createComponent(ConditionsComponent);
+    const page = new ConditionsPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+
+    return {
+      handlerService,
+      querySpy,
+      page,
+    };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
 
-    it('should correctly initialise', waitForAsync(async () => {
+    it('should correctly initialise', fakeAsync(waitForAsync(async () => {
+      const { page } = setup(true);
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
+      tick(500);
       await page.expectFullQueryToContain(expectedFullCreateQuery);
     }));
 
     it('should correctly update the unsaved status', () => {
+      const { page, handlerService } = setup(true);
       const field = 'ElseGroup';
       expect(handlerService.isConditionsUnsaved).toBe(false);
       page.setInputValueById(field, 3);
@@ -106,6 +105,7 @@ xdescribe('Conditions integration tests', () => {
     });
 
     it('changing a property and executing the query should correctly work', waitForAsync(async () => {
+      const { page, querySpy } = setup(true);
       const expectedQuery = 'DELETE FROM `conditions` WHERE (`SourceTypeOrReferenceId` = 2) AND (`SourceGroup` = 3) AND ' +
       '(`SourceEntry` = ' + sourceEntry + ') AND (`SourceId` = 0) AND (`ElseGroup` = 0) AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0);\n' +
       'INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES\n' +
@@ -122,6 +122,7 @@ xdescribe('Conditions integration tests', () => {
     }));
 
     it('should correctly toggle flag selector according to the selected condition type', () => {
+      const { page } = setup(true);
       expect(page.getQuestStateFlagSelector(false)).toBeFalsy();
       expect(page.getRankMaskFlagSelector(false)).toBeFalsy();
 
@@ -137,15 +138,16 @@ xdescribe('Conditions integration tests', () => {
 
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
 
     it('should correctly initialise', waitForAsync(async () => {
+      const { page } = setup(false);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       await page.expectFullQueryToContain(expectedFullCreateQuery);
     }));
 
     it('changing all properties and executing the query should correctly work', waitForAsync(async () => {
+      const { page, querySpy } = setup(false);
       const expectedQuery = 'UPDATE `conditions` SET `SourceTypeOrReferenceId` = \'\', `SourceGroup` = 1, `SourceEntry` = 2, `SourceId` = 3, `ElseGroup` = 4, `ConditionTypeOrReference` = \'\', '
       + '`ConditionTarget` = 6, `ConditionValue1` = 7, `ConditionValue2` = 8, `ConditionValue3` = 9, `NegativeCondition` = 10, `ErrorType` = 11, `ErrorTextId` = 12, `ScriptName` = \'13\', '
       + '`Comment` = \'14\' WHERE (`SourceTypeOrReferenceId` = 1) AND (`SourceGroup` = 2) AND (`SourceEntry` = 3) AND (`SourceId` = 0) AND (`ElseGroup` = 0) '
@@ -161,6 +163,7 @@ xdescribe('Conditions integration tests', () => {
     }));
 
     it('changing values should correctly update the queries', waitForAsync(async () => {
+      const { page } = setup(false);
 
       page.setInputValueById('SourceGroup', '1');
       await page.expectDiffQueryToContain(
