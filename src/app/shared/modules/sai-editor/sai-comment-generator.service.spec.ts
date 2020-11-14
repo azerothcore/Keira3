@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { SAI_ACTIONS } from '@keira-shared/modules/sai-editor/constants/sai-actions';
 import { SAI_EVENTS } from '@keira-shared/modules/sai-editor/constants/sai-event';
 import { MysqlQueryService } from '../../services/mysql-query.service';
@@ -14,7 +14,7 @@ import { SaiCommentGeneratorService } from './sai-comment-generator.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 
 describe('SaiCommentGeneratorService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+  beforeEach(waitForAsync(() => TestBed.configureTestingModule({})));
 
   describe('Comment generation should correctly work', () => {
     const createSai = (partial: Partial<SmartScripts>) => Object.assign(new SmartScripts(), partial);
@@ -42,7 +42,7 @@ describe('SaiCommentGeneratorService', () => {
       spyOn(sqliteQueryService, 'getSpellNameById').and.callFake(i => of(mockGetSpellNameById + i).toPromise());
     });
 
-    it('should correctly handle linked events', async () => {
+    it('should correctly handle linked events', waitForAsync(async () => {
       const rows: SmartScripts[] = [
         createSai({ id: 1, event_type: SAI_EVENTS.ACCEPTED_QUEST, link: 2 }),
         createSai({ id: 2, event_type: SAI_EVENTS.LINK, link: 3 }),
@@ -52,7 +52,7 @@ describe('SaiCommentGeneratorService', () => {
       const service: SaiCommentGeneratorService = TestBed.inject(SaiCommentGeneratorService);
 
       expect(await service.generateComment(rows, rows[2], mockName)).toEqual(expected);
-    });
+    }));
 
     const cases: { name: string, input: Partial<SmartScripts>, expected: string }[] = [
       {
@@ -1741,11 +1741,11 @@ describe('SaiCommentGeneratorService', () => {
     ];
 
     for (const { name, input, expected } of cases) {
-      it(`Case: ${name}`, async () => {
+      it(`Case: ${name}`, waitForAsync(async () => {
         const service: SaiCommentGeneratorService = TestBed.inject(SaiCommentGeneratorService);
         const sai = createSai(input);
         expect(await service.generateComment([sai], sai, mockName)).toEqual(expected);
-      });
+      }));
     }
 
   });

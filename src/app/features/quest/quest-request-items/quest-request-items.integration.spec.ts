@@ -113,7 +113,7 @@ describe('QuestRequestItems integration tests', () => {
 
   describe('Editing existing', () => {
 
-    it('should correctly initialise', async () => {
+    it('should correctly initialise', waitForAsync(async () => {
       const { page } = setup(false);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
@@ -121,7 +121,7 @@ describe('QuestRequestItems integration tests', () => {
         'INSERT INTO `quest_request_items` (`ID`, `EmoteOnComplete`, `EmoteOnIncomplete`, `CompletionText`, `VerifiedBuild`) VALUES\n' +
         '(1234, 2, 3, \'4\', 0);');
       page.removeElement();
-    });
+    }));
 
     it('changing all properties and executing the query should correctly work', () => {
       const { page, querySpy, originalEntity } = setup(false);
@@ -138,7 +138,7 @@ describe('QuestRequestItems integration tests', () => {
       page.removeElement();
     });
 
-    it('changing values should correctly update the queries', async () => {
+    it('changing values should correctly update the queries', waitForAsync(async () => {
       const { page } = setup(false);
       page.setInputValueById('EmoteOnComplete', '11');
       page.expectDiffQueryToContain(
@@ -160,9 +160,9 @@ describe('QuestRequestItems integration tests', () => {
         '(1234, 11, 22, \'4\', 0);\n'
       );
       page.removeElement();
-    });
+    }));
 
-    it('changing a value via SingleValueSelector should correctly work', async () => {
+    it('changing a value via SingleValueSelector should correctly work', waitForAsync(async () => {
       const { page } = setup(false);
       const field = 'EmoteOnComplete';
       page.clickElement(page.getSelectorBtn(field));
@@ -184,6 +184,6 @@ describe('QuestRequestItems integration tests', () => {
         '(1234, 4, 3, \'4\', 0);\n'
       );
       page.removeElement();
-    });
+    }));
   });
 });

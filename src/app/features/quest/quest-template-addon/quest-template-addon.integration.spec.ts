@@ -207,7 +207,7 @@ describe('QuestTemplateAddon integration tests', () => {
       page.removeElement();
     });
 
-    it('changing a value via FlagsSelector should correctly work', async () => {
+    it('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
       const { page } = setup(false);
       const field = 'SpecialFlags';
       page.clickElement(page.getSelectorBtn(field));
@@ -233,9 +233,9 @@ describe('QuestTemplateAddon integration tests', () => {
         '`RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`, `SpecialFlags`) VALUES\n' +
         '(1234, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 10)');
       page.removeElement();
-    });
+    }));
 
-    it('changing a value via SpellSelector should correctly work', async () => {
+    it('changing a value via SpellSelector should correctly work', waitForAsync(async () => {
       const { page } = setup(false);
 
       //  note: previously disabled because of:
@@ -265,9 +265,9 @@ describe('QuestTemplateAddon integration tests', () => {
         '(1234, 1, 2, 123, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);'
       );
       page.removeElement();
-    });
+    }));
 
-    it('changing a value via QuestSelector should correctly work', async () => {
+    it('changing a value via QuestSelector should correctly work', waitForAsync(async () => {
       const { page, fixture } = setup(false);
       const field = 'NextQuestID';
       const mysqlQueryService = TestBed.inject(MysqlQueryService);
@@ -298,7 +298,7 @@ describe('QuestTemplateAddon integration tests', () => {
         '(1234, 1, 2, 3, 4, 123, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);'
       );
       page.removeElement();
-    });
+    }));
 
   });
 });

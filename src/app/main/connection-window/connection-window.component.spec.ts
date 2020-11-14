@@ -172,7 +172,7 @@ describe('ConnectionWindowComponent', () => {
   });
 
   describe('the save checkbox', () => {
-    it('should be checked by default when there is no config', async () => {
+    it('should be checked by default when there is no config', waitForAsync(async () => {
       const { page, connectionWindowService } = setup(false);
       connectionWindowService.getConfigs.and.returnValue(null);
 
@@ -180,9 +180,9 @@ describe('ConnectionWindowComponent', () => {
       await page.whenStable();
 
       expect(page.savePasswordInput.checked).toBe(true);
-    });
+    }));
 
-    it('should be checked by default when the last used config has a non-empty password', async () => {
+    it('should be checked by default when the last used config has a non-empty password', waitForAsync(async () => {
       const { page, connectionWindowService } = setup(false);
       connectionWindowService.getConfigs.and.returnValue(mockConfigsWithPass);
 
@@ -190,9 +190,9 @@ describe('ConnectionWindowComponent', () => {
       await page.whenStable();
 
       expect(page.savePasswordInput.checked).toBe(true);
-    });
+    }));
 
-    it('should be unchecked by default when the last used config has an empty password', async () => {
+    it('should be unchecked by default when the last used config has an empty password', waitForAsync(async () => {
       const { page, connectionWindowService } = setup(false);
       connectionWindowService.getConfigs.and.returnValue(mockConfigsNoPass);
 
@@ -200,9 +200,9 @@ describe('ConnectionWindowComponent', () => {
       await page.whenStable();
 
       expect(page.savePasswordInput.checked).toBe(false);
-    });
+    }));
 
-    it('when selected, the password should be saved', async () => {
+    it('when selected, the password should be saved', waitForAsync(async () => {
       const password = 'opensource';
       const { page, connectionWindowService, connectSpy } = setup(false);
       connectionWindowService.getConfigs.and.returnValue(mockConfigsNoPass); // initially unselected, password empty
@@ -229,9 +229,9 @@ describe('ConnectionWindowComponent', () => {
         password,
         database: 'helias_world',
       });
-    });
+    }));
 
-    it('when unselected, the password should NOT be saved', async () => {
+    it('when unselected, the password should NOT be saved', waitForAsync(async () => {
       const { page, connectionWindowService, connectSpy } = setup(false);
       connectionWindowService.getConfigs.and.returnValue(mockConfigsWithPass); // initially selected, password filled
       page.detectChanges();
@@ -256,11 +256,11 @@ describe('ConnectionWindowComponent', () => {
         password: 'helias123',
         database: 'helias_world',
       });
-    });
+    }));
   });
 
   describe('the load recent menu', () => {
-    it('should be disabled when there are no recent configs [null]', async () => {
+    it('should be disabled when there are no recent configs [null]', waitForAsync(async () => {
       const { page, connectionWindowService } = setup(false);
       connectionWindowService.getConfigs.and.returnValue([]);
 
@@ -268,9 +268,9 @@ describe('ConnectionWindowComponent', () => {
       await page.whenStable();
 
       expect(page.loadRecentBtn.disabled).toBe(true);
-    });
+    }));
 
-    it('should be disabled when there are no recent configs [empty array]', async () => {
+    it('should be disabled when there are no recent configs [empty array]', waitForAsync(async () => {
       const { page, connectionWindowService } = setup(false);
       connectionWindowService.getConfigs.and.returnValue([]);
 
@@ -278,9 +278,9 @@ describe('ConnectionWindowComponent', () => {
       await page.whenStable();
 
       expect(page.loadRecentBtn.disabled).toBe(true);
-    });
+    }));
 
-    it('should be enabled when there are recent configs, allowing the user to select them', async () => {
+    it('should be enabled when there are recent configs, allowing the user to select them', waitForAsync(async () => {
       const { page, connectionWindowService } = setup(false);
       connectionWindowService.getConfigs.and.returnValue(mockConfigsWithPass);
 
@@ -290,9 +290,9 @@ describe('ConnectionWindowComponent', () => {
       expect(page.loadRecentBtn.disabled).toBe(false);
       // TODO: ideally we should click the dropdown and do more checks
       //  but we can't because of: https://github.com/valor-software/ngx-bootstrap/issues/4282
-    });
+    }));
 
-    it('clear all should correctly work', async () => {
+    it('clear all should correctly work', waitForAsync(async () => {
       const { page, component, connectionWindowService } = setup();
 
       // TODO: ideally we should click the dropdown's item instead of calling the method
@@ -306,9 +306,9 @@ describe('ConnectionWindowComponent', () => {
       expect(page.userInput.value).toBe('');
       expect(page.passwordInput.value).toBe('');
       expect(page.databaseInput.value).toBe('');
-    });
+    }));
 
-    it('loadConfig should correctly work', async () => {
+    it('loadConfig should correctly work', waitForAsync(async () => {
       const { page, component } = setup();
 
       // TODO: ideally we should click the dropdown's item instead of calling the method
@@ -320,7 +320,7 @@ describe('ConnectionWindowComponent', () => {
       expect(page.userInput.value).toBe(mockConfigsWithPass[0].user);
       expect(page.passwordInput.value).toBe(mockConfigsWithPass[0].password);
       expect(page.databaseInput.value).toBe(mockConfigsWithPass[0].database);
-    });
+    }));
   });
 
   afterEach(() => {

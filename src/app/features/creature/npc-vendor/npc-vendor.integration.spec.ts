@@ -266,7 +266,7 @@ describe('NpcVendor integration tests', () => {
       page.expectUniqueError();
     });
 
-    it('changing a value via ItemExtendedCost should correctly work', async () => {
+    it('changing a value via ItemExtendedCost should correctly work', waitForAsync(async () => {
       const field = 'ExtendedCost';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       spyOn(sqliteQueryService, 'query').and.returnValue(of(
@@ -300,7 +300,7 @@ describe('NpcVendor integration tests', () => {
         '(1234, 0, 1, 0, 0, 0, 0),\n' +
         '(1234, 0, 2, 0, 0, 0, 0);'
       );
-    });
+    }));
   });
 });
 

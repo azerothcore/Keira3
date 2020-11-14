@@ -149,7 +149,7 @@ describe('CreatureOnkillReputation integration tests', () => {
       );
     });
 
-    it('changing a value via SingleValueSelector should correctly work', async () => {
+    it('changing a value via SingleValueSelector should correctly work', waitForAsync(async () => {
       const field = 'MaxStanding1';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
@@ -171,9 +171,9 @@ describe('CreatureOnkillReputation integration tests', () => {
         '`MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n'  +
         '(1234, 0, 0, 7, 0, 0, 0, 0, 0, 0);'
       );
-    });
+    }));
 
-    it('changing a value via FactionSelector should correctly work', async () => {
+    it('changing a value via FactionSelector should correctly work', waitForAsync(async () => {
       const field = 'RewOnKillRepFaction1';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       spyOn(sqliteQueryService, 'query').and.returnValue(of(
@@ -199,7 +199,7 @@ describe('CreatureOnkillReputation integration tests', () => {
         'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`, `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, `MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n' +
         '(1234, 123, 0, 0, 0, 0, 0, 0, 0, 0);'
       );
-    });
+    }));
   });
 });
 

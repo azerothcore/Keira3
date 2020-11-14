@@ -128,7 +128,7 @@ describe('GameobjectTemplateAddon integration tests', () => {
 
     });
 
-    it('changing a value via FlagsSelector should correctly work', async () => {
+    it('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
       const field = 'flags';
       page.clickElement(page.getSelectorBtn(field));
       await page.whenReady();
@@ -151,7 +151,7 @@ describe('GameobjectTemplateAddon integration tests', () => {
         'INSERT INTO `gameobject_template_addon` (`entry`, `faction`, `flags`, `mingold`, `maxgold`) VALUES\n' +
         '(' + id + ', 0, 10, 0, 0);'
       );
-    });
+    }));
 
   });
 

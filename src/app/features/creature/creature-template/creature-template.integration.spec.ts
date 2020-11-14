@@ -173,7 +173,7 @@ describe('CreatureTemplate integration tests', () => {
       page.expectFullQueryToContain('AC Developer');
     });
 
-    it('changing a value via FlagsSelector should correctly work', async () => {
+    it('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
       const field = 'unit_flags';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
@@ -195,7 +195,7 @@ describe('CreatureTemplate integration tests', () => {
 
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('4100');
-    });
+    }));
   });
 });
 

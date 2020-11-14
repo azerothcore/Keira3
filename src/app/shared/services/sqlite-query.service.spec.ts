@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 import { SqliteQueryService } from './sqlite-query.service';
@@ -6,13 +6,13 @@ import { SqliteQueryService } from './sqlite-query.service';
 describe('SqliteQueryService', () => {
   let service: SqliteQueryService;
 
-  beforeEach(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({});
     service = TestBed.inject(SqliteQueryService);
-  });
+  }));
 
   describe('queryValue()', () => {
-    it('should correctly work', async () => {
+    it('should correctly work', waitForAsync(async () => {
       const value = 'mock result value';
       spyOn(service, 'query').and.returnValue(of([{ v: value }]));
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
@@ -22,9 +22,9 @@ describe('SqliteQueryService', () => {
       });
       expect(service.query).toHaveBeenCalledTimes(1);
       expect(service.query).toHaveBeenCalledWith(query);
-    });
+    }));
 
-    it('should be safe in case of no results', async () => {
+    it('should be safe in case of no results', waitForAsync(async () => {
       spyOn(service, 'query').and.returnValue(of(null ));
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
 
@@ -33,7 +33,7 @@ describe('SqliteQueryService', () => {
       });
       expect(service.query).toHaveBeenCalledTimes(1);
       expect(service.query).toHaveBeenCalledWith(query);
-    });
+    }));
   });
 
   describe('get helpers', () => {
@@ -99,25 +99,25 @@ describe('SqliteQueryService', () => {
       { name: 'getSocketBonusById',      query: `SELECT name AS v FROM item_enchantment WHERE id = ${id}` },
       { name: 'getSpellDescriptionById', query: `SELECT Description AS v FROM spells WHERE id = ${id}` },
     ]) {
-      it(test.name, async () => {
+      it(test.name, waitForAsync(async () => {
         expect(await service[test.name](id)).toEqual(mockResult);
         expect(await service[test.name](id)).toEqual(mockResult); // check cache
         expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
         expect(service.queryValue).toHaveBeenCalledWith(test.query);
         expect(Object.keys(service['cache']).length).toBe(1);
         expect(Object.keys(service['cache'])[0]).toBe(test.name);
-      });
+      }));
     }
 
-    it('getLockById', async () => {
+    it('getLockById', waitForAsync(async () => {
       spyOn(service, 'query').and.returnValue(of([]));
       expect(await service.getLockById(id)).toEqual([]);
       expect(await service.getLockById(id)).toEqual([]); // check cache
       expect(service.query).toHaveBeenCalledTimes(1); // check cache
       expect(service.query).toHaveBeenCalledWith(`SELECT * FROM lock WHERE id = ${id}`);
-    });
+    }));
 
-    it('getRewardXP', async () => {
+    it('getRewardXP', waitForAsync(async () => {
       expect(await service.getRewardXP(id, 2)).toEqual(mockResult);
       expect(await service.getRewardXP(id, 2)).toEqual(mockResult); // check cache
       expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
@@ -126,7 +126,7 @@ describe('SqliteQueryService', () => {
       );
       expect(Object.keys(service['cache']).length).toBe(1);
       expect(Object.keys(service['cache'])[0]).toBe('getRewardXP');
-    });
+    }));
 
   });
 

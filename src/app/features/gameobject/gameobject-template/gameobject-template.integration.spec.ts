@@ -148,7 +148,7 @@ describe('GameobjectTemplate integration tests', () => {
       page.expectFullQueryToContain('35');
     });
 
-    it('changing a value via SingleValueSelector should correctly work', async () => {
+    it('changing a value via SingleValueSelector should correctly work', waitForAsync(async () => {
       const field = 'type';
       page.clickElement(page.getSelectorBtn(field));
       await page.whenReady();
@@ -172,7 +172,7 @@ describe('GameobjectTemplate integration tests', () => {
         '(' + id + ', 7, 0, \'\', \'\', \'\', \'\', 1, 0, 0, 0, 0, 0, 0, 0, ' +
         '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', \'\', 0);'
       );
-    });
+    }));
   });
 
 });

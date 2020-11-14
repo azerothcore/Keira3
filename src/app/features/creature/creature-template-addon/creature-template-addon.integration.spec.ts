@@ -147,7 +147,7 @@ describe('CreatureTemplateAddon integration tests', () => {
       );
     });
 
-    it('changing a value via SingleValueSelector should correctly work', async () => {
+    it('changing a value via SingleValueSelector should correctly work', waitForAsync(async () => {
       const field = 'bytes1';
       page.clickElement(page.getSelectorBtn(field));
 
@@ -169,6 +169,6 @@ describe('CreatureTemplateAddon integration tests', () => {
         'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +
         '(1234, 123, 0, 8, 2, 3, 0, NULL);'
       );
-    });
+    }));
   });
 });
