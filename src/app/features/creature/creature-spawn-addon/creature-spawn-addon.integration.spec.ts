@@ -70,7 +70,7 @@ describe('CreatureSpawnAddon integration tests', () => {
   describe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise',   waitForAsync(async () => {
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.formError.hidden).toBe(true);
@@ -86,13 +86,13 @@ describe('CreatureSpawnAddon integration tests', () => {
       expect(page.getInputById('auras').disabled).toBe(true);
       expect(page.getEditorTableRowsCount()).toBe(0);
       expect(handlerService.isCreatureSpawnAddonUnsaved).toBe(false);
-    });
+    }));
 
-    // it('adding new rows and executing the query should correctly work', () => {
+    // it('adding new rows and executing the query should correctly work', waitForAsync(async () => {
     //  // Missing feature: ADD
     // });
 
-    // it('adding a row and changing its values should correctly update the queries', () => {
+    // it('adding a row and changing its values should correctly update the queries', waitForAsync(async () => {
     //   // Missing feature: ADD
     // });
   });
@@ -100,25 +100,25 @@ describe('CreatureSpawnAddon integration tests', () => {
   describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise',   waitForAsync(async () => {
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
-      page.expectFullQueryToContain('DELETE FROM `creature_addon` WHERE (`guid` IN (0, 1, 2));\n' +
+      await page.expectFullQueryToContain('DELETE FROM `creature_addon` WHERE (`guid` IN (0, 1, 2));\n' +
         'INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +
         '(0, 0, 0, 0, 0, 0, 0, \'\'),\n' +
         '(1, 0, 0, 0, 0, 0, 0, \'\'),\n' +
         '(2, 0, 0, 0, 0, 0, 0, \'\');');
       expect(page.getEditorTableRowsCount()).toBe(3);
-    });
+    }));
 
-    it('deleting rows should correctly work', () => {
+    it('deleting rows should correctly work', waitForAsync(async () => {
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `creature_addon` WHERE (`guid` IN (1));'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `creature_addon` WHERE (`guid` IN (0, 2));\n' +
         'INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +
         '(0, 0, 0, 0, 0, 0, 0, \'\'),\n' +
@@ -127,45 +127,45 @@ describe('CreatureSpawnAddon integration tests', () => {
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `creature_addon` WHERE (`guid` IN (1, 2));'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `creature_addon` WHERE (`guid` IN (0));\n' +
         'INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +
         '(0, 0, 0, 0, 0, 0, 0, \'\');');
 
       page.deleteRow(0);
       expect(page.getEditorTableRowsCount()).toBe(0);
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `creature_addon` WHERE (`guid` IN (0, 1, 2));'
       );
       page.expectFullQueryToBeEmpty();
-    });
+    }));
 
-    it('editing existing rows should correctly work', () => {
+    it('editing existing rows should correctly work', waitForAsync(async () => {
       page.clickRowOfDatatable(1);
       page.setInputValueById('path_id', 1);
 
       page.clickRowOfDatatable(2);
       page.setInputValueById('mount', 2);
 
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `creature_addon` WHERE (`guid` IN (1, 2));\n' +
         'INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +
         '(1, 1, 0, 0, 0, 0, 0, \'\'),\n' +
         '(2, 0, 2, 0, 0, 0, 0, \'\');'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `creature_addon` WHERE (`guid` IN (0, 1, 2));\n' +
         'INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +
         '(0, 0, 0, 0, 0, 0, 0, \'\'),\n' +
         '(1, 1, 0, 0, 0, 0, 0, \'\'),\n' +
         '(2, 0, 2, 0, 0, 0, 0, \'\');'
       );
-    });
+    }));
 
-    // it('combining add, edit and delete should correctly work', () => {
+    // it('combining add, edit and delete should correctly work', waitForAsync(async () => {
     //   // Missing feature: ADD
     // });
 

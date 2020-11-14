@@ -42,6 +42,9 @@ describe('QuestOfferReward integration tests', () => {
         RouterTestingModule,
         QuestModule,
       ],
+      providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
+      ]
     })
       .compileComponents();
   }));
@@ -75,13 +78,13 @@ describe('QuestOfferReward integration tests', () => {
 
   describe('Creating new', () => {
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise',   waitForAsync(async () => {
       const { page } = setup(true);
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
-      page.expectFullQueryToContain(expectedFullCreateQuery);
+      await page.expectFullQueryToContain(expectedFullCreateQuery);
       page.removeElement();
-    });
+    }));
 
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
@@ -94,7 +97,7 @@ describe('QuestOfferReward integration tests', () => {
       page.removeElement();
     });
 
-    it('changing a property and executing the query should correctly work', () => {
+    it('changing a property and executing the query should correctly work', waitForAsync(async () => {
       const { page, querySpy } = setup(true);
       const expectedQuery = 'DELETE FROM `quest_offer_reward` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `quest_offer_reward` (`ID`, `Emote1`, `Emote2`, `Emote3`, `Emote4`, ' +
@@ -105,11 +108,11 @@ describe('QuestOfferReward integration tests', () => {
       page.setInputValueById('Emote1', 33);
       page.clickExecuteQuery();
 
-      page.expectFullQueryToContain(expectedQuery);
+      await page.expectFullQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
       page.removeElement();
-    });
+    }));
 
     it('changing a property should be reflected in the quest preview', () => {
       const { page } = setup(true);
@@ -124,18 +127,18 @@ describe('QuestOfferReward integration tests', () => {
 
   describe('Editing existing', () => {
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise',   waitForAsync(async () => {
       const { page } = setup(false);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
-      page.expectFullQueryToContain('DELETE FROM `quest_offer_reward` WHERE (`ID` = 1234);\n' +
+      await page.expectFullQueryToContain('DELETE FROM `quest_offer_reward` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `quest_offer_reward` (`ID`, `Emote1`, `Emote2`, `Emote3`, `Emote4`, ' +
         '`EmoteDelay1`, `EmoteDelay2`, `EmoteDelay3`, `EmoteDelay4`, `RewardText`, `VerifiedBuild`) VALUES\n' +
         '(1234, 2, 3, 4, 5, 6, 7, 8, 9, \'10\', 0);');
       page.removeElement();
-    });
+    }));
 
-    it('changing all properties and executing the query should correctly work', () => {
+    it('changing all properties and executing the query should correctly work', waitForAsync(async () => {
       const { page, querySpy } = setup(false);
       const expectedQuery = 'UPDATE `quest_offer_reward` SET `Emote1` = 0, `Emote2` = 1, `Emote3` = 2, `Emote4` = 3, ' +
         '`EmoteDelay1` = 4, `EmoteDelay2` = 5, `EmoteDelay3` = 6, `EmoteDelay4` = 7, `RewardText` = \'8\' WHERE (`ID` = 1234);';
@@ -144,19 +147,19 @@ describe('QuestOfferReward integration tests', () => {
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.clickExecuteQuery();
 
-      page.expectDiffQueryToContain(expectedQuery);
+      await page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
       page.removeElement();
-    });
+    }));
 
-    it('changing values should correctly update the queries', () => {
+    it('changing values should correctly update the queries',  waitForAsync(async () => {
       const { page } = setup(false);
       page.setInputValueById('Emote1', '11');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `quest_offer_reward` SET `Emote1` = 11 WHERE (`ID` = 1234);'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `quest_offer_reward` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `quest_offer_reward` (`ID`, `Emote1`, `Emote2`, `Emote3`, `Emote4`, ' +
         '`EmoteDelay1`, `EmoteDelay2`, `EmoteDelay3`, `EmoteDelay4`, `RewardText`, `VerifiedBuild`) VALUES\n' +
@@ -164,17 +167,17 @@ describe('QuestOfferReward integration tests', () => {
       );
 
       page.setInputValueById('Emote2', '22');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `quest_offer_reward` SET `Emote1` = 11, `Emote2` = 22 WHERE (`ID` = 1234);'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `quest_offer_reward` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `quest_offer_reward` (`ID`, `Emote1`, `Emote2`, `Emote3`, `Emote4`, ' +
         '`EmoteDelay1`, `EmoteDelay2`, `EmoteDelay3`, `EmoteDelay4`, `RewardText`, `VerifiedBuild`) VALUES\n' +
         '(1234, 11, 22, 4, 5, 6, 7, 8, 9, \'10\', 0);'
       );
       page.removeElement();
-    });
+    }));
 
     it('changing a value via SingleValueSelector should correctly work', waitForAsync(async () => {
       const { page } = setup(false);
@@ -191,10 +194,10 @@ describe('QuestOfferReward integration tests', () => {
       await page.whenReady();
 
       expect(page.getInputById(field).value).toEqual('4');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `quest_offer_reward` SET `Emote1` = 4 WHERE (`ID` = 1234);'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `quest_offer_reward` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `quest_offer_reward` (`ID`, `Emote1`, `Emote2`, `Emote3`, `Emote4`, ' +
         '`EmoteDelay1`, `EmoteDelay2`, `EmoteDelay3`, `EmoteDelay4`, `RewardText`, `VerifiedBuild`) VALUES\n' +

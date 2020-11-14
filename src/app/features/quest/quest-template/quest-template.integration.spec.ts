@@ -49,6 +49,9 @@ describe('QuestTemplate integration tests', () => {
         RouterTestingModule,
         QuestModule,
       ],
+      providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
+      ]
     })
       .compileComponents();
   }));
@@ -86,13 +89,13 @@ describe('QuestTemplate integration tests', () => {
 
   describe('Creating new', () => {
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise',   waitForAsync(async () => {
       const { page } = setup(true);
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
-      page.expectFullQueryToContain(expectedFullCreateQuery);
+      await page.expectFullQueryToContain(expectedFullCreateQuery);
       page.removeElement();
-    });
+    }));
 
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
@@ -105,7 +108,7 @@ describe('QuestTemplate integration tests', () => {
       page.removeElement();
     });
 
-    it('changing a property and executing the query should correctly work', () => {
+    it('changing a property and executing the query should correctly work', waitForAsync(async () => {
       const { page, querySpy } = setup(true);
       querySpy.calls.reset();
 
@@ -113,11 +116,11 @@ describe('QuestTemplate integration tests', () => {
       page.clickExecuteQuery();
 
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
-      page.expectFullQueryToContain('Shin');
+      await page.expectFullQueryToContain('Shin');
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain('Shin');
       page.removeElement();
-    });
+    }));
 
     it('changing a property should be reflected in the quest preview', () => {
       const { page } = setup(true);
@@ -132,15 +135,15 @@ describe('QuestTemplate integration tests', () => {
 
   describe('Editing existing', () => {
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise',   waitForAsync(async () => {
       const { page } = setup(false);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
-      page.expectFullQueryToContain(expectedFullCreateQuery);
+      await page.expectFullQueryToContain(expectedFullCreateQuery);
       page.removeElement();
-    });
+    }));
 
-    it('changing all properties and executing the query should correctly work', () => {
+    it('changing all properties and executing the query should correctly work', waitForAsync(async () => {
       const { page, querySpy, originalEntity } = setup(false);
       const expectedQuery = 'UPDATE `quest_template` SET ' +
         '`QuestLevel` = 1, `MinLevel` = 2, `QuestSortID` = 3, `QuestInfoID` = 4, `SuggestedGroupNum` = 5, ' +
@@ -172,30 +175,30 @@ describe('QuestTemplate integration tests', () => {
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.clickExecuteQuery();
 
-      page.expectDiffQueryToContain(expectedQuery);
+      await page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(6);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
       page.removeElement();
-    });
+    }));
 
-    it('changing values should correctly update the queries', () => {
+    it('changing values should correctly update the queries',  waitForAsync(async () => {
       const { page } = setup(false);
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
 
       page.setInputValueById('LogTitle', 'Shin');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `quest_template` SET `LogTitle` = \'Shin\' WHERE (`ID` = 1234);'
       );
-      page.expectFullQueryToContain('Shin');
+      await page.expectFullQueryToContain('Shin');
 
       page.setInputValueById('MinLevel', 22);
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `quest_template` SET `MinLevel` = 22, `LogTitle` = \'Shin\' WHERE (`ID` = 1234);'
       );
-      page.expectFullQueryToContain('Shin');
-      page.expectFullQueryToContain('22');
+      await page.expectFullQueryToContain('Shin');
+      await page.expectFullQueryToContain('22');
       page.removeElement();
-    });
+    }));
 
     it('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
       const { page } = setup(false);
@@ -212,12 +215,12 @@ describe('QuestTemplate integration tests', () => {
       await page.whenReady();
 
       expect(page.getInputById(field).value).toEqual('4100');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `quest_template` SET `Flags` = 4100 WHERE (`ID` = 1234);'
       );
 
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
-      page.expectFullQueryToContain('4100');
+      await page.expectFullQueryToContain('4100');
       page.removeElement();
     }));
   });

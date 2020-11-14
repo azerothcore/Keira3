@@ -33,6 +33,9 @@ describe('GameobjectQueststarter integration tests', () => {
         RouterTestingModule,
         QuestModule,
       ],
+      providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
+      ]
     })
       .compileComponents();
   }));
@@ -67,7 +70,7 @@ describe('GameobjectQueststarter integration tests', () => {
 
   describe('Creating new', () => {
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise',   waitForAsync(async () => {
       const { page } = setup(true);
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
@@ -77,7 +80,7 @@ describe('GameobjectQueststarter integration tests', () => {
       expect(page.getInputById('id').disabled).toBe(true);
       expect(page.getEditorTableRowsCount()).toBe(0);
       page.removeElement();
-    });
+    }));
 
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
@@ -89,7 +92,7 @@ describe('GameobjectQueststarter integration tests', () => {
       page.removeElement();
     });
 
-    it('adding new rows and executing the query should correctly work', () => {
+    it('adding new rows and executing the query should correctly work', waitForAsync(async () => {
       const { page, querySpy } = setup(true);
       const expectedQuery = 'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (0, 1, 2));\n' +
         'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
@@ -106,39 +109,39 @@ describe('GameobjectQueststarter integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(3);
       page.clickExecuteQuery();
 
-      page.expectDiffQueryToContain(expectedQuery);
+      await page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
       page.removeElement();
-    });
+    }));
 
-    it('adding a row and changing its values should correctly update the queries', () => {
+    it('adding a row and changing its values should correctly update the queries', waitForAsync(async () => {
       const { page } = setup(true);
       page.addNewRow();
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (0));\n' +
         'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
         '(0, 1234);'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234);\n' +
         'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
         '(0, 1234);'
       );
 
       page.setInputValueById('id', '1');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1));\n' +
         'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
         '(1, 1234);\n'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234);\n' +
         'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
         '(1, 1234);'
       );
       page.removeElement();
-    });
+    }));
 
     it('changing a property should be reflected in the quest preview', () => {
       const { page } = setup(true);
@@ -155,28 +158,28 @@ describe('GameobjectQueststarter integration tests', () => {
 
   describe('Editing existing', () => {
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise',   waitForAsync(async () => {
       const { page } = setup(false);
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
-      page.expectFullQueryToContain('DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234);\n' +
+      await page.expectFullQueryToContain('DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234);\n' +
         'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
         '(0, 1234),\n' +
         '(1, 1234),\n' +
         '(2, 1234);\n');
       expect(page.getEditorTableRowsCount()).toBe(3);
       page.removeElement();
-    });
+    }));
 
-    it('deleting rows should correctly work', () => {
+    it('deleting rows should correctly work', waitForAsync(async () => {
       const { page } = setup(false);
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1));'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234);\n' +
         'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
         '(0, 1234),\n' +
@@ -185,10 +188,10 @@ describe('GameobjectQueststarter integration tests', () => {
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1, 2));'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234);\n' +
         'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
         '(0, 1234);'
@@ -196,24 +199,24 @@ describe('GameobjectQueststarter integration tests', () => {
 
       page.deleteRow(0);
       expect(page.getEditorTableRowsCount()).toBe(0);
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_queststarter` WHERE `quest` = 1234;'
       );
       page.expectFullQueryToBeEmpty();
       page.removeElement();
-    });
+    }));
 
-    it('editing existing rows should correctly work', () => {
+    it('editing existing rows should correctly work', waitForAsync(async () => {
       const { page } = setup(false);
       page.clickRowOfDatatable(1);
       page.setInputValueById('id', 111);
 
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1, 111));\n' +
         'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
         '(111, 1234);\n'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234);\n' +
         'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
         '(0, 1234),\n' +
@@ -221,9 +224,9 @@ describe('GameobjectQueststarter integration tests', () => {
         '(2, 1234);\n'
       );
       page.removeElement();
-    });
+    }));
 
-    it('combining add, edit and delete should correctly work', () => {
+    it('combining add, edit and delete should correctly work', waitForAsync(async () => {
       const { page } = setup(false);
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
@@ -235,13 +238,13 @@ describe('GameobjectQueststarter integration tests', () => {
       page.deleteRow(2);
       expect(page.getEditorTableRowsCount()).toBe(3);
 
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1, 2, 10, 3));\n' +
         'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
         '(10, 1234),\n' +
         '(3, 1234);\n'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234);\n' +
         'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
         '(0, 1234),\n' +
@@ -249,7 +252,7 @@ describe('GameobjectQueststarter integration tests', () => {
         '(3, 1234);\n'
       );
       page.removeElement();
-    });
+    }));
 
     it('using the same row id for multiple rows should correctly show an error', () => {
       const { page } = setup(false);

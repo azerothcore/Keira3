@@ -76,7 +76,7 @@ describe('SaiCreatureComponent integration tests', () => {
   describe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise',   waitForAsync(async () => {
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.addNewRowBtn.disabled).toBe(false);
@@ -109,7 +109,7 @@ describe('SaiCreatureComponent integration tests', () => {
       expect(page.getInputById('target_o').disabled).toBe(true);
       expect(page.getInputById('comment').disabled).toBe(true);
       expect(page.getEditorTableRowsCount()).toBe(0);
-    });
+    }));
 
     it('should correctly update the unsaved status', () => {
       const creatureHandlerService = TestBed.inject(CreatureHandlerService);
@@ -124,10 +124,10 @@ describe('SaiCreatureComponent integration tests', () => {
   describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise',   waitForAsync(async () => {
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
-      page.expectFullQueryToContain('DELETE FROM `smart_scripts` WHERE (`source_type` = 0 AND `entryorguid` = 1234);\n' +
+      await page.expectFullQueryToContain('DELETE FROM `smart_scripts` WHERE (`source_type` = 0 AND `entryorguid` = 1234);\n' +
         'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
         '`event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
         '`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, ' +
@@ -137,6 +137,6 @@ describe('SaiCreatureComponent integration tests', () => {
         '(1234, 0, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\'),\n' +
         '(1234, 0, 2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\');\n');
       expect(page.getEditorTableRowsCount()).toBe(3);
-    });
+    }));
   });
 });

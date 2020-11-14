@@ -81,13 +81,13 @@ describe('CreatureTemplate integration tests', () => {
   describe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise',   waitForAsync(async () => {
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
-      page.expectFullQueryToContain(expectedFullCreateQuery);
-    });
+      await page.expectFullQueryToContain(expectedFullCreateQuery);
+    }));
 
-    it('changing a property and executing the query should correctly work', () => {
+    it('changing a property and executing the query should correctly work', waitForAsync(async () => {
       const expectedQuery = 'DELETE FROM `creature_template` WHERE (`entry` = 1234);\n' +
       'INSERT INTO `creature_template` (`entry`, `difficulty_entry_1`, `difficulty_entry_2`, `difficulty_entry_3`,' +
       ' `KillCredit1`, `KillCredit2`, `modelid1`, `modelid2`, `modelid3`, `modelid4`, `name`, `subname`,' +
@@ -109,10 +109,10 @@ describe('CreatureTemplate integration tests', () => {
       page.setInputValueById('name', 'Shin');
       page.clickExecuteQuery();
 
-      page.expectFullQueryToContain(expectedQuery);
+      await page.expectFullQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-    });
+    }));
 
     it('should correctly update the unsaved status', () => {
       const field = 'difficulty_entry_1';
@@ -128,13 +128,13 @@ describe('CreatureTemplate integration tests', () => {
   describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', waitForAsync(async () => {
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
-      page.expectFullQueryToContain(expectedFullCreateQuery);
-    });
+      await page.expectFullQueryToContain(expectedFullCreateQuery);
+    }));
 
-    it('changing all properties and executing the query should correctly work', () => {
+    it('changing all properties and executing the query should correctly work', waitForAsync(async () => {
       const expectedQuery = 'UPDATE `creature_template` SET ' +
         '`difficulty_entry_2` = 1, `difficulty_entry_3` = 2, `KillCredit1` = 3, `KillCredit2` = 4, `modelid1` = 5, `modelid2` = 6, ' +
         '`modelid3` = 7, `modelid4` = 8, `name` = \'9\', `subname` = \'10\', `IconName` = \'11\', `gossip_menu_id` = 12, ' +
@@ -154,27 +154,27 @@ describe('CreatureTemplate integration tests', () => {
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.clickExecuteQuery();
 
-      page.expectDiffQueryToContain(expectedQuery);
+      await page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-    });
+    }));
 
-    it('changing values should correctly update the queries', () => {
+    it('changing values should correctly update the queries',  waitForAsync(async () => {
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
 
       page.setInputValueById('name', 'Shin');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `creature_template` SET `name` = \'Shin\' WHERE (`entry` = 1234);'
       );
-      page.expectFullQueryToContain('Shin');
+      await page.expectFullQueryToContain('Shin');
 
       page.setInputValueById('subname', 'AC Developer');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `creature_template` SET `name` = \'Shin\', `subname` = \'AC Developer\' WHERE (`entry` = 1234);'
       );
-      page.expectFullQueryToContain('Shin');
-      page.expectFullQueryToContain('AC Developer');
-    });
+      await page.expectFullQueryToContain('Shin');
+      await page.expectFullQueryToContain('AC Developer');
+    }));
 
     it('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
       const field = 'unit_flags';
@@ -192,12 +192,12 @@ describe('CreatureTemplate integration tests', () => {
       await page.whenReady();
 
       expect(page.getInputById(field).value).toEqual('4100');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `creature_template` SET `unit_flags` = 4100 WHERE (`entry` = 1234);'
       );
 
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
-      page.expectFullQueryToContain('4100');
+      await page.expectFullQueryToContain('4100');
     }));
   });
 });

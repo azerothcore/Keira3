@@ -69,7 +69,7 @@ describe('MillingLootTemplate integration tests', () => {
   describe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise',   waitForAsync(async () => {
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.formError.hidden).toBe(true);
@@ -85,7 +85,7 @@ describe('MillingLootTemplate integration tests', () => {
       expect(page.getInputById('MaxCount').disabled).toBe(true);
       expect(page.getInputById('Comment').disabled).toBe(true);
       expect(page.getEditorTableRowsCount()).toBe(0);
-    });
+    }));
 
     it('should correctly update the unsaved status', () => {
       expect(handlerService.isMillingLootTemplateUnsaved).toBe(false);
@@ -95,7 +95,7 @@ describe('MillingLootTemplate integration tests', () => {
       expect(handlerService.isMillingLootTemplateUnsaved).toBe(false);
     });
 
-    it('adding new rows and executing the query should correctly work', () => {
+    it('adding new rows and executing the query should correctly work', waitForAsync(async () => {
       const expectedQuery = 'DELETE FROM `milling_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0, 1, 2));\n' +
         'INSERT INTO `milling_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
         '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
@@ -112,20 +112,20 @@ describe('MillingLootTemplate integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(3);
       page.clickExecuteQuery();
 
-      page.expectDiffQueryToContain(expectedQuery);
+      await page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-    });
+    }));
 
-    it('adding a row and changing its values should correctly update the queries', () => {
+    it('adding a row and changing its values should correctly update the queries', waitForAsync(async () => {
       page.addNewRow();
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `milling_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
         'INSERT INTO `milling_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\');'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `milling_loot_template` WHERE (`Entry` = 1234);\n' +
         'INSERT INTO `milling_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
@@ -133,13 +133,13 @@ describe('MillingLootTemplate integration tests', () => {
       );
 
       page.setInputValueById('Chance', '1');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `milling_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
         'INSERT INTO `milling_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 1, 0, 1, 0, 1, 1, \'\');'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `milling_loot_template` WHERE (`Entry` = 1234);\n' +
         'INSERT INTO `milling_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
@@ -147,13 +147,13 @@ describe('MillingLootTemplate integration tests', () => {
       );
 
       page.setInputValueById('QuestRequired', '2');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `milling_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
         'INSERT INTO `milling_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 0, 0, 1, 2, 1, 0, 1, 1, \'\');'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `milling_loot_template` WHERE (`Entry` = 1234);\n' +
         'INSERT INTO `milling_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
@@ -161,29 +161,29 @@ describe('MillingLootTemplate integration tests', () => {
       );
 
       page.setInputValueById('Item', '123');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `milling_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (123));\n' +
         'INSERT INTO `milling_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 123, 0, 1, 2, 1, 0, 1, 1, \'\');'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `milling_loot_template` WHERE (`Entry` = 1234);\n' +
         'INSERT INTO `milling_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 123, 0, 1, 2, 1, 0, 1, 1, \'\');'
       );
-    });
+    }));
   });
 
   describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise',   waitForAsync(async () => {
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
-      page.expectFullQueryToContain('' +
+      await page.expectFullQueryToContain('' +
         'DELETE FROM `milling_loot_template` WHERE (`Entry` = 1234);\n' +
         'INSERT INTO `milling_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
         '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
@@ -191,16 +191,16 @@ describe('MillingLootTemplate integration tests', () => {
         '(1234, 1, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
         '(1234, 2, 0, 100, 0, 1, 0, 1, 1, \'\');');
       expect(page.getEditorTableRowsCount()).toBe(3);
-    });
+    }));
 
     it('deleting rows should correctly work', waitForAsync(async () => {
       await page.whenStable();
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `milling_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1));'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `milling_loot_template` WHERE (`Entry` = 1234);\n' +
         'INSERT INTO `milling_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
         '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
@@ -210,10 +210,10 @@ describe('MillingLootTemplate integration tests', () => {
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `milling_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2));'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `milling_loot_template` WHERE (`Entry` = 1234);\n' +
         'INSERT INTO `milling_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
         '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
@@ -222,26 +222,26 @@ describe('MillingLootTemplate integration tests', () => {
 
       page.deleteRow(0);
       expect(page.getEditorTableRowsCount()).toBe(0);
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `milling_loot_template` WHERE `Entry` = 1234;'
       );
       page.expectFullQueryToBeEmpty();
     }));
 
-    it('editing existing rows should correctly work', () => {
+    it('editing existing rows should correctly work', waitForAsync(async () => {
       page.clickRowOfDatatable(1);
       page.setInputValueById('LootMode', 1);
 
       page.clickRowOfDatatable(2);
       page.setInputValueById('GroupId', 2);
 
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `milling_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (2));\n' +
         'INSERT INTO `milling_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
         '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 2, 0, 100, 0, 1, 2, 1, 1, \'\');'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `milling_loot_template` WHERE (`Entry` = 1234);\n' +
         'INSERT INTO `milling_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
         '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
@@ -249,9 +249,9 @@ describe('MillingLootTemplate integration tests', () => {
         '(1234, 1, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
         '(1234, 2, 0, 100, 0, 1, 2, 1, 1, \'\');'
       );
-    });
+    }));
 
-    it('combining add, edit and delete should correctly work', () => {
+    it('combining add, edit and delete should correctly work', waitForAsync(async () => {
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
 
@@ -262,14 +262,14 @@ describe('MillingLootTemplate integration tests', () => {
       page.deleteRow(2);
       expect(page.getEditorTableRowsCount()).toBe(3);
 
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `milling_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2, 3));\n' +
         'INSERT INTO `milling_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
         '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
         '(1234, 1, 0, 10, 0, 1, 0, 1, 1, \'\'),\n' +
         '(1234, 3, 0, 100, 0, 1, 0, 1, 1, \'\');'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `milling_loot_template` WHERE (`Entry` = 1234);\n' +
         'INSERT INTO `milling_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
         '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
@@ -277,7 +277,7 @@ describe('MillingLootTemplate integration tests', () => {
         '(1234, 1, 0, 10, 0, 1, 0, 1, 1, \'\'),\n' +
         '(1234, 3, 0, 100, 0, 1, 0, 1, 1, \'\');'
       );
-    });
+    }));
 
     it('using the same row id for multiple rows should correctly show an error', () => {
       page.clickRowOfDatatable(2);

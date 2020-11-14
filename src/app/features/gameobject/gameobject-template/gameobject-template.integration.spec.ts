@@ -72,11 +72,11 @@ describe('GameobjectTemplate integration tests', () => {
   describe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise',   waitForAsync(async () => {
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
-      page.expectFullQueryToContain(expectedFullCreateQuery);
-    });
+      await page.expectFullQueryToContain(expectedFullCreateQuery);
+    }));
 
     it('should correctly update the unsaved status', () => {
       const field = 'Data0';
@@ -87,7 +87,7 @@ describe('GameobjectTemplate integration tests', () => {
       expect(handlerService.isGameobjectTemplateUnsaved).toBe(false);
     });
 
-    it('changing a property and executing the query should correctly work', () => {
+    it('changing a property and executing the query should correctly work', waitForAsync(async () => {
       const expectedQuery = 'DELETE FROM `gameobject_template` WHERE (`entry` = ' + id + ');\n' +
       'INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, ' +
       '`unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, ' +
@@ -101,22 +101,22 @@ describe('GameobjectTemplate integration tests', () => {
       page.setInputValueById('name', 'Helias');
       page.clickExecuteQuery();
 
-      page.expectFullQueryToContain(expectedQuery);
+      await page.expectFullQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-    });
+    }));
   });
 
   describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', waitForAsync(async () => {
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
-      page.expectFullQueryToContain(expectedFullCreateQuery);
-    });
+      await page.expectFullQueryToContain(expectedFullCreateQuery);
+    }));
 
-    it('changing all properties and executing the query should correctly work', () => {
+    it('changing all properties and executing the query should correctly work', waitForAsync(async () => {
       const expectedQuery = 'UPDATE `gameobject_template` SET `displayId` = 1, `name` = \'2\', `IconName` = \'3\', ' +
       '`castBarCaption` = \'4\', `unk1` = \'5\', `size` = 6, `Data0` = 7, `Data1` = 8, `Data2` = 9, `Data3` = 10, ' +
       '`Data4` = 11, `Data5` = 12, `Data6` = 13, `Data7` = 14, `Data8` = 15, `Data9` = 16, `Data10` = 17, `Data11` = 18, ' +
@@ -129,27 +129,27 @@ describe('GameobjectTemplate integration tests', () => {
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.clickExecuteQuery();
 
-      page.expectDiffQueryToContain(expectedQuery);
+      await page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-    });
+    }));
 
-    it('changing values should correctly update the queries', () => {
+    it('changing values should correctly update the queries',  waitForAsync(async () => {
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
 
       page.setInputValueById('name', 'Helias');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `gameobject_template` SET `name` = \'Helias\' WHERE (`entry` = ' + id + ');'
       );
-      page.expectFullQueryToContain('Helias');
+      await page.expectFullQueryToContain('Helias');
 
       page.setInputValueById('Data0', '35');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `gameobject_template` SET `name` = \'Helias\', `Data0` = 35 WHERE (`entry` = ' + id + ');'
       );
-      page.expectFullQueryToContain('Helias');
-      page.expectFullQueryToContain('35');
-    });
+      await page.expectFullQueryToContain('Helias');
+      await page.expectFullQueryToContain('35');
+    }));
 
     it('changing a value via SingleValueSelector should correctly work', waitForAsync(async () => {
       const field = 'type';
@@ -163,10 +163,10 @@ describe('GameobjectTemplate integration tests', () => {
       await page.whenReady();
 
       expect(page.getInputById(field).value).toEqual('7');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `gameobject_template` SET `type` = 7 WHERE (`entry` = ' + id + ');'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `gameobject_template` WHERE (`entry` = ' + id + ');\n' +
         'INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, ' +
         '`unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, ' +

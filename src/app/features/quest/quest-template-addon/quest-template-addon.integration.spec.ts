@@ -98,13 +98,13 @@ describe('QuestTemplateAddon integration tests', () => {
 
   describe('Creating new', () => {
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise',   waitForAsync(async () => {
       const { page } = setup(true);
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
-      page.expectFullQueryToContain(expectedFullCreateQuery);
+      await page.expectFullQueryToContain(expectedFullCreateQuery);
       page.removeElement();
-    });
+    }));
 
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
@@ -117,7 +117,7 @@ describe('QuestTemplateAddon integration tests', () => {
       page.removeElement();
     });
 
-    it('changing a property and executing the query should correctly work', () => {
+    it('changing a property and executing the query should correctly work', waitForAsync(async () => {
       const { page, querySpy } = setup(true);
       const expectedQuery = 'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, `PrevQuestID`, `NextQuestID`,' +
@@ -130,11 +130,11 @@ describe('QuestTemplateAddon integration tests', () => {
       page.setInputValueById('MaxLevel', 33);
       page.clickExecuteQuery();
 
-      page.expectFullQueryToContain(expectedQuery);
+      await page.expectFullQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
       page.removeElement();
-    });
+    }));
 
     it('changing a property should be reflected in the quest preview', () => {
       const { page } = setup(true);
@@ -149,20 +149,20 @@ describe('QuestTemplateAddon integration tests', () => {
 
   describe('Editing existing', () => {
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise',   waitForAsync(async () => {
       const { page } = setup(false);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
-      page.expectFullQueryToContain('DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
+      await page.expectFullQueryToContain('DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, `PrevQuestID`, `NextQuestID`,' +
         ' `ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`,' +
         ' `RequiredMinRepFaction`, `RequiredMaxRepFaction`, `RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`,' +
         ' `SpecialFlags`) VALUES\n' +
         '(1234, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);');
       page.removeElement();
-    });
+    }));
 
-    it('changing all properties and executing the query should correctly work', () => {
+    it('changing all properties and executing the query should correctly work', waitForAsync(async () => {
       const { page, querySpy } = setup(false);
       const expectedQuery = 'UPDATE `quest_template_addon` SET ' +
         '`MaxLevel` = 0, `AllowableClasses` = 1, `SourceSpellID` = 2, `PrevQuestID` = 3, `NextQuestID` = 4, `ExclusiveGroup` = 5, ' +
@@ -174,19 +174,19 @@ describe('QuestTemplateAddon integration tests', () => {
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.clickExecuteQuery();
 
-      page.expectDiffQueryToContain(expectedQuery);
+      await page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(2); // 2 because the preview also calls it
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
       page.removeElement();
-    });
+    }));
 
-    it('changing values should correctly update the queries', () => {
+    it('changing values should correctly update the queries',  waitForAsync(async () => {
       const { page } = setup(false);
       page.setInputValueById('PrevQuestID', '11');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `quest_template_addon` SET `PrevQuestID` = 11 WHERE (`ID` = 1234);'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, ' +
         '`SourceSpellID`, `PrevQuestID`, `NextQuestID`, `ExclusiveGroup`, `RewardMailTemplateID`,' +
@@ -196,10 +196,10 @@ describe('QuestTemplateAddon integration tests', () => {
       );
 
       page.setInputValueById('NextQuestID', '22');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `quest_template_addon` SET `PrevQuestID` = 11, `NextQuestID` = 22 WHERE (`ID` = 1234);'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, ' +
         '`PrevQuestID`, `NextQuestID`, `ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, ' +
@@ -208,7 +208,7 @@ describe('QuestTemplateAddon integration tests', () => {
         '(1234, 1, 2, 3, 11, 22, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);'
       );
       page.removeElement();
-    });
+    }));
 
     it('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
       const { page } = setup(false);
@@ -225,11 +225,11 @@ describe('QuestTemplateAddon integration tests', () => {
       await page.whenReady();
 
       expect(page.getInputById(field).value).toEqual('10');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `quest_template_addon` SET `SpecialFlags` = 10 WHERE (`ID` = 1234);'
       );
 
-      page.expectFullQueryToContain('DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
+      await page.expectFullQueryToContain('DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, ' +
         '`PrevQuestID`, `NextQuestID`, `ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, ' +
         '`RequiredSkillID`, `RequiredSkillPoints`, `RequiredMinRepFaction`, `RequiredMaxRepFaction`, ' +
@@ -257,10 +257,10 @@ describe('QuestTemplateAddon integration tests', () => {
       page.clickModalSelect();
       await page.whenReady();
 
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `quest_template_addon` SET `SourceSpellID` = 123 WHERE (`ID` = 1234);'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, `PrevQuestID`, `NextQuestID`, ' +
         '`ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`, `RequiredMinRepFaction`, ' +
@@ -290,10 +290,10 @@ describe('QuestTemplateAddon integration tests', () => {
       page.clickModalSelect();
       await page.whenReady();
 
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `quest_template_addon` SET `NextQuestID` = 123 WHERE (`ID` = 1234);'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, `PrevQuestID`, `NextQuestID`, ' +
         '`ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`, `RequiredMinRepFaction`, ' +

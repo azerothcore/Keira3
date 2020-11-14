@@ -71,11 +71,11 @@ describe('CreatureOnkillReputation integration tests', () => {
   describe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise',   waitForAsync(async () => {
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
-      page.expectFullQueryToContain(expectedFullCreateQuery);
-    });
+      await page.expectFullQueryToContain(expectedFullCreateQuery);
+    }));
 
     it('should correctly update the unsaved status', () => {
       const field = 'RewOnKillRepFaction1';
@@ -86,7 +86,7 @@ describe('CreatureOnkillReputation integration tests', () => {
       expect(handlerService.isCreatureOnkillReputationUnsaved).toBe(false);
     });
 
-    it('changing a property and executing the query should correctly work', () => {
+    it('changing a property and executing the query should correctly work', waitForAsync(async () => {
       const expectedQuery = 'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
       'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +
       ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, '  +
@@ -97,22 +97,22 @@ describe('CreatureOnkillReputation integration tests', () => {
       page.setInputValueById('RewOnKillRepFaction1', '2');
       page.clickExecuteQuery();
 
-      page.expectFullQueryToContain(expectedQuery);
+      await page.expectFullQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-    });
+    }));
   });
 
   describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', waitForAsync(async () => {
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
-      page.expectFullQueryToContain(expectedFullCreateQuery);
-    });
+      await page.expectFullQueryToContain(expectedFullCreateQuery);
+    }));
 
-    it('changing all properties and executing the query should correctly work', () => {
+    it('changing all properties and executing the query should correctly work', waitForAsync(async () => {
       const expectedQuery = 'UPDATE `creature_onkill_reputation` SET ' +
         '`RewOnKillRepFaction2` = 1, `MaxStanding1` = 2, `IsTeamAward1` = 3, `RewOnKillRepValue1` = 4, ' +
         '`MaxStanding2` = 5, `IsTeamAward2` = 6, `RewOnKillRepValue2` = 7, `TeamDependent` = 8 WHERE (`creature_id` = 1234);';
@@ -121,17 +121,17 @@ describe('CreatureOnkillReputation integration tests', () => {
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.clickExecuteQuery();
 
-      page.expectDiffQueryToContain(expectedQuery);
+      await page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-    });
+    }));
 
-    it('changing values should correctly update the queries', () => {
+    it('changing values should correctly update the queries',  waitForAsync(async () => {
       page.setInputValueById('RewOnKillRepFaction2', '1');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `creature_onkill_reputation` SET `RewOnKillRepFaction2` = 1 WHERE (`creature_id` = 1234);'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
         'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +
         ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, '  +
@@ -140,17 +140,17 @@ describe('CreatureOnkillReputation integration tests', () => {
       );
 
       page.setInputValueById('IsTeamAward1', '3');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `creature_onkill_reputation` SET `RewOnKillRepFaction2` = 1, `IsTeamAward1` = 3 WHERE (`creature_id` = 1234);'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
         'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +
         ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, '  +
         '`MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n'  +
         '(1234, 0, 1, 0, 3, 0, 0, 0, 0, 0);'
       );
-    });
+    }));
 
     it('changing a value via SingleValueSelector should correctly work', waitForAsync(async () => {
       const field = 'MaxStanding1';
@@ -164,10 +164,10 @@ describe('CreatureOnkillReputation integration tests', () => {
       await page.whenReady();
 
       expect(page.getInputById(field).value).toEqual('7');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `creature_onkill_reputation` SET `MaxStanding1` = 7 WHERE (`creature_id` = 1234);'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
         'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +
         ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, '  +
@@ -194,10 +194,10 @@ describe('CreatureOnkillReputation integration tests', () => {
       page.clickModalSelect();
       await page.whenReady();
 
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `creature_onkill_reputation` SET `RewOnKillRepFaction1` = 123 WHERE (`creature_id` = 1234);'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
         'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`, `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, `MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n' +
         '(1234, 123, 0, 0, 0, 0, 0, 0, 0, 0);'

@@ -74,11 +74,11 @@ describe('CreatureTemplateAddon integration tests', () => {
   describe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise',   waitForAsync(async () => {
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
-      page.expectFullQueryToContain(expectedFullCreateQuery);
-    });
+      await page.expectFullQueryToContain(expectedFullCreateQuery);
+    }));
 
     it('should correctly update the unsaved status', () => {
       const field = 'path_id';
@@ -89,7 +89,7 @@ describe('CreatureTemplateAddon integration tests', () => {
       expect(handlerService.isCreatureTemplateAddonUnsaved).toBe(false);
     });
 
-    it('changing a property and executing the query should correctly work', () => {
+    it('changing a property and executing the query should correctly work', waitForAsync(async () => {
       const expectedQuery = 'DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
         'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +
         '(1234, 3, 0, 0, 0, 0, 0, \'\');';
@@ -98,24 +98,24 @@ describe('CreatureTemplateAddon integration tests', () => {
       page.setInputValueById('path_id', 3);
       page.clickExecuteQuery();
 
-      page.expectFullQueryToContain(expectedQuery);
+      await page.expectFullQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-    });
+    }));
   });
 
   describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise',   waitForAsync(async () => {
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
-      page.expectFullQueryToContain('DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
+      await page.expectFullQueryToContain('DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
         'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +
         '(1234, 123, 0, 1, 2, 3, 0, NULL);');
-    });
+    }));
 
-    it('changing all properties and executing the query should correctly work', () => {
+    it('changing all properties and executing the query should correctly work', waitForAsync(async () => {
       const expectedQuery = 'UPDATE `creature_template_addon` SET ' +
         '`path_id` = 0, `mount` = 1, `bytes1` = 2, `bytes2` = 3, `emote` = 4, `isLarge` = 5, `auras` = \'6\' WHERE (`entry` = 1234);';
       querySpy.calls.reset();
@@ -123,32 +123,32 @@ describe('CreatureTemplateAddon integration tests', () => {
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.clickExecuteQuery();
 
-      page.expectDiffQueryToContain(expectedQuery);
+      await page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-    });
+    }));
 
-    it('changing values should correctly update the queries', () => {
+    it('changing values should correctly update the queries',  waitForAsync(async () => {
       page.setInputValueById('path_id', '3');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `creature_template_addon` SET `path_id` = 3 WHERE (`entry` = 1234);'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
         'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +
         '(1234, 3, 0, 1, 2, 3, 0, NULL);'
       );
 
       page.setInputValueById('bytes1', '2');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `creature_template_addon` SET `path_id` = 3, `bytes1` = 2 WHERE (`entry` = 1234);'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
         'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +
         '(1234, 3, 0, 2, 2, 3, 0, NULL);\n'
       );
-    });
+    }));
 
     it('changing a value via SingleValueSelector should correctly work', waitForAsync(async () => {
       const field = 'bytes1';
@@ -164,10 +164,10 @@ describe('CreatureTemplateAddon integration tests', () => {
       await page.whenReady();
 
       expect(page.getInputById(field).value).toEqual('8');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `creature_template_addon` SET `bytes1` = 8 WHERE (`entry` = 1234);'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
         'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +
         '(1234, 123, 0, 8, 2, 3, 0, NULL);'

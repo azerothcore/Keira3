@@ -68,7 +68,7 @@ describe('GossipMenu integration tests', () => {
   describe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise',   waitForAsync(async () => {
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.formError.hidden).toBe(true);
@@ -76,7 +76,7 @@ describe('GossipMenu integration tests', () => {
       expect(page.deleteSelectedRowBtn.disabled).toBe(true);
       expect(page.getInputById('OptionID').disabled).toBe(true);
       expect(page.getEditorTableRowsCount()).toBe(0);
-    });
+    }));
 
     it('should correctly update the unsaved status', () => {
       expect(handlerService.isGossipMenuOptionTableUnsaved).toBe(false);
@@ -86,7 +86,7 @@ describe('GossipMenu integration tests', () => {
       expect(handlerService.isGossipMenuOptionTableUnsaved).toBe(false);
     });
 
-    it('adding new rows and executing the query should correctly work', () => {
+    it('adding new rows and executing the query should correctly work', waitForAsync(async () => {
       const expectedQuery = 'DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234) AND (`OptionID` IN (0, 1, 2));\n' +
         'INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES\n' +
         '(1234, 0, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0),\n' +
@@ -102,60 +102,60 @@ describe('GossipMenu integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(3);
       page.clickExecuteQuery();
 
-      page.expectDiffQueryToContain(expectedQuery);
+      await page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-    });
+    }));
 
-    it('adding a row and changing its values should correctly update the queries', () => {
+    it('adding a row and changing its values should correctly update the queries', waitForAsync(async () => {
       page.addNewRow();
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234) AND (`OptionID` IN (0));\n' +
         'INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES\n' +
         '(1234, 0, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0);'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234);\n' +
         'INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES\n' +
         '(1234, 0, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0);'
       );
 
       page.setInputValueById('OptionID', '123');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234) AND (`OptionID` IN (123));\n' +
         'INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES\n' +
         '(1234, 123, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0);'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234);\n' +
         'INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES\n' +
         '(1234, 123, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0);'
       );
-    });
+    }));
   });
 
   describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise',   waitForAsync(async () => {
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
-      page.expectFullQueryToContain('DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234);\n' +
+      await page.expectFullQueryToContain('DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234);\n' +
         'INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES\n' +
         '(1234, 0, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0),\n' +
         '(1234, 1, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0),\n' +
         '(1234, 2, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0);');
       expect(page.getEditorTableRowsCount()).toBe(3);
-    });
+    }));
 
-    it('deleting rows should correctly work', () => {
+    it('deleting rows should correctly work', waitForAsync(async () => {
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234) AND (`OptionID` IN (1));'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234);\n' +
         'INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES\n' +
         '(1234, 0, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0),\n' +
@@ -164,10 +164,10 @@ describe('GossipMenu integration tests', () => {
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234) AND (`OptionID` IN (1, 2));'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234);\n' +
         'INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES\n' +
         '(1234, 0, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0);\n'
@@ -175,31 +175,31 @@ describe('GossipMenu integration tests', () => {
 
       page.deleteRow(0);
       expect(page.getEditorTableRowsCount()).toBe(0);
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `gossip_menu_option` WHERE `MenuID` = 1234;'
       );
       page.expectFullQueryToBeEmpty();
-    });
+    }));
 
-    it('editing existing rows should correctly work', () => {
+    it('editing existing rows should correctly work', waitForAsync(async () => {
       page.clickRowOfDatatable(1);
       page.setInputValueById('OptionID', 123);
 
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234) AND (`OptionID` IN (1, 123));\n' +
         'INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES\n' +
         '(1234, 123, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0);'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234);\n' +
         'INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES\n' +
         '(1234, 0, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0),\n' +
         '(1234, 123, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0),\n' +
         '(1234, 2, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0);\n'
       );
-    });
+    }));
 
-    it('combining add, edit and delete should correctly work', () => {
+    it('combining add, edit and delete should correctly work', waitForAsync(async () => {
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
 
@@ -210,20 +210,20 @@ describe('GossipMenu integration tests', () => {
       page.deleteRow(2);
       expect(page.getEditorTableRowsCount()).toBe(3);
 
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234) AND (`OptionID` IN (1, 2, 10, 3));\n' +
         'INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES\n' +
         '(1234, 10, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0),\n' +
         '(1234, 3, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0);'
       );
-      page.expectFullQueryToContain(
+      await page.expectFullQueryToContain(
         'DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234);\n' +
         'INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES\n' +
         '(1234, 0, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0),\n' +
         '(1234, 10, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0),\n' +
         '(1234, 3, 0, \'\', 0, 0, 0, 0, 0, 0, 0, \'\', 0, 0);\n'
       );
-    });
+    }));
 
     it('using the same row id for multiple rows should correctly show an error', () => {
       page.clickRowOfDatatable(2);

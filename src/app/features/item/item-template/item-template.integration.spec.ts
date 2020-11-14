@@ -93,11 +93,11 @@ describe('ItemTemplate integration tests', () => {
   describe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise',   waitForAsync(async () => {
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
-      page.expectFullQueryToContain(expectedFullCreateQuery);
-    });
+      await page.expectFullQueryToContain(expectedFullCreateQuery);
+    }));
 
     it('should correctly update the unsaved status', () => {
       const field = 'Quality';
@@ -108,29 +108,29 @@ describe('ItemTemplate integration tests', () => {
       expect(handlerService.isItemTemplateUnsaved).toBe(false);
     });
 
-    it('changing a property and executing the query should correctly work', () => {
+    it('changing a property and executing the query should correctly work', waitForAsync(async () => {
       querySpy.calls.reset();
 
       page.setInputValueById('name', 'Shin');
       page.clickExecuteQuery();
 
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
-      page.expectFullQueryToContain('Shin');
+      await page.expectFullQueryToContain('Shin');
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain('Shin');
-    });
+    }));
   });
 
   describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', waitForAsync(async () => {
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
-      page.expectFullQueryToContain(expectedFullCreateQuery);
-    });
+      await page.expectFullQueryToContain(expectedFullCreateQuery);
+    }));
 
-    it('changing all properties and executing the query should correctly work', () => {
+    it('changing all properties and executing the query should correctly work', waitForAsync(async () => {
       const expectedQuery = 'UPDATE `item_template` SET ' +
         '`subclass` = 1, `SoundOverrideSubclass` = 2, `name` = \'3\', `displayid` = 4, `Quality` = 5, `Flags` = 6, `FlagsExtra` = 7, ' +
         '`BuyCount` = 8, `BuyPrice` = 9, `SellPrice` = 10, `InventoryType` = 11, `AllowableClass` = 12, `AllowableRace` = 13, ' +
@@ -162,27 +162,27 @@ describe('ItemTemplate integration tests', () => {
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.clickExecuteQuery();
 
-      page.expectDiffQueryToContain(expectedQuery);
+      await page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-    });
+    }));
 
-    it('changing values should correctly update the queries', () => {
+    it('changing values should correctly update the queries',  waitForAsync(async () => {
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
 
       page.setInputValueById('name', 'Shin');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `item_template` SET `name` = \'Shin\' WHERE (`entry` = 1234);'
       );
-      page.expectFullQueryToContain('Shin');
+      await page.expectFullQueryToContain('Shin');
 
       page.setInputValueById('BuyCount', 22);
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `item_template` SET `name` = \'Shin\', `BuyCount` = 22 WHERE (`entry` = 1234);'
       );
-      page.expectFullQueryToContain('Shin');
-      page.expectFullQueryToContain('22');
-    });
+      await page.expectFullQueryToContain('Shin');
+      await page.expectFullQueryToContain('22');
+    }));
 
     it('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
       const field = 'Flags';
@@ -199,12 +199,12 @@ describe('ItemTemplate integration tests', () => {
       await page.whenReady();
 
       expect(page.getInputById(field).value).toEqual('4100');
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `item_template` SET `Flags` = 4100 WHERE (`entry` = 1234);'
       );
 
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
-      page.expectFullQueryToContain('4100');
+      await page.expectFullQueryToContain('4100');
     }));
 
     it('changing a value via ItemEnchantmentSelector should correctly work', waitForAsync(async () => {
@@ -225,11 +225,11 @@ describe('ItemTemplate integration tests', () => {
       page.clickModalSelect();
       await page.whenReady();
 
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `item_template` SET `socketBonus` = 1248 WHERE (`entry` = 1234);'
       );
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
-      page.expectFullQueryToContain('1248');
+      await page.expectFullQueryToContain('1248');
     }));
 
     it('changing a value via HolidaySelector should correctly work', waitForAsync(async () => {
@@ -250,11 +250,11 @@ describe('ItemTemplate integration tests', () => {
       page.clickModalSelect();
       await page.whenReady();
 
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `item_template` SET `HolidayId` = 1248 WHERE (`entry` = 1234);'
       );
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
-      page.expectFullQueryToContain('1248');
+      await page.expectFullQueryToContain('1248');
     }));
 
     it('changing a value via ItemLimitCategorySelector should correctly work', waitForAsync(async () => {
@@ -275,11 +275,11 @@ describe('ItemTemplate integration tests', () => {
       page.clickModalSelect();
       await page.whenReady();
 
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `item_template` SET `ItemLimitCategory` = 1248 WHERE (`entry` = 1234);'
       );
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
-      page.expectFullQueryToContain('1248');
+      await page.expectFullQueryToContain('1248');
     }));
 
     it('changing a value via LanguageSelector should correctly work', waitForAsync(async () => {
@@ -300,11 +300,11 @@ describe('ItemTemplate integration tests', () => {
       page.clickModalSelect();
       await page.whenReady();
 
-      page.expectDiffQueryToContain(
+      await page.expectDiffQueryToContain(
         'UPDATE `item_template` SET `LanguageID` = 1248 WHERE (`entry` = 1234);'
       );
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
-      page.expectFullQueryToContain('1248');
+      await page.expectFullQueryToContain('1248');
     }));
 
     describe('the subclass field', () => {
