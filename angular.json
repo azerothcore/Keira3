@@ -11,6 +11,11 @@
         "build": {
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "highlight.js",
+              "squel",
+              "sqlstring"
+            ],
             "customWebpackConfig": {
               "path": "./extra-webpack.config.js"
             },
