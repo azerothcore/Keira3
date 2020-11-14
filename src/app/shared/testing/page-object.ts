@@ -87,7 +87,7 @@ export abstract class PageObject<ComponentType> {
     return element.hasAttribute('hidden');
   }
 
-  queryOutisdeComponent<T extends HTMLElement>(selector: string, assert = true): T {
+  queryOutsideComponent<T extends HTMLElement>(selector: string, assert = true): T {
     const element: T = document.querySelector<T>(selector);
 
     if (assert) {

@@ -72,29 +72,29 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
   }
 
   clickModalSelect() {
-    this.clickElement(this.queryOutisdeComponent('#modal-select-btn'));
+    this.clickElement(this.queryOutsideComponent('#modal-select-btn'));
 
     // TODO: this shouldn't be necessary, but for some reasons the modal does not close so we manually close it
     //  see: https://stackoverflow.com/questions/57279830/ngx-bootstrap-modal-does-not-hide-during-test
     const modalService: BsModalService = TestBed.inject(BsModalService);
-    modalService.hide(1);
+    modalService.hide();
   }
 
   clickModalCancel() {
-    this.clickElement(this.queryOutisdeComponent('#modal-cancel-btn'));
+    this.clickElement(this.queryOutsideComponent('#modal-cancel-btn'));
   }
 
   expectModalDisplayed() {
-    this.queryOutisdeComponent('.modal-content', true);
+    this.queryOutsideComponent('.modal-content', true);
   }
 
   expectModalHidden() {
-    expect(this.queryOutisdeComponent('.modal-content', false))
+    expect(this.queryOutsideComponent('.modal-content', false))
       .toBeFalsy('Expected modal to be hidden');
   }
 
   clickSearchBtn() {
-    this.clickElement(this.queryOutisdeComponent('#search-btn'));
+    this.clickElement(this.queryOutsideComponent('#search-btn'));
   }
 
   expectQuerySwitchToBeHidden() {
