@@ -1,4 +1,4 @@
-import { async, TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance } from 'ts-mockito';
 
@@ -9,7 +9,7 @@ import { NpcTextSearchService } from '../../search/npc-text-search.service';
 import { NpcTextSelectorModule } from './npc-text-selector.module';
 
 describe('NpcTextSelectorModalComponent', () => {
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ NpcTextSelectorModule ],
       providers: [

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import Spy = jasmine.Spy;
 
@@ -33,7 +33,7 @@ describe('SaiTopBarComponent', () => {
   const entryorguid = 1234;
   const name = 'Francesco';
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ TestHostComponent, SaiTopBarComponent ],
       imports: [

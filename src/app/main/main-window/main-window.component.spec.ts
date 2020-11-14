@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { instance, reset } from 'ts-mockito';
 
@@ -24,7 +24,7 @@ describe('MainWindowComponent', () => {
   let component: MainWindowComponent;
   let fixture: ComponentFixture<MainWindowComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         MainWindowModule,

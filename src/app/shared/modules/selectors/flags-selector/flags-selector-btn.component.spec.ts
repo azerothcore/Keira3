@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { FlagsSelectorBtnComponent } from './flags-selector-btn.component';
 import { FlagsSelectorModule } from './flags-selector.module';
@@ -7,7 +7,7 @@ describe('FlagsSelectorBtnComponent', () => {
   let component: FlagsSelectorBtnComponent;
   let fixture: ComponentFixture<FlagsSelectorBtnComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ FlagsSelectorModule ],
     })

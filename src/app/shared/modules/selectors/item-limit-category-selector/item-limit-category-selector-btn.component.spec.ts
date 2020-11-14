@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ItemLimitCategorySelectorBtnComponent } from './item-limit-category-selector-btn.component';
 import { ItemLimitCategorySelectorModule } from './item-limit-category-selector.module';
@@ -7,7 +7,7 @@ describe('ItemLimitCategorySelectorBtnComponent', () => {
   let component: ItemLimitCategorySelectorBtnComponent;
   let fixture: ComponentFixture<ItemLimitCategorySelectorBtnComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ ItemLimitCategorySelectorModule ],
     })

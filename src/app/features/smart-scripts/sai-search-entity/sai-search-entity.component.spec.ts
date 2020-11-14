@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { SaiSearchEntityComponent } from './sai-search-entity.component';
@@ -23,7 +23,7 @@ describe('SaiSearchEntityComponent', () => {
   let fixture: ComponentFixture<SaiSearchEntityComponent>;
   let page: SaiSearchEntityComponentPage;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         SaiSearchEntityModule,

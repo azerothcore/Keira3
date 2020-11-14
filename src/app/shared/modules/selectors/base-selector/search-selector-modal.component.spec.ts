@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance } from 'ts-mockito';
 
@@ -16,7 +16,7 @@ describe('SearchSelectorModalComponent', () => {
   let fixture: ComponentFixture<ItemSelectorModalComponent>;
   let searchService: SearchService<ItemTemplate>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         ItemSelectorModule,

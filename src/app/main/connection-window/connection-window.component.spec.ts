@@ -1,4 +1,4 @@
-import { async, TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { instance, reset } from 'ts-mockito';
 import { ConnectionConfig, MysqlError } from 'mysql';
 import { of, throwError } from 'rxjs';
@@ -59,7 +59,7 @@ describe('ConnectionWindowComponent', () => {
     },
   ];
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ ConnectionWindowModule ],
       providers: [

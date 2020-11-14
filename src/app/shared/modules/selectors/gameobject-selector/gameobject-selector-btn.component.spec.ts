@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { GameobjectSelectorBtnComponent } from './gameobject-selector-btn.component';
 import { GameobjectSelectorModule } from './gameobject-selector.module';
@@ -7,7 +7,7 @@ describe('GameobjectSelectorBtnComponent', () => {
   let component: GameobjectSelectorBtnComponent;
   let fixture: ComponentFixture<GameobjectSelectorBtnComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ GameobjectSelectorModule ],
     })

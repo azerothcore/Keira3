@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
@@ -20,7 +20,7 @@ describe('GameobjectComponent', () => {
   let getFieldSpy: Spy;
 
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         GameobjectTemplateModule,

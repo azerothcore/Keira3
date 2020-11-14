@@ -1,4 +1,4 @@
-import { async, TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { Component, ViewChild } from '@angular/core';
 
 import { SearchButtonComponent } from './search-button.component';
@@ -18,7 +18,7 @@ class EditorButtonsPage extends PageObject<TestHostComponent> {
 
 describe('EditorButtonsComponent', () => {
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ SearchButtonComponent, TestHostComponent ]
     })

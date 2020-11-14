@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ItemEnchantmentSelectorBtnComponent } from './item-enchantment-selector-btn.component';
 import { ItemEnchantmentSelectorModule } from './item-enchantment-selector.module';
@@ -7,7 +7,7 @@ describe('ItemEnchantmentSelectorBtnComponent', () => {
   let component: ItemEnchantmentSelectorBtnComponent;
   let fixture: ComponentFixture<ItemEnchantmentSelectorBtnComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ ItemEnchantmentSelectorModule ],
     })

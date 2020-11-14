@@ -1,4 +1,4 @@
-import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { instance, reset } from 'ts-mockito';
 import { Connection, ConnectionConfig, MysqlError } from 'mysql';
 import { Subscriber } from 'rxjs';
@@ -47,7 +47,7 @@ describe('MysqlService', () => {
     expect(service.getConnectionState()).toEqual(connection.state);
   });
 
-  it('connect(config) should properly work', async(() => {
+  it('connect(config) should properly work', waitForAsync(() => {
     (service as any).mysql = new MockMySql();
     const mockConnection = new MockConnection();
     const createConnectionSpy = spyOn((service as any).mysql, 'createConnection').and.returnValue(mockConnection);
@@ -66,7 +66,7 @@ describe('MysqlService', () => {
   }));
 
   describe('dbQuery(queryString)', () => {
-    it('should properly work', async(() => {
+    it('should properly work', waitForAsync(() => {
       (service as any).mysql = new MockMySql();
       const mockConnection = new MockConnection();
       service['_connection'] = mockConnection as undefined as Connection;
@@ -82,7 +82,7 @@ describe('MysqlService', () => {
       });
     }));
 
-    it('should give error if _connection is not defined', async(() => {
+    it('should give error if _connection is not defined', waitForAsync(() => {
       (service as any).mysql = new MockMySql();
       service['_connection'] = undefined;
       spyOn(console, 'error');
@@ -96,7 +96,7 @@ describe('MysqlService', () => {
       });
     }));
 
-    it('should give error if reconnection is in progress', async(() => {
+    it('should give error if reconnection is in progress', waitForAsync(() => {
       (service as any).mysql = new MockMySql();
       service['_reconnecting'] = true;
       spyOn(console, 'error');

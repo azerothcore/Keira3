@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { HolidaySelectorBtnComponent } from './holiday-selector-btn.component';
 import { HolidaySelectorModule } from './holiday-selector.module';
@@ -7,7 +7,7 @@ describe('HolidaySelectorBtnComponent', () => {
   let component: HolidaySelectorBtnComponent;
   let fixture: ComponentFixture<HolidaySelectorBtnComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ HolidaySelectorModule ],
     })

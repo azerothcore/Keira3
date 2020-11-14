@@ -1,4 +1,4 @@
-import { async, TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SqlEditorComponent } from './sql-editor.component';
 import { SqlEditorModule } from './sql-editor.module';
@@ -26,7 +26,7 @@ describe('SqlEditorComponent', () => {
     { col1: 'y1', col2: 'y2', col3: 'y3' },
   ];
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [SqlEditorModule],
     })
