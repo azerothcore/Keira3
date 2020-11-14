@@ -3,13 +3,14 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { BaseSelectorModalComponent } from '../base-selector/base-selector-modal.component';
 import { FlagsService } from './flags.service';
+import { FlagsModalConfig } from './flags-selector.model';
 
 @Component({
   selector: 'keira-flags-selector-modal',
   templateUrl: './flags-selector-modal.component.html',
   styleUrls: ['./flags-selector-modal.component.scss']
 })
-export class FlagsSelectorModalComponent extends BaseSelectorModalComponent implements OnInit {
+export class FlagsSelectorModalComponent extends BaseSelectorModalComponent<FlagsModalConfig> implements OnInit {
 
   public readonly pow = Math.pow;
 

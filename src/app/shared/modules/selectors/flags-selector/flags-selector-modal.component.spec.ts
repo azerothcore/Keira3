@@ -38,7 +38,7 @@ describe('FlagsSelectorModalComponent', () => {
     const flags: Flag[] = [{ bit: 1, name: 'my-flag' }];
     const value = 123;
     component.value = value;
-    component.config = { flags };
+    component.config = { name: 'Mock Modal Name', flags };
     const getBitsArraySpy = spyOn(flagsService, 'getBitsArray').and.returnValue(bits);
 
     component.ngOnInit();
