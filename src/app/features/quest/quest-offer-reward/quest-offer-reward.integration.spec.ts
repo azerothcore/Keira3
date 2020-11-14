@@ -174,7 +174,7 @@ describe('QuestOfferReward integration tests', () => {
       page.removeElement();
     });
 
-    it('changing a value via SingleValueSelector should correctly work', async () => {
+    it('changing a value via SingleValueSelector should correctly work', waitForAsync(async () => {
       const { page } = setup(false);
       const field = 'Emote1';
       page.clickElement(page.getSelectorBtn(field));
@@ -199,6 +199,6 @@ describe('QuestOfferReward integration tests', () => {
         '(1234, 4, 3, 4, 5, 6, 7, 8, 9, \'10\', 0);'
       );
       page.removeElement();
-    });
+    }));
   });
 });

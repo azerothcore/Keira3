@@ -328,7 +328,7 @@ describe('CreatureSpawn integration tests', () => {
       page.expectUniqueError();
     });
 
-    it('changing a value via MapSelector should correctly work', async () => {
+    it('changing a value via MapSelector should correctly work', waitForAsync(async () => {
       const field = 'map';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       spyOn(sqliteQueryService, 'query').and.returnValue(of(
@@ -362,7 +362,7 @@ describe('CreatureSpawn integration tests', () => {
         '(1, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0),\n' +
         '(2, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, \'\', 0);\n'
       );
-    });
+    }));
   });
 });
 

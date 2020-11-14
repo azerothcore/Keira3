@@ -211,7 +211,7 @@ describe('GameobjectQuestitem integration tests', () => {
       );
     });
 
-    it('combining add, edit and delete should correctly work', async () => {
+    it('combining add, edit and delete should correctly work', waitForAsync(async () => {
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
 
@@ -237,7 +237,7 @@ describe('GameobjectQuestitem integration tests', () => {
         '(1234, 1, 10, 0),\n' +
         '(1234, 3, 0, 0);'
       );
-    });
+    }));
 
     it('using the same row id for multiple rows should correctly show an error', () => {
       page.clickRowOfDatatable(2);

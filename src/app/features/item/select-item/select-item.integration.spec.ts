@@ -56,7 +56,7 @@ describe('SelectItem integration tests', () => {
     fixture.detectChanges();
   });
 
-  it('should correctly initialise', async () => {
+  it('should correctly initialise', waitForAsync(async () => {
     await fixture.whenStable();
       expect(page.createInput.value).toEqual(`${component.customStartingId}`);
       page.expectNewEntityFree();
@@ -66,9 +66,9 @@ describe('SelectItem integration tests', () => {
       expect(page.queryWrapper.innerText).toContain(
         'SELECT * FROM `item_template` LIMIT 50'
       );
-  });
+  }));
 
-  it('should correctly behave when inserting and selecting free id', async () => {
+  it('should correctly behave when inserting and selecting free id', waitForAsync(async () => {
     await fixture.whenStable();
       querySpy.calls.reset();
       querySpy.and.returnValue(of(
@@ -88,9 +88,9 @@ describe('SelectItem integration tests', () => {
       expect(navigateSpy).toHaveBeenCalledTimes(1);
       expect(navigateSpy).toHaveBeenCalledWith(['item/item-template']);
       page.expectTopBarCreatingNew(value);
-  });
+  }));
 
-  it('should correctly behave when inserting an existing entity', async () => {
+  it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
     await fixture.whenStable();
       querySpy.calls.reset();
       querySpy.and.returnValue(of(
@@ -104,7 +104,7 @@ describe('SelectItem integration tests', () => {
         `SELECT * FROM \`item_template\` WHERE (entry = ${value})`
       );
       page.expectEntityAlreadyInUse();
-  });
+  }));
 
   for (const { testId, id, name, limit, expectedQuery } of [
     {

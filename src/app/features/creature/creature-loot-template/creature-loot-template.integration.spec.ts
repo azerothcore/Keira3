@@ -101,12 +101,12 @@ describe('CreatureLootTemplate integration tests', () => {
       expect(handlerService.isCreatureLootTemplateUnsaved).toBe(false);
     });
 
-    it('should reflect the item names', async () => {
+    it('should reflect the item names', waitForAsync(async () => {
       page.addNewRow();
       page.detectChanges();
       await page.whenReady();
       expect(page.getDatatableCell(0, 3).innerText).toContain('MockItemName');
-    });
+    }));
 
     it('adding new rows and executing the query should correctly work', () => {
       const expectedQuery = 'DELETE FROM `creature_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0, 1, 2));\n' +

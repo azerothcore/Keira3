@@ -409,7 +409,7 @@ describe('SaiEditorComponent integration tests', () => {
         '(1234, 0, 3, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\');\n');
     });
 
-    it('changing a value via FlagsSelector should correctly work', async () => {
+    it('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
       const field = 'event_flags';
       page.clickRowOfDatatable(0);
       await page.whenReady();
@@ -446,7 +446,7 @@ describe('SaiEditorComponent integration tests', () => {
         '(1234, 0, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\'),\n' +
         '(1234, 0, 2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\');\n'
       );
-    });
+    }));
 
     it('shows error on wrong linked event', () => {
 

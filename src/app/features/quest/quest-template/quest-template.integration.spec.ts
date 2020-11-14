@@ -195,7 +195,7 @@ describe('QuestTemplate integration tests', () => {
       page.removeElement();
     });
 
-    it('changing a value via FlagsSelector should correctly work', async () => {
+    it('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
       const { page } = setup(false);
       const field = 'Flags';
       page.clickElement(page.getSelectorBtn(field));
@@ -217,7 +217,7 @@ describe('QuestTemplate integration tests', () => {
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('4100');
       page.removeElement();
-    });
+    }));
   });
 });
 

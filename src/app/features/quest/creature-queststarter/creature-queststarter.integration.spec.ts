@@ -258,7 +258,7 @@ describe('CreatureQueststarter integration tests', () => {
       page.removeElement();
     });
 
-    it('changing a value via CreatureSelector should correctly work', async () => {
+    it('changing a value via CreatureSelector should correctly work', waitForAsync(async () => {
       const { page, fixture } = setup(false);
       const field = 'id';
       const mysqlQueryService = TestBed.inject(MysqlQueryService);
@@ -295,7 +295,7 @@ describe('CreatureQueststarter integration tests', () => {
         '(2, 1234);'
       );
       page.removeElement();
-    });
+    }));
   });
 });
 

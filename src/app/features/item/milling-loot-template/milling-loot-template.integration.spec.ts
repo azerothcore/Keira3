@@ -190,7 +190,7 @@ describe('MillingLootTemplate integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(3);
     });
 
-    it('deleting rows should correctly work', async () => {
+    it('deleting rows should correctly work', waitForAsync(async () => {
       await page.whenStable();
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
@@ -223,7 +223,7 @@ describe('MillingLootTemplate integration tests', () => {
         'DELETE FROM `milling_loot_template` WHERE `Entry` = 1234;'
       );
       page.expectFullQueryToBeEmpty();
-    });
+    }));
 
     it('editing existing rows should correctly work', () => {
       page.clickRowOfDatatable(1);

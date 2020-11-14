@@ -56,7 +56,7 @@ describe('SelectGossip integration tests', () => {
     fixture.detectChanges();
   });
 
-  it('should correctly initialise', async () => {
+  it('should correctly initialise', waitForAsync(async () => {
     await fixture.whenStable();
       expect(page.createInput.value).toEqual(`${component.customStartingId}`);
       page.expectNewEntityFree();
@@ -66,9 +66,9 @@ describe('SelectGossip integration tests', () => {
       expect(page.queryWrapper.innerText).toContain(
         'SELECT * FROM `gossip_menu` LIMIT 50'
       );
-  });
+  }));
 
-  it('should correctly behave when inserting and selecting free id', async () => {
+  it('should correctly behave when inserting and selecting free id', waitForAsync(async () => {
     await fixture.whenStable();
       querySpy.calls.reset();
       querySpy.and.returnValue(of(
@@ -88,9 +88,9 @@ describe('SelectGossip integration tests', () => {
       expect(navigateSpy).toHaveBeenCalledTimes(1);
       expect(navigateSpy).toHaveBeenCalledWith(['gossip/gossip-menu']);
       page.expectTopBarCreatingNew(value);
-  });
+  }));
 
-  it('should correctly behave when inserting an existing entity', async () => {
+  it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
     await fixture.whenStable();
       querySpy.calls.reset();
       querySpy.and.returnValue(of(
@@ -104,7 +104,7 @@ describe('SelectGossip integration tests', () => {
         `SELECT * FROM \`gossip_menu\` WHERE (MenuID = ${value})`
       );
       page.expectEntityAlreadyInUse();
-  });
+  }));
 
   for (const { testId, MenuID, TextID, limit, expectedQuery } of [
     {

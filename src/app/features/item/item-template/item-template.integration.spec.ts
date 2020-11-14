@@ -181,7 +181,7 @@ describe('ItemTemplate integration tests', () => {
       page.expectFullQueryToContain('22');
     });
 
-    it('changing a value via FlagsSelector should correctly work', async () => {
+    it('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
       const field = 'Flags';
       page.clickElement(page.getSelectorBtn(field));
 
@@ -202,9 +202,9 @@ describe('ItemTemplate integration tests', () => {
 
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('4100');
-    });
+    }));
 
-    it('changing a value via ItemEnchantmentSelector should correctly work', async () => {
+    it('changing a value via ItemEnchantmentSelector should correctly work', waitForAsync(async () => {
       const field = 'socketBonus';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       spyOn(sqliteQueryService, 'query').and.returnValue(of(
@@ -227,9 +227,9 @@ describe('ItemTemplate integration tests', () => {
       );
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('1248');
-    });
+    }));
 
-    it('changing a value via HolidaySelector should correctly work', async () => {
+    it('changing a value via HolidaySelector should correctly work', waitForAsync(async () => {
       const field = 'HolidayId';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       spyOn(sqliteQueryService, 'query').and.returnValue(of(
@@ -252,9 +252,9 @@ describe('ItemTemplate integration tests', () => {
       );
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('1248');
-    });
+    }));
 
-    it('changing a value via ItemLimitCategorySelector should correctly work', async () => {
+    it('changing a value via ItemLimitCategorySelector should correctly work', waitForAsync(async () => {
       const field = 'ItemLimitCategory';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       spyOn(sqliteQueryService, 'query').and.returnValue(of(
@@ -277,9 +277,9 @@ describe('ItemTemplate integration tests', () => {
       );
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('1248');
-    });
+    }));
 
-    it('changing a value via LanguageSelector should correctly work', async () => {
+    it('changing a value via LanguageSelector should correctly work', waitForAsync(async () => {
       const field = 'LanguageID';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       spyOn(sqliteQueryService, 'query').and.returnValue(of(
@@ -302,7 +302,7 @@ describe('ItemTemplate integration tests', () => {
       );
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('1248');
-    });
+    }));
 
     describe('the subclass field', () => {
       it('should show the selector button only if class has a valid value', () => {

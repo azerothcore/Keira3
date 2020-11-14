@@ -59,7 +59,7 @@ describe('SelectCreature integration tests', () => {
     fixture.detectChanges();
   });
 
-  it('should correctly initialise', async () => {
+  it('should correctly initialise', waitForAsync(async () => {
     await fixture.whenStable();
     expect(page.createInput.value).toEqual(`${component.customStartingId}`);
     page.expectNewEntityFree();
@@ -69,9 +69,9 @@ describe('SelectCreature integration tests', () => {
     expect(page.queryWrapper.innerText).toContain(
       'SELECT * FROM `creature_template` LIMIT 50'
     );
-  });
+  }));
 
-  it('should correctly behave when inserting and selecting free entry', async () => {
+  it('should correctly behave when inserting and selecting free entry', waitForAsync(async () => {
     await fixture.whenStable();
     querySpy.calls.reset();
     querySpy.and.returnValue(of([]));
@@ -90,9 +90,9 @@ describe('SelectCreature integration tests', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['creature/creature-template']);
     page.expectTopBarCreatingNew(value);
 
-  });
+  }));
 
-  it('should correctly behave when inserting an existing entity', async () => {
+  it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
     await fixture.whenStable();
     querySpy.calls.reset();
     querySpy.and.returnValue(of(['mock value']));
@@ -104,7 +104,7 @@ describe('SelectCreature integration tests', () => {
       `SELECT * FROM \`creature_template\` WHERE (entry = ${value})`
     );
     page.expectEntityAlreadyInUse();
-  });
+  }));
 
   for (const { id, entry, name, subname, limit, expectedQuery } of [
     {

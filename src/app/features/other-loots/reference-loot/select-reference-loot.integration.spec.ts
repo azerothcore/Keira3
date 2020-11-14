@@ -50,7 +50,7 @@ describe('SelectReferenceLoot integration tests', () => {
     return { component, fixture, selectService, page, queryService, querySpy, navigateSpy };
   }
 
-  it('should correctly initialise', async () => {
+  it('should correctly initialise', waitForAsync(async () => {
     const { fixture, page, querySpy, component } = setup();
 
     await fixture.whenStable();
@@ -62,9 +62,9 @@ describe('SelectReferenceLoot integration tests', () => {
     expect(page.queryWrapper.innerText).toContain(
       'SELECT `Entry` FROM `reference_loot_template` GROUP BY Entry LIMIT 50'
     );
-  });
+  }));
 
-  it('should correctly behave when inserting and selecting free entry', async () => {
+  it('should correctly behave when inserting and selecting free entry', waitForAsync(async () => {
     const { fixture, page, querySpy, navigateSpy } = setup();
 
     await fixture.whenStable();
@@ -85,9 +85,9 @@ describe('SelectReferenceLoot integration tests', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['other-loots/reference']);
     page.expectTopBarCreatingNew(value);
 
-  });
+  }));
 
-  it('should correctly behave when inserting an existing entity', async () => {
+  it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
     const { fixture, page, querySpy } = setup();
 
     await fixture.whenStable();
@@ -101,7 +101,7 @@ describe('SelectReferenceLoot integration tests', () => {
       `SELECT * FROM \`reference_loot_template\` WHERE (Entry = ${value})`
     );
     page.expectEntityAlreadyInUse();
-  });
+  }));
 
   for (const { id, entry, limit, expectedQuery } of [
     {
