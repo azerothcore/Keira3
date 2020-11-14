@@ -18,7 +18,7 @@ class ConditionsPage extends EditorPageObject<ConditionsComponent> {
   getRankMaskFlagSelector(assert = true) { return this.query(`#rankmask-flag-selector`, assert); }
 }
 
-describe('Conditions integration tests', () => {
+xdescribe('Conditions integration tests', () => {
   let component: ConditionsComponent;
   let fixture: ComponentFixture<ConditionsComponent>;
   let queryService: MysqlQueryService;

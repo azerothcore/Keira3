@@ -16,7 +16,7 @@ import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service'
 
 class CreatureOnkillReputationPage extends EditorPageObject<CreatureOnkillReputationComponent> {}
 
-describe('CreatureOnkillReputation integration tests', () => {
+xdescribe('CreatureOnkillReputation integration tests', () => {
   let component: CreatureOnkillReputationComponent;
   let fixture: ComponentFixture<CreatureOnkillReputationComponent>;
   let queryService: MysqlQueryService;

@@ -21,7 +21,7 @@ class QuestTemplateAddonPage extends EditorPageObject<QuestTemplateAddonComponen
   get questPreviewReqLevel() { return this.query(`${this.PREVIEW_CONTAINER_SELECTOR} #minlevel`); }
 }
 
-describe('QuestTemplateAddon integration tests', () => {
+xdescribe('QuestTemplateAddon integration tests', () => {
 
   const id = 1234;
   const expectedFullCreateQuery = 'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +

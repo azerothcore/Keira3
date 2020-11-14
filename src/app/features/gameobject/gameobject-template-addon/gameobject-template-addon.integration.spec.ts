@@ -15,7 +15,7 @@ import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
 class GameobjectTemplateAddonPage extends EditorPageObject<GameobjectTemplateAddonComponent> {}
 
-describe('GameobjectTemplateAddon integration tests', () => {
+xdescribe('GameobjectTemplateAddon integration tests', () => {
   let component: GameobjectTemplateAddonComponent;
   let fixture: ComponentFixture<GameobjectTemplateAddonComponent>;
   let queryService: MysqlQueryService;

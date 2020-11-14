@@ -19,7 +19,7 @@ class SelectGameobjectComponentPage extends SelectPageObject<SelectGameobjectCom
   ID_FIELD = 'entry';
 }
 
-describe('SelectGameobject integration tests', () => {
+xdescribe('SelectGameobject integration tests', () => {
   let component: SelectGameobjectComponent;
   let fixture: ComponentFixture<SelectGameobjectComponent>;
   let selectService: SelectGameobjectService;

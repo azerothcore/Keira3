@@ -15,7 +15,7 @@ import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 class CreatureEquipTemplatePage extends EditorPageObject<CreatureEquipTemplateComponent> {}
 
-describe('CreatureEquipTemplate integration tests', () => {
+xdescribe('CreatureEquipTemplate integration tests', () => {
   let component: CreatureEquipTemplateComponent;
   let fixture: ComponentFixture<CreatureEquipTemplateComponent>;
   let queryService: MysqlQueryService;
