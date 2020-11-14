@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { SaiEditorComponent } from './sai-editor.component';
@@ -10,7 +10,7 @@ describe('SaiEditorComponent', () => {
   let fixture: ComponentFixture<SaiEditorComponent>;
   let handler: SaiHandlerService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         SaiEditorModule,

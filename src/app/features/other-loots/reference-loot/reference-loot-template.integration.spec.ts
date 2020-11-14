@@ -1,4 +1,4 @@
-import { async, TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 
@@ -22,7 +22,7 @@ describe('ReferenceLootTemplate integration tests', () => {
   originalRow1.Item = 1;
   originalRow2.Item = 2;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         ReferenceLootTemplateModule,

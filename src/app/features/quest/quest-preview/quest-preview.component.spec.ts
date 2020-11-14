@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import Spy = jasmine.Spy;
 
 import { QuestPreviewComponent } from './quest-preview.component';
@@ -56,7 +56,7 @@ class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
 }
 
 describe('QuestPreviewComponent', () => {
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ QuestPreviewComponent ],
       imports: [

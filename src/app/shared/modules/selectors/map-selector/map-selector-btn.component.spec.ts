@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { MapSelectorBtnComponent } from './map-selector-btn.component';
 import { MapSelectorModule } from './map-selector.module';
@@ -7,7 +7,7 @@ describe('MapSelectorBtnComponent', () => {
   let component: MapSelectorBtnComponent;
   let fixture: ComponentFixture<MapSelectorBtnComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ MapSelectorModule ],
     })

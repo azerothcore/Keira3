@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import Spy = jasmine.Spy;
 import { ModalConfirmComponent } from './modal-confirm.component';
@@ -16,7 +16,7 @@ describe('ModalConfirmComponent', () => {
   let hideSpy: Spy;
   let page: ModalConfirmComponentPage;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         ModalConfirmModule,

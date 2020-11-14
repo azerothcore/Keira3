@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { anything, instance, mock, reset, when } from 'ts-mockito';
@@ -27,7 +27,7 @@ describe('CreateComponent', () => {
   const takenId = 100;
   const maxId = 12;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     spyError = spyOn(console, 'error');
 
     TestBed.configureTestingModule({

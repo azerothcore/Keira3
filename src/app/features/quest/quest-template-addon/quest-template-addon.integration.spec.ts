@@ -1,4 +1,4 @@
-import { async, TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
@@ -48,7 +48,7 @@ describe('QuestTemplateAddon integration tests', () => {
   originalEntity.ProvidedItemCount = 15;
   originalEntity.SpecialFlags = 0;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,

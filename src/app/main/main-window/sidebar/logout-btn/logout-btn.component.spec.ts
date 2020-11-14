@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import Spy = jasmine.Spy;
 
@@ -18,7 +18,7 @@ describe('LogoutBtnComponent', () => {
   let component: LogoutBtnComponent;
   let fixture: ComponentFixture<LogoutBtnComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ LogoutBtnComponent ],
       imports: [

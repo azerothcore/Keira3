@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AreaSelectorBtnComponent } from './area-selector-btn.component';
 import { AreaSelectorModule } from './area-selector.module';
@@ -7,7 +7,7 @@ describe('AreaSelectorBtnComponent', () => {
   let component: AreaSelectorBtnComponent;
   let fixture: ComponentFixture<AreaSelectorBtnComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ AreaSelectorModule ],
     })

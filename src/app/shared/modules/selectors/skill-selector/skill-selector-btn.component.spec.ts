@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SkillSelectorBtnComponent } from './skill-selector-btn.component';
 import { SkillSelectorModule } from './skill-selector.module';
@@ -7,7 +7,7 @@ describe('SkillSelectorBtnComponent', () => {
   let component: SkillSelectorBtnComponent;
   let fixture: ComponentFixture<SkillSelectorBtnComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ SkillSelectorModule ],
     })

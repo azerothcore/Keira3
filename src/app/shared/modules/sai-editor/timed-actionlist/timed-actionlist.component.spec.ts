@@ -1,4 +1,4 @@
-import { async, TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 
 import { TimedActionlistComponent } from './timed-actionlist.component';
 import { PageObject } from '@keira-testing/page-object';
@@ -20,7 +20,7 @@ class TimedActionlistPage extends PageObject<TestHostComponent> {}
 
 describe('TimedActionlistComponent', () => {
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [TimedActionlistComponent, TestHostComponent],
       imports: [NgxDatatableModule],

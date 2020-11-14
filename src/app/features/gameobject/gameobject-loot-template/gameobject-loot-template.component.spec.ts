@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { anything, instance, when } from 'ts-mockito';
 import { of, throwError } from 'rxjs';
@@ -25,7 +25,7 @@ describe('GameobjectTemplateComponent', () => {
   const lootId = 1230;
   const type = 3;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         GameobjectLootTemplateModule,

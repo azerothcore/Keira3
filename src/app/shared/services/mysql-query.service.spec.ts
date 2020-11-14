@@ -1,4 +1,4 @@
-import { async, TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { instance } from 'ts-mockito';
 
@@ -157,7 +157,7 @@ describe('MysqlQueryService', () => {
 
   });
 
-  it('selectAll() should correctly work', async(() => {
+  it('selectAll() should correctly work', waitForAsync(() => {
     const data: TableRow[] = [{ key: 'value'}];
     const querySpy = spyOn(service, 'query').and.returnValue(of(data));
 
@@ -169,7 +169,7 @@ describe('MysqlQueryService', () => {
       'FROM `my_ac` WHERE (param = value)');
   }));
 
-  it('selectAllMultipleKeys() should correctly work', async(() => {
+  it('selectAllMultipleKeys() should correctly work', waitForAsync(() => {
     const data: TableRow[] = [{ key: 'value'}];
     const querySpy = spyOn(service, 'query').and.returnValue(of(data));
     const row: TableRow = { k1: 1, k2: 2};
@@ -182,7 +182,7 @@ describe('MysqlQueryService', () => {
       'FROM `my_ac` WHERE (k1 = 1) AND (k2 = 2)');
   }));
 
-  it('getMaxId() should correctly work', async(() => {
+  it('getMaxId() should correctly work', waitForAsync(() => {
     const data: MaxRow[] = [{ max: 123 }];
     const querySpy = spyOn(service, 'query').and.returnValue(of());
 
@@ -194,7 +194,7 @@ describe('MysqlQueryService', () => {
       'FROM my_ac;');
   }));
 
-  it('getTimedActionlists() should correctly work', async(() => {
+  it('getTimedActionlists() should correctly work', waitForAsync(() => {
     const id = 1234;
     const data: SmartScripts[] = [{ entryorguid: 1111} as SmartScripts];
     const querySpy = spyOn(service, 'query').and.returnValue(of(data));

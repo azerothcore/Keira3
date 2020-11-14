@@ -1,4 +1,4 @@
-import { async, TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { Component, ViewChild } from '@angular/core';
 import { of } from 'rxjs';
 
@@ -22,7 +22,7 @@ class TestHostComponent {
 
 describe('ReferenceViewerComponent', () => {
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [TestHostComponent, ReferenceViewerComponent],
       imports: [LootEditorModule],

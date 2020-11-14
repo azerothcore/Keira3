@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
@@ -32,7 +32,7 @@ describe('CreatureOnkillReputation integration tests', () => {
   const originalEntity = new CreatureOnkillReputation();
   originalEntity.creature_id = id;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         CreatureOnkillReputationModule,

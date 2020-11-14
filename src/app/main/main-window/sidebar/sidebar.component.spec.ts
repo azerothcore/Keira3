@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { instance, reset } from 'ts-mockito';
 import { RouterTestingModule } from '@angular/router/testing';
 
@@ -35,7 +35,7 @@ describe('SidebarComponent', () => {
   let page: SidebarComponentPage;
   let sidebarService: SidebarService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         SidebarModule,
