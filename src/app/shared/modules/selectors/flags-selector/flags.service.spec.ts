@@ -4,20 +4,12 @@ import { FlagsService } from './flags.service';
 import { Flag } from '@keira-types/general';
 
 describe('FlagsService', () => {
-  let service: FlagsService;
 
   const toInt = (binary: string) => parseInt(binary, 2);
 
   beforeEach(() => TestBed.configureTestingModule({}));
 
-  beforeEach(() => {
-    service = TestBed.inject(FlagsService);
-  });
-
   describe('getBitsFromValue', () => {
-    it('it should return all 1s when the value is -1', () => {
-      expect(service.getBitsFromValue(-1, 3)).toEqual([true, true, true]);
-    });
 
     for (const { id, value, count, expected } of [
       { id: 1, value: 1,                    count: 1, expected: [true] },
@@ -29,6 +21,7 @@ describe('FlagsService', () => {
       { id: 7, value: toInt('01010'), count: 5, expected: [false, true, false, true, false] },
     ]) {
       it(`it should correctly work [${id}]`, () => {
+        const service = TestBed.inject(FlagsService);
         expect(service.getBitsFromValue(value, count)).toEqual(expected);
       });
     }
@@ -36,7 +29,7 @@ describe('FlagsService', () => {
 
   describe('getValueFromBits', () => {
     for (const { id, bits, expected } of [
-      { id: 1, bits: [true, true, true],                expected: -1, },
+      { id: 1, bits: [true, true, true],                expected: 7, },
       { id: 2, bits: [true, false],                     expected: 1, },
       { id: 3, bits: [false, true, false],              expected: 2, },
       { id: 4, bits: [false, true, true],               expected: toInt('110') },
@@ -45,6 +38,7 @@ describe('FlagsService', () => {
       { id: 7, bits: [false, true, false, true, false], expected: toInt('01010') },
     ]) {
       it(`it should correctly work [${id}]`, () => {
+        const service = TestBed.inject(FlagsService);
         expect(service.getValueFromBits(bits)).toEqual(expected);
       });
     }
@@ -53,12 +47,14 @@ describe('FlagsService', () => {
   describe('combining getValueFromBits and getBitsFromValue', () => {
     for (const v of [1, 5, 23, 40, 123, 231, 563, 2356, 8345, 9003]) {
       it(`value: ${v}`, () => {
+        const service = TestBed.inject(FlagsService);
         expect(service.getValueFromBits(service.getBitsFromValue(v, 24))).toEqual(v);
       });
     }
   });
 
   it('getBitsArray() should correctly work', () => {
+    const service = TestBed.inject(FlagsService);
     const mockResult = [true, false, true];
     const value = 123;
     const flags: Flag[] = [{ bit: 1, name: 'test' }];
