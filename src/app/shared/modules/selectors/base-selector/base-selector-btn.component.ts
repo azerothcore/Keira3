@@ -4,13 +4,14 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 import { Class } from '@keira-types/general';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
+import { BaseModalConfig } from './base-selector.model';
 
 @Directive()
 // tslint:disable-next-line:directive-class-suffix
-export abstract class BaseSelectorBtnComponent extends SubscriptionHandler {
+export abstract class BaseSelectorBtnComponent<ModalConfigType extends BaseModalConfig = BaseModalConfig> extends SubscriptionHandler {
 
   @Input() control: AbstractControl;
-  @Input() config;
+  @Input() config: ModalConfigType;
   @Input() modalClass = 'modal-xl';
 
   private modalRef: BsModalRef;

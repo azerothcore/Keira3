@@ -33,6 +33,7 @@ describe('SingleValueSelectorModalComponent', () => {
   it('should properly handle config (if any)', () => {
     component.value = value;
     component.config = {
+      name: 'Mock Modal Name',
       options: [
         { name: 'option1', value: 'some value' },
         { name: 'option2', value },
