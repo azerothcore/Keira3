@@ -4,6 +4,8 @@ import { of } from 'rxjs';
 
 import { GameobjectQuestenderComponent } from './gameobject-questender.component';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { GameobjectQuestender } from '@keira-types/gameobject-questender.type';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { QuestHandlerService } from '../quest-handler.service';

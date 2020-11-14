@@ -6,6 +6,8 @@ import Spy = jasmine.Spy;
 import { CreatureTemplateComponent } from './creature-template.component';
 import { CreatureTemplateModule } from './creature-template.module';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { CreatureTemplate } from '@keira-types/creature-template.type';
 import { CreatureHandlerService } from '../creature-handler.service';
@@ -49,6 +51,7 @@ describe('CreatureTemplate integration tests', () => {
         RouterTestingModule,
       ],
       providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
         CreatureHandlerService,
         SaiCreatureHandlerService,
       ],

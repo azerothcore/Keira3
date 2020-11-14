@@ -5,6 +5,8 @@ import Spy = jasmine.Spy;
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { SaiCreatureModule } from './sai-creature.module';
 import { SAI_TYPES, SmartScripts } from '@keira-types/smart-scripts.type';
 import { SaiCreatureComponent } from './sai-creature.component';
@@ -39,6 +41,7 @@ describe('SaiCreatureComponent integration tests', () => {
         RouterTestingModule,
       ],
       providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
         CreatureHandlerService,
         SaiCreatureHandlerService,
       ]

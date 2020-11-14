@@ -6,6 +6,8 @@ import Spy = jasmine.Spy;
 import { CreatureQuestitemComponent } from './creature-questitem.component';
 import { CreatureQuestitemModule } from './creature-questitem.module';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { CreatureQuestitem } from '@keira-types/creature-questitem.type';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -38,6 +40,7 @@ describe('CreatureQuestitem integration tests', () => {
         RouterTestingModule,
       ],
       providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
         CreatureHandlerService,
         SaiCreatureHandlerService,
       ],

@@ -18,6 +18,8 @@ import { ConditionsModule } from './features/conditions/conditions.module';
 import { SmartScriptsModule } from './features/smart-scripts/smart-scripts.module';
 import { SqlEditorModule } from './features/sql-editor/sql-editor.module';
 import { OtherLootsModule } from './features/other-loots/other-loots.module';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
+import { highlightOptions } from '@keira-config/highlight.config';
 
 @NgModule({
   declarations: [ AppComponent ],
@@ -40,6 +42,9 @@ import { OtherLootsModule } from './features/other-loots/other-loots.module';
     ConditionsModule,
     SmartScriptsModule,
   ],
-  bootstrap: [ AppComponent ]
+  bootstrap: [ AppComponent ],
+  providers: [
+    { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
+  ]
 })
 export class AppModule { }

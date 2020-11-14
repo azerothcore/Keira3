@@ -6,6 +6,8 @@ import Spy = jasmine.Spy;
 import { CreatureSpawnComponent } from './creature-spawn.component';
 import { CreatureSpawnModule } from './creature-spawn.module';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { CreatureSpawn } from '@keira-types/creature-spawn.type';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -39,6 +41,7 @@ describe('CreatureSpawn integration tests', () => {
         RouterTestingModule,
       ],
       providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
         CreatureHandlerService,
         SaiCreatureHandlerService,
       ],

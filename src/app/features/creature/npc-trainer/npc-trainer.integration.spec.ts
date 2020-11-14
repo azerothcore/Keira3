@@ -6,6 +6,8 @@ import Spy = jasmine.Spy;
 import { NpcTrainerComponent } from './npc-trainer.component';
 import { NpcTrainerModule } from './npc-trainer.module';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { NpcTrainer } from '@keira-types/npc-trainer.type';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -39,6 +41,7 @@ describe('NpcTrainer integration tests', () => {
         RouterTestingModule,
       ],
       providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
         CreatureHandlerService,
         SaiCreatureHandlerService,
       ],

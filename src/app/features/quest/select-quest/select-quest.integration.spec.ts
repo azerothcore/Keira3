@@ -5,6 +5,8 @@ import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { SelectQuestComponent } from './select-quest.component';
 import { SelectQuestService } from './select-quest.service';
 import { SelectQuestModule } from './select-quest.module';
@@ -34,6 +36,7 @@ describe('SelectQuest integration tests', () => {
         RouterTestingModule,
       ],
       providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
         QuestHandlerService,
       ]
     })

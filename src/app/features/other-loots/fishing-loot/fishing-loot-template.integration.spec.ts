@@ -5,6 +5,8 @@ import { of } from 'rxjs';
 import { FishingLootTemplateComponent } from './fishing-loot-template.component';
 import { FishingLootTemplateModule } from './fishing-loot-template.module';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { FishingLootTemplate } from '@keira-types/fishing-loot-template.type';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { FishingLootHandlerService } from './fishing-loot-handler.service';
@@ -29,6 +31,7 @@ describe('FishingLootTemplate integration tests', () => {
         RouterTestingModule,
       ],
       providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
         FishingLootHandlerService,
       ]
     })

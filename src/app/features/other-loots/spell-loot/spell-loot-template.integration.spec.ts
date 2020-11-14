@@ -5,6 +5,8 @@ import { of } from 'rxjs';
 import { SpellLootTemplateComponent } from './spell-loot-template.component';
 import { SpellLootTemplateModule } from './spell-loot-template.module';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { SpellLootTemplate } from '@keira-types/spell-loot-template.type';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { SpellLootHandlerService } from './spell-loot-handler.service';
@@ -29,6 +31,7 @@ describe('SpellLootTemplate integration tests', () => {
         RouterTestingModule,
       ],
       providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
         SpellLootHandlerService,
       ]
     })

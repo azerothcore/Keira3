@@ -6,6 +6,8 @@ import Spy = jasmine.Spy;
 import { GossipMenuOptionComponent } from './gossip-menu-option.component';
 import { GossipMenuOptionModule } from './gossip-menu-option.module';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { GossipMenuOption } from '@keira-types/gossip-menu-option.type';
 import { GossipHandlerService } from '../gossip-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -37,6 +39,7 @@ describe('GossipMenu integration tests', () => {
         RouterTestingModule,
       ],
       providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
         GossipHandlerService,
       ]
     })

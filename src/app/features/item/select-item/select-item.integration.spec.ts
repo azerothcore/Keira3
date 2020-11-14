@@ -5,6 +5,8 @@ import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { SelectItemComponent } from './select-item.component';
 import { SelectItemService } from './select-item.service';
 import { SelectItemModule } from './select-item.module';
@@ -34,6 +36,7 @@ describe('SelectItem integration tests', () => {
         RouterTestingModule,
       ],
       providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
         ItemHandlerService,
       ]
     })
@@ -124,7 +127,7 @@ describe('SelectItem integration tests', () => {
         'SELECT * FROM `item_template` WHERE (`entry` LIKE \'%1200%\')'
     },
   ]) {
-    it(`searching an existing entity should correctly work [${testId}]`, () => {
+    it(`searching an existing entity should correctly work [${testId}]`, waitForAsync(async () => {
       querySpy.calls.reset();
       if (id) {
         page.setInputValue(page.searchIdInput, id);
@@ -134,13 +137,14 @@ describe('SelectItem integration tests', () => {
       }
       page.setInputValue(page.searchLimitInput, limit);
 
+      await page.whenReady();
       expect(page.queryWrapper.innerText).toContain(expectedQuery);
 
       page.clickElement(page.searchBtn);
 
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy).toHaveBeenCalledWith(expectedQuery);
-    });
+    }));
   }
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {

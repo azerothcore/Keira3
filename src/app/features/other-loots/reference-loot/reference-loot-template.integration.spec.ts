@@ -5,6 +5,8 @@ import { of } from 'rxjs';
 import { ReferenceLootTemplateComponent } from './reference-loot-template.component';
 import { ReferenceLootTemplateModule } from './reference-loot-template.module';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { ReferenceLootTemplate } from '@keira-types/reference-loot-template.type';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { ReferenceLootHandlerService } from './reference-loot-handler.service';
@@ -29,6 +31,7 @@ describe('ReferenceLootTemplate integration tests', () => {
         RouterTestingModule,
       ],
       providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
         ReferenceLootHandlerService,
       ]
     })

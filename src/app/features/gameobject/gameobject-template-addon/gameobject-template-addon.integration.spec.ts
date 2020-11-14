@@ -6,6 +6,8 @@ import Spy = jasmine.Spy;
 import { GameobjectTemplateAddonComponent } from './gameobject-template-addon.component';
 import { GameobjectTemplateAddonModule } from './gameobject-template-addon.module';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { GameobjectTemplateAddon } from '@keira-types/gameobject-template-addon.type';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
@@ -36,6 +38,7 @@ describe('GameobjectTemplateAddon integration tests', () => {
         RouterTestingModule,
       ],
       providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
         GameobjectHandlerService,
         SaiGameobjectHandlerService,
       ]

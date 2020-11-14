@@ -4,6 +4,8 @@ import { of } from 'rxjs';
 
 import { QuestTemplateComponent } from './quest-template.component';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { QuestTemplate } from '@keira-types/quest-template.type';
 import { QuestHandlerService } from '../quest-handler.service';

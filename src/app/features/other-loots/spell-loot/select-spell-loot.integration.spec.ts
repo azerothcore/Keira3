@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { SelectSpellLootComponent } from './select-spell-loot.component';
 import { SelectSpellLootService } from './select-spell-loot.service';
 import { SelectPageObject } from '@keira-testing/select-page-object';
@@ -26,6 +28,7 @@ describe('SelectSpellLoot integration tests', () => {
         RouterTestingModule,
       ],
       providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
         SpellLootHandlerService,
       ]
     })
@@ -110,7 +113,7 @@ describe('SelectSpellLoot integration tests', () => {
         'WHERE (`Entry` LIKE \'%1200%\') GROUP BY Entry LIMIT 100'
     },
   ]) {
-    it(`searching an existing entity should correctly work [${id}]`, () => {
+    it(`searching an existing entity should correctly work [${id}]`, waitForAsync(async () => {
       const { page, querySpy } = setup();
 
       querySpy.calls.reset();
@@ -119,13 +122,14 @@ describe('SelectSpellLoot integration tests', () => {
       }
       page.setInputValue(page.searchLimitInput, limit);
 
+      await page.whenReady();
       expect(page.queryWrapper.innerText).toContain(expectedQuery);
 
       page.clickElement(page.searchBtn);
 
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy).toHaveBeenCalledWith(expectedQuery);
-    });
+    }));
   }
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {

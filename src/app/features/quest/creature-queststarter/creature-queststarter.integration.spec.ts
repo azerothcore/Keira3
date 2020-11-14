@@ -5,6 +5,8 @@ import Spy = jasmine.Spy;
 
 import { CreatureQueststarterComponent } from './creature-queststarter.component';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { CreatureQueststarter } from '@keira-types/creature-queststarter.type';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { QuestHandlerService } from '../quest-handler.service';

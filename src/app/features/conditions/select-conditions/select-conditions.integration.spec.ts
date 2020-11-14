@@ -5,6 +5,8 @@ import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { SelectConditionsComponent } from './select-conditions.component';
 import { ConditionsSearchService } from '@keira-shared/modules/search/conditions-search.service';
 import { SelectConditionsModule } from './select-conditions.module';
@@ -41,6 +43,7 @@ describe('SelectConditions integration tests', () => {
         RouterTestingModule,
       ],
       providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
         ConditionsHandlerService,
       ],
     })
@@ -100,7 +103,7 @@ describe('SelectConditions integration tests', () => {
         'SELECT * FROM `conditions` WHERE (`SourceGroup` LIKE \'%2%\') AND (`SourceEntry` LIKE \'%3%\') LIMIT 100'
     },
   ]) {
-    it(`searching an existing entity should correctly work [${testId}]`, () => {
+    it(`searching an existing entity should correctly work [${testId}]`, waitForAsync(async () => {
       querySpy.calls.reset();
       if (sourceIdorRef) {
         page.setInputValue(page.searchIdSelect, sourceIdorRef + ': ' + sourceIdorRef);
@@ -113,13 +116,14 @@ describe('SelectConditions integration tests', () => {
       }
       page.setInputValue(page.searchLimitInput, limit);
 
+      await page.whenReady();
       expect(page.queryWrapper.innerText).toContain(expectedQuery);
 
       page.clickElement(page.searchBtn);
 
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy).toHaveBeenCalledWith(expectedQuery);
-    });
+    }));
   }
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {

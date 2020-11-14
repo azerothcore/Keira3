@@ -17,7 +17,7 @@ import { highlightOptions } from '@keira-config/highlight.config';
   imports: [
     BrowserModule,
     FormsModule,
-    HighlightModule.forRoot(highlightOptions),
+    HighlightModule,
   ],
   exports: [
     QueryOutputComponent,

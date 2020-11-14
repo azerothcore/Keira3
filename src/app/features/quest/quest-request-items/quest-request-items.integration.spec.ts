@@ -3,6 +3,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { QuestRequestItemsComponent } from './quest-request-items.component';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { QuestRequestItems } from '@keira-types/quest-request-items.type';

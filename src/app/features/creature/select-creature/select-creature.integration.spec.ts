@@ -5,6 +5,8 @@ import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { SelectCreatureComponent } from './select-creature.component';
 import { SelectCreatureService } from './select-creature.service';
 import { SelectCreatureModule } from './select-creature.module';
@@ -36,6 +38,7 @@ describe('SelectCreature integration tests', () => {
         RouterTestingModule,
       ],
       providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
         CreatureHandlerService,
         SaiCreatureHandlerService,
       ]
@@ -125,7 +128,7 @@ describe('SelectCreature integration tests', () => {
         'SELECT * FROM `creature_template` WHERE (`subname` LIKE \'%it\\\'s a cool dev!%\')'
     },
   ]) {
-    it(`searching an existing entity should correctly work [${id}]`, () => {
+    it(`searching an existing entity should correctly work [${id}]`,  waitForAsync(async () => {
       querySpy.calls.reset();
       if (entry) {
         page.setInputValue(page.searchIdInput, entry);
@@ -138,13 +141,14 @@ describe('SelectCreature integration tests', () => {
       }
       page.setInputValue(page.searchLimitInput, limit);
 
+      await page.whenReady();
       expect(page.queryWrapper.innerText).toContain(expectedQuery);
 
       page.clickElement(page.searchBtn);
 
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy).toHaveBeenCalledWith(expectedQuery);
-    });
+    }));
   }
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {

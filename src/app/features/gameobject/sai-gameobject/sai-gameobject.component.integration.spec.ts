@@ -4,6 +4,8 @@ import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { SAI_TYPES, SmartScripts } from '@keira-types/smart-scripts.type';
 import { SaiGameobjectComponent } from './sai-gameobject.component';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
@@ -39,6 +41,7 @@ describe('SaiGameobjectComponent integration tests', () => {
         RouterTestingModule,
       ],
       providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
         GameobjectHandlerService,
         SaiGameobjectHandlerService,
       ]

@@ -6,6 +6,8 @@ import Spy = jasmine.Spy;
 import { ItemTemplateComponent } from './item-template.component';
 import { ItemTemplateModule } from './item-template.module';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { ItemTemplate } from '@keira-types/item-template.type';
 import { ItemHandlerService } from '../item-handler.service';
@@ -62,6 +64,7 @@ describe('ItemTemplate integration tests', () => {
         RouterTestingModule,
       ],
       providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
         ItemHandlerService,
       ]
     })

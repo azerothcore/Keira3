@@ -4,6 +4,8 @@ import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { CreatureTemplateAddonComponent } from './creature-template-addon.component';
 import { CreatureTemplateAddonModule } from './creature-template-addon.module';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
@@ -42,6 +44,7 @@ describe('CreatureTemplateAddon integration tests', () => {
         RouterTestingModule,
       ],
       providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
         CreatureHandlerService,
         SaiCreatureHandlerService,
       ],

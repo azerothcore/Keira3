@@ -6,6 +6,8 @@ import Spy = jasmine.Spy;
 import { GameobjectQuestitemComponent } from './gameobject-questitem.component';
 import { GameobjectQuestitemModule } from './gameobject-questitem.module';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { GameobjectQuestitem } from '@keira-types/gameobject-questitem.type';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -38,6 +40,7 @@ describe('GameobjectQuestitem integration tests', () => {
         RouterTestingModule,
       ],
       providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
         GameobjectHandlerService,
         SaiGameobjectHandlerService,
       ]

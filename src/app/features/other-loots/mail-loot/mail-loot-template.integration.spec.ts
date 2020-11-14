@@ -5,6 +5,8 @@ import { of } from 'rxjs';
 import { MailLootTemplateComponent } from './mail-loot-template.component';
 import { MailLootTemplateModule } from './mail-loot-template.module';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { MailLootTemplate } from '@keira-types/mail-loot-template.type';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { MailLootHandlerService } from './mail-loot-handler.service';
@@ -29,6 +31,7 @@ describe('MailLootTemplate integration tests', () => {
         RouterTestingModule,
       ],
       providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
         MailLootHandlerService,
       ]
     })

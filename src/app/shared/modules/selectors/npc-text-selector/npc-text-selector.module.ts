@@ -21,7 +21,7 @@ import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-
     ReactiveFormsModule,
     NgxDatatableModule,
     ModalModule.forRoot(),
-    HighlightModule.forRoot(highlightOptions),
+    HighlightModule,
     IconModule,
     SearchButtonsModule,
   ],

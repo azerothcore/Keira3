@@ -4,6 +4,8 @@ import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { QuestTemplateAddonComponent } from './quest-template-addon.component';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { QuestTemplateAddon } from '@keira-types/quest-template-addon.type';
@@ -55,6 +57,7 @@ describe('QuestTemplateAddon integration tests', () => {
         QuestModule,
       ],
       providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
         { provide: SqliteService, useValue: instance(MockedSqliteService) },
       ]
     })

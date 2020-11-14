@@ -6,6 +6,8 @@ import Spy = jasmine.Spy;
 import { DisenchantLootTemplateComponent } from './disenchant-loot-template.component';
 import { DisenchantLootTemplateModule } from './disenchant-loot-template.module';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { DisenchantLootTemplate } from '@keira-types/disenchant-loot-template.type';
 import { ItemHandlerService } from '../item-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -38,6 +40,7 @@ describe('DisenchantLootTemplate integration tests', () => {
         RouterTestingModule,
       ],
       providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
         ItemHandlerService,
       ]
     })

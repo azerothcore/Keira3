@@ -5,6 +5,8 @@ import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { SelectGossipComponent } from './select-gossip.component';
 import { SelectGossipService } from './select-gossip.service';
 import { SelectGossipModule } from './select-gossip.module';
@@ -34,6 +36,7 @@ describe('SelectGossip integration tests', () => {
         RouterTestingModule,
       ],
       providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
         GossipHandlerService,
       ]
     })
@@ -120,7 +123,7 @@ describe('SelectGossip integration tests', () => {
         'SELECT * FROM `gossip_menu` WHERE (`MenuID` LIKE \'%1200%\')'
     },
   ]) {
-    it(`searching an existing entity should correctly work [${testId}]`, () => {
+    it(`searching an existing entity should correctly work [${testId}]`, waitForAsync(async () => {
       querySpy.calls.reset();
       // Note: this is different than in other editors
       if (MenuID) {
@@ -131,13 +134,14 @@ describe('SelectGossip integration tests', () => {
       }
       page.setInputValue(page.searchLimitInput, limit);
 
+      await page.whenReady();
       expect(page.queryWrapper.innerText).toContain(expectedQuery);
 
       page.clickElement(page.searchBtn);
 
       expect(querySpy).toHaveBeenCalled();
       expect(querySpy).toHaveBeenCalledWith(expectedQuery);
-    });
+    }));
   }
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {

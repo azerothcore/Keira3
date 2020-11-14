@@ -6,6 +6,8 @@ import Spy = jasmine.Spy;
 import { MillingLootTemplateComponent } from './milling-loot-template.component';
 import { MillingLootTemplateModule } from './milling-loot-template.module';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { MillingLootTemplate } from '@keira-types/milling-loot-template.type';
 import { ItemHandlerService } from '../item-handler.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -37,6 +39,7 @@ describe('MillingLootTemplate integration tests', () => {
         RouterTestingModule,
       ],
       providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
         ItemHandlerService,
       ],
     })

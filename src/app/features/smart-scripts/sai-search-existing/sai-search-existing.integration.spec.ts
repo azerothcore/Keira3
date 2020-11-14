@@ -5,6 +5,8 @@ import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { PageObject } from '@keira-testing/page-object';
 import { SaiSearchExistingComponent } from './sai-search-existing.component';
 import { SaiSearchService } from '@keira-shared/modules/search/sai-search.service';
@@ -34,6 +36,9 @@ describe('SaiSearchExisting integration tests', () => {
       imports: [
         SaiSearchExistingModule,
         RouterTestingModule,
+      ],
+      providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
       ],
     })
       .compileComponents();
@@ -80,7 +85,7 @@ describe('SaiSearchExisting integration tests', () => {
         'SELECT `entryorguid`, `source_type` FROM `smart_scripts` WHERE (`entryorguid` LIKE \'%123%\') GROUP BY entryorguid, source_type'
     },
   ]) {
-    it(`searching an existing entity should correctly work [${testId}]`, () => {
+    it(`searching an existing entity should correctly work [${testId}]`, waitForAsync(async () => {
       querySpy.calls.reset();
       if (source_type) {
         page.setInputValue(page.searchSourceTypeSelect, source_type + ': ' + source_type);
@@ -91,13 +96,14 @@ describe('SaiSearchExisting integration tests', () => {
 
       page.setInputValue(page.searchLimitInput, limit);
 
+      await page.whenReady();
       expect(page.queryWrapper.innerText).toContain(expectedQuery);
 
       page.clickElement(page.searchBtn);
 
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy).toHaveBeenCalledWith(expectedQuery);
-    });
+    }));
   }
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {

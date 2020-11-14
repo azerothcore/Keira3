@@ -7,6 +7,8 @@ import Spy = jasmine.Spy;
 import { ConditionsComponent } from './conditions.component';
 import { ConditionsEditorModule } from './conditions-editor.module';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { highlightOptions } from '@keira-config/highlight.config';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { Conditions } from '@keira-types/conditions.type';
 import { ConditionsHandlerService } from '../conditions-handler.service';
@@ -58,6 +60,7 @@ describe('Conditions integration tests', () => {
         RouterTestingModule,
       ],
       providers: [
+        { provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions },
         ConditionsHandlerService,
       ],
     })
