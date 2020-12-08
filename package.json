@@ -73,7 +73,7 @@
     "electron": "11.0.4",
     "electron-builder": "22.9.1",
     "electron-reload": "1.5.0",
-    "highlight.js": "9.18.5",
+    "highlight.js": "10.4.1",
     "jasmine-core": "3.6.0",
     "jasmine-spec-reporter": "6.0.0",
     "karma": "5.2.3",
