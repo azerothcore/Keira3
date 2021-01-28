@@ -10,7 +10,6 @@ import { SPELLSCHOOLRES } from '@keira-constants/options/spell-school-res';
 @Component({
   selector: 'keira-creature-template-resistance',
   templateUrl: './creature-template-resistance.component.html',
-  styleUrls: ['./creature-template-resistance.component.scss']
 })
 export class CreatureTemplateResistanceComponent extends SingleRowEditorComponent<CreatureTemplateResistance> {
 
