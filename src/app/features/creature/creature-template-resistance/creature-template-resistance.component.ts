@@ -10,7 +10,6 @@ import { MultiRowEditorComponent } from '@keira-shared/abstract/components/edito
 @Component({
   selector: 'keira-creature-template-resistance',
   templateUrl: './creature-template-resistance.component.html',
-  styleUrls: ['./creature-template-resistance.component.scss']
 })
 export class CreatureTemplateResistanceComponent extends MultiRowEditorComponent<CreatureTemplateResistance> {
 
