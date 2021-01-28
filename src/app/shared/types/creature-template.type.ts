@@ -77,6 +77,7 @@ export class CreatureTemplate extends TableRow {
   movementId: number = 0;
   RegenHealth: number = 1;
   mechanic_immune_mask: number = 0;
+  spell_school_immune_mask = 0;
   flags_extra: number = 0;
   ScriptName: string = '';
   VerifiedBuild: number = 0;

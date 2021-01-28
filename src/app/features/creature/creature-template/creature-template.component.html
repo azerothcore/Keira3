@@ -178,6 +178,14 @@
             <input [formControlName]="'mechanic_immune_mask'" id="mechanic_immune_mask" type="number" class="form-control form-control-sm">
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="spell_school_immune_mask">spell_school_immune_mask</label>
+            <keira-flags-selector-btn
+              [control]="editorService.form.controls.spell_school_immune_mask"
+              [config]="{ flags: SPELL_SCHOOL_IMMUNE_MASK, name: 'spell_school_immune_mask' }"
+            ></keira-flags-selector-btn>
+            <input [formControlName]="'spell_school_immune_mask'" id="spell_school_immune_mask" type="number" class="form-control form-control-sm">
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="flags_extra">flags_extra</label>
             <keira-flags-selector-btn
               [control]="editorService.form.controls.flags_extra"
