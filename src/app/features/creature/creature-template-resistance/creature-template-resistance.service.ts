@@ -6,7 +6,7 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
 import {
   CREATURE_TEMPLATE_RESISTANCE_ID,
-  CREATURE_TEMPLATE_RESISTANCE_TABLE, CREATURE_TEMPLATE_SCHOOL,
+  CREATURE_TEMPLATE_RESISTANCE_TABLE, CREATURE_TEMPLATE_RESISTANCE_SCHOOL,
   CreatureTemplateResistance
 } from '@keira-types/creature-template-resistance.type';
 
@@ -23,7 +23,7 @@ export class CreatureTemplateResistanceService extends SingleRowEditorService<Cr
       CreatureTemplateResistance,
       CREATURE_TEMPLATE_RESISTANCE_TABLE,
       CREATURE_TEMPLATE_RESISTANCE_ID,
-      CREATURE_TEMPLATE_SCHOOL,
+      CREATURE_TEMPLATE_RESISTANCE_SCHOOL,
       false,
       handlerService,
       queryService,
