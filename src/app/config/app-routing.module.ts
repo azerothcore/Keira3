@@ -6,6 +6,7 @@ import { DashboardComponent } from '../features/dashboard/dashboard.component';
 import { SelectCreatureComponent } from '../features/creature/select-creature/select-creature.component';
 import { CreatureTemplateComponent } from '../features/creature/creature-template/creature-template.component';
 import { CreatureTemplateAddonComponent } from '../features/creature/creature-template-addon/creature-template-addon.component';
+import { CreatureTemplateResistanceComponent } from '../features/creature/creature-template-resistance/creature-template-resistance.component';
 import { NpcVendorComponent } from '../features/creature/npc-vendor/npc-vendor.component';
 import { CreatureEquipTemplateComponent } from '../features/creature/creature-equip-template/creature-equip-template.component';
 import {
@@ -101,6 +102,11 @@ const routes: Routes = [
       {
         path: 'creature-template-addon',
         component: CreatureTemplateAddonComponent,
+        canActivate: [CreatureHandlerService],
+      },
+	  {
+        path: 'creature-template-resistance',
+        component: CreatureTemplateResistanceComponent,
         canActivate: [CreatureHandlerService],
       },
       {

@@ -5,6 +5,7 @@ import { HandlerService } from '@keira-abstract/service/handlers/handler.service
 import { CREATURE_TEMPLATE_TABLE, CreatureTemplate } from '@keira-types/creature-template.type';
 import { SaiCreatureHandlerService } from './sai-creature-handler.service';
 import { CREATURE_TEMPLATE_ADDON_TABLE } from '@keira-types/creature-template-addon.type';
+import { CREATURE_TEMPLATE_RESISTANCE_TABLE } from '@keira-types/creature-template-resistance.type';
 import { CREATURE_ONKLL_REPUTATION_TABLE } from '@keira-types/creature-onkill-reputation.type';
 import { CREATURE_EQUIP_TEMPLATE_TABLE } from '@keira-types/creature-equip-template.type';
 import { NPC_VENDOR_TABLE } from '@keira-types/npc-vendor.type';
@@ -22,6 +23,7 @@ export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
 
   get isCreatureTemplateUnsaved(): boolean { return this.statusMap[CREATURE_TEMPLATE_TABLE]; }
   get isCreatureTemplateAddonUnsaved(): boolean { return this.statusMap[CREATURE_TEMPLATE_ADDON_TABLE]; }
+  get isCreatureTemplateResistanceUnsaved(): boolean { return this.statusMap[CREATURE_TEMPLATE_RESISTANCE_TABLE] }
   get isCreatureOnkillReputationUnsaved(): boolean { return this.statusMap[CREATURE_ONKLL_REPUTATION_TABLE]; }
   get isCreatureEquipTemplateUnsaved(): boolean { return this.statusMap[CREATURE_EQUIP_TEMPLATE_TABLE]; }
   get isNpcVendorUnsaved(): boolean { return this.statusMap[NPC_VENDOR_TABLE]; }
@@ -37,6 +39,7 @@ export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
   protected _statusMap = {
     [CREATURE_TEMPLATE_TABLE]: false,
     [CREATURE_TEMPLATE_ADDON_TABLE]: false,
+    [CREATURE_TEMPLATE_RESISTANCE_TABLE]: false,
     [CREATURE_ONKLL_REPUTATION_TABLE]: false,
     [CREATURE_EQUIP_TEMPLATE_TABLE]: false,
     [NPC_VENDOR_TABLE]: false,

@@ -80,6 +80,11 @@
                         Template Addon <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureTemplateAddonUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
+					<li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template-resistance'">
+                        Template Resistance <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureTemplateResistanceUnsaved"></keira-unsaved-icon>
+                      </a>
+                    </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-onkill-reputation'">
                         Onkill Reputation <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureOnkillReputationUnsaved"></keira-unsaved-icon>
