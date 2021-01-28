@@ -23,7 +23,7 @@ export class CreatureTemplateResistanceService extends SingleRowEditorService<Cr
       CreatureTemplateResistance,
       CREATURE_TEMPLATE_RESISTANCE_TABLE,
       CREATURE_TEMPLATE_RESISTANCE_ID,
-	  CREATURE_TEMPLATE_SCHOOL,
+      CREATURE_TEMPLATE_SCHOOL,
       false,
       handlerService,
       queryService,

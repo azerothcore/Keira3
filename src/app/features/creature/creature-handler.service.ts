@@ -23,7 +23,7 @@ export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
 
   get isCreatureTemplateUnsaved(): boolean { return this.statusMap[CREATURE_TEMPLATE_TABLE]; }
   get isCreatureTemplateAddonUnsaved(): boolean { return this.statusMap[CREATURE_TEMPLATE_ADDON_TABLE]; }
-  get isCreatureTemplateResistanceUnsaved(): boolean { return this.statusMap[CREATURE_TEMPLATE_RESISTANCE_TABLE] }
+  get isCreatureTemplateResistanceUnsaved(): boolean { return this.statusMap[CREATURE_TEMPLATE_RESISTANCE_TABLE]; }
   get isCreatureOnkillReputationUnsaved(): boolean { return this.statusMap[CREATURE_ONKLL_REPUTATION_TABLE]; }
   get isCreatureEquipTemplateUnsaved(): boolean { return this.statusMap[CREATURE_EQUIP_TEMPLATE_TABLE]; }
   get isNpcVendorUnsaved(): boolean { return this.statusMap[NPC_VENDOR_TABLE]; }

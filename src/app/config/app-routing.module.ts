@@ -104,7 +104,7 @@ const routes: Routes = [
         component: CreatureTemplateAddonComponent,
         canActivate: [CreatureHandlerService],
       },
-	  {
+      {
         path: 'creature-template-resistance',
         component: CreatureTemplateResistanceComponent,
         canActivate: [CreatureHandlerService],
