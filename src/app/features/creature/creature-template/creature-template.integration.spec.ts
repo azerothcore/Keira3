@@ -30,7 +30,6 @@ describe('CreatureTemplate integration tests', () => {
     ' `BaseAttackTime`, `RangeAttackTime`, `unit_class`, `unit_flags`, `unit_flags2`, `dynamicflags`,' +
     ' `family`, `trainer_type`, `trainer_spell`, `trainer_class`, `trainer_race`, `minrangedmg`,' +
     ' `maxrangedmg`, `rangedattackpower`, `type`, `type_flags`, `lootid`, `pickpocketloot`, `skinloot`,' +
-    ' `resistance1`, `resistance2`, `resistance3`, `resistance4`, `resistance5`, `resistance6`,' +
     ' `spell1`, `spell2`, `spell3`, `spell4`, `spell5`, `spell6`, `spell7`, `spell8`, `PetSpellDataId`,' +
     ' `VehicleId`, `mingold`, `maxgold`, `AIName`, `MovementType`, `InhabitType`, `HoverHeight`,' +
     ' `HealthModifier`, `ManaModifier`, `ArmorModifier`, `RacialLeader`, `movementId`, `RegenHealth`,' +
@@ -93,7 +92,6 @@ describe('CreatureTemplate integration tests', () => {
       ' `BaseAttackTime`, `RangeAttackTime`, `unit_class`, `unit_flags`, `unit_flags2`, `dynamicflags`,' +
       ' `family`, `trainer_type`, `trainer_spell`, `trainer_class`, `trainer_race`, `minrangedmg`,' +
       ' `maxrangedmg`, `rangedattackpower`, `type`, `type_flags`, `lootid`, `pickpocketloot`, `skinloot`,' +
-      ' `resistance1`, `resistance2`, `resistance3`, `resistance4`, `resistance5`, `resistance6`,' +
       ' `spell1`, `spell2`, `spell3`, `spell4`, `spell5`, `spell6`, `spell7`, `spell8`, `PetSpellDataId`,' +
       ' `VehicleId`, `mingold`, `maxgold`, `AIName`, `MovementType`, `InhabitType`, `HoverHeight`,' +
       ' `HealthModifier`, `ManaModifier`, `ArmorModifier`, `RacialLeader`, `movementId`, `RegenHealth`,' +
@@ -140,8 +138,7 @@ describe('CreatureTemplate integration tests', () => {
         '`BaseAttackTime` = 27, `RangeAttackTime` = 28, `unit_class` = 29, `unit_flags` = 30, `unit_flags2` = 31, ' +
         '`dynamicflags` = 32, `family` = 33, `trainer_type` = 34, `trainer_spell` = 35, `trainer_class` = 36, `trainer_race` = 37, ' +
         '`minrangedmg` = 38, `maxrangedmg` = 39, `rangedattackpower` = 40, `type` = 41, `type_flags` = 42, `lootid` = 43, ' +
-        '`pickpocketloot` = 44, `skinloot` = 45, `resistance1` = 46, `resistance2` = 47, `resistance3` = 48, `resistance4` = 49, ' +
-        '`resistance5` = 50, `resistance6` = 51, `spell1` = 52, `spell2` = 53, `spell3` = 54, `spell4` = 55, `spell5` = 56, ' +
+        '`pickpocketloot` = 44, `skinloot` = 45, `spell1` = 52, `spell2` = 53, `spell3` = 54, `spell4` = 55, `spell5` = 56, ' +
         '`spell6` = 57, `spell7` = 58, `spell8` = 59, `PetSpellDataId` = 60, `VehicleId` = 61, `mingold` = 62, `maxgold` = 63, ' +
         '`AIName` = \'64\', `MovementType` = 65, `InhabitType` = 66, `HoverHeight` = 67, `HealthModifier` = 68, `ManaModifier` = 69, ' +
         '`ArmorModifier` = 70, `RacialLeader` = 71, `movementId` = 72, `RegenHealth` = 73, `mechanic_immune_mask` = 74, ' +
