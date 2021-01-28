@@ -10,6 +10,8 @@ import { QueryOutputModule } from '@keira-shared/modules/query-output/query-outp
 import { CreatureTemplateResistanceComponent } from './creature-template-resistance.component';
 import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
 import { CreatureTemplateResistanceService } from './creature-template-resistance.service';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
 
 @NgModule({
   declarations: [
@@ -23,6 +25,8 @@ import { CreatureTemplateResistanceService } from './creature-template-resistanc
     TooltipModule.forRoot(),
     ToastrModule.forRoot(toastrConfig),
     SingleValueSelectorModule,
+    NgxDatatableModule,
+    EditorButtonsModule,
   ],
   exports: [
     CreatureTemplateResistanceComponent

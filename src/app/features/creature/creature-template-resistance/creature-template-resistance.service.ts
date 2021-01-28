@@ -3,15 +3,15 @@ import { ToastrService } from 'ngx-toastr';
 
 import { CreatureHandlerService } from '../creature-handler.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
 import {
   CREATURE_TEMPLATE_RESISTANCE_ID,
-  CREATURE_TEMPLATE_RESISTANCE_TABLE, CREATURE_TEMPLATE_SCHOOL,
+  CREATURE_TEMPLATE_RESISTANCE_TABLE, CREATURE_TEMPLATE_RESISTANCE_ID_2,
   CreatureTemplateResistance
 } from '@keira-types/creature-template-resistance.type';
+import { MultiRowEditorService } from '@keira-shared/abstract/service/editors/multi-row-editor.service';
 
 @Injectable()
-export class CreatureTemplateResistanceService extends SingleRowEditorService<CreatureTemplateResistance> {
+export class CreatureTemplateResistanceService extends MultiRowEditorService<CreatureTemplateResistance> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
@@ -23,8 +23,7 @@ export class CreatureTemplateResistanceService extends SingleRowEditorService<Cr
       CreatureTemplateResistance,
       CREATURE_TEMPLATE_RESISTANCE_TABLE,
       CREATURE_TEMPLATE_RESISTANCE_ID,
-      CREATURE_TEMPLATE_SCHOOL,
-      false,
+      CREATURE_TEMPLATE_RESISTANCE_ID_2,
       handlerService,
       queryService,
       toastrService,
