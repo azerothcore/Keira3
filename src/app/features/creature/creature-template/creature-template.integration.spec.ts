@@ -34,10 +34,10 @@ describe('CreatureTemplate integration tests', () => {
     ' `spell1`, `spell2`, `spell3`, `spell4`, `spell5`, `spell6`, `spell7`, `spell8`, `PetSpellDataId`,' +
     ' `VehicleId`, `mingold`, `maxgold`, `AIName`, `MovementType`, `InhabitType`, `HoverHeight`,' +
     ' `HealthModifier`, `ManaModifier`, `ArmorModifier`, `RacialLeader`, `movementId`, `RegenHealth`,' +
-    ' `mechanic_immune_mask`, `flags_extra`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+    ' `mechanic_immune_mask`, `spell_school_immune_mask`, `flags_extra`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
     '(1234, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', \'\', \'\', 0, 1, 1, 0, 0, 0, 1, 1.14286, 1, 0, 0, 0,' +
     ' 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,' +
-    ' 0, 0, 0, 0, 0, 0, \'\', 0, 3, 1, 1, 1, 1, 0, 0, 1, 0, 0, \'\', 0);';
+    ' 0, 0, 0, 0, 0, 0, \'\', 0, 3, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, \'\', 0);';
 
   const originalEntity = new CreatureTemplate();
   originalEntity.entry = id;
@@ -97,10 +97,10 @@ describe('CreatureTemplate integration tests', () => {
       ' `spell1`, `spell2`, `spell3`, `spell4`, `spell5`, `spell6`, `spell7`, `spell8`, `PetSpellDataId`,' +
       ' `VehicleId`, `mingold`, `maxgold`, `AIName`, `MovementType`, `InhabitType`, `HoverHeight`,' +
       ' `HealthModifier`, `ManaModifier`, `ArmorModifier`, `RacialLeader`, `movementId`, `RegenHealth`,' +
-      ' `mechanic_immune_mask`, `flags_extra`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+      ' `mechanic_immune_mask`, `spell_school_immune_mask`, `flags_extra`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
       '(1234, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'Shin\', \'\', \'\', 0, 1, 1, 0, 0, 0, 1, 1.14286, 1, 0, 0, 0,' +
       ' 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,' +
-      ' 0, 0, 0, 0, 0, 0, \'\', 0, 3, 1, 1, 1, 1, 0, 0, 1, 0, 0, \'\', 0);';
+      ' 0, 0, 0, 0, 0, 0, \'\', 0, 3, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, \'\', 0);';
       querySpy.calls.reset();
 
       page.setInputValueById('name', 'Shin');
@@ -145,7 +145,7 @@ describe('CreatureTemplate integration tests', () => {
         '`spell6` = 57, `spell7` = 58, `spell8` = 59, `PetSpellDataId` = 60, `VehicleId` = 61, `mingold` = 62, `maxgold` = 63, ' +
         '`AIName` = \'64\', `MovementType` = 65, `InhabitType` = 66, `HoverHeight` = 67, `HealthModifier` = 68, `ManaModifier` = 69, ' +
         '`ArmorModifier` = 70, `RacialLeader` = 71, `movementId` = 72, `RegenHealth` = 73, `mechanic_immune_mask` = 74, ' +
-        '`flags_extra` = 75, `ScriptName` = \'76\' WHERE (`entry` = 1234);';
+        ' `spell_school_immune_mask = 75, `flags_extra` = 76, `ScriptName` = \'77\' WHERE (`entry` = 1234);';
       querySpy.calls.reset();
 
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
