@@ -145,7 +145,7 @@ describe('CreatureTemplate integration tests', () => {
         '`spell6` = 57, `spell7` = 58, `spell8` = 59, `PetSpellDataId` = 60, `VehicleId` = 61, `mingold` = 62, `maxgold` = 63, ' +
         '`AIName` = \'64\', `MovementType` = 65, `InhabitType` = 66, `HoverHeight` = 67, `HealthModifier` = 68, `ManaModifier` = 69, ' +
         '`ArmorModifier` = 70, `RacialLeader` = 71, `movementId` = 72, `RegenHealth` = 73, `mechanic_immune_mask` = 74, ' +
-        ' `spell_school_immune_mask = 75, `flags_extra` = 76, `ScriptName` = \'77\' WHERE (`entry` = 1234);';
+        '`spell_school_immune_mask` = 75, `flags_extra` = 76, `ScriptName` = \'77\' WHERE (`entry` = 1234);';
       querySpy.calls.reset();
 
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
