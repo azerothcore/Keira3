@@ -98,6 +98,6 @@
     "typescript": "4.0.7",
     "wait-on": "5.2.1",
     "webdriver-manager": "12.1.8",
-    "zone.js": "0.11.3"
+    "zone.js": "0.11.4"
   }
 }
