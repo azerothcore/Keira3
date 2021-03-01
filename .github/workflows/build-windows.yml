@@ -1,6 +1,6 @@
 
 on: push
-name: main
+name: build-windows
 jobs:
   build:
     strategy:

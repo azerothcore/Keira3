@@ -1,6 +1,6 @@
 
 on: push
-name: main
+name: build-linux
 jobs:
   build:
     strategy:
