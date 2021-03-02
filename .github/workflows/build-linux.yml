@@ -7,7 +7,7 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [12.x]
-        os: [ubuntu-20.04, ubuntu-18.049]
+        os: [ubuntu-20.04, ubuntu-18.04]
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }}-node-${{ matrix.node-version }}
 
