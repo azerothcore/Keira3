@@ -28,5 +28,5 @@ jobs:
             ${{ runner.OS }}-
       - name: Install dependencies
         run: npm ci
-      - name: electron:mac
-        run: npm run electron:mac
+      - name: electron:mac:ci
+        run: npm run electron:mac:ci
