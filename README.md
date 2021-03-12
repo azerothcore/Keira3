@@ -39,6 +39,19 @@ Alternatively, you can use a public database of AzerothCore with read-only acces
 
 To use Keira3, you don't need to install any dependency. Just [download](https://github.com/azerothcore/Keira3/releases) and run it.
 
+If you're using a MySQL8.0 database you might encounter this error:
+
+_Client does not support authentication protocol requested by server; consider upgrading MySQL client_
+
+Before logging using Keira in remember to run this query on your database for your desired users:
+
+```
+ALTER USER 'acore' IDENTIFIED WITH mysql_native_password BY 'acore';
+flush privileges;
+```
+
+[More information about this issue here](https://stackoverflow.com/questions/50093144/mysql-8-0-client-does-not-support-authentication-protocol-requested-by-server)
+
 ## How to run Keira3 in development mode
 
 ### Dependencies
