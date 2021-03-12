@@ -38,7 +38,7 @@
   "dependencies": {
     "acorn": "8.1.0",
     "mysql": "2.18.1",
-    "ngx-toastr": "13.2.0",
+    "ngx-toastr": "13.2.1",
     "ngx-ui-switch": "10.0.2",
     "serialize-javascript": "5.0.1",
     "sqlite3": "5.0.2",
