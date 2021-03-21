@@ -38,13 +38,12 @@ export class CreatureTemplate extends TableRow {
   speed_run: number = 1.14286;
   scale: number = 1;
   rank: number = 0;
-  mindmg: number = 0;
-  maxdmg: number = 0;
   dmgschool: number = 0;
-  attackpower: number = 0;
   DamageModifier: number = 1;
   BaseAttackTime: number = 0;
   RangeAttackTime: number = 0;
+  BaseVariance: number = 0;
+  RangeVariance: number = 0;
   unit_class: number = 0;
   unit_flags: number = 0;
   unit_flags2: number = 0;
@@ -54,9 +53,6 @@ export class CreatureTemplate extends TableRow {
   trainer_spell: number = 0;
   trainer_class: number = 0;
   trainer_race: number = 0;
-  minrangedmg: number = 0;
-  maxrangedmg: number = 0;
-  rangedattackpower: number = 0;
   type: number = 0;
   type_flags: number = 0;
   lootid: number = 0;
