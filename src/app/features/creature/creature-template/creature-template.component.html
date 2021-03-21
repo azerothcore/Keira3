@@ -419,20 +419,20 @@
         <span class="category-title">Damage</span>
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
-            <label class="control-label" for="mindmg">mindmg</label>
+            <label class="control-label" for="BaseVariance">BaseVariance</label>
             <i
               class="fas fa-info-circle ml-1" [placement]="'auto'"
-              [tooltip]="'Minimum melee damage (affected by DamageModifier)'"
+              [tooltip]="'TODO'"
             ></i>
-            <input [formControlName]="'mindmg'" id="mindmg" type="number" class="form-control form-control-sm">
+            <input [formControlName]="'BaseVariance'" id="BaseVariance" type="number" class="form-control form-control-sm">
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
-            <label class="control-label" for="maxdmg">maxdmg</label>
+            <label class="control-label" for="RangeVariance">RangeVariance</label>
             <i
               class="fas fa-info-circle ml-1" [placement]="'auto'"
-              [tooltip]="'Maximum melee damage (affected by DamageModifier)'"
+              [tooltip]="'TODO'"
             ></i>
-            <input [formControlName]="'maxdmg'" id="maxdmg" type="number" class="form-control form-control-sm">
+            <input [formControlName]="'RangeVariance'" id="RangeVariance" type="number" class="form-control form-control-sm">
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
             <label class="control-label" for="dmgschool">dmgschool</label>
@@ -442,14 +442,6 @@
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
             <input [formControlName]="'dmgschool'" id="dmgschool" type="number" class="form-control form-control-sm">
-          </div>
-          <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
-            <label class="control-label" for="attackpower">attackpower</label>
-            <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
-              [tooltip]="'Melee attack power used for spells'"
-            ></i>
-            <input [formControlName]="'attackpower'" id="attackpower" type="number" class="form-control form-control-sm">
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
             <label class="control-label" for="BaseAttackTime">BaseAttackTime</label>
@@ -466,30 +458,6 @@
               [tooltip]="'Base time (milliseconds) that determines how long a creature must wait between ranged attacks.'"
             ></i>
             <input [formControlName]="'RangeAttackTime'" id="RangeAttackTime" type="number" class="form-control form-control-sm">
-          </div>
-          <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
-            <label class="control-label" for="minrangedmg">minrangedmg</label>
-            <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
-              [tooltip]="'Minimum ranged damage (affected by DamageModifier)'"
-            ></i>
-            <input [formControlName]="'minrangedmg'" id="minrangedmg" type="number" class="form-control form-control-sm">
-          </div>
-          <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
-            <label class="control-label" for="maxrangedmg">maxrangedmg</label>
-            <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
-              [tooltip]="'Maximum ranged damage (affected by DamageModifier)'"
-            ></i>
-            <input [formControlName]="'maxrangedmg'" id="maxrangedmg" type="number" class="form-control form-control-sm">
-          </div>
-          <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
-            <label class="control-label" for="rangedattackpower">rangedattackpower</label>
-            <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
-              [tooltip]="'Ranged attack power used for spells'"
-            ></i>
-            <input [formControlName]="'rangedattackpower'" id="rangedattackpower" type="number" class="form-control form-control-sm">
           </div>
         </div>
       </div>

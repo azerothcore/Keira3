@@ -87,9 +87,6 @@
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "customWebpackConfig": {
-              "path": "./extra-webpack.config.js"
-            },
             "browserTarget": "Keira3:build"
           },
           "configurations": {
