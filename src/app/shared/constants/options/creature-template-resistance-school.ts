@@ -7,5 +7,4 @@ export const CREATURE_TEMPLATE_RESISTANCE_SCHOOL: Option[] = [
   { value: 4,   name: 'SPELL_SCHOOL_FROST'  },
   { value: 5,   name: 'SPELL_SCHOOL_SHADOW' },
   { value: 6,   name: 'SPELL_SCHOOL_ARCANE' },
-
 ];
