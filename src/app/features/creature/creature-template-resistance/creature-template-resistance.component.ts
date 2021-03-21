@@ -6,6 +6,7 @@ import { CreatureTemplateResistanceService } from './creature-template-resistanc
 import { CREATURE_TEMPLATE_RESISTANCE_TABLE } from '@keira-types/creature-template-resistance.type';
 import { RESISTANCE } from '@keira-constants/options/creature-template-resistance';
 import { MultiRowEditorComponent } from '@keira-shared/abstract/components/editors/multi-row-editor.component';
+import { CREATURE_TEMPLATE_RESISTANCE_SCHOOL } from '@keira-constants/options/creature-template-resistance-school';
 
 @Component({
   selector: 'keira-creature-template-resistance',
@@ -19,6 +20,7 @@ export class CreatureTemplateResistanceComponent extends MultiRowEditorComponent
   }
 
   public readonly RESISTANCE = RESISTANCE;
+  public readonly CREATURE_TEMPLATE_RESISTANCE_SCHOOL = CREATURE_TEMPLATE_RESISTANCE_SCHOOL;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
