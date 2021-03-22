@@ -6,7 +6,7 @@ export const CREATURE_TEMPLATE_RESISTANCE_ID_2 = 'School';
 
 export class CreatureTemplateResistance extends TableRow {
   CreatureID: number = 0;
-  School: number = 0;
+  School: number = 1;
   Resistance: number = 0;
   VerifiedBuild: number = 0;
 }

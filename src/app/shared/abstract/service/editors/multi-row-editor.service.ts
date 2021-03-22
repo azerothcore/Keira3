@@ -7,10 +7,11 @@ import { HandlerService } from '../handlers/handler.service';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
 
 export abstract class MultiRowEditorService<T extends TableRow> extends EditorService<T> {
+  protected FIRST_ROW_START_VALUE = 0;
   protected _originalRows: T[] = [];
   protected _newRows: T[] = [];
   protected _selectedRowId: string|number;
-  protected _nextRowId = 0;
+  protected _nextRowId = this.FIRST_ROW_START_VALUE;
   protected _errors: string[] = [];
 
   get newRows(): T[] { return this._newRows; }
@@ -93,7 +94,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     this._newRows = [...this._newRows];
     this._selectedRowId = null;
     this._form.disable();
-    this._nextRowId = 0;
+    this._nextRowId = this.FIRST_ROW_START_VALUE;
   }
 
   protected updateDiffQuery(): void {
