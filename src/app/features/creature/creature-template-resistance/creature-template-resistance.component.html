@@ -17,15 +17,6 @@
         class="form-group edit-form"
       >
         <div class="row">
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
-            <label class="control-label" for="CreatureID">CreatureID</label>
-            <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
-              [tooltip]="'Link to creature_template.entry'"
-            ></i>
-            <input [formControlName]="'CreatureID'" id="CreatureID" type="number" class="form-control form-control-sm">
-          </div>
-
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="School">School</label>
             <keira-single-value-selector-btn
@@ -73,7 +64,6 @@
                 <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
               </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column name="CreatureID" prop="CreatureID" [minWidth]="80" [maxWidth]="150"></ngx-datatable-column>
             <ngx-datatable-column name="School" prop="School" [minWidth]="80" [maxWidth]="150"></ngx-datatable-column>
             <ngx-datatable-column name="Resistance" prop="Resistance" [minWidth]="80" [maxWidth]="150"></ngx-datatable-column>
           </ngx-datatable>
