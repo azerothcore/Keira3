@@ -1,7 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import Spy = jasmine.Spy;
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -12,7 +11,7 @@ import { CreatureHandlerService } from '../creature-handler.service';
 
 class CreatureTemplateResistancePage extends MultiRowEditorPageObject<CreatureTemplateResistanceComponent>  {}
 
-fdescribe('CreatureTemplateResistance integration tests', () => {
+describe('CreatureTemplateResistance integration tests', () => {
   const id = 1234;
 
   beforeEach(waitForAsync(() => {
