@@ -11,7 +11,6 @@ import { CREATURE_TEMPLATE_RESISTANCE_SCHOOL } from '@keira-constants/options/cr
 @Component({
   selector: 'keira-creature-template-resistance',
   templateUrl: './creature-template-resistance.component.html',
-  styleUrls: ['./creature-template-resistance.component.scss']
 })
 export class CreatureTemplateResistanceComponent extends MultiRowEditorComponent<CreatureTemplateResistance> {
 
