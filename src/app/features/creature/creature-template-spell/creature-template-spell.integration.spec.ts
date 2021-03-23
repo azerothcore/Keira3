@@ -116,16 +116,16 @@ describe('CreatureTemplateSpell integration tests', () => {
         '(1234, 0, 0, 0);'
       );
 
-      page.setInputValueById('Index', '2');
+      page.setInputValueById('Index', '1');
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234) AND (`Index` IN (2));\n' +
+        'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234) AND (`Index` IN (1));\n' +
         'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 2, 0, 0);'
+        '(1234, 1, 0, 0);'
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234);\n' +
         'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 1, 0, 0);'
+        '(1234, 2, 0, 0);'
       );
       page.removeElement();
     });
