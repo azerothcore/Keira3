@@ -13,8 +13,6 @@ import { MultiRowEditorService } from '@keira-shared/abstract/service/editors/mu
 @Injectable()
 export class CreatureTemplateSpellService extends MultiRowEditorService<CreatureTemplateSpell> {
 
-  FIRST_ROW_START_VALUE = 0;
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: CreatureHandlerService,
