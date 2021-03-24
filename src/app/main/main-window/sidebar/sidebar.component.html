@@ -86,6 +86,11 @@
                       </a>
                     </li>
                     <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template-spell'">
+                        Template Spell <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureTemplateSpellUnsaved"></keira-unsaved-icon>
+                      </a>
+                    </li>
+                    <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-onkill-reputation'">
                         Onkill Reputation <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureOnkillReputationUnsaved"></keira-unsaved-icon>
                       </a>
