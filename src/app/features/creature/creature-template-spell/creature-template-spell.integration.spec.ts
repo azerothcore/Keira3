@@ -125,7 +125,7 @@ describe('CreatureTemplateSpell integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234);\n' +
         'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 2, 0, 0);'
+        '(1234, 1, 0, 0);'
       );
       page.removeElement();
     });
@@ -151,7 +151,7 @@ describe('CreatureTemplateSpell integration tests', () => {
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234) AND (`Index` IN (2));'
+        'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234) AND (`Index` IN (1));'
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234);\n' +
