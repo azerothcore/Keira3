@@ -19,11 +19,10 @@
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="Index">Index</label>
-            <keira-single-value-selector-btn
-              [control]="editorService.form.controls.Index"
-              [config]="{ options: CREATURE_TEMPLATE_SPELL_INDEX, name: 'Index' }"
-              [modalClass]="'modal-lg'"
-            ></keira-single-value-selector-btn>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              [tooltip]="'Allowed values: 0-7'"
+            ></i>
             <input [formControlName]="'Index'" id="Index" type="number" class="form-control form-control-sm">
           </div>
 
