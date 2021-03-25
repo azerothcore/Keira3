@@ -101,7 +101,7 @@ describe('SingleRowComplexKeyEditorService', () => {
       const selectSpy = spyOn(TestBed.inject(MockHandlerService), 'select');
       const reloadSpy = spyOn(service, 'reload');
 
-      service['reloadAfterSave']();
+      service['reloadSameEntity']();
 
       expect(service['_isNew']).toBe(false);
       expect(reloadSpy).toHaveBeenCalled();
