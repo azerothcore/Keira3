@@ -34,7 +34,7 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
     return this.selectedQuery === 'full';
   }
 
-  copy() {
+  copy(): void {
     if (this.showFullQuery()) {
       this.clipboardService.copyFromContent(this.editorService.fullQuery);
     } else {
@@ -42,7 +42,7 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
     }
   }
 
-  execute() {
+  execute(): void {
     if (this.showFullQuery()) {
       this.executeQuery.emit(this.editorService.fullQuery);
     } else {
@@ -50,7 +50,7 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
     }
   }
 
-  reload() {
+  reload(): void {
     if (!this.editorService.diffQuery) {
       // if no changes to discard, just reload without asking confirmation
       this.editorService.reloadSameEntity();
