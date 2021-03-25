@@ -83,7 +83,7 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
     this.reloadEntity();
   }
 
-  protected reloadAfterSave() {
+  reloadSameEntity() {
     this._isNew = false;
     this.handlerService.select(false, getPartial<T>(this._form.getRawValue(), this.entityIdFields));
     this.reload();
