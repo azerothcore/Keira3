@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import Spy = jasmine.Spy;
 
 import { ItemEnchantmentTemplateComponent } from './item-enchantment-template.component';
@@ -35,6 +36,7 @@ describe('ItemEnchantmentTemplate integration tests', () => {
       imports: [
         ItemEnchantmentTemplateModule,
         RouterTestingModule,
+        ModalModule.forRoot(),
       ],
       providers: [
         ItemHandlerService,
