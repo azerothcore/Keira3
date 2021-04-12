@@ -36,7 +36,7 @@
     "version": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md"
   },
   "dependencies": {
-    "acorn": "8.1.0",
+    "acorn": "8.1.1",
     "@electron/remote": "1.0.4",
     "mysql": "2.18.1",
     "ngx-toastr": "13.2.1",
