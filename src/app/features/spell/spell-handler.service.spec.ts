@@ -1,11 +1,17 @@
 import { TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { SpellHandlerService } from './spell-handler.service';
 
 describe('SpellHandlerService', () => {
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      imports: [
+        RouterTestingModule,
+      ],
+      providers: [SpellHandlerService],
+    });
   });
 
   it('should be created', () => {

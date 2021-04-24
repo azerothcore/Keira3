@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { instance, reset } from 'ts-mockito';
+import { instance } from 'ts-mockito';
 
 import { MainWindowComponent } from './main-window.component';
 import { ElectronService } from '../../shared/services/electron.service';
@@ -19,10 +19,9 @@ import { ReferenceLootHandlerService } from '../../features/other-loots/referenc
 import { SpellLootHandlerService } from '../../features/other-loots/spell-loot/spell-loot-handler.service';
 import { FishingLootHandlerService } from '../../features/other-loots/fishing-loot/fishing-loot-handler.service';
 import { MailLootHandlerService } from '../../features/other-loots/mail-loot/mail-loot-handler.service';
+import { SpellHandlerService } from '../../features/spell/spell-handler.service';
 
 describe('MainWindowComponent', () => {
-  let component: MainWindowComponent;
-  let fixture: ComponentFixture<MainWindowComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -45,24 +44,23 @@ describe('MainWindowComponent', () => {
         SpellLootHandlerService,
         FishingLootHandlerService,
         MailLootHandlerService,
+        SpellHandlerService,
       ]
     })
     .compileComponents();
   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(MainWindowComponent);
-    component = fixture.componentInstance;
+  const setup = () => {
+    const fixture = TestBed.createComponent(MainWindowComponent);
+    const component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+
+    return { fixture, component };
+  };
 
   it('should create', () => {
+    const { fixture, component } = setup();
     expect(component).toBeTruthy();
-  });
-
-  afterEach(() => {
     fixture.debugElement.nativeElement.remove();
-    reset(MockedElectronService);
-    reset(MockedMysqlService);
   });
 });
