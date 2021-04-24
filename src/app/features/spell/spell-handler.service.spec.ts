@@ -14,8 +14,8 @@ describe('SpellHandlerService', () => {
     });
   });
 
-  it('should be created', () => {
+  it('should have the unsaved status getters', () => {
     const service = TestBed.inject(SpellHandlerService);
-    expect(service).toBeTruthy();
+    expect(service.isSpellDbcUnsaved).toBeDefined();
   });
 });
