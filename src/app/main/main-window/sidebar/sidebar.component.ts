@@ -15,6 +15,7 @@ import { ReferenceLootHandlerService } from '../../../features/other-loots/refer
 import { SpellLootHandlerService } from '../../../features/other-loots/spell-loot/spell-loot-handler.service';
 import { FishingLootHandlerService } from '../../../features/other-loots/fishing-loot/fishing-loot-handler.service';
 import { MailLootHandlerService } from '../../../features/other-loots/mail-loot/mail-loot-handler.service';
+import {SpellHandlerService} from '../../../features/spell/spell-handler.service';
 
 const animationTime = 200;
 
@@ -41,6 +42,7 @@ export class SidebarComponent {
     smartAi: 'up',
     conditions: 'up',
     gossip: 'up',
+    spell: 'up',
   };
   private readonly IMAGES_COUNT = 7;
   private readonly RANDOM_IMAGE = Math.floor(Math.random() * this.IMAGES_COUNT) + 1;
@@ -60,6 +62,7 @@ export class SidebarComponent {
     public spellLootHandlerService: SpellLootHandlerService,
     public fishingLootHandlerService: FishingLootHandlerService,
     public mailLootHandlerService: MailLootHandlerService,
+    public spellHandlerService: SpellHandlerService,
     private locationService: LocationService,
   ) { }
 

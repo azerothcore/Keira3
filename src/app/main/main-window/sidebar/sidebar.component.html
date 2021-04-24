@@ -451,6 +451,30 @@
             </div>
           </li>
 
+          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.spell === 'down' }">
+            <a (click)="toggleState('spell')">
+              <i class="fa fa-magic"></i>
+              <span>Spell DBC overrides</span>
+            </a>
+
+            <div class="sidebar-submenu" [@slide]="menuStates.spell">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'spell/select'">
+                    Search Spell
+                  </a>
+                </li>
+                <ng-container *ngIf="spellHandlerService.selected">
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'spell/spell-dbc'">
+                      Spell DBC editor <keira-unsaved-icon *ngIf="spellHandlerService.isSpellDbcUnsaved"></keira-unsaved-icon>
+                    </a>
+                  </li>
+                </ng-container>
+              </ul>
+            </div>
+          </li>
+
         </ul>
       </div>
     </perfect-scrollbar>

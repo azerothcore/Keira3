@@ -78,6 +78,8 @@ import { FishingLootHandlerService } from '../features/other-loots/fishing-loot/
 import { SelectMailLootComponent } from '../features/other-loots/mail-loot/select-mail-loot.component';
 import { MailLootTemplateComponent } from '../features/other-loots/mail-loot/mail-loot-template.component';
 import { MailLootHandlerService } from '../features/other-loots/mail-loot/mail-loot-handler.service';
+import { SelectSpellComponent } from '../features/spell/select-spell/select-spell.component';
+import { SpellDbcComponent } from '../features/spell/spell-dbc/spell-dbc.component';
 
 const routes: Routes = [
   {
@@ -388,6 +390,19 @@ const routes: Routes = [
         path: 'editors',
         component: SaiFullEditorComponent,
         canActivate: [SaiHandlerService],
+      },
+    ]
+  },
+  {
+    path: 'spell',
+    children: [
+      {
+        path: 'select',
+        component: SelectSpellComponent,
+      },
+      {
+        path: 'spell-dbc',
+        component: SpellDbcComponent,
       },
     ]
   },
