@@ -18,6 +18,7 @@ import { ConditionsModule } from './features/conditions/conditions.module';
 import { SmartScriptsModule } from './features/smart-scripts/smart-scripts.module';
 import { SqlEditorModule } from './features/sql-editor/sql-editor.module';
 import { OtherLootsModule } from './features/other-loots/other-loots.module';
+import { SpellModule } from './features/spell/spell.module';
 
 @NgModule({
   declarations: [ AppComponent ],
@@ -39,6 +40,7 @@ import { OtherLootsModule } from './features/other-loots/other-loots.module';
     GossipModule,
     ConditionsModule,
     SmartScriptsModule,
+    SpellModule,
   ],
   bootstrap: [ AppComponent ]
 })

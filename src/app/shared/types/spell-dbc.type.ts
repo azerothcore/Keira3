@@ -1,14 +1,14 @@
 import { TableRow } from './general';
 
-export const SPELL_TABLE = 'spell_dbc';
-export const SPELL_ID = 'ID';
-export const SPELL_NAME = 'Name_Lang_enUS';
-export const SPELL_SEARCH_FIELDS = [
-  SPELL_ID,
-  SPELL_NAME,
+export const SPELL_DBC_TABLE = 'spell_dbc';
+export const SPELL_DBC_ID = 'ID';
+export const SPELL_DBC_NAME = 'Name_Lang_enUS';
+export const SPELL_DBC_SEARCH_FIELDS = [
+  SPELL_DBC_ID,
+  SPELL_DBC_NAME,
 ];
 
-export class Spell extends TableRow {
+export class SpellDbc extends TableRow {
   ID: number = 0;
   Category: number = 0;
   DispelType: number = 0;
