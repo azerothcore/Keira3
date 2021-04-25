@@ -1,6 +1,7 @@
 import { TableRow } from './general';
 
 export const SPELL_DBC_TABLE = 'spell_dbc';
+export const SPELL_DBC_CUSTOM_STARTING_ID = 200000;
 export const SPELL_DBC_ID = 'ID';
 export const SPELL_DBC_NAME = 'Name_Lang_enUS';
 export const SPELL_DBC_SEARCH_FIELDS = [
