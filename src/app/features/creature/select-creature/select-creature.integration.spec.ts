@@ -1,8 +1,7 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
-import Spy = jasmine.Spy;
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SelectCreatureComponent } from './select-creature.component';
@@ -12,6 +11,7 @@ import { CreatureTemplate } from '@keira-types/creature-template.type';
 import { SelectPageObject } from '@keira-testing/select-page-object';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
+import Spy = jasmine.Spy;
 
 class SelectCreatureComponentPage extends SelectPageObject<SelectCreatureComponent> {
   ID_FIELD = 'entry';
@@ -19,13 +19,6 @@ class SelectCreatureComponentPage extends SelectPageObject<SelectCreatureCompone
 }
 
 describe('SelectCreature integration tests', () => {
-  let component: SelectCreatureComponent;
-  let fixture: ComponentFixture<SelectCreatureComponent>;
-  let selectService: SelectCreatureService;
-  let page: SelectCreatureComponentPage;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let navigateSpy: Spy;
 
   const value = 1200;
 
@@ -43,23 +36,26 @@ describe('SelectCreature integration tests', () => {
       .compileComponents();
   }));
 
-  beforeEach(() => {
-    navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of(
+  const setup = () => {
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy: Spy = spyOn(queryService, 'query').and.returnValue(of(
       [{ max: 1 }]
     ));
 
-    selectService = TestBed.inject(SelectCreatureService);
+    const selectService = TestBed.inject(SelectCreatureService);
 
-    fixture = TestBed.createComponent(SelectCreatureComponent);
-    page = new SelectCreatureComponentPage(fixture);
-    component = fixture.componentInstance;
+    const fixture = TestBed.createComponent(SelectCreatureComponent);
+    const page = new SelectCreatureComponentPage(fixture);
+    const component = fixture.componentInstance;
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
-  });
+
+    return { navigateSpy, queryService, querySpy, selectService, fixture, page, component };
+  };
 
   it('should correctly initialise', waitForAsync(async () => {
+    const { querySpy, fixture, page, component } = setup();
     await fixture.whenStable();
     expect(page.createInput.value).toEqual(`${component.customStartingId}`);
     page.expectNewEntityFree();
@@ -72,6 +68,7 @@ describe('SelectCreature integration tests', () => {
   }));
 
   it('should correctly behave when inserting and selecting free entry', waitForAsync(async () => {
+    const { navigateSpy, querySpy, fixture, page } = setup();
     await fixture.whenStable();
     querySpy.calls.reset();
     querySpy.and.returnValue(of([]));
@@ -93,6 +90,7 @@ describe('SelectCreature integration tests', () => {
   }));
 
   it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
+    const { querySpy, fixture, page } = setup();
     await fixture.whenStable();
     querySpy.calls.reset();
     querySpy.and.returnValue(of(['mock value']));
@@ -126,6 +124,7 @@ describe('SelectCreature integration tests', () => {
     },
   ]) {
     it(`searching an existing entity should correctly work [${id}]`, () => {
+      const { querySpy, page } = setup();
       querySpy.calls.reset();
       if (entry) {
         page.setInputValue(page.searchIdInput, entry);
@@ -148,6 +147,7 @@ describe('SelectCreature integration tests', () => {
   }
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
+    const { navigateSpy, querySpy, page } = setup();
     const results: Partial<CreatureTemplate>[] = [
       { entry: 1, name: 'Shin',   subname: 'Developer',    minlevel: 1, maxlevel: 80, AIName: '', ScriptName: 'Shin.cpp'   },
       { entry: 2, name: 'Helias', subname: 'Developer',    minlevel: 1, maxlevel: 80, AIName: '', ScriptName: 'Helias.cpp' },
