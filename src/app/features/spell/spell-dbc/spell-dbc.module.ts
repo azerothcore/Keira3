@@ -5,19 +5,34 @@ import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
 import { QueryOutputModule } from '@keira-shared/modules/query-output/query-output.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+import { SpellDbcBaseComponent } from './base/spell-dbc-base.component';
+import { SpellDbcEffectsComponent } from './effects/spell-dbc-effects.component';
+import { SpellDbcItemsComponent } from './items/spell-dbc-items.component';
+import { SpellDbcFlagsComponent } from './flags/spell-dbc-flags.component';
+import { SpellDbcTextsComponent } from './texts/spell-dbc-texts.component';
+import { ToastrModule } from 'ngx-toastr';
+import { toastrConfig } from '@keira-config/toastr.config';
 
 
 
 @NgModule({
   declarations: [
-    SpellDbcComponent
+    SpellDbcComponent,
+    SpellDbcBaseComponent,
+    SpellDbcEffectsComponent,
+    SpellDbcItemsComponent,
+    SpellDbcFlagsComponent,
+    SpellDbcTextsComponent,
   ],
   imports: [
     CommonModule,
     TopBarModule,
     QueryOutputModule,
     ReactiveFormsModule,
-    TooltipModule
+    TabsModule.forRoot(),
+    TooltipModule.forRoot(),
+    ToastrModule.forRoot(toastrConfig),
   ]
 })
 export class SpellDbcModule { }

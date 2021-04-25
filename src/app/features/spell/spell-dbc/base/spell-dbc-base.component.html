@@ -1,0 +1,44 @@
+<form
+  [formGroup]="formGroup"
+  class="form-group edit-form"
+>
+  <div class="row">
+
+    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+      <label class="control-label" for="ID">ID</label>
+      <i
+        class="fas fa-info-circle ml-1" [placement]="'auto'"
+        [tooltip]="'The unique ID of the spell'"
+      ></i>
+      <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm">
+    </div>
+
+    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+      <label class="control-label" for="Category">Category</label>
+      <i
+        class="fas fa-info-circle ml-1" [placement]="'auto'"
+        [tooltip]="'TODO'"
+      ></i>
+      <input [formControlName]="'Category'" id="Category" type="number" class="form-control form-control-sm">
+    </div>
+
+    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+      <label class="control-label" for="DispelType">DispelType</label>
+      <i
+        class="fas fa-info-circle ml-1" [placement]="'auto'"
+        [tooltip]="'TODO'"
+      ></i>
+      <input [formControlName]="'DispelType'" id="DispelType" type="number" class="form-control form-control-sm">
+    </div>
+
+    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+      <label class="control-label" for="Mechanic">Mechanic</label>
+      <i
+        class="fas fa-info-circle ml-1" [placement]="'auto'"
+        [tooltip]="'TODO'"
+      ></i>
+      <input [formControlName]="'Mechanic'" id="Mechanic" type="number" class="form-control form-control-sm">
+    </div>
+
+  </div>
+</form>
