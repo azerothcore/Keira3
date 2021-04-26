@@ -10,29 +10,25 @@
       <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
     </div>
 
-    <form
-      [formGroup]="editorService.form"
-      class="form-group edit-form"
-    >
+    <div class="content-block">
+      <tabset>
+        <tab heading="Base" id="tab1">
+          <keira-spell-dbc-base [formGroup]="editorService.form"></keira-spell-dbc-base>
+        </tab>
+        <tab heading="Effects">
+          <keira-spell-dbc-effects [formGroup]="editorService.form"></keira-spell-dbc-effects>
+        </tab>
+        <tab heading="Items">
+          <keira-spell-dbc-items [formGroup]="editorService.form"></keira-spell-dbc-items>
+        </tab>
+        <tab heading="Flags">
+          <keira-spell-dbc-flags [formGroup]="editorService.form"></keira-spell-dbc-flags>
+        </tab>
+        <tab heading="Texts">
+          <keira-spell-dbc-texts [formGroup]="editorService.form"></keira-spell-dbc-texts>
+        </tab>
+      </tabset>
+    </div>
 
-      <div class="content-block">
-        <span class="category-title">Base</span>
-        <div class="row">
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-            <label class="control-label" for="ID">ID</label>
-            <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
-              [tooltip]="'The unique ID of the spell'"
-            ></i>
-            <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm">
-          </div>
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-            <label class="control-label" for="Name_Lang_enUS">Name_Lang_enUS</label>
-            <input [formControlName]="'Name_Lang_enUS'" id="Name_Lang_enUS" class="form-control form-control-sm">
-          </div>
-        </div>
-      </div>
-
-    </form>
   </div>
 </div>
