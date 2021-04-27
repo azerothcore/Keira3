@@ -30,7 +30,6 @@ describe('SpellDbcLocaleComponent', () => {
   })
   class TestHostComponent {
     @ViewChild(SpellDbcLocaleComponent) child: SpellDbcLocaleComponent;
-    constructor(public editorService: SpellDbcService) {}
     form: FormGroup<SpellDbc>;
     locale: Locale;
   }

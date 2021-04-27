@@ -26,7 +26,7 @@ export class SpellDbc extends TableRow {
   unk_320_2: number = 0; // TODO
   ShapeshiftExclude: number = 0; // TODO
   unk_320_3: number = 0; // TODO
-  Targets: number = 0; // TODO
+  Targets: number = 0;
   TargetCreatureType: number = 0; // TODO
   RequiresSpellFocus: number = 0; // TODO
   FacingCasterFlags: number = 0; // TODO
@@ -44,9 +44,9 @@ export class SpellDbc extends TableRow {
   InterruptFlags: number = 0; // TODO
   AuraInterruptFlags: number = 0; // TODO
   ChannelInterruptFlags: number = 0; // TODO
-  ProcTypeMask: number = 0; // TODO
-  ProcChance: number = 0; // TODO
-  ProcCharges: number = 0; // TODO
+  ProcTypeMask: number = 0;
+  ProcChance: number = 0;
+  ProcCharges: number = 0;
   MaxLevel: number = 0; // TODO
   BaseLevel: number = 0; // TODO
   SpellLevel: number = 0; // TODO
