@@ -7,17 +7,19 @@ import { SpellDbcModule } from '../spell-dbc.module';
 import { PageObject } from '@keira-testing/page-object';
 import { SpellDbcService } from '../spell-dbc.service';
 import { SpellHandlerService } from '../../spell-handler.service';
+import { FormGroup } from 'ngx-typesafe-forms';
+import { SpellDbc } from '@keira-types/spell-dbc.type';
 
 describe('SpellDbcFlagsComponent', () => {
 
   class SpellDbcFlagsComponentPage extends PageObject<TestHostComponent> {}
 
   @Component({
-    template: '<keira-spell-dbc-flags [formGroup]="editorService.form"></keira-spell-dbc-flags>'
+    template: '<keira-spell-dbc-flags [formGroup]="form"></keira-spell-dbc-flags>'
   })
   class TestHostComponent {
     @ViewChild(SpellDbcFlagsComponent) child: SpellDbcFlagsComponent;
-    constructor(public editorService: SpellDbcService) {}
+    form: FormGroup<SpellDbc>;
   }
 
   beforeEach(async () => {
@@ -36,11 +38,13 @@ describe('SpellDbcFlagsComponent', () => {
     const fixture = TestBed.createComponent(TestHostComponent);
     const host = fixture.componentInstance;
     const page = new SpellDbcFlagsComponentPage(fixture);
+    const form = TestBed.inject(SpellDbcService).form;
+    host.form = form;
 
     fixture.detectChanges();
     const component = host.child;
 
-    return { fixture, component, page };
+    return { fixture, component, page, form };
   };
 
   it('should create', () => {

@@ -8,6 +8,8 @@ import { PageObject } from '@keira-testing/page-object';
 import { SpellDbcService } from '../spell-dbc.service';
 import { SpellHandlerService } from '../../spell-handler.service';
 import { LOCALES } from './spell-dbc-texts.model';
+import { FormGroup } from 'ngx-typesafe-forms';
+import { SpellDbc } from '@keira-types/spell-dbc.type';
 
 describe('SpellDbcTextsComponent', () => {
 
@@ -16,11 +18,11 @@ describe('SpellDbcTextsComponent', () => {
   }
 
   @Component({
-    template: '<keira-spell-dbc-texts [formGroup]="editorService.form"></keira-spell-dbc-texts>'
+    template: '<keira-spell-dbc-texts [formGroup]="form"></keira-spell-dbc-texts>'
   })
   class TestHostComponent {
     @ViewChild(SpellDbcTextsComponent) child: SpellDbcTextsComponent;
-    constructor(public editorService: SpellDbcService) {}
+    form: FormGroup<SpellDbc>;
   }
 
   beforeEach(async () => {
@@ -39,11 +41,13 @@ describe('SpellDbcTextsComponent', () => {
     const fixture = TestBed.createComponent(TestHostComponent);
     const host = fixture.componentInstance;
     const page = new SpellDbcTextsComponentPage(fixture);
+    const form = TestBed.inject(SpellDbcService).form;
+    host.form = form;
 
     fixture.detectChanges();
     const component = host.child;
 
-    return { fixture, component, page };
+    return { fixture, component, page, form };
   };
 
   it('should correctly display the locale tabs', () => {
