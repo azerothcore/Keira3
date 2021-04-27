@@ -13,6 +13,7 @@ import { SpellDbcFlagsComponent } from './flags/spell-dbc-flags.component';
 import { SpellDbcTextsComponent } from './texts/spell-dbc-texts.component';
 import { ToastrModule } from 'ngx-toastr';
 import { toastrConfig } from '@keira-config/toastr.config';
+import { SpellDbcLocaleComponent } from './texts/spell-dbc-locale/spell-dbc-locale.component';
 
 
 
@@ -24,6 +25,7 @@ import { toastrConfig } from '@keira-config/toastr.config';
     SpellDbcItemsComponent,
     SpellDbcFlagsComponent,
     SpellDbcTextsComponent,
+    SpellDbcLocaleComponent,
   ],
   imports: [
     CommonModule,

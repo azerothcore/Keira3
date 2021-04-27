@@ -4,7 +4,7 @@
 
   <span *ngIf="editorService.loading">Loading...</span>
 
-  <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
+  <div [hidden]="!editorService.form || !editorService.loadedEntityId || editorService.loading">
 
     <div class="content-block">
       <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
@@ -12,19 +12,19 @@
 
     <div class="content-block">
       <tabset>
-        <tab heading="Base" id="tab1">
+        <tab heading="Base" id="Base">
           <keira-spell-dbc-base [formGroup]="editorService.form"></keira-spell-dbc-base>
         </tab>
-        <tab heading="Effects">
+        <tab heading="Effects" id="Effects">
           <keira-spell-dbc-effects [formGroup]="editorService.form"></keira-spell-dbc-effects>
         </tab>
-        <tab heading="Items">
+        <tab heading="Items" id="Items">
           <keira-spell-dbc-items [formGroup]="editorService.form"></keira-spell-dbc-items>
         </tab>
-        <tab heading="Flags">
+        <tab heading="Flags" id="Flags">
           <keira-spell-dbc-flags [formGroup]="editorService.form"></keira-spell-dbc-flags>
         </tab>
-        <tab heading="Texts">
+        <tab heading="Texts" id="Texts">
           <keira-spell-dbc-texts [formGroup]="editorService.form"></keira-spell-dbc-texts>
         </tab>
       </tabset>
