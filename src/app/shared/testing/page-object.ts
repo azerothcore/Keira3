@@ -170,5 +170,24 @@ export abstract class PageObject<ComponentType> {
   clickRowOfDatatableInModal(rowIndex: number) {
     this.clickElement(this.getCellOfDatatableInModal(rowIndex, 0));
   }
+
+
+  /*** ngx-bootstrap Tabs utilities ***/
+
+  getTab(tabsetId: string, tabId: string): HTMLElement {
+    return this.query(`tabset#${tabsetId} a#${tabId}-link`);
+  }
+
+  expectTabActive(tab: HTMLElement): void {
+    expect(tab).toHaveClass('active');
+  }
+
+  expectTabInactive(tab: HTMLElement): void {
+    expect(tab).not.toHaveClass('active');
+  }
+
+  expectTabHeadToContain(tab: HTMLElement, text: string): void {
+    expect(tab.innerText).toContain(text);
+  }
 }
 

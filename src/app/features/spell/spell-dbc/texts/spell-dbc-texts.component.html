@@ -1,4 +1,4 @@
-<tabset *ngIf="formGroup">
+<tabset *ngIf="formGroup" id="locales">
   <tab *ngFor="let locale of LOCALES" [heading]="locale" [id]="locale">
     <keira-spell-dbc-locale [formGroup]="formGroup" [locale]="locale"></keira-spell-dbc-locale>
   </tab>
