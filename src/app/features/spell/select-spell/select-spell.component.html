@@ -3,6 +3,16 @@
 <div class="container-fluid">
 
   <div class="content-block">
+    <p class="h5 mb-3">HEADS UP: this is how the spell_dbc table works</p>
+
+    <p>The <i>spell_dbc</i> table contains mostly overrides of the spells located in the Client DBC files.</p>
+    <p>
+      <strong>IMPORTANT:</strong> only a subset of the spells from the DBC are present in the <i>spell_dbc</i> table, if you want to add new overrides, follow
+      <a target="_blank" href="https://www.azerothcore.org/wiki/importing-spell-dbc">THIS HOW-TO</a>.
+    </p>
+  </div>
+
+  <div class="content-block">
     <keira-create
       [entityTable]="entityTable"
       [entityIdField]="entityIdField"
