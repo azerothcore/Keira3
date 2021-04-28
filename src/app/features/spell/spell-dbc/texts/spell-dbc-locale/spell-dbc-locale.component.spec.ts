@@ -7,7 +7,7 @@ import { SpellDbcService } from '../../spell-dbc.service';
 import { SpellDbcModule } from '../../spell-dbc.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SpellHandlerService } from '../../../spell-handler.service';
-import { Locale, SPELL_DBC_TEXT_FIELDS, SpellDbcFieldPrefix } from '../spell-dbc-texts.model';
+import { Locale, SPELL_DBC_TEXT_FIELDS, SpellDbcTextFieldPrefix } from '../spell-dbc-texts.model';
 import { FormGroup } from 'ngx-typesafe-forms';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
 
@@ -60,7 +60,7 @@ describe('SpellDbcLocaleComponent', () => {
   };
 
   const testLocale: Locale = 'esES';
-  const createMockVal = (field: SpellDbcFieldPrefix) => `mock-${field}-${testLocale}`;
+  const createMockVal = (field: SpellDbcTextFieldPrefix) => `mock-${field}-${testLocale}`;
 
   it('should correctly display the inputs and their labels', () => {
     const { host, page } = setup();

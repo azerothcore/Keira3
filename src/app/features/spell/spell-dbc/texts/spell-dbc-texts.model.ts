@@ -26,4 +26,4 @@ export const SPELL_DBC_TEXT_FIELDS = [
   'AuraDescription_Lang',
 ] as const;
 
-export type SpellDbcFieldPrefix = typeof SPELL_DBC_TEXT_FIELDS[number];
+export type SpellDbcTextFieldPrefix = typeof SPELL_DBC_TEXT_FIELDS[number];

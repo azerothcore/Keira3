@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from 'ngx-typesafe-forms';
-import { Locale, SPELL_DBC_TEXT_FIELDS, SpellDbcFieldPrefix } from '../spell-dbc-texts.model';
+import { Locale, SPELL_DBC_TEXT_FIELDS, SpellDbcTextFieldPrefix } from '../spell-dbc-texts.model';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
 
 @Component({
@@ -13,7 +13,7 @@ export class SpellDbcLocaleComponent {
   @Input() formGroup: FormGroup<SpellDbc>;
   @Input() locale: Locale;
 
-  getFieldName(field: SpellDbcFieldPrefix): string {
+  getFieldName(field: SpellDbcTextFieldPrefix): string {
     return `${field}_${this.locale}`; // example: NameSubtext_Lang_esES
   }
 }
