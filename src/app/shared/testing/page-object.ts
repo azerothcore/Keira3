@@ -71,6 +71,17 @@ export abstract class PageObject<ComponentType> {
     this.fixture.detectChanges();
   }
 
+  getLabel(fieldName: string): HTMLLabelElement {
+    return this.query<HTMLLabelElement>(`.control-label[for="${fieldName}"]`);
+  }
+  getInput(fieldName: string): HTMLInputElement {
+    return this.query<HTMLInputElement>(`input.form-control[id="${fieldName}"]`);
+  }
+  expectInputVisible(fieldName: string) {
+    expect(this.getLabel(fieldName)).toBeDefined();
+    expect(this.getInput(fieldName)).toBeDefined();
+  }
+
   clickElement(element: HTMLElement): void {
     element.click();
     this.fixture.detectChanges();

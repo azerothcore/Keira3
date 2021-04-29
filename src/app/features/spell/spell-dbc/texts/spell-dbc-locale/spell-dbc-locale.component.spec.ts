@@ -14,14 +14,14 @@ import { SpellDbc } from '@keira-types/spell-dbc.type';
 describe('SpellDbcLocaleComponent', () => {
 
   class SpellDbcLocaleComponentPage extends PageObject<TestHostComponent> {
-    getLabel(fieldName: string, locale: Locale) {
+    getLabelByLocale(fieldName: string, locale: Locale) {
       return this.query<HTMLLabelElement>(`.control-label[for="${fieldName}_${locale}"]`);
     }
-    getInput(fieldName: string, locale: Locale) {
+    getInputByLocale(fieldName: string, locale: Locale) {
       return this.query<HTMLTextAreaElement>(`textarea.form-control[id="${fieldName}_${locale}"]`);
     }
-    expectInputVisible(fieldName: string, locale: Locale) {
-      expect(this.getLabel(fieldName, locale)).toBeDefined();
+    expectInputVisibleByLocale(fieldName: string, locale: Locale) {
+      expect(this.getLabelByLocale(fieldName, locale)).toBeDefined();
     }
   }
 
@@ -69,7 +69,7 @@ describe('SpellDbcLocaleComponent', () => {
     page.detectChanges();
 
     for (const field of SPELL_DBC_TEXT_FIELDS) {
-      page.expectInputVisible(field, testLocale);
+      page.expectInputVisibleByLocale(field, testLocale);
     }
   });
 
@@ -83,7 +83,7 @@ describe('SpellDbcLocaleComponent', () => {
     page.detectChanges();
 
     for (const field of SPELL_DBC_TEXT_FIELDS) {
-      expect(page.getInput(field, testLocale).value).toEqual(createMockVal(field));
+      expect(page.getInputByLocale(field, testLocale).value).toEqual(createMockVal(field));
     }
   });
 
@@ -93,7 +93,7 @@ describe('SpellDbcLocaleComponent', () => {
     page.detectChanges();
 
     for (const field of SPELL_DBC_TEXT_FIELDS) {
-      page.setInputValue(page.getInput(field, testLocale), createMockVal(field));
+      page.setInputValue(page.getInputByLocale(field, testLocale), createMockVal(field));
     }
     page.detectChanges();
 

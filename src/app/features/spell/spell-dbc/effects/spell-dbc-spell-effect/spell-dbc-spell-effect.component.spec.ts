@@ -14,14 +14,15 @@ import { SPELL_DBC_SPELL_EFFECT_FIELDS, SpellDbcSpellEffectFieldPrefix } from '.
 describe('SpellDbcSpellEffectComponent', () => {
 
   class SpellDbcSpellEffectComponentPage extends PageObject<TestHostComponent> {
-    getLabel(fieldName: string, index: number) {
+    getLabelByIndex(fieldName: string, index: number) {
       return this.query<HTMLLabelElement>(`.control-label[for="${fieldName}_${index}"]`);
     }
-    getInput(fieldName: string, index: number) {
+    getInputByIndex(fieldName: string, index: number) {
       return this.query<HTMLInputElement>(`input.form-control[id="${fieldName}_${index}"]`);
     }
-    expectInputVisible(fieldName: string, index: number) {
-      expect(this.getLabel(fieldName, index)).toBeDefined();
+    expectInputVisibleByIndex(fieldName: string, index: number) {
+      expect(this.getLabelByIndex(fieldName, index)).toBeDefined();
+      expect(this.getInputByIndex(fieldName, index)).toBeDefined();
     }
   }
 
@@ -70,7 +71,7 @@ describe('SpellDbcSpellEffectComponent', () => {
     await page.whenStable();
 
     for (const field of SPELL_DBC_SPELL_EFFECT_FIELDS) {
-      page.expectInputVisible(field, testIndex);
+      page.expectInputVisibleByIndex(field, testIndex);
     }
   });
 
@@ -85,7 +86,7 @@ describe('SpellDbcSpellEffectComponent', () => {
     await page.whenStable();
 
     for (const field of SPELL_DBC_SPELL_EFFECT_FIELDS) {
-      expect(page.getInput(field, testIndex).value).toEqual(String(createMockVal(field)));
+      expect(page.getInputByIndex(field, testIndex).value).toEqual(String(createMockVal(field)));
     }
   });
 
@@ -95,7 +96,7 @@ describe('SpellDbcSpellEffectComponent', () => {
     page.detectChanges();
 
     for (const field of SPELL_DBC_SPELL_EFFECT_FIELDS) {
-      page.setInputValue(page.getInput(field, testIndex), createMockVal(field));
+      page.setInputValue(page.getInputByIndex(field, testIndex), createMockVal(field));
     }
     page.detectChanges();
     await page.whenStable();
