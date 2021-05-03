@@ -69,7 +69,7 @@
     "@types/sqlstring": "2.3.0",
     "bootstrap": "4.6.0",
     "chai": "4.3.4",
-    "codelyzer": "6.0.1",
+    "codelyzer": "6.0.2",
     "conventional-changelog-cli": "2.1.1",
     "coveralls": "3.1.0",
     "cross-env": "7.0.3",
