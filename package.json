@@ -67,7 +67,7 @@
     "@types/node": "14.14.44",
     "@types/sqlite3": "3.1.7",
     "@types/sqlstring": "2.3.0",
-    "bootstrap": "4.6.0",
+    "bootstrap": "5.0.0",
     "chai": "4.3.4",
     "codelyzer": "6.0.2",
     "conventional-changelog-cli": "2.1.1",
