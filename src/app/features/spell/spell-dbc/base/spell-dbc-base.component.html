@@ -17,7 +17,7 @@
       <label class="control-label" for="Category">Category</label>
       <i
         class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
+        [tooltip]="'Category of a spell. Used for category cooldowns.'"
       ></i>
       <input [formControlName]="'Category'" id="Category" type="number" class="form-control form-control-sm">
     </div>
@@ -26,7 +26,7 @@
       <label class="control-label" for="DispelType">DispelType</label>
       <i
         class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
+        [tooltip]="'For determining which spells are capable of dispelling this.'"
       ></i>
       <input [formControlName]="'DispelType'" id="DispelType" type="number" class="form-control form-control-sm">
     </div>
@@ -35,7 +35,7 @@
       <label class="control-label" for="Mechanic">Mechanic</label>
       <i
         class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
+        [tooltip]="'Used by spells granting bonuses/immunities against certain effect types (stun, charm...).'"
       ></i>
       <input [formControlName]="'Mechanic'" id="Mechanic" type="number" class="form-control form-control-sm">
     </div>
@@ -44,7 +44,7 @@
       <label class="control-label" for="CastingTimeIndex">CastingTimeIndex</label>
       <i
         class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
+        [tooltip]="'Casting time of a spell. May differ with caster level.'"
       ></i>
       <input [formControlName]="'CastingTimeIndex'" id="CastingTimeIndex" type="number" class="form-control form-control-sm">
     </div>
@@ -52,7 +52,7 @@
       <label class="control-label" for="DurationIndex">DurationIndex</label>
       <i
         class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
+        [tooltip]="'Duration of spell effects.'"
       ></i>
       <input [formControlName]="'DurationIndex'" id="DurationIndex" type="number" class="form-control form-control-sm">
     </div>
@@ -60,7 +60,7 @@
       <label class="control-label" for="RangeIndex">RangeIndex</label>
       <i
         class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
+        [tooltip]="'Range of a spell. May differ for friendly and enemy targets.'"
       ></i>
       <input [formControlName]="'RangeIndex'" id="RangeIndex" type="number" class="form-control form-control-sm">
     </div>
@@ -76,7 +76,7 @@
       <label class="control-label" for="SpellLevel">SpellLevel</label>
       <i
         class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
+        [tooltip]="'Tends to be exactly same as base level.'"
       ></i>
       <input [formControlName]="'SpellLevel'" id="SpellLevel" type="number" class="form-control form-control-sm">
     </div>
@@ -84,7 +84,7 @@
       <label class="control-label" for="BaseLevel">BaseLevel</label>
       <i
         class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
+        [tooltip]="'Base level of a spell.'"
       ></i>
       <input [formControlName]="'BaseLevel'" id="BaseLevel" type="number" class="form-control form-control-sm">
     </div>
@@ -92,7 +92,7 @@
       <label class="control-label" for="MaxLevel">MaxLevel</label>
       <i
         class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
+        [tooltip]="'Probably maximal level from which spell can gain bonuses (or minuses) which are based on formula caster level - spell level.'"
       ></i>
       <input [formControlName]="'MaxLevel'" id="MaxLevel" type="number" class="form-control form-control-sm">
     </div>
@@ -100,7 +100,7 @@
       <label class="control-label" for="MaxTargets">MaxTargets</label>
       <i
         class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
+        [tooltip]="'Maximum number of targets the spell can affect.'"
       ></i>
       <input [formControlName]="'MaxTargets'" id="MaxTargets" type="number" class="form-control form-control-sm">
     </div>
@@ -108,7 +108,7 @@
       <label class="control-label" for="MaxTargetLevel">MaxTargetLevel</label>
       <i
         class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
+        [tooltip]="'The maximum level of target which can be affected by spell.'"
       ></i>
       <input [formControlName]="'MaxTargetLevel'" id="MaxTargetLevel" type="number" class="form-control form-control-sm">
     </div>
@@ -124,7 +124,7 @@
       <label class="control-label" for="SpellVisualID_1">SpellVisualID_1</label>
       <i
         class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
+        [tooltip]="'Visual effects of a spell.'"
       ></i>
       <input [formControlName]="'SpellVisualID_1'" id="SpellVisualID_1" type="number" class="form-control form-control-sm">
     </div>
@@ -132,7 +132,7 @@
       <label class="control-label" for="SpellVisualID_2">SpellVisualID_2</label>
       <i
         class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
+        [tooltip]="'Visual effects of a spell.'"
       ></i>
       <input [formControlName]="'SpellVisualID_2'" id="SpellVisualID_2" type="number" class="form-control form-control-sm">
     </div>
@@ -140,7 +140,7 @@
       <label class="control-label" for="Speed">Speed</label>
       <i
         class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
+        [tooltip]="'If <= 0.0 client skips HandleMissileEffects.'"
       ></i>
       <input [formControlName]="'Speed'" id="Speed" type="number" class="form-control form-control-sm">
     </div>
@@ -156,7 +156,7 @@
       <label class="control-label" for="RecoveryTime">RecoveryTime</label>
       <i
         class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
+        [tooltip]="'Cooldown of a spell. May differ with caster level.'"
       ></i>
       <input [formControlName]="'RecoveryTime'" id="RecoveryTime" type="number" class="form-control form-control-sm">
     </div>
@@ -180,7 +180,7 @@
       <label class="control-label" for="PowerType">PowerType</label>
       <i
         class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
+        [tooltip]="'Power type used by spell.'"
       ></i>
       <input [formControlName]="'PowerType'" id="PowerType" type="number" class="form-control form-control-sm">
     </div>
@@ -188,7 +188,7 @@
       <label class="control-label" for="RequiredTotemCategoryID_1">RequiredTotemCategoryID_1</label>
       <i
         class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
+        [tooltip]="'Non consumable items required to cast the spell.'"
       ></i>
       <input [formControlName]="'RequiredTotemCategoryID_1'" id="RequiredTotemCategoryID_1" type="number" class="form-control form-control-sm">
     </div>
@@ -196,7 +196,7 @@
       <label class="control-label" for="RequiredTotemCategoryID_2">RequiredTotemCategoryID_2</label>
       <i
         class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
+        [tooltip]="'Non consumable items required to cast the spell.'"
       ></i>
       <input [formControlName]="'RequiredTotemCategoryID_2'" id="RequiredTotemCategoryID_2" type="number" class="form-control form-control-sm">
     </div>
@@ -204,7 +204,7 @@
       <label class="control-label" for="RequiredAreasID">RequiredAreasID</label>
       <i
         class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
+        [tooltip]="'Areas in which a spell can be cast.'"
       ></i>
       <input [formControlName]="'RequiredAreasID'" id="RequiredAreasID" type="number" class="form-control form-control-sm">
     </div>
@@ -220,7 +220,7 @@
       <label class="control-label" for="ManaCost">ManaCost</label>
       <i
         class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
+        [tooltip]="'Base mana cost of a spell. It is being summed with ManaCostPercentage.'"
       ></i>
       <input [formControlName]="'ManaCost'" id="ManaCost" type="number" class="form-control form-control-sm">
     </div>
@@ -228,7 +228,7 @@
       <label class="control-label" for="ManaCostPerLevel">ManaCostPerLevel</label>
       <i
         class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
+        [tooltip]="'Likely is mana cost increased by ((caster level) - (spell level))*(this field).'"
       ></i>
       <input [formControlName]="'ManaCostPerLevel'" id="ManaCostPerLevel" type="number" class="form-control form-control-sm">
     </div>
@@ -236,7 +236,7 @@
       <label class="control-label" for="ManaPerSecond">ManaPerSecond</label>
       <i
         class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
+        [tooltip]="'For channels.'"
       ></i>
       <input [formControlName]="'ManaPerSecond'" id="ManaPerSecond" type="number" class="form-control form-control-sm">
     </div>
@@ -244,7 +244,7 @@
       <label class="control-label" for="ManaPerSecondPerLevel">ManaPerSecondPerLevel</label>
       <i
         class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
+        [tooltip]="'For channels. Likely is mana cost per second increased by ((caster level) - (spell level))*(this field).'"
       ></i>
       <input [formControlName]="'ManaPerSecondPerLevel'" id="ManaPerSecondPerLevel" type="number" class="form-control form-control-sm">
     </div>
@@ -252,7 +252,7 @@
       <label class="control-label" for="ManaCostPct">ManaCostPct</label>
       <i
         class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
+        [tooltip]="'% of base mana cost, added to flat value in manaCost field. For NPCs is base mana = their max mana.'"
       ></i>
       <input [formControlName]="'ManaCostPct'" id="ManaCostPct" type="number" class="form-control form-control-sm">
     </div>
@@ -268,7 +268,7 @@
       <label class="control-label" for="RequiresSpellFocus">RequiresSpellFocus</label>
       <i
         class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
+        [tooltip]="'Whether spell focus is needed by spell to be cast. Player needs to be within range of appropriate gameobject with type=8.'"
       ></i>
       <input [formControlName]="'RequiresSpellFocus'" id="RequiresSpellFocus" type="number" class="form-control form-control-sm">
     </div>
