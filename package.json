@@ -60,7 +60,7 @@
     "@angular/router": "11.2.14",
     "@fortawesome/fontawesome-free": "5.15.3",
     "@swimlane/ngx-datatable": "19.0.0",
-    "@types/jasmine": "3.7.2",
+    "@types/jasmine": "3.7.4",
     "@types/jasminewd2": "2.0.9",
     "@types/mocha": "8.2.2",
     "@types/mysql": "2.15.18",
