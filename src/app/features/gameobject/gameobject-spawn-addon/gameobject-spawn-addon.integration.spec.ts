@@ -1,7 +1,6 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import Spy = jasmine.Spy;
 
 import { GameobjectSpawnAddonComponent } from './gameobject-spawn-addon.component';
 import { GameobjectSpawnAddonModule } from './gameobject-spawn-addon.module';
@@ -15,12 +14,6 @@ import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 class GameobjectSpawnAddonPage extends MultiRowEditorPageObject<GameobjectSpawnAddonComponent> {}
 
 describe('GameobjectSpawnAddon integration tests', () => {
-  let component: GameobjectSpawnAddonComponent;
-  let fixture: ComponentFixture<GameobjectSpawnAddonComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: GameobjectHandlerService;
-  let page: GameobjectSpawnAddonPage;
 
   const id = 1234;
 
@@ -46,28 +39,30 @@ describe('GameobjectSpawnAddon integration tests', () => {
   }));
 
   function setup(creatingNew: boolean) {
-    handlerService = TestBed.inject(GameobjectHandlerService);
+    const handlerService = TestBed.inject(GameobjectHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of());
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(TestBed.inject(GameobjectSpawnAddonService), 'selectQuery').and.returnValue(of(
       creatingNew ? [] : [originalRow0, originalRow1, originalRow2]
     ));
 
-    fixture = TestBed.createComponent(GameobjectSpawnAddonComponent);
-    component = fixture.componentInstance;
-    page = new GameobjectSpawnAddonPage(fixture);
+    const fixture = TestBed.createComponent(GameobjectSpawnAddonComponent);
+    const component = fixture.componentInstance;
+    const page = new GameobjectSpawnAddonPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+
+    return { component,  fixture,  queryService,  querySpy,  handlerService,  page };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
 
     it('should correctly initialise', () => {
+      const { handlerService, page } = setup(true);
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.formError.hidden).toBe(true);
@@ -90,9 +85,9 @@ describe('GameobjectSpawnAddon integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
 
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
@@ -105,6 +100,7 @@ describe('GameobjectSpawnAddon integration tests', () => {
     });
 
     it('deleting rows should correctly work', () => {
+      const { page } = setup(false);
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.expectDiffQueryToContain(
@@ -136,6 +132,7 @@ describe('GameobjectSpawnAddon integration tests', () => {
     });
 
     it('editing existing rows should correctly work', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(1);
       page.setInputValueById('invisibilityType', 1);
 
@@ -162,6 +159,7 @@ describe('GameobjectSpawnAddon integration tests', () => {
     // });
 
     it('using the same row id for multiple rows should correctly show an error', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(2);
       page.setInputValueById('guid', 0);
 
