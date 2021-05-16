@@ -227,12 +227,10 @@ SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.FRIENDLY_HEALTH] = 'HPDeficit';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.FRIENDLY_HEALTH] = 'Radius';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.FRIENDLY_HEALTH] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.FRIENDLY_HEALTH] = 'RepeatMax';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.FRIENDLY_HEALTH] =
-  'Amount of Health the friendly unit must be at (NOT percentage)';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.FRIENDLY_HEALTH] = 'Amount of Health the friendly unit must be at (NOT percentage)';
 
 // SMART_EVENT_FRIENDLY_IS_CC
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.FRIENDLY_IS_CC] =
-  'When a friendly unit within a certain range is under the effect of a crowd control spell';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.FRIENDLY_IS_CC] = 'When a friendly unit within a certain range is under the effect of a crowd control spell';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.FRIENDLY_IS_CC] = 'Radius';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.FRIENDLY_IS_CC] = 'RepeatMin';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.FRIENDLY_IS_CC] = 'RepeatMax';
@@ -368,8 +366,7 @@ SAI_EVENT_TOOLTIPS[SAI_EVENTS.MOVEMENTINFORM] =
   'On movement inform. Useful when for example you want your creature to do something after it moving to a certain spot by using SMART_ACTION_MOVE_TO.';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.MOVEMENTINFORM] = 'MovementType';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.MOVEMENTINFORM] = 'PointId';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.MOVEMENTINFORM] =
-  'Use 0 for ANY movement types. ESCORT_MOTION_TYPE = 17, POINT_MOTION_TYPE = 8';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.MOVEMENTINFORM] = 'Use 0 for ANY movement types. ESCORT_MOTION_TYPE = 17, POINT_MOTION_TYPE = 8';
 
 // SMART_EVENT_SUMMON_DESPAWNED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.SUMMON_DESPAWNED] = 'On summoned unit despawned';
@@ -383,8 +380,7 @@ SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.SUMMON_DESPAWNED] =
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.CORPSE_REMOVED] = 'On creature corpse removal';
 
 // SMART_EVENT_AI_INIT
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.AI_INIT] =
-  'On AI initialization, so when the creature spawns (not when it respawns, resets or evades!)';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.AI_INIT] = 'On AI initialization, so when the creature spawns (not when it respawns, resets or evades!)';
 
 // SMART_EVENT_DATA_SET
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.DATA_SET] =
@@ -432,10 +428,8 @@ SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.RECEIVE_HEAL] = 'MinHeal';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.RECEIVE_HEAL] = 'MaxHeal';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.RECEIVE_HEAL] = 'CooldownMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.RECEIVE_HEAL] = 'CooldownMax';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.RECEIVE_HEAL] =
-  'Minimum required value the heal effect must be in order to trigger this event';
-SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.RECEIVE_HEAL] =
-  'Maximum allowed value of the heal effect to allow this event to trigger';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.RECEIVE_HEAL] = 'Minimum required value the heal effect must be in order to trigger this event';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.RECEIVE_HEAL] = 'Maximum allowed value of the heal effect to allow this event to trigger';
 
 // SMART_EVENT_JUST_SUMMONED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.JUST_SUMMONED] = 'Called when the creature or gameobject has just been summoned';
@@ -469,8 +463,7 @@ SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.WAYPOINT_ENDED] = 'Use 0 for ANY point';
 SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.WAYPOINT_ENDED] = 'Use 0 for ANY path';
 
 // SMART_EVENT_TIMED_EVENT_TRIGGERED
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.TIMED_EVENT_TRIGGERED] =
-  'Called when a timed event called by the action CREATE_TIMED_EVENT is triggered';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.TIMED_EVENT_TRIGGERED] = 'Called when a timed event called by the action CREATE_TIMED_EVENT is triggered';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.TIMED_EVENT_TRIGGERED] = 'EventId';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.TIMED_EVENT_TRIGGERED] = 'First parameter of SMART_ACTION_CREATE_TIMED_EVENT';
 
@@ -537,6 +530,7 @@ SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.ACTION_DONE] = 'ActionId';
 
 // SMART_EVENT_ON_SPELLCLICK
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.ON_SPELLCLICK] =
+  // tslint:disable-next-line:max-line-length
   "On unit spellclick. For more information on what spellclicks are, take a look at the wiki and search for the table 'npc_spellclick_spells' (world database).";
 
 // SMART_EVENT_FRIENDLY_HEALTH_PCT
@@ -548,8 +542,7 @@ SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.FRIENDLY_HEALTH_PCT] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.FRIENDLY_HEALTH_PCT] = 'RepeatMax';
 
 // SMART_EVENT_DISTANCE_CREATURE
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] =
-  'On creature guid OR any instance of creature entry is within distance.';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] = 'On creature guid OR any instance of creature entry is within distance.';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.DISTANCE_CREATURE] = 'Guid';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.DISTANCE_CREATURE] = 'Entry';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.DISTANCE_CREATURE] = 'Distance';
@@ -558,14 +551,12 @@ SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] =
   'Guid of the creature we want to check for. Can be left on 0 if the Entry is given.';
 SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] =
   'Entry of the creature we want to check for. Can be left on 0 if the Guid is given.';
-SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] =
-  'Min distance (in yards) to the creature that will trigger the event';
+SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] = 'Min distance (in yards) to the creature that will trigger the event';
 SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] =
   "Timer to check for distance. It's not a good idea to leave this at 0, having a handful of events doing that can slow down your core";
 
 // SMART_EVENT_DISTANCE_GAMEOBJECT
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] =
-  'On gameobject guid OR any instance of gameobject entry is within distance.';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'On gameobject guid OR any instance of gameobject entry is within distance.';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Guid';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Entry';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Distance';
@@ -574,8 +565,7 @@ SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] =
   'Guid of the gameobject we want to check for. Can be left on 0 if the entry is given.';
 SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] =
   'Entry of the gameobject we want to check for. Can be left on 0 if the guid is given.';
-SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] =
-  'Min distance (in yards) to the gameobject that will trigger the event';
+SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Min distance (in yards) to the gameobject that will trigger the event';
 SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] =
   "Timer to check for distance. It's not a good idea to leave this at 0, having a handful of events doing that can slow down your core";
 

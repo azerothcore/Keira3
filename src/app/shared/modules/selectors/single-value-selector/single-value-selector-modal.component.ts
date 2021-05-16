@@ -11,10 +11,7 @@ import { SingleValueModalConfig } from '@keira-shared/modules/selectors/single-v
   templateUrl: './single-value-selector-modal.component.html',
   styleUrls: ['./single-value-selector-modal.component.scss'],
 })
-export class SingleValueSelectorModalComponent
-  extends BaseSelectorModalComponent<SingleValueModalConfig>
-  implements OnInit
-{
+export class SingleValueSelectorModalComponent extends BaseSelectorModalComponent<SingleValueModalConfig> implements OnInit {
   public readonly DTCFG = DTCFG;
   selected: Option[] = [];
 

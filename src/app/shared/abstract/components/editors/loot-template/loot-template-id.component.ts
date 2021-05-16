@@ -8,10 +8,7 @@ import { LootTemplateComponent } from '@keira-abstract/components/editors/loot-t
 
 // Extended only by the loot tables that require a template loot id
 @Component({ template: '' })
-export abstract class LootTemplateIdComponent<T extends LootTemplate>
-  extends LootTemplateComponent<T>
-  implements OnInit
-{
+export abstract class LootTemplateIdComponent<T extends LootTemplate> extends LootTemplateComponent<T> implements OnInit {
   protected _lootId: number;
   get lootId(): number {
     return this._lootId;
