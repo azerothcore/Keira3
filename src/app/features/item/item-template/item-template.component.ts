@@ -54,6 +54,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   public readonly STAT_TYPE = STAT_TYPE;
   public readonly PVP_RANK = PVP_RANK;
 
+
   showItemPreview = true;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
