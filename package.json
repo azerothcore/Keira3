@@ -35,7 +35,8 @@
     "test": "npm run postinstall:web && ng test",
     "test-ci": "npm run postinstall:web && ng test --watch=false --browsers ChromeHeadless --code-coverage && (cat ./coverage/lcov.info | coveralls || true)",
     "e2e": "cross-env TS_NODE_PROJECT='e2e/tsconfig.e2e.json' mocha --timeout 300000 --require ts-node/register e2e/**/*.e2e.ts",
-    "version": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md"
+    "version": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md",
+    "prepare": "husky install"
   },
   "dependencies": {
     "acorn": "8.2.4",
@@ -79,7 +80,7 @@
     "electron-builder": "22.11.3",
     "electron-reload": "1.5.0",
     "highlight.js": "9.18.5",
-    "husky": "6.0.0",
+    "husky": "^6.0.0",
     "jasmine-core": "3.7.1",
     "jasmine-spec-reporter": "7.0.0",
     "karma": "6.3.2",
@@ -96,7 +97,7 @@
     "ngx-typesafe-forms": "1.4.3",
     "npm-run-all": "4.1.5",
     "prettier": "2.3.0",
-    "pretty-quick": "3.1.0",
+    "pretty-quick": "^3.1.0",
     "rxjs": "6.6.7",
     "spectron": "14.0.0",
     "sqlstring": "2.3.2",
