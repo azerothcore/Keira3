@@ -9,7 +9,6 @@ import { INVISIBILITY_TYPE } from '@keira-constants/options/invisibility-type';
 @Component({
   selector: 'keira-gameobject-spawn-addon',
   templateUrl: './gameobject-spawn-addon.component.html',
-  styleUrls: ['./gameobject-spawn-addon.component.scss']
 })
 export class GameobjectSpawnAddonComponent extends MultiRowEditorComponent<GameobjectSpawnAddon> {
 
