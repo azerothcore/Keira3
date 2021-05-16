@@ -29,10 +29,9 @@ import { PVP_RANK } from '@keira-shared/constants/options/item-honorrank';
 @Component({
   selector: 'keira-item-template',
   templateUrl: './item-template.component.html',
-  styleUrls: ['./item-template.component.scss']
+  styleUrls: ['./item-template.component.scss'],
 })
 export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate> implements OnInit {
-
   public readonly ITEM_CLASS = ITEM_CLASS;
   public readonly ITEM_SUBCLASS = ITEM_SUBCLASS;
   public readonly ITEM_QUALITY = ITEM_QUALITY;
@@ -70,7 +69,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
 
   private async loadItemPreview() {
     this.itemPreview = this.sanitizer.bypassSecurityTrustHtml(
-      await this.itemPreviewService.calculatePreview(this.editorService.form.getRawValue())
+      await this.itemPreviewService.calculatePreview(this.editorService.form.getRawValue()),
     );
   }
 
@@ -79,15 +78,16 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     this.loadItemPreview();
 
     this.subscriptions.push(
-      this.editorService.form.valueChanges.pipe(
-        debounceTime(600),
-        /* TODO */
-        distinctUntilChanged(
-          /* istanbul ignore next */
-          (a, b) => JSON.stringify(a) === JSON.stringify(b)
-        ),
-      ).subscribe(this.loadItemPreview.bind(this))
+      this.editorService.form.valueChanges
+        .pipe(
+          debounceTime(600),
+          /* TODO */
+          distinctUntilChanged(
+            /* istanbul ignore next */
+            (a, b) => JSON.stringify(a) === JSON.stringify(b),
+          ),
+        )
+        .subscribe(this.loadItemPreview.bind(this)),
     );
   }
-
 }
