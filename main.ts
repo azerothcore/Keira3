@@ -7,10 +7,9 @@ require('@electron/remote/main').initialize();
 
 let win, serve;
 const args = process.argv.slice(1);
-serve = args.some(val => val === '--serve');
+serve = args.some((val) => val === '--serve');
 
 function createWindow() {
-
   const size = screen.getPrimaryDisplay().workAreaSize;
 
   // Create the browser window.
@@ -23,7 +22,7 @@ function createWindow() {
     minHeight: 600,
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false,  // TODO: change this once Spectron supports it
+      contextIsolation: false, // TODO: change this once Spectron supports it
       enableRemoteModule: true, // TODO: change this once Spectron supports it
     },
     icon: nativeImage.createFromPath('src/assets/img/ac.png'),
@@ -31,15 +30,17 @@ function createWindow() {
 
   if (serve) {
     require('electron-reload')(__dirname, {
-      electron: require(`${__dirname}/node_modules/electron`)
+      electron: require(`${__dirname}/node_modules/electron`),
     });
     win.loadURL('http://localhost:4200');
   } else {
-    win.loadURL(url.format({
-      pathname: path.join(__dirname, 'dist/index.html'),
-      protocol: 'file:',
-      slashes: true
-    }));
+    win.loadURL(
+      url.format({
+        pathname: path.join(__dirname, 'dist/index.html'),
+        protocol: 'file:',
+        slashes: true,
+      }),
+    );
   }
 
   if (serve) {
@@ -48,13 +49,12 @@ function createWindow() {
 
   win.on('close', function (e) {
     if (!process.env.RUNNING_IN_SPECTRON) {
-      const choice = require('electron').dialog.showMessageBoxSync(this,
-        {
-          type: 'question',
-          buttons: ['Yes', 'No'],
-          title: 'Confirm',
-          message: 'Are you sure you want to quit?'
-        });
+      const choice = require('electron').dialog.showMessageBoxSync(this, {
+        type: 'question',
+        buttons: ['Yes', 'No'],
+        title: 'Confirm',
+        message: 'Are you sure you want to quit?',
+      });
       if (choice === 1) {
         e.preventDefault();
       }
@@ -77,7 +77,6 @@ function createWindow() {
 }
 
 try {
-
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.
@@ -88,9 +87,7 @@ try {
     const navMenu: Electron.MenuItemConstructorOptions[] = [
       {
         label: app.name,
-        submenu: [
-          { role: 'quit' },
-        ]
+        submenu: [{ role: 'quit' }],
       },
       {
         label: 'Edit',
@@ -103,8 +100,8 @@ try {
           { role: 'paste' },
           { role: 'delete' },
           { type: 'separator' },
-          { role: 'selectAll' }
-        ]
+          { role: 'selectAll' },
+        ],
       },
       {
         label: 'Window',
@@ -120,8 +117,8 @@ try {
           { type: 'separator' },
           { role: 'togglefullscreen' },
           { role: 'minimize' },
-          { role: 'close' }
-        ]
+          { role: 'close' },
+        ],
       },
       {
         label: 'Help',
@@ -140,9 +137,9 @@ try {
                 label: 'Report a Bug',
                 click: () => {
                   shell.openExternal('https://github.com/AzerothCore/Keira3/issues/new');
-                }
+                },
               },
-            ]
+            ],
           },
           {
             label: 'AzerothCore',
@@ -151,15 +148,15 @@ try {
                 label: 'AzerothCore Repository',
                 click: () => {
                   shell.openExternal('https://github.com/azerothcore/azerothcore-wotlk');
-                }
+                },
               },
               {
                 label: 'Report a Bug',
                 click: () => {
                   shell.openExternal('https://github.com/azerothcore/azerothcore-wotlk/issues/new/choose');
-                }
+                },
               },
-            ]
+            ],
           },
           {
             label: 'Wiki',
@@ -173,8 +170,8 @@ try {
             click: () => {
               shell.openExternal('https://discord.com/channels/217589275766685707/536630256048799744');
             },
-          }
-        ]
+          },
+        ],
       },
     ];
 
@@ -214,7 +211,6 @@ try {
       createWindow();
     }
   });
-
 } catch (e) {
   // Catch Error
   // throw e;
