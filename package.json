@@ -29,6 +29,8 @@
     "electron:windows": "npm run build:prod && electron-builder build --windows",
     "electron:mac": "npm run build:prod && electron-builder build --mac",
     "electron:mac:ci": "npm run build:prod && electron-builder build --mac --publish=never",
+    "format": "prettier --config ./.prettierrc --ignore-path ./.prettierignore --no-editorconfig --write .",
+    "format-staged": "pretty-quick --staged",
     "lint": "ng lint",
     "test": "npm run postinstall:web && ng test",
     "test-ci": "npm run postinstall:web && ng test --watch=false --browsers ChromeHeadless --code-coverage && (cat ./coverage/lcov.info | coveralls || true)",
@@ -77,6 +79,7 @@
     "electron-builder": "22.11.3",
     "electron-reload": "1.5.0",
     "highlight.js": "9.18.5",
+    "husky": "6.0.0",
     "jasmine-core": "3.7.1",
     "jasmine-spec-reporter": "7.0.0",
     "karma": "6.3.2",
@@ -91,6 +94,8 @@
     "ngx-perfect-scrollbar": "10.1.1",
     "ngx-typesafe-forms": "1.4.3",
     "npm-run-all": "4.1.5",
+    "prettier": "2.3.0",
+    "pretty-quick": "3.1.0",
     "rxjs": "6.6.7",
     "spectron": "14.0.0",
     "sqlstring": "2.3.2",
@@ -102,5 +107,17 @@
     "wait-on": "5.3.0",
     "webdriver-manager": "12.1.8",
     "zone.js": "0.11.4"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -e $GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "*.{js,json,css,scss,ts}": [
+      "npm run format-staged",
+      "git add"
+    ]
   }
 }
