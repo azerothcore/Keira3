@@ -9,16 +9,14 @@ import { NpcTextSearchService } from '../../search/npc-text-search.service';
 import { NpcTextSelectorModule } from './npc-text-selector.module';
 
 describe('NpcTextSelectorModalComponent', () => {
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ NpcTextSelectorModule ],
-      providers: [
-        BsModalRef,
-        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      ],
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [NpcTextSelectorModule],
+        providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+      }).compileComponents();
+    }),
+  );
 
   function setup() {
     const fixture = TestBed.createComponent(NpcTextSelectorModalComponent);

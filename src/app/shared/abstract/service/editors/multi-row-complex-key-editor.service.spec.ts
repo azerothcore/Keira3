@@ -16,16 +16,15 @@ import { TableRow } from '@keira-types/general';
 describe('MultiRowComplexKeyEditorService', () => {
   let service: MultiRowComplexKeyEditorService<MockEntity>;
 
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      { provide: ToastrService, useValue: instance(MockedToastrService) },
-
-    ],
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+      ],
+    }),
+  );
 
   beforeEach(() => {
     service = TestBed.inject(MockMultiRowComplexKeyEditorService);
@@ -37,7 +36,9 @@ describe('MultiRowComplexKeyEditorService', () => {
 
   it('updateDiffQuery should correctly work', () => {
     const queryService = TestBed.inject(MysqlQueryService);
-    const getDiffDeleteInsertTwoKeysQuerySpy = spyOn(queryService, 'getDiffDeleteInsertTwoKeysQuery').and.returnValue('-- Mock Query');
+    const getDiffDeleteInsertTwoKeysQuerySpy = spyOn(queryService, 'getDiffDeleteInsertTwoKeysQuery').and.returnValue(
+      '-- Mock Query',
+    );
     spyOn<any>(service, 'updateEditorStatus');
 
     service['updateDiffQuery']();
@@ -58,7 +59,6 @@ describe('MultiRowComplexKeyEditorService', () => {
   });
 
   it('reload should correctly work', () => {
-
     const resetSpy: Spy = spyOn<any>(service, 'reset');
     const reloadEntitySpy: Spy = spyOn<any>(service, 'reloadEntity');
 
@@ -72,7 +72,7 @@ describe('MultiRowComplexKeyEditorService', () => {
   it('selectQuery should correctly work', () => {
     const queryService = TestBed.inject(MysqlQueryService);
     const selectAllMultipleKeysSpy = spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(
-      of([{ mock: 'data' }] as TableRow[])
+      of([{ mock: 'data' }] as TableRow[]),
     );
     const handlerService = TestBed.inject(MockHandlerService);
     // @ts-ignore
@@ -84,7 +84,6 @@ describe('MultiRowComplexKeyEditorService', () => {
   });
 
   it('reloadEntity should correctly work', () => {
-
     spyOn<any>(service, 'onReloadSuccessful');
     const error = { code: 'mock error', errno: 1234 } as MysqlError;
     const selectQuerySpy: Spy = spyOn<any>(service, 'selectQuery').and.returnValue(of({ mock: 'data' }));
@@ -103,11 +102,13 @@ describe('MultiRowComplexKeyEditorService', () => {
   });
 
   it('onReloadSuccessful should correctly work', () => {
-    const res = [{
-      id: 0,
-      guid: 0,
-      name: '',
-    }];
+    const res = [
+      {
+        id: 0,
+        guid: 0,
+        name: '',
+      },
+    ];
     const mockData: MockEntity[] = res;
     const handlerService = TestBed.inject(MockHandlerService);
     const updateFullQuerySpy: Spy = spyOn<any>(service, 'updateFullQuery');
@@ -119,12 +120,11 @@ describe('MultiRowComplexKeyEditorService', () => {
     service['onReloadSuccessful'](mockData);
 
     expect(service.newRows).toEqual(res);
-    expect(service['_newRows']).toEqual([...res ]);
+    expect(service['_newRows']).toEqual([...res]);
     expect(service['_selectedRowId']).toBe(null);
     expect(disableFormSpy).toHaveBeenCalledTimes(1);
     expect(service['_loadedEntityId']).toEqual(handlerService.selected);
     expect(service['_nextRowId']).toBe(0);
     expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
   });
-
 });

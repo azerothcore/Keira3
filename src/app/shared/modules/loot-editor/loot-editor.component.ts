@@ -12,7 +12,6 @@ import { DTCFG } from '@keira-config/datatable.config';
   styleUrls: ['./loot-editor.component.scss'],
 })
 export class LootEditorComponent<T extends LootTemplate> {
-
   @Input() editorService: MultiRowEditorService<T>;
 
   public readonly LOOT_MODE = LOOT_MODE;
@@ -24,9 +23,7 @@ export class LootEditorComponent<T extends LootTemplate> {
   }
 
   public get referenceIds(): number[] {
-    return this.editorService.newRows
-      .filter(row => row.Reference > 0)
-      .map(row => row.Reference);
+    return this.editorService.newRows.filter((row) => row.Reference > 0).map((row) => row.Reference);
   }
 
   isReference(row): boolean {

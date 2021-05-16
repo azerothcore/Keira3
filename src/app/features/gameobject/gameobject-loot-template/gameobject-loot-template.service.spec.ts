@@ -14,18 +14,18 @@ import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/moc
 describe('GameobjectLootTemplateService', () => {
   let service: GameobjectLootTemplateService;
 
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      { provide: ToastrService, useValue: instance(MockedToastrService) },
-      GameobjectHandlerService,
-      SaiGameobjectHandlerService,
-      GameobjectLootTemplateService,
-    ]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+        GameobjectHandlerService,
+        SaiGameobjectHandlerService,
+        GameobjectLootTemplateService,
+      ],
+    }),
+  );
 
   beforeEach(() => {
     service = TestBed.inject(GameobjectLootTemplateService);
@@ -40,8 +40,10 @@ describe('GameobjectLootTemplateService', () => {
       expect(data).toEqual(mockData);
     });
 
-    expect(querySpy).toHaveBeenCalledWith(`SELECT ${GAMEOBJECT_TEMPLATE_TYPE} `
-    + `FROM ${service.entityTemplateTable} `
-    + `WHERE ${service['_entityTemplateIdField']} = ${service['handlerService.selected']}`);
+    expect(querySpy).toHaveBeenCalledWith(
+      `SELECT ${GAMEOBJECT_TEMPLATE_TYPE} ` +
+        `FROM ${service.entityTemplateTable} ` +
+        `WHERE ${service['_entityTemplateIdField']} = ${service['handlerService.selected']}`,
+    );
   });
 });

@@ -16,12 +16,12 @@ describe('ConnectionWindowService', () => {
 
   const setup = () => {
     const localStorageService: Spied<LocalStorageService> = jasmine.createSpyObj('LocalStorageService', [
-      'removeItem', 'getItem', 'setItem'
+      'removeItem',
+      'getItem',
+      'setItem',
     ]);
     TestBed.configureTestingModule({
-      providers: [
-        { provide: LocalStorageService, useValue: localStorageService },
-      ],
+      providers: [{ provide: LocalStorageService, useValue: localStorageService }],
     });
     const service = TestBed.inject(ConnectionWindowService);
 
@@ -36,13 +36,18 @@ describe('ConnectionWindowService', () => {
   });
 
   describe('saveNewConfig(newConfig)', () => {
-
     it('saving an existing config should correctly update its password', () => {
       const { service, localStorageService } = setup();
       localStorageService.getItem.and.returnValue(JSON.stringify(currentConfig));
       const newPassword = 'shin123';
 
-      service.saveNewConfig({ host: '127.0.0.1', port: 3306, user: 'root', password: newPassword, database: 'acore_world' });
+      service.saveNewConfig({
+        host: '127.0.0.1',
+        port: 3306,
+        user: 'root',
+        password: newPassword,
+        database: 'acore_world',
+      });
 
       const expectedNewConfig = [{ ...currentConfig[0] }, { ...currentConfig[1] }];
       expectedNewConfig[1].password = btoa(newPassword);
@@ -65,7 +70,13 @@ describe('ConnectionWindowService', () => {
       const { service, localStorageService } = setup();
       localStorageService.getItem.and.returnValue(JSON.stringify(currentConfig));
       const newPassword = 'shin123';
-      const newConfig = { host: '192.168.1.100', port: 3306, user: 'root', password: newPassword, database: 'acore_world' };
+      const newConfig = {
+        host: '192.168.1.100',
+        port: 3306,
+        user: 'root',
+        password: newPassword,
+        database: 'acore_world',
+      };
 
       service.saveNewConfig(newConfig);
 

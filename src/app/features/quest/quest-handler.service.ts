@@ -13,14 +13,30 @@ import { GAMEOBJECT_QUESTENDER_TABLE } from '@keira-types/gameobject-questender.
 
 @Injectable()
 export class QuestHandlerService extends HandlerService<QuestTemplate> {
-  get isQuestTemplateUnsaved(): boolean { return this.statusMap[QUEST_TEMPLATE_TABLE]; }
-  get isQuestTemplateAddonUnsaved(): boolean { return this.statusMap[QUEST_TEMPLATE_ADDON_TABLE]; }
-  get isQuestOfferRewardUnsaved(): boolean { return this.statusMap[QUEST_OFFER_REWARD_TABLE]; }
-  get isQuestRequestItemsUnsaved(): boolean { return this.statusMap[QUEST_REQUEST_ITEMS_TABLE]; }
-  get isCreatureQueststarterUnsaved(): boolean { return this.statusMap[CREATURE_QUESTSTARTER_TABLE]; }
-  get isCreatureQuestenderUnsaved(): boolean { return this.statusMap[CREATURE_QUESTENDER_TABLE]; }
-  get isGameobjectQueststarterUnsaved(): boolean { return this.statusMap[GAMEOBJECT_QUESTSTARTER_TABLE]; }
-  get isGameobjectQuestenderUnsaved(): boolean { return this.statusMap[GAMEOBJECT_QUESTENDER_TABLE]; }
+  get isQuestTemplateUnsaved(): boolean {
+    return this.statusMap[QUEST_TEMPLATE_TABLE];
+  }
+  get isQuestTemplateAddonUnsaved(): boolean {
+    return this.statusMap[QUEST_TEMPLATE_ADDON_TABLE];
+  }
+  get isQuestOfferRewardUnsaved(): boolean {
+    return this.statusMap[QUEST_OFFER_REWARD_TABLE];
+  }
+  get isQuestRequestItemsUnsaved(): boolean {
+    return this.statusMap[QUEST_REQUEST_ITEMS_TABLE];
+  }
+  get isCreatureQueststarterUnsaved(): boolean {
+    return this.statusMap[CREATURE_QUESTSTARTER_TABLE];
+  }
+  get isCreatureQuestenderUnsaved(): boolean {
+    return this.statusMap[CREATURE_QUESTENDER_TABLE];
+  }
+  get isGameobjectQueststarterUnsaved(): boolean {
+    return this.statusMap[GAMEOBJECT_QUESTSTARTER_TABLE];
+  }
+  get isGameobjectQuestenderUnsaved(): boolean {
+    return this.statusMap[GAMEOBJECT_QUESTENDER_TABLE];
+  }
 
   protected _statusMap = {
     [QUEST_TEMPLATE_TABLE]: false,
@@ -34,12 +50,7 @@ export class QuestHandlerService extends HandlerService<QuestTemplate> {
   };
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected router: Router,
-  ) {
-    super(
-      'quest/quest-template',
-      router,
-    );
+  constructor(protected router: Router) {
+    super('quest/quest-template', router);
   }
 }

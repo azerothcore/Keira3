@@ -16,7 +16,7 @@ import { ICON_SKILLS } from '@keira-shared/constants/quest-preview';
     [itemDisplayId]="itemDisplayId"
     [skillId]="skillId"
     [spellId]="spellId"
-  ></keira-icon>`
+  ></keira-icon>`,
 })
 class TestHostComponent {
   @ViewChild(IconComponent) child: IconComponent;
@@ -28,17 +28,20 @@ class TestHostComponent {
 }
 
 class IconComponentPage extends PageObject<TestHostComponent> {
-  get img() { return this.query<HTMLImageElement>('img'); }
+  get img() {
+    return this.query<HTMLImageElement>('img');
+  }
 }
 
 describe('ItemIconComponent', () => {
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [IconComponent, TestHostComponent],
-      imports: [IconModule]
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [IconComponent, TestHostComponent],
+        imports: [IconModule],
+      }).compileComponents();
+    }),
+  );
 
   const setup = () => {
     const fixture = TestBed.createComponent(TestHostComponent);
@@ -47,9 +50,9 @@ describe('ItemIconComponent', () => {
     const page = new IconComponentPage(fixture);
     const service = TestBed.inject(IconService);
 
-    spyOn(service, 'getIconByItemId').and.callFake(id => of(`getIconByItemId-${id}`));
-    spyOn(service, 'getIconByItemDisplayId').and.callFake(id => of(`getIconByItemDisplayId-${id}`));
-    spyOn(service, 'getIconBySpellId').and.callFake(id => of(`getIconBySpellId-${id}`));
+    spyOn(service, 'getIconByItemId').and.callFake((id) => of(`getIconByItemId-${id}`));
+    spyOn(service, 'getIconByItemDisplayId').and.callFake((id) => of(`getIconByItemDisplayId-${id}`));
+    spyOn(service, 'getIconBySpellId').and.callFake((id) => of(`getIconBySpellId-${id}`));
 
     fixture.detectChanges();
 

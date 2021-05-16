@@ -14,9 +14,7 @@ import { GameobjectTemplateAddonService } from './gameobject-template-addon.serv
 import { FactionSelectorModule } from '@keira-shared/modules/selectors/faction-selector/faction-selector.module';
 
 @NgModule({
-  declarations: [
-    GameobjectTemplateAddonComponent,
-  ],
+  declarations: [GameobjectTemplateAddonComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -28,11 +26,7 @@ import { FactionSelectorModule } from '@keira-shared/modules/selectors/faction-s
     FlagsSelectorModule,
     FactionSelectorModule,
   ],
-  exports: [
-    GameobjectTemplateAddonComponent,
-  ],
-  providers: [
-    GameobjectTemplateAddonService,
-  ],
+  exports: [GameobjectTemplateAddonComponent],
+  providers: [GameobjectTemplateAddonService],
 })
 export class GameobjectTemplateAddonModule {}

@@ -11,11 +11,10 @@ import { SpellHandlerService } from '../../spell-handler.service';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
 
 describe('SpellDbcBaseComponent', () => {
-
   class SpellDbcBaseComponentPage extends PageObject<TestHostComponent> {}
 
   @Component({
-    template: '<keira-spell-dbc-base [formGroup]="form"></keira-spell-dbc-base>'
+    template: '<keira-spell-dbc-base [formGroup]="form"></keira-spell-dbc-base>',
   })
   class TestHostComponent {
     @ViewChild(SpellDbcBaseComponent) child: SpellDbcBaseComponent;
@@ -60,14 +59,10 @@ describe('SpellDbcBaseComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TestHostComponent, SpellDbcBaseComponent ],
-      imports: [
-        SpellDbcModule,
-        RouterTestingModule,
-      ],
-      providers: [ SpellHandlerService ],
-    })
-    .compileComponents();
+      declarations: [TestHostComponent, SpellDbcBaseComponent],
+      imports: [SpellDbcModule, RouterTestingModule],
+      providers: [SpellHandlerService],
+    }).compileComponents();
   });
 
   const setup = () => {
@@ -105,7 +100,7 @@ describe('SpellDbcBaseComponent', () => {
   });
 
   it('should correctly edit the values of the form', () => {
-    const { page, form} = setup();
+    const { page, form } = setup();
     page.detectChanges();
 
     for (const field of fields) {

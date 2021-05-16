@@ -11,19 +11,18 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
 describe('GameobjectTemplateService', () => {
-
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      { provide: ToastrService, useValue: instance(MockedToastrService) },
-      GameobjectHandlerService,
-      SaiGameobjectHandlerService,
-      GameobjectTemplateService,
-    ]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+        GameobjectHandlerService,
+        SaiGameobjectHandlerService,
+        GameobjectTemplateService,
+      ],
+    }),
+  );
 
   it('should correctly return the definition according to the type', () => {
     const gameobjectService: GameobjectTemplateService = TestBed.inject(GameobjectTemplateService);
@@ -34,5 +33,4 @@ describe('GameobjectTemplateService', () => {
     const gameobjectService: GameobjectTemplateService = TestBed.inject(GameobjectTemplateService);
     expect(gameobjectService.getFieldDefinition(0, 25)).toEqual({ name: `Data25`, tooltip: null });
   });
-
 });

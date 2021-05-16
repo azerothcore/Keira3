@@ -9,17 +9,17 @@ import { ProspectingLootTemplateService } from './prospecting-loot-template.serv
 import { ItemHandlerService } from '../item-handler.service';
 
 describe('ProspectingLootTemplateService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      { provide: ToastrService, useValue: instance(MockedToastrService) },
-      ItemHandlerService,
-      ProspectingLootTemplateService,
-    ]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+        ItemHandlerService,
+        ProspectingLootTemplateService,
+      ],
+    }),
+  );
 
   it('should be created', () => {
     const service: ProspectingLootTemplateService = TestBed.inject(ProspectingLootTemplateService);

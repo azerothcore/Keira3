@@ -7,7 +7,7 @@ export interface QueryForm<T> {
   fields?: T;
 }
 
-export type Class = new(...args: any[]) => any;
+export type Class = new (...args: any[]) => any;
 
 export interface MysqlResult<T extends TableRow> {
   results?: T[];
@@ -15,7 +15,7 @@ export interface MysqlResult<T extends TableRow> {
 }
 
 export class TableRow {
-  [key: string]: string|number;
+  [key: string]: string | number;
 }
 
 export class ValueRow extends TableRow {
@@ -43,7 +43,7 @@ export interface Flag {
 }
 
 export interface Option {
-  value: number|string;
+  value: number | string;
   name: string;
   comment?: string;
 }

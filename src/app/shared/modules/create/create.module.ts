@@ -5,15 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { CreateComponent } from './create.component';
 
 @NgModule({
-  declarations: [
-    CreateComponent,
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-  ],
-  exports: [
-    CreateComponent,
-  ],
+  declarations: [CreateComponent],
+  imports: [BrowserModule, FormsModule],
+  exports: [CreateComponent],
 })
 export class CreateModule {}

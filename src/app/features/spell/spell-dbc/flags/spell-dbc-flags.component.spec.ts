@@ -11,11 +11,10 @@ import { FormGroup } from 'ngx-typesafe-forms';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
 
 describe('SpellDbcFlagsComponent', () => {
-
   class SpellDbcFlagsComponentPage extends PageObject<TestHostComponent> {}
 
   @Component({
-    template: '<keira-spell-dbc-flags [formGroup]="form"></keira-spell-dbc-flags>'
+    template: '<keira-spell-dbc-flags [formGroup]="form"></keira-spell-dbc-flags>',
   })
   class TestHostComponent {
     @ViewChild(SpellDbcFlagsComponent) child: SpellDbcFlagsComponent;
@@ -24,14 +23,10 @@ describe('SpellDbcFlagsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TestHostComponent, SpellDbcFlagsComponent ],
-      imports: [
-        SpellDbcModule,
-        RouterTestingModule,
-      ],
-      providers: [ SpellHandlerService ],
-    })
-      .compileComponents();
+      declarations: [TestHostComponent, SpellDbcFlagsComponent],
+      imports: [SpellDbcModule, RouterTestingModule],
+      providers: [SpellHandlerService],
+    }).compileComponents();
   });
 
   const fields: string[] = [
@@ -84,7 +79,7 @@ describe('SpellDbcFlagsComponent', () => {
   });
 
   it('should correctly edit the values of the form', () => {
-    const { page, form} = setup();
+    const { page, form } = setup();
     page.detectChanges();
 
     for (const field of fields) {

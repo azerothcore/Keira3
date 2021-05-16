@@ -13,7 +13,7 @@ import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/su
 @Component({
   selector: 'keira-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent extends SubscriptionHandler implements OnInit {
   public readonly KEIRA3_REPO_URL = KEIRA3_REPO_URL;
@@ -40,32 +40,30 @@ export class AppComponent extends SubscriptionHandler implements OnInit {
     /* istanbul ignore next */
     if (this.electronService.isElectron()) {
       this.subscriptions.push(
-        this.sqliteQueryService.query<{ id: number, name: string }>(
-          'SELECT * FROM achievements WHERE id = 970', true
-        ).subscribe((result) => {
-          this.sqliteResult = result ? result[0] : null;
-        }),
+        this.sqliteQueryService
+          .query<{ id: number; name: string }>('SELECT * FROM achievements WHERE id = 970', true)
+          .subscribe((result) => {
+            this.sqliteResult = result ? result[0] : null;
+          }),
       );
     }
   }
 
   private handleConnectionLostAlerts() {
     this.subscriptions.push(
-      this.mysqlService.connectionLost$
-        .pipe(distinctUntilChanged())
-        .subscribe((status) => {
-          if (!status) {
-            this.toastrService.error('Database connection lost');
-          } else {
-            this.toastrService.success('Database reconnected');
-          }
-        }),
+      this.mysqlService.connectionLost$.pipe(distinctUntilChanged()).subscribe((status) => {
+        if (!status) {
+          this.toastrService.error('Database connection lost');
+        } else {
+          this.toastrService.success('Database reconnected');
+        }
+      }),
     );
   }
 
   private handleNewerVersionAlert() {
     this.subscriptions.push(
-      this.http.get<{ tag_name: string }>(LATEST_RELEASE_API_URL).subscribe(release => {
+      this.http.get<{ tag_name: string }>(LATEST_RELEASE_API_URL).subscribe((release) => {
         const currentTag = `v${version}`;
         if (currentTag !== release.tag_name) {
           this.showNewerVersionAlert = true;

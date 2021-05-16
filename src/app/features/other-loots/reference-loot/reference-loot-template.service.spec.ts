@@ -9,17 +9,17 @@ import { ReferenceLootTemplateService } from './reference-loot-template.service'
 import { ReferenceLootHandlerService } from './reference-loot-handler.service';
 
 describe('ReferenceLootTemplateService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      { provide: ToastrService, useValue: instance(MockedToastrService) },
-      ReferenceLootHandlerService,
-      ReferenceLootTemplateService,
-    ]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+        ReferenceLootHandlerService,
+        ReferenceLootTemplateService,
+      ],
+    }),
+  );
 
   it('should be created', () => {
     expect(TestBed.inject(ReferenceLootTemplateService)).toBeTruthy();

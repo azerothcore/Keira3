@@ -9,22 +9,12 @@ import { ConditionsHandlerService } from '../conditions-handler.service';
 
 @Injectable()
 export class ConditionsService extends SingleRowComplexKeyEditorService<Conditions> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: ConditionsHandlerService,
     public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
-    super(
-      Conditions,
-      CONDITIONS_TABLE,
-      CONDITIONS_ID_FIELDS,
-      null,
-      true,
-      handlerService,
-      queryService,
-      toastrService,
-    );
+    super(Conditions, CONDITIONS_TABLE, CONDITIONS_ID_FIELDS, null, true, handlerService, queryService, toastrService);
   }
 }

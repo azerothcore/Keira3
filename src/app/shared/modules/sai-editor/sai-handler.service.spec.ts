@@ -11,14 +11,12 @@ import { SAI_TYPES } from '../../types/smart-scripts.type';
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
 
 describe('SaiHandlerService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-    ]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [{ provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+    }),
+  );
 
   for (const { testId, sourceType, entryOrGuid, isNew } of [
     { testId: 1, sourceType: 1, entryOrGuid: 111, isNew: true },
@@ -36,7 +34,7 @@ describe('SaiHandlerService', () => {
 
       expect(queryService.query).toHaveBeenCalledTimes(1);
       expect(queryService.query).toHaveBeenCalledWith(
-        `SELECT * FROM smart_scripts WHERE source_type = ${sourceType} AND entryorguid = ${entryOrGuid}`
+        `SELECT * FROM smart_scripts WHERE source_type = ${sourceType} AND entryorguid = ${entryOrGuid}`,
       );
       expect(service.select).toHaveBeenCalledTimes(1);
       expect(service.select).toHaveBeenCalledWith(isNew, { source_type: sourceType, entryorguid: entryOrGuid });
@@ -59,7 +57,8 @@ describe('SaiHandlerService', () => {
     {
       sourceType: SAI_TYPES.SAI_TYPE_AREATRIGGER,
       id: entry,
-      expectedQuery: `DELETE FROM \`areatrigger_scripts\` WHERE \`entry\` = ${entry};\n` +
+      expectedQuery:
+        `DELETE FROM \`areatrigger_scripts\` WHERE \`entry\` = ${entry};\n` +
         `INSERT INTO \`areatrigger_scripts\` (\`entry\`, \`ScriptName\`) VALUES (${entry}, 'SmartTrigger');`,
     },
     {
@@ -96,20 +95,20 @@ describe('SaiHandlerService', () => {
     const mockName = 'Mock Name';
 
     const cases: {
-      testId: number,
-      sourceType: number,
-      entryorguid: number,
-      name: string,
-      returnValue: { name: string }[],
-      expectedName: string,
-      expectedQuery: string,
+      testId: number;
+      sourceType: number;
+      entryorguid: number;
+      name: string;
+      returnValue: { name: string }[];
+      expectedName: string;
+      expectedQuery: string;
     }[] = [
       {
         testId: 1,
         sourceType: SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST,
         entryorguid: 12301,
         name: mockName,
-        returnValue: [ { name: mockName } ],
+        returnValue: [{ name: mockName }],
         expectedName: mockName,
         expectedQuery: 'SELECT name FROM creature_template WHERE entry = 123',
       },
@@ -118,9 +117,10 @@ describe('SaiHandlerService', () => {
         sourceType: SAI_TYPES.SAI_TYPE_CREATURE,
         entryorguid: -123,
         name: mockName,
-        returnValue: [ { name: mockName } ],
+        returnValue: [{ name: mockName }],
         expectedName: mockName,
-        expectedQuery: 'SELECT ct.name FROM creature_template AS ct INNER JOIN creature AS c ON c.id = ct.entry WHERE c.guid = 123',
+        expectedQuery:
+          'SELECT ct.name FROM creature_template AS ct INNER JOIN creature AS c ON c.id = ct.entry WHERE c.guid = 123',
       },
       {
         testId: 3,
@@ -134,24 +134,25 @@ describe('SaiHandlerService', () => {
       {
         testId: 4,
         sourceType: SAI_TYPES.SAI_TYPE_GAMEOBJECT,
-        entryorguid: -123, name: mockName,
-        returnValue: [ { name: mockName } ],
+        entryorguid: -123,
+        name: mockName,
+        returnValue: [{ name: mockName }],
         expectedName: mockName,
-        expectedQuery: 'SELECT ct.name FROM gameobject_template AS ct INNER JOIN gameobject AS c ON c.id = ct.entry WHERE c.guid = 123',
+        expectedQuery:
+          'SELECT ct.name FROM gameobject_template AS ct INNER JOIN gameobject AS c ON c.id = ct.entry WHERE c.guid = 123',
       },
       {
         testId: 5,
         sourceType: SAI_TYPES.SAI_TYPE_GAMEOBJECT,
         entryorguid: 123,
         name: mockName,
-        returnValue: [ { name: mockName } ],
+        returnValue: [{ name: mockName }],
         expectedName: mockName,
         expectedQuery: 'SELECT name FROM gameobject_template WHERE entry = 123',
       },
     ];
 
     for (const { testId, sourceType, entryorguid, name, returnValue, expectedName, expectedQuery } of cases) {
-
       it(`${testId}`, fakeAsync(() => {
         const service: SaiHandlerService = TestBed.inject(SaiHandlerService);
         const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
@@ -179,4 +180,3 @@ describe('SaiHandlerService', () => {
     }
   });
 });
-

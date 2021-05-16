@@ -22,12 +22,11 @@ describe('PreviewHelperService', () => {
     const { service } = setup();
 
     const mockRaces = 123;
-    const resRaces = [ 'Human', 'Orc', 'Night Elf', 'Undead', 'Tauren', 'Gnome' ];
-    expect(service.getRaceString(mockRaces).map(e => RACES_TEXT[e])).toEqual(resRaces);
+    const resRaces = ['Human', 'Orc', 'Night Elf', 'Undead', 'Tauren', 'Gnome'];
+    expect(service.getRaceString(mockRaces).map((e) => RACES_TEXT[e])).toEqual(resRaces);
 
     const mockFaction = 'test';
     spyOn(service, 'getFactionFromRace').and.returnValue(mockFaction);
     expect(service.getRaceString(RACE.MASK_HORDE)).toEqual([mockFaction]);
   });
-
 });

@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { SelectComponent } from '@keira-abstract/components/editors/select.component';
 import {
   SPELL_DBC_CUSTOM_STARTING_ID,
-  SPELL_DBC_ID, SPELL_DBC_NAME,
+  SPELL_DBC_ID,
+  SPELL_DBC_NAME,
   SPELL_DBC_TABLE,
   SpellDbc,
 } from '@keira-types/spell-dbc.type';
@@ -24,13 +25,6 @@ export class SelectSpellComponent extends SelectComponent<SpellDbc> {
     public handlerService: SpellHandlerService,
     public queryService: MysqlQueryService,
   ) {
-    super(
-      SPELL_DBC_TABLE,
-      SPELL_DBC_ID,
-      SPELL_DBC_CUSTOM_STARTING_ID,
-      selectService,
-      handlerService,
-      queryService,
-    );
+    super(SPELL_DBC_TABLE, SPELL_DBC_ID, SPELL_DBC_CUSTOM_STARTING_ID, selectService, handlerService, queryService);
   }
 }

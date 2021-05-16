@@ -15,8 +15,6 @@ import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selec
 import { QueryOutputModule } from '@keira-shared/modules/query-output/query-output.module';
 import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
 
-
-
 @NgModule({
   declarations: [ReferenceViewerComponent, LootEditorComponent],
   exports: [LootEditorComponent],
@@ -34,4 +32,4 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
   ],
   providers: [ReferenceViewerService],
 })
-export class LootEditorModule { }
+export class LootEditorModule {}

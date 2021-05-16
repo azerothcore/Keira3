@@ -12,7 +12,6 @@ import { FormGroup } from 'ngx-typesafe-forms';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
 
 describe('SpellDbcLocaleComponent', () => {
-
   class SpellDbcLocaleComponentPage extends PageObject<TestHostComponent> {
     getLabelByLocale(fieldName: string, locale: Locale) {
       return this.query<HTMLLabelElement>(`.control-label[for="${fieldName}_${locale}"]`);
@@ -26,7 +25,7 @@ describe('SpellDbcLocaleComponent', () => {
   }
 
   @Component({
-    template: '<keira-spell-dbc-locale [formGroup]="form" [locale]="locale"></keira-spell-dbc-locale>'
+    template: '<keira-spell-dbc-locale [formGroup]="form" [locale]="locale"></keira-spell-dbc-locale>',
   })
   class TestHostComponent {
     @ViewChild(SpellDbcLocaleComponent) child: SpellDbcLocaleComponent;
@@ -36,14 +35,10 @@ describe('SpellDbcLocaleComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TestHostComponent, SpellDbcLocaleComponent ],
-      imports: [
-        SpellDbcModule,
-        RouterTestingModule,
-      ],
-      providers: [ SpellHandlerService ],
-    })
-      .compileComponents();
+      declarations: [TestHostComponent, SpellDbcLocaleComponent],
+      imports: [SpellDbcModule, RouterTestingModule],
+      providers: [SpellHandlerService],
+    }).compileComponents();
   });
 
   const setup = () => {

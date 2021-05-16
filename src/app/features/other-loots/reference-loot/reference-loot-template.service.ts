@@ -9,7 +9,6 @@ import { ReferenceLootHandlerService } from './reference-loot-handler.service';
 
 @Injectable()
 export class ReferenceLootTemplateService extends MultiRowEditorService<ReferenceLootTemplate> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: ReferenceLootHandlerService,

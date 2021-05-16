@@ -14,9 +14,7 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
 import { NpcTextSelectorModule } from '@keira-shared/modules/selectors/npc-text-selector/npc-text-selector.module';
 
 @NgModule({
-  declarations: [
-    GossipMenuComponent,
-  ],
+  declarations: [GossipMenuComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -28,11 +26,7 @@ import { NpcTextSelectorModule } from '@keira-shared/modules/selectors/npc-text-
     EditorButtonsModule,
     NpcTextSelectorModule,
   ],
-  exports: [
-    GossipMenuComponent,
-  ],
-  providers: [
-    GossipMenuService,
-  ],
+  exports: [GossipMenuComponent],
+  providers: [GossipMenuService],
 })
 export class GossipMenuModule {}

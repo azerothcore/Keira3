@@ -22,112 +22,68 @@ export class MockEntity extends TableRow {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MockHandlerService extends HandlerService<MockEntity> {
   protected _statusMap: {
-    [MOCK_TABLE]: false,
+    [MOCK_TABLE]: false;
   };
 
-  constructor(
-    protected router: Router,
-  ) {
-    super(
-      'mock/route',
-      router,
-    );
+  constructor(protected router: Router) {
+    super('mock/route', router);
   }
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MockSingleRowEditorService extends SingleRowEditorService<MockEntity> {
-
   constructor(
     protected handlerService: MockHandlerService,
     public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
-    super(
-      MockEntity,
-      MOCK_TABLE,
-      MOCK_ID,
-      MOCK_NAME,
-      true,
-      handlerService,
-      queryService,
-      toastrService,
-    );
+    super(MockEntity, MOCK_TABLE, MOCK_ID, MOCK_NAME, true, handlerService, queryService, toastrService);
   }
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MockSingleRowComplexKeyEditorService extends SingleRowComplexKeyEditorService<MockEntity> {
-
   constructor(
     protected handlerService: MockHandlerService,
     public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
-    super(
-      MockEntity,
-      MOCK_TABLE,
-      [MOCK_ID, MOCK_ID_2],
-      MOCK_NAME,
-      true,
-      handlerService,
-      queryService,
-      toastrService,
-    );
+    super(MockEntity, MOCK_TABLE, [MOCK_ID, MOCK_ID_2], MOCK_NAME, true, handlerService, queryService, toastrService);
   }
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MockMultiRowEditorService extends MultiRowEditorService<MockEntity> {
-
   constructor(
     protected handlerService: MockHandlerService,
     public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
-    super(
-      MockEntity,
-      MOCK_TABLE,
-      MOCK_ID,
-      MOCK_ID_2,
-      handlerService,
-      queryService,
-      toastrService,
-    );
+    super(MockEntity, MOCK_TABLE, MOCK_ID, MOCK_ID_2, handlerService, queryService, toastrService);
   }
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MockMultiRowComplexKeyEditorService extends MultiRowComplexKeyEditorService<MockEntity> {
-
   constructor(
     protected handlerService: MockHandlerService,
     public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
-    super(
-      MockEntity,
-      MOCK_TABLE,
-      [MOCK_ID, MOCK_ID_2],
-      MOCK_ID_2,
-      handlerService,
-      queryService,
-      toastrService,
-    );
+    super(MockEntity, MOCK_TABLE, [MOCK_ID, MOCK_ID_2], MOCK_ID_2, handlerService, queryService, toastrService);
   }
 
   protected updateFullQuery(): void {}
-
 }

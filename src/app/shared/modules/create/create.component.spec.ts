@@ -11,9 +11,15 @@ import Spy = jasmine.Spy;
 import { CreatureHandlerService } from '../../../features/creature/creature-handler.service';
 
 class CreateComponentPage extends PageObject<CreateComponent<MockType>> {
-  get idInput() { return this.query<HTMLInputElement>('#id'); }
-  get selectBtn() { return this.query<HTMLInputElement>('#select-button'); }
-  get idFreeStatusBox() { return this.query<HTMLDivElement>('#id-free-status'); }
+  get idInput() {
+    return this.query<HTMLInputElement>('#id');
+  }
+  get selectBtn() {
+    return this.query<HTMLInputElement>('#select-button');
+  }
+  get idFreeStatusBox() {
+    return this.query<HTMLDivElement>('#id-free-status');
+  }
 }
 
 describe('CreateComponent', () => {
@@ -27,20 +33,16 @@ describe('CreateComponent', () => {
   const takenId = 100;
   const maxId = 12;
 
-  beforeEach(waitForAsync(() => {
-    spyError = spyOn(console, 'error');
+  beforeEach(
+    waitForAsync(() => {
+      spyError = spyOn(console, 'error');
 
-    TestBed.configureTestingModule({
-      declarations: [
-        CreateComponent,
-      ],
-      imports: [
-        BrowserModule,
-        FormsModule,
-      ]
-    })
-      .compileComponents();
-  }));
+      TestBed.configureTestingModule({
+        declarations: [CreateComponent],
+        imports: [BrowserModule, FormsModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     when(MockedMysqlQueryService.getMaxId(mockTable, mockId)).thenReturn(of([{ max: maxId }]));
@@ -58,11 +60,14 @@ describe('CreateComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should display the next id by default', waitForAsync(async () => {
-    await fixture.whenStable();
-    expect(page.idInput.value).toEqual(`${maxId + 1}`);
-    expect(component.loading).toBe(false);
-  }));
+  it(
+    'should display the next id by default',
+    waitForAsync(async () => {
+      await fixture.whenStable();
+      expect(page.idInput.value).toEqual(`${maxId + 1}`);
+      expect(component.loading).toBe(false);
+    }),
+  );
 
   it('should correctly toggle id free status the message', () => {
     page.setInputValue(page.idInput, takenId);

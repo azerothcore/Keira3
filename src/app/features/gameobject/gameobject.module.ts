@@ -17,15 +17,12 @@ const modules = [
   GameobjectQuestitemModule,
   GameobjectSpawnModule,
   GameobjectLootTemplateModule,
-  SaiGameobjectModule
+  SaiGameobjectModule,
 ];
 
 @NgModule({
   imports: [modules],
   exports: [modules],
-  providers: [
-    GameobjectHandlerService,
-    SaiGameobjectHandlerService,
-  ],
+  providers: [GameobjectHandlerService, SaiGameobjectHandlerService],
 })
 export class GameobjectModule {}

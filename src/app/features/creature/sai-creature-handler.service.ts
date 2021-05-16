@@ -7,13 +7,7 @@ import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.
 @Injectable()
 export class SaiCreatureHandlerService extends SaiHandlerService {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected router: Router,
-    public readonly queryService: MysqlQueryService,
-  ) {
-    super(
-      router,
-      queryService,
-    );
+  constructor(protected router: Router, public readonly queryService: MysqlQueryService) {
+    super(router, queryService);
   }
 }

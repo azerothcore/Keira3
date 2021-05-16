@@ -9,12 +9,8 @@ import { SpellHandlerService } from '../spell-handler.service';
   templateUrl: './spell-dbc.component.html',
 })
 export class SpellDbcComponent extends SingleRowEditorComponent<SpellDbc> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: SpellDbcService,
-    public handlerService: SpellHandlerService,
-  ) {
+  constructor(public editorService: SpellDbcService, public handlerService: SpellHandlerService) {
     super(editorService, handlerService);
   }
 }

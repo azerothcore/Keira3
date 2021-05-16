@@ -28,4 +28,4 @@ import { SaiFullEditorComponent } from './sai-full-editor.component';
   ],
   exports: [SaiFullEditorComponent],
 })
-export class SaiFullEditorModule { }
+export class SaiFullEditorModule {}

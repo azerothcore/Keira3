@@ -16,15 +16,15 @@ describe('SAI Editor Service', () => {
 
   const mockQuery = '-- Mock Query result';
 
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      { provide: ToastrService, useValue: instance(MockedToastrService) },
-    ],
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+      ],
+    }),
+  );
 
   beforeEach(() => {
     service = TestBed.inject(SaiEditorService);
@@ -32,12 +32,10 @@ describe('SAI Editor Service', () => {
     queryService = TestBed.inject(MysqlQueryService);
   });
 
-
   it('checks linked event', () => {
-
     const mockRows: Partial<SmartScripts>[] = [
-      { entryorguid: 0, source_type: 0, id: 0, link: 1, event_type: 0  },
-      { entryorguid: 0, source_type: 0, id: 1, link: 0, event_type: 61 }
+      { entryorguid: 0, source_type: 0, id: 0, link: 1, event_type: 0 },
+      { entryorguid: 0, source_type: 0, id: 1, link: 0, event_type: 61 },
     ];
 
     service['_newRows'] = mockRows as SmartScripts[];
@@ -64,7 +62,6 @@ describe('SAI Editor Service', () => {
     service['checkRowsCorrectness']();
     expect(service.errors.length).toBe(0);
   });
-
 
   describe('when templateQuery is null', () => {
     beforeEach(() => {

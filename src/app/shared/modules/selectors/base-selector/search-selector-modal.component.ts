@@ -7,10 +7,7 @@ export abstract class SearchSelectorModalComponent extends BaseSelectorModalComp
   public readonly DTCFG = DTCFG;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected entityIdField: string,
-    protected bsModalRef: BsModalRef,
-  ) {
+  constructor(protected entityIdField: string, protected bsModalRef: BsModalRef) {
     super(bsModalRef);
   }
 

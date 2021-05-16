@@ -3,18 +3,36 @@ import { PageObject } from './page-object';
 export abstract class SelectPageObject<T> extends PageObject<T> {
   ID_FIELD: string;
 
-  get createInput() { return this.query<HTMLInputElement>('keira-create input#id'); }
-  get selectNewBtn() { return this.query<HTMLButtonElement>('keira-create #select-button'); }
-  get freeStatusWrapper() { return this.query<HTMLDivElement>('#id-free-status'); }
+  get createInput() {
+    return this.query<HTMLInputElement>('keira-create input#id');
+  }
+  get selectNewBtn() {
+    return this.query<HTMLButtonElement>('keira-create #select-button');
+  }
+  get freeStatusWrapper() {
+    return this.query<HTMLDivElement>('#id-free-status');
+  }
 
-  get queryWrapper() { return this.query<HTMLElement>('code.hljs'); }
+  get queryWrapper() {
+    return this.query<HTMLElement>('code.hljs');
+  }
 
-  get searchIdInput() { return this.query<HTMLInputElement>('input#search-id'); }
-  get searchNameInput() { return this.query<HTMLInputElement>('input#name'); }
-  get searchLimitInput() { return this.query<HTMLInputElement>('input#limit'); }
-  get searchBtn() { return this.query<HTMLButtonElement>('#search-btn'); }
+  get searchIdInput() {
+    return this.query<HTMLInputElement>('input#search-id');
+  }
+  get searchNameInput() {
+    return this.query<HTMLInputElement>('input#name');
+  }
+  get searchLimitInput() {
+    return this.query<HTMLInputElement>('input#limit');
+  }
+  get searchBtn() {
+    return this.query<HTMLButtonElement>('#search-btn');
+  }
 
-  get topBar() { return this.query<HTMLElement>('keira-top-bar'); }
+  get topBar() {
+    return this.query<HTMLElement>('keira-top-bar');
+  }
 
   expectTopBarCreatingNew(id: number) {
     expect(this.topBar.innerText).toContain(`Creating new: ${id}`);

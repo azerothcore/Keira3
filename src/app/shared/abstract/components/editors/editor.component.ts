@@ -13,10 +13,7 @@ export abstract class EditorComponent<T extends TableRow> extends SubscriptionHa
     return this.WIKI_BASE_URL + this.editorService.entityTable;
   }
 
-  constructor(
-    public editorService: EditorService<T>,
-    protected handlerService: HandlerService<T>,
-  ) {
+  constructor(public editorService: EditorService<T>, protected handlerService: HandlerService<T>) {
     super();
   }
 

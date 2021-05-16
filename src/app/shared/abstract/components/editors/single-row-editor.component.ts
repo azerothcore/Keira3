@@ -6,12 +6,8 @@ import { Component } from '@angular/core';
 
 @Component({ template: '' })
 export abstract class SingleRowEditorComponent<T extends TableRow> extends EditorComponent<T> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: SingleRowEditorService<T>,
-    protected handlerService: HandlerService<T>,
-  ) {
+  constructor(public editorService: SingleRowEditorService<T>, protected handlerService: HandlerService<T>) {
     super(editorService, handlerService);
   }
 }

@@ -7,12 +7,13 @@ describe('SkillSelectorBtnComponent', () => {
   let component: SkillSelectorBtnComponent;
   let fixture: ComponentFixture<SkillSelectorBtnComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ SkillSelectorModule ],
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [SkillSelectorModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SkillSelectorBtnComponent);

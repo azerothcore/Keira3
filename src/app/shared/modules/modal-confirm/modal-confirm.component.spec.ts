@@ -6,8 +6,12 @@ import { ModalConfirmModule } from './modal-confirm.module';
 import { PageObject } from '../../testing/page-object';
 
 class ModalConfirmComponentPage extends PageObject<ModalConfirmComponent> {
-  get yesBtn() { return this.query<HTMLButtonElement>('#yes'); }
-  get noBtn() { return this.query<HTMLButtonElement>('#no'); }
+  get yesBtn() {
+    return this.query<HTMLButtonElement>('#yes');
+  }
+  get noBtn() {
+    return this.query<HTMLButtonElement>('#no');
+  }
 }
 
 describe('ModalConfirmComponent', () => {
@@ -16,17 +20,14 @@ describe('ModalConfirmComponent', () => {
   let hideSpy: Spy;
   let page: ModalConfirmComponentPage;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        ModalConfirmModule,
-      ],
-      providers: [
-        BsModalRef,
-      ],
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ModalConfirmModule],
+        providers: [BsModalRef],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ModalConfirmComponent);
@@ -56,5 +57,4 @@ describe('ModalConfirmComponent', () => {
     expect(nextSpy).toHaveBeenCalledTimes(1);
     expect(hideSpy).toHaveBeenCalledTimes(1);
   });
-
 });

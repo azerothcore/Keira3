@@ -9,7 +9,7 @@ import { SubscriptionHandler } from '../../utils/subscription-handler/subscripti
 @Component({
   selector: 'keira-create',
   templateUrl: './create.component.html',
-  styleUrls: ['./create.component.scss']
+  styleUrls: ['./create.component.scss'],
 })
 export class CreateComponent<T extends TableRow> extends SubscriptionHandler implements OnInit {
   @Input() entityTable: string;
@@ -22,7 +22,9 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
   private _loading = false;
   isIdFree = false;
 
-  get loading(): boolean { return this._loading; }
+  get loading(): boolean {
+    return this._loading;
+  }
 
   ngOnInit() {
     if (this.queryService) {
@@ -33,28 +35,40 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
   checkId() {
     this._loading = true;
     this.subscriptions.push(
-      this.queryService.selectAll<T>(this.entityTable, this.entityIdField, this.idModel).subscribe((data) => {
-        this.isIdFree = data.length <= 0;
-      }, (error: MysqlError) => {
-        console.error(error);
-      }).add(() => {
-        this._loading = false;
-      })
+      this.queryService
+        .selectAll<T>(this.entityTable, this.entityIdField, this.idModel)
+        .subscribe(
+          (data) => {
+            this.isIdFree = data.length <= 0;
+          },
+          (error: MysqlError) => {
+            console.error(error);
+          },
+        )
+        .add(() => {
+          this._loading = false;
+        }),
     );
   }
 
   private getNextId(): void {
     this._loading = true;
     this.subscriptions.push(
-      this.queryService.getMaxId(this.entityTable, this.entityIdField).subscribe((data) => {
-        const currentMax = data[0].max;
-        this.idModel = this.calculateNextId(currentMax);
-        this.isIdFree = true;
-      }, (error: MysqlError) => {
-        console.error(error);
-      }).add(() => {
-        this._loading = false;
-      })
+      this.queryService
+        .getMaxId(this.entityTable, this.entityIdField)
+        .subscribe(
+          (data) => {
+            const currentMax = data[0].max;
+            this.idModel = this.calculateNextId(currentMax);
+            this.isIdFree = true;
+          },
+          (error: MysqlError) => {
+            console.error(error);
+          },
+        )
+        .add(() => {
+          this._loading = false;
+        }),
     );
   }
 

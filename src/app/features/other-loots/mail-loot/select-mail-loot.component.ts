@@ -1,4 +1,4 @@
-import { Component, } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { SelectComponent } from '@keira-abstract/components/editors/select.component';
 import { SelectMailLootService } from './select-mail-loot.service';
@@ -6,7 +6,7 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import {
   MAIL_LOOT_TEMPLATE_CUSTOM_STARTING_ID,
   MAIL_LOOT_TEMPLATE_TABLE,
-  MailLootTemplate
+  MailLootTemplate,
 } from '@keira-types/mail-loot-template.type';
 import { LOOT_TEMPLATE_ID } from '@keira-types/loot-template.type';
 import { MailLootHandlerService } from './mail-loot-handler.service';

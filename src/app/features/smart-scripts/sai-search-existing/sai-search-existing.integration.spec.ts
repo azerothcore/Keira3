@@ -12,12 +12,22 @@ import { SaiSearchExistingModule } from './sai-search-existing.module';
 import { SmartScripts } from '@keira-types/smart-scripts.type';
 
 class SaiSearchExistingComponentPage extends PageObject<SaiSearchExistingComponent> {
-  get queryWrapper() { return this.query<HTMLElement>('code.hljs'); }
+  get queryWrapper() {
+    return this.query<HTMLElement>('code.hljs');
+  }
 
-  get searchSourceTypeSelect() { return this.query<HTMLInputElement>('select#source_type'); }
-  get searchEntryOrGuid() { return this.query<HTMLInputElement>('input#entryorguid'); }
-  get searchLimitInput() { return this.query<HTMLInputElement>('input#limit'); }
-  get searchBtn() { return this.query<HTMLButtonElement>('#search-btn'); }
+  get searchSourceTypeSelect() {
+    return this.query<HTMLInputElement>('select#source_type');
+  }
+  get searchEntryOrGuid() {
+    return this.query<HTMLInputElement>('input#entryorguid');
+  }
+  get searchLimitInput() {
+    return this.query<HTMLInputElement>('input#limit');
+  }
+  get searchBtn() {
+    return this.query<HTMLButtonElement>('#search-btn');
+  }
 }
 
 describe('SaiSearchExisting integration tests', () => {
@@ -29,22 +39,18 @@ describe('SaiSearchExisting integration tests', () => {
   let querySpy: Spy;
   let navigateSpy: Spy;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        SaiSearchExistingModule,
-        RouterTestingModule,
-      ],
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [SaiSearchExistingModule, RouterTestingModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of(
-      [{ max: 1 }]
-    ));
+    querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
 
     selectService = TestBed.inject(SaiSearchService);
 
@@ -55,29 +61,48 @@ describe('SaiSearchExisting integration tests', () => {
     fixture.detectChanges();
   });
 
-  it('should correctly initialise', waitForAsync(async () => {
-    await fixture.whenStable();
-    expect(page.queryWrapper.innerText).toContain(
-      'SELECT `entryorguid`, `source_type` FROM `smart_scripts` GROUP BY entryorguid, source_type LIMIT 50'
-    );
-  }));
+  it(
+    'should correctly initialise',
+    waitForAsync(async () => {
+      await fixture.whenStable();
+      expect(page.queryWrapper.innerText).toContain(
+        'SELECT `entryorguid`, `source_type` FROM `smart_scripts` GROUP BY entryorguid, source_type LIMIT 50',
+      );
+    }),
+  );
 
   for (const { testId, entryorguid, source_type, limit, expectedQuery } of [
     {
-      testId: 1, entryorguid: 1, source_type: 2, limit: '100', expectedQuery:
-        'SELECT `entryorguid`, `source_type` FROM `smart_scripts` WHERE (`entryorguid` LIKE \'%1%\') AND (`source_type` LIKE \'%2%\') GROUP BY entryorguid, source_type LIMIT 100'
+      testId: 1,
+      entryorguid: 1,
+      source_type: 2,
+      limit: '100',
+      expectedQuery:
+        "SELECT `entryorguid`, `source_type` FROM `smart_scripts` WHERE (`entryorguid` LIKE '%1%') AND (`source_type` LIKE '%2%') GROUP BY entryorguid, source_type LIMIT 100",
     },
     {
-      testId: 2, entryorguid: '', source_type: 2, limit: '100', expectedQuery:
-        'SELECT `entryorguid`, `source_type` FROM `smart_scripts` WHERE (`source_type` LIKE \'%2%\') GROUP BY entryorguid, source_type LIMIT 100'
+      testId: 2,
+      entryorguid: '',
+      source_type: 2,
+      limit: '100',
+      expectedQuery:
+        "SELECT `entryorguid`, `source_type` FROM `smart_scripts` WHERE (`source_type` LIKE '%2%') GROUP BY entryorguid, source_type LIMIT 100",
     },
     {
-      testId: 3, entryorguid: 123, source_type: '', limit: '100', expectedQuery:
-        'SELECT `entryorguid`, `source_type` FROM `smart_scripts` WHERE (`entryorguid` LIKE \'%123%\') GROUP BY entryorguid, source_type LIMIT 100'
+      testId: 3,
+      entryorguid: 123,
+      source_type: '',
+      limit: '100',
+      expectedQuery:
+        "SELECT `entryorguid`, `source_type` FROM `smart_scripts` WHERE (`entryorguid` LIKE '%123%') GROUP BY entryorguid, source_type LIMIT 100",
     },
     {
-      testId: 4, entryorguid: 123, source_type: '', limit: '', expectedQuery:
-        'SELECT `entryorguid`, `source_type` FROM `smart_scripts` WHERE (`entryorguid` LIKE \'%123%\') GROUP BY entryorguid, source_type'
+      testId: 4,
+      entryorguid: 123,
+      source_type: '',
+      limit: '',
+      expectedQuery:
+        "SELECT `entryorguid`, `source_type` FROM `smart_scripts` WHERE (`entryorguid` LIKE '%123%') GROUP BY entryorguid, source_type",
     },
   ]) {
     it(`searching an existing entity should correctly work [${testId}]`, () => {

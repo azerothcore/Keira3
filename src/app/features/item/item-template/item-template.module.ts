@@ -25,11 +25,8 @@ import { QuestSelectorModule } from '@keira-shared/modules/selectors/quest-selec
 import { SkillSelectorModule } from '@keira-shared/modules/selectors/skill-selector/skill-selector.module';
 import { IconModule } from '@keira-shared/modules/icon/icon.module';
 
-
 @NgModule({
-  declarations: [
-    ItemTemplateComponent,
-  ],
+  declarations: [ItemTemplateComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -52,12 +49,7 @@ import { IconModule } from '@keira-shared/modules/icon/icon.module';
     SkillSelectorModule,
     IconModule,
   ],
-  exports: [
-    ItemTemplateComponent,
-  ],
-  providers: [
-    ItemTemplateService,
-    ItemPreviewService,
-  ],
+  exports: [ItemTemplateComponent],
+  providers: [ItemTemplateService, ItemPreviewService],
 })
 export class ItemTemplateModule {}

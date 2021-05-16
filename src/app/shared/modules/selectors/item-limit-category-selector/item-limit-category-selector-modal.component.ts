@@ -1,4 +1,4 @@
-import { Component, } from '@angular/core';
+import { Component } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { ItemLimitCategorySearchService } from '../../search/item-limit-category-search.service';
@@ -8,15 +8,11 @@ import { SearchSelectorModalComponent } from '../base-selector/search-selector-m
 @Component({
   selector: 'keira-item-limit-category-selector-modal',
   templateUrl: './item-limit-category-selector-modal.component.html',
-  styleUrls: ['./item-limit-category-selector-modal.component.scss']
+  styleUrls: ['./item-limit-category-selector-modal.component.scss'],
 })
 export class ItemLimitCategorySelectorModalComponent extends SearchSelectorModalComponent {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected bsModalRef: BsModalRef,
-    public searchService: ItemLimitCategorySearchService,
-  ) {
+  constructor(protected bsModalRef: BsModalRef, public searchService: ItemLimitCategorySearchService) {
     super(ITEM_LIMIT_CATEGORY_ID, bsModalRef);
   }
 }

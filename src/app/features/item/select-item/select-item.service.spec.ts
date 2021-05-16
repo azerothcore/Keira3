@@ -8,16 +8,16 @@ import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { ItemHandlerService } from '../item-handler.service';
 
 describe('SelectItemService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      ItemHandlerService,
-      SelectItemService,
-    ]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        ItemHandlerService,
+        SelectItemService,
+      ],
+    }),
+  );
 
   it('should be created', () => {
     const service: SelectItemService = TestBed.inject(SelectItemService);

@@ -8,17 +8,8 @@ import { FlagsSelectorBtnComponent } from './flags-selector-btn.component';
 import { uiSwitchConfig } from '@keira-config/ui-switch.config';
 
 @NgModule({
-  declarations: [
-    FlagsSelectorModalComponent,
-    FlagsSelectorBtnComponent,
-  ],
-  imports: [
-    BrowserModule,
-    ModalModule.forRoot(),
-    UiSwitchModule.forRoot(uiSwitchConfig),
-  ],
-  exports: [
-    FlagsSelectorBtnComponent,
-  ],
+  declarations: [FlagsSelectorModalComponent, FlagsSelectorBtnComponent],
+  imports: [BrowserModule, ModalModule.forRoot(), UiSwitchModule.forRoot(uiSwitchConfig)],
+  exports: [FlagsSelectorBtnComponent],
 })
 export class FlagsSelectorModule {}

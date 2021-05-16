@@ -9,7 +9,6 @@ import { getPartial } from '../../../utils/helpers';
 import { MysqlError } from 'mysql';
 
 export abstract class SingleRowComplexKeyEditorService<T extends TableRow> extends SingleRowEditorService<T> {
-
   get entityIdFields(): string[] {
     return JSON.parse(this._entityIdField);
   }
@@ -66,14 +65,19 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
 
   protected reloadEntity() {
     this.subscriptions.push(
-      this.selectQuery().subscribe((data) => {
-        this._error = null;
-        this.onReloadSuccessful(data);
-      }, (error: MysqlError) => {
-        this._error = error;
-      }).add(() => {
-        this._loading = false;
-      })
+      this.selectQuery()
+        .subscribe(
+          (data) => {
+            this._error = null;
+            this.onReloadSuccessful(data);
+          },
+          (error: MysqlError) => {
+            this._error = error;
+          },
+        )
+        .add(() => {
+          this._loading = false;
+        }),
     );
   }
 

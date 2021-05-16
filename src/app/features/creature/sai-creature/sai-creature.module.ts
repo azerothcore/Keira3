@@ -16,9 +16,7 @@ import { SaiCreatureEditorService } from './sai-creature-editor.service';
 import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
 
 @NgModule({
-  declarations: [
-    SaiCreatureComponent
-  ],
+  declarations: [SaiCreatureComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -32,11 +30,7 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
     SaiEditorModule,
     EditorButtonsModule,
   ],
-  exports: [
-    SaiCreatureComponent,
-  ],
-  providers: [
-    SaiCreatureEditorService,
-  ],
+  exports: [SaiCreatureComponent],
+  providers: [SaiCreatureEditorService],
 })
 export class SaiCreatureModule {}

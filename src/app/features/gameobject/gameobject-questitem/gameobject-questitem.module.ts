@@ -14,9 +14,7 @@ import { IconModule } from '@keira-shared/modules/icon/icon.module';
 import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
 
 @NgModule({
-  declarations: [
-    GameobjectQuestitemComponent,
-  ],
+  declarations: [GameobjectQuestitemComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -28,11 +26,7 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
     IconModule,
     EditorButtonsModule,
   ],
-  exports: [
-    GameobjectQuestitemComponent,
-  ],
-  providers: [
-    GameobjectQuestitemService,
-  ],
+  exports: [GameobjectQuestitemComponent],
+  providers: [GameobjectQuestitemService],
 })
 export class GameobjectQuestitemModule {}

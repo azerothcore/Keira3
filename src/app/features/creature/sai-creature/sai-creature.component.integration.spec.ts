@@ -32,19 +32,14 @@ describe('SaiCreatureComponent integration tests', () => {
   originalRow1.id = 1;
   originalRow2.id = 2;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        SaiCreatureModule,
-        RouterTestingModule,
-      ],
-      providers: [
-        CreatureHandlerService,
-        SaiCreatureHandlerService,
-      ]
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [SaiCreatureModule, RouterTestingModule],
+        providers: [CreatureHandlerService, SaiCreatureHandlerService],
+      }).compileComponents();
+    }),
+  );
 
   function setup(creatingNew: boolean, hasTemplateQuery = false, st = sourceType) {
     const selected = { source_type: st, entryorguid: id };
@@ -59,9 +54,9 @@ describe('SaiCreatureComponent integration tests', () => {
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
-    spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(of(
-      creatingNew ? [] : [originalRow0, originalRow1, originalRow2]
-    ));
+    spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(
+      of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]),
+    );
 
     fixture = TestBed.createComponent(SaiCreatureComponent);
     component = fixture.componentInstance;
@@ -124,15 +119,17 @@ describe('SaiCreatureComponent integration tests', () => {
     it('should correctly initialise', () => {
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
-      page.expectFullQueryToContain('DELETE FROM `smart_scripts` WHERE (`source_type` = 0 AND `entryorguid` = 1234);\n' +
-        'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
-        '`event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
-        '`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, ' +
-        '`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, ' +
-        '`target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES\n' +
-        '(1234, 0, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\'),\n' +
-        '(1234, 0, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\'),\n' +
-        '(1234, 0, 2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\');\n');
+      page.expectFullQueryToContain(
+        'DELETE FROM `smart_scripts` WHERE (`source_type` = 0 AND `entryorguid` = 1234);\n' +
+          'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
+          '`event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
+          '`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, ' +
+          '`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, ' +
+          '`target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES\n' +
+          "(1234, 0, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ''),\n" +
+          "(1234, 0, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ''),\n" +
+          "(1234, 0, 2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '');\n",
+      );
       expect(page.getEditorTableRowsCount()).toBe(3);
     });
   });

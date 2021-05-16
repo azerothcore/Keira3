@@ -9,17 +9,17 @@ import { CreatureQuestenderService } from './creature-questender.service';
 import { QuestHandlerService } from '../quest-handler.service';
 
 describe('CreatureQuestenderService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      { provide: ToastrService, useValue: instance(MockedToastrService) },
-      QuestHandlerService,
-      CreatureQuestenderService,
-    ]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+        QuestHandlerService,
+        CreatureQuestenderService,
+      ],
+    }),
+  );
 
   it('should be created', () => {
     const service: CreatureQuestenderService = TestBed.inject(CreatureQuestenderService);

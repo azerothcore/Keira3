@@ -8,16 +8,16 @@ import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { MailLootHandlerService } from './mail-loot-handler.service';
 
 describe('SelectMailLootService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      SelectMailLootService,
-      MailLootHandlerService,
-    ],
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        SelectMailLootService,
+        MailLootHandlerService,
+      ],
+    }),
+  );
 
   it('should be created', () => {
     expect(TestBed.inject(SelectMailLootService)).toBeTruthy();

@@ -5,7 +5,7 @@ import { EditorButtonsComponent } from './editor-buttons.component';
 import { PageObject } from '@keira-testing/page-object';
 
 @Component({
-  template: `<keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>`
+  template: `<keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>`,
 })
 class TestHostComponent {
   @ViewChild(EditorButtonsComponent) child: EditorButtonsComponent<null>;
@@ -13,18 +13,22 @@ class TestHostComponent {
 }
 
 class EditorButtonsPage extends PageObject<TestHostComponent> {
-  get addBtn() { return this.query<HTMLButtonElement>('#add-new-row-btn'); }
-  get deleteBtn() { return this.query<HTMLButtonElement>('#delete-selected-row-btn'); }
+  get addBtn() {
+    return this.query<HTMLButtonElement>('#add-new-row-btn');
+  }
+  get deleteBtn() {
+    return this.query<HTMLButtonElement>('#delete-selected-row-btn');
+  }
 }
 
 describe('EditorButtonsComponent', () => {
-
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ EditorButtonsComponent, TestHostComponent ]
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [EditorButtonsComponent, TestHostComponent],
+      }).compileComponents();
+    }),
+  );
 
   const setup = () => {
     const editorService = {

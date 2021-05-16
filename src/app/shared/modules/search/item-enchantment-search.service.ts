@@ -9,14 +9,11 @@ import {
 } from '../../types/item-enchantment.type';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ItemEnchantmentSearchService extends SearchService<ItemEnchantment> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected queryService: SqliteQueryService,
-  ) {
+  constructor(protected queryService: SqliteQueryService) {
     super(queryService, ITEM_ENCHANTMENT_TABLE, ITEM_ENCHANTMENT_SEARCH_FIELDS);
   }
 }

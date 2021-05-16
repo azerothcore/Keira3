@@ -8,7 +8,6 @@ import { SaiCommentGeneratorService } from '@keira-shared/modules/sai-editor/sai
 
 @Injectable()
 export class SaiGameobjectEditorService extends SaiEditorService {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: SaiGameobjectHandlerService,
@@ -16,11 +15,6 @@ export class SaiGameobjectEditorService extends SaiEditorService {
     protected toastrService: ToastrService,
     protected saiCommentGeneratorService: SaiCommentGeneratorService,
   ) {
-    super(
-      handlerService,
-      queryService,
-      toastrService,
-      saiCommentGeneratorService,
-    );
+    super(handlerService, queryService, toastrService, saiCommentGeneratorService);
   }
 }

@@ -6,9 +6,8 @@ import { Connection, ConnectionConfig, FieldInfo, MysqlError } from 'mysql';
 import { ElectronService } from './electron.service';
 import { MysqlResult, TableRow } from '../types/general';
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MysqlService {
   private mysql: typeof mysql;
@@ -32,10 +31,7 @@ export class MysqlService {
     return this._reconnecting;
   }
 
-  constructor(
-    private electronService: ElectronService,
-    private ngZone: NgZone,
-  ) {
+  constructor(private electronService: ElectronService, private ngZone: NgZone) {
     /* istanbul ignore next */
     if (this.electronService.isElectron()) {
       this.mysql = window.require('mysql');
@@ -52,7 +48,7 @@ export class MysqlService {
 
     this._connection = this.mysql.createConnection(this.config);
 
-    return new Observable(subscriber => {
+    return new Observable((subscriber) => {
       this._connection.connect(this.getConnectCallback(subscriber));
     });
   }
@@ -106,7 +102,7 @@ export class MysqlService {
   }
 
   dbQuery<T extends TableRow>(queryString: string, values?: string[]): Observable<MysqlResult<T>> {
-    return new Observable<MysqlResult<T>>(subscriber => {
+    return new Observable<MysqlResult<T>>((subscriber) => {
       if (this.reconnecting) {
         console.error(`Reconnection in progress while trying to run query: ${queryString}`);
         return;
@@ -115,7 +111,7 @@ export class MysqlService {
       if (this._connection) {
         this._connection.query(queryString, values, this.getQueryCallback<T>(subscriber));
         /* istanbul ignore else */
-      } else /* istanbul ignore next */ if (this.electronService.isElectron()) {
+      } /* istanbul ignore next */ else if (this.electronService.isElectron()) {
         console.error(`_connection was not defined when trying to run query: ${queryString}`);
       }
     });
@@ -128,7 +124,7 @@ export class MysqlService {
           console.log(`Error when executing query: \n\n${err.sql}`);
           subscriber.error(err);
         } else {
-          subscriber.next({results, fields});
+          subscriber.next({ results, fields });
         }
         subscriber.complete();
       });

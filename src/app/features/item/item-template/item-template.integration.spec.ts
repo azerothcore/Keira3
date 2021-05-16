@@ -14,7 +14,9 @@ import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service'
 import { Lock } from '@keira-shared/types/lock.type';
 
 class ItemTemplatePage extends EditorPageObject<ItemTemplateComponent> {
-  get itemStats() { return this.query<HTMLDivElement>('.item-stats'); }
+  get itemStats() {
+    return this.query<HTMLDivElement>('.item-stats');
+  }
 }
 
 describe('ItemTemplate integration tests', () => {
@@ -26,7 +28,8 @@ describe('ItemTemplate integration tests', () => {
   let page: ItemTemplatePage;
 
   const id = 1234;
-  const expectedFullCreateQuery = 'DELETE FROM `item_template` WHERE (`entry` = 1234);\n' +
+  const expectedFullCreateQuery =
+    'DELETE FROM `item_template` WHERE (`entry` = 1234);\n' +
     'INSERT INTO `item_template` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`, `name`, `displayid`, `Quality`, ' +
     '`Flags`, `FlagsExtra`, `BuyCount`, `BuyPrice`, `SellPrice`, `InventoryType`, `AllowableClass`, `AllowableRace`, ' +
     '`ItemLevel`, `RequiredLevel`, `RequiredSkill`, `RequiredSkillRank`, `requiredspell`, `requiredhonorrank`, ' +
@@ -47,26 +50,22 @@ describe('ItemTemplate integration tests', () => {
     '`socketContent_2`, `socketColor_3`, `socketContent_3`, `socketBonus`, `GemProperties`, `RequiredDisenchantSkill`, ' +
     '`ArmorDamageModifier`, `duration`, `ItemLimitCategory`, `HolidayId`, `ScriptName`, `DisenchantID`, `FoodType`, ' +
     '`minMoneyLoot`, `maxMoneyLoot`, `flagsCustom`, `VerifiedBuild`) VALUES\n' +
-    '(1234, 0, 0, -1, \'\', 0, 0, 0, 0, 1, 0, 0, 0, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ' +
+    "(1234, 0, 0, -1, '', 0, 0, 0, 0, 1, 0, 0, 0, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, " +
     '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1000, 0, 0, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 0, -1, ' +
-    '0, -1, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 0, -1, 0, -1, 0, \'\', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ' +
-    '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, \'\', 0, 0, 0, 0, 0, 0);\n';
+    "0, -1, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 0, -1, 0, -1, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, " +
+    "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, '', 0, 0, 0, 0, 0, 0);\n";
 
   const originalEntity = new ItemTemplate();
   originalEntity.entry = id;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        ItemTemplateModule,
-        RouterTestingModule,
-      ],
-      providers: [
-        ItemHandlerService,
-      ]
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ItemTemplateModule, RouterTestingModule],
+        providers: [ItemHandlerService],
+      }).compileComponents();
+    }),
+  );
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(ItemHandlerService);
@@ -76,9 +75,7 @@ describe('ItemTemplate integration tests', () => {
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(
-      creatingNew ? [] : [originalEntity]
-    ));
+    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
 
     fixture = TestBed.createComponent(ItemTemplateComponent);
     component = fixture.componentInstance;
@@ -128,8 +125,9 @@ describe('ItemTemplate integration tests', () => {
     });
 
     it('changing all properties and executing the query should correctly work', () => {
-      const expectedQuery = 'UPDATE `item_template` SET ' +
-        '`subclass` = 1, `SoundOverrideSubclass` = 2, `name` = \'3\', `displayid` = 4, `Quality` = 5, `Flags` = 6, `FlagsExtra` = 7, ' +
+      const expectedQuery =
+        'UPDATE `item_template` SET ' +
+        "`subclass` = 1, `SoundOverrideSubclass` = 2, `name` = '3', `displayid` = 4, `Quality` = 5, `Flags` = 6, `FlagsExtra` = 7, " +
         '`BuyCount` = 8, `BuyPrice` = 9, `SellPrice` = 10, `InventoryType` = 11, `AllowableClass` = 12, `AllowableRace` = 13, ' +
         '`ItemLevel` = 14, `RequiredLevel` = 15, `RequiredSkill` = 16, `RequiredSkillRank` = 17, `requiredspell` = 18, ' +
         '`requiredhonorrank` = 19, `RequiredCityRank` = 20, `RequiredReputationFaction` = 21, `RequiredReputationRank` = 22, ' +
@@ -147,12 +145,12 @@ describe('ItemTemplate integration tests', () => {
         '`spellcategorycooldown_3` = 85, `spellid_4` = 86, `spelltrigger_4` = 87, `spellcharges_4` = 88, `spellppmRate_4` = 89, ' +
         '`spellcooldown_4` = 90, `spellcategory_4` = 91, `spellcategorycooldown_4` = 92, `spellid_5` = 93, `spelltrigger_5` = 94, ' +
         '`spellcharges_5` = 95, `spellppmRate_5` = 96, `spellcooldown_5` = 97, `spellcategory_5` = 98, ' +
-        '`spellcategorycooldown_5` = 99, `bonding` = 100, `description` = \'101\', `PageText` = 102, `LanguageID` = 103, ' +
+        "`spellcategorycooldown_5` = 99, `bonding` = 100, `description` = '101', `PageText` = 102, `LanguageID` = 103, " +
         '`PageMaterial` = 104, `startquest` = 105, `lockid` = 106, `Material` = 107, `sheath` = 108, `RandomProperty` = 109, ' +
         '`RandomSuffix` = 110, `block` = 111, `itemset` = 112, `MaxDurability` = 113, `area` = 114, `Map` = 115, `BagFamily` = 116, ' +
         '`TotemCategory` = 117, `socketColor_1` = 118, `socketContent_1` = 119, `socketColor_2` = 120, `socketContent_2` = 121, ' +
         '`socketColor_3` = 122, `socketContent_3` = 123, `socketBonus` = 124, `GemProperties` = 125, `RequiredDisenchantSkill` = 126, ' +
-        '`ArmorDamageModifier` = 127, `duration` = 128, `ItemLimitCategory` = 129, `HolidayId` = 130, `ScriptName` = \'131\', ' +
+        "`ArmorDamageModifier` = 127, `duration` = 128, `ItemLimitCategory` = 129, `HolidayId` = 130, `ScriptName` = '131', " +
         '`DisenchantID` = 132, `FoodType` = 133, `minMoneyLoot` = 134, `maxMoneyLoot` = 135, `flagsCustom` = 136 WHERE (`entry` = 1234);';
       querySpy.calls.reset();
 
@@ -168,141 +166,140 @@ describe('ItemTemplate integration tests', () => {
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
 
       page.setInputValueById('name', 'Shin');
-      page.expectDiffQueryToContain(
-        'UPDATE `item_template` SET `name` = \'Shin\' WHERE (`entry` = 1234);'
-      );
+      page.expectDiffQueryToContain("UPDATE `item_template` SET `name` = 'Shin' WHERE (`entry` = 1234);");
       page.expectFullQueryToContain('Shin');
 
       page.setInputValueById('BuyCount', 22);
       page.expectDiffQueryToContain(
-        'UPDATE `item_template` SET `name` = \'Shin\', `BuyCount` = 22 WHERE (`entry` = 1234);'
+        "UPDATE `item_template` SET `name` = 'Shin', `BuyCount` = 22 WHERE (`entry` = 1234);",
       );
       page.expectFullQueryToContain('Shin');
       page.expectFullQueryToContain('22');
     });
 
-    it('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
-      const field = 'Flags';
-      page.clickElement(page.getSelectorBtn(field));
+    it(
+      'changing a value via FlagsSelector should correctly work',
+      waitForAsync(async () => {
+        const field = 'Flags';
+        page.clickElement(page.getSelectorBtn(field));
 
-      await page.whenReady();
-      page.expectModalDisplayed();
+        await page.whenReady();
+        page.expectModalDisplayed();
 
-      page.toggleFlagInRowExternal(2);
-      await page.whenReady();
-      page.toggleFlagInRowExternal(12);
-      await page.whenReady();
-      page.clickModalSelect();
-      await page.whenReady();
+        page.toggleFlagInRowExternal(2);
+        await page.whenReady();
+        page.toggleFlagInRowExternal(12);
+        await page.whenReady();
+        page.clickModalSelect();
+        await page.whenReady();
 
-      expect(page.getInputById(field).value).toEqual('4100');
-      page.expectDiffQueryToContain(
-        'UPDATE `item_template` SET `Flags` = 4100 WHERE (`entry` = 1234);'
-      );
+        expect(page.getInputById(field).value).toEqual('4100');
+        page.expectDiffQueryToContain('UPDATE `item_template` SET `Flags` = 4100 WHERE (`entry` = 1234);');
 
-      // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
-      page.expectFullQueryToContain('4100');
-    }));
+        // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
+        page.expectFullQueryToContain('4100');
+      }),
+    );
 
-    it('changing a value via ItemEnchantmentSelector should correctly work', waitForAsync(async () => {
-      const field = 'socketBonus';
-      const sqliteQueryService = TestBed.inject(SqliteQueryService);
-      spyOn(sqliteQueryService, 'query').and.returnValue(of(
-        [{ id: 1248, name: 'Mock Enchantment', conditionId: 456 }]
-      ));
+    it(
+      'changing a value via ItemEnchantmentSelector should correctly work',
+      waitForAsync(async () => {
+        const field = 'socketBonus';
+        const sqliteQueryService = TestBed.inject(SqliteQueryService);
+        spyOn(sqliteQueryService, 'query').and.returnValue(
+          of([{ id: 1248, name: 'Mock Enchantment', conditionId: 456 }]),
+        );
 
-      page.clickElement(page.getSelectorBtn(field));
-      await page.whenReady();
-      page.expectModalDisplayed();
+        page.clickElement(page.getSelectorBtn(field));
+        await page.whenReady();
+        page.expectModalDisplayed();
 
-      page.clickSearchBtn();
-      await fixture.whenStable();
-      page.clickRowOfDatatableInModal(0);
-      await page.whenReady();
-      page.clickModalSelect();
-      await page.whenReady();
+        page.clickSearchBtn();
+        await fixture.whenStable();
+        page.clickRowOfDatatableInModal(0);
+        await page.whenReady();
+        page.clickModalSelect();
+        await page.whenReady();
 
-      page.expectDiffQueryToContain(
-        'UPDATE `item_template` SET `socketBonus` = 1248 WHERE (`entry` = 1234);'
-      );
-      // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
-      page.expectFullQueryToContain('1248');
-    }));
+        page.expectDiffQueryToContain('UPDATE `item_template` SET `socketBonus` = 1248 WHERE (`entry` = 1234);');
+        // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
+        page.expectFullQueryToContain('1248');
+      }),
+    );
 
-    it('changing a value via HolidaySelector should correctly work', waitForAsync(async () => {
-      const field = 'HolidayId';
-      const sqliteQueryService = TestBed.inject(SqliteQueryService);
-      spyOn(sqliteQueryService, 'query').and.returnValue(of(
-        [{ id: 1248, name: 'Mock Holiday' }]
-      ));
+    it(
+      'changing a value via HolidaySelector should correctly work',
+      waitForAsync(async () => {
+        const field = 'HolidayId';
+        const sqliteQueryService = TestBed.inject(SqliteQueryService);
+        spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock Holiday' }]));
 
-      page.clickElement(page.getSelectorBtn(field));
-      await page.whenReady();
-      page.expectModalDisplayed();
+        page.clickElement(page.getSelectorBtn(field));
+        await page.whenReady();
+        page.expectModalDisplayed();
 
-      page.clickSearchBtn();
-      await fixture.whenStable();
-      page.clickRowOfDatatableInModal(0);
-      await page.whenReady();
-      page.clickModalSelect();
-      await page.whenReady();
+        page.clickSearchBtn();
+        await fixture.whenStable();
+        page.clickRowOfDatatableInModal(0);
+        await page.whenReady();
+        page.clickModalSelect();
+        await page.whenReady();
 
-      page.expectDiffQueryToContain(
-        'UPDATE `item_template` SET `HolidayId` = 1248 WHERE (`entry` = 1234);'
-      );
-      // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
-      page.expectFullQueryToContain('1248');
-    }));
+        page.expectDiffQueryToContain('UPDATE `item_template` SET `HolidayId` = 1248 WHERE (`entry` = 1234);');
+        // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
+        page.expectFullQueryToContain('1248');
+      }),
+    );
 
-    it('changing a value via ItemLimitCategorySelector should correctly work', waitForAsync(async () => {
-      const field = 'ItemLimitCategory';
-      const sqliteQueryService = TestBed.inject(SqliteQueryService);
-      spyOn(sqliteQueryService, 'query').and.returnValue(of(
-        [{ id: 1248, name: 'Mock ItemLimitCategory', count: 2, isGem: 1 }]
-      ));
+    it(
+      'changing a value via ItemLimitCategorySelector should correctly work',
+      waitForAsync(async () => {
+        const field = 'ItemLimitCategory';
+        const sqliteQueryService = TestBed.inject(SqliteQueryService);
+        spyOn(sqliteQueryService, 'query').and.returnValue(
+          of([{ id: 1248, name: 'Mock ItemLimitCategory', count: 2, isGem: 1 }]),
+        );
 
-      page.clickElement(page.getSelectorBtn(field));
-      await page.whenReady();
-      page.expectModalDisplayed();
+        page.clickElement(page.getSelectorBtn(field));
+        await page.whenReady();
+        page.expectModalDisplayed();
 
-      page.clickSearchBtn();
-      await fixture.whenStable();
-      page.clickRowOfDatatableInModal(0);
-      await page.whenReady();
-      page.clickModalSelect();
-      await page.whenReady();
+        page.clickSearchBtn();
+        await fixture.whenStable();
+        page.clickRowOfDatatableInModal(0);
+        await page.whenReady();
+        page.clickModalSelect();
+        await page.whenReady();
 
-      page.expectDiffQueryToContain(
-        'UPDATE `item_template` SET `ItemLimitCategory` = 1248 WHERE (`entry` = 1234);'
-      );
-      // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
-      page.expectFullQueryToContain('1248');
-    }));
+        page.expectDiffQueryToContain('UPDATE `item_template` SET `ItemLimitCategory` = 1248 WHERE (`entry` = 1234);');
+        // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
+        page.expectFullQueryToContain('1248');
+      }),
+    );
 
-    it('changing a value via LanguageSelector should correctly work', waitForAsync(async () => {
-      const field = 'LanguageID';
-      const sqliteQueryService = TestBed.inject(SqliteQueryService);
-      spyOn(sqliteQueryService, 'query').and.returnValue(of(
-        [{ id: 1248, name: 'Mock LanguageID' }]
-      ));
+    it(
+      'changing a value via LanguageSelector should correctly work',
+      waitForAsync(async () => {
+        const field = 'LanguageID';
+        const sqliteQueryService = TestBed.inject(SqliteQueryService);
+        spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock LanguageID' }]));
 
-      page.clickElement(page.getSelectorBtn(field));
-      await page.whenReady();
-      page.expectModalDisplayed();
+        page.clickElement(page.getSelectorBtn(field));
+        await page.whenReady();
+        page.expectModalDisplayed();
 
-      page.clickSearchBtn();
-      await fixture.whenStable();
-      page.clickRowOfDatatableInModal(0);
-      await page.whenReady();
-      page.clickModalSelect();
-      await page.whenReady();
+        page.clickSearchBtn();
+        await fixture.whenStable();
+        page.clickRowOfDatatableInModal(0);
+        await page.whenReady();
+        page.clickModalSelect();
+        await page.whenReady();
 
-      page.expectDiffQueryToContain(
-        'UPDATE `item_template` SET `LanguageID` = 1248 WHERE (`entry` = 1234);'
-      );
-      // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
-      page.expectFullQueryToContain('1248');
-    }));
+        page.expectDiffQueryToContain('UPDATE `item_template` SET `LanguageID` = 1248 WHERE (`entry` = 1234);');
+        // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
+        page.expectFullQueryToContain('1248');
+      }),
+    );
 
     describe('the subclass field', () => {
       it('should show the selector button only if class has a valid value', () => {
@@ -342,9 +339,22 @@ describe('ItemTemplate integration tests', () => {
       const mockGetSocketBonusById = 'mockgetFactionNameByIdGetSocketBonusById';
 
       const lockData: Lock = {
-        id: 1, type1: 1, type2: 1, type3: 2, type4: 2, type5: 0,
-        properties1: 1, properties2: 0, properties3: 1, properties4: 0, properties5: 0,
-        reqSkill1: 0, reqSkill2: 0, reqSkill3: 1, reqSkill4: 0, reqSkill5: 0
+        id: 1,
+        type1: 1,
+        type2: 1,
+        type3: 2,
+        type4: 2,
+        type5: 0,
+        properties1: 1,
+        properties2: 0,
+        properties3: 1,
+        properties4: 0,
+        properties5: 0,
+        reqSkill1: 0,
+        reqSkill2: 0,
+        reqSkill3: 1,
+        reqSkill4: 0,
+        reqSkill5: 0,
       };
 
       let mysqlQueryService: MysqlQueryService;
@@ -352,26 +362,29 @@ describe('ItemTemplate integration tests', () => {
 
       beforeEach(() => {
         mysqlQueryService = TestBed.inject(MysqlQueryService);
-        spyOn(mysqlQueryService, 'getItemNameById').and.callFake(i => of(mockItemNameById).toPromise());
-        spyOn(mysqlQueryService, 'queryValue').and.callFake(i => of([234] as any));
+        spyOn(mysqlQueryService, 'getItemNameById').and.callFake((i) => of(mockItemNameById).toPromise());
+        spyOn(mysqlQueryService, 'queryValue').and.callFake((i) => of([234] as any));
 
         sqliteQueryService = TestBed.inject(SqliteQueryService);
-        spyOn(sqliteQueryService, 'getSpellNameById').and.callFake(i => of(mockGetSpellNameById + i).toPromise());
-        spyOn(sqliteQueryService, 'getSpellDescriptionById').and.callFake(i => of(mockGetSpellDescriptionById + i).toPromise());
-        spyOn(sqliteQueryService, 'getFactionNameById').and.callFake(i => of(mockGetFactionNameById + i).toPromise());
-        spyOn(sqliteQueryService, 'getMapNameById').and.callFake(i => of(mockGetMapNameById + i).toPromise());
-        spyOn(sqliteQueryService, 'getAreaNameById').and.callFake(i => of(mockGetAreaNameById + i).toPromise());
-        spyOn(sqliteQueryService, 'getEventNameByHolidayId').and.callFake(i => of(mockGetEventNameByHolidayId + i).toPromise());
-        spyOn(sqliteQueryService, 'getSocketBonusById').and.callFake(i => of(mockGetSocketBonusById + i).toPromise());
-        spyOn(sqliteQueryService, 'getLockById').and.callFake(i => of([lockData]).toPromise());
-        spyOn(sqliteQueryService, 'getSkillNameById').and.callFake(i => of('profession').toPromise());
-        spyOn(sqliteQueryService, 'getIconByItemDisplayId').and.callFake(i => of('inv_axe_60'));
-        spyOn(sqliteQueryService, 'queryValue').and.callFake(i => of('inv_axe_60' as any));
-        spyOn(sqliteQueryService, 'query').and.callFake(i => of([{ name: 'test' }] as any));
+        spyOn(sqliteQueryService, 'getSpellNameById').and.callFake((i) => of(mockGetSpellNameById + i).toPromise());
+        spyOn(sqliteQueryService, 'getSpellDescriptionById').and.callFake((i) =>
+          of(mockGetSpellDescriptionById + i).toPromise(),
+        );
+        spyOn(sqliteQueryService, 'getFactionNameById').and.callFake((i) => of(mockGetFactionNameById + i).toPromise());
+        spyOn(sqliteQueryService, 'getMapNameById').and.callFake((i) => of(mockGetMapNameById + i).toPromise());
+        spyOn(sqliteQueryService, 'getAreaNameById').and.callFake((i) => of(mockGetAreaNameById + i).toPromise());
+        spyOn(sqliteQueryService, 'getEventNameByHolidayId').and.callFake((i) =>
+          of(mockGetEventNameByHolidayId + i).toPromise(),
+        );
+        spyOn(sqliteQueryService, 'getSocketBonusById').and.callFake((i) => of(mockGetSocketBonusById + i).toPromise());
+        spyOn(sqliteQueryService, 'getLockById').and.callFake((i) => of([lockData]).toPromise());
+        spyOn(sqliteQueryService, 'getSkillNameById').and.callFake((i) => of('profession').toPromise());
+        spyOn(sqliteQueryService, 'getIconByItemDisplayId').and.callFake((i) => of('inv_axe_60'));
+        spyOn(sqliteQueryService, 'queryValue').and.callFake((i) => of('inv_axe_60' as any));
+        spyOn(sqliteQueryService, 'query').and.callFake((i) => of([{ name: 'test' }] as any));
       });
 
       it('all fields', fakeAsync(() => {
-
         page.setInputValueById('class', 1);
         page.setInputValueById('subclass', 2);
         page.setInputValueById('SoundOverrideSubclass', 3);
@@ -554,9 +567,7 @@ describe('ItemTemplate integration tests', () => {
           expect(itemStats).toContain('<Right Click To Read>');
           expect(itemStats).toContain('123 Charges');
         });
-
       }));
     });
   });
 });
-

@@ -5,43 +5,44 @@ import { PreviewHelperService } from '@keira-shared/services/preview-helper.serv
 @Component({
   selector: 'keira-quest-preview',
   templateUrl: './quest-preview.component.html',
-  styleUrls: ['./quest-preview.component.scss']
+  styleUrls: ['./quest-preview.component.scss'],
 })
 export class QuestPreviewComponent implements OnInit {
-
-  constructor(
-    public readonly service: QuestPreviewService,
-    public readonly helper: PreviewHelperService,
-  ) { }
+  constructor(public readonly service: QuestPreviewService, public readonly helper: PreviewHelperService) {}
 
   descriptionToggle = true;
   progressToggle = true;
   completionToggle = true;
 
-  get showMaxLevel(): boolean { return !!this.service.maxLevel && this.service.maxLevel !== '0'; }
-  get showRaces(): boolean { return !this.service.side && this.service.races && this.service.races.length > 0; }
-  get showClasses(): boolean { return !!this.service.classes && this.service.classes.length > 0; }
-  get type(): boolean { return !!this.questInfo || !!this.service.periodicQuest; }
+  get showMaxLevel(): boolean {
+    return !!this.service.maxLevel && this.service.maxLevel !== '0';
+  }
+  get showRaces(): boolean {
+    return !this.service.side && this.service.races && this.service.races.length > 0;
+  }
+  get showClasses(): boolean {
+    return !!this.service.classes && this.service.classes.length > 0;
+  }
+  get type(): boolean {
+    return !!this.questInfo || !!this.service.periodicQuest;
+  }
   get questInfo(): string {
-    const qInfo = this.service.QUEST_INFO.find(q => q.value === this.service.questTemplate.QuestInfoID);
-    return this.service.questTemplate.QuestInfoID > 0  && qInfo?.name;
+    const qInfo = this.service.QUEST_INFO.find((q) => q.value === this.service.questTemplate.QuestInfoID);
+    return this.service.questTemplate.QuestInfoID > 0 && qInfo?.name;
   }
 
   get questStartIcon(): string {
-    return this.service.periodicQuest
-    ? 'quest_start_daily.gif'
-    : 'quest_start.gif';
+    return this.service.periodicQuest ? 'quest_start_daily.gif' : 'quest_start.gif';
   }
   get questEndIcon(): string {
-    return this.service.periodicQuest
-    ? 'quest_end_daily.gif'
-    : 'quest_end.gif';
+    return this.service.periodicQuest ? 'quest_end_daily.gif' : 'quest_end.gif';
   }
 
   get reqSkillPoint() {
-    return !!this.service.questTemplateAddon.RequiredSkillPoints && this.service.questTemplateAddon.RequiredSkillPoints > 1
-    ? `(${this.service.questTemplateAddon.RequiredSkillPoints})`
-    : '';
+    return !!this.service.questTemplateAddon.RequiredSkillPoints &&
+      this.service.questTemplateAddon.RequiredSkillPoints > 1
+      ? `(${this.service.questTemplateAddon.RequiredSkillPoints})`
+      : '';
   }
 
   ngOnInit() {

@@ -9,17 +9,17 @@ import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/moc
 import { ItemHandlerService } from '../item-handler.service';
 
 describe('DisenchantLootTemplateService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      { provide: ToastrService, useValue: instance(MockedToastrService) },
-      ItemHandlerService,
-      DisenchantLootTemplateService,
-    ]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+        ItemHandlerService,
+        DisenchantLootTemplateService,
+      ],
+    }),
+  );
 
   it('should be created', () => {
     const service: DisenchantLootTemplateService = TestBed.inject(DisenchantLootTemplateService);

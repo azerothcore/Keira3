@@ -9,11 +9,13 @@ import { ReferenceViewerService } from '@keira-shared/modules/loot-editor/refere
 import { LootTemplate } from '@keira-types/loot-template.type';
 
 class ReferenceViewerComponentPage extends PageObject<TestHostComponent> {
-  get referenceViewers() { return this.queryAll('keira-reference-viewer'); }
+  get referenceViewers() {
+    return this.queryAll('keira-reference-viewer');
+  }
 }
 
 @Component({
-  template: '<keira-reference-viewer [referenceId]="referenceId"></keira-reference-viewer>'
+  template: '<keira-reference-viewer [referenceId]="referenceId"></keira-reference-viewer>',
 })
 class TestHostComponent {
   @ViewChild(ReferenceViewerComponent) child: ReferenceViewerComponent;
@@ -21,14 +23,14 @@ class TestHostComponent {
 }
 
 describe('ReferenceViewerComponent', () => {
-
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [TestHostComponent, ReferenceViewerComponent],
-      imports: [LootEditorModule],
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [TestHostComponent, ReferenceViewerComponent],
+        imports: [LootEditorModule],
+      }).compileComponents();
+    }),
+  );
 
   const setup = () => {
     const fixture = TestBed.createComponent(TestHostComponent);
@@ -43,7 +45,7 @@ describe('ReferenceViewerComponent', () => {
     const { page, host, fixture, service } = setup();
     const id = 1234;
     host.referenceId = id;
-    const mockLootRows: LootTemplate[] = [ new LootTemplate(), new LootTemplate(), new LootTemplate() ];
+    const mockLootRows: LootTemplate[] = [new LootTemplate(), new LootTemplate(), new LootTemplate()];
     mockLootRows[0].Reference = 111;
     mockLootRows[1].Reference = 222;
     const getReferenceByIdSpy = spyOn(service, 'getReferenceById').and.returnValues(of(mockLootRows), of([]));

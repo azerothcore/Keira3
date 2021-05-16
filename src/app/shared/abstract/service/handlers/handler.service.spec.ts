@@ -8,18 +8,14 @@ import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { SaiCreatureHandlerService } from '../../../../features/creature/sai-creature-handler.service';
 
 describe('HandlerService', () => {
-
   let service: HandlerService<CreatureTemplate>;
 
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      CreatureHandlerService,
-      SaiCreatureHandlerService,
-    ],
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [CreatureHandlerService, SaiCreatureHandlerService],
+    }),
+  );
 
   beforeEach(() => {
     service = TestBed.inject(CreatureHandlerService);

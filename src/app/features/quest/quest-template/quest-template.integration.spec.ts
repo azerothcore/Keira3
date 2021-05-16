@@ -11,13 +11,15 @@ import { QuestModule } from '../quest.module';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 
 class QuestTemplatePage extends EditorPageObject<QuestTemplateComponent> {
-  get questPreviewTitle() { return this.query(`${this.PREVIEW_CONTAINER_SELECTOR} #title`); }
+  get questPreviewTitle() {
+    return this.query(`${this.PREVIEW_CONTAINER_SELECTOR} #title`);
+  }
 }
 
 describe('QuestTemplate integration tests', () => {
-
   const id = 1234;
-  const expectedFullCreateQuery = 'DELETE FROM `quest_template` WHERE (`ID` = 1234);\n' +
+  const expectedFullCreateQuery =
+    'DELETE FROM `quest_template` WHERE (`ID` = 1234);\n' +
     'INSERT INTO `quest_template` (`ID`, `QuestType`, `QuestLevel`, `MinLevel`, `QuestSortID`, `QuestInfoID`, ' +
     '`SuggestedGroupNum`, `RequiredFactionId1`, `RequiredFactionId2`, `RequiredFactionValue1`, `RequiredFactionValue2`, ' +
     '`RewardNextQuest`, `RewardXPDifficulty`, `RewardMoney`, `RewardBonusMoney`, `RewardDisplaySpell`, `RewardSpell`,' +
@@ -38,18 +40,16 @@ describe('QuestTemplate integration tests', () => {
     '`RequiredItemCount2`, `RequiredItemCount3`, `RequiredItemCount4`, `RequiredItemCount5`, `RequiredItemCount6`, `Unknown0`, ' +
     '`ObjectiveText1`, `ObjectiveText2`, `ObjectiveText3`, `ObjectiveText4`, `VerifiedBuild`) VALUES\n' +
     '(1234, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ' +
-    '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', \'\', \'\', ' +
-    '\'\', \'\', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', \'\', \'\', \'\', 0);\n';
+    "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', '', " +
+    "'', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', '', '', 0);\n";
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        QuestModule,
-      ],
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [RouterTestingModule, QuestModule],
+      }).compileComponents();
+    }),
+  );
 
   function setup(creatingNew: boolean) {
     const originalEntity = new QuestTemplate();
@@ -63,9 +63,7 @@ describe('QuestTemplate integration tests', () => {
     const querySpy = spyOn(queryService, 'query').and.returnValue(of());
     spyOn(queryService, 'queryValue').and.returnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(
-      creatingNew ? [] : [originalEntity]
-    ));
+    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
     // by default the other editor services should not be initialised, because the selectAll would return the wrong types for them
     const initializeServicesSpy = spyOn(TestBed.inject(QuestPreviewService), 'initializeServices');
     if (creatingNew) {
@@ -83,7 +81,6 @@ describe('QuestTemplate integration tests', () => {
   }
 
   describe('Creating new', () => {
-
     it('should correctly initialise', () => {
       const { page } = setup(true);
       page.expectQuerySwitchToBeHidden();
@@ -129,7 +126,6 @@ describe('QuestTemplate integration tests', () => {
   });
 
   describe('Editing existing', () => {
-
     it('should correctly initialise', () => {
       const { page } = setup(false);
       page.expectDiffQueryToBeShown();
@@ -140,7 +136,8 @@ describe('QuestTemplate integration tests', () => {
 
     it('changing all properties and executing the query should correctly work', () => {
       const { page, querySpy, originalEntity } = setup(false);
-      const expectedQuery = 'UPDATE `quest_template` SET ' +
+      const expectedQuery =
+        'UPDATE `quest_template` SET ' +
         '`QuestLevel` = 1, `MinLevel` = 2, `QuestSortID` = 3, `QuestInfoID` = 4, `SuggestedGroupNum` = 5, ' +
         '`RequiredFactionId1` = 6, `RequiredFactionId2` = 7, `RequiredFactionValue1` = 8, `RequiredFactionValue2` = 9, ' +
         '`RewardNextQuest` = 10, `RewardXPDifficulty` = 11, `RewardMoney` = 12, `RewardBonusMoney` = 13, ' +
@@ -157,14 +154,14 @@ describe('QuestTemplate integration tests', () => {
         '`RewardFactionOverride1` = 58, `RewardFactionID2` = 59, `RewardFactionValue2` = 60, `RewardFactionOverride2` = 61, ' +
         '`RewardFactionID3` = 62, `RewardFactionValue3` = 63, `RewardFactionOverride3` = 64, `RewardFactionID4` = 65, ' +
         '`RewardFactionValue4` = 66, `RewardFactionOverride4` = 67, `RewardFactionID5` = 68, `RewardFactionValue5` = 69, ' +
-        '`RewardFactionOverride5` = 70, `TimeAllowed` = 71, `AllowableRaces` = 72, `LogTitle` = \'73\', `LogDescription` = \'74\', ' +
-        '`QuestDescription` = \'75\', `AreaDescription` = \'76\', `QuestCompletionLog` = \'77\', `RequiredNpcOrGo1` = 78, ' +
+        "`RewardFactionOverride5` = 70, `TimeAllowed` = 71, `AllowableRaces` = 72, `LogTitle` = '73', `LogDescription` = '74', " +
+        "`QuestDescription` = '75', `AreaDescription` = '76', `QuestCompletionLog` = '77', `RequiredNpcOrGo1` = 78, " +
         '`RequiredNpcOrGo2` = 79, `RequiredNpcOrGo3` = 80, `RequiredNpcOrGo4` = 81, `RequiredNpcOrGoCount1` = 82, ' +
         '`RequiredNpcOrGoCount2` = 83, `RequiredNpcOrGoCount3` = 84, `RequiredNpcOrGoCount4` = 85, `RequiredItemId1` = 86, ' +
         '`RequiredItemId2` = 87, `RequiredItemId3` = 88, `RequiredItemId4` = 89, `RequiredItemId5` = 90, `RequiredItemId6` = 91, ' +
         '`RequiredItemCount1` = 92, `RequiredItemCount2` = 93, `RequiredItemCount3` = 94, `RequiredItemCount4` = 95, ' +
-        '`RequiredItemCount5` = 96, `RequiredItemCount6` = 97, `Unknown0` = 98, `ObjectiveText1` = \'99\', `ObjectiveText2` = \'100\', ' +
-        '`ObjectiveText3` = \'101\', `ObjectiveText4` = \'102\' WHERE (`ID` = 1234);';
+        "`RequiredItemCount5` = 96, `RequiredItemCount6` = 97, `Unknown0` = 98, `ObjectiveText1` = '99', `ObjectiveText2` = '100', " +
+        "`ObjectiveText3` = '101', `ObjectiveText4` = '102' WHERE (`ID` = 1234);";
       querySpy.calls.reset();
 
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
@@ -181,43 +178,41 @@ describe('QuestTemplate integration tests', () => {
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
 
       page.setInputValueById('LogTitle', 'Shin');
-      page.expectDiffQueryToContain(
-        'UPDATE `quest_template` SET `LogTitle` = \'Shin\' WHERE (`ID` = 1234);'
-      );
+      page.expectDiffQueryToContain("UPDATE `quest_template` SET `LogTitle` = 'Shin' WHERE (`ID` = 1234);");
       page.expectFullQueryToContain('Shin');
 
       page.setInputValueById('MinLevel', 22);
       page.expectDiffQueryToContain(
-        'UPDATE `quest_template` SET `MinLevel` = 22, `LogTitle` = \'Shin\' WHERE (`ID` = 1234);'
+        "UPDATE `quest_template` SET `MinLevel` = 22, `LogTitle` = 'Shin' WHERE (`ID` = 1234);",
       );
       page.expectFullQueryToContain('Shin');
       page.expectFullQueryToContain('22');
       page.removeElement();
     });
 
-    it('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
-      const { page } = setup(false);
-      const field = 'Flags';
-      page.clickElement(page.getSelectorBtn(field));
-      await page.whenReady();
-      page.expectModalDisplayed();
+    it(
+      'changing a value via FlagsSelector should correctly work',
+      waitForAsync(async () => {
+        const { page } = setup(false);
+        const field = 'Flags';
+        page.clickElement(page.getSelectorBtn(field));
+        await page.whenReady();
+        page.expectModalDisplayed();
 
-      page.toggleFlagInRowExternal(2);
-      await page.whenReady();
-      page.toggleFlagInRowExternal(12);
-      await page.whenReady();
-      page.clickModalSelect();
-      await page.whenReady();
+        page.toggleFlagInRowExternal(2);
+        await page.whenReady();
+        page.toggleFlagInRowExternal(12);
+        await page.whenReady();
+        page.clickModalSelect();
+        await page.whenReady();
 
-      expect(page.getInputById(field).value).toEqual('4100');
-      page.expectDiffQueryToContain(
-        'UPDATE `quest_template` SET `Flags` = 4100 WHERE (`ID` = 1234);'
-      );
+        expect(page.getInputById(field).value).toEqual('4100');
+        page.expectDiffQueryToContain('UPDATE `quest_template` SET `Flags` = 4100 WHERE (`ID` = 1234);');
 
-      // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
-      page.expectFullQueryToContain('4100');
-      page.removeElement();
-    }));
+        // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
+        page.expectFullQueryToContain('4100');
+        page.removeElement();
+      }),
+    );
   });
 });
-

@@ -11,11 +11,13 @@ import { CreatureHandlerService } from '../../../features/creature/creature-hand
 import { SaiCreatureHandlerService } from '../../../features/creature/sai-creature-handler.service';
 
 class LootEditorComponentPage extends PageObject<TestHostComponent> {
-  get referenceViewers() { return this.queryAll('keira-reference-viewer'); }
+  get referenceViewers() {
+    return this.queryAll('keira-reference-viewer');
+  }
 }
 
 @Component({
-  template: '<keira-loot-editor [editorService]="editorService"></keira-loot-editor>'
+  template: '<keira-loot-editor [editorService]="editorService"></keira-loot-editor>',
 })
 class TestHostComponent {
   @ViewChild(LootEditorComponent) child: LootEditorComponent<any>;
@@ -23,22 +25,15 @@ class TestHostComponent {
 }
 
 describe('LootEditorComponent', () => {
-
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [TestHostComponent],
-      imports: [
-        LootEditorModule,
-        RouterTestingModule,
-      ],
-      providers: [
-        CreatureLootTemplateService,
-        CreatureHandlerService,
-        SaiCreatureHandlerService,
-      ]
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [TestHostComponent],
+        imports: [LootEditorModule, RouterTestingModule],
+        providers: [CreatureLootTemplateService, CreatureHandlerService, SaiCreatureHandlerService],
+      }).compileComponents();
+    }),
+  );
 
   const setup = () => {
     const fixture = TestBed.createComponent(TestHostComponent);
@@ -50,7 +45,7 @@ describe('LootEditorComponent', () => {
 
   it('should correctly show the references', () => {
     const { page, fixture, editorService } = setup();
-    const mockLootRows: LootTemplate[] = [ new LootTemplate(), new LootTemplate(), new LootTemplate() ];
+    const mockLootRows: LootTemplate[] = [new LootTemplate(), new LootTemplate(), new LootTemplate()];
     mockLootRows[0].Reference = 111;
     mockLootRows[1].Reference = 222;
     spyOnProperty(editorService, 'newRows').and.returnValue(mockLootRows);

@@ -13,16 +13,32 @@ import { Conditions } from '@keira-types/conditions.type';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 
 class SelectConditionsComponentPage extends PageObject<SelectConditionsComponent> {
-  get queryWrapper() { return this.query<HTMLElement>('code.hljs'); }
+  get queryWrapper() {
+    return this.query<HTMLElement>('code.hljs');
+  }
 
-  get searchIdSelect() { return this.query<HTMLInputElement>('select#SourceTypeOrReferenceId'); }
-  get searchGroupInput() { return this.query<HTMLInputElement>('input#SourceGroup'); }
-  get searchEntryInput() { return this.query<HTMLInputElement>('input#SourceEntry'); }
-  get searchLimitInput() { return this.query<HTMLInputElement>('input#limit'); }
-  get searchBtn() { return this.query<HTMLButtonElement>('#search-btn'); }
-  get createBtn() { return this.query<HTMLButtonElement>('#create-new-btn'); }
+  get searchIdSelect() {
+    return this.query<HTMLInputElement>('select#SourceTypeOrReferenceId');
+  }
+  get searchGroupInput() {
+    return this.query<HTMLInputElement>('input#SourceGroup');
+  }
+  get searchEntryInput() {
+    return this.query<HTMLInputElement>('input#SourceEntry');
+  }
+  get searchLimitInput() {
+    return this.query<HTMLInputElement>('input#limit');
+  }
+  get searchBtn() {
+    return this.query<HTMLButtonElement>('#search-btn');
+  }
+  get createBtn() {
+    return this.query<HTMLButtonElement>('#create-new-btn');
+  }
 
-  get topBar() { return this.query<HTMLElement>('keira-top-bar'); }
+  get topBar() {
+    return this.query<HTMLElement>('keira-top-bar');
+  }
 }
 
 describe('SelectConditions integration tests', () => {
@@ -34,25 +50,19 @@ describe('SelectConditions integration tests', () => {
   let querySpy: Spy;
   let navigateSpy: Spy;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        SelectConditionsModule,
-        RouterTestingModule,
-      ],
-      providers: [
-        ConditionsHandlerService,
-      ],
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [SelectConditionsModule, RouterTestingModule],
+        providers: [ConditionsHandlerService],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of(
-      [{ max: 1 }]
-    ));
+    querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
 
     selectService = TestBed.inject(ConditionsSearchService);
 
@@ -63,41 +73,72 @@ describe('SelectConditions integration tests', () => {
     fixture.detectChanges();
   });
 
-  it('should correctly initialise', async  () => {
+  it('should correctly initialise', async () => {
     await fixture.whenStable();
-    expect(page.queryWrapper.innerText).toContain(
-      'SELECT * FROM `conditions` LIMIT 50'
-    );
+    expect(page.queryWrapper.innerText).toContain('SELECT * FROM `conditions` LIMIT 50');
   });
 
   for (const { testId, sourceIdorRef, group, entry, limit, expectedQuery } of [
     {
-      testId: 1, sourceIdorRef: 1, group: 2, entry: 3, limit: '100', expectedQuery:
-        'SELECT * FROM `conditions` WHERE (`SourceTypeOrReferenceId` LIKE \'%1%\') AND (`SourceGroup` LIKE \'%2%\') AND (`SourceEntry` LIKE \'%3%\') LIMIT 100'
+      testId: 1,
+      sourceIdorRef: 1,
+      group: 2,
+      entry: 3,
+      limit: '100',
+      expectedQuery:
+        "SELECT * FROM `conditions` WHERE (`SourceTypeOrReferenceId` LIKE '%1%') AND (`SourceGroup` LIKE '%2%') AND (`SourceEntry` LIKE '%3%') LIMIT 100",
     },
     {
-      testId: 2, sourceIdorRef: 1, group: '', entry: '', limit: '100', expectedQuery:
-        'SELECT * FROM `conditions` WHERE (`SourceTypeOrReferenceId` LIKE \'%1%\') LIMIT 100'
+      testId: 2,
+      sourceIdorRef: 1,
+      group: '',
+      entry: '',
+      limit: '100',
+      expectedQuery: "SELECT * FROM `conditions` WHERE (`SourceTypeOrReferenceId` LIKE '%1%') LIMIT 100",
     },
     {
-      testId: 3, sourceIdorRef: 1, group: 2, entry: '', limit: '100', expectedQuery:
-        'SELECT * FROM `conditions` WHERE (`SourceTypeOrReferenceId` LIKE \'%1%\') AND (`SourceGroup` LIKE \'%2%\') LIMIT 100'
+      testId: 3,
+      sourceIdorRef: 1,
+      group: 2,
+      entry: '',
+      limit: '100',
+      expectedQuery:
+        "SELECT * FROM `conditions` WHERE (`SourceTypeOrReferenceId` LIKE '%1%') AND (`SourceGroup` LIKE '%2%') LIMIT 100",
     },
     {
-      testId: 4, sourceIdorRef: '', group: 2, entry: 3, limit: '100', expectedQuery:
-        'SELECT * FROM `conditions` WHERE (`SourceGroup` LIKE \'%2%\') AND (`SourceEntry` LIKE \'%3%\') LIMIT 100'
+      testId: 4,
+      sourceIdorRef: '',
+      group: 2,
+      entry: 3,
+      limit: '100',
+      expectedQuery:
+        "SELECT * FROM `conditions` WHERE (`SourceGroup` LIKE '%2%') AND (`SourceEntry` LIKE '%3%') LIMIT 100",
     },
     {
-      testId: 5, sourceIdorRef: 1, group: '', entry: 3, limit: '100', expectedQuery:
-        'SELECT * FROM `conditions` WHERE (`SourceTypeOrReferenceId` LIKE \'%1%\') AND (`SourceEntry` LIKE \'%3%\') LIMIT 100'
+      testId: 5,
+      sourceIdorRef: 1,
+      group: '',
+      entry: 3,
+      limit: '100',
+      expectedQuery:
+        "SELECT * FROM `conditions` WHERE (`SourceTypeOrReferenceId` LIKE '%1%') AND (`SourceEntry` LIKE '%3%') LIMIT 100",
     },
     {
-      testId: 6, sourceIdorRef: 1, group: '', entry: '', limit: '', expectedQuery:
-        'SELECT * FROM `conditions` WHERE (`SourceTypeOrReferenceId` LIKE \'%1%\')'
+      testId: 6,
+      sourceIdorRef: 1,
+      group: '',
+      entry: '',
+      limit: '',
+      expectedQuery: "SELECT * FROM `conditions` WHERE (`SourceTypeOrReferenceId` LIKE '%1%')",
     },
     {
-      testId: 7, sourceIdorRef: 0, group: 2, entry: 3, limit: '100', expectedQuery:
-        'SELECT * FROM `conditions` WHERE (`SourceGroup` LIKE \'%2%\') AND (`SourceEntry` LIKE \'%3%\') LIMIT 100'
+      testId: 7,
+      sourceIdorRef: 0,
+      group: 2,
+      entry: 3,
+      limit: '100',
+      expectedQuery:
+        "SELECT * FROM `conditions` WHERE (`SourceGroup` LIKE '%2%') AND (`SourceEntry` LIKE '%3%') LIMIT 100",
     },
   ]) {
     it(`searching an existing entity should correctly work [${testId}]`, () => {
@@ -125,17 +166,55 @@ describe('SelectConditions integration tests', () => {
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
     const results: Partial<Conditions>[] = [
       {
-        SourceTypeOrReferenceId: 1, SourceGroup: 4, SourceEntry: 7, SourceId: 0, ElseGroup: 0,
-        ConditionTypeOrReference: 0, ConditionTarget: 0, ConditionValue1: 0, ConditionValue2: 0,
-        ConditionValue3: 0, NegativeCondition: 0, ErrorType: 0, ErrorTextId: 0, ScriptName: '', Comment: ''
+        SourceTypeOrReferenceId: 1,
+        SourceGroup: 4,
+        SourceEntry: 7,
+        SourceId: 0,
+        ElseGroup: 0,
+        ConditionTypeOrReference: 0,
+        ConditionTarget: 0,
+        ConditionValue1: 0,
+        ConditionValue2: 0,
+        ConditionValue3: 0,
+        NegativeCondition: 0,
+        ErrorType: 0,
+        ErrorTextId: 0,
+        ScriptName: '',
+        Comment: '',
       },
-      { SourceTypeOrReferenceId: 2, SourceGroup: 5, SourceEntry: 8, SourceId: 0, ElseGroup: 0,
-        ConditionTypeOrReference: 0, ConditionTarget: 0, ConditionValue1: 0, ConditionValue2: 0,
-        ConditionValue3: 0, NegativeCondition: 0, ErrorType: 0, ErrorTextId: 0, ScriptName: '', Comment: ''
+      {
+        SourceTypeOrReferenceId: 2,
+        SourceGroup: 5,
+        SourceEntry: 8,
+        SourceId: 0,
+        ElseGroup: 0,
+        ConditionTypeOrReference: 0,
+        ConditionTarget: 0,
+        ConditionValue1: 0,
+        ConditionValue2: 0,
+        ConditionValue3: 0,
+        NegativeCondition: 0,
+        ErrorType: 0,
+        ErrorTextId: 0,
+        ScriptName: '',
+        Comment: '',
       },
-      { SourceTypeOrReferenceId: 3, SourceGroup: 6, SourceEntry: 9, SourceId: 0, ElseGroup: 0,
-        ConditionTypeOrReference: 0, ConditionTarget: 0, ConditionValue1: 0, ConditionValue2: 0,
-        ConditionValue3: 0, NegativeCondition: 0, ErrorType: 0, ErrorTextId: 0, ScriptName: '', Comment: ''
+      {
+        SourceTypeOrReferenceId: 3,
+        SourceGroup: 6,
+        SourceEntry: 9,
+        SourceId: 0,
+        ElseGroup: 0,
+        ConditionTypeOrReference: 0,
+        ConditionTarget: 0,
+        ConditionValue1: 0,
+        ConditionValue2: 0,
+        ConditionValue3: 0,
+        NegativeCondition: 0,
+        ErrorType: 0,
+        ErrorTextId: 0,
+        ScriptName: '',
+        Comment: '',
       },
     ];
 

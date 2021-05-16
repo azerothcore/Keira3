@@ -14,10 +14,7 @@ import { SelectReferenceLootComponent } from './select-reference-loot.component'
 import { CreateModule } from '@keira-shared/modules/create/create.module';
 import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 
-const components = [
-  ReferenceLootTemplateComponent,
-  SelectReferenceLootComponent,
-];
+const components = [ReferenceLootTemplateComponent, SelectReferenceLootComponent];
 
 @NgModule({
   declarations: components,
@@ -32,10 +29,6 @@ const components = [
     HighlightModule,
     NgxDatatableModule,
   ],
-  providers: [
-    ReferenceLootTemplateService,
-    SelectReferenceLootService,
-    ReferenceLootHandlerService,
-  ],
+  providers: [ReferenceLootTemplateService, SelectReferenceLootService, ReferenceLootHandlerService],
 })
 export class ReferenceLootTemplateModule {}

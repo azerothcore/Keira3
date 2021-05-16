@@ -9,17 +9,13 @@ import { GAMEOBJECT_FLAGS } from '@keira-constants/flags/gameobject-flags';
 @Component({
   selector: 'keira-gameobject-template-addon',
   templateUrl: './gameobject-template-addon.component.html',
-  styleUrls: ['./gameobject-template-addon.component.scss']
+  styleUrls: ['./gameobject-template-addon.component.scss'],
 })
 export class GameobjectTemplateAddonComponent extends SingleRowEditorComponent<GameobjectTemplateAddon> {
-
   public readonly GAMEOBJECT_FLAGS = GAMEOBJECT_FLAGS;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: GameobjectTemplateAddonService,
-    public handlerService: GameobjectHandlerService,
-  ) {
+  constructor(public editorService: GameobjectTemplateAddonService, public handlerService: GameobjectHandlerService) {
     super(editorService, handlerService);
   }
 }

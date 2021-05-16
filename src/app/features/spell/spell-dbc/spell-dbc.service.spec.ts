@@ -9,18 +9,17 @@ import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/moc
 import { SpellHandlerService } from '../spell-handler.service';
 
 describe('SpellDbcService', () => {
-
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      { provide: ToastrService, useValue: instance(MockedToastrService) },
-      SpellHandlerService,
-      SpellDbcService,
-    ],
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+        SpellHandlerService,
+        SpellDbcService,
+      ],
+    }),
+  );
 
   it('should be created', () => {
     const service = TestBed.inject(SpellDbcService);

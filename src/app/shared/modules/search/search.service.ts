@@ -9,8 +9,8 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
   rows: T[];
   fields: FormGroup<T> = new FormGroup({} as any);
   queryForm = new FormGroup<QueryForm<T>>({
-    'limit': new FormControl(50),
-    'fields': this.fields,
+    limit: new FormControl(50),
+    fields: this.fields,
   });
 
   constructor(
@@ -43,7 +43,7 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
             this.groupFields,
           );
         }
-      })
+      }),
     );
   }
 
@@ -51,7 +51,7 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
     this.subscriptions.push(
       this.queryService.query<T>(this.query).subscribe((data) => {
         this.rows = data;
-      })
+      }),
     );
   }
 }

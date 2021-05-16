@@ -7,19 +7,9 @@ import { ProspectingLootTemplateService } from './prospecting-loot-template.serv
 import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.module';
 
 @NgModule({
-  declarations: [
-    ProspectingLootTemplateComponent,
-  ],
-  imports: [
-    CommonModule,
-    TopBarModule,
-    LootEditorModule,
-  ],
-  exports: [
-    ProspectingLootTemplateComponent,
-  ],
-  providers: [
-    ProspectingLootTemplateService,
-  ],
+  declarations: [ProspectingLootTemplateComponent],
+  imports: [CommonModule, TopBarModule, LootEditorModule],
+  exports: [ProspectingLootTemplateComponent],
+  providers: [ProspectingLootTemplateService],
 })
 export class ProspectingLootTemplateModule {}

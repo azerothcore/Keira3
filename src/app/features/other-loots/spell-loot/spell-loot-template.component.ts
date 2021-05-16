@@ -10,12 +10,8 @@ import { SpellLootHandlerService } from './spell-loot-handler.service';
   templateUrl: '../../../shared/abstract/components/editors/loot-template/loot-template.component.html',
 })
 export class SpellLootTemplateComponent extends LootTemplateComponent<SpellLootTemplate> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: SpellLootTemplateService,
-    public handlerService: SpellLootHandlerService,
-  ) {
+  constructor(public editorService: SpellLootTemplateService, public handlerService: SpellLootHandlerService) {
     super(editorService, handlerService);
   }
 }

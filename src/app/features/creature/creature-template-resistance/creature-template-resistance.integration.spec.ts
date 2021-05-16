@@ -9,20 +9,18 @@ import { CreatureModule } from '../creature.module';
 import { CreatureTemplateResistanceComponent } from './creature-template-resistance.component';
 import { CreatureHandlerService } from '../creature-handler.service';
 
-class CreatureTemplateResistancePage extends MultiRowEditorPageObject<CreatureTemplateResistanceComponent>  {}
+class CreatureTemplateResistancePage extends MultiRowEditorPageObject<CreatureTemplateResistanceComponent> {}
 
 describe('CreatureTemplateResistance integration tests', () => {
   const id = 1234;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        CreatureModule,
-      ],
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [RouterTestingModule, CreatureModule],
+      }).compileComponents();
+    }),
+  );
 
   function setup(creatingNew: boolean) {
     const originalRow0 = new CreatureTemplateResistance();
@@ -41,9 +39,7 @@ describe('CreatureTemplateResistance integration tests', () => {
     const querySpy = spyOn(queryService, 'query').and.returnValue(of());
     spyOn(queryService, 'queryValue').and.returnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(
-      creatingNew ? [] : [originalRow0, originalRow1, originalRow2]
-    ));
+    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     const fixture = TestBed.createComponent(CreatureTemplateResistanceComponent);
     const component = fixture.componentInstance;
@@ -55,7 +51,6 @@ describe('CreatureTemplateResistance integration tests', () => {
   }
 
   describe('Creating new', () => {
-
     it('should correctly initialise', () => {
       const { page } = setup(true);
       page.expectDiffQueryToBeEmpty();
@@ -81,7 +76,8 @@ describe('CreatureTemplateResistance integration tests', () => {
 
     it('adding new rows and executing the query should correctly work', () => {
       const { page, querySpy } = setup(true);
-      const expectedQuery = 'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234) AND (`School` IN (1, 2, 3));\n' +
+      const expectedQuery =
+        'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234) AND (`School` IN (1, 2, 3));\n' +
         'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
         '(1234, 1, 0, 0),\n' +
         '(1234, 2, 0, 0),\n' +
@@ -107,25 +103,25 @@ describe('CreatureTemplateResistance integration tests', () => {
       page.addNewRow();
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234) AND (`School` IN (1));\n' +
-        'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 1, 0, 0);'
+          'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 1, 0, 0);',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234);\n' +
-        'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 1, 0, 0);'
+          'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 1, 0, 0);',
       );
 
       page.setInputValueById('School', '2');
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234) AND (`School` IN (2));\n' +
-        'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 2, 0, 0);'
+          'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 2, 0, 0);',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234);\n' +
-        'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 2, 0, 0);'
+          'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 2, 0, 0);',
       );
       page.removeElement();
     });
@@ -137,11 +133,13 @@ describe('CreatureTemplateResistance integration tests', () => {
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
-      page.expectFullQueryToContain('DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234);\n' +
-        'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 1, 0, 0),\n' +
-        '(1234, 2, 0, 0),\n' +
-        '(1234, 3, 0, 0);');
+      page.expectFullQueryToContain(
+        'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234);\n' +
+          'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 1, 0, 0),\n' +
+          '(1234, 2, 0, 0),\n' +
+          '(1234, 3, 0, 0);',
+      );
       expect(page.getEditorTableRowsCount()).toBe(3);
       page.removeElement();
     });
@@ -151,31 +149,29 @@ describe('CreatureTemplateResistance integration tests', () => {
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234) AND (`School` IN (2));'
+        'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234) AND (`School` IN (2));',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234);\n' +
-        'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 1, 0, 0),\n' +
-        '(1234, 3, 0, 0);'
+          'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 1, 0, 0),\n' +
+          '(1234, 3, 0, 0);',
       );
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234) AND (`School` IN (2, 3));'
+        'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234) AND (`School` IN (2, 3));',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234);\n' +
-        'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 1, 0, 0);'
+          'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 1, 0, 0);',
       );
 
       page.deleteRow(0);
       expect(page.getEditorTableRowsCount()).toBe(0);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `creature_template_resistance` WHERE `CreatureID` = 1234;'
-      );
+      page.expectDiffQueryToContain('DELETE FROM `creature_template_resistance` WHERE `CreatureID` = 1234;');
       page.expectFullQueryToBeEmpty();
       page.removeElement();
     });
@@ -187,15 +183,15 @@ describe('CreatureTemplateResistance integration tests', () => {
 
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234) AND (`School` IN (2, 111));\n' +
-        'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 111, 0, 0);'
+          'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 111, 0, 0);',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234);\n' +
-        'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 1, 0, 0),\n' +
-        '(1234, 111, 0, 0),\n' +
-        '(1234, 3, 0, 0);'
+          'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 1, 0, 0),\n' +
+          '(1234, 111, 0, 0),\n' +
+          '(1234, 3, 0, 0);',
       );
       page.removeElement();
     });
@@ -214,16 +210,16 @@ describe('CreatureTemplateResistance integration tests', () => {
 
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234) AND (`School` IN (2, 3, 10, 4));\n' +
-        'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 10, 0, 0),\n' +
-        '(1234, 4, 0, 0);'
+          'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 10, 0, 0),\n' +
+          '(1234, 4, 0, 0);',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234);\n' +
-        'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 1, 0, 0),\n' +
-        '(1234, 10, 0, 0),\n' +
-        '(1234, 4, 0, 0);'
+          'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 1, 0, 0),\n' +
+          '(1234, 10, 0, 0),\n' +
+          '(1234, 4, 0, 0);',
       );
       page.removeElement();
     });
@@ -238,4 +234,3 @@ describe('CreatureTemplateResistance integration tests', () => {
     });
   });
 });
-

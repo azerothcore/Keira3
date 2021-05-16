@@ -22,26 +22,22 @@ describe('CreatureEquipTemplate integration tests', () => {
   let page: CreatureEquipTemplatePage;
 
   const id = 1234;
-  const expectedFullCreateQuery = 'DELETE FROM `creature_equip_template` WHERE (`CreatureID` = 1234);\n' +
+  const expectedFullCreateQuery =
+    'DELETE FROM `creature_equip_template` WHERE (`CreatureID` = 1234);\n' +
     'INSERT INTO `creature_equip_template` (`CreatureID`, `ID`, `ItemID1`, `ItemID2`, `ItemID3`, `VerifiedBuild`) VALUES\n' +
     '(1234, 1, 0, 0, 0, 0);';
 
   const originalEntity = new CreatureEquipTemplate();
   originalEntity.CreatureID = id;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        CreatureEquipTemplateModule,
-        RouterTestingModule,
-      ],
-      providers: [
-        CreatureHandlerService,
-        SaiCreatureHandlerService,
-      ],
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [CreatureEquipTemplateModule, RouterTestingModule],
+        providers: [CreatureHandlerService, SaiCreatureHandlerService],
+      }).compileComponents();
+    }),
+  );
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(CreatureHandlerService);
@@ -52,9 +48,7 @@ describe('CreatureEquipTemplate integration tests', () => {
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
     spyOn(queryService, 'queryValue').and.returnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(
-      creatingNew ? [] : [originalEntity]
-    ));
+    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
 
     fixture = TestBed.createComponent(CreatureEquipTemplateComponent);
     component = fixture.componentInstance;
@@ -82,7 +76,8 @@ describe('CreatureEquipTemplate integration tests', () => {
     });
 
     it('changing a property and executing the query should correctly work', () => {
-      const expectedQuery = 'DELETE FROM `creature_equip_template` WHERE (`CreatureID` = 1234);\n' +
+      const expectedQuery =
+        'DELETE FROM `creature_equip_template` WHERE (`CreatureID` = 1234);\n' +
         'INSERT INTO `creature_equip_template` (`CreatureID`, `ID`, `ItemID1`, `ItemID2`, `ItemID3`, `VerifiedBuild`) VALUES\n' +
         '(1234, 1, 0, 2, 0, 0);';
       querySpy.calls.reset();
@@ -106,7 +101,8 @@ describe('CreatureEquipTemplate integration tests', () => {
     });
 
     it('changing all properties and executing the query should correctly work', () => {
-      const expectedQuery = 'UPDATE `creature_equip_template` SET `ItemID2` = 1, `ItemID3` = 2 WHERE (`CreatureID` = 1234);';
+      const expectedQuery =
+        'UPDATE `creature_equip_template` SET `ItemID2` = 1, `ItemID3` = 2 WHERE (`CreatureID` = 1234);';
       querySpy.calls.reset();
 
       page.changeAllFields(originalEntity, ['ID', 'VerifiedBuild']);
@@ -119,56 +115,53 @@ describe('CreatureEquipTemplate integration tests', () => {
 
     it('changing values should correctly update the queries', () => {
       page.setInputValueById('ItemID1', '1');
-      page.expectDiffQueryToContain(
-        'UPDATE `creature_equip_template` SET `ItemID1` = 1 WHERE (`CreatureID` = 1234);'
-      );
+      page.expectDiffQueryToContain('UPDATE `creature_equip_template` SET `ItemID1` = 1 WHERE (`CreatureID` = 1234);');
       page.expectFullQueryToContain(
         'DELETE FROM `creature_equip_template` WHERE (`CreatureID` = 1234);\n' +
-        'INSERT INTO `creature_equip_template` (`CreatureID`, `ID`, `ItemID1`, `ItemID2`, `ItemID3`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 1, 1, 0, 0, 0);'
+          'INSERT INTO `creature_equip_template` (`CreatureID`, `ID`, `ItemID1`, `ItemID2`, `ItemID3`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 1, 1, 0, 0, 0);',
       );
 
       page.setInputValueById('ItemID3', '3');
       page.expectDiffQueryToContain(
-        'UPDATE `creature_equip_template` SET `ItemID1` = 1, `ItemID3` = 3 WHERE (`CreatureID` = 1234);'
+        'UPDATE `creature_equip_template` SET `ItemID1` = 1, `ItemID3` = 3 WHERE (`CreatureID` = 1234);',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_equip_template` WHERE (`CreatureID` = 1234);\n' +
-        'INSERT INTO `creature_equip_template` (`CreatureID`, `ID`, `ItemID1`, `ItemID2`, `ItemID3`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 1, 1, 0, 3, 0);'
+          'INSERT INTO `creature_equip_template` (`CreatureID`, `ID`, `ItemID1`, `ItemID2`, `ItemID3`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 1, 1, 0, 3, 0);',
       );
     });
 
-    it('changing a value via ItemSelector should correctly work', waitForAsync(async () => {
+    it(
+      'changing a value via ItemSelector should correctly work',
+      waitForAsync(async () => {
+        //  note: previously disabled because of:
+        //  https://stackoverflow.com/questions/57336982/how-to-make-angular-tests-wait-for-previous-async-operation-to-complete-before-e
 
-      //  note: previously disabled because of:
-      //  https://stackoverflow.com/questions/57336982/how-to-make-angular-tests-wait-for-previous-async-operation-to-complete-before-e
+        const itemEntry = 1200;
+        querySpy.and.returnValue(of([{ entry: itemEntry, name: 'Mock Item' }]));
+        const field = 'ItemID1';
+        page.clickElement(page.getSelectorBtn(field));
+        page.expectModalDisplayed();
+        await page.whenReady();
 
-      const itemEntry = 1200;
-      querySpy.and.returnValue(of(
-        [{ entry: itemEntry, name: 'Mock Item' }]
-      ));
-      const field = 'ItemID1';
-      page.clickElement(page.getSelectorBtn(field));
-      page.expectModalDisplayed();
-      await page.whenReady();
+        page.clickSearchBtn();
+        await page.whenReady();
+        page.clickRowOfDatatableInModal(0);
+        await page.whenReady();
+        page.clickModalSelect();
+        await page.whenReady();
 
-      page.clickSearchBtn();
-      await page.whenReady();
-      page.clickRowOfDatatableInModal(0);
-      await page.whenReady();
-      page.clickModalSelect();
-      await page.whenReady();
-
-      page.expectDiffQueryToContain(
-        'UPDATE `creature_equip_template` SET `ItemID1` = 1200 WHERE (`CreatureID` = 1234);'
-      );
-      page.expectFullQueryToContain(
-        'DELETE FROM `creature_equip_template` WHERE (`CreatureID` = 1234);\n' +
-        'INSERT INTO `creature_equip_template` (`CreatureID`, `ID`, `ItemID1`, `ItemID2`, `ItemID3`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 1, 1200, 0, 0, 0);'
-      );
-    }));
+        page.expectDiffQueryToContain(
+          'UPDATE `creature_equip_template` SET `ItemID1` = 1200 WHERE (`CreatureID` = 1234);',
+        );
+        page.expectFullQueryToContain(
+          'DELETE FROM `creature_equip_template` WHERE (`CreatureID` = 1234);\n' +
+            'INSERT INTO `creature_equip_template` (`CreatureID`, `ID`, `ItemID1`, `ItemID2`, `ItemID3`, `VerifiedBuild`) VALUES\n' +
+            '(1234, 1, 1200, 0, 0, 0);',
+        );
+      }),
+    );
   });
 });
-

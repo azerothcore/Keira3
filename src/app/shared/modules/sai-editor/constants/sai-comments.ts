@@ -183,8 +183,9 @@ SAI_ACTION_COMMENTS[SAI_ACTIONS.ADD_POWER] = `Add _actionParamTwo_ _powerTypeAct
 SAI_ACTION_COMMENTS[SAI_ACTIONS.REMOVE_POWER] = `Remove _actionParamTwo_ _powerTypeActionParamOne_`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.GAME_EVENT_STOP] = `Stop game event _actionParamTwo_`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.GAME_EVENT_START] = `Start game event _actionParamTwo_`;
-SAI_ACTION_COMMENTS[SAI_ACTIONS.START_CLOSEST_WAYPOINT] =
-  `Pick Closest Waypoint _actionParamOne_ _actionParamTwo_ _actionParamThree_ _actionParamFour_ _actionParamFive_ _actionParamSix_`;
+SAI_ACTION_COMMENTS[
+  SAI_ACTIONS.START_CLOSEST_WAYPOINT
+] = `Pick Closest Waypoint _actionParamOne_ _actionParamTwo_ _actionParamThree_ _actionParamFour_ _actionParamFive_ _actionParamSix_`;
 
 // AC-only actions:
 SAI_ACTION_COMMENTS[SAI_ACTIONS.MOVE_TO_POS_TARGET] = 'Move to pos target _actionParamOne_';
@@ -192,16 +193,20 @@ SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_GO_STATE] = 'Set GO state to _actionParamOne
 SAI_ACTION_COMMENTS[SAI_ACTIONS.EXIT_VEHICLE] = 'Exit vehicle';
 SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_UNIT_MOVEMENT_FLAGS] = 'Set unit movement flags to _actionParamOne_';
 SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_COMBAT_DISTANCE] = 'Set combat distance to _actionParamOne_';
-SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_CASTER_COMBAT_DIST] = 'Set caster combat distance to _actionParamOne_ (RestToMax: _actionParamTwo_)';
+SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_CASTER_COMBAT_DIST] =
+  'Set caster combat distance to _actionParamOne_ (RestToMax: _actionParamTwo_)';
 SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_HOVER] = 'Set hover _actionParamOne_';
-SAI_ACTION_COMMENTS[SAI_ACTIONS.ADD_IMMUNITY] = 'Add immunity Type: _actionParamOne_, Id: _actionParamTwo_, Value: _actionParamThree_';
+SAI_ACTION_COMMENTS[SAI_ACTIONS.ADD_IMMUNITY] =
+  'Add immunity Type: _actionParamOne_, Id: _actionParamTwo_, Value: _actionParamThree_';
 SAI_ACTION_COMMENTS[SAI_ACTIONS.REMOVE_IMMUNITY] =
   'Remove immunity Type: _actionParamOne_, Id: _actionParamTwo_, Value: _actionParamThree_';
 SAI_ACTION_COMMENTS[SAI_ACTIONS.FALL] = 'Fall';
 SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_EVENT_FLAG_RESET] = 'Flag reset _actionParamOne_';
-SAI_ACTION_COMMENTS[SAI_ACTIONS.STOP_MOTION] = 'Stop motion (StopMoving: _actionParamOne_, MovementExpired: _actionParamTwo_)';
+SAI_ACTION_COMMENTS[SAI_ACTIONS.STOP_MOTION] =
+  'Stop motion (StopMoving: _actionParamOne_, MovementExpired: _actionParamTwo_)';
 SAI_ACTION_COMMENTS[SAI_ACTIONS.NO_ENVIRONMENT_UPDATE] = 'No environment update';
 SAI_ACTION_COMMENTS[SAI_ACTIONS.ZONE_UNDER_ATTACK] = 'Zone under attack';
 SAI_ACTION_COMMENTS[SAI_ACTIONS.LOAD_GRID] = 'Load Grid';
-SAI_ACTION_COMMENTS[SAI_ACTIONS.MUSIC] = 'Play music SoundId: _actionParamOne_, OnlySelf: _actionParamTwo_, Type: _actionParamThree_';
+SAI_ACTION_COMMENTS[SAI_ACTIONS.MUSIC] =
+  'Play music SoundId: _actionParamOne_, OnlySelf: _actionParamTwo_, Type: _actionParamThree_';
 SAI_ACTION_COMMENTS[SAI_ACTIONS.RANDOM_MUSIC] = 'Play random music OnlySelf: _actionParamFive_, Type: _actionParamSix_';

@@ -13,10 +13,9 @@ import { QUEST_INFO } from '@keira-shared/constants/options/quest-info';
 @Component({
   selector: 'keira-quest-template',
   templateUrl: './quest-template.component.html',
-  styleUrls: ['./quest-template.component.scss']
+  styleUrls: ['./quest-template.component.scss'],
 })
 export class QuestTemplateComponent extends SingleRowEditorComponent<QuestTemplate> {
-
   public readonly QUEST_FLAGS = QUEST_FLAGS;
   public readonly QUEST_TYPE = QUEST_TYPE;
   public readonly ALLOWABLE_RACES = ALLOWABLE_RACES;

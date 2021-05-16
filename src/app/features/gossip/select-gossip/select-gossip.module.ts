@@ -13,9 +13,7 @@ import { SelectGossipService } from './select-gossip.service';
 import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 
 @NgModule({
-  declarations: [
-    SelectGossipComponent,
-  ],
+  declarations: [SelectGossipComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -26,11 +24,7 @@ import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-
     NgxDatatableModule,
     SearchButtonsModule,
   ],
-  exports: [
-    SelectGossipComponent,
-  ],
-  providers: [
-    SelectGossipService,
-  ],
+  exports: [SelectGossipComponent],
+  providers: [SelectGossipService],
 })
 export class SelectGossipModule {}

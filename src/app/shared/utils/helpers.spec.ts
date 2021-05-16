@@ -2,7 +2,6 @@ import { getNumberOrString, getPartial } from './helpers';
 import { Conditions } from '../types/conditions.type';
 
 describe('Helpers', () => {
-
   describe('getNumberOrString(value)', () => {
     for (const { id, value, expectedResult } of [
       { id: 1, value: '123', expectedResult: 123 },
@@ -17,9 +16,8 @@ describe('Helpers', () => {
   });
 
   describe('getPartial(value, conditions)', () => {
-
     it('should correctly work', () => {
-      const fields = ['a' , 'b', 'c'];
+      const fields = ['a', 'b', 'c'];
       const input: Partial<Conditions> = {
         a: 1,
         b: 2,
@@ -35,5 +33,4 @@ describe('Helpers', () => {
       expect(getPartial<Conditions>(input, fields)).toEqual(output);
     });
   });
-
 });

@@ -4,12 +4,13 @@ import { NpcTextSelectorBtnComponent } from './npc-text-selector-btn.component';
 import { NpcTextSelectorModule } from './npc-text-selector.module';
 
 describe('NpcTextSelectorBtnComponent', () => {
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ NpcTextSelectorModule ],
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [NpcTextSelectorModule],
+      }).compileComponents();
+    }),
+  );
 
   function setup() {
     const fixture = TestBed.createComponent(NpcTextSelectorBtnComponent);

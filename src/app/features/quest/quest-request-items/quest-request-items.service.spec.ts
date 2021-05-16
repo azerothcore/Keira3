@@ -9,17 +9,17 @@ import { QuestRequestItemsService } from './quest-request-items.service';
 import { QuestHandlerService } from '../quest-handler.service';
 
 describe('QuestRequestItemsService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      { provide: ToastrService, useValue: instance(MockedToastrService) },
-      QuestHandlerService,
-      QuestRequestItemsService,
-    ]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+        QuestHandlerService,
+        QuestRequestItemsService,
+      ],
+    }),
+  );
 
   it('should be created', () => {
     const service: QuestRequestItemsService = TestBed.inject(QuestRequestItemsService);

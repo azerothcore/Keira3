@@ -10,13 +10,8 @@ import { LootTemplateIdComponent } from '@keira-abstract/components/editors/loot
   templateUrl: '../../../shared/abstract/components/editors/loot-template/loot-template-id.component.html',
 })
 export class PickpocketingLootTemplateComponent extends LootTemplateIdComponent<PickpocketingLootTemplate> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: PickpocketingLootTemplateService,
-    public handlerService: CreatureHandlerService,
-  ) {
+  constructor(public editorService: PickpocketingLootTemplateService, public handlerService: CreatureHandlerService) {
     super(editorService, handlerService);
   }
 }
-

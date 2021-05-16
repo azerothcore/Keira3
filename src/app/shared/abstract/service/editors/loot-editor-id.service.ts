@@ -9,8 +9,12 @@ import { MysqlQueryService } from '../../../services/mysql-query.service';
 
 // Extended only by the loot tables that require a template loot id
 export abstract class LootEditorIdService<T extends LootTemplate> extends MultiRowEditorService<T> {
-  get entityTemplateTable(): string { return this._entityTemplateTable; }
-  get entityTemplateLootField(): string { return this._entityTemplateLootField; }
+  get entityTemplateTable(): string {
+    return this._entityTemplateTable;
+  }
+  get entityTemplateLootField(): string {
+    return this._entityTemplateLootField;
+  }
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
@@ -36,9 +40,9 @@ export abstract class LootEditorIdService<T extends LootTemplate> extends MultiR
 
   getLootId(): Observable<{ lootId: number }[]> {
     return this.queryService.query(
-      `SELECT ${this._entityTemplateLootField} AS lootId `
-      + `FROM ${this._entityTemplateTable} `
-      + `WHERE ${this._entityTemplateIdField} = ${this.handlerService.selected}`
+      `SELECT ${this._entityTemplateLootField} AS lootId ` +
+        `FROM ${this._entityTemplateTable} ` +
+        `WHERE ${this._entityTemplateIdField} = ${this.handlerService.selected}`,
     );
   }
 }

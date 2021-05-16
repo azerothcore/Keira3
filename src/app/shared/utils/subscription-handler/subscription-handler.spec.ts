@@ -1,4 +1,3 @@
-
 import { Subscription } from 'rxjs';
 
 import { SubscriptionHandler } from './subscription-handler';

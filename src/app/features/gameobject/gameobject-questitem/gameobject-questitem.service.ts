@@ -8,12 +8,11 @@ import {
   GAMEOBJECT_QUESTITEM_ID,
   GAMEOBJECT_QUESTITEM_ID_2,
   GAMEOBJECT_QUESTITEM_TABLE,
-  GameobjectQuestitem
+  GameobjectQuestitem,
 } from '@keira-types/gameobject-questitem.type';
 
 @Injectable()
 export class GameobjectQuestitemService extends MultiRowEditorService<GameobjectQuestitem> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: GameobjectHandlerService,

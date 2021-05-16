@@ -16,9 +16,7 @@ import { FactionSelectorModule } from '@keira-shared/modules/selectors/faction-s
 import { CreatureSelectorModule } from '@keira-shared/modules/selectors/creature-selector/creature-selector.module';
 
 @NgModule({
-  declarations: [
-    CreatureTemplateComponent,
-  ],
+  declarations: [CreatureTemplateComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -32,11 +30,7 @@ import { CreatureSelectorModule } from '@keira-shared/modules/selectors/creature
     FactionSelectorModule,
     CreatureSelectorModule,
   ],
-  exports: [
-    CreatureTemplateComponent,
-  ],
-  providers: [
-    CreatureTemplateService,
-  ],
+  exports: [CreatureTemplateComponent],
+  providers: [CreatureTemplateService],
 })
 export class CreatureTemplateModule {}

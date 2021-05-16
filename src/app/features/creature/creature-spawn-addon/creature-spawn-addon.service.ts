@@ -7,12 +7,11 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import {
   CREATURE_SPAWN_ADDON_ID_2,
   CREATURE_SPAWN_ADDON_TABLE,
-  CreatureSpawnAddon
+  CreatureSpawnAddon,
 } from '@keira-types/creature-spawn-addon.type';
 
 @Injectable()
 export class CreatureSpawnAddonService extends MultiRowExternalEditorService<CreatureSpawnAddon> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: CreatureHandlerService,
@@ -29,9 +28,9 @@ export class CreatureSpawnAddonService extends MultiRowExternalEditorService<Cre
     );
   }
 
-  selectQuery(id: string|number) {
+  selectQuery(id: string | number) {
     return this.queryService.query<CreatureSpawnAddon>(
-      `SELECT a.* FROM creature AS c INNER JOIN creature_addon AS a ON c.guid = a.guid WHERE c.id = ${id}`
+      `SELECT a.* FROM creature AS c INNER JOIN creature_addon AS a ON c.guid = a.guid WHERE c.id = ${id}`,
     );
   }
 }

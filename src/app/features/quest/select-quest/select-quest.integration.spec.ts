@@ -27,25 +27,19 @@ describe('SelectQuest integration tests', () => {
 
   const value = 1200;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        SelectQuestModule,
-        RouterTestingModule,
-      ],
-      providers: [
-        QuestHandlerService,
-      ]
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [SelectQuestModule, RouterTestingModule],
+        providers: [QuestHandlerService],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of(
-      [{ max: 1 }]
-    ));
+    querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
 
     selectService = TestBed.inject(SelectQuestService);
 
@@ -56,31 +50,28 @@ describe('SelectQuest integration tests', () => {
     fixture.detectChanges();
   });
 
-  it('should correctly initialise', waitForAsync(async () => {
-    await fixture.whenStable();
+  it(
+    'should correctly initialise',
+    waitForAsync(async () => {
+      await fixture.whenStable();
       expect(page.createInput.value).toEqual(`${component.customStartingId}`);
       page.expectNewEntityFree();
-      expect(querySpy).toHaveBeenCalledWith(
-        'SELECT MAX(ID) AS max FROM quest_template;'
-      );
-      expect(page.queryWrapper.innerText).toContain(
-        'SELECT * FROM `quest_template` LIMIT 50'
-      );
-  }));
+      expect(querySpy).toHaveBeenCalledWith('SELECT MAX(ID) AS max FROM quest_template;');
+      expect(page.queryWrapper.innerText).toContain('SELECT * FROM `quest_template` LIMIT 50');
+    }),
+  );
 
-  it('should correctly behave when inserting and selecting free id', waitForAsync(async () => {
-    await fixture.whenStable();
+  it(
+    'should correctly behave when inserting and selecting free id',
+    waitForAsync(async () => {
+      await fixture.whenStable();
       querySpy.calls.reset();
-      querySpy.and.returnValue(of(
-        []
-      ));
+      querySpy.and.returnValue(of([]));
 
       page.setInputValue(page.createInput, value);
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy).toHaveBeenCalledWith(
-        `SELECT * FROM \`quest_template\` WHERE (ID = ${value})`
-      );
+      expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`quest_template\` WHERE (ID = ${value})`);
       page.expectNewEntityFree();
 
       page.clickElement(page.selectNewBtn);
@@ -88,36 +79,46 @@ describe('SelectQuest integration tests', () => {
       expect(navigateSpy).toHaveBeenCalledTimes(1);
       expect(navigateSpy).toHaveBeenCalledWith(['quest/quest-template']);
       page.expectTopBarCreatingNew(value);
-  }));
+    }),
+  );
 
-  it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
-    await fixture.whenStable();
+  it(
+    'should correctly behave when inserting an existing entity',
+    waitForAsync(async () => {
+      await fixture.whenStable();
       querySpy.calls.reset();
-      querySpy.and.returnValue(of(
-        ['mock value']
-      ));
+      querySpy.and.returnValue(of(['mock value']));
 
       page.setInputValue(page.createInput, value);
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy).toHaveBeenCalledWith(
-        `SELECT * FROM \`quest_template\` WHERE (ID = ${value})`
-      );
+      expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`quest_template\` WHERE (ID = ${value})`);
       page.expectEntityAlreadyInUse();
-  }));
+    }),
+  );
 
   for (const { testId, id, name, limit, expectedQuery } of [
     {
-      testId: 1, id: 1200, name: `The People's Militia`, limit: '100', expectedQuery:
-        'SELECT * FROM `quest_template` WHERE (`ID` LIKE \'%1200%\') AND (`LogTitle` LIKE \'%The People\\\'s Militia%\') LIMIT 100'
+      testId: 1,
+      id: 1200,
+      name: `The People's Militia`,
+      limit: '100',
+      expectedQuery:
+        "SELECT * FROM `quest_template` WHERE (`ID` LIKE '%1200%') AND (`LogTitle` LIKE '%The People\\'s Militia%') LIMIT 100",
     },
     {
-      testId: 2, id: '', name: `The People's Militia`, limit: '100', expectedQuery:
-        'SELECT * FROM `quest_template` WHERE (`LogTitle` LIKE \'%The People\\\'s Militia%\') LIMIT 100'
+      testId: 2,
+      id: '',
+      name: `The People's Militia`,
+      limit: '100',
+      expectedQuery: "SELECT * FROM `quest_template` WHERE (`LogTitle` LIKE '%The People\\'s Militia%') LIMIT 100",
     },
     {
-      testId: 3, id: 1200, name: '', limit: '', expectedQuery:
-        'SELECT * FROM `quest_template` WHERE (`ID` LIKE \'%1200%\')'
+      testId: 3,
+      id: 1200,
+      name: '',
+      limit: '',
+      expectedQuery: "SELECT * FROM `quest_template` WHERE (`ID` LIKE '%1200%')",
     },
   ]) {
     it(`searching an existing entity should correctly work [${testId}]`, () => {
@@ -141,9 +142,9 @@ describe('SelectQuest integration tests', () => {
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
     const results: Partial<QuestTemplate>[] = [
-      { id: 1, LogTitle: 'An awesome Quest 1', QuestType: 0, QuestLevel: 1, MinLevel: 10, QuestDescription: ''   },
-      { id: 2, LogTitle: 'An awesome Quest 2', QuestType: 0, QuestLevel: 2, MinLevel: 20, QuestDescription: ''   },
-      { id: 3, LogTitle: 'An awesome Quest 3', QuestType: 0, QuestLevel: 3, MinLevel: 30, QuestDescription: ''   },
+      { id: 1, LogTitle: 'An awesome Quest 1', QuestType: 0, QuestLevel: 1, MinLevel: 10, QuestDescription: '' },
+      { id: 2, LogTitle: 'An awesome Quest 2', QuestType: 0, QuestLevel: 2, MinLevel: 20, QuestDescription: '' },
+      { id: 3, LogTitle: 'An awesome Quest 3', QuestType: 0, QuestLevel: 3, MinLevel: 30, QuestDescription: '' },
     ];
     querySpy.calls.reset();
     querySpy.and.returnValue(of(results));

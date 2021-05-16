@@ -7,12 +7,13 @@ describe('LanguageSelectorBtnComponent', () => {
   let component: LanguageSelectorBtnComponent;
   let fixture: ComponentFixture<LanguageSelectorBtnComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ LanguageSelectorModule ],
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [LanguageSelectorModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(LanguageSelectorBtnComponent);
