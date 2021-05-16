@@ -1,0 +1,99 @@
+<keira-top-bar [handler]="handlerService"></keira-top-bar>
+
+<div class="container-fluid">
+
+  <span *ngIf="editorService.loading">Loading...</span>
+
+  <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
+
+    <div class="content-block">
+      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
+    </div>
+
+    <div class="content-block">
+
+      <form
+        [formGroup]="editorService.form"
+        class="form-group edit-form"
+      >
+
+        <div class="row">
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="guid">guid</label>
+            <i
+              class="fas fa-info-circle ml-1" [placement]="'guid'"
+              [tooltip]="'Link to gameobject.guid'"
+            ></i>
+            <input [formControlName]="'guid'" id="guid" type="number" class="form-control form-control-sm">
+          </div>
+
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="guid">invisibilityType</label>
+            <keira-single-value-selector-btn
+              [control]="editorService.form.controls.invisibilityType"
+              [config]="{ options: INVISIBILITY_TYPE, name: 'invisibilityType' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
+            <input [formControlName]="'invisibilityType'" id="invisibilityType" type="number" class="form-control form-control-sm">
+          </div>
+
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="guid">invisibilityValue</label>
+            <input [formControlName]="'invisibilityValue'" id="invisibilityValue" type="number" class="form-control form-control-sm">
+          </div>
+
+          <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
+            <i class="fas fa-exclamation-triangle"></i>
+            The <strong>{{ editorService.entitySecondIdField }}</strong> must be unique.
+          </div>
+
+        </div>
+
+      </form>
+
+      <div class="row">
+        <div class="col-12">
+
+          <button
+            id="delete-selected-row-btn"
+            class="btn btn-danger btn-sm mr-2"
+            (click)="editorService.deleteSelectedRow()"
+            [disabled]="editorService.selectedRowId === null"
+          >Delete selected row</button>
+
+          <button
+            id="add-new-row-btn"
+            class="btn btn-success btn-sm"
+            (click)="editorService.addNewRow()"
+            disabled
+          >Add new row</button>
+
+          <ngx-datatable
+            id="editor-table"
+            class="bootstrap table table-striped text-center datatable-select"
+            [rows]="editorService.newRows"
+            [headerHeight]="DTCFG.headerHeight"
+            [footerHeight]="DTCFG.footerHeight"
+            [columnMode]="DTCFG.columnMode"
+            [rowHeight]="DTCFG.rowHeight"
+            [selectionType]="DTCFG.selectionType"
+            (select)='editorService.onRowSelection($event)'
+            (keydown.delete)="editorService.deleteSelectedRow()"
+          >
+            <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="guid" prop="guid" [minWidth]="80"></ngx-datatable-column>
+            <ngx-datatable-column name="invisibilityType" prop="invisibilityType"></ngx-datatable-column>
+            <ngx-datatable-column name="invisibilityValue" prop="invisibilityValue"></ngx-datatable-column>
+          </ngx-datatable>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>

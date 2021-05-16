@@ -80,6 +80,7 @@ import { MailLootTemplateComponent } from '../features/other-loots/mail-loot/mai
 import { MailLootHandlerService } from '../features/other-loots/mail-loot/mail-loot-handler.service';
 import { SelectSpellComponent } from '../features/spell/select-spell/select-spell.component';
 import { SpellDbcComponent } from '../features/spell/spell-dbc/spell-dbc.component';
+import { GameobjectSpawnAddonComponent } from '../features/gameobject/gameobject-spawn-addon/gameobject-spawn-addon.component';
 
 const routes: Routes = [
   {
@@ -253,6 +254,11 @@ const routes: Routes = [
       {
         path: 'gameobject-spawn',
         component: GameobjectSpawnComponent,
+        canActivate: [GameobjectHandlerService],
+      },
+      {
+        path: 'gameobject-spawn-addon',
+        component: GameobjectSpawnAddonComponent,
         canActivate: [GameobjectHandlerService],
       },
       {
