@@ -5,7 +5,7 @@ import { SearchButtonComponent } from './search-button.component';
 import { PageObject } from '@keira-testing/page-object';
 
 @Component({
-  template: `<keira-search-button [searchService]="searchService"></keira-search-button>`
+  template: `<keira-search-button [searchService]="searchService"></keira-search-button>`,
 })
 class TestHostComponent {
   @ViewChild(SearchButtonComponent) child: SearchButtonComponent<null>;
@@ -13,17 +13,19 @@ class TestHostComponent {
 }
 
 class EditorButtonsPage extends PageObject<TestHostComponent> {
-  get searchBtn() { return this.query<HTMLButtonElement>('#search-btn'); }
+  get searchBtn() {
+    return this.query<HTMLButtonElement>('#search-btn');
+  }
 }
 
 describe('EditorButtonsComponent', () => {
-
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ SearchButtonComponent, TestHostComponent ]
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [SearchButtonComponent, TestHostComponent],
+      }).compileComponents();
+    }),
+  );
 
   const setup = () => {
     const searchService = {
@@ -59,5 +61,4 @@ describe('EditorButtonsComponent', () => {
     page.clickElement(page.searchBtn);
     expect(searchService.onSearch).toHaveBeenCalledTimes(1);
   });
-
 });

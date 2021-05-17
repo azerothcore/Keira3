@@ -13,9 +13,7 @@ import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/singl
 import { CreatureSpawnAddonService } from './creature-spawn-addon.service';
 
 @NgModule({
-  declarations: [
-    CreatureSpawnAddonComponent,
-  ],
+  declarations: [CreatureSpawnAddonComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -26,11 +24,7 @@ import { CreatureSpawnAddonService } from './creature-spawn-addon.service';
     NgxDatatableModule,
     SingleValueSelectorModule,
   ],
-  exports: [
-    CreatureSpawnAddonComponent,
-  ],
-  providers: [
-    CreatureSpawnAddonService,
-  ],
+  exports: [CreatureSpawnAddonComponent],
+  providers: [CreatureSpawnAddonService],
 })
 export class CreatureSpawnAddonModule {}

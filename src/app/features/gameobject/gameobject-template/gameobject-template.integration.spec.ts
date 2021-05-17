@@ -22,30 +22,30 @@ describe('GameobjectTemplate integration tests', () => {
   let page: GameobjectTemplatePage;
 
   const id = 1234;
-  const expectedFullCreateQuery = 'DELETE FROM `gameobject_template` WHERE (`entry` = ' + id + ');\n' +
-  'INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, ' +
-  '`unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, ' +
-  '`Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, ' +
-  '`Data21`, `Data22`, `Data23`, `AIName`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-  '(' + id + ', 0, 0, \'\', \'\', \'\', \'\', 1, 0, 0, 0, 0, 0, 0, 0, ' +
-  '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', \'\', 0);';
+  const expectedFullCreateQuery =
+    'DELETE FROM `gameobject_template` WHERE (`entry` = ' +
+    id +
+    ');\n' +
+    'INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, ' +
+    '`unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, ' +
+    '`Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, ' +
+    '`Data21`, `Data22`, `Data23`, `AIName`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+    '(' +
+    id +
+    ", 0, 0, '', '', '', '', 1, 0, 0, 0, 0, 0, 0, 0, " +
+    "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', 0);";
 
   const originalEntity = new GameobjectTemplate();
   originalEntity.entry = id;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        GameobjectTemplateModule,
-        RouterTestingModule,
-      ],
-      providers: [
-        GameobjectHandlerService,
-        SaiGameobjectHandlerService,
-      ]
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [GameobjectTemplateModule, RouterTestingModule],
+        providers: [GameobjectHandlerService, SaiGameobjectHandlerService],
+      }).compileComponents();
+    }),
+  );
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(GameobjectHandlerService);
@@ -55,9 +55,7 @@ describe('GameobjectTemplate integration tests', () => {
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(
-      creatingNew ? [] : [originalEntity]
-    ));
+    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
 
     fixture = TestBed.createComponent(GameobjectTemplateComponent);
     component = fixture.componentInstance;
@@ -85,13 +83,18 @@ describe('GameobjectTemplate integration tests', () => {
     });
 
     it('changing a property and executing the query should correctly work', () => {
-      const expectedQuery = 'DELETE FROM `gameobject_template` WHERE (`entry` = ' + id + ');\n' +
-      'INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, ' +
-      '`unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, ' +
-      '`Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, ' +
-      '`Data21`, `Data22`, `Data23`, `AIName`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-      '(' + id + ', 0, 0, \'Helias\', \'\', \'\', \'\', 1, 0, 0, 0, 0, 0, 0, 0, ' +
-      '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', \'\', 0);';
+      const expectedQuery =
+        'DELETE FROM `gameobject_template` WHERE (`entry` = ' +
+        id +
+        ');\n' +
+        'INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, ' +
+        '`unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, ' +
+        '`Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, ' +
+        '`Data21`, `Data22`, `Data23`, `AIName`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+        '(' +
+        id +
+        ", 0, 0, 'Helias', '', '', '', 1, 0, 0, 0, 0, 0, 0, 0, " +
+        "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', 0);";
 
       querySpy.calls.reset();
 
@@ -114,12 +117,13 @@ describe('GameobjectTemplate integration tests', () => {
     });
 
     it('changing all properties and executing the query should correctly work', () => {
-      const expectedQuery = 'UPDATE `gameobject_template` SET `displayId` = 1, `name` = \'2\', `IconName` = \'3\', ' +
-      '`castBarCaption` = \'4\', `unk1` = \'5\', `size` = 6, `Data0` = 7, `Data1` = 8, `Data2` = 9, `Data3` = 10, ' +
-      '`Data4` = 11, `Data5` = 12, `Data6` = 13, `Data7` = 14, `Data8` = 15, `Data9` = 16, `Data10` = 17, `Data11` = 18, ' +
-      '`Data12` = 19, `Data13` = 20, `Data14` = 21, `Data15` = 22, `Data16` = 23, `Data17` = 24, `Data18` = 25, ' +
-      '`Data19` = 26, `Data20` = 27, `Data21` = 28, `Data22` = 29, `Data23` = 30, `AIName` = \'31\', ' +
-      '`ScriptName` = \'32\' WHERE (`entry` = 1234);';
+      const expectedQuery =
+        "UPDATE `gameobject_template` SET `displayId` = 1, `name` = '2', `IconName` = '3', " +
+        "`castBarCaption` = '4', `unk1` = '5', `size` = 6, `Data0` = 7, `Data1` = 8, `Data2` = 9, `Data3` = 10, " +
+        '`Data4` = 11, `Data5` = 12, `Data6` = 13, `Data7` = 14, `Data8` = 15, `Data9` = 16, `Data10` = 17, `Data11` = 18, ' +
+        '`Data12` = 19, `Data13` = 20, `Data14` = 21, `Data15` = 22, `Data16` = 23, `Data17` = 24, `Data18` = 25, ' +
+        "`Data19` = 26, `Data20` = 27, `Data21` = 28, `Data22` = 29, `Data23` = 30, `AIName` = '31', " +
+        "`ScriptName` = '32' WHERE (`entry` = 1234);";
 
       querySpy.calls.reset();
 
@@ -135,44 +139,46 @@ describe('GameobjectTemplate integration tests', () => {
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
 
       page.setInputValueById('name', 'Helias');
-      page.expectDiffQueryToContain(
-        'UPDATE `gameobject_template` SET `name` = \'Helias\' WHERE (`entry` = ' + id + ');'
-      );
+      page.expectDiffQueryToContain("UPDATE `gameobject_template` SET `name` = 'Helias' WHERE (`entry` = " + id + ');');
       page.expectFullQueryToContain('Helias');
 
       page.setInputValueById('Data0', '35');
       page.expectDiffQueryToContain(
-        'UPDATE `gameobject_template` SET `name` = \'Helias\', `Data0` = 35 WHERE (`entry` = ' + id + ');'
+        "UPDATE `gameobject_template` SET `name` = 'Helias', `Data0` = 35 WHERE (`entry` = " + id + ');',
       );
       page.expectFullQueryToContain('Helias');
       page.expectFullQueryToContain('35');
     });
 
-    it('changing a value via SingleValueSelector should correctly work', waitForAsync(async () => {
-      const field = 'type';
-      page.clickElement(page.getSelectorBtn(field));
-      await page.whenReady();
-      page.expectModalDisplayed();
+    it(
+      'changing a value via SingleValueSelector should correctly work',
+      waitForAsync(async () => {
+        const field = 'type';
+        page.clickElement(page.getSelectorBtn(field));
+        await page.whenReady();
+        page.expectModalDisplayed();
 
-      page.clickRowOfDatatableInModal(7);
-      await page.whenReady();
-      page.clickModalSelect();
-      await page.whenReady();
+        page.clickRowOfDatatableInModal(7);
+        await page.whenReady();
+        page.clickModalSelect();
+        await page.whenReady();
 
-      expect(page.getInputById(field).value).toEqual('7');
-      page.expectDiffQueryToContain(
-        'UPDATE `gameobject_template` SET `type` = 7 WHERE (`entry` = ' + id + ');'
-      );
-      page.expectFullQueryToContain(
-        'DELETE FROM `gameobject_template` WHERE (`entry` = ' + id + ');\n' +
-        'INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, ' +
-        '`unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, ' +
-        '`Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, ' +
-        '`Data21`, `Data22`, `Data23`, `AIName`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-        '(' + id + ', 7, 0, \'\', \'\', \'\', \'\', 1, 0, 0, 0, 0, 0, 0, 0, ' +
-        '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', \'\', 0);'
-      );
-    }));
+        expect(page.getInputById(field).value).toEqual('7');
+        page.expectDiffQueryToContain('UPDATE `gameobject_template` SET `type` = 7 WHERE (`entry` = ' + id + ');');
+        page.expectFullQueryToContain(
+          'DELETE FROM `gameobject_template` WHERE (`entry` = ' +
+            id +
+            ');\n' +
+            'INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, ' +
+            '`unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, ' +
+            '`Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, ' +
+            '`Data21`, `Data22`, `Data23`, `AIName`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+            '(' +
+            id +
+            ", 7, 0, '', '', '', '', 1, 0, 0, 0, 0, 0, 0, 0, " +
+            "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', 0);",
+        );
+      }),
+    );
   });
-
 });

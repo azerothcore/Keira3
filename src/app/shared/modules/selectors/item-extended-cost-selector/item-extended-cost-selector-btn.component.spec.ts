@@ -7,12 +7,13 @@ describe('ItemExtendedCostSelectorBtnComponent', () => {
   let component: ItemExtendedCostSelectorBtnComponent;
   let fixture: ComponentFixture<ItemExtendedCostSelectorBtnComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ ItemExtendedCostSelectorModule ],
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ItemExtendedCostSelectorModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ItemExtendedCostSelectorBtnComponent);

@@ -7,19 +7,9 @@ import { MillingLootTemplateService } from './milling-loot-template.service';
 import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.module';
 
 @NgModule({
-  declarations: [
-    MillingLootTemplateComponent,
-  ],
-  imports: [
-    CommonModule,
-    TopBarModule,
-    LootEditorModule,
-  ],
-  exports: [
-    MillingLootTemplateComponent,
-  ],
-  providers: [
-    MillingLootTemplateService,
-  ],
+  declarations: [MillingLootTemplateComponent],
+  imports: [CommonModule, TopBarModule, LootEditorModule],
+  exports: [MillingLootTemplateComponent],
+  providers: [MillingLootTemplateService],
 })
 export class MillingLootTemplateModule {}

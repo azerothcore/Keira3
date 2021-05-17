@@ -13,9 +13,7 @@ import { SelectQuestService } from './select-quest.service';
 import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 
 @NgModule({
-  declarations: [
-    SelectQuestComponent,
-  ],
+  declarations: [SelectQuestComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -26,11 +24,7 @@ import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-
     NgxDatatableModule,
     SearchButtonsModule,
   ],
-  exports: [
-    SelectQuestComponent,
-  ],
-  providers: [
-    SelectQuestService,
-  ],
+  exports: [SelectQuestComponent],
+  providers: [SelectQuestService],
 })
 export class SelectQuestModule {}

@@ -10,10 +10,9 @@ import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 @Component({
   selector: 'keira-quest-request-items',
   templateUrl: './quest-request-items.component.html',
-  styleUrls: ['./quest-request-items.component.scss']
+  styleUrls: ['./quest-request-items.component.scss'],
 })
 export class QuestRequestItemsComponent extends SingleRowEditorComponent<QuestRequestItems> {
-
   public readonly EMOTE = EMOTE;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

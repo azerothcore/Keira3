@@ -9,10 +9,9 @@ import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 @Component({
   selector: 'keira-gameobject-queststarter',
   templateUrl: './gameobject-queststarter.component.html',
-  styleUrls: ['./gameobject-queststarter.component.scss']
+  styleUrls: ['./gameobject-queststarter.component.scss'],
 })
 export class GameobjectQueststarterComponent extends MultiRowEditorComponent<GameobjectQueststarter> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: GameobjectQueststarterService,

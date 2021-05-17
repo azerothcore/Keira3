@@ -10,12 +10,8 @@ import { MailLootHandlerService } from './mail-loot-handler.service';
   templateUrl: '../../../shared/abstract/components/editors/loot-template/loot-template.component.html',
 })
 export class MailLootTemplateComponent extends LootTemplateComponent<MailLootTemplate> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: MailLootTemplateService,
-    public handlerService: MailLootHandlerService,
-  ) {
+  constructor(public editorService: MailLootTemplateService, public handlerService: MailLootHandlerService) {
     super(editorService, handlerService);
   }
 }

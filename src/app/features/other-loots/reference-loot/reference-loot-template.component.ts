@@ -10,12 +10,8 @@ import { ReferenceLootHandlerService } from './reference-loot-handler.service';
   templateUrl: '../../../shared/abstract/components/editors/loot-template/loot-template.component.html',
 })
 export class ReferenceLootTemplateComponent extends LootTemplateComponent<ReferenceLootTemplate> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: ReferenceLootTemplateService,
-    public handlerService: ReferenceLootHandlerService,
-  ) {
+  constructor(public editorService: ReferenceLootTemplateService, public handlerService: ReferenceLootHandlerService) {
     super(editorService, handlerService);
   }
 }

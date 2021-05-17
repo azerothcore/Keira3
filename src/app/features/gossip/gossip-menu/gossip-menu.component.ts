@@ -9,7 +9,7 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 @Component({
   selector: 'keira-gossip-menu',
   templateUrl: './gossip-menu.component.html',
-  styleUrls: ['./gossip-menu.component.scss']
+  styleUrls: ['./gossip-menu.component.scss'],
 })
 export class GossipMenuComponent extends MultiRowEditorComponent<GossipMenu> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

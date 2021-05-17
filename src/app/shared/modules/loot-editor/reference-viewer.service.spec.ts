@@ -8,12 +8,9 @@ import { ReferenceLootTemplate } from '@keira-types/reference-loot-template.type
 import { TableRow } from '@keira-types/general';
 
 describe('ReferenceViewerService', () => {
-
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        LootEditorModule,
-      ]
+      imports: [LootEditorModule],
     });
   });
 
@@ -23,7 +20,7 @@ describe('ReferenceViewerService', () => {
     return { service, queryService };
   };
 
-  it('should be created', done => {
+  it('should be created', (done) => {
     const mockReferenceLoot: ReferenceLootTemplate[] = [new ReferenceLootTemplate()];
     const referenceId = 1234;
     const { service, queryService } = setup();
@@ -33,9 +30,7 @@ describe('ReferenceViewerService', () => {
     service.getReferenceById(referenceId).subscribe((result) => {
       expect(result).toEqual(mockReferenceLoot);
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy).toHaveBeenCalledWith(
-        `SELECT * FROM reference_loot_template WHERE Entry = ${referenceId}`
-      );
+      expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM reference_loot_template WHERE Entry = ${referenceId}`);
       done();
     });
   });

@@ -9,17 +9,17 @@ import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/moc
 import { GossipHandlerService } from '../gossip-handler.service';
 
 describe('GossipMenuService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      { provide: ToastrService, useValue: instance(MockedToastrService) },
-      GossipHandlerService,
-      GossipMenuService,
-    ]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+        GossipHandlerService,
+        GossipMenuService,
+      ],
+    }),
+  );
 
   it('should be created', () => {
     const service: GossipMenuService = TestBed.inject(GossipMenuService);

@@ -16,18 +16,14 @@ describe('SearchSelectorModalComponent', () => {
   let fixture: ComponentFixture<ItemSelectorModalComponent>;
   let searchService: SearchService<ItemTemplate>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        ItemSelectorModule,
-      ],
-      providers: [
-        BsModalRef,
-        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      ],
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ItemSelectorModule],
+        providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     searchService = TestBed.inject(ItemSearchService);
@@ -43,7 +39,7 @@ describe('SearchSelectorModalComponent', () => {
     const value = 'mock-value';
     component['entityIdField'] = field;
 
-    component.onSelect({ selected: [{ [field]: value }]});
+    component.onSelect({ selected: [{ [field]: value }] });
 
     expect(component.value).toEqual(value);
   });

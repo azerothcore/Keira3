@@ -6,16 +6,12 @@ import { TableRow } from '@keira-types/general';
 
 /* istanbul ignore next */ // Note: will be tested in e2e
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SqliteService {
-
   private db;
 
-  constructor(
-    private electronService: ElectronService,
-    private ngZone: NgZone,
-  ) {
+  constructor(private electronService: ElectronService, private ngZone: NgZone) {
     /* istanbul ignore next */
     if (this.electronService.isElectron()) {
       const sqlite = window.require('sqlite3');
@@ -29,11 +25,11 @@ export class SqliteService {
   }
 
   dbQuery<T extends TableRow>(queryString: string): Observable<T[]> {
-    return new Observable<T[]>(subscriber => {
+    return new Observable<T[]>((subscriber) => {
       if (this.db) {
         this.db.all(queryString, this.getQueryCallback(subscriber));
         /* istanbul ignore else */
-      } else /* istanbul ignore next */  if (this.electronService.isElectron()) {
+      } /* istanbul ignore next */ else if (this.electronService.isElectron()) {
         console.error(`sqite db was not defined when trying to run query: ${queryString}`);
       }
     });

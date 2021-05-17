@@ -17,9 +17,7 @@ import { AreaSelectorModule } from '@keira-shared/modules/selectors/area-selecto
 import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
 
 @NgModule({
-  declarations: [
-    GameobjectSpawnComponent,
-  ],
+  declarations: [GameobjectSpawnComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -34,11 +32,7 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
     AreaSelectorModule,
     EditorButtonsModule,
   ],
-  exports: [
-    GameobjectSpawnComponent,
-  ],
-  providers: [
-    GameobjectSpawnService,
-  ],
+  exports: [GameobjectSpawnComponent],
+  providers: [GameobjectSpawnService],
 })
 export class GameobjectSpawnModule {}

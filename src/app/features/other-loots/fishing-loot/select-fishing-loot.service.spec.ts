@@ -8,16 +8,16 @@ import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { FishingLootHandlerService } from './fishing-loot-handler.service';
 
 describe('SelectFishingLootService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      SelectFishingLootService,
-      FishingLootHandlerService,
-    ],
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        SelectFishingLootService,
+        FishingLootHandlerService,
+      ],
+    }),
+  );
 
   it('should be created', () => {
     expect(TestBed.inject(SelectFishingLootService)).toBeTruthy();

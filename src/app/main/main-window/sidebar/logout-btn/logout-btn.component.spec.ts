@@ -9,8 +9,8 @@ import { ModalConfirmComponent } from '@keira-shared/modules/modal-confirm/modal
 import { closeModalsAfterEach } from '@keira-testing/test-helpers';
 
 @NgModule({
-  declarations: [ ModalConfirmComponent ],
-  imports: [ ],
+  declarations: [ModalConfirmComponent],
+  imports: [],
 })
 class TestModule {}
 
@@ -18,20 +18,18 @@ describe('LogoutBtnComponent', () => {
   let component: LogoutBtnComponent;
   let fixture: ComponentFixture<LogoutBtnComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ LogoutBtnComponent ],
-      imports: [
-        ModalModule.forRoot(),
-        TestModule,
-      ],
-    })
-    .compileComponents();
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [LogoutBtnComponent],
+        imports: [ModalModule.forRoot(), TestModule],
+      }).compileComponents();
 
-    fixture = TestBed.createComponent(LogoutBtnComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  }));
+      fixture = TestBed.createComponent(LogoutBtnComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    }),
+  );
 
   it('openModalConfirm() should correctly work', () => {
     const showSpy = spyOn(TestBed.inject(BsModalService), 'show').and.callThrough();

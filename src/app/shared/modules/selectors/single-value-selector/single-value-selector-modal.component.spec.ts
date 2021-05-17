@@ -10,15 +10,14 @@ describe('SingleValueSelectorModalComponent', () => {
 
   const value = 'myValue';
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ SingleValueSelectorModule ],
-      providers: [
-        BsModalRef,
-      ],
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [SingleValueSelectorModule],
+        providers: [BsModalRef],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SingleValueSelectorModalComponent);
@@ -38,7 +37,7 @@ describe('SingleValueSelectorModalComponent', () => {
         { name: 'option1', value: 'some value' },
         { name: 'option2', value },
         { name: 'option3', value: 'some other value' },
-      ]
+      ],
     };
 
     component.ngOnInit();
@@ -47,7 +46,7 @@ describe('SingleValueSelectorModalComponent', () => {
   });
 
   it('onSelect() should properly set the value', () => {
-    component.onSelect({ selected: [ { value }]});
+    component.onSelect({ selected: [{ value }] });
     expect(component.value).toEqual(value);
   });
 });

@@ -8,11 +8,12 @@ import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
-
-  get isSaiUnsaved(): boolean { return this.statusMap[SAI_TABLE]; }
+  get isSaiUnsaved(): boolean {
+    return this.statusMap[SAI_TABLE];
+  }
 
   protected _statusMap = {
     [SAI_TABLE]: false,
@@ -24,25 +25,18 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
   }
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected router: Router,
-    public readonly queryService: MysqlQueryService,
-  ) {
-    super(
-      'smart-ai/editors',
-      router,
-      SAI_ID_FIELDS,
-    );
+  constructor(protected router: Router, public readonly queryService: MysqlQueryService) {
+    super('smart-ai/editors', router, SAI_ID_FIELDS);
   }
 
   selectFromEntity(sourceType: number, entryOrGuid: number) {
     // we are selecting an entity, so we don't know if the SAI exists or not
     this.subscriptions.push(
-      this.queryService.query(
-        `SELECT * FROM smart_scripts WHERE source_type = ${sourceType} AND entryorguid = ${entryOrGuid}`
-      ).subscribe((data) => {
-        this.select(data.length === 0, { source_type: sourceType, entryorguid: entryOrGuid });
-      })
+      this.queryService
+        .query(`SELECT * FROM smart_scripts WHERE source_type = ${sourceType} AND entryorguid = ${entryOrGuid}`)
+        .subscribe((data) => {
+          this.select(data.length === 0, { source_type: sourceType, entryorguid: entryOrGuid });
+        }),
     );
   }
 
@@ -60,7 +54,6 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
     }
 
     switch (selected.source_type) {
-
       case SAI_TYPES.SAI_TYPE_CREATURE:
         return `UPDATE \`creature_template\` SET \`AIName\` = 'SmartAI' WHERE \`entry\` = ${selected.entryorguid};`;
 
@@ -68,8 +61,10 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
         return `UPDATE \`gameobject_template\` SET \`AIName\` = 'SmartGameObjectAI' WHERE \`entry\` = ${selected.entryorguid};`;
 
       case SAI_TYPES.SAI_TYPE_AREATRIGGER:
-        return `DELETE FROM \`areatrigger_scripts\` WHERE \`entry\` = ${selected.entryorguid};\n` +
-          `INSERT INTO \`areatrigger_scripts\` (\`entry\`, \`ScriptName\`) VALUES (${selected.entryorguid}, 'SmartTrigger');`;
+        return (
+          `DELETE FROM \`areatrigger_scripts\` WHERE \`entry\` = ${selected.entryorguid};\n` +
+          `INSERT INTO \`areatrigger_scripts\` (\`entry\`, \`ScriptName\`) VALUES (${selected.entryorguid}, 'SmartTrigger');`
+        );
 
       default:
         return null;
@@ -81,18 +76,16 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
     let query: string;
 
     if (sai.source_type === SAI_TYPES.SAI_TYPE_CREATURE || sai.source_type === SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST) {
-
       if (sai.entryorguid < 0) {
-        query =
-          `SELECT ct.name FROM creature_template AS ct INNER JOIN creature AS c ON c.id = ct.entry WHERE c.guid = ${-sai.entryorguid}`;
+        query = `SELECT ct.name FROM creature_template AS ct INNER JOIN creature AS c ON c.id = ct.entry WHERE c.guid = ${-sai.entryorguid}`;
       } else {
-        const entry = sai.source_type === SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST ? Math.trunc(sai.entryorguid / 100) : sai.entryorguid;
+        const entry =
+          sai.source_type === SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST ? Math.trunc(sai.entryorguid / 100) : sai.entryorguid;
         query = `SELECT name FROM creature_template WHERE entry = ${entry}`;
       }
     } else if (sai.source_type === SAI_TYPES.SAI_TYPE_GAMEOBJECT) {
       if (sai.entryorguid < 0) {
-        query =
-          `SELECT ct.name FROM gameobject_template AS ct INNER JOIN gameobject AS c ON c.id = ct.entry WHERE c.guid = ${-sai.entryorguid}`;
+        query = `SELECT ct.name FROM gameobject_template AS ct INNER JOIN gameobject AS c ON c.id = ct.entry WHERE c.guid = ${-sai.entryorguid}`;
       } else {
         query = `SELECT name FROM gameobject_template WHERE entry = ${sai.entryorguid}`;
       }
@@ -108,7 +101,7 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
           console.error(`Unable to find name for source_type = ${sai.source_type}, entryorguid = ${sai.entryorguid}`);
           return null;
         }
-      })
+      }),
     );
   }
 }

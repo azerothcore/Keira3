@@ -10,18 +10,14 @@ import { OPTION_TYPE } from '@keira-constants/options/gossip-option-type';
 @Component({
   selector: 'keira-gossip-menu-option',
   templateUrl: './gossip-menu-option.component.html',
-  styleUrls: ['./gossip-menu-option.component.scss']
+  styleUrls: ['./gossip-menu-option.component.scss'],
 })
 export class GossipMenuOptionComponent extends MultiRowEditorComponent<GossipMenuOption> {
-
   public readonly OPTION_ICON = OPTION_ICON;
   public readonly OPTION_TYPE = OPTION_TYPE;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: GossipMenuOptionService,
-    public handlerService: GossipHandlerService,
-  ) {
+  constructor(public editorService: GossipMenuOptionService, public handlerService: GossipHandlerService) {
     super(editorService, handlerService);
   }
 

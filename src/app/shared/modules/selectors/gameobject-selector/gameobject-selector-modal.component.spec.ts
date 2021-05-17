@@ -13,16 +13,14 @@ describe('GameobjectSelectorModalComponent', () => {
   let fixture: ComponentFixture<GameobjectSelectorModalComponent>;
   let searchService: GameobjectSearchService;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ GameobjectSelectorModule ],
-      providers: [
-        BsModalRef,
-        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      ],
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [GameobjectSelectorModule],
+        providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     searchService = TestBed.inject(GameobjectSearchService);

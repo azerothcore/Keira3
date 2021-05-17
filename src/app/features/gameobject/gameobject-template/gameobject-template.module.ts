@@ -12,9 +12,7 @@ import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/singl
 import { GameobjectTemplateService } from './gameobject-template.service';
 
 @NgModule({
-  declarations: [
-    GameobjectTemplateComponent,
-  ],
+  declarations: [GameobjectTemplateComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -24,11 +22,7 @@ import { GameobjectTemplateService } from './gameobject-template.service';
     ToastrModule.forRoot(toastrConfig),
     SingleValueSelectorModule,
   ],
-  exports: [
-    GameobjectTemplateComponent,
-  ],
-  providers: [
-    GameobjectTemplateService,
-  ],
+  exports: [GameobjectTemplateComponent],
+  providers: [GameobjectTemplateService],
 })
 export class GameobjectTemplateModule {}

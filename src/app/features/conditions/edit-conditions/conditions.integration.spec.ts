@@ -12,8 +12,12 @@ import { Conditions } from '@keira-types/conditions.type';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 
 class ConditionsPage extends EditorPageObject<ConditionsComponent> {
-  getQuestStateFlagSelector(assert = true) { return this.query(`#queststate-flag-selector`, assert); }
-  getRankMaskFlagSelector(assert = true) { return this.query(`#rankmask-flag-selector`, assert); }
+  getQuestStateFlagSelector(assert = true) {
+    return this.query(`#queststate-flag-selector`, assert);
+  }
+  getRankMaskFlagSelector(assert = true) {
+    return this.query(`#rankmask-flag-selector`, assert);
+  }
 }
 
 describe('Conditions integration tests', () => {
@@ -39,30 +43,33 @@ describe('Conditions integration tests', () => {
     SourceEntry: sourceEntry,
     SourceGroup: sourceGroup,
     SourceId: 0,
-    SourceTypeOrReferenceId: sourceTypeOrReferenceId
+    SourceTypeOrReferenceId: sourceTypeOrReferenceId,
   };
 
-  const expectedFullCreateQuery = 'DELETE FROM `conditions` WHERE (`SourceTypeOrReferenceId` = ' + sourceTypeOrReferenceId + ') AND (`SourceGroup` = ' + sourceGroup + ') AND (`SourceEntry` = ' + sourceEntry + ') AND (`SourceId` = 0) AND (`ElseGroup` = 0) AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0);\n' +
+  const expectedFullCreateQuery =
+    'DELETE FROM `conditions` WHERE (`SourceTypeOrReferenceId` = ' +
+    sourceTypeOrReferenceId +
+    ') AND (`SourceGroup` = ' +
+    sourceGroup +
+    ') AND (`SourceEntry` = ' +
+    sourceEntry +
+    ') AND (`SourceId` = 0) AND (`ElseGroup` = 0) AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0);\n' +
     'INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES\n' +
-    '(1, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', \'\');';
+    "(1, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '');";
 
   const originalEntity = new Conditions();
   originalEntity.SourceTypeOrReferenceId = sourceTypeOrReferenceId;
   originalEntity.SourceGroup = sourceGroup;
   originalEntity.SourceEntry = sourceEntry;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        ConditionsEditorModule,
-        RouterTestingModule,
-      ],
-      providers: [
-        ConditionsHandlerService,
-      ],
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ConditionsEditorModule, RouterTestingModule],
+        providers: [ConditionsHandlerService],
+      }).compileComponents();
+    }),
+  );
 
   function setup(creatingNew: boolean) {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
@@ -73,9 +80,7 @@ describe('Conditions integration tests', () => {
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
-    spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(of(
-      creatingNew ? [] : [originalEntity]
-    ));
+    spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(of(creatingNew ? [] : [originalEntity]));
 
     fixture = TestBed.createComponent(ConditionsComponent);
     component = fixture.componentInstance;
@@ -103,10 +108,13 @@ describe('Conditions integration tests', () => {
     });
 
     it('changing a property and executing the query should correctly work', () => {
-      const expectedQuery = 'DELETE FROM `conditions` WHERE (`SourceTypeOrReferenceId` = 2) AND (`SourceGroup` = 3) AND ' +
-      '(`SourceEntry` = ' + sourceEntry + ') AND (`SourceId` = 0) AND (`ElseGroup` = 0) AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0);\n' +
-      'INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES\n' +
-      '(2, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', \'\');';
+      const expectedQuery =
+        'DELETE FROM `conditions` WHERE (`SourceTypeOrReferenceId` = 2) AND (`SourceGroup` = 3) AND ' +
+        '(`SourceEntry` = ' +
+        sourceEntry +
+        ') AND (`SourceId` = 0) AND (`ElseGroup` = 0) AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0);\n' +
+        'INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES\n' +
+        "(2, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '');";
       querySpy.calls.reset();
 
       page.setSelectValueById('SourceTypeOrReferenceId', 2);
@@ -132,7 +140,6 @@ describe('Conditions integration tests', () => {
     });
   });
 
-
   describe('Editing existing', () => {
     beforeEach(() => setup(false));
 
@@ -143,10 +150,11 @@ describe('Conditions integration tests', () => {
     });
 
     it('changing all properties and executing the query should correctly work', () => {
-      const expectedQuery = 'UPDATE `conditions` SET `SourceTypeOrReferenceId` = \'\', `SourceGroup` = 1, `SourceEntry` = 2, `SourceId` = 3, `ElseGroup` = 4, `ConditionTypeOrReference` = \'\', '
-      + '`ConditionTarget` = 6, `ConditionValue1` = 7, `ConditionValue2` = 8, `ConditionValue3` = 9, `NegativeCondition` = 10, `ErrorType` = 11, `ErrorTextId` = 12, `ScriptName` = \'13\', '
-      + '`Comment` = \'14\' WHERE (`SourceTypeOrReferenceId` = 1) AND (`SourceGroup` = 2) AND (`SourceEntry` = 3) AND (`SourceId` = 0) AND (`ElseGroup` = 0) '
-      + 'AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0)';
+      const expectedQuery =
+        "UPDATE `conditions` SET `SourceTypeOrReferenceId` = '', `SourceGroup` = 1, `SourceEntry` = 2, `SourceId` = 3, `ElseGroup` = 4, `ConditionTypeOrReference` = '', " +
+        "`ConditionTarget` = 6, `ConditionValue1` = 7, `ConditionValue2` = 8, `ConditionValue3` = 9, `NegativeCondition` = 10, `ErrorType` = 11, `ErrorTextId` = 12, `ScriptName` = '13', " +
+        "`Comment` = '14' WHERE (`SourceTypeOrReferenceId` = 1) AND (`SourceGroup` = 2) AND (`SourceEntry` = 3) AND (`SourceId` = 0) AND (`ElseGroup` = 0) " +
+        'AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0)';
       querySpy.calls.reset();
 
       page.changeAllFields(originalEntity, []);
@@ -158,29 +166,49 @@ describe('Conditions integration tests', () => {
     });
 
     it('changing values should correctly update the queries', () => {
-
       page.setInputValueById('SourceGroup', '1');
       page.expectDiffQueryToContain(
-        'UPDATE `conditions` SET `SourceGroup` = 1 WHERE (`SourceTypeOrReferenceId` = ' + sourceTypeOrReferenceId + ') AND (`SourceGroup` = ' + sourceGroup + ') AND (`SourceEntry` = ' + sourceEntry + ') AND (`SourceId` = 0) AND (`ElseGroup` = 0) AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0)'
+        'UPDATE `conditions` SET `SourceGroup` = 1 WHERE (`SourceTypeOrReferenceId` = ' +
+          sourceTypeOrReferenceId +
+          ') AND (`SourceGroup` = ' +
+          sourceGroup +
+          ') AND (`SourceEntry` = ' +
+          sourceEntry +
+          ') AND (`SourceId` = 0) AND (`ElseGroup` = 0) AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0)',
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `conditions` WHERE (`SourceTypeOrReferenceId` = ' + sourceTypeOrReferenceId + ') AND (`SourceGroup` = ' + sourceGroup + ') AND (`SourceEntry` = ' + sourceEntry + ') AND (`SourceId` = 0) AND (`ElseGroup` = 0) AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0);\n' +
-        'INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES\n' +
-        '(1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', \'\');'
+        'DELETE FROM `conditions` WHERE (`SourceTypeOrReferenceId` = ' +
+          sourceTypeOrReferenceId +
+          ') AND (`SourceGroup` = ' +
+          sourceGroup +
+          ') AND (`SourceEntry` = ' +
+          sourceEntry +
+          ') AND (`SourceId` = 0) AND (`ElseGroup` = 0) AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0);\n' +
+          'INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES\n' +
+          "(1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '');",
       );
 
       page.setInputValueById('SourceEntry', '4');
       page.expectDiffQueryToContain(
-        'UPDATE `conditions` SET `SourceGroup` = 1, `SourceEntry` = 4 WHERE (`SourceTypeOrReferenceId` = ' + sourceTypeOrReferenceId + ') AND (`SourceGroup` = ' + sourceGroup + ') AND (`SourceEntry` = ' + sourceEntry + ') AND (`SourceId` = 0) AND (`ElseGroup` = 0) AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0)'
+        'UPDATE `conditions` SET `SourceGroup` = 1, `SourceEntry` = 4 WHERE (`SourceTypeOrReferenceId` = ' +
+          sourceTypeOrReferenceId +
+          ') AND (`SourceGroup` = ' +
+          sourceGroup +
+          ') AND (`SourceEntry` = ' +
+          sourceEntry +
+          ') AND (`SourceId` = 0) AND (`ElseGroup` = 0) AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0)',
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `conditions` WHERE (`SourceTypeOrReferenceId` = ' + sourceTypeOrReferenceId + ') AND (`SourceGroup` = ' + sourceGroup + ') AND (`SourceEntry` = ' + sourceEntry + ') AND (`SourceId` = 0) AND (`ElseGroup` = 0) AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0);\n' +
-        'INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES\n' +
-        '(1, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \'\', \'\');'
+        'DELETE FROM `conditions` WHERE (`SourceTypeOrReferenceId` = ' +
+          sourceTypeOrReferenceId +
+          ') AND (`SourceGroup` = ' +
+          sourceGroup +
+          ') AND (`SourceEntry` = ' +
+          sourceEntry +
+          ') AND (`SourceId` = 0) AND (`ElseGroup` = 0) AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0);\n' +
+          'INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES\n' +
+          "(1, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '');",
       );
     });
-
   });
-
 });
-

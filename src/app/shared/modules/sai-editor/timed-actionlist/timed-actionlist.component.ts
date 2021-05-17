@@ -13,16 +13,14 @@ import { DTCFG } from '@keira-config/datatable.config';
 })
 export class TimedActionlistComponent implements OnChanges {
   public readonly DTCFG = DTCFG;
-  @Input() creatureId: string|number;
+  @Input() creatureId: string | number;
 
   private _timedActionLists$: Observable<SmartScripts[]>;
   get timedActionlists$(): Observable<SmartScripts[]> {
     return this._timedActionLists$;
   }
 
-  constructor(
-    private queryService: MysqlQueryService,
-  ) { }
+  constructor(private queryService: MysqlQueryService) {}
 
   ngOnChanges() {
     this._timedActionLists$ = this.queryService.getTimedActionlists(this.creatureId);

@@ -9,17 +9,17 @@ import { SpellLootTemplateService } from './spell-loot-template.service';
 import { SpellLootHandlerService } from './spell-loot-handler.service';
 
 describe('SpellLootTemplateService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      { provide: ToastrService, useValue: instance(MockedToastrService) },
-      SpellLootHandlerService,
-      SpellLootTemplateService,
-    ]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+        SpellLootHandlerService,
+        SpellLootTemplateService,
+      ],
+    }),
+  );
 
   it('should be created', () => {
     expect(TestBed.inject(SpellLootTemplateService)).toBeTruthy();

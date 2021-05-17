@@ -10,12 +10,8 @@ import { HighlightModule } from 'ngx-highlightjs';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { highlightOptions } from '@keira-config/highlight.config';
 
-
-
 @NgModule({
-  declarations: [
-    SelectSpellComponent
-  ],
+  declarations: [SelectSpellComponent],
   imports: [
     CommonModule,
     TopBarModule,
@@ -23,10 +19,8 @@ import { highlightOptions } from '@keira-config/highlight.config';
     ReactiveFormsModule,
     SearchButtonsModule,
     HighlightModule.forRoot(highlightOptions),
-    NgxDatatableModule
+    NgxDatatableModule,
   ],
-  providers: [
-    SelectSpellService,
-  ],
+  providers: [SelectSpellService],
 })
-export class SelectSpellModule { }
+export class SelectSpellModule {}

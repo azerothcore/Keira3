@@ -11,10 +11,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 
 @NgModule({
-  declarations: [
-    GameobjectSelectorBtnComponent,
-    GameobjectSelectorModalComponent,
-  ],
+  declarations: [GameobjectSelectorBtnComponent, GameobjectSelectorModalComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -23,8 +20,6 @@ import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-
     HighlightModule.forRoot(highlightOptions),
     SearchButtonsModule,
   ],
-  exports: [
-    GameobjectSelectorBtnComponent,
-  ],
+  exports: [GameobjectSelectorBtnComponent],
 })
 export class GameobjectSelectorModule {}

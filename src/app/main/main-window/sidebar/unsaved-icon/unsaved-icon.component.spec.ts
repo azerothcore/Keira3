@@ -6,12 +6,13 @@ describe('UnsavedIconComponent', () => {
   let component: UnsavedIconComponent;
   let fixture: ComponentFixture<UnsavedIconComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ UnsavedIconComponent ]
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [UnsavedIconComponent],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UnsavedIconComponent);

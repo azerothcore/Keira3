@@ -7,12 +7,11 @@ import { SingleRowEditorService } from '@keira-abstract/service/editors/single-r
 import {
   QUEST_OFFER_REWARD_ID,
   QUEST_OFFER_REWARD_TABLE,
-  QuestOfferReward
+  QuestOfferReward,
 } from '@keira-types/quest-offer-reward.type';
 
 @Injectable()
 export class QuestOfferRewardService extends SingleRowEditorService<QuestOfferReward> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: QuestHandlerService,

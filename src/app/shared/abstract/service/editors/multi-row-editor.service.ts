@@ -10,14 +10,22 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   protected FIRST_ROW_START_VALUE = 0;
   protected _originalRows: T[] = [];
   protected _newRows: T[] = [];
-  protected _selectedRowId: string|number;
+  protected _selectedRowId: string | number;
   protected _nextRowId = this.FIRST_ROW_START_VALUE;
   protected _errors: string[] = [];
 
-  get newRows(): T[] { return this._newRows; }
-  get selectedRowId(): string|number { return this._selectedRowId; }
-  get entitySecondIdField(): string { return this._entitySecondIdField; }
-  get errors(): string[] { return this._errors; }
+  get newRows(): T[] {
+    return this._newRows;
+  }
+  get selectedRowId(): string | number {
+    return this._selectedRowId;
+  }
+  get entitySecondIdField(): string {
+    return this._entitySecondIdField;
+  }
+  get errors(): string[] {
+    return this._errors;
+  }
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
@@ -29,14 +37,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
-    super(
-      _entityClass,
-      _entityTable,
-      _entityIdField,
-      handlerService,
-      queryService,
-      toastrService,
-    );
+    super(_entityClass, _entityTable, _entityIdField, handlerService, queryService, toastrService);
     this.initForm();
   }
 
@@ -44,26 +45,26 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     super.initForm();
 
     this.subscriptions.push(
-      this._form.valueChanges.pipe(
-        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
-      ).subscribe(() => {
-        if (!this._loading) {
-          if (this._form.dirty && this.isFormIdUnique()) {
-            this._newRows[this.getSelectedRowIndex()] = this._form.getRawValue();
-            this._newRows = [ ...this._newRows ];
-            this._selectedRowId = this.form.controls[this._entitySecondIdField].value;
-            this.checkRowsCorrectness();
-            this.updateDiffQuery();
-            this.updateFullQuery();
+      this._form.valueChanges
+        .pipe(distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)))
+        .subscribe(() => {
+          if (!this._loading) {
+            if (this._form.dirty && this.isFormIdUnique()) {
+              this._newRows[this.getSelectedRowIndex()] = this._form.getRawValue();
+              this._newRows = [...this._newRows];
+              this._selectedRowId = this.form.controls[this._entitySecondIdField].value;
+              this.checkRowsCorrectness();
+              this.updateDiffQuery();
+              this.updateFullQuery();
+            }
           }
-        }
-      })
+        }),
     );
   }
 
   protected checkRowsCorrectness(): void {}
 
-  private getRowIndex(id: string|number): number {
+  private getRowIndex(id: string | number): number {
     for (let i = 0; i < this._newRows.length; i++) {
       if (id === this._newRows[i][this._entitySecondIdField]) {
         return i;
@@ -77,7 +78,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     return this.getRowIndex(this._selectedRowId);
   }
 
-  protected onReloadSuccessful(data: T[], id: string|number) {
+  protected onReloadSuccessful(data: T[], id: string | number) {
     this.loadNewData(data);
     this._loadedEntityId = id;
     this.updateFullQuery();
@@ -134,7 +135,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     return false;
   }
 
-  onRowSelection({ selected }: { selected: T[]} ): void {
+  onRowSelection({ selected }: { selected: T[] }): void {
     const newId = selected[0][this._entitySecondIdField];
 
     if (newId === this._selectedRowId) {
@@ -152,9 +153,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
       const control = this._form.controls[field];
       /* istanbul ignore else */
       if (control) {
-        control.setValue(
-          this._newRows[index][field]
-        );
+        control.setValue(this._newRows[index][field]);
       } else {
         console.error(`Control '${field}' does not exist!`);
         console.log(`----------- DEBUG CONTROL KEYS:`);
@@ -183,7 +182,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     }
 
     this._newRows.splice(this.getSelectedRowIndex(), 1);
-    this._newRows = [ ...this._newRows ];
+    this._newRows = [...this._newRows];
 
     this._selectedRowId = null;
     this._form.reset();
@@ -203,7 +202,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
       this.addIdToNewRow(newRow);
     }
     newRow[this._entitySecondIdField] = this.getNextFreeRowId();
-    this._newRows = [ ...this._newRows, { ...newRow }];
+    this._newRows = [...this._newRows, { ...newRow }];
 
     this.updateDiffQuery();
     this.updateFullQuery();
@@ -214,8 +213,8 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   isFormIdUnique(): boolean {
     for (const row of this._newRows) {
       if (
-        row[this._entitySecondIdField] !== this._selectedRowId
-        && row[this._entitySecondIdField] === this._form.controls[this._entitySecondIdField].value
+        row[this._entitySecondIdField] !== this._selectedRowId &&
+        row[this._entitySecondIdField] === this._form.controls[this._entitySecondIdField].value
       ) {
         return false;
       }
@@ -225,6 +224,6 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   }
 
   refreshDatatable() {
-    this._newRows = [ ...this._newRows ];
+    this._newRows = [...this._newRows];
   }
 }

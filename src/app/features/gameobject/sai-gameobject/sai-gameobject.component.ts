@@ -7,16 +7,11 @@ import { SaiGameobjectEditorService } from './sai-gameobject-editor.service';
 @Component({
   selector: 'keira-sai-gameobject',
   templateUrl: '../../../shared/modules/sai-editor/sai-editor.component.html',
-  styleUrls: ['../../../shared/modules/sai-editor/sai-editor.component.scss']
+  styleUrls: ['../../../shared/modules/sai-editor/sai-editor.component.scss'],
 })
 export class SaiGameobjectComponent extends SaiEditorComponent {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: SaiGameobjectEditorService,
-    protected handlerService: SaiGameobjectHandlerService,
-  ) {
+  constructor(public editorService: SaiGameobjectEditorService, protected handlerService: SaiGameobjectHandlerService) {
     super(editorService, handlerService);
   }
 }
-

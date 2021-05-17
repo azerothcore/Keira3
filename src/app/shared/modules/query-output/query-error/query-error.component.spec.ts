@@ -6,12 +6,13 @@ describe('QueryErrorComponent', () => {
   let component: QueryErrorComponent;
   let fixture: ComponentFixture<QueryErrorComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ QueryErrorComponent ]
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [QueryErrorComponent],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(QueryErrorComponent);

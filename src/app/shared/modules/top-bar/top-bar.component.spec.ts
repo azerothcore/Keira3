@@ -8,12 +8,13 @@ describe('TopBarComponent', () => {
   let component: TopBarComponent<MockType>;
   let fixture: ComponentFixture<TopBarComponent<MockType>>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ TopBarModule ]
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [TopBarModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TopBarComponent);

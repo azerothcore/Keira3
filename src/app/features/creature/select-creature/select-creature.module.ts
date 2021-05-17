@@ -13,9 +13,7 @@ import { SelectCreatureService } from './select-creature.service';
 import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 
 @NgModule({
-  declarations: [
-    SelectCreatureComponent,
-  ],
+  declarations: [SelectCreatureComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -26,11 +24,7 @@ import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-
     NgxDatatableModule,
     SearchButtonsModule,
   ],
-  exports: [
-    SelectCreatureComponent,
-  ],
-  providers: [
-    SelectCreatureService,
-  ],
+  exports: [SelectCreatureComponent],
+  providers: [SelectCreatureService],
 })
 export class SelectCreatureModule {}

@@ -12,9 +12,7 @@ import { CreatureEquipTemplateService } from './creature-equip-template.service'
 import { IconModule } from '@keira-shared/modules/icon/icon.module';
 
 @NgModule({
-  declarations: [
-    CreatureEquipTemplateComponent,
-  ],
+  declarations: [CreatureEquipTemplateComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -24,11 +22,7 @@ import { IconModule } from '@keira-shared/modules/icon/icon.module';
     ToastrModule.forRoot(toastrConfig),
     IconModule,
   ],
-  exports: [
-    CreatureEquipTemplateComponent,
-  ],
-  providers: [
-    CreatureEquipTemplateService,
-  ],
+  exports: [CreatureEquipTemplateComponent],
+  providers: [CreatureEquipTemplateService],
 })
 export class CreatureEquipTemplateModule {}

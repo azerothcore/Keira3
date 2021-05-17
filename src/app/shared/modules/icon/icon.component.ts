@@ -13,7 +13,7 @@ export class IconComponent extends SubscriptionHandler {
   private readonly DEFAULT_ICON = 'inv_misc_questionmark';
   private _iconId: string = this.DEFAULT_ICON;
 
-  @Input() size: 'small'|'medium'|'large' = 'medium';
+  @Input() size: 'small' | 'medium' | 'large' = 'medium';
   @Input() set itemId(itemId: string | number) {
     if (!!itemId) {
       this.subscriptions.push(this.service.getIconByItemId(itemId).subscribe(this.setIcon.bind(this)));
@@ -35,15 +35,11 @@ export class IconComponent extends SubscriptionHandler {
     }
   }
 
-
   get iconLink(): string {
     return `https://wow.zamimg.com/images/wow/icons/${this.size}/${this._iconId}.jpg`;
   }
 
-  constructor(
-    private readonly service: IconService,
-    private readonly cd: ChangeDetectorRef,
-  ) {
+  constructor(private readonly service: IconService, private readonly cd: ChangeDetectorRef) {
     super();
   }
 

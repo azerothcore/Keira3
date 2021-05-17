@@ -12,17 +12,13 @@ import { SmartScripts } from '@keira-types/smart-scripts.type';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { QuestReputationReward } from 'app/features/quest/quest-preview/quest-preview.model';
 
-declare const squel: Squel & {flavour: null};
+declare const squel: Squel & { flavour: null };
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MysqlQueryService extends QueryService {
-
-  constructor(
-    private mysqlService: MysqlService,
-    private configService: ConfigService,
-  ) {
+  constructor(private mysqlService: MysqlService, private configService: ConfigService) {
     super();
   }
 
@@ -32,30 +28,21 @@ export class MysqlQueryService extends QueryService {
 
   query<T extends TableRow>(queryString: string, values?: string[]): Observable<T[]> {
     return this.mysqlService.dbQuery<T>(queryString, values).pipe(
-      tap(val => {
+      tap((val) => {
         if (this.configService.debugMode) {
           console.log(`\n${queryString}`);
           console.log(val);
         }
       }),
-      map(val => val?.results),
+      map((val) => val?.results),
     );
   }
 
-  selectAll<T extends TableRow>(
-    table: string,
-    idField: string,
-    idValue: string|number,
-  ): Observable<T[]> {
-    return this.query<T>(
-      squel.select(squelConfig).from(table).where(`${idField} = ${idValue}`).toString()
-    );
+  selectAll<T extends TableRow>(table: string, idField: string, idValue: string | number): Observable<T[]> {
+    return this.query<T>(squel.select(squelConfig).from(table).where(`${idField} = ${idValue}`).toString());
   }
 
-  selectAllMultipleKeys<T extends TableRow>(
-    table: string,
-    row: Partial<T>,
-  ): Observable<T[]> {
+  selectAllMultipleKeys<T extends TableRow>(table: string, row: Partial<T>): Observable<T[]> {
     const query = squel.select(squelConfig).from(table);
 
     for (const key in row) {
@@ -69,20 +56,17 @@ export class MysqlQueryService extends QueryService {
   }
 
   getMaxId(table: string, idField: string): Observable<MaxRow[]> {
-    return this.query<MaxRow>(
-      `SELECT MAX(${idField}) AS max FROM ${table};`
-    );
+    return this.query<MaxRow>(`SELECT MAX(${idField}) AS max FROM ${table};`);
   }
 
   // UPDATE query without WHERE
   private getUpdateQueryBase<T extends TableRow>(
-    tableName: string,  // the name of the table (example: 'creature_template')
-    currentRow: T,      // object of the original row
-    newRow: T,          // object of the new row
+    tableName: string, // the name of the table (example: 'creature_template')
+    currentRow: T, // object of the original row
+    newRow: T, // object of the new row
   ): Update {
     let diff = false;
-    const query = squel.update(squelConfig)
-      .table(tableName);
+    const query = squel.update(squelConfig).table(tableName);
 
     for (const key in currentRow) {
       /* istanbul ignore else */
@@ -99,10 +83,10 @@ export class MysqlQueryService extends QueryService {
 
   // Tracks difference between two row objects and generate UPDATE query
   getUpdateQuery<T extends TableRow>(
-    tableName: string,  // the name of the table (example: 'creature_template')
+    tableName: string, // the name of the table (example: 'creature_template')
     primaryKey: string, // the key that uniquely identifies the row in the table
-    currentRow: T,      // object of the original row
-    newRow: T,          // object of the new row
+    currentRow: T, // object of the original row
+    newRow: T, // object of the new row
   ): string {
     const query = this.getUpdateQueryBase(tableName, currentRow, newRow);
 
@@ -114,11 +98,7 @@ export class MysqlQueryService extends QueryService {
     return `${query.toString()};`;
   }
 
-  private getRow<T extends TableRow>(
-    key: string,
-    object: T,
-    array: T[],
-  ): T {
+  private getRow<T extends TableRow>(key: string, object: T, array: T[]): T {
     for (let i = 0; i < array.length; i++) {
       if (array[i][key] === object[key]) {
         return array[i];
@@ -131,7 +111,7 @@ export class MysqlQueryService extends QueryService {
     key: string,
     currentRows: T[],
     newRows: T[],
-    involvedRows: (string|number)[],
+    involvedRows: (string | number)[],
     addedOrEditedRows: T[],
   ): void {
     for (let i = 0; i < currentRows.length; i++) {
@@ -151,7 +131,7 @@ export class MysqlQueryService extends QueryService {
     key: string,
     currentRows: T[],
     newRows: T[],
-    involvedRows: (string|number)[],
+    involvedRows: (string | number)[],
     addedOrEditedRows: T[],
   ): void {
     for (let i = 0; i < newRows.length; i++) {
@@ -184,14 +164,15 @@ export class MysqlQueryService extends QueryService {
 
   // Tracks difference between two groups of rows (with TWO keys) and generate DELETE/INSERT query
   getDiffDeleteInsertTwoKeysQuery<T extends TableRow>(
-    tableName: string,            // the name of the table (example: 'creature_loot_template')
-    primaryKey1: string|string[], // first  primary key (example: 'Entry' or ['source_type', 'entryorguid'])
-    primaryKey2: string,          // second primary key (example: 'Item')
-    currentRows: T[],             // object of the original rows
-    newRows: T[],                 // array of the new rows
+    tableName: string, // the name of the table (example: 'creature_loot_template')
+    primaryKey1: string | string[], // first  primary key (example: 'Entry' or ['source_type', 'entryorguid'])
+    primaryKey2: string, // second primary key (example: 'Item')
+    currentRows: T[], // object of the original rows
+    newRows: T[], // array of the new rows
   ): string {
-
-    if (!newRows || !currentRows) { return ''; }
+    if (!newRows || !currentRows) {
+      return '';
+    }
     if (newRows.length === 0 && currentRows.length === 0) {
       return '';
     }
@@ -208,13 +189,13 @@ export class MysqlQueryService extends QueryService {
       }
     }
 
-    const involvedRows: (string|number)[] = []; // -> needed for DELETE query
-    const addedOrEditedRows: T[] = [];          // -> needed for INSERT query
+    const involvedRows: (string | number)[] = []; // -> needed for DELETE query
+    const addedOrEditedRows: T[] = []; // -> needed for INSERT query
 
     this.findEditedAndDeletedRows(primaryKey2, currentRows, newRows, involvedRows, addedOrEditedRows);
     this.findAddedRows(primaryKey2, currentRows, newRows, involvedRows, addedOrEditedRows);
 
-    if ( involvedRows.length === 0 ) {
+    if (involvedRows.length === 0) {
       return '';
     }
     const insertQuery: Insert = squel.insert(squelConfig).into(tableName);
@@ -235,20 +216,22 @@ export class MysqlQueryService extends QueryService {
 
   // Tracks difference between two groups of rows (with ONE key) and generate DELETE/INSERT query
   getDiffDeleteInsertOneKeyQuery<T extends TableRow>(
-    tableName: string,  // the name of the table (example: 'creature_addon')
+    tableName: string, // the name of the table (example: 'creature_addon')
     primaryKey: string, // name of the primary key (example: 'guid')
-    currentRows: T[],   // object of the original rows
-    newRows: T[],       // array of the new rows
+    currentRows: T[], // object of the original rows
+    newRows: T[], // array of the new rows
   ): string {
-    if (!newRows || !currentRows) { return ''; }
+    if (!newRows || !currentRows) {
+      return '';
+    }
 
-    const involvedRows: (string|number)[] = []; // -> needed for DELETE query
-    const addedOrEditedRows: T[] = [];          // -> needed for INSERT query
+    const involvedRows: (string | number)[] = []; // -> needed for DELETE query
+    const addedOrEditedRows: T[] = []; // -> needed for INSERT query
 
     this.findEditedAndDeletedRows(primaryKey, currentRows, newRows, involvedRows, addedOrEditedRows);
     this.findAddedRows(primaryKey, currentRows, newRows, involvedRows, addedOrEditedRows);
 
-    if ( involvedRows.length === 0 ) {
+    if (involvedRows.length === 0) {
       return '';
     }
 
@@ -263,15 +246,16 @@ export class MysqlQueryService extends QueryService {
 
   // Generates the full DELETE/INSERT query of a group of rows using one or two keys
   getFullDeleteInsertQuery<T extends TableRow>(
-    tableName: string,          // the name of the table (example: 'creature_loot_template')
-    rows: T[],                  // array of the new rows
-    primaryKey: string = null,  // first primary key (example: 'Entry'), it will be used to generate the DELETE statement for ALL rows
+    tableName: string, // the name of the table (example: 'creature_loot_template')
+    rows: T[], // array of the new rows
+    primaryKey: string = null, // first primary key (example: 'Entry'), it will be used to generate the DELETE statement for ALL rows
     primaryKey2: string = null, // the second primary key, it will be used to generate the DELETE statement for SPECIFIC rows
-    grouped: boolean = false,   // whether the primaryKey2 is different for each row (e.g. primaryKey2='Item' in `creature_loot_template`)
-                                // or is the same for all rows (e.g. primaryKey='entryorguid', primaryKey2='source_type' in `smart_scripts`)
+    grouped: boolean = false, // whether the primaryKey2 is different for each row (e.g. primaryKey2='Item' in `creature_loot_template`)
+    // or is the same for all rows (e.g. primaryKey='entryorguid', primaryKey2='source_type' in `smart_scripts`)
   ) {
-
-    if (!rows || rows.length === 0) { return ''; }
+    if (!rows || rows.length === 0) {
+      return '';
+    }
 
     let deleteCondition: string = '';
 
@@ -285,7 +269,7 @@ export class MysqlQueryService extends QueryService {
       if (grouped) {
         deleteCondition += '`' + primaryKey2 + '` = ' + rows[0][primaryKey2];
       } else {
-        const ids = rows.map(row => row[primaryKey2]);
+        const ids = rows.map((row) => row[primaryKey2]);
         deleteCondition += '`' + primaryKey2 + '` IN (' + ids.join(', ') + ')';
       }
     }
@@ -300,8 +284,8 @@ export class MysqlQueryService extends QueryService {
 
   private addWhereConditionsToQuery<T extends TableRow>(
     query: Delete | Update, // squel query object
-    row: T,                 // the row, it MUST contain ALL the primaryKeys
-    primaryKeys: string[],  // array of the primary keys
+    row: T, // the row, it MUST contain ALL the primaryKeys
+    primaryKeys: string[], // array of the primary keys
   ) {
     for (const key of primaryKeys) {
       query.where('`' + key + '` = ' + row[key]);
@@ -310,9 +294,9 @@ export class MysqlQueryService extends QueryService {
 
   // Generates the full UPDATE query of ONE row using more than 2 keys
   getUpdateMultipleKeysQuery<T extends TableRow>(
-    tableName: string,     // the name of the table (example: 'conditions')
-    currentRow: T,        // the original row, it MUST contain ALL the primaryKeys
-    newRow: T,             // the original row, it MUST contain ALL the primaryKeys
+    tableName: string, // the name of the table (example: 'conditions')
+    currentRow: T, // the original row, it MUST contain ALL the primaryKeys
+    newRow: T, // the original row, it MUST contain ALL the primaryKeys
     primaryKeys: string[], // array of the primary keys
   ) {
     const updateQuery: Update = this.getUpdateQueryBase(tableName, currentRow, newRow);
@@ -325,8 +309,8 @@ export class MysqlQueryService extends QueryService {
 
   // Generates the DELETE query of ONE row using more than 2 keys
   getDeleteMultipleKeysQuery<T extends TableRow>(
-    tableName: string,     // the name of the table (example: 'conditions')
-    row: T,                // the row, it MUST contain ALL the primaryKeys
+    tableName: string, // the name of the table (example: 'conditions')
+    row: T, // the row, it MUST contain ALL the primaryKeys
     primaryKeys: string[], // array of the primary keys (example: ['SourceTypeOrReferenceId', 'SourceGroup', 'SourceEntry'])
   ) {
     const deleteQuery: Delete = squel.delete(squelConfig).from(tableName);
@@ -336,9 +320,9 @@ export class MysqlQueryService extends QueryService {
 
   // Generates the full DELETE/INSERT query of ONE row using more than 2 keys
   getFullDeleteInsertMultipleKeysQuery<T extends TableRow>(
-    tableName: string,     // the name of the table (example: 'conditions')
-    currentRow: T,        // the original row, it MUST contain ALL the primaryKeys
-    newRow: T,             // the original row, it MUST contain ALL the primaryKeys
+    tableName: string, // the name of the table (example: 'conditions')
+    currentRow: T, // the original row, it MUST contain ALL the primaryKeys
+    newRow: T, // the original row, it MUST contain ALL the primaryKeys
     primaryKeys: string[], // array of the primary keys
   ) {
     const insertQuery: Insert = squel.insert(squelConfig).into(tableName).setFieldsRows([newRow]);
@@ -350,71 +334,117 @@ export class MysqlQueryService extends QueryService {
   getTimedActionlists(creatureId: string | number): Observable<SmartScripts[]> {
     const startId = +creatureId * 100;
     return this.query<SmartScripts>(
-      `SELECT * FROM smart_scripts WHERE source_type = 9 AND entryorguid >= ${startId} AND entryorguid < ${startId + 100}`
+      `SELECT * FROM smart_scripts WHERE source_type = 9 AND entryorguid >= ${startId} AND entryorguid < ${
+        startId + 100
+      }`,
     );
   }
 
-  getCreatureNameById(id: string|number): Promise<string> {
-    return this.queryValueToPromiseCached('getCreatureNameById', String(id), `SELECT name AS v FROM creature_template WHERE entry = ${id}`);
-  }
-
-  getCreatureNameByGuid(guid: string|number): Promise<string> {
-    return this.queryValueToPromiseCached('getCreatureNameByGuid', String(guid), `SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id WHERE c.guid = ${guid}`);
-  }
-
-  getGameObjectNameById(id: string|number): Promise<string> {
-    return this.queryValueToPromiseCached('getGameObjectNameById', String(id), `SELECT name AS v FROM gameobject_template WHERE entry = ${id}`);
-  }
-
-  getGameObjectNameByGuid(guid: string|number): Promise<string> {
-    return this.queryValueToPromiseCached('getGameObjectNameByGuid', String(guid), `SELECT name AS v FROM gameobject_template AS gt INNER JOIN gameobject AS g ON gt.entry = g.id WHERE g.guid = ${guid}`);
-  }
-
-  getQuestTitleById(id: string|number): Promise<string> {
-    return this.queryValueToPromiseCached('getQuestTitleById', String(id), `SELECT LogTitle AS v FROM quest_template WHERE ID = ${id}`);
-  }
-
-  getPrevQuestById(id: string|number): Promise<string> {
-    return this.queryValueToPromiseCached('getPrevQuestById', String(id), `SELECT PrevQuestID AS v FROM quest_template_addon WHERE id = ${id}`);
-  }
-
-  getNextQuestById(id: string|number, usingPrev = false): Promise<string> {
-    return usingPrev
-      ? this.queryValueToPromiseCached('getNextQuest1', String(id), `SELECT id AS v FROM quest_template_addon WHERE PrevQuestID = ${id}`)
-      : this.queryValueToPromiseCached('getNextQuest2', String(id), `SELECT NextQuestID AS v FROM quest_template_addon WHERE id = ${id}`);
-  }
-
-  getItemByStartQuest(id: string|number): Promise<string> {
+  getCreatureNameById(id: string | number): Promise<string> {
     return this.queryValueToPromiseCached(
-      'getItemByStartQuest', String(id), `SELECT entry AS v FROM item_template WHERE startquest = ${id}`
+      'getCreatureNameById',
+      String(id),
+      `SELECT name AS v FROM creature_template WHERE entry = ${id}`,
     );
   }
 
-  getItemNameByStartQuest(id: string|number): Promise<string> {
-    return this.queryValueToPromiseCached('getItemNameByStartQuest', String(id), `SELECT name AS v FROM item_template WHERE startquest = ${id}`);
+  getCreatureNameByGuid(guid: string | number): Promise<string> {
+    return this.queryValueToPromiseCached(
+      'getCreatureNameByGuid',
+      String(guid),
+      `SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id WHERE c.guid = ${guid}`,
+    );
   }
 
-  getItemNameById(id: string|number): Promise<string> {
-    return this.queryValueToPromiseCached('getItemNameById', String(id), `SELECT name AS v FROM item_template WHERE entry = ${id}`);
+  getGameObjectNameById(id: string | number): Promise<string> {
+    return this.queryValueToPromiseCached(
+      'getGameObjectNameById',
+      String(id),
+      `SELECT name AS v FROM gameobject_template WHERE entry = ${id}`,
+    );
   }
 
-  getDisplayIdByItemId(id: string|number): Observable<string> {
+  getGameObjectNameByGuid(guid: string | number): Promise<string> {
+    return this.queryValueToPromiseCached(
+      'getGameObjectNameByGuid',
+      String(guid),
+      `SELECT name AS v FROM gameobject_template AS gt INNER JOIN gameobject AS g ON gt.entry = g.id WHERE g.guid = ${guid}`,
+    );
+  }
+
+  getQuestTitleById(id: string | number): Promise<string> {
+    return this.queryValueToPromiseCached(
+      'getQuestTitleById',
+      String(id),
+      `SELECT LogTitle AS v FROM quest_template WHERE ID = ${id}`,
+    );
+  }
+
+  getPrevQuestById(id: string | number): Promise<string> {
+    return this.queryValueToPromiseCached(
+      'getPrevQuestById',
+      String(id),
+      `SELECT PrevQuestID AS v FROM quest_template_addon WHERE id = ${id}`,
+    );
+  }
+
+  getNextQuestById(id: string | number, usingPrev = false): Promise<string> {
+    return usingPrev
+      ? this.queryValueToPromiseCached(
+          'getNextQuest1',
+          String(id),
+          `SELECT id AS v FROM quest_template_addon WHERE PrevQuestID = ${id}`,
+        )
+      : this.queryValueToPromiseCached(
+          'getNextQuest2',
+          String(id),
+          `SELECT NextQuestID AS v FROM quest_template_addon WHERE id = ${id}`,
+        );
+  }
+
+  getItemByStartQuest(id: string | number): Promise<string> {
+    return this.queryValueToPromiseCached(
+      'getItemByStartQuest',
+      String(id),
+      `SELECT entry AS v FROM item_template WHERE startquest = ${id}`,
+    );
+  }
+
+  getItemNameByStartQuest(id: string | number): Promise<string> {
+    return this.queryValueToPromiseCached(
+      'getItemNameByStartQuest',
+      String(id),
+      `SELECT name AS v FROM item_template WHERE startquest = ${id}`,
+    );
+  }
+
+  getItemNameById(id: string | number): Promise<string> {
+    return this.queryValueToPromiseCached(
+      'getItemNameById',
+      String(id),
+      `SELECT name AS v FROM item_template WHERE entry = ${id}`,
+    );
+  }
+
+  getDisplayIdByItemId(id: string | number): Observable<string> {
     return !!id
-      ? fromPromise(this.queryValueToPromiseCached(
-        'getDisplayIdByItemId',
-        String(id),
-        `SELECT displayid AS v FROM item_template WHERE entry = ${id}`,
-      ))
+      ? fromPromise(
+          this.queryValueToPromiseCached(
+            'getDisplayIdByItemId',
+            String(id),
+            `SELECT displayid AS v FROM item_template WHERE entry = ${id}`,
+          ),
+        )
       : of(null);
   }
 
   // Note: at least one param should be defined
   getQuestTitleByCriteria(
-    requiredNpcOrGo1: string|number|null,
-    requiredNpcOrGo2: string|number|null,
-    requiredNpcOrGo3: string|number|null,
-    requiredNpcOrGo4: string|number|null,
-    requiredSpellCast1: string|number|null = null,
+    requiredNpcOrGo1: string | number | null,
+    requiredNpcOrGo2: string | number | null,
+    requiredNpcOrGo3: string | number | null,
+    requiredNpcOrGo4: string | number | null,
+    requiredSpellCast1: string | number | null = null,
   ): Promise<string> {
     const query = squel.select(squelConfig).fields({ LogTitle: 'v' }).from('quest_template');
 
@@ -438,15 +468,26 @@ export class MysqlQueryService extends QueryService {
   }
 
   getReputationRewardByFaction(id: string | number): Promise<QuestReputationReward[]> {
-    return this.queryToPromiseCached<QuestReputationReward>('getReputationRewardByFaction', String(id), `SELECT * FROM reputation_reward_rate WHERE faction = ${id}`);
+    return this.queryToPromiseCached<QuestReputationReward>(
+      'getReputationRewardByFaction',
+      String(id),
+      `SELECT * FROM reputation_reward_rate WHERE faction = ${id}`,
+    );
   }
 
-  getText0ById(id: string|number): Promise<string> {
-    return this.queryValueToPromiseCached('getText0ById', String(id), `SELECT text0_0 AS v FROM npc_text WHERE ID = ${id}`);
+  getText0ById(id: string | number): Promise<string> {
+    return this.queryValueToPromiseCached(
+      'getText0ById',
+      String(id),
+      `SELECT text0_0 AS v FROM npc_text WHERE ID = ${id}`,
+    );
   }
 
-  getText1ById(id: string|number): Promise<string> {
-    return this.queryValueToPromiseCached('getText1ById', String(id), `SELECT text0_1 AS v FROM npc_text WHERE ID = ${id}`);
+  getText1ById(id: string | number): Promise<string> {
+    return this.queryValueToPromiseCached(
+      'getText1ById',
+      String(id),
+      `SELECT text0_1 AS v FROM npc_text WHERE ID = ${id}`,
+    );
   }
-
 }

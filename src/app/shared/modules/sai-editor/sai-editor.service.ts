@@ -8,12 +8,13 @@ import { MysqlQueryService } from '../../services/mysql-query.service';
 import { SaiCommentGeneratorService } from '@keira-shared/modules/sai-editor/sai-comment-generator.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScripts> {
-
   protected _errorLinkedEvent = false;
-  get errorLinkedEvent() { return this._errorLinkedEvent; }
+  get errorLinkedEvent() {
+    return this._errorLinkedEvent;
+  }
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
@@ -22,15 +23,7 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
     protected toastrService: ToastrService,
     protected saiCommentGeneratorService: SaiCommentGeneratorService,
   ) {
-    super(
-      SmartScripts,
-      SAI_TABLE,
-      SAI_ID_FIELDS,
-      SAI_ID_2,
-      handlerService,
-      queryService,
-      toastrService,
-    );
+    super(SmartScripts, SAI_TABLE, SAI_ID_FIELDS, SAI_ID_2, handlerService, queryService, toastrService);
   }
 
   protected updateFullQuery(): void {
@@ -74,7 +67,9 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
     for (const row of this.newRows) {
       if (links.has(row.id) && row.event_type !== 61) {
         this._errorLinkedEvent = true;
-        this._errors.push(`ERROR: the SAI (id: ${row.id}) is being linked by another event so it must have Event type "61 - LINK"`);
+        this._errors.push(
+          `ERROR: the SAI (id: ${row.id}) is being linked by another event so it must have Event type "61 - LINK"`,
+        );
       }
 
       links.delete(row.id);
@@ -83,7 +78,6 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
     if (links.size !== 0) {
       this._errors.push(`ERROR: non-existing links: ${Array.from(links).join(' ')}`);
     }
-
   }
 
   protected onRowSelected() {

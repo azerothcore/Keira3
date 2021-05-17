@@ -12,7 +12,6 @@ import { CREATURE_TEMPLATE_RESISTANCE_SCHOOL } from '@keira-constants/options/cr
   templateUrl: './creature-template-resistance.component.html',
 })
 export class CreatureTemplateResistanceComponent extends MultiRowEditorComponent<CreatureTemplateResistance> {
-
   public get docUrl(): string {
     return this.WIKI_BASE_URL + CREATURE_TEMPLATE_RESISTANCE_TABLE;
   }
@@ -20,10 +19,7 @@ export class CreatureTemplateResistanceComponent extends MultiRowEditorComponent
   public readonly CREATURE_TEMPLATE_RESISTANCE_SCHOOL = CREATURE_TEMPLATE_RESISTANCE_SCHOOL;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: CreatureTemplateResistanceService,
-    public handlerService: CreatureHandlerService,
-  ) {
+  constructor(public editorService: CreatureTemplateResistanceService, public handlerService: CreatureHandlerService) {
     super(editorService, handlerService);
   }
 }

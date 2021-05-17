@@ -7,12 +7,13 @@ describe('MapSelectorBtnComponent', () => {
   let component: MapSelectorBtnComponent;
   let fixture: ComponentFixture<MapSelectorBtnComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ MapSelectorModule ],
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [MapSelectorModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MapSelectorBtnComponent);

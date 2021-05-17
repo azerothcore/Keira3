@@ -11,11 +11,21 @@ import { DashboardModule } from './dashboard.module';
 import { MysqlService } from '@keira-shared/services/mysql.service';
 
 class DashboardComponentPage extends PageObject<DashboardComponent> {
-  get coreVersion() { return this.query<HTMLTableCellElement>('#core-version'); }
-  get coreRevision() { return this.query<HTMLTableCellElement>('#core-revision'); }
-  get dbVersion() { return this.query<HTMLTableCellElement>('#db-version'); }
-  get dbWorldVersion() { return this.query<HTMLTableCellElement>('#db-world-version'); }
-  get dbWarning() { return this.query<HTMLDivElement>('#database-warning', false); }
+  get coreVersion() {
+    return this.query<HTMLTableCellElement>('#core-version');
+  }
+  get coreRevision() {
+    return this.query<HTMLTableCellElement>('#core-revision');
+  }
+  get dbVersion() {
+    return this.query<HTMLTableCellElement>('#db-version');
+  }
+  get dbWorldVersion() {
+    return this.query<HTMLTableCellElement>('#db-world-version');
+  }
+  get dbWarning() {
+    return this.query<HTMLDivElement>('#database-warning', false);
+  }
 }
 
 describe('DashboardComponent', () => {
@@ -31,20 +41,19 @@ describe('DashboardComponent', () => {
   };
   const worldDbVersion = '2019_02_17_02';
   const versionDbRow: VersionDbRow = {
-    'sql_rev': 123,
-    'required_rev': null,
+    sql_rev: 123,
+    required_rev: null,
     [worldDbVersion]: null,
   };
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ DashboardModule ],
-      providers: [
-        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      ]
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [DashboardModule],
+        providers: [{ provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     when(MockedMysqlQueryService.query('SELECT * FROM version')).thenReturn(of([versionRow]));

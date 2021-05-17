@@ -9,17 +9,17 @@ import { GameobjectQueststarterService } from './gameobject-queststarter.service
 import { QuestHandlerService } from '../quest-handler.service';
 
 describe('GameobjectQueststarterService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      { provide: ToastrService, useValue: instance(MockedToastrService) },
-      QuestHandlerService,
-      GameobjectQueststarterService,
-    ]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+        QuestHandlerService,
+        GameobjectQueststarterService,
+      ],
+    }),
+  );
 
   it('should be created', () => {
     const service: GameobjectQueststarterService = TestBed.inject(GameobjectQueststarterService);

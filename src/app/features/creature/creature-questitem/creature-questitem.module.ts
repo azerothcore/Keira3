@@ -14,9 +14,7 @@ import { IconModule } from '@keira-shared/modules/icon/icon.module';
 import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
 
 @NgModule({
-  declarations: [
-    CreatureQuestitemComponent,
-  ],
+  declarations: [CreatureQuestitemComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -28,11 +26,7 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
     IconModule,
     EditorButtonsModule,
   ],
-  exports: [
-    CreatureQuestitemComponent,
-  ],
-  providers: [
-    CreatureQuestitemService,
-  ],
+  exports: [CreatureQuestitemComponent],
+  providers: [CreatureQuestitemService],
 })
 export class CreatureQuestitemModule {}

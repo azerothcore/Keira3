@@ -17,7 +17,7 @@ import { MockedMysqlService } from '@keira-testing/mocks';
 import { closeModalsAfterEach } from '@keira-testing/test-helpers';
 
 @NgModule({
-  declarations: [ ItemSelectorModalComponent ],
+  declarations: [ItemSelectorModalComponent],
   imports: [
     CommonModule,
     BrowserModule,
@@ -26,9 +26,7 @@ import { closeModalsAfterEach } from '@keira-testing/test-helpers';
     NgxDatatableModule,
     HighlightModule.forRoot(highlightOptions),
   ],
-  providers: [
-    { provide : MysqlService, useValue: instance(MockedMysqlService) },
-  ]
+  providers: [{ provide: MysqlService, useValue: instance(MockedMysqlService) }],
 })
 class TestModule {}
 
@@ -38,16 +36,14 @@ describe('BaseSelectorBtnComponent', () => {
 
   const value = 'mock-value';
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ItemSelectorBtnComponent ],
-      imports: [
-        ModalModule.forRoot(),
-        TestModule,
-      ]
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ItemSelectorBtnComponent],
+        imports: [ModalModule.forRoot(), TestModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ItemSelectorBtnComponent);

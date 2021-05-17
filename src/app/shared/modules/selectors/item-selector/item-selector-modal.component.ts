@@ -1,4 +1,4 @@
-import { Component, } from '@angular/core';
+import { Component } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { ItemSearchService } from '../../search/item-search.service';
@@ -8,15 +8,11 @@ import { SearchSelectorModalComponent } from '../base-selector/search-selector-m
 @Component({
   selector: 'keira-item-selector-modal',
   templateUrl: './item-selector-modal.component.html',
-  styleUrls: ['./item-selector-modal.component.scss']
+  styleUrls: ['./item-selector-modal.component.scss'],
 })
 export class ItemSelectorModalComponent extends SearchSelectorModalComponent {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected bsModalRef: BsModalRef,
-    public searchService: ItemSearchService,
-  ) {
+  constructor(protected bsModalRef: BsModalRef, public searchService: ItemSearchService) {
     super(ITEM_TEMPLATE_ID, bsModalRef);
   }
 }

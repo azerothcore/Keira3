@@ -13,16 +13,14 @@ describe('QuestSelectorModalComponent', () => {
   let fixture: ComponentFixture<QuestSelectorModalComponent>;
   let searchService: QuestSearchService;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ QuestSelectorModule ],
-      providers: [
-        BsModalRef,
-        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      ],
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [QuestSelectorModule],
+        providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     searchService = TestBed.inject(QuestSearchService);

@@ -8,9 +8,7 @@ import { ConnectionWindowComponent } from './connection-window.component';
 import { QueryOutputModule } from '../../shared/modules/query-output/query-output.module';
 
 @NgModule({
-  declarations: [
-    ConnectionWindowComponent,
-  ],
+  declarations: [ConnectionWindowComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -20,8 +18,6 @@ import { QueryOutputModule } from '../../shared/modules/query-output/query-outpu
     BsDropdownModule.forRoot({ isAnimated: false, autoClose: true }),
     FormsModule,
   ],
-  exports: [
-    ConnectionWindowComponent,
-  ],
+  exports: [ConnectionWindowComponent],
 })
 export class ConnectionWindowModule {}

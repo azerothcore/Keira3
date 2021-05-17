@@ -6,20 +6,16 @@ import { FISHING_LOOT_TEMPLATE_TABLE, FishingLootTemplate } from '@keira-types/f
 
 @Injectable()
 export class FishingLootHandlerService extends HandlerService<FishingLootTemplate> {
-
-  get isUnsaved(): boolean { return this.statusMap[FISHING_LOOT_TEMPLATE_TABLE]; }
+  get isUnsaved(): boolean {
+    return this.statusMap[FISHING_LOOT_TEMPLATE_TABLE];
+  }
 
   protected _statusMap = {
     [FISHING_LOOT_TEMPLATE_TABLE]: false,
   };
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected router: Router,
-  ) {
-    super(
-      'other-loots/fishing',
-      router,
-    );
+  constructor(protected router: Router) {
+    super('other-loots/fishing', router);
   }
 }

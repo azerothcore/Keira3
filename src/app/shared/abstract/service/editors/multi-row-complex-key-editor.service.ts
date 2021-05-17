@@ -8,7 +8,6 @@ import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { MultiRowEditorService } from './multi-row-editor.service';
 
 export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extends MultiRowEditorService<T> {
-
   get entityIdFields(): string[] {
     return JSON.parse(this._entityIdField);
   }
@@ -73,14 +72,19 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
 
   protected reloadEntity() {
     this.subscriptions.push(
-      this.selectQuery().subscribe((data) => {
-        this._error = null;
-        this.onReloadSuccessful(data);
-      }, (error: MysqlError) => {
-        this._error = error;
-      }).add(() => {
-        this._loading = false;
-      })
+      this.selectQuery()
+        .subscribe(
+          (data) => {
+            this._error = null;
+            this.onReloadSuccessful(data);
+          },
+          (error: MysqlError) => {
+            this._error = error;
+          },
+        )
+        .add(() => {
+          this._loading = false;
+        }),
     );
   }
 

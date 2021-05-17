@@ -2,19 +2,26 @@ import { CONDITION_SOURCE_TYPES as ST, CONDITION_TYPES as CT } from '@keira-shar
 
 export const SOURCE_GROUP_TOOLTIPS = [];
 SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_NONE] = '';
-SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_CREATURE_LOOT_TEMPLATE] = 'creature_loot_template or reference_loot_template Entry';
-SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_DISENCHANT_LOOT_TEMPLATE] = 'disenchant_loot_template or reference_loot_template Entry';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_CREATURE_LOOT_TEMPLATE] =
+  'creature_loot_template or reference_loot_template Entry';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_DISENCHANT_LOOT_TEMPLATE] =
+  'disenchant_loot_template or reference_loot_template Entry';
 SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_FISHING_LOOT_TEMPLATE] = 'fishing_loot_template or reference_loot_template Entry';
-SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_GAMEOBJECT_LOOT_TEMPLATE] = 'gameobject_loot_template or reference_loot_template Entry';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_GAMEOBJECT_LOOT_TEMPLATE] =
+  'gameobject_loot_template or reference_loot_template Entry';
 SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_ITEM_LOOT_TEMPLATE] = 'item_loot_template or reference_loot_template Entry';
 SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_MAIL_LOOT_TEMPLATE] = 'mail_loot_template or reference_loot_template Entry';
 SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_MILLING_LOOT_TEMPLATE] = 'milling_loot_template or reference_loot_template Entry';
-SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_PICKPOCKETING_LOOT_TEMPLATE] = 'pickpocketing_loot_template or reference_loot_template Entry';
-SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_PROSPECTING_LOOT_TEMPLATE] = 'prospecting_loot_template or reference_loot_template Entry';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_PICKPOCKETING_LOOT_TEMPLATE] =
+  'pickpocketing_loot_template or reference_loot_template Entry';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_PROSPECTING_LOOT_TEMPLATE] =
+  'prospecting_loot_template or reference_loot_template Entry';
 SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_REFERENCE_LOOT_TEMPLATE] = 'reference_loot_template Entry';
-SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_SKINNING_LOOT_TEMPLATE] = 'skinning_loot_template or reference_loot_template Entry';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_SKINNING_LOOT_TEMPLATE] =
+  'skinning_loot_template or reference_loot_template Entry';
 SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_SPELL_LOOT_TEMPLATE] = 'spell_loot_template or reference_loot_template Entry';
-SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_SPELL_IMPLICIT_TARGET] = 'Mask of effects to be affected by condition: 1 = EFFECT_0, 2 = EFFECT_1, 4 = EFFECT_2';
+SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_SPELL_IMPLICIT_TARGET] =
+  'Mask of effects to be affected by condition: 1 = EFFECT_0, 2 = EFFECT_1, 4 = EFFECT_2';
 SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_GOSSIP_MENU] = 'gossip_menu.MenuID';
 SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_GOSSIP_MENU_OPTION] = 'gossip_menu_option.MenuId';
 SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_CREATURE_TEMPLATE_VEHICLE] = 'Always 0';
@@ -30,14 +37,18 @@ SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_SPELL_PROC] = 'Always 0';
 export const SOURCE_ENTRY_TOOLTIPS = [];
 SOURCE_ENTRY_TOOLTIPS[ST.SOURCE_TYPE_NONE] = '';
 SOURCE_ENTRY_TOOLTIPS[ST.SOURCE_TYPE_CREATURE_LOOT_TEMPLATE] = 'creature_loot_template or reference_loot_template Item';
-SOURCE_ENTRY_TOOLTIPS[ST.SOURCE_TYPE_DISENCHANT_LOOT_TEMPLATE] = 'disenchant_loot_template or reference_loot_template Item';
+SOURCE_ENTRY_TOOLTIPS[ST.SOURCE_TYPE_DISENCHANT_LOOT_TEMPLATE] =
+  'disenchant_loot_template or reference_loot_template Item';
 SOURCE_ENTRY_TOOLTIPS[ST.SOURCE_TYPE_FISHING_LOOT_TEMPLATE] = 'fishing_loot_template or reference_loot_template Item';
-SOURCE_ENTRY_TOOLTIPS[ST.SOURCE_TYPE_GAMEOBJECT_LOOT_TEMPLATE] = 'gameobject_loot_template or reference_loot_template Item';
+SOURCE_ENTRY_TOOLTIPS[ST.SOURCE_TYPE_GAMEOBJECT_LOOT_TEMPLATE] =
+  'gameobject_loot_template or reference_loot_template Item';
 SOURCE_ENTRY_TOOLTIPS[ST.SOURCE_TYPE_ITEM_LOOT_TEMPLATE] = 'item_loot_template or reference_loot_template Item';
 SOURCE_ENTRY_TOOLTIPS[ST.SOURCE_TYPE_MAIL_LOOT_TEMPLATE] = 'mail_loot_template or reference_loot_template Item';
 SOURCE_ENTRY_TOOLTIPS[ST.SOURCE_TYPE_MILLING_LOOT_TEMPLATE] = 'milling_loot_template or reference_loot_template Item';
-SOURCE_ENTRY_TOOLTIPS[ST.SOURCE_TYPE_PICKPOCKETING_LOOT_TEMPLATE] = 'pickpocketing_loot_template or reference_loot_template Item';
-SOURCE_ENTRY_TOOLTIPS[ST.SOURCE_TYPE_PROSPECTING_LOOT_TEMPLATE] = 'prospecting_loot_template or reference_loot_template Item';
+SOURCE_ENTRY_TOOLTIPS[ST.SOURCE_TYPE_PICKPOCKETING_LOOT_TEMPLATE] =
+  'pickpocketing_loot_template or reference_loot_template Item';
+SOURCE_ENTRY_TOOLTIPS[ST.SOURCE_TYPE_PROSPECTING_LOOT_TEMPLATE] =
+  'prospecting_loot_template or reference_loot_template Item';
 SOURCE_ENTRY_TOOLTIPS[ST.SOURCE_TYPE_REFERENCE_LOOT_TEMPLATE] = 'reference_loot_template Item';
 SOURCE_ENTRY_TOOLTIPS[ST.SOURCE_TYPE_SKINNING_LOOT_TEMPLATE] = 'skinning_loot_template or reference_loot_template Item';
 SOURCE_ENTRY_TOOLTIPS[ST.SOURCE_TYPE_SPELL_LOOT_TEMPLATE] = 'spell_loot_template or reference_loot_template Item';
@@ -71,12 +82,15 @@ CONDITION_TARGET_TOOLTIPS[ST.SOURCE_TYPE_SPELL_LOOT_TEMPLATE] = 'Always 0';
 CONDITION_TARGET_TOOLTIPS[ST.SOURCE_TYPE_SPELL_IMPLICIT_TARGET] = '0 = Potential spell Target;  1 = spell Caster';
 CONDITION_TARGET_TOOLTIPS[ST.SOURCE_TYPE_GOSSIP_MENU] = '0 = Player;  1 = WorldObject';
 CONDITION_TARGET_TOOLTIPS[ST.SOURCE_TYPE_GOSSIP_MENU_OPTION] = '0 = Player;  1 = WorldObject';
-CONDITION_TARGET_TOOLTIPS[ST.SOURCE_TYPE_CREATURE_TEMPLATE_VEHICLE] = '0 = Player riding vehicle;  1 = Vehicle creature';
-CONDITION_TARGET_TOOLTIPS[ST.SOURCE_TYPE_SPELL] = '0 = spell Caster;  1 =  Explicit Target of the spell (only for spells which take the object selected by caster into account)';
+CONDITION_TARGET_TOOLTIPS[ST.SOURCE_TYPE_CREATURE_TEMPLATE_VEHICLE] =
+  '0 = Player riding vehicle;  1 = Vehicle creature';
+CONDITION_TARGET_TOOLTIPS[ST.SOURCE_TYPE_SPELL] =
+  '0 = spell Caster;  1 =  Explicit Target of the spell (only for spells which take the object selected by caster into account)';
 CONDITION_TARGET_TOOLTIPS[ST.SOURCE_TYPE_SPELL_CLICK_EVENT] = '0 = Clicker;  1 = Spellclick target (clickee)';
 CONDITION_TARGET_TOOLTIPS[ST.SOURCE_TYPE_QUEST_AVAILABLE] = 'Always 0';
 CONDITION_TARGET_TOOLTIPS[ST.SOURCE_TYPE_UNUSED_20] = '';
-CONDITION_TARGET_TOOLTIPS[ST.SOURCE_TYPE_VEHICLE_SPELL] = '0 = Player for whom spell bar is shown;  1 =  Vehicle creature';
+CONDITION_TARGET_TOOLTIPS[ST.SOURCE_TYPE_VEHICLE_SPELL] =
+  '0 = Player for whom spell bar is shown;  1 =  Vehicle creature';
 CONDITION_TARGET_TOOLTIPS[ST.SOURCE_TYPE_SMART_EVENT] = '0 = Invoker;  1 = Object';
 CONDITION_TARGET_TOOLTIPS[ST.SOURCE_TYPE_NPC_VENDOR] = 'Always 0';
 CONDITION_TARGET_TOOLTIPS[ST.SOURCE_TYPE_SPELL_PROC] = '0 = Actor; 1 = ActionTarget';
@@ -97,8 +111,10 @@ CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_WORLD_STATE] = 'World state index';
 CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_ACTIVE_EVENT] = 'game_event.eventEntry';
 CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_INSTANCE_INFO] = 'entry (see corresponding source script files for info)';
 CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_QUEST_NONE] = 'quest_template.ID';
-CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_CLASS] = 'Class mask from ChrClasses.dbc. Add flags together for all classes where condition is true';
-CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_RACE] = 'Player must be this race. See ChrRaces.dbc. Add flags together for all races where condition is true.';
+CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_CLASS] =
+  'Class mask from ChrClasses.dbc. Add flags together for all classes where condition is true';
+CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_RACE] =
+  'Player must be this race. See ChrRaces.dbc. Add flags together for all races where condition is true.';
 CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_ACHIEVEMENT] = 'Achievement ID from Achievement.dbc';
 CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_TITLE] = 'Title ID from CharTitles.dbc\t';
 CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_SPAWNMASK] = 'spawnMask fromm creature.spawnMask or gameobject.spawnMask';
@@ -106,15 +122,18 @@ CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_GENDER] = '0 = Male, 1 = Female, 2 = Non
 CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_UNIT_STATE] = 'UnitState (enum from Unit.h)';
 CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_MAPID] = 'Map entry from Map.dbc (0=Eastern Kingdoms, 1=Kalimdor, etc..)';
 CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_AREAID] = 'Area ID from AreaTable.dbc';
-CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_CREATURE_TYPE] = 'Creature type from creature_template.type (True if creature_template.type == ConditionValue1)';
+CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_CREATURE_TYPE] =
+  'Creature type from creature_template.type (True if creature_template.type == ConditionValue1)';
 CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_SPELL] = 'Spell ID from Spell.dbc';
 CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_PHASEMASK] = 'phasemask value';
 CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_LEVEL] = 'Player level (1-80)';
 CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_QUEST_COMPLETE] = 'quest_template.ID';
 CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_NEAR_CREATURE] = 'creature_template.entry';
 CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_NEAR_GAMEOBJECT] = 'gameobject_template.entry';
-CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_OBJECT_ENTRY_GUID] = 'TypeID. 3-TYPEID_UNIT, 4-TYPEID_PLAYER, 5-TYPEID_GAMEOBJECT, 7-TYPEID_CORPSE(player corpse, after spirit release)';
-CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_TYPE_MASK] = 'TypeMask - a bitmask of following object types: 0x0008 - TYPEMASK_UNIT (8) 0x0010 - TYPEMASK_PLAYER (16) 0x0020 - TYPEMASK_GAMEOBJECT (32) 0x0080 - TYPEMASK_CORPSE (player corpse after spirit release) (128)';
+CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_OBJECT_ENTRY_GUID] =
+  'TypeID. 3-TYPEID_UNIT, 4-TYPEID_PLAYER, 5-TYPEID_GAMEOBJECT, 7-TYPEID_CORPSE(player corpse, after spirit release)';
+CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_TYPE_MASK] =
+  'TypeMask - a bitmask of following object types: 0x0008 - TYPEMASK_UNIT (8) 0x0010 - TYPEMASK_PLAYER (16) 0x0020 - TYPEMASK_GAMEOBJECT (32) 0x0080 - TYPEMASK_CORPSE (player corpse after spirit release) (128)';
 const CONDITION_TO = 'Target to which relation is checked. One of the ConditionTargets available in current SourceType';
 CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_RELATION_TO] = CONDITION_TO;
 CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_REACTION_TO] = CONDITION_TO;
@@ -125,7 +144,8 @@ CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_HP_PCT] = 'Percentage of max HP';
 CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_REALM_ACHIEVEMENT] = 'Achievement ID from Achievement.dbc';
 CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_IN_WATER] = 'Always 0';
 CONDITION_VALUE_1_TOOLTIPS[CT.UNUSED] = '';
-CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_STAND_STATE] = 'stateType ("exact" or "any"): 0 = Exact state used in ConditionValue2;   1 = Any type of state in ConditionValue2';
+CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_STAND_STATE] =
+  'stateType ("exact" or "any"): 0 = Exact state used in ConditionValue2;   1 = Any type of state in ConditionValue2';
 CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_DAILY_QUEST_DONE] = 'quest_template.ID';
 CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_CHARMED] = 'Always 0';
 CONDITION_VALUE_1_TOOLTIPS[CT.CONDITION_PET_TYPE] = 'mask';
@@ -137,7 +157,8 @@ export const CONDITION_VALUE_2_TOOLTIPS = [];
 CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_NONE] = '(Never used)';
 CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_AURA] = 'Effect index (0-2)';
 CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_ITEM] = 'Item count';
-const rankMask = 'Rank mask. 1=hated, 2=hostile, 4=unfriendly, 8=neutral, 16=friendly, 32=honored, 64=revered, 128=exalted';
+const rankMask =
+  'Rank mask. 1=hated, 2=hostile, 4=unfriendly, 8=neutral, 16=friendly, 32=honored, 64=revered, 128=exalted';
 CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_ITEM_EQUIPPED] = rankMask;
 CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_ZONEID] = 'Always 0';
 CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_REPUTATION_RANK] = 'Always 0';
@@ -162,13 +183,16 @@ CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_AREAID] = 'Always 0';
 CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_CREATURE_TYPE] = 'Always 0';
 CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_SPELL] = 'Always 0';
 CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_PHASEMASK] = 'Always 0';
-CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_LEVEL] = 'Optional: 0 = Level must be equal, 1 = Level must be higher, 2 = Level must be lower, 3 = Level must be higher or equal, 4 = Level must be lower or equal.';
+CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_LEVEL] =
+  'Optional: 0 = Level must be equal, 1 = Level must be higher, 2 = Level must be lower, 3 = Level must be higher or equal, 4 = Level must be lower or equal.';
 CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_QUEST_COMPLETE] = 'Always 0';
 CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_NEAR_CREATURE] = 'Distance in yards';
 CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_NEAR_GAMEOBJECT] = 'Distance in yards';
-CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_OBJECT_ENTRY_GUID] = '0 = Any object of given TypeID; if TypeID = TYPEID_UNIT => Creature entry from creature_template.entry; if TypeID = TYPEID_GAMEOBJECT => Gameobject entry from gameobject_template.entry';
+CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_OBJECT_ENTRY_GUID] =
+  '0 = Any object of given TypeID; if TypeID = TYPEID_UNIT => Creature entry from creature_template.entry; if TypeID = TYPEID_GAMEOBJECT => Gameobject entry from gameobject_template.entry';
 CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_TYPE_MASK] = 'Always 0';
-CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_RELATION_TO] = 'RelationType - defines relation of current ConditionTarget to target specified in ConditionValue1. ' +
+CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_RELATION_TO] =
+  'RelationType - defines relation of current ConditionTarget to target specified in ConditionValue1. ' +
   '0 - RELATION_SELF; ' +
   '1 - RELATION_IN_PARTY; ' +
   '2 - RELATION_IN_RAID_OR_PARTY; ' +
@@ -176,15 +200,18 @@ CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_RELATION_TO] = 'RelationType - defines r
   '4 - RELATION_PASSENGER_OF (ConditionTarget is passenger of ConditionValue1); ' +
   '5 - RELATION_CREATED_BY (ConditionTarget is summoned by ConditionValue1)';
 CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_REACTION_TO] = rankMask;
-CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_DISTANCE_TO] = 'Defines distance between current ConditionTarget and target specified in ConditionValue1';
+CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_DISTANCE_TO] =
+  'Defines distance between current ConditionTarget and target specified in ConditionValue1';
 CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_ALIVE] = 'Always 0';
-CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_HP_VAL] = 'ComparisionType:; ' +
+CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_HP_VAL] =
+  'ComparisionType:; ' +
   '0 = HP must be equal; ' +
   '1 = HP must be higher; ' +
   '2 = HP must be lesser; ' +
   '3 = HP must be equal or higher; ' +
   '4 = HP must be equal or lower';
-CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_HP_PCT] = 'ComparisionType: ' +
+CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_HP_PCT] =
+  'ComparisionType: ' +
   '0 = Percentage of max HP must be equal; ' +
   '1 = Percentage of max HP must be higher; ' +
   '2 = Percentage of max HP must be lower; ' +
@@ -193,13 +220,15 @@ CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_HP_PCT] = 'ComparisionType: ' +
 CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_REALM_ACHIEVEMENT] = 'Always 0';
 CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_IN_WATER] = 'Always 0';
 CONDITION_VALUE_2_TOOLTIPS[CT.UNUSED] = '';
-CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_STAND_STATE] = 'Exact stand state, or generic state (stand/sit), depending on value 10 = Standing; 1 = Sitting';
+CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_STAND_STATE] =
+  'Exact stand state, or generic state (stand/sit), depending on value 10 = Standing; 1 = Sitting';
 CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_DAILY_QUEST_DONE] = 'Always 0';
 CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_CHARMED] = 'Always 0';
 CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_PET_TYPE] = 'Always 0';
 CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_TAXI] = 'Always 0';
 CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_QUESTSTATE] = 'state_mask';
-CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_QUEST_OBJECTIVE_PROGRESS] = 'Quest Objective ID - see quest_template.RequiredNpcOrGo';
+CONDITION_VALUE_2_TOOLTIPS[CT.CONDITION_QUEST_OBJECTIVE_PROGRESS] =
+  'Quest Objective ID - see quest_template.RequiredNpcOrGo';
 
 export const CONDITION_VALUE_3_TOOLTIPS = [];
 CONDITION_VALUE_3_TOOLTIPS[CT.CONDITION_NONE] = '(Never used)';
@@ -215,7 +244,8 @@ CONDITION_VALUE_3_TOOLTIPS[CT.CONDITION_QUESTTAKEN] = 'Always 0';
 CONDITION_VALUE_3_TOOLTIPS[CT.CONDITION_DRUNKENSTATE] = 'Always 0';
 CONDITION_VALUE_3_TOOLTIPS[CT.CONDITION_WORLD_STATE] = 'Always 0';
 CONDITION_VALUE_3_TOOLTIPS[CT.CONDITION_ACTIVE_EVENT] = 'Always 0';
-CONDITION_VALUE_3_TOOLTIPS[CT.CONDITION_INSTANCE_INFO] = '0=INSTANCE_INFO_DATA; ' +
+CONDITION_VALUE_3_TOOLTIPS[CT.CONDITION_INSTANCE_INFO] =
+  '0=INSTANCE_INFO_DATA; ' +
   '1=INSTANCE_INFO_GUID_DATA; ' +
   '2=INSTANCE_INFO_BOSS_STATE; ' +
   '3=INSTANCE_INFO_DATA64; ';
@@ -236,11 +266,13 @@ CONDITION_VALUE_3_TOOLTIPS[CT.CONDITION_LEVEL] = 'Always 0';
 CONDITION_VALUE_3_TOOLTIPS[CT.CONDITION_QUEST_COMPLETE] = 'Always 0';
 CONDITION_VALUE_3_TOOLTIPS[CT.CONDITION_NEAR_CREATURE] = 'Alive=0; Dead=1';
 CONDITION_VALUE_3_TOOLTIPS[CT.CONDITION_NEAR_GAMEOBJECT] = 'Always 0';
-CONDITION_VALUE_3_TOOLTIPS[CT.CONDITION_OBJECT_ENTRY_GUID] = '0 = Any object of given type;  1 - 500k = creature/gameobject GUID';
+CONDITION_VALUE_3_TOOLTIPS[CT.CONDITION_OBJECT_ENTRY_GUID] =
+  '0 = Any object of given type;  1 - 500k = creature/gameobject GUID';
 CONDITION_VALUE_3_TOOLTIPS[CT.CONDITION_TYPE_MASK] = 'Always 0';
 CONDITION_VALUE_3_TOOLTIPS[CT.CONDITION_RELATION_TO] = 'Always 0';
 CONDITION_VALUE_3_TOOLTIPS[CT.CONDITION_REACTION_TO] = 'Always 0';
-CONDITION_VALUE_3_TOOLTIPS[CT.CONDITION_DISTANCE_TO] = 'ComparisionType: ' +
+CONDITION_VALUE_3_TOOLTIPS[CT.CONDITION_DISTANCE_TO] =
+  'ComparisionType: ' +
   '0 = distance must be equal to ConditionValue2; ' +
   '1 = distance must be higher than ConditionValue2; ' +
   '2 = distance must be lower than ConditionValue2; ' +

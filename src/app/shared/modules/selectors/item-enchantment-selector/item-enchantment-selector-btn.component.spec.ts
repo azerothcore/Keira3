@@ -7,12 +7,13 @@ describe('ItemEnchantmentSelectorBtnComponent', () => {
   let component: ItemEnchantmentSelectorBtnComponent;
   let fixture: ComponentFixture<ItemEnchantmentSelectorBtnComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ ItemEnchantmentSelectorModule ],
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ItemEnchantmentSelectorModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ItemEnchantmentSelectorBtnComponent);

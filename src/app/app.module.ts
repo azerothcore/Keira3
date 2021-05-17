@@ -21,7 +21,7 @@ import { OtherLootsModule } from './features/other-loots/other-loots.module';
 import { SpellModule } from './features/spell/spell.module';
 
 @NgModule({
-  declarations: [ AppComponent ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -42,6 +42,6 @@ import { SpellModule } from './features/spell/spell.module';
     SmartScriptsModule,
     SpellModule,
   ],
-  bootstrap: [ AppComponent ]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

@@ -11,11 +11,13 @@ import { Component, ViewChild } from '@angular/core';
 import { of } from 'rxjs';
 
 class SaiTopBarComponentPage extends PageObject<TestHostComponent> {
-  get mainText() { return this.query<HTMLSpanElement>('.main-text'); }
+  get mainText() {
+    return this.query<HTMLSpanElement>('.main-text');
+  }
 }
 
 @Component({
-  template: '<keira-sai-top-bar [handler]="handlerService"><</keira-sai-top-bar>'
+  template: '<keira-sai-top-bar [handler]="handlerService"><</keira-sai-top-bar>',
 })
 class TestHostComponent {
   @ViewChild(SaiTopBarComponent, { static: true }) child: SaiTopBarComponent;
@@ -33,15 +35,14 @@ describe('SaiTopBarComponent', () => {
   const entryorguid = 1234;
   const name = 'Francesco';
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ TestHostComponent, SaiTopBarComponent ],
-      imports: [
-        RouterTestingModule,
-      ]
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [TestHostComponent, SaiTopBarComponent],
+        imports: [RouterTestingModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     handler = TestBed.inject(SaiHandlerService);
@@ -66,7 +67,12 @@ describe('SaiTopBarComponent', () => {
 
   for (const { testId, type, positive, expected } of [
     { testId: 1, type: SAI_TYPES.SAI_TYPE_AREATRIGGER, positive: true, expected: `Areatrigger ID ${entryorguid}` },
-    { testId: 2, type: SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST, positive: true, expected: `Timed Actionlist ID ${entryorguid}` },
+    {
+      testId: 2,
+      type: SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST,
+      positive: true,
+      expected: `Timed Actionlist ID ${entryorguid}`,
+    },
     { testId: 3, type: SAI_TYPES.SAI_TYPE_GAMEOBJECT, positive: true, expected: `Gameobject ID ${entryorguid}` },
     { testId: 4, type: SAI_TYPES.SAI_TYPE_GAMEOBJECT, positive: false, expected: `Gameobject GUID ${entryorguid}` },
     { testId: 5, type: SAI_TYPES.SAI_TYPE_CREATURE, positive: true, expected: `Creature ID ${entryorguid}` },

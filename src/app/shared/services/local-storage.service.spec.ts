@@ -4,7 +4,6 @@ import Spy = jasmine.Spy;
 import { LocalStorageService } from './local-storage.service';
 
 describe('LocalStorageService', () => {
-
   let mockStorage;
 
   let spyClear: Spy;
@@ -28,8 +27,10 @@ describe('LocalStorageService', () => {
     // mock localStorage
     mockStorage = {};
     spyGetItem.and.callFake((k) => mockStorage[k]);
-    spySetItem.and.callFake((k, v) => mockStorage[k] = v);
-    spyClear.and.callFake(() => { mockStorage = {}; });
+    spySetItem.and.callFake((k, v) => (mockStorage[k] = v));
+    spyClear.and.callFake(() => {
+      mockStorage = {};
+    });
   });
 
   it('should be created', inject([LocalStorageService], (service: LocalStorageService) => {

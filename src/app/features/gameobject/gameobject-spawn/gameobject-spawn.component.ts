@@ -10,19 +10,14 @@ import { PHASE_MASK } from '@keira-constants/flags/phase-mask';
 @Component({
   selector: 'keira-gameobject-spawn',
   templateUrl: './gameobject-spawn.component.html',
-  styleUrls: ['./gameobject-spawn.component.scss']
+  styleUrls: ['./gameobject-spawn.component.scss'],
 })
 export class GameobjectSpawnComponent extends MultiRowEditorComponent<GameobjectSpawn> {
-
   public readonly SPAWN_MASK = SPAWN_MASK;
   public readonly PHASE_MASK = PHASE_MASK;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: GameobjectSpawnService,
-    public handlerService: GameobjectHandlerService,
-  ) {
+  constructor(public editorService: GameobjectSpawnService, public handlerService: GameobjectHandlerService) {
     super(editorService, handlerService);
   }
 }
-

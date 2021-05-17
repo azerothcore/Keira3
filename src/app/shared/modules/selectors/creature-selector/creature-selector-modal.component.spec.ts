@@ -13,16 +13,14 @@ describe('CreatureSelectorModalComponent', () => {
   let fixture: ComponentFixture<CreatureSelectorModalComponent>;
   let searchService: CreatureSearchService;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ CreatureSelectorModule ],
-      providers: [
-        BsModalRef,
-        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      ],
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [CreatureSelectorModule],
+        providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     searchService = TestBed.inject(CreatureSearchService);

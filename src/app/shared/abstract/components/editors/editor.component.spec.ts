@@ -8,9 +8,12 @@ import { Component } from '@angular/core';
 class MockComponent extends EditorComponent<MockEntity> {}
 
 describe('EditorComponent', () => {
-
   const setup = () => {
-    const editorService = { loadedEntityId: 0, reload: jasmine.createSpy('reload'), clearCache: jasmine.createSpy('clearCache')  };
+    const editorService = {
+      loadedEntityId: 0,
+      reload: jasmine.createSpy('reload'),
+      clearCache: jasmine.createSpy('clearCache'),
+    };
     const handlerService = { selected: 0 };
 
     const component = new MockComponent(

@@ -1,4 +1,4 @@
-import { Component, } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { SelectComponent } from '@keira-abstract/components/editors/select.component';
 import { SelectSpellLootService } from './select-spell-loot.service';
@@ -6,7 +6,7 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import {
   SPELL_LOOT_TEMPLATE_CUSTOM_STARTING_ID,
   SPELL_LOOT_TEMPLATE_TABLE,
-  SpellLootTemplate
+  SpellLootTemplate,
 } from '@keira-types/spell-loot-template.type';
 import { LOOT_TEMPLATE_ID } from '@keira-types/loot-template.type';
 import { SpellLootHandlerService } from './spell-loot-handler.service';

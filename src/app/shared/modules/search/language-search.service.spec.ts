@@ -6,11 +6,11 @@ import { MockedSqliteQueryService } from '../../testing/mocks';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 
 describe('LanguageSearchService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    providers: [
-      { provide: SqliteQueryService, useValue: instance(MockedSqliteQueryService) },
-    ]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      providers: [{ provide: SqliteQueryService, useValue: instance(MockedSqliteQueryService) }],
+    }),
+  );
 
   it('should be created', () => {
     const service: LanguageSearchService = TestBed.inject(LanguageSearchService);

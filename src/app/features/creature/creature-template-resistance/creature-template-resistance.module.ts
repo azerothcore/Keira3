@@ -14,9 +14,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
 
 @NgModule({
-  declarations: [
-    CreatureTemplateResistanceComponent
-  ],
+  declarations: [CreatureTemplateResistanceComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -28,11 +26,7 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
     NgxDatatableModule,
     EditorButtonsModule,
   ],
-  exports: [
-    CreatureTemplateResistanceComponent
-  ],
-  providers: [
-    CreatureTemplateResistanceService,
-  ],
+  exports: [CreatureTemplateResistanceComponent],
+  providers: [CreatureTemplateResistanceService],
 })
 export class CreatureTemplateResistanceModule {}

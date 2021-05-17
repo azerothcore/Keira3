@@ -7,12 +7,11 @@ import { SingleRowEditorService } from '@keira-abstract/service/editors/single-r
 import {
   QUEST_TEMPLATE_ADDON_ID,
   QUEST_TEMPLATE_ADDON_TABLE,
-  QuestTemplateAddon
+  QuestTemplateAddon,
 } from '@keira-types/quest-template-addon.type';
 
 @Injectable()
 export class QuestTemplateAddonService extends SingleRowEditorService<QuestTemplateAddon> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: QuestHandlerService,

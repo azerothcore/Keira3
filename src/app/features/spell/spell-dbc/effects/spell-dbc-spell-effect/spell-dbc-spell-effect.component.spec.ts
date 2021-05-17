@@ -12,7 +12,6 @@ import { SpellDbc } from '@keira-types/spell-dbc.type';
 import { SPELL_DBC_SPELL_EFFECT_FIELDS, SpellDbcSpellEffectFieldPrefix } from './spell-dbc-spell-effect.model';
 
 describe('SpellDbcSpellEffectComponent', () => {
-
   class SpellDbcSpellEffectComponentPage extends PageObject<TestHostComponent> {
     getLabelByIndex(fieldName: string, index: number) {
       return this.query<HTMLLabelElement>(`.control-label[for="${fieldName}_${index}"]`);
@@ -27,7 +26,7 @@ describe('SpellDbcSpellEffectComponent', () => {
   }
 
   @Component({
-    template: '<keira-spell-dbc-spell-effect [formGroup]="form" [index]="index"></keira-spell-dbc-spell-effect>'
+    template: '<keira-spell-dbc-spell-effect [formGroup]="form" [index]="index"></keira-spell-dbc-spell-effect>',
   })
   class TestHostComponent {
     @ViewChild(SpellDbcSpellEffectComponent) child: SpellDbcSpellEffectComponent;
@@ -37,14 +36,10 @@ describe('SpellDbcSpellEffectComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TestHostComponent, SpellDbcSpellEffectComponent ],
-      imports: [
-        SpellDbcModule,
-        RouterTestingModule,
-      ],
-      providers: [ SpellHandlerService ],
-    })
-      .compileComponents();
+      declarations: [TestHostComponent, SpellDbcSpellEffectComponent],
+      imports: [SpellDbcModule, RouterTestingModule],
+      providers: [SpellHandlerService],
+    }).compileComponents();
   });
 
   const setup = () => {

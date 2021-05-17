@@ -9,17 +9,17 @@ import { ItemEnchantmentTemplateService } from './item-enchantment-template.serv
 import { ItemHandlerService } from '../item-handler.service';
 
 describe('ItemEnchantmentTemplateService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      { provide: ToastrService, useValue: instance(MockedToastrService) },
-      ItemHandlerService,
-      ItemEnchantmentTemplateService,
-    ]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+        ItemHandlerService,
+        ItemEnchantmentTemplateService,
+      ],
+    }),
+  );
 
   it('should be created', () => {
     const service: ItemEnchantmentTemplateService = TestBed.inject(ItemEnchantmentTemplateService);

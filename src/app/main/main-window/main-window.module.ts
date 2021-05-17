@@ -6,16 +6,8 @@ import { MainWindowComponent } from './main-window.component';
 import { SidebarModule } from './sidebar/sidebar.module';
 
 @NgModule({
-  declarations: [
-    MainWindowComponent,
-  ],
-  imports: [
-    BrowserModule,
-    RouterModule,
-    SidebarModule,
-  ],
-  exports: [
-    MainWindowComponent,
-  ],
+  declarations: [MainWindowComponent],
+  imports: [BrowserModule, RouterModule, SidebarModule],
+  exports: [MainWindowComponent],
 })
 export class MainWindowModule {}

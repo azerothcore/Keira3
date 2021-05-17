@@ -13,16 +13,14 @@ describe('ItemLimitCategorySelectorModalComponent', () => {
   let fixture: ComponentFixture<ItemLimitCategorySelectorModalComponent>;
   let searchService: ItemLimitCategorySearchService;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ ItemLimitCategorySelectorModule ],
-      providers: [
-        BsModalRef,
-        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      ],
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ItemLimitCategorySelectorModule],
+        providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     searchService = TestBed.inject(ItemLimitCategorySearchService);

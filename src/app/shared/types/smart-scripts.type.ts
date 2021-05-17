@@ -3,10 +3,7 @@ import { getEnumKeys } from '../utils/helpers';
 
 export const SAI_TABLE = 'smart_scripts';
 
-export const SAI_ID_FIELDS = [
-  'entryorguid',
-  'source_type',
-];
+export const SAI_ID_FIELDS = ['entryorguid', 'source_type'];
 export const SAI_ID_2 = 'id';
 export const SAI_SEARCH_FIELDS = SAI_ID_FIELDS;
 

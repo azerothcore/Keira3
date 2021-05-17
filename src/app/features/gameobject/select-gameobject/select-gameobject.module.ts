@@ -13,9 +13,7 @@ import { SelectGameobjectService } from './select-gameobject.service';
 import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 
 @NgModule({
-  declarations: [
-    SelectGameobjectComponent,
-  ],
+  declarations: [SelectGameobjectComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -26,11 +24,7 @@ import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-
     NgxDatatableModule,
     SearchButtonsModule,
   ],
-  exports: [
-    SelectGameobjectComponent,
-  ],
-  providers: [
-    SelectGameobjectService,
-  ],
+  exports: [SelectGameobjectComponent],
+  providers: [SelectGameobjectService],
 })
 export class SelectGameobjectModule {}

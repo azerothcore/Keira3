@@ -5,7 +5,6 @@ import { HandlerService } from '../../service/handlers/handler.service';
 import { DTCFG } from '@keira-config/datatable.config';
 
 export abstract class SelectComponent<T extends TableRow> {
-
   public readonly DTCFG = DTCFG;
 
   constructor(
@@ -15,5 +14,5 @@ export abstract class SelectComponent<T extends TableRow> {
     public selectService: SelectService<T>,
     public handlerService: HandlerService<T>,
     public queryService: MysqlQueryService,
-  ) { }
+  ) {}
 }

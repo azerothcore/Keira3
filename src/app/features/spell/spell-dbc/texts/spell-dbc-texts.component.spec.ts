@@ -12,13 +12,12 @@ import { FormGroup } from 'ngx-typesafe-forms';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
 
 describe('SpellDbcTextsComponent', () => {
-
   class SpellDbcTextsComponentPage extends PageObject<TestHostComponent> {
     readonly localesTabsetId = 'locales';
   }
 
   @Component({
-    template: '<keira-spell-dbc-texts [formGroup]="form"></keira-spell-dbc-texts>'
+    template: '<keira-spell-dbc-texts [formGroup]="form"></keira-spell-dbc-texts>',
   })
   class TestHostComponent {
     @ViewChild(SpellDbcTextsComponent) child: SpellDbcTextsComponent;
@@ -27,14 +26,10 @@ describe('SpellDbcTextsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TestHostComponent, SpellDbcTextsComponent ],
-      imports: [
-        SpellDbcModule,
-        RouterTestingModule,
-      ],
-      providers: [ SpellHandlerService ],
-    })
-      .compileComponents();
+      declarations: [TestHostComponent, SpellDbcTextsComponent],
+      imports: [SpellDbcModule, RouterTestingModule],
+      providers: [SpellHandlerService],
+    }).compileComponents();
   });
 
   const setup = () => {

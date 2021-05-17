@@ -7,19 +7,9 @@ import { SkinningLootTemplateService } from './skinning-loot-template.service';
 import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.module';
 
 @NgModule({
-  declarations: [
-    SkinningLootTemplateComponent,
-  ],
-  imports: [
-    CommonModule,
-    TopBarModule,
-    LootEditorModule,
-  ],
-  exports: [
-    SkinningLootTemplateComponent,
-  ],
-  providers: [
-    SkinningLootTemplateService,
-  ],
+  declarations: [SkinningLootTemplateComponent],
+  imports: [CommonModule, TopBarModule, LootEditorModule],
+  exports: [SkinningLootTemplateComponent],
+  providers: [SkinningLootTemplateService],
 })
 export class SkinningLootTemplateModule {}
