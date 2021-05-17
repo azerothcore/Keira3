@@ -6,7 +6,7 @@ export const uiSwitchConfig: UiSwitchModuleConfig = {
   switchColor: '#FFF',
   switchOffColor: '#FFF',
   defaultBgColor: '#707375',
-  defaultBoColor : '#476EFF',
+  defaultBoColor: '#476EFF',
   checkedLabel: '',
   uncheckedLabel: '',
 };

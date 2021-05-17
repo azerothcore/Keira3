@@ -14,11 +14,7 @@ export const CONDITIONS_ID_FIELDS = [
   'ConditionValue2',
   'ConditionValue3',
 ];
-export const CONDITIONS_SEARCH_FIELDS = [
-  'SourceTypeOrReferenceId',
-  'SourceGroup',
-  'SourceEntry',
-];
+export const CONDITIONS_SEARCH_FIELDS = ['SourceTypeOrReferenceId', 'SourceGroup', 'SourceEntry'];
 
 export class Conditions extends TableRow {
   SourceTypeOrReferenceId: number = 0;

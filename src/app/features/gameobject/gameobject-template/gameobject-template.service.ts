@@ -15,7 +15,6 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 
 @Injectable()
 export class GameobjectTemplateService extends SingleRowEditorService<GameobjectTemplate> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: GameobjectHandlerService,
@@ -36,9 +35,7 @@ export class GameobjectTemplateService extends SingleRowEditorService<Gameobject
 
   getFieldDefinition(type: number, dataIndex: number): FieldDefinition {
     return GO_DATA_FIELDS[type] && GO_DATA_FIELDS[type][dataIndex]
-    ? GO_DATA_FIELDS[type][dataIndex]
-    : { name: `Data${dataIndex}`, tooltip: null };
+      ? GO_DATA_FIELDS[type][dataIndex]
+      : { name: `Data${dataIndex}`, tooltip: null };
   }
-
 }
-

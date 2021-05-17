@@ -3,16 +3,13 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 import { BaseModalConfig } from '@keira-shared/modules/selectors/base-selector/base-selector.model';
 
 export abstract class BaseSelectorModalComponent<ModalConfigType extends BaseModalConfig = BaseModalConfig> {
-
   // will be injected by the component that creates the modal
-  public value: string|number;
+  public value: string | number;
   public config: ModalConfigType;
 
-  public onValueSelected = new Subject<string|number>();
+  public onValueSelected = new Subject<string | number>();
 
-  constructor(
-    protected bsModalRef: BsModalRef,
-  ) {}
+  constructor(protected bsModalRef: BsModalRef) {}
 
   onCancel() {
     this.bsModalRef.hide();

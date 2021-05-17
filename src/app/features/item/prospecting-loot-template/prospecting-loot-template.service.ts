@@ -9,7 +9,6 @@ import { LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2 } from '@keira-types/loot-template
 
 @Injectable()
 export class ProspectingLootTemplateService extends MultiRowEditorService<ProspectingLootTemplate> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: ItemHandlerService,

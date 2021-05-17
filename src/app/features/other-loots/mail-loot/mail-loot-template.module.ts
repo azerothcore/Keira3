@@ -14,10 +14,7 @@ import { SelectMailLootComponent } from './select-mail-loot.component';
 import { CreateModule } from '@keira-shared/modules/create/create.module';
 import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 
-const components = [
-  MailLootTemplateComponent,
-  SelectMailLootComponent,
-];
+const components = [MailLootTemplateComponent, SelectMailLootComponent];
 
 @NgModule({
   declarations: components,
@@ -32,10 +29,6 @@ const components = [
     HighlightModule,
     NgxDatatableModule,
   ],
-  providers: [
-    MailLootTemplateService,
-    SelectMailLootService,
-    MailLootHandlerService,
-  ],
+  providers: [MailLootTemplateService, SelectMailLootService, MailLootHandlerService],
 })
 export class MailLootTemplateModule {}

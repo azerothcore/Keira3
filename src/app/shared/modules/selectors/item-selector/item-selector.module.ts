@@ -12,10 +12,7 @@ import { IconModule } from '@keira-shared/modules/icon/icon.module';
 import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 
 @NgModule({
-  declarations: [
-    ItemSelectorBtnComponent,
-    ItemSelectorModalComponent,
-  ],
+  declarations: [ItemSelectorBtnComponent, ItemSelectorModalComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -25,8 +22,6 @@ import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-
     IconModule,
     SearchButtonsModule,
   ],
-  exports: [
-    ItemSelectorBtnComponent,
-  ],
+  exports: [ItemSelectorBtnComponent],
 })
 export class ItemSelectorModule {}

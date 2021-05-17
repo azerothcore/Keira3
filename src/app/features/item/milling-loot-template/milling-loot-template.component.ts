@@ -10,12 +10,8 @@ import { LootTemplateComponent } from '@keira-abstract/components/editors/loot-t
   templateUrl: '../../../shared/abstract/components/editors/loot-template/loot-template.component.html',
 })
 export class MillingLootTemplateComponent extends LootTemplateComponent<MillingLootTemplate> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: MillingLootTemplateService,
-    public handlerService: ItemHandlerService,
-  ) {
+  constructor(public editorService: MillingLootTemplateService, public handlerService: ItemHandlerService) {
     super(editorService, handlerService);
   }
 }

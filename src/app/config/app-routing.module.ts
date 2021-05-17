@@ -10,15 +10,11 @@ import { CreatureTemplateResistanceComponent } from '../features/creature/creatu
 import { CreatureTemplateSpellComponent } from '../features/creature/creature-template-spell/creature-template-spell.component';
 import { NpcVendorComponent } from '../features/creature/npc-vendor/npc-vendor.component';
 import { CreatureEquipTemplateComponent } from '../features/creature/creature-equip-template/creature-equip-template.component';
-import {
-  CreatureOnkillReputationComponent
-} from '../features/creature/creature-onkill-reputation/creature-onkill-reputation.component';
+import { CreatureOnkillReputationComponent } from '../features/creature/creature-onkill-reputation/creature-onkill-reputation.component';
 import { CreatureHandlerService } from '../features/creature/creature-handler.service';
 import { CreatureQuestitemComponent } from '../features/creature/creature-questitem/creature-questitem.component';
 import { CreatureLootTemplateComponent } from '../features/creature/creature-loot-template/creature-loot-template.component';
-import {
-  PickpocketingLootTemplateComponent
-} from '../features/creature/pickpocketing-loot-template/pickpocketing-loot-template.component';
+import { PickpocketingLootTemplateComponent } from '../features/creature/pickpocketing-loot-template/pickpocketing-loot-template.component';
 import { SkinningLootTemplateComponent } from '../features/creature/skinning-loot-template/skinning-loot-template.component';
 import { NpcTrainerComponent } from '../features/creature/npc-trainer/npc-trainer.component';
 import { CreatureSpawnComponent } from '../features/creature/creature-spawn/creature-spawn.component';
@@ -30,9 +26,7 @@ import { QuestTemplateAddonComponent } from '../features/quest/quest-template-ad
 import { QuestOfferRewardComponent } from '../features/quest/quest-offer-reward/quest-offer-reward.component';
 import { QuestRequestItemsComponent } from '../features/quest/quest-request-items/quest-request-items.component';
 import { GameobjectTemplateComponent } from '../features/gameobject/gameobject-template/gameobject-template.component';
-import {
-  GameobjectTemplateAddonComponent
-} from '../features/gameobject/gameobject-template-addon/gameobject-template-addon.component';
+import { GameobjectTemplateAddonComponent } from '../features/gameobject/gameobject-template-addon/gameobject-template-addon.component';
 import { GameobjectHandlerService } from '../features/gameobject/gameobject-handler.service';
 import { SelectGameobjectComponent } from '../features/gameobject/select-gameobject/select-gameobject.component';
 import { GameobjectQuestitemComponent } from '../features/gameobject/gameobject-questitem/gameobject-questitem.component';
@@ -41,9 +35,7 @@ import { CreatureQueststarterComponent } from '../features/quest/creature-quests
 import { CreatureQuestenderComponent } from '../features/quest/creature-questender/creature-questender.component';
 import { GameobjectQueststarterComponent } from '../features/quest/gameobject-queststarter/gameobject-queststarter.component';
 import { GameobjectQuestenderComponent } from '../features/quest/gameobject-questender/gameobject-questender.component';
-import {
-  GameobjectLootTemplateComponent
-} from '../features/gameobject/gameobject-loot-template/gameobject-loot-template.component';
+import { GameobjectLootTemplateComponent } from '../features/gameobject/gameobject-loot-template/gameobject-loot-template.component';
 import { SelectItemComponent } from '../features/item/select-item/select-item.component';
 import { ItemTemplateComponent } from '../features/item/item-template/item-template.component';
 import { ItemHandlerService } from '../features/item/item-handler.service';
@@ -84,7 +76,7 @@ import { SpellDbcComponent } from '../features/spell/spell-dbc/spell-dbc.compone
 const routes: Routes = [
   {
     path: '',
-    component: DashboardComponent
+    component: DashboardComponent,
   },
   {
     path: 'sql-editor',
@@ -172,7 +164,7 @@ const routes: Routes = [
         component: SaiCreatureComponent,
         canActivate: [CreatureHandlerService],
       },
-    ]
+    ],
   },
   {
     path: 'quest',
@@ -221,7 +213,7 @@ const routes: Routes = [
         component: GameobjectQuestenderComponent,
         canActivate: [QuestHandlerService],
       },
-    ]
+    ],
   },
   {
     path: 'gameobject',
@@ -260,7 +252,7 @@ const routes: Routes = [
         component: SaiGameobjectComponent,
         canActivate: [GameobjectHandlerService],
       },
-    ]
+    ],
   },
   {
     path: 'item',
@@ -299,7 +291,7 @@ const routes: Routes = [
         component: MillingLootTemplateComponent,
         canActivate: [ItemHandlerService],
       },
-    ]
+    ],
   },
   {
     path: 'other-loots',
@@ -314,8 +306,8 @@ const routes: Routes = [
         canActivate: [ReferenceLootHandlerService],
       },
       {
-        'path': 'select-spell',
-        'component': SelectSpellLootComponent,
+        path: 'select-spell',
+        component: SelectSpellLootComponent,
       },
       {
         path: 'spell',
@@ -323,8 +315,8 @@ const routes: Routes = [
         canActivate: [SpellLootHandlerService],
       },
       {
-        'path': 'select-fishing',
-        'component': SelectFishingLootComponent,
+        path: 'select-fishing',
+        component: SelectFishingLootComponent,
       },
       {
         path: 'fishing',
@@ -332,15 +324,15 @@ const routes: Routes = [
         canActivate: [FishingLootHandlerService],
       },
       {
-        'path': 'select-mail',
-        'component': SelectMailLootComponent,
+        path: 'select-mail',
+        component: SelectMailLootComponent,
       },
       {
         path: 'mail',
         component: MailLootTemplateComponent,
         canActivate: [MailLootHandlerService],
       },
-    ]
+    ],
   },
   {
     path: 'gossip',
@@ -359,7 +351,7 @@ const routes: Routes = [
         component: GossipMenuOptionComponent,
         canActivate: [GossipHandlerService],
       },
-    ]
+    ],
   },
   {
     path: 'conditions',
@@ -373,7 +365,7 @@ const routes: Routes = [
         component: ConditionsComponent,
         canActivate: [ConditionsHandlerService],
       },
-    ]
+    ],
   },
   {
     path: 'smart-ai',
@@ -391,7 +383,7 @@ const routes: Routes = [
         component: SaiFullEditorComponent,
         canActivate: [SaiHandlerService],
       },
-    ]
+    ],
   },
   {
     path: 'spell',
@@ -404,12 +396,12 @@ const routes: Routes = [
         path: 'spell-dbc',
         component: SpellDbcComponent,
       },
-    ]
+    ],
   },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, { useHash: true, relativeLinkResolution: 'legacy' })],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

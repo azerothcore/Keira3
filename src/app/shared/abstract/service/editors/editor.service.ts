@@ -19,15 +19,31 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   protected _error: MysqlError;
 
   get loadedEntityId(): string {
-    return typeof this._loadedEntityId === 'object' ? JSON.stringify(this._loadedEntityId) : String(this._loadedEntityId);
+    return typeof this._loadedEntityId === 'object'
+      ? JSON.stringify(this._loadedEntityId)
+      : String(this._loadedEntityId);
   }
-  get loading(): boolean { return this._loading; }
-  get diffQuery(): string { return this._diffQuery; }
-  get fullQuery(): string { return this._fullQuery; }
-  get entityTable(): string { return this._entityTable; }
-  get isNew(): boolean { return this._isNew; }
-  get form(): FormGroup<T> { return this._form; }
-  get error(): MysqlError { return this._error; }
+  get loading(): boolean {
+    return this._loading;
+  }
+  get diffQuery(): string {
+    return this._diffQuery;
+  }
+  get fullQuery(): string {
+    return this._fullQuery;
+  }
+  get entityTable(): string {
+    return this._entityTable;
+  }
+  get isNew(): boolean {
+    return this._isNew;
+  }
+  get form(): FormGroup<T> {
+    return this._form;
+  }
+  get error(): MysqlError {
+    return this._error;
+  }
 
   constructor(
     protected _entityClass: Class,
@@ -47,7 +63,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
 
   protected abstract updateDiffQuery();
   protected abstract updateFullQuery();
-  protected abstract onReloadSuccessful(data: T[], id: string|number);
+  protected abstract onReloadSuccessful(data: T[], id: string | number);
 
   protected updateEditorStatus() {
     this.handlerService.statusMap[this._entityTable] = !!this._diffQuery;
@@ -72,20 +88,25 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     this.disableEntityIdField();
   }
 
-  protected selectQuery(id: string|number): Observable<T[]> {
+  protected selectQuery(id: string | number): Observable<T[]> {
     return this.queryService.selectAll<T>(this._entityTable, this._entityIdField, id);
   }
 
-  protected reloadEntity(id: string|number) {
+  protected reloadEntity(id: string | number) {
     this.subscriptions.push(
-      this.selectQuery(id).subscribe((data) => {
-        this._error = null;
-        this.onReloadSuccessful(data, id);
-      }, (error: MysqlError) => {
-        this._error = error;
-      }).add(() => {
-        this._loading = false;
-      })
+      this.selectQuery(id)
+        .subscribe(
+          (data) => {
+            this._error = null;
+            this.onReloadSuccessful(data, id);
+          },
+          (error: MysqlError) => {
+            this._error = error;
+          },
+        )
+        .add(() => {
+          this._loading = false;
+        }),
     );
   }
 
@@ -96,7 +117,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     this.updateEditorStatus();
   }
 
-  reload(id: string|number) {
+  reload(id: string | number) {
     this._loading = true;
     this.reset();
     this.reloadEntity(id);
@@ -107,22 +128,29 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   }
 
   save(query: string) {
-    if (!query) { return; }
+    if (!query) {
+      return;
+    }
 
     this._loading = true;
 
     this.subscriptions.push(
-      this.queryService.query<T>(query).subscribe(() => {
-        this._error = null;
-        this.reloadSameEntity();
-        this.toastrService.success('Query executed successfully', 'Success');
-      }, (error: MysqlError) => {
-        this._error = error;
-        this.toastrService.error('Error when executing the query!', 'Query error');
-      }).add(() => {
-        this._loading = false;
-      })
+      this.queryService
+        .query<T>(query)
+        .subscribe(
+          () => {
+            this._error = null;
+            this.reloadSameEntity();
+            this.toastrService.success('Query executed successfully', 'Success');
+          },
+          (error: MysqlError) => {
+            this._error = error;
+            this.toastrService.error('Error when executing the query!', 'Query error');
+          },
+        )
+        .add(() => {
+          this._loading = false;
+        }),
     );
-
   }
 }

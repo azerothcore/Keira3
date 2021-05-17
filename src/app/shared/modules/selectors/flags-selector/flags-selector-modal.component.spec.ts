@@ -11,15 +11,14 @@ describe('FlagsSelectorModalComponent', () => {
   let fixture: ComponentFixture<FlagsSelectorModalComponent>;
   let flagsService: FlagsService;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ FlagsSelectorModule ],
-      providers: [
-        BsModalRef,
-      ],
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [FlagsSelectorModule],
+        providers: [BsModalRef],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     flagsService = TestBed.inject(FlagsService);

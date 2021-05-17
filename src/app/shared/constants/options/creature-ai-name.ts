@@ -2,7 +2,10 @@ import { Option } from '../../types/general';
 
 export const CREATURE_AI_NAME: Option[] = [
   { value: 'NullCreatureAI', name: 'Empty AI, creature does nothing; cannot be charmed.' },
-  { value: 'TriggerAI', name: 'Same as "NullCreatureAI", except that the creature casts the spell from field spell1 when summoned' },
+  {
+    value: 'TriggerAI',
+    name: 'Same as "NullCreatureAI", except that the creature casts the spell from field spell1 when summoned',
+  },
   { value: 'AggressorAI', name: 'Creature attacks when entering aggro radius; uses only melee attacks.' },
   { value: 'ReactorAI', name: 'Creature attacks only if aggroed; uses only melee attacks..' },
   { value: 'PassiveAI', name: 'Creature behaves passive, cannot attack. ' },

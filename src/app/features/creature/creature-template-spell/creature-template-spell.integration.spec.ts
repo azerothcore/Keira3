@@ -9,20 +9,18 @@ import { CreatureModule } from '../creature.module';
 import { CreatureTemplateSpellComponent } from './creature-template-spell.component';
 import { CreatureHandlerService } from '../creature-handler.service';
 
-class CreatureTemplateSpellPage extends MultiRowEditorPageObject<CreatureTemplateSpellComponent>  {}
+class CreatureTemplateSpellPage extends MultiRowEditorPageObject<CreatureTemplateSpellComponent> {}
 
 describe('CreatureTemplateSpell integration tests', () => {
   const id = 1234;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        CreatureModule,
-      ],
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [RouterTestingModule, CreatureModule],
+      }).compileComponents();
+    }),
+  );
 
   function setup(creatingNew: boolean) {
     const originalRow0 = new CreatureTemplateSpell();
@@ -41,9 +39,7 @@ describe('CreatureTemplateSpell integration tests', () => {
     const querySpy = spyOn(queryService, 'query').and.returnValue(of());
     spyOn(queryService, 'queryValue').and.returnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(
-      creatingNew ? [] : [originalRow0, originalRow1, originalRow2]
-    ));
+    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     const fixture = TestBed.createComponent(CreatureTemplateSpellComponent);
     const component = fixture.componentInstance;
@@ -55,7 +51,6 @@ describe('CreatureTemplateSpell integration tests', () => {
   }
 
   describe('Creating new', () => {
-
     it('should correctly initialise', () => {
       const { page } = setup(true);
       page.expectDiffQueryToBeEmpty();
@@ -81,7 +76,8 @@ describe('CreatureTemplateSpell integration tests', () => {
 
     it('adding new rows and executing the query should correctly work', () => {
       const { page, querySpy } = setup(true);
-      const expectedQuery = 'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234) AND (`Index` IN (0, 1, 2));\n' +
+      const expectedQuery =
+        'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234) AND (`Index` IN (0, 1, 2));\n' +
         'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
         '(1234, 0, 0, 0),\n' +
         '(1234, 1, 0, 0),\n' +
@@ -107,25 +103,25 @@ describe('CreatureTemplateSpell integration tests', () => {
       page.addNewRow();
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234) AND (`Index` IN (0));\n' +
-        'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 0, 0, 0);'
+          'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 0, 0, 0);',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234);\n' +
-        'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 0, 0, 0);'
+          'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 0, 0, 0);',
       );
 
       page.setInputValueById('Index', '1');
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234) AND (`Index` IN (1));\n' +
-        'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 1, 0, 0);'
+          'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 1, 0, 0);',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234);\n' +
-        'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 1, 0, 0);'
+          'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 1, 0, 0);',
       );
       page.removeElement();
     });
@@ -137,11 +133,13 @@ describe('CreatureTemplateSpell integration tests', () => {
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
-      page.expectFullQueryToContain('DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234);\n' +
-        'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 0, 0, 0),\n' +
-        '(1234, 1, 0, 0),\n' +
-        '(1234, 2, 0, 0);');
+      page.expectFullQueryToContain(
+        'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234);\n' +
+          'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 0, 0, 0),\n' +
+          '(1234, 1, 0, 0),\n' +
+          '(1234, 2, 0, 0);',
+      );
       expect(page.getEditorTableRowsCount()).toBe(3);
       page.removeElement();
     });
@@ -151,31 +149,29 @@ describe('CreatureTemplateSpell integration tests', () => {
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234) AND (`Index` IN (1));'
+        'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234) AND (`Index` IN (1));',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234);\n' +
-        'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 0, 0, 0),\n' +
-        '(1234, 2, 0, 0);'
+          'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 0, 0, 0),\n' +
+          '(1234, 2, 0, 0);',
       );
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234) AND (`Index` IN (1, 2));'
+        'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234) AND (`Index` IN (1, 2));',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234);\n' +
-        'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 0, 0, 0);'
+          'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 0, 0, 0);',
       );
 
       page.deleteRow(0);
       expect(page.getEditorTableRowsCount()).toBe(0);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `creature_template_spell` WHERE `CreatureID` = 1234;'
-      );
+      page.expectDiffQueryToContain('DELETE FROM `creature_template_spell` WHERE `CreatureID` = 1234;');
       page.expectFullQueryToBeEmpty();
       page.removeElement();
     });
@@ -187,15 +183,15 @@ describe('CreatureTemplateSpell integration tests', () => {
 
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234) AND (`Index` IN (1, 111));\n' +
-        'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 111, 0, 0);'
+          'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 111, 0, 0);',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234);\n' +
-        'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 0, 0, 0),\n' +
-        '(1234, 111, 0, 0),\n' +
-        '(1234, 2, 0, 0);'
+          'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 0, 0, 0),\n' +
+          '(1234, 111, 0, 0),\n' +
+          '(1234, 2, 0, 0);',
       );
       page.removeElement();
     });
@@ -214,16 +210,16 @@ describe('CreatureTemplateSpell integration tests', () => {
 
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234) AND (`Index` IN (1, 2, 10, 3));\n' +
-        'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 10, 0, 0),\n' +
-        '(1234, 3, 0, 0);'
+          'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 10, 0, 0),\n' +
+          '(1234, 3, 0, 0);',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234);\n' +
-        'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 0, 0, 0),\n' +
-        '(1234, 10, 0, 0),\n' +
-        '(1234, 3, 0, 0);'
+          'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 0, 0, 0),\n' +
+          '(1234, 10, 0, 0),\n' +
+          '(1234, 3, 0, 0);',
       );
       page.removeElement();
     });
@@ -238,4 +234,3 @@ describe('CreatureTemplateSpell integration tests', () => {
     });
   });
 });
-

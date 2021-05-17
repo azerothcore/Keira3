@@ -9,17 +9,17 @@ import { FishingLootTemplateService } from './fishing-loot-template.service';
 import { FishingLootHandlerService } from './fishing-loot-handler.service';
 
 describe('FishingLootTemplateService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      { provide: ToastrService, useValue: instance(MockedToastrService) },
-      FishingLootHandlerService,
-      FishingLootTemplateService,
-    ]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+        FishingLootHandlerService,
+        FishingLootTemplateService,
+      ],
+    }),
+  );
 
   it('should be created', () => {
     expect(TestBed.inject(FishingLootTemplateService)).toBeTruthy();

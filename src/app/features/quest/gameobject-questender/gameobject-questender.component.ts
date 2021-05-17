@@ -9,10 +9,9 @@ import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 @Component({
   selector: 'keira-gameobject-questender',
   templateUrl: './gameobject-questender.component.html',
-  styleUrls: ['./gameobject-questender.component.scss']
+  styleUrls: ['./gameobject-questender.component.scss'],
 })
 export class GameobjectQuestenderComponent extends MultiRowEditorComponent<GameobjectQuestender> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: GameobjectQuestenderService,

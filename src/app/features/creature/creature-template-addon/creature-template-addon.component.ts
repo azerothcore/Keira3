@@ -12,10 +12,9 @@ import { CREATURE_ADDON_BYTES_2 } from '@keira-constants/options/creature-addon-
 @Component({
   selector: 'keira-creature-template-addon',
   templateUrl: './creature-template-addon.component.html',
-  styleUrls: ['./creature-template-addon.component.scss']
+  styleUrls: ['./creature-template-addon.component.scss'],
 })
 export class CreatureTemplateAddonComponent extends SingleRowEditorComponent<CreatureTemplateAddon> {
-
   public get docUrl(): string {
     return this.WIKI_BASE_URL + CREATURE_SPAWN_ADDON_TABLE; // they share the same doc page
   }
@@ -25,10 +24,7 @@ export class CreatureTemplateAddonComponent extends SingleRowEditorComponent<Cre
   public readonly CREATURE_ADDON_BYTES_2 = CREATURE_ADDON_BYTES_2;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: CreatureTemplateAddonService,
-    public handlerService: CreatureHandlerService,
-  ) {
+  constructor(public editorService: CreatureTemplateAddonService, public handlerService: CreatureHandlerService) {
     super(editorService, handlerService);
   }
 }

@@ -7,12 +7,13 @@ describe('QuestSelectorBtnComponent', () => {
   let component: QuestSelectorBtnComponent;
   let fixture: ComponentFixture<QuestSelectorBtnComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ QuestSelectorModule ],
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [QuestSelectorModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(QuestSelectorBtnComponent);

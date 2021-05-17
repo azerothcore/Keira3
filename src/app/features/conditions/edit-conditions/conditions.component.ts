@@ -7,14 +7,16 @@ import {
   CONDITION_SOURCE_TYPES_KEYS,
   CONDITION_TYPES,
   CONDITION_TYPES_KEYS,
-  Conditions
+  Conditions,
 } from '@keira-types/conditions.type';
 import { ConditionsService } from './conditions.service';
 import {
   CONDITION_TARGET_TOOLTIPS,
-  CONDITION_VALUE_1_TOOLTIPS, CONDITION_VALUE_2_TOOLTIPS, CONDITION_VALUE_3_TOOLTIPS,
+  CONDITION_VALUE_1_TOOLTIPS,
+  CONDITION_VALUE_2_TOOLTIPS,
+  CONDITION_VALUE_3_TOOLTIPS,
   SOURCE_ENTRY_TOOLTIPS,
-  SOURCE_GROUP_TOOLTIPS
+  SOURCE_GROUP_TOOLTIPS,
 } from './conditions-constants';
 
 import { QUEST_STATE, RANKMASK, TYPEMASK } from '@keira-constants/flags/conditions';
@@ -34,10 +36,9 @@ import {
 @Component({
   selector: 'keira-conditions',
   templateUrl: './conditions.component.html',
-  styleUrls: ['./conditions.component.scss']
+  styleUrls: ['./conditions.component.scss'],
 })
 export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
-
   public readonly CONDITION_SOURCE_TYPES = CONDITION_SOURCE_TYPES;
   public readonly CONDITION_SOURCE_TYPES_KEYS = CONDITION_SOURCE_TYPES_KEYS;
   public readonly CONDITION_TYPES = CONDITION_TYPES;
@@ -68,7 +69,7 @@ export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
   public readonly CONDITION_STAND_STATE_CV2 = CONDITION_STAND_STATE_CV2;
 
   get selectedSourceType(): number {
-   return this.editorService.form.controls.SourceTypeOrReferenceId.value;
+    return this.editorService.form.controls.SourceTypeOrReferenceId.value;
   }
 
   get conditionType(): number {
@@ -130,10 +131,7 @@ export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
   }
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: ConditionsService,
-    public handlerService: ConditionsHandlerService,
-  ) {
+  constructor(public editorService: ConditionsService, public handlerService: ConditionsHandlerService) {
     super(editorService, handlerService);
   }
 }

@@ -11,10 +11,9 @@ import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 @Component({
   selector: 'keira-quest-template-addon',
   templateUrl: './quest-template-addon.component.html',
-  styleUrls: ['./quest-template-addon.component.scss']
+  styleUrls: ['./quest-template-addon.component.scss'],
 })
 export class QuestTemplateAddonComponent extends SingleRowEditorComponent<QuestTemplateAddon> {
-
   public readonly ALLOWABLE_CLASSES = ALLOWABLE_CLASSES;
   public readonly SPECIAL_FLAGS = SPECIAL_FLAGS;
 

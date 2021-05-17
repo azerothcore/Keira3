@@ -1,4 +1,3 @@
-
 import { ToastrService } from 'ngx-toastr';
 
 import { MultiRowEditorService } from './multi-row-editor.service';
@@ -9,7 +8,6 @@ import { MysqlQueryService } from '../../../services/mysql-query.service';
 // Used where none of the editors table's fields matches with the main entity ID. For example creature_addon (CreatureSpawnAddonService)
 
 export abstract class MultiRowExternalEditorService<T extends TableRow> extends MultiRowEditorService<T> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected _entityClass: Class,
@@ -53,5 +51,5 @@ export abstract class MultiRowExternalEditorService<T extends TableRow> extends 
     );
   }
 
-  abstract selectQuery(id: string|number);
+  abstract selectQuery(id: string | number);
 }

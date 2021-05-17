@@ -6,15 +6,8 @@ import { TableRow } from '@keira-types/general';
 
 export abstract class ComplexKeyHandlerService<T extends TableRow> extends HandlerService<T> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected mainEditorRoutePath: string,
-    protected router: Router,
-    protected idFields: string[],
-  ) {
-    super(
-      mainEditorRoutePath,
-      router,
-    );
+  constructor(protected mainEditorRoutePath: string, protected router: Router, protected idFields: string[]) {
+    super(mainEditorRoutePath, router);
   }
 
   select(isNew: boolean, id: Partial<T>, name = null, navigate = true) {

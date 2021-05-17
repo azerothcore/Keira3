@@ -4,12 +4,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SpellHandlerService } from './spell-handler.service';
 
 describe('SpellHandlerService', () => {
-
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-      ],
+      imports: [RouterTestingModule],
       providers: [SpellHandlerService],
     });
   });

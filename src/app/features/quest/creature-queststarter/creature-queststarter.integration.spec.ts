@@ -11,22 +11,22 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { QuestModule } from '../quest.module';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 
-class CreatureQueststarterPage extends MultiRowEditorPageObject<CreatureQueststarterComponent>  {
-  get questPreviewNpcStart() { return this.query(`${this.PREVIEW_CONTAINER_SELECTOR} #npc-start`); }
+class CreatureQueststarterPage extends MultiRowEditorPageObject<CreatureQueststarterComponent> {
+  get questPreviewNpcStart() {
+    return this.query(`${this.PREVIEW_CONTAINER_SELECTOR} #npc-start`);
+  }
 }
 
 describe('CreatureQueststarter integration tests', () => {
   const id = 1234;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        QuestModule,
-      ],
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [RouterTestingModule, QuestModule],
+      }).compileComponents();
+    }),
+  );
 
   function setup(creatingNew: boolean) {
     const originalRow0 = new CreatureQueststarter();
@@ -45,9 +45,7 @@ describe('CreatureQueststarter integration tests', () => {
     const querySpy = spyOn(queryService, 'query').and.returnValue(of());
     spyOn(queryService, 'queryValue').and.returnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(
-      creatingNew ? [] : [originalRow0, originalRow1, originalRow2]
-    ));
+    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
     // by default the other editor services should not be initialised, because the selectAll would return the wrong types for them
     const initializeServicesSpy = spyOn(TestBed.inject(QuestPreviewService), 'initializeServices');
     if (creatingNew) {
@@ -65,7 +63,6 @@ describe('CreatureQueststarter integration tests', () => {
   }
 
   describe('Creating new', () => {
-
     it('should correctly initialise', () => {
       const { page } = setup(true);
       page.expectDiffQueryToBeEmpty();
@@ -90,7 +87,8 @@ describe('CreatureQueststarter integration tests', () => {
 
     it('adding new rows and executing the query should correctly work', () => {
       const { page, querySpy } = setup(true);
-      const expectedQuery = 'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234) AND (`id` IN (0, 1, 2));\n' +
+      const expectedQuery =
+        'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234) AND (`id` IN (0, 1, 2));\n' +
         'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
         '(0, 1234),\n' +
         '(1, 1234),\n' +
@@ -116,25 +114,25 @@ describe('CreatureQueststarter integration tests', () => {
       page.addNewRow();
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234) AND (`id` IN (0));\n' +
-        'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
-        '(0, 1234);'
+          'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
+          '(0, 1234);',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234);\n' +
-        'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
-        '(0, 1234);'
+          'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
+          '(0, 1234);',
       );
 
       page.setInputValueById('id', '1');
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1));\n' +
-        'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
-        '(1, 1234);\n'
+          'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
+          '(1, 1234);\n',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234);\n' +
-        'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
-        '(1, 1234);'
+          'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
+          '(1, 1234);',
       );
       page.removeElement();
     });
@@ -158,11 +156,13 @@ describe('CreatureQueststarter integration tests', () => {
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
-      page.expectFullQueryToContain('DELETE FROM `creature_queststarter` WHERE (`quest` = 1234);\n' +
-        'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
-        '(0, 1234),\n' +
-        '(1, 1234),\n' +
-        '(2, 1234);\n');
+      page.expectFullQueryToContain(
+        'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234);\n' +
+          'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
+          '(0, 1234),\n' +
+          '(1, 1234),\n' +
+          '(2, 1234);\n',
+      );
       expect(page.getEditorTableRowsCount()).toBe(3);
       page.removeElement();
     });
@@ -171,32 +171,26 @@ describe('CreatureQueststarter integration tests', () => {
       const { page } = setup(false);
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1));'
-      );
+      page.expectDiffQueryToContain('DELETE FROM `creature_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1));');
       page.expectFullQueryToContain(
         'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234);\n' +
-        'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
-        '(0, 1234),\n' +
-        '(2, 1234);'
+          'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
+          '(0, 1234),\n' +
+          '(2, 1234);',
       );
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1, 2));'
-      );
+      page.expectDiffQueryToContain('DELETE FROM `creature_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1, 2));');
       page.expectFullQueryToContain(
         'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234);\n' +
-        'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
-        '(0, 1234);'
+          'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
+          '(0, 1234);',
       );
 
       page.deleteRow(0);
       expect(page.getEditorTableRowsCount()).toBe(0);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `creature_queststarter` WHERE `quest` = 1234;'
-      );
+      page.expectDiffQueryToContain('DELETE FROM `creature_queststarter` WHERE `quest` = 1234;');
       page.expectFullQueryToBeEmpty();
       page.removeElement();
     });
@@ -208,15 +202,15 @@ describe('CreatureQueststarter integration tests', () => {
 
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1, 111));\n' +
-        'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
-        '(111, 1234);\n'
+          'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
+          '(111, 1234);\n',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234);\n' +
-        'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
-        '(0, 1234),\n' +
-        '(111, 1234),\n' +
-        '(2, 1234);\n'
+          'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
+          '(0, 1234),\n' +
+          '(111, 1234),\n' +
+          '(2, 1234);\n',
       );
       page.removeElement();
     });
@@ -235,16 +229,16 @@ describe('CreatureQueststarter integration tests', () => {
 
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1, 2, 10, 3));\n' +
-        'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
-        '(10, 1234),\n' +
-        '(3, 1234);\n'
+          'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
+          '(10, 1234),\n' +
+          '(3, 1234);\n',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234);\n' +
-        'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
-        '(0, 1234),\n' +
-        '(10, 1234),\n' +
-        '(3, 1234);\n'
+          'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
+          '(0, 1234),\n' +
+          '(10, 1234),\n' +
+          '(3, 1234);\n',
       );
       page.removeElement();
     });
@@ -258,44 +252,44 @@ describe('CreatureQueststarter integration tests', () => {
       page.removeElement();
     });
 
-    it('changing a value via CreatureSelector should correctly work', waitForAsync(async () => {
-      const { page, fixture } = setup(false);
-      const field = 'id';
-      const mysqlQueryService = TestBed.inject(MysqlQueryService);
-      (mysqlQueryService.query as Spy).and.returnValue(of(
-        [{ entry: 123, name: 'Mock Creature' }]
-      ));
+    it(
+      'changing a value via CreatureSelector should correctly work',
+      waitForAsync(async () => {
+        const { page, fixture } = setup(false);
+        const field = 'id';
+        const mysqlQueryService = TestBed.inject(MysqlQueryService);
+        (mysqlQueryService.query as Spy).and.returnValue(of([{ entry: 123, name: 'Mock Creature' }]));
 
-      // because this is a multi-row editor
-      page.clickRowOfDatatable(0);
-      await page.whenReady();
+        // because this is a multi-row editor
+        page.clickRowOfDatatable(0);
+        await page.whenReady();
 
-      page.clickElement(page.getSelectorBtn(field));
-      await page.whenReady();
-      page.expectModalDisplayed();
+        page.clickElement(page.getSelectorBtn(field));
+        await page.whenReady();
+        page.expectModalDisplayed();
 
-      page.clickSearchBtn();
+        page.clickSearchBtn();
 
-      await fixture.whenStable();
-      page.clickRowOfDatatableInModal(0);
-      await page.whenReady();
-      page.clickModalSelect();
-      await page.whenReady();
+        await fixture.whenStable();
+        page.clickRowOfDatatableInModal(0);
+        await page.whenReady();
+        page.clickModalSelect();
+        await page.whenReady();
 
-      page.expectDiffQueryToContain(
-        'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234) AND (`id` IN (0, 123));\n' +
-        'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
-        '(123, 1234);'
-      );
-      page.expectFullQueryToContain(
-        'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234);\n' +
-        'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
-        '(123, 1234),\n' +
-        '(1, 1234),\n' +
-        '(2, 1234);'
-      );
-      page.removeElement();
-    }));
+        page.expectDiffQueryToContain(
+          'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234) AND (`id` IN (0, 123));\n' +
+            'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
+            '(123, 1234);',
+        );
+        page.expectFullQueryToContain(
+          'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234);\n' +
+            'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
+            '(123, 1234),\n' +
+            '(1, 1234),\n' +
+            '(2, 1234);',
+        );
+        page.removeElement();
+      }),
+    );
   });
 });
-

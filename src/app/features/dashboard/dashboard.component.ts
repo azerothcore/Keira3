@@ -11,10 +11,9 @@ import { MysqlService } from '@keira-shared/services/mysql.service';
 @Component({
   selector: 'keira-home',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent extends SubscriptionHandler implements OnInit {
-
   coreVersions: VersionRow;
   dbWorldVersion: string;
   error = false;
@@ -45,37 +44,46 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
     const query = 'SELECT * FROM version';
 
     this.subscriptions.push(
-      this.queryService.query<VersionRow>(query).subscribe((data) => {
-        if (data && data.length > 0) {
-          this.coreVersions = data[0];
+      this.queryService.query<VersionRow>(query).subscribe(
+        (data) => {
+          if (data && data.length > 0) {
+            this.coreVersions = data[0];
 
-          if (!this.coreVersions.db_version.startsWith('ACDB') || !this.coreVersions.core_version.startsWith('AzerothCore')) {
-            this.error = true;
+            if (
+              !this.coreVersions.db_version.startsWith('ACDB') ||
+              !this.coreVersions.core_version.startsWith('AzerothCore')
+            ) {
+              this.error = true;
+            }
+          } else {
+            console.error(`Query ${query} produced no results: ${data}`);
           }
-        } else {
-          console.error(`Query ${query} produced no results: ${data}`);
-        }
-      }, (error) => {
-        this.error = true;
-        console.error(error);
-      })
+        },
+        (error) => {
+          this.error = true;
+          console.error(error);
+        },
+      ),
     );
   }
 
   private getWorldDbVersion() {
     const query = 'SELECT * FROM version_db_world';
     this.subscriptions.push(
-      this.queryService.query<VersionDbRow>(query).subscribe((data) => {
-        if (data && data.length > 0) {
-          const keys = Object.keys(data[0]);
-          this.dbWorldVersion = keys[2];
-        } else {
-          console.error(`Query ${query} produced no results: ${data}`);
-        }
-      }, (error) => {
-        this.error = true;
-        console.error(error);
-      })
+      this.queryService.query<VersionDbRow>(query).subscribe(
+        (data) => {
+          if (data && data.length > 0) {
+            const keys = Object.keys(data[0]);
+            this.dbWorldVersion = keys[2];
+          } else {
+            console.error(`Query ${query} produced no results: ${data}`);
+          }
+        },
+        (error) => {
+          this.error = true;
+          console.error(error);
+        },
+      ),
     );
   }
 

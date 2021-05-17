@@ -10,15 +10,13 @@ describe('SaiEditorComponent', () => {
   let fixture: ComponentFixture<SaiEditorComponent>;
   let handler: SaiHandlerService;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        SaiEditorModule,
-        RouterTestingModule,
-      ]
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [SaiEditorModule, RouterTestingModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     const selected = { source_type: 1, entryorguid: 100 };

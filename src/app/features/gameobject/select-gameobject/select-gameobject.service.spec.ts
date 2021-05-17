@@ -9,17 +9,17 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
 describe('SelectGameobjectService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      GameobjectHandlerService,
-      SaiGameobjectHandlerService,
-      SelectGameobjectService,
-    ]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        GameobjectHandlerService,
+        SaiGameobjectHandlerService,
+        SelectGameobjectService,
+      ],
+    }),
+  );
 
   it('should be created', () => {
     const service: SelectGameobjectService = TestBed.inject(SelectGameobjectService);

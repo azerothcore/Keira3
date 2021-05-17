@@ -12,9 +12,7 @@ import { ItemEnchantmentTemplateService } from './item-enchantment-template.serv
 import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
 
 @NgModule({
-  declarations: [
-    ItemEnchantmentTemplateComponent,
-  ],
+  declarations: [ItemEnchantmentTemplateComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -24,11 +22,7 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
     ToastrModule.forRoot(toastrConfig),
     EditorButtonsModule,
   ],
-  exports: [
-    ItemEnchantmentTemplateComponent,
-  ],
-  providers: [
-    ItemEnchantmentTemplateService,
-  ],
+  exports: [ItemEnchantmentTemplateComponent],
+  providers: [ItemEnchantmentTemplateService],
 })
 export class ItemEnchantmentTemplateModule {}

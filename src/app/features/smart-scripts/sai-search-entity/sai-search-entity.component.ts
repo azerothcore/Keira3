@@ -1,4 +1,4 @@
-import { Component, } from '@angular/core';
+import { Component } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { FormControl, FormGroup } from 'ngx-typesafe-forms';
 
@@ -8,16 +8,15 @@ import { SAI_TYPES, SAI_TYPES_KEYS, SmartScripts } from '@keira-types/smart-scri
 @Component({
   selector: 'keira-sai-search-entity',
   templateUrl: './sai-search-entity.component.html',
-  styleUrls: ['./sai-search-entity.component.scss']
+  styleUrls: ['./sai-search-entity.component.scss'],
 })
 export class SaiSearchEntityComponent {
-
   public readonly SAI_SEARCH_TYPES = SAI_TYPES;
   public readonly SAI_SEARCH_TYPES_KEYS = SAI_TYPES_KEYS;
 
   public readonly form = new FormGroup<Partial<SmartScripts>>({
-    'source_type': new FormControl<number>(null, [Validators.required]),
-    'entryorguid': new FormControl<number>(null, [Validators.required]),
+    source_type: new FormControl<number>(null, [Validators.required]),
+    entryorguid: new FormControl<number>(null, [Validators.required]),
   });
 
   get isTypeCreatureSelected(): boolean {
@@ -44,9 +43,7 @@ export class SaiSearchEntityComponent {
     return this.form.controls.entryorguid as FormGroup<number>;
   }
 
-  constructor(
-    private handlerService: SaiHandlerService,
-  ) {}
+  constructor(private handlerService: SaiHandlerService) {}
 
   onSelectedTypeChange() {
     this.entryOrGuidControl.setValue(null);

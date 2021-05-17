@@ -12,9 +12,7 @@ import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/singl
 import { CreatureTemplateAddonService } from './creature-template-addon.service';
 
 @NgModule({
-  declarations: [
-    CreatureTemplateAddonComponent
-  ],
+  declarations: [CreatureTemplateAddonComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -24,11 +22,7 @@ import { CreatureTemplateAddonService } from './creature-template-addon.service'
     ToastrModule.forRoot(toastrConfig),
     SingleValueSelectorModule,
   ],
-  exports: [
-    CreatureTemplateAddonComponent
-  ],
-  providers: [
-    CreatureTemplateAddonService,
-  ],
+  exports: [CreatureTemplateAddonComponent],
+  providers: [CreatureTemplateAddonService],
 })
 export class CreatureTemplateAddonModule {}

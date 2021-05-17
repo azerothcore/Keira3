@@ -4,11 +4,7 @@ import { SaiSearchEntityModule } from './sai-search-entity/sai-search-entity.mod
 import { SaiSearchExistingModule } from './sai-search-existing/sai-search-existing.module';
 import { SaiFullEditorModule } from './sai-full-editor/sai-full-editor.module';
 
-const modules = [
-  SaiSearchEntityModule,
-  SaiSearchExistingModule,
-  SaiFullEditorModule,
-];
+const modules = [SaiSearchEntityModule, SaiSearchExistingModule, SaiFullEditorModule];
 
 @NgModule({
   imports: [modules],

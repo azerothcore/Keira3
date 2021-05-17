@@ -23,4 +23,4 @@ import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-
   ],
   exports: [SaiSearchExistingComponent],
 })
-export class SaiSearchExistingModule { }
+export class SaiSearchExistingModule {}

@@ -25,4 +25,4 @@ import { GameobjectSelectorModule } from '@keira-shared/modules/selectors/gameob
   ],
   exports: [SaiSearchEntityComponent],
 })
-export class SaiSearchEntityModule { }
+export class SaiSearchEntityModule {}

@@ -32,24 +32,17 @@ describe('SkinningLootTemplate integration tests', () => {
   originalRow1.Item = 1;
   originalRow2.Item = 2;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        SkinningLootTemplateModule,
-        RouterTestingModule,
-      ],
-      providers: [
-        CreatureHandlerService,
-        SaiCreatureHandlerService,
-      ],
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [SkinningLootTemplateModule, RouterTestingModule],
+        providers: [CreatureHandlerService, SaiCreatureHandlerService],
+      }).compileComponents();
+    }),
+  );
 
   function setup(creatingNew: boolean, lootId = id) {
-    spyOn(TestBed.inject(SkinningLootTemplateService), 'getLootId').and.returnValue(of(
-      [{ lootId }]
-    ));
+    spyOn(TestBed.inject(SkinningLootTemplateService), 'getLootId').and.returnValue(of([{ lootId }]));
 
     handlerService = TestBed.inject(CreatureHandlerService);
     handlerService['_selected'] = `${id}`;
@@ -59,9 +52,7 @@ describe('SkinningLootTemplate integration tests', () => {
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
     spyOn(queryService, 'queryValue').and.returnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(
-      creatingNew ? [] : [originalRow0, originalRow1, originalRow2]
-    ));
+    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     fixture = TestBed.createComponent(SkinningLootTemplateComponent);
     component = fixture.componentInstance;
@@ -100,12 +91,13 @@ describe('SkinningLootTemplate integration tests', () => {
     });
 
     it('adding new rows and executing the query should correctly work', () => {
-      const expectedQuery = 'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0, 1, 2));\n' +
+      const expectedQuery =
+        'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0, 1, 2));\n' +
         'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
         '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 1, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 2, 0, 100, 0, 1, 0, 1, 1, \'\');';
+        "(1234, 0, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
+        "(1234, 1, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
+        "(1234, 2, 0, 100, 0, 1, 0, 1, 1, '');";
       querySpy.calls.reset();
 
       page.addNewRow();
@@ -125,57 +117,57 @@ describe('SkinningLootTemplate integration tests', () => {
       page.addNewRow();
       page.expectDiffQueryToContain(
         'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 100, 0, 1, 0, 1, 1, '');",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 100, 0, 1, 0, 1, 1, '');",
       );
 
       page.setInputValueById('Chance', '1');
       page.expectDiffQueryToContain(
         'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 1, 0, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 1, 0, 1, 0, 1, 1, '');",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 1, 0, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 1, 0, 1, 0, 1, 1, '');",
       );
 
       page.setInputValueById('QuestRequired', '2');
       page.expectDiffQueryToContain(
         'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 1, 2, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 1, 2, 1, 0, 1, 1, '');",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 1, 2, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 1, 2, 1, 0, 1, 1, '');",
       );
 
       page.setInputValueById('Item', '123');
       page.expectDiffQueryToContain(
         'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (123));\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 123, 0, 1, 2, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 123, 0, 1, 2, 1, 0, 1, 1, '');",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 123, 0, 1, 2, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 123, 0, 1, 2, 1, 0, 1, 1, '');",
       );
     });
   });
@@ -187,47 +179,45 @@ describe('SkinningLootTemplate integration tests', () => {
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
-      page.expectFullQueryToContain('' +
-        'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 1, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 2, 0, 100, 0, 1, 0, 1, 1, \'\');');
+      page.expectFullQueryToContain(
+        '' +
+          'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234);\n' +
+          'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 1, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 2, 0, 100, 0, 1, 0, 1, 1, '');",
+      );
       expect(page.getEditorTableRowsCount()).toBe(3);
     });
 
     it('deleting rows should correctly work', () => {
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1));'
-      );
+      page.expectDiffQueryToContain('DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1));');
       page.expectFullQueryToContain(
         'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
-        '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 2, 0, 100, 0, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+          '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 2, 0, 100, 0, 1, 0, 1, 1, '');",
       );
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
       page.expectDiffQueryToContain(
-        'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2));'
+        'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2));',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
-        '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+          '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 100, 0, 1, 0, 1, 1, '');",
       );
 
       page.deleteRow(0);
       expect(page.getEditorTableRowsCount()).toBe(0);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `skinning_loot_template` WHERE `Entry` = 1234;'
-      );
+      page.expectDiffQueryToContain('DELETE FROM `skinning_loot_template` WHERE `Entry` = 1234;');
       page.expectFullQueryToBeEmpty();
     });
 
@@ -240,17 +230,17 @@ describe('SkinningLootTemplate integration tests', () => {
 
       page.expectDiffQueryToContain(
         'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (2));\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
-        '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 2, 0, 100, 0, 1, 2, 1, 1, \'\');'
+          'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+          '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 2, 0, 100, 0, 1, 2, 1, 1, '');",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
-        '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 1, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 2, 0, 100, 0, 1, 2, 1, 1, \'\');'
+          'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+          '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 1, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 2, 0, 100, 0, 1, 2, 1, 1, '');",
       );
     });
 
@@ -267,18 +257,18 @@ describe('SkinningLootTemplate integration tests', () => {
 
       page.expectDiffQueryToContain(
         'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2, 3));\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
-        '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 1, 0, 10, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 3, 0, 100, 0, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+          '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 1, 0, 10, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 3, 0, 100, 0, 1, 0, 1, 1, '');",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
-        '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 1, 0, 10, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 3, 0, 100, 0, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+          '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 1, 0, 10, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 3, 0, 100, 0, 1, 0, 1, 1, '');",
       );
     });
 
@@ -294,7 +284,7 @@ describe('SkinningLootTemplate integration tests', () => {
     setup(true, 0);
 
     expect(page.query('.alert-info').innerText).toContain(
-      'You have to set the field `skinloot` of creature_template in order to enable this feature.'
+      'You have to set the field `skinloot` of creature_template in order to enable this feature.',
     );
   });
 });

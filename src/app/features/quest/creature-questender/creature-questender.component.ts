@@ -9,10 +9,9 @@ import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 @Component({
   selector: 'keira-creature-questender',
   templateUrl: './creature-questender.component.html',
-  styleUrls: ['./creature-questender.component.scss']
+  styleUrls: ['./creature-questender.component.scss'],
 })
 export class CreatureQuestenderComponent extends MultiRowEditorComponent<CreatureQuestender> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: CreatureQuestenderService,

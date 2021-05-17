@@ -13,10 +13,7 @@ export abstract class QueryService {
 
   // Input query format must be: SELECT something AS v FROM ...
   queryValue<T extends string | number>(query: string): Observable<T | null> {
-    return this.query(query).pipe(
-      map(data => data && data[0] ? data[0].v as T : null),
-    );
-
+    return this.query(query).pipe(map((data) => (data && data[0] ? (data[0].v as T) : null)));
   }
 
   queryValueToPromise<T extends string | number>(query: string): Promise<T> {
@@ -43,7 +40,12 @@ export abstract class QueryService {
     return this.cache[cacheId][id];
   }
 
-  getSearchQuery<T>(table: string, queryForm: QueryForm<T>, selectFields: string[] = null, groupFields: string[] = null): string {
+  getSearchQuery<T>(
+    table: string,
+    queryForm: QueryForm<T>,
+    selectFields: string[] = null,
+    groupFields: string[] = null,
+  ): string {
     const query = squel.select(squelConfig).from(table);
 
     if (selectFields) {

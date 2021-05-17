@@ -22,33 +22,30 @@ import { MailLootHandlerService } from '../../features/other-loots/mail-loot/mai
 import { SpellHandlerService } from '../../features/spell/spell-handler.service';
 
 describe('MainWindowComponent', () => {
-
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        MainWindowModule,
-        RouterTestingModule,
-      ],
-      providers: [
-        { provide : ElectronService, useValue: instance(MockedElectronService) },
-        { provide : MysqlService, useValue: instance(MockedMysqlService) },
-        CreatureHandlerService,
-        SaiCreatureHandlerService,
-        QuestHandlerService,
-        ItemHandlerService,
-        GameobjectHandlerService,
-        SaiGameobjectHandlerService,
-        GossipHandlerService,
-        ConditionsHandlerService,
-        ReferenceLootHandlerService,
-        SpellLootHandlerService,
-        FishingLootHandlerService,
-        MailLootHandlerService,
-        SpellHandlerService,
-      ]
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [MainWindowModule, RouterTestingModule],
+        providers: [
+          { provide: ElectronService, useValue: instance(MockedElectronService) },
+          { provide: MysqlService, useValue: instance(MockedMysqlService) },
+          CreatureHandlerService,
+          SaiCreatureHandlerService,
+          QuestHandlerService,
+          ItemHandlerService,
+          GameobjectHandlerService,
+          SaiGameobjectHandlerService,
+          GossipHandlerService,
+          ConditionsHandlerService,
+          ReferenceLootHandlerService,
+          SpellLootHandlerService,
+          FishingLootHandlerService,
+          MailLootHandlerService,
+          SpellHandlerService,
+        ],
+      }).compileComponents();
+    }),
+  );
 
   const setup = () => {
     const fixture = TestBed.createComponent(MainWindowComponent);

@@ -16,8 +16,6 @@ import { toastrConfig } from '@keira-config/toastr.config';
 import { SpellDbcLocaleComponent } from './texts/spell-dbc-locale/spell-dbc-locale.component';
 import { SpellDbcSpellEffectComponent } from './effects/spell-dbc-spell-effect/spell-dbc-spell-effect.component';
 
-
-
 @NgModule({
   declarations: [
     SpellDbcComponent,
@@ -37,6 +35,6 @@ import { SpellDbcSpellEffectComponent } from './effects/spell-dbc-spell-effect/s
     TabsModule.forRoot(),
     TooltipModule.forRoot(),
     ToastrModule.forRoot(toastrConfig),
-  ]
+  ],
 })
-export class SpellDbcModule { }
+export class SpellDbcModule {}

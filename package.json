@@ -29,11 +29,14 @@
     "electron:windows": "npm run build:prod && electron-builder build --windows",
     "electron:mac": "npm run build:prod && electron-builder build --mac",
     "electron:mac:ci": "npm run build:prod && electron-builder build --mac --publish=never",
+    "format": "prettier --config ./.prettierrc --ignore-path ./.prettierignore --no-editorconfig --write .",
+    "format-staged": "pretty-quick --staged",
     "lint": "ng lint",
     "test": "npm run postinstall:web && ng test",
     "test-ci": "npm run postinstall:web && ng test --watch=false --browsers ChromeHeadless --code-coverage && (cat ./coverage/lcov.info | coveralls || true)",
     "e2e": "cross-env TS_NODE_PROJECT='e2e/tsconfig.e2e.json' mocha --timeout 300000 --require ts-node/register e2e/**/*.e2e.ts",
-    "version": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md"
+    "version": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md",
+    "prepare": "husky install"
   },
   "dependencies": {
     "acorn": "8.2.4",
@@ -47,24 +50,24 @@
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "11.1.1",
-    "@angular-devkit/build-angular": "0.1102.12",
-    "@angular/animations": "11.2.13",
-    "@angular/cli": "11.2.12",
-    "@angular/common": "11.2.13",
-    "@angular/compiler": "11.2.13",
-    "@angular/compiler-cli": "11.2.13",
-    "@angular/core": "11.2.13",
-    "@angular/forms": "11.2.13",
-    "@angular/platform-browser": "11.2.13",
-    "@angular/platform-browser-dynamic": "11.2.13",
-    "@angular/router": "11.2.13",
+    "@angular-devkit/build-angular": "0.1102.13",
+    "@angular/animations": "11.2.14",
+    "@angular/cli": "11.2.13",
+    "@angular/common": "11.2.14",
+    "@angular/compiler": "11.2.14",
+    "@angular/compiler-cli": "11.2.14",
+    "@angular/core": "11.2.14",
+    "@angular/forms": "11.2.14",
+    "@angular/platform-browser": "11.2.14",
+    "@angular/platform-browser-dynamic": "11.2.14",
+    "@angular/router": "11.2.14",
     "@fortawesome/fontawesome-free": "5.15.3",
     "@swimlane/ngx-datatable": "19.0.0",
-    "@types/jasmine": "3.7.1",
+    "@types/jasmine": "3.7.4",
     "@types/jasminewd2": "2.0.9",
     "@types/mocha": "8.2.2",
     "@types/mysql": "2.15.18",
-    "@types/node": "14.14.44",
+    "@types/node": "14.14.45",
     "@types/sqlite3": "3.1.7",
     "@types/sqlstring": "2.3.0",
     "bootstrap": "4.6.0",
@@ -74,9 +77,10 @@
     "coveralls": "3.1.0",
     "cross-env": "7.0.3",
     "electron": "12.0.7",
-    "electron-builder": "22.11.2",
+    "electron-builder": "22.11.3",
     "electron-reload": "1.5.0",
     "highlight.js": "9.18.5",
+    "husky": "6.0.0",
     "jasmine-core": "3.7.1",
     "jasmine-spec-reporter": "7.0.0",
     "karma": "6.3.2",
@@ -84,6 +88,7 @@
     "karma-coverage-istanbul-reporter": "3.0.3",
     "karma-jasmine": "4.0.1",
     "karma-jasmine-html-reporter": "1.6.0",
+    "lint-staged": "11.0.0",
     "mocha": "8.4.0",
     "ngx-bootstrap": "6.2.0",
     "ngx-clipboard": "14.0.1",
@@ -91,6 +96,8 @@
     "ngx-perfect-scrollbar": "10.1.1",
     "ngx-typesafe-forms": "1.4.3",
     "npm-run-all": "4.1.5",
+    "prettier": "2.3.0",
+    "pretty-quick": "3.1.0",
     "rxjs": "6.6.7",
     "spectron": "14.0.0",
     "sqlstring": "2.3.2",
@@ -102,5 +109,17 @@
     "wait-on": "5.3.0",
     "webdriver-manager": "12.1.8",
     "zone.js": "0.11.4"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -e $GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "*.{js,json,css,scss,ts}": [
+      "npm run format-staged",
+      "git add"
+    ]
   }
 }

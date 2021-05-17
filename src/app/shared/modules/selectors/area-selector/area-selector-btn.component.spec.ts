@@ -7,12 +7,13 @@ describe('AreaSelectorBtnComponent', () => {
   let component: AreaSelectorBtnComponent;
   let fixture: ComponentFixture<AreaSelectorBtnComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ AreaSelectorModule ],
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [AreaSelectorModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AreaSelectorBtnComponent);

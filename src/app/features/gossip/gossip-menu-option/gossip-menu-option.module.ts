@@ -15,9 +15,7 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
 import { GossipMenuOptionPreviewModule } from '../gossip-menu-option-preview/gossip-menu-option-preview.module';
 
 @NgModule({
-  declarations: [
-    GossipMenuOptionComponent,
-  ],
+  declarations: [GossipMenuOptionComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -30,11 +28,7 @@ import { GossipMenuOptionPreviewModule } from '../gossip-menu-option-preview/gos
     EditorButtonsModule,
     GossipMenuOptionPreviewModule,
   ],
-  exports: [
-    GossipMenuOptionComponent,
-  ],
-  providers: [
-    GossipMenuOptionService,
-  ],
+  exports: [GossipMenuOptionComponent],
+  providers: [GossipMenuOptionService],
 })
 export class GossipMenuOptionModule {}

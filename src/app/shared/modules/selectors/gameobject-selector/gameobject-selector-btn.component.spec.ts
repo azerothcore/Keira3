@@ -7,12 +7,13 @@ describe('GameobjectSelectorBtnComponent', () => {
   let component: GameobjectSelectorBtnComponent;
   let fixture: ComponentFixture<GameobjectSelectorBtnComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ GameobjectSelectorModule ],
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [GameobjectSelectorModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(GameobjectSelectorBtnComponent);

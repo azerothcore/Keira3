@@ -23,28 +23,24 @@ describe('CreatureOnkillReputation integration tests', () => {
   let page: CreatureOnkillReputationPage;
 
   const id = 1234;
-  const expectedFullCreateQuery = 'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
-  'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +
-  ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, '  +
-  '`MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n'  +
+  const expectedFullCreateQuery =
+    'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
+    'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +
+    ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, ' +
+    '`MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n' +
     '(1234, 0, 0, 0, 0, 0, 0, 0, 0, 0);';
 
   const originalEntity = new CreatureOnkillReputation();
   originalEntity.creature_id = id;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        CreatureOnkillReputationModule,
-        RouterTestingModule,
-      ],
-      providers: [
-        CreatureHandlerService,
-        SaiCreatureHandlerService,
-      ],
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [CreatureOnkillReputationModule, RouterTestingModule],
+        providers: [CreatureHandlerService, SaiCreatureHandlerService],
+      }).compileComponents();
+    }),
+  );
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(CreatureHandlerService);
@@ -54,9 +50,7 @@ describe('CreatureOnkillReputation integration tests', () => {
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(
-      creatingNew ? [] : [originalEntity]
-    ));
+    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
 
     fixture = TestBed.createComponent(CreatureOnkillReputationComponent);
     component = fixture.componentInstance;
@@ -84,10 +78,11 @@ describe('CreatureOnkillReputation integration tests', () => {
     });
 
     it('changing a property and executing the query should correctly work', () => {
-      const expectedQuery = 'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
-      'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +
-      ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, '  +
-      '`MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n'  +
+      const expectedQuery =
+        'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
+        'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +
+        ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, ' +
+        '`MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n' +
         '(1234, 2, 0, 0, 0, 0, 0, 0, 0, 0);';
       querySpy.calls.reset();
 
@@ -110,7 +105,8 @@ describe('CreatureOnkillReputation integration tests', () => {
     });
 
     it('changing all properties and executing the query should correctly work', () => {
-      const expectedQuery = 'UPDATE `creature_onkill_reputation` SET ' +
+      const expectedQuery =
+        'UPDATE `creature_onkill_reputation` SET ' +
         '`RewOnKillRepFaction2` = 1, `MaxStanding1` = 2, `IsTeamAward1` = 3, `RewOnKillRepValue1` = 4, ' +
         '`MaxStanding2` = 5, `IsTeamAward2` = 6, `RewOnKillRepValue2` = 7, `TeamDependent` = 8 WHERE (`creature_id` = 1234);';
       querySpy.calls.reset();
@@ -126,80 +122,83 @@ describe('CreatureOnkillReputation integration tests', () => {
     it('changing values should correctly update the queries', () => {
       page.setInputValueById('RewOnKillRepFaction2', '1');
       page.expectDiffQueryToContain(
-        'UPDATE `creature_onkill_reputation` SET `RewOnKillRepFaction2` = 1 WHERE (`creature_id` = 1234);'
+        'UPDATE `creature_onkill_reputation` SET `RewOnKillRepFaction2` = 1 WHERE (`creature_id` = 1234);',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
-        'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +
-        ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, '  +
-        '`MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n'  +
-        '(1234, 0, 1, 0, 0, 0, 0, 0, 0, 0);'
+          'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +
+          ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, ' +
+          '`MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n' +
+          '(1234, 0, 1, 0, 0, 0, 0, 0, 0, 0);',
       );
 
       page.setInputValueById('IsTeamAward1', '3');
       page.expectDiffQueryToContain(
-        'UPDATE `creature_onkill_reputation` SET `RewOnKillRepFaction2` = 1, `IsTeamAward1` = 3 WHERE (`creature_id` = 1234);'
+        'UPDATE `creature_onkill_reputation` SET `RewOnKillRepFaction2` = 1, `IsTeamAward1` = 3 WHERE (`creature_id` = 1234);',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
-        'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +
-        ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, '  +
-        '`MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n'  +
-        '(1234, 0, 1, 0, 3, 0, 0, 0, 0, 0);'
+          'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +
+          ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, ' +
+          '`MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n' +
+          '(1234, 0, 1, 0, 3, 0, 0, 0, 0, 0);',
       );
     });
 
-    it('changing a value via SingleValueSelector should correctly work', waitForAsync(async () => {
-      const field = 'MaxStanding1';
-      page.clickElement(page.getSelectorBtn(field));
-      page.expectModalDisplayed();
-      await page.whenReady();
+    it(
+      'changing a value via SingleValueSelector should correctly work',
+      waitForAsync(async () => {
+        const field = 'MaxStanding1';
+        page.clickElement(page.getSelectorBtn(field));
+        page.expectModalDisplayed();
+        await page.whenReady();
 
-      page.clickRowOfDatatableInModal(7);
-      await page.whenReady();
-      page.clickModalSelect();
-      await page.whenReady();
+        page.clickRowOfDatatableInModal(7);
+        await page.whenReady();
+        page.clickModalSelect();
+        await page.whenReady();
 
-      expect(page.getInputById(field).value).toEqual('7');
-      page.expectDiffQueryToContain(
-        'UPDATE `creature_onkill_reputation` SET `MaxStanding1` = 7 WHERE (`creature_id` = 1234);'
-      );
-      page.expectFullQueryToContain(
-        'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
-        'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +
-        ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, '  +
-        '`MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n'  +
-        '(1234, 0, 0, 7, 0, 0, 0, 0, 0, 0);'
-      );
-    }));
+        expect(page.getInputById(field).value).toEqual('7');
+        page.expectDiffQueryToContain(
+          'UPDATE `creature_onkill_reputation` SET `MaxStanding1` = 7 WHERE (`creature_id` = 1234);',
+        );
+        page.expectFullQueryToContain(
+          'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
+            'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +
+            ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, ' +
+            '`MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n' +
+            '(1234, 0, 0, 7, 0, 0, 0, 0, 0, 0);',
+        );
+      }),
+    );
 
-    it('changing a value via FactionSelector should correctly work', waitForAsync(async () => {
-      const field = 'RewOnKillRepFaction1';
-      const sqliteQueryService = TestBed.inject(SqliteQueryService);
-      spyOn(sqliteQueryService, 'query').and.returnValue(of(
-        [{ m_ID: 123, m_name_lang_1: 'Mock Faction' }]
-      ));
+    it(
+      'changing a value via FactionSelector should correctly work',
+      waitForAsync(async () => {
+        const field = 'RewOnKillRepFaction1';
+        const sqliteQueryService = TestBed.inject(SqliteQueryService);
+        spyOn(sqliteQueryService, 'query').and.returnValue(of([{ m_ID: 123, m_name_lang_1: 'Mock Faction' }]));
 
-      page.clickElement(page.getSelectorBtn(field));
-      await page.whenReady();
-      page.expectModalDisplayed();
+        page.clickElement(page.getSelectorBtn(field));
+        await page.whenReady();
+        page.expectModalDisplayed();
 
-      page.clickSearchBtn();
-      await fixture.whenStable();
-      page.clickRowOfDatatableInModal(0);
-      await page.whenReady();
-      page.clickModalSelect();
-      await page.whenReady();
+        page.clickSearchBtn();
+        await fixture.whenStable();
+        page.clickRowOfDatatableInModal(0);
+        await page.whenReady();
+        page.clickModalSelect();
+        await page.whenReady();
 
-      page.expectDiffQueryToContain(
-        'UPDATE `creature_onkill_reputation` SET `RewOnKillRepFaction1` = 123 WHERE (`creature_id` = 1234);'
-      );
-      page.expectFullQueryToContain(
-        'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
-        'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`, `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, `MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n' +
-        '(1234, 123, 0, 0, 0, 0, 0, 0, 0, 0);'
-      );
-    }));
+        page.expectDiffQueryToContain(
+          'UPDATE `creature_onkill_reputation` SET `RewOnKillRepFaction1` = 123 WHERE (`creature_id` = 1234);',
+        );
+        page.expectFullQueryToContain(
+          'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
+            'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`, `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, `MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n' +
+            '(1234, 123, 0, 0, 0, 0, 0, 0, 0, 0);',
+        );
+      }),
+    );
   });
 });
-

@@ -9,17 +9,17 @@ import { MillingLootTemplateService } from './milling-loot-template.service';
 import { ItemHandlerService } from '../item-handler.service';
 
 describe('MillingLootTemplateService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      { provide: ToastrService, useValue: instance(MockedToastrService) },
-      ItemHandlerService,
-      MillingLootTemplateService,
-    ]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+        ItemHandlerService,
+        MillingLootTemplateService,
+      ],
+    }),
+  );
 
   it('should be created', () => {
     const service: MillingLootTemplateService = TestBed.inject(MillingLootTemplateService);

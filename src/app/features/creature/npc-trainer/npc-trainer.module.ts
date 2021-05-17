@@ -15,9 +15,7 @@ import { SkillSelectorModule } from '@keira-shared/modules/selectors/skill-selec
 import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
 
 @NgModule({
-  declarations: [
-    NpcTrainerComponent
-  ],
+  declarations: [NpcTrainerComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -30,11 +28,7 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
     SkillSelectorModule,
     EditorButtonsModule,
   ],
-  exports: [
-    NpcTrainerComponent,
-  ],
-  providers: [
-    NpcTrainerService,
-  ],
+  exports: [NpcTrainerComponent],
+  providers: [NpcTrainerService],
 })
 export class NpcTrainerModule {}

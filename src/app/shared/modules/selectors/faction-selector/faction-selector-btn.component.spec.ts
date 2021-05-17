@@ -7,12 +7,13 @@ describe('FactionSelectorBtnComponent', () => {
   let component: FactionSelectorBtnComponent;
   let fixture: ComponentFixture<FactionSelectorBtnComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ FactionSelectorModule ],
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [FactionSelectorModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(FactionSelectorBtnComponent);

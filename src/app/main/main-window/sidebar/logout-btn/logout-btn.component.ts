@@ -11,34 +11,29 @@ import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/su
   styleUrls: ['./logout-btn.component.scss'],
 })
 export class LogoutBtnComponent extends SubscriptionHandler {
-
   public modalRef: BsModalRef;
-  constructor(
-      private modalService: BsModalService,
-      private locationService: LocationService
-  ) {
+  constructor(private modalService: BsModalService, private locationService: LocationService) {
     super();
   }
 
   openModalConfirm() {
     const initialState = {
       title: 'Logout',
-      content: 'Are you sure you want to logout?'
+      content: 'Are you sure you want to logout?',
     };
 
     this.modalRef = this.modalService.show(ModalConfirmComponent, { initialState });
 
     this.subscriptions.push(
-      this.modalRef.content.onClose.subscribe(result => {
+      this.modalRef.content.onClose.subscribe((result) => {
         if (result) {
           this.logout();
         }
-      })
+      }),
     );
   }
 
   logout() {
     this.locationService.reload();
   }
-
 }

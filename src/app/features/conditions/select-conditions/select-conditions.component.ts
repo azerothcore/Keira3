@@ -1,4 +1,4 @@
-import { Component, } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { ConditionsSearchService } from '@keira-shared/modules/search/conditions-search.service';
 import { CONDITION_SOURCE_TYPES, CONDITION_SOURCE_TYPES_KEYS, Conditions } from '@keira-types/conditions.type';
@@ -8,16 +8,13 @@ import { SelectComplexKeyComponent } from '@keira-abstract/components/editors/se
 @Component({
   selector: 'keira-select-creature',
   templateUrl: './select-conditions.component.html',
-  styleUrls: ['./select-conditions.component.scss']
+  styleUrls: ['./select-conditions.component.scss'],
 })
 export class SelectConditionsComponent extends SelectComplexKeyComponent<Conditions> {
   public readonly CONDITION_SOURCE_TYPES = CONDITION_SOURCE_TYPES;
   public readonly CONDITION_SOURCE_TYPES_KEYS = CONDITION_SOURCE_TYPES_KEYS;
 
-  constructor(
-    public selectService: ConditionsSearchService,
-    protected handlerService: ConditionsHandlerService,
-  ) {
+  constructor(public selectService: ConditionsSearchService, protected handlerService: ConditionsHandlerService) {
     super(selectService, handlerService);
   }
 }

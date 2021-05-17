@@ -16,9 +16,7 @@ import { SaiGameobjectEditorService } from './sai-gameobject-editor.service';
 import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
 
 @NgModule({
-  declarations: [
-    SaiGameobjectComponent
-  ],
+  declarations: [SaiGameobjectComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -32,11 +30,7 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
     SaiEditorModule,
     EditorButtonsModule,
   ],
-  exports: [
-    SaiGameobjectComponent,
-  ],
-  providers: [
-    SaiGameobjectEditorService,
-  ],
+  exports: [SaiGameobjectComponent],
+  providers: [SaiGameobjectEditorService],
 })
 export class SaiGameobjectModule {}

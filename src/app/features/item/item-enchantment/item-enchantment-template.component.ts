@@ -8,15 +8,11 @@ import { ItemEnchantmentTemplateService } from './item-enchantment-template.serv
 @Component({
   selector: 'keira-item-enchantment-template',
   templateUrl: './item-enchantment-template.component.html',
-  styleUrls: ['./item-enchantment-template.component.scss']
+  styleUrls: ['./item-enchantment-template.component.scss'],
 })
 export class ItemEnchantmentTemplateComponent extends MultiRowEditorComponent<ItemEnchantmentTemplate> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: ItemEnchantmentTemplateService,
-    public handlerService: ItemHandlerService,
-  ) {
+  constructor(public editorService: ItemEnchantmentTemplateService, public handlerService: ItemHandlerService) {
     super(editorService, handlerService);
   }
 }

@@ -3,10 +3,7 @@ import { TableRow } from './general';
 export const ITEM_TEMPLATE_TABLE = 'item_template';
 export const ITEM_TEMPLATE_ID = 'entry';
 export const ITEM_TEMPLATE_NAME = 'name';
-export const ITEM_TEMPLATE_SEARCH_FIELDS = [
-  ITEM_TEMPLATE_ID,
-  ITEM_TEMPLATE_NAME,
-];
+export const ITEM_TEMPLATE_SEARCH_FIELDS = [ITEM_TEMPLATE_ID, ITEM_TEMPLATE_NAME];
 export const ITEM_TEMPLATE_CUSTOM_STARTING_ID = 90_000;
 
 export const DISENCHANT_TEMPLATE_LOOT_ID = 'DisenchantID';

@@ -15,35 +15,91 @@ import { QuestRequestItems } from '@keira-types/quest-request-items.type';
 import { QuestOfferReward } from '@keira-types/quest-offer-reward.type';
 
 class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
-  get title() { return this.query<HTMLHeadElement>('#title'); }
-  get level() { return this.query<HTMLParagraphElement>('#level'); }
-  get minLevel() { return this.query<HTMLParagraphElement>('#minlevel'); }
-  get creatureQuestStartIcon() { return this.query<HTMLImageElement>('#creatureQuestStartIcon'); }
-  get creatureQuestEndIcon() { return this.query<HTMLImageElement>('#creatureQuestEndIcon'); }
-  get questType() { return this.query<HTMLParagraphElement>('#type'); }
-  get classes() { return this.query<HTMLParagraphElement>('#classes'); }
-  get requiredSkill() { return this.query<HTMLParagraphElement>('#requiredSkill'); }
-  get rewardXP() { return this.query<HTMLParagraphElement>('#rewardXP'); }
-  get rewardTalents() { return this.query<HTMLParagraphElement>('#rewardTalents'); }
-  get rewardReputations() { return this.query<HTMLParagraphElement>('#rewardReputations'); }
-  get providedItem() { return this.query<HTMLParagraphElement>('#provided-item'); }
-  get areaDescription() { return this.query<HTMLParagraphElement>('#areaDescription'); }
-  get npcOrGoObjectives() { return this.query<HTMLParagraphElement>('#npcOrGoObjectives'); }
-  get itemObjectives() { return this.query<HTMLParagraphElement>('#itemObjectives'); }
-  get RequiredFaction() { return this.query<HTMLParagraphElement>('#RequiredFaction'); }
-  get requiredMoney() { return this.query<HTMLDivElement>('#required-money', false); }
-  get rewardMoney() { return this.query<HTMLDivElement>('#reward-money', false); }
-  get rewardBonusMoney() { return this.query<HTMLDivElement>('#reward-bonus-money', false); }
-  get rewardSpell() { return this.query<HTMLDivElement>('#rewardSpell', false); }
-  get rewardItems() { return this.query<HTMLDivElement>('#reward-items', false); }
-  get rewardChoiceItems() { return this.query<HTMLDivElement>('#reward-choice-items', false); }
+  get title() {
+    return this.query<HTMLHeadElement>('#title');
+  }
+  get level() {
+    return this.query<HTMLParagraphElement>('#level');
+  }
+  get minLevel() {
+    return this.query<HTMLParagraphElement>('#minlevel');
+  }
+  get creatureQuestStartIcon() {
+    return this.query<HTMLImageElement>('#creatureQuestStartIcon');
+  }
+  get creatureQuestEndIcon() {
+    return this.query<HTMLImageElement>('#creatureQuestEndIcon');
+  }
+  get questType() {
+    return this.query<HTMLParagraphElement>('#type');
+  }
+  get classes() {
+    return this.query<HTMLParagraphElement>('#classes');
+  }
+  get requiredSkill() {
+    return this.query<HTMLParagraphElement>('#requiredSkill');
+  }
+  get rewardXP() {
+    return this.query<HTMLParagraphElement>('#rewardXP');
+  }
+  get rewardTalents() {
+    return this.query<HTMLParagraphElement>('#rewardTalents');
+  }
+  get rewardReputations() {
+    return this.query<HTMLParagraphElement>('#rewardReputations');
+  }
+  get providedItem() {
+    return this.query<HTMLParagraphElement>('#provided-item');
+  }
+  get areaDescription() {
+    return this.query<HTMLParagraphElement>('#areaDescription');
+  }
+  get npcOrGoObjectives() {
+    return this.query<HTMLParagraphElement>('#npcOrGoObjectives');
+  }
+  get itemObjectives() {
+    return this.query<HTMLParagraphElement>('#itemObjectives');
+  }
+  get RequiredFaction() {
+    return this.query<HTMLParagraphElement>('#RequiredFaction');
+  }
+  get requiredMoney() {
+    return this.query<HTMLDivElement>('#required-money', false);
+  }
+  get rewardMoney() {
+    return this.query<HTMLDivElement>('#reward-money', false);
+  }
+  get rewardBonusMoney() {
+    return this.query<HTMLDivElement>('#reward-bonus-money', false);
+  }
+  get rewardSpell() {
+    return this.query<HTMLDivElement>('#rewardSpell', false);
+  }
+  get rewardItems() {
+    return this.query<HTMLDivElement>('#reward-items', false);
+  }
+  get rewardChoiceItems() {
+    return this.query<HTMLDivElement>('#reward-choice-items', false);
+  }
 
-  get descriptionText() { return this.query<HTMLDivElement>('#description-text'); }
-  get progressText() { return this.query<HTMLDivElement>('#progress-text'); }
-  get completionText() { return this.query<HTMLDivElement>('#completion-text'); }
-  get descriptionToggle() { return this.query<HTMLParagraphElement>('#description-toggle'); }
-  get progressToggle() { return this.query<HTMLParagraphElement>('#progress-toggle'); }
-  get completionToggle() { return this.query<HTMLParagraphElement>('#completion-toggle'); }
+  get descriptionText() {
+    return this.query<HTMLDivElement>('#description-text');
+  }
+  get progressText() {
+    return this.query<HTMLDivElement>('#progress-text');
+  }
+  get completionText() {
+    return this.query<HTMLDivElement>('#completion-text');
+  }
+  get descriptionToggle() {
+    return this.query<HTMLParagraphElement>('#description-toggle');
+  }
+  get progressToggle() {
+    return this.query<HTMLParagraphElement>('#progress-toggle');
+  }
+  get completionToggle() {
+    return this.query<HTMLParagraphElement>('#completion-toggle');
+  }
 
   expectCollapsed(element: HTMLElement) {
     expect(this.queryInsideElement(element, 'i')).toHaveClass('fa-caret-right');
@@ -52,20 +108,20 @@ class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
     expect(this.queryInsideElement(element, 'i')).toHaveClass('fa-caret-down');
   }
 
-  getRaces(assert = true) { return this.query<HTMLParagraphElement>('#races', assert); }
+  getRaces(assert = true) {
+    return this.query<HTMLParagraphElement>('#races', assert);
+  }
 }
 
 describe('QuestPreviewComponent', () => {
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ QuestPreviewComponent ],
-      imports: [
-        RouterTestingModule,
-        QuestModule,
-      ],
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [QuestPreviewComponent],
+        imports: [RouterTestingModule, QuestModule],
+      }).compileComponents();
+    }),
+  );
 
   function setup() {
     const service = TestBed.inject(QuestPreviewService);
@@ -168,7 +224,7 @@ describe('QuestPreviewComponent', () => {
     page.removeElement();
   });
 
-  it('should show required skill', async() => {
+  it('should show required skill', async () => {
     const { fixture, service, page } = setup();
     spyOnProperty(service, 'requiredSkill$', 'get').and.returnValue(Promise.resolve('Jewelcrafting'));
 
@@ -186,7 +242,7 @@ describe('QuestPreviewComponent', () => {
     page.removeElement();
   });
 
-  it('should show provided item (start item)', async() => {
+  it('should show provided item (start item)', async () => {
     const { fixture, service, page } = setup();
     const mockStartItem = 123456;
     const mockStartItemName = 'Sword of AzerothCore';
@@ -202,7 +258,7 @@ describe('QuestPreviewComponent', () => {
     page.removeElement();
   });
 
-  it('should show rewardXP', async() => {
+  it('should show rewardXP', async () => {
     const { fixture, service, page } = setup();
     const questTemplate = createMockObject({ RewardXPDifficulty: 2, QuestLevel: 10 }, QuestTemplate);
     spyOnProperty(service, 'rewardXP$', 'get').and.returnValue(Promise.resolve('200'));
@@ -241,7 +297,7 @@ describe('QuestPreviewComponent', () => {
 
   it('should show areaDescription', () => {
     const { fixture, page, service } = setup();
-    const questTemplate = createMockObject({ AreaDescription: 'Area Desc', }, QuestTemplate);
+    const questTemplate = createMockObject({ AreaDescription: 'Area Desc' }, QuestTemplate);
     spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
 
     fixture.detectChanges();
@@ -250,7 +306,7 @@ describe('QuestPreviewComponent', () => {
     fixture.debugElement.nativeElement.remove();
   });
 
-  it('should show npcOrGoObjectives', async() => {
+  it('should show npcOrGoObjectives', async () => {
     const { fixture, page, service } = setup();
     const getObjectiveCountSpy: Spy = spyOn(service, 'getObjectiveCount').and.returnValue('(1)');
     const getObjTextSpy: Spy = spyOn(service, 'getObjText').and.returnValue('Mock Objective');
@@ -275,8 +331,7 @@ describe('QuestPreviewComponent', () => {
     fixture.debugElement.nativeElement.remove();
   });
 
-
-  it('should show itemObjectives', async() => {
+  it('should show itemObjectives', async () => {
     const { fixture, page, service, mysqlQueryService } = setup();
     const getObjItemCountSpy: Spy = spyOn(service, 'getObjItemCount').and.returnValue('(2)');
     const questTemplate = createMockObject({ RequiredItemId1: 1 }, QuestTemplate);
@@ -296,7 +351,7 @@ describe('QuestPreviewComponent', () => {
     fixture.debugElement.nativeElement.remove();
   });
 
-  it('should show RequiredFaction', async() => {
+  it('should show RequiredFaction', async () => {
     const { fixture, page, service, sqliteQueryService } = setup();
     const questTemplate = createMockObject({ RequiredFactionId1: 1, RequiredFactionValue1: 900 }, QuestTemplate);
     spyOn(service, 'getFactionByValue').and.returnValue('(Neutral)');
@@ -416,7 +471,7 @@ describe('QuestPreviewComponent', () => {
       page.removeElement();
     });
 
-    it('should correctly show the reward spell', async() => {
+    it('should correctly show the reward spell', async () => {
       const { fixture, service, page, sqliteQueryService } = setup();
       const rewardSpellSpy = spyOn(service, 'rewardSpell');
       const questTemplate = createMockObject({ rewardSpell: 123 }, QuestTemplate);
@@ -441,7 +496,7 @@ describe('QuestPreviewComponent', () => {
       page.removeElement();
     });
 
-    it('should correctly show the reward items', async() => {
+    it('should correctly show the reward items', async () => {
       const { fixture, service, page, mysqlQueryService } = setup();
       const isRewardItemsSpy = spyOn(service, 'isRewardItems');
       const questTemplate = createMockObject({ RewardItem1: 123, RewardAmount1: 1 }, QuestTemplate);
@@ -466,7 +521,7 @@ describe('QuestPreviewComponent', () => {
       page.removeElement();
     });
 
-    it('should correctly show the reward choice items', async() => {
+    it('should correctly show the reward choice items', async () => {
       const { fixture, service, page, mysqlQueryService } = setup();
       const isRewardChoiceItemsSpy = spyOn(service, 'isRewardChoiceItems');
       const questTemplate = createMockObject({ RewardChoiceItemID1: 123, RewardChoiceItemQuantity1: 1 }, QuestTemplate);
@@ -490,6 +545,5 @@ describe('QuestPreviewComponent', () => {
 
       page.removeElement();
     });
-
   });
 });

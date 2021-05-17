@@ -20,18 +20,22 @@ export class ItemPreviewService {
     private readonly sqliteQueryService: SqliteQueryService,
     private readonly mysqlQueryService: MysqlQueryService,
     private readonly helperService: PreviewHelperService,
-  ) { }
+  ) {}
 
   /**
    * query functions
    */
 
   private getItemsetSlotBak(itemset: number | string): Promise<any[]> {
-    return this.sqliteQueryService.query(`SELECT * FROM items WHERE itemset = ${itemset} ORDER BY slotBak, id`).toPromise();
+    return this.sqliteQueryService
+      .query(`SELECT * FROM items WHERE itemset = ${itemset} ORDER BY slotBak, id`)
+      .toPromise();
   }
 
   private getItemNameByIDsASC(IDs: number[]): Promise<any[]> {
-    return this.mysqlQueryService.query(`SELECT name FROM item_template WHERE entry IN (${IDs.join(',')}) ORDER BY entry ASC`).toPromise();
+    return this.mysqlQueryService
+      .query(`SELECT name FROM item_template WHERE entry IN (${IDs.join(',')}) ORDER BY entry ASC`)
+      .toPromise();
   }
 
   private getItemsetById(ID: number | string): Promise<any> {
@@ -42,7 +46,7 @@ export class ItemPreviewService {
     return this.sqliteQueryService.query(`SELECT * FROM item_limit_category WHERE id = ${id}`).toPromise();
   }
 
-  private getGemEnchantmentIdById(id: number | string): Promise<string|number> {
+  private getGemEnchantmentIdById(id: number | string): Promise<string | number> {
     return this.sqliteQueryService.queryValue(`SELECT gemEnchantmentId AS v FROM items WHERE id = ${id};`).toPromise();
   }
 
@@ -59,7 +63,9 @@ export class ItemPreviewService {
   }
 
   private getItemExtendedCostFromVendor(id: number | string): Promise<any[]> {
-    return this.mysqlQueryService.query(`SELECT
+    return this.mysqlQueryService
+      .query(
+        `SELECT
       nv.item,
       nv.entry,
       0 AS eventId,
@@ -82,7 +88,9 @@ export class ItemPreviewService {
           JOIN
       creature c ON c.guid = genv.guid
     WHERE
-      genv.item = ${id};`).toPromise();
+      genv.item = ${id};`,
+      )
+      .toPromise();
   }
 
   /**
@@ -96,7 +104,7 @@ export class ItemPreviewService {
       ITEM_MOD.DODGE_RATING,
       ITEM_MOD.PARRY_RATING,
       ITEM_MOD.BLOCK_RATING,
-      ITEM_MOD.RESILIENCE_RATING
+      ITEM_MOD.RESILIENCE_RATING,
     ];
 
     if (rating.includes(type) && level < 34) {
@@ -106,7 +114,7 @@ export class ItemPreviewService {
     if (gtCombatRatings[type]) {
       let c: number;
       if (level > 70) {
-        c = 82 / 52 * Math.pow(131 / 63, (level - 70) / 10);
+        c = (82 / 52) * Math.pow(131 / 63, (level - 70) / 10);
       } else if (level > 60) {
         c = 82 / (262 - 3 * level);
       } else if (level > 10) {
@@ -122,9 +130,7 @@ export class ItemPreviewService {
       result += '%';
     }
 
-    return ITEM_CONSTANTS.ratingString
-      .replace('%s', `<!--rtg%${type}-->${result}`)
-      .replace('%s', `<!--lvl-->${level}`);
+    return ITEM_CONSTANTS.ratingString.replace('%s', `<!--rtg%${type}-->${result}`).replace('%s', `<!--lvl-->${level}`);
   }
 
   private parseRating(type: number, value: number, requiredLevel: number): string {
@@ -136,11 +142,12 @@ export class ItemPreviewService {
       return '';
     }
 
-    if (lvlIndepRating.includes(type)) { // level independant Bonus
+    if (lvlIndepRating.includes(type)) {
+      // level independant Bonus
       return ITEM_CONSTANTS.trigger[1] + ITEM_CONSTANTS.statType[type].replace('%d', `<!--rtg${type}-->${value}`);
     }
 
-     // rating-Bonuses
+    // rating-Bonuses
     const js = `&nbsp;<small>(${this.setRatingLevel(level, type, value)})</small>`;
     return ITEM_CONSTANTS.trigger[1] + ITEM_CONSTANTS.statType[type].replace('%d', `<!--rtg${type}-->${value}${js}`);
   }
@@ -186,29 +193,46 @@ export class ItemPreviewService {
     let tmp: number;
 
     tmp = s.d + s.h / 24;
-    if (tmp > 1 && !(tmp % 364)) {                      // whole years
-      return Math.round((s.d + s.h / 24) / 364) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.d / 364) === 1 && !s.h ? 'sg' : 'pl'][0];
+    if (tmp > 1 && !(tmp % 364)) {
+      // whole years
+      return (
+        Math.round((s.d + s.h / 24) / 364) +
+        ' ' +
+        ITEM_CONSTANTS.timeUnits[Math.abs(s.d / 364) === 1 && !s.h ? 'sg' : 'pl'][0]
+      );
     }
-    if (tmp > 1 && !(tmp % 30)) {                       // whole month
-      return Math.round((s.d + s.h / 24) /  30) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.d /  30) === 1 && !s.h ? 'sg' : 'pl'][1];
+    if (tmp > 1 && !(tmp % 30)) {
+      // whole month
+      return (
+        Math.round((s.d + s.h / 24) / 30) +
+        ' ' +
+        ITEM_CONSTANTS.timeUnits[Math.abs(s.d / 30) === 1 && !s.h ? 'sg' : 'pl'][1]
+      );
     }
-    if (tmp > 1 && !(tmp % 7)) {                        // whole weeks
-      return Math.round((s.d + s.h / 24) /   7) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.d / 7) === 1 && !s.h ? 'sg' : 'pl'][2];
+    if (tmp > 1 && !(tmp % 7)) {
+      // whole weeks
+      return (
+        Math.round((s.d + s.h / 24) / 7) +
+        ' ' +
+        ITEM_CONSTANTS.timeUnits[Math.abs(s.d / 7) === 1 && !s.h ? 'sg' : 'pl'][2]
+      );
     }
     if (s.d !== 0) {
-      return Math.round(s.d + s.h  /   24) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.d) === 1 && !s.h  ? 'sg' : 'pl'][3];
+      return Math.round(s.d + s.h / 24) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.d) === 1 && !s.h ? 'sg' : 'pl'][3];
     }
     if (s.h !== 0) {
-      return Math.round(s.h + s.m  /   60) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.h) === 1 && !s.m  ? 'sg' : 'pl'][4];
+      return Math.round(s.h + s.m / 60) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.h) === 1 && !s.m ? 'sg' : 'pl'][4];
     }
     if (s.m !== 0) {
-      return Math.round(s.m + s.s  /   60) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.m) === 1 && !s.s  ? 'sg' : 'pl'][5];
+      return Math.round(s.m + s.s / 60) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.m) === 1 && !s.s ? 'sg' : 'pl'][5];
     }
     if (s.s !== 0) {
-      return Math.round(s.s + s.ms / 1000) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.s) === 1 && !s.ms ? 'sg' : 'pl'][6];
+      return (
+        Math.round(s.s + s.ms / 1000) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.s) === 1 && !s.ms ? 'sg' : 'pl'][6]
+      );
     }
     if (s.ms !== 0) {
-      return s.ms + ' ' + ITEM_CONSTANTS.timeUnits[ Math.abs(s.ms) === 1 ? 'sg' : 'pl'][7];
+      return s.ms + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.ms) === 1 ? 'sg' : 'pl'][7];
     }
 
     return '0 ' + ITEM_CONSTANTS.timeUnits.pl[6];
@@ -246,7 +270,9 @@ export class ItemPreviewService {
 
   private async getLocks(lockId: number): Promise<string[]> {
     /* istanbul ignore next */
-    if (!lockId) { return ['']; }
+    if (!lockId) {
+      return [''];
+    }
 
     const lock = (await this.sqliteQueryService.getLockById(lockId))[0];
 
@@ -263,13 +289,15 @@ export class ItemPreviewService {
 
       const lockType = Number(lock['type' + i]);
 
-      if (lockType === 1) {                      // opened by item
+      if (lockType === 1) {
+        // opened by item
         name = await this.mysqlQueryService.getItemNameById(prop);
 
         if (!name) {
           continue;
         }
-      } else if (lockType === 2) {                 // opened by skill
+      } else if (lockType === 2) {
+        // opened by skill
 
         // exclude unusual stuff
         if (!ITEM_CONSTANTS.lockType[prop] || ![1, 2, 3, 4, 9, 16, 20].includes(Number(prop))) {
@@ -294,8 +322,9 @@ export class ItemPreviewService {
   // todo (med): information will get lost if one vendor sells one item multiple times with different costs (e.g. for item 54637)
   //             wowhead seems to have had the same issues
   private async getExtendedCost(entry: number, flagsExtra: number, buyPrice: number): Promise<any[]> {
-
-    if (!entry) { return []; }
+    if (!entry) {
+      return [];
+    }
 
     const itemz = {};
     let xCostData = [];
@@ -322,23 +351,23 @@ export class ItemPreviewService {
       }
     }
 
-      if (
+    if (
       /* istanbul ignore next */
-      !!xCostData
-      && xCostData.length > 0) {
+      !!xCostData &&
+      xCostData.length > 0
+    ) {
       xCostData = Array.from(new Set(xCostData)); // filter duplicates
       xCostData = await this.getItemExtendedCost(xCostData);
 
       /* istanbul ignore else */
       if (!!xCostData && xCostData.length > 0) {
-
         // converting xCostData to ARRAY_KEY structure
         for (const xCost of xCostData) {
           xCostDataArr[xCost.id] = xCost;
         }
       } else {
-      /* istanbul ignore next */
-      return [];
+        /* istanbul ignore next */
+        return [];
       }
     }
 
@@ -347,27 +376,21 @@ export class ItemPreviewService {
     for (const [k, vendors] of Object.entries(itemz)) {
       for (const [l, vendor] of Object.entries(vendors)) {
         for (const [m, vInfo] of Object.entries(vendor)) {
-
           let costs = [];
-        /* istanbul ignore else */
-        if (xCostDataArr[vInfo['extendedCost']] && Object.keys(xCostDataArr[vInfo['extendedCost']]).length > 0) {
+          /* istanbul ignore else */
+          if (xCostDataArr[vInfo['extendedCost']] && Object.keys(xCostDataArr[vInfo['extendedCost']]).length > 0) {
             costs = xCostDataArr[vInfo['extendedCost']];
           }
 
           const data = {
-            stock:      vInfo['maxcount'] ??
+            stock:
+              vInfo['maxcount'] ??
+              /* istanbul ignore next */
+              -1,
+            event: vInfo['eventId'],
+            reqRating: costs ? costs['reqPersonalRating'] : /* istanbul ignore next */ 0,
             /* istanbul ignore next */
-            -1,
-            event:      vInfo['eventId'],
-            reqRating:  costs
-            ? costs['reqPersonalRating']
-            /* istanbul ignore next */
-            : 0,
-            /* istanbul ignore next */
-            reqBracket: costs
-            ? costs['reqArenaSlot']
-            /* istanbul ignore next */
-            : 0
+            reqBracket: costs ? costs['reqArenaSlot'] : /* istanbul ignore next */ 0,
           };
 
           // hardcode arena(103) & honor(104)
@@ -380,8 +403,11 @@ export class ItemPreviewService {
           }
 
           for (let i = 1; i < 6; i++) {
-            if (costs['reqItemId' + i] /* && costs['reqItemId' + i].length > 0 */
-            && costs['itemCount' + i] && costs['itemCount' + i] > 0) {
+            if (
+              costs['reqItemId' + i] /* && costs['reqItemId' + i].length > 0 */ &&
+              costs['itemCount' + i] &&
+              costs['itemCount' + i] > 0
+            ) {
               data[costs['reqItemId' + i]] = costs['itemCount' + i];
               cItems.push(costs['reqItemId' + i]);
             }
@@ -403,9 +429,8 @@ export class ItemPreviewService {
     }
 
     // convert items to currency if possible
-      /* istanbul ignore else */
-      if (!!cItems) {
-
+    /* istanbul ignore else */
+    if (!!cItems) {
       for (const [itemId, vendors] of Object.entries(itemz)) {
         for (const [npcId, costData] of Object.entries(vendors)) {
           for (const [itr, cost] of Object.entries(costData)) {
@@ -439,10 +464,11 @@ export class ItemPreviewService {
         for (const costs of entries) {
           // reqRating isn't really a cost .. so pass it by ref instead of return
           // use highest total value
-          if (data[npcId] &&
-                costs['reqRating'] &&
-                /* istanbul ignore next */
-                (reqRating.length === 0 || (reqRating && reqRating[0] < costs['reqRating']))
+          if (
+            data[npcId] &&
+            costs['reqRating'] &&
+            /* istanbul ignore next */
+            (reqRating.length === 0 || (reqRating && reqRating[0] < costs['reqRating']))
           ) {
             reqRating = [costs['reqRating'], costs['reqBracket']];
           }
@@ -450,7 +476,7 @@ export class ItemPreviewService {
       }
 
       /* istanbul ignore next */
-      if (!(data)) {
+      if (!data) {
         delete result[itemId];
       }
     }
@@ -482,7 +508,9 @@ export class ItemPreviewService {
 
     if (itemClass === ITEM_TYPE.AMMUNITION && dmgmin && dmgmax) {
       if (sc1 && sc1 < ITEM_CONSTANTS.sc.length && sc1 > 0) {
-        damageText += ITEM_CONSTANTS.damage.ammo[1].replace('%d', ((dmgmin + dmgmax) / 2).toString()).replace('%s', ITEM_CONSTANTS.sc[sc1]);
+        damageText += ITEM_CONSTANTS.damage.ammo[1]
+          .replace('%d', ((dmgmin + dmgmax) / 2).toString())
+          .replace('%s', ITEM_CONSTANTS.sc[sc1]);
       } else {
         damageText += ITEM_CONSTANTS.damage.ammo[0].replace('%d', ((dmgmin + dmgmax) / 2).toString());
       }
@@ -490,7 +518,7 @@ export class ItemPreviewService {
       if (dmgmin1 === dmgmax1) {
         dmg = ITEM_CONSTANTS.damage.single[sc1 ? 1 : 0]
           .replace('%d', String(dmgmin1))
-          .replace('%s', (!!sc1 && sc1 < ITEM_CONSTANTS.sc.length && sc1 > 0 ? ITEM_CONSTANTS.sc[sc1] : ''));
+          .replace('%s', !!sc1 && sc1 < ITEM_CONSTANTS.sc.length && sc1 > 0 ? ITEM_CONSTANTS.sc[sc1] : '');
       } else {
         dmg = ITEM_CONSTANTS.damage.range[sc1 ? 1 : 0]
           .replace('%d', String(dmgmin1))
@@ -499,7 +527,9 @@ export class ItemPreviewService {
       }
 
       if (itemClass === ITEM_TYPE.WEAPON) {
-        damageText += `<!--dmg--><table style="float: left; width: 100%;"><tr><td>${dmg}</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><th style="text-align: right;">Speed <!--spd-->${speed.toFixed(2)}</th></tr></table>`;
+        damageText += `<!--dmg--><table style="float: left; width: 100%;"><tr><td>${dmg}</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><th style="text-align: right;">Speed <!--spd-->${speed.toFixed(
+          2,
+        )}</th></tr></table>`;
       } else {
         damageText += `<br><!--dmg-->${dmg}`;
       }
@@ -553,9 +583,12 @@ export class ItemPreviewService {
         case ITEM_MOD.INTELLECT:
         case ITEM_MOD.SPIRIT:
         case ITEM_MOD.STAMINA:
-          stats += `<br><span><!--stat${type}-->${(qty > 0 ? '+' : '-') + Math.abs(qty)} ${ITEM_CONSTANTS.statType[type]}</span>`;
+          stats += `<br><span><!--stat${type}-->${(qty > 0 ? '+' : '-') + Math.abs(qty)} ${
+            ITEM_CONSTANTS.statType[type]
+          }</span>`;
           break;
-        default: // rating with % for reqLevel
+        default:
+          // rating with % for reqLevel
           greenText.push(this.parseRating(type, qty, requiredLevel));
       }
     }
@@ -572,7 +605,9 @@ export class ItemPreviewService {
 
     const itemsetPieces = await this.getItemsetSlotBak(itemset);
 
-    if (!itemsetPieces || itemsetPieces.length === 0) { return ''; }
+    if (!itemsetPieces || itemsetPieces.length === 0) {
+      return '';
+    }
 
     // check if there are multiple itemset with the same itemset ID
     let multipleItemset = false;
@@ -652,74 +687,75 @@ export class ItemPreviewService {
       itemsetAttr = itemsetAttr[0];
     }
 
-    itemsetText += '<br><br><span class="q">' + ITEM_CONSTANTS.setName
-      .replace('%s', `${itemsetAttr['name'] ?? ''}`)
-      .replace('%d', '0')
-      .replace('%d', itemsName.length.toString())
-      + '</span>';
+    itemsetText +=
+      '<br><br><span class="q">' +
+      ITEM_CONSTANTS.setName
+        .replace('%s', `${itemsetAttr['name'] ?? ''}`)
+        .replace('%d', '0')
+        .replace('%d', itemsName.length.toString()) +
+      '</span>';
 
-      // if require skill
-      if (!!itemsetAttr['skillId']) {
-        itemsetText += `<br>Requires ${await this.sqliteQueryService.getSkillNameById(itemsetAttr['skillId'])}`;
+    // if require skill
+    if (!!itemsetAttr['skillId']) {
+      itemsetText += `<br>Requires ${await this.sqliteQueryService.getSkillNameById(itemsetAttr['skillId'])}`;
 
-        if (!!itemsetAttr['skillLevel']) {
-          itemsetText += ` (${itemsetAttr['skillLevel']})`;
-        }
+      if (!!itemsetAttr['skillLevel']) {
+        itemsetText += ` (${itemsetAttr['skillLevel']})`;
       }
+    }
 
-      // list pieces
-      itemsetText += `<br><div class="q0" style="padding-left: .6em">${itemsName.join('<br>')}</div>`;
+    // list pieces
+    itemsetText += `<br><div class="q0" style="padding-left: .6em">${itemsName.join('<br>')}</div>`;
 
-      // get bonuses
-      const setSpellsAndIdx = [];
+    // get bonuses
+    const setSpellsAndIdx = [];
 
-      for (let j = 1; j <= 8; j++) {
-        const spell = itemsetAttr['spell' + j];
+    for (let j = 1; j <= 8; j++) {
+      const spell = itemsetAttr['spell' + j];
 
-        if (!!spell) {
-          setSpellsAndIdx[spell] = j;
-        }
+      if (!!spell) {
+        setSpellsAndIdx[spell] = j;
       }
+    }
 
-      const setSpells = [];
-      if (setSpellsAndIdx && setSpellsAndIdx.length > 0) {
-        const spellsIDs = Object.keys(setSpellsAndIdx);
-        for (const s of spellsIDs) {
-          setSpells.push({
-            tooltip: await this.sqliteQueryService.getSpellDescriptionById(s),
-            entry: itemsetAttr['spell' + setSpellsAndIdx[s]],
-            bonus: itemsetAttr['bonus' + setSpellsAndIdx[s]],
-          });
-        }
+    const setSpells = [];
+    if (setSpellsAndIdx && setSpellsAndIdx.length > 0) {
+      const spellsIDs = Object.keys(setSpellsAndIdx);
+      for (const s of spellsIDs) {
+        setSpells.push({
+          tooltip: await this.sqliteQueryService.getSpellDescriptionById(s),
+          entry: itemsetAttr['spell' + setSpellsAndIdx[s]],
+          bonus: itemsetAttr['bonus' + setSpellsAndIdx[s]],
+        });
       }
+    }
 
-      // sort and list bonuses
-      let tmpBonus = '';
-      for (let i = 0; i < setSpells.length; i++) {
-        for (let j = i; j < setSpells.length; j++) {
-          if (setSpells[j]['bonus'] >= setSpells[i]['bonus']) {
-            continue;
-          }
-
-          const tmp = setSpells[i];
-          setSpells[i] = setSpells[j];
-          setSpells[j] = tmp;
+    // sort and list bonuses
+    let tmpBonus = '';
+    for (let i = 0; i < setSpells.length; i++) {
+      for (let j = i; j < setSpells.length; j++) {
+        if (setSpells[j]['bonus'] >= setSpells[i]['bonus']) {
+          continue;
         }
 
-        const bonusText = setSpells[i]['bonus'] && setSpells[i]['tooltip']
-        ? ITEM_CONSTANTS.setBonus
-          .replace('%d', setSpells[i]['bonus'])
-          .replace('%s', setSpells[i]['tooltip'])
-        : '';
-
-        if (!!bonusText) {
-          tmpBonus += `<br><span>${bonusText}</span>`;
-        }
+        const tmp = setSpells[i];
+        setSpells[i] = setSpells[j];
+        setSpells[j] = tmp;
       }
 
-      if (tmpBonus !== '') {
-        itemsetText += `<span class="q0">${tmpBonus}</span>`;
+      const bonusText =
+        setSpells[i]['bonus'] && setSpells[i]['tooltip']
+          ? ITEM_CONSTANTS.setBonus.replace('%d', setSpells[i]['bonus']).replace('%s', setSpells[i]['tooltip'])
+          : '';
+
+      if (!!bonusText) {
+        tmpBonus += `<br><span>${bonusText}</span>`;
       }
+    }
+
+    if (tmpBonus !== '') {
+      itemsetText += `<span class="q0">${tmpBonus}</span>`;
+    }
 
     return itemsetText;
   }
@@ -743,7 +779,8 @@ export class ItemPreviewService {
     // unique || unique-equipped || unique-limited
     if (maxcount === 1) {
       bondingText += '<br><!-- unique[0] -->' + this.ITEM_CONSTANTS['unique'][0];
-    } else if (!!maxcount && bagFamily !== 8192) { // not for currency tokens
+    } else if (!!maxcount && bagFamily !== 8192) {
+      // not for currency tokens
       bondingText += '<br><!-- unique[1] -->' + this.ITEM_CONSTANTS['unique'][1].replace('%d', maxcount.toString());
     } else if (flags & ITEM_FLAG.UNIQUEEQUIPPED) {
       bondingText += '<br><!-- uniqueEquipped -->' + this.ITEM_CONSTANTS['uniqueEquipped'][0];
@@ -754,9 +791,9 @@ export class ItemPreviewService {
         limit = limit[0];
 
         const index = limit && limit.isGem ? 'uniqueEquipped' : 'unique';
-        bondingText += `<br><!-- unique isGem -->${
-          ITEM_CONSTANTS[index][2].replace('%s', limit.name).replace('%d', limit.count)
-        }`;
+        bondingText += `<br><!-- unique isGem -->${ITEM_CONSTANTS[index][2]
+          .replace('%s', limit.name)
+          .replace('%d', limit.count)}`;
       }
     }
 
@@ -781,10 +818,12 @@ export class ItemPreviewService {
       if (itemClass === ITEM_TYPE.ARMOR && subclass > 0) {
         classTmpText += `<th${textRight}><!--asc ${subclass} -->${ITEM_CONSTANTS.armorSubClass[subclass]}</th>`;
       } else if (itemClass === ITEM_TYPE.WEAPON) {
-        classTmpText += ITEM_CONSTANTS.weaponSubClass[subclass] ? `<th${textRight}>${ITEM_CONSTANTS.weaponSubClass[subclass]}</th>` : '';
+        classTmpText += ITEM_CONSTANTS.weaponSubClass[subclass]
+          ? `<th${textRight}>${ITEM_CONSTANTS.weaponSubClass[subclass]}</th>`
+          : '';
       } else if (itemClass === ITEM_TYPE.AMMUNITION) {
         classTmpText += ITEM_CONSTANTS.projectileSubClass[subclass]
-         ? `<th${textRight}>${ITEM_CONSTANTS.projectileSubClass[subclass]}</th>`
+          ? `<th${textRight}>${ITEM_CONSTANTS.projectileSubClass[subclass]}</th>`
           : '';
       }
 
@@ -810,7 +849,10 @@ export class ItemPreviewService {
     const armor = itemTemplate.armor;
     const itemClass: number = Number(itemTemplate.class);
     if (itemClass === ITEM_TYPE.ARMOR && armorDamageModifier > 0 && !!armor) {
-      armorText += `<br><span class="q2"><!--addamr${armorDamageModifier}--><span>${ITEM_CONSTANTS.armor.replace('%s', String(armor))}</span></span>`;
+      armorText += `<br><span class="q2"><!--addamr${armorDamageModifier}--><span>${ITEM_CONSTANTS.armor.replace(
+        '%s',
+        String(armor),
+      )}</span></span>`;
     } else if (armor) {
       armorText += `<br><span><!--amr-->${ITEM_CONSTANTS.armor.replace('%s', String(armor))}</span>`;
     }
@@ -830,7 +872,7 @@ export class ItemPreviewService {
     // required classes
     const classes = this.helperService.getRequiredClass(itemTemplate.AllowableClass);
     if (classes != null && classes.length > 0) {
-      requiredText += `<br>Classes: ${classes.map(i => `<span class="c${i}">${CLASSES_TEXT[i]}</span>`).join(', ')}`;
+      requiredText += `<br>Classes: ${classes.map((i) => `<span class="c${i}">${CLASSES_TEXT[i]}</span>`).join(', ')}`;
     }
 
     // required races
@@ -843,28 +885,42 @@ export class ItemPreviewService {
     }
 
     // required honorRank (not used anymore)
-    if (!!itemTemplate.requiredhonorrank && !!PVP_RANK[itemTemplate.requiredhonorrank] && !!PVP_RANK[itemTemplate.requiredhonorrank].name) {
+    if (
+      !!itemTemplate.requiredhonorrank &&
+      !!PVP_RANK[itemTemplate.requiredhonorrank] &&
+      !!PVP_RANK[itemTemplate.requiredhonorrank].name
+    ) {
       requiredText += `<br>Requires ${PVP_RANK[itemTemplate.requiredhonorrank].name}`;
     }
 
     // required CityRank -> the value is always 0
 
     // required level
-    if ((itemTemplate.Flags & ITEM_FLAG.ACCOUNTBOUND) && itemTemplate.Quality === ITEMS_QUALITY.HEIRLOOM) {
-
-      requiredText += '<br>' + ITEM_CONSTANTS.reqLevelRange
-        .replace('%d', '1')
-        .replace('%d', MAX_LEVEL.toString())
-        .replace('%s', MAX_LEVEL.toString());
-
+    if (itemTemplate.Flags & ITEM_FLAG.ACCOUNTBOUND && itemTemplate.Quality === ITEMS_QUALITY.HEIRLOOM) {
+      requiredText +=
+        '<br>' +
+        ITEM_CONSTANTS.reqLevelRange
+          .replace('%d', '1')
+          .replace('%d', MAX_LEVEL.toString())
+          .replace('%s', MAX_LEVEL.toString());
     } else if (itemTemplate.RequiredLevel > 1) {
       requiredText += '<br>' + ITEM_CONSTANTS.reqMinLevel.replace('%d', String(itemTemplate.RequiredLevel));
     }
 
     // required arena team rating / personal rating / todo (low): sort out what kind of rating
-    const [res, reqRating] = await this.getExtendedCost(itemTemplate.entry, itemTemplate.FlagsExtra, itemTemplate.BuyPrice);
+    const [res, reqRating] = await this.getExtendedCost(
+      itemTemplate.entry,
+      itemTemplate.FlagsExtra,
+      itemTemplate.BuyPrice,
+    );
 
-    if (!!res && !!reqRating && res[itemTemplate.entry] && Object.keys(res[itemTemplate.entry]).length > 0 && reqRating.length > 0) {
+    if (
+      !!res &&
+      !!reqRating &&
+      res[itemTemplate.entry] &&
+      Object.keys(res[itemTemplate.entry]).length > 0 &&
+      reqRating.length > 0
+    ) {
       requiredText += '<br>' + ITEM_CONSTANTS.reqRating[reqRating[1]].replace('%d', reqRating[0]);
     }
 
@@ -894,7 +950,9 @@ export class ItemPreviewService {
     // required spell
     const requiredSpell = itemTemplate.requiredspell;
     if (!!requiredSpell && requiredSpell > 0) {
-      requiredText += `<br>Requires <span class="q1">${await this.sqliteQueryService.getSpellNameById(requiredSpell)}</span>`;
+      requiredText += `<br>Requires <span class="q1">${await this.sqliteQueryService.getSpellNameById(
+        requiredSpell,
+      )}</span>`;
     }
 
     // required reputation w/ faction
@@ -939,7 +997,8 @@ export class ItemPreviewService {
     // max duration
     if (duration) {
       let rt = '';
-      if (flagsCustom & 0x1) { // if CU_DURATION_REAL_TIME
+      if (flagsCustom & 0x1) {
+        // if CU_DURATION_REAL_TIME
         rt = ' (real time)';
       }
       durationText += `<br>Duration: ${this.formatTime(duration * 1000)}${rt}`;
@@ -983,7 +1042,6 @@ export class ItemPreviewService {
     // charges (I guess, checking first spell is enough)
     const spellCharges1 = itemTemplate.spellcharges_1;
     if (!!spellCharges1) {
-
       let charges = ITEM_CONSTANTS.charges.replace('%d', Math.abs(spellCharges1).toString());
       if (Math.abs(spellCharges1) === 1) {
         charges = charges.replace('Charges', 'Charge');
@@ -999,14 +1057,18 @@ export class ItemPreviewService {
   }
 
   private async getGemEnchantment(entry: number): Promise<string> {
-    if (!entry) { return ''; }
+    if (!entry) {
+      return '';
+    }
 
     let gemEnchantmentText = '';
     const gemEnchantmentId = await this.getGemEnchantmentIdById(entry);
 
     if (!!gemEnchantmentId) {
       let gemEnch = await this.getItemEnchantmentById(gemEnchantmentId);
-      if (!gemEnch || (gemEnch && gemEnch.length === 0)) { return ''; }
+      if (!gemEnch || (gemEnch && gemEnch.length === 0)) {
+        return '';
+      }
 
       gemEnch = gemEnch[0];
 
@@ -1016,14 +1078,14 @@ export class ItemPreviewService {
 
       // activation conditions for meta gems
       if (!!gemEnch['conditionId']) {
-
         let gemCnd = await this.getItemEnchantmentConditionById(gemEnch['conditionId']);
-        if (!gemCnd || (gemCnd && gemCnd.length === 0)) { return ''; }
+        if (!gemCnd || (gemCnd && gemCnd.length === 0)) {
+          return '';
+        }
 
         gemCnd = gemCnd[0];
 
         if (!!gemCnd) {
-
           for (let i = 1; i < 6; i++) {
             const gemCndColor = Number(gemCnd[`color${i}`]);
 
@@ -1038,19 +1100,16 @@ export class ItemPreviewService {
             let vspfArgs: any = ['', ''];
 
             switch (gemCndComparator) {
-              case 2:                         // requires less <color> than (<value> || <comparecolor>) gems
-              case 5:                         // requires at least <color> than (<value> || <comparecolor>) gems
-              vspfArgs = [
-                gemCndValue,
-                ITEM_CONSTANTS['gemColors'][gemCndColor - 1],
-              ];
-              break;
-              case 3:                         // requires more <color> than (<value> || <comparecolor>) gems
+              case 2: // requires less <color> than (<value> || <comparecolor>) gems
+              case 5: // requires at least <color> than (<value> || <comparecolor>) gems
+                vspfArgs = [gemCndValue, ITEM_CONSTANTS['gemColors'][gemCndColor - 1]];
+                break;
+              case 3: // requires more <color> than (<value> || <comparecolor>) gems
                 vspfArgs = [
                   ITEM_CONSTANTS['gemColors'][gemCndColor - 1],
                   ITEM_CONSTANTS['gemColors'][gemCndCmpColor - 1],
                 ];
-              break;
+                break;
               default:
                 break;
             }
@@ -1076,7 +1135,6 @@ export class ItemPreviewService {
   }
 
   private async getSocketEnchantment(itemTemplate: ItemTemplate): Promise<string> {
-
     let socketText = '';
 
     // fill native sockets
@@ -1139,10 +1197,14 @@ export class ItemPreviewService {
           /* istanbul ignore next */
           if (spellTrigger[0] || parsed || spellTrigger[1]) {
             /* istanbul ignore next */
-            green.push((ITEM_CONSTANTS.trigger[spellTrigger[0]] ?? '') + (parsed ?? '') + ' ' + (ITEM_CONSTANTS.trigger[spellTrigger[1]] ?? ''));
+            green.push(
+              (ITEM_CONSTANTS.trigger[spellTrigger[0]] ?? '') +
+                (parsed ?? '') +
+                ' ' +
+                (ITEM_CONSTANTS.trigger[spellTrigger[1]] ?? ''),
+            );
           }
         }
-
       }
     }
   }
@@ -1158,7 +1220,9 @@ export class ItemPreviewService {
     const spellId1 = itemTemplate.spellid_1;
     const spellId2 = itemTemplate.spellid_2;
 
-    if (!spellId1 || !spellId2) { return ''; }
+    if (!spellId1 || !spellId2) {
+      return '';
+    }
 
     if (this.canTeachSpell(spellId1, spellId2)) {
       const craftSpell = spellId2;
@@ -1332,5 +1396,4 @@ export class ItemPreviewService {
 
     return tmpItemPreview;
   }
-
 }

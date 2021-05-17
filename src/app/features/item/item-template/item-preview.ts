@@ -22,7 +22,8 @@ export class Lock extends TableRow {
 
 export const MAX_LEVEL = 80;
 
-export const lvlIndepRating = [        // rating doesn't scale with level
+export const lvlIndepRating = [
+  // rating doesn't scale with level
   ITEM_MOD.MANA,
   ITEM_MOD.HEALTH,
   ITEM_MOD.ATTACK_POWER,
@@ -74,31 +75,31 @@ export const resistanceFields = [
 ];
 
 export enum CLASSES {
-  WARRIOR     = 0x001,
-  PALADIN     = 0x002,
-  HUNTER      = 0x004,
-  ROGUE       = 0x008,
-  PRIEST      = 0x010,
+  WARRIOR = 0x001,
+  PALADIN = 0x002,
+  HUNTER = 0x004,
+  ROGUE = 0x008,
+  PRIEST = 0x010,
   DEATHKNIGHT = 0x020,
-  SHAMAN      = 0x040,
-  MAGE        = 0x080,
-  WARLOCK     = 0x100,
-  DRUID       = 0x400,
-  MASK_ALL    = 0x5FF,
+  SHAMAN = 0x040,
+  MAGE = 0x080,
+  WARLOCK = 0x100,
+  DRUID = 0x400,
+  MASK_ALL = 0x5ff,
 }
 
 export enum RACE {
-  HUMAN         = 0x001,
-  ORC           = 0x002,
-  DWARF         = 0x004,
-  NIGHTELF      = 0x008,
-  UNDEAD        = 0x010,
-  TAUREN        = 0x020,
-  GNOME         = 0x040,
-  TROLL         = 0x080,
-  BLOODELF      = 0x200,
-  DRAENEI       = 0x400,
-  MASK_ALLIANCE = 0x44D,
-  MASK_HORDE    = 0x2B2,
-  MASK_ALL      = 0x6FF,
+  HUMAN = 0x001,
+  ORC = 0x002,
+  DWARF = 0x004,
+  NIGHTELF = 0x008,
+  UNDEAD = 0x010,
+  TAUREN = 0x020,
+  GNOME = 0x040,
+  TROLL = 0x080,
+  BLOODELF = 0x200,
+  DRAENEI = 0x400,
+  MASK_ALLIANCE = 0x44d,
+  MASK_HORDE = 0x2b2,
+  MASK_ALL = 0x6ff,
 }

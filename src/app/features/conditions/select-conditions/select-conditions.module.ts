@@ -12,9 +12,7 @@ import { highlightOptions } from '@keira-config/highlight.config';
 import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 
 @NgModule({
-  declarations: [
-    SelectConditionsComponent,
-  ],
+  declarations: [SelectConditionsComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -25,8 +23,6 @@ import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-
     NgxDatatableModule,
     SearchButtonsModule,
   ],
-  exports: [
-    SelectConditionsComponent,
-  ],
+  exports: [SelectConditionsComponent],
 })
 export class SelectConditionsModule {}

@@ -10,19 +10,18 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
 describe('GameobjectTemplateAddonService', () => {
-
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      { provide: ToastrService, useValue: instance(MockedToastrService) },
-      GameobjectHandlerService,
-      SaiGameobjectHandlerService,
-      GameobjectTemplateAddonService
-    ]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+        GameobjectHandlerService,
+        SaiGameobjectHandlerService,
+        GameobjectTemplateAddonService,
+      ],
+    }),
+  );
 
   it('should be created', () => {
     const service: GameobjectTemplateAddonService = TestBed.inject(GameobjectTemplateAddonService);

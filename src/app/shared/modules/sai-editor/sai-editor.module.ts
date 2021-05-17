@@ -13,11 +13,7 @@ import { FlagsSelectorModule } from '../selectors/flags-selector/flags-selector.
 import { TimedActionlistComponent } from './timed-actionlist/timed-actionlist.component';
 import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
 
-const components = [
-  SaiEditorComponent,
-  SaiTopBarComponent,
-  TimedActionlistComponent,
-];
+const components = [SaiEditorComponent, SaiTopBarComponent, TimedActionlistComponent];
 
 @NgModule({
   declarations: components,
@@ -31,6 +27,6 @@ const components = [
     ToastrModule.forRoot(toastrConfig),
     NgxDatatableModule,
     EditorButtonsModule,
-  ]
+  ],
 })
-export class SaiEditorModule { }
+export class SaiEditorModule {}

@@ -10,7 +10,6 @@ import { SubscriptionHandler } from '../../../utils/subscription-handler/subscri
   templateUrl: './sai-top-bar.component.html',
 })
 export class SaiTopBarComponent extends SubscriptionHandler implements OnInit {
-
   @Input() public handler: SaiHandlerService;
 
   private _selectedText: string;
@@ -19,9 +18,7 @@ export class SaiTopBarComponent extends SubscriptionHandler implements OnInit {
     return this._selectedText;
   }
 
-  constructor(
-    public queryService: MysqlQueryService,
-  ) {
+  constructor(public queryService: MysqlQueryService) {
     super();
   }
 
@@ -29,7 +26,6 @@ export class SaiTopBarComponent extends SubscriptionHandler implements OnInit {
     const selected: Partial<SmartScripts> = JSON.parse(this.handler.selected);
 
     switch (selected.source_type) {
-
       case SAI_TYPES.SAI_TYPE_CREATURE:
         this._selectedText = `Creature ${this.getGuidOrIdText(selected.entryorguid)}`;
         this._selectedText = `${this._selectedText} (${await this.handler.getName().toPromise()})`;
@@ -48,7 +44,6 @@ export class SaiTopBarComponent extends SubscriptionHandler implements OnInit {
         this._selectedText = `Timed Actionlist ID ${selected.entryorguid}`;
         this._selectedText = `${this._selectedText} (${await this.handler.getName().toPromise()})`;
         break;
-
     }
   }
 

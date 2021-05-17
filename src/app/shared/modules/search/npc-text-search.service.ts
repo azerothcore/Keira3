@@ -5,14 +5,11 @@ import { ItemTemplate } from '../../types/item-template.type';
 import { SearchService } from './search.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class NpcTextSearchService extends SearchService<ItemTemplate> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public readonly queryService: MysqlQueryService,
-  ) {
+  constructor(public readonly queryService: MysqlQueryService) {
     super(queryService, NPC_TEXT_TABLE, NPC_TEXT_SEARCH_FIELDS);
   }
 }

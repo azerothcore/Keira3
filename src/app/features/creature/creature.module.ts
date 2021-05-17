@@ -41,9 +41,6 @@ const modules = [
 @NgModule({
   imports: [modules],
   exports: [modules],
-  providers: [
-    CreatureHandlerService,
-    SaiCreatureHandlerService,
-  ],
+  providers: [CreatureHandlerService, SaiCreatureHandlerService],
 })
 export class CreatureModule {}

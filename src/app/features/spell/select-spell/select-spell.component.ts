@@ -29,13 +29,6 @@ export class SelectSpellComponent extends SelectComponent<SpellDbc> {
     public handlerService: SpellHandlerService,
     public queryService: MysqlQueryService,
   ) {
-    super(
-      SPELL_DBC_TABLE,
-      SPELL_DBC_ID,
-      SPELL_DBC_CUSTOM_STARTING_ID,
-      selectService,
-      handlerService,
-      queryService,
-    );
+    super(SPELL_DBC_TABLE, SPELL_DBC_ID, SPELL_DBC_CUSTOM_STARTING_ID, selectService, handlerService, queryService);
   }
 }

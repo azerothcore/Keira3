@@ -6,11 +6,11 @@ import { MysqlQueryService } from '../../services/mysql-query.service';
 import { MockedMysqlQueryService } from '../../testing/mocks';
 
 describe('NpcTextSearchService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-    ]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      providers: [{ provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+    }),
+  );
 
   it('should be created', () => {
     const service: NpcTextSearchService = TestBed.inject(NpcTextSearchService);

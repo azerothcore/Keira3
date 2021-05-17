@@ -8,16 +8,16 @@ import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { GossipHandlerService } from '../gossip-handler.service';
 
 describe('SelectGossipService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      GossipHandlerService,
-      SelectGossipService,
-    ]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        GossipHandlerService,
+        SelectGossipService,
+      ],
+    }),
+  );
 
   it('should be created', () => {
     const service: SelectGossipService = TestBed.inject(SelectGossipService);

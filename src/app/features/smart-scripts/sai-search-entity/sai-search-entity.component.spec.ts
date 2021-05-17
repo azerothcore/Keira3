@@ -7,15 +7,33 @@ import { PageObject } from '@keira-testing/page-object';
 import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
 
 class SaiSearchEntityComponentPage extends PageObject<SaiSearchEntityComponent> {
-  get entryOrGuidInput() { return this.query<HTMLInputElement>('input#entryorguid', false); }
-  get entryOrGuidLabel() { return this.query<HTMLLabelElement>('label[for="entryorguid"]', false); }
-  get editBtn() { return this.query<HTMLButtonElement>('#edit-btn', false); }
-  get creatureSelector() { return this.query<HTMLElement>('keira-creature-selector-btn', false); }
-  get gameobjectSelector() { return this.query<HTMLElement>('keira-gameobject-selector-btn', false); }
-  get sourceTypeCreature() { return this.query<HTMLSelectElement>('.radio-container label#SAI_TYPE_CREATURE'); }
-  get sourceTypeGameobject() { return this.query<HTMLSelectElement>('.radio-container label#SAI_TYPE_GAMEOBJECT'); }
-  get sourceTypeAreatrigger() { return this.query<HTMLSelectElement>('.radio-container label#SAI_TYPE_AREATRIGGER'); }
-  get sourceTypeTimedActionlist() { return this.query<HTMLSelectElement>('.radio-container label#SAI_TYPE_TIMED_ACTIONLIST'); }
+  get entryOrGuidInput() {
+    return this.query<HTMLInputElement>('input#entryorguid', false);
+  }
+  get entryOrGuidLabel() {
+    return this.query<HTMLLabelElement>('label[for="entryorguid"]', false);
+  }
+  get editBtn() {
+    return this.query<HTMLButtonElement>('#edit-btn', false);
+  }
+  get creatureSelector() {
+    return this.query<HTMLElement>('keira-creature-selector-btn', false);
+  }
+  get gameobjectSelector() {
+    return this.query<HTMLElement>('keira-gameobject-selector-btn', false);
+  }
+  get sourceTypeCreature() {
+    return this.query<HTMLSelectElement>('.radio-container label#SAI_TYPE_CREATURE');
+  }
+  get sourceTypeGameobject() {
+    return this.query<HTMLSelectElement>('.radio-container label#SAI_TYPE_GAMEOBJECT');
+  }
+  get sourceTypeAreatrigger() {
+    return this.query<HTMLSelectElement>('.radio-container label#SAI_TYPE_AREATRIGGER');
+  }
+  get sourceTypeTimedActionlist() {
+    return this.query<HTMLSelectElement>('.radio-container label#SAI_TYPE_TIMED_ACTIONLIST');
+  }
 }
 
 describe('SaiSearchEntityComponent', () => {
@@ -23,15 +41,13 @@ describe('SaiSearchEntityComponent', () => {
   let fixture: ComponentFixture<SaiSearchEntityComponent>;
   let page: SaiSearchEntityComponentPage;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        SaiSearchEntityModule,
-        RouterTestingModule,
-      ]
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [SaiSearchEntityModule, RouterTestingModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SaiSearchEntityComponent);
@@ -74,7 +90,7 @@ describe('SaiSearchEntityComponent', () => {
     page.clickElement(page.sourceTypeCreature);
 
     expect(page.entryOrGuidLabel.innerText).toContain(
-      'Insert a negative number to select a GUID(-) or a positive number to select an Entry(+)'
+      'Insert a negative number to select a GUID(-) or a positive number to select an Entry(+)',
     );
     expect(page.creatureSelector).toBeTruthy();
     expect(page.gameobjectSelector).toBeFalsy();
@@ -82,7 +98,7 @@ describe('SaiSearchEntityComponent', () => {
     page.clickElement(page.sourceTypeGameobject);
 
     expect(page.entryOrGuidLabel.innerText).toContain(
-      'Insert a negative number to select a GUID(-) or a positive number to select an Entry(+)'
+      'Insert a negative number to select a GUID(-) or a positive number to select an Entry(+)',
     );
     expect(page.creatureSelector).toBeFalsy();
     expect(page.gameobjectSelector).toBeTruthy();
@@ -96,7 +112,7 @@ describe('SaiSearchEntityComponent', () => {
     page.clickElement(page.sourceTypeTimedActionlist);
 
     expect(page.entryOrGuidLabel.innerText).toContain(
-      `TimedActionlists IDs are composed by the Creature's Entry followed by a 2-digits number`
+      `TimedActionlists IDs are composed by the Creature's Entry followed by a 2-digits number`,
     );
     expect(page.creatureSelector).toBeFalsy();
     expect(page.gameobjectSelector).toBeFalsy();

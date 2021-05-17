@@ -22,33 +22,34 @@ import { LATEST_RELEASE_API_URL } from '@keira-constants/general';
 import { version } from '../../../package.json';
 
 describe('AppComponent', () => {
-
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        MainWindowComponent,
-        ConnectionWindowComponent,
-        AppComponent,
-        SidebarComponent,
-        QueryErrorComponent,
-        LogoutBtnComponent,
-      ],
-      imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        RouterTestingModule,
-        BrowserAnimationsModule,
-        PerfectScrollbarModule,
-        HttpClientTestingModule,
-        ModalConfirmModule,
-        ToastrModule.forRoot(),
-      ],
-      providers: [
-        { provide : ElectronService, useValue: instance(MockedElectronService) },
-        { provide : MysqlService, useValue: instance(MockedMysqlService) },
-      ]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [
+          MainWindowComponent,
+          ConnectionWindowComponent,
+          AppComponent,
+          SidebarComponent,
+          QueryErrorComponent,
+          LogoutBtnComponent,
+        ],
+        imports: [
+          FormsModule,
+          ReactiveFormsModule,
+          RouterTestingModule,
+          BrowserAnimationsModule,
+          PerfectScrollbarModule,
+          HttpClientTestingModule,
+          ModalConfirmModule,
+          ToastrModule.forRoot(),
+        ],
+        providers: [
+          { provide: ElectronService, useValue: instance(MockedElectronService) },
+          { provide: MysqlService, useValue: instance(MockedMysqlService) },
+        ],
+      }).compileComponents();
+    }),
+  );
 
   const setup = () => {
     const fixture = TestBed.createComponent(AppComponent);

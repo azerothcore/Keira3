@@ -7,12 +7,13 @@ describe('CreatureSelectorBtnComponent', () => {
   let component: CreatureSelectorBtnComponent;
   let fixture: ComponentFixture<CreatureSelectorBtnComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ CreatureSelectorModule ],
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [CreatureSelectorModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CreatureSelectorBtnComponent);

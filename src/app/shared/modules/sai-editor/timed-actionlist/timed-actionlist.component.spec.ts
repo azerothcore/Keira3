@@ -9,7 +9,7 @@ import { of } from 'rxjs';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 @Component({
-  template: `<keira-timed-actionlist [creatureId]="creatureId"></keira-timed-actionlist>`
+  template: `<keira-timed-actionlist [creatureId]="creatureId"></keira-timed-actionlist>`,
 })
 class TestHostComponent {
   @ViewChild(TimedActionlistComponent) child: TimedActionlistComponent;
@@ -19,14 +19,14 @@ class TestHostComponent {
 class TimedActionlistPage extends PageObject<TestHostComponent> {}
 
 describe('TimedActionlistComponent', () => {
-
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [TimedActionlistComponent, TestHostComponent],
-      imports: [NgxDatatableModule],
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [TimedActionlistComponent, TestHostComponent],
+        imports: [NgxDatatableModule],
+      }).compileComponents();
+    }),
+  );
 
   const setup = () => {
     const fixture = TestBed.createComponent(TestHostComponent);

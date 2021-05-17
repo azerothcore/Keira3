@@ -16,9 +16,7 @@ import { ItemExtendedCostSelectorModule } from '@keira-shared/modules/selectors/
 import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
 
 @NgModule({
-  declarations: [
-    NpcVendorComponent,
-  ],
+  declarations: [NpcVendorComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -32,11 +30,7 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
     ItemExtendedCostSelectorModule,
     EditorButtonsModule,
   ],
-  exports: [
-    NpcVendorComponent,
-  ],
-  providers: [
-    NpcVendorService,
-  ],
+  exports: [NpcVendorComponent],
+  providers: [NpcVendorService],
 })
 export class NpcVendorModule {}
