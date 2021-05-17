@@ -10,7 +10,7 @@ import { SelectSpellModule } from './select-spell.module';
 import { SelectPageObject } from '@keira-testing/select-page-object';
 import { SpellHandlerService } from '../spell-handler.service';
 import Spy = jasmine.Spy;
-import { SPELL_DBC_ID, SPELL_DBC_NAME, SpellDbc } from '@keira-types/spell-dbc.type';
+import { SPELL_DBC_ID, SPELL_DBC_NAME, SPELL_DBC_NAMESUBTEXT, SPELL_DBC_DESCRIPTION, SpellDbc } from '@keira-types/spell-dbc.type';
 
 class SelectSpellComponentPage extends SelectPageObject<SelectSpellComponent> {
   ID_FIELD = SPELL_DBC_ID;
