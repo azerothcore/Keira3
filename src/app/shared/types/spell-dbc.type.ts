@@ -4,7 +4,14 @@ export const SPELL_DBC_TABLE = 'spell_dbc';
 export const SPELL_DBC_CUSTOM_STARTING_ID = 200000;
 export const SPELL_DBC_ID = 'ID';
 export const SPELL_DBC_NAME = 'Name_Lang_enUS';
-export const SPELL_DBC_SEARCH_FIELDS = [SPELL_DBC_ID, SPELL_DBC_NAME];
+export const SPELL_DBC_NAMESUBTEXT = 'NameSubtext_Lang_enUS';
+export const SPELL_DBC_DESCRIPTION = 'Description_Lang_enUS';
+export const SPELL_DBC_SEARCH_FIELDS = [
+  SPELL_DBC_ID,
+  SPELL_DBC_NAME,
+  SPELL_DBC_NAMESUBTEXT,
+  SPELL_DBC_DESCRIPTION,
+];
 
 export class SpellDbc extends TableRow {
   ID: number = 0;
