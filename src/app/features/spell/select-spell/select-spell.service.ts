@@ -3,8 +3,6 @@ import { SelectService } from '@keira-abstract/service/select/select.service';
 import {
   SPELL_DBC_ID,
   SPELL_DBC_NAME,
-  SPELL_DBC_NAMESUBTEXT,
-  SPELL_DBC_DESCRIPTION,
   SPELL_DBC_SEARCH_FIELDS,
   SPELL_DBC_TABLE,
   SpellDbc
