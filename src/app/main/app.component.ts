@@ -7,7 +7,7 @@ import { MysqlService } from '../shared/services/mysql.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { ElectronService } from '@keira-shared/services/electron.service';
 import { KEIRA3_REPO_URL, LATEST_RELEASE_API_URL } from '@keira-constants/general';
-import { version } from '../../../package.json';
+import packageInfo from '../../../package.json';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
 
 @Component({
@@ -64,7 +64,7 @@ export class AppComponent extends SubscriptionHandler implements OnInit {
   private handleNewerVersionAlert() {
     this.subscriptions.push(
       this.http.get<{ tag_name: string }>(LATEST_RELEASE_API_URL).subscribe((release) => {
-        const currentTag = `v${version}`;
+        const currentTag = `v${packageInfo.version}`;
         if (currentTag !== release.tag_name) {
           this.showNewerVersionAlert = true;
         }

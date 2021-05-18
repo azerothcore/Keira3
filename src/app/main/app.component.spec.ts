@@ -19,7 +19,7 @@ import { QueryErrorComponent } from '../shared/modules/query-output/query-error/
 import { ModalConfirmModule } from '../shared/modules/modal-confirm/modal-confirm.module';
 import { LogoutBtnComponent } from './main-window/sidebar/logout-btn/logout-btn.component';
 import { LATEST_RELEASE_API_URL } from '@keira-constants/general';
-import { version } from '../../../package.json';
+import packageInfo from '../../../package.json';
 
 describe('AppComponent', () => {
   beforeEach(
@@ -114,7 +114,7 @@ describe('AppComponent', () => {
 
       const req = httpTestingController.expectOne(LATEST_RELEASE_API_URL);
       expect(req.request.method).toEqual('GET');
-      req.flush({ tag_name: `v${version}` });
+      req.flush({ tag_name: `v${packageInfo.version}` });
 
       httpTestingController.verify();
     });
