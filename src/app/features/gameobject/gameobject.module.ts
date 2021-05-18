@@ -9,6 +9,7 @@ import { GameobjectLootTemplateModule } from './gameobject-loot-template/gameobj
 import { SaiGameobjectModule } from './sai-gameobject/sai-gameobject.module';
 import { GameobjectHandlerService } from './gameobject-handler.service';
 import { SaiGameobjectHandlerService } from './sai-gameobject-handler.service';
+import { GameobjectSpawnAddonModule } from './gameobject-spawn-addon/gameobject-spawn-addon.module';
 
 const modules = [
   SelectGameobjectModule,
@@ -16,6 +17,7 @@ const modules = [
   GameobjectTemplateAddonModule,
   GameobjectQuestitemModule,
   GameobjectSpawnModule,
+  GameobjectSpawnAddonModule,
   GameobjectLootTemplateModule,
   SaiGameobjectModule,
 ];

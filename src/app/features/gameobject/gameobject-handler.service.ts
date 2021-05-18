@@ -9,9 +9,11 @@ import { GAMEOBJECT_QUESTITEM_TABLE } from '@keira-types/gameobject-questitem.ty
 import { GAMEOBJECT_LOOT_TEMPLATE_TABLE } from '@keira-types/gameobject-loot-template.type';
 import { GAMEOBJECT_SPAWN_TABLE } from '@keira-types/gameobject-spawn.type';
 import { SAI_TABLE } from '@keira-types/smart-scripts.type';
+import { GAMEOBJECT_SPAWN_ADDON_TABLE } from '@keira-types/gameobject-spawn-addon.type';
 
 @Injectable()
 export class GameobjectHandlerService extends HandlerService<GameobjectTemplate> {
+
   get isGameobjectTemplateUnsaved(): boolean {
     return this.statusMap[GAMEOBJECT_TEMPLATE_TABLE];
   }
@@ -27,6 +29,9 @@ export class GameobjectHandlerService extends HandlerService<GameobjectTemplate>
   get isGameobjectSpawnUnsaved(): boolean {
     return this.statusMap[GAMEOBJECT_SPAWN_TABLE];
   }
+  get isGameobjectSpawnAddonUnsaved(): boolean {
+    return this.statusMap[GAMEOBJECT_SPAWN_ADDON_TABLE];
+  }
   get isGameobjectSaiUnsaved(): boolean {
     return this.saiGameobjectHandler.statusMap[SAI_TABLE];
   }
@@ -37,6 +42,7 @@ export class GameobjectHandlerService extends HandlerService<GameobjectTemplate>
     [GAMEOBJECT_QUESTITEM_TABLE]: false,
     [GAMEOBJECT_LOOT_TEMPLATE_TABLE]: false,
     [GAMEOBJECT_SPAWN_TABLE]: false,
+    [GAMEOBJECT_SPAWN_ADDON_TABLE]: false,
   };
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

@@ -250,7 +250,12 @@
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-spawn'">
-                        Spawns <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectSpawnUnsaved"></keira-unsaved-icon>
+                        Spawn <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectSpawnUnsaved"></keira-unsaved-icon>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-spawn-addon'">
+                        Spawn Addon <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectSpawnAddonUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
