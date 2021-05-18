@@ -7,12 +7,13 @@ describe('HolidaySelectorBtnComponent', () => {
   let component: HolidaySelectorBtnComponent;
   let fixture: ComponentFixture<HolidaySelectorBtnComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ HolidaySelectorModule ],
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [HolidaySelectorModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HolidaySelectorBtnComponent);

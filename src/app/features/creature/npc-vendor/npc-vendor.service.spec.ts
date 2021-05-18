@@ -10,18 +10,18 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 describe('NpcVendorService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      { provide: ToastrService, useValue: instance(MockedToastrService) },
-      CreatureHandlerService,
-      SaiCreatureHandlerService,
-      NpcVendorService,
-    ],
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        NpcVendorService,
+      ],
+    }),
+  );
 
   it('should be created', () => {
     const service: NpcVendorService = TestBed.inject(NpcVendorService);

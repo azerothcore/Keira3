@@ -7,12 +7,13 @@ describe('FlagsSelectorBtnComponent', () => {
   let component: FlagsSelectorBtnComponent;
   let fixture: ComponentFixture<FlagsSelectorBtnComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ FlagsSelectorModule ],
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [FlagsSelectorModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(FlagsSelectorBtnComponent);

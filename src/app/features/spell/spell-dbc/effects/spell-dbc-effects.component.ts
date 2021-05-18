@@ -9,4 +9,3 @@ import { SpellDbc } from '@keira-types/spell-dbc.type';
 export class SpellDbcEffectsComponent {
   @Input() formGroup: FormGroup<SpellDbc>;
 }
-

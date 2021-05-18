@@ -13,16 +13,15 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
     return this._statusMap;
   }
 
-  get selected(): string { return this._selected; }
+  get selected(): string {
+    return this._selected;
+  }
 
   get parsedSelected(): Partial<T> {
     return JSON.parse(this.selected);
   }
 
-  constructor(
-    protected mainEditorRoutePath: string,
-    protected router: Router,
-  ) {
+  constructor(protected mainEditorRoutePath: string, protected router: Router) {
     super();
   }
 
@@ -37,7 +36,7 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
     }
   }
 
-  select(isNew: boolean, id: string|number|Partial<T>, name?: string, navigate = true) {
+  select(isNew: boolean, id: string | number | Partial<T>, name?: string, navigate = true) {
     this.resetStatus();
     this.isNew = isNew;
 

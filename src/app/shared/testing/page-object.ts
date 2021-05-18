@@ -63,7 +63,10 @@ export abstract class PageObject<ComponentType> {
     return children;
   }
 
-  public setInputValue(inputElement: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement, value: string|number) {
+  public setInputValue(
+    inputElement: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement,
+    value: string | number,
+  ) {
     inputElement.value = `${value}`;
     inputElement.dispatchEvent(new Event('input'));
     inputElement.dispatchEvent(new Event('change'));
@@ -118,9 +121,11 @@ export abstract class PageObject<ComponentType> {
     return `${datatableSelector} .datatable-row-wrapper:nth-child(${rowIndex + 1})`;
   }
   private getDatatableCellSelector(datatableSelector: string, rowIndex: number, colIndex: number): string {
-    return `${datatableSelector} .datatable-row-wrapper:nth-child(${rowIndex + 1}) .datatable-body-cell:nth-child(${colIndex + 1})`;
+    return `${datatableSelector} .datatable-row-wrapper:nth-child(${rowIndex + 1}) .datatable-body-cell:nth-child(${
+      colIndex + 1
+    })`;
   }
-  private getDefaultSelectorIfNull(datatableSelector: string|null) {
+  private getDefaultSelectorIfNull(datatableSelector: string | null) {
     return datatableSelector ? datatableSelector : this.DT_SELECTOR;
   }
 
@@ -148,7 +153,9 @@ export abstract class PageObject<ComponentType> {
   /* external selectors (querying the document) */
   getDatatableHeaderByTitleExternal(text: string, assert = true, datatableSelector?: string): HTMLElement {
     datatableSelector = this.getDefaultSelectorIfNull(datatableSelector);
-    const element: HTMLElement = document.querySelector(this.getDatatableHeaderByTitleSelector(datatableSelector, text));
+    const element: HTMLElement = document.querySelector(
+      this.getDatatableHeaderByTitleSelector(datatableSelector, text),
+    );
     if (assert) {
       expect(element).toBeTruthy(`Unable to find text ${text} of ${datatableSelector}`);
     }
@@ -166,7 +173,9 @@ export abstract class PageObject<ComponentType> {
 
   getDatatableCellExternal(rowIndex: number, colIndex: number, assert = true, datatableSelector?: string): HTMLElement {
     datatableSelector = this.getDefaultSelectorIfNull(datatableSelector);
-    const element: HTMLElement = document.querySelector(this.getDatatableCellSelector(datatableSelector, rowIndex, colIndex));
+    const element: HTMLElement = document.querySelector(
+      this.getDatatableCellSelector(datatableSelector, rowIndex, colIndex),
+    );
     if (assert) {
       expect(element).toBeTruthy(`Unable to find column ${colIndex} of row ${rowIndex} of ${datatableSelector}`);
     }
@@ -181,7 +190,6 @@ export abstract class PageObject<ComponentType> {
   clickRowOfDatatableInModal(rowIndex: number) {
     this.clickElement(this.getCellOfDatatableInModal(rowIndex, 0));
   }
-
 
   /*** ngx-bootstrap Tabs utilities ***/
 
@@ -201,4 +209,3 @@ export abstract class PageObject<ComponentType> {
     expect(tab.innerText).toContain(text);
   }
 }
-

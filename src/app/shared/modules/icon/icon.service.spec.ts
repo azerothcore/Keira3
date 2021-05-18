@@ -17,7 +17,7 @@ describe('IconService', () => {
     const sqliteQueryService = TestBed.inject(SqliteQueryService);
     spyOn(sqliteQueryService, 'getIconByItemDisplayId').and.returnValue(of(mockResult));
 
-    service.getIconByItemDisplayId(mockArgument).subscribe(result => {
+    service.getIconByItemDisplayId(mockArgument).subscribe((result) => {
       expect(result).toEqual(mockResult);
     });
     expect(sqliteQueryService.getIconByItemDisplayId).toHaveBeenCalledTimes(1);
@@ -33,13 +33,12 @@ describe('IconService', () => {
 
     spyOn(sqliteQueryService, 'getIconByItemDisplayId').and.returnValue(of(tgaIcon));
 
-    service.getIconByItemDisplayId(mockArgument).subscribe(result => {
+    service.getIconByItemDisplayId(mockArgument).subscribe((result) => {
       expect(result).toEqual(icon);
     });
     expect(sqliteQueryService.getIconByItemDisplayId).toHaveBeenCalledTimes(1);
     expect(sqliteQueryService.getIconByItemDisplayId).toHaveBeenCalledWith(mockArgument);
   });
-
 
   it('getIconByItemId() should correctly work [case mysqlQuery return non-null]', () => {
     const service = TestBed.inject(IconService);
@@ -48,7 +47,7 @@ describe('IconService', () => {
     spyOn(mysqlQueryService, 'getDisplayIdByItemId').and.returnValue(of(mockIntermediateResult));
     spyOn(service, 'getIconByItemDisplayId').and.returnValue(of(mockResult));
 
-    service.getIconByItemId(mockArgument).subscribe(result => {
+    service.getIconByItemId(mockArgument).subscribe((result) => {
       expect(result).toEqual(mockResult);
     });
     expect(mysqlQueryService.getDisplayIdByItemId).toHaveBeenCalledTimes(1);
@@ -63,7 +62,7 @@ describe('IconService', () => {
     spyOn(mysqlQueryService, 'getDisplayIdByItemId').and.returnValue(of(null));
     spyOn(service, 'getIconByItemDisplayId');
 
-    service.getIconByItemId(mockArgument).subscribe(result => {
+    service.getIconByItemId(mockArgument).subscribe((result) => {
       expect(result).toEqual(null);
     });
     expect(mysqlQueryService.getDisplayIdByItemId).toHaveBeenCalledTimes(1);
@@ -77,7 +76,7 @@ describe('IconService', () => {
     const mockIntermediateResult = 'some intermediate result';
     spyOn(sqliteQueryService, 'getDisplayIdBySpellId').and.returnValue(of(mockIntermediateResult));
 
-    service.getIconBySpellId(mockArgument).subscribe(result => {
+    service.getIconBySpellId(mockArgument).subscribe((result) => {
       expect(result).toEqual(mockResult);
     });
     expect(sqliteQueryService.getDisplayIdBySpellId).toHaveBeenCalledTimes(1);
@@ -89,7 +88,7 @@ describe('IconService', () => {
     const sqliteQueryService = TestBed.inject(SqliteQueryService);
     spyOn(sqliteQueryService, 'getDisplayIdBySpellId').and.returnValue(of(null));
 
-    service.getIconBySpellId(mockArgument).subscribe(result => {
+    service.getIconBySpellId(mockArgument).subscribe((result) => {
       expect(result).toEqual(null);
     });
     expect(sqliteQueryService.getDisplayIdBySpellId).toHaveBeenCalledTimes(1);

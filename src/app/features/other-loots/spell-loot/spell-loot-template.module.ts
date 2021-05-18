@@ -14,10 +14,7 @@ import { SelectSpellLootComponent } from './select-spell-loot.component';
 import { CreateModule } from '@keira-shared/modules/create/create.module';
 import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 
-const components = [
-  SpellLootTemplateComponent,
-  SelectSpellLootComponent,
-];
+const components = [SpellLootTemplateComponent, SelectSpellLootComponent];
 
 @NgModule({
   declarations: components,
@@ -32,10 +29,6 @@ const components = [
     HighlightModule,
     NgxDatatableModule,
   ],
-  providers: [
-    SpellLootTemplateService,
-    SelectSpellLootService,
-    SpellLootHandlerService,
-  ],
+  providers: [SpellLootTemplateService, SelectSpellLootService, SpellLootHandlerService],
 })
 export class SpellLootTemplateModule {}

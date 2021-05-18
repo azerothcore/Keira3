@@ -6,7 +6,7 @@ import { OPTION_IMG } from '@keira-constants/options/gossip-option-icon';
 @Component({
   selector: 'keira-gossip-menu-option-preview',
   templateUrl: './gossip-menu-option-preview.component.html',
-  styleUrls: ['./gossip-menu-option-preview.component.scss']
+  styleUrls: ['./gossip-menu-option-preview.component.scss'],
 })
 export class GossipMenuOptionPreviewComponent {
   @Input() options: GossipMenuOption[];

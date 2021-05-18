@@ -10,18 +10,18 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 describe('CreatureEquipTemplateService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      { provide: ToastrService, useValue: instance(MockedToastrService) },
-      CreatureHandlerService,
-      SaiCreatureHandlerService,
-      CreatureEquipTemplateService,
-    ],
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        CreatureEquipTemplateService,
+      ],
+    }),
+  );
 
   it('should be created', () => {
     const service: CreatureEquipTemplateService = TestBed.inject(CreatureEquipTemplateService);

@@ -7,19 +7,9 @@ import { PickpocketingLootTemplateService } from './pickpocketing-loot-template.
 import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.module';
 
 @NgModule({
-  declarations: [
-    PickpocketingLootTemplateComponent,
-  ],
-  imports: [
-    CommonModule,
-    TopBarModule,
-    LootEditorModule,
-  ],
-  exports: [
-    PickpocketingLootTemplateComponent,
-  ],
-  providers: [
-    PickpocketingLootTemplateService,
-  ],
+  declarations: [PickpocketingLootTemplateComponent],
+  imports: [CommonModule, TopBarModule, LootEditorModule],
+  exports: [PickpocketingLootTemplateComponent],
+  providers: [PickpocketingLootTemplateService],
 })
 export class PickpocketingLootTemplateModule {}

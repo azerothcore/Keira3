@@ -7,17 +7,8 @@ import { SingleValueSelectorModalComponent } from './single-value-selector-modal
 import { SingleValueSelectorBtnComponent } from './single-value-selector-btn.component';
 
 @NgModule({
-  declarations: [
-    SingleValueSelectorModalComponent,
-    SingleValueSelectorBtnComponent,
-  ],
-  imports: [
-    BrowserModule,
-    ModalModule.forRoot(),
-    NgxDatatableModule,
-  ],
-  exports: [
-    SingleValueSelectorBtnComponent,
-  ],
+  declarations: [SingleValueSelectorModalComponent, SingleValueSelectorBtnComponent],
+  imports: [BrowserModule, ModalModule.forRoot(), NgxDatatableModule],
+  exports: [SingleValueSelectorBtnComponent],
 })
 export class SingleValueSelectorModule {}

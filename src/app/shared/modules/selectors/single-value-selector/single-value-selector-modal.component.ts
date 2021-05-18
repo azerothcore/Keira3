@@ -1,4 +1,4 @@
-import { Component, OnInit, } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { BaseSelectorModalComponent } from '../base-selector/base-selector-modal.component';
@@ -9,17 +9,14 @@ import { SingleValueModalConfig } from '@keira-shared/modules/selectors/single-v
 @Component({
   selector: 'keira-single-value-selector-modal',
   templateUrl: './single-value-selector-modal.component.html',
-  styleUrls: ['./single-value-selector-modal.component.scss']
+  styleUrls: ['./single-value-selector-modal.component.scss'],
 })
 export class SingleValueSelectorModalComponent extends BaseSelectorModalComponent<SingleValueModalConfig> implements OnInit {
-
   public readonly DTCFG = DTCFG;
   selected: Option[] = [];
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected bsModalRef: BsModalRef,
-  ) {
+  constructor(protected bsModalRef: BsModalRef) {
     super(bsModalRef);
   }
 

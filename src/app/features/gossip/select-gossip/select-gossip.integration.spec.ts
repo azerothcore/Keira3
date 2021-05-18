@@ -27,25 +27,19 @@ describe('SelectGossip integration tests', () => {
 
   const value = 1200;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        SelectGossipModule,
-        RouterTestingModule,
-      ],
-      providers: [
-        GossipHandlerService,
-      ]
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [SelectGossipModule, RouterTestingModule],
+        providers: [GossipHandlerService],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of(
-      [{ max: 1 }]
-    ));
+    querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
 
     selectService = TestBed.inject(SelectGossipService);
 
@@ -56,31 +50,28 @@ describe('SelectGossip integration tests', () => {
     fixture.detectChanges();
   });
 
-  it('should correctly initialise', waitForAsync(async () => {
-    await fixture.whenStable();
+  it(
+    'should correctly initialise',
+    waitForAsync(async () => {
+      await fixture.whenStable();
       expect(page.createInput.value).toEqual(`${component.customStartingId}`);
       page.expectNewEntityFree();
-      expect(querySpy).toHaveBeenCalledWith(
-        'SELECT MAX(MenuID) AS max FROM gossip_menu;'
-      );
-      expect(page.queryWrapper.innerText).toContain(
-        'SELECT * FROM `gossip_menu` LIMIT 50'
-      );
-  }));
+      expect(querySpy).toHaveBeenCalledWith('SELECT MAX(MenuID) AS max FROM gossip_menu;');
+      expect(page.queryWrapper.innerText).toContain('SELECT * FROM `gossip_menu` LIMIT 50');
+    }),
+  );
 
-  it('should correctly behave when inserting and selecting free id', waitForAsync(async () => {
-    await fixture.whenStable();
+  it(
+    'should correctly behave when inserting and selecting free id',
+    waitForAsync(async () => {
+      await fixture.whenStable();
       querySpy.calls.reset();
-      querySpy.and.returnValue(of(
-        []
-      ));
+      querySpy.and.returnValue(of([]));
 
       page.setInputValue(page.createInput, value);
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy).toHaveBeenCalledWith(
-        `SELECT * FROM \`gossip_menu\` WHERE (MenuID = ${value})`
-      );
+      expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`gossip_menu\` WHERE (MenuID = ${value})`);
       page.expectNewEntityFree();
 
       page.clickElement(page.selectNewBtn);
@@ -88,36 +79,45 @@ describe('SelectGossip integration tests', () => {
       expect(navigateSpy).toHaveBeenCalledTimes(1);
       expect(navigateSpy).toHaveBeenCalledWith(['gossip/gossip-menu']);
       page.expectTopBarCreatingNew(value);
-  }));
+    }),
+  );
 
-  it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
-    await fixture.whenStable();
+  it(
+    'should correctly behave when inserting an existing entity',
+    waitForAsync(async () => {
+      await fixture.whenStable();
       querySpy.calls.reset();
-      querySpy.and.returnValue(of(
-        ['mock value']
-      ));
+      querySpy.and.returnValue(of(['mock value']));
 
       page.setInputValue(page.createInput, value);
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy).toHaveBeenCalledWith(
-        `SELECT * FROM \`gossip_menu\` WHERE (MenuID = ${value})`
-      );
+      expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`gossip_menu\` WHERE (MenuID = ${value})`);
       page.expectEntityAlreadyInUse();
-  }));
+    }),
+  );
 
   for (const { testId, MenuID, TextID, limit, expectedQuery } of [
     {
-      testId: 1, MenuID: 1200, TextID: 123, limit: '100', expectedQuery:
-        'SELECT * FROM `gossip_menu` WHERE (`MenuID` LIKE \'%1200%\') AND (`TextID` LIKE \'%123%\') LIMIT 100'
+      testId: 1,
+      MenuID: 1200,
+      TextID: 123,
+      limit: '100',
+      expectedQuery: "SELECT * FROM `gossip_menu` WHERE (`MenuID` LIKE '%1200%') AND (`TextID` LIKE '%123%') LIMIT 100",
     },
     {
-      testId: 2, MenuID: '', TextID: 123, limit: '100', expectedQuery:
-        'SELECT * FROM `gossip_menu` WHERE (`TextID` LIKE \'%123%\') LIMIT 100'
+      testId: 2,
+      MenuID: '',
+      TextID: 123,
+      limit: '100',
+      expectedQuery: "SELECT * FROM `gossip_menu` WHERE (`TextID` LIKE '%123%') LIMIT 100",
     },
     {
-      testId: 3, MenuID: 1200, TextID: '', limit: '', expectedQuery:
-        'SELECT * FROM `gossip_menu` WHERE (`MenuID` LIKE \'%1200%\')'
+      testId: 3,
+      MenuID: 1200,
+      TextID: '',
+      limit: '',
+      expectedQuery: "SELECT * FROM `gossip_menu` WHERE (`MenuID` LIKE '%1200%')",
     },
   ]) {
     it(`searching an existing entity should correctly work [${testId}]`, () => {

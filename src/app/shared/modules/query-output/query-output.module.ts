@@ -9,19 +9,8 @@ import { QueryErrorComponent } from './query-error/query-error.component';
 import { highlightOptions } from '@keira-config/highlight.config';
 
 @NgModule({
-  declarations: [
-    QueryOutputComponent,
-    QueryErrorComponent,
-    HighlightjsWrapperComponent,
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    HighlightModule.forRoot(highlightOptions),
-  ],
-  exports: [
-    QueryOutputComponent,
-    QueryErrorComponent,
-  ],
+  declarations: [QueryOutputComponent, QueryErrorComponent, HighlightjsWrapperComponent],
+  imports: [BrowserModule, FormsModule, HighlightModule.forRoot(highlightOptions)],
+  exports: [QueryOutputComponent, QueryErrorComponent],
 })
 export class QueryOutputModule {}

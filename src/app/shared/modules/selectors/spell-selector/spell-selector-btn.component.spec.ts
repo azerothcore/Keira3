@@ -7,12 +7,13 @@ describe('SpellSelectorBtnComponent', () => {
   let component: SpellSelectorBtnComponent;
   let fixture: ComponentFixture<SpellSelectorBtnComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ SpellSelectorModule ],
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [SpellSelectorModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SpellSelectorBtnComponent);

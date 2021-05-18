@@ -8,10 +8,7 @@ export abstract class SelectComplexKeyComponent<T extends TableRow> {
   public readonly DTCFG = DTCFG;
   public readonly WIKI_BASE_URL = WIKI_BASE_URL;
 
-  constructor(
-    public selectService: SearchService<T>,
-    protected handlerService: ComplexKeyHandlerService<T>,
-  ) {}
+  constructor(public selectService: SearchService<T>, protected handlerService: ComplexKeyHandlerService<T>) {}
 
   onSelect(event) {
     this.handlerService.select(false, event.selected[0]);

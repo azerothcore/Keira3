@@ -19,20 +19,14 @@ describe('GameobjectComponent', () => {
   let gameobjectTemplateService: GameobjectTemplateService;
   let getFieldSpy: Spy;
 
-
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        GameobjectTemplateModule,
-        RouterTestingModule,
-      ],
-      providers: [
-        GameobjectHandlerService,
-        SaiGameobjectHandlerService,
-      ]
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [GameobjectTemplateModule, RouterTestingModule],
+        providers: [GameobjectHandlerService, SaiGameobjectHandlerService],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     queryService = TestBed.inject(MysqlQueryService);

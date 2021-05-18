@@ -9,10 +9,9 @@ import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service'
 @Component({
   selector: 'keira-npc-trainer',
   templateUrl: './npc-trainer.component.html',
-  styleUrls: ['./npc-trainer.component.scss']
+  styleUrls: ['./npc-trainer.component.scss'],
 })
 export class NpcTrainerComponent extends MultiRowEditorComponent<NpcTrainer> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: NpcTrainerService,
@@ -21,5 +20,4 @@ export class NpcTrainerComponent extends MultiRowEditorComponent<NpcTrainer> {
   ) {
     super(editorService, handlerService);
   }
-
 }

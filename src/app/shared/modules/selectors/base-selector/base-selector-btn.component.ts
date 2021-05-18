@@ -8,8 +8,9 @@ import { BaseModalConfig } from './base-selector.model';
 
 @Directive()
 // tslint:disable-next-line:directive-class-suffix
-export abstract class BaseSelectorBtnComponent<ModalConfigType extends BaseModalConfig = BaseModalConfig> extends SubscriptionHandler {
-
+export abstract class BaseSelectorBtnComponent<
+  ModalConfigType extends BaseModalConfig = BaseModalConfig,
+> extends SubscriptionHandler {
   @Input() control: AbstractControl;
   @Input() config: ModalConfigType;
   @Input() modalClass = 'modal-xl';
@@ -24,22 +25,19 @@ export abstract class BaseSelectorBtnComponent<ModalConfigType extends BaseModal
   }
 
   onClick() {
-    this.modalRef = this.modalService.show(
-      this.modalComponentClass,
-      {
-        class: this.modalClass,
-        initialState: {
-          config: this.config,
-          value: this.control.value,
-        }
+    this.modalRef = this.modalService.show(this.modalComponentClass, {
+      class: this.modalClass,
+      initialState: {
+        config: this.config,
+        value: this.control.value,
       },
-    );
+    });
 
     this.subscriptions.push(
       this.modalRef.content.onValueSelected.subscribe((newValue) => {
         this.control.markAsDirty();
         this.control.setValue(newValue);
-      })
+      }),
     );
   }
 }

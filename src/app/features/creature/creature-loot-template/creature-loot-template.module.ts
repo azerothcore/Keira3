@@ -7,19 +7,9 @@ import { CreatureLootTemplateService } from './creature-loot-template.service';
 import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.module';
 
 @NgModule({
-  declarations: [
-    CreatureLootTemplateComponent,
-  ],
-  imports: [
-    CommonModule,
-    TopBarModule,
-    LootEditorModule,
-  ],
-  exports: [
-    CreatureLootTemplateComponent,
-  ],
-  providers: [
-    CreatureLootTemplateService,
-  ],
+  declarations: [CreatureLootTemplateComponent],
+  imports: [CommonModule, TopBarModule, LootEditorModule],
+  exports: [CreatureLootTemplateComponent],
+  providers: [CreatureLootTemplateService],
 })
 export class CreatureLootTemplateModule {}

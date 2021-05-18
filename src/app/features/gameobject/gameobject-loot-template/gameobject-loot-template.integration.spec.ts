@@ -33,28 +33,19 @@ describe('GameobjectLootTemplate integration tests', () => {
   originalRow1.Item = 1;
   originalRow2.Item = 2;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        GameobjectLootTemplateModule,
-        RouterTestingModule,
-      ],
-      providers: [
-        GameobjectHandlerService,
-        SaiGameobjectHandlerService,
-      ]
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [GameobjectLootTemplateModule, RouterTestingModule],
+        providers: [GameobjectHandlerService, SaiGameobjectHandlerService],
+      }).compileComponents();
+    }),
+  );
 
-  function setup(creatingNew: boolean, lootId = id, type = _type)  {
-    spyOn(TestBed.inject(GameobjectLootTemplateService), 'getLootId').and.returnValue(of(
-      [{ lootId }]
-    ));
+  function setup(creatingNew: boolean, lootId = id, type = _type) {
+    spyOn(TestBed.inject(GameobjectLootTemplateService), 'getLootId').and.returnValue(of([{ lootId }]));
 
-    spyOn(TestBed.inject(GameobjectLootTemplateService), 'getType').and.returnValue(of(
-      [{ type }]
-    ));
+    spyOn(TestBed.inject(GameobjectLootTemplateService), 'getType').and.returnValue(of([{ type }]));
 
     handlerService = TestBed.inject(GameobjectHandlerService);
     handlerService['_selected'] = `${id}`;
@@ -64,9 +55,7 @@ describe('GameobjectLootTemplate integration tests', () => {
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
     spyOn(queryService, 'queryValue').and.returnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(
-      creatingNew ? [] : [originalRow0, originalRow1, originalRow2]
-    ));
+    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     fixture = TestBed.createComponent(GameobjectLootTemplateComponent);
     component = fixture.componentInstance;
@@ -105,12 +94,13 @@ describe('GameobjectLootTemplate integration tests', () => {
     });
 
     it('adding new rows and executing the query should correctly work', () => {
-      const expectedQuery = 'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0, 1, 2));\n' +
+      const expectedQuery =
+        'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0, 1, 2));\n' +
         'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
         '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 1, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 2, 0, 100, 0, 1, 0, 1, 1, \'\');';
+        "(1234, 0, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
+        "(1234, 1, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
+        "(1234, 2, 0, 100, 0, 1, 0, 1, 1, '');";
       querySpy.calls.reset();
 
       page.addNewRow();
@@ -130,57 +120,57 @@ describe('GameobjectLootTemplate integration tests', () => {
       page.addNewRow();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
-        'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 100, 0, 1, 0, 1, 1, '');",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 100, 0, 1, 0, 1, 1, '');",
       );
 
       page.setInputValueById('Chance', '1');
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
-        'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 1, 0, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 1, 0, 1, 0, 1, 1, '');",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 1, 0, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 1, 0, 1, 0, 1, 1, '');",
       );
 
       page.setInputValueById('QuestRequired', '2');
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
-        'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 1, 2, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 1, 2, 1, 0, 1, 1, '');",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 1, 2, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 1, 2, 1, 0, 1, 1, '');",
       );
 
       page.setInputValueById('Item', '123');
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (123));\n' +
-        'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 123, 0, 1, 2, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 123, 0, 1, 2, 1, 0, 1, 1, '');",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 123, 0, 1, 2, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 123, 0, 1, 2, 1, 0, 1, 1, '');",
       );
     });
   });
@@ -192,13 +182,15 @@ describe('GameobjectLootTemplate integration tests', () => {
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
-      page.expectFullQueryToContain('' +
-        'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 1, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 2, 0, 100, 0, 1, 0, 1, 1, \'\');');
+      page.expectFullQueryToContain(
+        '' +
+          'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234);\n' +
+          'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 1, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 2, 0, 100, 0, 1, 0, 1, 1, '');",
+      );
       expect(page.getEditorTableRowsCount()).toBe(3);
     });
 
@@ -206,33 +198,31 @@ describe('GameobjectLootTemplate integration tests', () => {
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.expectDiffQueryToContain(
-        'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1));'
+        'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1));',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
-        '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 2, 0, 100, 0, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+          '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 2, 0, 100, 0, 1, 0, 1, 1, '');",
       );
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
       page.expectDiffQueryToContain(
-        'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2));'
+        'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2));',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
-        '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+          '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 100, 0, 1, 0, 1, 1, '');",
       );
 
       page.deleteRow(0);
       expect(page.getEditorTableRowsCount()).toBe(0);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `gameobject_loot_template` WHERE `Entry` = 1234;'
-      );
+      page.expectDiffQueryToContain('DELETE FROM `gameobject_loot_template` WHERE `Entry` = 1234;');
       page.expectFullQueryToBeEmpty();
     });
 
@@ -245,17 +235,17 @@ describe('GameobjectLootTemplate integration tests', () => {
 
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (2));\n' +
-        'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
-        '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 2, 0, 100, 0, 1, 2, 1, 1, \'\');'
+          'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+          '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 2, 0, 100, 0, 1, 2, 1, 1, '');",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
-        '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 1, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 2, 0, 100, 0, 1, 2, 1, 1, \'\');'
+          'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+          '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 1, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 2, 0, 100, 0, 1, 2, 1, 1, '');",
       );
     });
 
@@ -272,18 +262,18 @@ describe('GameobjectLootTemplate integration tests', () => {
 
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2, 3));\n' +
-        'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
-        '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 1, 0, 10, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 3, 0, 100, 0, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+          '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 1, 0, 10, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 3, 0, 100, 0, 1, 0, 1, 1, '');",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
-        '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 1, 0, 10, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 3, 0, 100, 0, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+          '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 1, 0, 10, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 3, 0, 100, 0, 1, 0, 1, 1, '');",
       );
     });
 
@@ -299,7 +289,7 @@ describe('GameobjectLootTemplate integration tests', () => {
     setup(true, 0);
 
     expect(page.query('.alert-info').innerText).toContain(
-      'You have to set the field `Data1` (lootid) and `type` (3 or 25) of gameobject_template in order to enable this feature.'
+      'You have to set the field `Data1` (lootid) and `type` (3 or 25) of gameobject_template in order to enable this feature.',
     );
   });
 });

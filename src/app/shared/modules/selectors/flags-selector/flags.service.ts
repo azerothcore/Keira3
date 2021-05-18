@@ -2,15 +2,14 @@ import { Injectable } from '@angular/core';
 import { Flag } from '@keira-types/general';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FlagsService {
-
   getBitsFromValue(value: number, bitsCount: number): boolean[] {
     const bits = new Array<boolean>(bitsCount);
     const binaryStr: string = value.toString(2).split('').reverse().join('');
 
-    for (let i = 0; i < bitsCount; i++)  {
+    for (let i = 0; i < bitsCount; i++) {
       bits[i] = parseInt(binaryStr[i], 10) === 1;
     }
 

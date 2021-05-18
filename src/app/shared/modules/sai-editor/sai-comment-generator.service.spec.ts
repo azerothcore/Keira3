@@ -5,9 +5,16 @@ import { MysqlQueryService } from '../../services/mysql-query.service';
 import { SAI_TYPES, SmartScripts } from '@keira-types/smart-scripts.type';
 import { of } from 'rxjs';
 import {
-  DYNAMIC_FLAGS, GO_FLAGS, NPC_FLAGS,
-  templates, unitBytes1Flags, unitFieldBytes1Type,
-  unitStandFlags, unitStandStateType, UNIT_FLAGS, EVENT_FLAGS
+  DYNAMIC_FLAGS,
+  GO_FLAGS,
+  NPC_FLAGS,
+  templates,
+  unitBytes1Flags,
+  unitFieldBytes1Type,
+  unitStandFlags,
+  unitStandStateType,
+  UNIT_FLAGS,
+  EVENT_FLAGS,
 } from './constants/sai-constants';
 import { SAI_TARGETS } from './constants/sai-targets';
 import { SaiCommentGeneratorService } from './sai-comment-generator.service';
@@ -30,31 +37,34 @@ describe('SaiCommentGeneratorService', () => {
 
     beforeEach(() => {
       const queryService = TestBed.inject(MysqlQueryService);
-      spyOn(queryService, 'getCreatureNameById').and.callFake(i => of(mockCreatureNameById + i).toPromise());
-      spyOn(queryService, 'getCreatureNameByGuid').and.callFake(i => of(mockCreatureNameByGuid + i).toPromise());
-      spyOn(queryService, 'getGameObjectNameById').and.callFake(i => of(mockGameobjectNameById + i).toPromise());
-      spyOn(queryService, 'getGameObjectNameByGuid').and.callFake(i => of(mockGameobjectNameByGuid + i).toPromise());
-      spyOn(queryService, 'getQuestTitleById').and.callFake(i => of(mockQuestTitleById + i).toPromise());
-      spyOn(queryService, 'getItemNameById').and.callFake(i => of(mockItemNameById + i).toPromise());
-      spyOn(queryService, 'getQuestTitleByCriteria').and.callFake(i => of(mockQuestTitleByCriteria + i).toPromise());
+      spyOn(queryService, 'getCreatureNameById').and.callFake((i) => of(mockCreatureNameById + i).toPromise());
+      spyOn(queryService, 'getCreatureNameByGuid').and.callFake((i) => of(mockCreatureNameByGuid + i).toPromise());
+      spyOn(queryService, 'getGameObjectNameById').and.callFake((i) => of(mockGameobjectNameById + i).toPromise());
+      spyOn(queryService, 'getGameObjectNameByGuid').and.callFake((i) => of(mockGameobjectNameByGuid + i).toPromise());
+      spyOn(queryService, 'getQuestTitleById').and.callFake((i) => of(mockQuestTitleById + i).toPromise());
+      spyOn(queryService, 'getItemNameById').and.callFake((i) => of(mockItemNameById + i).toPromise());
+      spyOn(queryService, 'getQuestTitleByCriteria').and.callFake((i) => of(mockQuestTitleByCriteria + i).toPromise());
 
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
-      spyOn(sqliteQueryService, 'getSpellNameById').and.callFake(i => of(mockGetSpellNameById + i).toPromise());
+      spyOn(sqliteQueryService, 'getSpellNameById').and.callFake((i) => of(mockGetSpellNameById + i).toPromise());
     });
 
-    it('should correctly handle linked events', waitForAsync(async () => {
-      const rows: SmartScripts[] = [
-        createSai({ id: 1, event_type: SAI_EVENTS.ACCEPTED_QUEST, link: 2 }),
-        createSai({ id: 2, event_type: SAI_EVENTS.LINK, link: 3 }),
-        createSai({ id: 3, event_type: SAI_EVENTS.LINK }),
-      ];
-      const expected = `MockEntity - On Quest 'mockQuestTitleById0' Taken - No Action Type`;
-      const service: SaiCommentGeneratorService = TestBed.inject(SaiCommentGeneratorService);
+    it(
+      'should correctly handle linked events',
+      waitForAsync(async () => {
+        const rows: SmartScripts[] = [
+          createSai({ id: 1, event_type: SAI_EVENTS.ACCEPTED_QUEST, link: 2 }),
+          createSai({ id: 2, event_type: SAI_EVENTS.LINK, link: 3 }),
+          createSai({ id: 3, event_type: SAI_EVENTS.LINK }),
+        ];
+        const expected = `MockEntity - On Quest 'mockQuestTitleById0' Taken - No Action Type`;
+        const service: SaiCommentGeneratorService = TestBed.inject(SaiCommentGeneratorService);
 
-      expect(await service.generateComment(rows, rows[2], mockName)).toEqual(expected);
-    }));
+        expect(await service.generateComment(rows, rows[2], mockName)).toEqual(expected);
+      }),
+    );
 
-    const cases: { name: string, input: Partial<SmartScripts>, expected: string }[] = [
+    const cases: { name: string; input: Partial<SmartScripts>; expected: string }[] = [
       {
         name: 'Non-existing event type',
         input: {
@@ -1432,7 +1442,9 @@ describe('SaiCommentGeneratorService', () => {
         expected: `MockEntity - In Combat - Set Flag Creep`,
       },
       {
-        name: `SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1 ` + `check action param 1,2 (unitStandFlags.UNTRACKABLE, unitFieldBytes1Type.STAND_FLAGS_TYPE)`,
+        name:
+          `SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1 ` +
+          `check action param 1,2 (unitStandFlags.UNTRACKABLE, unitFieldBytes1Type.STAND_FLAGS_TYPE)`,
         input: {
           action_type: SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1,
           action_param1: unitStandFlags.UNTRACKABLE,
@@ -1441,7 +1453,9 @@ describe('SaiCommentGeneratorService', () => {
         expected: `MockEntity - In Combat - Set Flag Untrackable`,
       },
       {
-        name: `SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1 ` + `check action param 1,2 (unitStandFlags.NONE, unitFieldBytes1Type.STAND_FLAGS_TYPE)`,
+        name:
+          `SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1 ` +
+          `check action param 1,2 (unitStandFlags.NONE, unitFieldBytes1Type.STAND_FLAGS_TYPE)`,
         input: {
           action_type: SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1,
           action_param1: unitStandFlags.NONE,
@@ -1646,7 +1660,8 @@ describe('SaiCommentGeneratorService', () => {
           action_type: SAI_ACTIONS.MOUNT_TO_ENTRY_OR_MODEL,
           action_param2: 1,
           event_phase_mask: 2,
-          event_flags: EVENT_FLAGS.NORMAL_DUNGEON + EVENT_FLAGS.HEROIC_DUNGEON + EVENT_FLAGS.NORMAL_RAID + EVENT_FLAGS.HEROIC_RAID,
+          event_flags:
+            EVENT_FLAGS.NORMAL_DUNGEON + EVENT_FLAGS.HEROIC_DUNGEON + EVENT_FLAGS.NORMAL_RAID + EVENT_FLAGS.HEROIC_RAID,
         },
         expected: `MockEntity - In Combat - Mount To Model 1 (Phase 2) (Dungeon & Raid) (Raid)`,
       },
@@ -1741,12 +1756,14 @@ describe('SaiCommentGeneratorService', () => {
     ];
 
     for (const { name, input, expected } of cases) {
-      it(`Case: ${name}`, waitForAsync(async () => {
-        const service: SaiCommentGeneratorService = TestBed.inject(SaiCommentGeneratorService);
-        const sai = createSai(input);
-        expect(await service.generateComment([sai], sai, mockName)).toEqual(expected);
-      }));
+      it(
+        `Case: ${name}`,
+        waitForAsync(async () => {
+          const service: SaiCommentGeneratorService = TestBed.inject(SaiCommentGeneratorService);
+          const sai = createSai(input);
+          expect(await service.generateComment([sai], sai, mockName)).toEqual(expected);
+        }),
+      );
     }
-
   });
 });

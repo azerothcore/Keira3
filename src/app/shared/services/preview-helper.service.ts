@@ -4,7 +4,6 @@ import { RACES_TEXT } from '@keira-shared/constants/preview';
 
 @Injectable({ providedIn: 'root' })
 export class PreviewHelperService {
-
   public formatMoney(qty: number): string {
     let money = '';
 
@@ -51,7 +50,7 @@ export class PreviewHelperService {
       return [faction];
     }
 
-    const tmp  = [];
+    const tmp = [];
     let i = 1;
     while (raceMask) {
       if (raceMask & (1 << (i - 1))) {
@@ -70,7 +69,8 @@ export class PreviewHelperService {
   public getRequiredClass(classMask: number): number[] {
     classMask &= CLASSES.MASK_ALL; // clamp to available classes..
 
-    if (classMask === CLASSES.MASK_ALL) { // available to all classes
+    if (classMask === CLASSES.MASK_ALL) {
+      // available to all classes
       return null;
     }
 
@@ -90,6 +90,4 @@ export class PreviewHelperService {
 
     return tmp;
   }
-
-
 }

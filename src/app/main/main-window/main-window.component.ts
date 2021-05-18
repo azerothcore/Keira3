@@ -4,10 +4,8 @@ import { SidebarService } from './sidebar/sidebar.service';
 @Component({
   selector: 'keira-main-window',
   templateUrl: './main-window.component.html',
-  styleUrls: ['./main-window.component.scss']
+  styleUrls: ['./main-window.component.scss'],
 })
 export class MainWindowComponent {
-  constructor(
-    public sidebarService: SidebarService,
-  ) { }
+  constructor(public sidebarService: SidebarService) {}
 }

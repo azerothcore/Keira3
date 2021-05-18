@@ -4,13 +4,10 @@ import { instance } from 'ts-mockito';
 import { ToastrService } from 'ngx-toastr';
 import Spy = jasmine.Spy;
 
-
 import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { MultiRowEditorService } from './multi-row-editor.service';
 import { MOCK_ID, MOCK_ID_2, MOCK_NAME, MockEntity, MockMultiRowEditorService } from '@keira-testing/mock-services';
-
-
 
 describe('MultiRowEditorService', () => {
   let service: MultiRowEditorService<MockEntity>;
@@ -24,16 +21,15 @@ describe('MultiRowEditorService', () => {
   const queryResult = '-- Mock query result';
   const rowId = 12345;
 
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      { provide: ToastrService, useValue: instance(MockedToastrService) },
-
-    ],
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+      ],
+    }),
+  );
 
   beforeEach(() => {
     service = TestBed.inject(MockMultiRowEditorService);
@@ -85,7 +81,9 @@ describe('MultiRowEditorService', () => {
 
   it('updateDiffQuery() should correctly work', () => {
     service['_diffQuery'] = '';
-    const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getDiffDeleteInsertTwoKeysQuery').and.returnValue(queryResult);
+    const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getDiffDeleteInsertTwoKeysQuery').and.returnValue(
+      queryResult,
+    );
     spyOn<any>(service, 'updateEditorStatus');
 
     service['updateDiffQuery']();
@@ -104,16 +102,14 @@ describe('MultiRowEditorService', () => {
 
   it('updateFullQuery() should correctly work', () => {
     service['_fullQuery'] = '';
-    const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertQuery').and.returnValue(queryResult);
+    const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertQuery').and.returnValue(
+      queryResult,
+    );
 
     service['updateFullQuery']();
 
     expect(getQuerySpy).toHaveBeenCalledTimes(1);
-    expect(getQuerySpy).toHaveBeenCalledWith(
-      service.entityTable,
-      service.newRows,
-      service['_entityIdField'],
-    );
+    expect(getQuerySpy).toHaveBeenCalledWith(service.entityTable, service.newRows, service['_entityIdField']);
     expect(service.fullQuery).toEqual(queryResult);
   });
 
@@ -188,7 +184,6 @@ describe('MultiRowEditorService', () => {
       expect(formResetSpy).toHaveBeenCalledTimes(0);
       expect(formEnableSpy).toHaveBeenCalledTimes(0);
     });
-
 
     it('should correctly work', () => {
       const rows = [{ [MOCK_ID]: 123, [MOCK_ID_2]: 3, [MOCK_NAME]: 'some name' }];
@@ -273,7 +268,7 @@ describe('MultiRowEditorService', () => {
       expect(updateDiffQuerySpy).toHaveBeenCalledTimes(1);
       expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
       expect(onRowSelectionSpy).toHaveBeenCalledTimes(1);
-      expect(onRowSelectionSpy).toHaveBeenCalledWith({ selected:  [newRow] });
+      expect(onRowSelectionSpy).toHaveBeenCalledWith({ selected: [newRow] });
       expect(service.newRows).toEqual([{ ...newRow }]);
       expect(service['_nextRowId']).toEqual(nextRowId);
     });
@@ -286,17 +281,14 @@ describe('MultiRowEditorService', () => {
       expect(updateDiffQuerySpy).toHaveBeenCalledTimes(1);
       expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
       expect(onRowSelectionSpy).toHaveBeenCalledTimes(1);
-      expect(onRowSelectionSpy).toHaveBeenCalledWith({ selected:  [newRow] });
+      expect(onRowSelectionSpy).toHaveBeenCalledWith({ selected: [newRow] });
       expect(service.newRows).toEqual([{ ...newRow }]);
       expect(service['_nextRowId']).toEqual(nextRowId);
     });
 
     it('it should correctly assign the new row id', () => {
       newRow[MOCK_ID] = loadedEntityId;
-      service['_newRows'] = [
-        { ...newRow },
-        { ...newRow },
-      ];
+      service['_newRows'] = [{ ...newRow }, { ...newRow }];
       service['_newRows'][0][MOCK_ID_2] = 3;
       service['_newRows'][1][MOCK_ID_2] = 4;
 

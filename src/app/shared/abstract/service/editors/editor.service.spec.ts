@@ -6,7 +6,6 @@ import { of, throwError } from 'rxjs';
 import { MysqlError } from 'mysql';
 import Spy = jasmine.Spy;
 
-
 import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { MockSingleRowEditorService, MockEntity } from '@keira-testing/mock-services';
@@ -16,27 +15,22 @@ describe('EditorService', () => {
   let service: EditorService<MockEntity>;
   const error = { code: 'some error', errno: 1234 } as MysqlError;
 
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      { provide: ToastrService, useValue: instance(MockedToastrService) },
-
-    ],
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+      ],
+    }),
+  );
 
   beforeEach(() => {
     service = TestBed.inject(MockSingleRowEditorService);
   });
 
   it('after creating, the fields should correctly set', () => {
-    expect(service['fields']).toEqual([
-      'id',
-      'guid',
-      'name',
-    ]);
+    expect(service['fields']).toEqual(['id', 'guid', 'name']);
   });
 
   describe('reload', () => {

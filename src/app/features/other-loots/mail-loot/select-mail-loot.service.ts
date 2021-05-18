@@ -8,12 +8,8 @@ import { LOOT_TEMPLATE_ID } from '@keira-types/loot-template.type';
 
 @Injectable()
 export class SelectMailLootService extends SelectService<MailLootTemplate> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public readonly queryService: MysqlQueryService,
-    public handlerService: MailLootHandlerService,
-  ) {
+  constructor(public readonly queryService: MysqlQueryService, public handlerService: MailLootHandlerService) {
     super(
       queryService,
       handlerService,

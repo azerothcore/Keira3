@@ -6,20 +6,25 @@ import { SAI_ACTION_COMMENTS, SAI_EVENT_COMMENTS } from '@keira-shared/modules/s
 import { MysqlQueryService } from '../../services/mysql-query.service';
 import { SAI_TARGETS } from '@keira-shared/modules/sai-editor/constants/sai-targets';
 import {
-  DYNAMIC_FLAGS, EVENT_FLAGS, GO_FLAGS, NPC_FLAGS, phaseMask, templates, UNIT_FLAGS, unitBytes1Flags, unitFieldBytes1Type, unitStandFlags,
-  unitStandStateType
+  DYNAMIC_FLAGS,
+  EVENT_FLAGS,
+  GO_FLAGS,
+  NPC_FLAGS,
+  phaseMask,
+  templates,
+  UNIT_FLAGS,
+  unitBytes1Flags,
+  unitFieldBytes1Type,
+  unitStandFlags,
+  unitStandStateType,
 } from '@keira-shared/modules/sai-editor/constants/sai-constants';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SaiCommentGeneratorService {
-
-  constructor(
-    private queryService: MysqlQueryService,
-    private sqliteQueryService: SqliteQueryService,
-  ) {}
+  constructor(private queryService: MysqlQueryService, private sqliteQueryService: SqliteQueryService) {}
 
   private async getStringByTargetType(smartScript: SmartScripts): Promise<string> {
     switch (Number(smartScript.target_type)) {
@@ -52,7 +57,7 @@ export class SaiCommentGeneratorService {
       case SAI_TARGETS.GAMEOBJECT_GUID:
         return `Closest Creature '${await this.queryService.getGameObjectNameByGuid(smartScript.target_param1)}'`;
       case SAI_TARGETS.INVOKER_PARTY:
-        return 'Invoker\'s Party';
+        return "Invoker's Party";
       case SAI_TARGETS.PLAYER_RANGE:
       case SAI_TARGETS.PLAYER_DISTANCE:
       case SAI_TARGETS.CLOSEST_PLAYER:
@@ -98,7 +103,6 @@ export class SaiCommentGeneratorService {
     let eventLine = '';
 
     switch (Number(smartScript.source_type)) {
-
       case SAI_TYPES.SAI_TYPE_CREATURE:
       case SAI_TYPES.SAI_TYPE_GAMEOBJECT:
         eventLine += name + ' - ';
@@ -131,8 +135,7 @@ export class SaiCommentGeneratorService {
         break;
     }
 
-    if ((eventLine.indexOf('_previousLineComment_') > -1) && (smartScriptLink != null)) {
-
+    if (eventLine.indexOf('_previousLineComment_') > -1 && smartScriptLink != null) {
       eventLine = eventLine.replace('_previousLineComment_', SAI_EVENT_COMMENTS[smartScriptLink.event_type]);
       smartScript.event_param1 = smartScriptLink.event_param1;
       smartScript.event_param2 = smartScriptLink.event_param2;
@@ -142,31 +145,40 @@ export class SaiCommentGeneratorService {
 
     eventLine = eventLine.replace('_previousLineComment_', 'MISSING LINK');
 
-    eventLine = eventLine.replace('_eventParamOne_',   `${smartScript.event_param1}`);
-    eventLine = eventLine.replace('_eventParamTwo_',   `${smartScript.event_param2}`);
+    eventLine = eventLine.replace('_eventParamOne_', `${smartScript.event_param1}`);
+    eventLine = eventLine.replace('_eventParamTwo_', `${smartScript.event_param2}`);
     eventLine = eventLine.replace('_eventParamThree_', `${smartScript.event_param3}`);
-    eventLine = eventLine.replace('_eventParamFour_',  `${smartScript.event_param4}`);
+    eventLine = eventLine.replace('_eventParamFour_', `${smartScript.event_param4}`);
 
     if (eventLine.indexOf('_questNameEventParamOne_') > -1) {
-      eventLine = eventLine.replace('_questNameEventParamOne_', await this.queryService.getQuestTitleById(smartScript.event_param1));
+      eventLine = eventLine.replace(
+        '_questNameEventParamOne_',
+        await this.queryService.getQuestTitleById(smartScript.event_param1),
+      );
     }
     if (eventLine.indexOf('_spellNameEventParamOne_') > -1) {
-      eventLine = eventLine.replace('_spellNameEventParamOne_', await this.sqliteQueryService.getSpellNameById(smartScript.event_param1));
+      eventLine = eventLine.replace(
+        '_spellNameEventParamOne_',
+        await this.sqliteQueryService.getSpellNameById(smartScript.event_param1),
+      );
     }
     if (eventLine.indexOf('_targetCastingSpellName_') > -1) {
-      eventLine = eventLine.replace('_targetCastingSpellName_', await this.sqliteQueryService.getSpellNameById(smartScript.event_param3));
+      eventLine = eventLine.replace(
+        '_targetCastingSpellName_',
+        await this.sqliteQueryService.getSpellNameById(smartScript.event_param3),
+      );
     }
     if (eventLine.indexOf('_hasAuraEventParamOne_') > -1) {
-      eventLine = eventLine.replace('_hasAuraEventParamOne_', await this.sqliteQueryService.getSpellNameById(smartScript.event_param1));
+      eventLine = eventLine.replace(
+        '_hasAuraEventParamOne_',
+        await this.sqliteQueryService.getSpellNameById(smartScript.event_param1),
+      );
     }
 
     return eventLine;
   }
 
-  private async generateActionComment(
-    smartScript: SmartScripts,
-    smartScriptLink: SmartScripts,
-  ): Promise<string> {
+  private async generateActionComment(smartScript: SmartScripts, smartScriptLink: SmartScripts): Promise<string> {
     let actionLine = SAI_ACTION_COMMENTS[smartScript.action_type];
 
     if (!actionLine) {
@@ -175,19 +187,28 @@ export class SaiCommentGeneratorService {
       return error;
     }
 
-    actionLine = actionLine.replace('_actionParamOne_',   `${smartScript.action_param1}`);
-    actionLine = actionLine.replace('_actionParamTwo_',   `${smartScript.action_param2}`);
+    actionLine = actionLine.replace('_actionParamOne_', `${smartScript.action_param1}`);
+    actionLine = actionLine.replace('_actionParamTwo_', `${smartScript.action_param2}`);
     actionLine = actionLine.replace('_actionParamThree_', `${smartScript.action_param3}`);
-    actionLine = actionLine.replace('_actionParamFour_',  `${smartScript.action_param4}`);
-    actionLine = actionLine.replace('_actionParamFive_',  `${smartScript.action_param5}`);
-    actionLine = actionLine.replace('_actionParamSix_',   `${smartScript.action_param6}`);
+    actionLine = actionLine.replace('_actionParamFour_', `${smartScript.action_param4}`);
+    actionLine = actionLine.replace('_actionParamFive_', `${smartScript.action_param5}`);
+    actionLine = actionLine.replace('_actionParamSix_', `${smartScript.action_param6}`);
 
     if (actionLine.indexOf('_questNameActionParamOne_') > -1) {
-      actionLine = actionLine.replace('_questNameActionParamOne_', await this.queryService.getQuestTitleById(smartScript.action_param1));
+      actionLine = actionLine.replace(
+        '_questNameActionParamOne_',
+        await this.queryService.getQuestTitleById(smartScript.action_param1),
+      );
     }
     if (actionLine.indexOf('_questNameKillCredit_') > -1) {
-      actionLine = actionLine.replace('_questNameKillCredit_', await this.queryService.getQuestTitleByCriteria
-        (smartScript.action_param1, smartScript.action_param1, smartScript.action_param1, smartScript.action_param1)
+      actionLine = actionLine.replace(
+        '_questNameKillCredit_',
+        await this.queryService.getQuestTitleByCriteria(
+          smartScript.action_param1,
+          smartScript.action_param1,
+          smartScript.action_param1,
+          smartScript.action_param1,
+        ),
       );
     }
     if (actionLine.indexOf('_spellNameActionParamOne_') > -1) {
@@ -204,7 +225,6 @@ export class SaiCommentGeneratorService {
     }
 
     if (actionLine.indexOf('_reactStateParamOne_') > -1) {
-
       switch (Number(smartScript.action_param1)) {
         case 0:
           actionLine = actionLine.replace('_reactStateParamOne_', 'Passive');
@@ -222,7 +242,6 @@ export class SaiCommentGeneratorService {
     }
 
     if (actionLine.indexOf('_actionRandomParameters_') > -1) {
-
       let randomEmotes = smartScript.action_param1 + ', ' + smartScript.action_param2;
 
       if (smartScript.action_param3 > 0) {
@@ -252,34 +271,81 @@ export class SaiCommentGeneratorService {
     }
 
     if (actionLine.indexOf('_getUnitFlags_') > -1) {
-
       let commentUnitFlag = '';
       const unitFlags = smartScript.action_param1;
 
-      if ((unitFlags & UNIT_FLAGS.SERVER_CONTROLLED) !== 0) { commentUnitFlag += 'Server Controlled & '; }
-      if ((unitFlags & UNIT_FLAGS.NON_ATTACKABLE) !== 0)    { commentUnitFlag += 'Not Attackable & '; }
-      if ((unitFlags & UNIT_FLAGS.DISABLE_MOVE) !== 0)      { commentUnitFlag += 'Disable Movement & '; }
-      if ((unitFlags & UNIT_FLAGS.PVP_ATTACKABLE) !== 0)    { commentUnitFlag += 'PvP Attackable & '; }
-      if ((unitFlags & UNIT_FLAGS.RENAME) !== 0)            { commentUnitFlag += 'Rename & '; }
-      if ((unitFlags & UNIT_FLAGS.PREPARATION) !== 0)       { commentUnitFlag += 'Preparation & '; }
-      if ((unitFlags & UNIT_FLAGS.NOT_ATTACKABLE_1) !== 0)  { commentUnitFlag += 'Not Attackable & '; }
-      if ((unitFlags & UNIT_FLAGS.IMMUNE_TO_PC) !== 0)      { commentUnitFlag += 'Immune To Players & '; }
-      if ((unitFlags & UNIT_FLAGS.IMMUNE_TO_NPC) !== 0)     { commentUnitFlag += 'Immune To NPC\'s & '; }
-      if ((unitFlags & UNIT_FLAGS.LOOTING) !== 0)           { commentUnitFlag += 'Looting & '; }
-      if ((unitFlags & UNIT_FLAGS.PET_IN_COMBAT) !== 0)     { commentUnitFlag += 'Pet In Combat & '; }
-      if ((unitFlags & UNIT_FLAGS.PVP) !== 0)               { commentUnitFlag += 'PvP & '; }
-      if ((unitFlags & UNIT_FLAGS.SILENCED) !== 0)          { commentUnitFlag += 'Silenced & '; }
-      if ((unitFlags & UNIT_FLAGS.PACIFIED) !== 0)          { commentUnitFlag += 'Pacified & '; }
-      if ((unitFlags & UNIT_FLAGS.STUNNED) !== 0)           { commentUnitFlag += 'Stunned & '; }
-      if ((unitFlags & UNIT_FLAGS.IN_COMBAT) !== 0)         { commentUnitFlag += 'In Combat & '; }
-      if ((unitFlags & UNIT_FLAGS.DISARMED) !== 0)          { commentUnitFlag += 'Disarmed & '; }
-      if ((unitFlags & UNIT_FLAGS.CONFUSED) !== 0)          { commentUnitFlag += 'Confused & '; }
-      if ((unitFlags & UNIT_FLAGS.FLEEING) !== 0)           { commentUnitFlag += 'Fleeing & '; }
-      if ((unitFlags & UNIT_FLAGS.PLAYER_CONTROLLED) !== 0) { commentUnitFlag += 'Player Controlled & '; }
-      if ((unitFlags & UNIT_FLAGS.NOT_SELECTABLE) !== 0)    { commentUnitFlag += 'Not Selectable & '; }
-      if ((unitFlags & UNIT_FLAGS.SKINNABLE) !== 0)         { commentUnitFlag += 'Skinnable & '; }
-      if ((unitFlags & UNIT_FLAGS.MOUNT) !== 0)             { commentUnitFlag += 'Mounted & '; }
-      if ((unitFlags & UNIT_FLAGS.SHEATHE) !== 0)           { commentUnitFlag += 'Sheathed & '; }
+      if ((unitFlags & UNIT_FLAGS.SERVER_CONTROLLED) !== 0) {
+        commentUnitFlag += 'Server Controlled & ';
+      }
+      if ((unitFlags & UNIT_FLAGS.NON_ATTACKABLE) !== 0) {
+        commentUnitFlag += 'Not Attackable & ';
+      }
+      if ((unitFlags & UNIT_FLAGS.DISABLE_MOVE) !== 0) {
+        commentUnitFlag += 'Disable Movement & ';
+      }
+      if ((unitFlags & UNIT_FLAGS.PVP_ATTACKABLE) !== 0) {
+        commentUnitFlag += 'PvP Attackable & ';
+      }
+      if ((unitFlags & UNIT_FLAGS.RENAME) !== 0) {
+        commentUnitFlag += 'Rename & ';
+      }
+      if ((unitFlags & UNIT_FLAGS.PREPARATION) !== 0) {
+        commentUnitFlag += 'Preparation & ';
+      }
+      if ((unitFlags & UNIT_FLAGS.NOT_ATTACKABLE_1) !== 0) {
+        commentUnitFlag += 'Not Attackable & ';
+      }
+      if ((unitFlags & UNIT_FLAGS.IMMUNE_TO_PC) !== 0) {
+        commentUnitFlag += 'Immune To Players & ';
+      }
+      if ((unitFlags & UNIT_FLAGS.IMMUNE_TO_NPC) !== 0) {
+        commentUnitFlag += "Immune To NPC's & ";
+      }
+      if ((unitFlags & UNIT_FLAGS.LOOTING) !== 0) {
+        commentUnitFlag += 'Looting & ';
+      }
+      if ((unitFlags & UNIT_FLAGS.PET_IN_COMBAT) !== 0) {
+        commentUnitFlag += 'Pet In Combat & ';
+      }
+      if ((unitFlags & UNIT_FLAGS.PVP) !== 0) {
+        commentUnitFlag += 'PvP & ';
+      }
+      if ((unitFlags & UNIT_FLAGS.SILENCED) !== 0) {
+        commentUnitFlag += 'Silenced & ';
+      }
+      if ((unitFlags & UNIT_FLAGS.PACIFIED) !== 0) {
+        commentUnitFlag += 'Pacified & ';
+      }
+      if ((unitFlags & UNIT_FLAGS.STUNNED) !== 0) {
+        commentUnitFlag += 'Stunned & ';
+      }
+      if ((unitFlags & UNIT_FLAGS.IN_COMBAT) !== 0) {
+        commentUnitFlag += 'In Combat & ';
+      }
+      if ((unitFlags & UNIT_FLAGS.DISARMED) !== 0) {
+        commentUnitFlag += 'Disarmed & ';
+      }
+      if ((unitFlags & UNIT_FLAGS.CONFUSED) !== 0) {
+        commentUnitFlag += 'Confused & ';
+      }
+      if ((unitFlags & UNIT_FLAGS.FLEEING) !== 0) {
+        commentUnitFlag += 'Fleeing & ';
+      }
+      if ((unitFlags & UNIT_FLAGS.PLAYER_CONTROLLED) !== 0) {
+        commentUnitFlag += 'Player Controlled & ';
+      }
+      if ((unitFlags & UNIT_FLAGS.NOT_SELECTABLE) !== 0) {
+        commentUnitFlag += 'Not Selectable & ';
+      }
+      if ((unitFlags & UNIT_FLAGS.SKINNABLE) !== 0) {
+        commentUnitFlag += 'Skinnable & ';
+      }
+      if ((unitFlags & UNIT_FLAGS.MOUNT) !== 0) {
+        commentUnitFlag += 'Mounted & ';
+      }
+      if ((unitFlags & UNIT_FLAGS.SHEATHE) !== 0) {
+        commentUnitFlag += 'Sheathed & ';
+      }
 
       if (commentUnitFlag.indexOf('&') > -1) {
         // ! Trim last ' & ' from the comment..
@@ -295,32 +361,84 @@ export class SaiCommentGeneratorService {
       let commentNpcFlag = '';
       const npcFlags = smartScript.action_param1;
 
-      if ((npcFlags & NPC_FLAGS.GOSSIP) !== 0)             { commentNpcFlag += 'Gossip & '; }
-      if ((npcFlags & NPC_FLAGS.QUESTGIVER) !== 0)         { commentNpcFlag += 'Questgiver & '; }
-      if ((npcFlags & NPC_FLAGS.UNK1) !== 0)               { commentNpcFlag += 'Unknown 1 & '; }
-      if ((npcFlags & NPC_FLAGS.UNK2) !== 0)               { commentNpcFlag += 'Unknown 2 & '; }
-      if ((npcFlags & NPC_FLAGS.TRAINER) !== 0)            { commentNpcFlag += 'Trainer & '; }
-      if ((npcFlags & NPC_FLAGS.TRAINER_CLASS) !== 0)      { commentNpcFlag += 'Class Trainer & '; }
-      if ((npcFlags & NPC_FLAGS.TRAINER_PROFESSION) !== 0) { commentNpcFlag += 'Profession Trainer & '; }
-      if ((npcFlags & NPC_FLAGS.VENDOR) !== 0)             { commentNpcFlag += 'Vendor & '; }
-      if ((npcFlags & NPC_FLAGS.VENDOR_AMMO) !== 0)        { commentNpcFlag += 'Ammo Vendor & '; }
-      if ((npcFlags & NPC_FLAGS.VENDOR_FOOD) !== 0)        { commentNpcFlag += 'Food Vendor & '; }
-      if ((npcFlags & NPC_FLAGS.VENDOR_POISON) !== 0)      { commentNpcFlag += 'Poison Vendor & '; }
-      if ((npcFlags & NPC_FLAGS.VENDOR_REAGENT) !== 0)     { commentNpcFlag += 'Reagent Vendor & '; }
-      if ((npcFlags & NPC_FLAGS.REPAIR) !== 0)             { commentNpcFlag += 'Repair Vendor & '; }
-      if ((npcFlags & NPC_FLAGS.FLIGHTMASTER) !== 0)       { commentNpcFlag += 'Flightmaster & '; }
-      if ((npcFlags & NPC_FLAGS.SPIRITHEALER) !== 0)       { commentNpcFlag += 'Spirithealer & '; }
-      if ((npcFlags & NPC_FLAGS.SPIRITGUIDE) !== 0)        { commentNpcFlag += 'Spiritguide & '; }
-      if ((npcFlags & NPC_FLAGS.INNKEEPER) !== 0)          { commentNpcFlag += 'Innkeeper & '; }
-      if ((npcFlags & NPC_FLAGS.BANKER) !== 0)             { commentNpcFlag += 'Banker & '; }
-      if ((npcFlags & NPC_FLAGS.PETITIONER) !== 0)         { commentNpcFlag += 'Petitioner & '; }
-      if ((npcFlags & NPC_FLAGS.TABARDDESIGNER) !== 0)     { commentNpcFlag += 'Tabard Designer & '; }
-      if ((npcFlags & NPC_FLAGS.BATTLEMASTER) !== 0)       { commentNpcFlag += 'Battlemaster & '; }
-      if ((npcFlags & NPC_FLAGS.AUCTIONEER) !== 0)         { commentNpcFlag += 'Auctioneer & '; }
-      if ((npcFlags & NPC_FLAGS.STABLEMASTER) !== 0)       { commentNpcFlag += 'Stablemaster & '; }
-      if ((npcFlags & NPC_FLAGS.GUILD_BANKER) !== 0)       { commentNpcFlag += 'Guild Banker & '; }
-      if ((npcFlags & NPC_FLAGS.SPELLCLICK) !== 0)         { commentNpcFlag += 'Spellclick & '; }
-      if ((npcFlags & NPC_FLAGS.PLAYER_VEHICLE) !== 0)     { commentNpcFlag += 'Player Vehicle & '; }
+      if ((npcFlags & NPC_FLAGS.GOSSIP) !== 0) {
+        commentNpcFlag += 'Gossip & ';
+      }
+      if ((npcFlags & NPC_FLAGS.QUESTGIVER) !== 0) {
+        commentNpcFlag += 'Questgiver & ';
+      }
+      if ((npcFlags & NPC_FLAGS.UNK1) !== 0) {
+        commentNpcFlag += 'Unknown 1 & ';
+      }
+      if ((npcFlags & NPC_FLAGS.UNK2) !== 0) {
+        commentNpcFlag += 'Unknown 2 & ';
+      }
+      if ((npcFlags & NPC_FLAGS.TRAINER) !== 0) {
+        commentNpcFlag += 'Trainer & ';
+      }
+      if ((npcFlags & NPC_FLAGS.TRAINER_CLASS) !== 0) {
+        commentNpcFlag += 'Class Trainer & ';
+      }
+      if ((npcFlags & NPC_FLAGS.TRAINER_PROFESSION) !== 0) {
+        commentNpcFlag += 'Profession Trainer & ';
+      }
+      if ((npcFlags & NPC_FLAGS.VENDOR) !== 0) {
+        commentNpcFlag += 'Vendor & ';
+      }
+      if ((npcFlags & NPC_FLAGS.VENDOR_AMMO) !== 0) {
+        commentNpcFlag += 'Ammo Vendor & ';
+      }
+      if ((npcFlags & NPC_FLAGS.VENDOR_FOOD) !== 0) {
+        commentNpcFlag += 'Food Vendor & ';
+      }
+      if ((npcFlags & NPC_FLAGS.VENDOR_POISON) !== 0) {
+        commentNpcFlag += 'Poison Vendor & ';
+      }
+      if ((npcFlags & NPC_FLAGS.VENDOR_REAGENT) !== 0) {
+        commentNpcFlag += 'Reagent Vendor & ';
+      }
+      if ((npcFlags & NPC_FLAGS.REPAIR) !== 0) {
+        commentNpcFlag += 'Repair Vendor & ';
+      }
+      if ((npcFlags & NPC_FLAGS.FLIGHTMASTER) !== 0) {
+        commentNpcFlag += 'Flightmaster & ';
+      }
+      if ((npcFlags & NPC_FLAGS.SPIRITHEALER) !== 0) {
+        commentNpcFlag += 'Spirithealer & ';
+      }
+      if ((npcFlags & NPC_FLAGS.SPIRITGUIDE) !== 0) {
+        commentNpcFlag += 'Spiritguide & ';
+      }
+      if ((npcFlags & NPC_FLAGS.INNKEEPER) !== 0) {
+        commentNpcFlag += 'Innkeeper & ';
+      }
+      if ((npcFlags & NPC_FLAGS.BANKER) !== 0) {
+        commentNpcFlag += 'Banker & ';
+      }
+      if ((npcFlags & NPC_FLAGS.PETITIONER) !== 0) {
+        commentNpcFlag += 'Petitioner & ';
+      }
+      if ((npcFlags & NPC_FLAGS.TABARDDESIGNER) !== 0) {
+        commentNpcFlag += 'Tabard Designer & ';
+      }
+      if ((npcFlags & NPC_FLAGS.BATTLEMASTER) !== 0) {
+        commentNpcFlag += 'Battlemaster & ';
+      }
+      if ((npcFlags & NPC_FLAGS.AUCTIONEER) !== 0) {
+        commentNpcFlag += 'Auctioneer & ';
+      }
+      if ((npcFlags & NPC_FLAGS.STABLEMASTER) !== 0) {
+        commentNpcFlag += 'Stablemaster & ';
+      }
+      if ((npcFlags & NPC_FLAGS.GUILD_BANKER) !== 0) {
+        commentNpcFlag += 'Guild Banker & ';
+      }
+      if ((npcFlags & NPC_FLAGS.SPELLCLICK) !== 0) {
+        commentNpcFlag += 'Spellclick & ';
+      }
+      if ((npcFlags & NPC_FLAGS.PLAYER_VEHICLE) !== 0) {
+        commentNpcFlag += 'Player Vehicle & ';
+      }
 
       if (commentNpcFlag.indexOf('&') > -1) {
         // ! Trim last ' & ' from the comment..
@@ -333,25 +451,24 @@ export class SaiCommentGeneratorService {
     }
 
     if (actionLine.indexOf('_startOrStopActionParamOne_') > -1) {
-
       if (`${smartScript.action_param1}` === '0') {
         actionLine = actionLine.replace('_startOrStopActionParamOne_', 'Stop');
-      } else { // ! Even if above 1 or below 0 we start attacking/allow-combat-movement
+      } else {
+        // ! Even if above 1 or below 0 we start attacking/allow-combat-movement
         actionLine = actionLine.replace('_startOrStopActionParamOne_', 'Start');
       }
     }
 
     if (actionLine.indexOf('_enableDisableActionParamOne_') > -1) {
-
       if (`${smartScript.action_param1}` === '0') {
         actionLine = actionLine.replace('_enableDisableActionParamOne_', 'Disable');
-      } else { // ! Even if above 1 or below 0 we start attacking/allow-combat-movement
+      } else {
+        // ! Even if above 1 or below 0 we start attacking/allow-combat-movement
         actionLine = actionLine.replace('_enableDisableActionParamOne_', 'Enable');
       }
     }
 
     if (actionLine.indexOf('_incrementOrDecrementActionParamOne_') > -1) {
-
       if (`${smartScript.action_param1}` === '1') {
         actionLine = actionLine.replace('_incrementOrDecrementActionParamOne_', 'Increment');
       } else if (`${smartScript.action_param2}` === '1') {
@@ -363,7 +480,6 @@ export class SaiCommentGeneratorService {
     }
 
     if (actionLine.indexOf('_sheathActionParamOne_') > -1) {
-
       switch (Number(smartScript.action_param1)) {
         case 0:
           actionLine = actionLine.replace('_sheathActionParamOne_', 'Unarmed');
@@ -381,7 +497,6 @@ export class SaiCommentGeneratorService {
     }
 
     if (actionLine.indexOf('_forceDespawnActionParamOne_') > -1) {
-
       if (smartScript.action_param1 > 2) {
         actionLine = actionLine.replace('_forceDespawnActionParamOne_', 'In ' + smartScript.action_param1 + ' ms');
       } else {
@@ -390,11 +505,16 @@ export class SaiCommentGeneratorService {
     }
 
     if (actionLine.indexOf('_invincibilityHpActionParamsOneTwo_') > -1) {
-
       if (smartScript.action_param1 > 0) {
-        actionLine = actionLine.replace('_invincibilityHpActionParamsOneTwo_', 'Set Invincibility Hp ' + smartScript.action_param1);
+        actionLine = actionLine.replace(
+          '_invincibilityHpActionParamsOneTwo_',
+          'Set Invincibility Hp ' + smartScript.action_param1,
+        );
       } else if (smartScript.action_param2 > 0) {
-        actionLine = actionLine.replace('_invincibilityHpActionParamsOneTwo_', 'Set Invincibility Hp ' + smartScript.action_param2 + '%');
+        actionLine = actionLine.replace(
+          '_invincibilityHpActionParamsOneTwo_',
+          'Set Invincibility Hp ' + smartScript.action_param2 + '%',
+        );
       } else if (smartScript.action_param1 === 0 && smartScript.action_param2 === 0) {
         actionLine = actionLine.replace('_invincibilityHpActionParamsOneTwo_', 'Reset Invincibility Hp');
       } else {
@@ -403,7 +523,6 @@ export class SaiCommentGeneratorService {
     }
 
     if (actionLine.indexOf('_onOffActionParamOne_') > -1) {
-
       if (smartScript.action_param1 === 1) {
         actionLine = actionLine.replace('_onOffActionParamOne_', 'On');
       } else {
@@ -412,11 +531,15 @@ export class SaiCommentGeneratorService {
     }
 
     if (actionLine.indexOf('_gameobjectNameActionParamOne_') > -1) {
-      actionLine = actionLine.replace('_gameobjectNameActionParamOne_', `'${await this.queryService.getGameObjectNameById(smartScript.action_param1)}'`);
+      actionLine = actionLine.replace(
+        '_gameobjectNameActionParamOne_',
+        `'${await this.queryService.getGameObjectNameById(smartScript.action_param1)}'`,
+      );
     }
 
     if (actionLine.indexOf('_addItemBasedOnActionParams_') > -1) {
-      actionLine = actionLine.replace('_addItemBasedOnActionParams_',
+      actionLine = actionLine.replace(
+        '_addItemBasedOnActionParams_',
         `'${await this.queryService.getItemNameById(smartScript.action_param1)}'`,
       );
 
@@ -428,7 +551,6 @@ export class SaiCommentGeneratorService {
     }
 
     if (actionLine.indexOf('_updateAiTemplateActionParamOne_') > -1) {
-
       switch (Number(smartScript.action_param1)) {
         case templates.BASIC:
           actionLine = actionLine.replace('_updateAiTemplateActionParamOne_', 'Basic');
@@ -449,13 +571,15 @@ export class SaiCommentGeneratorService {
           actionLine = actionLine.replace('_updateAiTemplateActionParamOne_', 'Caged Creature Part');
           break;
         default:
-          actionLine = actionLine.replace('_updateAiTemplateActionParamOne_', '[_updateAiTemplateActionParamOne_ Unknown ai template]');
+          actionLine = actionLine.replace(
+            '_updateAiTemplateActionParamOne_',
+            '[_updateAiTemplateActionParamOne_ Unknown ai template]',
+          );
           break;
       }
     }
 
     if (actionLine.indexOf('_setOrientationTargetType_') > -1) {
-
       switch (Number(smartScript.target_type)) {
         case SAI_TARGETS.SELF:
           actionLine = actionLine.replace('_setOrientationTargetType_', 'Home Position');
@@ -483,7 +607,6 @@ export class SaiCommentGeneratorService {
     }
 
     if (actionLine.indexOf('_goStateActionParamOne_') > -1) {
-
       switch (Number(smartScript.action_param1)) {
         case 0:
           actionLine = actionLine.replace('_goStateActionParamOne_', 'Not Ready');
@@ -507,15 +630,33 @@ export class SaiCommentGeneratorService {
       let commentGoFlag = '';
       const goFlags = smartScript.action_param1;
 
-      if ((goFlags & GO_FLAGS.IN_USE) !== 0)         { commentGoFlag += 'In Use & '; }
-      if ((goFlags & GO_FLAGS.LOCKED) !== 0)         { commentGoFlag += 'Locked & '; }
-      if ((goFlags & GO_FLAGS.INTERACT_COND) !== 0)  { commentGoFlag += 'Interact Condition & '; }
-      if ((goFlags & GO_FLAGS.TRANSPORT) !== 0)      { commentGoFlag += 'Transport & '; }
-      if ((goFlags & GO_FLAGS.NOT_SELECTABLE) !== 0) { commentGoFlag += 'Not Selectable & '; }
-      if ((goFlags & GO_FLAGS.NODESPAWN) !== 0)      { commentGoFlag += 'No Despawn & '; }
-      if ((goFlags & GO_FLAGS.TRIGGERED) !== 0)      { commentGoFlag += 'Triggered & '; }
-      if ((goFlags & GO_FLAGS.DAMAGED) !== 0)        { commentGoFlag += 'Damaged & '; }
-      if ((goFlags & GO_FLAGS.DESTROYED) !== 0)      { commentGoFlag += 'Destroyed & '; }
+      if ((goFlags & GO_FLAGS.IN_USE) !== 0) {
+        commentGoFlag += 'In Use & ';
+      }
+      if ((goFlags & GO_FLAGS.LOCKED) !== 0) {
+        commentGoFlag += 'Locked & ';
+      }
+      if ((goFlags & GO_FLAGS.INTERACT_COND) !== 0) {
+        commentGoFlag += 'Interact Condition & ';
+      }
+      if ((goFlags & GO_FLAGS.TRANSPORT) !== 0) {
+        commentGoFlag += 'Transport & ';
+      }
+      if ((goFlags & GO_FLAGS.NOT_SELECTABLE) !== 0) {
+        commentGoFlag += 'Not Selectable & ';
+      }
+      if ((goFlags & GO_FLAGS.NODESPAWN) !== 0) {
+        commentGoFlag += 'No Despawn & ';
+      }
+      if ((goFlags & GO_FLAGS.TRIGGERED) !== 0) {
+        commentGoFlag += 'Triggered & ';
+      }
+      if ((goFlags & GO_FLAGS.DAMAGED) !== 0) {
+        commentGoFlag += 'Damaged & ';
+      }
+      if ((goFlags & GO_FLAGS.DESTROYED) !== 0) {
+        commentGoFlag += 'Destroyed & ';
+      }
 
       if (commentGoFlag.indexOf('&') > -1) {
         // ! Trim last ' & ' from the comment..
@@ -528,18 +669,33 @@ export class SaiCommentGeneratorService {
     }
 
     if (actionLine.indexOf('_getDynamicFlags_') > -1) {
-
       let commentDynamicFlag = '';
       const dynamicFlags = smartScript.action_param1;
 
-      if ((dynamicFlags & DYNAMIC_FLAGS.LOOTABLE) !== 0)                  { commentDynamicFlag += 'Lootable & '; }
-      if ((dynamicFlags & DYNAMIC_FLAGS.TRACK_UNIT) !== 0)                { commentDynamicFlag += 'Track Units & '; }
-      if ((dynamicFlags & DYNAMIC_FLAGS.TAPPED) !== 0)                    { commentDynamicFlag += 'Tapped & '; }
-      if ((dynamicFlags & DYNAMIC_FLAGS.TAPPED_BY_PLAYER) !== 0)          { commentDynamicFlag += 'Tapped By Player & '; }
-      if ((dynamicFlags & DYNAMIC_FLAGS.SPECIALINFO) !== 0)               { commentDynamicFlag += 'Special Info & '; }
-      if ((dynamicFlags & DYNAMIC_FLAGS.DEAD) !== 0)                      { commentDynamicFlag += 'Dead & '; }
-      if ((dynamicFlags & DYNAMIC_FLAGS.REFER_A_FRIEND) !== 0)            { commentDynamicFlag += 'Refer A Friend & '; }
-      if ((dynamicFlags & DYNAMIC_FLAGS.TAPPED_BY_ALL_THREAT_LIST) !== 0) { commentDynamicFlag += 'Tapped By Threatlist & '; }
+      if ((dynamicFlags & DYNAMIC_FLAGS.LOOTABLE) !== 0) {
+        commentDynamicFlag += 'Lootable & ';
+      }
+      if ((dynamicFlags & DYNAMIC_FLAGS.TRACK_UNIT) !== 0) {
+        commentDynamicFlag += 'Track Units & ';
+      }
+      if ((dynamicFlags & DYNAMIC_FLAGS.TAPPED) !== 0) {
+        commentDynamicFlag += 'Tapped & ';
+      }
+      if ((dynamicFlags & DYNAMIC_FLAGS.TAPPED_BY_PLAYER) !== 0) {
+        commentDynamicFlag += 'Tapped By Player & ';
+      }
+      if ((dynamicFlags & DYNAMIC_FLAGS.SPECIALINFO) !== 0) {
+        commentDynamicFlag += 'Special Info & ';
+      }
+      if ((dynamicFlags & DYNAMIC_FLAGS.DEAD) !== 0) {
+        commentDynamicFlag += 'Dead & ';
+      }
+      if ((dynamicFlags & DYNAMIC_FLAGS.REFER_A_FRIEND) !== 0) {
+        commentDynamicFlag += 'Refer A Friend & ';
+      }
+      if ((dynamicFlags & DYNAMIC_FLAGS.TAPPED_BY_ALL_THREAT_LIST) !== 0) {
+        commentDynamicFlag += 'Tapped By Threatlist & ';
+      }
 
       if (commentDynamicFlag.indexOf('&') > -1) {
         // ! Trim last ' & ' from the comment..
@@ -552,7 +708,6 @@ export class SaiCommentGeneratorService {
     }
 
     if (actionLine.indexOf('_getBytes1Flags_') > -1) {
-
       switch (Number(smartScript.action_param2)) {
         case unitFieldBytes1Type.STAND_STAND_STATE_TYPE:
           switch (Number(smartScript.action_param1)) {
@@ -616,7 +771,6 @@ export class SaiCommentGeneratorService {
           break;
 
         case unitFieldBytes1Type.BYTES1_FLAGS_TYPE:
-
           switch (Number(smartScript.action_param1)) {
             case unitBytes1Flags.UNK_3:
               actionLine = actionLine.replace('_getBytes1Flags_', '[Unknown]');
@@ -668,14 +822,16 @@ export class SaiCommentGeneratorService {
     }
 
     if (actionLine.indexOf('_morphToEntryOrModelActionParams_') > -1) {
-
       if (smartScript.action_param1 > 0) {
         actionLine = actionLine.replace(
           '_morphToEntryOrModelActionParams_',
-          'Morph To Creature ' + await this.queryService.getCreatureNameById(smartScript.action_param1),
+          'Morph To Creature ' + (await this.queryService.getCreatureNameById(smartScript.action_param1)),
         );
       } else if (smartScript.action_param2 > 0) {
-        actionLine = actionLine.replace('_morphToEntryOrModelActionParams_', 'Morph To Model ' + smartScript.action_param2);
+        actionLine = actionLine.replace(
+          '_morphToEntryOrModelActionParams_',
+          'Morph To Model ' + smartScript.action_param2,
+        );
       } else {
         actionLine = actionLine.replace('_morphToEntryOrModelActionParams_', 'Demorph');
       }
@@ -685,10 +841,13 @@ export class SaiCommentGeneratorService {
       if (smartScript.action_param1 > 0) {
         actionLine = actionLine.replace(
           '_mountToEntryOrModelActionParams_',
-          'Mount To Creature ' + await this.queryService.getCreatureNameById(smartScript.action_param1),
+          'Mount To Creature ' + (await this.queryService.getCreatureNameById(smartScript.action_param1)),
         );
       } else if (smartScript.action_param2 > 0) {
-        actionLine = actionLine.replace('_mountToEntryOrModelActionParams_', 'Mount To Model ' + smartScript.action_param2);
+        actionLine = actionLine.replace(
+          '_mountToEntryOrModelActionParams_',
+          'Mount To Model ' + smartScript.action_param2,
+        );
       } else {
         actionLine = actionLine.replace('_mountToEntryOrModelActionParams_', 'Dismount');
       }
@@ -729,41 +888,40 @@ export class SaiCommentGeneratorService {
     const event_flags = smartScriptLink != null ? smartScriptLink.event_flags : smartScript.event_flags;
 
     if (event_flags !== EVENT_FLAGS.NONE) {
-
-      if (((event_flags & EVENT_FLAGS.NOT_REPEATABLE) !== 0)) {
+      if ((event_flags & EVENT_FLAGS.NOT_REPEATABLE) !== 0) {
         actionLine += ' (No Repeat)';
       }
 
-      if (((event_flags & EVENT_FLAGS.NORMAL_DUNGEON) !== 0) &&
-        ((event_flags & EVENT_FLAGS.HEROIC_DUNGEON) !== 0) &&
-        ((event_flags & EVENT_FLAGS.NORMAL_RAID) !== 0)    &&
-        ((event_flags & EVENT_FLAGS.HEROIC_RAID) !== 0)) {
+      if (
+        (event_flags & EVENT_FLAGS.NORMAL_DUNGEON) !== 0 &&
+        (event_flags & EVENT_FLAGS.HEROIC_DUNGEON) !== 0 &&
+        (event_flags & EVENT_FLAGS.NORMAL_RAID) !== 0 &&
+        (event_flags & EVENT_FLAGS.HEROIC_RAID) !== 0
+      ) {
         actionLine += ' (Dungeon & Raid)';
       } else {
-        if (((event_flags & EVENT_FLAGS.NORMAL_DUNGEON) !== 0) &&
-          ((event_flags & EVENT_FLAGS.HEROIC_DUNGEON) !== 0)) {
+        if ((event_flags & EVENT_FLAGS.NORMAL_DUNGEON) !== 0 && (event_flags & EVENT_FLAGS.HEROIC_DUNGEON) !== 0) {
           actionLine += ' (Dungeon)';
         } else {
-          if (((event_flags & EVENT_FLAGS.NORMAL_DUNGEON) !== 0)) {
+          if ((event_flags & EVENT_FLAGS.NORMAL_DUNGEON) !== 0) {
             actionLine += ' (Normal Dungeon)';
-          } else if (((event_flags & EVENT_FLAGS.HEROIC_DUNGEON) !== 0)) {
+          } else if ((event_flags & EVENT_FLAGS.HEROIC_DUNGEON) !== 0) {
             actionLine += ' (Heroic Dungeon)';
           }
         }
       }
 
-      if (((event_flags & EVENT_FLAGS.NORMAL_RAID) !== 0) &&
-        ((event_flags & EVENT_FLAGS.HEROIC_RAID) !== 0)) {
+      if ((event_flags & EVENT_FLAGS.NORMAL_RAID) !== 0 && (event_flags & EVENT_FLAGS.HEROIC_RAID) !== 0) {
         actionLine += ' (Raid)';
       } else {
-        if (((event_flags & EVENT_FLAGS.NORMAL_RAID) !== 0)) {
+        if ((event_flags & EVENT_FLAGS.NORMAL_RAID) !== 0) {
           actionLine += ' (Normal Raid)';
-        } else if (((event_flags & EVENT_FLAGS.HEROIC_RAID) !== 0)) {
+        } else if ((event_flags & EVENT_FLAGS.HEROIC_RAID) !== 0) {
           actionLine += ' (Heroic Raid)';
         }
       }
 
-      if (((event_flags & EVENT_FLAGS.DEBUG_ONLY) !== 0)) {
+      if ((event_flags & EVENT_FLAGS.DEBUG_ONLY) !== 0) {
         actionLine += ' (Debug)';
       }
     }
@@ -779,6 +937,9 @@ export class SaiCommentGeneratorService {
     name: string, // the name of the creature or gameobject
   ): Promise<string> {
     const smartScriptLink = this.getPreviousScriptLink(rows, smartScript);
-    return `${await this.generateEventComment(smartScript, name, smartScriptLink)} - ${await this.generateActionComment(smartScript, smartScriptLink)}`;
+    return `${await this.generateEventComment(smartScript, name, smartScriptLink)} - ${await this.generateActionComment(
+      smartScript,
+      smartScriptLink,
+    )}`;
   }
 }

@@ -1,16 +1,16 @@
 import { Flag } from '../../types/general';
 
 export const UNIT_FLAGS: Flag[] = [
-  { bit: 0,  name: 'SERVER_CONTROLLED' },
-  { bit: 1,  name: 'NON_ATTACKABLE' },
-  { bit: 2,  name: 'DISABLE_MOVE' },
-  { bit: 3,  name: 'PLAYER_CONTROLLED - controlled by player, use _IMMUNE_TO_PC instead of _IMMUNE_TO_NPC' },
-  { bit: 4,  name: 'RENAME' },
-  { bit: 5,  name: 'PREPARATION - don\'t take reagents for spells with SPELL_ATTR5_NO_REAGENT_WHILE_PREP' },
-  { bit: 6,  name: 'UNK_6 - not sure what it does, but it is needed to cast nontriggered spells in smart_scripts' },
-  { bit: 7,  name: 'NOT_ATTACKABLE_1' },
-  { bit: 8,  name: 'IMMUNE_TO_PC - disables combat/assistance with PlayerCharacters (PC)' },
-  { bit: 9,  name: 'IMMUNE_TO_NPC - disables combat/assistance with NonPlayerCharacters (NPC)' },
+  { bit: 0, name: 'SERVER_CONTROLLED' },
+  { bit: 1, name: 'NON_ATTACKABLE' },
+  { bit: 2, name: 'DISABLE_MOVE' },
+  { bit: 3, name: 'PLAYER_CONTROLLED - controlled by player, use _IMMUNE_TO_PC instead of _IMMUNE_TO_NPC' },
+  { bit: 4, name: 'RENAME' },
+  { bit: 5, name: "PREPARATION - don't take reagents for spells with SPELL_ATTR5_NO_REAGENT_WHILE_PREP" },
+  { bit: 6, name: 'UNK_6 - not sure what it does, but it is needed to cast nontriggered spells in smart_scripts' },
+  { bit: 7, name: 'NOT_ATTACKABLE_1' },
+  { bit: 8, name: 'IMMUNE_TO_PC - disables combat/assistance with PlayerCharacters (PC)' },
+  { bit: 9, name: 'IMMUNE_TO_NPC - disables combat/assistance with NonPlayerCharacters (NPC)' },
   { bit: 10, name: 'LOOTING - loot animation' },
   { bit: 11, name: 'PET_IN_COMBAT' },
   { bit: 12, name: 'PVP' },
@@ -30,7 +30,10 @@ export const UNIT_FLAGS: Flag[] = [
   { bit: 26, name: 'SKINNABLE' },
   { bit: 27, name: 'MOUNT - The client seems to handle it perfectly. Also used when making custom mounts.' },
   { bit: 28, name: 'UNK_28 - PreventKneelingWhenLooting' },
-  { bit: 29, name: 'PREVENT_EMOTES_FROM_CHAT_TEXT - Prevent automatically playing emotes from parsing chat text, for example "lol" in /say, ending message with ? or !, or using /yell' },
+  {
+    bit: 29,
+    name: 'PREVENT_EMOTES_FROM_CHAT_TEXT - Prevent automatically playing emotes from parsing chat text, for example "lol" in /say, ending message with ? or !, or using /yell',
+  },
   { bit: 30, name: 'SHEATHE' },
   { bit: 31, name: 'UNK_31' },
 ];

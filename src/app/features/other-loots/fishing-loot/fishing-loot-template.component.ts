@@ -10,12 +10,8 @@ import { FishingLootHandlerService } from './fishing-loot-handler.service';
   templateUrl: '../../../shared/abstract/components/editors/loot-template/loot-template.component.html',
 })
 export class FishingLootTemplateComponent extends LootTemplateComponent<FishingLootTemplate> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: FishingLootTemplateService,
-    public handlerService: FishingLootHandlerService,
-  ) {
+  constructor(public editorService: FishingLootTemplateService, public handlerService: FishingLootHandlerService) {
     super(editorService, handlerService);
   }
 }

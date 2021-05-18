@@ -11,10 +11,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 
 @NgModule({
-  declarations: [
-    MapSelectorBtnComponent,
-    MapSelectorModalComponent,
-  ],
+  declarations: [MapSelectorBtnComponent, MapSelectorModalComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -23,8 +20,6 @@ import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-
     HighlightModule.forRoot(highlightOptions),
     SearchButtonsModule,
   ],
-  exports: [
-    MapSelectorBtnComponent,
-  ],
+  exports: [MapSelectorBtnComponent],
 })
 export class MapSelectorModule {}

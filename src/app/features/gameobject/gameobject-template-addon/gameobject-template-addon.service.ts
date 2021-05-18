@@ -12,7 +12,6 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 
 @Injectable()
 export class GameobjectTemplateAddonService extends SingleRowEditorService<GameobjectTemplateAddon> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: GameobjectHandlerService,
@@ -30,6 +29,4 @@ export class GameobjectTemplateAddonService extends SingleRowEditorService<Gameo
       toastrService,
     );
   }
-
 }
-

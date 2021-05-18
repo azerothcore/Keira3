@@ -22,18 +22,14 @@ describe('ReferenceLootTemplate integration tests', () => {
   originalRow1.Item = 1;
   originalRow2.Item = 2;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        ReferenceLootTemplateModule,
-        RouterTestingModule,
-      ],
-      providers: [
-        ReferenceLootHandlerService,
-      ]
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ReferenceLootTemplateModule, RouterTestingModule],
+        providers: [ReferenceLootHandlerService],
+      }).compileComponents();
+    }),
+  );
 
   function setup(creatingNew: boolean) {
     const handlerService = TestBed.inject(ReferenceLootHandlerService);
@@ -44,9 +40,7 @@ describe('ReferenceLootTemplate integration tests', () => {
     const querySpy = spyOn(queryService, 'query').and.returnValue(of());
     spyOn(queryService, 'queryValue').and.returnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(
-      creatingNew ? [] : [originalRow0, originalRow1, originalRow2]
-    ));
+    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     const fixture = TestBed.createComponent(ReferenceLootTemplateComponent);
     const page = new ReferenceLootTemplatePage(fixture);
@@ -57,7 +51,6 @@ describe('ReferenceLootTemplate integration tests', () => {
   }
 
   describe('Creating new', () => {
-
     it('should correctly initialise', () => {
       const { page } = setup(true);
       page.expectDiffQueryToBeEmpty();
@@ -88,12 +81,13 @@ describe('ReferenceLootTemplate integration tests', () => {
 
     it('adding new rows and executing the query should correctly work', () => {
       const { page, querySpy } = setup(true);
-      const expectedQuery = 'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0, 1, 2));\n' +
+      const expectedQuery =
+        'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0, 1, 2));\n' +
         'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
         '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 1, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 2, 0, 100, 0, 1, 0, 1, 1, \'\');';
+        "(1234, 0, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
+        "(1234, 1, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
+        "(1234, 2, 0, 100, 0, 1, 0, 1, 1, '');";
       querySpy.calls.reset();
 
       page.addNewRow();
@@ -114,75 +108,76 @@ describe('ReferenceLootTemplate integration tests', () => {
       page.addNewRow();
       page.expectDiffQueryToContain(
         'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
-        'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 100, 0, 1, 0, 1, 1, '');",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 100, 0, 1, 0, 1, 1, '');",
       );
 
       page.setInputValueById('Chance', '1');
       page.expectDiffQueryToContain(
         'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
-        'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 1, 0, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 1, 0, 1, 0, 1, 1, '');",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 1, 0, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 1, 0, 1, 0, 1, 1, '');",
       );
 
       page.setInputValueById('QuestRequired', '2');
       page.expectDiffQueryToContain(
         'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
-        'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 1, 2, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 1, 2, 1, 0, 1, 1, '');",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 1, 2, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 1, 2, 1, 0, 1, 1, '');",
       );
 
       page.setInputValueById('Item', '123');
       page.expectDiffQueryToContain(
         'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (123));\n' +
-        'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 123, 0, 1, 2, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 123, 0, 1, 2, 1, 0, 1, 1, '');",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 123, 0, 1, 2, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 123, 0, 1, 2, 1, 0, 1, 1, '');",
       );
     });
   });
 
   describe('Editing existing', () => {
-
     it('should correctly initialise', () => {
       const { page } = setup(false);
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
-      page.expectFullQueryToContain('' +
-        'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
-        '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 1, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 2, 0, 100, 0, 1, 0, 1, 1, \'\');');
+      page.expectFullQueryToContain(
+        '' +
+          'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234);\n' +
+          'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 1, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 2, 0, 100, 0, 1, 0, 1, 1, '');",
+      );
       expect(page.getEditorTableRowsCount()).toBe(3);
     });
 
@@ -191,33 +186,31 @@ describe('ReferenceLootTemplate integration tests', () => {
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.expectDiffQueryToContain(
-        'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1));'
+        'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1));',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
-        '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 2, 0, 100, 0, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+          '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 2, 0, 100, 0, 1, 0, 1, 1, '');",
       );
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
       page.expectDiffQueryToContain(
-        'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2));'
+        'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2));',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
-        '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+          '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 100, 0, 1, 0, 1, 1, '');",
       );
 
       page.deleteRow(0);
       expect(page.getEditorTableRowsCount()).toBe(0);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `reference_loot_template` WHERE `Entry` = 1234;'
-      );
+      page.expectDiffQueryToContain('DELETE FROM `reference_loot_template` WHERE `Entry` = 1234;');
       page.expectFullQueryToBeEmpty();
     });
 
@@ -231,17 +224,17 @@ describe('ReferenceLootTemplate integration tests', () => {
 
       page.expectDiffQueryToContain(
         'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (2));\n' +
-        'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
-        '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 2, 0, 100, 0, 1, 2, 1, 1, \'\');'
+          'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+          '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 2, 0, 100, 0, 1, 2, 1, 1, '');",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
-        '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 1, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 2, 0, 100, 0, 1, 2, 1, 1, \'\');'
+          'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+          '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 1, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 2, 0, 100, 0, 1, 2, 1, 1, '');",
       );
     });
 
@@ -259,18 +252,18 @@ describe('ReferenceLootTemplate integration tests', () => {
 
       page.expectDiffQueryToContain(
         'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2, 3));\n' +
-        'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
-        '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 1, 0, 10, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 3, 0, 100, 0, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+          '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 1, 0, 10, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 3, 0, 100, 0, 1, 0, 1, 1, '');",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234);\n' +
-        'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
-        '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
-        '(1234, 0, 0, 100, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 1, 0, 10, 0, 1, 0, 1, 1, \'\'),\n' +
-        '(1234, 3, 0, 100, 0, 1, 0, 1, 1, \'\');'
+          'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+          '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 1, 0, 10, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 3, 0, 100, 0, 1, 0, 1, 1, '');",
       );
     });
 
@@ -282,5 +275,4 @@ describe('ReferenceLootTemplate integration tests', () => {
       page.expectUniqueError();
     });
   });
-
 });

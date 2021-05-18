@@ -7,24 +7,23 @@ import { Subject } from 'rxjs';
   templateUrl: './modal-confirm.component.html',
 })
 export class ModalConfirmComponent implements OnInit {
+  public onClose: Subject<boolean>;
+  title: string;
+  content: string;
 
-    public onClose: Subject <boolean>;
-    title: string;
-    content: string;
+  constructor(private _bsModalRef: BsModalRef) {}
 
-    constructor(private _bsModalRef: BsModalRef) {}
+  public ngOnInit(): void {
+    this.onClose = new Subject();
+  }
 
-    public ngOnInit(): void {
-        this.onClose = new Subject();
-    }
+  public onConfirm(): void {
+    this.onClose.next(true);
+    this._bsModalRef.hide();
+  }
 
-    public onConfirm(): void {
-        this.onClose.next(true);
-        this._bsModalRef.hide();
-    }
-
-    public onCancel(): void {
-        this.onClose.next(false);
-        this._bsModalRef.hide();
-    }
+  public onCancel(): void {
+    this.onClose.next(false);
+    this._bsModalRef.hide();
+  }
 }

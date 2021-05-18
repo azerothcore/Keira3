@@ -22,12 +22,11 @@ describe('MysqlService', () => {
 
   const config: ConnectionConfig = { host: 'azerothcore.org' };
 
-  beforeEach(() => TestBed.configureTestingModule({
-    providers: [
-      MysqlService,
-      { provide : ElectronService, useValue: instance(MockedElectronService) },
-    ]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      providers: [MysqlService, { provide: ElectronService, useValue: instance(MockedElectronService) }],
+    }),
+  );
 
   beforeEach(() => {
     service = TestBed.inject(MysqlService);
@@ -42,73 +41,87 @@ describe('MysqlService', () => {
     (service as any)._connection = null;
     expect(service.getConnectionState()).toBeNull();
 
-    const connection: Partial<Connection> = { state:  'connected' };
+    const connection: Partial<Connection> = { state: 'connected' };
     (service as any)._connection = connection;
     expect(service.getConnectionState()).toEqual(connection.state);
   });
 
-  it('connect(config) should properly work', waitForAsync(() => {
-    (service as any).mysql = new MockMySql();
-    const mockConnection = new MockConnection();
-    const createConnectionSpy = spyOn((service as any).mysql, 'createConnection').and.returnValue(mockConnection);
-    const connectSpy = spyOn(mockConnection, 'connect');
-
-    const obs = service.connect(config);
-
-    expect(createConnectionSpy).toHaveBeenCalledWith(config);
-    expect(service.config).toEqual(config);
-
-    obs.subscribe(() => {
-      expect(connectSpy).toHaveBeenCalledTimes(1);
-      // @ts-ignore
-      expect(connectSpy).toHaveBeenCalledWith(service['connectCallback']);
-    });
-  }));
-
-  describe('dbQuery(queryString)', () => {
-    it('should properly work', waitForAsync(() => {
+  it(
+    'connect(config) should properly work',
+    waitForAsync(() => {
       (service as any).mysql = new MockMySql();
       const mockConnection = new MockConnection();
-      service['_connection'] = mockConnection as undefined as Connection;
-      const querySpy = spyOn(mockConnection, 'query');
-      const queryStr = '--some mock query';
+      const createConnectionSpy = spyOn((service as any).mysql, 'createConnection').and.returnValue(mockConnection);
+      const connectSpy = spyOn(mockConnection, 'connect');
 
-      const obs = service.dbQuery(queryStr, []);
+      const obs = service.connect(config);
+
+      expect(createConnectionSpy).toHaveBeenCalledWith(config);
+      expect(service.config).toEqual(config);
 
       obs.subscribe(() => {
-        expect(querySpy).toHaveBeenCalledTimes(1);
+        expect(connectSpy).toHaveBeenCalledTimes(1);
         // @ts-ignore
-        expect(querySpy).toHaveBeenCalledWith(queryStr, [], service['queryCallback']);
+        expect(connectSpy).toHaveBeenCalledWith(service['connectCallback']);
       });
-    }));
+    }),
+  );
 
-    it('should give error if _connection is not defined', waitForAsync(() => {
-      (service as any).mysql = new MockMySql();
-      service['_connection'] = undefined;
-      spyOn(console, 'error');
-      const queryStr = '--some mock query';
+  describe('dbQuery(queryString)', () => {
+    it(
+      'should properly work',
+      waitForAsync(() => {
+        (service as any).mysql = new MockMySql();
+        const mockConnection = new MockConnection();
+        service['_connection'] = mockConnection as undefined as Connection;
+        const querySpy = spyOn(mockConnection, 'query');
+        const queryStr = '--some mock query';
 
-      const obs = service.dbQuery(queryStr, []);
+        const obs = service.dbQuery(queryStr, []);
 
-      obs.subscribe(() => {
-        expect(console.error).toHaveBeenCalledTimes(1);
-        expect(console.error).toHaveBeenCalledWith(`_connection was not defined when trying to run query: ${queryStr}`);
-      });
-    }));
+        obs.subscribe(() => {
+          expect(querySpy).toHaveBeenCalledTimes(1);
+          // @ts-ignore
+          expect(querySpy).toHaveBeenCalledWith(queryStr, [], service['queryCallback']);
+        });
+      }),
+    );
 
-    it('should give error if reconnection is in progress', waitForAsync(() => {
-      (service as any).mysql = new MockMySql();
-      service['_reconnecting'] = true;
-      spyOn(console, 'error');
-      const queryStr = '--some mock query';
+    it(
+      'should give error if _connection is not defined',
+      waitForAsync(() => {
+        (service as any).mysql = new MockMySql();
+        service['_connection'] = undefined;
+        spyOn(console, 'error');
+        const queryStr = '--some mock query';
 
-      const obs = service.dbQuery(queryStr);
+        const obs = service.dbQuery(queryStr, []);
 
-      obs.subscribe(() => {
-        expect(console.error).toHaveBeenCalledTimes(1);
-        expect(console.error).toHaveBeenCalledWith(`Reconnection in progress while trying to run query: ${queryStr}`);
-      });
-    }));
+        obs.subscribe(() => {
+          expect(console.error).toHaveBeenCalledTimes(1);
+          expect(console.error).toHaveBeenCalledWith(
+            `_connection was not defined when trying to run query: ${queryStr}`,
+          );
+        });
+      }),
+    );
+
+    it(
+      'should give error if reconnection is in progress',
+      waitForAsync(() => {
+        (service as any).mysql = new MockMySql();
+        service['_reconnecting'] = true;
+        spyOn(console, 'error');
+        const queryStr = '--some mock query';
+
+        const obs = service.dbQuery(queryStr);
+
+        obs.subscribe(() => {
+          expect(console.error).toHaveBeenCalledTimes(1);
+          expect(console.error).toHaveBeenCalledWith(`Reconnection in progress while trying to run query: ${queryStr}`);
+        });
+      }),
+    );
   });
 
   describe('callbacks', () => {
@@ -234,7 +247,7 @@ describe('MysqlService', () => {
       spyOn<any>(service, 'reconnect');
       service['_connection'] = { on: jasmine.createSpy() } as any;
 
-      service['reconnectCallback']({ code: 'mock-error'} as unknown as MysqlError);
+      service['reconnectCallback']({ code: 'mock-error' } as unknown as MysqlError);
 
       expect(service['reconnect']).toHaveBeenCalledTimes(1);
       expect(service['_reconnecting']).toBe(true);

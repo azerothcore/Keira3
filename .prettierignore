@@ -1,0 +1,15 @@
+.tmp
+.idea
+.vscode
+.npmrc
+.nvmrc
+node_modules/
+build/
+build-tools/
+reports/
+coverage/
+dist/
+**/*.md
+**/*.yml
+package.json
+package-lock.json

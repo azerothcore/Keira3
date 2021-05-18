@@ -16,14 +16,12 @@ const modules = [
   ItemLootTemplateModule,
   DisenchantLootTemplateModule,
   ProspectingLootTemplateModule,
-  MillingLootTemplateModule
+  MillingLootTemplateModule,
 ];
 
 @NgModule({
   imports: [modules],
   exports: [modules],
-  providers: [
-    ItemHandlerService,
-  ]
+  providers: [ItemHandlerService],
 })
 export class ItemModule {}

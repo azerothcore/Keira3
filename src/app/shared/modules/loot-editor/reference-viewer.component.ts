@@ -12,17 +12,13 @@ import { DTCFG } from '@keira-config/datatable.config';
   styleUrls: ['./loot-editor.component.scss'],
 })
 export class ReferenceViewerComponent extends SubscriptionHandler implements OnChanges {
-
   @Input() referenceId: number;
 
   readonly DTCFG = DTCFG;
   referenceLootRows: ReferenceLootTemplate[];
   nestedReferenceIds: number[] = [];
 
-  constructor(
-    public service: ReferenceViewerService,
-    public queryService: MysqlQueryService,
-  ) {
+  constructor(public service: ReferenceViewerService, public queryService: MysqlQueryService) {
     super();
   }
 
@@ -30,12 +26,13 @@ export class ReferenceViewerComponent extends SubscriptionHandler implements OnC
     this.referenceLootRows = null;
     this.nestedReferenceIds = [];
 
-    this.subscriptions.push(this.service.getReferenceById(this.referenceId)?.subscribe((result: ReferenceLootTemplate[]) => {
+    this.subscriptions.push(
+      this.service.getReferenceById(this.referenceId)?.subscribe((result: ReferenceLootTemplate[]) => {
         this.referenceLootRows = result;
 
         this.nestedReferenceIds = this.referenceLootRows
-          .filter(referenceLootRow => referenceLootRow.Reference > 0)
-          .map(referenceLootRow => referenceLootRow.Reference);
+          .filter((referenceLootRow) => referenceLootRow.Reference > 0)
+          .map((referenceLootRow) => referenceLootRow.Reference);
       }),
     );
   }

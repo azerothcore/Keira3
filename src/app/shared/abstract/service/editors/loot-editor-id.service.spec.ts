@@ -4,7 +4,6 @@ import { instance } from 'ts-mockito';
 import { ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
 
-
 import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { LootEditorIdService } from './loot-editor-id.service';
@@ -13,22 +12,21 @@ import { CreatureLootTemplateService } from '../../../../features/creature/creat
 import { CreatureHandlerService } from '../../../../features/creature/creature-handler.service';
 import { SaiCreatureHandlerService } from '../../../../features/creature/sai-creature-handler.service';
 
-
 describe('LootEditorService', () => {
   let service: LootEditorIdService<CreatureLootTemplate>;
 
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      { provide: ToastrService, useValue: instance(MockedToastrService) },
-      CreatureHandlerService,
-      SaiCreatureHandlerService,
-      CreatureLootTemplateService,
-    ],
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        CreatureLootTemplateService,
+      ],
+    }),
+  );
 
   beforeEach(() => {
     service = TestBed.inject(CreatureLootTemplateService);
@@ -42,8 +40,10 @@ describe('LootEditorService', () => {
     service.getLootId().subscribe((data) => {
       expect(data).toEqual(mockData);
     });
-    expect(querySpy).toHaveBeenCalledWith(`SELECT ${service.entityTemplateLootField} AS lootId `
-    + `FROM ${service.entityTemplateTable} `
-    + `WHERE ${service['_entityTemplateIdField']} = ${service['handlerService.selected']}`);
+    expect(querySpy).toHaveBeenCalledWith(
+      `SELECT ${service.entityTemplateLootField} AS lootId ` +
+        `FROM ${service.entityTemplateTable} ` +
+        `WHERE ${service['_entityTemplateIdField']} = ${service['handlerService.selected']}`,
+    );
   });
 });

@@ -11,10 +11,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 
 @NgModule({
-  declarations: [
-    ItemExtendedCostSelectorBtnComponent,
-    ItemExtendedCostSelectorModalComponent,
-  ],
+  declarations: [ItemExtendedCostSelectorBtnComponent, ItemExtendedCostSelectorModalComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -23,8 +20,6 @@ import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-
     HighlightModule.forRoot(highlightOptions),
     SearchButtonsModule,
   ],
-  exports: [
-    ItemExtendedCostSelectorBtnComponent,
-  ],
+  exports: [ItemExtendedCostSelectorBtnComponent],
 })
 export class ItemExtendedCostSelectorModule {}

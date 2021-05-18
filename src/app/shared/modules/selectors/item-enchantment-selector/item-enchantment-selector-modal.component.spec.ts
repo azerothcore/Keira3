@@ -13,16 +13,14 @@ describe('ItemEnchantmentSelectorModalComponent', () => {
   let fixture: ComponentFixture<ItemEnchantmentSelectorModalComponent>;
   let searchService: ItemEnchantmentSearchService;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ ItemEnchantmentSelectorModule ],
-      providers: [
-        BsModalRef,
-        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      ],
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ItemEnchantmentSelectorModule],
+        providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     searchService = TestBed.inject(ItemEnchantmentSearchService);

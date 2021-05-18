@@ -9,35 +9,36 @@ import { LootTemplateComponent } from '@keira-abstract/components/editors/loot-t
 // Extended only by the loot tables that require a template loot id
 @Component({ template: '' })
 export abstract class LootTemplateIdComponent<T extends LootTemplate> extends LootTemplateComponent<T> implements OnInit {
-
   protected _lootId: number;
-  get lootId(): number { return this._lootId; }
+  get lootId(): number {
+    return this._lootId;
+  }
 
   protected checkTemplateLootId() {
     this.subscriptions.push(
-      this.editorService.getLootId().subscribe((data) => {
-        // always re-check the lootId
-        this._lootId = data[0].lootId;
+      this.editorService.getLootId().subscribe(
+        (data) => {
+          // always re-check the lootId
+          this._lootId = data[0].lootId;
 
-        if (this._lootId !== 0) {
-          // the lootId is correctly set
+          if (this._lootId !== 0) {
+            // the lootId is correctly set
 
-          if (this.editorService.loadedEntityId !== `${this._lootId}`) {
-            // the rows haven't been loaded or the lootId has changed
-            this.editorService.reload(this._lootId);
+            if (this.editorService.loadedEntityId !== `${this._lootId}`) {
+              // the rows haven't been loaded or the lootId has changed
+              this.editorService.reload(this._lootId);
+            }
           }
-        }
-      }, (error: MysqlError) => {
-        console.error(error);
-      })
+        },
+        (error: MysqlError) => {
+          console.error(error);
+        },
+      ),
     );
   }
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: LootEditorIdService<T>,
-    protected handlerService: HandlerService<T>,
-  ) {
+  constructor(public editorService: LootEditorIdService<T>, protected handlerService: HandlerService<T>) {
     super(editorService, handlerService);
   }
 

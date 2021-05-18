@@ -7,12 +7,13 @@ describe('SingleValueSelectorBtnComponent', () => {
   let component: SingleValueSelectorBtnComponent;
   let fixture: ComponentFixture<SingleValueSelectorBtnComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ SingleValueSelectorModule ],
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [SingleValueSelectorModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SingleValueSelectorBtnComponent);

@@ -29,10 +29,9 @@ import { CREATURE_AI_NAME } from '@keira-constants/options/creature-ai-name';
 @Component({
   selector: 'keira-creature-template',
   templateUrl: './creature-template.component.html',
-  styleUrls: ['./creature-template.component.scss']
+  styleUrls: ['./creature-template.component.scss'],
 })
 export class CreatureTemplateComponent extends SingleRowEditorComponent<CreatureTemplate> {
-
   public readonly UNIT_FLAGS = UNIT_FLAGS;
   public readonly UNIT_FLAGS_2 = UNIT_FLAGS_2;
   public readonly INHABIT_TYPE = INHABIT_TYPE;
@@ -55,27 +54,28 @@ export class CreatureTemplateComponent extends SingleRowEditorComponent<Creature
   public readonly DAMAGE_TYPE = DAMAGE_TYPE;
   public readonly CREATURE_AI_NAME = CREATURE_AI_NAME;
 
-  public readonly VEHICLE_ID_TOOLTIP = 'Entry of vehicle if creature is/has a vehicle entry. ' +
+  public readonly VEHICLE_ID_TOOLTIP =
+    'Entry of vehicle if creature is/has a vehicle entry. ' +
     'This field determines how the player appears on the vehicle, how the vehicle moves, ' +
     'and whether or not the vehicle action bar is shown. For example, a vehicleID of 292 will make the player invisible, ' +
     'prevent the vehicle from strafing left/right (but will allow forwards/backwards), and will show the vehicle action bar spells ' +
     '(which are defined in spell1-8). An npc_spellclick_spells entry must be made for this creature entry in order for this to work.';
 
-  public readonly MODEL_ID_TOOLTIP = 'A random graphical model that the client applies on this creature. ' +
+  public readonly MODEL_ID_TOOLTIP =
+    'A random graphical model that the client applies on this creature. ' +
     'If you specify only one modelid and the rest will be equal to 0, model you have set won’t be chosen randomly. ' +
     'From creature_model_info.modelid';
 
-  public readonly TRAINER_SPELL_TOOLTIP = 'If the NPC is a trainer that teaches professions (trainer_type = 2), ' +
+  public readonly TRAINER_SPELL_TOOLTIP =
+    'If the NPC is a trainer that teaches professions (trainer_type = 2), ' +
     'then the player must already know the spell ID specified here to be able to talk to this NPC.';
 
-  public readonly SPELLS_TOOLTIP = 'Spell ID that can be used for Mind Control of this creature. ' +
+  public readonly SPELLS_TOOLTIP =
+    'Spell ID that can be used for Mind Control of this creature. ' +
     'For vehicle creatures: the spell on action bar with position X.';
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: CreatureTemplateService,
-    public handlerService: CreatureHandlerService,
-  ) {
+  constructor(public editorService: CreatureTemplateService, public handlerService: CreatureHandlerService) {
     super(editorService, handlerService);
   }
 }

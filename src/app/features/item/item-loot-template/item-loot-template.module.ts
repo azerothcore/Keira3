@@ -7,19 +7,9 @@ import { ItemLootTemplateService } from './item-loot-template.service';
 import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.module';
 
 @NgModule({
-  declarations: [
-    ItemLootTemplateComponent,
-  ],
-  imports: [
-    CommonModule,
-    TopBarModule,
-    LootEditorModule,
-  ],
-  exports: [
-    ItemLootTemplateComponent,
-  ],
-  providers: [
-    ItemLootTemplateService,
-  ],
+  declarations: [ItemLootTemplateComponent],
+  imports: [CommonModule, TopBarModule, LootEditorModule],
+  exports: [ItemLootTemplateComponent],
+  providers: [ItemLootTemplateService],
 })
 export class ItemLootTemplateModule {}

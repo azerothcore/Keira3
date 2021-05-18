@@ -8,15 +8,11 @@ import { NpcVendor } from '@keira-types/npc-vendor.type';
 @Component({
   selector: 'keira-npc-vendor',
   templateUrl: './npc-vendor.component.html',
-  styleUrls: ['./npc-vendor.component.scss']
+  styleUrls: ['./npc-vendor.component.scss'],
 })
 export class NpcVendorComponent extends MultiRowEditorComponent<NpcVendor> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: NpcVendorService,
-    public handlerService: CreatureHandlerService,
-  ) {
+  constructor(public editorService: NpcVendorService, public handlerService: CreatureHandlerService) {
     super(editorService, handlerService);
   }
 }

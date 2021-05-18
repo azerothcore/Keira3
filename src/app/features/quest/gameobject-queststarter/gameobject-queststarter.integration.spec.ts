@@ -10,8 +10,10 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { QuestModule } from '../quest.module';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 
-class GameobjectQueststarterPage extends MultiRowEditorPageObject<GameobjectQueststarterComponent>  {
-  get questPreviewGoStart() { return this.query(`${this.PREVIEW_CONTAINER_SELECTOR} #go-start`); }
+class GameobjectQueststarterPage extends MultiRowEditorPageObject<GameobjectQueststarterComponent> {
+  get questPreviewGoStart() {
+    return this.query(`${this.PREVIEW_CONTAINER_SELECTOR} #go-start`);
+  }
 }
 
 describe('GameobjectQueststarter integration tests', () => {
@@ -25,15 +27,13 @@ describe('GameobjectQueststarter integration tests', () => {
   originalRow1.id = 1;
   originalRow2.id = 2;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        QuestModule,
-      ],
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [RouterTestingModule, QuestModule],
+      }).compileComponents();
+    }),
+  );
 
   function setup(creatingNew: boolean) {
     const handlerService = TestBed.inject(QuestHandlerService);
@@ -44,9 +44,7 @@ describe('GameobjectQueststarter integration tests', () => {
     const querySpy = spyOn(queryService, 'query').and.returnValue(of());
     spyOn(queryService, 'queryValue').and.returnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(
-      creatingNew ? [] : [originalRow0, originalRow1, originalRow2]
-    ));
+    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
     // by default the other editor services should not be initialised, because the selectAll would return the wrong types for them
     const initializeServicesSpy = spyOn(TestBed.inject(QuestPreviewService), 'initializeServices');
     if (creatingNew) {
@@ -64,7 +62,6 @@ describe('GameobjectQueststarter integration tests', () => {
   }
 
   describe('Creating new', () => {
-
     it('should correctly initialise', () => {
       const { page } = setup(true);
       page.expectDiffQueryToBeEmpty();
@@ -89,7 +86,8 @@ describe('GameobjectQueststarter integration tests', () => {
 
     it('adding new rows and executing the query should correctly work', () => {
       const { page, querySpy } = setup(true);
-      const expectedQuery = 'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (0, 1, 2));\n' +
+      const expectedQuery =
+        'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (0, 1, 2));\n' +
         'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
         '(0, 1234),\n' +
         '(1, 1234),\n' +
@@ -115,25 +113,25 @@ describe('GameobjectQueststarter integration tests', () => {
       page.addNewRow();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (0));\n' +
-        'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
-        '(0, 1234);'
+          'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
+          '(0, 1234);',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234);\n' +
-        'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
-        '(0, 1234);'
+          'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
+          '(0, 1234);',
       );
 
       page.setInputValueById('id', '1');
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1));\n' +
-        'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
-        '(1, 1234);\n'
+          'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
+          '(1, 1234);\n',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234);\n' +
-        'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
-        '(1, 1234);'
+          'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
+          '(1, 1234);',
       );
       page.removeElement();
     });
@@ -152,17 +150,18 @@ describe('GameobjectQueststarter integration tests', () => {
   });
 
   describe('Editing existing', () => {
-
     it('should correctly initialise', () => {
       const { page } = setup(false);
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
-      page.expectFullQueryToContain('DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234);\n' +
-        'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
-        '(0, 1234),\n' +
-        '(1, 1234),\n' +
-        '(2, 1234);\n');
+      page.expectFullQueryToContain(
+        'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234);\n' +
+          'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
+          '(0, 1234),\n' +
+          '(1, 1234),\n' +
+          '(2, 1234);\n',
+      );
       expect(page.getEditorTableRowsCount()).toBe(3);
       page.removeElement();
     });
@@ -171,32 +170,28 @@ describe('GameobjectQueststarter integration tests', () => {
       const { page } = setup(false);
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1));'
-      );
+      page.expectDiffQueryToContain('DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1));');
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234);\n' +
-        'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
-        '(0, 1234),\n' +
-        '(2, 1234);'
+          'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
+          '(0, 1234),\n' +
+          '(2, 1234);',
       );
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
       page.expectDiffQueryToContain(
-        'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1, 2));'
+        'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1, 2));',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234);\n' +
-        'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
-        '(0, 1234);'
+          'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
+          '(0, 1234);',
       );
 
       page.deleteRow(0);
       expect(page.getEditorTableRowsCount()).toBe(0);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `gameobject_queststarter` WHERE `quest` = 1234;'
-      );
+      page.expectDiffQueryToContain('DELETE FROM `gameobject_queststarter` WHERE `quest` = 1234;');
       page.expectFullQueryToBeEmpty();
       page.removeElement();
     });
@@ -208,15 +203,15 @@ describe('GameobjectQueststarter integration tests', () => {
 
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1, 111));\n' +
-        'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
-        '(111, 1234);\n'
+          'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
+          '(111, 1234);\n',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234);\n' +
-        'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
-        '(0, 1234),\n' +
-        '(111, 1234),\n' +
-        '(2, 1234);\n'
+          'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
+          '(0, 1234),\n' +
+          '(111, 1234),\n' +
+          '(2, 1234);\n',
       );
       page.removeElement();
     });
@@ -235,16 +230,16 @@ describe('GameobjectQueststarter integration tests', () => {
 
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1, 2, 10, 3));\n' +
-        'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
-        '(10, 1234),\n' +
-        '(3, 1234);\n'
+          'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
+          '(10, 1234),\n' +
+          '(3, 1234);\n',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234);\n' +
-        'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
-        '(0, 1234),\n' +
-        '(10, 1234),\n' +
-        '(3, 1234);\n'
+          'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
+          '(0, 1234),\n' +
+          '(10, 1234),\n' +
+          '(3, 1234);\n',
       );
       page.removeElement();
     });
@@ -259,4 +254,3 @@ describe('GameobjectQueststarter integration tests', () => {
     });
   });
 });
-

@@ -13,9 +13,7 @@ import { CreatureOnkillReputationService } from './creature-onkill-reputation.se
 import { FactionSelectorModule } from '@keira-shared/modules/selectors/faction-selector/faction-selector.module';
 
 @NgModule({
-  declarations: [
-    CreatureOnkillReputationComponent,
-  ],
+  declarations: [CreatureOnkillReputationComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -26,11 +24,7 @@ import { FactionSelectorModule } from '@keira-shared/modules/selectors/faction-s
     SingleValueSelectorModule,
     FactionSelectorModule,
   ],
-  exports: [
-    CreatureOnkillReputationComponent,
-  ],
-  providers: [
-    CreatureOnkillReputationService,
-  ],
+  exports: [CreatureOnkillReputationComponent],
+  providers: [CreatureOnkillReputationService],
 })
 export class CreatureOnkillReputationModule {}

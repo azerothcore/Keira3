@@ -9,17 +9,16 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
   public readonly PREVIEW_CONTAINER_SELECTOR = '.preview-container';
   protected readonly queryPo: QueryOutputComponentPage;
 
-  get queryTypeSwitchWrapper() { return this.query<HTMLDivElement>('.query-type-switch'); }
+  get queryTypeSwitchWrapper() {
+    return this.query<HTMLDivElement>('.query-type-switch');
+  }
 
-  constructor(
-    protected fixture: ComponentFixture<T>,
-    config: { clearStorage: boolean } = { clearStorage: true },
-  ) {
+  constructor(protected fixture: ComponentFixture<T>, config: { clearStorage: boolean } = { clearStorage: true }) {
     super(fixture, config);
     this.queryPo = new QueryOutputComponentPage(fixture as ComponentFixture<any>);
   }
 
-  changeAllFields<E extends TableRow>(entity: E, excludedFields: string[] = [] ) {
+  changeAllFields<E extends TableRow>(entity: E, excludedFields: string[] = []) {
     let i = 0;
     for (const field of Object.getOwnPropertyNames(entity)) {
       if (!excludedFields.includes(field)) {
@@ -57,7 +56,7 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
 
   getCellOfTableExternal(tableSelector: string, rowIndex: number, colIndex: number): HTMLTableDataCellElement {
     const element = document.querySelector<HTMLTableDataCellElement>(
-      `${tableSelector} tr:nth-child(${rowIndex + 1}) td:nth-child(${colIndex + 1})`
+      `${tableSelector} tr:nth-child(${rowIndex + 1}) td:nth-child(${colIndex + 1})`,
     );
     expect(element).toBeTruthy(`Unable to find column ${colIndex} of row ${rowIndex} of ${tableSelector}`);
     return element;
@@ -89,8 +88,7 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
   }
 
   expectModalHidden() {
-    expect(this.queryOutsideComponent('.modal-content', false))
-      .toBeFalsy('Expected modal to be hidden');
+    expect(this.queryOutsideComponent('.modal-content', false)).toBeFalsy('Expected modal to be hidden');
   }
 
   clickSearchBtn() {

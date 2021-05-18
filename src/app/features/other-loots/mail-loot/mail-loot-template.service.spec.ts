@@ -9,17 +9,17 @@ import { MailLootTemplateService } from './mail-loot-template.service';
 import { MailLootHandlerService } from './mail-loot-handler.service';
 
 describe('MailLootTemplateService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      { provide: ToastrService, useValue: instance(MockedToastrService) },
-      MailLootHandlerService,
-      MailLootTemplateService,
-    ]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+        MailLootHandlerService,
+        MailLootTemplateService,
+      ],
+    }),
+  );
 
   it('should be created', () => {
     expect(TestBed.inject(MailLootTemplateService)).toBeTruthy();

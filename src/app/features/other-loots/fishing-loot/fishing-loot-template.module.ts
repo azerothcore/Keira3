@@ -14,10 +14,7 @@ import { SelectFishingLootComponent } from './select-fishing-loot.component';
 import { CreateModule } from '@keira-shared/modules/create/create.module';
 import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 
-const components = [
-  FishingLootTemplateComponent,
-  SelectFishingLootComponent,
-];
+const components = [FishingLootTemplateComponent, SelectFishingLootComponent];
 
 @NgModule({
   declarations: components,
@@ -32,10 +29,6 @@ const components = [
     HighlightModule,
     NgxDatatableModule,
   ],
-  providers: [
-    FishingLootTemplateService,
-    SelectFishingLootService,
-    FishingLootHandlerService,
-  ],
+  providers: [FishingLootTemplateService, SelectFishingLootService, FishingLootHandlerService],
 })
 export class FishingLootTemplateModule {}

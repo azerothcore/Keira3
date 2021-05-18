@@ -25,39 +25,42 @@ import { MailLootHandlerService } from '../../../features/other-loots/mail-loot/
 import { SpellHandlerService } from '../../../features/spell/spell-handler.service';
 
 class SidebarComponentPage extends PageObject<SidebarComponent> {
-  get toggleSidebarBtn() { return this.query<HTMLButtonElement>('.sidebar-button'); }
-  get collapseAll() { return this.query<HTMLAnchorElement>('#collapse-all'); }
-  get creatureEditorToggle() { return this.query<HTMLAnchorElement>('#creature-editor-toggle'); }
+  get toggleSidebarBtn() {
+    return this.query<HTMLButtonElement>('.sidebar-button');
+  }
+  get collapseAll() {
+    return this.query<HTMLAnchorElement>('#collapse-all');
+  }
+  get creatureEditorToggle() {
+    return this.query<HTMLAnchorElement>('#creature-editor-toggle');
+  }
 }
 
 describe('SidebarComponent', () => {
-
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        SidebarModule,
-        RouterTestingModule,
-      ],
-      providers: [
-        { provide : ElectronService, useValue: instance(MockedElectronService) },
-        { provide : MysqlService, useValue: instance(MockedMysqlService) },
-        CreatureHandlerService,
-        SaiCreatureHandlerService,
-        QuestHandlerService,
-        ItemHandlerService,
-        GameobjectHandlerService,
-        SaiGameobjectHandlerService,
-        GossipHandlerService,
-        ConditionsHandlerService,
-        ReferenceLootHandlerService,
-        SpellLootHandlerService,
-        FishingLootHandlerService,
-        MailLootHandlerService,
-        SpellHandlerService,
-      ]
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [SidebarModule, RouterTestingModule],
+        providers: [
+          { provide: ElectronService, useValue: instance(MockedElectronService) },
+          { provide: MysqlService, useValue: instance(MockedMysqlService) },
+          CreatureHandlerService,
+          SaiCreatureHandlerService,
+          QuestHandlerService,
+          ItemHandlerService,
+          GameobjectHandlerService,
+          SaiGameobjectHandlerService,
+          GossipHandlerService,
+          ConditionsHandlerService,
+          ReferenceLootHandlerService,
+          SpellLootHandlerService,
+          FishingLootHandlerService,
+          MailLootHandlerService,
+          SpellHandlerService,
+        ],
+      }).compileComponents();
+    }),
+  );
 
   const setup = () => {
     const sidebarService = TestBed.inject(SidebarService);

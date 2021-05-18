@@ -20,7 +20,7 @@ export const CLASSES_TEXT = [
   'Mage',
   'Warlock',
   null,
-  'Druid'
+  'Druid',
 ];
 
 // ChrRaces.dbc

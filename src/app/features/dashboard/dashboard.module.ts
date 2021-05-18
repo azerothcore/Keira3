@@ -6,16 +6,8 @@ import { ClipboardModule } from 'ngx-clipboard';
 import { DashboardComponent } from './dashboard.component';
 
 @NgModule({
-  declarations: [
-    DashboardComponent,
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    ClipboardModule,
-  ],
-  exports: [
-    DashboardComponent,
-  ],
+  declarations: [DashboardComponent],
+  imports: [BrowserModule, FormsModule, ClipboardModule],
+  exports: [DashboardComponent],
 })
 export class DashboardModule {}

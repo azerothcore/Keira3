@@ -8,20 +8,9 @@ import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.
 import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
 
 @NgModule({
-  declarations: [
-    DisenchantLootTemplateComponent,
-  ],
-  imports: [
-    CommonModule,
-    TooltipModule.forRoot(),
-    LootEditorModule,
-    TopBarModule,
-  ],
-  exports: [
-    DisenchantLootTemplateComponent,
-  ],
-  providers: [
-    DisenchantLootTemplateService,
-  ],
+  declarations: [DisenchantLootTemplateComponent],
+  imports: [CommonModule, TooltipModule.forRoot(), LootEditorModule, TopBarModule],
+  exports: [DisenchantLootTemplateComponent],
+  providers: [DisenchantLootTemplateService],
 })
 export class DisenchantLootTemplateModule {}

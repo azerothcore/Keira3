@@ -1,11 +1,11 @@
-import { Component, } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { SelectComponent } from '@keira-abstract/components/editors/select.component';
 import {
   GOSSIP_MENU_CUSTOM_STARTING_ID,
   GOSSIP_MENU_ID,
   GOSSIP_MENU_TABLE,
-  GossipMenu
+  GossipMenu,
 } from '@keira-types/gossip-menu.type';
 import { SelectGossipService } from './select-gossip.service';
 import { GossipHandlerService } from '../gossip-handler.service';
@@ -14,7 +14,7 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 @Component({
   selector: 'keira-select-gossip',
   templateUrl: './select-gossip.component.html',
-  styleUrls: ['./select-gossip.component.scss']
+  styleUrls: ['./select-gossip.component.scss'],
 })
 export class SelectGossipComponent extends SelectComponent<GossipMenu> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

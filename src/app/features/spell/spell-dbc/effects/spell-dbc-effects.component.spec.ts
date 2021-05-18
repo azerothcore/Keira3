@@ -11,16 +11,23 @@ import { SpellHandlerService } from '../../spell-handler.service';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
 
 describe('SpellDbcEffectsComponent', () => {
-
   class SpellDbcEffectsComponentPage extends PageObject<TestHostComponent> {
-    getTargets(): HTMLInputElement { return this.query('#Targets'); }
-    getProcTypeMask(): HTMLInputElement { return this.query('#ProcTypeMask'); }
-    getProcChance(): HTMLInputElement { return this.query('#ProcChance'); }
-    getProcCharges(): HTMLInputElement { return this.query('#ProcCharges'); }
+    getTargets(): HTMLInputElement {
+      return this.query('#Targets');
+    }
+    getProcTypeMask(): HTMLInputElement {
+      return this.query('#ProcTypeMask');
+    }
+    getProcChance(): HTMLInputElement {
+      return this.query('#ProcChance');
+    }
+    getProcCharges(): HTMLInputElement {
+      return this.query('#ProcCharges');
+    }
   }
 
   @Component({
-    template: '<keira-spell-dbc-effects [formGroup]="form"></keira-spell-dbc-effects>'
+    template: '<keira-spell-dbc-effects [formGroup]="form"></keira-spell-dbc-effects>',
   })
   class TestHostComponent {
     @ViewChild(SpellDbcEffectsComponent) child: SpellDbcEffectsComponent;
@@ -29,14 +36,10 @@ describe('SpellDbcEffectsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TestHostComponent, SpellDbcEffectsComponent ],
-      imports: [
-        SpellDbcModule,
-        RouterTestingModule,
-      ],
-      providers: [ SpellHandlerService ],
-    })
-      .compileComponents();
+      declarations: [TestHostComponent, SpellDbcEffectsComponent],
+      imports: [SpellDbcModule, RouterTestingModule],
+      providers: [SpellHandlerService],
+    }).compileComponents();
   });
 
   const setup = () => {

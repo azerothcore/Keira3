@@ -7,12 +7,13 @@ describe('ItemLimitCategorySelectorBtnComponent', () => {
   let component: ItemLimitCategorySelectorBtnComponent;
   let fixture: ComponentFixture<ItemLimitCategorySelectorBtnComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ ItemLimitCategorySelectorModule ],
-    })
-    .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ItemLimitCategorySelectorModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ItemLimitCategorySelectorBtnComponent);

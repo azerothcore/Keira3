@@ -1,4 +1,4 @@
-import { Component, } from '@angular/core';
+import { Component } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { GameobjectSearchService } from '../../search/gameobject-search.service';
@@ -8,15 +8,11 @@ import { SearchSelectorModalComponent } from '../base-selector/search-selector-m
 @Component({
   selector: 'keira-gameobject-selector-modal',
   templateUrl: './gameobject-selector-modal.component.html',
-  styleUrls: ['./gameobject-selector-modal.component.scss']
+  styleUrls: ['./gameobject-selector-modal.component.scss'],
 })
 export class GameobjectSelectorModalComponent extends SearchSelectorModalComponent {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected bsModalRef: BsModalRef,
-    public searchService: GameobjectSearchService,
-  ) {
+  constructor(protected bsModalRef: BsModalRef, public searchService: GameobjectSearchService) {
     super(GAMEOBJECT_TEMPLATE_ID, bsModalRef);
   }
 }

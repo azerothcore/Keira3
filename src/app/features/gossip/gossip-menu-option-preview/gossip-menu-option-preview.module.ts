@@ -6,16 +6,8 @@ import { QueryOutputModule } from '@keira-shared/modules/query-output/query-outp
 import { GossipMenuOptionPreviewComponent } from './gossip-menu-option-preview.component';
 
 @NgModule({
-  declarations: [
-    GossipMenuOptionPreviewComponent,
-  ],
-  imports: [
-    BrowserModule,
-    QueryOutputModule,
-    PerfectScrollbarModule,
-  ],
-  exports: [
-    GossipMenuOptionPreviewComponent,
-  ],
+  declarations: [GossipMenuOptionPreviewComponent],
+  imports: [BrowserModule, QueryOutputModule, PerfectScrollbarModule],
+  exports: [GossipMenuOptionPreviewComponent],
 })
 export class GossipMenuOptionPreviewModule {}

@@ -9,23 +9,27 @@ import { ToastrService } from 'ngx-toastr';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { SingleRowComplexKeyEditorService } from './single-row-complex-key-editor.service';
-import { MockSingleRowComplexKeyEditorService, MockEntity, MockHandlerService, MOCK_NAME } from '@keira-testing/mock-services';
+import {
+  MockSingleRowComplexKeyEditorService,
+  MockEntity,
+  MockHandlerService,
+  MOCK_NAME,
+} from '@keira-testing/mock-services';
 
 import { getPartial } from '../../../utils/helpers';
-
 
 describe('SingleRowComplexKeyEditorService', () => {
   let service: SingleRowComplexKeyEditorService<MockEntity>;
 
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      { provide: ToastrService, useValue: instance(MockedToastrService) },
-    ],
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+      ],
+    }),
+  );
 
   beforeEach(() => {
     service = TestBed.inject(MockSingleRowComplexKeyEditorService);
@@ -33,7 +37,6 @@ describe('SingleRowComplexKeyEditorService', () => {
   });
 
   describe('check methods of class', () => {
-
     it('get entityIdFields() correctly', () => {
       expect(service.entityIdFields).toEqual(JSON.parse(service['_entityIdField']));
     });
@@ -60,13 +63,16 @@ describe('SingleRowComplexKeyEditorService', () => {
         service['_entityTable'],
         service['_originalValue'],
         service['_form'].getRawValue(),
-        service['entityIdFields']
+        service['entityIdFields'],
       );
       expect(service['updateEditorStatus']).toHaveBeenCalledTimes(1);
     });
 
     it('updateFullQuery()', () => {
-      const getFullDeleteInsertMultipleKeysQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertMultipleKeysQuery');
+      const getFullDeleteInsertMultipleKeysQuerySpy = spyOn(
+        TestBed.inject(MysqlQueryService),
+        'getFullDeleteInsertMultipleKeysQuery',
+      );
 
       service['updateFullQuery']();
 
@@ -74,10 +80,13 @@ describe('SingleRowComplexKeyEditorService', () => {
     });
 
     it('updateFullQuery() when isNew is true', () => {
-      const getFullDeleteInsertMultipleKeysQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertMultipleKeysQuery');
+      const getFullDeleteInsertMultipleKeysQuerySpy = spyOn(
+        TestBed.inject(MysqlQueryService),
+        'getFullDeleteInsertMultipleKeysQuery',
+      );
       const handlerService = TestBed.inject(MockHandlerService);
       // @ts-ignore
-      handlerService._selected = JSON.stringify({ 'id': 1, 'guid': 2 });
+      handlerService._selected = JSON.stringify({ id: 1, guid: 2 });
       service['_entityIdFields'] = ['id', 'guid'];
 
       service['onCreatingNewEntity']();
@@ -129,7 +138,7 @@ describe('SingleRowComplexKeyEditorService', () => {
       const handlerService = TestBed.inject(MockHandlerService);
       spyOnProperty(service, 'entityIdFields', 'get').and.returnValue(['id', 'guid', 'test']);
       // @ts-ignore
-      handlerService._selected = JSON.stringify({ 'id': 1, 'guid': 2 });
+      handlerService._selected = JSON.stringify({ id: 1, guid: 2 });
 
       service['onCreatingNewEntity']();
 
@@ -148,7 +157,7 @@ describe('SingleRowComplexKeyEditorService', () => {
       service['setLoadedEntity']();
 
       expect(service['_loadedEntityId']).toEqual(
-        JSON.stringify(getPartial(service['_originalValue'], service['_entityIdFields']))
+        JSON.stringify(getPartial(service['_originalValue'], service['_entityIdFields'])),
       );
       expect(selectSpy).toHaveBeenCalled();
     });
@@ -175,7 +184,5 @@ describe('SingleRowComplexKeyEditorService', () => {
 
       expect(onCreatingNewEntitySpy).toHaveBeenCalled();
     });
-
   });
-
 });

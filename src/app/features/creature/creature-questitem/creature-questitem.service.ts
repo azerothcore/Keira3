@@ -13,7 +13,6 @@ import {
 
 @Injectable()
 export class CreatureQuestitemService extends MultiRowEditorService<CreatureQuestitem> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: CreatureHandlerService,

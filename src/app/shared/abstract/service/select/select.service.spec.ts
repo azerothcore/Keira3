@@ -9,18 +9,17 @@ import { CreatureHandlerService } from '../../../../features/creature/creature-h
 import { SaiCreatureHandlerService } from '../../../../features/creature/sai-creature-handler.service';
 
 describe('SelectService', () => {
-
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      SelectCreatureService,
-      CreatureHandlerService,
-      SaiCreatureHandlerService,
-    ],
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        SelectCreatureService,
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+      ],
+    }),
+  );
 
   it('onSelect() should correctly work', () => {
     const service = TestBed.inject(SelectCreatureService);
@@ -44,10 +43,6 @@ describe('SelectService', () => {
 
     service.onSelect({ selected });
 
-    expect(spy).toHaveBeenCalledWith(
-      false,
-      `${selected[0][service['entityIdField']]}`,
-      service['entityTable'],
-    );
+    expect(spy).toHaveBeenCalledWith(false, `${selected[0][service['entityIdField']]}`, service['entityTable']);
   });
 });

@@ -8,12 +8,8 @@ import { LOOT_TEMPLATE_ID } from '@keira-types/loot-template.type';
 
 @Injectable()
 export class SelectFishingLootService extends SelectService<FishingLootTemplate> {
-
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public readonly queryService: MysqlQueryService,
-    public handlerService: FishingLootHandlerService,
-  ) {
+  constructor(public readonly queryService: MysqlQueryService, public handlerService: FishingLootHandlerService) {
     super(
       queryService,
       handlerService,

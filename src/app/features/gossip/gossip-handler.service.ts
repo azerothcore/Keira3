@@ -7,9 +7,12 @@ import { GOSSIP_MENU_OPTION_TABLE } from '@keira-types/gossip-menu-option.type';
 
 @Injectable()
 export class GossipHandlerService extends HandlerService<GossipMenu> {
-
-  get isGossipMenuTableUnsaved(): boolean { return this.statusMap[GOSSIP_MENU_TABLE]; }
-  get isGossipMenuOptionTableUnsaved(): boolean { return this.statusMap[GOSSIP_MENU_OPTION_TABLE]; }
+  get isGossipMenuTableUnsaved(): boolean {
+    return this.statusMap[GOSSIP_MENU_TABLE];
+  }
+  get isGossipMenuOptionTableUnsaved(): boolean {
+    return this.statusMap[GOSSIP_MENU_OPTION_TABLE];
+  }
 
   protected _statusMap = {
     [GOSSIP_MENU_TABLE]: false,
@@ -17,12 +20,7 @@ export class GossipHandlerService extends HandlerService<GossipMenu> {
   };
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected router: Router,
-  ) {
-    super(
-      'gossip/gossip-menu',
-      router,
-    );
+  constructor(protected router: Router) {
+    super('gossip/gossip-menu', router);
   }
 }

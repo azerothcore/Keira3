@@ -12,9 +12,7 @@ import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selec
 import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
 
 @NgModule({
-  declarations: [
-    ConditionsComponent
-  ],
+  declarations: [ConditionsComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -24,11 +22,7 @@ import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/singl
     FlagsSelectorModule,
     SingleValueSelectorModule,
   ],
-  exports: [
-    ConditionsComponent,
-  ],
-  providers: [
-    ConditionsService,
-  ],
+  exports: [ConditionsComponent],
+  providers: [ConditionsService],
 })
 export class ConditionsEditorModule {}

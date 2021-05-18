@@ -9,17 +9,17 @@ import { ConditionsService } from './conditions.service';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 
 describe('ConditionsService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      { provide: ToastrService, useValue: instance(MockedToastrService) },
-      ConditionsHandlerService,
-      ConditionsService,
-    ],
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+        ConditionsHandlerService,
+        ConditionsService,
+      ],
+    }),
+  );
 
   it('should be created', () => {
     const service: ConditionsService = TestBed.inject(ConditionsService);

@@ -15,7 +15,7 @@ import { ReferenceLootHandlerService } from '../../../features/other-loots/refer
 import { SpellLootHandlerService } from '../../../features/other-loots/spell-loot/spell-loot-handler.service';
 import { FishingLootHandlerService } from '../../../features/other-loots/fishing-loot/fishing-loot-handler.service';
 import { MailLootHandlerService } from '../../../features/other-loots/mail-loot/mail-loot-handler.service';
-import {SpellHandlerService} from '../../../features/spell/spell-handler.service';
+import { SpellHandlerService } from '../../../features/spell/spell-handler.service';
 
 const animationTime = 200;
 
@@ -27,13 +27,12 @@ const animationTime = 200;
     trigger('slide', [
       state('up', style({ height: 0 })),
       state('down', style({ height: '*' })),
-      transition('up <=> down', animate(animationTime))
-    ])
-  ]
+      transition('up <=> down', animate(animationTime)),
+    ]),
+  ],
 })
 export class SidebarComponent {
-
-  menuStates: { [key: string]: 'down'|'up' } = {
+  menuStates: { [key: string]: 'down' | 'up' } = {
     creature: 'up',
     quest: 'up',
     gameobject: 'up',
@@ -64,7 +63,7 @@ export class SidebarComponent {
     public mailLootHandlerService: MailLootHandlerService,
     public spellHandlerService: SpellHandlerService,
     private locationService: LocationService,
-  ) { }
+  ) {}
 
   getSideBarState() {
     return this.sidebarService.getSidebarState();

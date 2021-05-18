@@ -8,20 +8,9 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.module';
 
 @NgModule({
-  declarations: [
-    GameobjectLootTemplateComponent,
-  ],
-  imports: [
-    CommonModule,
-    TopBarModule,
-    LootEditorModule,
-  ],
-  exports: [
-    GameobjectLootTemplateComponent,
-  ],
-  providers: [
-    GameobjectLootTemplateService,
-    GameobjectHandlerService,
-  ],
+  declarations: [GameobjectLootTemplateComponent],
+  imports: [CommonModule, TopBarModule, LootEditorModule],
+  exports: [GameobjectLootTemplateComponent],
+  providers: [GameobjectLootTemplateService, GameobjectHandlerService],
 })
 export class GameobjectLootTemplateModule {}
