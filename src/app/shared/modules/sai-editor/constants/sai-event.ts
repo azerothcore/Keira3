@@ -530,7 +530,7 @@ SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.ACTION_DONE] = 'ActionId';
 
 // SMART_EVENT_ON_SPELLCLICK
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.ON_SPELLCLICK] =
-  // tslint:disable-next-line:max-line-length
+  // eslint-disable-next-line max-len
   "On unit spellclick. For more information on what spellclicks are, take a look at the wiki and search for the table 'npc_spellclick_spells' (world database).";
 
 // SMART_EVENT_FRIENDLY_HEALTH_PCT
