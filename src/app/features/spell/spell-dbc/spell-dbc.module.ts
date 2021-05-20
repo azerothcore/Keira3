@@ -36,7 +36,7 @@ import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selec
     TabsModule.forRoot(),
     TooltipModule.forRoot(),
     ToastrModule.forRoot(toastrConfig),
-	FlagsSelectorModule,
+    FlagsSelectorModule,
   ],
 })
 export class SpellDbcModule {}
