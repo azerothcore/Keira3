@@ -1,6 +1,10 @@
-
-on: push
 name: build-windows
+on:
+  push:
+    branches:
+      - 'master'
+  pull_request:
+
 jobs:
   build:
     strategy:
