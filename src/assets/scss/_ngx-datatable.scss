@@ -41,10 +41,6 @@
       &:hover {
         background-color: #eee;
       }
-      // &.active {
-        //background-color: blue;
-        //font-weight: 600;
-      // }
 
       .datatable-body-cell {
         text-align: left;
@@ -179,7 +175,7 @@
   width: 20px;
   height: 20px;
   border-radius: 100%;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, .3);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
   margin-top: 0;
 }
 
@@ -195,17 +191,17 @@
   margin-top: 0;
 }
 
-.ngx-datatable input[type=checkbox]:active,
-.ngx-datatable input[type=checkbox]:checked,
-.ngx-datatable input[type=checkbox]:focus,
-input[type=checkbox]:active,
-input[type=checkbox]:checked,
-input[type=checkbox]:focus {
+.ngx-datatable input[type='checkbox']:active,
+.ngx-datatable input[type='checkbox']:checked,
+.ngx-datatable input[type='checkbox']:focus,
+input[type='checkbox']:active,
+input[type='checkbox']:checked,
+input[type='checkbox']:focus {
   border-color: #ddd !important;
-  content: "1";
+  content: '1';
 }
 
-.ngx-datatable input[type=checkbox] {
+.ngx-datatable input[type='checkbox'] {
   -webkit-appearance: none;
   width: 20px;
   height: 20px;
@@ -214,8 +210,8 @@ input[type=checkbox]:focus {
   border: 2px solid #ddd;
 }
 
-.ngx-datatable input[type=radio],
-.radio input[type=radio] {
+.ngx-datatable input[type='radio'],
+.radio input[type='radio'] {
   -webkit-appearance: none;
   width: 20px;
   height: 20px;
@@ -227,7 +223,7 @@ input[type=checkbox]:focus {
 }
 
 .datatable-row-detail {
-  height: auto !important; // hackfix issue of "height: 0px;"
+  height: auto !important;
 }
 
 .sortable .sort-btn {
@@ -240,16 +236,16 @@ input[type=checkbox]:focus {
 }
 
 .sortable .sort-btn:after {
-  font-family: "data-table", sans-serif !important;
-  content: "c" !important;
+  font-family: 'data-table', sans-serif !important;
+  content: 'c' !important;
 }
 
 .sortable .sort-btn.datatable-icon-down:after {
-  content: "f" !important;
+  content: 'f' !important;
 }
 
 .sortable .sort-btn.datatable-icon-up:after {
-  content: "e" !important;
+  content: 'e' !important;
 }
 
 .ngx-datatable.bootstrap .datatable-header .datatable-header-cell:first-child {
@@ -276,7 +272,8 @@ input[type=checkbox]:focus {
 }
 
 .datatable-entity-select {
-  .datatable-checkbox input[type=checkbox], .datatable-checkbox input[type=radio] {
+  .datatable-checkbox input[type='checkbox'],
+  .datatable-checkbox input[type='radio'] {
     margin-top: 2px;
   }
 }

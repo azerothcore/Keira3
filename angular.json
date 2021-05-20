@@ -28,12 +28,8 @@
               "src/favicon.256x256.png",
               "src/favicon.512x512.png"
             ],
-            "styles": [
-              "src/assets/scss/main.scss"
-            ],
-            "scripts": [
-              "node_modules/squel/dist/squel.min.js"
-            ]
+            "styles": ["src/assets/scss/main.scss"],
+            "scripts": ["node_modules/squel/dist/squel.min.js"]
           },
           "configurations": {
             "dev": {
@@ -120,12 +116,8 @@
               "src/app/shared/testing/**/*",
               "src/app/shared/testing/test-helpers.ts"
             ],
-            "scripts": [
-              "node_modules/squel/dist/squel.min.js"
-            ],
-            "styles": [
-              "src/assets/scss/main.scss"
-            ],
+            "scripts": ["node_modules/squel/dist/squel.min.js"],
+            "styles": ["src/assets/scss/main.scss"],
             "assets": [
               "src/assets",
               "src/favicon.ico",
@@ -137,15 +129,9 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
           }
         }
       }
@@ -157,12 +143,8 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "e2e/tsconfig.e2e.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "tsConfig": ["e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**"]
           }
         }
       }

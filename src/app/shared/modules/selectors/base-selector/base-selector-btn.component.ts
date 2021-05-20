@@ -7,10 +7,8 @@ import { SubscriptionHandler } from '../../../utils/subscription-handler/subscri
 import { BaseModalConfig } from './base-selector.model';
 
 @Directive()
-// tslint:disable-next-line:directive-class-suffix
-export abstract class BaseSelectorBtnComponent<
-  ModalConfigType extends BaseModalConfig = BaseModalConfig,
-> extends SubscriptionHandler {
+// eslint-disable-next-line @angular-eslint/directive-class-suffix
+export abstract class BaseSelectorBtnComponent<ModalConfigType extends BaseModalConfig = BaseModalConfig> extends SubscriptionHandler {
   @Input() control: AbstractControl;
   @Input() config: ModalConfigType;
   @Input() modalClass = 'modal-xl';
