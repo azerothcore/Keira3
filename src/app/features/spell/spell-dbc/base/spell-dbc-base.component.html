@@ -3,7 +3,6 @@
   class="form-group edit-form"
 >
   <div class="row">
-
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="ID">ID</label>
       <i
@@ -12,7 +11,33 @@
       ></i>
       <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm">
     </div>
-
+    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 offset-lg-3 col-xl-2 offset-xl-6">
+      <label class="control-label" for="SchoolMask"><b>School</b></label>
+      <i
+        class="fas fa-info-circle ml-1" [placement]="'auto'"
+        [tooltip]="'School of a spell. Used for specific the Spell\'s element kind.'"
+      ></i>
+      <keira-flags-selector-btn
+        [control]="formGroup.controls.SchoolMask"
+        [config]="{ flags: SPELL_DBC_SCHOOL_OPTIONS, name: 'SchoolMask' }"
+      ></keira-flags-selector-btn>
+      <input [formControlName]="'SchoolMask'" id="SchoolMask" type="number" class="form-control form-control-sm">
+    </div>
+    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+      <label class="control-label" for="FacingCasterFlags"><b>FacingFront</b></label>
+      <i
+        class="fas fa-info-circle ml-1" [placement]="'auto'"
+        [tooltip]="'If marked, forces the Caster to use the ability in front of the enemy.'"
+      ></i>
+      <keira-flags-selector-btn
+        [control]="formGroup.controls.FacingCasterFlags"
+        [config]="{ flags: SPELL_DBC_FACING_FRONT_FLAG, name: 'FacingCasterFlags' }"
+      ></keira-flags-selector-btn>
+      <input [formControlName]="'FacingCasterFlags'" id="FacingCasterFlags" type="number" class="form-control form-control-sm">
+    </div>
+  </div>
+  <br>
+  <div class="row">
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="Category">Category</label>
       <i
@@ -48,6 +73,7 @@
       ></i>
       <input [formControlName]="'CastingTimeIndex'" id="CastingTimeIndex" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="DurationIndex">DurationIndex</label>
       <i
@@ -56,6 +82,7 @@
       ></i>
       <input [formControlName]="'DurationIndex'" id="DurationIndex" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="RangeIndex">RangeIndex</label>
       <i
@@ -64,6 +91,7 @@
       ></i>
       <input [formControlName]="'RangeIndex'" id="RangeIndex" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="CasterAuraState">CasterAuraState</label>
       <i
@@ -72,6 +100,7 @@
       ></i>
       <input [formControlName]="'CasterAuraState'" id="CasterAuraState" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="SpellLevel">SpellLevel</label>
       <i
@@ -80,6 +109,7 @@
       ></i>
       <input [formControlName]="'SpellLevel'" id="SpellLevel" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="BaseLevel">BaseLevel</label>
       <i
@@ -88,6 +118,7 @@
       ></i>
       <input [formControlName]="'BaseLevel'" id="BaseLevel" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="MaxLevel">MaxLevel</label>
       <i
@@ -96,6 +127,7 @@
       ></i>
       <input [formControlName]="'MaxLevel'" id="MaxLevel" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="MaxTargets">MaxTargets</label>
       <i
@@ -104,6 +136,7 @@
       ></i>
       <input [formControlName]="'MaxTargets'" id="MaxTargets" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="MaxTargetLevel">MaxTargetLevel</label>
       <i
@@ -112,6 +145,7 @@
       ></i>
       <input [formControlName]="'MaxTargetLevel'" id="MaxTargetLevel" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="RuneCostID">RuneCostID</label>
       <i
@@ -120,6 +154,7 @@
       ></i>
       <input [formControlName]="'RuneCostID'" id="RuneCostID" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="SpellVisualID_1">SpellVisualID_1</label>
       <i
@@ -128,6 +163,7 @@
       ></i>
       <input [formControlName]="'SpellVisualID_1'" id="SpellVisualID_1" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="SpellVisualID_2">SpellVisualID_2</label>
       <i
@@ -136,6 +172,7 @@
       ></i>
       <input [formControlName]="'SpellVisualID_2'" id="SpellVisualID_2" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="Speed">Speed</label>
       <i
@@ -144,6 +181,7 @@
       ></i>
       <input [formControlName]="'Speed'" id="Speed" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="TargetAuraState">TargetAuraState</label>
       <i
@@ -152,6 +190,7 @@
       ></i>
       <input [formControlName]="'TargetAuraState'" id="TargetAuraState" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="RecoveryTime">RecoveryTime</label>
       <i
@@ -160,6 +199,7 @@
       ></i>
       <input [formControlName]="'RecoveryTime'" id="RecoveryTime" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="SpellMissileID">SpellMissileID</label>
       <i
@@ -168,6 +208,7 @@
       ></i>
       <input [formControlName]="'SpellMissileID'" id="SpellMissileID" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="SpellDifficultyID">SpellDifficultyID</label>
       <i
@@ -176,6 +217,7 @@
       ></i>
       <input [formControlName]="'SpellDifficultyID'" id="SpellDifficultyID" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="PowerType">PowerType</label>
       <i
@@ -184,6 +226,7 @@
       ></i>
       <input [formControlName]="'PowerType'" id="PowerType" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="RequiredTotemCategoryID_1">RequiredTotemCategoryID_1</label>
       <i
@@ -192,6 +235,7 @@
       ></i>
       <input [formControlName]="'RequiredTotemCategoryID_1'" id="RequiredTotemCategoryID_1" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="RequiredTotemCategoryID_2">RequiredTotemCategoryID_2</label>
       <i
@@ -200,6 +244,7 @@
       ></i>
       <input [formControlName]="'RequiredTotemCategoryID_2'" id="RequiredTotemCategoryID_2" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="RequiredAreasID">RequiredAreasID</label>
       <i
@@ -208,6 +253,7 @@
       ></i>
       <input [formControlName]="'RequiredAreasID'" id="RequiredAreasID" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="SpellDescriptionVariableID">SpellDescriptionVariableID</label>
       <i
@@ -216,6 +262,7 @@
       ></i>
       <input [formControlName]="'SpellDescriptionVariableID'" id="SpellDescriptionVariableID" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="ManaCost">ManaCost</label>
       <i
@@ -224,6 +271,7 @@
       ></i>
       <input [formControlName]="'ManaCost'" id="ManaCost" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="ManaCostPerLevel">ManaCostPerLevel</label>
       <i
@@ -232,6 +280,7 @@
       ></i>
       <input [formControlName]="'ManaCostPerLevel'" id="ManaCostPerLevel" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="ManaPerSecond">ManaPerSecond</label>
       <i
@@ -240,6 +289,7 @@
       ></i>
       <input [formControlName]="'ManaPerSecond'" id="ManaPerSecond" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="ManaPerSecondPerLevel">ManaPerSecondPerLevel</label>
       <i
@@ -248,6 +298,7 @@
       ></i>
       <input [formControlName]="'ManaPerSecondPerLevel'" id="ManaPerSecondPerLevel" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="ManaCostPct">ManaCostPct</label>
       <i
@@ -256,6 +307,7 @@
       ></i>
       <input [formControlName]="'ManaCostPct'" id="ManaCostPct" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="PreventionType">PreventionType</label>
       <i
@@ -264,6 +316,7 @@
       ></i>
       <input [formControlName]="'PreventionType'" id="PreventionType" type="number" class="form-control form-control-sm">
     </div>
+
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="RequiresSpellFocus">RequiresSpellFocus</label>
       <i
@@ -272,6 +325,5 @@
       ></i>
       <input [formControlName]="'RequiresSpellFocus'" id="RequiresSpellFocus" type="number" class="form-control form-control-sm">
     </div>
-
   </div>
 </form>
