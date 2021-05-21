@@ -13,14 +13,6 @@ export const SPELL_DBC_SEARCH_FIELDS = [
   SPELL_DBC_DESCRIPTION,
 ];
 
-export class SPELL_DBC_SCHOOL_OPTIONS extends TableRow {
-  SchoolMask: number = 0;
-}
-
-export class SPELL_DBC_FACING_FRONT_FLAG extends TableRow {
-  FacingCasterFlags: number = 0;
-}
-
 export class SpellDbc extends TableRow {
   ID: number = 0;
   Category: number = 0;
