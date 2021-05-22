@@ -1,30 +1,24 @@
 <keira-top-bar [handler]="handlerService"></keira-top-bar>
 
 <div class="container-fluid">
-
   <span *ngIf="editorService.loading">Loading...</span>
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
-
     <div class="content-block">
-      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
+      <keira-query-output
+        [docUrl]="docUrl"
+        [editorService]="editorService"
+        (executeQuery)="editorService.save($event)"
+      ></keira-query-output>
     </div>
 
     <div class="content-block">
-
-      <form
-        [formGroup]="editorService.form"
-        class="form-group edit-form"
-      >
-
+      <form [formGroup]="editorService.form" class="form-group edit-form">
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="entry">entry</label>
-            <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
-              [tooltip]="'The unique ID of the gameobject'"
-            ></i>
-            <input [formControlName]="'entry'" id="entry" type="number" class="form-control form-control-sm">
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The unique ID of the gameobject'"></i>
+            <input [formControlName]="'entry'" id="entry" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="faction">faction</label>
@@ -32,7 +26,7 @@
               [config]="{ name: 'faction' }"
               [control]="editorService.form.controls.faction"
             ></keira-faction-selector-btn>
-            <input [formControlName]="'faction'" id="faction" type="number" class="form-control form-control-sm">
+            <input [formControlName]="'faction'" id="faction" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="flags">flags</label>
@@ -41,18 +35,17 @@
               [config]="{ flags: GAMEOBJECT_FLAGS, name: 'flags' }"
               [modalClass]="'modal-lg'"
             ></keira-flags-selector-btn>
-            <input [formControlName]="'flags'" id="flags" type="number" class="form-control form-control-sm">
+            <input [formControlName]="'flags'" id="flags" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="mingold">mingold</label>
-            <input [formControlName]="'mingold'" id="mingold" type="number" class="form-control form-control-sm">
+            <input [formControlName]="'mingold'" id="mingold" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="maxgold">maxgold</label>
-            <input [formControlName]="'maxgold'" id="maxgold" type="number" class="form-control form-control-sm">
+            <input [formControlName]="'maxgold'" id="maxgold" type="number" class="form-control form-control-sm" />
           </div>
         </div>
-
       </form>
     </div>
   </div>

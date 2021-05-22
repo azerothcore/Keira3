@@ -1,49 +1,40 @@
 <keira-top-bar [handler]="handlerService"></keira-top-bar>
 
 <div class="container-fluid">
-
   <span *ngIf="editorService.loading">Loading...</span>
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
-
     <div class="content-block">
-      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
+      <keira-query-output
+        [docUrl]="docUrl"
+        [editorService]="editorService"
+        (executeQuery)="editorService.save($event)"
+      ></keira-query-output>
     </div>
 
     <div class="content-block">
-
-      <form
-        [formGroup]="editorService.form"
-        class="form-group edit-form"
-      >
+      <form [formGroup]="editorService.form" class="form-group edit-form">
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="Index">Index</label>
-            <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
-              [tooltip]="'Allowed values: 0-7'"
-            ></i>
-            <input [formControlName]="'Index'" id="Index" type="number" class="form-control form-control-sm">
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Allowed values: 0-7'"></i>
+            <input [formControlName]="'Index'" id="Index" type="number" class="form-control form-control-sm" />
           </div>
 
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
             <label class="control-label" for="Spell">Spell</label>
-            <input [formControlName]="'Spell'" id="Spell" type="number" class="form-control form-control-sm">
+            <input [formControlName]="'Spell'" id="Spell" type="number" class="form-control form-control-sm" />
           </div>
-
 
           <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
             <i class="fas fa-exclamation-triangle"></i>
             The <strong>{{ editorService.entitySecondIdField }}</strong> must be unique.
           </div>
-
         </div>
-
       </form>
 
       <div class="row">
         <div class="col-12">
-
           <keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>
 
           <ngx-datatable
@@ -55,7 +46,7 @@
             [columnMode]="DTCFG.columnMode"
             [rowHeight]="DTCFG.rowHeight"
             [selectionType]="DTCFG.selectionType"
-            (select)='editorService.onRowSelection($event)'
+            (select)="editorService.onRowSelection($event)"
             (keydown.delete)="editorService.deleteSelectedRow()"
           >
             <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
@@ -66,7 +57,6 @@
             <ngx-datatable-column name="Index" prop="Index" [minWidth]="80" [maxWidth]="150"></ngx-datatable-column>
             <ngx-datatable-column name="Spell" prop="Spell" [minWidth]="80" [maxWidth]="150"></ngx-datatable-column>
           </ngx-datatable>
-
         </div>
       </div>
     </div>

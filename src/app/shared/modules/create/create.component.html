@@ -1,28 +1,25 @@
 <p class="h5">Create new</p>
 <label class="control-label" for="id">
-  Create a new <strong>{{ entityTable }}</strong> by selecting an empty <strong>{{ entityIdField }}</strong>:
+  Create a new <strong>{{ entityTable }}</strong> by selecting an empty <strong>{{ entityIdField }}</strong
+  >:
 </label>
 <div class="row">
   <div class="form-inline">
     <div class="form-group col-12">
-      <input
-        type="number"
-        class="form-control form-control-sm"
-        id="id"
-        [(ngModel)]="idModel"
-        (input)="checkId()"
-      >
+      <input type="number" class="form-control form-control-sm" id="id" [(ngModel)]="idModel" (input)="checkId()" />
       <button
-        class="btn btn-success btn-sm ml-2"
+        class="btn btn-success btn-sm ms-2"
         id="select-button"
         [disabled]="!isIdFree || !idModel"
         (click)="handlerService.select(true, idModel)"
-      ><i class="fa fa-plus"></i> Select</button>
+      >
+        <i class="fa fa-plus"></i> Select
+      </button>
     </div>
   </div>
   <div class="col-12 mt-1" [hidden]="!idModel" id="id-free-status">
     <small>
-      <i class="fas" [ngClass]="{ 'fa-check-circle': isIdFree, 'fa-times-circle': !isIdFree}"></i>
+      <i class="fas" [ngClass]="{ 'fa-check-circle': isIdFree, 'fa-times-circle': !isIdFree }"></i>
       The {{ entityIdField }} is {{ isIdFree ? 'free' : 'already in use' }}
     </small>
   </div>

@@ -1,5 +1,4 @@
-
-$fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
+$fa-font-path: '~@fortawesome/fontawesome-free/webfonts';
 @import '~bootstrap/scss/bootstrap';
 @import '~@fortawesome/fontawesome-free/scss/fontawesome';
 @import '~@fortawesome/fontawesome-free/scss/solid';
@@ -10,8 +9,9 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 @import '~@swimlane/ngx-datatable/index.css';
 @import '~@swimlane/ngx-datatable/assets/icons.css';
 @import '~ngx-ui-switch/ui-switch.component.scss';
-@import '~ngx-toastr/toastr-bs4-alert';
+@import '~ngx-toastr/toastr';
 
+@import './bootstrap5-overrides';
 @import './ngx-datatable';
 @import './content';
 @import './sidebar';

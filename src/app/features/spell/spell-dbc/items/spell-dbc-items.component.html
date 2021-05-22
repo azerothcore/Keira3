@@ -1,79 +1,47 @@
-<form
-  [formGroup]="formGroup"
-  class="form-group edit-form"
->
+<form [formGroup]="formGroup" class="form-group edit-form">
   <div class="row">
-
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="Totem_1">Totem_1</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
-      ></i>
-      <input [formControlName]="'Totem_1'" id="Totem_1" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <input [formControlName]="'Totem_1'" id="Totem_1" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="Totem_2">Totem_2</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
-      ></i>
-      <input [formControlName]="'Totem_2'" id="Totem_2" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <input [formControlName]="'Totem_2'" id="Totem_2" type="number" class="form-control form-control-sm" />
     </div>
-
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="EquippedItemClass">EquippedItemClass</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
-      ></i>
-      <input [formControlName]="'EquippedItemClass'" id="EquippedItemClass" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <input [formControlName]="'EquippedItemClass'" id="EquippedItemClass" type="number" class="form-control form-control-sm" />
     </div>
-
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="EquippedItemSubclass">EquippedItemSubclass</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
-      ></i>
-      <input [formControlName]="'EquippedItemSubclass'" id="EquippedItemSubclass" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <input [formControlName]="'EquippedItemSubclass'" id="EquippedItemSubclass" type="number" class="form-control form-control-sm" />
     </div>
-
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="EquippedItemInvTypes">EquippedItemInvTypes</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
-      ></i>
-      <input [formControlName]="'EquippedItemInvTypes'" id="EquippedItemInvTypes" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <input [formControlName]="'EquippedItemInvTypes'" id="EquippedItemInvTypes" type="number" class="form-control form-control-sm" />
     </div>
-
   </div>
 
-  <div class="row" *ngFor="let i of [1,2,3,4,5,6,7,8]">
-
+  <div class="row" *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8]">
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" [for]="'Reagent_' + i">Reagent_{{ i }}</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
-      ></i>
-      <input [formControlName]="'Reagent_' + i" [id]="'Reagent_' + i" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <input [formControlName]="'Reagent_' + i" [id]="'Reagent_' + i" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" [for]="'ReagentCount_' + i">ReagentCount_{{ i }}</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
-      ></i>
-      <input [formControlName]="'ReagentCount_' + i" [id]="'ReagentCount_' + i" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <input [formControlName]="'ReagentCount_' + i" [id]="'ReagentCount_' + i" type="number" class="form-control form-control-sm" />
     </div>
-
   </div>
-
 </form>

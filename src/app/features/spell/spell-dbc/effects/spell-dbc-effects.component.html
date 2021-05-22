@@ -1,48 +1,28 @@
-<form
-  [formGroup]="formGroup"
-  class="form-group edit-form"
->
+<form [formGroup]="formGroup" class="form-group edit-form">
   <div class="row">
-
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="Targets">Targets</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
-      ></i>
-      <input [formControlName]="'Targets'" id="Targets" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <input [formControlName]="'Targets'" id="Targets" type="number" class="form-control form-control-sm" />
     </div>
-
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="ProcTypeMask">ProcTypeMask</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
-      ></i>
-      <input [formControlName]="'ProcTypeMask'" id="ProcTypeMask" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <input [formControlName]="'ProcTypeMask'" id="ProcTypeMask" type="number" class="form-control form-control-sm" />
     </div>
-
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="ProcChance">ProcChance</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'Most spells with 100% chance tend to have value 101.'"
-      ></i>
-      <input [formControlName]="'ProcChance'" id="ProcChance" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Most spells with 100% chance tend to have value 101.'"></i>
+      <input [formControlName]="'ProcChance'" id="ProcChance" type="number" class="form-control form-control-sm" />
     </div>
-
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="ProcCharges">ProcCharges</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
-      ></i>
-      <input [formControlName]="'ProcCharges'" id="ProcCharges" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <input [formControlName]="'ProcCharges'" id="ProcCharges" type="number" class="form-control form-control-sm" />
     </div>
-
   </div>
 </form>
 
@@ -57,4 +37,3 @@
     <keira-spell-dbc-spell-effect [formGroup]="formGroup" [index]="3"></keira-spell-dbc-spell-effect>
   </tab>
 </tabset>
-
