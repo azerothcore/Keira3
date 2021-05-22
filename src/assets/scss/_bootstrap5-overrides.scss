@@ -6,9 +6,19 @@ a {
   margin-bottom: 1rem;
 }
 
-.form-control {
-  display: inline-block;
-  width: auto;
+@media (min-width: 576px) {
+  .form-inline .form-control {
+    display: inline-block;
+    width: auto;
+    vertical-align: middle;
+  }
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -5px;
+  margin-left: -5px;
 }
 
 label {
