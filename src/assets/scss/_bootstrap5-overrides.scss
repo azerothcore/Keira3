@@ -6,12 +6,10 @@ a {
   margin-bottom: 1rem;
 }
 
-@media (min-width: 576px) {
-  .form-inline .form-control {
-    display: inline-block;
-    width: auto;
-    vertical-align: middle;
-  }
+.form-inline .form-control {
+  display: inline-block;
+  width: auto;
+  vertical-align: middle;
 }
 
 .form-row {
