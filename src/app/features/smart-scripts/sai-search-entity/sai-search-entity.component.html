@@ -1,17 +1,11 @@
 <div class="container-fluid">
   <form [formGroup]="form" class="form-group">
-
     <div class="content-block">
       <p class="lead">Select a Source Type</p>
 
       <div class="radio-container" *ngFor="let key of SAI_SEARCH_TYPES_KEYS">
         <label class="cursor-pointer" [id]="SAI_SEARCH_TYPES[key]">
-          <input
-            [value]="key"
-            [formControlName]="'source_type'"
-            (change)="onSelectedTypeChange()"
-            type="radio"
-          >
+          <input [value]="key" [formControlName]="'source_type'" (change)="onSelectedTypeChange()" type="radio" />
           <span class="radio-text">{{ SAI_SEARCH_TYPES[key] }}</span>
         </label>
       </div>
@@ -32,9 +26,7 @@
             <ng-container *ngIf="isTypeCreatureSelected || isTypeGameobjectSelected">
               Insert a negative number to select a GUID(-) or a positive number to select an Entry(+)
             </ng-container>
-            <ng-container *ngIf="isTypeAreatriggerSelected">
-              Insert the Areatrigger ID
-            </ng-container>
+            <ng-container *ngIf="isTypeAreatriggerSelected"> Insert the Areatrigger ID </ng-container>
             <ng-container *ngIf="isTypeTimedActionlistsSelected">
               TimedActionlists IDs are composed by the <strong>Creature's Entry</strong> followed by a <strong>2-digits number</strong>
             </ng-container>
@@ -43,35 +35,27 @@
           <keira-creature-selector-btn
             *ngIf="isTypeCreatureSelected"
             [control]="entryOrGuidControl"
-            [config]="{  name: 'entryorguid' }"
+            [config]="{ name: 'entryorguid' }"
           ></keira-creature-selector-btn>
           <keira-gameobject-selector-btn
             *ngIf="isTypeGameobjectSelected"
             [control]="entryOrGuidControl"
-            [config]="{  name: 'entryorguid' }"
+            [config]="{ name: 'entryorguid' }"
           ></keira-gameobject-selector-btn>
 
-          <input [formControlName]="'entryorguid'" id="entryorguid" type="number" class="form-control form-control-sm">
+          <input [formControlName]="'entryorguid'" id="entryorguid" type="number" class="form-control form-control-sm" />
 
-          <div class="mt-2">
-            If the selected entity does not have any SmartScripts yet, new ones will be created.
-          </div>
+          <div class="mt-2">If the selected entity does not have any SmartScripts yet, new ones will be created.</div>
         </div>
       </div>
 
       <div class="row mt-3">
         <div class="col-12">
-          <button
-            class="btn btn-success float-right"
-            [disabled]="entryOrGuidControl.invalid"
-            (click)="onEdit()"
-            id="edit-btn"
-          >Edit SmartAI</button>
+          <button class="btn btn-success float-end" [disabled]="entryOrGuidControl.invalid" (click)="onEdit()" id="edit-btn">
+            Edit SmartAI
+          </button>
         </div>
       </div>
-
     </div>
-
   </form>
-
 </div>

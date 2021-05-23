@@ -1,22 +1,19 @@
 <keira-top-bar [handler]="handlerService"></keira-top-bar>
 
 <div class="container-fluid">
-
   <span *ngIf="editorService.loading">Loading...</span>
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
-
     <div class="content-block">
-      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
+      <keira-query-output
+        [docUrl]="docUrl"
+        [editorService]="editorService"
+        (executeQuery)="editorService.save($event)"
+      ></keira-query-output>
     </div>
 
     <div class="content-block">
-
-      <form
-        [formGroup]="editorService.form"
-        class="form-group edit-form"
-      >
-
+      <form [formGroup]="editorService.form" class="form-group edit-form">
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="SpellID">SpellID</label>
@@ -25,57 +22,58 @@
               [config]="{ name: 'SpellID' }"
               [modalClass]="'modal-lg'"
             ></keira-spell-selector-btn>
-            <input [formControlName]="'SpellID'" id="SpellID" type="number" class="form-control form-control-sm">
+            <input [formControlName]="'SpellID'" id="SpellID" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="MoneyCost">MoneyCost</label>
             <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              class="fas fa-info-circle ms-1"
+              [placement]="'auto'"
               [tooltip]="'The cost to pay to learn the spell represented in copper (1 gold = 100 silver = 10000 cooper)'"
             ></i>
-            <input [formControlName]="'MoneyCost'" id="MoneyCost" type="number" class="form-control form-control-sm">
+            <input [formControlName]="'MoneyCost'" id="MoneyCost" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="ReqSkillLine">ReqSkillLine</label>
             <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              class="fas fa-info-circle ms-1"
+              [placement]="'auto'"
               [tooltip]="'The required skill the player needs to have in order to be able to learn the spell'"
             ></i>
             <keira-skill-selector-btn
               [config]="{ name: 'ReqSkillLine' }"
               [control]="editorService.form.controls.ReqSkillLine"
             ></keira-skill-selector-btn>
-            <input [formControlName]="'ReqSkillLine'" id="ReqSkillLine" type="number" class="form-control form-control-sm">
+            <input [formControlName]="'ReqSkillLine'" id="ReqSkillLine" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="ReqSkillRank">ReqSkillRank</label>
             <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              class="fas fa-info-circle ms-1"
+              [placement]="'auto'"
               [tooltip]="'The proficiency in the skill from reqskill that the player needs to meet to learn the spell'"
             ></i>
-            <input [formControlName]="'ReqSkillRank'" id="ReqSkillRank" type="number" class="form-control form-control-sm">
+            <input [formControlName]="'ReqSkillRank'" id="ReqSkillRank" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="ReqLevel">ReqLevel</label>
             <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              class="fas fa-info-circle ms-1"
+              [placement]="'auto'"
               [tooltip]="'The minimum level the player needs to be in order to learn the spell.'"
             ></i>
-            <input [formControlName]="'ReqLevel'" id="ReqLevel" type="number" class="form-control form-control-sm">
+            <input [formControlName]="'ReqLevel'" id="ReqLevel" type="number" class="form-control form-control-sm" />
           </div>
 
           <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
             <i class="fas fa-exclamation-triangle"></i>
             The <strong>{{ editorService.entitySecondIdField }}</strong> must be unique.
           </div>
-
         </div>
-
       </form>
 
       <div class="row">
         <div class="col-12">
-
           <keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>
 
           <ngx-datatable
@@ -87,7 +85,7 @@
             [columnMode]="DTCFG.columnMode"
             [rowHeight]="DTCFG.rowHeight"
             [selectionType]="DTCFG.selectionType"
-            (select)='editorService.onRowSelection($event)'
+            (select)="editorService.onRowSelection($event)"
             (keydown.delete)="editorService.deleteSelectedRow()"
           >
             <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
@@ -106,11 +104,8 @@
             <ngx-datatable-column name="ReqSkillRank" prop="ReqSkillRank"></ngx-datatable-column>
             <ngx-datatable-column name="ReqLevel" prop="ReqLevel"></ngx-datatable-column>
           </ngx-datatable>
-
         </div>
       </div>
-
     </div>
-
   </div>
 </div>

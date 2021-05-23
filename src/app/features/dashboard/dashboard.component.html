@@ -3,14 +3,14 @@
     <p class="lead">Welcome to Keira3</p>
     <p>
       You can always find the latest Keira3 version at the
-      <a [href]="KEIRA3_REPO_URL + '/releases'" target="_blank">releases page</a>.
-      Join our <strong>#keira-editor</strong> channel on <a [href]="AC_DISCORD_URL" target="_blank">Discord</a>
+      <a [href]="KEIRA3_REPO_URL + '/releases'" target="_blank">releases page</a>. Join our <strong>#keira-editor</strong> channel on
+      <a [href]="AC_DISCORD_URL" target="_blank">Discord</a>
       to stay up to date with the latest news and releases!
     </p>
     <p>
       Please report any bugs or suggestions using
-      <a [href]="KEIRA3_REPO_URL + '/issues/new'" target="_blank">the official repository</a>.
-      If you like Keira3, don't forget to give us a &#11088; on GitHub!
+      <a [href]="KEIRA3_REPO_URL + '/issues/new'" target="_blank">the official repository</a>. If you like Keira3, don't forget to give us a
+      &#11088; on GitHub!
     </p>
     <p>
       Keira3 is free and open source software that we build during our own spare time, you can
@@ -18,9 +18,7 @@
     </p>
     <p>
       We hope that you enjoy using this software and don't forget to contribute with the community by
-      <a href="http://www.azerothcore.org/wiki/Contribute#how-to-create-a-pull-request" target="_blank">
-        sharing your code
-      </a>
+      <a href="http://www.azerothcore.org/wiki/Contribute#how-to-create-a-pull-request" target="_blank"> sharing your code </a>
     </p>
   </div>
 
@@ -28,61 +26,65 @@
     <p class="lead mb-3">System details</p>
     <div *ngIf="error" class="alert alert-danger error-box mt-2" id="database-warning">
       <p>
-        <strong>WARNING:</strong> It looks like <strong><i>{{ databaseName }}</i></strong> is not a valid AzerothCore world database.
+        <strong>WARNING:</strong> It looks like
+        <strong
+          ><i>{{ databaseName }}</i></strong
+        >
+        is not a valid AzerothCore world database.
       </p>
 
       <ul>
         <li>If you selected the wrong database by mistake, you can <strong>logout</strong> and change it.</li>
-        <li>If you are using an old version of AzerothCore, we recommend to <a target="_blank" href="http://www.azerothcore.org/wiki/Update">update it</a> before using the editor.</li>
-        <li>If you are using a different emulator than AzerothCore, <strong>be aware that some features will be broken</strong>. More info are available <a target="_blank" href="https://github.com/azerothcore/forum/issues/43">here</a>.</li>
+        <li>
+          If you are using an old version of AzerothCore, we recommend to
+          <a target="_blank" href="http://www.azerothcore.org/wiki/Update">update it</a> before using the editor.
+        </li>
+        <li>
+          If you are using a different emulator than AzerothCore, <strong>be aware that some features will be broken</strong>. More info are
+          available <a target="_blank" href="https://github.com/azerothcore/forum/issues/43">here</a>.
+        </li>
       </ul>
     </div>
 
     <table class="table table-striped table-bordered table-sm">
       <tbody>
-      <tr>
-        <td>Keira Version:</td>
-        <td>{{ KEIRA_VERSION }}</td>
-      </tr>
-      <ng-container *ngIf="coreVersions">
         <tr>
-          <td>AC Core version:</td>
-          <td id="core-version">{{ coreVersions.core_version }}</td>
+          <td>Keira Version:</td>
+          <td>{{ KEIRA_VERSION }}</td>
         </tr>
-        <tr>
-          <td>AC commit hash:</td>
-          <td id="core-revision">
-            <a [href]="getCommit(coreVersions.core_revision)" target="_blank">
-              {{ coreVersions.core_revision }}
-            </a>
-            <button class="btn btn-secondary btn-sm ml-2 px-2 py-1" [ngxClipboard] [cbContent]="getCommit(coreVersions.core_revision)">
-              <i class="far fa-copy fa-sm"></i>
-            </button>
-          </td>
+        <ng-container *ngIf="coreVersions">
+          <tr>
+            <td>AC Core version:</td>
+            <td id="core-version">{{ coreVersions.core_version }}</td>
+          </tr>
+          <tr>
+            <td>AC commit hash:</td>
+            <td id="core-revision">
+              <a [href]="getCommit(coreVersions.core_revision)" target="_blank">
+                {{ coreVersions.core_revision }}
+              </a>
+              <button class="btn btn-secondary btn-sm ms-2 px-2 py-1" [ngxClipboard] [cbContent]="getCommit(coreVersions.core_revision)">
+                <i class="far fa-copy fa-sm"></i>
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td>AC DB release:</td>
+            <td id="db-version">{{ coreVersions.db_version }}</td>
+          </tr>
+        </ng-container>
+        <tr *ngIf="dbWorldVersion">
+          <td>AC World DB version:</td>
+          <td id="db-world-version">{{ dbWorldVersion }}</td>
         </tr>
-        <tr>
-          <td>AC DB release:</td>
-          <td id="db-version">{{ coreVersions.db_version }}</td>
-        </tr>
-      </ng-container>
-      <tr *ngIf="dbWorldVersion">
-        <td>AC World DB version:</td>
-        <td id="db-world-version">{{ dbWorldVersion }}</td>
-      </tr>
       </tbody>
     </table>
 
     <div class="form-check">
-      <input
-        class="form-check-input"
-        type="checkbox"
-        [(ngModel)]="configService.debugMode"
-        id="debug-mode"
-      >
+      <input class="form-check-input" type="checkbox" [(ngModel)]="configService.debugMode" id="debug-mode" />
       <label class="form-check-label" for="debug-mode">
         Enable Keira3 Debug mode (slower performance, to be used only for development)
       </label>
     </div>
   </div>
-
 </div>

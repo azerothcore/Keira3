@@ -1,18 +1,15 @@
 <div class="container-fluid">
-
   <div class="content-block">
-
     <p class="lead mt-3 mb-2">
       SQL Editor
-      <i class="fas fa-info-circle ml-1" [placement]="'auto'"
-         [tooltip]="'A minimalistic SQL Editor to run custom queries'"></i>
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'A minimalistic SQL Editor to run custom queries'"></i>
     </p>
 
     <textarea id="code" class="mb-1" [(ngModel)]="service.code" (keydown.f9)="execute()" rows="6"></textarea>
 
     <div class="row">
       <div class="col-sm-7">
-        <button type="button" class="btn btn-secondary btn-sm mr-2" (click)="copy()" id="copy-btn">
+        <button type="button" class="btn btn-secondary btn-sm me-2" (click)="copy()" id="copy-btn">
           <i class="fa fa-copy fa-sm"></i> Copy
         </button>
         <button type="button" class="btn btn-primary btn-sm" (click)="execute()" id="execute-btn">
@@ -21,9 +18,7 @@
       </div>
       <div class="col-sm-5">
         <div class="wiki-link">
-          <a [href]="docUrl" target="_blank">
-            <i class="fas fa-link"></i> learn the SQL language
-          </a>
+          <a [href]="docUrl" target="_blank"> <i class="fas fa-link"></i> learn the SQL language </a>
         </div>
       </div>
     </div>
@@ -31,10 +26,12 @@
     <keira-query-error [error]="error"></keira-query-error>
 
     <p *ngIf="affectedRows > -1; else queryResults" id="affected-rows-box" class="mt-2">
-      <code class="hljs">Affected rows: <strong>{{ affectedRows }}</strong> {{ message }}</code>
+      <code class="hljs"
+        >Affected rows: <strong>{{ affectedRows }}</strong> {{ message }}</code
+      >
     </p>
     <ng-template #queryResults>
-      <hr>
+      <hr />
       <!--    Display: <select [(ngModel)]="displayLimit" class="select-limit">-->
       <!--      <option *ngFor="let option of displayLimitOptions" [value]="option">{{ option }}</option>-->
       <!--    </select>-->
@@ -56,7 +53,5 @@
         ></ngx-datatable-column>
       </ngx-datatable>
     </ng-template>
-
   </div>
-
 </div>

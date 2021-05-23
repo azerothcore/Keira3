@@ -28,7 +28,7 @@
               "src/favicon.256x256.png",
               "src/favicon.512x512.png"
             ],
-            "styles": ["src/assets/scss/main.scss"],
+            "styles": ["src/app/scss/main.scss"],
             "scripts": ["node_modules/squel/dist/squel.min.js"]
           },
           "configurations": {
@@ -117,7 +117,7 @@
               "src/app/shared/testing/test-helpers.ts"
             ],
             "scripts": ["node_modules/squel/dist/squel.min.js"],
-            "styles": ["src/assets/scss/main.scss"],
+            "styles": ["src/app/scss/main.scss"],
             "assets": [
               "src/assets",
               "src/favicon.ico",

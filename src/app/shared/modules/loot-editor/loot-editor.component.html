@@ -1,51 +1,41 @@
 <ng-container *ngIf="!!editorService">
-
   <div class="content-block">
     <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
   </div>
 
   <div class="content-block">
-
-    <form
-      [formGroup]="editorService.form"
-      class="form-group edit-form"
-    >
-
+    <form [formGroup]="editorService.form" class="form-group edit-form">
       <div class="row">
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="Item">
             <keira-icon [itemId]="editorService.form.controls.Item.value"></keira-icon>
             Item
           </label>
-          <keira-item-selector-btn
-            [control]="editorService.form.controls.Item"
-            [config]="{  name: 'Item' }"
-          ></keira-item-selector-btn>
-          <input [formControlName]="'Item'" id="Item" type="number" class="form-control form-control-sm">
+          <keira-item-selector-btn [control]="editorService.form.controls.Item" [config]="{ name: 'Item' }"></keira-item-selector-btn>
+          <input [formControlName]="'Item'" id="Item" type="number" class="form-control form-control-sm" />
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="Reference">Reference</label>
           <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            class="fas fa-info-circle ms-1"
+            [placement]="'auto'"
             [tooltip]="'Include a group of loots. Linked to referenced_loot_template.entry'"
           ></i>
-          <input [formControlName]="'Reference'" id="Reference" type="number" class="form-control form-control-sm">
+          <input [formControlName]="'Reference'" id="Reference" type="number" class="form-control form-control-sm" />
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="Chance">Chance</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'Item drop chance'"
-          ></i>
-          <input [formControlName]="'Chance'" id="Chance" type="number" class="form-control form-control-sm">
+          <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Item drop chance'"></i>
+          <input [formControlName]="'Chance'" id="Chance" type="number" class="form-control form-control-sm" />
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="QuestRequired">QuestRequired</label>
           <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            class="fas fa-info-circle ms-1"
+            [placement]="'auto'"
             [tooltip]="'The item should be shown only to characters having the appropriate quest.'"
           ></i>
-          <input [formControlName]="'QuestRequired'" id="QuestRequired" type="number" class="form-control form-control-sm">
+          <input [formControlName]="'QuestRequired'" id="QuestRequired" type="number" class="form-control form-control-sm" />
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="LootMode">LootMode</label>
@@ -54,53 +44,52 @@
             [config]="{ flags: LOOT_MODE, name: 'LootMode' }"
             [modalClass]="'modal-lg'"
           ></keira-flags-selector-btn>
-          <input [formControlName]="'LootMode'" id="LootMode" type="number" class="form-control form-control-sm">
+          <input [formControlName]="'LootMode'" id="LootMode" type="number" class="form-control form-control-sm" />
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="GroupId">GroupId</label>
           <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            class="fas fa-info-circle ms-1"
+            [placement]="'auto'"
             [tooltip]="'Set of loot definitions, check the wiki for more details'"
           ></i>
-          <input [formControlName]="'GroupId'" id="GroupId" type="number" class="form-control form-control-sm">
+          <input [formControlName]="'GroupId'" id="GroupId" type="number" class="form-control form-control-sm" />
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="MinCount">MinCount</label>
           <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
+            class="fas fa-info-circle ms-1"
+            [placement]="'auto'"
             [tooltip]="'The minimum number of copies of the item that can drop in a single loot. For references, this is ignored.'"
           ></i>
-          <input [formControlName]="'MinCount'" id="MinCount" type="number" class="form-control form-control-sm">
+          <input [formControlName]="'MinCount'" id="MinCount" type="number" class="form-control form-control-sm" />
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="MaxCount">MaxCount</label>
           <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'The maximum number of copies of the item that can drop in a single loot. For references, this is the EXACT count value.'"
+            class="fas fa-info-circle ms-1"
+            [placement]="'auto'"
+            [tooltip]="
+              'The maximum number of copies of the item that can drop in a single loot. For references, this is the EXACT count value.'
+            "
           ></i>
-          <input [formControlName]="'MaxCount'" id="MaxCount" type="number" class="form-control form-control-sm">
+          <input [formControlName]="'MaxCount'" id="MaxCount" type="number" class="form-control form-control-sm" />
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="Comment">Comment</label>
-          <i
-            class="fas fa-info-circle ml-1" [placement]="'auto'"
-            [tooltip]="'A comment that is ignored by the core'"
-          ></i>
-          <input [formControlName]="'Comment'" id="Comment" class="form-control form-control-sm">
+          <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'A comment that is ignored by the core'"></i>
+          <input [formControlName]="'Comment'" id="Comment" class="form-control form-control-sm" />
         </div>
 
         <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
           <i class="fas fa-exclamation-triangle"></i>
           The <strong>{{ editorService.entitySecondIdField }}</strong> must be unique.
         </div>
-
       </div>
-
     </form>
 
     <div class="row">
       <div class="col-12">
-
         <keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>
 
         <ngx-datatable
@@ -112,7 +101,7 @@
           [columnMode]="DTCFG.columnMode"
           [rowHeight]="DTCFG.rowHeightWithIcon"
           [selectionType]="DTCFG.selectionType"
-          (select)='editorService.onRowSelection($event)'
+          (select)="editorService.onRowSelection($event)"
           (keydown.delete)="editorService.deleteSelectedRow()"
         >
           <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
@@ -134,7 +123,7 @@
           </ngx-datatable-column>
           <ngx-datatable-column name="Reference" prop="Reference">
             <ng-template let-row="row" ngx-datatable-cell-template>
-              <span [ngClass]="{ 'reference': isReference(row) }">{{ row.Reference }}</span>
+              <span [ngClass]="{ reference: isReference(row) }">{{ row.Reference }}</span>
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column name="Chance" prop="Chance"></ngx-datatable-column>
@@ -152,12 +141,9 @@
           </ngx-datatable-column>
           <ngx-datatable-column name="MaxCount" prop="MaxCount"></ngx-datatable-column>
         </ngx-datatable>
-
       </div>
     </div>
-
   </div>
 
   <keira-reference-viewer *ngFor="let id of referenceIds" [referenceId]="id"></keira-reference-viewer>
-
 </ng-container>

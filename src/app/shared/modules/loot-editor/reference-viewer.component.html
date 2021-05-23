@@ -1,13 +1,16 @@
 <div class="content-block text-center" *ngIf="!!referenceLootRows">
-
   <span class="h6">
-    Referenced loot <strong>{{ referenceId }}</strong> (read-only) <i
-    class="fas fa-info-circle ml-1" [placement]="'auto'"
-    [tooltip]="'Showing the content of this reference_loot_template in read-only mode. To edit edit it, open it using the Reference Loot Editor'"
-  ></i>
+    Referenced loot <strong>{{ referenceId }}</strong> (read-only)
+    <i
+      class="fas fa-info-circle ms-1"
+      [placement]="'auto'"
+      [tooltip]="
+        'Showing the content of this reference_loot_template in read-only mode. To edit edit it, open it using the Reference Loot Editor'
+      "
+    ></i>
   </span>
 
-  <hr>
+  <hr />
 
   <div class="row">
     <div class="col-12">
@@ -34,7 +37,7 @@
         </ngx-datatable-column>
         <ngx-datatable-column name="Reference" prop="Reference">
           <ng-template let-row="row" ngx-datatable-cell-template>
-            <span [ngClass]="{ 'reference': isReference(row) }">{{ row.Reference }}</span>
+            <span [ngClass]="{ reference: isReference(row) }">{{ row.Reference }}</span>
           </ng-template>
         </ngx-datatable-column>
         <ngx-datatable-column name="Chance" prop="Chance"></ngx-datatable-column>
@@ -52,7 +55,6 @@
         </ngx-datatable-column>
         <ngx-datatable-column name="MaxCount" prop="MaxCount"></ngx-datatable-column>
       </ngx-datatable>
-
     </div>
   </div>
 </div>
