@@ -6,12 +6,7 @@ export const SPELL_DBC_ID = 'ID';
 export const SPELL_DBC_NAME = 'Name_Lang_enUS';
 export const SPELL_DBC_NAMESUBTEXT = 'NameSubtext_Lang_enUS';
 export const SPELL_DBC_DESCRIPTION = 'Description_Lang_enUS';
-export const SPELL_DBC_SEARCH_FIELDS = [
-  SPELL_DBC_ID,
-  SPELL_DBC_NAME,
-  SPELL_DBC_NAMESUBTEXT,
-  SPELL_DBC_DESCRIPTION,
-];
+export const SPELL_DBC_SEARCH_FIELDS = [SPELL_DBC_ID, SPELL_DBC_NAME, SPELL_DBC_NAMESUBTEXT, SPELL_DBC_DESCRIPTION];
 
 export class SpellDbc extends TableRow {
   ID: number = 0;
@@ -33,7 +28,7 @@ export class SpellDbc extends TableRow {
   Targets: number = 0;
   TargetCreatureType: number = 0; // TODO
   RequiresSpellFocus: number = 0;
-  FacingCasterFlags: number = 0; // TODO
+  FacingCasterFlags: number = 0;
   CasterAuraState: number = 0;
   TargetAuraState: number = 0;
   ExcludeCasterAuraState: number = 0; // TODO
@@ -239,7 +234,7 @@ export class SpellDbc extends TableRow {
   RequiredTotemCategoryID_1: number = 0;
   RequiredTotemCategoryID_2: number = 0;
   RequiredAreasID: number = 0;
-  SchoolMask: number = 0; // TODO
+  SchoolMask: number = 0;
   RuneCostID: number = 0;
   SpellMissileID: number = 0;
   PowerDisplayID: number = 0; // TODO
