@@ -8,10 +8,12 @@ import { SpellDbcComponent } from './spell-dbc.component';
 import { SpellModule } from '../spell.module';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
 import { SpellHandlerService } from '../spell-handler.service';
+import { LOCALES } from './texts/spell-dbc-texts.model';
 
 describe('SpellDbc integration tests', () => {
   class SpellDbcPage extends EditorPageObject<SpellDbcComponent> {
     readonly tabsetId = 'spell-dbc-tabset';
+    readonly localesTabsetId = 'locales';
   }
 
   const id = 1234;
@@ -112,13 +114,20 @@ describe('SpellDbc integration tests', () => {
   });
 
   describe('Editing existing - tabs check', () => {
+    const baseTabId = 'Base';
+    const effectsTabId = 'Effects';
+    const itemsTabId = 'Items';
+    const flagsTabId = 'Flags';
+    const textsTabId = 'Texts';
+    const allTabIds = [baseTabId, effectsTabId, itemsTabId, flagsTabId, textsTabId];
+
     it('should correctly initialise', () => {
       const { page } = setup(false);
-      const baseTab = page.getTab(page.tabsetId, 'Base');
-      const effectsTab = page.getTab(page.tabsetId, 'Effects');
-      const itemsTab = page.getTab(page.tabsetId, 'Items');
-      const flagsTab = page.getTab(page.tabsetId, 'Flags');
-      const textsTab = page.getTab(page.tabsetId, 'Texts');
+      const baseTab = page.getTab(page.tabsetId, baseTabId);
+      const effectsTab = page.getTab(page.tabsetId, effectsTabId);
+      const itemsTab = page.getTab(page.tabsetId, itemsTabId);
+      const flagsTab = page.getTab(page.tabsetId, flagsTabId);
+      const textsTab = page.getTab(page.tabsetId, textsTabId);
       page.expectTabActive(baseTab);
       page.expectTabInactive(effectsTab);
       page.expectTabInactive(itemsTab);
@@ -126,6 +135,59 @@ describe('SpellDbc integration tests', () => {
       page.expectTabInactive(textsTab);
     });
 
-    // TODO: write more checks with tabs
+    describe('should allow to edit from every tab', () => {
+      const cases: { tabId: string; field: string }[] = [
+        { tabId: baseTabId, field: 'DurationIndex' },
+        { tabId: effectsTabId, field: 'Targets' },
+        { tabId: itemsTabId, field: 'EquippedItemClass' },
+        { tabId: flagsTabId, field: 'Attributes' },
+      ];
+
+      for (const { tabId, field } of cases) {
+        it(`tabId=${tabId}`, () => {
+          const { page } = setup(false);
+          const tab = page.getTab(page.tabsetId, tabId);
+
+          page.clickElement(tab);
+          page.expectTabActive(tab);
+
+          for (const otherTabId of allTabIds) {
+            if (otherTabId != tabId) {
+              page.expectTabInactive(page.getTab(page.tabsetId, otherTabId));
+            }
+          }
+
+          const testValue = 112233;
+          page.setInputValueById(field, testValue);
+          page.expectDiffQueryToContain('UPDATE `spell_dbc` SET `' + field + '` = ' + testValue + ' WHERE (`ID` = 1234);');
+        });
+      }
+    });
+
+    describe('Texts tab', () => {
+      for (const locale of LOCALES) {
+        it(`locale=${locale}`, () => {
+          const { page } = setup(false);
+          const tab = page.getTab(page.tabsetId, textsTabId);
+          page.clickElement(tab);
+          page.expectTabActive(tab);
+
+          const localeTab = page.getTab(page.localesTabsetId, locale);
+          page.clickElement(localeTab);
+          page.expectTabActive(localeTab);
+
+          for (const otherTabId of LOCALES) {
+            if (otherTabId != locale) {
+              page.expectTabInactive(page.getTab(page.localesTabsetId, otherTabId));
+            }
+          }
+
+          const testValue = 'ChromieCraft';
+          const field = `Name_Lang_${locale}`;
+          page.setInputValueById(field, testValue);
+          page.expectDiffQueryToContain('UPDATE `spell_dbc` SET `' + field + "` = '" + testValue + "' WHERE (`ID` = 1234);");
+        });
+      }
+    });
   });
 });
