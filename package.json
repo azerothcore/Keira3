@@ -39,8 +39,9 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "acorn": "8.2.4",
     "@electron/remote": "1.0.4",
+    "@types/electron-settings": "^4.0.0",
+    "acorn": "8.2.4",
     "electron-settings": "^4.0.2",
     "mysql": "2.18.1",
     "ngx-toastr": "14.0.0",
