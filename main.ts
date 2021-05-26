@@ -12,17 +12,10 @@ serve = args.some((val) => val === '--serve');
 
 function createWindow() {
   const hasPreviousSettings = settings.hasSync('user_settings.width');
-  let width = 800;
-  let height = 600;
-  let pox_x = 0;
-  let pos_y = 0;
-
-  if (hasPreviousSettings) {
-    width = settings.getSync('user_settings.width') as number;
-    height = settings.getSync('user_settings.height') as number;
-    pox_x = settings.getSync('user_settings.pos_x') as number;
-    pos_y = settings.getSync('user_settings.pos_y') as number;
-  }
+  const width = hasPreviousSettings ? Number(settings.getSync('user_settings.width')) : 800;
+  const height = hasPreviousSettings ? Number(settings.getSync('user_settings.height')) : 600;
+  const pox_x = hasPreviousSettings ? Number(settings.getSync('user_settings.pos_x')) : 0;
+  const pos_y = hasPreviousSettings ? Number(settings.getSync('user_settings.pos_y')) : 0;
 
   // Create the browser window.
   win = new BrowserWindow({
@@ -61,7 +54,7 @@ function createWindow() {
 
   win.on('close', function (e) {
     //Save the settings
-    let bounds = win.getBounds();
+    const bounds = win.getBounds();
     settings.setSync('user_settings', {
       width: bounds.width,
       height: bounds.height,
