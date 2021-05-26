@@ -54,7 +54,7 @@ function createWindow() {
 
   win.on('close', function (e) {
     //Save the settings
-    let bounds = win.getBounds();
+    const bounds = win.getBounds();
     settings.setSync('user_settings', {
       width: bounds.width,
       height: bounds.height,
