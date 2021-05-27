@@ -1,6 +1,7 @@
-import { app, BrowserWindow, shell, screen, Menu, MenuItem, nativeImage } from 'electron';
+import { app, BrowserWindow, shell, Menu, MenuItem, nativeImage } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
+import * as settings from 'electron-settings';
 
 // Initialize remote module
 require('@electron/remote/main').initialize();
@@ -10,14 +11,18 @@ const args = process.argv.slice(1);
 serve = args.some((val) => val === '--serve');
 
 function createWindow() {
-  const size = screen.getPrimaryDisplay().workAreaSize;
+  const hasPreviousSettings = settings.hasSync('user_settings.width');
+  const width = hasPreviousSettings ? Number(settings.getSync('user_settings.width')) : 800;
+  const height = hasPreviousSettings ? Number(settings.getSync('user_settings.height')) : 600;
+  const pox_x = hasPreviousSettings ? Number(settings.getSync('user_settings.pos_x')) : 0;
+  const pos_y = hasPreviousSettings ? Number(settings.getSync('user_settings.pos_y')) : 0;
 
   // Create the browser window.
   win = new BrowserWindow({
-    x: 0,
-    y: 0,
-    width: size.width,
-    height: size.height,
+    x: pox_x,
+    y: pos_y,
+    width: width,
+    height: height,
     minWidth: 800,
     minHeight: 600,
     webPreferences: {
@@ -48,6 +53,14 @@ function createWindow() {
   }
 
   win.on('close', function (e) {
+    //Save the settings
+    const bounds = win.getBounds();
+    settings.setSync('user_settings', {
+      width: bounds.width,
+      height: bounds.height,
+      pos_x: bounds.x,
+      pos_y: bounds.y,
+    });
     if (!process.env.RUNNING_IN_SPECTRON) {
       const choice = require('electron').dialog.showMessageBoxSync(this, {
         type: 'question',
