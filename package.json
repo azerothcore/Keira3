@@ -109,7 +109,7 @@
     "prettier": "2.3.0",
     "pretty-quick": "3.1.0",
     "rxjs": "6.6.7",
-    "spectron": "14.0.0",
+    "spectron": "15.0.0",
     "sqlstring": "2.3.2",
     "squel": "5.13.0",
     "ts-mockito": "2.6.1",
