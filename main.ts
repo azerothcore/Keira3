@@ -11,12 +11,10 @@ const args = process.argv.slice(1);
 serve = args.some((val) => val === '--serve');
 
 function createWindow() {
-  const hasPreviousSettings = settings.hasSync('user_settings.width');
-  const width = hasPreviousSettings ? Number(settings.getSync('user_settings.width')) : 800;
-  const height = hasPreviousSettings ? Number(settings.getSync('user_settings.height')) : 600;
-  const pox_x = hasPreviousSettings ? Number(settings.getSync('user_settings.pos_x')) : 0;
-  const pos_y = hasPreviousSettings ? Number(settings.getSync('user_settings.pos_y')) : 0;
-
+  const width = settings.hasSync('user_settings.width') ? Number(settings.getSync('user_settings.width')) : 800;
+  const height = settings.hasSync('user_settings.height') ? Number(settings.getSync('user_settings.height')) : 600;
+  const pox_x = settings.hasSync('user_settings.pos_x') ? Number(settings.getSync('user_settings.pos_x')) : 0;
+  const pos_y = settings.hasSync('user_settings.pos_y') ? Number(settings.getSync('user_settings.pos_y')) : 0;
   // Create the browser window.
   win = new BrowserWindow({
     x: pox_x,

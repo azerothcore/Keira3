@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from 'ngx-typesafe-forms';
 import { ConnectionConfig, MysqlError } from 'mysql';
 import packageInfo from '../../../../package.json';
@@ -13,6 +13,7 @@ import { ConnectionWindowService } from './connection-window.service';
   styleUrls: ['./connection-window.component.scss'],
 })
 export class ConnectionWindowComponent extends SubscriptionHandler implements OnInit {
+  @ViewChild('myDiv') myDiv: ElementRef<HTMLElement>;
   private readonly IMAGES_COUNT = 10;
   public readonly RANDOM_IMAGE = Math.floor(Math.random() * this.IMAGES_COUNT) + 1;
   public readonly KEIRA_VERSION = packageInfo.version;
@@ -54,6 +55,18 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
     }
   }
 
+  /*
+    AfterViewInit, a lifecycle hook that is called after Angular has fully initialized a component's view.
+    forces the login if auto_login is detected.
+  */
+  ngAfterViewInit(): void {
+    const auto_login = localStorage.getItem('auto_login') === 'true';
+    if (auto_login) {
+      let el: HTMLElement = this.myDiv.nativeElement;
+      el.click();
+    }
+  }
+
   loadConfig(config: Partial<ConnectionConfig>): void {
     this.form.setValue(config);
   }
@@ -65,6 +78,8 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
   }
 
   onConnect(): void {
+    // When we first connect, we will assume we want to auto connect.
+    localStorage.setItem('auto_login', 'true');
     this.subscriptions.push(
       this.mysqlService.connect(this.form.getRawValue()).subscribe(
         () => {

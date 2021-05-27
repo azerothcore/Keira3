@@ -17,7 +17,7 @@ import { MysqlService } from '../shared/services/mysql.service';
 import { ConnectionWindowComponent } from './connection-window/connection-window.component';
 import { QueryErrorComponent } from '../shared/modules/query-output/query-error/query-error.component';
 import { ModalConfirmModule } from '../shared/modules/modal-confirm/modal-confirm.module';
-import { LogoutBtnComponent } from './main-window/sidebar/logout-btn/logout-btn.component';
+import { DisconnectBtnComponent } from './main-window/sidebar/disconnect-btn/disconnect-btn.component';
 import { LATEST_RELEASE_API_URL } from '@keira-constants/general';
 import packageInfo from '../../../package.json';
 
@@ -31,7 +31,7 @@ describe('AppComponent', () => {
           AppComponent,
           SidebarComponent,
           QueryErrorComponent,
-          LogoutBtnComponent,
+          DisconnectBtnComponent,
         ],
         imports: [
           FormsModule,

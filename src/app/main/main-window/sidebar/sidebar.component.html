@@ -1,9 +1,4 @@
-<nav
-  id="sidebar"
-  class="sidebar perfect-scrollbar-transparent"
-  [ngClass]="{'sidebar-bg' : hasBackgroundImage()}"
-  [style]="style"
->
+<nav id="sidebar" class="sidebar perfect-scrollbar-transparent" [ngClass]="{ 'sidebar-bg': hasBackgroundImage() }" [style]="style">
   <div class="sidebar-content">
     <perfect-scrollbar class="transparent">
       <div class="sidebar-header">
@@ -12,50 +7,47 @@
 
       <div class="sidebar-profile">
         <div class="user-pic">
-          <img class="img-responsive img-rounded" [src]="'assets/img/ac.png'" alt="User picture">
+          <img class="img-responsive img-rounded" [src]="'assets/img/ac.png'" alt="User picture" />
         </div>
         <div class="user-info" *ngIf="mysqlService.config">
           <span class="db-user">
             <strong>{{ mysqlService.config.user }}</strong>
           </span>
           <span class="db-host">
-            <strong>{{ mysqlService.config.host }}<span class="port">:{{ mysqlService.config.port }}</span></strong>
+            <strong
+              >{{ mysqlService.config.host }}<span class="port">:{{ mysqlService.config.port }}</span></strong
+            >
           </span>
           <span class="db-name">
-            <strong><i>{{ mysqlService.config.database }}</i></strong>
+            <strong
+              ><i>{{ mysqlService.config.database }}</i></strong
+            >
           </span>
           <span class="user-status">
             <i class="fa fa-circle connection-status" [ngClass]="mysqlService.getConnectionState()"></i>
             <span>{{ mysqlService.getConnectionState() | titlecase }}</span>
           </span>
           <span>
-            <keira-logout-btn></keira-logout-btn>
+            <keira-disconnect-btn></keira-disconnect-btn>
           </span>
         </div>
       </div>
 
       <div class="sidebar-menu">
         <ul>
-
           <li>
-            <a id="dashboard-toggle" href="#" [routerLink]="''">
-              <i class="fa fa-tachometer-alt"></i> Dashboard
-            </a>
+            <a id="dashboard-toggle" href="#" [routerLink]="''"> <i class="fa fa-tachometer-alt"></i> Dashboard </a>
           </li>
 
           <li>
-            <a id="sql-editor-toggle" href="#" [routerLink]="'sql-editor'">
-              <i class="fa fa-code"></i> SQL Editor
-            </a>
+            <a id="sql-editor-toggle" href="#" [routerLink]="'sql-editor'"> <i class="fa fa-code"></i> SQL Editor </a>
           </li>
 
           <li>
-            <a id="collapse-all" (click)="collapseAll()">
-              <i class="fas fa-angle-double-up"></i> Collapse All
-            </a>
+            <a id="collapse-all" (click)="collapseAll()"> <i class="fas fa-angle-double-up"></i> Collapse All </a>
           </li>
 
-          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.creature === 'down' }">
+          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.creature === 'down' }">
             <a id="creature-editor-toggle" (click)="toggleState('creature')">
               <i class="fa fa-dragon"></i>
               <span>Creature</span>
@@ -64,9 +56,7 @@
             <div class="sidebar-submenu" [@slide]="menuStates.creature">
               <ul>
                 <li>
-                  <a href="#" routerLinkActive="active" [routerLink]="'creature/select'">
-                    Select Creature
-                  </a>
+                  <a href="#" routerLinkActive="active" [routerLink]="'creature/select'"> Select Creature </a>
                 </li>
                 <ng-container *ngIf="creatureHandlerService.selected">
                   <li>
@@ -77,27 +67,32 @@
                   <ng-container *ngIf="!creatureHandlerService.isNew">
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template-addon'">
-                        Template Addon <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureTemplateAddonUnsaved"></keira-unsaved-icon>
+                        Template Addon
+                        <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureTemplateAddonUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template-resistance'">
-                        Template Resistance <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureTemplateResistanceUnsaved"></keira-unsaved-icon>
+                        Template Resistance
+                        <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureTemplateResistanceUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template-spell'">
-                        Template Spell <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureTemplateSpellUnsaved"></keira-unsaved-icon>
+                        Template Spell
+                        <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureTemplateSpellUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-onkill-reputation'">
-                        Onkill Reputation <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureOnkillReputationUnsaved"></keira-unsaved-icon>
+                        Onkill Reputation
+                        <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureOnkillReputationUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-equip-template'">
-                        Equip Template <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureEquipTemplateUnsaved"></keira-unsaved-icon>
+                        Equip Template
+                        <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureEquipTemplateUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
@@ -122,7 +117,8 @@
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/pickpocketing-loot-template'">
-                        Pickpocketing Loot <keira-unsaved-icon *ngIf="creatureHandlerService.isPickpocketingLootTemplateUnsaved"></keira-unsaved-icon>
+                        Pickpocketing Loot
+                        <keira-unsaved-icon *ngIf="creatureHandlerService.isPickpocketingLootTemplateUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
@@ -147,12 +143,11 @@
                     </li>
                   </ng-container>
                 </ng-container>
-
               </ul>
             </div>
           </li>
 
-          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.quest === 'down' }">
+          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.quest === 'down' }">
             <a (click)="toggleState('quest')">
               <i class="fa fa-scroll"></i>
               <span>Quest</span>
@@ -161,9 +156,7 @@
             <div class="sidebar-submenu" [@slide]="menuStates.quest">
               <ul>
                 <li>
-                  <a href="#" routerLinkActive="active" [routerLink]="'quest/select'">
-                    Select Quest
-                  </a>
+                  <a href="#" routerLinkActive="active" [routerLink]="'quest/select'"> Select Quest </a>
                 </li>
                 <ng-container *ngIf="questHandlerService.selected">
                   <li>
@@ -174,7 +167,8 @@
                   <ng-container *ngIf="!questHandlerService.isNew">
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-template-addon'">
-                        Quest Template Addon <keira-unsaved-icon *ngIf="questHandlerService.isQuestTemplateAddonUnsaved"></keira-unsaved-icon>
+                        Quest Template Addon
+                        <keira-unsaved-icon *ngIf="questHandlerService.isQuestTemplateAddonUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
@@ -189,32 +183,35 @@
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/creature-queststarter'">
-                        Creature Queststarter <keira-unsaved-icon *ngIf="questHandlerService.isCreatureQueststarterUnsaved"></keira-unsaved-icon>
+                        Creature Queststarter
+                        <keira-unsaved-icon *ngIf="questHandlerService.isCreatureQueststarterUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/creature-questender'">
-                        Creature Questender <keira-unsaved-icon *ngIf="questHandlerService.isCreatureQuestenderUnsaved"></keira-unsaved-icon>
+                        Creature Questender
+                        <keira-unsaved-icon *ngIf="questHandlerService.isCreatureQuestenderUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/gameobject-queststarter'">
-                        Gameobject Queststarter <keira-unsaved-icon *ngIf="questHandlerService.isGameobjectQueststarterUnsaved"></keira-unsaved-icon>
+                        Gameobject Queststarter
+                        <keira-unsaved-icon *ngIf="questHandlerService.isGameobjectQueststarterUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/gameobject-questender'">
-                        Gameobject Questender <keira-unsaved-icon *ngIf="questHandlerService.isGameobjectQuestenderUnsaved"></keira-unsaved-icon>
+                        Gameobject Questender
+                        <keira-unsaved-icon *ngIf="questHandlerService.isGameobjectQuestenderUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                   </ng-container>
                 </ng-container>
-
               </ul>
             </div>
           </li>
 
-          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.gameobject === 'down' }">
+          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.gameobject === 'down' }">
             <a (click)="toggleState('gameobject')">
               <i class="fa fa-dungeon"></i>
               <span>GameObject</span>
@@ -222,20 +219,20 @@
             <div class="sidebar-submenu" [@slide]="menuStates.gameobject">
               <ul>
                 <li>
-                  <a href="#" routerLinkActive="active" [routerLink]="'gameobject/select'">
-                    Select Gameobject
-                  </a>
+                  <a href="#" routerLinkActive="active" [routerLink]="'gameobject/select'"> Select Gameobject </a>
                 </li>
                 <ng-container *ngIf="gameobjectHandlerService.selected">
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-template'">
-                      Gameobject Template <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectTemplateUnsaved"></keira-unsaved-icon>
+                      Gameobject Template
+                      <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectTemplateUnsaved"></keira-unsaved-icon>
                     </a>
                   </li>
                   <ng-container *ngIf="!gameobjectHandlerService.isNew">
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-template-addon'">
-                        Template Addon <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectTemplateAddonUnsaved"></keira-unsaved-icon>
+                        Template Addon
+                        <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectTemplateAddonUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
@@ -245,7 +242,8 @@
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-loot-template'">
-                        Gameobject Loot <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectLooTemplateUnsaved"></keira-unsaved-icon>
+                        Gameobject Loot
+                        <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectLooTemplateUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
@@ -269,7 +267,7 @@
             </div>
           </li>
 
-          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.item === 'down' }">
+          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.item === 'down' }">
             <a (click)="toggleState('item')">
               <i class="fa fa-gavel"></i>
               <span>Item</span>
@@ -277,9 +275,7 @@
             <div class="sidebar-submenu" [@slide]="menuStates.item">
               <ul>
                 <li>
-                  <a href="#" routerLinkActive="active" [routerLink]="'item/select'">
-                    Select Item
-                  </a>
+                  <a href="#" routerLinkActive="active" [routerLink]="'item/select'"> Select Item </a>
                 </li>
                 <ng-container *ngIf="itemHandlerService.selected">
                   <li>
@@ -300,12 +296,14 @@
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'item/disenchant-loot-template'">
-                        Disenchant Loot <keira-unsaved-icon *ngIf="itemHandlerService.isDisenchantmentLootTemplateUnsaved"></keira-unsaved-icon>
+                        Disenchant Loot
+                        <keira-unsaved-icon *ngIf="itemHandlerService.isDisenchantmentLootTemplateUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'item/prospecting-loot-template'">
-                        Prospecting Loot <keira-unsaved-icon *ngIf="itemHandlerService.isProspectingLootTemplateUnsaved"></keira-unsaved-icon>
+                        Prospecting Loot
+                        <keira-unsaved-icon *ngIf="itemHandlerService.isProspectingLootTemplateUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
@@ -319,7 +317,7 @@
             </div>
           </li>
 
-          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.otherLoot === 'down' }">
+          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.otherLoot === 'down' }">
             <a (click)="toggleState('otherLoot')">
               <i class="fa fa-coins"></i>
               <span>Other Loots</span>
@@ -327,42 +325,34 @@
             <div class="sidebar-submenu" [@slide]="menuStates.otherLoot">
               <ul>
                 <li>
-                  <a href="#" routerLinkActive="active" [routerLink]="'other-loots/select-reference'">
-                    Select Reference Loot
-                  </a>
+                  <a href="#" routerLinkActive="active" [routerLink]="'other-loots/select-reference'"> Select Reference Loot </a>
                 </li>
                 <li *ngIf="referenceLootHandlerService.selected">
                   <a href="#" routerLinkActive="active" [routerLink]="'other-loots/reference'">
                     Reference Loot Template <keira-unsaved-icon *ngIf="spellLootHandlerService.isUnsaved"></keira-unsaved-icon>
                   </a>
                 </li>
-                <hr>
+                <hr />
                 <li>
-                  <a href="#" routerLinkActive="active" [routerLink]="'other-loots/select-spell'">
-                    Select Spell Loot
-                  </a>
+                  <a href="#" routerLinkActive="active" [routerLink]="'other-loots/select-spell'"> Select Spell Loot </a>
                 </li>
                 <li *ngIf="spellLootHandlerService.selected">
                   <a href="#" routerLinkActive="active" [routerLink]="'other-loots/spell'">
                     Spell Loot Template <keira-unsaved-icon *ngIf="spellLootHandlerService.isUnsaved"></keira-unsaved-icon>
                   </a>
                 </li>
-                <hr>
+                <hr />
                 <li>
-                  <a href="#" routerLinkActive="active" [routerLink]="'other-loots/select-fishing'">
-                    Select Fishing Loot
-                  </a>
+                  <a href="#" routerLinkActive="active" [routerLink]="'other-loots/select-fishing'"> Select Fishing Loot </a>
                 </li>
                 <li *ngIf="fishingLootHandlerService.selected">
                   <a href="#" routerLinkActive="active" [routerLink]="'other-loots/fishing'">
                     Fishing Loot Template <keira-unsaved-icon *ngIf="fishingLootHandlerService.isUnsaved"></keira-unsaved-icon>
                   </a>
                 </li>
-                <hr>
+                <hr />
                 <li>
-                  <a href="#" routerLinkActive="active" [routerLink]="'other-loots/select-mail'">
-                    Select Mail Loot
-                  </a>
+                  <a href="#" routerLinkActive="active" [routerLink]="'other-loots/select-mail'"> Select Mail Loot </a>
                 </li>
                 <li *ngIf="mailLootHandlerService.selected">
                   <a href="#" routerLinkActive="active" [routerLink]="'other-loots/mail'">
@@ -373,7 +363,7 @@
             </div>
           </li>
 
-          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.gossip === 'down' }">
+          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.gossip === 'down' }">
             <a (click)="toggleState('gossip')">
               <i class="fa fa-comments"></i>
               <span>Gossip</span>
@@ -381,9 +371,7 @@
             <div class="sidebar-submenu" [@slide]="menuStates.gossip">
               <ul>
                 <li>
-                  <a href="#" routerLinkActive="active" [routerLink]="'gossip/select'">
-                    Select Gossip Menu
-                  </a>
+                  <a href="#" routerLinkActive="active" [routerLink]="'gossip/select'"> Select Gossip Menu </a>
                 </li>
                 <ng-container *ngIf="gossipHandlerService.selected">
                   <li>
@@ -394,7 +382,8 @@
                   <ng-container *ngIf="!gossipHandlerService.isNew">
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gossip/gossip-menu-option'">
-                        Gossip Menu Option <keira-unsaved-icon *ngIf="gossipHandlerService.isGossipMenuOptionTableUnsaved"></keira-unsaved-icon>
+                        Gossip Menu Option
+                        <keira-unsaved-icon *ngIf="gossipHandlerService.isGossipMenuOptionTableUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                   </ng-container>
@@ -403,7 +392,7 @@
             </div>
           </li>
 
-          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.conditions === 'down' }">
+          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.conditions === 'down' }">
             <a (click)="toggleState('conditions')">
               <i class="fas fa-sort-amount-up"></i>
               <span>Conditions</span>
@@ -412,9 +401,7 @@
             <div class="sidebar-submenu" [@slide]="menuStates.conditions">
               <ul>
                 <li>
-                  <a href="#" routerLinkActive="active" [routerLink]="'conditions/select'">
-                    Select Conditions
-                  </a>
+                  <a href="#" routerLinkActive="active" [routerLink]="'conditions/select'"> Select Conditions </a>
                 </li>
                 <ng-container *ngIf="conditionsHandlerService.selected">
                   <li>
@@ -427,7 +414,7 @@
             </div>
           </li>
 
-          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.smartAi === 'down' }">
+          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.smartAi === 'down' }">
             <a (click)="toggleState('smartAi')">
               <i class="fa fa-lightbulb"></i>
               <span>SmartAI</span>
@@ -436,14 +423,10 @@
             <div class="sidebar-submenu" [@slide]="menuStates.smartAi">
               <ul>
                 <li>
-                  <a href="#" routerLinkActive="active" [routerLink]="'smart-ai/search-existing'">
-                    Search by existing SAI
-                  </a>
+                  <a href="#" routerLinkActive="active" [routerLink]="'smart-ai/search-existing'"> Search by existing SAI </a>
                 </li>
                 <li>
-                  <a href="#" routerLinkActive="active" [routerLink]="'smart-ai/search-entity'">
-                    Search by entity
-                  </a>
+                  <a href="#" routerLinkActive="active" [routerLink]="'smart-ai/search-entity'"> Search by entity </a>
                 </li>
                 <ng-container *ngIf="saiHandlerService.selected">
                   <li>
@@ -456,7 +439,7 @@
             </div>
           </li>
 
-          <li class="sidebar-dropdown" [ngClass]="{ 'active': menuStates.spell === 'down' }">
+          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.spell === 'down' }">
             <a (click)="toggleState('spell')">
               <i class="fa fa-magic"></i>
               <span>Spell DBC overrides</span>
@@ -465,9 +448,7 @@
             <div class="sidebar-submenu" [@slide]="menuStates.spell">
               <ul>
                 <li>
-                  <a href="#" routerLinkActive="active" [routerLink]="'spell/select'">
-                    Search Spell
-                  </a>
+                  <a href="#" routerLinkActive="active" [routerLink]="'spell/select'"> Search Spell </a>
                 </li>
                 <ng-container *ngIf="spellHandlerService.selected">
                   <li>
@@ -479,7 +460,6 @@
               </ul>
             </div>
           </li>
-
         </ul>
       </div>
     </perfect-scrollbar>

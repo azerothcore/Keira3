@@ -116,11 +116,11 @@ describe('SidebarComponent', () => {
     page.removeElement();
   });
 
-  it('reload the app on logout', () => {
+  it('reload the app on disconnect', () => {
     const { page, component } = setup();
     const reloadSpy = spyOn(TestBed.inject(LocationService), 'reload');
 
-    component.logout();
+    component.disconnect();
 
     expect(reloadSpy).toHaveBeenCalledTimes(1);
 

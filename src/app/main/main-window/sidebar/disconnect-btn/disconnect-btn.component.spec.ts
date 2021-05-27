@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import Spy = jasmine.Spy;
 
-import { LogoutBtnComponent } from './logout-btn.component';
+import { DisconnectBtnComponent } from './disconnect-btn.component';
 import { LocationService } from '@keira-shared/services/location.service';
 import { NgModule } from '@angular/core';
 import { ModalConfirmComponent } from '@keira-shared/modules/modal-confirm/modal-confirm.component';
@@ -14,18 +14,18 @@ import { closeModalsAfterEach } from '@keira-testing/test-helpers';
 })
 class TestModule {}
 
-describe('LogoutBtnComponent', () => {
-  let component: LogoutBtnComponent;
-  let fixture: ComponentFixture<LogoutBtnComponent>;
+describe('DisconnectBtnComponent', () => {
+  let component: DisconnectBtnComponent;
+  let fixture: ComponentFixture<DisconnectBtnComponent>;
 
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [LogoutBtnComponent],
+        declarations: [DisconnectBtnComponent],
         imports: [ModalModule.forRoot(), TestModule],
       }).compileComponents();
 
-      fixture = TestBed.createComponent(LogoutBtnComponent);
+      fixture = TestBed.createComponent(DisconnectBtnComponent);
       component = fixture.componentInstance;
       fixture.detectChanges();
     }),
@@ -33,21 +33,21 @@ describe('LogoutBtnComponent', () => {
 
   it('openModalConfirm() should correctly work', () => {
     const showSpy = spyOn(TestBed.inject(BsModalService), 'show').and.callThrough();
-    const logoutSpy = spyOn(component, 'logout');
+    const disconnectSpy = spyOn(component, 'disconnect');
 
     component.openModalConfirm();
     expect(showSpy).toHaveBeenCalledTimes(1);
 
     component['modalRef'].content.onCancel();
-    expect(logoutSpy).toHaveBeenCalledTimes(0);
+    expect(disconnectSpy).toHaveBeenCalledTimes(0);
 
     component['modalRef'].content.onConfirm();
-    expect(logoutSpy).toHaveBeenCalledTimes(1);
+    expect(disconnectSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('logout() should correctly work', () => {
+  it('disconnect() should correctly work', () => {
     const locationServiceSpy: Spy = spyOn(TestBed.inject(LocationService), 'reload');
-    component.logout();
+    component.disconnect();
     expect(locationServiceSpy).toHaveBeenCalledTimes(1);
   });
 

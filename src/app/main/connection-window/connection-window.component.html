@@ -1,6 +1,5 @@
 <div class="wrapper img-{{ RANDOM_IMAGE }}">
   <div class="content">
-
     <div class="title">
       <span class="lead font-weight-bold">Keira {{ KEIRA_VERSION }}</span>
     </div>
@@ -8,33 +7,47 @@
     <div class="form-wrapper" *ngIf="form">
       <form [formGroup]="form">
         <div class="form-group">
-          <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-server"></i>Host</span></div>
-          <input [formControlName]="'host'" class="form-control" id="host">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-server"></i>Host</span>
+          </div>
+          <input [formControlName]="'host'" class="form-control" id="host" />
         </div>
         <div class="form-group">
-          <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-network-wired"></i>Port</span></div>
-          <input [formControlName]="'port'" type="number" class="form-control" id="port">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-network-wired"></i>Port</span>
+          </div>
+          <input [formControlName]="'port'" type="number" class="form-control" id="port" />
         </div>
         <div class="form-group">
-          <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-user"></i>Username</span></div>
-          <input [formControlName]="'user'" class="form-control" id="user">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-user"></i>Username</span>
+          </div>
+          <input [formControlName]="'user'" class="form-control" id="user" />
         </div>
         <div class="form-group">
-          <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-key"></i>Password</span></div>
-          <input [formControlName]="'password'" type="password" class="form-control" id="password">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-key"></i>Password</span>
+          </div>
+          <input [formControlName]="'password'" type="password" class="form-control" id="password" />
         </div>
         <div class="form-group">
-          <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-database"></i>Database</span></div>
-          <input [formControlName]="'database'" class="form-control" id="database">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-database"></i>Database</span>
+          </div>
+          <input [formControlName]="'database'" class="form-control" id="database" />
         </div>
         <div class="recent-container">
           <div class="row">
             <div class="col">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="save-password" [(ngModel)]="savePassword" [ngModelOptions]="{ standalone: true }">
-                <label class="form-check-label" for="save-password">
-                  Save password
-                </label>
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="save-password"
+                  [(ngModel)]="savePassword"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+                <label class="form-check-label" for="save-password"> Save password </label>
               </div>
             </div>
             <div class="col">
@@ -42,10 +55,11 @@
                 <button dropdownToggle type="button" class="btn btn-sm btn-primary dropdown-toggle">
                   <i class="fas fa-history"></i> Load recent <span class="caret"></span>
                 </button>
-                <ul *dropdownMenu class="dropdown-menu"
-                    role="menu" aria-labelledby="button-basic">
+                <ul *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
                   <li role="menuitem">
-                    <a class="dropdown-item" href="#" (click)="removeAllConfigs()" id="clear-all"><i class="fa fa-trash-alt"></i> Clear all</a>
+                    <a class="dropdown-item" href="#" (click)="removeAllConfigs()" id="clear-all"
+                      ><i class="fa fa-trash-alt"></i> Clear all</a
+                    >
                   </li>
                   <li class="divider dropdown-divider"></li>
                   <li role="menuitem" *ngFor="let config of configs" class="config-item">
@@ -58,18 +72,18 @@
             </div>
           </div>
         </div>
-        <button class="btn btn-primary connect-button" (click)="onConnect()">Connect</button>
+        <button #myDiv class="btn btn-primary connect-button" (click)="onConnect()">Connect</button>
       </form>
 
       <div class="login-error-box">
         <keira-query-error [error]="error"></keira-query-error>
       </div>
-
     </div>
 
     <div class="end-text">
       <!-- We have worked hard to create Keira3 for free, please do not remove the credits -->
-      Created by <a href="https://github.com/FrancescoBorzi" target="_blank">Shin</a> && <a href="https://github.com/Helias" target="_blank">Helias</a>
+      Created by <a href="https://github.com/FrancescoBorzi" target="_blank">Shin</a> &&
+      <a href="https://github.com/Helias" target="_blank">Helias</a>
     </div>
   </div>
 </div>

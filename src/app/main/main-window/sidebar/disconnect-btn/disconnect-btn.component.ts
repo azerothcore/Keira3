@@ -6,11 +6,11 @@ import { LocationService } from '@keira-shared/services/location.service';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
 
 @Component({
-  selector: 'keira-logout-btn',
-  templateUrl: './logout-btn.component.html',
-  styleUrls: ['./logout-btn.component.scss'],
+  selector: 'keira-disconnect-btn',
+  templateUrl: './disconnect-btn.component.html',
+  styleUrls: ['./disconnect-btn.component.scss'],
 })
-export class LogoutBtnComponent extends SubscriptionHandler {
+export class DisconnectBtnComponent extends SubscriptionHandler {
   public modalRef: BsModalRef;
   constructor(private modalService: BsModalService, private locationService: LocationService) {
     super();
@@ -18,8 +18,8 @@ export class LogoutBtnComponent extends SubscriptionHandler {
 
   openModalConfirm() {
     const initialState = {
-      title: 'Logout',
-      content: 'Are you sure you want to logout?',
+      title: 'Disconnect',
+      content: 'Are you sure you want to disconnect?',
     };
 
     this.modalRef = this.modalService.show(ModalConfirmComponent, { initialState });
@@ -27,13 +27,15 @@ export class LogoutBtnComponent extends SubscriptionHandler {
     this.subscriptions.push(
       this.modalRef.content.onClose.subscribe((result) => {
         if (result) {
-          this.logout();
+          this.disconnect();
         }
       }),
     );
   }
 
-  logout() {
+  disconnect() {
+    // On disconnect we will assume we don't wish to reconnect.
+    localStorage.setItem('auto_login', 'false');
     this.locationService.reload();
   }
 }
