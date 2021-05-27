@@ -96,7 +96,7 @@ export class SidebarComponent {
     }
   }
 
-  disconnect() {
+  disconnect(): void {
     this.locationService.reload();
   }
 }

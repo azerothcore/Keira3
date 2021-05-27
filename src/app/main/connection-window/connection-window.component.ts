@@ -62,8 +62,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
   ngAfterViewInit(): void {
     const auto_login = localStorage.getItem('auto_login') === 'true';
     if (auto_login) {
-      let el: HTMLElement = this.myDiv.nativeElement;
-      el.click();
+      this.myDiv.nativeElement.click();
     }
   }
 
