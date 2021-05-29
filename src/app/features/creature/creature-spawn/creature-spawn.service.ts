@@ -2,12 +2,7 @@ import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
 import { MultiRowEditorService } from '@keira-abstract/service/editors/multi-row-editor.service';
-import {
-  CreatureSpawn,
-  CREATURE_SPAWN_ID,
-  CREATURE_SPAWN_ID_2,
-  CREATURE_SPAWN_TABLE,
-} from '@keira-types/creature-spawn.type';
+import { CreatureSpawn, CREATURE_SPAWN_ID, CREATURE_SPAWN_ID_2, CREATURE_SPAWN_TABLE } from '@keira-types/creature-spawn.type';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 
@@ -19,14 +14,6 @@ export class CreatureSpawnService extends MultiRowEditorService<CreatureSpawn> {
     public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
-    super(
-      CreatureSpawn,
-      CREATURE_SPAWN_TABLE,
-      CREATURE_SPAWN_ID,
-      CREATURE_SPAWN_ID_2,
-      handlerService,
-      queryService,
-      toastrService,
-    );
+    super(CreatureSpawn, CREATURE_SPAWN_TABLE, CREATURE_SPAWN_ID, CREATURE_SPAWN_ID_2, handlerService, queryService, toastrService);
   }
 }

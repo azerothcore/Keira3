@@ -133,9 +133,7 @@ describe('CreatureTemplateAddon integration tests', () => {
       );
 
       page.setInputValueById('bytes1', '2');
-      page.expectDiffQueryToContain(
-        'UPDATE `creature_template_addon` SET `path_id` = 3, `bytes1` = 2 WHERE (`entry` = 1234);',
-      );
+      page.expectDiffQueryToContain('UPDATE `creature_template_addon` SET `path_id` = 3, `bytes1` = 2 WHERE (`entry` = 1234);');
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
           'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +

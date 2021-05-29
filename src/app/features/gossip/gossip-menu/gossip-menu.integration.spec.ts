@@ -106,9 +106,7 @@ describe('GossipMenu integration tests', () => {
           '(1234, 0);',
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `gossip_menu` WHERE (`MenuID` = 1234);\n' +
-          'INSERT INTO `gossip_menu` (`MenuID`, `TextID`) VALUES\n' +
-          '(1234, 0);',
+        'DELETE FROM `gossip_menu` WHERE (`MenuID` = 1234);\n' + 'INSERT INTO `gossip_menu` (`MenuID`, `TextID`) VALUES\n' + '(1234, 0);',
       );
 
       page.setInputValueById('TextID', '123');
@@ -118,9 +116,7 @@ describe('GossipMenu integration tests', () => {
           '(1234, 123);',
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `gossip_menu` WHERE (`MenuID` = 1234);\n' +
-          'INSERT INTO `gossip_menu` (`MenuID`, `TextID`) VALUES\n' +
-          '(1234, 123);',
+        'DELETE FROM `gossip_menu` WHERE (`MenuID` = 1234);\n' + 'INSERT INTO `gossip_menu` (`MenuID`, `TextID`) VALUES\n' + '(1234, 123);',
       );
     });
   });
@@ -157,9 +153,7 @@ describe('GossipMenu integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(1);
       page.expectDiffQueryToContain('DELETE FROM `gossip_menu` WHERE (`MenuID` = 1234) AND (`TextID` IN (1, 2));');
       page.expectFullQueryToContain(
-        'DELETE FROM `gossip_menu` WHERE (`MenuID` = 1234);\n' +
-          'INSERT INTO `gossip_menu` (`MenuID`, `TextID`) VALUES\n' +
-          '(1234, 0);',
+        'DELETE FROM `gossip_menu` WHERE (`MenuID` = 1234);\n' + 'INSERT INTO `gossip_menu` (`MenuID`, `TextID`) VALUES\n' + '(1234, 0);',
       );
 
       page.deleteRow(0);

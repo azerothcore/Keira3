@@ -148,9 +148,7 @@ describe('CreatureTemplateResistance integration tests', () => {
       const { page } = setup(false);
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234) AND (`School` IN (2));',
-      );
+      page.expectDiffQueryToContain('DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234) AND (`School` IN (2));');
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234);\n' +
           'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
@@ -160,9 +158,7 @@ describe('CreatureTemplateResistance integration tests', () => {
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234) AND (`School` IN (2, 3));',
-      );
+      page.expectDiffQueryToContain('DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234) AND (`School` IN (2, 3));');
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234);\n' +
           'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +

@@ -40,12 +40,7 @@ export abstract class QueryService {
     return this.cache[cacheId][id];
   }
 
-  getSearchQuery<T>(
-    table: string,
-    queryForm: QueryForm<T>,
-    selectFields: string[] = null,
-    groupFields: string[] = null,
-  ): string {
+  getSearchQuery<T>(table: string, queryForm: QueryForm<T>, selectFields: string[] = null, groupFields: string[] = null): string {
     const query = squel.select(squelConfig).from(table);
 
     if (selectFields) {

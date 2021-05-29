@@ -180,9 +180,7 @@ describe('GameobjectQueststarter integration tests', () => {
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1, 2));',
-      );
+      page.expectDiffQueryToContain('DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1, 2));');
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234);\n' +
           'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +

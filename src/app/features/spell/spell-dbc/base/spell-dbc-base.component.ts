@@ -9,9 +9,8 @@ import { SPELL_DBC_FACING_FRONT_FLAG } from '@keira-shared/constants/flags/spell
   templateUrl: './spell-dbc-base.component.html',
 })
 export class SpellDbcBaseComponent {
-	
   public readonly SPELL_DBC_SCHOOL_OPTIONS = SPELL_DBC_SCHOOL_OPTIONS;
   public readonly SPELL_DBC_FACING_FRONT_FLAG = SPELL_DBC_FACING_FRONT_FLAG;
-	
+
   @Input() formGroup: FormGroup<SpellDbc>;
 }

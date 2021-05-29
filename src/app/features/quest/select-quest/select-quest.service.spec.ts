@@ -11,11 +11,7 @@ describe('SelectQuestService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      providers: [
-        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-        QuestHandlerService,
-        SelectQuestService,
-      ],
+      providers: [{ provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }, QuestHandlerService, SelectQuestService],
     }),
   );
 

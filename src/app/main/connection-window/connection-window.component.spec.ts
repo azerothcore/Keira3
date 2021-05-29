@@ -89,11 +89,7 @@ describe('ConnectionWindowComponent', () => {
           { provide: MysqlService, useValue: instance(MockedMysqlService) },
           {
             provide: ConnectionWindowService,
-            useValue: jasmine.createSpyObj('ConnectionWindowService', [
-              'getConfigs',
-              'removeAllConfigs',
-              'saveNewConfig',
-            ]),
+            useValue: jasmine.createSpyObj('ConnectionWindowService', ['getConfigs', 'removeAllConfigs', 'saveNewConfig']),
           },
         ],
       }).compileComponents();
@@ -102,9 +98,7 @@ describe('ConnectionWindowComponent', () => {
 
   const setup = (detectChanges = true) => {
     const connectSpy = spyOn(TestBed.inject(MysqlService), 'connect').and.returnValue(of({}));
-    const connectionWindowService = TestBed.inject(
-      ConnectionWindowService,
-    ) as unknown as Spied<ConnectionWindowService>;
+    const connectionWindowService = TestBed.inject(ConnectionWindowService) as unknown as Spied<ConnectionWindowService>;
 
     const fixture = TestBed.createComponent(ConnectionWindowComponent);
     const page = new ConnectionWindowComponentPage(fixture);

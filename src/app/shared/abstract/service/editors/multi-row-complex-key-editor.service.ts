@@ -22,15 +22,7 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
     public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
-    super(
-      _entityClass,
-      _entityTable,
-      JSON.stringify(_entityIdField),
-      _entitySecondIdField,
-      handlerService,
-      queryService,
-      toastrService,
-    );
+    super(_entityClass, _entityTable, JSON.stringify(_entityIdField), _entitySecondIdField, handlerService, queryService, toastrService);
   }
 
   protected disableEntityIdField() {}

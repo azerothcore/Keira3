@@ -19,11 +19,6 @@ export const LOCALES = [
 
 export type Locale = typeof LOCALES[number];
 
-export const SPELL_DBC_TEXT_FIELDS = [
-  'Name_Lang',
-  'NameSubtext_Lang',
-  'Description_Lang',
-  'AuraDescription_Lang',
-] as const;
+export const SPELL_DBC_TEXT_FIELDS = ['Name_Lang', 'NameSubtext_Lang', 'Description_Lang', 'AuraDescription_Lang'] as const;
 
 export type SpellDbcTextFieldPrefix = typeof SPELL_DBC_TEXT_FIELDS[number];

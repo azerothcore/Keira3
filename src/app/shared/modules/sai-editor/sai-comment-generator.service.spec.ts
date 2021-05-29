@@ -1453,9 +1453,7 @@ describe('SaiCommentGeneratorService', () => {
         expected: `MockEntity - In Combat - Set Flag Untrackable`,
       },
       {
-        name:
-          `SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1 ` +
-          `check action param 1,2 (unitStandFlags.NONE, unitFieldBytes1Type.STAND_FLAGS_TYPE)`,
+        name: `SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1 ` + `check action param 1,2 (unitStandFlags.NONE, unitFieldBytes1Type.STAND_FLAGS_TYPE)`,
         input: {
           action_type: SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1,
           action_param1: unitStandFlags.NONE,
@@ -1660,8 +1658,7 @@ describe('SaiCommentGeneratorService', () => {
           action_type: SAI_ACTIONS.MOUNT_TO_ENTRY_OR_MODEL,
           action_param2: 1,
           event_phase_mask: 2,
-          event_flags:
-            EVENT_FLAGS.NORMAL_DUNGEON + EVENT_FLAGS.HEROIC_DUNGEON + EVENT_FLAGS.NORMAL_RAID + EVENT_FLAGS.HEROIC_RAID,
+          event_flags: EVENT_FLAGS.NORMAL_DUNGEON + EVENT_FLAGS.HEROIC_DUNGEON + EVENT_FLAGS.NORMAL_RAID + EVENT_FLAGS.HEROIC_RAID,
         },
         expected: `MockEntity - In Combat - Mount To Model 1 (Phase 2) (Dungeon & Raid) (Raid)`,
       },

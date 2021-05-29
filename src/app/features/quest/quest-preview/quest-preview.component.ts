@@ -39,8 +39,7 @@ export class QuestPreviewComponent implements OnInit {
   }
 
   get reqSkillPoint() {
-    return !!this.service.questTemplateAddon.RequiredSkillPoints &&
-      this.service.questTemplateAddon.RequiredSkillPoints > 1
+    return !!this.service.questTemplateAddon.RequiredSkillPoints && this.service.questTemplateAddon.RequiredSkillPoints > 1
       ? `(${this.service.questTemplateAddon.RequiredSkillPoints})`
       : '';
   }

@@ -96,18 +96,12 @@ describe('SingleRowEditorService', () => {
   it('updateFullQuery() should correctly work', () => {
     service['_fullQuery'] = '';
     const queryResult = '-- Mock query result';
-    const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertQuery').and.returnValue(
-      queryResult,
-    );
+    const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertQuery').and.returnValue(queryResult);
 
     service['updateFullQuery']();
 
     expect(getQuerySpy).toHaveBeenCalledTimes(1);
-    expect(getQuerySpy).toHaveBeenCalledWith(
-      service.entityTable,
-      [service.form.getRawValue()],
-      service['_entityIdField'],
-    );
+    expect(getQuerySpy).toHaveBeenCalledWith(service.entityTable, [service.form.getRawValue()], service['_entityIdField']);
     expect(service.fullQuery).toEqual(queryResult);
   });
 

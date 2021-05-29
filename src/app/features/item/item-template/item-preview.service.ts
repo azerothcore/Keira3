@@ -27,15 +27,11 @@ export class ItemPreviewService {
    */
 
   private getItemsetSlotBak(itemset: number | string): Promise<any[]> {
-    return this.sqliteQueryService
-      .query(`SELECT * FROM items WHERE itemset = ${itemset} ORDER BY slotBak, id`)
-      .toPromise();
+    return this.sqliteQueryService.query(`SELECT * FROM items WHERE itemset = ${itemset} ORDER BY slotBak, id`).toPromise();
   }
 
   private getItemNameByIDsASC(IDs: number[]): Promise<any[]> {
-    return this.mysqlQueryService
-      .query(`SELECT name FROM item_template WHERE entry IN (${IDs.join(',')}) ORDER BY entry ASC`)
-      .toPromise();
+    return this.mysqlQueryService.query(`SELECT name FROM item_template WHERE entry IN (${IDs.join(',')}) ORDER BY entry ASC`).toPromise();
   }
 
   private getItemsetById(ID: number | string): Promise<any> {
@@ -195,27 +191,15 @@ export class ItemPreviewService {
     tmp = s.d + s.h / 24;
     if (tmp > 1 && !(tmp % 364)) {
       // whole years
-      return (
-        Math.round((s.d + s.h / 24) / 364) +
-        ' ' +
-        ITEM_CONSTANTS.timeUnits[Math.abs(s.d / 364) === 1 && !s.h ? 'sg' : 'pl'][0]
-      );
+      return Math.round((s.d + s.h / 24) / 364) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.d / 364) === 1 && !s.h ? 'sg' : 'pl'][0];
     }
     if (tmp > 1 && !(tmp % 30)) {
       // whole month
-      return (
-        Math.round((s.d + s.h / 24) / 30) +
-        ' ' +
-        ITEM_CONSTANTS.timeUnits[Math.abs(s.d / 30) === 1 && !s.h ? 'sg' : 'pl'][1]
-      );
+      return Math.round((s.d + s.h / 24) / 30) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.d / 30) === 1 && !s.h ? 'sg' : 'pl'][1];
     }
     if (tmp > 1 && !(tmp % 7)) {
       // whole weeks
-      return (
-        Math.round((s.d + s.h / 24) / 7) +
-        ' ' +
-        ITEM_CONSTANTS.timeUnits[Math.abs(s.d / 7) === 1 && !s.h ? 'sg' : 'pl'][2]
-      );
+      return Math.round((s.d + s.h / 24) / 7) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.d / 7) === 1 && !s.h ? 'sg' : 'pl'][2];
     }
     if (s.d !== 0) {
       return Math.round(s.d + s.h / 24) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.d) === 1 && !s.h ? 'sg' : 'pl'][3];
@@ -227,9 +211,7 @@ export class ItemPreviewService {
       return Math.round(s.m + s.s / 60) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.m) === 1 && !s.s ? 'sg' : 'pl'][5];
     }
     if (s.s !== 0) {
-      return (
-        Math.round(s.s + s.ms / 1000) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.s) === 1 && !s.ms ? 'sg' : 'pl'][6]
-      );
+      return Math.round(s.s + s.ms / 1000) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.s) === 1 && !s.ms ? 'sg' : 'pl'][6];
     }
     if (s.ms !== 0) {
       return s.ms + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.ms) === 1 ? 'sg' : 'pl'][7];
@@ -403,11 +385,7 @@ export class ItemPreviewService {
           }
 
           for (let i = 1; i < 6; i++) {
-            if (
-              costs['reqItemId' + i] /* && costs['reqItemId' + i].length > 0 */ &&
-              costs['itemCount' + i] &&
-              costs['itemCount' + i] > 0
-            ) {
+            if (costs['reqItemId' + i] /* && costs['reqItemId' + i].length > 0 */ && costs['itemCount' + i] && costs['itemCount' + i] > 0) {
               data[costs['reqItemId' + i]] = costs['itemCount' + i];
               cItems.push(costs['reqItemId' + i]);
             }
@@ -508,9 +486,7 @@ export class ItemPreviewService {
 
     if (itemClass === ITEM_TYPE.AMMUNITION && dmgmin && dmgmax) {
       if (sc1 && sc1 < ITEM_CONSTANTS.sc.length && sc1 > 0) {
-        damageText += ITEM_CONSTANTS.damage.ammo[1]
-          .replace('%d', ((dmgmin + dmgmax) / 2).toString())
-          .replace('%s', ITEM_CONSTANTS.sc[sc1]);
+        damageText += ITEM_CONSTANTS.damage.ammo[1].replace('%d', ((dmgmin + dmgmax) / 2).toString()).replace('%s', ITEM_CONSTANTS.sc[sc1]);
       } else {
         damageText += ITEM_CONSTANTS.damage.ammo[0].replace('%d', ((dmgmin + dmgmax) / 2).toString());
       }
@@ -583,9 +559,7 @@ export class ItemPreviewService {
         case ITEM_MOD.INTELLECT:
         case ITEM_MOD.SPIRIT:
         case ITEM_MOD.STAMINA:
-          stats += `<br><span><!--stat${type}-->${(qty > 0 ? '+' : '-') + Math.abs(qty)} ${
-            ITEM_CONSTANTS.statType[type]
-          }</span>`;
+          stats += `<br><span><!--stat${type}-->${(qty > 0 ? '+' : '-') + Math.abs(qty)} ${ITEM_CONSTANTS.statType[type]}</span>`;
           break;
         default:
           // rating with % for reqLevel
@@ -791,9 +765,7 @@ export class ItemPreviewService {
         limit = limit[0];
 
         const index = limit && limit.isGem ? 'uniqueEquipped' : 'unique';
-        bondingText += `<br><!-- unique isGem -->${ITEM_CONSTANTS[index][2]
-          .replace('%s', limit.name)
-          .replace('%d', limit.count)}`;
+        bondingText += `<br><!-- unique isGem -->${ITEM_CONSTANTS[index][2].replace('%s', limit.name).replace('%d', limit.count)}`;
       }
     }
 
@@ -818,9 +790,7 @@ export class ItemPreviewService {
       if (itemClass === ITEM_TYPE.ARMOR && subclass > 0) {
         classTmpText += `<th${textRight}><!--asc ${subclass} -->${ITEM_CONSTANTS.armorSubClass[subclass]}</th>`;
       } else if (itemClass === ITEM_TYPE.WEAPON) {
-        classTmpText += ITEM_CONSTANTS.weaponSubClass[subclass]
-          ? `<th${textRight}>${ITEM_CONSTANTS.weaponSubClass[subclass]}</th>`
-          : '';
+        classTmpText += ITEM_CONSTANTS.weaponSubClass[subclass] ? `<th${textRight}>${ITEM_CONSTANTS.weaponSubClass[subclass]}</th>` : '';
       } else if (itemClass === ITEM_TYPE.AMMUNITION) {
         classTmpText += ITEM_CONSTANTS.projectileSubClass[subclass]
           ? `<th${textRight}>${ITEM_CONSTANTS.projectileSubClass[subclass]}</th>`
@@ -885,11 +855,7 @@ export class ItemPreviewService {
     }
 
     // required honorRank (not used anymore)
-    if (
-      !!itemTemplate.requiredhonorrank &&
-      !!PVP_RANK[itemTemplate.requiredhonorrank] &&
-      !!PVP_RANK[itemTemplate.requiredhonorrank].name
-    ) {
+    if (!!itemTemplate.requiredhonorrank && !!PVP_RANK[itemTemplate.requiredhonorrank] && !!PVP_RANK[itemTemplate.requiredhonorrank].name) {
       requiredText += `<br>Requires ${PVP_RANK[itemTemplate.requiredhonorrank].name}`;
     }
 
@@ -898,29 +864,15 @@ export class ItemPreviewService {
     // required level
     if (itemTemplate.Flags & ITEM_FLAG.ACCOUNTBOUND && itemTemplate.Quality === ITEMS_QUALITY.HEIRLOOM) {
       requiredText +=
-        '<br>' +
-        ITEM_CONSTANTS.reqLevelRange
-          .replace('%d', '1')
-          .replace('%d', MAX_LEVEL.toString())
-          .replace('%s', MAX_LEVEL.toString());
+        '<br>' + ITEM_CONSTANTS.reqLevelRange.replace('%d', '1').replace('%d', MAX_LEVEL.toString()).replace('%s', MAX_LEVEL.toString());
     } else if (itemTemplate.RequiredLevel > 1) {
       requiredText += '<br>' + ITEM_CONSTANTS.reqMinLevel.replace('%d', String(itemTemplate.RequiredLevel));
     }
 
     // required arena team rating / personal rating / todo (low): sort out what kind of rating
-    const [res, reqRating] = await this.getExtendedCost(
-      itemTemplate.entry,
-      itemTemplate.FlagsExtra,
-      itemTemplate.BuyPrice,
-    );
+    const [res, reqRating] = await this.getExtendedCost(itemTemplate.entry, itemTemplate.FlagsExtra, itemTemplate.BuyPrice);
 
-    if (
-      !!res &&
-      !!reqRating &&
-      res[itemTemplate.entry] &&
-      Object.keys(res[itemTemplate.entry]).length > 0 &&
-      reqRating.length > 0
-    ) {
+    if (!!res && !!reqRating && res[itemTemplate.entry] && Object.keys(res[itemTemplate.entry]).length > 0 && reqRating.length > 0) {
       requiredText += '<br>' + ITEM_CONSTANTS.reqRating[reqRating[1]].replace('%d', reqRating[0]);
     }
 
@@ -950,9 +902,7 @@ export class ItemPreviewService {
     // required spell
     const requiredSpell = itemTemplate.requiredspell;
     if (!!requiredSpell && requiredSpell > 0) {
-      requiredText += `<br>Requires <span class="q1">${await this.sqliteQueryService.getSpellNameById(
-        requiredSpell,
-      )}</span>`;
+      requiredText += `<br>Requires <span class="q1">${await this.sqliteQueryService.getSpellNameById(requiredSpell)}</span>`;
     }
 
     // required reputation w/ faction
@@ -1105,10 +1055,7 @@ export class ItemPreviewService {
                 vspfArgs = [gemCndValue, ITEM_CONSTANTS['gemColors'][gemCndColor - 1]];
                 break;
               case 3: // requires more <color> than (<value> || <comparecolor>) gems
-                vspfArgs = [
-                  ITEM_CONSTANTS['gemColors'][gemCndColor - 1],
-                  ITEM_CONSTANTS['gemColors'][gemCndCmpColor - 1],
-                ];
+                vspfArgs = [ITEM_CONSTANTS['gemColors'][gemCndColor - 1], ITEM_CONSTANTS['gemColors'][gemCndCmpColor - 1]];
                 break;
               default:
                 break;
@@ -1198,10 +1145,7 @@ export class ItemPreviewService {
           if (spellTrigger[0] || parsed || spellTrigger[1]) {
             /* istanbul ignore next */
             green.push(
-              (ITEM_CONSTANTS.trigger[spellTrigger[0]] ?? '') +
-                (parsed ?? '') +
-                ' ' +
-                (ITEM_CONSTANTS.trigger[spellTrigger[1]] ?? ''),
+              (ITEM_CONSTANTS.trigger[spellTrigger[0]] ?? '') + (parsed ?? '') + ' ' + (ITEM_CONSTANTS.trigger[spellTrigger[1]] ?? ''),
             );
           }
         }

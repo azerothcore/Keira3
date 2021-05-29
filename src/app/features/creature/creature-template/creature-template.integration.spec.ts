@@ -150,9 +150,7 @@ describe('CreatureTemplate integration tests', () => {
       page.expectFullQueryToContain('Shin');
 
       page.setInputValueById('subname', 'AC Developer');
-      page.expectDiffQueryToContain(
-        "UPDATE `creature_template` SET `name` = 'Shin', `subname` = 'AC Developer' WHERE (`entry` = 1234);",
-      );
+      page.expectDiffQueryToContain("UPDATE `creature_template` SET `name` = 'Shin', `subname` = 'AC Developer' WHERE (`entry` = 1234);");
       page.expectFullQueryToContain('Shin');
       page.expectFullQueryToContain('AC Developer');
     });

@@ -143,9 +143,7 @@ describe('GameobjectTemplate integration tests', () => {
       page.expectFullQueryToContain('Helias');
 
       page.setInputValueById('Data0', '35');
-      page.expectDiffQueryToContain(
-        "UPDATE `gameobject_template` SET `name` = 'Helias', `Data0` = 35 WHERE (`entry` = " + id + ');',
-      );
+      page.expectDiffQueryToContain("UPDATE `gameobject_template` SET `name` = 'Helias', `Data0` = 35 WHERE (`entry` = " + id + ');');
       page.expectFullQueryToContain('Helias');
       page.expectFullQueryToContain('35');
     });

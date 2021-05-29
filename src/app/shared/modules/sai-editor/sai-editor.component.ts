@@ -134,8 +134,7 @@ export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> im
 
   get showTimedActionlists(): boolean {
     return (
-      this.handlerService.parsedSelected.source_type === SAI_TYPES.SAI_TYPE_CREATURE &&
-      this.handlerService.parsedSelected.entryorguid > 0
+      this.handlerService.parsedSelected.source_type === SAI_TYPES.SAI_TYPE_CREATURE && this.handlerService.parsedSelected.entryorguid > 0
     );
   }
 

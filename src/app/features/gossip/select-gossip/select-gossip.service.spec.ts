@@ -11,11 +11,7 @@ describe('SelectGossipService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      providers: [
-        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-        GossipHandlerService,
-        SelectGossipService,
-      ],
+      providers: [{ provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }, GossipHandlerService, SelectGossipService],
     }),
   );
 

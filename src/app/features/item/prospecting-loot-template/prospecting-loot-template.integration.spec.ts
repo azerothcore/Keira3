@@ -190,9 +190,7 @@ describe('ProspectingLootTemplate integration tests', () => {
     it('deleting rows should correctly work', () => {
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `prospecting_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1));',
-      );
+      page.expectDiffQueryToContain('DELETE FROM `prospecting_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1));');
       page.expectFullQueryToContain(
         'DELETE FROM `prospecting_loot_template` WHERE (`Entry` = 1234);\n' +
           'INSERT INTO `prospecting_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
@@ -203,9 +201,7 @@ describe('ProspectingLootTemplate integration tests', () => {
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `prospecting_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2));',
-      );
+      page.expectDiffQueryToContain('DELETE FROM `prospecting_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2));');
       page.expectFullQueryToContain(
         'DELETE FROM `prospecting_loot_template` WHERE (`Entry` = 1234);\n' +
           'INSERT INTO `prospecting_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +

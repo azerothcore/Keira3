@@ -1,22 +1,32 @@
 <div class="modal-body">
-
   <p class="lead text-center mb-1">Area selector</p>
 
   <form [formGroup]="searchService.queryForm">
     <div class="row">
       <ng-container [formGroup]="searchService.fields">
         <div class="form-group col-3">
-          <input [formControlName]="'m_ID'" type="number" class="form-control form-control-sm" id="m_ID" placeholder="m_ID">
+          <input [formControlName]="'m_ID'" type="number" class="form-control form-control-sm" id="m_ID" placeholder="m_ID" />
         </div>
         <div class="form-group col-3">
-          <input [formControlName]="'m_ParentAreaID'" type="number" class="form-control form-control-sm" id="m_ParentAreaID" placeholder="m_ParentAreaID">
+          <input
+            [formControlName]="'m_ParentAreaID'"
+            type="number"
+            class="form-control form-control-sm"
+            id="m_ParentAreaID"
+            placeholder="m_ParentAreaID"
+          />
         </div>
         <div class="form-group col-5">
-          <input [formControlName]="'m_AreaName_lang'" class="form-control form-control-sm" id="m_AreaName_lang" placeholder="m_AreaName_lang">
+          <input
+            [formControlName]="'m_AreaName_lang'"
+            class="form-control form-control-sm"
+            id="m_AreaName_lang"
+            placeholder="m_AreaName_lang"
+          />
         </div>
       </ng-container>
       <div class="form-group col-2">
-        <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Unlimited">
+        <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Unlimited" />
       </div>
       <div class="col-2">
         <keira-search-button [searchService]="searchService"></keira-search-button>
@@ -26,7 +36,6 @@
   </form>
 
   <div *ngIf="searchService.rows">
-
     <ngx-datatable
       class="bootstrap table table-striped text-center datatable-select highlight-select"
       [rows]="searchService.rows"
@@ -36,7 +45,7 @@
       [rowHeight]="DTCFG.rowHeight"
       [limit]="DTCFG.limit"
       [selectionType]="DTCFG.selectionType"
-      (select)='onSelect($event)'
+      (select)="onSelect($event)"
     >
       <ngx-datatable-column name="m_ID" prop="m_ID" [minWidth]="100">
         <ng-template let-row="row" ngx-datatable-cell-template>
@@ -46,7 +55,6 @@
       <ngx-datatable-column name="m_ParentAreaID" prop="m_ParentAreaID"></ngx-datatable-column>
       <ngx-datatable-column name="m_AreaName_lang" prop="m_AreaName_lang"></ngx-datatable-column>
     </ngx-datatable>
-
   </div>
 </div>
 

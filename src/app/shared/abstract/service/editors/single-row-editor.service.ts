@@ -29,16 +29,14 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     super.initForm();
 
     this.subscriptions.push(
-      this._form.valueChanges
-        .pipe(distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)))
-        .subscribe(() => {
-          if (!this._loading) {
-            if (this._form.dirty) {
-              this.updateDiffQuery();
-            }
-            this.updateFullQuery();
+      this._form.valueChanges.pipe(distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))).subscribe(() => {
+        if (!this._loading) {
+          if (this._form.dirty) {
+            this.updateDiffQuery();
           }
-        }),
+          this.updateFullQuery();
+        }
+      }),
     );
   }
 
@@ -54,11 +52,7 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
   }
 
   protected updateFullQuery(): void {
-    this._fullQuery = this.queryService.getFullDeleteInsertQuery<T>(
-      this._entityTable,
-      [this._form.getRawValue()],
-      this._entityIdField,
-    );
+    this._fullQuery = this.queryService.getFullDeleteInsertQuery<T>(this._entityTable, [this._form.getRawValue()], this._entityIdField);
   }
 
   /*

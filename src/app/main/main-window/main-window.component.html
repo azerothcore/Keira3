@@ -1,8 +1,6 @@
-<div class="page-wrapper" [ngClass]="{'toggled' : sidebarService.getSidebarState() }">
+<div class="page-wrapper" [ngClass]="{ toggled: sidebarService.getSidebarState() }">
   <keira-sidebar></keira-sidebar>
   <main class="page-content">
     <router-outlet></router-outlet>
   </main>
 </div>
-
-

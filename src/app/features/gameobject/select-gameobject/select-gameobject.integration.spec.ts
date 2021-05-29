@@ -104,8 +104,7 @@ describe('SelectGameobject integration tests', () => {
       id: 1200,
       name: `Solid Chest`,
       limit: '100',
-      expectedQuery:
-        "SELECT * FROM `gameobject_template` WHERE (`entry` LIKE '%1200%') AND (`name` LIKE '%Solid Chest%') LIMIT 100",
+      expectedQuery: "SELECT * FROM `gameobject_template` WHERE (`entry` LIKE '%1200%') AND (`name` LIKE '%Solid Chest%') LIMIT 100",
     },
     {
       testId: 2,

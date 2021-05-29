@@ -13,7 +13,6 @@ import { GAMEOBJECT_SPAWN_ADDON_TABLE } from '@keira-types/gameobject-spawn-addo
 
 @Injectable()
 export class GameobjectHandlerService extends HandlerService<GameobjectTemplate> {
-
   get isGameobjectTemplateUnsaved(): boolean {
     return this.statusMap[GAMEOBJECT_TEMPLATE_TABLE];
   }
