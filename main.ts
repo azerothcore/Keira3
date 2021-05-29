@@ -12,8 +12,8 @@ serve = args.some((val) => val === '--serve');
 
 function createWindow() {
   const hasPreviousSettings = settings.hasSync('user_settings.width');
-  const width = hasPreviousSettings ? Number(settings.getSync('user_settings.width')) : 800;
-  const height = hasPreviousSettings ? Number(settings.getSync('user_settings.height')) : 600;
+  const width = hasPreviousSettings ? Number(settings.getSync('user_settings.width')) : 1024;
+  const height = hasPreviousSettings ? Number(settings.getSync('user_settings.height')) : 768;
   const pox_x = hasPreviousSettings ? Number(settings.getSync('user_settings.pos_x')) : 0;
   const pos_y = hasPreviousSettings ? Number(settings.getSync('user_settings.pos_y')) : 0;
 

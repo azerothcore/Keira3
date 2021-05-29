@@ -22,6 +22,7 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
   public readonly AC_FORUM_URL = AC_FORUM_URL;
   public readonly AC_DISCORD_URL = AC_DISCORD_URL;
   public readonly KEIRA3_REPO_URL = KEIRA3_REPO_URL;
+  public readonly NAVIGATOR_APP_VERSION = window.navigator.appVersion;
 
   get databaseName() {
     return this.mysqlService.config.database;
