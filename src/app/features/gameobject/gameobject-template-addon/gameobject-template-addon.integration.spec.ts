@@ -110,10 +110,7 @@ describe('GameobjectTemplateAddon integration tests', () => {
 
     it('changing all properties and executing the query should correctly work', () => {
       const expectedQuery =
-        'UPDATE `gameobject_template_addon` SET ' +
-        '`flags` = 1, `mingold` = 2, `maxgold` = 3 WHERE (`entry` = ' +
-        id +
-        ');';
+        'UPDATE `gameobject_template_addon` SET ' + '`flags` = 1, `mingold` = 2, `maxgold` = 3 WHERE (`entry` = ' + id + ');';
 
       querySpy.calls.reset();
 
@@ -127,9 +124,7 @@ describe('GameobjectTemplateAddon integration tests', () => {
 
     it('changing values should correctly update the queries', () => {
       page.setInputValueById('faction', '35');
-      page.expectDiffQueryToContain(
-        'UPDATE `gameobject_template_addon` SET `faction` = 35 WHERE (`entry` = ' + id + ');',
-      );
+      page.expectDiffQueryToContain('UPDATE `gameobject_template_addon` SET `faction` = 35 WHERE (`entry` = ' + id + ');');
       page.expectFullQueryToContain('35');
     });
 
@@ -149,9 +144,7 @@ describe('GameobjectTemplateAddon integration tests', () => {
         await page.whenReady();
 
         expect(page.getInputById(field).value).toEqual('10');
-        page.expectDiffQueryToContain(
-          'UPDATE `gameobject_template_addon` SET `flags` = 10 WHERE (`entry` = ' + id + ');',
-        );
+        page.expectDiffQueryToContain('UPDATE `gameobject_template_addon` SET `flags` = 10 WHERE (`entry` = ' + id + ');');
 
         page.expectFullQueryToContain(
           'DELETE FROM `gameobject_template_addon` WHERE (`entry` = ' +

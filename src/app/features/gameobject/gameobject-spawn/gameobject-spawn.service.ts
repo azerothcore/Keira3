@@ -2,12 +2,7 @@ import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
 import { MultiRowEditorService } from '@keira-abstract/service/editors/multi-row-editor.service';
-import {
-  GameobjectSpawn,
-  GAMEOBJECT_SPAWN_ID,
-  GAMEOBJECT_SPAWN_ID_2,
-  GAMEOBJECT_SPAWN_TABLE,
-} from '@keira-types/gameobject-spawn.type';
+import { GameobjectSpawn, GAMEOBJECT_SPAWN_ID, GAMEOBJECT_SPAWN_ID_2, GAMEOBJECT_SPAWN_TABLE } from '@keira-types/gameobject-spawn.type';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 
@@ -19,14 +14,6 @@ export class GameobjectSpawnService extends MultiRowEditorService<GameobjectSpaw
     public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
-    super(
-      GameobjectSpawn,
-      GAMEOBJECT_SPAWN_TABLE,
-      GAMEOBJECT_SPAWN_ID,
-      GAMEOBJECT_SPAWN_ID_2,
-      handlerService,
-      queryService,
-      toastrService,
-    );
+    super(GameobjectSpawn, GAMEOBJECT_SPAWN_TABLE, GAMEOBJECT_SPAWN_ID, GAMEOBJECT_SPAWN_ID_2, handlerService, queryService, toastrService);
   }
 }

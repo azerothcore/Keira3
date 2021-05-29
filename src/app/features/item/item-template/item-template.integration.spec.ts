@@ -170,9 +170,7 @@ describe('ItemTemplate integration tests', () => {
       page.expectFullQueryToContain('Shin');
 
       page.setInputValueById('BuyCount', 22);
-      page.expectDiffQueryToContain(
-        "UPDATE `item_template` SET `name` = 'Shin', `BuyCount` = 22 WHERE (`entry` = 1234);",
-      );
+      page.expectDiffQueryToContain("UPDATE `item_template` SET `name` = 'Shin', `BuyCount` = 22 WHERE (`entry` = 1234);");
       page.expectFullQueryToContain('Shin');
       page.expectFullQueryToContain('22');
     });
@@ -206,9 +204,7 @@ describe('ItemTemplate integration tests', () => {
       waitForAsync(async () => {
         const field = 'socketBonus';
         const sqliteQueryService = TestBed.inject(SqliteQueryService);
-        spyOn(sqliteQueryService, 'query').and.returnValue(
-          of([{ id: 1248, name: 'Mock Enchantment', conditionId: 456 }]),
-        );
+        spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock Enchantment', conditionId: 456 }]));
 
         page.clickElement(page.getSelectorBtn(field));
         await page.whenReady();
@@ -256,9 +252,7 @@ describe('ItemTemplate integration tests', () => {
       waitForAsync(async () => {
         const field = 'ItemLimitCategory';
         const sqliteQueryService = TestBed.inject(SqliteQueryService);
-        spyOn(sqliteQueryService, 'query').and.returnValue(
-          of([{ id: 1248, name: 'Mock ItemLimitCategory', count: 2, isGem: 1 }]),
-        );
+        spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock ItemLimitCategory', count: 2, isGem: 1 }]));
 
         page.clickElement(page.getSelectorBtn(field));
         await page.whenReady();
@@ -367,15 +361,11 @@ describe('ItemTemplate integration tests', () => {
 
         sqliteQueryService = TestBed.inject(SqliteQueryService);
         spyOn(sqliteQueryService, 'getSpellNameById').and.callFake((i) => of(mockGetSpellNameById + i).toPromise());
-        spyOn(sqliteQueryService, 'getSpellDescriptionById').and.callFake((i) =>
-          of(mockGetSpellDescriptionById + i).toPromise(),
-        );
+        spyOn(sqliteQueryService, 'getSpellDescriptionById').and.callFake((i) => of(mockGetSpellDescriptionById + i).toPromise());
         spyOn(sqliteQueryService, 'getFactionNameById').and.callFake((i) => of(mockGetFactionNameById + i).toPromise());
         spyOn(sqliteQueryService, 'getMapNameById').and.callFake((i) => of(mockGetMapNameById + i).toPromise());
         spyOn(sqliteQueryService, 'getAreaNameById').and.callFake((i) => of(mockGetAreaNameById + i).toPromise());
-        spyOn(sqliteQueryService, 'getEventNameByHolidayId').and.callFake((i) =>
-          of(mockGetEventNameByHolidayId + i).toPromise(),
-        );
+        spyOn(sqliteQueryService, 'getEventNameByHolidayId').and.callFake((i) => of(mockGetEventNameByHolidayId + i).toPromise());
         spyOn(sqliteQueryService, 'getSocketBonusById').and.callFake((i) => of(mockGetSocketBonusById + i).toPromise());
         spyOn(sqliteQueryService, 'getLockById').and.callFake((i) => of([lockData]).toPromise());
         spyOn(sqliteQueryService, 'getSkillNameById').and.callFake((i) => of('profession').toPromise());

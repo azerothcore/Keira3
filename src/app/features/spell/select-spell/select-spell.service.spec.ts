@@ -11,11 +11,7 @@ describe('SelectSpellService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      providers: [
-        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-        SpellHandlerService,
-        SelectSpellService,
-      ],
+      providers: [{ provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }, SpellHandlerService, SelectSpellService],
     }),
   );
 

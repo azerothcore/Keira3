@@ -142,11 +142,7 @@ export class MysqlQueryService extends QueryService {
     }
   }
 
-  private getFinalDiffDeleteInsertQuery<T extends TableRow>(
-    addedOrEditedRows: T[],
-    deleteQuery: Delete,
-    insertQuery: Insert,
-  ): string {
+  private getFinalDiffDeleteInsertQuery<T extends TableRow>(addedOrEditedRows: T[], deleteQuery: Delete, insertQuery: Insert): string {
     let query = deleteQuery.toString() + ';\n';
 
     if (addedOrEditedRows.length > 0) {
@@ -334,18 +330,12 @@ export class MysqlQueryService extends QueryService {
   getTimedActionlists(creatureId: string | number): Observable<SmartScripts[]> {
     const startId = +creatureId * 100;
     return this.query<SmartScripts>(
-      `SELECT * FROM smart_scripts WHERE source_type = 9 AND entryorguid >= ${startId} AND entryorguid < ${
-        startId + 100
-      }`,
+      `SELECT * FROM smart_scripts WHERE source_type = 9 AND entryorguid >= ${startId} AND entryorguid < ${startId + 100}`,
     );
   }
 
   getCreatureNameById(id: string | number): Promise<string> {
-    return this.queryValueToPromiseCached(
-      'getCreatureNameById',
-      String(id),
-      `SELECT name AS v FROM creature_template WHERE entry = ${id}`,
-    );
+    return this.queryValueToPromiseCached('getCreatureNameById', String(id), `SELECT name AS v FROM creature_template WHERE entry = ${id}`);
   }
 
   getCreatureNameByGuid(guid: string | number): Promise<string> {
@@ -373,11 +363,7 @@ export class MysqlQueryService extends QueryService {
   }
 
   getQuestTitleById(id: string | number): Promise<string> {
-    return this.queryValueToPromiseCached(
-      'getQuestTitleById',
-      String(id),
-      `SELECT LogTitle AS v FROM quest_template WHERE ID = ${id}`,
-    );
+    return this.queryValueToPromiseCached('getQuestTitleById', String(id), `SELECT LogTitle AS v FROM quest_template WHERE ID = ${id}`);
   }
 
   getPrevQuestById(id: string | number): Promise<string> {
@@ -390,16 +376,8 @@ export class MysqlQueryService extends QueryService {
 
   getNextQuestById(id: string | number, usingPrev = false): Promise<string> {
     return usingPrev
-      ? this.queryValueToPromiseCached(
-          'getNextQuest1',
-          String(id),
-          `SELECT id AS v FROM quest_template_addon WHERE PrevQuestID = ${id}`,
-        )
-      : this.queryValueToPromiseCached(
-          'getNextQuest2',
-          String(id),
-          `SELECT NextQuestID AS v FROM quest_template_addon WHERE id = ${id}`,
-        );
+      ? this.queryValueToPromiseCached('getNextQuest1', String(id), `SELECT id AS v FROM quest_template_addon WHERE PrevQuestID = ${id}`)
+      : this.queryValueToPromiseCached('getNextQuest2', String(id), `SELECT NextQuestID AS v FROM quest_template_addon WHERE id = ${id}`);
   }
 
   getItemByStartQuest(id: string | number): Promise<string> {
@@ -419,11 +397,7 @@ export class MysqlQueryService extends QueryService {
   }
 
   getItemNameById(id: string | number): Promise<string> {
-    return this.queryValueToPromiseCached(
-      'getItemNameById',
-      String(id),
-      `SELECT name AS v FROM item_template WHERE entry = ${id}`,
-    );
+    return this.queryValueToPromiseCached('getItemNameById', String(id), `SELECT name AS v FROM item_template WHERE entry = ${id}`);
   }
 
   getDisplayIdByItemId(id: string | number): Observable<string> {
@@ -476,18 +450,10 @@ export class MysqlQueryService extends QueryService {
   }
 
   getText0ById(id: string | number): Promise<string> {
-    return this.queryValueToPromiseCached(
-      'getText0ById',
-      String(id),
-      `SELECT text0_0 AS v FROM npc_text WHERE ID = ${id}`,
-    );
+    return this.queryValueToPromiseCached('getText0ById', String(id), `SELECT text0_0 AS v FROM npc_text WHERE ID = ${id}`);
   }
 
   getText1ById(id: string | number): Promise<string> {
-    return this.queryValueToPromiseCached(
-      'getText1ById',
-      String(id),
-      `SELECT text0_1 AS v FROM npc_text WHERE ID = ${id}`,
-    );
+    return this.queryValueToPromiseCached('getText1ById', String(id), `SELECT text0_1 AS v FROM npc_text WHERE ID = ${id}`);
   }
 }

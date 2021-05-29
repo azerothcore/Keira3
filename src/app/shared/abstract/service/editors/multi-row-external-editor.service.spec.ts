@@ -34,9 +34,7 @@ describe('MultiRowExternalEditorService', () => {
   it('updateDiffQuery() should correctly work', () => {
     service['_diffQuery'] = '';
     const queryResult = '-- Mock query result';
-    const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getDiffDeleteInsertTwoKeysQuery').and.returnValue(
-      queryResult,
-    );
+    const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getDiffDeleteInsertTwoKeysQuery').and.returnValue(queryResult);
 
     service['updateDiffQuery']();
 
@@ -54,9 +52,7 @@ describe('MultiRowExternalEditorService', () => {
   it('updateFullQuery() should correctly work', () => {
     service['_fullQuery'] = '';
     const queryResult = '-- Mock query result';
-    const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertQuery').and.returnValue(
-      queryResult,
-    );
+    const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertQuery').and.returnValue(queryResult);
 
     service['updateFullQuery']();
 

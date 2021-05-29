@@ -121,9 +121,7 @@ describe('CreatureOnkillReputation integration tests', () => {
 
     it('changing values should correctly update the queries', () => {
       page.setInputValueById('RewOnKillRepFaction2', '1');
-      page.expectDiffQueryToContain(
-        'UPDATE `creature_onkill_reputation` SET `RewOnKillRepFaction2` = 1 WHERE (`creature_id` = 1234);',
-      );
+      page.expectDiffQueryToContain('UPDATE `creature_onkill_reputation` SET `RewOnKillRepFaction2` = 1 WHERE (`creature_id` = 1234);');
       page.expectFullQueryToContain(
         'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
           'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +
@@ -159,9 +157,7 @@ describe('CreatureOnkillReputation integration tests', () => {
         await page.whenReady();
 
         expect(page.getInputById(field).value).toEqual('7');
-        page.expectDiffQueryToContain(
-          'UPDATE `creature_onkill_reputation` SET `MaxStanding1` = 7 WHERE (`creature_id` = 1234);',
-        );
+        page.expectDiffQueryToContain('UPDATE `creature_onkill_reputation` SET `MaxStanding1` = 7 WHERE (`creature_id` = 1234);');
         page.expectFullQueryToContain(
           'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
             'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +
@@ -190,9 +186,7 @@ describe('CreatureOnkillReputation integration tests', () => {
         page.clickModalSelect();
         await page.whenReady();
 
-        page.expectDiffQueryToContain(
-          'UPDATE `creature_onkill_reputation` SET `RewOnKillRepFaction1` = 123 WHERE (`creature_id` = 1234);',
-        );
+        page.expectDiffQueryToContain('UPDATE `creature_onkill_reputation` SET `RewOnKillRepFaction1` = 123 WHERE (`creature_id` = 1234);');
         page.expectFullQueryToContain(
           'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
             'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`, `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, `MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n' +

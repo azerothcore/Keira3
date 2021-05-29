@@ -334,10 +334,7 @@ export class QuestPreviewService {
   }
 
   public isRepeatable(): boolean {
-    return !!(
-      this.questTemplate.Flags & QUEST_FLAG_REPEATABLE ||
-      this.questTemplateAddon.SpecialFlags & QUEST_FLAG_SPECIAL_REPEATABLE
-    );
+    return !!(this.questTemplate.Flags & QUEST_FLAG_REPEATABLE || this.questTemplateAddon.SpecialFlags & QUEST_FLAG_SPECIAL_REPEATABLE);
   }
 
   get requiredSkill$(): Promise<string> {
@@ -482,13 +479,7 @@ export class QuestPreviewService {
   }
 
   isReward(): boolean {
-    return (
-      this.isRewardItems() ||
-      this.isRewardChoiceItems() ||
-      !!this.rewardSpell() ||
-      this.isRewardMoney() ||
-      this.isRewardBonusMoney()
-    );
+    return this.isRewardItems() || this.isRewardChoiceItems() || !!this.rewardSpell() || this.isRewardMoney() || this.isRewardBonusMoney();
   }
 
   rewardSpell(): number {

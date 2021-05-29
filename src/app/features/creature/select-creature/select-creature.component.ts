@@ -23,13 +23,6 @@ export class SelectCreatureComponent extends SelectComponent<CreatureTemplate> {
     public handlerService: CreatureHandlerService,
     public queryService: MysqlQueryService,
   ) {
-    super(
-      CREATURE_TEMPLATE_TABLE,
-      CREATURE_TEMPLATE_ID,
-      CREATURE_TEMPLATE_CUSTOM_STARTING_ID,
-      selectService,
-      handlerService,
-      queryService,
-    );
+    super(CREATURE_TEMPLATE_TABLE, CREATURE_TEMPLATE_ID, CREATURE_TEMPLATE_CUSTOM_STARTING_ID, selectService, handlerService, queryService);
   }
 }

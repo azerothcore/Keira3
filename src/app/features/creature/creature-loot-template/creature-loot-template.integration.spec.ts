@@ -217,9 +217,7 @@ describe('CreatureLootTemplate integration tests', () => {
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `creature_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2));',
-      );
+      page.expectDiffQueryToContain('DELETE FROM `creature_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2));');
       page.expectFullQueryToContain(
         'DELETE FROM `creature_loot_template` WHERE (`Entry` = 1234);\n' +
           'INSERT INTO `creature_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +

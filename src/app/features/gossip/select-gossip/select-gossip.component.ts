@@ -1,12 +1,7 @@
 import { Component } from '@angular/core';
 
 import { SelectComponent } from '@keira-abstract/components/editors/select.component';
-import {
-  GOSSIP_MENU_CUSTOM_STARTING_ID,
-  GOSSIP_MENU_ID,
-  GOSSIP_MENU_TABLE,
-  GossipMenu,
-} from '@keira-types/gossip-menu.type';
+import { GOSSIP_MENU_CUSTOM_STARTING_ID, GOSSIP_MENU_ID, GOSSIP_MENU_TABLE, GossipMenu } from '@keira-types/gossip-menu.type';
 import { SelectGossipService } from './select-gossip.service';
 import { GossipHandlerService } from '../gossip-handler.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
@@ -23,13 +18,6 @@ export class SelectGossipComponent extends SelectComponent<GossipMenu> {
     public handlerService: GossipHandlerService,
     public queryService: MysqlQueryService,
   ) {
-    super(
-      GOSSIP_MENU_TABLE,
-      GOSSIP_MENU_ID,
-      GOSSIP_MENU_CUSTOM_STARTING_ID,
-      selectService,
-      handlerService,
-      queryService,
-    );
+    super(GOSSIP_MENU_TABLE, GOSSIP_MENU_ID, GOSSIP_MENU_CUSTOM_STARTING_ID, selectService, handlerService, queryService);
   }
 }

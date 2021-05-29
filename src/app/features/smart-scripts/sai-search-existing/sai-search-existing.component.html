@@ -1,9 +1,7 @@
 <div class="container-fluid">
   <div class="content-block">
     <div class="wiki-link mb-2">
-      <a [href]="WIKI_BASE_URL + 'conditions'" target="_blank">
-        <i class="fas fa-link"></i> conditions documentation
-      </a>
+      <a [href]="WIKI_BASE_URL + 'conditions'" target="_blank"> <i class="fas fa-link"></i> conditions documentation </a>
     </div>
 
     <form [formGroup]="selectService.queryForm">
@@ -19,14 +17,20 @@
         <div class="form-group row">
           <label class="col-sm-5 col-md-4 col-lg-3 col-form-label" for="entryorguid">Entry(+) or GUID(-):</label>
           <div class="col-sm-7 col-md-8 col-lg-9">
-            <input [formControlName]="'entryorguid'" type="number" class="form-control form-control-sm" id="entryorguid" placeholder="Entry (as positive number) or GUID (as negative number)">
+            <input
+              [formControlName]="'entryorguid'"
+              type="number"
+              class="form-control form-control-sm"
+              id="entryorguid"
+              placeholder="Entry (as positive number) or GUID (as negative number)"
+            />
           </div>
         </div>
       </ng-container>
       <div class="form-group row">
         <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="limit">Limit:</label>
         <div class="col-sm-4 col-md-3 col-lg-2">
-          <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Limit">
+          <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Limit" />
         </div>
         <div class="col-sm-12 col-md-6 mt-1 mt-md-0">
           <keira-search-button [searchService]="selectService"></keira-search-button>
@@ -36,7 +40,6 @@
     </form>
 
     <div *ngIf="selectService.rows">
-
       <ngx-datatable
         class="bootstrap table table-striped text-center datatable-select"
         [rows]="selectService.rows"
@@ -46,12 +49,11 @@
         [rowHeight]="DTCFG.rowHeight"
         [limit]="DTCFG.limit"
         [selectionType]="DTCFG.selectionType"
-        (select)='onSelect($event)'
+        (select)="onSelect($event)"
       >
         <ngx-datatable-column name="Entry or GUID" prop="entryorguid" [minWidth]="200"></ngx-datatable-column>
         <ngx-datatable-column name="Source Type" prop="source_type"></ngx-datatable-column>
       </ngx-datatable>
-
     </div>
   </div>
 </div>

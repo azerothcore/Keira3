@@ -103,8 +103,7 @@ describe('SelectItem integration tests', () => {
       id: 1200,
       name: `The People's Militia`,
       limit: '100',
-      expectedQuery:
-        "SELECT * FROM `item_template` WHERE (`entry` LIKE '%1200%') AND (`name` LIKE '%The People\\'s Militia%') LIMIT 100",
+      expectedQuery: "SELECT * FROM `item_template` WHERE (`entry` LIKE '%1200%') AND (`name` LIKE '%The People\\'s Militia%') LIMIT 100",
     },
     {
       testId: 2,

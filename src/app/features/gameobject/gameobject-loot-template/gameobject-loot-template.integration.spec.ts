@@ -197,9 +197,7 @@ describe('GameobjectLootTemplate integration tests', () => {
     it('deleting rows should correctly work', () => {
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1));',
-      );
+      page.expectDiffQueryToContain('DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1));');
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234);\n' +
           'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
@@ -210,9 +208,7 @@ describe('GameobjectLootTemplate integration tests', () => {
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2));',
-      );
+      page.expectDiffQueryToContain('DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2));');
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234);\n' +
           'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +

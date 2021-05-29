@@ -392,9 +392,7 @@ describe('GameobjectSpawn integration tests', () => {
       waitForAsync(async () => {
         const field = 'areaId';
         const sqliteQueryService = TestBed.inject(SqliteQueryService);
-        spyOn(sqliteQueryService, 'query').and.returnValue(
-          of([{ m_ID: 123, m_ParentAreaID: 456, m_AreaName_lang: 'Mock Area' }]),
-        );
+        spyOn(sqliteQueryService, 'query').and.returnValue(of([{ m_ID: 123, m_ParentAreaID: 456, m_AreaName_lang: 'Mock Area' }]));
 
         // because this is a multi-row editor
         page.clickRowOfDatatable(0);

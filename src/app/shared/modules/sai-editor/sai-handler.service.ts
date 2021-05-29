@@ -79,8 +79,7 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
       if (sai.entryorguid < 0) {
         query = `SELECT ct.name FROM creature_template AS ct INNER JOIN creature AS c ON c.id = ct.entry WHERE c.guid = ${-sai.entryorguid}`;
       } else {
-        const entry =
-          sai.source_type === SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST ? Math.trunc(sai.entryorguid / 100) : sai.entryorguid;
+        const entry = sai.source_type === SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST ? Math.trunc(sai.entryorguid / 100) : sai.entryorguid;
         query = `SELECT name FROM creature_template WHERE entry = ${entry}`;
       }
     } else if (sai.source_type === SAI_TYPES.SAI_TYPE_GAMEOBJECT) {

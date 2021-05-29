@@ -18,14 +18,7 @@ import { closeModalsAfterEach } from '@keira-testing/test-helpers';
 
 @NgModule({
   declarations: [ItemSelectorModalComponent],
-  imports: [
-    CommonModule,
-    BrowserModule,
-    FormsModule,
-    ReactiveFormsModule,
-    NgxDatatableModule,
-    HighlightModule.forRoot(highlightOptions),
-  ],
+  imports: [CommonModule, BrowserModule, FormsModule, ReactiveFormsModule, NgxDatatableModule, HighlightModule.forRoot(highlightOptions)],
   providers: [{ provide: MysqlService, useValue: instance(MockedMysqlService) }],
 })
 class TestModule {}

@@ -16,6 +16,7 @@ import { toastrConfig } from '@keira-config/toastr.config';
 import { SpellDbcLocaleComponent } from './texts/spell-dbc-locale/spell-dbc-locale.component';
 import { SpellDbcSpellEffectComponent } from './effects/spell-dbc-spell-effect/spell-dbc-spell-effect.component';
 import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selector/flags-selector.module';
+import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selec
     TooltipModule.forRoot(),
     ToastrModule.forRoot(toastrConfig),
     FlagsSelectorModule,
+    SingleValueSelectorModule,
   ],
 })
 export class SpellDbcModule {}

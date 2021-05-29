@@ -2,12 +2,7 @@ import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
 import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
-import {
-  ITEM_TEMPLATE_ID,
-  ITEM_TEMPLATE_NAME,
-  ITEM_TEMPLATE_TABLE,
-  ItemTemplate,
-} from '@keira-types/item-template.type';
+import { ITEM_TEMPLATE_ID, ITEM_TEMPLATE_NAME, ITEM_TEMPLATE_TABLE, ItemTemplate } from '@keira-types/item-template.type';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { ItemHandlerService } from '../item-handler.service';
 
@@ -19,15 +14,6 @@ export class ItemTemplateService extends SingleRowEditorService<ItemTemplate> {
     public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
-    super(
-      ItemTemplate,
-      ITEM_TEMPLATE_TABLE,
-      ITEM_TEMPLATE_ID,
-      ITEM_TEMPLATE_NAME,
-      true,
-      handlerService,
-      queryService,
-      toastrService,
-    );
+    super(ItemTemplate, ITEM_TEMPLATE_TABLE, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_NAME, true, handlerService, queryService, toastrService);
   }
 }

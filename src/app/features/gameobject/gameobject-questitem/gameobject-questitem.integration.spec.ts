@@ -160,9 +160,7 @@ describe('GameobjectQuestitem integration tests', () => {
     it('deleting rows should correctly work', () => {
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234) AND (`Idx` IN (1));',
-      );
+      page.expectDiffQueryToContain('DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234) AND (`Idx` IN (1));');
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234);\n' +
           'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
@@ -172,9 +170,7 @@ describe('GameobjectQuestitem integration tests', () => {
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234) AND (`Idx` IN (1, 2));',
-      );
+      page.expectDiffQueryToContain('DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234) AND (`Idx` IN (1, 2));');
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234);\n' +
           'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +

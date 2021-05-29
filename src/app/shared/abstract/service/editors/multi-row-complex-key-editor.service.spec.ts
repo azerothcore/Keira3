@@ -36,9 +36,7 @@ describe('MultiRowComplexKeyEditorService', () => {
 
   it('updateDiffQuery should correctly work', () => {
     const queryService = TestBed.inject(MysqlQueryService);
-    const getDiffDeleteInsertTwoKeysQuerySpy = spyOn(queryService, 'getDiffDeleteInsertTwoKeysQuery').and.returnValue(
-      '-- Mock Query',
-    );
+    const getDiffDeleteInsertTwoKeysQuerySpy = spyOn(queryService, 'getDiffDeleteInsertTwoKeysQuery').and.returnValue('-- Mock Query');
     spyOn<any>(service, 'updateEditorStatus');
 
     service['updateDiffQuery']();
@@ -71,9 +69,7 @@ describe('MultiRowComplexKeyEditorService', () => {
 
   it('selectQuery should correctly work', () => {
     const queryService = TestBed.inject(MysqlQueryService);
-    const selectAllMultipleKeysSpy = spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(
-      of([{ mock: 'data' }] as TableRow[]),
-    );
+    const selectAllMultipleKeysSpy = spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(of([{ mock: 'data' }] as TableRow[]));
     const handlerService = TestBed.inject(MockHandlerService);
     // @ts-ignore
     handlerService['_selected'] = 1;

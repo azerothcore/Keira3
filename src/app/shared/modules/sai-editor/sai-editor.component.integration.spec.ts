@@ -122,9 +122,7 @@ describe('SaiEditorComponent integration tests', () => {
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
-    spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(
-      of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]),
-    );
+    spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     fixture = TestBed.createComponent(SaiEditorComponent);
     component = fixture.componentInstance;
@@ -351,9 +349,7 @@ describe('SaiEditorComponent integration tests', () => {
     it('deleting rows should correctly work', () => {
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (1));',
-      );
+      page.expectDiffQueryToContain('DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (1));');
       page.expectFullQueryToContain(
         'DELETE FROM `smart_scripts` WHERE (`source_type` = 0 AND `entryorguid` = 1234);\n' +
           'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
