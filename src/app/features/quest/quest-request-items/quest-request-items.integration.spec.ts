@@ -129,8 +129,7 @@ describe('QuestRequestItems integration tests', () => {
     it('changing all properties and executing the query should correctly work', () => {
       const { page, querySpy, originalEntity } = setup(false);
       const expectedQuery =
-        'UPDATE `quest_request_items` SET ' +
-        "`EmoteOnComplete` = 0, `EmoteOnIncomplete` = 1, `CompletionText` = '2' WHERE (`ID` = 1234);";
+        'UPDATE `quest_request_items` SET ' + "`EmoteOnComplete` = 0, `EmoteOnIncomplete` = 1, `CompletionText` = '2' WHERE (`ID` = 1234);";
       querySpy.calls.reset();
 
       page.changeAllFields(originalEntity, ['VerifiedBuild']);

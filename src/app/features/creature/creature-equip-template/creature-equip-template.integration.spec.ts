@@ -101,8 +101,7 @@ describe('CreatureEquipTemplate integration tests', () => {
     });
 
     it('changing all properties and executing the query should correctly work', () => {
-      const expectedQuery =
-        'UPDATE `creature_equip_template` SET `ItemID2` = 1, `ItemID3` = 2 WHERE (`CreatureID` = 1234);';
+      const expectedQuery = 'UPDATE `creature_equip_template` SET `ItemID2` = 1, `ItemID3` = 2 WHERE (`CreatureID` = 1234);';
       querySpy.calls.reset();
 
       page.changeAllFields(originalEntity, ['ID', 'VerifiedBuild']);
@@ -123,9 +122,7 @@ describe('CreatureEquipTemplate integration tests', () => {
       );
 
       page.setInputValueById('ItemID3', '3');
-      page.expectDiffQueryToContain(
-        'UPDATE `creature_equip_template` SET `ItemID1` = 1, `ItemID3` = 3 WHERE (`CreatureID` = 1234);',
-      );
+      page.expectDiffQueryToContain('UPDATE `creature_equip_template` SET `ItemID1` = 1, `ItemID3` = 3 WHERE (`CreatureID` = 1234);');
       page.expectFullQueryToContain(
         'DELETE FROM `creature_equip_template` WHERE (`CreatureID` = 1234);\n' +
           'INSERT INTO `creature_equip_template` (`CreatureID`, `ID`, `ItemID1`, `ItemID2`, `ItemID3`, `VerifiedBuild`) VALUES\n' +
@@ -153,9 +150,7 @@ describe('CreatureEquipTemplate integration tests', () => {
         page.clickModalSelect();
         await page.whenReady();
 
-        page.expectDiffQueryToContain(
-          'UPDATE `creature_equip_template` SET `ItemID1` = 1200 WHERE (`CreatureID` = 1234);',
-        );
+        page.expectDiffQueryToContain('UPDATE `creature_equip_template` SET `ItemID1` = 1200 WHERE (`CreatureID` = 1234);');
         page.expectFullQueryToContain(
           'DELETE FROM `creature_equip_template` WHERE (`CreatureID` = 1234);\n' +
             'INSERT INTO `creature_equip_template` (`CreatureID`, `ID`, `ItemID1`, `ItemID2`, `ItemID3`, `VerifiedBuild`) VALUES\n' +

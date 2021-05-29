@@ -1,9 +1,9 @@
 <div class="modal-body" *ngIf="config">
-
   <div class="row">
     <div class="col-12">
-
-      <p class="lead text-center"><strong>{{ config.name }}</strong></p>
+      <p class="lead text-center">
+        <strong>{{ config.name }}</strong>
+      </p>
 
       <ngx-datatable
         class="bootstrap table table-striped text-center datatable-select highlight-select"
@@ -14,7 +14,7 @@
         [rowHeight]="DTCFG.rowHeight"
         [selectionType]="DTCFG.selectionType"
         [selected]="selected"
-        (select)='onSelect($event)'
+        (select)="onSelect($event)"
       >
         <ngx-datatable-column name="value" prop="value" [minWidth]="80"></ngx-datatable-column>
         <ngx-datatable-column [width]="30" [sortable]="false">
@@ -25,10 +25,8 @@
 
         <ngx-datatable-footer></ngx-datatable-footer>
       </ngx-datatable>
-
     </div>
   </div>
-
 </div>
 
 <div class="modal-footer">

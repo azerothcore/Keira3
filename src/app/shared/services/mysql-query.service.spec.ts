@@ -52,9 +52,7 @@ describe('MysqlQueryService', () => {
   it('query() should call mysqlService.dbQuery() and output query and results if debug mode is enabled', () => {
     const logSpy = spyOn(console, 'log');
     configService.debugMode = true;
-    const querySpy = spyOn(TestBed.inject(MysqlService), 'dbQuery').and.returnValue(
-      of({ id: 'mock value' } as TableRow),
-    );
+    const querySpy = spyOn(TestBed.inject(MysqlService), 'dbQuery').and.returnValue(of({ id: 'mock value' } as TableRow));
     const myQuery = 'SELECT azerothcore FROM projects;';
 
     service.query(myQuery).subscribe(() => {
@@ -118,8 +116,7 @@ describe('MysqlQueryService', () => {
       };
 
       expect(service.getSearchQuery(table, queryForm)).toEqual(
-        'SELECT * ' +
-          "FROM `my_keira3` WHERE (`myField1` LIKE '%myValue1%') AND (`myField2` LIKE '%myValue2%') LIMIT 20",
+        'SELECT * ' + "FROM `my_keira3` WHERE (`myField1` LIKE '%myValue1%') AND (`myField2` LIKE '%myValue2%') LIMIT 20",
       );
     });
 
@@ -209,9 +206,7 @@ describe('MysqlQueryService', () => {
       });
 
       expect(querySpy).toHaveBeenCalledWith(
-        `SELECT * FROM smart_scripts WHERE source_type = 9 AND entryorguid >= ${id * 100} AND entryorguid < ${
-          id * 100 + 100
-        }`,
+        `SELECT * FROM smart_scripts WHERE source_type = 9 AND entryorguid >= ${id * 100} AND entryorguid < ${id * 100 + 100}`,
       );
     }),
   );
@@ -239,8 +234,7 @@ describe('MysqlQueryService', () => {
           },
           {
             newRow: { entry: 1234, name: 'Helias', subname: 'AC-Web-Dev', attribute1: 25, attribute2: 14 },
-            expectedQuery:
-              "UPDATE `my_table` SET `name` = 'Helias', `subname` = 'AC-Web-Dev', `attribute2` = 14 WHERE (`entry` = 1234);",
+            expectedQuery: "UPDATE `my_table` SET `name` = 'Helias', `subname` = 'AC-Web-Dev', `attribute2` = 14 WHERE (`entry` = 1234);",
           },
         ]) {
           expect(service.getUpdateQuery(tableName, primaryKey, currentRow, newRow)).toEqual(expectedQuery);
@@ -268,9 +262,7 @@ describe('MysqlQueryService', () => {
       });
 
       it('should correctly work when there are no changes', () => {
-        expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, myRows, myRows)).toEqual(
-          '',
-        );
+        expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, myRows, myRows)).toEqual('');
       });
 
       describe('using both keys', () => {
@@ -432,15 +424,13 @@ describe('MysqlQueryService', () => {
         ];
 
         it('should correctly work when all rows are deleted', () => {
-          expect(
-            service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryComplexKey1, primaryKey2, myComplexRows, []),
-          ).toEqual('DELETE FROM `my_table` WHERE (`pk11` = 1234) AND (`pk12` = 5678)');
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryComplexKey1, primaryKey2, myComplexRows, [])).toEqual(
+            'DELETE FROM `my_table` WHERE (`pk11` = 1234) AND (`pk12` = 5678)',
+          );
         });
 
         it('should correctly work when adding new rows to an empty set', () => {
-          expect(
-            service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryComplexKey1, primaryKey2, [], myComplexRows),
-          ).toEqual(
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryComplexKey1, primaryKey2, [], myComplexRows)).toEqual(
             'DELETE' +
               ' FROM `my_table` WHERE (`pk11` = 1234) AND (`pk12` = 5678) AND (`pk2` IN (1, 2, 3));\n' +
               'INSERT' +
@@ -457,9 +447,7 @@ describe('MysqlQueryService', () => {
           newRows[1].name = 'Helias2';
           newRows[2].name = 'Kalhac2';
 
-          expect(
-            service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryComplexKey1, primaryKey2, myComplexRows, newRows),
-          ).toEqual(
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryComplexKey1, primaryKey2, myComplexRows, newRows)).toEqual(
             'DELETE' +
               ' FROM `my_table` WHERE (`pk11` = 1234) AND (`pk12` = 5678) AND (`pk2` IN (2, 3));\n' +
               'INSERT' +
@@ -475,9 +463,7 @@ describe('MysqlQueryService', () => {
           newRows.push({ pk11: 1234, pk12: 5678, pk2: 4, name: 'Yehonal', attribute1: 99, attribute2: 0 });
           newRows.push({ pk11: 1234, pk12: 5678, pk2: 5, name: 'Barbz', attribute1: 68, attribute2: 1 });
 
-          expect(
-            service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryComplexKey1, primaryKey2, myComplexRows, newRows),
-          ).toEqual(
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryComplexKey1, primaryKey2, myComplexRows, newRows)).toEqual(
             'DELETE' +
               ' FROM `my_table` WHERE (`pk11` = 1234) AND (`pk12` = 5678) AND (`pk2` IN (4, 5));\n' +
               'INSERT' +
@@ -490,9 +476,9 @@ describe('MysqlQueryService', () => {
         it('should correctly work when removing rows', () => {
           const newRows = [{ ...myComplexRows[0] }, { ...myComplexRows[2] }]; // delete second row
 
-          expect(
-            service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryComplexKey1, primaryKey2, myComplexRows, newRows),
-          ).toEqual('DELETE' + ' FROM `my_table` WHERE (`pk11` = 1234) AND (`pk12` = 5678) AND (`pk2` IN (2));\n');
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryComplexKey1, primaryKey2, myComplexRows, newRows)).toEqual(
+            'DELETE' + ' FROM `my_table` WHERE (`pk11` = 1234) AND (`pk12` = 5678) AND (`pk2` IN (2));\n',
+          );
         });
 
         it('should correctly work when removing, editing and adding rows all together', () => {
@@ -500,9 +486,7 @@ describe('MysqlQueryService', () => {
           newRows[1].name = 'Kalhac2'; // edit row
           newRows.push({ pk11: 1234, pk12: 5678, pk2: 4, name: 'Yehonal', attribute1: 99, attribute2: 0 }); // add a new row
 
-          expect(
-            service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryComplexKey1, primaryKey2, myComplexRows, newRows),
-          ).toEqual(
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryComplexKey1, primaryKey2, myComplexRows, newRows)).toEqual(
             'DELETE' +
               ' FROM `my_table` WHERE (`pk11` = 1234) AND (`pk12` = 5678) AND (`pk2` IN (2, 3, 4));\n' +
               'INSERT' +
@@ -843,20 +827,14 @@ describe('MysqlQueryService', () => {
           currentRow: { k1: 1, n1: 33 },
           newRow: { k1: 1, n1: 22 },
           keys: ['k1'],
-          query:
-            'DELETE FROM `my_table` WHERE (`k1` = 1);\n' +
-            'INSERT INTO `my_table` (`k1`, `n1`) VALUES\n' +
-            '(1, 22);\n',
+          query: 'DELETE FROM `my_table` WHERE (`k1` = 1);\n' + 'INSERT INTO `my_table` (`k1`, `n1`) VALUES\n' + '(1, 22);\n',
         },
         {
           id: 2,
           currentRow: { k1: 1, n1: 33 },
           newRow: { k1: 2, n1: 22 },
           keys: ['k1'],
-          query:
-            'DELETE FROM `my_table` WHERE (`k1` = 1);\n' +
-            'INSERT INTO `my_table` (`k1`, `n1`) VALUES\n' +
-            '(2, 22);\n',
+          query: 'DELETE FROM `my_table` WHERE (`k1` = 1);\n' + 'INSERT INTO `my_table` (`k1`, `n1`) VALUES\n' + '(2, 22);\n',
         },
       ]) {
         it(`should correctly generate the query [${id}]`, () => {
@@ -985,9 +963,7 @@ describe('MysqlQueryService', () => {
         expect(await service.getNextQuestById(id)).toEqual(result);
         expect(await service.getNextQuestById(id)).toEqual(result); // check cache
         expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
-        expect(service.queryValue).toHaveBeenCalledWith(
-          `SELECT NextQuestID AS v FROM quest_template_addon WHERE id = ${id}`,
-        );
+        expect(service.queryValue).toHaveBeenCalledWith(`SELECT NextQuestID AS v FROM quest_template_addon WHERE id = ${id}`);
         expect(Object.keys(service['cache']).length).toBe(1);
         expect(Object.keys(service['cache'])[0]).toBe('getNextQuest2');
       }),
@@ -999,9 +975,7 @@ describe('MysqlQueryService', () => {
         expect(await service.getNextQuestById(id, true)).toEqual(result);
         expect(await service.getNextQuestById(id, true)).toEqual(result); // check cache
         expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
-        expect(service.queryValue).toHaveBeenCalledWith(
-          `SELECT id AS v FROM quest_template_addon WHERE PrevQuestID = ${id}`,
-        );
+        expect(service.queryValue).toHaveBeenCalledWith(`SELECT id AS v FROM quest_template_addon WHERE PrevQuestID = ${id}`);
         expect(Object.keys(service['cache']).length).toBe(1);
         expect(Object.keys(service['cache'])[0]).toBe('getNextQuest1');
       }),

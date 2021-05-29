@@ -186,9 +186,7 @@ describe('QuestTemplateAddon integration tests', () => {
       );
 
       page.setInputValueById('NextQuestID', '22');
-      page.expectDiffQueryToContain(
-        'UPDATE `quest_template_addon` SET `PrevQuestID` = 11, `NextQuestID` = 22 WHERE (`ID` = 1234);',
-      );
+      page.expectDiffQueryToContain('UPDATE `quest_template_addon` SET `PrevQuestID` = 11, `NextQuestID` = 22 WHERE (`ID` = 1234);');
       page.expectFullQueryToContain(
         'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
           'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, ' +

@@ -5,12 +5,7 @@ import { SpellLootTemplateModule } from './spell-loot/spell-loot-template.module
 import { FishingLootTemplateModule } from './fishing-loot/fishing-loot-template.module';
 import { MailLootTemplateModule } from './mail-loot/mail-loot-template.module';
 
-const modules = [
-  ReferenceLootTemplateModule,
-  SpellLootTemplateModule,
-  FishingLootTemplateModule,
-  MailLootTemplateModule,
-];
+const modules = [ReferenceLootTemplateModule, SpellLootTemplateModule, FishingLootTemplateModule, MailLootTemplateModule];
 
 @NgModule({
   imports: [modules],

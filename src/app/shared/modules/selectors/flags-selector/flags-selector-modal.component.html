@@ -1,11 +1,14 @@
 <div class="modal-body" *ngIf="config && config.flags && flagValues">
-
   <div class="row">
     <div class="col-12">
-      <p class="lead text-center mb-1">Flags selection: <strong>{{ config.name }}</strong></p>
+      <p class="lead text-center mb-1">
+        Flags selection: <strong>{{ config.name }}</strong>
+      </p>
     </div>
     <div class="col-5">
-      <p>Total value: <strong>{{ value }}</strong></p>
+      <p>
+        Total value: <strong>{{ value }}</strong>
+      </p>
     </div>
     <div class="col-7">
       <p class="text-right">
@@ -18,30 +21,25 @@
   <div class="table-wrapper">
     <table class="table table-striped table-bordered table-sm" id="flags-table">
       <thead>
-      <tr>
-        <th></th>
-        <th>Bit</th>
-        <th>Value (2^Bit)</th>
-        <th>Description</th>
-      </tr>
+        <tr>
+          <th></th>
+          <th>Bit</th>
+          <th>Value (2^Bit)</th>
+          <th>Description</th>
+        </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let flag of config.flags">
-        <td>
-          <ui-switch
-            [checked]="flagValues[flag.bit]"
-            (change)="toggleBit(flag.bit)"
-            [id]="'switch-bit-' + flag.bit"
-          ></ui-switch>
-        </td>
-        <td class="text-center">{{ flag.bit }}</td>
-        <td class="text-center">{{ flagValues[flag.bit] ? '+' + pow(2, flag.bit) : '' }}</td>
-        <td>{{ flag.name }}</td>
-      </tr>
+        <tr *ngFor="let flag of config.flags">
+          <td>
+            <ui-switch [checked]="flagValues[flag.bit]" (change)="toggleBit(flag.bit)" [id]="'switch-bit-' + flag.bit"></ui-switch>
+          </td>
+          <td class="text-center">{{ flag.bit }}</td>
+          <td class="text-center">{{ flagValues[flag.bit] ? '+' + pow(2, flag.bit) : '' }}</td>
+          <td>{{ flag.name }}</td>
+        </tr>
       </tbody>
     </table>
   </div>
-
 </div>
 
 <div class="modal-footer">

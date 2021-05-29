@@ -54,9 +54,7 @@ describe('SaiGameobjectComponent integration tests', () => {
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
-    spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(
-      of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]),
-    );
+    spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     fixture = TestBed.createComponent(SaiGameobjectComponent);
     component = fixture.componentInstance;

@@ -102,8 +102,7 @@ describe('SelectConditions integration tests', () => {
       group: 2,
       entry: '',
       limit: '100',
-      expectedQuery:
-        "SELECT * FROM `conditions` WHERE (`SourceTypeOrReferenceId` LIKE '%1%') AND (`SourceGroup` LIKE '%2%') LIMIT 100",
+      expectedQuery: "SELECT * FROM `conditions` WHERE (`SourceTypeOrReferenceId` LIKE '%1%') AND (`SourceGroup` LIKE '%2%') LIMIT 100",
     },
     {
       testId: 4,
@@ -111,8 +110,7 @@ describe('SelectConditions integration tests', () => {
       group: 2,
       entry: 3,
       limit: '100',
-      expectedQuery:
-        "SELECT * FROM `conditions` WHERE (`SourceGroup` LIKE '%2%') AND (`SourceEntry` LIKE '%3%') LIMIT 100",
+      expectedQuery: "SELECT * FROM `conditions` WHERE (`SourceGroup` LIKE '%2%') AND (`SourceEntry` LIKE '%3%') LIMIT 100",
     },
     {
       testId: 5,
@@ -120,8 +118,7 @@ describe('SelectConditions integration tests', () => {
       group: '',
       entry: 3,
       limit: '100',
-      expectedQuery:
-        "SELECT * FROM `conditions` WHERE (`SourceTypeOrReferenceId` LIKE '%1%') AND (`SourceEntry` LIKE '%3%') LIMIT 100",
+      expectedQuery: "SELECT * FROM `conditions` WHERE (`SourceTypeOrReferenceId` LIKE '%1%') AND (`SourceEntry` LIKE '%3%') LIMIT 100",
     },
     {
       testId: 6,
@@ -137,8 +134,7 @@ describe('SelectConditions integration tests', () => {
       group: 2,
       entry: 3,
       limit: '100',
-      expectedQuery:
-        "SELECT * FROM `conditions` WHERE (`SourceGroup` LIKE '%2%') AND (`SourceEntry` LIKE '%3%') LIMIT 100",
+      expectedQuery: "SELECT * FROM `conditions` WHERE (`SourceGroup` LIKE '%2%') AND (`SourceEntry` LIKE '%3%') LIMIT 100",
     },
   ]) {
     it(`searching an existing entity should correctly work [${testId}]`, () => {

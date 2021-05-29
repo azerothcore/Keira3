@@ -182,9 +182,7 @@ describe('QuestTemplate integration tests', () => {
       page.expectFullQueryToContain('Shin');
 
       page.setInputValueById('MinLevel', 22);
-      page.expectDiffQueryToContain(
-        "UPDATE `quest_template` SET `MinLevel` = 22, `LogTitle` = 'Shin' WHERE (`ID` = 1234);",
-      );
+      page.expectDiffQueryToContain("UPDATE `quest_template` SET `MinLevel` = 22, `LogTitle` = 'Shin' WHERE (`ID` = 1234);");
       page.expectFullQueryToContain('Shin');
       page.expectFullQueryToContain('22');
       page.removeElement();

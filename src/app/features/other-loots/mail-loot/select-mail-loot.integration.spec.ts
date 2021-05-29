@@ -101,8 +101,7 @@ describe('SelectMailLoot integration tests', () => {
       id: 1,
       entry: 1200,
       limit: '100',
-      expectedQuery:
-        'SELECT `Entry` FROM `mail_loot_template` ' + "WHERE (`Entry` LIKE '%1200%') GROUP BY Entry LIMIT 100",
+      expectedQuery: 'SELECT `Entry` FROM `mail_loot_template` ' + "WHERE (`Entry` LIKE '%1200%') GROUP BY Entry LIMIT 100",
     },
   ]) {
     it(`searching an existing entity should correctly work [${id}]`, () => {

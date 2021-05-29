@@ -22,13 +22,6 @@ export class SelectSpellLootComponent extends SelectComponent<SpellLootTemplate>
     public handlerService: SpellLootHandlerService,
     public queryService: MysqlQueryService,
   ) {
-    super(
-      SPELL_LOOT_TEMPLATE_TABLE,
-      LOOT_TEMPLATE_ID,
-      SPELL_LOOT_TEMPLATE_CUSTOM_STARTING_ID,
-      selectService,
-      handlerService,
-      queryService,
-    );
+    super(SPELL_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID, SPELL_LOOT_TEMPLATE_CUSTOM_STARTING_ID, selectService, handlerService, queryService);
   }
 }

@@ -45,20 +45,16 @@ export class SqliteQueryService extends QueryService {
   }
 
   getSpellNameById(spellId: string | number): Promise<string> {
-    return this.queryValueToPromiseCached(
-      'getSpellNameById',
-      String(spellId),
-      `SELECT spellName AS v FROM spells WHERE id = ${spellId}`,
-    );
+    return this.queryValueToPromiseCached('getSpellNameById', String(spellId), `SELECT spellName AS v FROM spells WHERE id = ${spellId}`);
   }
 
   getIconBySpellDisplayId(displayId: string | number): Observable<string> {
     displayId = Number(displayId);
 
     if (!this.spellDisplayIdCache[displayId]) {
-      this.spellDisplayIdCache[displayId] = this.queryValue<string>(
-        `SELECT icon AS v FROM spells_icon WHERE ID = ${displayId}`,
-      ).pipe(shareReplay());
+      this.spellDisplayIdCache[displayId] = this.queryValue<string>(`SELECT icon AS v FROM spells_icon WHERE ID = ${displayId}`).pipe(
+        shareReplay(),
+      );
     }
 
     return this.spellDisplayIdCache[displayId];
@@ -67,11 +63,7 @@ export class SqliteQueryService extends QueryService {
   getDisplayIdBySpellId(id: string | number): Observable<string> {
     return !!id
       ? fromPromise(
-          this.queryValueToPromiseCached(
-            'getDisplayIdBySpellId',
-            String(id),
-            `SELECT spellIconID AS v FROM spells WHERE ID = ${id}`,
-          ),
+          this.queryValueToPromiseCached('getDisplayIdBySpellId', String(id), `SELECT spellIconID AS v FROM spells WHERE ID = ${id}`),
         )
       : of(null);
   }
@@ -93,11 +85,7 @@ export class SqliteQueryService extends QueryService {
   }
 
   getMapNameById(id: string | number): Promise<string> {
-    return this.queryValueToPromiseCached<string>(
-      'getMapNameById',
-      String(id),
-      `SELECT m_MapName_lang1 AS v FROM maps WHERE m_ID = ${id}`,
-    );
+    return this.queryValueToPromiseCached<string>('getMapNameById', String(id), `SELECT m_MapName_lang1 AS v FROM maps WHERE m_ID = ${id}`);
   }
 
   getAreaNameById(id: string | number): Promise<string> {
@@ -109,11 +97,7 @@ export class SqliteQueryService extends QueryService {
   }
 
   getEventNameByHolidayId(id: string | number): Promise<string> {
-    return this.queryValueToPromiseCached<string>(
-      'getEventNameByHolidayId',
-      String(id),
-      `SELECT name AS v FROM holiday WHERE id = ${id}`,
-    );
+    return this.queryValueToPromiseCached<string>('getEventNameByHolidayId', String(id), `SELECT name AS v FROM holiday WHERE id = ${id}`);
   }
 
   getSocketBonusById(id: string | number): Promise<string> {

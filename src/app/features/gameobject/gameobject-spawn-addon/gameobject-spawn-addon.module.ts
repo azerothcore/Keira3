@@ -13,9 +13,7 @@ import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/singl
 import { GameobjectSpawnAddonService } from './gameobject-spawn-addon.service';
 
 @NgModule({
-  declarations: [
-    GameobjectSpawnAddonComponent,
-  ],
+  declarations: [GameobjectSpawnAddonComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -26,11 +24,7 @@ import { GameobjectSpawnAddonService } from './gameobject-spawn-addon.service';
     NgxDatatableModule,
     SingleValueSelectorModule,
   ],
-  exports: [
-    GameobjectSpawnAddonComponent,
-  ],
-  providers: [
-    GameobjectSpawnAddonService,
-  ],
+  exports: [GameobjectSpawnAddonComponent],
+  providers: [GameobjectSpawnAddonService],
 })
 export class GameobjectSpawnAddonModule {}

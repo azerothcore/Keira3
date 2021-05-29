@@ -28,11 +28,7 @@ describe('SelectService', () => {
 
     service.onSelect({ selected });
 
-    expect(spy).toHaveBeenCalledWith(
-      false,
-      `${selected[0][service['entityIdField']]}`,
-      `${selected[0][service['entityNameField']]}`,
-    );
+    expect(spy).toHaveBeenCalledWith(false, `${selected[0][service['entityIdField']]}`, `${selected[0][service['entityNameField']]}`);
   });
 
   it('onSelect() should use the table name when the entityNameField is not defined', () => {

@@ -18,11 +18,7 @@ describe('ItemPreviewService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      providers: [
-        { provide: ToastrService, useValue: instance(MockedToastrService) },
-        ItemPreviewService,
-        ItemHandlerService,
-      ],
+      providers: [{ provide: ToastrService, useValue: instance(MockedToastrService) }, ItemPreviewService, ItemHandlerService],
     }),
   );
 
@@ -150,9 +146,7 @@ describe('ItemPreviewService', () => {
     { id: 153, slotBak: 2, itemset: 153 },
   ];
 
-  const mockItemset1 = [
-    { id: 123, name: 'Helias itemset', spell1: 1, bonus1: 2, bonus2: 1, skillId: 1, skillLevel: 1 },
-  ];
+  const mockItemset1 = [{ id: 123, name: 'Helias itemset', spell1: 1, bonus1: 2, bonus2: 1, skillId: 1, skillLevel: 1 }];
   const mockItemset2 = [{ id: 123, name: 'Shin itemset', spell1: 1, spell2: 2, skillId: 1 }];
   const mockItemset3 = [{ id: 123, name: 'Kalhac itemset' }];
   const mockItemset4 = [{ id: 123, name: null }];
@@ -161,9 +155,7 @@ describe('ItemPreviewService', () => {
 
   beforeEach(() => {
     mysqlQueryService = TestBed.inject(MysqlQueryService);
-    spyOn(mysqlQueryService, 'getItemNameById').and.callFake((i) =>
-      of(i === 1 ? mockItemNameById + i : null).toPromise(),
-    );
+    spyOn(mysqlQueryService, 'getItemNameById').and.callFake((i) => of(i === 1 ? mockItemNameById + i : null).toPromise());
     spyOn(mysqlQueryService, 'query').and.callFake((i) => {
       if (i.indexOf('npc_vendor') > -1) {
         if (i.indexOf('600') > -1) {
@@ -180,9 +172,7 @@ describe('ItemPreviewService', () => {
         }
 
         if (i.indexOf('123') > -1) {
-          const itemsName = [{ name: '' }].concat(
-            Array.from(new Array(11), (_, idx) => ({ name: 'Helias Item' + idx })),
-          );
+          const itemsName = [{ name: '' }].concat(Array.from(new Array(11), (_, idx) => ({ name: 'Helias Item' + idx })));
           return of(itemsName);
         }
 
@@ -209,9 +199,7 @@ describe('ItemPreviewService', () => {
     spyOn(sqliteQueryService, 'getAreaNameById').and.callFake((i) =>
       of(String(i).indexOf('123') > -1 ? '' : mockGetAreaNameById + i).toPromise(),
     );
-    spyOn(sqliteQueryService, 'getEventNameByHolidayId').and.callFake((i) =>
-      of(mockGetEventNameByHolidayId + i).toPromise(),
-    );
+    spyOn(sqliteQueryService, 'getEventNameByHolidayId').and.callFake((i) => of(mockGetEventNameByHolidayId + i).toPromise());
     spyOn(sqliteQueryService, 'getSocketBonusById').and.callFake((i) => of(mockGetSocketBonusById + i).toPromise());
     spyOn(sqliteQueryService, 'getLockById').and.callFake((i) => of(locksData[i]).toPromise());
     spyOn(sqliteQueryService, 'getSkillNameById').and.callFake((i) => of(i === 1 ? 'profession' : null).toPromise());
@@ -355,9 +343,7 @@ describe('ItemPreviewService', () => {
   it('getItemsetSlotBak', () => {
     service['getItemsetSlotBak'](id);
     expect(sqliteQueryService.query).toHaveBeenCalledTimes(1);
-    expect(sqliteQueryService.query).toHaveBeenCalledWith(
-      `SELECT * FROM items WHERE itemset = ${id} ORDER BY slotBak, id`,
-    );
+    expect(sqliteQueryService.query).toHaveBeenCalledWith(`SELECT * FROM items WHERE itemset = ${id} ORDER BY slotBak, id`);
   });
 
   it('getItemNameByIDsASC', () => {
@@ -384,9 +370,7 @@ describe('ItemPreviewService', () => {
   it('getGemEnchantmentIdById', () => {
     service['getGemEnchantmentIdById'](id);
     expect(sqliteQueryService.queryValue).toHaveBeenCalledTimes(1);
-    expect(sqliteQueryService.queryValue).toHaveBeenCalledWith(
-      `SELECT gemEnchantmentId AS v FROM items WHERE id = ${id};`,
-    );
+    expect(sqliteQueryService.queryValue).toHaveBeenCalledWith(`SELECT gemEnchantmentId AS v FROM items WHERE id = ${id};`);
   });
 
   it('getItemEnchantmentById', () => {
@@ -399,9 +383,7 @@ describe('ItemPreviewService', () => {
     const IDs = [123, 1234];
     service['getItemExtendedCost'](IDs);
     expect(sqliteQueryService.query).toHaveBeenCalledTimes(1);
-    expect(sqliteQueryService.query).toHaveBeenCalledWith(
-      `SELECT * FROM item_extended_cost WHERE id IN (${IDs.join(',')})`,
-    );
+    expect(sqliteQueryService.query).toHaveBeenCalledWith(`SELECT * FROM item_extended_cost WHERE id IN (${IDs.join(',')})`);
   });
 
   it('getItemEnchantmentConditionById', () => {

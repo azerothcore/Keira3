@@ -115,8 +115,7 @@ describe('SelectCreature integration tests', () => {
       name: 'Helias',
       subname: 'Dev',
       limit: '100',
-      expectedQuery:
-        "SELECT * FROM `creature_template` WHERE (`name` LIKE '%Helias%') AND (`subname` LIKE '%Dev%') LIMIT 100",
+      expectedQuery: "SELECT * FROM `creature_template` WHERE (`name` LIKE '%Helias%') AND (`subname` LIKE '%Dev%') LIMIT 100",
     },
     {
       id: 3,

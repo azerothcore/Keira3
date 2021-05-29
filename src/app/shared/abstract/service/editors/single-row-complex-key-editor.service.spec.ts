@@ -9,12 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { SingleRowComplexKeyEditorService } from './single-row-complex-key-editor.service';
-import {
-  MockSingleRowComplexKeyEditorService,
-  MockEntity,
-  MockHandlerService,
-  MOCK_NAME,
-} from '@keira-testing/mock-services';
+import { MockSingleRowComplexKeyEditorService, MockEntity, MockHandlerService, MOCK_NAME } from '@keira-testing/mock-services';
 
 import { getPartial } from '../../../utils/helpers';
 
@@ -69,10 +64,7 @@ describe('SingleRowComplexKeyEditorService', () => {
     });
 
     it('updateFullQuery()', () => {
-      const getFullDeleteInsertMultipleKeysQuerySpy = spyOn(
-        TestBed.inject(MysqlQueryService),
-        'getFullDeleteInsertMultipleKeysQuery',
-      );
+      const getFullDeleteInsertMultipleKeysQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertMultipleKeysQuery');
 
       service['updateFullQuery']();
 
@@ -80,10 +72,7 @@ describe('SingleRowComplexKeyEditorService', () => {
     });
 
     it('updateFullQuery() when isNew is true', () => {
-      const getFullDeleteInsertMultipleKeysQuerySpy = spyOn(
-        TestBed.inject(MysqlQueryService),
-        'getFullDeleteInsertMultipleKeysQuery',
-      );
+      const getFullDeleteInsertMultipleKeysQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertMultipleKeysQuery');
       const handlerService = TestBed.inject(MockHandlerService);
       // @ts-ignore
       handlerService._selected = JSON.stringify({ id: 1, guid: 2 });
@@ -156,9 +145,7 @@ describe('SingleRowComplexKeyEditorService', () => {
 
       service['setLoadedEntity']();
 
-      expect(service['_loadedEntityId']).toEqual(
-        JSON.stringify(getPartial(service['_originalValue'], service['_entityIdFields'])),
-      );
+      expect(service['_loadedEntityId']).toEqual(JSON.stringify(getPartial(service['_originalValue'], service['_entityIdFields'])));
       expect(selectSpy).toHaveBeenCalled();
     });
 

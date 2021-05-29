@@ -10,18 +10,18 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
 describe('GameobjectSpawnAddonService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule,
-    ],
-    providers: [
-      { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-      { provide: ToastrService, useValue: instance(MockedToastrService) },
-      GameobjectHandlerService,
-      SaiGameobjectHandlerService,
-      GameobjectSpawnAddonService,
-    ],
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+        GameobjectHandlerService,
+        SaiGameobjectHandlerService,
+        GameobjectSpawnAddonService,
+      ],
+    }),
+  );
 
   it('selectQuery should correctly work', () => {
     const service: GameobjectSpawnAddonService = TestBed.inject(GameobjectSpawnAddonService);
@@ -31,7 +31,7 @@ describe('GameobjectSpawnAddonService', () => {
     service.selectQuery(id);
 
     expect(querySpy).toHaveBeenCalledWith(
-      `SELECT a.* FROM gameobject AS g INNER JOIN gameobject_addon AS a ON g.guid = a.guid WHERE g.id = ${id}`
+      `SELECT a.* FROM gameobject AS g INNER JOIN gameobject_addon AS a ON g.guid = a.guid WHERE g.id = ${id}`,
     );
   });
 });

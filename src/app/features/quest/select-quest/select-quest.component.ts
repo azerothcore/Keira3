@@ -23,13 +23,6 @@ export class SelectQuestComponent extends SelectComponent<QuestTemplate> {
     public handlerService: QuestHandlerService,
     public queryService: MysqlQueryService,
   ) {
-    super(
-      QUEST_TEMPLATE_TABLE,
-      QUEST_TEMPLATE_ID,
-      QUEST_TEMPLATE_CUSTOM_STARTING_ID,
-      selectService,
-      handlerService,
-      queryService,
-    );
+    super(QUEST_TEMPLATE_TABLE, QUEST_TEMPLATE_ID, QUEST_TEMPLATE_CUSTOM_STARTING_ID, selectService, handlerService, queryService);
   }
 }

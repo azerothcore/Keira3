@@ -205,9 +205,7 @@ describe('SkinningLootTemplate integration tests', () => {
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2));',
-      );
+      page.expectDiffQueryToContain('DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2));');
       page.expectFullQueryToContain(
         'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234);\n' +
           'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +

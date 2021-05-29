@@ -2,11 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { SearchService } from './search.service';
 import { MysqlQueryService } from '../../services/mysql-query.service';
-import {
-  GAMEOBJECT_TEMPLATE_SEARCH_FIELDS,
-  GAMEOBJECT_TEMPLATE_TABLE,
-  GameobjectTemplate,
-} from '../../types/gameobject-template.type';
+import { GAMEOBJECT_TEMPLATE_SEARCH_FIELDS, GAMEOBJECT_TEMPLATE_TABLE, GameobjectTemplate } from '../../types/gameobject-template.type';
 
 @Injectable({
   providedIn: 'root',

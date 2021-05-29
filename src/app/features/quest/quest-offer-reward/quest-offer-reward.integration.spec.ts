@@ -160,9 +160,7 @@ describe('QuestOfferReward integration tests', () => {
       );
 
       page.setInputValueById('Emote2', '22');
-      page.expectDiffQueryToContain(
-        'UPDATE `quest_offer_reward` SET `Emote1` = 11, `Emote2` = 22 WHERE (`ID` = 1234);',
-      );
+      page.expectDiffQueryToContain('UPDATE `quest_offer_reward` SET `Emote1` = 11, `Emote2` = 22 WHERE (`ID` = 1234);');
       page.expectFullQueryToContain(
         'DELETE FROM `quest_offer_reward` WHERE (`ID` = 1234);\n' +
           'INSERT INTO `quest_offer_reward` (`ID`, `Emote1`, `Emote2`, `Emote3`, `Emote4`, ' +
