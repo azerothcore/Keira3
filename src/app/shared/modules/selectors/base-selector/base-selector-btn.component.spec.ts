@@ -11,7 +11,6 @@ import { HighlightModule } from 'ngx-highlightjs';
 import { BaseSelectorBtnComponent } from './base-selector-btn.component';
 import { ItemSelectorBtnComponent } from '../item-selector/item-selector-btn.component';
 import { ItemSelectorModalComponent } from '../item-selector/item-selector-modal.component';
-import { highlightOptions } from '@keira-config/highlight.config';
 import { MysqlService } from '../../../services/mysql.service';
 import { MockedMysqlService } from '@keira-testing/mocks';
 import { closeModalsAfterEach } from '@keira-testing/test-helpers';

@@ -1,1 +1,5 @@
-<pre><code [highlight]="code"></code></pre>
+<pre *ngIf="electronService.isElectron(); else noHighlight"><code [highlight]="code"></code></pre>
+
+<ng-template #noHighlight>
+  <pre><code>{{ code }}</code></pre>
+</ng-template>

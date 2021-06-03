@@ -4,6 +4,9 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
+import { highlightOptions } from '@keira-config/highlight.config';
+
 import { AppRoutingModule } from './config/app-routing.module';
 import { AppComponent } from './main/app.component';
 import { ConnectionWindowModule } from './main/connection-window/connection-window.module';
@@ -43,5 +46,6 @@ import { SpellModule } from './features/spell/spell.module';
     SpellModule,
   ],
   bootstrap: [AppComponent],
+  providers: [{ provide: HIGHLIGHT_OPTIONS, useValue: highlightOptions }],
 })
 export class AppModule {}

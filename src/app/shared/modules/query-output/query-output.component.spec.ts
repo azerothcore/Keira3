@@ -7,7 +7,6 @@ import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 
 import { QueryOutputComponent } from './query-output.component';
 import { MockType } from '../../testing/mocks';
-import { highlightOptions } from '@keira-config/highlight.config';
 import { HighlightjsWrapperComponent } from './hightlightjs-wrapper/highlightjs-wrapper.component';
 import { QueryErrorComponent } from './query-error/query-error.component';
 import { EditorService } from '../../abstract/service/editors/editor.service';
@@ -68,7 +67,7 @@ describe('QueryOutputComponent', () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [TestHostComponent, QueryOutputComponent, HighlightjsWrapperComponent, QueryErrorComponent],
-        imports: [BrowserModule, FormsModule, HighlightModule.forRoot(highlightOptions), ModalModule.forRoot()],
+        imports: [BrowserModule, FormsModule, HighlightModule, ModalModule.forRoot()],
       }).compileComponents();
     }),
   );
