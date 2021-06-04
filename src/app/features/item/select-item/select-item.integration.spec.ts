@@ -16,7 +16,7 @@ class SelectItemComponentPage extends SelectPageObject<SelectItemComponent> {
   ID_FIELD = 'entry';
 }
 
-describe('SelectItem integration tests', () => {
+fdescribe('SelectItem integration tests', () => {
   let component: SelectItemComponent;
   let fixture: ComponentFixture<SelectItemComponent>;
   let selectService: SelectItemService;
