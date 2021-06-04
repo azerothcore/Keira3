@@ -4,14 +4,14 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { ItemExtendedCostSelectorModalComponent } from './item-extended-cost-selector-modal.component';
 import { ItemExtendedCostSelectorBtnComponent } from './item-extended-cost-selector-btn.component';
-import { HighlightModule } from 'ngx-highlightjs';
+import { HighlightjsWrapperModule } from '@keira-shared/modules/highlightjs-wrapper/highlightjs-wrapper.module';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 
 @NgModule({
   declarations: [ItemExtendedCostSelectorBtnComponent, ItemExtendedCostSelectorModalComponent],
-  imports: [BrowserModule, ReactiveFormsModule, NgxDatatableModule, ModalModule.forRoot(), HighlightModule, SearchButtonsModule],
+  imports: [BrowserModule, ReactiveFormsModule, NgxDatatableModule, ModalModule.forRoot(), HighlightjsWrapperModule, SearchButtonsModule],
   exports: [ItemExtendedCostSelectorBtnComponent],
 })
 export class ItemExtendedCostSelectorModule {}

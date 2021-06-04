@@ -56,7 +56,7 @@
           </button>
         </div>
       </div>
-      <code [highlight]="selectService.query"></code>
+      <keira-highlightjs-wrapper [code]="selectService.query"></keira-highlightjs-wrapper>
     </form>
 
     <div *ngIf="selectService.rows">

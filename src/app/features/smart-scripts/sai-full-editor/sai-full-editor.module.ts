@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HighlightModule } from 'ngx-highlightjs';
+import { HighlightjsWrapperModule } from '@keira-shared/modules/highlightjs-wrapper/highlightjs-wrapper.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
 import { QueryOutputModule } from '@keira-shared/modules/query-output/query-output.module';
@@ -19,7 +19,7 @@ import { SaiFullEditorComponent } from './sai-full-editor.component';
     ReactiveFormsModule,
     TopBarModule,
     QueryOutputModule,
-    HighlightModule,
+    HighlightjsWrapperModule,
     TooltipModule.forRoot(),
     ToastrModule.forRoot(toastrConfig),
     NgxDatatableModule,
