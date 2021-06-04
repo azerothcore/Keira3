@@ -10,7 +10,7 @@ import { SqlEditorService } from './sql-editor.service';
 
 @NgModule({
   declarations: [SqlEditorComponent],
-  imports: [CommonModule, TooltipModule.forRoot(), FormsModule, QueryOutputModule, NgxDatatableModule],
+  imports: [CommonModule, TooltipModule, FormsModule, QueryOutputModule, NgxDatatableModule],
   providers: [SqlEditorService],
 })
 export class SqlEditorModule {}

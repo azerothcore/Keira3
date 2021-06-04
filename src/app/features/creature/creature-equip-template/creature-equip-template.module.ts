@@ -13,15 +13,7 @@ import { IconModule } from '@keira-shared/modules/icon/icon.module';
 
 @NgModule({
   declarations: [CreatureEquipTemplateComponent],
-  imports: [
-    BrowserModule,
-    ReactiveFormsModule,
-    TopBarModule,
-    QueryOutputModule,
-    ItemSelectorModule,
-    ToastrModule.forRoot(toastrConfig),
-    IconModule,
-  ],
+  imports: [BrowserModule, ReactiveFormsModule, TopBarModule, QueryOutputModule, ItemSelectorModule, ToastrModule, IconModule],
   exports: [CreatureEquipTemplateComponent],
   providers: [CreatureEquipTemplateService],
 })

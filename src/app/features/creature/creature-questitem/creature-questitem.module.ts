@@ -22,7 +22,7 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
     QueryOutputModule,
     NgxDatatableModule,
     ItemSelectorModule,
-    ToastrModule.forRoot(toastrConfig),
+    ToastrModule,
     IconModule,
     EditorButtonsModule,
   ],

@@ -13,15 +13,7 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
 
 @NgModule({
   declarations: [ItemEnchantmentTemplateComponent],
-  imports: [
-    BrowserModule,
-    ReactiveFormsModule,
-    TopBarModule,
-    QueryOutputModule,
-    NgxDatatableModule,
-    ToastrModule.forRoot(toastrConfig),
-    EditorButtonsModule,
-  ],
+  imports: [BrowserModule, ReactiveFormsModule, TopBarModule, QueryOutputModule, NgxDatatableModule, ToastrModule, EditorButtonsModule],
   exports: [ItemEnchantmentTemplateComponent],
   providers: [ItemEnchantmentTemplateService],
 })

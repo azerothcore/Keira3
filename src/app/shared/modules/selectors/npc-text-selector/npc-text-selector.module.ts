@@ -12,15 +12,7 @@ import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-
 
 @NgModule({
   declarations: [NpcTextSelectorBtnComponent, NpcTextSelectorModalComponent],
-  imports: [
-    BrowserModule,
-    ReactiveFormsModule,
-    NgxDatatableModule,
-    ModalModule.forRoot(),
-    HighlightjsWrapperModule,
-    IconModule,
-    SearchButtonsModule,
-  ],
+  imports: [BrowserModule, ReactiveFormsModule, NgxDatatableModule, ModalModule, HighlightjsWrapperModule, IconModule, SearchButtonsModule],
   exports: [NpcTextSelectorBtnComponent],
 })
 export class NpcTextSelectorModule {}

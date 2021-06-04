@@ -11,7 +11,7 @@ import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-
 
 @NgModule({
   declarations: [GameobjectSelectorBtnComponent, GameobjectSelectorModalComponent],
-  imports: [BrowserModule, ReactiveFormsModule, NgxDatatableModule, ModalModule.forRoot(), HighlightjsWrapperModule, SearchButtonsModule],
+  imports: [BrowserModule, ReactiveFormsModule, NgxDatatableModule, ModalModule, HighlightjsWrapperModule, SearchButtonsModule],
   exports: [GameobjectSelectorBtnComponent],
 })
 export class GameobjectSelectorModule {}
