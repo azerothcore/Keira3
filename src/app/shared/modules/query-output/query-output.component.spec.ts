@@ -7,7 +7,7 @@ import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 
 import { QueryOutputComponent } from './query-output.component';
 import { MockType } from '../../testing/mocks';
-import { HighlightjsWrapperComponent } from './hightlightjs-wrapper/highlightjs-wrapper.component';
+import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-wrapper.component';
 import { QueryErrorComponent } from './query-error/query-error.component';
 import { EditorService } from '../../abstract/service/editors/editor.service';
 import { PageObject } from '../../testing/page-object';
