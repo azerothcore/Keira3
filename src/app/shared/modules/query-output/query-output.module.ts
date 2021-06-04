@@ -9,7 +9,7 @@ import { QueryErrorComponent } from './query-error/query-error.component';
 
 @NgModule({
   declarations: [QueryOutputComponent, QueryErrorComponent, HighlightjsWrapperComponent],
-  imports: [BrowserModule, FormsModule, HighlightModule.forRoot(highlightOptions)],
+  imports: [BrowserModule, FormsModule],
   exports: [QueryOutputComponent, QueryErrorComponent],
 })
 export class QueryOutputModule {}

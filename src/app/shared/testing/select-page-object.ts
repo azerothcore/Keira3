@@ -14,7 +14,7 @@ export abstract class SelectPageObject<T> extends PageObject<T> {
   }
 
   get queryWrapper() {
-    return this.query<HTMLElement>('code.hljs');
+    return this.query<HTMLElement>('#no-highlight-query-wrapper');
   }
 
   get searchIdInput() {
