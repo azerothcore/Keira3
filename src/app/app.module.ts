@@ -27,6 +27,8 @@ import { uiSwitchConfig } from '@keira-config/ui-switch.config';
 import { toastrConfig } from '@keira-config/toastr.config';
 import { ToastrModule } from 'ngx-toastr';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 @NgModule({
   declarations: [AppComponent],
@@ -35,9 +37,11 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
     HttpClientModule,
     // TODO: enable animation once this bug is fixed: https://github.com/valor-software/ngx-bootstrap/issues/5727
     BsDropdownModule.forRoot({ isAnimated: false, autoClose: true }),
-    UiSwitchModule.forRoot(uiSwitchConfig),
+    ModalModule.forRoot(),
+    TabsModule.forRoot(),
     TooltipModule.forRoot(),
     ToastrModule.forRoot(toastrConfig),
+    UiSwitchModule.forRoot(uiSwitchConfig),
     /* Misc */
     AppRoutingModule,
     ConnectionWindowModule,
