@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import Spy = jasmine.Spy;
 
 import { GossipMenuComponent } from './gossip-menu.component';
@@ -32,7 +34,7 @@ describe('GossipMenu integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [GossipMenuModule, RouterTestingModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), GossipMenuModule, RouterTestingModule],
         providers: [GossipHandlerService],
       }).compileComponents();
     }),

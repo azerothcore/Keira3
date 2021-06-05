@@ -1,6 +1,8 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { GameobjectSpawnAddonComponent } from './gameobject-spawn-addon.component';
 import { GameobjectSpawnAddonModule } from './gameobject-spawn-addon.module';
@@ -26,7 +28,7 @@ describe('GameobjectSpawnAddon integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [GameobjectSpawnAddonModule, RouterTestingModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), GameobjectSpawnAddonModule, RouterTestingModule],
         providers: [GameobjectHandlerService, SaiGameobjectHandlerService],
       }).compileComponents();
     }),

@@ -1,6 +1,8 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { ReferenceLootTemplateComponent } from './reference-loot-template.component';
 import { ReferenceLootTemplateModule } from './reference-loot-template.module';
@@ -25,7 +27,7 @@ describe('ReferenceLootTemplate integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [ReferenceLootTemplateModule, RouterTestingModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ReferenceLootTemplateModule, RouterTestingModule],
         providers: [ReferenceLootHandlerService],
       }).compileComponents();
     }),

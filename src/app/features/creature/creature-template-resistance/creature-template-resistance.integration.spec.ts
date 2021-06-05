@@ -1,6 +1,8 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -17,7 +19,7 @@ describe('CreatureTemplateResistance integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [RouterTestingModule, CreatureModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, CreatureModule],
       }).compileComponents();
     }),
   );

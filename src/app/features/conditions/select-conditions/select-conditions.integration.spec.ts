@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import Spy = jasmine.Spy;
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
@@ -53,7 +55,7 @@ describe('SelectConditions integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [SelectConditionsModule, RouterTestingModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectConditionsModule, RouterTestingModule],
         providers: [ConditionsHandlerService],
       }).compileComponents();
     }),

@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed, tick, fakeAsync, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import Spy = jasmine.Spy;
 
 import { ItemTemplateComponent } from './item-template.component';
@@ -61,7 +63,7 @@ describe('ItemTemplate integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [ItemTemplateModule, RouterTestingModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ItemTemplateModule, RouterTestingModule],
         providers: [ItemHandlerService],
       }).compileComponents();
     }),
