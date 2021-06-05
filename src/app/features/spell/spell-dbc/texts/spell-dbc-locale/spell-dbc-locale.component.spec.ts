@@ -9,6 +9,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SpellHandlerService } from '../../../spell-handler.service';
 import { Locale, SPELL_DBC_TEXT_FIELDS, SpellDbcTextFieldPrefix } from '../spell-dbc-texts.model';
 import { FormGroup } from 'ngx-typesafe-forms';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ToastrModule } from 'ngx-toastr';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
 
 describe('SpellDbcLocaleComponent', () => {
@@ -36,7 +38,7 @@ describe('SpellDbcLocaleComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [TestHostComponent, SpellDbcLocaleComponent],
-      imports: [SpellDbcModule, RouterTestingModule],
+      imports: [ToastrModule.forRoot(), TooltipModule.forRoot(), SpellDbcModule, RouterTestingModule],
       providers: [SpellHandlerService],
     }).compileComponents();
   });

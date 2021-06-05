@@ -2,6 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { Component, ViewChild } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FormGroup } from 'ngx-typesafe-forms';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ToastrModule } from 'ngx-toastr';
 
 import { SpellDbcEffectsComponent } from './spell-dbc-effects.component';
 import { SpellDbcModule } from '../spell-dbc.module';
@@ -37,7 +39,7 @@ describe('SpellDbcEffectsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [TestHostComponent, SpellDbcEffectsComponent],
-      imports: [SpellDbcModule, RouterTestingModule],
+      imports: [ToastrModule.forRoot(), TooltipModule.forRoot(), SpellDbcModule, RouterTestingModule],
       providers: [SpellHandlerService],
     }).compileComponents();
   });

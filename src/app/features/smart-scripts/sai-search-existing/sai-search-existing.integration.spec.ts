@@ -14,10 +14,6 @@ import { SaiSearchExistingModule } from './sai-search-existing.module';
 import { SmartScripts } from '@keira-types/smart-scripts.type';
 
 class SaiSearchExistingComponentPage extends PageObject<SaiSearchExistingComponent> {
-  get queryWrapper() {
-    return this.query<HTMLElement>('code.hljs');
-  }
-
   get searchSourceTypeSelect() {
     return this.query<HTMLInputElement>('select#source_type');
   }

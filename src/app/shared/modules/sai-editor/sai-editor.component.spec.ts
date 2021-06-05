@@ -4,6 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SaiEditorComponent } from './sai-editor.component';
 import { SaiEditorModule } from './sai-editor.module';
 import { SaiHandlerService } from './sai-handler.service';
+import { ToastrModule } from 'ngx-toastr';
 
 describe('SaiEditorComponent', () => {
   let component: SaiEditorComponent;
@@ -13,7 +14,7 @@ describe('SaiEditorComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [SaiEditorModule, RouterTestingModule],
+        imports: [ToastrModule.forRoot(), SaiEditorModule, RouterTestingModule],
       }).compileComponents();
     }),
   );
