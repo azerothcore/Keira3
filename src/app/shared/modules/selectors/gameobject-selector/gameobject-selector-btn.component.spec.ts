@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { GameobjectSelectorBtnComponent } from './gameobject-selector-btn.component';
 import { GameobjectSelectorModule } from './gameobject-selector.module';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 describe('GameobjectSelectorBtnComponent', () => {
   let component: GameobjectSelectorBtnComponent;
@@ -10,7 +11,7 @@ describe('GameobjectSelectorBtnComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [GameobjectSelectorModule],
+        imports: [ModalModule.forRoot(), GameobjectSelectorModule],
       }).compileComponents();
     }),
   );

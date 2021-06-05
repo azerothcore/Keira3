@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SingleValueSelectorBtnComponent } from './single-value-selector-btn.component';
 import { SingleValueSelectorModule } from './single-value-selector.module';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 describe('SingleValueSelectorBtnComponent', () => {
   let component: SingleValueSelectorBtnComponent;
@@ -10,7 +11,7 @@ describe('SingleValueSelectorBtnComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [SingleValueSelectorModule],
+        imports: [ModalModule.forRoot(), SingleValueSelectorModule],
       }).compileComponents();
     }),
   );

@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ItemSelectorBtnComponent } from './item-selector-btn.component';
 import { ItemSelectorModule } from './item-selector.module';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 describe('ItemSelectorBtnComponent', () => {
   let component: ItemSelectorBtnComponent;
@@ -10,7 +11,7 @@ describe('ItemSelectorBtnComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [ItemSelectorModule],
+        imports: [ModalModule.forRoot(), ItemSelectorModule],
       }).compileComponents();
     }),
   );
