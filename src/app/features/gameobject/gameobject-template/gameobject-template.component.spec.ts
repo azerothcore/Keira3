@@ -10,6 +10,8 @@ import { GameobjectTemplateService } from './gameobject-template.service';
 import { FieldDefinition } from '@keira-types/general';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 describe('GameobjectComponent', () => {
   let component: GameobjectTemplateComponent;
@@ -22,7 +24,7 @@ describe('GameobjectComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [GameobjectTemplateModule, RouterTestingModule],
+        imports: [ModalModule.forRoot(), ToastrModule.forRoot(), GameobjectTemplateModule, RouterTestingModule],
         providers: [GameobjectHandlerService, SaiGameobjectHandlerService],
       }).compileComponents();
     }),

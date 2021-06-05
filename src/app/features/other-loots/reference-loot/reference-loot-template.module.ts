@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { HighlightModule } from 'ngx-highlightjs';
+import { HighlightjsWrapperModule } from '@keira-shared/modules/highlightjs-wrapper/highlightjs-wrapper.module';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
@@ -26,7 +26,7 @@ const components = [ReferenceLootTemplateComponent, SelectReferenceLootComponent
     CreateModule,
     ReactiveFormsModule,
     SearchButtonsModule,
-    HighlightModule,
+    HighlightjsWrapperModule,
     NgxDatatableModule,
   ],
   providers: [ReferenceLootTemplateService, SelectReferenceLootService, ReferenceLootHandlerService],

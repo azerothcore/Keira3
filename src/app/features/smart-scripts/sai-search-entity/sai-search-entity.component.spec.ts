@@ -5,6 +5,7 @@ import { SaiSearchEntityComponent } from './sai-search-entity.component';
 import { SaiSearchEntityModule } from './sai-search-entity.module';
 import { PageObject } from '@keira-testing/page-object';
 import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 class SaiSearchEntityComponentPage extends PageObject<SaiSearchEntityComponent> {
   get entryOrGuidInput() {
@@ -44,7 +45,7 @@ describe('SaiSearchEntityComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [SaiSearchEntityModule, RouterTestingModule],
+        imports: [ModalModule.forRoot(), SaiSearchEntityModule, RouterTestingModule],
       }).compileComponents();
     }),
   );

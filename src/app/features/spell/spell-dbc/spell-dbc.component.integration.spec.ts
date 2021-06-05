@@ -1,6 +1,8 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
@@ -25,7 +27,7 @@ describe('SpellDbc integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [RouterTestingModule, SpellModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, SpellModule],
       }).compileComponents();
     }),
   );

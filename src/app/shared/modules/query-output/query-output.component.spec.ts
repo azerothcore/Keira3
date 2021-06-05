@@ -1,19 +1,18 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-import { HighlightModule } from 'ngx-highlightjs';
 import { ClipboardService } from 'ngx-clipboard';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 
 import { QueryOutputComponent } from './query-output.component';
 import { MockType } from '../../testing/mocks';
-import { highlightOptions } from '@keira-config/highlight.config';
-import { HighlightjsWrapperComponent } from './hightlightjs-wrapper/highlightjs-wrapper.component';
+import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-wrapper.component';
 import { QueryErrorComponent } from './query-error/query-error.component';
 import { EditorService } from '../../abstract/service/editors/editor.service';
 import { PageObject } from '../../testing/page-object';
 import { Component, ViewChild } from '@angular/core';
 import { closeModalsAfterEach } from '@keira-testing/test-helpers';
+import { HighlightjsWrapperModule } from '@keira-shared/modules/highlightjs-wrapper/highlightjs-wrapper.module';
 
 @Component({
   template: `<keira-query-output [editorService]="editorService"></keira-query-output>`,
@@ -68,7 +67,7 @@ describe('QueryOutputComponent', () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [TestHostComponent, QueryOutputComponent, HighlightjsWrapperComponent, QueryErrorComponent],
-        imports: [BrowserModule, FormsModule, HighlightModule.forRoot(highlightOptions), ModalModule.forRoot()],
+        imports: [BrowserModule, FormsModule, HighlightjsWrapperModule, ModalModule.forRoot()],
       }).compileComponents();
     }),
   );

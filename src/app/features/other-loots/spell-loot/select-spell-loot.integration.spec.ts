@@ -2,6 +2,8 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SelectSpellLootComponent } from './select-spell-loot.component';
@@ -21,7 +23,7 @@ describe('SelectSpellLoot integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [SpellLootTemplateModule, RouterTestingModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SpellLootTemplateModule, RouterTestingModule],
         providers: [SpellLootHandlerService],
       }).compileComponents();
     }),

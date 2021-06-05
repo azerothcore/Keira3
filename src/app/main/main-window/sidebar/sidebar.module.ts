@@ -15,7 +15,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 
 @NgModule({
   declarations: [SidebarComponent, LogoutBtnComponent, UnsavedIconComponent],
-  imports: [RouterModule, BrowserAnimationsModule, PerfectScrollbarModule, ModalModule.forRoot(), ModalConfirmModule, TooltipModule],
+  imports: [RouterModule, BrowserAnimationsModule, PerfectScrollbarModule, ModalModule, ModalConfirmModule, TooltipModule],
   exports: [SidebarComponent],
   providers: [{ provide: PERFECT_SCROLLBAR_CONFIG, useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG }],
 })

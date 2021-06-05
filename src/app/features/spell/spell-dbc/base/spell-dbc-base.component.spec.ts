@@ -2,6 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { Component, ViewChild } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FormGroup } from 'ngx-typesafe-forms';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ToastrModule } from 'ngx-toastr';
 
 import { SpellDbcBaseComponent } from './spell-dbc-base.component';
 import { SpellDbcModule } from '../spell-dbc.module';
@@ -9,6 +11,7 @@ import { PageObject } from '@keira-testing/page-object';
 import { SpellDbcService } from '../spell-dbc.service';
 import { SpellHandlerService } from '../../spell-handler.service';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 describe('SpellDbcBaseComponent', () => {
   class SpellDbcBaseComponentPage extends PageObject<TestHostComponent> {}
@@ -60,7 +63,7 @@ describe('SpellDbcBaseComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [TestHostComponent, SpellDbcBaseComponent],
-      imports: [SpellDbcModule, RouterTestingModule],
+      imports: [ModalModule.forRoot(), ToastrModule.forRoot(), TooltipModule.forRoot(), SpellDbcModule, RouterTestingModule],
       providers: [SpellHandlerService],
     }).compileComponents();
   });

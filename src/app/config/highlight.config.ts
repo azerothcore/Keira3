@@ -1,9 +1,8 @@
-import sql from 'highlight.js/lib/languages/sql';
+import { HighlightOptions } from 'ngx-highlightjs';
 
-export function hljsLanguages() {
-  return [{ name: 'sql', func: sql }];
-}
-
-export const highlightOptions = {
-  languages: hljsLanguages,
+export const highlightOptions: HighlightOptions = {
+  coreLibraryLoader: () => import('highlight.js/lib/core'),
+  languages: {
+    sql: () => import('highlight.js/lib/languages/sql'),
+  },
 };

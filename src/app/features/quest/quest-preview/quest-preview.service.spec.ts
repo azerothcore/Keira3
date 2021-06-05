@@ -23,12 +23,13 @@ import {
 } from '@keira-shared/constants/quest-preview';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { QuestOfferRewardService } from '../quest-offer-reward/quest-offer-reward.service';
+import { ToastrModule } from 'ngx-toastr';
 
 describe('QuestPreviewService', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [RouterTestingModule, QuestModule],
+        imports: [ToastrModule.forRoot(), RouterTestingModule, QuestModule],
         providers: [QuestTemplateService],
       });
     }),

@@ -13,6 +13,7 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { QuestRequestItems } from '@keira-types/quest-request-items.type';
 import { QuestOfferReward } from '@keira-types/quest-offer-reward.type';
+import { ToastrModule } from 'ngx-toastr';
 
 class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   get title() {
@@ -118,7 +119,7 @@ describe('QuestPreviewComponent', () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [QuestPreviewComponent],
-        imports: [RouterTestingModule, QuestModule],
+        imports: [ToastrModule.forRoot(), RouterTestingModule, QuestModule],
       }).compileComponents();
     }),
   );

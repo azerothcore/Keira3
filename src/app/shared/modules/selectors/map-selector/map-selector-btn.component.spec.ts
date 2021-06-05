@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { MapSelectorBtnComponent } from './map-selector-btn.component';
 import { MapSelectorModule } from './map-selector.module';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 describe('MapSelectorBtnComponent', () => {
   let component: MapSelectorBtnComponent;
@@ -10,7 +11,7 @@ describe('MapSelectorBtnComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [MapSelectorModule],
+        imports: [ModalModule.forRoot(), MapSelectorModule],
       }).compileComponents();
     }),
   );

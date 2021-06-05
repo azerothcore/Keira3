@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { ElectronService } from '@keira-shared/services/electron.service';
 
 @Component({
   selector: 'keira-highlightjs-wrapper',
@@ -6,4 +7,6 @@ import { Component, Input } from '@angular/core';
 })
 export class HighlightjsWrapperComponent {
   @Input() code: string;
+
+  constructor(public readonly electronService: ElectronService) {}
 }

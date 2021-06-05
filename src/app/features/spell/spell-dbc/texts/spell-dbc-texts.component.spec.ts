@@ -9,6 +9,8 @@ import { SpellDbcService } from '../spell-dbc.service';
 import { SpellHandlerService } from '../../spell-handler.service';
 import { LOCALES } from './spell-dbc-texts.model';
 import { FormGroup } from 'ngx-typesafe-forms';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ToastrModule } from 'ngx-toastr';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
 
 describe('SpellDbcTextsComponent', () => {
@@ -27,7 +29,7 @@ describe('SpellDbcTextsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [TestHostComponent, SpellDbcTextsComponent],
-      imports: [SpellDbcModule, RouterTestingModule],
+      imports: [ToastrModule.forRoot(), TooltipModule.forRoot(), SpellDbcModule, RouterTestingModule],
       providers: [SpellHandlerService],
     }).compileComponents();
   });

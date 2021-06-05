@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import Spy = jasmine.Spy;
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
@@ -13,10 +15,6 @@ import { Conditions } from '@keira-types/conditions.type';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 
 class SelectConditionsComponentPage extends PageObject<SelectConditionsComponent> {
-  get queryWrapper() {
-    return this.query<HTMLElement>('code.hljs');
-  }
-
   get searchIdSelect() {
     return this.query<HTMLInputElement>('select#SourceTypeOrReferenceId');
   }
@@ -53,7 +51,7 @@ describe('SelectConditions integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [SelectConditionsModule, RouterTestingModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectConditionsModule, RouterTestingModule],
         providers: [ConditionsHandlerService],
       }).compileComponents();
     }),

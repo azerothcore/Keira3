@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import Spy = jasmine.Spy;
 
 import { ProspectingLootTemplateComponent } from './prospecting-loot-template.component';
@@ -33,7 +35,7 @@ describe('ProspectingLootTemplate integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [ProspectingLootTemplateModule, RouterTestingModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ProspectingLootTemplateModule, RouterTestingModule],
         providers: [ItemHandlerService],
       }).compileComponents();
     }),

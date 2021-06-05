@@ -10,6 +10,7 @@ import { PageObject } from '@keira-testing/page-object';
 import { ConnectionWindowModule } from './connection-window.module';
 import { ConnectionWindowService } from './connection-window.service';
 import { Spied } from '@keira-testing/test-helpers';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 class ConnectionWindowComponentPage extends PageObject<ConnectionWindowComponent> {
   get hostInput() {
@@ -84,7 +85,7 @@ describe('ConnectionWindowComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [ConnectionWindowModule],
+        imports: [TooltipModule.forRoot(), ConnectionWindowModule],
         providers: [
           { provide: MysqlService, useValue: instance(MockedMysqlService) },
           {

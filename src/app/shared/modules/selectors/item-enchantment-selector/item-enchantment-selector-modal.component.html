@@ -27,7 +27,7 @@
         <keira-search-button [searchService]="searchService"></keira-search-button>
       </div>
     </div>
-    <code [highlight]="searchService.query"></code>
+    <keira-highlightjs-wrapper [code]="searchService.query"></keira-highlightjs-wrapper>
   </form>
 
   <div *ngIf="searchService.rows">

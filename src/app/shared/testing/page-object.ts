@@ -105,6 +105,10 @@ export abstract class PageObject<ComponentType> {
     return element;
   }
 
+  get queryWrapper() {
+    return this.query<HTMLElement>('#no-highlight-query-wrapper');
+  }
+
   /*** ngx-datatable utilities ***/
 
   /* selector string generators */
