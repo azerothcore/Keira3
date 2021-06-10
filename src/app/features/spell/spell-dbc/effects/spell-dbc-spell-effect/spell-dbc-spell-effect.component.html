@@ -87,6 +87,11 @@
 
     <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" [for]="getFieldName('EffectMechanic')">{{ getFieldName('EffectMechanic') }}</label>
+      <keira-single-value-selector-btn
+        [control]="formGroup.controls.Mechanic"
+        [config]="{ options: SPELL_MECHANIC, name: getFieldName('EffectMechanic') }"
+        [modalClass]="'modal-md'"
+      ></keira-single-value-selector-btn>
       <i
         class="fas fa-info-circle ms-1"
         [placement]="'auto'"
