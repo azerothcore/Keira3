@@ -237,13 +237,13 @@ SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.FRIENDLY_IS_CC] = 'RepeatMax';
 
 // SMART_EVENT_FRIENDLY_MISSING_BUFF
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.FRIENDLY_MISSING_BUFF] =
-  'When a friendly unit within a certain range is missing or having an aura/spell on them. If the first parameter is the SpellId in a negative format, it will mean the event is triggered when a friendly unit within a certain range HAS a buff.';
+  'When a friendly unit within a certain range is missing or having an aura/spell on them.';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.FRIENDLY_MISSING_BUFF] = 'SpellId';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.FRIENDLY_MISSING_BUFF] = 'Radius';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.FRIENDLY_MISSING_BUFF] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.FRIENDLY_MISSING_BUFF] = 'RepeatMax';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.FRIENDLY_MISSING_BUFF] =
-  'Spell id for the event to trigger. If the SpellId is negative it means the event is reversed and triggered only when the aura is actually active on the friendly unit.';
+  'Spell id for the event to trigger.';
 
 // SMART_EVENT_SUMMONED_UNIT
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.SUMMONED_UNIT] =
@@ -284,23 +284,23 @@ SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.RECEIVE_EMOTE] = 'RepeatMax';
 
 // SMART_EVENT_HAS_AURA
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.HAS_AURA] =
-  'When the creature is missing or having an aura/spell on them. If the first parameter is the SpellId in a negative format, it will mean the event is triggered when a friendly unit within a certain range is MISSING a buff.';
+  'When the creature is missing or having an aura/spell on them.';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.HAS_AURA] = 'SpellId';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.HAS_AURA] = 'Stacks';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.HAS_AURA] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.HAS_AURA] = 'RepeatMax';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.HAS_AURA] =
-  'Spell id for the event to trigger. If the SpellId is negative it means the event is reversed and triggered only when the aura is NOT present on the creature.';
+  'Spell id for the event to trigger.';
 
 // SMART_EVENT_TARGET_BUFFED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.TARGET_BUFFED] =
-  "When the creature's target is missing or having an aura/spell on them. If the first parameter is the SpellId in a negative format, it will mean the event is triggered when a friendly unit within a certain range is MISSING a buff.";
+  "When the creature's target is missing or having an aura/spell on them.";
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.TARGET_BUFFED] = 'SpellId';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.TARGET_BUFFED] = 'Stacks';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.TARGET_BUFFED] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.TARGET_BUFFED] = 'RepeatMax';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.TARGET_BUFFED] =
-  'Spell id for the event to trigger. If the SpellId is negative it means the event is reversed and triggered only when the aura is not present on the creature.';
+  'Spell id for the event to trigger.';
 
 // SMART_EVENT_RESET
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.RESET] = 'When the creature resets (evades, respawns, spawns or resets out of combat)';
