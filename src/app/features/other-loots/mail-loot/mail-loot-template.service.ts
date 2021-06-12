@@ -15,14 +15,6 @@ export class MailLootTemplateService extends MultiRowEditorService<MailLootTempl
     public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
-    super(
-      MailLootTemplate,
-      MAIL_LOOT_TEMPLATE_TABLE,
-      LOOT_TEMPLATE_ID,
-      LOOT_TEMPLATE_ID_2,
-      handlerService,
-      queryService,
-      toastrService,
-    );
+    super(MailLootTemplate, MAIL_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, handlerService, queryService, toastrService);
   }
 }

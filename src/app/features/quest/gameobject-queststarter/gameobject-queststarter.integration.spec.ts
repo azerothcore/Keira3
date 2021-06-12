@@ -1,6 +1,8 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { GameobjectQueststarterComponent } from './gameobject-queststarter.component';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
@@ -30,7 +32,7 @@ describe('GameobjectQueststarter integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [RouterTestingModule, QuestModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, QuestModule],
       }).compileComponents();
     }),
   );
@@ -180,9 +182,7 @@ describe('GameobjectQueststarter integration tests', () => {
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1, 2));',
-      );
+      page.expectDiffQueryToContain('DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1, 2));');
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject_queststarter` WHERE (`quest` = 1234);\n' +
           'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +

@@ -99,9 +99,7 @@ describe('MysqlService', () => {
 
         obs.subscribe(() => {
           expect(console.error).toHaveBeenCalledTimes(1);
-          expect(console.error).toHaveBeenCalledWith(
-            `_connection was not defined when trying to run query: ${queryStr}`,
-          );
+          expect(console.error).toHaveBeenCalledWith(`_connection was not defined when trying to run query: ${queryStr}`);
         });
       }),
     );

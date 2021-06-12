@@ -8,6 +8,7 @@ import { of, throwError } from 'rxjs';
 import { ClipboardService } from 'ngx-clipboard';
 import { MysqlError } from 'mysql';
 import Spy = jasmine.Spy;
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 export class SqlEditorPage extends PageObject<SqlEditorComponent> {
   readonly DT = 'ngx-datatable';
@@ -38,7 +39,7 @@ describe('SqlEditorComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [SqlEditorModule],
+        imports: [TooltipModule.forRoot(), SqlEditorModule],
       }).compileComponents();
     }),
   );

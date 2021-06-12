@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import Spy = jasmine.Spy;
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
@@ -39,7 +41,7 @@ describe('CreatureTemplateAddon integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [CreatureTemplateAddonModule, RouterTestingModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureTemplateAddonModule, RouterTestingModule],
         providers: [CreatureHandlerService, SaiCreatureHandlerService],
       }).compileComponents();
     }),
@@ -133,9 +135,7 @@ describe('CreatureTemplateAddon integration tests', () => {
       );
 
       page.setInputValueById('bytes1', '2');
-      page.expectDiffQueryToContain(
-        'UPDATE `creature_template_addon` SET `path_id` = 3, `bytes1` = 2 WHERE (`entry` = 1234);',
-      );
+      page.expectDiffQueryToContain('UPDATE `creature_template_addon` SET `path_id` = 3, `bytes1` = 2 WHERE (`entry` = 1234);');
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
           'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +

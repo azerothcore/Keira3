@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import Spy = jasmine.Spy;
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
@@ -12,10 +14,6 @@ import { SaiSearchExistingModule } from './sai-search-existing.module';
 import { SmartScripts } from '@keira-types/smart-scripts.type';
 
 class SaiSearchExistingComponentPage extends PageObject<SaiSearchExistingComponent> {
-  get queryWrapper() {
-    return this.query<HTMLElement>('code.hljs');
-  }
-
   get searchSourceTypeSelect() {
     return this.query<HTMLInputElement>('select#source_type');
   }
@@ -42,7 +40,7 @@ describe('SaiSearchExisting integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [SaiSearchExistingModule, RouterTestingModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SaiSearchExistingModule, RouterTestingModule],
       }).compileComponents();
     }),
   );

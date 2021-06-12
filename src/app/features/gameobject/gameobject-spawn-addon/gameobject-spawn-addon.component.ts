@@ -11,15 +11,10 @@ import { INVISIBILITY_TYPE } from '@keira-constants/options/invisibility-type';
   templateUrl: './gameobject-spawn-addon.component.html',
 })
 export class GameobjectSpawnAddonComponent extends MultiRowEditorComponent<GameobjectSpawnAddon> {
-
   public readonly INVISIBILITY_TYPE = INVISIBILITY_TYPE;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: GameobjectSpawnAddonService,
-    public handlerService: GameobjectHandlerService,
-  ) {
+  constructor(public editorService: GameobjectSpawnAddonService, public handlerService: GameobjectHandlerService) {
     super(editorService, handlerService);
   }
-
 }

@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import Spy = jasmine.Spy;
 
 import { GameobjectSpawnComponent } from './gameobject-spawn.component';
@@ -35,7 +37,7 @@ describe('GameobjectSpawn integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [GameobjectSpawnModule, RouterTestingModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), GameobjectSpawnModule, RouterTestingModule],
         providers: [GameobjectHandlerService, SaiGameobjectHandlerService],
       }).compileComponents();
     }),
@@ -392,9 +394,7 @@ describe('GameobjectSpawn integration tests', () => {
       waitForAsync(async () => {
         const field = 'areaId';
         const sqliteQueryService = TestBed.inject(SqliteQueryService);
-        spyOn(sqliteQueryService, 'query').and.returnValue(
-          of([{ m_ID: 123, m_ParentAreaID: 456, m_AreaName_lang: 'Mock Area' }]),
-        );
+        spyOn(sqliteQueryService, 'query').and.returnValue(of([{ m_ID: 123, m_ParentAreaID: 456, m_AreaName_lang: 'Mock Area' }]));
 
         // because this is a multi-row editor
         page.clickRowOfDatatable(0);

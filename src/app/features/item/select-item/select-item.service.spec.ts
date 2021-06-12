@@ -11,11 +11,7 @@ describe('SelectItemService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      providers: [
-        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-        ItemHandlerService,
-        SelectItemService,
-      ],
+      providers: [{ provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }, ItemHandlerService, SelectItemService],
     }),
   );
 

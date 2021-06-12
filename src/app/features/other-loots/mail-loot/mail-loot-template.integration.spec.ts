@@ -1,6 +1,8 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { MailLootTemplateComponent } from './mail-loot-template.component';
 import { MailLootTemplateModule } from './mail-loot-template.module';
@@ -25,7 +27,7 @@ describe('MailLootTemplate integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [MailLootTemplateModule, RouterTestingModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), MailLootTemplateModule, RouterTestingModule],
         providers: [MailLootHandlerService],
       }).compileComponents();
     }),

@@ -1,6 +1,8 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { QuestOfferRewardComponent } from './quest-offer-reward.component';
@@ -39,7 +41,7 @@ describe('QuestOfferReward integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [RouterTestingModule, QuestModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, QuestModule],
       }).compileComponents();
     }),
   );
@@ -160,9 +162,7 @@ describe('QuestOfferReward integration tests', () => {
       );
 
       page.setInputValueById('Emote2', '22');
-      page.expectDiffQueryToContain(
-        'UPDATE `quest_offer_reward` SET `Emote1` = 11, `Emote2` = 22 WHERE (`ID` = 1234);',
-      );
+      page.expectDiffQueryToContain('UPDATE `quest_offer_reward` SET `Emote1` = 11, `Emote2` = 22 WHERE (`ID` = 1234);');
       page.expectFullQueryToContain(
         'DELETE FROM `quest_offer_reward` WHERE (`ID` = 1234);\n' +
           'INSERT INTO `quest_offer_reward` (`ID`, `Emote1`, `Emote2`, `Emote3`, `Emote4`, ' +

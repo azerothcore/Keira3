@@ -23,12 +23,13 @@ import {
 } from '@keira-shared/constants/quest-preview';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { QuestOfferRewardService } from '../quest-offer-reward/quest-offer-reward.service';
+import { ToastrModule } from 'ngx-toastr';
 
 describe('QuestPreviewService', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [RouterTestingModule, QuestModule],
+        imports: [ToastrModule.forRoot(), RouterTestingModule, QuestModule],
         providers: [QuestTemplateService],
       });
     }),
@@ -48,12 +49,8 @@ describe('QuestPreviewService', () => {
     const MAX_NEXT_QUEST_ID = 7;
 
     spyOn(mysqlQueryService, 'getQuestTitleById').and.callFake((i) => Promise.resolve('Title' + i));
-    spyOn(mysqlQueryService, 'getPrevQuestById').and.callFake((id: number) =>
-      Promise.resolve(String(id > 0 ? id - 1 : 0)),
-    );
-    spyOn(mysqlQueryService, 'getNextQuestById').and.callFake((id: number) =>
-      Promise.resolve(String(id < MAX_NEXT_QUEST_ID ? id + 1 : 0)),
-    );
+    spyOn(mysqlQueryService, 'getPrevQuestById').and.callFake((id: number) => Promise.resolve(String(id > 0 ? id - 1 : 0)));
+    spyOn(mysqlQueryService, 'getNextQuestById').and.callFake((id: number) => Promise.resolve(String(id < MAX_NEXT_QUEST_ID ? id + 1 : 0)));
     spyOn(mysqlQueryService, 'getGameObjectNameById').and.callFake(() => Promise.resolve('Helias Gameobject'));
     spyOn(mysqlQueryService, 'getCreatureNameById').and.callFake(() => Promise.resolve('Helias Creature'));
 
@@ -73,13 +70,8 @@ describe('QuestPreviewService', () => {
   };
 
   it('getters', () => {
-    const {
-      service,
-      creatureQueststarterService,
-      creatureQuestenderService,
-      gameobjectQueststarterService,
-      gameobjectQuestenderService,
-    } = setup();
+    const { service, creatureQueststarterService, creatureQuestenderService, gameobjectQueststarterService, gameobjectQuestenderService } =
+      setup();
     creatureQueststarterService.addNewRow();
     creatureQuestenderService.addNewRow();
     gameobjectQueststarterService.addNewRow();
@@ -170,9 +162,7 @@ describe('QuestPreviewService', () => {
 
     spyOn(mysqlQueryService, 'getItemByStartQuest').and.callFake(() => Promise.resolve(mockItem));
     spyOn(mysqlQueryService, 'getItemNameByStartQuest').and.callFake(() => Promise.resolve(mockItemName));
-    spyOn(mysqlQueryService, 'getReputationRewardByFaction').and.callFake(() =>
-      Promise.resolve([mockQuestReputationReward]),
-    );
+    spyOn(mysqlQueryService, 'getReputationRewardByFaction').and.callFake(() => Promise.resolve([mockQuestReputationReward]));
     questTemplateService.form.controls.ID.setValue(mockID);
 
     expect(await service.questGivenByItem$).toBe(mockItem);

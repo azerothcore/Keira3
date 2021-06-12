@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import Spy = jasmine.Spy;
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { CreatureHandlerService } from '../creature-handler.service';
@@ -35,7 +37,7 @@ describe('SaiCreatureComponent integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [SaiCreatureModule, RouterTestingModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SaiCreatureModule, RouterTestingModule],
         providers: [CreatureHandlerService, SaiCreatureHandlerService],
       }).compileComponents();
     }),
@@ -54,9 +56,7 @@ describe('SaiCreatureComponent integration tests', () => {
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
-    spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(
-      of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]),
-    );
+    spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     fixture = TestBed.createComponent(SaiCreatureComponent);
     component = fixture.componentInstance;

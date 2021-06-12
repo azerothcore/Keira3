@@ -6,26 +6,17 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { instance } from 'ts-mockito';
-import { HighlightModule } from 'ngx-highlightjs';
 
 import { BaseSelectorBtnComponent } from './base-selector-btn.component';
 import { ItemSelectorBtnComponent } from '../item-selector/item-selector-btn.component';
 import { ItemSelectorModalComponent } from '../item-selector/item-selector-modal.component';
-import { highlightOptions } from '@keira-config/highlight.config';
 import { MysqlService } from '../../../services/mysql.service';
 import { MockedMysqlService } from '@keira-testing/mocks';
 import { closeModalsAfterEach } from '@keira-testing/test-helpers';
 
 @NgModule({
   declarations: [ItemSelectorModalComponent],
-  imports: [
-    CommonModule,
-    BrowserModule,
-    FormsModule,
-    ReactiveFormsModule,
-    NgxDatatableModule,
-    HighlightModule.forRoot(highlightOptions),
-  ],
+  imports: [ModalModule.forRoot(), CommonModule, BrowserModule, FormsModule, ReactiveFormsModule, NgxDatatableModule],
   providers: [{ provide: MysqlService, useValue: instance(MockedMysqlService) }],
 })
 class TestModule {}
@@ -40,7 +31,7 @@ describe('BaseSelectorBtnComponent', () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [ItemSelectorBtnComponent],
-        imports: [ModalModule.forRoot(), TestModule],
+        imports: [ModalModule.forRoot(), ModalModule.forRoot(), TestModule],
       }).compileComponents();
     }),
   );

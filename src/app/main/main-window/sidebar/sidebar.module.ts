@@ -1,11 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
-import {
-  PERFECT_SCROLLBAR_CONFIG,
-  PerfectScrollbarConfigInterface,
-  PerfectScrollbarModule,
-} from 'ngx-perfect-scrollbar';
+import { PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarConfigInterface, PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
@@ -19,14 +15,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 
 @NgModule({
   declarations: [SidebarComponent, LogoutBtnComponent, UnsavedIconComponent],
-  imports: [
-    RouterModule,
-    BrowserAnimationsModule,
-    PerfectScrollbarModule,
-    ModalModule.forRoot(),
-    ModalConfirmModule,
-    TooltipModule,
-  ],
+  imports: [RouterModule, BrowserAnimationsModule, PerfectScrollbarModule, ModalModule, ModalConfirmModule, TooltipModule],
   exports: [SidebarComponent],
   providers: [{ provide: PERFECT_SCROLLBAR_CONFIG, useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG }],
 })

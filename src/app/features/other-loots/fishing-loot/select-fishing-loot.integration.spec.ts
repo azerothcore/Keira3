@@ -2,6 +2,8 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SelectFishingLootComponent } from './select-fishing-loot.component';
@@ -21,7 +23,7 @@ describe('SelectFishingLoot integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [FishingLootTemplateModule, RouterTestingModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), FishingLootTemplateModule, RouterTestingModule],
         providers: [FishingLootHandlerService],
       }).compileComponents();
     }),
@@ -52,9 +54,7 @@ describe('SelectFishingLoot integration tests', () => {
       expect(page.createInput.value).toEqual(`${component.customStartingId}`);
       page.expectNewEntityFree();
       expect(querySpy).toHaveBeenCalledWith('SELECT MAX(Entry) AS max FROM fishing_loot_template;');
-      expect(page.queryWrapper.innerText).toContain(
-        'SELECT `Entry` FROM `fishing_loot_template` GROUP BY Entry LIMIT 50',
-      );
+      expect(page.queryWrapper.innerText).toContain('SELECT `Entry` FROM `fishing_loot_template` GROUP BY Entry LIMIT 50');
     }),
   );
 
@@ -103,8 +103,7 @@ describe('SelectFishingLoot integration tests', () => {
       id: 1,
       entry: 1200,
       limit: '100',
-      expectedQuery:
-        'SELECT `Entry` FROM `fishing_loot_template` ' + "WHERE (`Entry` LIKE '%1200%') GROUP BY Entry LIMIT 100",
+      expectedQuery: 'SELECT `Entry` FROM `fishing_loot_template` ' + "WHERE (`Entry` LIKE '%1200%') GROUP BY Entry LIMIT 100",
     },
   ]) {
     it(`searching an existing entity should correctly work [${id}]`, () => {

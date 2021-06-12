@@ -9,8 +9,6 @@ export class ReferenceViewerService {
   constructor(public queryService: MysqlQueryService) {}
 
   getReferenceById(referenceId: number): Observable<ReferenceLootTemplate[]> {
-    return this.queryService.query<ReferenceLootTemplate>(
-      `SELECT * FROM reference_loot_template WHERE Entry = ${referenceId}`,
-    );
+    return this.queryService.query<ReferenceLootTemplate>(`SELECT * FROM reference_loot_template WHERE Entry = ${referenceId}`);
   }
 }

@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import Spy = jasmine.Spy;
 
 import { CreatureTemplateComponent } from './creature-template.component';
@@ -42,7 +44,7 @@ describe('CreatureTemplate integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [CreatureTemplateModule, RouterTestingModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureTemplateModule, RouterTestingModule],
         providers: [CreatureHandlerService, SaiCreatureHandlerService],
       }).compileComponents();
     }),
@@ -150,9 +152,7 @@ describe('CreatureTemplate integration tests', () => {
       page.expectFullQueryToContain('Shin');
 
       page.setInputValueById('subname', 'AC Developer');
-      page.expectDiffQueryToContain(
-        "UPDATE `creature_template` SET `name` = 'Shin', `subname` = 'AC Developer' WHERE (`entry` = 1234);",
-      );
+      page.expectDiffQueryToContain("UPDATE `creature_template` SET `name` = 'Shin', `subname` = 'AC Developer' WHERE (`entry` = 1234);");
       page.expectFullQueryToContain('Shin');
       page.expectFullQueryToContain('AC Developer');
     });

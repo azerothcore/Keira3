@@ -1,13 +1,33 @@
-.wrapper.img-1 { background-image: url("../../../assets/img/login-backgrounds/ne-1.jpg"); }
-.wrapper.img-2 { background-image: url("../../../assets/img/login-backgrounds/ragnaros.jpg"); }
-.wrapper.img-3 { background-image: url("../../../assets/img/login-backgrounds/illidan-1.jpg"); }
-.wrapper.img-4 { background-image: url("../../../assets/img/login-backgrounds/death-angel.jpg"); }
-.wrapper.img-5 { background-image: url("../../../assets/img/login-backgrounds/ne-2.jpg"); }
-.wrapper.img-6 { background-image: url("../../../assets/img/login-backgrounds/ne-3.jpg"); }
-.wrapper.img-7 { background-image: url("../../../assets/img/login-backgrounds/orc-1.jpg"); }
-.wrapper.img-8 { background-image: url("../../../assets/img/login-backgrounds/orc-2.jpg"); }
-.wrapper.img-9 { background-image: url("../../../assets/img/login-backgrounds/orc-campfire.jpg"); }
-.wrapper.img-10 { background-image: url("../../../assets/img/login-backgrounds/undead-1.jpg"); }
+.wrapper.img-1 {
+  background-image: url('../../../assets/img/login-backgrounds/ne-1.jpg');
+}
+.wrapper.img-2 {
+  background-image: url('../../../assets/img/login-backgrounds/ragnaros.jpg');
+}
+.wrapper.img-3 {
+  background-image: url('../../../assets/img/login-backgrounds/illidan-1.jpg');
+}
+.wrapper.img-4 {
+  background-image: url('../../../assets/img/login-backgrounds/death-angel.jpg');
+}
+.wrapper.img-5 {
+  background-image: url('../../../assets/img/login-backgrounds/ne-2.jpg');
+}
+.wrapper.img-6 {
+  background-image: url('../../../assets/img/login-backgrounds/ne-3.jpg');
+}
+.wrapper.img-7 {
+  background-image: url('../../../assets/img/login-backgrounds/orc-1.jpg');
+}
+.wrapper.img-8 {
+  background-image: url('../../../assets/img/login-backgrounds/orc-2.jpg');
+}
+.wrapper.img-9 {
+  background-image: url('../../../assets/img/login-backgrounds/orc-campfire.jpg');
+}
+.wrapper.img-10 {
+  background-image: url('../../../assets/img/login-backgrounds/undead-1.jpg');
+}
 
 $main-color-blue: #0052a7;
 $secondary-color-blue: #cdcfff;
@@ -25,7 +45,8 @@ $secondary-color-green: #b7e2ad;
     background-color: $main-color-blue;
     border-color: $main-color-blue;
   }
-  a, a:hover {
+  a,
+  a:hover {
     color: $secondary-color-blue;
   }
 }
@@ -41,7 +62,8 @@ $secondary-color-green: #b7e2ad;
     background-color: $main-color-red;
     border-color: $main-color-red;
   }
-  a, a:hover {
+  a,
+  a:hover {
     color: $secondary-color-red;
   }
 }
@@ -56,7 +78,8 @@ $secondary-color-green: #b7e2ad;
     background-color: $main-color-green;
     border-color: $main-color-green;
   }
-  a, a:hover {
+  a,
+  a:hover {
     color: $secondary-color-green;
   }
 }

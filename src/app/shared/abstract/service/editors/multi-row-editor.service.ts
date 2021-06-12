@@ -45,20 +45,18 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     super.initForm();
 
     this.subscriptions.push(
-      this._form.valueChanges
-        .pipe(distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)))
-        .subscribe(() => {
-          if (!this._loading) {
-            if (this._form.dirty && this.isFormIdUnique()) {
-              this._newRows[this.getSelectedRowIndex()] = this._form.getRawValue();
-              this._newRows = [...this._newRows];
-              this._selectedRowId = this.form.controls[this._entitySecondIdField].value;
-              this.checkRowsCorrectness();
-              this.updateDiffQuery();
-              this.updateFullQuery();
-            }
+      this._form.valueChanges.pipe(distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))).subscribe(() => {
+        if (!this._loading) {
+          if (this._form.dirty && this.isFormIdUnique()) {
+            this._newRows[this.getSelectedRowIndex()] = this._form.getRawValue();
+            this._newRows = [...this._newRows];
+            this._selectedRowId = this.form.controls[this._entitySecondIdField].value;
+            this.checkRowsCorrectness();
+            this.updateDiffQuery();
+            this.updateFullQuery();
           }
-        }),
+        }
+      }),
     );
   }
 
@@ -111,11 +109,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   }
 
   protected updateFullQuery(): void {
-    this._fullQuery = this.queryService.getFullDeleteInsertQuery<T>(
-      this._entityTable,
-      this._newRows,
-      this._entityIdField,
-    );
+    this._fullQuery = this.queryService.getFullDeleteInsertQuery<T>(this._entityTable, this._newRows, this._entityIdField);
   }
 
   protected getNextFreeRowId(): number {

@@ -1,12 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SelectService } from '@keira-abstract/service/select/select.service';
-import {
-  SPELL_DBC_ID,
-  SPELL_DBC_NAME,
-  SPELL_DBC_SEARCH_FIELDS,
-  SPELL_DBC_TABLE,
-  SpellDbc,
-} from '@keira-types/spell-dbc.type';
+import { SPELL_DBC_ID, SPELL_DBC_NAME, SPELL_DBC_SEARCH_FIELDS, SPELL_DBC_TABLE, SpellDbc } from '@keira-types/spell-dbc.type';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SpellHandlerService } from '../spell-handler.service';
 

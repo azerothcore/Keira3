@@ -27,15 +27,7 @@ export abstract class LootEditorIdService<T extends LootTemplate> extends MultiR
     public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
-    super(
-      _entityClass,
-      _entityTable,
-      LOOT_TEMPLATE_ID,
-      LOOT_TEMPLATE_ID_2,
-      handlerService,
-      queryService,
-      toastrService,
-    );
+    super(_entityClass, _entityTable, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, handlerService, queryService, toastrService);
   }
 
   getLootId(): Observable<{ lootId: number }[]> {

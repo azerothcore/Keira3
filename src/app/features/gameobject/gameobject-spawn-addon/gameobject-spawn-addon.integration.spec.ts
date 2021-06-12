@@ -1,6 +1,8 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { GameobjectSpawnAddonComponent } from './gameobject-spawn-addon.component';
 import { GameobjectSpawnAddonModule } from './gameobject-spawn-addon.module';
@@ -14,7 +16,6 @@ import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 class GameobjectSpawnAddonPage extends MultiRowEditorPageObject<GameobjectSpawnAddonComponent> {}
 
 describe('GameobjectSpawnAddon integration tests', () => {
-
   const id = 1234;
 
   const originalRow0 = new GameobjectSpawnAddon();
@@ -24,19 +25,14 @@ describe('GameobjectSpawnAddon integration tests', () => {
   originalRow1.guid = 1;
   originalRow2.guid = 2;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        GameobjectSpawnAddonModule,
-        RouterTestingModule,
-      ],
-      providers: [
-        GameobjectHandlerService,
-        SaiGameobjectHandlerService,
-      ],
-    })
-      .compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), GameobjectSpawnAddonModule, RouterTestingModule],
+        providers: [GameobjectHandlerService, SaiGameobjectHandlerService],
+      }).compileComponents();
+    }),
+  );
 
   function setup(creatingNew: boolean) {
     const handlerService = TestBed.inject(GameobjectHandlerService);
@@ -46,9 +42,9 @@ describe('GameobjectSpawnAddon integration tests', () => {
     const queryService = TestBed.inject(MysqlQueryService);
     const querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
-    spyOn(TestBed.inject(GameobjectSpawnAddonService), 'selectQuery').and.returnValue(of(
-      creatingNew ? [] : [originalRow0, originalRow1, originalRow2]
-    ));
+    spyOn(TestBed.inject(GameobjectSpawnAddonService), 'selectQuery').and.returnValue(
+      of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]),
+    );
 
     const fixture = TestBed.createComponent(GameobjectSpawnAddonComponent);
     const component = fixture.componentInstance;
@@ -56,11 +52,10 @@ describe('GameobjectSpawnAddon integration tests', () => {
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
 
-    return { component,  fixture,  queryService,  querySpy,  handlerService,  page };
+    return { component, fixture, queryService, querySpy, handlerService, page };
   }
 
   describe('Creating new', () => {
-
     it('should correctly initialise', () => {
       const { handlerService, page } = setup(true);
       page.expectDiffQueryToBeEmpty();
@@ -85,17 +80,18 @@ describe('GameobjectSpawnAddon integration tests', () => {
   });
 
   describe('Editing existing', () => {
-
     it('should correctly initialise', () => {
       const { page } = setup(false);
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
-      page.expectFullQueryToContain('DELETE FROM `gameobject_addon` WHERE (`guid` IN (0, 1, 2));\n' +
-        'INSERT INTO `gameobject_addon` (`guid`, `invisibilityType`, `invisibilityValue`) VALUES\n' +
-        '(0, 0, 0),\n' +
-        '(1, 0, 0),\n' +
-        '(2, 0, 0);');
+      page.expectFullQueryToContain(
+        'DELETE FROM `gameobject_addon` WHERE (`guid` IN (0, 1, 2));\n' +
+          'INSERT INTO `gameobject_addon` (`guid`, `invisibilityType`, `invisibilityValue`) VALUES\n' +
+          '(0, 0, 0),\n' +
+          '(1, 0, 0),\n' +
+          '(2, 0, 0);',
+      );
       expect(page.getEditorTableRowsCount()).toBe(3);
     });
 
@@ -103,31 +99,26 @@ describe('GameobjectSpawnAddon integration tests', () => {
       const { page } = setup(false);
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `gameobject_addon` WHERE (`guid` IN (1));'
-      );
+      page.expectDiffQueryToContain('DELETE FROM `gameobject_addon` WHERE (`guid` IN (1));');
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject_addon` WHERE (`guid` IN (0, 2));\n' +
-        'INSERT INTO `gameobject_addon` (`guid`, `invisibilityType`, `invisibilityValue`) VALUES\n' +
-        '(0, 0, 0),\n' +
-        '(2, 0, 0);'
+          'INSERT INTO `gameobject_addon` (`guid`, `invisibilityType`, `invisibilityValue`) VALUES\n' +
+          '(0, 0, 0),\n' +
+          '(2, 0, 0);',
       );
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `gameobject_addon` WHERE (`guid` IN (1, 2));'
-      );
+      page.expectDiffQueryToContain('DELETE FROM `gameobject_addon` WHERE (`guid` IN (1, 2));');
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject_addon` WHERE (`guid` IN (0));\n' +
-        'INSERT INTO `gameobject_addon` (`guid`, `invisibilityType`, `invisibilityValue`) VALUES\n' +
-        '(0, 0, 0);');
+          'INSERT INTO `gameobject_addon` (`guid`, `invisibilityType`, `invisibilityValue`) VALUES\n' +
+          '(0, 0, 0);',
+      );
 
       page.deleteRow(0);
       expect(page.getEditorTableRowsCount()).toBe(0);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `gameobject_addon` WHERE (`guid` IN (0, 1, 2));'
-      );
+      page.expectDiffQueryToContain('DELETE FROM `gameobject_addon` WHERE (`guid` IN (0, 1, 2));');
       page.expectFullQueryToBeEmpty();
     });
 
@@ -141,16 +132,16 @@ describe('GameobjectSpawnAddon integration tests', () => {
 
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_addon` WHERE (`guid` IN (1, 2));\n' +
-        'INSERT INTO `gameobject_addon` (`guid`, `invisibilityType`, `invisibilityValue`) VALUES\n' +
-        '(1, 1, 0),\n' +
-        '(2, 0, 2);'
+          'INSERT INTO `gameobject_addon` (`guid`, `invisibilityType`, `invisibilityValue`) VALUES\n' +
+          '(1, 1, 0),\n' +
+          '(2, 0, 2);',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject_addon` WHERE (`guid` IN (0, 1, 2));\n' +
-        'INSERT INTO `gameobject_addon` (`guid`, `invisibilityType`, `invisibilityValue`) VALUES\n' +
-        '(0, 0, 0),\n' +
-        '(1, 1, 0),\n' +
-        '(2, 0, 2);'
+          'INSERT INTO `gameobject_addon` (`guid`, `invisibilityType`, `invisibilityValue`) VALUES\n' +
+          '(0, 0, 0),\n' +
+          '(1, 1, 0),\n' +
+          '(2, 0, 2);',
       );
     });
 
@@ -167,4 +158,3 @@ describe('GameobjectSpawnAddon integration tests', () => {
     });
   });
 });
-

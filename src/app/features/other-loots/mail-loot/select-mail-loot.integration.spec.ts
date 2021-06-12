@@ -2,6 +2,8 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SelectMailLootComponent } from './select-mail-loot.component';
@@ -21,7 +23,7 @@ describe('SelectMailLoot integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [MailLootTemplateModule, RouterTestingModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), MailLootTemplateModule, RouterTestingModule],
         providers: [MailLootHandlerService],
       }).compileComponents();
     }),
@@ -101,8 +103,7 @@ describe('SelectMailLoot integration tests', () => {
       id: 1,
       entry: 1200,
       limit: '100',
-      expectedQuery:
-        'SELECT `Entry` FROM `mail_loot_template` ' + "WHERE (`Entry` LIKE '%1200%') GROUP BY Entry LIMIT 100",
+      expectedQuery: 'SELECT `Entry` FROM `mail_loot_template` ' + "WHERE (`Entry` LIKE '%1200%') GROUP BY Entry LIMIT 100",
     },
   ]) {
     it(`searching an existing entity should correctly work [${id}]`, () => {

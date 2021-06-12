@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import Spy = jasmine.Spy;
 
 import { ProspectingLootTemplateComponent } from './prospecting-loot-template.component';
@@ -33,7 +35,7 @@ describe('ProspectingLootTemplate integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [ProspectingLootTemplateModule, RouterTestingModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ProspectingLootTemplateModule, RouterTestingModule],
         providers: [ItemHandlerService],
       }).compileComponents();
     }),
@@ -190,9 +192,7 @@ describe('ProspectingLootTemplate integration tests', () => {
     it('deleting rows should correctly work', () => {
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `prospecting_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1));',
-      );
+      page.expectDiffQueryToContain('DELETE FROM `prospecting_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1));');
       page.expectFullQueryToContain(
         'DELETE FROM `prospecting_loot_template` WHERE (`Entry` = 1234);\n' +
           'INSERT INTO `prospecting_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
@@ -203,9 +203,7 @@ describe('ProspectingLootTemplate integration tests', () => {
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `prospecting_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2));',
-      );
+      page.expectDiffQueryToContain('DELETE FROM `prospecting_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2));');
       page.expectFullQueryToContain(
         'DELETE FROM `prospecting_loot_template` WHERE (`Entry` = 1234);\n' +
           'INSERT INTO `prospecting_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +

@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { FactionSelectorBtnComponent } from './faction-selector-btn.component';
 import { FactionSelectorModule } from './faction-selector.module';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 describe('FactionSelectorBtnComponent', () => {
   let component: FactionSelectorBtnComponent;
@@ -10,7 +11,7 @@ describe('FactionSelectorBtnComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [FactionSelectorModule],
+        imports: [ModalModule.forRoot(), FactionSelectorModule],
       }).compileComponents();
     }),
   );

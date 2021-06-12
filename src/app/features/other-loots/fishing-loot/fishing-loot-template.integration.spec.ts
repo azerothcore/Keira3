@@ -1,6 +1,8 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { FishingLootTemplateComponent } from './fishing-loot-template.component';
 import { FishingLootTemplateModule } from './fishing-loot-template.module';
@@ -25,7 +27,7 @@ describe('FishingLootTemplate integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [FishingLootTemplateModule, RouterTestingModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), FishingLootTemplateModule, RouterTestingModule],
         providers: [FishingLootHandlerService],
       }).compileComponents();
     }),
@@ -196,9 +198,7 @@ describe('FishingLootTemplate integration tests', () => {
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `fishing_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2));',
-      );
+      page.expectDiffQueryToContain('DELETE FROM `fishing_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2));');
       page.expectFullQueryToContain(
         'DELETE FROM `fishing_loot_template` WHERE (`Entry` = 1234);\n' +
           'INSERT INTO `fishing_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +

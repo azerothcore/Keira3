@@ -8,7 +8,7 @@ import { SingleValueSelectorBtnComponent } from './single-value-selector-btn.com
 
 @NgModule({
   declarations: [SingleValueSelectorModalComponent, SingleValueSelectorBtnComponent],
-  imports: [BrowserModule, ModalModule.forRoot(), NgxDatatableModule],
+  imports: [BrowserModule, ModalModule, NgxDatatableModule],
   exports: [SingleValueSelectorBtnComponent],
 })
 export class SingleValueSelectorModule {}

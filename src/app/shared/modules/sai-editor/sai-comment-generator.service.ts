@@ -95,11 +95,7 @@ export class SaiCommentGeneratorService {
     }
   }
 
-  private async generateEventComment(
-    smartScript: SmartScripts,
-    name: string,
-    smartScriptLink: SmartScripts,
-  ): Promise<string> {
+  private async generateEventComment(smartScript: SmartScripts, name: string, smartScriptLink: SmartScripts): Promise<string> {
     let eventLine = '';
 
     switch (Number(smartScript.source_type)) {
@@ -151,28 +147,16 @@ export class SaiCommentGeneratorService {
     eventLine = eventLine.replace('_eventParamFour_', `${smartScript.event_param4}`);
 
     if (eventLine.indexOf('_questNameEventParamOne_') > -1) {
-      eventLine = eventLine.replace(
-        '_questNameEventParamOne_',
-        await this.queryService.getQuestTitleById(smartScript.event_param1),
-      );
+      eventLine = eventLine.replace('_questNameEventParamOne_', await this.queryService.getQuestTitleById(smartScript.event_param1));
     }
     if (eventLine.indexOf('_spellNameEventParamOne_') > -1) {
-      eventLine = eventLine.replace(
-        '_spellNameEventParamOne_',
-        await this.sqliteQueryService.getSpellNameById(smartScript.event_param1),
-      );
+      eventLine = eventLine.replace('_spellNameEventParamOne_', await this.sqliteQueryService.getSpellNameById(smartScript.event_param1));
     }
     if (eventLine.indexOf('_targetCastingSpellName_') > -1) {
-      eventLine = eventLine.replace(
-        '_targetCastingSpellName_',
-        await this.sqliteQueryService.getSpellNameById(smartScript.event_param3),
-      );
+      eventLine = eventLine.replace('_targetCastingSpellName_', await this.sqliteQueryService.getSpellNameById(smartScript.event_param3));
     }
     if (eventLine.indexOf('_hasAuraEventParamOne_') > -1) {
-      eventLine = eventLine.replace(
-        '_hasAuraEventParamOne_',
-        await this.sqliteQueryService.getSpellNameById(smartScript.event_param1),
-      );
+      eventLine = eventLine.replace('_hasAuraEventParamOne_', await this.sqliteQueryService.getSpellNameById(smartScript.event_param1));
     }
 
     return eventLine;
@@ -195,10 +179,7 @@ export class SaiCommentGeneratorService {
     actionLine = actionLine.replace('_actionParamSix_', `${smartScript.action_param6}`);
 
     if (actionLine.indexOf('_questNameActionParamOne_') > -1) {
-      actionLine = actionLine.replace(
-        '_questNameActionParamOne_',
-        await this.queryService.getQuestTitleById(smartScript.action_param1),
-      );
+      actionLine = actionLine.replace('_questNameActionParamOne_', await this.queryService.getQuestTitleById(smartScript.action_param1));
     }
     if (actionLine.indexOf('_questNameKillCredit_') > -1) {
       actionLine = actionLine.replace(
@@ -506,15 +487,9 @@ export class SaiCommentGeneratorService {
 
     if (actionLine.indexOf('_invincibilityHpActionParamsOneTwo_') > -1) {
       if (smartScript.action_param1 > 0) {
-        actionLine = actionLine.replace(
-          '_invincibilityHpActionParamsOneTwo_',
-          'Set Invincibility Hp ' + smartScript.action_param1,
-        );
+        actionLine = actionLine.replace('_invincibilityHpActionParamsOneTwo_', 'Set Invincibility Hp ' + smartScript.action_param1);
       } else if (smartScript.action_param2 > 0) {
-        actionLine = actionLine.replace(
-          '_invincibilityHpActionParamsOneTwo_',
-          'Set Invincibility Hp ' + smartScript.action_param2 + '%',
-        );
+        actionLine = actionLine.replace('_invincibilityHpActionParamsOneTwo_', 'Set Invincibility Hp ' + smartScript.action_param2 + '%');
       } else if (smartScript.action_param1 === 0 && smartScript.action_param2 === 0) {
         actionLine = actionLine.replace('_invincibilityHpActionParamsOneTwo_', 'Reset Invincibility Hp');
       } else {
@@ -571,10 +546,7 @@ export class SaiCommentGeneratorService {
           actionLine = actionLine.replace('_updateAiTemplateActionParamOne_', 'Caged Creature Part');
           break;
         default:
-          actionLine = actionLine.replace(
-            '_updateAiTemplateActionParamOne_',
-            '[_updateAiTemplateActionParamOne_ Unknown ai template]',
-          );
+          actionLine = actionLine.replace('_updateAiTemplateActionParamOne_', '[_updateAiTemplateActionParamOne_ Unknown ai template]');
           break;
       }
     }
@@ -828,10 +800,7 @@ export class SaiCommentGeneratorService {
           'Morph To Creature ' + (await this.queryService.getCreatureNameById(smartScript.action_param1)),
         );
       } else if (smartScript.action_param2 > 0) {
-        actionLine = actionLine.replace(
-          '_morphToEntryOrModelActionParams_',
-          'Morph To Model ' + smartScript.action_param2,
-        );
+        actionLine = actionLine.replace('_morphToEntryOrModelActionParams_', 'Morph To Model ' + smartScript.action_param2);
       } else {
         actionLine = actionLine.replace('_morphToEntryOrModelActionParams_', 'Demorph');
       }
@@ -844,10 +813,7 @@ export class SaiCommentGeneratorService {
           'Mount To Creature ' + (await this.queryService.getCreatureNameById(smartScript.action_param1)),
         );
       } else if (smartScript.action_param2 > 0) {
-        actionLine = actionLine.replace(
-          '_mountToEntryOrModelActionParams_',
-          'Mount To Model ' + smartScript.action_param2,
-        );
+        actionLine = actionLine.replace('_mountToEntryOrModelActionParams_', 'Mount To Model ' + smartScript.action_param2);
       } else {
         actionLine = actionLine.replace('_mountToEntryOrModelActionParams_', 'Dismount');
       }

@@ -10,6 +10,7 @@ import { PageObject } from '@keira-testing/page-object';
 import { ConnectionWindowModule } from './connection-window.module';
 import { ConnectionWindowService } from './connection-window.service';
 import { Spied } from '@keira-testing/test-helpers';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 class ConnectionWindowComponentPage extends PageObject<ConnectionWindowComponent> {
   get hostInput() {
@@ -84,16 +85,12 @@ describe('ConnectionWindowComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [ConnectionWindowModule],
+        imports: [TooltipModule.forRoot(), ConnectionWindowModule],
         providers: [
           { provide: MysqlService, useValue: instance(MockedMysqlService) },
           {
             provide: ConnectionWindowService,
-            useValue: jasmine.createSpyObj('ConnectionWindowService', [
-              'getConfigs',
-              'removeAllConfigs',
-              'saveNewConfig',
-            ]),
+            useValue: jasmine.createSpyObj('ConnectionWindowService', ['getConfigs', 'removeAllConfigs', 'saveNewConfig']),
           },
         ],
       }).compileComponents();
@@ -102,9 +99,7 @@ describe('ConnectionWindowComponent', () => {
 
   const setup = (detectChanges = true) => {
     const connectSpy = spyOn(TestBed.inject(MysqlService), 'connect').and.returnValue(of({}));
-    const connectionWindowService = TestBed.inject(
-      ConnectionWindowService,
-    ) as unknown as Spied<ConnectionWindowService>;
+    const connectionWindowService = TestBed.inject(ConnectionWindowService) as unknown as Spied<ConnectionWindowService>;
 
     const fixture = TestBed.createComponent(ConnectionWindowComponent);
     const page = new ConnectionWindowComponentPage(fixture);

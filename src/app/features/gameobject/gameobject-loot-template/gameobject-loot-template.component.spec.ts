@@ -13,6 +13,7 @@ import { GameobjectLootTemplateService } from './gameobject-loot-template.servic
 import { GameobjectLootTemplateModule } from './gameobject-loot-template.module';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 describe('GameobjectTemplateComponent', () => {
   let component: GameobjectLootTemplateComponent;
@@ -28,7 +29,13 @@ describe('GameobjectTemplateComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [GameobjectLootTemplateModule, RouterTestingModule, TooltipModule.forRoot(), ToastrModule.forRoot()],
+        imports: [
+          GameobjectLootTemplateModule,
+          RouterTestingModule,
+          ModalModule.forRoot(),
+          TooltipModule.forRoot(),
+          ToastrModule.forRoot(),
+        ],
         providers: [
           { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
           GameobjectHandlerService,

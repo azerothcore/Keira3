@@ -2,11 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { SearchService } from './search.service';
 import { MysqlQueryService } from '../../services/mysql-query.service';
-import {
-  CREATURE_TEMPLATE_SEARCH_FIELDS,
-  CREATURE_TEMPLATE_TABLE,
-  CreatureTemplate,
-} from '../../types/creature-template.type';
+import { CREATURE_TEMPLATE_SEARCH_FIELDS, CREATURE_TEMPLATE_TABLE, CreatureTemplate } from '../../types/creature-template.type';
 
 @Injectable({
   providedIn: 'root',

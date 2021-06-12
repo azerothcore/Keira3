@@ -2,6 +2,8 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SelectCreatureComponent } from './select-creature.component';
@@ -26,7 +28,7 @@ describe('SelectCreature integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [SelectCreatureModule, RouterTestingModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectCreatureModule, RouterTestingModule],
         providers: [CreatureHandlerService, SaiCreatureHandlerService],
       }).compileComponents();
     }),
@@ -115,8 +117,7 @@ describe('SelectCreature integration tests', () => {
       name: 'Helias',
       subname: 'Dev',
       limit: '100',
-      expectedQuery:
-        "SELECT * FROM `creature_template` WHERE (`name` LIKE '%Helias%') AND (`subname` LIKE '%Dev%') LIMIT 100",
+      expectedQuery: "SELECT * FROM `creature_template` WHERE (`name` LIKE '%Helias%') AND (`subname` LIKE '%Dev%') LIMIT 100",
     },
     {
       id: 3,

@@ -1,6 +1,8 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { SpellLootTemplateComponent } from './spell-loot-template.component';
 import { SpellLootTemplateModule } from './spell-loot-template.module';
@@ -25,7 +27,7 @@ describe('SpellLootTemplate integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [SpellLootTemplateModule, RouterTestingModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SpellLootTemplateModule, RouterTestingModule],
         providers: [SpellLootHandlerService],
       }).compileComponents();
     }),

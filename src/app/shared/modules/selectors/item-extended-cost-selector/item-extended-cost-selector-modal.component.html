@@ -1,53 +1,105 @@
 <div class="modal-body">
-
   <p class="lead text-center mb-1">ItemExtendedCost selector</p>
 
   <form [formGroup]="searchService.queryForm">
     <div class="row">
       <ng-container [formGroup]="searchService.fields">
         <div class="form-group col-4 col-md-3 col-lg-2">
-          <input [formControlName]="'id'" type="number" class="form-control form-control-sm" id="id" placeholder="id">
+          <input [formControlName]="'id'" type="number" class="form-control form-control-sm" id="id" placeholder="id" />
         </div>
         <div class="form-group col-4 col-md-3 col-lg-2">
-          <input [formControlName]="'reqHonorPoints'" type="number" class="form-control form-control-sm" id="reqHonorPoints" placeholder="reqHonorPoints">
+          <input
+            [formControlName]="'reqHonorPoints'"
+            type="number"
+            class="form-control form-control-sm"
+            id="reqHonorPoints"
+            placeholder="reqHonorPoints"
+          />
         </div>
         <div class="form-group col-4 col-md-3 col-lg-2">
-          <input [formControlName]="'reqArenaPoints'" type="number" class="form-control form-control-sm" id="reqArenaPoints" placeholder="reqArenaPoints">
+          <input
+            [formControlName]="'reqArenaPoints'"
+            type="number"
+            class="form-control form-control-sm"
+            id="reqArenaPoints"
+            placeholder="reqArenaPoints"
+          />
         </div>
         <div class="form-group col-4 col-md-3 col-lg-2">
-          <input [formControlName]="'reqArenaSlot'" type="number" class="form-control form-control-sm" id="reqArenaSlot" placeholder="reqArenaSlot">
+          <input
+            [formControlName]="'reqArenaSlot'"
+            type="number"
+            class="form-control form-control-sm"
+            id="reqArenaSlot"
+            placeholder="reqArenaSlot"
+          />
         </div>
         <div class="form-group col-4 col-md-3 col-lg-2">
-          <input [formControlName]="'reqItemId1'" type="number" class="form-control form-control-sm" id="reqItemId1" placeholder="reqItemId1">
+          <input
+            [formControlName]="'reqItemId1'"
+            type="number"
+            class="form-control form-control-sm"
+            id="reqItemId1"
+            placeholder="reqItemId1"
+          />
         </div>
         <div class="form-group col-4 col-md-3 col-lg-2">
-          <input [formControlName]="'reqItemId2'" type="number" class="form-control form-control-sm" id="reqItemId2" placeholder="reqItemId2">
+          <input
+            [formControlName]="'reqItemId2'"
+            type="number"
+            class="form-control form-control-sm"
+            id="reqItemId2"
+            placeholder="reqItemId2"
+          />
         </div>
         <div class="form-group col-4 col-md-3 col-lg-2">
-          <input [formControlName]="'reqItemId3'" type="number" class="form-control form-control-sm" id="reqItemId3" placeholder="reqItemId3">
+          <input
+            [formControlName]="'reqItemId3'"
+            type="number"
+            class="form-control form-control-sm"
+            id="reqItemId3"
+            placeholder="reqItemId3"
+          />
         </div>
         <div class="form-group col-4 col-md-3 col-lg-2">
-          <input [formControlName]="'reqItemId4'" type="number" class="form-control form-control-sm" id="reqItemId4" placeholder="reqItemId4">
+          <input
+            [formControlName]="'reqItemId4'"
+            type="number"
+            class="form-control form-control-sm"
+            id="reqItemId4"
+            placeholder="reqItemId4"
+          />
         </div>
         <div class="form-group col-4 col-md-3 col-lg-2">
-          <input [formControlName]="'reqItemId5'" type="number" class="form-control form-control-sm" id="reqItemId5" placeholder="reqItemId5">
+          <input
+            [formControlName]="'reqItemId5'"
+            type="number"
+            class="form-control form-control-sm"
+            id="reqItemId5"
+            placeholder="reqItemId5"
+          />
         </div>
         <div class="form-group col-4 col-md-3 col-lg-2">
-          <input [formControlName]="'reqPersonalRating'" type="number" class="form-control form-control-sm" id="reqPersonalRating" placeholder="reqPersonalRating">
+          <input
+            [formControlName]="'reqPersonalRating'"
+            type="number"
+            class="form-control form-control-sm"
+            id="reqPersonalRating"
+            placeholder="reqPersonalRating"
+          />
         </div>
       </ng-container>
       <div class="form-group col-2">
-        <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Unlimited">
+        <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Unlimited" />
       </div>
       <div class="col-2">
         <keira-search-button [searchService]="searchService"></keira-search-button>
       </div>
     </div>
-    <code [highlight]="searchService.query"></code>
+    <keira-highlightjs-wrapper [code]="searchService.query"></keira-highlightjs-wrapper>
   </form>
 
   <div *ngIf="searchService.rows">
-
     <ngx-datatable
       class="bootstrap table table-striped text-center datatable-select highlight-select"
       [rows]="searchService.rows"
@@ -57,7 +109,7 @@
       [rowHeight]="DTCFG.rowHeight"
       [limit]="DTCFG.limit"
       [selectionType]="DTCFG.selectionType"
-      (select)='onSelect($event)'
+      (select)="onSelect($event)"
     >
       <ngx-datatable-column name="ID" prop="id" [minWidth]="100">
         <ng-template let-row="row" ngx-datatable-cell-template>
@@ -79,7 +131,6 @@
       <ngx-datatable-column name="Item5" prop="reqItemId5"></ngx-datatable-column>
       <ngx-datatable-column name="Count5" prop="itemCount5"></ngx-datatable-column>
     </ngx-datatable>
-
   </div>
 </div>
 
