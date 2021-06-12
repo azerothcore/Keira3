@@ -11,6 +11,7 @@ import { PageObject } from '@keira-testing/page-object';
 import { SpellDbcService } from '../spell-dbc.service';
 import { SpellHandlerService } from '../../spell-handler.service';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 describe('SpellDbcEffectsComponent', () => {
   class SpellDbcEffectsComponentPage extends PageObject<TestHostComponent> {
@@ -39,7 +40,7 @@ describe('SpellDbcEffectsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [TestHostComponent, SpellDbcEffectsComponent],
-      imports: [ToastrModule.forRoot(), TooltipModule.forRoot(), SpellDbcModule, RouterTestingModule],
+      imports: [ModalModule.forRoot(), ToastrModule.forRoot(), TooltipModule.forRoot(), SpellDbcModule, RouterTestingModule],
       providers: [SpellHandlerService],
     }).compileComponents();
   });
