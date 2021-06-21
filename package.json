@@ -46,7 +46,7 @@
     "mysql": "2.18.1",
     "ngx-toastr": "14.0.0",
     "ngx-ui-switch": "10.0.2",
-    "serialize-javascript": "5.0.1",
+    "serialize-javascript": "6.0.0",
     "sqlite3": "5.0.2",
     "tslib": "2.3.0"
   },
