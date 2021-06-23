@@ -1,6 +1,8 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { QuestTemplateComponent } from './quest-template.component';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
@@ -46,7 +48,7 @@ describe('QuestTemplate integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [RouterTestingModule, QuestModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, QuestModule],
       }).compileComponents();
     }),
   );
@@ -182,9 +184,7 @@ describe('QuestTemplate integration tests', () => {
       page.expectFullQueryToContain('Shin');
 
       page.setInputValueById('MinLevel', 22);
-      page.expectDiffQueryToContain(
-        "UPDATE `quest_template` SET `MinLevel` = 22, `LogTitle` = 'Shin' WHERE (`ID` = 1234);",
-      );
+      page.expectDiffQueryToContain("UPDATE `quest_template` SET `MinLevel` = 22, `LogTitle` = 'Shin' WHERE (`ID` = 1234);");
       page.expectFullQueryToContain('Shin');
       page.expectFullQueryToContain('22');
       page.removeElement();

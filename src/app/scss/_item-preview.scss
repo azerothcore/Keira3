@@ -1,0 +1,76 @@
+.item-preview {
+  .item-stock,
+  .item-name {
+    line-height: 30px;
+    font-size: 18px;
+  }
+
+  .icon {
+    width: 100px;
+    height: 100px;
+    position: relative;
+    margin: auto;
+    margin-top: 5px;
+    border: 1px solid #6b6d78;
+    border-radius: 3px;
+
+    img {
+      width: 90px;
+      height: 90px;
+      margin-top: 3px;
+    }
+  }
+
+  /* Quality */
+  .q {
+    color: #ffd100;
+  }
+  .q0 {
+    color: #9d9d9d;
+  }
+  .q1 {
+    color: #ffffff;
+  }
+  .q2 {
+    color: #1eff00;
+  }
+  .q3 {
+    color: #0070dd;
+  }
+  .q4 {
+    color: #a335ee;
+  }
+  .q5 {
+    color: #ff8000;
+  }
+  .q6 {
+    color: #e5cc80;
+  }
+  .q7 {
+    color: #e5cc80;
+  }
+
+  /* Sockets */
+  .socket0,
+  .socket1,
+  .socket2,
+  .socket3,
+  .socket4 {
+    padding-left: 26px;
+  }
+  .socket0 {
+    background: url(../../assets/img/sockets/meta.gif) no-repeat left center;
+  } /* meta */
+  .socket1 {
+    background: url(../../assets/img/sockets/red.gif) no-repeat left center;
+  } /* red */
+  .socket2 {
+    background: url(../../assets/img/sockets/yellow.gif) no-repeat left center;
+  } /* yellow */
+  .socket3 {
+    background: url(../../assets/img/sockets/blue.gif) no-repeat left center;
+  } /* blue */
+  .socket4 {
+    background: url(../../assets/img/sockets/prismatic.gif) no-repeat left center;
+  } /* prismatic */
+}

@@ -3,10 +3,7 @@ import { ToastrService } from 'ngx-toastr';
 
 import { CreatureHandlerService } from '../creature-handler.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import {
-  PICKPOCKETING_LOOT_TEMPLATE_TABLE,
-  PickpocketingLootTemplate,
-} from '@keira-types/pickpocketing-loot-template.type';
+import { PICKPOCKETING_LOOT_TEMPLATE_TABLE, PickpocketingLootTemplate } from '@keira-types/pickpocketing-loot-template.type';
 import { LootEditorIdService } from '@keira-abstract/service/editors/loot-editor-id.service';
 import { CreatureLootTemplate } from '@keira-types/creature-loot-template.type';
 import {

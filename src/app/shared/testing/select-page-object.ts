@@ -13,10 +13,6 @@ export abstract class SelectPageObject<T> extends PageObject<T> {
     return this.query<HTMLDivElement>('#id-free-status');
   }
 
-  get queryWrapper() {
-    return this.query<HTMLElement>('code.hljs');
-  }
-
   get searchIdInput() {
     return this.query<HTMLInputElement>('input#search-id');
   }

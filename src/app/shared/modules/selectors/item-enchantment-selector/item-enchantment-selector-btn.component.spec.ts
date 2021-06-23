@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ItemEnchantmentSelectorBtnComponent } from './item-enchantment-selector-btn.component';
 import { ItemEnchantmentSelectorModule } from './item-enchantment-selector.module';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 describe('ItemEnchantmentSelectorBtnComponent', () => {
   let component: ItemEnchantmentSelectorBtnComponent;
@@ -10,7 +11,7 @@ describe('ItemEnchantmentSelectorBtnComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [ItemEnchantmentSelectorModule],
+        imports: [ModalModule.forRoot(), ItemEnchantmentSelectorModule],
       }).compileComponents();
     }),
   );

@@ -7,6 +7,7 @@ import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.
 import { PageObject } from '@keira-testing/page-object';
 import { ReferenceViewerService } from '@keira-shared/modules/loot-editor/reference-viewer.service';
 import { LootTemplate } from '@keira-types/loot-template.type';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 class ReferenceViewerComponentPage extends PageObject<TestHostComponent> {
   get referenceViewers() {
@@ -27,7 +28,7 @@ describe('ReferenceViewerComponent', () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [TestHostComponent, ReferenceViewerComponent],
-        imports: [LootEditorModule],
+        imports: [TooltipModule.forRoot(), LootEditorModule],
       }).compileComponents();
     }),
   );

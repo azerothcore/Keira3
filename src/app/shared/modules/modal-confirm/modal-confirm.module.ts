@@ -4,7 +4,7 @@ import { ModalConfirmComponent } from './modal-confirm.component';
 
 @NgModule({
   declarations: [ModalConfirmComponent],
-  imports: [ModalModule.forRoot()],
+  imports: [ModalModule],
   exports: [ModalConfirmComponent],
 })
 export class ModalConfirmModule {}

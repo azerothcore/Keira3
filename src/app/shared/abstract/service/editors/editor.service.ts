@@ -19,9 +19,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   protected _error: MysqlError;
 
   get loadedEntityId(): string {
-    return typeof this._loadedEntityId === 'object'
-      ? JSON.stringify(this._loadedEntityId)
-      : String(this._loadedEntityId);
+    return typeof this._loadedEntityId === 'object' ? JSON.stringify(this._loadedEntityId) : String(this._loadedEntityId);
   }
   get loading(): boolean {
     return this._loading;

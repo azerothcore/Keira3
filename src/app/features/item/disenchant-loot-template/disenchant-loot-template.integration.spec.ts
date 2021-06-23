@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import Spy = jasmine.Spy;
 
 import { DisenchantLootTemplateComponent } from './disenchant-loot-template.component';
@@ -34,7 +36,7 @@ describe('DisenchantLootTemplate integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [DisenchantLootTemplateModule, RouterTestingModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), DisenchantLootTemplateModule, RouterTestingModule],
         providers: [ItemHandlerService],
       }).compileComponents();
     }),
@@ -193,9 +195,7 @@ describe('DisenchantLootTemplate integration tests', () => {
     it('deleting rows should correctly work', () => {
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `disenchant_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1));',
-      );
+      page.expectDiffQueryToContain('DELETE FROM `disenchant_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1));');
       page.expectFullQueryToContain(
         'DELETE FROM `disenchant_loot_template` WHERE (`Entry` = 1234);\n' +
           'INSERT INTO `disenchant_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
@@ -206,9 +206,7 @@ describe('DisenchantLootTemplate integration tests', () => {
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `disenchant_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2));',
-      );
+      page.expectDiffQueryToContain('DELETE FROM `disenchant_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1, 2));');
       page.expectFullQueryToContain(
         'DELETE FROM `disenchant_loot_template` WHERE (`Entry` = 1234);\n' +
           'INSERT INTO `disenchant_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +

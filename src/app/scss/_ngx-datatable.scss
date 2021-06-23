@@ -193,10 +193,7 @@
 
 .ngx-datatable input[type='checkbox']:active,
 .ngx-datatable input[type='checkbox']:checked,
-.ngx-datatable input[type='checkbox']:focus,
-input[type='checkbox']:active,
-input[type='checkbox']:checked,
-input[type='checkbox']:focus {
+.ngx-datatable input[type='checkbox']:focus {
   border-color: #ddd !important;
   content: '1';
 }

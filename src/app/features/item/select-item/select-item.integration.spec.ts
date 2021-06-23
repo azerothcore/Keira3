@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import Spy = jasmine.Spy;
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
@@ -30,7 +32,7 @@ describe('SelectItem integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [SelectItemModule, RouterTestingModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectItemModule, RouterTestingModule],
         providers: [ItemHandlerService],
       }).compileComponents();
     }),
@@ -103,8 +105,7 @@ describe('SelectItem integration tests', () => {
       id: 1200,
       name: `The People's Militia`,
       limit: '100',
-      expectedQuery:
-        "SELECT * FROM `item_template` WHERE (`entry` LIKE '%1200%') AND (`name` LIKE '%The People\\'s Militia%') LIMIT 100",
+      expectedQuery: "SELECT * FROM `item_template` WHERE (`entry` LIKE '%1200%') AND (`name` LIKE '%The People\\'s Militia%') LIMIT 100",
     },
     {
       testId: 2,

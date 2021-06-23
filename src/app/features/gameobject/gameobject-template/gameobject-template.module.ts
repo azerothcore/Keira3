@@ -13,15 +13,7 @@ import { GameobjectTemplateService } from './gameobject-template.service';
 
 @NgModule({
   declarations: [GameobjectTemplateComponent],
-  imports: [
-    BrowserModule,
-    ReactiveFormsModule,
-    TopBarModule,
-    QueryOutputModule,
-    TooltipModule.forRoot(),
-    ToastrModule.forRoot(toastrConfig),
-    SingleValueSelectorModule,
-  ],
+  imports: [BrowserModule, ReactiveFormsModule, TopBarModule, QueryOutputModule, TooltipModule, ToastrModule, SingleValueSelectorModule],
   exports: [GameobjectTemplateComponent],
   providers: [GameobjectTemplateService],
 })

@@ -1,25 +1,23 @@
 <keira-top-bar [handler]="handlerService"></keira-top-bar>
 
 <div class="container-fluid">
-
   <span *ngIf="editorService.loading">Loading...</span>
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
-
     <div class="content-block">
-      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
+      <keira-query-output
+        [docUrl]="docUrl"
+        [editorService]="editorService"
+        (executeQuery)="editorService.save($event)"
+      ></keira-query-output>
     </div>
 
-    <form
-      [formGroup]="editorService.form"
-      class="form-group edit-form"
-    >
-
+    <form [formGroup]="editorService.form" class="form-group edit-form">
       <div class="content-block">
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="creature_id">creature_id</label>
-            <input [formControlName]="'creature_id'" id="creature_id" type="number" class="form-control form-control-sm">
+            <input [formControlName]="'creature_id'" id="creature_id" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="RewOnKillRepFaction1">RewOnKillRepFaction1</label>
@@ -27,7 +25,12 @@
               [config]="{ name: 'RewOnKillRepFaction1' }"
               [control]="editorService.form.controls.RewOnKillRepFaction1"
             ></keira-faction-selector-btn>
-            <input [formControlName]="'RewOnKillRepFaction1'" id="RewOnKillRepFaction1" type="number" class="form-control form-control-sm">
+            <input
+              [formControlName]="'RewOnKillRepFaction1'"
+              id="RewOnKillRepFaction1"
+              type="number"
+              class="form-control form-control-sm"
+            />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="RewOnKillRepFaction2">RewOnKillRepFaction2</label>
@@ -35,7 +38,12 @@
               [config]="{ name: 'RewOnKillRepFaction2' }"
               [control]="editorService.form.controls.RewOnKillRepFaction2"
             ></keira-faction-selector-btn>
-            <input [formControlName]="'RewOnKillRepFaction2'" id="RewOnKillRepFaction2" type="number" class="form-control form-control-sm">
+            <input
+              [formControlName]="'RewOnKillRepFaction2'"
+              id="RewOnKillRepFaction2"
+              type="number"
+              class="form-control form-control-sm"
+            />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="MaxStanding1">MaxStanding1</label>
@@ -44,23 +52,25 @@
               [config]="{ options: FACTION_RANK, name: 'MaxStanding1' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
-            <input [formControlName]="'MaxStanding1'" id="MaxStanding1" type="number" class="form-control form-control-sm">
+            <input [formControlName]="'MaxStanding1'" id="MaxStanding1" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="IsTeamAward1">IsTeamAward1</label>
             <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              class="fas fa-info-circle ms-1"
+              [placement]="'auto'"
               [tooltip]="'Boolean (0 or 1) whether the player receives the reputation also the faction team or not.'"
             ></i>
-            <input [formControlName]="'IsTeamAward1'" id="IsTeamAward1" type="number" class="form-control form-control-sm">
+            <input [formControlName]="'IsTeamAward1'" id="IsTeamAward1" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="RewOnKillRepValue1">RewOnKillRepValue1</label>
             <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              class="fas fa-info-circle ms-1"
+              [placement]="'auto'"
               [tooltip]="'The reputation value that the player gains (or loses if negative) by killing the creature.'"
             ></i>
-            <input [formControlName]="'RewOnKillRepValue1'" id="RewOnKillRepValue1" type="number" class="form-control form-control-sm">
+            <input [formControlName]="'RewOnKillRepValue1'" id="RewOnKillRepValue1" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="MaxStanding2">MaxStanding2</label>
@@ -69,35 +79,33 @@
               [config]="{ options: FACTION_RANK, name: 'MaxStanding2' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
-            <input [formControlName]="'MaxStanding2'" id="MaxStanding2" type="number" class="form-control form-control-sm">
+            <input [formControlName]="'MaxStanding2'" id="MaxStanding2" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="IsTeamAward2">IsTeamAward2</label>
             <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              class="fas fa-info-circle ms-1"
+              [placement]="'auto'"
               [tooltip]="'Boolean (0 or 1) whether the player receives the reputation also the faction team or not.'"
             ></i>
-            <input [formControlName]="'IsTeamAward2'" id="IsTeamAward2" type="number" class="form-control form-control-sm">
+            <input [formControlName]="'IsTeamAward2'" id="IsTeamAward2" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="RewOnKillRepValue2">RewOnKillRepValue2</label>
             <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              class="fas fa-info-circle ms-1"
+              [placement]="'auto'"
               [tooltip]="'The reputation value that the player gains (or loses if negative) by killing the creature.'"
             ></i>
-            <input [formControlName]="'RewOnKillRepValue2'" id="RewOnKillRepValue2" type="number" class="form-control form-control-sm">
+            <input [formControlName]="'RewOnKillRepValue2'" id="RewOnKillRepValue2" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="TeamDependent">TeamDependent</label>
-            <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
-              [tooltip]="TEAM_DEPENDENT_TOOLTIP"
-            ></i>
-            <input [formControlName]="'TeamDependent'" id="TeamDependent" type="number" class="form-control form-control-sm">
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="TEAM_DEPENDENT_TOOLTIP"></i>
+            <input [formControlName]="'TeamDependent'" id="TeamDependent" type="number" class="form-control form-control-sm" />
           </div>
         </div>
       </div>
-
     </form>
   </div>
 </div>

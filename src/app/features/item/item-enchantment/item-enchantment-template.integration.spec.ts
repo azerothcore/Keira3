@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import Spy = jasmine.Spy;
 
@@ -34,7 +35,7 @@ describe('ItemEnchantmentTemplate integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [ItemEnchantmentTemplateModule, RouterTestingModule, ModalModule.forRoot()],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ItemEnchantmentTemplateModule, RouterTestingModule, ModalModule.forRoot()],
         providers: [ItemHandlerService],
       }).compileComponents();
     }),
@@ -159,9 +160,7 @@ describe('ItemEnchantmentTemplate integration tests', () => {
     it('deleting rows should correctly work', () => {
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `item_enchantment_template` WHERE (`entry` = 1234) AND (`ench` IN (1));',
-      );
+      page.expectDiffQueryToContain('DELETE FROM `item_enchantment_template` WHERE (`entry` = 1234) AND (`ench` IN (1));');
       page.expectFullQueryToContain(
         'DELETE FROM `item_enchantment_template` WHERE (`entry` = 1234);\n' +
           'INSERT INTO `item_enchantment_template` (`entry`, `ench`, `chance`) VALUES\n' +
@@ -171,9 +170,7 @@ describe('ItemEnchantmentTemplate integration tests', () => {
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `item_enchantment_template` WHERE (`entry` = 1234) AND (`ench` IN (1, 2));',
-      );
+      page.expectDiffQueryToContain('DELETE FROM `item_enchantment_template` WHERE (`entry` = 1234) AND (`ench` IN (1, 2));');
       page.expectFullQueryToContain(
         'DELETE FROM `item_enchantment_template` WHERE (`entry` = 1234);\n' +
           'INSERT INTO `item_enchantment_template` (`entry`, `ench`, `chance`) VALUES\n' +

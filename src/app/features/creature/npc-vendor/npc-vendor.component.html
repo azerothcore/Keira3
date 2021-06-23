@@ -1,57 +1,50 @@
 <keira-top-bar [handler]="handlerService"></keira-top-bar>
 
 <div class="container-fluid">
-
   <span *ngIf="editorService.loading">Loading...</span>
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
-
     <div class="content-block">
-      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
+      <keira-query-output
+        [docUrl]="docUrl"
+        [editorService]="editorService"
+        (executeQuery)="editorService.save($event)"
+      ></keira-query-output>
     </div>
 
     <div class="content-block">
-
-      <form
-        [formGroup]="editorService.form"
-        class="form-group edit-form"
-      >
-
+      <form [formGroup]="editorService.form" class="form-group edit-form">
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="item">
               <keira-icon [itemId]="editorService.form.controls.item.value"></keira-icon>
               item
             </label>
-            <keira-item-selector-btn
-              [control]="editorService.form.controls.item"
-              [config]="{  name: 'item' }"
-            ></keira-item-selector-btn>
-            <input [formControlName]="'item'" id="item" type="number" class="form-control form-control-sm">
+            <keira-item-selector-btn [control]="editorService.form.controls.item" [config]="{ name: 'item' }"></keira-item-selector-btn>
+            <input [formControlName]="'item'" id="item" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="slot">slot</label>
-            <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
-              [tooltip]="'Position of the item in the vendor window'"
-            ></i>
-            <input [formControlName]="'slot'" id="slot" type="number" class="form-control form-control-sm">
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Position of the item in the vendor window'"></i>
+            <input [formControlName]="'slot'" id="slot" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="maxcount">maxcount</label>
             <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              class="fas fa-info-circle ms-1"
+              [placement]="'auto'"
               [tooltip]="'The maximum number of items carried by the vendor at any time. 0 for infinite.'"
             ></i>
-            <input [formControlName]="'maxcount'" id="maxcount" type="number" class="form-control form-control-sm">
+            <input [formControlName]="'maxcount'" id="maxcount" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="incrtime">incrtime</label>
             <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              class="fas fa-info-circle ms-1"
+              [placement]="'auto'"
               [tooltip]="'Combined with maxcount, how often (in seconds) the vendor list is refreshed'"
             ></i>
-            <input [formControlName]="'incrtime'" id="incrtime" type="number" class="form-control form-control-sm">
+            <input [formControlName]="'incrtime'" id="incrtime" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="ExtendedCost">ExtendedCost</label>
@@ -60,24 +53,22 @@
               [control]="editorService.form.controls.ExtendedCost"
             ></keira-item-extended-cost-selector-btn>
             <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              class="fas fa-info-circle ms-1"
+              [placement]="'auto'"
               [tooltip]="'Value comes from DBC and a selector for this will be implemented later in Keira3'"
             ></i>
-            <input [formControlName]="'ExtendedCost'" id="ExtendedCost" type="number" class="form-control form-control-sm">
+            <input [formControlName]="'ExtendedCost'" id="ExtendedCost" type="number" class="form-control form-control-sm" />
           </div>
 
           <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
             <i class="fas fa-exclamation-triangle"></i>
             The <strong>{{ editorService.entitySecondIdField }}</strong> must be unique.
           </div>
-
         </div>
-
       </form>
 
       <div class="row">
         <div class="col-12">
-
           <keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>
 
           <ngx-datatable
@@ -89,7 +80,7 @@
             [columnMode]="DTCFG.columnMode"
             [rowHeight]="DTCFG.rowHeightWithIcon"
             [selectionType]="DTCFG.selectionType"
-            (select)='editorService.onRowSelection($event)'
+            (select)="editorService.onRowSelection($event)"
             (keydown.delete)="editorService.deleteSelectedRow()"
           >
             <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
@@ -113,11 +104,8 @@
             <ngx-datatable-column name="incrtime" prop="incrtime"></ngx-datatable-column>
             <ngx-datatable-column name="ExtendedCost" prop="ExtendedCost"></ngx-datatable-column>
           </ngx-datatable>
-
         </div>
       </div>
-
     </div>
-
   </div>
 </div>

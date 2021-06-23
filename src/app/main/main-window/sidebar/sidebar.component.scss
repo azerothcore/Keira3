@@ -1,4 +1,4 @@
-@import '../../../../assets/scss/variables';
+@import '../../../scss/variables';
 
 $bg-sidebar-wrapper: #1d1d1d;
 $border-color: #2b2b2b;
@@ -10,15 +10,33 @@ $img-bg-sidebar-wrapper: rgba(29, 29, 29, 0.85);
 $img-border-color: rgba(255, 255, 255, 0.1);
 
 @keyframes swing {
-  0% { transform: rotate(0deg); }
-  10% { transform: rotate(10deg); }
-  30% { transform: rotate(0deg); }
-  40% { transform: rotate(-10deg); }
-  50% { transform: rotate(0deg); }
-  60% { transform: rotate(5deg); }
-  70% { transform: rotate(0deg); }
-  80% { transform: rotate(-5deg); }
-  100% { transform: rotate(0deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  10% {
+    transform: rotate(10deg);
+  }
+  30% {
+    transform: rotate(0deg);
+  }
+  40% {
+    transform: rotate(-10deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  60% {
+    transform: rotate(5deg);
+  }
+  70% {
+    transform: rotate(0deg);
+  }
+  80% {
+    transform: rotate(-5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
 }
 .sidebar {
   width: $sidebar-width;
@@ -28,7 +46,7 @@ $img-border-color: rgba(255, 255, 255, 0.1);
   top: 0;
   left: 0;
   z-index: 999;
-  transition: left .3s ease;
+  transition: left 0.3s ease;
 
   hr {
     color: #fff;
@@ -38,7 +56,7 @@ $img-border-color: rgba(255, 255, 255, 0.1);
 
   a {
     text-decoration: none;
-    transition: color .3s ease;
+    transition: color 0.3s ease;
   }
 
   .sidebar-content {
@@ -54,7 +72,7 @@ $img-border-color: rgba(255, 255, 255, 0.1);
       display: flex;
       align-items: center;
 
-      >a {
+      > a {
         text-transform: uppercase;
         font-weight: bold;
         flex-grow: 1;
@@ -84,11 +102,12 @@ $img-border-color: rgba(255, 255, 255, 0.1);
       .user-info {
         float: left;
 
-        >span {
+        > span {
           display: block;
         }
 
-        .db-user, .db-name {
+        .db-user,
+        .db-name {
           font-size: 12px;
           color: #bdbdbd;
         }
@@ -171,9 +190,9 @@ $img-border-color: rgba(255, 255, 255, 0.1);
 
       .sidebar-dropdown {
         > a:after {
-          font-family: "Font Awesome 5 Free", serif;
+          font-family: 'Font Awesome 5 Free', serif;
           font-weight: 900;
-          content: "\f105";
+          content: '\f105';
           display: inline-block;
           font-style: normal;
           font-variant: normal;
@@ -241,7 +260,7 @@ $img-border-color: rgba(255, 255, 255, 0.1);
   .sidebar-menu ul li:hover > a,
   .sidebar-menu .sidebar-dropdown.active > a,
   .sidebar-profile .user-info,
-  .sidebar-header>a:hover,
+  .sidebar-header > a:hover,
   #close-sidebar:hover {
     color: $hover-color;
   }

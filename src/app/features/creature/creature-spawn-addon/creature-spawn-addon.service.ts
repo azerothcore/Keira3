@@ -4,11 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { MultiRowExternalEditorService } from '@keira-abstract/service/editors/multi-row-external-editor.service';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import {
-  CREATURE_SPAWN_ADDON_ID_2,
-  CREATURE_SPAWN_ADDON_TABLE,
-  CreatureSpawnAddon,
-} from '@keira-types/creature-spawn-addon.type';
+import { CREATURE_SPAWN_ADDON_ID_2, CREATURE_SPAWN_ADDON_TABLE, CreatureSpawnAddon } from '@keira-types/creature-spawn-addon.type';
 
 @Injectable()
 export class CreatureSpawnAddonService extends MultiRowExternalEditorService<CreatureSpawnAddon> {
@@ -18,14 +14,7 @@ export class CreatureSpawnAddonService extends MultiRowExternalEditorService<Cre
     public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
-    super(
-      CreatureSpawnAddon,
-      CREATURE_SPAWN_ADDON_TABLE,
-      CREATURE_SPAWN_ADDON_ID_2,
-      handlerService,
-      queryService,
-      toastrService,
-    );
+    super(CreatureSpawnAddon, CREATURE_SPAWN_ADDON_TABLE, CREATURE_SPAWN_ADDON_ID_2, handlerService, queryService, toastrService);
   }
 
   selectQuery(id: string | number) {

@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import Spy = jasmine.Spy;
 
 import { GameobjectTemplateComponent } from './gameobject-template.component';
@@ -41,7 +43,7 @@ describe('GameobjectTemplate integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [GameobjectTemplateModule, RouterTestingModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), GameobjectTemplateModule, RouterTestingModule],
         providers: [GameobjectHandlerService, SaiGameobjectHandlerService],
       }).compileComponents();
     }),
@@ -143,9 +145,7 @@ describe('GameobjectTemplate integration tests', () => {
       page.expectFullQueryToContain('Helias');
 
       page.setInputValueById('Data0', '35');
-      page.expectDiffQueryToContain(
-        "UPDATE `gameobject_template` SET `name` = 'Helias', `Data0` = 35 WHERE (`entry` = " + id + ');',
-      );
+      page.expectDiffQueryToContain("UPDATE `gameobject_template` SET `name` = 'Helias', `Data0` = 35 WHERE (`entry` = " + id + ');');
       page.expectFullQueryToContain('Helias');
       page.expectFullQueryToContain('35');
     });

@@ -1,329 +1,304 @@
-<form
-  [formGroup]="formGroup"
-  class="form-group edit-form"
->
+<form [formGroup]="formGroup" class="form-group edit-form">
   <div class="row">
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="ID">ID</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'The unique ID of the spell'"
-      ></i>
-      <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The unique ID of the spell'"></i>
+      <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm" />
     </div>
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 offset-lg-3 col-xl-2 offset-xl-6">
-      <label class="control-label" for="SchoolMask"><b>School</b></label>
+      <label class="control-label" for="SchoolMask"><strong>SchoolMask</strong></label>
       <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
         [tooltip]="'School of a spell. Used for specific the Spell\'s element kind.'"
       ></i>
       <keira-flags-selector-btn
         [control]="formGroup.controls.SchoolMask"
         [config]="{ flags: SPELL_DBC_SCHOOL_OPTIONS, name: 'SchoolMask' }"
       ></keira-flags-selector-btn>
-      <input [formControlName]="'SchoolMask'" id="SchoolMask" type="number" class="form-control form-control-sm">
+      <input [formControlName]="'SchoolMask'" id="SchoolMask" type="number" class="form-control form-control-sm" />
     </div>
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" for="FacingCasterFlags"><b>FacingFront</b></label>
+      <label class="control-label" for="FacingCasterFlags"><strong>FacingCasterFlags</strong></label>
       <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
         [tooltip]="'If marked, forces the Caster to use the ability in front of the enemy.'"
       ></i>
       <keira-flags-selector-btn
         [control]="formGroup.controls.FacingCasterFlags"
         [config]="{ flags: SPELL_DBC_FACING_FRONT_FLAG, name: 'FacingCasterFlags' }"
       ></keira-flags-selector-btn>
-      <input [formControlName]="'FacingCasterFlags'" id="FacingCasterFlags" type="number" class="form-control form-control-sm">
+      <input [formControlName]="'FacingCasterFlags'" id="FacingCasterFlags" type="number" class="form-control form-control-sm" />
     </div>
   </div>
-  <br>
+  <br />
   <div class="row">
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="Category">Category</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'Category of a spell. Used for category cooldowns.'"
-      ></i>
-      <input [formControlName]="'Category'" id="Category" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Category of a spell. Used for category cooldowns.'"></i>
+      <input [formControlName]="'Category'" id="Category" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="DispelType">DispelType</label>
+      <keira-single-value-selector-btn
+        [control]="formGroup.controls.DispelType"
+        [config]="{ options: DISPEL_TYPE, name: 'DispelType' }"
+        [modalClass]="'modal-md'"
+      ></keira-single-value-selector-btn>
       <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
         [tooltip]="'For determining which spells are capable of dispelling this.'"
       ></i>
-      <input [formControlName]="'DispelType'" id="DispelType" type="number" class="form-control form-control-sm">
+      <input [formControlName]="'DispelType'" id="DispelType" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="Mechanic">Mechanic</label>
+      <keira-single-value-selector-btn
+        [control]="formGroup.controls.Mechanic"
+        [config]="{ options: SPELL_MECHANIC, name: 'Mechanic' }"
+        [modalClass]="'modal-md'"
+      ></keira-single-value-selector-btn>
       <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
         [tooltip]="'Used by spells granting bonuses/immunities against certain effect types (stun, charm...).'"
       ></i>
-      <input [formControlName]="'Mechanic'" id="Mechanic" type="number" class="form-control form-control-sm">
+      <input [formControlName]="'Mechanic'" id="Mechanic" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="CastingTimeIndex">CastingTimeIndex</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'Casting time of a spell. May differ with caster level.'"
-      ></i>
-      <input [formControlName]="'CastingTimeIndex'" id="CastingTimeIndex" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Casting time of a spell. May differ with caster level.'"></i>
+      <input [formControlName]="'CastingTimeIndex'" id="CastingTimeIndex" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="DurationIndex">DurationIndex</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'Duration of spell effects.'"
-      ></i>
-      <input [formControlName]="'DurationIndex'" id="DurationIndex" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Duration of spell effects.'"></i>
+      <input [formControlName]="'DurationIndex'" id="DurationIndex" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="RangeIndex">RangeIndex</label>
       <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
         [tooltip]="'Range of a spell. May differ for friendly and enemy targets.'"
       ></i>
-      <input [formControlName]="'RangeIndex'" id="RangeIndex" type="number" class="form-control form-control-sm">
+      <input [formControlName]="'RangeIndex'" id="RangeIndex" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="CasterAuraState">CasterAuraState</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
-      ></i>
-      <input [formControlName]="'CasterAuraState'" id="CasterAuraState" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <input [formControlName]="'CasterAuraState'" id="CasterAuraState" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="SpellLevel">SpellLevel</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'Tends to be exactly same as base level.'"
-      ></i>
-      <input [formControlName]="'SpellLevel'" id="SpellLevel" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Tends to be exactly same as base level.'"></i>
+      <input [formControlName]="'SpellLevel'" id="SpellLevel" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="BaseLevel">BaseLevel</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'Base level of a spell.'"
-      ></i>
-      <input [formControlName]="'BaseLevel'" id="BaseLevel" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Base level of a spell.'"></i>
+      <input [formControlName]="'BaseLevel'" id="BaseLevel" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="MaxLevel">MaxLevel</label>
       <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'Probably maximal level from which spell can gain bonuses (or minuses) which are based on formula caster level - spell level.'"
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
+        [tooltip]="
+          'Probably maximal level from which spell can gain bonuses (or minuses) which are based on formula caster level - spell level.'
+        "
       ></i>
-      <input [formControlName]="'MaxLevel'" id="MaxLevel" type="number" class="form-control form-control-sm">
+      <input [formControlName]="'MaxLevel'" id="MaxLevel" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="MaxTargets">MaxTargets</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'Maximum number of targets the spell can affect.'"
-      ></i>
-      <input [formControlName]="'MaxTargets'" id="MaxTargets" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Maximum number of targets the spell can affect.'"></i>
+      <input [formControlName]="'MaxTargets'" id="MaxTargets" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="MaxTargetLevel">MaxTargetLevel</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'The maximum level of target which can be affected by spell.'"
-      ></i>
-      <input [formControlName]="'MaxTargetLevel'" id="MaxTargetLevel" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The maximum level of target which can be affected by spell.'"></i>
+      <input [formControlName]="'MaxTargetLevel'" id="MaxTargetLevel" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="RuneCostID">RuneCostID</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
-      ></i>
-      <input [formControlName]="'RuneCostID'" id="RuneCostID" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <input [formControlName]="'RuneCostID'" id="RuneCostID" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="SpellVisualID_1">SpellVisualID_1</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'Visual effects of a spell.'"
-      ></i>
-      <input [formControlName]="'SpellVisualID_1'" id="SpellVisualID_1" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Visual effects of a spell.'"></i>
+      <input [formControlName]="'SpellVisualID_1'" id="SpellVisualID_1" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="SpellVisualID_2">SpellVisualID_2</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'Visual effects of a spell.'"
-      ></i>
-      <input [formControlName]="'SpellVisualID_2'" id="SpellVisualID_2" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Visual effects of a spell.'"></i>
+      <input [formControlName]="'SpellVisualID_2'" id="SpellVisualID_2" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="Speed">Speed</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'If <= 0.0 client skips HandleMissileEffects.'"
-      ></i>
-      <input [formControlName]="'Speed'" id="Speed" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'If <= 0.0 client skips HandleMissileEffects.'"></i>
+      <input [formControlName]="'Speed'" id="Speed" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="TargetAuraState">TargetAuraState</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
-      ></i>
-      <input [formControlName]="'TargetAuraState'" id="TargetAuraState" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <input [formControlName]="'TargetAuraState'" id="TargetAuraState" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="RecoveryTime">RecoveryTime</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'Cooldown of a spell. May differ with caster level.'"
-      ></i>
-      <input [formControlName]="'RecoveryTime'" id="RecoveryTime" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Cooldown of a spell. May differ with caster level.'"></i>
+      <input [formControlName]="'RecoveryTime'" id="RecoveryTime" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="SpellMissileID">SpellMissileID</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
-      ></i>
-      <input [formControlName]="'SpellMissileID'" id="SpellMissileID" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <input [formControlName]="'SpellMissileID'" id="SpellMissileID" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="SpellDifficultyID">SpellDifficultyID</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
-      ></i>
-      <input [formControlName]="'SpellDifficultyID'" id="SpellDifficultyID" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <input [formControlName]="'SpellDifficultyID'" id="SpellDifficultyID" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="PowerType">PowerType</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'Power type used by spell.'"
-      ></i>
-      <input [formControlName]="'PowerType'" id="PowerType" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Power type used by spell.'"></i>
+      <input [formControlName]="'PowerType'" id="PowerType" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="RequiredTotemCategoryID_1">RequiredTotemCategoryID_1</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'Non consumable items required to cast the spell.'"
-      ></i>
-      <input [formControlName]="'RequiredTotemCategoryID_1'" id="RequiredTotemCategoryID_1" type="number" class="form-control form-control-sm">
+      <keira-single-value-selector-btn
+        [control]="formGroup.controls.RequiredTotemCategoryID_1"
+        [config]="{ options: TOTEM_CATEGORY, name: 'RequiredTotemCategoryID_1' }"
+        [modalClass]="'modal-md'"
+      ></keira-single-value-selector-btn>
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Non consumable items required to cast the spell.'"></i>
+      <input
+        [formControlName]="'RequiredTotemCategoryID_1'"
+        id="RequiredTotemCategoryID_1"
+        type="number"
+        class="form-control form-control-sm"
+      />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="RequiredTotemCategoryID_2">RequiredTotemCategoryID_2</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'Non consumable items required to cast the spell.'"
-      ></i>
-      <input [formControlName]="'RequiredTotemCategoryID_2'" id="RequiredTotemCategoryID_2" type="number" class="form-control form-control-sm">
+      <keira-single-value-selector-btn
+        [control]="formGroup.controls.RequiredTotemCategoryID_2"
+        [config]="{ options: TOTEM_CATEGORY, name: 'RequiredTotemCategoryID_2' }"
+        [modalClass]="'modal-md'"
+      ></keira-single-value-selector-btn>
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Non consumable items required to cast the spell.'"></i>
+      <input
+        [formControlName]="'RequiredTotemCategoryID_2'"
+        id="RequiredTotemCategoryID_2"
+        type="number"
+        class="form-control form-control-sm"
+      />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="RequiredAreasID">RequiredAreasID</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'Areas in which a spell can be cast.'"
-      ></i>
-      <input [formControlName]="'RequiredAreasID'" id="RequiredAreasID" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Areas in which a spell can be cast.'"></i>
+      <input [formControlName]="'RequiredAreasID'" id="RequiredAreasID" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="SpellDescriptionVariableID">SpellDescriptionVariableID</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
-      ></i>
-      <input [formControlName]="'SpellDescriptionVariableID'" id="SpellDescriptionVariableID" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <input
+        [formControlName]="'SpellDescriptionVariableID'"
+        id="SpellDescriptionVariableID"
+        type="number"
+        class="form-control form-control-sm"
+      />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="ManaCost">ManaCost</label>
       <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
         [tooltip]="'Base mana cost of a spell. It is being summed with ManaCostPercentage.'"
       ></i>
-      <input [formControlName]="'ManaCost'" id="ManaCost" type="number" class="form-control form-control-sm">
+      <input [formControlName]="'ManaCost'" id="ManaCost" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="ManaCostPerLevel">ManaCostPerLevel</label>
       <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
         [tooltip]="'Likely is mana cost increased by ((caster level) - (spell level))*(this field).'"
       ></i>
-      <input [formControlName]="'ManaCostPerLevel'" id="ManaCostPerLevel" type="number" class="form-control form-control-sm">
+      <input [formControlName]="'ManaCostPerLevel'" id="ManaCostPerLevel" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="ManaPerSecond">ManaPerSecond</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'For channels.'"
-      ></i>
-      <input [formControlName]="'ManaPerSecond'" id="ManaPerSecond" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'For channels.'"></i>
+      <input [formControlName]="'ManaPerSecond'" id="ManaPerSecond" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="ManaPerSecondPerLevel">ManaPerSecondPerLevel</label>
       <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
         [tooltip]="'For channels. Likely is mana cost per second increased by ((caster level) - (spell level))*(this field).'"
       ></i>
-      <input [formControlName]="'ManaPerSecondPerLevel'" id="ManaPerSecondPerLevel" type="number" class="form-control form-control-sm">
+      <input [formControlName]="'ManaPerSecondPerLevel'" id="ManaPerSecondPerLevel" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="ManaCostPct">ManaCostPct</label>
       <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
         [tooltip]="'% of base mana cost, added to flat value in manaCost field. For NPCs is base mana = their max mana.'"
       ></i>
-      <input [formControlName]="'ManaCostPct'" id="ManaCostPct" type="number" class="form-control form-control-sm">
+      <input [formControlName]="'ManaCostPct'" id="ManaCostPct" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="PreventionType">PreventionType</label>
-      <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'TODO'"
-      ></i>
-      <input [formControlName]="'PreventionType'" id="PreventionType" type="number" class="form-control form-control-sm">
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <input [formControlName]="'PreventionType'" id="PreventionType" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="RequiresSpellFocus">RequiresSpellFocus</label>
       <i
-        class="fas fa-info-circle ml-1" [placement]="'auto'"
-        [tooltip]="'Whether spell focus is needed by spell to be cast. Player needs to be within range of appropriate gameobject with type=8.'"
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
+        [tooltip]="
+          'Whether spell focus is needed by spell to be cast. Player needs to be within range of appropriate gameobject with type=8.'
+        "
       ></i>
-      <input [formControlName]="'RequiresSpellFocus'" id="RequiresSpellFocus" type="number" class="form-control form-control-sm">
+      <input [formControlName]="'RequiresSpellFocus'" id="RequiresSpellFocus" type="number" class="form-control form-control-sm" />
     </div>
   </div>
 </form>

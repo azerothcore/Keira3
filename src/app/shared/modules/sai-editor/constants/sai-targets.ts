@@ -64,12 +64,10 @@ SAI_TARGET_TOOLTIPS[SAI_TARGETS.SELF] = 'Targets the creature/gameobject/areatri
 SAI_TARGET_TOOLTIPS[SAI_TARGETS.VICTIM] = 'Targets the current victim of the creature';
 
 // SMART_TARGET_HOSTILE_SECOND_AGGRO
-SAI_TARGET_TOOLTIPS[SAI_TARGETS.HOSTILE_SECOND_AGGRO] =
-  'The unit that is second highest on the current threatlist of the creature';
+SAI_TARGET_TOOLTIPS[SAI_TARGETS.HOSTILE_SECOND_AGGRO] = 'The unit that is second highest on the current threatlist of the creature';
 
 // SMART_TARGET_HOSTILE_LAST_AGGRO
-SAI_TARGET_TOOLTIPS[SAI_TARGETS.HOSTILE_LAST_AGGRO] =
-  'The unit that is last (so lowest threat) on the current threatlist of the creature';
+SAI_TARGET_TOOLTIPS[SAI_TARGETS.HOSTILE_LAST_AGGRO] = 'The unit that is last (so lowest threat) on the current threatlist of the creature';
 
 // SMART_TARGET_HOSTILE_RANDOM
 SAI_TARGET_TOOLTIPS[SAI_TARGETS.HOSTILE_RANDOM] = 'A random unit on the current threatlist of the creature';
@@ -93,8 +91,7 @@ SAI_TARGET_PARAM1_NAMES[SAI_TARGETS.CREATURE_RANGE] = 'CreatureId';
 SAI_TARGET_PARAM2_NAMES[SAI_TARGETS.CREATURE_RANGE] = 'MinDistance';
 SAI_TARGET_PARAM3_NAMES[SAI_TARGETS.CREATURE_RANGE] = 'MaxDistance';
 SAI_TARGET_PARAM4_NAMES[SAI_TARGETS.CREATURE_RANGE] = 'AliveState';
-SAI_TARGET_PARAM1_TOOLTIPS[SAI_TARGETS.CREATURE_RANGE] =
-  'If left at 0, it will target all creatures within the given distance';
+SAI_TARGET_PARAM1_TOOLTIPS[SAI_TARGETS.CREATURE_RANGE] = 'If left at 0, it will target all creatures within the given distance';
 SAI_TARGET_PARAM4_TOOLTIPS[SAI_TARGETS.CREATURE_RANGE] = '1 alive, 2 dead, 0 both';
 
 // SMART_TARGET_CREATURE_GUID
@@ -110,8 +107,7 @@ SAI_TARGET_TOOLTIPS[SAI_TARGETS.CREATURE_DISTANCE] =
 SAI_TARGET_PARAM1_NAMES[SAI_TARGETS.CREATURE_DISTANCE] = 'CreatureId';
 SAI_TARGET_PARAM2_NAMES[SAI_TARGETS.CREATURE_DISTANCE] = 'MaxDistance';
 SAI_TARGET_PARAM3_NAMES[SAI_TARGETS.CREATURE_DISTANCE] = 'AliveState';
-SAI_TARGET_PARAM1_TOOLTIPS[SAI_TARGETS.CREATURE_DISTANCE] =
-  'If left at 0, it will target all creatures within the given distance';
+SAI_TARGET_PARAM1_TOOLTIPS[SAI_TARGETS.CREATURE_DISTANCE] = 'If left at 0, it will target all creatures within the given distance';
 SAI_TARGET_PARAM3_TOOLTIPS[SAI_TARGETS.CREATURE_DISTANCE] = '1 alive, 2 dead, 0 both';
 
 // SMART_TARGET_STORED
@@ -124,8 +120,7 @@ SAI_TARGET_TOOLTIPS[SAI_TARGETS.GAMEOBJECT_RANGE] =
 SAI_TARGET_PARAM1_NAMES[SAI_TARGETS.GAMEOBJECT_RANGE] = 'GameobjectId';
 SAI_TARGET_PARAM2_NAMES[SAI_TARGETS.GAMEOBJECT_RANGE] = 'MinDistance';
 SAI_TARGET_PARAM3_NAMES[SAI_TARGETS.GAMEOBJECT_RANGE] = 'MaxDistance';
-SAI_TARGET_PARAM1_TOOLTIPS[SAI_TARGETS.GAMEOBJECT_RANGE] =
-  'If left at 0, it will target all gameobjects within the given distance';
+SAI_TARGET_PARAM1_TOOLTIPS[SAI_TARGETS.GAMEOBJECT_RANGE] = 'If left at 0, it will target all gameobjects within the given distance';
 
 // SMART_TARGET_GAMEOBJECT_GUID
 SAI_TARGET_TOOLTIPS[SAI_TARGETS.GAMEOBJECT_GUID] = 'Targets a specific gameobject guid and entry';
@@ -139,12 +134,10 @@ SAI_TARGET_TOOLTIPS[SAI_TARGETS.GAMEOBJECT_DISTANCE] =
   'Targets any gameobject of a given entry (or any gameobject, if first parameter is left at 0) within a given distance';
 SAI_TARGET_PARAM1_NAMES[SAI_TARGETS.GAMEOBJECT_DISTANCE] = 'GameobjectId';
 SAI_TARGET_PARAM2_NAMES[SAI_TARGETS.GAMEOBJECT_DISTANCE] = 'MaxDistance';
-SAI_TARGET_PARAM1_TOOLTIPS[SAI_TARGETS.GAMEOBJECT_DISTANCE] =
-  'If left at 0, it will target all gameobjects within the given distance';
+SAI_TARGET_PARAM1_TOOLTIPS[SAI_TARGETS.GAMEOBJECT_DISTANCE] = 'If left at 0, it will target all gameobjects within the given distance';
 
 // SMART_TARGET_INVOKER_PARTY
-SAI_TARGET_TOOLTIPS[SAI_TARGETS.INVOKER_PARTY] =
-  'Targets all party members of the action invoker (SMART_TARGET_ACTION_INVOKER)';
+SAI_TARGET_TOOLTIPS[SAI_TARGETS.INVOKER_PARTY] = 'Targets all party members of the action invoker (SMART_TARGET_ACTION_INVOKER)';
 
 // SMART_TARGET_PLAYER_RANGE
 SAI_TARGET_TOOLTIPS[SAI_TARGETS.PLAYER_RANGE] = 'Targets any player within a given minimum and maximum distance';
@@ -162,8 +155,7 @@ SAI_TARGET_TOOLTIPS[SAI_TARGETS.CLOSEST_CREATURE] =
 SAI_TARGET_PARAM1_NAMES[SAI_TARGETS.CLOSEST_CREATURE] = 'CreatureId';
 SAI_TARGET_PARAM2_NAMES[SAI_TARGETS.CLOSEST_CREATURE] = 'MaxDistance';
 SAI_TARGET_PARAM3_NAMES[SAI_TARGETS.CLOSEST_CREATURE] = 'MustBeDead';
-SAI_TARGET_PARAM1_TOOLTIPS[SAI_TARGETS.CLOSEST_CREATURE] =
-  'If left at 0, it will target the closest creature of ANY entry';
+SAI_TARGET_PARAM1_TOOLTIPS[SAI_TARGETS.CLOSEST_CREATURE] = 'If left at 0, it will target the closest creature of ANY entry';
 SAI_TARGET_PARAM2_TOOLTIPS[SAI_TARGETS.CLOSEST_CREATURE] = 'Can be from 0 to 100 yards';
 SAI_TARGET_PARAM3_TOOLTIPS[SAI_TARGETS.CLOSEST_CREATURE] =
   'If set to 0 it will only target alive creatures; if set to 1 it will target only alive creatures';
@@ -173,8 +165,7 @@ SAI_TARGET_TOOLTIPS[SAI_TARGETS.CLOSEST_GAMEOBJECT] =
   'Takes the closest gameobject within a given distance and entry (or the closest gameobject of any entry, if first parameter is left at 0).';
 SAI_TARGET_PARAM1_NAMES[SAI_TARGETS.CLOSEST_GAMEOBJECT] = 'GameobjectId';
 SAI_TARGET_PARAM2_NAMES[SAI_TARGETS.CLOSEST_GAMEOBJECT] = 'MaxDistance';
-SAI_TARGET_PARAM1_TOOLTIPS[SAI_TARGETS.CLOSEST_GAMEOBJECT] =
-  'If left at 0, it will target the closest gameobject of ANY entry';
+SAI_TARGET_PARAM1_TOOLTIPS[SAI_TARGETS.CLOSEST_GAMEOBJECT] = 'If left at 0, it will target the closest gameobject of ANY entry';
 SAI_TARGET_PARAM2_TOOLTIPS[SAI_TARGETS.CLOSEST_GAMEOBJECT] = 'Can be from 0 to 100 yards';
 
 // SMART_TARGET_CLOSEST_PLAYER
@@ -182,8 +173,7 @@ SAI_TARGET_TOOLTIPS[SAI_TARGETS.CLOSEST_PLAYER] = 'Takes the closest player with
 SAI_TARGET_PARAM1_NAMES[SAI_TARGETS.CLOSEST_PLAYER] = 'MaxDistance';
 
 // SMART_TARGET_ACTION_INVOKER_VEHICLE
-SAI_TARGET_TOOLTIPS[SAI_TARGETS.ACTION_INVOKER_VEHICLE] =
-  'Takes the vehicle of the action invoker (SMART_TARGET_ACTION_INVOKER)';
+SAI_TARGET_TOOLTIPS[SAI_TARGETS.ACTION_INVOKER_VEHICLE] = 'Takes the vehicle of the action invoker (SMART_TARGET_ACTION_INVOKER)';
 
 // SMART_TARGET_OWNER_OR_SUMMONER
 SAI_TARGET_TOOLTIPS[SAI_TARGETS.OWNER_OR_SUMMONER] = 'Takes the owner or the summoner of the creature/gameobject';

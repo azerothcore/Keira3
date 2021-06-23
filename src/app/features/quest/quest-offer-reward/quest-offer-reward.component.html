@@ -1,35 +1,31 @@
 <keira-top-bar [handler]="handlerService"></keira-top-bar>
 
-<div class="container-fluid editor-with-preview" [ngClass]="{'show-preview': questPreviewService.showPreview }">
-
+<div class="container-fluid editor-with-preview" [ngClass]="{ 'show-preview': questPreviewService.showPreview }">
   <span *ngIf="editorService.loading">Loading...</span>
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
-
     <div class="content-block">
-      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
+      <keira-query-output
+        [docUrl]="docUrl"
+        [editorService]="editorService"
+        (executeQuery)="editorService.save($event)"
+      ></keira-query-output>
     </div>
 
     <div class="content-block">
-
-      <form
-        [formGroup]="editorService.form"
-        class="form-group edit-form"
-      >
+      <form [formGroup]="editorService.form" class="form-group edit-form">
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
             <label class="control-label" for="ID">ID</label>
-            <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
-              [tooltip]="'The unique ID of the quest'"
-            ></i>
-            <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm">
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The unique ID of the quest'"></i>
+            <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm" />
           </div>
 
           <div class="form-group col-12 col-sm-12 col-md-8 col-lg-9 col-xl-9">
             <label class="control-label" for="RewardText">RewardText</label>
             <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              class="fas fa-info-circle ms-1"
+              [placement]="'auto'"
               [tooltip]="'Quest gossip text shown when turning in a quest where no item delivery is involved.'"
             ></i>
             <textarea [formControlName]="'RewardText'" id="RewardText" class="form-control form-control-sm"></textarea>
@@ -37,11 +33,7 @@
         </div>
 
         <div class="row">
-
-          <div
-            *ngFor="let i of [1,2,3,4]"
-            class="form-group col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3"
-          >
+          <div *ngFor="let i of [1, 2, 3, 4]" class="form-group col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3">
             <div class="row">
               <div class="col-12">
                 <label class="control-label" for="Emote{{ i }}">Emote{{ i }}</label>
@@ -50,27 +42,19 @@
                   [config]="{ options: EMOTE, name: 'Emote' + i }"
                   [modalClass]="'modal-md'"
                 ></keira-single-value-selector-btn>
-                <input [formControlName]="'Emote' + i" id="Emote{{ i }}" type="number" class="form-control form-control-sm">
+                <input [formControlName]="'Emote' + i" id="Emote{{ i }}" type="number" class="form-control form-control-sm" />
               </div>
               <div class="col-12">
                 <label class="control-label" for="EmoteDelay{{ i }}">EmoteDelay{{ i }}</label>
-                <i
-                  class="fas fa-info-circle ml-1" [placement]="'auto'"
-                  [tooltip]="'Emote delay in milliseconds'"
-                ></i>
-                <input [formControlName]="'EmoteDelay' + i" id="EmoteDelay{{ i }}" type="number" class="form-control form-control-sm">
+                <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Emote delay in milliseconds'"></i>
+                <input [formControlName]="'EmoteDelay' + i" id="EmoteDelay{{ i }}" type="number" class="form-control form-control-sm" />
               </div>
             </div>
-
           </div>
-
         </div>
-
       </form>
-
     </div>
 
     <keira-quest-preview></keira-quest-preview>
-
   </div>
 </div>

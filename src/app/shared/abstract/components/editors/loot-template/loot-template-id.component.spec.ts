@@ -16,6 +16,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { MysqlQueryService } from '../../../../services/mysql-query.service';
 import { CreatureHandlerService } from '../../../../../features/creature/creature-handler.service';
 import { SaiCreatureHandlerService } from '../../../../../features/creature/sai-creature-handler.service';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 describe('LootTemplateComponent', () => {
   let component: LootTemplateIdComponent<CreatureLootTemplate>;
@@ -29,7 +30,7 @@ describe('LootTemplateComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [CreatureLootTemplateModule, RouterTestingModule, TooltipModule.forRoot(), ToastrModule.forRoot()],
+        imports: [CreatureLootTemplateModule, RouterTestingModule, ModalModule.forRoot(), TooltipModule.forRoot(), ToastrModule.forRoot()],
         providers: [
           { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
           CreatureHandlerService,

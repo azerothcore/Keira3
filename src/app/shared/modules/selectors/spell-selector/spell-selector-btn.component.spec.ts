@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SpellSelectorBtnComponent } from './spell-selector-btn.component';
 import { SpellSelectorModule } from './spell-selector.module';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 describe('SpellSelectorBtnComponent', () => {
   let component: SpellSelectorBtnComponent;
@@ -10,7 +11,7 @@ describe('SpellSelectorBtnComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [SpellSelectorModule],
+        imports: [ModalModule.forRoot(), SpellSelectorModule],
       }).compileComponents();
     }),
   );

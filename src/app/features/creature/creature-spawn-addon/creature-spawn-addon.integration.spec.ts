@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import Spy = jasmine.Spy;
 
 import { CreatureSpawnAddonComponent } from './creature-spawn-addon.component';
@@ -34,7 +36,7 @@ describe('CreatureSpawnAddon integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [CreatureSpawnAddonModule, RouterTestingModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureSpawnAddonModule, RouterTestingModule],
         providers: [CreatureHandlerService, SaiCreatureHandlerService],
       }).compileComponents();
     }),

@@ -1,6 +1,8 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
@@ -17,7 +19,7 @@ describe('CreatureTemplateResistance integration tests', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [RouterTestingModule, CreatureModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, CreatureModule],
       }).compileComponents();
     }),
   );
@@ -148,9 +150,7 @@ describe('CreatureTemplateResistance integration tests', () => {
       const { page } = setup(false);
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234) AND (`School` IN (2));',
-      );
+      page.expectDiffQueryToContain('DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234) AND (`School` IN (2));');
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234);\n' +
           'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
@@ -160,9 +160,7 @@ describe('CreatureTemplateResistance integration tests', () => {
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
-      page.expectDiffQueryToContain(
-        'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234) AND (`School` IN (2, 3));',
-      );
+      page.expectDiffQueryToContain('DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234) AND (`School` IN (2, 3));');
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234);\n' +
           'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +

@@ -15,14 +15,6 @@ export class SpellLootTemplateService extends MultiRowEditorService<SpellLootTem
     public readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
-    super(
-      SpellLootTemplate,
-      SPELL_LOOT_TEMPLATE_TABLE,
-      LOOT_TEMPLATE_ID,
-      LOOT_TEMPLATE_ID_2,
-      handlerService,
-      queryService,
-      toastrService,
-    );
+    super(SpellLootTemplate, SPELL_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, handlerService, queryService, toastrService);
   }
 }

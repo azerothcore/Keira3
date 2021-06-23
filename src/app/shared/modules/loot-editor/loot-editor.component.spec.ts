@@ -9,6 +9,8 @@ import { LootTemplate } from '@keira-types/loot-template.type';
 import { CreatureLootTemplateService } from '../../../features/creature/creature-loot-template/creature-loot-template.service';
 import { CreatureHandlerService } from '../../../features/creature/creature-handler.service';
 import { SaiCreatureHandlerService } from '../../../features/creature/sai-creature-handler.service';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 class LootEditorComponentPage extends PageObject<TestHostComponent> {
   get referenceViewers() {
@@ -29,7 +31,7 @@ describe('LootEditorComponent', () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [TestHostComponent],
-        imports: [LootEditorModule, RouterTestingModule],
+        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), LootEditorModule, RouterTestingModule],
         providers: [CreatureLootTemplateService, CreatureHandlerService, SaiCreatureHandlerService],
       }).compileComponents();
     }),

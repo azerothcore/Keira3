@@ -1,38 +1,34 @@
 <keira-top-bar [handler]="handlerService"></keira-top-bar>
 
-<div class="container-fluid editor-with-preview" [ngClass]="{'show-preview': questPreviewService.showPreview }">
-
+<div class="container-fluid editor-with-preview" [ngClass]="{ 'show-preview': questPreviewService.showPreview }">
   <span *ngIf="editorService.loading">Loading...</span>
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
-
     <div class="content-block">
-      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
+      <keira-query-output
+        [docUrl]="docUrl"
+        [editorService]="editorService"
+        (executeQuery)="editorService.save($event)"
+      ></keira-query-output>
     </div>
 
     <div class="content-block">
-
-      <form
-        [formGroup]="editorService.form"
-        class="form-group edit-form"
-      >
+      <form [formGroup]="editorService.form" class="form-group edit-form">
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
             <label class="control-label" for="ID">ID</label>
-            <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
-              [tooltip]="'The unique ID of the quest'"
-            ></i>
-            <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm">
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The unique ID of the quest'"></i>
+            <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm" />
           </div>
 
           <div class="form-group col-12 col-sm-12 col-md-8 col-lg-9 col-xl-9">
             <label class="control-label" for="CompletionText">CompletionText</label>
             <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              class="fas fa-info-circle ms-1"
+              [placement]="'auto'"
               [tooltip]="'Quest gossip text shown in the final gossip dialogue window when turning in an item delivery quest.'"
             ></i>
-            <input [formControlName]="'CompletionText'" id="CompletionText" class="form-control form-control-sm">
+            <input [formControlName]="'CompletionText'" id="CompletionText" class="form-control form-control-sm" />
           </div>
 
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
@@ -43,10 +39,11 @@
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
             <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              class="fas fa-info-circle ms-1"
+              [placement]="'auto'"
               [tooltip]="'Played by the quest ender NPC when all quest objectives are completed.'"
             ></i>
-            <input [formControlName]="'EmoteOnComplete'" id="EmoteOnComplete" type="number" class="form-control form-control-sm">
+            <input [formControlName]="'EmoteOnComplete'" id="EmoteOnComplete" type="number" class="form-control form-control-sm" />
           </div>
 
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
@@ -57,18 +54,16 @@
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
             <i
-              class="fas fa-info-circle ml-1" [placement]="'auto'"
+              class="fas fa-info-circle ms-1"
+              [placement]="'auto'"
               [tooltip]="'Played by the quest ender NPC if any of the quest objectives are incomplete.'"
             ></i>
-            <input [formControlName]="'EmoteOnIncomplete'" id="EmoteOnIncomplete" type="number" class="form-control form-control-sm">
+            <input [formControlName]="'EmoteOnIncomplete'" id="EmoteOnIncomplete" type="number" class="form-control form-control-sm" />
           </div>
         </div>
-
       </form>
-
     </div>
 
     <keira-quest-preview></keira-quest-preview>
-
   </div>
 </div>

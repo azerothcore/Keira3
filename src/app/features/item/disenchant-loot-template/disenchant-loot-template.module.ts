@@ -9,7 +9,7 @@ import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
 
 @NgModule({
   declarations: [DisenchantLootTemplateComponent],
-  imports: [CommonModule, TooltipModule.forRoot(), LootEditorModule, TopBarModule],
+  imports: [CommonModule, TooltipModule, LootEditorModule, TopBarModule],
   exports: [DisenchantLootTemplateComponent],
   providers: [DisenchantLootTemplateService],
 })

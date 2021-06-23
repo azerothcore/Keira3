@@ -9,15 +9,7 @@ import { QueryOutputModule } from '../../shared/modules/query-output/query-outpu
 
 @NgModule({
   declarations: [ConnectionWindowComponent],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    ReactiveFormsModule,
-    QueryOutputModule,
-    // TODO: enable animation once this bug is fixed: https://github.com/valor-software/ngx-bootstrap/issues/5727
-    BsDropdownModule.forRoot({ isAnimated: false, autoClose: true }),
-    FormsModule,
-  ],
+  imports: [BrowserModule, BrowserAnimationsModule, ReactiveFormsModule, QueryOutputModule, BsDropdownModule, FormsModule],
   exports: [ConnectionWindowComponent],
 })
 export class ConnectionWindowModule {}

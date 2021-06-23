@@ -8,8 +8,11 @@ import { SpellDbcModule } from '../../spell-dbc.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SpellHandlerService } from '../../../spell-handler.service';
 import { FormGroup } from 'ngx-typesafe-forms';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ToastrModule } from 'ngx-toastr';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
 import { SPELL_DBC_SPELL_EFFECT_FIELDS, SpellDbcSpellEffectFieldPrefix } from './spell-dbc-spell-effect.model';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 describe('SpellDbcSpellEffectComponent', () => {
   class SpellDbcSpellEffectComponentPage extends PageObject<TestHostComponent> {
@@ -37,7 +40,7 @@ describe('SpellDbcSpellEffectComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [TestHostComponent, SpellDbcSpellEffectComponent],
-      imports: [SpellDbcModule, RouterTestingModule],
+      imports: [ModalModule.forRoot(), ToastrModule.forRoot(), TooltipModule.forRoot(), SpellDbcModule, RouterTestingModule],
       providers: [SpellHandlerService],
     }).compileComponents();
   });

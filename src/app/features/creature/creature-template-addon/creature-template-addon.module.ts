@@ -13,15 +13,7 @@ import { CreatureTemplateAddonService } from './creature-template-addon.service'
 
 @NgModule({
   declarations: [CreatureTemplateAddonComponent],
-  imports: [
-    BrowserModule,
-    ReactiveFormsModule,
-    TopBarModule,
-    QueryOutputModule,
-    TooltipModule.forRoot(),
-    ToastrModule.forRoot(toastrConfig),
-    SingleValueSelectorModule,
-  ],
+  imports: [BrowserModule, ReactiveFormsModule, TopBarModule, QueryOutputModule, TooltipModule, ToastrModule, SingleValueSelectorModule],
   exports: [CreatureTemplateAddonComponent],
   providers: [CreatureTemplateAddonService],
 })

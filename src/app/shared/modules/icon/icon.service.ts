@@ -24,8 +24,6 @@ export class IconService {
   getIconBySpellId(spellId: string | number): Observable<string> {
     return this.sqliteQueryService
       .getDisplayIdBySpellId(spellId)
-      .pipe(
-        mergeMap((displayId) => (!!displayId ? this.sqliteQueryService.getIconBySpellDisplayId(displayId) : of(null))),
-      );
+      .pipe(mergeMap((displayId) => (!!displayId ? this.sqliteQueryService.getIconBySpellDisplayId(displayId) : of(null))));
   }
 }
