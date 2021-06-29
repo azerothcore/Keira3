@@ -83,7 +83,7 @@
     "chai": "4.3.4",
     "codelyzer": "6.0.2",
     "conventional-changelog-cli": "2.1.1",
-    "coveralls": "3.1.0",
+    "coveralls": "3.1.1",
     "cross-env": "7.0.3",
     "electron": "13.1.4",
     "electron-builder": "22.11.3",
