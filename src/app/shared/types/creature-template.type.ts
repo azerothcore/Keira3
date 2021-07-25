@@ -32,6 +32,7 @@ export class CreatureTemplate extends TableRow {
   npcflag: number = 0;
   speed_walk: number = 1;
   speed_run: number = 1.14286;
+  detection_range: number = 1;
   scale: number = 1;
   rank: number = 0;
   dmgschool: number = 0;
