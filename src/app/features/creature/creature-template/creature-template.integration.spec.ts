@@ -28,14 +28,14 @@ describe('CreatureTemplate integration tests', () => {
     'DELETE FROM `creature_template` WHERE (`entry` = 1234);\n' +
     'INSERT INTO `creature_template` (`entry`, `difficulty_entry_1`, `difficulty_entry_2`, `difficulty_entry_3`, ' +
     '`KillCredit1`, `KillCredit2`, `modelid1`, `modelid2`, `modelid3`, `modelid4`, `name`, `subname`, ' +
-    '`IconName`, `gossip_menu_id`, `minlevel`, `maxlevel`, `exp`, `faction`, `npcflag`, `speed_walk`, `speed_run`, ' +
+    '`IconName`, `gossip_menu_id`, `minlevel`, `maxlevel`, `exp`, `faction`, `npcflag`, `speed_walk`, `speed_run`, `detection_range`, ' +
     '`scale`, `rank`, `dmgschool`, `DamageModifier`, `BaseAttackTime`, `RangeAttackTime`, `BaseVariance`, `RangeVariance`, ' +
     '`unit_class`, `unit_flags`, `unit_flags2`, `dynamicflags`, `family`, `trainer_type`, `trainer_spell`, `trainer_class`, ' +
     '`trainer_race`, `type`, `type_flags`, `lootid`, `pickpocketloot`, `skinloot`, `PetSpellDataId`, `VehicleId`, `mingold`, ' +
     '`maxgold`, `AIName`, `MovementType`, `InhabitType`, `HoverHeight`, `HealthModifier`, `ManaModifier`, `ArmorModifier`, ' +
     '`RacialLeader`, `movementId`, `RegenHealth`, `mechanic_immune_mask`, `spell_school_immune_mask`, ' +
     '`flags_extra`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-    "(1234, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', '', 0, 1, 1, 0, 0, 0, 1, 1.14286, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, " +
+    "(1234, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', '', 0, 1, 1, 0, 0, 0, 1, 1.14286, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, " +
     "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, 3, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, '', 0);\n";
 
   const originalEntity = new CreatureTemplate();
@@ -81,14 +81,14 @@ describe('CreatureTemplate integration tests', () => {
         'DELETE FROM `creature_template` WHERE (`entry` = 1234);\n' +
         'INSERT INTO `creature_template` (`entry`, `difficulty_entry_1`, `difficulty_entry_2`, `difficulty_entry_3`, ' +
         '`KillCredit1`, `KillCredit2`, `modelid1`, `modelid2`, `modelid3`, `modelid4`, `name`, `subname`, `IconName`, ' +
-        '`gossip_menu_id`, `minlevel`, `maxlevel`, `exp`, `faction`, `npcflag`, `speed_walk`, `speed_run`, ' +
+        '`gossip_menu_id`, `minlevel`, `maxlevel`, `exp`, `faction`, `npcflag`, `speed_walk`, `speed_run`, `detection_range`, ' +
         '`scale`, `rank`, `dmgschool`, `DamageModifier`, `BaseAttackTime`, `RangeAttackTime`, `BaseVariance`, ' +
         '`RangeVariance`, `unit_class`, `unit_flags`, `unit_flags2`, `dynamicflags`, `family`, ' +
         '`trainer_type`, `trainer_spell`, `trainer_class`, `trainer_race`, `type`, `type_flags`, ' +
         '`lootid`, `pickpocketloot`, `skinloot`, `PetSpellDataId`, `VehicleId`, `mingold`, `maxgold`, ' +
         '`AIName`, `MovementType`, `InhabitType`, `HoverHeight`, `HealthModifier`, `ManaModifier`, `ArmorModifier`, `RacialLeader`, ' +
         '`movementId`, `RegenHealth`, `mechanic_immune_mask`, `spell_school_immune_mask`, `flags_extra`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-        "(1234, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Shin', '', '', 0, 1, 1, 0, 0, 0, 1, 1.14286, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0," +
+        "(1234, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Shin', '', '', 0, 1, 1, 0, 0, 0, 1, 1.14286, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0," +
         " 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, 3, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, '', 0);";
 
       querySpy.calls.reset();
@@ -125,14 +125,14 @@ describe('CreatureTemplate integration tests', () => {
         'UPDATE `creature_template` SET `difficulty_entry_2` = 1, `difficulty_entry_3` = 2, ' +
         '`KillCredit1` = 3, `KillCredit2` = 4, `modelid1` = 5, `modelid2` = 6, `modelid3` = 7, `modelid4` = 8, ' +
         "`name` = '9', `subname` = '10', `IconName` = '11', `gossip_menu_id` = 12, `minlevel` = 13, `maxlevel` = 14, " +
-        '`exp` = 15, `faction` = 16, `npcflag` = 17, `speed_walk` = 18, `speed_run` = 19, `scale` = 20, `rank` = 21, ' +
-        '`dmgschool` = 22, `DamageModifier` = 23, `BaseAttackTime` = 24, `RangeAttackTime` = 25, `BaseVariance` = 26, ' +
-        '`RangeVariance` = 27, `unit_class` = 28, `unit_flags` = 29, `unit_flags2` = 30, `dynamicflags` = 31, `family` = 32, ' +
-        '`trainer_type` = 33, `trainer_spell` = 34, `trainer_class` = 35, `trainer_race` = 36, `type` = 37, `type_flags` = 38, ' +
-        '`lootid` = 39, `pickpocketloot` = 40, `skinloot` = 41, `PetSpellDataId` = 42, `VehicleId` = 43, ' +
-        "`mingold` = 44, `maxgold` = 45, `AIName` = '46', `MovementType` = 47, `InhabitType` = 48, `HoverHeight` = 49, " +
-        '`HealthModifier` = 50, `ManaModifier` = 51, `ArmorModifier` = 52, `RacialLeader` = 53, `movementId` = 54, `RegenHealth` = 55, ' +
-        "`mechanic_immune_mask` = 56, `spell_school_immune_mask` = 57, `flags_extra` = 58, `ScriptName` = '59' WHERE (`entry` = 1234);";
+        '`exp` = 15, `faction` = 16, `npcflag` = 17, `speed_walk` = 18, `speed_run` = 19, `detection_range` = 20, `scale` = 21, `rank` = 22, ' +
+        '`dmgschool` = 23, `DamageModifier` = 24, `BaseAttackTime` = 25, `RangeAttackTime` = 26, `BaseVariance` = 27, ' +
+        '`RangeVariance` = 28, `unit_class` = 29, `unit_flags` = 30, `unit_flags2` = 31, `dynamicflags` = 32, `family` = 33, ' +
+        '`trainer_type` = 34, `trainer_spell` = 35, `trainer_class` = 36, `trainer_race` = 37, `type` = 38, `type_flags` = 39, ' +
+        '`lootid` = 40, `pickpocketloot` = 41, `skinloot` = 42, `PetSpellDataId` = 43, `VehicleId` = 44, ' +
+        "`mingold` = 45, `maxgold` = 46, `AIName` = '47', `MovementType` = 48, `InhabitType` = 49, `HoverHeight` = 50, " +
+        '`HealthModifier` = 51, `ManaModifier` = 52, `ArmorModifier` = 53, `RacialLeader` = 54, `movementId` = 55, `RegenHealth` = 56, ' +
+        "`mechanic_immune_mask` = 57, `spell_school_immune_mask` = 58, `flags_extra` = 59, `ScriptName` = '60' WHERE (`entry` = 1234);";
 
       querySpy.calls.reset();
 
