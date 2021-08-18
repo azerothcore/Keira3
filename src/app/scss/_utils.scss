@@ -37,3 +37,19 @@ input[type='radio'] {
     margin-left: 16px;
   }
 }
+
+.side {
+  padding-left: 16px;
+}
+.alliance {
+  background: url(../../assets/img/quest/alliance.gif) left center no-repeat;
+}
+.horde {
+  background: url(../../assets/img/quest/horde.gif) left center no-repeat;
+}
+.item-extended-cost {
+  display: inline-block;
+  background-color: #080d22;
+  color: #fff;
+  padding-right: 5px;
+}

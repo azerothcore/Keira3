@@ -103,6 +103,11 @@
             <ngx-datatable-column name="maxcount" prop="maxcount"></ngx-datatable-column>
             <ngx-datatable-column name="incrtime" prop="incrtime"></ngx-datatable-column>
             <ngx-datatable-column name="ExtendedCost" prop="ExtendedCost"></ngx-datatable-column>
+            <ngx-datatable-column name="ExtendedCostReadable">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <div [innerHTML]="editorService.getItemExtendedCost(row.ExtendedCost) | async"></div>
+              </ng-template>
+            </ngx-datatable-column>
           </ngx-datatable>
         </div>
       </div>
