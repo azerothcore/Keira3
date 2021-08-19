@@ -47,9 +47,15 @@ input[type='radio'] {
 .horde {
   background: url(../../assets/img/quest/horde.gif) left center no-repeat;
 }
+.arena {
+  background: url(../../assets/img/pvp/arena.gif) left center no-repeat;
+}
 .item-extended-cost {
   display: inline-block;
   background-color: #080d22;
   color: #fff;
-  padding-right: 5px;
+  padding: 4px 10px 4px 0px;
+}
+.item-extended-cost img {
+  vertical-align: sub;
 }

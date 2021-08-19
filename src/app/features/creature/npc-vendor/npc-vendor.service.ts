@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { MultiRowEditorService } from '@keira-abstract/service/editors/multi-row-editor.service';
+import { IconService } from '@keira-shared/modules/icon/icon.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { ItemExtendedCost } from '@keira-shared/types/item-extended-cost.type';
@@ -16,7 +16,7 @@ export class NpcVendorService extends MultiRowEditorService<NpcVendor> {
     public readonly queryService: MysqlQueryService,
     public readonly sqliteQueryService: SqliteQueryService,
     protected toastrService: ToastrService,
-    private readonly sanitizer: DomSanitizer,
+    private iconService: IconService,
   ) {
     super(NpcVendor, NPC_VENDOR_TABLE, NPC_VENDOR_ID, NPC_VENDOR_ID_2, handlerService, queryService, toastrService);
   }
@@ -35,21 +35,31 @@ export class NpcVendorService extends MultiRowEditorService<NpcVendor> {
 
   private async getItemExtendedCostReadable(extendedCost: number): Promise<string> {
     const extendedCostData: ItemExtendedCost[] = await this.sqliteQueryService.getItemExtendedCost([extendedCost]);
-    // return this.sqliteQueryService.getItemExtendedCost([extendedCost]).then((extendedCostData) => {
+    const extCost = extendedCostData[0];
+
     let resultText = '<div class="item-extended-cost">';
 
-    if (extendedCostData[0]?.reqHonorPoints > 0) {
-      console.log('honor: ', extendedCostData[0].reqHonorPoints);
-      resultText += `<span class="mx-2">${extendedCostData[0].reqHonorPoints}</span>
-        <span class="mx-1 alliance side"></span>
-        <span class="mx-1 horde side"></span>`;
-    }
+    if (extCost) {
+      if (extCost.reqHonorPoints > 0) {
+        resultText += `<span class="mx-2">${extCost.reqHonorPoints}</span>
+          <span class="mx-1 alliance side"></span>
+          <span class="mx-1 horde side"></span>`;
+      }
 
-    // if (extendedCostData[0]?.reqArenaPoints > 0) {
-    //   console.log('arena: ', extendedCostData[0].reqArenaPoints);
-    //   // resultText +=
-    //   //   extendedCostData[0].reqArenaPoints + ' <img src="assets/img/quest/alliance.gif"> <img src="assets/img/quest/horde.gif"> ';
-    // }
+      if (extCost.reqArenaPoints > 0) {
+        resultText += `<span class="mx-2">${extCost.reqArenaPoints}</span>
+        <span class="mx-1 arena side"></span>`;
+      }
+
+      for (const index of [1, 2, 3, 4, 5]) {
+        if (extCost['reqItemId' + index] > 0) {
+          const itemIcon = await this.iconService.getIconByItemId(extCost['reqItemId' + index]).toPromise();
+
+          resultText += `<span class="mx-2">${extCost['itemCount' + index]}</span>
+          <img src="https://wow.zamimg.com/images/wow/icons/small/${itemIcon ? itemIcon : 'inv_misc_questionmark'}.jpg">`;
+        }
+      }
+    }
 
     resultText += '</div>';
 
