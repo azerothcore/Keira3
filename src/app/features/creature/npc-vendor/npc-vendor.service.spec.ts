@@ -45,17 +45,17 @@ describe('NpcVendorService', () => {
       const service: NpcVendorService = TestBed.inject(NpcVendorService);
       const getItemExtendedCostReadableSpy = spyOn<any>(service, 'getItemExtendedCostReadable').and.returnValue(Promise.resolve('mock'));
 
-      expect(service['cache']).toEqual({});
+      expect(service['cache']).toEqual([]);
 
-      const extCost = await service['extendedCostCache']('cacheId', 1);
+      const extCost = await service['extendedCostCache'](1);
 
       expect(getItemExtendedCostReadableSpy).toHaveBeenCalledTimes(1);
       expect(extCost).toBe('mock');
-      expect(await service['cache'].cacheId[1]).toBe('mock');
+      expect(await service['cache'][1]).toBe('mock');
 
       getItemExtendedCostReadableSpy.calls.reset();
 
-      await service['extendedCostCache']('cacheId', 1);
+      await service['extendedCostCache'](1);
       expect(getItemExtendedCostReadableSpy).not.toHaveBeenCalled();
     }),
   );

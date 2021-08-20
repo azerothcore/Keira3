@@ -21,16 +21,13 @@ export class NpcVendorService extends MultiRowEditorService<NpcVendor> {
     super(NpcVendor, NPC_VENDOR_TABLE, NPC_VENDOR_ID, NPC_VENDOR_ID_2, handlerService, queryService, toastrService);
   }
 
-  private cache: { [key: string]: Promise<string>[] } = {};
+  private cache: Promise<string>[] = [];
 
-  private extendedCostCache(cacheId: string, extendedCost: number): Promise<string> {
-    if (!this.cache[cacheId]) {
-      this.cache[cacheId] = [];
+  private extendedCostCache(extendedCost: number): Promise<string> {
+    if (!this.cache[extendedCost]) {
+      this.cache[extendedCost] = this.getItemExtendedCostReadable(extendedCost);
     }
-    if (!this.cache[cacheId][extendedCost]) {
-      this.cache[cacheId][extendedCost] = this.getItemExtendedCostReadable(extendedCost);
-    }
-    return this.cache[cacheId][extendedCost];
+    return this.cache[extendedCost];
   }
 
   private async getItemExtendedCostReadable(extendedCost: number): Promise<string> {
@@ -67,6 +64,6 @@ export class NpcVendorService extends MultiRowEditorService<NpcVendor> {
   }
 
   getItemExtendedCost(extendedCost: number): Promise<string> {
-    return this.extendedCostCache('extendedCost', extendedCost);
+    return this.extendedCostCache(extendedCost);
   }
 }
