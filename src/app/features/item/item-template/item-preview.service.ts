@@ -10,6 +10,7 @@ import { ItemTemplate } from '@keira-shared/types/item-template.type';
 import { PVP_RANK } from '@keira-shared/constants/options/item-honorrank';
 import { PreviewHelperService } from '@keira-shared/services/preview-helper.service';
 import { CLASSES_TEXT, RACES_TEXT } from '@keira-shared/constants/preview';
+import { ItemExtendedCost } from '@keira-shared/types/item-extended-cost.type';
 
 @Injectable()
 export class ItemPreviewService {
@@ -50,15 +51,15 @@ export class ItemPreviewService {
     return this.sqliteQueryService.query(`SELECT * FROM item_enchantment WHERE id = ${id}`).toPromise();
   }
 
-  private getItemExtendedCost(IDs: number[]): Promise<any[]> {
-    return this.sqliteQueryService.query(`SELECT * FROM item_extended_cost WHERE id IN (${IDs.join(',')})`).toPromise();
+  private getItemExtendedCost(IDs: number[]): Promise<ItemExtendedCost[]> {
+    return this.sqliteQueryService.query<ItemExtendedCost>(`SELECT * FROM item_extended_cost WHERE id IN (${IDs.join(',')})`).toPromise();
   }
 
   private getItemEnchantmentConditionById(id: number | string): Promise<any[]> {
     return this.sqliteQueryService.query(`SELECT * FROM item_enchantment_condition WHERE id = ${id}`).toPromise();
   }
 
-  private getItemExtendedCostFromVendor(id: number | string): Promise<any[]> {
+  private getItemExtendedCostFromVendor(itemId: number | string): Promise<any[]> {
     return this.mysqlQueryService
       .query(
         `SELECT
@@ -70,7 +71,7 @@ export class ItemPreviewService {
     FROM
       npc_vendor nv
     WHERE
-      nv.item = ${id}
+      nv.item = ${itemId}
     UNION SELECT
       genv.item,
       c.id AS \`entry\`,
@@ -84,7 +85,7 @@ export class ItemPreviewService {
           JOIN
       creature c ON c.guid = genv.guid
     WHERE
-      genv.item = ${id};`,
+      genv.item = ${itemId};`,
       )
       .toPromise();
   }

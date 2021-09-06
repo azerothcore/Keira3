@@ -136,5 +136,16 @@ describe('SqliteQueryService', () => {
         expect(Object.keys(service['cache'])[0]).toBe('getRewardXP');
       }),
     );
+
+    it(
+      'getItemExtendedCost',
+      waitForAsync(async () => {
+        spyOn(service, 'query').and.returnValue(of([]));
+        expect(await service.getItemExtendedCost([])).toEqual([]);
+        expect(await service.getItemExtendedCost([])).toEqual([]); // check cache
+        expect(service.query).toHaveBeenCalledTimes(1); // check cache
+        expect(service.query).toHaveBeenCalledWith(`SELECT * FROM item_extended_cost WHERE id IN ()`);
+      }),
+    );
   });
 });
