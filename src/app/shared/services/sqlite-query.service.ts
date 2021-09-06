@@ -8,6 +8,7 @@ import { TableRow } from '@keira-types/general';
 import { QueryService } from '@keira-shared/services/query.service';
 import { Lock } from '@keira-types/lock.type';
 import { fromPromise } from 'rxjs/internal-compatibility';
+import { ItemExtendedCost } from '@keira-shared/types/item-extended-cost.type';
 
 @Injectable({
   providedIn: 'root',
@@ -125,6 +126,14 @@ export class SqliteQueryService extends QueryService {
       'getRewardXP',
       String(RewardXPDifficulty) + '_' + String(QuestLevel),
       `SELECT field${Number(RewardXPDifficulty) + 1} AS v FROM questxp WHERE id = ${QuestLevel}`,
+    );
+  }
+
+  getItemExtendedCost(IDs: number[]): Promise<ItemExtendedCost[]> {
+    return this.queryToPromiseCached<ItemExtendedCost>(
+      'getItemExtendedCost',
+      String(IDs.join(',')),
+      `SELECT * FROM item_extended_cost WHERE id IN (${IDs.join(',')})`,
     );
   }
 }
