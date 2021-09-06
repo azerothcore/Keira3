@@ -41,7 +41,7 @@
   "dependencies": {
     "@electron/remote": "1.2.1",
     "@types/electron-settings": "4.0.0",
-    "acorn": "8.4.1",
+    "acorn": "8.5.0",
     "electron-settings": "4.0.2",
     "mysql": "2.18.1",
     "ngx-toastr": "14.1.0",
