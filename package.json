@@ -69,7 +69,7 @@
     "@angular/platform-browser-dynamic": "12.2.5",
     "@angular/router": "12.2.5",
     "@fortawesome/fontawesome-free": "5.15.4",
-    "@swimlane/ngx-datatable": "19.0.0",
+    "@swimlane/ngx-datatable": "20.0.0",
     "@types/jasmine": "3.9.0",
     "@types/jasminewd2": "2.0.10",
     "@types/mocha": "9.0.0",
