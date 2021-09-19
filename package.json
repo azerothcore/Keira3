@@ -39,7 +39,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@electron/remote": "2.0.0",
+    "@electron/remote": "2.0.1",
     "@types/electron-settings": "4.0.0",
     "acorn": "8.5.0",
     "electron-settings": "4.0.2",
