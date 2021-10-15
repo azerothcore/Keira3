@@ -37,7 +37,7 @@ jobs:
       - name: Unit and Integration tests
         uses: nick-invision/retry@v2
         with:
-          max_attempts: 3
+          max_attempts: 6
           command: npm run test-ci
           timeout_minutes: 20
       - name: Build
