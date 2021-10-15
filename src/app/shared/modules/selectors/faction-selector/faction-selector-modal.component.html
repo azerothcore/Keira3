@@ -7,6 +7,9 @@
         <div class="form-group col-3">
           <input [formControlName]="'m_ID'" type="number" class="form-control form-control-sm" id="m_ID" placeholder="ID" />
         </div>
+        <div class="form-group col-3">
+          <input [formControlName]="'faction_name_id'" class="form-control form-control-sm" id="faction_name_id" placeholder="Faction" />
+        </div>
         <div class="form-group col-5">
           <input [formControlName]="'m_name_lang_1'" class="form-control form-control-sm" id="m_name_lang_1" placeholder="Faction Name" />
         </div>
@@ -38,6 +41,7 @@
           {{ row.m_ID }}
         </ng-template>
       </ngx-datatable-column>
+      <ngx-datatable-column name="Faction" prop="faction_name_id"></ngx-datatable-column>
       <ngx-datatable-column name="Faction Name" prop="m_name_lang_1"></ngx-datatable-column>
     </ngx-datatable>
   </div>
