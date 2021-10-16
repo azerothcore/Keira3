@@ -66,6 +66,7 @@ export class CreatureTemplate extends TableRow {
   HealthModifier: number = 1;
   ManaModifier: number = 1;
   ArmorModifier: number = 1;
+  ExperienceModifier: number = 1;
   RacialLeader: number = 0;
   movementId: number = 0;
   RegenHealth: number = 1;
