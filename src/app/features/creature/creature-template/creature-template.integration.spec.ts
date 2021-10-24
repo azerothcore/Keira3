@@ -32,11 +32,11 @@ describe('CreatureTemplate integration tests', () => {
     '`scale`, `rank`, `dmgschool`, `DamageModifier`, `BaseAttackTime`, `RangeAttackTime`, `BaseVariance`, `RangeVariance`, ' +
     '`unit_class`, `unit_flags`, `unit_flags2`, `dynamicflags`, `family`, `trainer_type`, `trainer_spell`, `trainer_class`, ' +
     '`trainer_race`, `type`, `type_flags`, `lootid`, `pickpocketloot`, `skinloot`, `PetSpellDataId`, `VehicleId`, `mingold`, ' +
-    '`maxgold`, `AIName`, `MovementType`, `InhabitType`, `HoverHeight`, `HealthModifier`, `ManaModifier`, `ArmorModifier`, ' +
+    '`maxgold`, `AIName`, `MovementType`, `InhabitType`, `HoverHeight`, `HealthModifier`, `ManaModifier`, `ArmorModifier`, `ExperienceModifier`, ' +
     '`RacialLeader`, `movementId`, `RegenHealth`, `mechanic_immune_mask`, `spell_school_immune_mask`, ' +
     '`flags_extra`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
     "(1234, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', '', 0, 1, 1, 0, 0, 0, 1, 1.14286, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, " +
-    "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, 3, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, '', 0);\n";
+    "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, 3, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, '', 0);\n";
 
   const originalEntity = new CreatureTemplate();
   originalEntity.entry = id;
@@ -86,10 +86,10 @@ describe('CreatureTemplate integration tests', () => {
         '`RangeVariance`, `unit_class`, `unit_flags`, `unit_flags2`, `dynamicflags`, `family`, ' +
         '`trainer_type`, `trainer_spell`, `trainer_class`, `trainer_race`, `type`, `type_flags`, ' +
         '`lootid`, `pickpocketloot`, `skinloot`, `PetSpellDataId`, `VehicleId`, `mingold`, `maxgold`, ' +
-        '`AIName`, `MovementType`, `InhabitType`, `HoverHeight`, `HealthModifier`, `ManaModifier`, `ArmorModifier`, `RacialLeader`, ' +
+        '`AIName`, `MovementType`, `InhabitType`, `HoverHeight`, `HealthModifier`, `ManaModifier`, `ArmorModifier`, `ExperienceModifier`, `RacialLeader`, ' +
         '`movementId`, `RegenHealth`, `mechanic_immune_mask`, `spell_school_immune_mask`, `flags_extra`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
         "(1234, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Shin', '', '', 0, 1, 1, 0, 0, 0, 1, 1.14286, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0," +
-        " 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, 3, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, '', 0);";
+        " 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, 3, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, '', 0);";
 
       querySpy.calls.reset();
 
@@ -131,8 +131,8 @@ describe('CreatureTemplate integration tests', () => {
         '`trainer_type` = 34, `trainer_spell` = 35, `trainer_class` = 36, `trainer_race` = 37, `type` = 38, `type_flags` = 39, ' +
         '`lootid` = 40, `pickpocketloot` = 41, `skinloot` = 42, `PetSpellDataId` = 43, `VehicleId` = 44, ' +
         "`mingold` = 45, `maxgold` = 46, `AIName` = '47', `MovementType` = 48, `InhabitType` = 49, `HoverHeight` = 50, " +
-        '`HealthModifier` = 51, `ManaModifier` = 52, `ArmorModifier` = 53, `RacialLeader` = 54, `movementId` = 55, `RegenHealth` = 56, ' +
-        "`mechanic_immune_mask` = 57, `spell_school_immune_mask` = 58, `flags_extra` = 59, `ScriptName` = '60' WHERE (`entry` = 1234);";
+        '`HealthModifier` = 51, `ManaModifier` = 52, `ArmorModifier` = 53, `ExperienceModifier` = 54, `RacialLeader` = 55, `movementId` = 56, `RegenHealth` = 57, ' +
+        "`mechanic_immune_mask` = 58, `spell_school_immune_mask` = 59, `flags_extra` = 60, `ScriptName` = '61' WHERE (`entry` = 1234);";
 
       querySpy.calls.reset();
 
