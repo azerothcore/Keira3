@@ -21,6 +21,7 @@ export class QuestTemplate extends TableRow {
   RewardNextQuest: number = 0;
   RewardXPDifficulty: number = 0;
   RewardMoney: number = 0;
+  RewardMoneyDifficulty: number = 0;
   RewardBonusMoney: number = 0;
   RewardDisplaySpell: number = 0;
   RewardSpell: number = 0;
