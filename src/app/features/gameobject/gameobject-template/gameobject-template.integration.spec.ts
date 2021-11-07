@@ -150,7 +150,7 @@ describe('GameobjectTemplate integration tests', () => {
       page.expectFullQueryToContain('35');
     });
 
-    it(
+    xit(
       'changing a value via SingleValueSelector should correctly work',
       waitForAsync(async () => {
         const field = 'type';

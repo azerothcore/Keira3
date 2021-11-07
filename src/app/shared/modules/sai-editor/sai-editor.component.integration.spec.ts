@@ -448,7 +448,7 @@ describe('SaiEditorComponent integration tests', () => {
       );
     });
 
-    it(
+    xit(
       'changing a value via FlagsSelector should correctly work',
       waitForAsync(async () => {
         const field = 'event_flags';

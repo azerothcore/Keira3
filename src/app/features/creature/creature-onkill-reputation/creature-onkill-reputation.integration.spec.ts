@@ -145,7 +145,7 @@ describe('CreatureOnkillReputation integration tests', () => {
       );
     });
 
-    it(
+    xit(
       'changing a value via SingleValueSelector should correctly work',
       waitForAsync(async () => {
         const field = 'MaxStanding1';
@@ -170,7 +170,7 @@ describe('CreatureOnkillReputation integration tests', () => {
       }),
     );
 
-    it(
+    xit(
       'changing a value via FactionSelector should correctly work',
       waitForAsync(async () => {
         const field = 'RewOnKillRepFaction1';

@@ -157,7 +157,7 @@ describe('CreatureTemplate integration tests', () => {
       page.expectFullQueryToContain('AC Developer');
     });
 
-    it(
+    xit(
       'changing a value via FlagsSelector should correctly work',
       waitForAsync(async () => {
         const field = 'unit_flags';

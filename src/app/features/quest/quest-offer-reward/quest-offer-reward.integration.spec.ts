@@ -172,7 +172,7 @@ describe('QuestOfferReward integration tests', () => {
       page.removeElement();
     });
 
-    it(
+    xit(
       'changing a value via SingleValueSelector should correctly work',
       waitForAsync(async () => {
         const { page } = setup(false);

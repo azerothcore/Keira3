@@ -177,7 +177,7 @@ describe('ItemTemplate integration tests', () => {
       page.expectFullQueryToContain('22');
     });
 
-    it(
+    xit(
       'changing a value via FlagsSelector should correctly work',
       waitForAsync(async () => {
         const field = 'Flags';
@@ -201,7 +201,7 @@ describe('ItemTemplate integration tests', () => {
       }),
     );
 
-    it(
+    xit(
       'changing a value via ItemEnchantmentSelector should correctly work',
       waitForAsync(async () => {
         const field = 'socketBonus';
@@ -225,7 +225,7 @@ describe('ItemTemplate integration tests', () => {
       }),
     );
 
-    it(
+    xit(
       'changing a value via HolidaySelector should correctly work',
       waitForAsync(async () => {
         const field = 'HolidayId';
@@ -249,7 +249,7 @@ describe('ItemTemplate integration tests', () => {
       }),
     );
 
-    it(
+    xit(
       'changing a value via ItemLimitCategorySelector should correctly work',
       waitForAsync(async () => {
         const field = 'ItemLimitCategory';
@@ -273,7 +273,7 @@ describe('ItemTemplate integration tests', () => {
       }),
     );
 
-    it(
+    xit(
       'changing a value via LanguageSelector should correctly work',
       waitForAsync(async () => {
         const field = 'LanguageID';

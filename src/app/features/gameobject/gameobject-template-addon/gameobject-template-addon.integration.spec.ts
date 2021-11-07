@@ -130,7 +130,7 @@ describe('GameobjectTemplateAddon integration tests', () => {
       page.expectFullQueryToContain('35');
     });
 
-    it(
+    xit(
       'changing a value via FlagsSelector should correctly work',
       waitForAsync(async () => {
         const field = 'flags';

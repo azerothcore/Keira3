@@ -254,7 +254,7 @@ describe('CreatureQueststarter integration tests', () => {
       page.removeElement();
     });
 
-    it(
+    xit(
       'changing a value via CreatureSelector should correctly work',
       waitForAsync(async () => {
         const { page, fixture } = setup(false);
