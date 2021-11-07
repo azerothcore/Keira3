@@ -31,6 +31,8 @@ src/**/*.js
 !.vscode/extensions.json
 
 # misc
+/.angular/cache
+src/coverage
 /.sass-cache
 /connect.lock
 /coverage
