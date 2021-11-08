@@ -203,36 +203,33 @@ describe('GameobjectQuestitem integration tests', () => {
       );
     });
 
-    it(
-      'combining add, edit and delete should correctly work',
-      waitForAsync(async () => {
-        page.addNewRow();
-        expect(page.getEditorTableRowsCount()).toBe(4);
+    it('combining add, edit and delete should correctly work', () => {
+      page.addNewRow();
+      expect(page.getEditorTableRowsCount()).toBe(4);
 
-        page.clickRowOfDatatable(1);
-        page.setInputValueById('ItemId', 10);
-        expect(page.getEditorTableRowsCount()).toBe(4);
+      page.clickRowOfDatatable(1);
+      page.setInputValueById('ItemId', 10);
+      expect(page.getEditorTableRowsCount()).toBe(4);
 
-        page.deleteRow(2);
-        expect(page.getEditorTableRowsCount()).toBe(3);
+      page.deleteRow(2);
+      expect(page.getEditorTableRowsCount()).toBe(3);
 
-        fixture.detectChanges();
+      fixture.detectChanges();
 
-        page.expectDiffQueryToContain(
-          'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234) AND (`Idx` IN (1, 2, 3));\n' +
-            'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
-            '(1234, 1, 10, 0),\n' +
-            '(1234, 3, 0, 0);',
-        );
-        page.expectFullQueryToContain(
-          'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234);\n' +
-            'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
-            '(1234, 0, 0, 0),\n' +
-            '(1234, 1, 10, 0),\n' +
-            '(1234, 3, 0, 0);',
-        );
-      }),
-    );
+      page.expectDiffQueryToContain(
+        'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234) AND (`Idx` IN (1, 2, 3));\n' +
+          'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 1, 10, 0),\n' +
+          '(1234, 3, 0, 0);',
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234);\n' +
+          'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 0, 0, 0),\n' +
+          '(1234, 1, 10, 0),\n' +
+          '(1234, 3, 0, 0);',
+      );
+    });
 
     it('using the same row id for multiple rows should correctly show an error', () => {
       page.clickRowOfDatatable(2);
