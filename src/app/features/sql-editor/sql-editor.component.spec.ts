@@ -71,9 +71,8 @@ describe('SqlEditorComponent', () => {
     expect(page.getDatatableCell(1, 2).innerText).toEqual(mockRows[1].col3);
   });
 
-  it('should allow the user to insert a custom query', async () => {
+  it('should allow the user to insert a custom query', () => {
     const { page, mysqlQueryService } = setup();
-    await page.whenStable();
     const customQuery = 'SELECT col FROM table WHERE col > 10';
 
     page.setInputValue(page.code, customQuery);

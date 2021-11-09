@@ -22,13 +22,6 @@ class ItemTemplatePage extends EditorPageObject<ItemTemplateComponent> {
 }
 
 describe('ItemTemplate integration tests', () => {
-  let component: ItemTemplateComponent;
-  let fixture: ComponentFixture<ItemTemplateComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: ItemHandlerService;
-  let page: ItemTemplatePage;
-
   const id = 1234;
   const expectedFullCreateQuery =
     'DELETE FROM `item_template` WHERE (`entry` = 1234);\n' +
@@ -69,33 +62,81 @@ describe('ItemTemplate integration tests', () => {
     }),
   );
 
+  const mockItemNameById = 'mockItemNameById';
+  const mockGetSpellNameById = 'mockGetSpellNameById';
+  const mockGetSpellDescriptionById = 'mockGetSpellDescriptionById';
+  const mockGetFactionNameById = 'mockGetFactionNameById';
+  const mockGetMapNameById = 'mockGetMapNameById';
+  const mockGetAreaNameById = 'mockGetAreaNameById';
+  const mockGetEventNameByHolidayId = 'mockGetEventNameByHolidayId';
+  const mockGetSocketBonusById = 'mockgetFactionNameByIdGetSocketBonusById';
+
+  const lockData: Lock = {
+    id: 1,
+    type1: 1,
+    type2: 1,
+    type3: 2,
+    type4: 2,
+    type5: 0,
+    properties1: 1,
+    properties2: 0,
+    properties3: 1,
+    properties4: 0,
+    properties5: 0,
+    reqSkill1: 0,
+    reqSkill2: 0,
+    reqSkill3: 1,
+    reqSkill4: 0,
+    reqSkill5: 0,
+  };
+
   function setup(creatingNew: boolean) {
-    handlerService = TestBed.inject(ItemHandlerService);
+    const handlerService = TestBed.inject(ItemHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of());
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
 
-    fixture = TestBed.createComponent(ItemTemplateComponent);
-    component = fixture.componentInstance;
-    page = new ItemTemplatePage(fixture);
+    const fixture = TestBed.createComponent(ItemTemplateComponent);
+    const component = fixture.componentInstance;
+    const page = new ItemTemplatePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+
+    const mysqlQueryService = TestBed.inject(MysqlQueryService);
+    spyOn(mysqlQueryService, 'getItemNameById').and.callFake((i) => of(mockItemNameById).toPromise());
+    spyOn(mysqlQueryService, 'queryValue').and.callFake((i) => of([234] as any));
+
+    const sqliteQueryService = TestBed.inject(SqliteQueryService);
+    spyOn(sqliteQueryService, 'getSpellNameById').and.callFake((i) => of(mockGetSpellNameById + i).toPromise());
+    spyOn(sqliteQueryService, 'getSpellDescriptionById').and.callFake((i) => of(mockGetSpellDescriptionById + i).toPromise());
+    spyOn(sqliteQueryService, 'getFactionNameById').and.callFake((i) => of(mockGetFactionNameById + i).toPromise());
+    spyOn(sqliteQueryService, 'getMapNameById').and.callFake((i) => of(mockGetMapNameById + i).toPromise());
+    spyOn(sqliteQueryService, 'getAreaNameById').and.callFake((i) => of(mockGetAreaNameById + i).toPromise());
+    spyOn(sqliteQueryService, 'getEventNameByHolidayId').and.callFake((i) => of(mockGetEventNameByHolidayId + i).toPromise());
+    spyOn(sqliteQueryService, 'getSocketBonusById').and.callFake((i) => of(mockGetSocketBonusById + i).toPromise());
+    spyOn(sqliteQueryService, 'getLockById').and.callFake((i) => of([lockData]).toPromise());
+    spyOn(sqliteQueryService, 'getSkillNameById').and.callFake((i) => of('profession').toPromise());
+    spyOn(sqliteQueryService, 'getIconByItemDisplayId').and.callFake((i) => of('inv_axe_60'));
+    spyOn(sqliteQueryService, 'queryValue').and.callFake((i) => of('inv_axe_60' as any));
+    spyOn(sqliteQueryService, 'query').and.callFake((i) => of([{ name: 'test' }] as any));
+
+    return { handlerService, queryService, querySpy, fixture, component, page, mysqlQueryService, sqliteQueryService };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
-
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
     it('should correctly update the unsaved status', () => {
+      const { page, handlerService } = setup(true);
       const field = 'Quality';
       expect(handlerService.isItemTemplateUnsaved).toBe(false);
       page.setInputValueById(field, 3);
@@ -105,6 +146,7 @@ describe('ItemTemplate integration tests', () => {
     });
 
     it('changing a property and executing the query should correctly work', () => {
+      const { page, querySpy } = setup(true);
       querySpy.calls.reset();
 
       page.setInputValueById('name', 'Shin');
@@ -118,15 +160,15 @@ describe('ItemTemplate integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
     it('changing all properties and executing the query should correctly work', () => {
+      const { page, querySpy } = setup(false);
       const expectedQuery =
         'UPDATE `item_template` SET ' +
         "`subclass` = 1, `SoundOverrideSubclass` = 2, `name` = '3', `displayid` = 4, `Quality` = 5, `Flags` = 6, `FlagsExtra` = 7, " +
@@ -165,6 +207,7 @@ describe('ItemTemplate integration tests', () => {
     });
 
     it('changing values should correctly update the queries', () => {
+      const { page } = setup(false);
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
 
       page.setInputValueById('name', 'Shin');
@@ -180,6 +223,7 @@ describe('ItemTemplate integration tests', () => {
     xit(
       'changing a value via FlagsSelector should correctly work',
       waitForAsync(async () => {
+        const { page } = setup(false);
         const field = 'Flags';
         page.clickElement(page.getSelectorBtn(field));
 
@@ -204,6 +248,7 @@ describe('ItemTemplate integration tests', () => {
     xit(
       'changing a value via ItemEnchantmentSelector should correctly work',
       waitForAsync(async () => {
+        const { page, fixture } = setup(false);
         const field = 'socketBonus';
         const sqliteQueryService = TestBed.inject(SqliteQueryService);
         spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock Enchantment', conditionId: 456 }]));
@@ -228,6 +273,7 @@ describe('ItemTemplate integration tests', () => {
     xit(
       'changing a value via HolidaySelector should correctly work',
       waitForAsync(async () => {
+        const { page, fixture } = setup(false);
         const field = 'HolidayId';
         const sqliteQueryService = TestBed.inject(SqliteQueryService);
         spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock Holiday' }]));
@@ -252,6 +298,7 @@ describe('ItemTemplate integration tests', () => {
     xit(
       'changing a value via ItemLimitCategorySelector should correctly work',
       waitForAsync(async () => {
+        const { page, fixture } = setup(false);
         const field = 'ItemLimitCategory';
         const sqliteQueryService = TestBed.inject(SqliteQueryService);
         spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock ItemLimitCategory', count: 2, isGem: 1 }]));
@@ -276,6 +323,7 @@ describe('ItemTemplate integration tests', () => {
     xit(
       'changing a value via LanguageSelector should correctly work',
       waitForAsync(async () => {
+        const { page, fixture } = setup(false);
         const field = 'LanguageID';
         const sqliteQueryService = TestBed.inject(SqliteQueryService);
         spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock LanguageID' }]));
@@ -299,6 +347,7 @@ describe('ItemTemplate integration tests', () => {
 
     describe('the subclass field', () => {
       it('should show the selector button only if class has a valid value', () => {
+        const { page } = setup(false);
         page.setInputValueById('class', 100);
         expect(page.getSelectorBtn('subclass', false)).toBeFalsy();
 
@@ -316,6 +365,7 @@ describe('ItemTemplate integration tests', () => {
       });
 
       it('should show its values according to the value of class', () => {
+        const { page } = setup(false);
         page.setInputValueById('class', 3);
         page.clickElement(page.getSelectorBtn('subclass'));
 
@@ -325,58 +375,8 @@ describe('ItemTemplate integration tests', () => {
     });
 
     describe('item preview', () => {
-      const mockItemNameById = 'mockItemNameById';
-      const mockGetSpellNameById = 'mockGetSpellNameById';
-      const mockGetSpellDescriptionById = 'mockGetSpellDescriptionById';
-      const mockGetFactionNameById = 'mockGetFactionNameById';
-      const mockGetMapNameById = 'mockGetMapNameById';
-      const mockGetAreaNameById = 'mockGetAreaNameById';
-      const mockGetEventNameByHolidayId = 'mockGetEventNameByHolidayId';
-      const mockGetSocketBonusById = 'mockgetFactionNameByIdGetSocketBonusById';
-
-      const lockData: Lock = {
-        id: 1,
-        type1: 1,
-        type2: 1,
-        type3: 2,
-        type4: 2,
-        type5: 0,
-        properties1: 1,
-        properties2: 0,
-        properties3: 1,
-        properties4: 0,
-        properties5: 0,
-        reqSkill1: 0,
-        reqSkill2: 0,
-        reqSkill3: 1,
-        reqSkill4: 0,
-        reqSkill5: 0,
-      };
-
-      let mysqlQueryService: MysqlQueryService;
-      let sqliteQueryService: SqliteQueryService;
-
-      beforeEach(() => {
-        mysqlQueryService = TestBed.inject(MysqlQueryService);
-        spyOn(mysqlQueryService, 'getItemNameById').and.callFake((i) => of(mockItemNameById).toPromise());
-        spyOn(mysqlQueryService, 'queryValue').and.callFake((i) => of([234] as any));
-
-        sqliteQueryService = TestBed.inject(SqliteQueryService);
-        spyOn(sqliteQueryService, 'getSpellNameById').and.callFake((i) => of(mockGetSpellNameById + i).toPromise());
-        spyOn(sqliteQueryService, 'getSpellDescriptionById').and.callFake((i) => of(mockGetSpellDescriptionById + i).toPromise());
-        spyOn(sqliteQueryService, 'getFactionNameById').and.callFake((i) => of(mockGetFactionNameById + i).toPromise());
-        spyOn(sqliteQueryService, 'getMapNameById').and.callFake((i) => of(mockGetMapNameById + i).toPromise());
-        spyOn(sqliteQueryService, 'getAreaNameById').and.callFake((i) => of(mockGetAreaNameById + i).toPromise());
-        spyOn(sqliteQueryService, 'getEventNameByHolidayId').and.callFake((i) => of(mockGetEventNameByHolidayId + i).toPromise());
-        spyOn(sqliteQueryService, 'getSocketBonusById').and.callFake((i) => of(mockGetSocketBonusById + i).toPromise());
-        spyOn(sqliteQueryService, 'getLockById').and.callFake((i) => of([lockData]).toPromise());
-        spyOn(sqliteQueryService, 'getSkillNameById').and.callFake((i) => of('profession').toPromise());
-        spyOn(sqliteQueryService, 'getIconByItemDisplayId').and.callFake((i) => of('inv_axe_60'));
-        spyOn(sqliteQueryService, 'queryValue').and.callFake((i) => of('inv_axe_60' as any));
-        spyOn(sqliteQueryService, 'query').and.callFake((i) => of([{ name: 'test' }] as any));
-      });
-
       it('all fields', fakeAsync(() => {
+        const { page, fixture } = setup(false);
         page.setInputValueById('class', 1);
         page.setInputValueById('subclass', 2);
         page.setInputValueById('SoundOverrideSubclass', 3);

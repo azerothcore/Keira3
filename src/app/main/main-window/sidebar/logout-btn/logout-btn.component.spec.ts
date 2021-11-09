@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import Spy = jasmine.Spy;
 
@@ -15,23 +15,25 @@ import { closeModalsAfterEach } from '@keira-testing/test-helpers';
 class TestModule {}
 
 describe('LogoutBtnComponent', () => {
-  let component: LogoutBtnComponent;
-  let fixture: ComponentFixture<LogoutBtnComponent>;
-
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [LogoutBtnComponent],
         imports: [ModalModule.forRoot(), TestModule],
       }).compileComponents();
-
-      fixture = TestBed.createComponent(LogoutBtnComponent);
-      component = fixture.componentInstance;
-      fixture.detectChanges();
     }),
   );
 
+  function setup() {
+    const fixture = TestBed.createComponent(LogoutBtnComponent);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    return { fixture, component };
+  }
+
   it('openModalConfirm() should correctly work', () => {
+    const { fixture, component } = setup();
     const showSpy = spyOn(TestBed.inject(BsModalService), 'show').and.callThrough();
     const logoutSpy = spyOn(component, 'logout');
 
@@ -46,6 +48,7 @@ describe('LogoutBtnComponent', () => {
   });
 
   it('logout() should correctly work', () => {
+    const { component } = setup();
     const locationServiceSpy: Spy = spyOn(TestBed.inject(LocationService), 'reload');
     component.logout();
     expect(locationServiceSpy).toHaveBeenCalledTimes(1);
