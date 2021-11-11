@@ -200,7 +200,7 @@ describe('QuestTemplateAddon integration tests', () => {
       page.removeElement();
     });
 
-    it(
+    xit(
       'changing a value via FlagsSelector should correctly work',
       waitForAsync(async () => {
         const { page } = setup(false);
@@ -231,7 +231,7 @@ describe('QuestTemplateAddon integration tests', () => {
       }),
     );
 
-    it(
+    xit(
       'changing a value via SpellSelector should correctly work',
       waitForAsync(async () => {
         const { page } = setup(false);
@@ -264,7 +264,7 @@ describe('QuestTemplateAddon integration tests', () => {
       }),
     );
 
-    it(
+    xit(
       'changing a value via QuestSelector should correctly work',
       waitForAsync(async () => {
         const { page, fixture } = setup(false);

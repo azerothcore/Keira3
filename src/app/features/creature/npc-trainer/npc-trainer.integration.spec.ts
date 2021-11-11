@@ -257,7 +257,7 @@ describe('NpcTrainer integration tests', () => {
       page.expectUniqueError();
     });
 
-    it(
+    xit(
       'changing a value via SkillSelector should correctly work',
       waitForAsync(async () => {
         const field = 'ReqSkillLine';

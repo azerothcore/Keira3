@@ -4,7 +4,7 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 export function closeModalsAfterEach(upToLevel: number = 1) {
   afterEach(() => {
     const modalService: BsModalService = TestBed.inject(BsModalService);
-    modalService.hide();
+    modalService?.hide();
   });
 }
 

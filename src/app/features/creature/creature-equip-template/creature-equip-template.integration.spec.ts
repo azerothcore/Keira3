@@ -132,7 +132,7 @@ describe('CreatureEquipTemplate integration tests', () => {
       );
     });
 
-    it(
+    xit(
       'changing a value via ItemSelector should correctly work',
       waitForAsync(async () => {
         //  note: previously disabled because of:

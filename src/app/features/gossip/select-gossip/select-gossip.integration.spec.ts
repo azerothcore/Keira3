@@ -1,10 +1,9 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { ToastrModule } from 'ngx-toastr';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import Spy = jasmine.Spy;
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SelectGossipComponent } from './select-gossip.component';
@@ -19,14 +18,6 @@ class SelectGossipComponentPage extends SelectPageObject<SelectGossipComponent> 
 }
 
 describe('SelectGossip integration tests', () => {
-  let component: SelectGossipComponent;
-  let fixture: ComponentFixture<SelectGossipComponent>;
-  let selectService: SelectGossipService;
-  let page: SelectGossipComponentPage;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let navigateSpy: Spy;
-
   const value = 1200;
 
   beforeEach(
@@ -38,23 +29,26 @@ describe('SelectGossip integration tests', () => {
     }),
   );
 
-  beforeEach(() => {
-    navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
+  function setup() {
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
 
-    selectService = TestBed.inject(SelectGossipService);
+    const selectService = TestBed.inject(SelectGossipService);
 
-    fixture = TestBed.createComponent(SelectGossipComponent);
-    page = new SelectGossipComponentPage(fixture);
-    component = fixture.componentInstance;
+    const fixture = TestBed.createComponent(SelectGossipComponent);
+    const page = new SelectGossipComponentPage(fixture);
+    const component = fixture.componentInstance;
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
-  });
+
+    return { navigateSpy, queryService, querySpy, selectService, fixture, page, component };
+  }
 
   it(
     'should correctly initialise',
     waitForAsync(async () => {
+      const { fixture, page, querySpy, component } = setup();
       await fixture.whenStable();
       expect(page.createInput.value).toEqual(`${component.customStartingId}`);
       page.expectNewEntityFree();
@@ -66,6 +60,7 @@ describe('SelectGossip integration tests', () => {
   it(
     'should correctly behave when inserting and selecting free id',
     waitForAsync(async () => {
+      const { fixture, page, querySpy, navigateSpy } = setup();
       await fixture.whenStable();
       querySpy.calls.reset();
       querySpy.and.returnValue(of([]));
@@ -87,9 +82,10 @@ describe('SelectGossip integration tests', () => {
   it(
     'should correctly behave when inserting an existing entity',
     waitForAsync(async () => {
+      const { fixture, page, querySpy } = setup();
       await fixture.whenStable();
       querySpy.calls.reset();
-      querySpy.and.returnValue(of(['mock value']));
+      querySpy.and.returnValue(of(['mock value'] as any));
 
       page.setInputValue(page.createInput, value);
 
@@ -123,6 +119,7 @@ describe('SelectGossip integration tests', () => {
     },
   ]) {
     it(`searching an existing entity should correctly work [${testId}]`, () => {
+      const { page, querySpy } = setup();
       querySpy.calls.reset();
       // Note: this is different than in other editors
       if (MenuID) {
@@ -143,6 +140,7 @@ describe('SelectGossip integration tests', () => {
   }
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
+    const { navigateSpy, page, querySpy, component } = setup();
     const results: GossipMenu[] = [
       { MenuID: 1, TextID: 1 },
       { MenuID: 1, TextID: 2 },

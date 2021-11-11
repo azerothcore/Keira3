@@ -178,6 +178,6 @@ describe('QueryOutputComponent', () => {
       expect(host.editorService.reloadSameEntity).toHaveBeenCalledTimes(0);
     });
 
-    closeModalsAfterEach();
+    // closeModalsAfterEach();
   });
 });

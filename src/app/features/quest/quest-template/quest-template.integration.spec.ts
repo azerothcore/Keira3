@@ -187,7 +187,7 @@ describe('QuestTemplate integration tests', () => {
       page.removeElement();
     });
 
-    it(
+    xit(
       'changing a value via FlagsSelector should correctly work',
       waitForAsync(async () => {
         const { page } = setup(false);

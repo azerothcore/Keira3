@@ -6,6 +6,6 @@ export abstract class SubscriptionHandler implements OnDestroy {
   protected subscriptions: Subscription[] = [];
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+    this.subscriptions.forEach((subscription) => subscription?.unsubscribe());
   }
 }

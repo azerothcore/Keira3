@@ -1,9 +1,8 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { ToastrModule } from 'ngx-toastr';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import Spy = jasmine.Spy;
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SAI_TYPES, SmartScripts } from '@keira-types/smart-scripts.type';
@@ -15,13 +14,6 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 class SaiGameobjectPage extends MultiRowEditorPageObject<SaiGameobjectComponent> {}
 
 describe('SaiGameobjectComponent integration tests', () => {
-  let component: SaiGameobjectComponent;
-  let fixture: ComponentFixture<SaiGameobjectComponent>;
-  let handlerService: SaiGameobjectHandlerService;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let page: SaiGameobjectPage;
-
   const sourceType = SAI_TYPES.SAI_TYPE_GAMEOBJECT;
   const id = 1234;
 
@@ -45,7 +37,7 @@ describe('SaiGameobjectComponent integration tests', () => {
 
   function setup(creatingNew: boolean, hasTemplateQuery = false, st = sourceType) {
     const selected = { source_type: st, entryorguid: id };
-    handlerService = TestBed.inject(SaiGameobjectHandlerService);
+    const handlerService = TestBed.inject(SaiGameobjectHandlerService);
     handlerService['_selected'] = JSON.stringify(selected);
     handlerService.isNew = creatingNew;
 
@@ -53,22 +45,23 @@ describe('SaiGameobjectComponent integration tests', () => {
       handlerService['_templateQuery'] = '-- Mock template query';
     }
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of());
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
-    fixture = TestBed.createComponent(SaiGameobjectComponent);
-    component = fixture.componentInstance;
-    page = new SaiGameobjectPage(fixture);
+    const fixture = TestBed.createComponent(SaiGameobjectComponent);
+    const component = fixture.componentInstance;
+    const page = new SaiGameobjectPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+
+    return { handlerService, queryService, querySpy, fixture, component, page };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
-
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.addNewRowBtn.disabled).toBe(false);
@@ -104,6 +97,7 @@ describe('SaiGameobjectComponent integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
+      const { page } = setup(true);
       const gameobjectHandlerService = TestBed.inject(GameobjectHandlerService);
       expect(gameobjectHandlerService.isGameobjectSaiUnsaved).toBe(false);
       page.addNewRow();
@@ -114,9 +108,8 @@ describe('SaiGameobjectComponent integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(

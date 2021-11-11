@@ -389,7 +389,7 @@ describe('GameobjectSpawn integration tests', () => {
       page.expectUniqueError();
     });
 
-    it(
+    xit(
       'changing a value via AreaSelector should correctly work',
       waitForAsync(async () => {
         const field = 'areaId';

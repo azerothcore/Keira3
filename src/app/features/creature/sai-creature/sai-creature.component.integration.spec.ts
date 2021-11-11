@@ -15,13 +15,6 @@ import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 class SaiCreaturePage extends MultiRowEditorPageObject<SaiCreatureComponent> {}
 
 describe('SaiCreatureComponent integration tests', () => {
-  let component: SaiCreatureComponent;
-  let fixture: ComponentFixture<SaiCreatureComponent>;
-  let handlerService: SaiCreatureHandlerService;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let page: SaiCreaturePage;
-
   const sourceType = SAI_TYPES.SAI_TYPE_CREATURE;
   const id = 1234;
 
@@ -45,7 +38,7 @@ describe('SaiCreatureComponent integration tests', () => {
 
   function setup(creatingNew: boolean, hasTemplateQuery = false, st = sourceType) {
     const selected = { source_type: st, entryorguid: id };
-    handlerService = TestBed.inject(SaiCreatureHandlerService);
+    const handlerService = TestBed.inject(SaiCreatureHandlerService);
     handlerService['_selected'] = JSON.stringify(selected);
     handlerService.isNew = creatingNew;
 
@@ -53,22 +46,23 @@ describe('SaiCreatureComponent integration tests', () => {
       handlerService['_templateQuery'] = '-- Mock template query';
     }
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of());
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of());
 
     spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
-    fixture = TestBed.createComponent(SaiCreatureComponent);
-    component = fixture.componentInstance;
-    page = new SaiCreaturePage(fixture);
+    const fixture = TestBed.createComponent(SaiCreatureComponent);
+    const component = fixture.componentInstance;
+    const page = new SaiCreaturePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+
+    return { handlerService, queryService, querySpy, fixture, component, page };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
-
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.addNewRowBtn.disabled).toBe(false);
@@ -104,6 +98,7 @@ describe('SaiCreatureComponent integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
+      const { page } = setup(true);
       const creatureHandlerService = TestBed.inject(CreatureHandlerService);
       expect(creatureHandlerService.isCreatureSaiUnsaved).toBe(false);
       page.addNewRow();
@@ -114,9 +109,8 @@ describe('SaiCreatureComponent integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(
