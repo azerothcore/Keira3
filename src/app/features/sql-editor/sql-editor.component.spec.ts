@@ -102,10 +102,9 @@ describe('SqlEditorComponent', () => {
     expect(page.errorElement.innerHTML).toContain(`${error.errno}`);
   });
 
-  it('should have no colums if the result is an empty set', async () => {
+  it('should have no colums if the result is an empty set', () => {
     const { page, mysqlQueryService, component } = setup();
     (mysqlQueryService.query as Spy).and.returnValue(of([]));
-    await page.whenStable();
 
     page.clickElement(page.executeBtn);
 

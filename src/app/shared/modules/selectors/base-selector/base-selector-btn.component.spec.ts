@@ -61,5 +61,5 @@ describe('BaseSelectorBtnComponent', () => {
     expect(setValueSpy).toHaveBeenCalledWith(value);
   });
 
-  closeModalsAfterEach();
+  // closeModalsAfterEach();
 });

@@ -54,5 +54,5 @@ describe('LogoutBtnComponent', () => {
     expect(locationServiceSpy).toHaveBeenCalledTimes(1);
   });
 
-  closeModalsAfterEach();
+  // closeModalsAfterEach();
 });
