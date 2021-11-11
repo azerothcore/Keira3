@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { Component, ViewChild } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FormGroup } from 'ngx-typesafe-forms';
@@ -60,13 +60,15 @@ describe('SpellDbcBaseComponent', () => {
   ];
   const createMockVal = (field: string): number => field.length;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [TestHostComponent, SpellDbcBaseComponent],
-      imports: [ModalModule.forRoot(), ToastrModule.forRoot(), TooltipModule.forRoot(), SpellDbcModule, RouterTestingModule],
-      providers: [SpellHandlerService],
-    }).compileComponents();
-  });
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [TestHostComponent, SpellDbcBaseComponent],
+        imports: [ModalModule.forRoot(), ToastrModule.forRoot(), TooltipModule.forRoot(), SpellDbcModule, RouterTestingModule],
+        providers: [SpellHandlerService],
+      }).compileComponents();
+    }),
+  );
 
   const setup = () => {
     const fixture = TestBed.createComponent(TestHostComponent);

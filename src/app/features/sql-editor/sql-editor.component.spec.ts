@@ -82,7 +82,7 @@ describe('SqlEditorComponent', () => {
     expect(mysqlQueryService.query).toHaveBeenCalledTimes(1);
   });
 
-  it('should show an error if the query fails', async () => {
+  it('should show an error if the query fails', () => {
     const { page, mysqlQueryService } = setup();
     const error = {
       code: 'some error happened',
@@ -91,8 +91,6 @@ describe('SqlEditorComponent', () => {
       sqlState: 'some SQL state',
     } as MysqlError;
     (mysqlQueryService.query as Spy).and.returnValue(throwError(error));
-
-    await page.whenStable();
 
     page.clickElement(page.executeBtn);
 
@@ -123,7 +121,7 @@ describe('SqlEditorComponent', () => {
     expect(page.affectedRows.innerText).toContain(message);
   });
 
-  it('should cut the columns amount when there are too many', async () => {
+  it('should cut the columns amount when there are too many', () => {
     const { page, mysqlQueryService, component } = setup();
     (mysqlQueryService.query as Spy).and.returnValue(
       of([
@@ -152,7 +150,6 @@ describe('SqlEditorComponent', () => {
         },
       ]),
     );
-    await page.whenStable();
 
     page.clickElement(page.executeBtn);
 
