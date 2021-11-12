@@ -68,7 +68,7 @@ describe('QuestTemplateAddon integration tests', () => {
 
     const sqliteQueryService = TestBed.inject(SqliteQueryService);
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of());
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
     spyOn(sqliteQueryService, 'query').and.returnValue(of([{ ID: 123, spellName: 'Mock Spell' }]));
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
@@ -120,9 +120,10 @@ describe('QuestTemplateAddon integration tests', () => {
       querySpy.calls.reset();
 
       page.setInputValueById('MaxLevel', 33);
+      page.expectFullQueryToContain(expectedQuery);
+
       page.clickExecuteQuery();
 
-      page.expectFullQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
       page.removeElement();
@@ -166,9 +167,9 @@ describe('QuestTemplateAddon integration tests', () => {
       querySpy.calls.reset();
 
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
-      page.clickExecuteQuery();
-
       page.expectDiffQueryToContain(expectedQuery);
+
+      page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(2); // 2 because the preview also calls it
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
       page.removeElement();

@@ -45,7 +45,7 @@ describe('QuestRequestItems integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of());
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
     // by default the other editor services should not be initialised, because the selectAll would return the wrong types for them
@@ -93,9 +93,10 @@ describe('QuestRequestItems integration tests', () => {
       querySpy.calls.reset();
 
       page.setInputValueById('EmoteOnComplete', 33);
+      page.expectFullQueryToContain(expectedQuery);
+
       page.clickExecuteQuery();
 
-      page.expectFullQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
       page.removeElement();
@@ -135,9 +136,9 @@ describe('QuestRequestItems integration tests', () => {
       querySpy.calls.reset();
 
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
-      page.clickExecuteQuery();
-
       page.expectDiffQueryToContain(expectedQuery);
+
+      page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
       page.removeElement();

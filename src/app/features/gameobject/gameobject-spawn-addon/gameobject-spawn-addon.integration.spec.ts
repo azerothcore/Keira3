@@ -40,7 +40,7 @@ describe('GameobjectSpawnAddon integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of());
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
 
     spyOn(TestBed.inject(GameobjectSpawnAddonService), 'selectQuery').and.returnValue(
       of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]),

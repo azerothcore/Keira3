@@ -51,7 +51,7 @@ describe('PickpocketingLootTemplate integration tests', () => {
     handlerService.isNew = creatingNew;
 
     queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of());
+    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
     spyOn(queryService, 'queryValue').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
@@ -108,9 +108,9 @@ describe('PickpocketingLootTemplate integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(3);
-      page.clickExecuteQuery();
-
       page.expectDiffQueryToContain(expectedQuery);
+
+      page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });

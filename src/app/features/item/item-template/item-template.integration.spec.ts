@@ -96,7 +96,7 @@ describe('ItemTemplate integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of());
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
 
@@ -199,9 +199,9 @@ describe('ItemTemplate integration tests', () => {
       querySpy.calls.reset();
 
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
-      page.clickExecuteQuery();
-
       page.expectDiffQueryToContain(expectedQuery);
+
+      page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });

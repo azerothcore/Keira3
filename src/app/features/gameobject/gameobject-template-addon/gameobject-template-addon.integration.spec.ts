@@ -51,7 +51,7 @@ describe('GameobjectTemplateAddon integration tests', () => {
     handlerService.isNew = creatingNew;
 
     queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of());
+    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
 
@@ -93,9 +93,10 @@ describe('GameobjectTemplateAddon integration tests', () => {
       querySpy.calls.reset();
 
       page.setInputValueById('faction', '35');
+      page.expectFullQueryToContain(expectedQuery);
+
       page.clickExecuteQuery();
 
-      page.expectFullQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
@@ -117,9 +118,9 @@ describe('GameobjectTemplateAddon integration tests', () => {
       querySpy.calls.reset();
 
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
-      page.clickExecuteQuery();
-
       page.expectDiffQueryToContain(expectedQuery);
+
+      page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
