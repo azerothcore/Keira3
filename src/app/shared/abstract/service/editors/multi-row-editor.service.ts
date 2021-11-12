@@ -1,10 +1,10 @@
-import { distinctUntilChanged } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 
 import { Class, TableRow } from '@keira-types/general';
 import { EditorService } from './editor.service';
 import { HandlerService } from '../handlers/handler.service';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { distinctUntilChanged } from 'rxjs';
 
 export abstract class MultiRowEditorService<T extends TableRow> extends EditorService<T> {
   protected FIRST_ROW_START_VALUE = 0;

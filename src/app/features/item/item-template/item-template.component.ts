@@ -20,11 +20,11 @@ import { ITEM_SHEAT } from '@keira-constants/options/item-sheath';
 import { STAT_TYPE } from '@keira-constants/options/stat-type';
 import { TOTEM_CATEGORY } from '@keira-constants/options/totem-category';
 import { ItemTemplate } from '@keira-types/item-template.type';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemPreviewService } from './item-preview.service';
 import { ItemTemplateService } from './item-template.service';
 import { PVP_RANK } from '@keira-shared/constants/options/item-honorrank';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'keira-item-template',
