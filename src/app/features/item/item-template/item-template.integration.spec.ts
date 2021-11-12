@@ -150,10 +150,11 @@ describe('ItemTemplate integration tests', () => {
       querySpy.calls.reset();
 
       page.setInputValueById('name', 'Shin');
-      page.clickExecuteQuery();
-
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('Shin');
+
+      page.clickExecuteQuery();
+
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain('Shin');
     });
