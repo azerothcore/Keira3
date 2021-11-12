@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [16]
-        os: [ubuntu-20.04, ubuntu-18.04, macos-11]
+        os: [windows-2019]
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }}-node-${{ matrix.node-version }}
 
@@ -42,8 +42,3 @@ jobs:
           timeout_minutes: 20
       - name: Build
         run: npm run build:prod
-      - name: End-to-End tests
-        uses: GabrielBB/xvfb-action@v1
-        with:
-          run: npm run e2e
-
