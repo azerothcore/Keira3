@@ -41,8 +41,8 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
     const query = 'SELECT * FROM version';
 
     this.subscriptions.push(
-      this.queryService.query<VersionRow>(query).subscribe(
-        (data) => {
+      this.queryService.query<VersionRow>(query).subscribe({
+        next: (data) => {
           if (data && data.length > 0) {
             this.coreVersions = data[0];
 
@@ -53,19 +53,19 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
             console.error(`Query ${query} produced no results: ${data}`);
           }
         },
-        (error) => {
+        error: (error) => {
           this.error = true;
           console.error(error);
         },
-      ),
+      }),
     );
   }
 
   private getWorldDbVersion() {
     const query = 'SELECT * FROM version_db_world';
     this.subscriptions.push(
-      this.queryService.query<VersionDbRow>(query).subscribe(
-        (data) => {
+      this.queryService.query<VersionDbRow>(query).subscribe({
+        next: (data) => {
           if (data && data.length > 0) {
             const keys = Object.keys(data[0]);
             this.dbWorldVersion = keys[2];
@@ -73,11 +73,11 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
             console.error(`Query ${query} produced no results: ${data}`);
           }
         },
-        (error) => {
+        error: (error) => {
           this.error = true;
           console.error(error);
         },
-      ),
+      }),
     );
   }
 

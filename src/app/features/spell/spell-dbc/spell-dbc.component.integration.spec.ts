@@ -41,7 +41,7 @@ describe('SpellDbc integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of());
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
     spyOn(queryService, 'queryValue').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
@@ -80,10 +80,11 @@ describe('SpellDbc integration tests', () => {
 
       const value = 12135;
       page.setInputValueById('Category', value);
-      page.clickExecuteQuery();
-
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain(String(value));
+
+      page.clickExecuteQuery();
+
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(String(value));
       page.removeElement();

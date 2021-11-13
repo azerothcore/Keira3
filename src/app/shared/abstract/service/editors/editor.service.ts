@@ -92,19 +92,17 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
 
   protected reloadEntity(id: string | number) {
     this.subscriptions.push(
-      this.selectQuery(id)
-        .subscribe(
-          (data) => {
-            this._error = null;
-            this.onReloadSuccessful(data, id);
-          },
-          (error: MysqlError) => {
-            this._error = error;
-          },
-        )
-        .add(() => {
+      this.selectQuery(id).subscribe({
+        next: (data) => {
+          this._error = null;
+          this.onReloadSuccessful(data, id);
           this._loading = false;
-        }),
+        },
+        error: (error: MysqlError) => {
+          this._error = error;
+          this._loading = false;
+        },
+      }),
     );
   }
 
@@ -133,22 +131,19 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     this._loading = true;
 
     this.subscriptions.push(
-      this.queryService
-        .query<T>(query)
-        .subscribe(
-          () => {
-            this._error = null;
-            this.reloadSameEntity();
-            this.toastrService.success('Query executed successfully', 'Success');
-          },
-          (error: MysqlError) => {
-            this._error = error;
-            this.toastrService.error('Error when executing the query!', 'Query error');
-          },
-        )
-        .add(() => {
+      this.queryService.query<T>(query).subscribe({
+        next: () => {
+          this._error = null;
+          this.reloadSameEntity();
+          this.toastrService.success('Query executed successfully', 'Success');
           this._loading = false;
-        }),
+        },
+        error: (error: MysqlError) => {
+          this._error = error;
+          this.toastrService.error('Error when executing the query!', 'Query error');
+          this._loading = false;
+        },
+      }),
     );
   }
 }

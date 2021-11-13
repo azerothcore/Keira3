@@ -66,8 +66,8 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
 
   onConnect(): void {
     this.subscriptions.push(
-      this.mysqlService.connect(this.form.getRawValue()).subscribe(
-        () => {
+      this.mysqlService.connect(this.form.getRawValue()).subscribe({
+        next: () => {
           const newConfig = this.form.getRawValue();
           if (!this.savePassword) {
             newConfig.password = '';
@@ -75,10 +75,10 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
           this.connectionWindowService.saveNewConfig(newConfig);
           this.error = null;
         },
-        (error: MysqlError) => {
+        error: (error: MysqlError) => {
           this.error = error;
         },
-      ),
+      }),
     );
   }
 }

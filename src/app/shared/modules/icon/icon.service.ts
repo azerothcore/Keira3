@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { mergeMap, map } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+import { Observable, of, mergeMap, map } from 'rxjs';
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';

@@ -80,7 +80,7 @@ describe('Conditions integration tests', () => {
     handlerService.isNew = creatingNew;
 
     queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of());
+    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
 
     spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(of(creatingNew ? [] : [originalEntity]));
 
@@ -121,9 +121,10 @@ describe('Conditions integration tests', () => {
 
       page.setSelectValueById('SourceTypeOrReferenceId', 2);
       page.setInputValueById('SourceGroup', 3);
+      page.expectFullQueryToContain(expectedQuery);
+
       page.clickExecuteQuery();
 
-      page.expectFullQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
@@ -160,9 +161,9 @@ describe('Conditions integration tests', () => {
       querySpy.calls.reset();
 
       page.changeAllFields(originalEntity, []);
-      page.clickExecuteQuery();
-
       page.expectDiffQueryToContain(expectedQuery);
+
+      page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });

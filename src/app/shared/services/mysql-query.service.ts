@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { Observable, of, map, tap } from 'rxjs';
 import { Squel, Delete, Insert, Update } from 'squel';
 
 import { MysqlService } from './mysql.service';
@@ -9,7 +8,7 @@ import { squelConfig } from '../../config/squel.config';
 import { ConfigService } from './config.service';
 import { QueryService } from '@keira-shared/services/query.service';
 import { SmartScripts } from '@keira-types/smart-scripts.type';
-import { fromPromise } from 'rxjs/internal-compatibility';
+import { from } from 'rxjs';
 import { QuestReputationReward } from 'app/features/quest/quest-preview/quest-preview.model';
 
 declare const squel: Squel & { flavour: null };
@@ -400,9 +399,9 @@ export class MysqlQueryService extends QueryService {
     return this.queryValueToPromiseCached('getItemNameById', String(id), `SELECT name AS v FROM item_template WHERE entry = ${id}`);
   }
 
-  getDisplayIdByItemId(id: string | number): Observable<string> {
+  getDisplayIdByItemId(id: string | number): Observable<string | number> {
     return !!id
-      ? fromPromise(
+      ? from(
           this.queryValueToPromiseCached(
             'getDisplayIdByItemId',
             String(id),

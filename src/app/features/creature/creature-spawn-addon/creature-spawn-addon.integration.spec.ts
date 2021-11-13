@@ -48,7 +48,7 @@ describe('CreatureSpawnAddon integration tests', () => {
     handlerService.isNew = creatingNew;
 
     queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of());
+    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
 
     spyOn(TestBed.inject(CreatureSpawnAddonService), 'selectQuery').and.returnValue(
       of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]),
