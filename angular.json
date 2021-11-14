@@ -13,6 +13,7 @@
           "options": {
             "customWebpackConfig": {
               "allowedCommonJsDependencies": ["highlight.js", "squel", "sqlstring"],
+              "extractCss": true,
               "path": "./angular.webpack.js"
             },
             "aot": true,
@@ -43,7 +44,6 @@
               "optimization": false,
               "outputHashing": "all",
               "sourceMap": true,
-              "extractCss": true,
               "namedChunks": false,
               "aot": false,
               "extractLicenses": true,
@@ -60,7 +60,6 @@
               "optimization": false,
               "outputHashing": "all",
               "sourceMap": true,
-              "extractCss": true,
               "namedChunks": false,
               "aot": false,
               "extractLicenses": true,
@@ -83,7 +82,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
