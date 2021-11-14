@@ -31,7 +31,7 @@
     "format-staged": "pretty-quick --staged",
     "lint": "ng lint Keira3",
     "test": "ng test",
-    "test-ci": "npm run postinstall:web && ng test --watch=false --browsers ChromeHeadless --code-coverage && (cat ./coverage/lcov.info | coveralls || true)",
+    "test-ci": "ng test --watch=false --browsers ChromeHeadless --code-coverage && (cat ./coverage/lcov.info | coveralls || true)",
     "e2e": "cross-env TS_NODE_PROJECT='e2e/tsconfig.e2e.json' mocha --timeout 300000 --require ts-node/register e2e/**/*.e2e.ts",
     "version": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md",
     "prepare": "husky install"
