@@ -13,7 +13,8 @@
           "options": {
             "customWebpackConfig": {
               "allowedCommonJsDependencies": ["highlight.js", "squel", "sqlstring"],
-              "path": "./extra-webpack.config.js"
+              "extractCss": true,
+              "path": "./angular.webpack.js"
             },
             "aot": true,
             "outputPath": "dist",
@@ -43,7 +44,6 @@
               "optimization": false,
               "outputHashing": "all",
               "sourceMap": true,
-              "extractCss": true,
               "namedChunks": false,
               "aot": false,
               "extractLicenses": true,
@@ -53,6 +53,22 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.dev.ts"
+                }
+              ]
+            },
+            "dev-web": {
+              "optimization": false,
+              "outputHashing": "all",
+              "sourceMap": true,
+              "namedChunks": false,
+              "aot": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": false,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.web.ts"
                 }
               ]
             },
@@ -66,7 +82,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -90,6 +105,9 @@
             "dev": {
               "browserTarget": "Keira3:build:dev"
             },
+            "dev-web": {
+              "browserTarget": "angular-electron:build:dev-web"
+            },
             "production": {
               "browserTarget": "Keira3:build:production"
             }
@@ -102,7 +120,7 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-builders/custom-webpack:karma",
           "options": {
             "main": "src/test.ts",
             "polyfills": "src/polyfills-test.ts",
@@ -126,7 +144,11 @@
               "src/favicon.icns",
               "src/favicon.256x256.png",
               "src/favicon.512x512.png"
-            ]
+            ],
+            "customWebpackConfig": {
+              "path": "./angular.webpack.js",
+              "target": "web"
+            }
           }
         },
         "lint": {
