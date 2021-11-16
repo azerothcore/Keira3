@@ -1,0 +1,14 @@
+{
+  "name": "angular-electron",
+  "version": "10.3.0",
+  "main": "main.js",
+  "private": true,
+  "dependencies": {
+    "mysql": "2.18.1",
+    "ngx-toastr": "14.2.0",
+    "ngx-ui-switch": "12.0.1",
+    "serialize-javascript": "6.0.0",
+    "sqlite3": "5.0.2",
+    "squel": "5.13.0"
+  }
+}

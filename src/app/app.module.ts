@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import '../polyfills';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';

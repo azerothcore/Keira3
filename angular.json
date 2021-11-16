@@ -1,5 +1,8 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "defaultCollection": "@angular-eslint/schematics"
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -7,15 +10,15 @@
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
+      "schematics": {
+        "@schematics/angular:application": {
+          "strict": true
+        }
+      },
       "architect": {
         "build": {
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
-            "customWebpackConfig": {
-              "allowedCommonJsDependencies": ["highlight.js", "squel", "sqlstring"],
-              "extractCss": true,
-              "path": "./angular.webpack.js"
-            },
             "aot": true,
             "outputPath": "dist",
             "index": "src/index.html",
@@ -31,7 +34,13 @@
               "src/favicon.512x512.png"
             ],
             "styles": ["src/app/scss/main.scss"],
-            "scripts": ["node_modules/squel/dist/squel.min.js"]
+            "scripts": ["node_modules/squel/dist/squel.min.js"],
+            "customWebpackConfig": {
+              "allowedCommonJsDependencies": ["highlight.js", "squel", "sqlstring"],
+              "extractCss": true,
+              "path": "./angular.webpack.js",
+              "replaceDuplicatePlugins": true
+            }
           },
           "configurations": {
             "dev": {
@@ -56,7 +65,7 @@
                 }
               ]
             },
-            "dev-web": {
+            "web": {
               "optimization": false,
               "outputHashing": "all",
               "sourceMap": true,
@@ -105,8 +114,8 @@
             "dev": {
               "browserTarget": "Keira3:build:dev"
             },
-            "dev-web": {
-              "browserTarget": "angular-electron:build:dev-web"
+            "web": {
+              "browserTarget": "Keira3:build:web"
             },
             "production": {
               "browserTarget": "Keira3:build:production"
@@ -147,7 +156,7 @@
             ],
             "customWebpackConfig": {
               "path": "./angular.webpack.js",
-              "target": "web"
+              "replaceDuplicatePlugins": true
             }
           }
         },
@@ -162,7 +171,14 @@
     "Keira3-e2e": {
       "root": "e2e",
       "projectType": "application",
-      "architect": {}
+      "architect": {
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["e2e/**/*.ts"]
+          }
+        }
+      }
     }
   },
   "defaultProject": "Keira3",
@@ -174,8 +190,5 @@
     "@schematics/angular:directive": {
       "prefix": "keira"
     }
-  },
-  "cli": {
-    "analytics": false
   }
 }

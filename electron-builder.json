@@ -1,48 +1,30 @@
 {
   "productName": "Keira3",
-  "asarUnpack": [
-    "dist/assets/sqlite.db"
-  ],
+  "asarUnpack": ["dist/assets/sqlite.db"],
   "directories": {
     "output": "release/"
   },
-  "files": [
-    "**/*",
-    "!**/*.ts",
-    "!*.code-workspace",
-    "!LICENSE.md",
-    "!package.json",
-    "!package-lock.json",
-    "!src/",
-    "!e2e/",
-    "!hooks/",
-    "!angular.json",
-    "!_config.yml",
-    "!karma.conf.js",
-    "!tsconfig.json",
-    "!tslint.json"
+  "files": ["**/*", "!**/*.ts", "!*.map", "!package.json", "!package-lock.json"],
+  "extraResources": [
+    {
+      "from": "dist",
+      "to": "app",
+      "filter": ["**/*"]
+    }
   ],
   "win": {
-    "icon": "dist",
-    "target": [
-      "portable"
-    ]
+    "icon": "dist/assets/icons",
+    "target": ["portable"]
+  },
+  "portable": {
+    "splashImage": "dist/assets/icons/electron.bmp"
   },
   "mac": {
-    "icon": "dist",
-    "target": [
-      "dmg"
-    ]
+    "icon": "dist/assets/icons",
+    "target": ["dmg"]
   },
   "linux": {
-    "icon": "dist",
-    "category": "Development",
-    "target": [
-      "AppImage",
-      "deb",
-      "snap",
-      "rpm",
-      "AppImage"
-    ]
+    "icon": "dist/assets/icons",
+    "target": ["AppImage", "deb", "snap", "rpm"]
   }
 }
