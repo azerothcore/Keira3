@@ -39,7 +39,7 @@
   "dependencies": {
     "@electron/remote": "2.0.1",
     "@types/electron-settings": "4.0.0",
-    "acorn": "8.5.0",
+    "acorn": "8.6.0",
     "electron-settings": "4.0.2",
     "karma-coverage": "2.0.3",
     "mysql": "2.18.1",
