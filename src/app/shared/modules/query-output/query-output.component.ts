@@ -6,7 +6,7 @@ import { TableRow } from '../../types/general';
 import { ModalConfirmComponent } from '@keira-shared/modules/modal-confirm/modal-confirm.component';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { filter } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'keira-query-output',

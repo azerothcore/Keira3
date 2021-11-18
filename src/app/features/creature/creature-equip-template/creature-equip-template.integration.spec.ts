@@ -47,7 +47,7 @@ describe('CreatureEquipTemplate integration tests', () => {
     handlerService.isNew = creatingNew;
 
     queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    querySpy = spyOn(queryService, 'query').and.returnValue(of());
     spyOn(queryService, 'queryValue').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
@@ -85,10 +85,9 @@ describe('CreatureEquipTemplate integration tests', () => {
       querySpy.calls.reset();
 
       page.setInputValueById('ItemID2', '2');
-      page.expectFullQueryToContain(expectedQuery);
-
       page.clickExecuteQuery();
 
+      page.expectFullQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
@@ -108,9 +107,9 @@ describe('CreatureEquipTemplate integration tests', () => {
       querySpy.calls.reset();
 
       page.changeAllFields(originalEntity, ['ID', 'VerifiedBuild']);
-      page.expectDiffQueryToContain(expectedQuery);
-
       page.clickExecuteQuery();
+
+      page.expectDiffQueryToContain(expectedQuery);
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });

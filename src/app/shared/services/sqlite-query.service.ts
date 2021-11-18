@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, shareReplay, tap } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { shareReplay, tap } from 'rxjs/operators';
+
 import { SqliteService } from '@keira-shared/services/sqlite.service';
 import { ConfigService } from '@keira-shared/services/config.service';
 import { TableRow } from '@keira-types/general';
 import { QueryService } from '@keira-shared/services/query.service';
 import { Lock } from '@keira-types/lock.type';
-import { from } from 'rxjs';
+import { fromPromise } from 'rxjs/internal-compatibility';
 import { ItemExtendedCost } from '@keira-shared/types/item-extended-cost.type';
 
 @Injectable({
@@ -59,9 +61,11 @@ export class SqliteQueryService extends QueryService {
     return this.spellDisplayIdCache[displayId];
   }
 
-  getDisplayIdBySpellId(id: string | number): Observable<string | number> {
+  getDisplayIdBySpellId(id: string | number): Observable<string> {
     return !!id
-      ? from(this.queryValueToPromiseCached('getDisplayIdBySpellId', String(id), `SELECT spellIconID AS v FROM spells WHERE ID = ${id}`))
+      ? fromPromise(
+          this.queryValueToPromiseCached('getDisplayIdBySpellId', String(id), `SELECT spellIconID AS v FROM spells WHERE ID = ${id}`),
+        )
       : of(null);
   }
 

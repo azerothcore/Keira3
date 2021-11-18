@@ -35,34 +35,40 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
   checkId() {
     this._loading = true;
     this.subscriptions.push(
-      this.queryService.selectAll<T>(this.entityTable, this.entityIdField, this.idModel).subscribe({
-        next: (data) => {
-          this.isIdFree = data.length <= 0;
+      this.queryService
+        .selectAll<T>(this.entityTable, this.entityIdField, this.idModel)
+        .subscribe(
+          (data) => {
+            this.isIdFree = data.length <= 0;
+          },
+          (error: MysqlError) => {
+            console.error(error);
+          },
+        )
+        .add(() => {
           this._loading = false;
-        },
-        error: (error: MysqlError) => {
-          console.error(error);
-          this._loading = false;
-        },
-      }),
+        }),
     );
   }
 
   private getNextId(): void {
     this._loading = true;
     this.subscriptions.push(
-      this.queryService.getMaxId(this.entityTable, this.entityIdField).subscribe({
-        next: (data) => {
-          const currentMax = data[0].max;
-          this.idModel = this.calculateNextId(currentMax);
-          this.isIdFree = true;
+      this.queryService
+        .getMaxId(this.entityTable, this.entityIdField)
+        .subscribe(
+          (data) => {
+            const currentMax = data[0].max;
+            this.idModel = this.calculateNextId(currentMax);
+            this.isIdFree = true;
+          },
+          (error: MysqlError) => {
+            console.error(error);
+          },
+        )
+        .add(() => {
           this._loading = false;
-        },
-        error: (error: MysqlError) => {
-          console.error(error);
-          this._loading = false;
-        },
-      }),
+        }),
     );
   }
 

@@ -159,32 +159,32 @@ describe('ItemPreviewService', () => {
     spyOn(mysqlQueryService, 'query').and.callFake((i) => {
       if (i.indexOf('npc_vendor') > -1) {
         if (i.indexOf('600') > -1) {
-          return of(npcVendor1) as any;
+          return of(npcVendor1);
         }
         if (i.indexOf('601') > -1) {
-          return of(npcVendor2) as any;
+          return of(npcVendor2);
         }
       }
 
       if (i.indexOf('SELECT name FROM item_template') > -1) {
         if (i.indexOf('153') > -1) {
-          return of(null) as any;
+          return of(null);
         }
 
         if (i.indexOf('123') > -1) {
           const itemsName = [{ name: '' }].concat(Array.from(new Array(11), (_, idx) => ({ name: 'Helias Item' + idx })));
-          return of(itemsName) as any;
+          return of(itemsName);
         }
 
         if (i.indexOf('138') > -1 || i.indexOf('150') > -1) {
-          return of(Array.from(new Array(1), () => ({ name: 'Shin Item' }))) as any;
+          return of(Array.from(new Array(1), () => ({ name: 'Shin Item' })));
         }
         if (i.indexOf('152') > -1) {
-          return of([{ name: null }]) as any;
+          return of([{ name: null }]);
         }
       }
 
-      return of(null) as any;
+      return of(null);
     });
 
     sqliteQueryService = TestBed.inject(SqliteQueryService);
@@ -310,22 +310,22 @@ describe('ItemPreviewService', () => {
     spyOn(sqliteQueryService, 'queryValue').and.callFake((i) => {
       if (i.indexOf('SELECT gemEnchantmentId AS v') > -1) {
         if (i.indexOf('id = 100') > -1) {
-          return of(100) as any;
+          return of(100);
         }
         if (i.indexOf('id = 101') > -1) {
-          return of(null) as any;
+          return of(null);
         }
         if (i.indexOf('id = 102') > -1) {
-          return of(102) as any;
+          return of(102);
         }
         if (i.indexOf('id = 103') > -1) {
-          return of(103) as any;
+          return of(103);
         }
         if (i.indexOf('id = 104') > -1) {
-          return of(104) as any;
+          return of(104);
         }
         if (i.indexOf('id = 105') > -1) {
-          return of(105) as any;
+          return of(105);
         }
       }
 

@@ -16,8 +16,8 @@ export abstract class LootTemplateIdComponent<T extends LootTemplate> extends Lo
 
   protected checkTemplateLootId() {
     this.subscriptions.push(
-      this.editorService.getLootId().subscribe({
-        next: (data) => {
+      this.editorService.getLootId().subscribe(
+        (data) => {
           // always re-check the lootId
           this._lootId = data[0].lootId;
 
@@ -30,10 +30,10 @@ export abstract class LootTemplateIdComponent<T extends LootTemplate> extends Lo
             }
           }
         },
-        error: (error: MysqlError) => {
+        (error: MysqlError) => {
           console.error(error);
         },
-      }),
+      ),
     );
   }
 

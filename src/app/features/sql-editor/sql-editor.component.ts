@@ -62,8 +62,8 @@ export class SqlEditorComponent extends SubscriptionHandler {
 
   execute() {
     this.subscriptions.push(
-      this.mysqlQueryService.query(this.service.code).subscribe({
-        next: (rows: TableRow[] | { affectedRows: number; message: string }) => {
+      this.mysqlQueryService.query(this.service.code).subscribe(
+        (rows: TableRow[] | { affectedRows: number; message: string }) => {
           this._error = null;
           this._affectedRows = -1;
 
@@ -84,12 +84,12 @@ export class SqlEditorComponent extends SubscriptionHandler {
 
           this._rows = rows as TableRow[];
         },
-        error: (error: MysqlError) => {
+        (error: MysqlError) => {
           this._error = error;
           this._rows = [];
           this._columns = [];
         },
-      }),
+      ),
     );
   }
 }

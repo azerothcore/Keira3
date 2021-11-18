@@ -18,15 +18,15 @@ export class GameobjectLootTemplateComponent extends LootTemplateIdComponent<Gam
 
   checkTemplateType() {
     this.subscriptions.push(
-      this.editorService.getType().subscribe({
-        next: (data) => {
+      this.editorService.getType().subscribe(
+        (data) => {
           // always re-check the 'type'
           this._type = data[0].type;
         },
-        error: (error: MysqlError) => {
+        (error: MysqlError) => {
           console.error(error);
         },
-      }),
+      ),
     );
   }
 
