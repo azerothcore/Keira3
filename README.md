@@ -48,9 +48,13 @@ _Client does not support authentication protocol requested by server; consider u
 Before logging using Keira in remember to run this query on your database for your desired users:
 
 ```
-ALTER USER 'acore' IDENTIFIED WITH mysql_native_password BY 'acore';
+ALTER USER 'acore'@'localhost' IDENTIFIED WITH mysql_native_password BY 'acore';
 flush privileges;
 ```
+
+- The first `acore` refers to the user. Which uses AzerothCore by default.
+- `localhost`, is the type of connection.
+- The second `acore`, is the password, which by default is that.
 
 [More information about this issue here](https://stackoverflow.com/questions/50093144/mysql-8-0-client-does-not-support-authentication-protocol-requested-by-server)
 
