@@ -101,7 +101,7 @@
     "lint-staged": "12.1.2",
     "mocha": "9.1.3",
     "ngx-bootstrap": "7.1.0",
-    "ngx-clipboard": "15.0.0",
+    "ngx-clipboard": "15.0.1",
     "ngx-highlightjs": "5.0.0",
     "ngx-perfect-scrollbar": "10.1.1",
     "ngx-typesafe-forms": "1.5.2",
