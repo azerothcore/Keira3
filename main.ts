@@ -25,7 +25,6 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false, // TODO: change this once Spectron supports it
-      enableRemoteModule: true, // TODO: change this once Spectron supports it
     },
     icon: nativeImage.createFromPath('src/assets/img/ac.png'),
   });
