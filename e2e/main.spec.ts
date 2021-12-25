@@ -40,11 +40,11 @@ test.describe('Check Home Page', async () => {
 
   test('sqlite should correctly work', async () => {
     const sleep = (time) => new Promise((r) => setTimeout(r, time));
+    await sleep(500);
     const selector = '#sqlite-e2e-test';
     const expectedText = 'Tricks and Treats of Azeroth';
     const element = await firstWindow.$(selector);
     const text = await element.getAttribute('e2e');
-    await sleep(500);
     expect(text).toEqual(expectedText);
   });
 
