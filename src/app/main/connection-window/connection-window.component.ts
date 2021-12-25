@@ -17,9 +17,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
   public readonly RANDOM_IMAGE = Math.floor(Math.random() * this.IMAGES_COUNT) + 1;
   public readonly KEIRA_VERSION = packageInfo.version;
   configs: Partial<ConnectionConfig>[];
-  // TODO remove 'any' type hack once this is solved: https://github.com/dirkluijk/ngx-typesafe-forms/issues/26
-  form: FormGroup<any>;
-  // form: FormGroup<Partial<ConnectionConfig>>;
+  form: FormGroup<Partial<ConnectionConfig>>;
   error: MysqlError;
   savePassword = true;
 
@@ -32,21 +30,19 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
   }
 
   ngOnInit(): void {
-    // TODO remove 'any' type hack once this is solved: https://github.com/dirkluijk/ngx-typesafe-forms/issues/26
-    this.form = new FormGroup<any>({
-      host: new FormControl<any>('127.0.0.1'),
-      port: new FormControl<any>(3306),
-      user: new FormControl<any>('root'),
-      password: new FormControl<any>('root'),
-      database: new FormControl<any>('acore_world'),
+    this.form = new FormGroup<ConnectionConfig>({
+      host: new FormControl<string>('127.0.0.1'),
+      port: new FormControl<number>(3306),
+      user: new FormControl<string>('root'),
+      password: new FormControl<string>('root'),
+      database: new FormControl<string>('acore_world'),
     });
 
     this.configs = this.connectionWindowService.getConfigs();
 
     if (this.configs?.length > 0) {
       // get last saved config
-      // TODO remove 'as any' type hack once this is solved: https://github.com/dirkluijk/ngx-typesafe-forms/issues/26
-      this.form.setValue(this.configs[this.configs.length - 1] as any);
+      this.form.setValue(this.configs[this.configs.length - 1]);
 
       if (!this.form.getRawValue().password) {
         this.savePassword = false;
