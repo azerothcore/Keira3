@@ -24,7 +24,6 @@ function createWindow() {
     minHeight: 600,
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false, // TODO: change this once Spectron supports it
     },
     icon: nativeImage.createFromPath('src/assets/img/ac.png'),
   });
@@ -57,17 +56,6 @@ function createWindow() {
       pos_x: bounds.x,
       pos_y: bounds.y,
     });
-    if (!process.env.RUNNING_IN_SPECTRON) {
-      const choice = require('electron').dialog.showMessageBoxSync(this, {
-        type: 'question',
-        buttons: ['Yes', 'No'],
-        title: 'Confirm',
-        message: 'Are you sure you want to quit?',
-      });
-      if (choice === 1) {
-        e.preventDefault();
-      }
-    }
   });
 
   // Emitted when the window is closed.
