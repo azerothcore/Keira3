@@ -3,9 +3,6 @@ import * as path from 'path';
 import * as url from 'url';
 import * as settings from 'electron-settings';
 
-// Initialize remote module
-require('@electron/remote/main').initialize();
-
 let win, serve;
 const args = process.argv.slice(1);
 serve = args.some((val) => val === '--serve');
