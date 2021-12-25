@@ -41,7 +41,7 @@
     "@types/electron-settings": "4.0.0",
     "acorn": "8.6.0",
     "electron-settings": "4.0.2",
-    "karma-coverage": "2.0.3",
+    "karma-coverage": "2.1.0",
     "mysql": "2.18.1",
     "ngx-toastr": "14.2.1",
     "ngx-ui-switch": "12.0.1",
