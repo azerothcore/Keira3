@@ -1,48 +1,21 @@
 {
   "productName": "Keira3",
-  "asarUnpack": [
-    "dist/assets/sqlite.db"
-  ],
+  "asarUnpack": ["dist/assets/sqlite.db"],
   "directories": {
     "output": "release/"
   },
-  "files": [
-    "**/*",
-    "!**/*.ts",
-    "!*.code-workspace",
-    "!LICENSE.md",
-    "!package.json",
-    "!package-lock.json",
-    "!src/",
-    "!e2e/",
-    "!hooks/",
-    "!angular.json",
-    "!_config.yml",
-    "!karma.conf.js",
-    "!tsconfig.json",
-    "!tslint.json"
-  ],
+  "files": ["dist/**/*", "main.js", "main.js.map"],
   "win": {
     "icon": "dist",
-    "target": [
-      "portable"
-    ]
+    "target": ["portable"]
   },
   "mac": {
     "icon": "dist",
-    "target": [
-      "dmg"
-    ]
+    "target": ["dmg"]
   },
   "linux": {
     "icon": "dist",
     "category": "Development",
-    "target": [
-      "AppImage",
-      "deb",
-      "snap",
-      "rpm",
-      "AppImage"
-    ]
+    "target": ["AppImage", "deb", "snap", "rpm", "AppImage"]
   }
 }
