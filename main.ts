@@ -24,6 +24,7 @@ function createWindow() {
     minHeight: 600,
     webPreferences: {
       nodeIntegration: true,
+      contetxIsolation: false, // TODO: change this once Spectron supports it
     },
     icon: nativeImage.createFromPath('src/assets/img/ac.png'),
   });
