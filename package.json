@@ -27,6 +27,7 @@
     "electron:windows": "npm run build:prod && electron-builder build --windows",
     "electron:mac": "npm run build:prod && electron-builder build --mac",
     "electron:mac:ci": "npm run build:prod && electron-builder build --mac --publish=never",
+    "electron:all": "npm run build:prod && electron-builder build --linux && electron-builder build --mac && electron-builder build --windows",
     "format": "prettier --config ./.prettierrc --ignore-path ./.prettierignore --no-editorconfig --write .",
     "format-staged": "pretty-quick --staged",
     "lint": "ng lint Keira3",
