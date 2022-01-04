@@ -72,7 +72,7 @@
     "@fortawesome/fontawesome-free": "5.15.4",
     "@swimlane/ngx-datatable": "20.0.0",
     "@playwright/test": "1.17.1",
-    "@types/jasmine": "3.10.2",
+    "@types/jasmine": "3.10.3",
     "@types/jasminewd2": "2.0.10",
     "@types/mysql": "2.15.20",
     "@types/node": "16.11.17",
