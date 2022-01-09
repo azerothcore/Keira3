@@ -5,7 +5,6 @@ import { CreatureTemplate } from '@keira-types/creature-template.type';
 import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { UNIT_FLAGS_2 } from '@keira-constants/flags/unit-flags2';
-import { INHABIT_TYPE } from '@keira-constants/flags/inhabit-type';
 import { TRAINER_TYPE } from '@keira-constants/options/trainer-type';
 import { NPC_FLAGS } from '@keira-constants/flags/npc-flags';
 import { CREATURE_FAMILY } from '@keira-constants/options/creature-family';
@@ -34,7 +33,6 @@ import { CREATURE_AI_NAME } from '@keira-constants/options/creature-ai-name';
 export class CreatureTemplateComponent extends SingleRowEditorComponent<CreatureTemplate> {
   public readonly UNIT_FLAGS = UNIT_FLAGS;
   public readonly UNIT_FLAGS_2 = UNIT_FLAGS_2;
-  public readonly INHABIT_TYPE = INHABIT_TYPE;
   public readonly TRAINER_TYPE = TRAINER_TYPE;
   public readonly NPC_FLAGS = NPC_FLAGS;
   public readonly CREATURE_FAMILY = CREATURE_FAMILY;
