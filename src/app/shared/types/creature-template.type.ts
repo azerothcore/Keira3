@@ -61,7 +61,6 @@ export class CreatureTemplate extends TableRow {
   maxgold: number = 0;
   AIName: string = '';
   MovementType: number = 0;
-  InhabitType: number = 3;
   HoverHeight: number = 1;
   HealthModifier: number = 1;
   ManaModifier: number = 1;
