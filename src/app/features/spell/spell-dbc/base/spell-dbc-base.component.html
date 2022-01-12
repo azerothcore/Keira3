@@ -184,6 +184,11 @@
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="PowerType">PowerType</label>
+      <keira-single-value-selector-btn
+        [control]="formGroup.controls.PowerType"
+        [config]="{ options: SPELL_DBC_POWER_TYPE, name: 'PowerType' }"
+        [modalClass]="'modal-md'"
+      ></keira-single-value-selector-btn>
       <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Power type used by spell.'"></i>
       <input [formControlName]="'PowerType'" id="PowerType" type="number" class="form-control form-control-sm" />
     </div>

@@ -8,6 +8,7 @@ import { SPELL_DBC_FACING_FRONT_FLAG } from '@keira-shared/constants/flags/spell
 import { DISPEL_TYPE } from '@keira-shared/constants/options/dispel-type';
 import { SPELL_MECHANIC } from '@keira-shared/constants/options/spell-mechanic';
 import { TOTEM_CATEGORY } from '@keira-shared/constants/options/totem-category';
+import { SPELL_DBC_POWER_TYPE } from '@keira-shared/constants/options/spell_dbc_power_type';
 
 @Component({
   selector: 'keira-spell-dbc-base',
@@ -19,6 +20,7 @@ export class SpellDbcBaseComponent {
   readonly DISPEL_TYPE = DISPEL_TYPE;
   readonly SPELL_MECHANIC = SPELL_MECHANIC;
   readonly TOTEM_CATEGORY = TOTEM_CATEGORY;
+  readonly SPELL_DBC_POWER_TYPE = SPELL_DBC_POWER_TYPE;
 
   @Input() formGroup: FormGroup<SpellDbc>;
 }
