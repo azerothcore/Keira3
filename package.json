@@ -49,7 +49,7 @@
     "serialize-javascript": "6.0.0",
     "sqlite3": "5.0.2",
     "tslib": "2.3.1",
-    "webpack-sources": "3.2.2"
+    "webpack-sources": "3.2.3"
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "13.0.0",
@@ -85,7 +85,7 @@
     "conventional-changelog-cli": "2.2.2",
     "coveralls": "3.1.1",
     "cross-env": "7.0.3",
-    "electron": "16.0.6",
+    "electron": "16.0.7",
     "electron-builder": "22.14.5",
     "electron-reload": "1.5.0",
     "eslint": "8.6.0",
@@ -99,9 +99,9 @@
     "karma-jasmine": "4.0.1",
     "karma-jasmine-html-reporter": "1.7.0",
     "lint-staged": "12.1.7",
-    "ngx-bootstrap": "8.0.0-RC.5",
+    "ngx-bootstrap": "8.0.0-RC.8",
     "ngx-clipboard": "15.0.1",
-    "ngx-highlightjs": "6.1.0",
+    "ngx-highlightjs": "6.1.1",
     "ngx-perfect-scrollbar": "10.1.1",
     "ngx-typesafe-forms": "1.5.2",
     "npm-run-all": "4.1.5",
@@ -116,7 +116,7 @@
     "typescript": "4.4.4",
     "wait-on": "6.0.0",
     "webdriver-manager": "12.1.8",
-    "webpack": "5.65.0",
+    "webpack": "5.66.0",
     "zone.js": "0.11.4"
   },
   "husky": {
