@@ -7,6 +7,7 @@ import { SaiCreatureHandlerService } from './sai-creature-handler.service';
 import { CREATURE_TEMPLATE_ADDON_TABLE } from '@keira-types/creature-template-addon.type';
 import { CREATURE_TEMPLATE_RESISTANCE_TABLE } from '@keira-types/creature-template-resistance.type';
 import { CREATURE_TEMPLATE_SPELL_TABLE } from '@keira-types/creature-template-spell.type';
+import { CREATURE_TEMPLATE_MOVEMENT_TABLE } from '@keira-types/creature-template-movement.type';
 import { CREATURE_ONKLL_REPUTATION_TABLE } from '@keira-types/creature-onkill-reputation.type';
 import { CREATURE_EQUIP_TEMPLATE_TABLE } from '@keira-types/creature-equip-template.type';
 import { NPC_VENDOR_TABLE } from '@keira-types/npc-vendor.type';
@@ -32,6 +33,9 @@ export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
   }
   get isCreatureTemplateSpellUnsaved(): boolean {
     return this.statusMap[CREATURE_TEMPLATE_SPELL_TABLE];
+  }
+  get isCreatureTemplateMovementUnsaved(): boolean {
+    return this.statusMap[CREATURE_TEMPLATE_MOVEMENT_TABLE];
   }
   get isCreatureOnkillReputationUnsaved(): boolean {
     return this.statusMap[CREATURE_ONKLL_REPUTATION_TABLE];
@@ -72,6 +76,7 @@ export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
     [CREATURE_TEMPLATE_ADDON_TABLE]: false,
     [CREATURE_TEMPLATE_RESISTANCE_TABLE]: false,
     [CREATURE_TEMPLATE_SPELL_TABLE]: false,
+    [CREATURE_TEMPLATE_MOVEMENT_TABLE]: false,
     [CREATURE_ONKLL_REPUTATION_TABLE]: false,
     [CREATURE_EQUIP_TEMPLATE_TABLE]: false,
     [NPC_VENDOR_TABLE]: false,

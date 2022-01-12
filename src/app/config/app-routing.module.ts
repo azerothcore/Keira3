@@ -8,6 +8,7 @@ import { CreatureTemplateComponent } from '../features/creature/creature-templat
 import { CreatureTemplateAddonComponent } from '../features/creature/creature-template-addon/creature-template-addon.component';
 import { CreatureTemplateResistanceComponent } from '../features/creature/creature-template-resistance/creature-template-resistance.component';
 import { CreatureTemplateSpellComponent } from '../features/creature/creature-template-spell/creature-template-spell.component';
+import { CreatureTemplateMovementComponent } from '../features/creature/creature-template-movement/creature-template-movement.component';
 import { NpcVendorComponent } from '../features/creature/npc-vendor/npc-vendor.component';
 import { CreatureEquipTemplateComponent } from '../features/creature/creature-equip-template/creature-equip-template.component';
 import { CreatureOnkillReputationComponent } from '../features/creature/creature-onkill-reputation/creature-onkill-reputation.component';
@@ -108,6 +109,11 @@ const routes: Routes = [
       {
         path: 'creature-template-spell',
         component: CreatureTemplateSpellComponent,
+        canActivate: [CreatureHandlerService],
+      },
+      {
+        path: 'creature-template-movement',
+        component: CreatureTemplateMovementComponent,
         canActivate: [CreatureHandlerService],
       },
       {

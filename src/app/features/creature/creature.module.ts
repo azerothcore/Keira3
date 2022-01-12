@@ -7,6 +7,7 @@ import { CreatureTemplateModule } from './creature-template/creature-template.mo
 import { CreatureTemplateAddonModule } from './creature-template-addon/creature-template-addon.module';
 import { CreatureTemplateResistanceModule } from './creature-template-resistance/creature-template-resistance.module';
 import { CreatureTemplateSpellModule } from './creature-template-spell/creature-template-spell.module';
+import { CreatureTemplateMovementModule } from './creature-template-movement/creature-template-movement.module';
 import { NpcTrainerModule } from './npc-trainer/npc-trainer.module';
 import { PickpocketingLootTemplateModule } from './pickpocketing-loot-template/pickpocketing-loot-template.module';
 import { SelectCreatureModule } from './select-creature/select-creature.module';
@@ -27,6 +28,7 @@ const modules = [
   CreatureTemplateAddonModule,
   CreatureTemplateResistanceModule,
   CreatureTemplateSpellModule,
+  CreatureTemplateMovementModule,
   CreatureQuestitemModule,
   NpcTrainerModule,
   NpcVendorModule,
