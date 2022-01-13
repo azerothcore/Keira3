@@ -11,6 +11,7 @@ import { FormGroup } from 'ngx-typesafe-forms';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 describe('SpellDbcFlagsComponent', () => {
   class SpellDbcFlagsComponentPage extends PageObject<TestHostComponent> {}
@@ -26,7 +27,7 @@ describe('SpellDbcFlagsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [TestHostComponent, SpellDbcFlagsComponent],
-      imports: [ToastrModule.forRoot(), TooltipModule.forRoot(), SpellDbcModule, RouterTestingModule],
+      imports: [ModalModule.forRoot(), ToastrModule.forRoot(), TooltipModule.forRoot(), SpellDbcModule, RouterTestingModule],
       providers: [SpellHandlerService],
     }).compileComponents();
   });
@@ -43,6 +44,8 @@ describe('SpellDbcFlagsComponent', () => {
     'AttributesEx5',
     'AttributesEx6',
     'AttributesEx7',
+    'TargetCreatureType',
+    'ShapeshiftMask',
   ];
   const createMockVal = (field: string): number => field.length;
 

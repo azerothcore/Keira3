@@ -21,12 +21,12 @@ export class SpellDbc extends TableRow {
   AttributesEx5: number = 0;
   AttributesEx6: number = 0;
   AttributesEx7: number = 0;
-  ShapeshiftMask: number = 0; // TODO
+  ShapeshiftMask: number = 0;
   unk_320_2: number = 0; // TODO
   ShapeshiftExclude: number = 0; // TODO
   unk_320_3: number = 0; // TODO
   Targets: number = 0;
-  TargetCreatureType: number = 0; // TODO
+  TargetCreatureType: number = 0;
   RequiresSpellFocus: number = 0;
   FacingCasterFlags: number = 0;
   CasterAuraState: number = 0;
