@@ -5,6 +5,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
 import { SpellDbcSpellEffectFieldPrefix } from './spell-dbc-spell-effect.model';
 import { SPELL_MECHANIC } from '@keira-shared/constants/options/spell-mechanic';
+import { SPELL_DBC_EFFECT, SPELL_DBC_APPLY_AURA_NAME } from '@keira-shared/constants/options/spell_dbc_effects_options';
 
 @Component({
   selector: 'keira-spell-dbc-spell-effect',
@@ -14,7 +15,9 @@ export class SpellDbcSpellEffectComponent {
   @Input() formGroup: FormGroup<SpellDbc>;
   @Input() index: number;
 
-  readonly SPELL_MECHANIC = SPELL_MECHANIC;
+  public readonly SPELL_MECHANIC = SPELL_MECHANIC;
+  public readonly SPELL_DBC_EFFECT = SPELL_DBC_EFFECT;
+  public readonly SPELL_DBC_APPLY_AURA_NAME = SPELL_DBC_APPLY_AURA_NAME;
 
   getFieldName(field: SpellDbcSpellEffectFieldPrefix): string {
     return `${field}_${this.index}`; // example: EffectSpellClassMaskA_3

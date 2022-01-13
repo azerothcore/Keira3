@@ -28,12 +28,15 @@
 
     <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" [for]="getFieldName('Effect')">{{ getFieldName('Effect') }}</label>
+      <keira-single-value-selector-btn
+        [control]="formGroup.controls[getFieldName('Effect')]"
+        [config]="{ options: SPELL_DBC_EFFECT, name: getFieldName('Effect') }"
+        [modalClass]="'modal-md'"
+      ></keira-single-value-selector-btn>
       <i
         class="fas fa-info-circle ms-1"
         [placement]="'auto'"
-        [tooltip]="
-          'Type of effect which spell has. All following effect fields (and some at the end of DBC) refer to these - up to 3 effects.'
-        "
+        [tooltip]="'Type of effect which spell has. All following effect fields refer to these.'"
       ></i>
       <input [formControlName]="getFieldName('Effect')" type="number" [id]="getFieldName('Effect')" class="form-control form-control-sm" />
     </div>
@@ -146,6 +149,11 @@
 
     <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" [for]="getFieldName('EffectAura')">{{ getFieldName('EffectAura') }}</label>
+      <keira-single-value-selector-btn
+        [control]="formGroup.controls[getFieldName('EffectAura')]"
+        [config]="{ options: SPELL_DBC_APPLY_AURA_NAME, name: getFieldName('EffectAura') }"
+        [modalClass]="'modal-md'"
+      ></keira-single-value-selector-btn>
       <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
       <input
         [formControlName]="getFieldName('EffectAura')"
