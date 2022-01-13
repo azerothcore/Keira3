@@ -16,6 +16,10 @@
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="ProcTypeMask">ProcTypeMask</label>
+      <keira-flags-selector-btn
+        [control]="formGroup.controls.ProcTypeMask"
+        [config]="{ flags: SPELL_DBC_PROC_FLAGS, name: 'ProcTypeMask' }"
+      ></keira-flags-selector-btn>
       <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Under which conditions a spell can proc. 0 = PROC_FLAG_NONE'"></i>
       <input [formControlName]="'ProcTypeMask'" id="ProcTypeMask" type="number" class="form-control form-control-sm" />
     </div>

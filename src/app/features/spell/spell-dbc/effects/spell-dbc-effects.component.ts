@@ -4,6 +4,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
 import { SPELL_DBC_TARGETS } from '@keira-shared/constants/flags/spell_dbc_targets';
+import { SPELL_DBC_PROC_FLAGS } from '@keira-shared/constants/flags/spell_dbc_proc_flags';
 
 @Component({
   selector: 'keira-spell-dbc-effects',
@@ -11,6 +12,7 @@ import { SPELL_DBC_TARGETS } from '@keira-shared/constants/flags/spell_dbc_targe
 })
 export class SpellDbcEffectsComponent {
   readonly SPELL_DBC_TARGETS = SPELL_DBC_TARGETS;
+  readonly SPELL_DBC_PROC_FLAGS = SPELL_DBC_PROC_FLAGS;
 
   @Input() formGroup: FormGroup<SpellDbc>;
 }
