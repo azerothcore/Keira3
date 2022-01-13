@@ -178,7 +178,11 @@
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="SpellDifficultyID">SpellDifficultyID</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <i
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
+        [tooltip]="'Alternative spells which get used in different Raid difficulties instead. Link to entry in SpellDifficulty.dbc'"
+      ></i>
       <input [formControlName]="'SpellDifficultyID'" id="SpellDifficultyID" type="number" class="form-control form-control-sm" />
     </div>
 
@@ -227,13 +231,17 @@
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="RequiredAreasID">RequiredAreasID</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Areas in which a spell can be cast.'"></i>
+      <i
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
+        [tooltip]="'Areas in which a spell can be cast. Link to entry in AreaGroup.dbc'"
+      ></i>
       <input [formControlName]="'RequiredAreasID'" id="RequiredAreasID" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="SpellDescriptionVariableID">SpellDescriptionVariableID</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Link to entry in SpellDescriptionVariables.dbc'"></i>
       <input
         [formControlName]="'SpellDescriptionVariableID'"
         id="SpellDescriptionVariableID"
