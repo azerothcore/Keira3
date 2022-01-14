@@ -36,7 +36,11 @@
   <div class="row">
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="Category">Category</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Category of a spell. Used for category cooldowns.'"></i>
+      <i
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
+        [tooltip]="'Category of a spell. Used for category cooldowns. Link to entry in SpellCategory.dbc'"
+      ></i>
       <input [formControlName]="'Category'" id="Category" type="number" class="form-control form-control-sm" />
     </div>
 
@@ -87,7 +91,11 @@
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="DurationIndex">DurationIndex</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Duration of spell effects.'"></i>
+      <i
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
+        [tooltip]="'Duration of spell effects. Link to entry in SpellDuration.dbc'"
+      ></i>
       <input [formControlName]="'DurationIndex'" id="DurationIndex" type="number" class="form-control form-control-sm" />
     </div>
 
@@ -96,7 +104,7 @@
       <i
         class="fas fa-info-circle ms-1"
         [placement]="'auto'"
-        [tooltip]="'Range of a spell. May differ for friendly and enemy targets.'"
+        [tooltip]="'Range of a spell. May differ for friendly and enemy targets. Link to entry in SpellRange.dbc'"
       ></i>
       <input [formControlName]="'RangeIndex'" id="RangeIndex" type="number" class="form-control form-control-sm" />
     </div>
@@ -150,25 +158,33 @@
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="RuneCostID">RuneCostID</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <i
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
+        [tooltip]="'Rune costs for death knights. Link to entry in SpellRuneCost.dbc'"
+      ></i>
       <input [formControlName]="'RuneCostID'" id="RuneCostID" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="SpellVisualID_1">SpellVisualID_1</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Visual effects of a spell.'"></i>
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Visual effects of a spell. Link to entry in SpellVisual.dbc'"></i>
       <input [formControlName]="'SpellVisualID_1'" id="SpellVisualID_1" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="SpellVisualID_2">SpellVisualID_2</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Visual effects of a spell.'"></i>
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Visual effects of a spell. Link to entry in SpellVisual.dbc'"></i>
       <input [formControlName]="'SpellVisualID_2'" id="SpellVisualID_2" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="Speed">Speed</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'If <= 0.0 client skips HandleMissileEffects.'"></i>
+      <i
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
+        [tooltip]="'?Casting speed modifier? If <= 0.0 client skips HandleMissileEffects.'"
+      ></i>
       <input [formControlName]="'Speed'" id="Speed" type="number" class="form-control form-control-sm" />
     </div>
 
@@ -195,7 +211,7 @@
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="SpellMissileID">SpellMissileID</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'?Todo? Link to SpellMissile.dbc'"></i>
       <input [formControlName]="'SpellMissileID'" id="SpellMissileID" type="number" class="form-control form-control-sm" />
     </div>
 
@@ -278,7 +294,7 @@
       <i
         class="fas fa-info-circle ms-1"
         [placement]="'auto'"
-        [tooltip]="'Base mana cost of a spell. It is being summed with ManaCostPercentage.'"
+        [tooltip]="'Base power cost of a spell. It is being summed with ManaCostPercentage. Seems to be used for other power types as well'"
       ></i>
       <input [formControlName]="'ManaCost'" id="ManaCost" type="number" class="form-control form-control-sm" />
     </div>
@@ -295,7 +311,7 @@
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="ManaPerSecond">ManaPerSecond</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'For channels.'"></i>
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Mana cost per second for channeling spells.'"></i>
       <input [formControlName]="'ManaPerSecond'" id="ManaPerSecond" type="number" class="form-control form-control-sm" />
     </div>
 
