@@ -161,7 +161,7 @@ export class SpellDbc extends TableRow {
   Name_Lang_ptBR: string = '';
   Name_Lang_itIT: string = '';
   Name_Lang_Unk: string = '';
-  Name_Lang_Mask: number = 0; // TODO
+  Name_Lang_Mask: number = 0;
   NameSubtext_Lang_enUS: string = '';
   NameSubtext_Lang_enGB: string = '';
   NameSubtext_Lang_koKR: string = '';
@@ -178,7 +178,7 @@ export class SpellDbc extends TableRow {
   NameSubtext_Lang_ptBR: string = '';
   NameSubtext_Lang_itIT: string = '';
   NameSubtext_Lang_Unk: string = '';
-  NameSubtext_Lang_Mask: number = 0; // TODO
+  NameSubtext_Lang_Mask: number = 0;
   Description_Lang_enUS: string = '';
   Description_Lang_enGB: string = '';
   Description_Lang_koKR: string = '';
@@ -195,7 +195,7 @@ export class SpellDbc extends TableRow {
   Description_Lang_ptBR: string = '';
   Description_Lang_itIT: string = '';
   Description_Lang_Unk: string = '';
-  Description_Lang_Mask: number = 0; // TODO
+  Description_Lang_Mask: number = 0;
   AuraDescription_Lang_enUS: string = '';
   AuraDescription_Lang_enGB: string = '';
   AuraDescription_Lang_koKR: string = '';
@@ -212,7 +212,7 @@ export class SpellDbc extends TableRow {
   AuraDescription_Lang_ptBR: string = '';
   AuraDescription_Lang_itIT: string = '';
   AuraDescription_Lang_Unk: string = '';
-  AuraDescription_Lang_Mask: number = 0; // TODO
+  AuraDescription_Lang_Mask: number = 0;
   ManaCostPct: number = 0;
   StartRecoveryCategory: number = 0; // TODO
   StartRecoveryTime: number = 0; // TODO
