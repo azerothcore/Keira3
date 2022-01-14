@@ -103,7 +103,12 @@
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="CasterAuraState">CasterAuraState</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <keira-single-value-selector-btn
+        [control]="formGroup.controls.CasterAuraState"
+        [config]="{ options: SPELL_DBC_CASTER_AURA_STATE, name: 'CasterAuraState' }"
+        [modalClass]="'modal-md'"
+      ></keira-single-value-selector-btn>
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Which condition has to be fulfilled to cast the spell'"></i>
       <input [formControlName]="'CasterAuraState'" id="CasterAuraState" type="number" class="form-control form-control-sm" />
     </div>
 
@@ -169,7 +174,16 @@
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="TargetAuraState">TargetAuraState</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <keira-single-value-selector-btn
+        [control]="formGroup.controls.TargetAuraState"
+        [config]="{ options: SPELL_DBC_TARGET_AURA_STATE, name: 'TargetAuraState' }"
+        [modalClass]="'modal-md'"
+      ></keira-single-value-selector-btn>
+      <i
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
+        [tooltip]="'Which condition has to be fulfilled to cast the spell on a target.'"
+      ></i>
       <input [formControlName]="'TargetAuraState'" id="TargetAuraState" type="number" class="form-control form-control-sm" />
     </div>
 
