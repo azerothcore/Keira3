@@ -1,4 +1,28 @@
-import { Flag } from '../../types/general';
+import { Flag } from '@keira-types/general';
+
+export const SPELL_DBC_TARGETS: Flag[] = [
+  { bit: 0, name: 'TARGET_FLAG_UNUSED_1' },
+  { bit: 1, name: 'TARGET_FLAG_UNIT' },
+  { bit: 2, name: 'TARGET_FLAG_UNIT_RAID - Unit in Raid' },
+  { bit: 3, name: 'TARGET_FLAG_UNIT_PARTY - Unit in Party' },
+  { bit: 4, name: 'TARGET_FLAG_ITEM - Item Enchantment' },
+  { bit: 5, name: 'TARGET_FLAG_SOURCE_LOCATION - Blank AoE source location' },
+  { bit: 6, name: 'TARGET_FLAG_DEST_LOCATION - Target AoE destination location' },
+  { bit: 7, name: 'TARGET_FLAG_UNIT_ENEMY' },
+  { bit: 8, name: 'TARGET_FLAG_UNIT_ALLY' },
+  { bit: 9, name: 'TARGET_FLAG_CORPSE_ENEMY - Corpse of an Enemy' },
+  { bit: 10, name: 'TARGET_FLAG_UNIT_DEAD - Dead Unit' },
+  { bit: 11, name: 'TARGET_FLAG_GAMEOBJECT' },
+  { bit: 12, name: 'TARGET_FLAG_TRADE_ITEM' },
+  { bit: 13, name: 'TARGET_FLAG_STRING' },
+  { bit: 14, name: 'TARGET_FLAG_GAMEOBJECT_ITEM' },
+  { bit: 15, name: 'TARGET_FLAG_CORPSE_ALLY - Corpse of an ally' },
+  { bit: 16, name: 'TARGET_FLAG_UNIT_MINIPET' },
+  { bit: 17, name: 'TARGET_FLAG_GLYPH_SLOT' },
+  { bit: 18, name: 'TARGET_FLAG_DEST_TARGET - Destination target' },
+  { bit: 19, name: 'TARGET_FLAG_UNUSED20' },
+  { bit: 20, name: 'TARGET_FLAG_UNIT_PASSENGER' },
+];
 
 export const SPELL_DBC_PROC_FLAGS: Flag[] = [
   { bit: 0, name: 'PROC_FLAG_KILLED - On Death' },

@@ -18,7 +18,7 @@ import { CREATURE_RACE } from '@keira-constants/options/creature-race';
 import { MOVEMENT_TYPE } from '@keira-constants/options/movement-type';
 import { FLAGS_EXTRA } from '@keira-constants/flags/flags-extra';
 import { MECHANIC_IMMUNE_MASK } from '@keira-constants/flags/mechanic-immune-mask';
-import { SPELL_SCHOOL_IMMUNE_MASK } from '@keira-constants/flags/spell-school-immune-mask';
+import { SPELL_SCHOOL_MASK } from '@keira-constants/flags/spell-school-mask';
 import { CREATURE_ICON } from '@keira-constants/options/creature-icon';
 import { EXPANSION } from '@keira-constants/options/expansion';
 import { UNIT_CLASS } from '@keira-constants/options/unit-class';
@@ -45,7 +45,7 @@ export class CreatureTemplateComponent extends SingleRowEditorComponent<Creature
   public readonly MOVEMENT_TYPE = MOVEMENT_TYPE;
   public readonly FLAGS_EXTRA = FLAGS_EXTRA;
   public readonly MECHANIC_IMMUNE_MASK = MECHANIC_IMMUNE_MASK;
-  public readonly SPELL_SCHOOL_IMMUNE_MASK = SPELL_SCHOOL_IMMUNE_MASK;
+  public readonly SPELL_SCHOOL_IMMUNE_MASK = SPELL_SCHOOL_MASK;
   public readonly CREATURE_ICON = CREATURE_ICON;
   public readonly EXPANSION = EXPANSION;
   public readonly UNIT_CLASS = UNIT_CLASS;

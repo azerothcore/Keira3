@@ -72,3 +72,46 @@ export const SPELL_DBC_CAST_TIME: Option[] = [
   { value: 69, name: '60000' },
   { value: 70, name: '200' },
 ];
+
+export const SPELL_DBC_POWER_TYPE: Option[] = [
+  { value: 0, name: 'Mana' },
+  { value: 1, name: 'Rage' },
+  { value: 2, name: 'Focus (Pet)' },
+  { value: 3, name: 'Energy' },
+  { value: 4, name: 'Happiness' },
+  { value: 5, name: 'Runes' },
+  { value: 6, name: 'Runic Power' },
+  { value: 7, name: 'Steam' },
+  { value: 8, name: 'Pyrite' },
+  { value: 9, name: 'Heat' },
+  { value: 10, name: 'Ooze' },
+  { value: 11, name: 'Blood' },
+  { value: 12, name: 'Wrath' },
+  { value: 13, name: 'Health' },
+];
+
+export const SPELL_DBC_CASTER_AURA_STATE: Option[] = [
+  { value: 0, name: 'None' },
+  { value: 1, name: 'Defense' },
+  { value: 2, name: 'Health <= 20%' },
+  { value: 3, name: 'Berserking' },
+  { value: 4, name: 'Judgement' },
+  { value: 5, name: 'Hunter Parry' },
+  { value: 6, name: 'Victory Rush' },
+  { value: 7, name: 'Unknown 1' },
+  { value: 8, name: 'Health <= 35%' },
+  { value: 9, name: 'Enrage' },
+  { value: 10, name: 'Unknown 2' },
+  { value: 11, name: 'Health => 75%' },
+];
+
+export const SPELL_DBC_TARGET_AURA_STATE: Option[] = [
+  { value: 0, name: 'None' },
+  { value: 1, name: 'Health <= 20%' },
+  { value: 2, name: 'Berserking' },
+  { value: 3, name: 'Health <= 35%' },
+  { value: 4, name: 'Conflagrate' },
+  { value: 5, name: 'Swiftmend' },
+  { value: 6, name: 'Deadly Poison' },
+  { value: 7, name: 'Bleeding' },
+];
