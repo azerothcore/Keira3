@@ -2,7 +2,11 @@
   <div class="row">
     <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" [for]="getFieldName('SpellClassMask')">{{ getFieldName('SpellClassMask') }}</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <i
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
+        [tooltip]="'?Mask for spells which are affected (buffed, ...) by this spell?'"
+      ></i>
       <input
         [formControlName]="getFieldName('SpellClassMask')"
         type="number"
@@ -154,7 +158,11 @@
         [config]="{ options: SPELL_DBC_APPLY_AURA_NAME, name: getFieldName('EffectAura') }"
         [modalClass]="'modal-md'"
       ></keira-single-value-selector-btn>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <i
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
+        [tooltip]="'Type of aura (effect of effect) which according effect applies.'"
+      ></i>
       <input
         [formControlName]="getFieldName('EffectAura')"
         type="number"
