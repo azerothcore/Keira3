@@ -137,7 +137,7 @@
       <i
         class="fas fa-info-circle ms-1"
         [placement]="'auto'"
-        [tooltip]="'According spell effect radius. May differ with caster level.'"
+        [tooltip]="'According spell effect radius. May differ with caster level. Link to entry in SpellRadius.dbc'"
       ></i>
       <input
         [formControlName]="getFieldName('EffectRadiusIndex')"
@@ -165,7 +165,7 @@
 
     <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" [for]="getFieldName('EffectAuraPeriod')">{{ getFieldName('EffectAuraPeriod') }}</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'How often according effect ticks in ms.'"></i>
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'How often the effect ticks in ms.'"></i>
       <input
         [formControlName]="getFieldName('EffectAuraPeriod')"
         type="number"
@@ -176,7 +176,7 @@
 
     <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" [for]="getFieldName('EffectMultipleValue')">{{ getFieldName('EffectMultipleValue') }}</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Number of stacks for Buffs/Debuffs'"></i>
       <input
         [formControlName]="getFieldName('EffectMultipleValue')"
         type="number"
@@ -187,7 +187,11 @@
 
     <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" [for]="getFieldName('EffectChainTargets')">{{ getFieldName('EffectChainTargets') }}</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+      <i
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
+        [tooltip]="'?Used to create chaining visual effects (e.g. chain lightning)?'"
+      ></i>
       <input
         [formControlName]="getFieldName('EffectChainTargets')"
         type="number"
@@ -269,6 +273,10 @@
 
     <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" [for]="getFieldName('EffectSpellClassMaskA')">{{ getFieldName('EffectSpellClassMaskA') }}</label>
+      <keira-flags-selector-btn
+        [control]="formGroup.controls[getFieldName('EffectSpellClassMaskA')]"
+        [config]="{ flags: SPELL_DBC_CLASS_MASK_FLAGS, name: getFieldName('EffectSpellClassMaskA') }"
+      ></keira-flags-selector-btn>
       <i
         class="fas fa-info-circle ms-1"
         [placement]="'auto'"
@@ -284,6 +292,10 @@
 
     <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" [for]="getFieldName('EffectSpellClassMaskB')">{{ getFieldName('EffectSpellClassMaskB') }}</label>
+      <keira-flags-selector-btn
+        [control]="formGroup.controls[getFieldName('EffectSpellClassMaskB')]"
+        [config]="{ flags: SPELL_DBC_CLASS_MASK_FLAGS, name: getFieldName('EffectSpellClassMaskB') }"
+      ></keira-flags-selector-btn>
       <i
         class="fas fa-info-circle ms-1"
         [placement]="'auto'"
@@ -299,6 +311,10 @@
 
     <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" [for]="getFieldName('EffectSpellClassMaskC')">{{ getFieldName('EffectSpellClassMaskC') }}</label>
+      <keira-flags-selector-btn
+        [control]="formGroup.controls[getFieldName('EffectSpellClassMaskC')]"
+        [config]="{ flags: SPELL_DBC_CLASS_MASK_FLAGS, name: getFieldName('EffectSpellClassMaskC') }"
+      ></keira-flags-selector-btn>
       <i
         class="fas fa-info-circle ms-1"
         [placement]="'auto'"
