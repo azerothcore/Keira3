@@ -9,6 +9,7 @@ import { DISPEL_TYPE } from '@keira-shared/constants/options/dispel-type';
 import { SPELL_MECHANIC } from '@keira-shared/constants/options/spell-mechanic';
 import { TOTEM_CATEGORY } from '@keira-shared/constants/options/totem-category';
 import { SPELL_DBC_POWER_TYPE } from '@keira-shared/constants/options/spell_dbc_power_type';
+import { SPELL_DBC_CAST_TIME } from '@keira-shared/constants/options/spell_dbc_base_options';
 
 @Component({
   selector: 'keira-spell-dbc-base',
@@ -21,6 +22,7 @@ export class SpellDbcBaseComponent {
   readonly SPELL_MECHANIC = SPELL_MECHANIC;
   readonly TOTEM_CATEGORY = TOTEM_CATEGORY;
   readonly SPELL_DBC_POWER_TYPE = SPELL_DBC_POWER_TYPE;
+  readonly SPELL_DBC_CAST_TIME = SPELL_DBC_CAST_TIME;
 
   @Input() formGroup: FormGroup<SpellDbc>;
 }

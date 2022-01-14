@@ -72,7 +72,16 @@
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="CastingTimeIndex">CastingTimeIndex</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Casting time of a spell. May differ with caster level.'"></i>
+      <keira-single-value-selector-btn
+        [control]="formGroup.controls.CastingTimeIndex"
+        [config]="{ options: SPELL_DBC_CAST_TIME, name: 'CastingTimeIndex' }"
+        [modalClass]="'modal-md'"
+      ></keira-single-value-selector-btn>
+      <i
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
+        [tooltip]="'Casting time of a spell. May differ with caster level. Links to SpellCastTimes.dbc'"
+      ></i>
       <input [formControlName]="'CastingTimeIndex'" id="CastingTimeIndex" type="number" class="form-control form-control-sm" />
     </div>
 
