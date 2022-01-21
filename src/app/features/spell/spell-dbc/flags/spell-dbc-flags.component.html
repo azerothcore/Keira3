@@ -72,9 +72,23 @@
       <i
         class="fas fa-info-circle ms-1"
         [placement]="'auto'"
-        [tooltip]="'Mask. Shapeshifts/Stances in which is spell castable. 0 = No shape/stance required'"
+        [tooltip]="'Shapeshifts/Stances in which the spell is castable. 0 = No shape/stance required'"
       ></i>
       <input [formControlName]="'ShapeshiftMask'" id="ShapeshiftMask" type="number" class="form-control form-control-sm" />
+    </div>
+    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+      <label class="control-label" for="ShapeshiftExclude">ShapeshiftExclude</label>
+      <keira-flags-selector-btn
+        [control]="formGroup.controls.ShapeshiftMask"
+        [config]="{ flags: SPELL_DBC_STANCES_FLAGS, name: 'ShapeshiftMask' }"
+        [modalClass]="'modal-md'"
+      ></keira-flags-selector-btn>
+      <i
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
+        [tooltip]="'Shapeshifts/Stances in which the spell is not castable. 0 = No restriction'"
+      ></i>
+      <input [formControlName]="'ShapeshiftExclude'" id="ShapeshiftExclude" type="number" class="form-control form-control-sm" />
     </div>
   </div>
 </form>

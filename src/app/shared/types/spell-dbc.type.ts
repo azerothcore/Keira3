@@ -23,7 +23,7 @@ export class SpellDbc extends TableRow {
   AttributesEx7: number = 0;
   ShapeshiftMask: number = 0;
   unk_320_2: number = 0;
-  ShapeshiftExclude: number = 0; // TODO Mask. Shapeshifts/Stances in which is spell not castable.
+  ShapeshiftExclude: number = 0;
   unk_320_3: number = 0;
   Targets: number = 0;
   TargetCreatureType: number = 0;
