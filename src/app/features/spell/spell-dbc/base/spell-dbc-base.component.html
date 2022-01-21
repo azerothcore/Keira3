@@ -5,6 +5,24 @@
       <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The unique ID of the spell'"></i>
       <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm" />
     </div>
+    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+      <label class="control-label" for="SpellIconID">SpellIconID</label>
+      <i
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
+        [tooltip]="'ID of icon used while spell is not active. Link to entry in SpellIcon.dbc'"
+      ></i>
+      <input [formControlName]="'SpellIconID'" id="SpellIconID" type="number" class="form-control form-control-sm" />
+    </div>
+    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+      <label class="control-label" for="ActiveIconID">ActiveIconID</label>
+      <i
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
+        [tooltip]="'ID of icon used while spell is active. Used e.g. Stealth. Link to entry in SpellIcon.dbc'"
+      ></i>
+      <input [formControlName]="'ActiveIconID'" id="ActiveIconID" type="number" class="form-control form-control-sm" />
+    </div>
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 offset-lg-3 col-xl-2 offset-xl-6">
       <label class="control-label" for="SchoolMask"><strong>SchoolMask</strong></label>
       <i
@@ -42,6 +60,16 @@
         [tooltip]="'Category of a spell. Used for category cooldowns. Link to entry in SpellCategory.dbc'"
       ></i>
       <input [formControlName]="'Category'" id="Category" type="number" class="form-control form-control-sm" />
+    </div>
+
+    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+      <label class="control-label" for="CategoryRecoveryTime">CategoryRecoveryTime</label>
+      <i
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
+        [tooltip]="'Cooldown applied by spell on all spells with the same Category. Link to entry in SpellCategory.dbc'"
+      ></i>
+      <input [formControlName]="'CategoryRecoveryTime'" id="CategoryRecoveryTime" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -351,6 +379,25 @@
         "
       ></i>
       <input [formControlName]="'RequiresSpellFocus'" id="RequiresSpellFocus" type="number" class="form-control form-control-sm" />
+    </div>
+
+    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+      <label class="control-label" for="MinFactionID">MinFactionID</label>
+      <i
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
+        [tooltip]="'ID of required reputation with a faction that is needed to cast the spell.'"
+      ></i>
+      <input [formControlName]="'MinFactionID'" id="MinFactionID" type="number" class="form-control form-control-sm" />
+    </div>
+    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+      <label class="control-label" for="MinReputation">MinReputation</label>
+      <i
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
+        [tooltip]="'Probably either value or level of required reputation with a faction that is needed to cast the spell.'"
+      ></i>
+      <input [formControlName]="'MinReputation'" id="MinReputation" type="number" class="form-control form-control-sm" />
     </div>
   </div>
 </form>

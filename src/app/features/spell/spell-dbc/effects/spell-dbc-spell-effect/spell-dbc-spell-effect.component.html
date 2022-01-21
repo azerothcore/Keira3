@@ -335,5 +335,19 @@
         class="form-control form-control-sm"
       />
     </div>
+    <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+      <label class="control-label" [for]="getFieldName('EffectBonusMultiplier')">{{ getFieldName('EffectBonusMultiplier') }}</label>
+      <i
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
+        [tooltip]="'Seems to be used for calculation of the according effect value of ticks for DoTs and HoTs.'"
+      ></i>
+      <input
+        [formControlName]="getFieldName('EffectBonusMultiplier')"
+        type="number"
+        [id]="getFieldName('EffectBonusMultiplier')"
+        class="form-control form-control-sm"
+      />
+    </div>
   </div>
 </form>

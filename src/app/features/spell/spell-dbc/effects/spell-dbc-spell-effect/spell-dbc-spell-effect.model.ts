@@ -21,5 +21,6 @@ export const SPELL_DBC_SPELL_EFFECT_FIELDS = [
   'EffectSpellClassMaskA',
   'EffectSpellClassMaskB',
   'EffectSpellClassMaskC',
+  'EffectBonusMultiplier',
 ] as const;
 export type SpellDbcSpellEffectFieldPrefix = typeof SPELL_DBC_SPELL_EFFECT_FIELDS[number];
