@@ -118,7 +118,7 @@ export const SPELL_DBC_TARGET_AURA_STATE: Option[] = [
 
 export const SPELL_DBC_DAMAGE_CLASS: Option[] = [
   { value: 0, name: 'NONE' },
-  { value: 0, name: 'MAGIC' },
-  { value: 0, name: 'MELEE' },
-  { value: 0, name: 'RANGED' },
+  { value: 1, name: 'MAGIC' },
+  { value: 2, name: 'MELEE' },
+  { value: 3, name: 'RANGED' },
 ];
