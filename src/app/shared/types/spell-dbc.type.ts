@@ -222,7 +222,7 @@ export class SpellDbc extends TableRow {
   SpellClassMask_2: number = 0;
   SpellClassMask_3: number = 0;
   MaxTargets: number = 0;
-  DefenseType: number = 0; // TODO https://wowdev.wiki/Spell.dbc/DmgClass
+  DefenseType: number = 0;
   PreventionType: number = 0;
   StanceBarOrder: number = 0;
   EffectChainAmplitude_1: number = 0;
@@ -237,7 +237,7 @@ export class SpellDbc extends TableRow {
   SchoolMask: number = 0;
   RuneCostID: number = 0;
   SpellMissileID: number = 0;
-  PowerDisplayID: number = 0; // TODO https://wowdev.wiki/DB/PowerDisplay
+  PowerDisplayID: number = 0;
   EffectBonusMultiplier_1: number = 0;
   EffectBonusMultiplier_2: number = 0;
   EffectBonusMultiplier_3: number = 0;
