@@ -4,7 +4,6 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
 import { SPELL_SCHOOL_MASK } from '@keira-shared/constants/flags/spell-school-mask';
-import { SPELL_DBC_FACING_FRONT_FLAG } from '@keira-shared/constants/flags/spell_dbc_base_flags';
 import { DISPEL_TYPE } from '@keira-shared/constants/options/dispel-type';
 import { SPELL_MECHANIC } from '@keira-shared/constants/options/spell-mechanic';
 import {
@@ -22,7 +21,6 @@ import {
 })
 export class SpellDbcBaseComponent {
   readonly SPELL_DBC_SCHOOL_OPTIONS = SPELL_SCHOOL_MASK;
-  readonly SPELL_DBC_FACING_FRONT_FLAG = SPELL_DBC_FACING_FRONT_FLAG;
   readonly DISPEL_TYPE = DISPEL_TYPE;
   readonly SPELL_MECHANIC = SPELL_MECHANIC;
   readonly SPELL_DBC_POWER_TYPE = SPELL_DBC_POWER_TYPE;
