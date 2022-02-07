@@ -83,44 +83,6 @@
         ></i>
         <input [formControlName]="'RequiredAreasID'" id="RequiredAreasID" type="number" class="form-control form-control-sm" />
       </div>
-      <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <label class="control-label" for="RequiredTotemCategoryID_1">RequiredTotemCategoryID_1</label>
-        <keira-single-value-selector-btn
-          [control]="formGroup.controls.RequiredTotemCategoryID_1"
-          [config]="{ options: TOTEM_CATEGORY, name: 'RequiredTotemCategoryID_1' }"
-          [modalClass]="'modal-md'"
-        ></keira-single-value-selector-btn>
-        <i
-          class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
-          [tooltip]="'Non consumable items (e.g. enchanter rods) required to cast the spell.'"
-        ></i>
-        <input
-          [formControlName]="'RequiredTotemCategoryID_1'"
-          id="RequiredTotemCategoryID_1"
-          type="number"
-          class="form-control form-control-sm"
-        />
-      </div>
-      <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <label class="control-label" for="RequiredTotemCategoryID_2">RequiredTotemCategoryID_2</label>
-        <keira-single-value-selector-btn
-          [control]="formGroup.controls.RequiredTotemCategoryID_2"
-          [config]="{ options: TOTEM_CATEGORY, name: 'RequiredTotemCategoryID_2' }"
-          [modalClass]="'modal-md'"
-        ></keira-single-value-selector-btn>
-        <i
-          class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
-          [tooltip]="'Non consumable items (e.g. enchanter rods) required to cast the spell.'"
-        ></i>
-        <input
-          [formControlName]="'RequiredTotemCategoryID_2'"
-          id="RequiredTotemCategoryID_2"
-          type="number"
-          class="form-control form-control-sm"
-        />
-      </div>
     </div>
   </div>
   <div class="content-block">
