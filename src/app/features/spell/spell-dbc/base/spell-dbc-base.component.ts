@@ -13,6 +13,7 @@ import {
   SPELL_DBC_CASTER_AURA_STATE,
   SPELL_DBC_TARGET_AURA_STATE,
   SPELL_DBC_DAMAGE_CLASS,
+  SPELL_DBC_PREVENTION_TYPE,
 } from '@keira-shared/constants/options/spell_dbc_base_options';
 
 @Component({
@@ -29,6 +30,7 @@ export class SpellDbcBaseComponent {
   readonly SPELL_DBC_CASTER_AURA_STATE = SPELL_DBC_CASTER_AURA_STATE;
   readonly SPELL_DBC_TARGET_AURA_STATE = SPELL_DBC_TARGET_AURA_STATE;
   readonly SPELL_DBC_DAMAGE_CLASS = SPELL_DBC_DAMAGE_CLASS;
+  readonly SPELL_DBC_PREVENTION_TYPE = SPELL_DBC_PREVENTION_TYPE;
 
   @Input() formGroup: FormGroup<SpellDbc>;
 }

@@ -83,6 +83,11 @@
         ></i>
         <input [formControlName]="'RequiredAreasID'" id="RequiredAreasID" type="number" class="form-control form-control-sm" />
       </div>
+      <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" for="SpellClassSet">SpellClassSet</label>
+        <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'For which class the spell is intended.'"></i>
+        <input [formControlName]="'SpellClassSet'" id="SpellClassSet" type="number" class="form-control form-control-sm" />
+      </div>
     </div>
   </div>
   <div class="content-block">
@@ -185,7 +190,12 @@
       </div>
       <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" for="PreventionType">PreventionType</label>
-        <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+        <keira-single-value-selector-btn
+          [control]="formGroup.controls.PreventionType"
+          [config]="{ options: SPELL_DBC_PREVENTION_TYPE, name: 'PreventionType' }"
+          [modalClass]="'modal-md'"
+        ></keira-single-value-selector-btn>
+        <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Under which conditions the spell is prevented to be cast.'"></i>
         <input [formControlName]="'PreventionType'" id="PreventionType" type="number" class="form-control form-control-sm" />
       </div>
       <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -262,6 +272,31 @@
         <input [formControlName]="'CasterAuraState'" id="CasterAuraState" type="number" class="form-control form-control-sm" />
       </div>
       <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" for="ExcludeCasterAuraState">ExcludeCasterAuraState</label>
+        <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+        <input
+          [formControlName]="'ExcludeCasterAuraState'"
+          id="ExcludeCasterAuraState"
+          type="number"
+          class="form-control form-control-sm"
+        />
+      </div>
+      <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" for="CasterAuraSpell">CasterAuraSpell</label>
+        <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+        <input [formControlName]="'CasterAuraSpell'" id="CasterAuraSpell" type="number" class="form-control form-control-sm" />
+      </div>
+      <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" for="ExcludeCasterAuraSpell">ExcludeCasterAuraSpell</label>
+        <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+        <input
+          [formControlName]="'ExcludeCasterAuraSpell'"
+          id="ExcludeCasterAuraSpell"
+          type="number"
+          class="form-control form-control-sm"
+        />
+      </div>
+      <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" for="TargetAuraState">TargetAuraState</label>
         <keira-single-value-selector-btn
           [control]="formGroup.controls.TargetAuraState"
@@ -276,6 +311,31 @@
         <input [formControlName]="'TargetAuraState'" id="TargetAuraState" type="number" class="form-control form-control-sm" />
       </div>
       <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" for="ExcludeTargetAuraState">ExcludeTargetAuraState</label>
+        <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+        <input
+          [formControlName]="'ExcludeTargetAuraState'"
+          id="ExcludeTargetAuraState"
+          type="number"
+          class="form-control form-control-sm"
+        />
+      </div>
+      <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" for="TargetAuraSpell">TargetAuraSpell</label>
+        <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+        <input [formControlName]="'TargetAuraSpell'" id="TargetAuraSpell" type="number" class="form-control form-control-sm" />
+      </div>
+      <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" for="ExcludeTargetAuraSpell">ExcludeTargetAuraSpell</label>
+        <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+        <input
+          [formControlName]="'ExcludeTargetAuraSpell'"
+          id="ExcludeTargetAuraSpell"
+          type="number"
+          class="form-control form-control-sm"
+        />
+      </div>
+      <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" for="RequiresSpellFocus">RequiresSpellFocus</label>
         <i
           class="fas fa-info-circle ms-1"
@@ -285,6 +345,15 @@
           "
         ></i>
         <input [formControlName]="'RequiresSpellFocus'" id="RequiresSpellFocus" type="number" class="form-control form-control-sm" />
+      </div>
+      <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" for="CumulativeAura">CumulativeAura</label>
+        <i
+          class="fas fa-info-circle ms-1"
+          [placement]="'auto'"
+          [tooltip]="'For stackable spells, maximal amount of stacks on target. For non-stackable spells leave 0.'"
+        ></i>
+        <input [formControlName]="'CumulativeAura'" id="CumulativeAura" type="number" class="form-control form-control-sm" />
       </div>
     </div>
   </div>
@@ -362,6 +431,15 @@
         <input [formControlName]="'ActiveIconID'" id="ActiveIconID" type="number" class="form-control form-control-sm" />
       </div>
       <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" for="StanceBarOrder">StanceBarOrder</label>
+        <i
+          class="fas fa-info-circle ms-1"
+          [placement]="'auto'"
+          [tooltip]="'On which slot of the stance bar (e.g. Paladin Auras) the spell is displayed.'"
+        ></i>
+        <input [formControlName]="'StanceBarOrder'" id="StanceBarOrder" type="number" class="form-control form-control-sm" />
+      </div>
+      <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" for="SpellVisualID_1">SpellVisualID_1</label>
         <i
           class="fas fa-info-circle ms-1"
@@ -387,6 +465,11 @@
           [tooltip]="'Used for creating Visual Spell effects. Link to SpellMissile.dbc'"
         ></i>
         <input [formControlName]="'SpellMissileID'" id="SpellMissileID" type="number" class="form-control form-control-sm" />
+      </div>
+      <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" for="PowerDisplayID">PowerDisplayID</label>
+        <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Link to entry in PowerDisplay.dbc'"></i>
+        <input [formControlName]="'PowerDisplayID'" id="PowerDisplayID" type="number" class="form-control form-control-sm" />
       </div>
     </div>
   </div>

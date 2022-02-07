@@ -105,6 +105,12 @@ export const SPELL_DBC_CASTER_AURA_STATE: Option[] = [
   { value: 11, name: 'Health => 75%' },
 ];
 
+export const SPELL_DBC_PREVENTION_TYPE: Option[] = [
+  { value: 0, name: 'None' },
+  { value: 1, name: 'Silence' },
+  { value: 2, name: 'Pacify' },
+];
+
 export const SPELL_DBC_TARGET_AURA_STATE: Option[] = [
   { value: 0, name: 'None' },
   { value: 1, name: 'Health <= 20%' },
