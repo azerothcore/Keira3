@@ -1,4 +1,12 @@
 import { Flag } from '../../types/general';
+import { CREATURE_TYPE } from '@keira-constants/options/creature-type';
+
+export const SPELL_DBC_CREATURE_TYPE_FLAGS: Flag[] = CREATURE_TYPE.slice(1, CREATURE_TYPE.length).map((option) => ({
+  bit: (option.value as number) - 1,
+  name: option.name,
+}));
+
+export const SPELL_DBC_FACING_FRONT_FLAG: Flag[] = [{ bit: 0, name: 'FacingFront' }];
 
 export const SPELL_DBC_INTERRUPT_FLAGS: Flag[] = [
   { bit: 0, name: 'On movement' },
@@ -90,22 +98,6 @@ export const SPELL_DBC_CHANNEL_INTERRUPT_FLAGS: Flag[] = [
   { bit: 15, name: 'On 16' },
   { bit: 16, name: 'On 17' },
   { bit: 17, name: 'On 18' },
-];
-
-export const SPELL_DBC_CREATURE_TYPE_FLAGS: Flag[] = [
-  { bit: 0, name: 'BEAST' },
-  { bit: 1, name: 'DRAGONKIN' },
-  { bit: 2, name: 'DEMON' },
-  { bit: 3, name: 'ELEMENTAL' },
-  { bit: 4, name: 'GIANT' },
-  { bit: 5, name: 'UNDEAD' },
-  { bit: 6, name: 'HUMANOID' },
-  { bit: 7, name: 'CRITTER' },
-  { bit: 8, name: 'MECHANICAL' },
-  { bit: 9, name: 'NOT_SPECIFIED' },
-  { bit: 10, name: 'TOTEM' },
-  { bit: 11, name: 'NON_COMBAT_PET' },
-  { bit: 12, name: 'GAS_CLOUD' },
 ];
 
 export const SPELL_DBC_ATTRIBUTES_FLAGS: Flag[][] = [];
