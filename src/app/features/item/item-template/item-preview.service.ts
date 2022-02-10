@@ -11,6 +11,7 @@ import { PVP_RANK } from '@keira-shared/constants/options/item-honorrank';
 import { PreviewHelperService } from '@keira-shared/services/preview-helper.service';
 import { CLASSES_TEXT, RACES_TEXT } from '@keira-shared/constants/preview';
 import { ItemExtendedCost } from '@keira-shared/types/item-extended-cost.type';
+import { FACTION_RANK } from '@keira-shared/constants/options/faction-rank';
 
 @Injectable()
 export class ItemPreviewService {
@@ -915,7 +916,7 @@ export class ItemPreviewService {
       /* istanbul ignore else */
       if (!!reqFaction) {
         if (requiredFactionRank > 0) {
-          reqFaction += ` (${requiredFactionRank})`;
+          reqFaction += ` (${FACTION_RANK[requiredFactionRank].name})`;
         }
         requiredText += `<br>Requires ${reqFaction}`;
       }

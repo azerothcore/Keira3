@@ -1,4 +1,5 @@
 import { Flag } from '../../types/general';
+import { FACTION_RANK } from '../options/faction-rank';
 
 export const QUEST_STATE: Flag[] = [
   { bit: 0, name: 'NONE (not taken)' },
@@ -10,16 +11,7 @@ export const QUEST_STATE: Flag[] = [
   { bit: 6, name: 'REWARDED' },
 ];
 
-export const RANKMASK: Flag[] = [
-  { bit: 0, name: 'HATED' },
-  { bit: 1, name: 'HOSTILE' },
-  { bit: 2, name: 'UNFRIENDLY' },
-  { bit: 3, name: 'NEUTRAL' },
-  { bit: 4, name: 'FRIENDLY' },
-  { bit: 5, name: 'HONORED' },
-  { bit: 6, name: 'REVERED' },
-  { bit: 7, name: 'EXALTED' },
-];
+export const RANKMASK: Flag[] = FACTION_RANK.map((option) => ({ bit: option.value as number, name: option.name }));
 
 export const TYPEMASK: Flag[] = [
   { bit: 3, name: 'TYPEMASK_UNIT' },

@@ -755,7 +755,7 @@ describe('ItemPreviewService', () => {
         RequiredReputationRank: 1,
         RequiredSkillRank: 10,
       },
-      output: `<br>Requires: profession (10)<br>Requires mockGetFactionNameById1 (1)`,
+      output: `<br>Requires: profession (10)<br>Requires mockGetFactionNameById1 (Hostile)`,
     },
     {
       name: 'Skill, Spell, Map, Area',

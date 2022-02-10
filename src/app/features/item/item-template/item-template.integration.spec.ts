@@ -400,7 +400,7 @@ describe('ItemTemplate integration tests', () => {
         page.setInputValueById('requiredhonorrank', 123);
         page.setInputValueById('RequiredCityRank', 123);
         page.setInputValueById('RequiredReputationFaction', 123);
-        page.setInputValueById('RequiredReputationRank', 123);
+        page.setInputValueById('RequiredReputationRank', 1);
         page.setInputValueById('maxcount', 123);
         page.setInputValueById('stackable', 123);
         page.setInputValueById('ContainerSlots', 123);
@@ -550,7 +550,7 @@ describe('ItemTemplate integration tests', () => {
           expect(itemStats).toContain('Requires Level 123');
           expect(itemStats).toContain('Requires: profession (123)');
           expect(itemStats).toContain('Requires mockGetSpellNameById123');
-          expect(itemStats).toContain('Requires mockGetFactionNameById123 (123)');
+          expect(itemStats).toContain('Requires mockGetFactionNameById123 (Hostile)');
           expect(itemStats).toContain('Locked');
           expect(itemStats).toContain('Requires mockItemNameById');
           expect(itemStats).toContain('Requires mockItemNameById');

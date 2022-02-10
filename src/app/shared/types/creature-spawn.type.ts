@@ -1,12 +1,14 @@
 import { TableRow } from './general';
 
 export const CREATURE_SPAWN_TABLE = 'creature';
-export const CREATURE_SPAWN_ID = 'id';
+export const CREATURE_SPAWN_ID = 'id1';
 export const CREATURE_SPAWN_ID_2 = 'guid';
 
 export class CreatureSpawn extends TableRow {
   guid: number = 0;
-  id: number = 0;
+  id1: number = 0;
+  id2: number = 0;
+  id3: number = 0;
   map: number = 0;
   zoneId: number = 0;
   areaId: number = 0;
