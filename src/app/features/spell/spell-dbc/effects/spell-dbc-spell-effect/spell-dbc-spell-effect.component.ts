@@ -5,8 +5,8 @@ import { ToastrModule } from 'ngx-toastr';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
 import { SpellDbcSpellEffectFieldPrefix } from './spell-dbc-spell-effect.model';
 import { SPELL_MECHANIC } from '@keira-shared/constants/options/spell-mechanic';
-import { SPELL_DBC_EFFECT, SPELL_DBC_APPLY_AURA_NAME } from '@keira-shared/constants/options/spell_dbc_effects_options';
-import { SPELL_DBC_CLASS_MASK_FLAGS } from '@keira-shared/constants/flags/spell_dbc_effect_flags';
+import { SPELL_DBC_EFFECT, SPELL_DBC_APPLY_AURA_NAME } from '@keira-shared/constants/options/spell-dbc-effects-options';
+import { SPELL_DBC_CLASS_MASK_FLAGS } from '@keira-shared/constants/flags/spell-dbc-effect-flags';
 
 @Component({
   selector: 'keira-spell-dbc-spell-effect',

@@ -11,7 +11,7 @@ import {
   SPELL_DBC_CREATURE_TYPE_FLAGS,
   SPELL_DBC_STANCES_FLAGS,
   SPELL_DBC_FACING_FRONT_FLAG,
-} from '@keira-shared/constants/flags/spell_dbc_flags_flags';
+} from '@keira-shared/constants/flags/spell-dbc-flags-flags';
 
 @Component({
   selector: 'keira-spell-dbc-flags',

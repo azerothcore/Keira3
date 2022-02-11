@@ -13,7 +13,7 @@ import {
   SPELL_DBC_TARGET_AURA_STATE,
   SPELL_DBC_DAMAGE_CLASS,
   SPELL_DBC_PREVENTION_TYPE,
-} from '@keira-shared/constants/options/spell_dbc_base_options';
+} from '@keira-shared/constants/options/spell-dbc-base-options';
 
 @Component({
   selector: 'keira-spell-dbc-base',
