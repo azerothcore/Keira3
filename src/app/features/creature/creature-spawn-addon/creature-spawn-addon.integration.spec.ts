@@ -76,7 +76,7 @@ describe('CreatureSpawnAddon integration tests', () => {
       expect(page.getInputById('bytes1').disabled).toBe(true);
       expect(page.getInputById('bytes2').disabled).toBe(true);
       expect(page.getInputById('emote').disabled).toBe(true);
-      expect(page.getInputById('isLarge').disabled).toBe(true);
+      expect(page.getInputById('visibilityDistanceType').disabled).toBe(true);
       expect(page.getInputById('auras').disabled).toBe(true);
       expect(page.getEditorTableRowsCount()).toBe(0);
       expect(handlerService.isCreatureSpawnAddonUnsaved).toBe(false);
@@ -100,7 +100,7 @@ describe('CreatureSpawnAddon integration tests', () => {
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(
         'DELETE FROM `creature_addon` WHERE (`guid` IN (0, 1, 2));\n' +
-          'INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +
+          'INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES\n' +
           "(0, 0, 0, 0, 0, 0, 0, ''),\n" +
           "(1, 0, 0, 0, 0, 0, 0, ''),\n" +
           "(2, 0, 0, 0, 0, 0, 0, '');",
@@ -114,7 +114,7 @@ describe('CreatureSpawnAddon integration tests', () => {
       page.expectDiffQueryToContain('DELETE FROM `creature_addon` WHERE (`guid` IN (1));');
       page.expectFullQueryToContain(
         'DELETE FROM `creature_addon` WHERE (`guid` IN (0, 2));\n' +
-          'INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +
+          'INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES\n' +
           "(0, 0, 0, 0, 0, 0, 0, ''),\n" +
           "(2, 0, 0, 0, 0, 0, 0, '');",
       );
@@ -124,7 +124,7 @@ describe('CreatureSpawnAddon integration tests', () => {
       page.expectDiffQueryToContain('DELETE FROM `creature_addon` WHERE (`guid` IN (1, 2));');
       page.expectFullQueryToContain(
         'DELETE FROM `creature_addon` WHERE (`guid` IN (0));\n' +
-          'INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +
+          'INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES\n' +
           "(0, 0, 0, 0, 0, 0, 0, '');",
       );
 
@@ -143,13 +143,13 @@ describe('CreatureSpawnAddon integration tests', () => {
 
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_addon` WHERE (`guid` IN (1, 2));\n' +
-          'INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +
+          'INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES\n' +
           "(1, 1, 0, 0, 0, 0, 0, ''),\n" +
           "(2, 0, 2, 0, 0, 0, 0, '');",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_addon` WHERE (`guid` IN (0, 1, 2));\n' +
-          'INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +
+          'INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES\n' +
           "(0, 0, 0, 0, 0, 0, 0, ''),\n" +
           "(1, 1, 0, 0, 0, 0, 0, ''),\n" +
           "(2, 0, 2, 0, 0, 0, 0, '');",

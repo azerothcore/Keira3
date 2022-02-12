@@ -10,6 +10,6 @@ export class CreatureSpawnAddon extends TableRow {
   bytes1: number = 0;
   bytes2: number = 0;
   emote: number = 0;
-  isLarge: number = 0;
+  visibilityDistanceType: number = 0;
   auras: string = '';
 }
