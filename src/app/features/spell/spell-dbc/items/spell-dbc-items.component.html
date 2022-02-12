@@ -1,47 +1,139 @@
 <form [formGroup]="formGroup" class="form-group edit-form">
-  <div class="row">
-    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" for="Totem_1">Totem_1</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
-      <input [formControlName]="'Totem_1'" id="Totem_1" type="number" class="form-control form-control-sm" />
-    </div>
-
-    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" for="Totem_2">Totem_2</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
-      <input [formControlName]="'Totem_2'" id="Totem_2" type="number" class="form-control form-control-sm" />
-    </div>
-
-    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" for="EquippedItemClass">EquippedItemClass</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
-      <input [formControlName]="'EquippedItemClass'" id="EquippedItemClass" type="number" class="form-control form-control-sm" />
-    </div>
-
-    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" for="EquippedItemSubclass">EquippedItemSubclass</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
-      <input [formControlName]="'EquippedItemSubclass'" id="EquippedItemSubclass" type="number" class="form-control form-control-sm" />
-    </div>
-
-    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" for="EquippedItemInvTypes">EquippedItemInvTypes</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
-      <input [formControlName]="'EquippedItemInvTypes'" id="EquippedItemInvTypes" type="number" class="form-control form-control-sm" />
+  <div class="content-block">
+    <span class="category-title"> General </span>
+    <div class="row">
+      <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" for="EquippedItemClass">EquippedItemClass</label>
+        <keira-single-value-selector-btn
+          [control]="formGroup.controls.EquippedItemClass"
+          [config]="{ options: ITEM_CLASS, name: 'EquippedItemClass' }"
+          [modalClass]="'modal-md'"
+        ></keira-single-value-selector-btn>
+        <i
+          class="fas fa-info-circle ms-1"
+          [placement]="'auto'"
+          [tooltip]="'item_template.class value which casters item held in hand must have'"
+        ></i>
+        <input [formControlName]="'EquippedItemClass'" id="EquippedItemClass" type="number" class="form-control form-control-sm" />
+      </div>
+      <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" for="EquippedItemSubclass">EquippedItemSubclass</label>
+        <keira-flags-selector-btn
+          *ngIf="
+            formGroup.controls.EquippedItemClass &&
+            formGroup.controls.EquippedItemClass.value !== null &&
+            formGroup.controls.EquippedItemClass.value >= 0 &&
+            formGroup.controls.EquippedItemClass.value < SPELL_DBC_ITEM_SUBCLASS.length
+          "
+          [control]="formGroup.controls.EquippedItemSubclass"
+          [config]="{ flags: SPELL_DBC_ITEM_SUBCLASS[formGroup.controls.EquippedItemClass.value], name: 'EquippedItemSubclass' }"
+          [modalClass]="'modal-md'"
+        ></keira-flags-selector-btn>
+        <i
+          class="fas fa-info-circle ms-1"
+          [placement]="'auto'"
+          [tooltip]="'Mask of item_template.subclass values which caster\'s item held in hand must have'"
+        ></i>
+        <input [formControlName]="'EquippedItemSubclass'" id="EquippedItemSubclass" type="number" class="form-control form-control-sm" />
+      </div>
+      <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" for="EquippedItemInvTypes">EquippedItemInvTypes</label>
+        <keira-flags-selector-btn
+          [control]="formGroup.controls.EquippedItemInvTypes"
+          [config]="{ flags: SPELL_DBC_INVENTORY_TYPE, name: 'EquippedItemInvTypes' }"
+          [modalClass]="'modal-md'"
+        ></keira-flags-selector-btn>
+        <i
+          class="fas fa-info-circle ms-1"
+          [placement]="'auto'"
+          [tooltip]="'Mask of item_template.InventoryType values which targeted item must have'"
+        ></i>
+        <input [formControlName]="'EquippedItemInvTypes'" id="EquippedItemInvTypes" type="number" class="form-control form-control-sm" />
+      </div>
     </div>
   </div>
+  <div class="content-block">
+    <span class="category-title"> Non-consumable items </span>
+    <div class="row">
+      <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" for="Totem_1">Totem_1</label>
+        <keira-item-selector-btn [control]="formGroup.controls.Totem_1" [config]="{ name: 'Totem_1' }"></keira-item-selector-btn>
+        <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Non consumable item required to cast the spell.'"></i>
+        <input [formControlName]="'Totem_1'" id="Totem_1" type="number" class="form-control form-control-sm" />
+      </div>
 
-  <div class="row" *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8]">
-    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" [for]="'Reagent_' + i">Reagent_{{ i }}</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
-      <input [formControlName]="'Reagent_' + i" [id]="'Reagent_' + i" type="number" class="form-control form-control-sm" />
+      <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" for="Totem_2">Totem_2</label>
+        <keira-item-selector-btn [control]="formGroup.controls.Totem_2" [config]="{ name: 'Totem_2' }"></keira-item-selector-btn>
+        <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Non consumable item required to cast the spell.'"></i>
+        <input [formControlName]="'Totem_2'" id="Totem_2" type="number" class="form-control form-control-sm" />
+      </div>
     </div>
+    <div class="row">
+      <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" for="RequiredTotemCategoryID_1">RequiredTotemCategoryID_1</label>
+        <keira-single-value-selector-btn
+          [control]="formGroup.controls.RequiredTotemCategoryID_1"
+          [config]="{ options: TOTEM_CATEGORY, name: 'RequiredTotemCategoryID_1' }"
+          [modalClass]="'modal-md'"
+        ></keira-single-value-selector-btn>
+        <i
+          class="fas fa-info-circle ms-1"
+          [placement]="'auto'"
+          [tooltip]="'Non consumable items (e.g. enchanter rods) required to cast the spell.'"
+        ></i>
+        <input
+          [formControlName]="'RequiredTotemCategoryID_1'"
+          id="RequiredTotemCategoryID_1"
+          type="number"
+          class="form-control form-control-sm"
+        />
+      </div>
+      <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" for="RequiredTotemCategoryID_2">RequiredTotemCategoryID_2</label>
+        <keira-single-value-selector-btn
+          [control]="formGroup.controls.RequiredTotemCategoryID_2"
+          [config]="{ options: TOTEM_CATEGORY, name: 'RequiredTotemCategoryID_2' }"
+          [modalClass]="'modal-md'"
+        ></keira-single-value-selector-btn>
+        <i
+          class="fas fa-info-circle ms-1"
+          [placement]="'auto'"
+          [tooltip]="'Non consumable items (e.g. enchanter rods) required to cast the spell.'"
+        ></i>
+        <input
+          [formControlName]="'RequiredTotemCategoryID_2'"
+          id="RequiredTotemCategoryID_2"
+          type="number"
+          class="form-control form-control-sm"
+        />
+      </div>
+    </div>
+  </div>
+  <div class="content-block">
+    <span class="category-title"> Consumable items </span>
+    <div class="row">
+      <div class="row" *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8]">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" [for]="'Reagent_' + i">Reagent_{{ i }}</label>
+          <keira-item-selector-btn
+            [control]="formGroup.controls['Reagent_' + i]"
+            [config]="{ name: 'Reagent_' + i }"
+          ></keira-item-selector-btn>
+          <i
+            class="fas fa-info-circle ms-1"
+            [placement]="'auto'"
+            [tooltip]="'Entry of item used by this spell as resources. Gets consumed. Materials for professions.'"
+          ></i>
+          <input [formControlName]="'Reagent_' + i" [id]="'Reagent_' + i" type="number" class="form-control form-control-sm" />
+        </div>
 
-    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" [for]="'ReagentCount_' + i">ReagentCount_{{ i }}</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
-      <input [formControlName]="'ReagentCount_' + i" [id]="'ReagentCount_' + i" type="number" class="form-control form-control-sm" />
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" [for]="'ReagentCount_' + i">ReagentCount_{{ i }}</label>
+          <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Number of reagent items needed by spell'"></i>
+          <input [formControlName]="'ReagentCount_' + i" [id]="'ReagentCount_' + i" type="number" class="form-control form-control-sm" />
+        </div>
+      </div>
     </div>
   </div>
 </form>

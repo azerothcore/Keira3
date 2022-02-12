@@ -1,163 +1,242 @@
 <form *ngIf="formGroup && index" [formGroup]="formGroup" class="form-group edit-form">
-  <div class="row">
-    <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" [for]="getFieldName('SpellClassMask')">{{ getFieldName('SpellClassMask') }}</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
-      <input
-        [formControlName]="getFieldName('SpellClassMask')"
-        type="number"
-        [id]="getFieldName('SpellClassMask')"
-        class="form-control form-control-sm"
-      />
+  <div class="content-block">
+    <span class="category-title"> Effect </span>
+    <div class="row">
+      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" [for]="getFieldName('Effect')">{{ getFieldName('Effect') }}</label>
+        <keira-single-value-selector-btn
+          [control]="formGroup.controls[getFieldName('Effect')]"
+          [config]="{ options: SPELL_DBC_EFFECT, name: getFieldName('Effect') }"
+          [modalClass]="'modal-md'"
+        ></keira-single-value-selector-btn>
+        <i
+          class="fas fa-info-circle ms-1"
+          [placement]="'auto'"
+          [tooltip]="'Type of effect which spell has. All following effect fields refer to these.'"
+        ></i>
+        <input
+          [formControlName]="getFieldName('Effect')"
+          type="number"
+          [id]="getFieldName('Effect')"
+          class="form-control form-control-sm"
+        />
+      </div>
+      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" [for]="getFieldName('EffectBasePoints')">{{ getFieldName('EffectBasePoints') }}</label>
+        <i
+          class="fas fa-info-circle ms-1"
+          [placement]="'auto'"
+          [tooltip]="
+            'Base points added to result of according effects rolled dice. e.g. EffectDieSides=26 and EffectBasePoints=49 will make 50-75.'
+          "
+        ></i>
+        <input
+          [formControlName]="getFieldName('EffectBasePoints')"
+          type="number"
+          [id]="getFieldName('EffectBasePoints')"
+          class="form-control form-control-sm"
+        />
+      </div>
+      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" [for]="getFieldName('EffectRealPointsPerLevel')">{{ getFieldName('EffectRealPointsPerLevel') }}</label>
+        <i
+          class="fas fa-info-circle ms-1"
+          [placement]="'auto'"
+          [tooltip]="'Base points added to according EffectBasePoints based on caster level.'"
+        ></i>
+        <input
+          [formControlName]="getFieldName('EffectRealPointsPerLevel')"
+          type="number"
+          [id]="getFieldName('EffectRealPointsPerLevel')"
+          class="form-control form-control-sm"
+        />
+      </div>
+      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" [for]="getFieldName('EffectRadiusIndex')">{{ getFieldName('EffectRadiusIndex') }}</label>
+        <i
+          class="fas fa-info-circle ms-1"
+          [placement]="'auto'"
+          [tooltip]="'According spell effect radius. May differ with caster level. Link to entry in SpellRadius.dbc'"
+        ></i>
+        <input
+          [formControlName]="getFieldName('EffectRadiusIndex')"
+          type="number"
+          [id]="getFieldName('EffectRadiusIndex')"
+          class="form-control form-control-sm"
+        />
+      </div>
+      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" [for]="getFieldName('EffectMultipleValue')">{{ getFieldName('EffectMultipleValue') }}</label>
+        <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Number of stacks for Buffs/Debuffs'"></i>
+        <input
+          [formControlName]="getFieldName('EffectMultipleValue')"
+          type="number"
+          [id]="getFieldName('EffectMultipleValue')"
+          class="form-control form-control-sm"
+        />
+      </div>
+      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" [for]="getFieldName('EffectMiscValue')">{{ getFieldName('EffectMiscValue') }}</label>
+        <i
+          class="fas fa-info-circle ms-1"
+          [placement]="'auto'"
+          [tooltip]="'Used for according effects special misc values, commonly entries of called or used creature/item/gameobject.'"
+        ></i>
+        <input
+          [formControlName]="getFieldName('EffectMiscValue')"
+          type="number"
+          [id]="getFieldName('EffectMiscValue')"
+          class="form-control form-control-sm"
+        />
+      </div>
+      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" [for]="getFieldName('EffectMiscValueB')">{{ getFieldName('EffectMiscValueB') }}</label>
+        <i
+          class="fas fa-info-circle ms-1"
+          [placement]="'auto'"
+          [tooltip]="'Used for according effects special misc values, commonly entries of called or used creature/item/gameobject.'"
+        ></i>
+        <input
+          [formControlName]="getFieldName('EffectMiscValueB')"
+          type="number"
+          [id]="getFieldName('EffectMiscValueB')"
+          class="form-control form-control-sm"
+        />
+      </div>
+      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" [for]="getFieldName('EffectTriggerSpell')">{{ getFieldName('EffectTriggerSpell') }}</label>
+        <i
+          class="fas fa-info-circle ms-1"
+          [placement]="'auto'"
+          [tooltip]="'Entry of spell triggered on affected target by this according effect.'"
+        ></i>
+        <input
+          [formControlName]="getFieldName('EffectTriggerSpell')"
+          type="number"
+          [id]="getFieldName('EffectTriggerSpell')"
+          class="form-control form-control-sm"
+        />
+      </div>
+      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" [for]="getFieldName('EffectItemType')">{{ getFieldName('EffectItemType') }}</label>
+        <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+        <input
+          [formControlName]="getFieldName('EffectItemType')"
+          type="number"
+          [id]="getFieldName('EffectItemType')"
+          class="form-control form-control-sm"
+        />
+      </div>
+      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" [for]="getFieldName('EffectPointsPerCombo')">{{ getFieldName('EffectPointsPerCombo') }}</label>
+        <i
+          class="fas fa-info-circle ms-1"
+          [placement]="'auto'"
+          [tooltip]="'Bonus to effect base value based on amount of combo points on target.'"
+        ></i>
+        <input
+          [formControlName]="getFieldName('EffectPointsPerCombo')"
+          type="number"
+          [id]="getFieldName('EffectPointsPerCombo')"
+          class="form-control form-control-sm"
+        />
+      </div>
+      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" [for]="getFieldName('EffectDieSides')">{{ getFieldName('EffectDieSides') }}</label>
+        <i
+          class="fas fa-info-circle ms-1"
+          [placement]="'auto'"
+          [tooltip]="'Number of sides of dice which is being rolled for random value of according effect.'"
+        ></i>
+        <input
+          [formControlName]="getFieldName('EffectDieSides')"
+          type="number"
+          [id]="getFieldName('EffectDieSides')"
+          class="form-control form-control-sm"
+        />
+      </div>
+      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" [for]="getFieldName('EffectChainAmplitude')">{{ getFieldName('EffectChainAmplitude') }}</label>
+        <i
+          class="fas fa-info-circle ms-1"
+          [placement]="'auto'"
+          [tooltip]="'Used for decreasing (or increasing) according effect value on next chained targets.'"
+        ></i>
+        <input
+          [formControlName]="getFieldName('EffectChainAmplitude')"
+          type="number"
+          [id]="getFieldName('EffectChainAmplitude')"
+          class="form-control form-control-sm"
+        />
+      </div>
+      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" [for]="getFieldName('EffectBonusMultiplier')">{{ getFieldName('EffectBonusMultiplier') }}</label>
+        <i
+          class="fas fa-info-circle ms-1"
+          [placement]="'auto'"
+          [tooltip]="'Seems to be used for calculation of the according effect value of ticks for DoTs and HoTs.'"
+        ></i>
+        <input
+          [formControlName]="getFieldName('EffectBonusMultiplier')"
+          type="number"
+          [id]="getFieldName('EffectBonusMultiplier')"
+          class="form-control form-control-sm"
+        />
+      </div>
     </div>
-
-    <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" [for]="getFieldName('EffectChainAmplitude')">{{ getFieldName('EffectChainAmplitude') }}</label>
-      <i
-        class="fas fa-info-circle ms-1"
-        [placement]="'auto'"
-        [tooltip]="'Used for decreasing (or increasing) according effect value on next chained targets.'"
-      ></i>
-      <input
-        [formControlName]="getFieldName('EffectChainAmplitude')"
-        type="number"
-        [id]="getFieldName('EffectChainAmplitude')"
-        class="form-control form-control-sm"
-      />
+  </div>
+  <div class="content-block">
+    <span class="category-title"> Effect Mechanic </span>
+    <div class="row">
+      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" [for]="getFieldName('EffectMechanic')">{{ getFieldName('EffectMechanic') }}</label>
+        <keira-single-value-selector-btn
+          [control]="formGroup.controls[getFieldName('EffectMechanic')]"
+          [config]="{ options: SPELL_MECHANIC, name: getFieldName('EffectMechanic') }"
+          [modalClass]="'modal-md'"
+        ></keira-single-value-selector-btn>
+        <i
+          class="fas fa-info-circle ms-1"
+          [placement]="'auto'"
+          [tooltip]="
+            'Mechanic of according spell effect. Used by spells granting bonuses/immunities against certain effect types (stun, charm...).'
+          "
+        ></i>
+        <input
+          [formControlName]="getFieldName('EffectMechanic')"
+          type="number"
+          [id]="getFieldName('EffectMechanic')"
+          class="form-control form-control-sm"
+        />
+      </div>
     </div>
-
-    <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" [for]="getFieldName('Effect')">{{ getFieldName('Effect') }}</label>
-      <i
-        class="fas fa-info-circle ms-1"
-        [placement]="'auto'"
-        [tooltip]="
-          'Type of effect which spell has. All following effect fields (and some at the end of DBC) refer to these - up to 3 effects.'
-        "
-      ></i>
-      <input [formControlName]="getFieldName('Effect')" type="number" [id]="getFieldName('Effect')" class="form-control form-control-sm" />
+  </div>
+  <div class="content-block">
+    <span class="category-title"> Effect Aura </span>
+    <div class="row">
+      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" [for]="getFieldName('EffectAura')">{{ getFieldName('EffectAura') }}</label>
+        <keira-single-value-selector-btn
+          [control]="formGroup.controls[getFieldName('EffectAura')]"
+          [config]="{ options: SPELL_DBC_APPLY_AURA_NAME, name: getFieldName('EffectAura') }"
+          [modalClass]="'modal-md'"
+        ></keira-single-value-selector-btn>
+        <i
+          class="fas fa-info-circle ms-1"
+          [placement]="'auto'"
+          [tooltip]="'Type of aura (effect of effect) which according effect applies.'"
+        ></i>
+        <input
+          [formControlName]="getFieldName('EffectAura')"
+          type="number"
+          [id]="getFieldName('EffectAura')"
+          class="form-control form-control-sm"
+        />
+      </div>
     </div>
-
-    <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" [for]="getFieldName('EffectDieSides')">{{ getFieldName('EffectDieSides') }}</label>
-      <i
-        class="fas fa-info-circle ms-1"
-        [placement]="'auto'"
-        [tooltip]="'Number of sides of dice which is being rolled for random value of according effect.'"
-      ></i>
-      <input
-        [formControlName]="getFieldName('EffectDieSides')"
-        type="number"
-        [id]="getFieldName('EffectDieSides')"
-        class="form-control form-control-sm"
-      />
-    </div>
-
-    <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" [for]="getFieldName('EffectRealPointsPerLevel')">{{ getFieldName('EffectRealPointsPerLevel') }}</label>
-      <i
-        class="fas fa-info-circle ms-1"
-        [placement]="'auto'"
-        [tooltip]="'Base points added to according EffectBasePoints based on caster level.'"
-      ></i>
-      <input
-        [formControlName]="getFieldName('EffectRealPointsPerLevel')"
-        type="number"
-        [id]="getFieldName('EffectRealPointsPerLevel')"
-        class="form-control form-control-sm"
-      />
-    </div>
-
-    <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" [for]="getFieldName('EffectBasePoints')">{{ getFieldName('EffectBasePoints') }}</label>
-      <i
-        class="fas fa-info-circle ms-1"
-        [placement]="'auto'"
-        [tooltip]="
-          'Base points added to result of according effects rolled dice. e.g. EffectDieSides=26 and EffectBasePoints=49 will make 50-75.'
-        "
-      ></i>
-      <input
-        [formControlName]="getFieldName('EffectBasePoints')"
-        type="number"
-        [id]="getFieldName('EffectBasePoints')"
-        class="form-control form-control-sm"
-      />
-    </div>
-
-    <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" [for]="getFieldName('EffectMechanic')">{{ getFieldName('EffectMechanic') }}</label>
-      <keira-single-value-selector-btn
-        [control]="formGroup.controls[getFieldName('EffectMechanic')]"
-        [config]="{ options: SPELL_MECHANIC, name: getFieldName('EffectMechanic') }"
-        [modalClass]="'modal-md'"
-      ></keira-single-value-selector-btn>
-      <i
-        class="fas fa-info-circle ms-1"
-        [placement]="'auto'"
-        [tooltip]="
-          'Mechanic of according spell effect. Used by spells granting bonuses/immunities against certain effect types (stun, charm...).'
-        "
-      ></i>
-      <input
-        [formControlName]="getFieldName('EffectMechanic')"
-        type="number"
-        [id]="getFieldName('EffectMechanic')"
-        class="form-control form-control-sm"
-      />
-    </div>
-
-    <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" [for]="getFieldName('ImplicitTargetA')">{{ getFieldName('ImplicitTargetA') }}</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Type of implicit target(s) of according effect.'"></i>
-      <input
-        [formControlName]="getFieldName('ImplicitTargetA')"
-        type="number"
-        [id]="getFieldName('ImplicitTargetA')"
-        class="form-control form-control-sm"
-      />
-    </div>
-
-    <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" [for]="getFieldName('ImplicitTargetB')">{{ getFieldName('ImplicitTargetB') }}</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Type of implicit target(s) of according effect.'"></i>
-      <input
-        [formControlName]="getFieldName('ImplicitTargetB')"
-        type="number"
-        [id]="getFieldName('ImplicitTargetB')"
-        class="form-control form-control-sm"
-      />
-    </div>
-
-    <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" [for]="getFieldName('EffectRadiusIndex')">{{ getFieldName('EffectRadiusIndex') }}</label>
-      <i
-        class="fas fa-info-circle ms-1"
-        [placement]="'auto'"
-        [tooltip]="'According spell effect radius. May differ with caster level.'"
-      ></i>
-      <input
-        [formControlName]="getFieldName('EffectRadiusIndex')"
-        type="number"
-        [id]="getFieldName('EffectRadiusIndex')"
-        class="form-control form-control-sm"
-      />
-    </div>
-
-    <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" [for]="getFieldName('EffectAura')">{{ getFieldName('EffectAura') }}</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
-      <input
-        [formControlName]="getFieldName('EffectAura')"
-        type="number"
-        [id]="getFieldName('EffectAura')"
-        class="form-control form-control-sm"
-      />
-    </div>
-
     <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" [for]="getFieldName('EffectAuraPeriod')">{{ getFieldName('EffectAuraPeriod') }}</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'How often according effect ticks in ms.'"></i>
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'How often the effect ticks in ms.'"></i>
       <input
         [formControlName]="getFieldName('EffectAuraPeriod')"
         type="number"
@@ -165,143 +244,112 @@
         class="form-control form-control-sm"
       />
     </div>
-
-    <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" [for]="getFieldName('EffectMultipleValue')">{{ getFieldName('EffectMultipleValue') }}</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
-      <input
-        [formControlName]="getFieldName('EffectMultipleValue')"
-        type="number"
-        [id]="getFieldName('EffectMultipleValue')"
-        class="form-control form-control-sm"
-      />
-    </div>
-
-    <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" [for]="getFieldName('EffectChainTargets')">{{ getFieldName('EffectChainTargets') }}</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
-      <input
-        [formControlName]="getFieldName('EffectChainTargets')"
-        type="number"
-        [id]="getFieldName('EffectChainTargets')"
-        class="form-control form-control-sm"
-      />
-    </div>
-
-    <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" [for]="getFieldName('EffectItemType')">{{ getFieldName('EffectItemType') }}</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
-      <input
-        [formControlName]="getFieldName('EffectItemType')"
-        type="number"
-        [id]="getFieldName('EffectItemType')"
-        class="form-control form-control-sm"
-      />
-    </div>
-
-    <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" [for]="getFieldName('EffectMiscValue')">{{ getFieldName('EffectMiscValue') }}</label>
-      <i
-        class="fas fa-info-circle ms-1"
-        [placement]="'auto'"
-        [tooltip]="'Used for according effects special misc values, commonly entries of called or used creature/item/gameobject.'"
-      ></i>
-      <input
-        [formControlName]="getFieldName('EffectMiscValue')"
-        type="number"
-        [id]="getFieldName('EffectMiscValue')"
-        class="form-control form-control-sm"
-      />
-    </div>
-
-    <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" [for]="getFieldName('EffectMiscValueB')">{{ getFieldName('EffectMiscValueB') }}</label>
-      <i
-        class="fas fa-info-circle ms-1"
-        [placement]="'auto'"
-        [tooltip]="'Used for according effects special misc values, commonly entries of called or used creature/item/gameobject.'"
-      ></i>
-      <input
-        [formControlName]="getFieldName('EffectMiscValueB')"
-        type="number"
-        [id]="getFieldName('EffectMiscValueB')"
-        class="form-control form-control-sm"
-      />
-    </div>
-
-    <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" [for]="getFieldName('EffectTriggerSpell')">{{ getFieldName('EffectTriggerSpell') }}</label>
-      <i
-        class="fas fa-info-circle ms-1"
-        [placement]="'auto'"
-        [tooltip]="'Entry of spell triggered on affected target by this according effect.'"
-      ></i>
-      <input
-        [formControlName]="getFieldName('EffectTriggerSpell')"
-        type="number"
-        [id]="getFieldName('EffectTriggerSpell')"
-        class="form-control form-control-sm"
-      />
-    </div>
-
-    <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" [for]="getFieldName('EffectPointsPerCombo')">{{ getFieldName('EffectPointsPerCombo') }}</label>
-      <i
-        class="fas fa-info-circle ms-1"
-        [placement]="'auto'"
-        [tooltip]="'Bonus to effect base value based on amount of combo points on target.'"
-      ></i>
-      <input
-        [formControlName]="getFieldName('EffectPointsPerCombo')"
-        type="number"
-        [id]="getFieldName('EffectPointsPerCombo')"
-        class="form-control form-control-sm"
-      />
-    </div>
-
-    <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" [for]="getFieldName('EffectSpellClassMaskA')">{{ getFieldName('EffectSpellClassMaskA') }}</label>
-      <i
-        class="fas fa-info-circle ms-1"
-        [placement]="'auto'"
-        [tooltip]="'Entry of fields 210-212 as hex value of the spell this spell is affecting. Used for effect #1'"
-      ></i>
-      <input
-        [formControlName]="getFieldName('EffectSpellClassMaskA')"
-        type="number"
-        [id]="getFieldName('EffectSpellClassMaskA')"
-        class="form-control form-control-sm"
-      />
-    </div>
-
-    <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" [for]="getFieldName('EffectSpellClassMaskB')">{{ getFieldName('EffectSpellClassMaskB') }}</label>
-      <i
-        class="fas fa-info-circle ms-1"
-        [placement]="'auto'"
-        [tooltip]="'Entry of fields 210-212 as hex value of the spell this spell is affecting. Used for effect #2'"
-      ></i>
-      <input
-        [formControlName]="getFieldName('EffectSpellClassMaskB')"
-        type="number"
-        [id]="getFieldName('EffectSpellClassMaskB')"
-        class="form-control form-control-sm"
-      />
-    </div>
-
-    <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" [for]="getFieldName('EffectSpellClassMaskC')">{{ getFieldName('EffectSpellClassMaskC') }}</label>
-      <i
-        class="fas fa-info-circle ms-1"
-        [placement]="'auto'"
-        [tooltip]="'Entry of fields 210-212 as hex value of the spell this spell is affecting. Used for effect #3'"
-      ></i>
-      <input
-        [formControlName]="getFieldName('EffectSpellClassMaskC')"
-        type="number"
-        [id]="getFieldName('EffectSpellClassMaskC')"
-        class="form-control form-control-sm"
-      />
+  </div>
+  <div class="content-block">
+    <span class="category-title"> Misc </span>
+    <div class="row">
+      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" [for]="getFieldName('SpellClassMask')">{{ getFieldName('SpellClassMask') }}</label>
+        <i
+          class="fas fa-info-circle ms-1"
+          [placement]="'auto'"
+          [tooltip]="'?Mask for spells which are affected (buffed, ...) by this spell?'"
+        ></i>
+        <input
+          [formControlName]="getFieldName('SpellClassMask')"
+          type="number"
+          [id]="getFieldName('SpellClassMask')"
+          class="form-control form-control-sm"
+        />
+      </div>
+      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" [for]="getFieldName('ImplicitTargetA')">{{ getFieldName('ImplicitTargetA') }}</label>
+        <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Type of implicit target(s) of according effect.'"></i>
+        <input
+          [formControlName]="getFieldName('ImplicitTargetA')"
+          type="number"
+          [id]="getFieldName('ImplicitTargetA')"
+          class="form-control form-control-sm"
+        />
+      </div>
+      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" [for]="getFieldName('ImplicitTargetB')">{{ getFieldName('ImplicitTargetB') }}</label>
+        <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Type of implicit target(s) of according effect.'"></i>
+        <input
+          [formControlName]="getFieldName('ImplicitTargetB')"
+          type="number"
+          [id]="getFieldName('ImplicitTargetB')"
+          class="form-control form-control-sm"
+        />
+      </div>
+      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" [for]="getFieldName('EffectChainTargets')">{{ getFieldName('EffectChainTargets') }}</label>
+        <i
+          class="fas fa-info-circle ms-1"
+          [placement]="'auto'"
+          [tooltip]="'?Used to create chaining visual effects (e.g. chain lightning)?'"
+        ></i>
+        <input
+          [formControlName]="getFieldName('EffectChainTargets')"
+          type="number"
+          [id]="getFieldName('EffectChainTargets')"
+          class="form-control form-control-sm"
+        />
+      </div>
+      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" [for]="getFieldName('EffectSpellClassMaskA')">{{ getFieldName('EffectSpellClassMaskA') }}</label>
+        <keira-flags-selector-btn
+          [control]="formGroup.controls[getFieldName('EffectSpellClassMaskA')]"
+          [config]="{ flags: SPELL_DBC_CLASS_MASK_FLAGS, name: getFieldName('EffectSpellClassMaskA') }"
+        ></keira-flags-selector-btn>
+        <i
+          class="fas fa-info-circle ms-1"
+          [placement]="'auto'"
+          [tooltip]="'Entry of fields 210-212 as hex value of the spell this spell is affecting. Used for effect #1'"
+        ></i>
+        <input
+          [formControlName]="getFieldName('EffectSpellClassMaskA')"
+          type="number"
+          [id]="getFieldName('EffectSpellClassMaskA')"
+          class="form-control form-control-sm"
+        />
+      </div>
+      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" [for]="getFieldName('EffectSpellClassMaskB')">{{ getFieldName('EffectSpellClassMaskB') }}</label>
+        <keira-flags-selector-btn
+          [control]="formGroup.controls[getFieldName('EffectSpellClassMaskB')]"
+          [config]="{ flags: SPELL_DBC_CLASS_MASK_FLAGS, name: getFieldName('EffectSpellClassMaskB') }"
+        ></keira-flags-selector-btn>
+        <i
+          class="fas fa-info-circle ms-1"
+          [placement]="'auto'"
+          [tooltip]="'Entry of fields 210-212 as hex value of the spell this spell is affecting. Used for effect #2'"
+        ></i>
+        <input
+          [formControlName]="getFieldName('EffectSpellClassMaskB')"
+          type="number"
+          [id]="getFieldName('EffectSpellClassMaskB')"
+          class="form-control form-control-sm"
+        />
+      </div>
+      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" [for]="getFieldName('EffectSpellClassMaskC')">{{ getFieldName('EffectSpellClassMaskC') }}</label>
+        <keira-flags-selector-btn
+          [control]="formGroup.controls[getFieldName('EffectSpellClassMaskC')]"
+          [config]="{ flags: SPELL_DBC_CLASS_MASK_FLAGS, name: getFieldName('EffectSpellClassMaskC') }"
+        ></keira-flags-selector-btn>
+        <i
+          class="fas fa-info-circle ms-1"
+          [placement]="'auto'"
+          [tooltip]="'Entry of fields 210-212 as hex value of the spell this spell is affecting. Used for effect #3'"
+        ></i>
+        <input
+          [formControlName]="getFieldName('EffectSpellClassMaskC')"
+          type="number"
+          [id]="getFieldName('EffectSpellClassMaskC')"
+          class="form-control form-control-sm"
+        />
+      </div>
     </div>
   </div>
 </form>

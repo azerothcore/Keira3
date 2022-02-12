@@ -1,6 +1,6 @@
 import { Flag } from '../../types/general';
 
-export const SPELL_SCHOOL_IMMUNE_MASK: Flag[] = [
+export const SPELL_SCHOOL_MASK: Flag[] = [
   { bit: 0, name: 'SPELL_SCHOOL_NORMAL' },
   { bit: 1, name: 'SPELL_SCHOOL_HOLY' },
   { bit: 2, name: 'SPELL_SCHOOL_FIRE' },

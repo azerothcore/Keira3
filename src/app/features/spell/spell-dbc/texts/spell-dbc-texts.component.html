@@ -1,3 +1,32 @@
+<form [formGroup]="formGroup" class="form-group edit-form">
+  <div class="row">
+    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+      <label class="control-label" for="Name_Lang_Mask">Name_Lang_Mask</label>
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Bitmask for Language string data'"></i>
+      <input [formControlName]="'Name_Lang_Mask'" id="Name_Lang_Mask" type="number" class="form-control form-control-sm" />
+    </div>
+    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+      <label class="control-label" for="NameSubtext_Lang_Mask">NameSubtext_Lang_Mask</label>
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Bitmask for NameSubtext string data'"></i>
+      <input [formControlName]="'NameSubtext_Lang_Mask'" id="NameSubtext_Lang_Mask" type="number" class="form-control form-control-sm" />
+    </div>
+    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+      <label class="control-label" for="Description_Lang_Mask">Description_Lang_Mask</label>
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Bitmask for Description string data'"></i>
+      <input [formControlName]="'Description_Lang_Mask'" id="Description_Lang_Mask" type="number" class="form-control form-control-sm" />
+    </div>
+    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+      <label class="control-label" for="AuraDescription_Lang_Mask">AuraDescription_Lang_Mask</label>
+      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Bitmask for AuraDescription string data'"></i>
+      <input
+        [formControlName]="'AuraDescription_Lang_Mask'"
+        id="AuraDescription_Lang_Mask"
+        type="number"
+        class="form-control form-control-sm"
+      />
+    </div>
+  </div>
+</form>
 <tabset *ngIf="formGroup" id="locales">
   <tab *ngFor="let locale of LOCALES" [heading]="locale" [id]="locale">
     <keira-spell-dbc-locale [formGroup]="formGroup" [locale]="locale"></keira-spell-dbc-locale>
