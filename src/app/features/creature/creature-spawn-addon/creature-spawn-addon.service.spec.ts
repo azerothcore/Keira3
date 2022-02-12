@@ -31,7 +31,7 @@ describe('CreatureSpawnAddonService', () => {
     service.selectQuery(id);
 
     expect(querySpy).toHaveBeenCalledWith(
-      `SELECT a.* FROM creature AS c INNER JOIN creature_addon AS a ON c.guid = a.guid WHERE c.id = ${id}`,
+      `SELECT a.* FROM creature AS c INNER JOIN creature_addon AS a ON c.guid = a.guid WHERE c.id1 = ${id}`,
     );
   });
 });

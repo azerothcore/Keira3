@@ -70,13 +70,18 @@
             <input [formControlName]="'emote'" id="emote" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-            <label class="control-label" for="isLarge">isLarge</label>
+            <label class="control-label" for="visibilityDistanceType">visibilityDistanceType</label>
             <i
               class="fas fa-info-circle ms-1"
               [placement]="'auto'"
               [tooltip]="'Controls the visibility distance of the creature. 0 = Normal (default 90 yards);  1 = Large (250 yards)'"
             ></i>
-            <input [formControlName]="'isLarge'" id="isLarge" type="number" class="form-control form-control-sm" />
+            <input
+              [formControlName]="'visibilityDistanceType'"
+              id="visibilityDistanceType"
+              type="number"
+              class="form-control form-control-sm"
+            />
           </div>
           <div class="form-group col-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
             <label class="control-label" for="auras">auras</label>

@@ -26,7 +26,7 @@ describe('CreatureTemplateAddon integration tests', () => {
   const id = 1234;
   const expectedFullCreateQuery =
     'DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
-    'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +
+    'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES\n' +
     "(1234, 0, 0, 0, 0, 0, 0, '');";
 
   const originalEntity = new CreatureTemplateAddon();
@@ -85,7 +85,7 @@ describe('CreatureTemplateAddon integration tests', () => {
     it('changing a property and executing the query should correctly work', () => {
       const expectedQuery =
         'DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
-        'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +
+        'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES\n' +
         "(1234, 3, 0, 0, 0, 0, 0, '');";
       querySpy.calls.reset();
 
@@ -107,7 +107,7 @@ describe('CreatureTemplateAddon integration tests', () => {
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
-          'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +
+          'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES\n' +
           '(1234, 123, 0, 1, 2, 3, 0, NULL);',
       );
     });
@@ -115,7 +115,7 @@ describe('CreatureTemplateAddon integration tests', () => {
     it('changing all properties and executing the query should correctly work', () => {
       const expectedQuery =
         'UPDATE `creature_template_addon` SET ' +
-        "`path_id` = 0, `mount` = 1, `bytes1` = 2, `bytes2` = 3, `emote` = 4, `isLarge` = 5, `auras` = '6' WHERE (`entry` = 1234);";
+        "`path_id` = 0, `mount` = 1, `bytes1` = 2, `bytes2` = 3, `emote` = 4, `visibilityDistanceType` = 5, `auras` = '6' WHERE (`entry` = 1234);";
       querySpy.calls.reset();
 
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
@@ -131,7 +131,7 @@ describe('CreatureTemplateAddon integration tests', () => {
       page.expectDiffQueryToContain('UPDATE `creature_template_addon` SET `path_id` = 3 WHERE (`entry` = 1234);');
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
-          'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +
+          'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES\n' +
           '(1234, 3, 0, 1, 2, 3, 0, NULL);',
       );
 
@@ -139,7 +139,7 @@ describe('CreatureTemplateAddon integration tests', () => {
       page.expectDiffQueryToContain('UPDATE `creature_template_addon` SET `path_id` = 3, `bytes1` = 2 WHERE (`entry` = 1234);');
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
-          'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +
+          'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES\n' +
           '(1234, 3, 0, 2, 2, 3, 0, NULL);\n',
       );
     });
@@ -163,7 +163,7 @@ describe('CreatureTemplateAddon integration tests', () => {
         page.expectDiffQueryToContain('UPDATE `creature_template_addon` SET `bytes1` = 8 WHERE (`entry` = 1234);');
         page.expectFullQueryToContain(
           'DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
-            'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `isLarge`, `auras`) VALUES\n' +
+            'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES\n' +
             '(1234, 123, 0, 8, 2, 3, 0, NULL);',
         );
       }),
