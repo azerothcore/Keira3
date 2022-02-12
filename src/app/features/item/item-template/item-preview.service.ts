@@ -75,7 +75,7 @@ export class ItemPreviewService {
       nv.item = ${itemId}
     UNION SELECT
       genv.item,
-      c.id AS \`entry\`,
+      c.id1 AS \`entry\`,
       ge.eventEntry AS eventId,
       genv.maxcount,
       genv.extendedCost
