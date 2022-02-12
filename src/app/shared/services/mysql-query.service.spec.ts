@@ -899,7 +899,7 @@ describe('MysqlQueryService', () => {
       { name: 'getCreatureNameById', query: `SELECT name AS v FROM creature_template WHERE entry = ${id}` },
       {
         name: 'getCreatureNameByGuid',
-        query: `SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id WHERE c.guid = ${guid}`,
+        query: `SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id1 WHERE c.guid = ${guid}`,
       },
       { name: 'getGameObjectNameById', query: `SELECT name AS v FROM gameobject_template WHERE entry = ${id}` },
       {
