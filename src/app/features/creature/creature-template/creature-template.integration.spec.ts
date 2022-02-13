@@ -70,7 +70,7 @@ describe('CreatureTemplate integration tests', () => {
   describe('Creating new', () => {
     beforeEach(() => setup(true));
 
-    fit('should correctly initialise', () => {
+    it('should correctly initialise', () => {
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
