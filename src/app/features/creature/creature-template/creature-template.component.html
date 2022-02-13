@@ -581,6 +581,16 @@
             <input [formControlName]="'speed_run'" id="speed_run" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="speed_run">speed_swim</label>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Controls how fast the creature can swim.'"></i>
+            <input [formControlName]="'speed_swim'" id="speed_swim" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="speed_run">speed_flight</label>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Controls how fast the creature can fly.'"></i>
+            <input [formControlName]="'speed_flight'" id="speed_flight" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="detection_range">detection_range</label>
             <i
               class="fas fa-info-circle ms-1"
