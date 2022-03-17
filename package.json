@@ -98,7 +98,7 @@
     "karma-coverage-istanbul-reporter": "3.0.3",
     "karma-jasmine": "4.0.1",
     "karma-jasmine-html-reporter": "1.7.0",
-    "lint-staged": "12.3.6",
+    "lint-staged": "12.3.7",
     "ngx-bootstrap": "8.0.0",
     "ngx-clipboard": "15.1.0",
     "ngx-highlightjs": "6.1.2",
