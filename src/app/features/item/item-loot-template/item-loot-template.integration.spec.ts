@@ -1,21 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
+import { ItemLootTemplate } from '@keira-types/item-loot-template.type';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import Spy = jasmine.Spy;
-
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
+import { ItemHandlerService } from '../item-handler.service';
 import { ItemLootTemplateComponent } from './item-loot-template.component';
 import { ItemLootTemplateModule } from './item-loot-template.module';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { ItemLootTemplate } from '@keira-types/item-loot-template.type';
-import { ItemHandlerService } from '../item-handler.service';
-import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
+import Spy = jasmine.Spy;
 
 class ItemLootTemplatePage extends MultiRowEditorPageObject<ItemLootTemplateComponent> {}
 
 describe('ItemLootTemplate integration tests', () => {
-  let component: ItemLootTemplateComponent;
   let fixture: ComponentFixture<ItemLootTemplateComponent>;
   let queryService: MysqlQueryService;
   let querySpy: Spy;
@@ -53,7 +51,6 @@ describe('ItemLootTemplate integration tests', () => {
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     fixture = TestBed.createComponent(ItemLootTemplateComponent);
-    component = fixture.componentInstance;
     page = new ItemLootTemplatePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();

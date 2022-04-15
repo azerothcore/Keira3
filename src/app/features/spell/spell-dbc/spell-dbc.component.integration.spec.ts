@@ -1,15 +1,14 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
-import { ModalModule } from 'ngx-bootstrap/modal';
-
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
-import { SpellDbcComponent } from './spell-dbc.component';
-import { SpellModule } from '../spell.module';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
 import { SpellHandlerService } from '../spell-handler.service';
+import { SpellModule } from '../spell.module';
+import { SpellDbcComponent } from './spell-dbc.component';
 import { LOCALES } from './texts/spell-dbc-texts.model';
 
 describe('SpellDbc integration tests', () => {

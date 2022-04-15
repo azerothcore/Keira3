@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-
 import { SelectService } from '@keira-abstract/service/select/select.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { REFERENCE_LOOT_TEMPLATE_TABLE, ReferenceLootTemplate } from '@keira-types/reference-loot-template.type';
-import { ReferenceLootHandlerService } from './reference-loot-handler.service';
 import { LOOT_TEMPLATE_ID } from '@keira-types/loot-template.type';
+import { ReferenceLootTemplate, REFERENCE_LOOT_TEMPLATE_TABLE } from '@keira-types/reference-loot-template.type';
+import { ReferenceLootHandlerService } from './reference-loot-handler.service';
 
 @Injectable()
 export class SelectReferenceLootService extends SelectService<ReferenceLootTemplate> {

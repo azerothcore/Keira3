@@ -1,5 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { ITEM_FLAG } from '@keira-shared/constants/flags/item-flags';
+import { ITEM_TYPE } from '@keira-shared/constants/options/item-class';
 import { ITEMS_QUALITY } from '@keira-shared/constants/options/item-quality';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
@@ -11,8 +13,6 @@ import { instance } from 'ts-mockito';
 import { ItemHandlerService } from '../item-handler.service';
 import { Lock } from './item-preview';
 import { ItemPreviewService } from './item-preview.service';
-import { ITEM_FLAG } from '@keira-shared/constants/flags/item-flags';
-import { ITEM_TYPE } from '@keira-shared/constants/options/item-class';
 
 describe('ItemPreviewService', () => {
   beforeEach(() =>

@@ -1,23 +1,21 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
+import { NpcTrainer } from '@keira-types/npc-trainer.type';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import Spy = jasmine.Spy;
-
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
+import { CreatureHandlerService } from '../creature-handler.service';
+import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { NpcTrainerComponent } from './npc-trainer.component';
 import { NpcTrainerModule } from './npc-trainer.module';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { NpcTrainer } from '@keira-types/npc-trainer.type';
-import { CreatureHandlerService } from '../creature-handler.service';
-import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
-import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
-import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import Spy = jasmine.Spy;
 
 class NpcTrainerPage extends MultiRowEditorPageObject<NpcTrainerComponent> {}
 
 describe('NpcTrainer integration tests', () => {
-  let component: NpcTrainerComponent;
   let fixture: ComponentFixture<NpcTrainerComponent>;
   let queryService: MysqlQueryService;
   let querySpy: Spy;
@@ -55,7 +53,6 @@ describe('NpcTrainer integration tests', () => {
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     fixture = TestBed.createComponent(NpcTrainerComponent);
-    component = fixture.componentInstance;
     page = new NpcTrainerPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();

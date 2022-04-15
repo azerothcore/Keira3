@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-
 import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
-import { CreatureHandlerService } from '../creature-handler.service';
-import { CreatureOnkillReputation } from '@keira-types/creature-onkill-reputation.type';
-import { CreatureOnkillReputationService } from './creature-onkill-reputation.service';
 import { FACTION_RANK } from '@keira-constants/options/faction-rank';
+import { CreatureOnkillReputation } from '@keira-types/creature-onkill-reputation.type';
+import { CreatureHandlerService } from '../creature-handler.service';
+import { CreatureOnkillReputationService } from './creature-onkill-reputation.service';
 
 @Component({
   selector: 'keira-creature-onkill-reputation',

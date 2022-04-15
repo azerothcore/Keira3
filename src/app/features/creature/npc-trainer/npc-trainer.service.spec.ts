@@ -1,13 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { instance } from 'ts-mockito';
-import { ToastrService } from 'ngx-toastr';
-
-import { NpcTrainerService } from './npc-trainer.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { ToastrService } from 'ngx-toastr';
+import { instance } from 'ts-mockito';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
+import { NpcTrainerService } from './npc-trainer.service';
 
 describe('NpcTrainerService', () => {
   beforeEach(() =>

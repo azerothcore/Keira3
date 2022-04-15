@@ -1,9 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-
-import { SaiHandlerService } from '../sai-handler.service';
 import { SAI_TYPES, SmartScripts } from '@keira-types/smart-scripts.type';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
+import { SaiHandlerService } from '../sai-handler.service';
 
 @Component({
   selector: 'keira-sai-top-bar',

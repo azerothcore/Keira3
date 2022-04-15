@@ -1,5 +1,5 @@
-import { SAI_EVENTS } from './sai-event';
 import { SAI_ACTIONS } from './sai-actions';
+import { SAI_EVENTS } from './sai-event';
 
 export const SAI_EVENT_COMMENTS = [];
 SAI_EVENT_COMMENTS[SAI_EVENTS.SPELLHIT] = `On Spellhit '_spellNameEventParamOne_'`;

@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
-
 import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
+import { GO_DATA_FIELDS } from '@keira-constants/gameobject-types';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import {
+  GameobjectTemplate,
   GAMEOBJECT_TEMPLATE_ID,
   GAMEOBJECT_TEMPLATE_NAME,
   GAMEOBJECT_TEMPLATE_TABLE,
-  GameobjectTemplate,
 } from '@keira-types/gameobject-template.type';
 import { FieldDefinition } from '@keira-types/general';
-import { GO_DATA_FIELDS } from '@keira-constants/gameobject-types';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { ToastrService } from 'ngx-toastr';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 
 @Injectable()

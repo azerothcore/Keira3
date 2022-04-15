@@ -1,8 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-import { HighlightModule } from 'ngx-highlightjs';
-
+import { BrowserModule } from '@angular/platform-browser';
 import { HighlightjsWrapperComponent } from './highlightjs-wrapper.component';
 
 describe('HighlightjsWrapperComponent', () => {

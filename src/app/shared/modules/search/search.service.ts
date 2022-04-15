@@ -1,8 +1,7 @@
+import { QueryService } from '@keira-shared/services/query.service';
 import { FormControl, FormGroup } from 'ngx-typesafe-forms';
-
 import { QueryForm, StringKeys, TableRow } from '../../types/general';
 import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
-import { QueryService } from '@keira-shared/services/query.service';
 
 export abstract class SearchService<T extends TableRow> extends SubscriptionHandler {
   query: string;

@@ -1,15 +1,14 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
+import { ReferenceLootTemplate } from '@keira-types/reference-loot-template.type';
 import { ModalModule } from 'ngx-bootstrap/modal';
-
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
+import { ReferenceLootHandlerService } from './reference-loot-handler.service';
 import { ReferenceLootTemplateComponent } from './reference-loot-template.component';
 import { ReferenceLootTemplateModule } from './reference-loot-template.module';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { ReferenceLootTemplate } from '@keira-types/reference-loot-template.type';
-import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
-import { ReferenceLootHandlerService } from './reference-loot-handler.service';
 
 class ReferenceLootTemplatePage extends MultiRowEditorPageObject<ReferenceLootTemplateComponent> {}
 

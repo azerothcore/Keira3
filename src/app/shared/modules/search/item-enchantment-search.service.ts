@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-
-import { SearchService } from './search.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
-import { ITEM_ENCHANTMENT_SEARCH_FIELDS, ITEM_ENCHANTMENT_TABLE, ItemEnchantment } from '../../types/item-enchantment.type';
+import { ItemEnchantment, ITEM_ENCHANTMENT_SEARCH_FIELDS, ITEM_ENCHANTMENT_TABLE } from '../../types/item-enchantment.type';
+import { SearchService } from './search.service';
 
 @Injectable({
   providedIn: 'root',

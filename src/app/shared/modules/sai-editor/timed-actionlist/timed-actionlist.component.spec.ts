@@ -1,12 +1,11 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
-
-import { TimedActionlistComponent } from './timed-actionlist.component';
-import { PageObject } from '@keira-testing/page-object';
 import { Component, ViewChild } from '@angular/core';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { PageObject } from '@keira-testing/page-object';
 import { SmartScripts } from '@keira-types/smart-scripts.type';
-import { of } from 'rxjs';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { of } from 'rxjs';
+import { TimedActionlistComponent } from './timed-actionlist.component';
 
 @Component({
   template: `<keira-timed-actionlist [creatureId]="creatureId"></keira-timed-actionlist>`,

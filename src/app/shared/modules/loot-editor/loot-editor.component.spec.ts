@@ -1,16 +1,15 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
 import { Component, ViewChild } from '@angular/core';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-
-import { LootEditorComponent } from './loot-editor.component';
 import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.module';
 import { PageObject } from '@keira-testing/page-object';
 import { LootTemplate } from '@keira-types/loot-template.type';
-import { CreatureLootTemplateService } from '../../../features/creature/creature-loot-template/creature-loot-template.service';
-import { CreatureHandlerService } from '../../../features/creature/creature-handler.service';
-import { SaiCreatureHandlerService } from '../../../features/creature/sai-creature-handler.service';
-import { ToastrModule } from 'ngx-toastr';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { ToastrModule } from 'ngx-toastr';
+import { CreatureHandlerService } from '../../../features/creature/creature-handler.service';
+import { CreatureLootTemplateService } from '../../../features/creature/creature-loot-template/creature-loot-template.service';
+import { SaiCreatureHandlerService } from '../../../features/creature/sai-creature-handler.service';
+import { LootEditorComponent } from './loot-editor.component';
 
 class LootEditorComponentPage extends PageObject<TestHostComponent> {
   get referenceViewers() {

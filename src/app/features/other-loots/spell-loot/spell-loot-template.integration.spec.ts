@@ -1,15 +1,14 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
+import { SpellLootTemplate } from '@keira-types/spell-loot-template.type';
 import { ModalModule } from 'ngx-bootstrap/modal';
-
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
+import { SpellLootHandlerService } from './spell-loot-handler.service';
 import { SpellLootTemplateComponent } from './spell-loot-template.component';
 import { SpellLootTemplateModule } from './spell-loot-template.module';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { SpellLootTemplate } from '@keira-types/spell-loot-template.type';
-import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
-import { SpellLootHandlerService } from './spell-loot-handler.service';
 
 class SpellLootTemplatePage extends MultiRowEditorPageObject<SpellLootTemplateComponent> {}
 

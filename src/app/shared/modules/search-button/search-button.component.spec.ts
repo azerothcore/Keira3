@@ -1,8 +1,7 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
 import { Component, ViewChild } from '@angular/core';
-
-import { SearchButtonComponent } from './search-button.component';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { PageObject } from '@keira-testing/page-object';
+import { SearchButtonComponent } from './search-button.component';
 
 @Component({
   template: `<keira-search-button [searchService]="searchService"></keira-search-button>`,

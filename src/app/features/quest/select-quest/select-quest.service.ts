@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
-
 import { SelectService } from '@keira-abstract/service/select/select.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import {
+  QuestTemplate,
   QUEST_TEMPLATE_ID,
   QUEST_TEMPLATE_NAME,
   QUEST_TEMPLATE_SEARCH_FIELDS,
   QUEST_TEMPLATE_TABLE,
-  QuestTemplate,
 } from '@keira-types/quest-template.type';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { QuestHandlerService } from '../quest-handler.service';
 
 @Injectable()

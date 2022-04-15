@@ -1,18 +1,16 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
-import { ModalModule } from 'ngx-bootstrap/modal';
-import Spy = jasmine.Spy;
-
+import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { SelectQuestComponent } from './select-quest.component';
-import { SelectQuestService } from './select-quest.service';
-import { SelectQuestModule } from './select-quest.module';
-import { QuestTemplate } from '@keira-types/quest-template.type';
 import { SelectPageObject } from '@keira-testing/select-page-object';
+import { QuestTemplate } from '@keira-types/quest-template.type';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
 import { QuestHandlerService } from '../quest-handler.service';
+import { SelectQuestComponent } from './select-quest.component';
+import { SelectQuestModule } from './select-quest.module';
+import Spy = jasmine.Spy;
 
 class SelectQuestComponentPage extends SelectPageObject<SelectQuestComponent> {
   ID_FIELD = 'ID';
@@ -21,7 +19,6 @@ class SelectQuestComponentPage extends SelectPageObject<SelectQuestComponent> {
 describe('SelectQuest integration tests', () => {
   let component: SelectQuestComponent;
   let fixture: ComponentFixture<SelectQuestComponent>;
-  let selectService: SelectQuestService;
   let page: SelectQuestComponentPage;
   let queryService: MysqlQueryService;
   let querySpy: Spy;
@@ -42,8 +39,6 @@ describe('SelectQuest integration tests', () => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
-
-    selectService = TestBed.inject(SelectQuestService);
 
     fixture = TestBed.createComponent(SelectQuestComponent);
     page = new SelectQuestComponentPage(fixture);

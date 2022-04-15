@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-
+import { map, Observable } from 'rxjs';
 import { ComplexKeyHandlerService } from '../../abstract/service/handlers/complex-key.handler.service';
-import { SAI_ID_FIELDS, SAI_TABLE, SAI_TYPES, SmartScripts } from '../../types/smart-scripts.type';
 import { MysqlQueryService } from '../../services/mysql-query.service';
-import { Observable, map } from 'rxjs';
+import { SAI_ID_FIELDS, SAI_TABLE, SAI_TYPES, SmartScripts } from '../../types/smart-scripts.type';
 
 @Injectable({
   providedIn: 'root',

@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-
-import { SearchService } from './search.service';
 import { MysqlQueryService } from '../../services/mysql-query.service';
-import { ITEM_TEMPLATE_SEARCH_FIELDS, ITEM_TEMPLATE_TABLE, ItemTemplate } from '../../types/item-template.type';
+import { ItemTemplate, ITEM_TEMPLATE_SEARCH_FIELDS, ITEM_TEMPLATE_TABLE } from '../../types/item-template.type';
+import { SearchService } from './search.service';
 
 @Injectable({
   providedIn: 'root',

@@ -1,16 +1,15 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
-import { ModalModule } from 'ngx-bootstrap/modal';
-
-import { GameobjectQuestenderComponent } from './gameobject-questender.component';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { GameobjectQuestender } from '@keira-types/gameobject-questender.type';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
+import { GameobjectQuestender } from '@keira-types/gameobject-questender.type';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
 import { QuestHandlerService } from '../quest-handler.service';
-import { QuestModule } from '../quest.module';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
+import { QuestModule } from '../quest.module';
+import { GameobjectQuestenderComponent } from './gameobject-questender.component';
 
 class GameobjectQuestenderPage extends MultiRowEditorPageObject<GameobjectQuestenderComponent> {
   get questPreviewGoEnd() {

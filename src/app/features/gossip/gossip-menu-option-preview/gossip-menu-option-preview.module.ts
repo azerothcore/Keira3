@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
-
 import { QueryOutputModule } from '@keira-shared/modules/query-output/query-output.module';
+import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { GossipMenuOptionPreviewComponent } from './gossip-menu-option-preview.component';
 
 @NgModule({

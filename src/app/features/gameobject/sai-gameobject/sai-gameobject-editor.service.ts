@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
-
+import { SaiCommentGeneratorService } from '@keira-shared/modules/sai-editor/sai-comment-generator.service';
 import { SaiEditorService } from '@keira-shared/modules/sai-editor/sai-editor.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { ToastrService } from 'ngx-toastr';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
-import { SaiCommentGeneratorService } from '@keira-shared/modules/sai-editor/sai-comment-generator.service';
 
 @Injectable()
 export class SaiGameobjectEditorService extends SaiEditorService {

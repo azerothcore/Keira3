@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-
-import { SpellLootTemplate } from '@keira-types/spell-loot-template.type';
-import { SpellLootTemplateService } from './spell-loot-template.service';
 import { LootTemplateComponent } from '@keira-abstract/components/editors/loot-template/loot-template.component';
+import { SpellLootTemplate } from '@keira-types/spell-loot-template.type';
 import { SpellLootHandlerService } from './spell-loot-handler.service';
+import { SpellLootTemplateService } from './spell-loot-template.service';
 
 @Component({
   selector: 'keira-spell-loot-template',

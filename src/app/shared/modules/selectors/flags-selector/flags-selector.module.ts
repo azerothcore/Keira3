@@ -2,10 +2,8 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { UiSwitchModule } from 'ngx-ui-switch';
-
-import { FlagsSelectorModalComponent } from './flags-selector-modal.component';
 import { FlagsSelectorBtnComponent } from './flags-selector-btn.component';
-import { uiSwitchConfig } from '@keira-config/ui-switch.config';
+import { FlagsSelectorModalComponent } from './flags-selector-modal.component';
 
 @NgModule({
   declarations: [FlagsSelectorModalComponent, FlagsSelectorBtnComponent],

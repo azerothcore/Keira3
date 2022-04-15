@@ -1,11 +1,10 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance } from 'ts-mockito';
-
-import { ItemSelectorModalComponent } from './item-selector-modal.component';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
-import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { ItemSearchService } from '../../search/item-search.service';
+import { ItemSelectorModalComponent } from './item-selector-modal.component';
 import { ItemSelectorModule } from './item-selector.module';
 
 describe('ItemSelectorModalComponent', () => {

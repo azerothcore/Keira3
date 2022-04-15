@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
-import { ClipboardService } from 'ngx-clipboard';
-import { MysqlError } from 'mysql';
-
+import { DTCFG } from '@keira-config/datatable.config';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
 import { TableRow } from '@keira-types/general';
-import { DTCFG } from '@keira-config/datatable.config';
+import { MysqlError } from 'mysql';
+import { ClipboardService } from 'ngx-clipboard';
 import { SqlEditorService } from './sql-editor.service';
 
 @Component({

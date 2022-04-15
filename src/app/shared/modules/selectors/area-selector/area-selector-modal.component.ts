@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap/modal';
-
-import { AreaSearchService } from '../../search/area-search.service';
 import { AREA_ID } from '@keira-types/area.type';
+import { BsModalRef } from 'ngx-bootstrap/modal';
+import { AreaSearchService } from '../../search/area-search.service';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 
 @Component({

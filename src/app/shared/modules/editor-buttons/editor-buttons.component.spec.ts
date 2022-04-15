@@ -1,8 +1,7 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
 import { Component, ViewChild } from '@angular/core';
-
-import { EditorButtonsComponent } from './editor-buttons.component';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { PageObject } from '@keira-testing/page-object';
+import { EditorButtonsComponent } from './editor-buttons.component';
 
 @Component({
   template: `<keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>`,

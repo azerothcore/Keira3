@@ -1,17 +1,16 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
-import { ModalModule } from 'ngx-bootstrap/modal';
-import Spy = jasmine.Spy;
-
-import { CreatureQueststarterComponent } from './creature-queststarter.component';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { CreatureQueststarter } from '@keira-types/creature-queststarter.type';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
+import { CreatureQueststarter } from '@keira-types/creature-queststarter.type';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
 import { QuestHandlerService } from '../quest-handler.service';
-import { QuestModule } from '../quest.module';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
+import { QuestModule } from '../quest.module';
+import { CreatureQueststarterComponent } from './creature-queststarter.component';
+import Spy = jasmine.Spy;
 
 class CreatureQueststarterPage extends MultiRowEditorPageObject<CreatureQueststarterComponent> {
   get questPreviewNpcStart() {

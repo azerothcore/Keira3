@@ -1,11 +1,10 @@
-import { Observable } from 'rxjs';
-import { ToastrService } from 'ngx-toastr';
-
-import { MultiRowEditorService } from './multi-row-editor.service';
-import { LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, LootTemplate } from '@keira-types/loot-template.type';
 import { Class } from '@keira-types/general';
-import { HandlerService } from '../handlers/handler.service';
+import { LootTemplate, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2 } from '@keira-types/loot-template.type';
+import { ToastrService } from 'ngx-toastr';
+import { Observable } from 'rxjs';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { HandlerService } from '../handlers/handler.service';
+import { MultiRowEditorService } from './multi-row-editor.service';
 
 // Extended only by the loot tables that require a template loot id
 export abstract class LootEditorIdService<T extends LootTemplate> extends MultiRowEditorService<T> {

@@ -1,5 +1,5 @@
-import { TableRow } from './general';
 import { getEnumKeys } from '../utils/helpers';
+import { TableRow } from './general';
 
 export const SAI_TABLE = 'smart_scripts';
 

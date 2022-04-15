@@ -1,9 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BsModalService } from 'ngx-bootstrap/modal';
-
-import { PageObject } from './page-object';
 import { QueryOutputComponentPage } from '../modules/query-output/query-output.component.spec';
 import { TableRow } from '../types/general';
+import { PageObject } from './page-object';
 
 export abstract class EditorPageObject<T> extends PageObject<T> {
   public readonly PREVIEW_CONTAINER_SELECTOR = '.preview-container';

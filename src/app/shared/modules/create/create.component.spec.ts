@@ -1,14 +1,14 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-import { anything, instance, mock, reset, when } from 'ts-mockito';
+import { BrowserModule } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
-
-import { CreateComponent } from './create.component';
+import { anything, instance, mock, reset, when } from 'ts-mockito';
+import { CreatureHandlerService } from '../../../features/creature/creature-handler.service';
 import { MockedMysqlQueryService, MockType } from '../../testing/mocks';
 import { PageObject } from '../../testing/page-object';
+import { CreateComponent } from './create.component';
+
 import Spy = jasmine.Spy;
-import { CreatureHandlerService } from '../../../features/creature/creature-handler.service';
 
 class CreateComponentPage extends PageObject<CreateComponent<MockType>> {
   get idInput() {

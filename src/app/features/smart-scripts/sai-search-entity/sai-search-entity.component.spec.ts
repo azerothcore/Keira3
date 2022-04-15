@@ -1,11 +1,10 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-
+import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
+import { PageObject } from '@keira-testing/page-object';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import { SaiSearchEntityComponent } from './sai-search-entity.component';
 import { SaiSearchEntityModule } from './sai-search-entity.module';
-import { PageObject } from '@keira-testing/page-object';
-import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
-import { ModalModule } from 'ngx-bootstrap/modal';
 
 class SaiSearchEntityComponentPage extends PageObject<SaiSearchEntityComponent> {
   get entryOrGuidInput() {
@@ -38,7 +37,6 @@ class SaiSearchEntityComponentPage extends PageObject<SaiSearchEntityComponent> 
 }
 
 describe('SaiSearchEntityComponent', () => {
-  let component: SaiSearchEntityComponent;
   let fixture: ComponentFixture<SaiSearchEntityComponent>;
   let page: SaiSearchEntityComponentPage;
 
@@ -52,7 +50,6 @@ describe('SaiSearchEntityComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SaiSearchEntityComponent);
-    component = fixture.componentInstance;
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
     page = new SaiSearchEntityComponentPage(fixture);

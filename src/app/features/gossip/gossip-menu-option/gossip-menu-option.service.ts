@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
-
 import { MultiRowEditorService } from '@keira-abstract/service/editors/multi-row-editor.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import {
+  GossipMenuOption,
   GOSSIP_MENU_OPTION_ID,
   GOSSIP_MENU_OPTION_ID_2,
   GOSSIP_MENU_OPTION_TABLE,
-  GossipMenuOption,
 } from '@keira-types/gossip-menu-option.type';
+import { ToastrService } from 'ngx-toastr';
 import { GossipHandlerService } from '../gossip-handler.service';
 
 @Injectable()

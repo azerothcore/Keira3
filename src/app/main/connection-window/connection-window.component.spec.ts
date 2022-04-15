@@ -1,16 +1,15 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { instance, reset } from 'ts-mockito';
-import { ConnectionConfig, MysqlError } from 'mysql';
-import { of, throwError } from 'rxjs';
-
-import { ConnectionWindowComponent } from './connection-window.component';
 import { MockedMysqlService } from '@keira-testing/mocks';
-import { MysqlService } from '../../shared/services/mysql.service';
 import { PageObject } from '@keira-testing/page-object';
+import { Spied } from '@keira-testing/test-helpers';
+import { ConnectionConfig, MysqlError } from 'mysql';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { of, throwError } from 'rxjs';
+import { instance, reset } from 'ts-mockito';
+import { MysqlService } from '../../shared/services/mysql.service';
+import { ConnectionWindowComponent } from './connection-window.component';
 import { ConnectionWindowModule } from './connection-window.module';
 import { ConnectionWindowService } from './connection-window.service';
-import { Spied } from '@keira-testing/test-helpers';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 class ConnectionWindowComponentPage extends PageObject<ConnectionWindowComponent> {
   get hostInput() {

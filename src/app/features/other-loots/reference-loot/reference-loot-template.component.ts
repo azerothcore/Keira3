@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-
-import { ReferenceLootTemplate } from '@keira-types/reference-loot-template.type';
-import { ReferenceLootTemplateService } from './reference-loot-template.service';
 import { LootTemplateComponent } from '@keira-abstract/components/editors/loot-template/loot-template.component';
+import { ReferenceLootTemplate } from '@keira-types/reference-loot-template.type';
 import { ReferenceLootHandlerService } from './reference-loot-handler.service';
+import { ReferenceLootTemplateService } from './reference-loot-template.service';
 
 @Component({
   selector: 'keira-reference-loot-template',

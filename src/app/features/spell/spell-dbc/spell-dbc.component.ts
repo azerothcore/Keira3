@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
-import { SpellDbcService } from './spell-dbc.service';
 import { SpellHandlerService } from '../spell-handler.service';
+import { SpellDbcService } from './spell-dbc.service';
 
 @Component({
   selector: 'keira-spell-dbc',

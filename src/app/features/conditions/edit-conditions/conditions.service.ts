@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
-
-import { CONDITIONS_TABLE, CONDITIONS_ID_FIELDS } from '@keira-types/conditions.type';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SingleRowComplexKeyEditorService } from '@keira-abstract/service/editors/single-row-complex-key-editor.service';
-import { Conditions } from '@keira-types/conditions.type';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { Conditions, CONDITIONS_ID_FIELDS, CONDITIONS_TABLE } from '@keira-types/conditions.type';
+import { ToastrService } from 'ngx-toastr';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 
 @Injectable()

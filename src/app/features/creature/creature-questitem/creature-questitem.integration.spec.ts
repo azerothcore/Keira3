@@ -1,22 +1,20 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
+import { CreatureQuestitem } from '@keira-types/creature-questitem.type';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import Spy = jasmine.Spy;
-
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
+import { CreatureHandlerService } from '../creature-handler.service';
+import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureQuestitemComponent } from './creature-questitem.component';
 import { CreatureQuestitemModule } from './creature-questitem.module';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { CreatureQuestitem } from '@keira-types/creature-questitem.type';
-import { CreatureHandlerService } from '../creature-handler.service';
-import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
-import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
+import Spy = jasmine.Spy;
 
 class CreatureQuestitemPage extends MultiRowEditorPageObject<CreatureQuestitemComponent> {}
 
 describe('CreatureQuestitem integration tests', () => {
-  let component: CreatureQuestitemComponent;
   let fixture: ComponentFixture<CreatureQuestitemComponent>;
   let queryService: MysqlQueryService;
   let querySpy: Spy;
@@ -54,7 +52,6 @@ describe('CreatureQuestitem integration tests', () => {
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     fixture = TestBed.createComponent(CreatureQuestitemComponent);
-    component = fixture.componentInstance;
     page = new CreatureQuestitemPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();

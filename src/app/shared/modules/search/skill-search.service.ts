@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-
-import { SearchService } from './search.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
-import { SKILL_SEARCH_FIELDS, SKILL_TABLE, Skill } from '../../types/skill.type';
+import { Skill, SKILL_SEARCH_FIELDS, SKILL_TABLE } from '../../types/skill.type';
+import { SearchService } from './search.service';
 
 @Injectable({
   providedIn: 'root',

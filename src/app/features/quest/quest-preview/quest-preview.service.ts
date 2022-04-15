@@ -1,41 +1,39 @@
 import { Injectable } from '@angular/core';
-
-import { QuestTemplateService } from '../quest-template/quest-template.service';
-import { QuestRequestItemsService } from '../quest-request-items/quest-request-items.service';
-import { QuestHandlerService } from '../quest-handler.service';
-import { QuestTemplateAddonService } from '../quest-template-addon/quest-template-addon.service';
-import { GameobjectQueststarterService } from '../gameobject-queststarter/gameobject-queststarter.service';
-import { GameobjectQuestenderService } from '../gameobject-questender/gameobject-questender.service';
-import { CreatureQueststarterService } from '../creature-queststarter/creature-queststarter.service';
-import { CreatureQuestenderService } from '../creature-questender/creature-questender.service';
-import { PreviewHelperService } from '@keira-shared/services/preview-helper.service';
-import { QUEST_FLAG_SHARABLE } from '@keira-shared/constants/flags/quest-flags';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { EditorService } from '@keira-shared/abstract/service/editors/editor.service';
-import { TableRow } from '@keira-types/general';
-import { Quest, QuestReputationReward } from './quest-preview.model';
-import { QuestTemplate } from '@keira-shared/types/quest-template.type';
-import { CreatureQueststarter } from '@keira-shared/types/creature-queststarter.type';
-import { GameobjectQueststarter } from '@keira-shared/types/gameobject-queststarter.type';
-import { CreatureQuestender } from '@keira-shared/types/creature-questender.type';
-import { GameobjectQuestender } from '@keira-shared/types/gameobject-questender.type';
-import { QuestTemplateAddon } from '@keira-types/quest-template-addon.type';
-import { DifficultyLevel } from './quest-preview.model';
-import { RACES_TEXT, CLASSES_TEXT } from '@keira-shared/constants/preview';
-import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { QUEST_FLAG_SHARABLE } from '@keira-shared/constants/flags/quest-flags';
+import { QUEST_INFO } from '@keira-shared/constants/options/quest-info';
+import { CLASSES_TEXT, RACES_TEXT } from '@keira-shared/constants/preview';
 import {
-  QUEST_FLAG_DAILY,
-  QUEST_FLAG_WEEKLY,
-  QUEST_FLAG_SPECIAL_MONTHLY,
-  QUEST_FLAG_REPEATABLE,
-  QUEST_FLAG_SPECIAL_REPEATABLE,
   ICON_SKILLS,
+  QUEST_FLAG_DAILY,
+  QUEST_FLAG_REPEATABLE,
+  QUEST_FLAG_SPECIAL_MONTHLY,
+  QUEST_FLAG_SPECIAL_REPEATABLE,
+  QUEST_FLAG_WEEKLY,
   QUEST_PERIOD,
 } from '@keira-shared/constants/quest-preview';
-import { QuestOfferRewardService } from '../quest-offer-reward/quest-offer-reward.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { PreviewHelperService } from '@keira-shared/services/preview-helper.service';
+import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { CreatureQuestender } from '@keira-shared/types/creature-questender.type';
+import { CreatureQueststarter } from '@keira-shared/types/creature-queststarter.type';
+import { GameobjectQuestender } from '@keira-shared/types/gameobject-questender.type';
+import { GameobjectQueststarter } from '@keira-shared/types/gameobject-queststarter.type';
+import { QuestTemplate } from '@keira-shared/types/quest-template.type';
+import { TableRow } from '@keira-types/general';
 import { QuestOfferReward } from '@keira-types/quest-offer-reward.type';
 import { QuestRequestItems } from '@keira-types/quest-request-items.type';
-import { QUEST_INFO } from '@keira-shared/constants/options/quest-info';
+import { QuestTemplateAddon } from '@keira-types/quest-template-addon.type';
+import { CreatureQuestenderService } from '../creature-questender/creature-questender.service';
+import { CreatureQueststarterService } from '../creature-queststarter/creature-queststarter.service';
+import { GameobjectQuestenderService } from '../gameobject-questender/gameobject-questender.service';
+import { GameobjectQueststarterService } from '../gameobject-queststarter/gameobject-queststarter.service';
+import { QuestHandlerService } from '../quest-handler.service';
+import { QuestOfferRewardService } from '../quest-offer-reward/quest-offer-reward.service';
+import { QuestRequestItemsService } from '../quest-request-items/quest-request-items.service';
+import { QuestTemplateAddonService } from '../quest-template-addon/quest-template-addon.service';
+import { QuestTemplateService } from '../quest-template/quest-template.service';
+import { DifficultyLevel, Quest, QuestReputationReward } from './quest-preview.model';
 
 @Injectable()
 export class QuestPreviewService {

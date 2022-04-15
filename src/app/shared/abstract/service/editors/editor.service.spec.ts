@@ -1,15 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { instance } from 'ts-mockito';
+import { MockEntity, MockSingleRowEditorService } from '@keira-testing/mock-services';
+import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { MysqlError } from 'mysql';
 import { ToastrService } from 'ngx-toastr';
 import { of, throwError } from 'rxjs';
-import { MysqlError } from 'mysql';
-import Spy = jasmine.Spy;
-
+import { instance } from 'ts-mockito';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
-import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
-import { MockSingleRowEditorService, MockEntity } from '@keira-testing/mock-services';
 import { EditorService } from './editor.service';
+import Spy = jasmine.Spy;
 
 describe('EditorService', () => {
   let service: EditorService<MockEntity>;

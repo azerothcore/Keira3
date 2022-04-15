@@ -9,20 +9,20 @@ export abstract class PageObject<ComponentType> {
     }
   }
 
-  whenStable() {
+  whenStable(): Promise<any> {
     return this.fixture.whenStable();
   }
 
-  async whenReady() {
+  async whenReady(): Promise<void> {
     await this.fixture.whenStable();
     await this.fixture.whenRenderingDone();
   }
 
-  detectChanges() {
+  detectChanges(): void {
     this.fixture.detectChanges();
   }
 
-  removeElement() {
+  removeElement(): void {
     this.fixture.debugElement.nativeElement.remove();
   }
 
@@ -36,7 +36,7 @@ export abstract class PageObject<ComponentType> {
     return element;
   }
 
-  queryInsideElement<T extends HTMLElement>(element: HTMLElement, selector: string, assert = true) {
+  queryInsideElement<T extends HTMLElement>(element: HTMLElement, selector: string, assert = true): HTMLElement {
     const child: T = element.querySelector<T>(selector);
 
     if (assert) {
@@ -50,7 +50,7 @@ export abstract class PageObject<ComponentType> {
     return this.fixture.nativeElement.querySelectorAll(selector);
   }
 
-  queryAllInsideElement<T extends HTMLElement>(element: HTMLElement, selector: string, assert = true) {
+  queryAllInsideElement<T extends HTMLElement>(element: HTMLElement, selector: string, assert = true): T[] {
     const children: T[] = Array.from(element.querySelectorAll<T>(selector));
 
     if (assert) {
@@ -60,7 +60,7 @@ export abstract class PageObject<ComponentType> {
     return children;
   }
 
-  public setInputValue(inputElement: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement, value: string | number) {
+  public setInputValue(inputElement: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement, value: string | number): void {
     inputElement.value = `${value}`;
     inputElement.dispatchEvent(new Event('input'));
     inputElement.dispatchEvent(new Event('change'));
@@ -74,7 +74,7 @@ export abstract class PageObject<ComponentType> {
   getInput(fieldName: string): HTMLInputElement {
     return this.query<HTMLInputElement>(`input.form-control[id="${fieldName}"]`);
   }
-  expectInputVisible(fieldName: string) {
+  expectInputVisible(fieldName: string): void {
     expect(this.getLabel(fieldName)).toBeDefined();
     expect(this.getInput(fieldName)).toBeDefined();
   }
@@ -91,7 +91,7 @@ export abstract class PageObject<ComponentType> {
     this.fixture.detectChanges();
   }
 
-  isHidden(element: HTMLElement) {
+  isHidden(element: HTMLElement): boolean {
     return element.hasAttribute('hidden');
   }
 
@@ -105,7 +105,7 @@ export abstract class PageObject<ComponentType> {
     return element;
   }
 
-  get queryWrapper() {
+  get queryWrapper(): HTMLElement {
     return this.query<HTMLElement>('#no-highlight-query-wrapper');
   }
 
@@ -121,7 +121,7 @@ export abstract class PageObject<ComponentType> {
   private getDatatableCellSelector(datatableSelector: string, rowIndex: number, colIndex: number): string {
     return `${datatableSelector} .datatable-row-wrapper:nth-child(${rowIndex + 1}) .datatable-body-cell:nth-child(${colIndex + 1})`;
   }
-  private getDefaultSelectorIfNull(datatableSelector: string | null) {
+  private getDefaultSelectorIfNull(datatableSelector: string | null): string {
     return datatableSelector ? datatableSelector : this.DT_SELECTOR;
   }
 
@@ -142,7 +142,7 @@ export abstract class PageObject<ComponentType> {
     return this.query(this.getDatatableCellSelector(datatableSelector, rowIndex, colIndex), assert);
   }
 
-  clickRowOfDatatable(rowIndex: number) {
+  clickRowOfDatatable(rowIndex: number): void {
     this.clickElement(this.getDatatableCell(rowIndex, 0));
   }
 
@@ -174,12 +174,12 @@ export abstract class PageObject<ComponentType> {
     return element;
   }
 
-  getCellOfDatatableInModal(rowIndex: number, colIndex: number, assert = true) {
+  getCellOfDatatableInModal(rowIndex: number, colIndex: number): HTMLElement {
     const datatableSelector = `.modal-content ${this.DT_SELECTOR}`;
     return this.getDatatableCellExternal(rowIndex, colIndex, true, datatableSelector);
   }
 
-  clickRowOfDatatableInModal(rowIndex: number) {
+  clickRowOfDatatableInModal(rowIndex: number): void {
     this.clickElement(this.getCellOfDatatableInModal(rowIndex, 0));
   }
 

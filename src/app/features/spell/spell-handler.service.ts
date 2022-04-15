@@ -1,7 +1,7 @@
-import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { HandlerService } from '@keira-abstract/service/handlers/handler.service';
-import { SPELL_DBC_TABLE, SpellDbc } from '@keira-types/spell-dbc.type';
+import { SpellDbc, SPELL_DBC_TABLE } from '@keira-types/spell-dbc.type';
 
 @Injectable()
 export class SpellHandlerService extends HandlerService<SpellDbc> {

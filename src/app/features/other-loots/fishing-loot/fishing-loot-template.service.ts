@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
-
 import { MultiRowEditorService } from '@keira-abstract/service/editors/multi-row-editor.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { FISHING_LOOT_TEMPLATE_TABLE, FishingLootTemplate } from '@keira-types/fishing-loot-template.type';
+import { FishingLootTemplate, FISHING_LOOT_TEMPLATE_TABLE } from '@keira-types/fishing-loot-template.type';
 import { LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2 } from '@keira-types/loot-template.type';
+import { ToastrService } from 'ngx-toastr';
 import { FishingLootHandlerService } from './fishing-loot-handler.service';
 
 @Injectable()

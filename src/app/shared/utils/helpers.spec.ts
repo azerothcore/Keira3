@@ -1,5 +1,5 @@
-import { getNumberOrString, getPartial } from './helpers';
 import { Conditions } from '../types/conditions.type';
+import { getNumberOrString, getPartial } from './helpers';
 
 describe('Helpers', () => {
   describe('getNumberOrString(value)', () => {

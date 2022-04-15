@@ -1,15 +1,14 @@
 import { Component } from '@angular/core';
-
 import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
-import { CreatureHandlerService } from '../creature-handler.service';
-import { CreatureSpawn } from '@keira-types/creature-spawn.type';
-import { CreatureSpawnService } from './creature-spawn.service';
-import { MOVEMENT_TYPE } from '@keira-constants/options/movement-type';
-import { NPC_FLAGS } from '@keira-constants/flags/npc-flags';
-import { UNIT_FLAGS } from '@keira-constants/flags/unit-flags';
 import { DYNAMIC_FLAGS } from '@keira-constants/flags/dynamic-flags';
-import { SPAWN_MASK } from '@keira-constants/flags/spawn-mask';
+import { NPC_FLAGS } from '@keira-constants/flags/npc-flags';
 import { PHASE_MASK } from '@keira-constants/flags/phase-mask';
+import { SPAWN_MASK } from '@keira-constants/flags/spawn-mask';
+import { UNIT_FLAGS } from '@keira-constants/flags/unit-flags';
+import { MOVEMENT_TYPE } from '@keira-constants/options/movement-type';
+import { CreatureSpawn } from '@keira-types/creature-spawn.type';
+import { CreatureHandlerService } from '../creature-handler.service';
+import { CreatureSpawnService } from './creature-spawn.service';
 
 @Component({
   selector: 'keira-creature-spawn',

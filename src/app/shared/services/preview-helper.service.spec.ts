@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-import { PreviewHelperService } from './preview-helper.service';
-import { RACE } from 'app/features/item/item-template/item-preview';
 import { RACES_TEXT } from '@keira-shared/constants/preview';
+import { RACE } from 'app/features/item/item-template/item-preview';
+import { PreviewHelperService } from './preview-helper.service';
 
 describe('PreviewHelperService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));

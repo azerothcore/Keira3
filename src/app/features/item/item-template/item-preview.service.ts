@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
-import { ITEM_TYPE, ITEM_MOD } from '@keira-shared/constants/options/item-class';
-import { ITEM_CONSTANTS } from './item-constants';
-import { MAX_LEVEL, lvlIndepRating, gtCombatRatings, resistanceFields } from './item-preview';
 import { ITEM_FLAG } from '@keira-shared/constants/flags/item-flags';
-import { ITEMS_QUALITY } from '@keira-shared/constants/options/item-quality';
-import { ItemTemplate } from '@keira-shared/types/item-template.type';
-import { PVP_RANK } from '@keira-shared/constants/options/item-honorrank';
-import { PreviewHelperService } from '@keira-shared/services/preview-helper.service';
-import { CLASSES_TEXT, RACES_TEXT } from '@keira-shared/constants/preview';
-import { ItemExtendedCost } from '@keira-shared/types/item-extended-cost.type';
 import { FACTION_RANK } from '@keira-shared/constants/options/faction-rank';
+import { ITEM_MOD, ITEM_TYPE } from '@keira-shared/constants/options/item-class';
+import { PVP_RANK } from '@keira-shared/constants/options/item-honorrank';
+import { ITEMS_QUALITY } from '@keira-shared/constants/options/item-quality';
+import { CLASSES_TEXT, RACES_TEXT } from '@keira-shared/constants/preview';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { PreviewHelperService } from '@keira-shared/services/preview-helper.service';
+import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { ItemExtendedCost } from '@keira-shared/types/item-extended-cost.type';
+import { ItemTemplate } from '@keira-shared/types/item-template.type';
+import { ITEM_CONSTANTS } from './item-constants';
+import { gtCombatRatings, lvlIndepRating, MAX_LEVEL, resistanceFields } from './item-preview';
 
 @Injectable()
 export class ItemPreviewService {
@@ -188,9 +188,8 @@ export class ItemPreviewService {
 
   private formatTime(base: number) {
     const s = this.parseTime(base / 1000);
-    let tmp: number;
+    const tmp = s.d + s.h / 24;
 
-    tmp = s.d + s.h / 24;
     if (tmp > 1 && !(tmp % 364)) {
       // whole years
       return Math.round((s.d + s.h / 24) / 364) + ' ' + ITEM_CONSTANTS.timeUnits[Math.abs(s.d / 364) === 1 && !s.h ? 'sg' : 'pl'][0];
@@ -416,12 +415,11 @@ export class ItemPreviewService {
           for (const [itr, cost] of Object.entries(costData)) {
             for (const [k, v] of Object.entries(cost)) {
               if (cItems.includes(Number(k))) {
-                let found = false;
                 for (const item of cItems) {
                   if (item === Number(k)) {
                     delete cost[Number(k)];
                     cost[-item.id] = v;
-                    found = true;
+
                     break;
                   }
                 }

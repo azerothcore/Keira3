@@ -1,12 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ClipboardService } from 'ngx-clipboard';
-
-import { EditorService } from '../../abstract/service/editors/editor.service';
-import { TableRow } from '../../types/general';
 import { ModalConfirmComponent } from '@keira-shared/modules/modal-confirm/modal-confirm.component';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { ClipboardService } from 'ngx-clipboard';
 import { filter } from 'rxjs';
+import { EditorService } from '../../abstract/service/editors/editor.service';
+import { TableRow } from '../../types/general';
 
 @Component({
   selector: 'keira-query-output',

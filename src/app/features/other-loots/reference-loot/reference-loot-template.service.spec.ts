@@ -1,12 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { instance } from 'ts-mockito';
-import { ToastrService } from 'ngx-toastr';
-
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
-import { ReferenceLootTemplateService } from './reference-loot-template.service';
+import { ToastrService } from 'ngx-toastr';
+import { instance } from 'ts-mockito';
 import { ReferenceLootHandlerService } from './reference-loot-handler.service';
+import { ReferenceLootTemplateService } from './reference-loot-template.service';
 
 describe('ReferenceLootTemplateService', () => {
   beforeEach(() =>

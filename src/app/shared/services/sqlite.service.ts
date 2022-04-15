@@ -1,8 +1,8 @@
 import { Injectable, NgZone } from '@angular/core';
-import { Observable } from 'rxjs';
 import { ElectronService } from '@keira-shared/services/electron.service';
-import { AppConfig } from '../../../environments/environment';
 import { TableRow } from '@keira-types/general';
+import { Observable } from 'rxjs';
+import { AppConfig } from '../../../environments/environment';
 
 /* istanbul ignore next */ // Note: will be tested in e2e
 @Injectable({

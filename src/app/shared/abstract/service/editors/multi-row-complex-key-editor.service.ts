@@ -1,10 +1,9 @@
-import { Observable } from 'rxjs';
+import { Class, TableRow } from '@keira-types/general';
 import { MysqlError } from 'mysql';
 import { ToastrService } from 'ngx-toastr';
-
-import { Class, TableRow } from '@keira-types/general';
-import { HandlerService } from '../handlers/handler.service';
+import { Observable } from 'rxjs';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { HandlerService } from '../handlers/handler.service';
 import { MultiRowEditorService } from './multi-row-editor.service';
 
 export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extends MultiRowEditorService<T> {

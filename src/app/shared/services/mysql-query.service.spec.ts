@@ -1,13 +1,12 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { SmartScripts } from '@keira-types/smart-scripts.type';
 import { of } from 'rxjs';
 import { instance } from 'ts-mockito';
-
-import { MysqlQueryService } from './mysql-query.service';
-import { MysqlService } from './mysql.service';
 import { MockedMysqlService } from '../testing/mocks';
 import { MaxRow, QueryForm, TableRow } from '../types/general';
 import { ConfigService } from './config.service';
-import { SmartScripts } from '@keira-types/smart-scripts.type';
+import { MysqlQueryService } from './mysql-query.service';
+import { MysqlService } from './mysql.service';
 
 interface MockRow extends TableRow {
   entry: number;

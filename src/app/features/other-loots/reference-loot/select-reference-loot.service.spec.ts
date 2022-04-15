@@ -1,11 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { instance } from 'ts-mockito';
-
-import { SelectReferenceLootService } from './select-reference-loot.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
+import { instance } from 'ts-mockito';
 import { ReferenceLootHandlerService } from './reference-loot-handler.service';
+import { SelectReferenceLootService } from './select-reference-loot.service';
 
 describe('SelectReferenceLootService', () => {
   beforeEach(() =>

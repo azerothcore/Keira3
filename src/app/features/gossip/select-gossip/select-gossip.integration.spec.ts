@@ -1,17 +1,16 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
-import { ModalModule } from 'ngx-bootstrap/modal';
-
+import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { SelectGossipComponent } from './select-gossip.component';
-import { SelectGossipService } from './select-gossip.service';
-import { SelectGossipModule } from './select-gossip.module';
-import { GossipMenu } from '@keira-types/gossip-menu.type';
 import { SelectPageObject } from '@keira-testing/select-page-object';
+import { GossipMenu } from '@keira-types/gossip-menu.type';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
 import { GossipHandlerService } from '../gossip-handler.service';
+import { SelectGossipComponent } from './select-gossip.component';
+import { SelectGossipModule } from './select-gossip.module';
+import { SelectGossipService } from './select-gossip.service';
 
 class SelectGossipComponentPage extends SelectPageObject<SelectGossipComponent> {
   ID_FIELD = 'MenuID';
@@ -140,7 +139,7 @@ describe('SelectGossip integration tests', () => {
   }
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
-    const { navigateSpy, page, querySpy, component } = setup();
+    const { navigateSpy, page, querySpy } = setup();
     const results: GossipMenu[] = [
       { MenuID: 1, TextID: 1 },
       { MenuID: 1, TextID: 2 },

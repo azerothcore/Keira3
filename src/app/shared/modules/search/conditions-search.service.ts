@@ -1,7 +1,7 @@
-import { SearchService } from './search.service';
-import { Conditions, CONDITIONS_SEARCH_FIELDS, CONDITIONS_TABLE } from '../../types/conditions.type';
-import { MysqlQueryService } from '../../services/mysql-query.service';
 import { Injectable } from '@angular/core';
+import { MysqlQueryService } from '../../services/mysql-query.service';
+import { Conditions, CONDITIONS_SEARCH_FIELDS, CONDITIONS_TABLE } from '../../types/conditions.type';
+import { SearchService } from './search.service';
 
 @Injectable({
   providedIn: 'root',

@@ -1,18 +1,16 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { NgModule } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
+import { MockedMysqlService } from '@keira-testing/mocks';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { instance } from 'ts-mockito';
-
-import { BaseSelectorBtnComponent } from './base-selector-btn.component';
+import { MysqlService } from '../../../services/mysql.service';
 import { ItemSelectorBtnComponent } from '../item-selector/item-selector-btn.component';
 import { ItemSelectorModalComponent } from '../item-selector/item-selector-modal.component';
-import { MysqlService } from '../../../services/mysql.service';
-import { MockedMysqlService } from '@keira-testing/mocks';
-import { closeModalsAfterEach } from '@keira-testing/test-helpers';
+import { BaseSelectorBtnComponent } from './base-selector-btn.component';
 
 @NgModule({
   declarations: [ItemSelectorModalComponent],

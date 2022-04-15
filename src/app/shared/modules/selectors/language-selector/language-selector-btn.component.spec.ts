@@ -1,8 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-
+import { ModalModule } from 'ngx-bootstrap/modal';
 import { LanguageSelectorBtnComponent } from './language-selector-btn.component';
 import { LanguageSelectorModule } from './language-selector.module';
-import { ModalModule } from 'ngx-bootstrap/modal';
 
 describe('LanguageSelectorBtnComponent', () => {
   let component: LanguageSelectorBtnComponent;

@@ -1,9 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { instance } from 'ts-mockito';
-
-import { LanguageSearchService } from './language-search.service';
-import { MockedSqliteQueryService } from '../../testing/mocks';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { instance } from 'ts-mockito';
+import { MockedSqliteQueryService } from '../../testing/mocks';
+import { LanguageSearchService } from './language-search.service';
 
 describe('LanguageSearchService', () => {
   beforeEach(() =>

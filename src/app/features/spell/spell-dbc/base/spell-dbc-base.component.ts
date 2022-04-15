@@ -1,19 +1,17 @@
 import { Component, Input } from '@angular/core';
-import { FormGroup } from 'ngx-typesafe-forms';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { ToastrModule } from 'ngx-toastr';
-import { SpellDbc } from '@keira-types/spell-dbc.type';
 import { SPELL_SCHOOL_MASK } from '@keira-shared/constants/flags/spell-school-mask';
 import { DISPEL_TYPE } from '@keira-shared/constants/options/dispel-type';
-import { SPELL_MECHANIC } from '@keira-shared/constants/options/spell-mechanic';
 import {
-  SPELL_DBC_CAST_TIME,
-  SPELL_DBC_POWER_TYPE,
   SPELL_DBC_CASTER_AURA_STATE,
-  SPELL_DBC_TARGET_AURA_STATE,
+  SPELL_DBC_CAST_TIME,
   SPELL_DBC_DAMAGE_CLASS,
+  SPELL_DBC_POWER_TYPE,
   SPELL_DBC_PREVENTION_TYPE,
+  SPELL_DBC_TARGET_AURA_STATE,
 } from '@keira-shared/constants/options/spell-dbc-base-options';
+import { SPELL_MECHANIC } from '@keira-shared/constants/options/spell-mechanic';
+import { SpellDbc } from '@keira-types/spell-dbc.type';
+import { FormGroup } from 'ngx-typesafe-forms';
 
 @Component({
   selector: 'keira-spell-dbc-base',

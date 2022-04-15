@@ -1,17 +1,16 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
-import { ModalModule } from 'ngx-bootstrap/modal';
-
+import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { SelectPageObject } from '@keira-testing/select-page-object';
+import { FishingLootTemplate } from '@keira-types/fishing-loot-template.type';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
+import { FishingLootHandlerService } from './fishing-loot-handler.service';
+import { FishingLootTemplateModule } from './fishing-loot-template.module';
 import { SelectFishingLootComponent } from './select-fishing-loot.component';
 import { SelectFishingLootService } from './select-fishing-loot.service';
-import { SelectPageObject } from '@keira-testing/select-page-object';
-import { FishingLootTemplateModule } from './fishing-loot-template.module';
-import { FishingLootHandlerService } from './fishing-loot-handler.service';
-import { FishingLootTemplate } from '@keira-types/fishing-loot-template.type';
 
 class SelectFishingLootComponentPage extends SelectPageObject<SelectFishingLootComponent> {
   ID_FIELD = 'Entry';

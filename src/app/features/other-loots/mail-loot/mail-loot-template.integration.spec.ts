@@ -1,15 +1,14 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
+import { MailLootTemplate } from '@keira-types/mail-loot-template.type';
 import { ModalModule } from 'ngx-bootstrap/modal';
-
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
+import { MailLootHandlerService } from './mail-loot-handler.service';
 import { MailLootTemplateComponent } from './mail-loot-template.component';
 import { MailLootTemplateModule } from './mail-loot-template.module';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { MailLootTemplate } from '@keira-types/mail-loot-template.type';
-import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
-import { MailLootHandlerService } from './mail-loot-handler.service';
 
 class MailLootTemplatePage extends MultiRowEditorPageObject<MailLootTemplateComponent> {}
 

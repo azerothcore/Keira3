@@ -1,11 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
-
-import { ReferenceViewerService } from './reference-viewer.service';
 import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.module';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { ReferenceLootTemplate } from '@keira-types/reference-loot-template.type';
 import { TableRow } from '@keira-types/general';
+import { ReferenceLootTemplate } from '@keira-types/reference-loot-template.type';
+import { of } from 'rxjs';
+import { ReferenceViewerService } from './reference-viewer.service';
 
 describe('ReferenceViewerService', () => {
   beforeEach(() => {

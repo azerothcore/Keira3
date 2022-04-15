@@ -1,22 +1,20 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
-import { ModalModule } from 'ngx-bootstrap/modal';
-import Spy = jasmine.Spy;
-
-import { CreatureEquipTemplateComponent } from './creature-equip-template.component';
-import { CreatureEquipTemplateModule } from './creature-equip-template.module';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { CreatureEquipTemplate } from '@keira-types/creature-equip-template.type';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
+import { CreatureEquipTemplateComponent } from './creature-equip-template.component';
+import { CreatureEquipTemplateModule } from './creature-equip-template.module';
+import Spy = jasmine.Spy;
 
 class CreatureEquipTemplatePage extends EditorPageObject<CreatureEquipTemplateComponent> {}
 
 describe('CreatureEquipTemplate integration tests', () => {
-  let component: CreatureEquipTemplateComponent;
   let fixture: ComponentFixture<CreatureEquipTemplateComponent>;
   let queryService: MysqlQueryService;
   let querySpy: Spy;
@@ -53,7 +51,6 @@ describe('CreatureEquipTemplate integration tests', () => {
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
 
     fixture = TestBed.createComponent(CreatureEquipTemplateComponent);
-    component = fixture.componentInstance;
     page = new CreatureEquipTemplatePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();

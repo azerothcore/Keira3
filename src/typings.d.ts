@@ -1,3 +1,5 @@
+/* eslint no-var: off */
+
 /* SystemJS module definition */
 declare var nodeModule: NodeModule;
 interface NodeModule {

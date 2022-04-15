@@ -1,29 +1,28 @@
 import { Component } from '@angular/core';
-
-import { CreatureTemplateService } from './creature-template.service';
-import { CreatureTemplate } from '@keira-types/creature-template.type';
 import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
-import { CreatureHandlerService } from '../creature-handler.service';
-import { UNIT_FLAGS_2 } from '@keira-constants/flags/unit-flags2';
-import { TRAINER_TYPE } from '@keira-constants/options/trainer-type';
-import { NPC_FLAGS } from '@keira-constants/flags/npc-flags';
-import { CREATURE_FAMILY } from '@keira-constants/options/creature-family';
-import { CREATURE_TYPE } from '@keira-constants/options/creature-type';
 import { CREATURE_TYPE_FLAGS } from '@keira-constants/flags/creature-type-flags';
-import { RANK } from '@keira-constants/options/rank';
-import { UNIT_FLAGS } from '@keira-constants/flags/unit-flags';
 import { DYNAMIC_FLAGS } from '@keira-constants/flags/dynamic-flags';
-import { CREATURE_CLASS } from '@keira-constants/options/creature-class';
-import { CREATURE_RACE } from '@keira-constants/options/creature-race';
-import { MOVEMENT_TYPE } from '@keira-constants/options/movement-type';
 import { FLAGS_EXTRA } from '@keira-constants/flags/flags-extra';
 import { MECHANIC_IMMUNE_MASK } from '@keira-constants/flags/mechanic-immune-mask';
+import { NPC_FLAGS } from '@keira-constants/flags/npc-flags';
 import { SPELL_SCHOOL_MASK } from '@keira-constants/flags/spell-school-mask';
-import { CREATURE_ICON } from '@keira-constants/options/creature-icon';
-import { EXPANSION } from '@keira-constants/options/expansion';
-import { UNIT_CLASS } from '@keira-constants/options/unit-class';
-import { DAMAGE_TYPE } from '@keira-constants/options/damage-type';
+import { UNIT_FLAGS } from '@keira-constants/flags/unit-flags';
+import { UNIT_FLAGS_2 } from '@keira-constants/flags/unit-flags2';
 import { CREATURE_AI_NAME } from '@keira-constants/options/creature-ai-name';
+import { CREATURE_CLASS } from '@keira-constants/options/creature-class';
+import { CREATURE_FAMILY } from '@keira-constants/options/creature-family';
+import { CREATURE_ICON } from '@keira-constants/options/creature-icon';
+import { CREATURE_RACE } from '@keira-constants/options/creature-race';
+import { CREATURE_TYPE } from '@keira-constants/options/creature-type';
+import { DAMAGE_TYPE } from '@keira-constants/options/damage-type';
+import { EXPANSION } from '@keira-constants/options/expansion';
+import { MOVEMENT_TYPE } from '@keira-constants/options/movement-type';
+import { RANK } from '@keira-constants/options/rank';
+import { TRAINER_TYPE } from '@keira-constants/options/trainer-type';
+import { UNIT_CLASS } from '@keira-constants/options/unit-class';
+import { CreatureTemplate } from '@keira-types/creature-template.type';
+import { CreatureHandlerService } from '../creature-handler.service';
+import { CreatureTemplateService } from './creature-template.service';
 
 @Component({
   selector: 'keira-creature-template',

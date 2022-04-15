@@ -1,18 +1,18 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
-import { ModalModule } from 'ngx-bootstrap/modal';
-
+import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { SelectSpellComponent } from './select-spell.component';
-import { SelectSpellService } from './select-spell.service';
-import { SelectSpellModule } from './select-spell.module';
 import { SelectPageObject } from '@keira-testing/select-page-object';
+import { SpellDbc, SPELL_DBC_ID, SPELL_DBC_NAME } from '@keira-types/spell-dbc.type';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
 import { SpellHandlerService } from '../spell-handler.service';
+import { SelectSpellComponent } from './select-spell.component';
+import { SelectSpellModule } from './select-spell.module';
+import { SelectSpellService } from './select-spell.service';
+
 import Spy = jasmine.Spy;
-import { SPELL_DBC_ID, SPELL_DBC_NAME, SPELL_DBC_NAMESUBTEXT, SPELL_DBC_DESCRIPTION, SpellDbc } from '@keira-types/spell-dbc.type';
 
 class SelectSpellComponentPage extends SelectPageObject<SelectSpellComponent> {
   ID_FIELD = SPELL_DBC_ID;

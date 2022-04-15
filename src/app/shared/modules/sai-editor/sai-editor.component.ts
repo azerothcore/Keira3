@@ -1,25 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-
-import { SaiHandlerService } from './sai-handler.service';
 import { MultiRowEditorComponent } from '../../abstract/components/editors/multi-row-editor.component';
+import { EVENT_PHASE_MASK } from '../../constants/flags/event-phase-mask';
+import { SMART_EVENT_FLAGS } from '../../constants/flags/smart-event-flags';
 import { SAI_TYPES, SmartScripts } from '../../types/smart-scripts.type';
-import { SaiEditorService } from './sai-editor.service';
 import {
-  SAI_EVENT_PARAM1_NAMES,
-  SAI_EVENT_PARAM1_TOOLTIPS,
-  SAI_EVENT_PARAM2_NAMES,
-  SAI_EVENT_PARAM2_TOOLTIPS,
-  SAI_EVENT_PARAM3_NAMES,
-  SAI_EVENT_PARAM3_TOOLTIPS,
-  SAI_EVENT_PARAM4_NAMES,
-  SAI_EVENT_PARAM4_TOOLTIPS,
-  SAI_EVENT_PARAM5_NAMES,
-  SAI_EVENT_PARAM5_TOOLTIPS,
-  SAI_EVENT_TOOLTIPS,
-  SAI_EVENTS,
-  SAI_EVENTS_KEYS,
-} from './constants/sai-event';
-import {
+  SAI_ACTIONS,
+  SAI_ACTIONS_KEYS,
   SAI_ACTION_PARAM1_NAMES,
   SAI_ACTION_PARAM1_TOOLTIPS,
   SAI_ACTION_PARAM2_NAMES,
@@ -33,10 +19,27 @@ import {
   SAI_ACTION_PARAM6_NAMES,
   SAI_ACTION_PARAM6_TOOLTIPS,
   SAI_ACTION_TOOLTIPS,
-  SAI_ACTIONS,
-  SAI_ACTIONS_KEYS,
 } from './constants/sai-actions';
 import {
+  SAI_EVENTS,
+  SAI_EVENTS_KEYS,
+  SAI_EVENT_PARAM1_NAMES,
+  SAI_EVENT_PARAM1_TOOLTIPS,
+  SAI_EVENT_PARAM2_NAMES,
+  SAI_EVENT_PARAM2_TOOLTIPS,
+  SAI_EVENT_PARAM3_NAMES,
+  SAI_EVENT_PARAM3_TOOLTIPS,
+  SAI_EVENT_PARAM4_NAMES,
+  SAI_EVENT_PARAM4_TOOLTIPS,
+  SAI_EVENT_PARAM5_NAMES,
+  SAI_EVENT_PARAM5_TOOLTIPS,
+  SAI_EVENT_TOOLTIPS,
+} from './constants/sai-event';
+import {
+  SAI_TARGETS,
+  SAI_TARGETS_KEYS,
+  SAI_TARGET_O_NAMES,
+  SAI_TARGET_O_TOOLTIPS,
   SAI_TARGET_PARAM1_NAMES,
   SAI_TARGET_PARAM1_TOOLTIPS,
   SAI_TARGET_PARAM2_NAMES,
@@ -46,19 +49,15 @@ import {
   SAI_TARGET_PARAM4_NAMES,
   SAI_TARGET_PARAM4_TOOLTIPS,
   SAI_TARGET_TOOLTIPS,
-  SAI_TARGETS,
-  SAI_TARGETS_KEYS,
   SAI_TARGET_X_NAMES,
-  SAI_TARGET_Y_NAMES,
-  SAI_TARGET_Z_NAMES,
-  SAI_TARGET_O_NAMES,
   SAI_TARGET_X_TOOLTIPS,
+  SAI_TARGET_Y_NAMES,
   SAI_TARGET_Y_TOOLTIPS,
+  SAI_TARGET_Z_NAMES,
   SAI_TARGET_Z_TOOLTIPS,
-  SAI_TARGET_O_TOOLTIPS,
 } from './constants/sai-targets';
-import { EVENT_PHASE_MASK } from '../../constants/flags/event-phase-mask';
-import { SMART_EVENT_FLAGS } from '../../constants/flags/smart-event-flags';
+import { SaiEditorService } from './sai-editor.service';
+import { SaiHandlerService } from './sai-handler.service';
 
 @Component({
   selector: 'keira-sai-editor',

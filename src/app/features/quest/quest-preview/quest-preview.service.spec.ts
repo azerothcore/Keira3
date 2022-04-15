@@ -1,29 +1,29 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { QuestTemplateService } from '../quest-template/quest-template.service';
-import { QuestModule } from '../quest.module';
-import { QuestPreviewService } from './quest-preview.service';
-import Spy = jasmine.Spy;
-import { QuestRequestItemsService } from '../quest-request-items/quest-request-items.service';
-import { QuestTemplateAddonService } from '../quest-template-addon/quest-template-addon.service';
-import { GameobjectQueststarterService } from '../gameobject-queststarter/gameobject-queststarter.service';
-import { GameobjectQuestenderService } from '../gameobject-questender/gameobject-questender.service';
-import { CreatureQueststarterService } from '../creature-queststarter/creature-queststarter.service';
-import { CreatureQuestenderService } from '../creature-questender/creature-questender.service';
-import { QuestHandlerService } from '../quest-handler.service';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { DifficultyLevel } from './quest-preview.model';
 import {
   QUEST_FLAG_DAILY,
-  QUEST_FLAG_WEEKLY,
+  QUEST_FLAG_REPEATABLE,
   QUEST_FLAG_SPECIAL_MONTHLY,
   QUEST_FLAG_SPECIAL_REPEATABLE,
-  QUEST_FLAG_REPEATABLE,
+  QUEST_FLAG_WEEKLY,
   QUEST_PERIOD,
 } from '@keira-shared/constants/quest-preview';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
-import { QuestOfferRewardService } from '../quest-offer-reward/quest-offer-reward.service';
 import { ToastrModule } from 'ngx-toastr';
+import { CreatureQuestenderService } from '../creature-questender/creature-questender.service';
+import { CreatureQueststarterService } from '../creature-queststarter/creature-queststarter.service';
+import { GameobjectQuestenderService } from '../gameobject-questender/gameobject-questender.service';
+import { GameobjectQueststarterService } from '../gameobject-queststarter/gameobject-queststarter.service';
+import { QuestHandlerService } from '../quest-handler.service';
+import { QuestOfferRewardService } from '../quest-offer-reward/quest-offer-reward.service';
+import { QuestRequestItemsService } from '../quest-request-items/quest-request-items.service';
+import { QuestTemplateAddonService } from '../quest-template-addon/quest-template-addon.service';
+import { QuestTemplateService } from '../quest-template/quest-template.service';
+import { QuestModule } from '../quest.module';
+import { DifficultyLevel } from './quest-preview.model';
+import { QuestPreviewService } from './quest-preview.service';
+import Spy = jasmine.Spy;
 
 describe('QuestPreviewService', () => {
   beforeEach(

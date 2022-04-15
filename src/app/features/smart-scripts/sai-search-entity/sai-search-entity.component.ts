@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { Validators } from '@angular/forms';
-import { FormControl, FormGroup } from 'ngx-typesafe-forms';
-
 import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
 import { SAI_TYPES, SAI_TYPES_KEYS, SmartScripts } from '@keira-types/smart-scripts.type';
+import { FormControl, FormGroup } from 'ngx-typesafe-forms';
 
 @Component({
   selector: 'keira-sai-search-entity',

@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
-
-import { CreatureHandlerService } from '../creature-handler.service';
-import { CreatureTemplateSpell } from '@keira-types/creature-template-spell.type';
-import { CreatureTemplateSpellService } from './creature-template-spell.service';
-import { CREATURE_TEMPLATE_SPELL_TABLE } from '@keira-types/creature-template-spell.type';
 import { MultiRowEditorComponent } from '@keira-shared/abstract/components/editors/multi-row-editor.component';
+import { CreatureTemplateSpell, CREATURE_TEMPLATE_SPELL_TABLE } from '@keira-types/creature-template-spell.type';
+import { CreatureHandlerService } from '../creature-handler.service';
+import { CreatureTemplateSpellService } from './creature-template-spell.service';
 
 @Component({
   selector: 'keira-creature-template-spell',

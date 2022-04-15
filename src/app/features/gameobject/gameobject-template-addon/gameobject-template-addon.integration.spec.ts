@@ -1,22 +1,20 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
-import { ModalModule } from 'ngx-bootstrap/modal';
-import Spy = jasmine.Spy;
-
-import { GameobjectTemplateAddonComponent } from './gameobject-template-addon.component';
-import { GameobjectTemplateAddonModule } from './gameobject-template-addon.module';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { GameobjectTemplateAddon } from '@keira-types/gameobject-template-addon.type';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
+import { GameobjectTemplateAddonComponent } from './gameobject-template-addon.component';
+import { GameobjectTemplateAddonModule } from './gameobject-template-addon.module';
+import Spy = jasmine.Spy;
 
 class GameobjectTemplateAddonPage extends EditorPageObject<GameobjectTemplateAddonComponent> {}
 
 describe('GameobjectTemplateAddon integration tests', () => {
-  let component: GameobjectTemplateAddonComponent;
   let fixture: ComponentFixture<GameobjectTemplateAddonComponent>;
   let queryService: MysqlQueryService;
   let querySpy: Spy;
@@ -56,7 +54,6 @@ describe('GameobjectTemplateAddon integration tests', () => {
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
 
     fixture = TestBed.createComponent(GameobjectTemplateAddonComponent);
-    component = fixture.componentInstance;
     page = new GameobjectTemplateAddonPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();

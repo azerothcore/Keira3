@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-
-import { MysqlQueryService } from '../../shared/services/mysql-query.service';
 import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
+import { MysqlQueryService } from '../../shared/services/mysql-query.service';
 
 @Injectable()
 export class SaiGameobjectHandlerService extends SaiHandlerService {

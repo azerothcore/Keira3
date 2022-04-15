@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { QuestPreviewService } from './quest-preview.service';
 import { PreviewHelperService } from '@keira-shared/services/preview-helper.service';
+import { QuestPreviewService } from './quest-preview.service';
 
 @Component({
   selector: 'keira-quest-preview',

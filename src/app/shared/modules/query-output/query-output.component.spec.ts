@@ -1,18 +1,16 @@
+import { Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-import { ClipboardService } from 'ngx-clipboard';
+import { BrowserModule } from '@angular/platform-browser';
+import { HighlightjsWrapperModule } from '@keira-shared/modules/highlightjs-wrapper/highlightjs-wrapper.module';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
-
-import { QueryOutputComponent } from './query-output.component';
+import { ClipboardService } from 'ngx-clipboard';
+import { EditorService } from '../../abstract/service/editors/editor.service';
 import { MockType } from '../../testing/mocks';
+import { PageObject } from '../../testing/page-object';
 import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-wrapper.component';
 import { QueryErrorComponent } from './query-error/query-error.component';
-import { EditorService } from '../../abstract/service/editors/editor.service';
-import { PageObject } from '../../testing/page-object';
-import { Component, ViewChild } from '@angular/core';
-import { closeModalsAfterEach } from '@keira-testing/test-helpers';
-import { HighlightjsWrapperModule } from '@keira-shared/modules/highlightjs-wrapper/highlightjs-wrapper.module';
+import { QueryOutputComponent } from './query-output.component';
 
 @Component({
   template: `<keira-query-output [editorService]="editorService"></keira-query-output>`,

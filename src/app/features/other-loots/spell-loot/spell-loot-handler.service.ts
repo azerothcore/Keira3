@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-
 import { HandlerService } from '@keira-abstract/service/handlers/handler.service';
-import { SPELL_LOOT_TEMPLATE_TABLE, SpellLootTemplate } from '@keira-types/spell-loot-template.type';
+import { SpellLootTemplate, SPELL_LOOT_TEMPLATE_TABLE } from '@keira-types/spell-loot-template.type';
 
 @Injectable()
 export class SpellLootHandlerService extends HandlerService<SpellLootTemplate> {

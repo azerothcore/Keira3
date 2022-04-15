@@ -1,12 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { instance } from 'ts-mockito';
-import { ToastrService } from 'ngx-toastr';
-
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
-import { GameobjectQueststarterService } from './gameobject-queststarter.service';
+import { ToastrService } from 'ngx-toastr';
+import { instance } from 'ts-mockito';
 import { QuestHandlerService } from '../quest-handler.service';
+import { GameobjectQueststarterService } from './gameobject-queststarter.service';
 
 describe('GameobjectQueststarterService', () => {
   beforeEach(() =>

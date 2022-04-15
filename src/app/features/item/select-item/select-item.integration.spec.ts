@@ -1,18 +1,16 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
-import { ModalModule } from 'ngx-bootstrap/modal';
-import Spy = jasmine.Spy;
-
+import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { SelectItemComponent } from './select-item.component';
-import { SelectItemService } from './select-item.service';
-import { SelectItemModule } from './select-item.module';
-import { ItemTemplate } from '@keira-types/item-template.type';
 import { SelectPageObject } from '@keira-testing/select-page-object';
+import { ItemTemplate } from '@keira-types/item-template.type';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
 import { ItemHandlerService } from '../item-handler.service';
+import { SelectItemComponent } from './select-item.component';
+import { SelectItemModule } from './select-item.module';
+import Spy = jasmine.Spy;
 
 class SelectItemComponentPage extends SelectPageObject<SelectItemComponent> {
   ID_FIELD = 'entry';
@@ -21,7 +19,6 @@ class SelectItemComponentPage extends SelectPageObject<SelectItemComponent> {
 describe('SelectItem integration tests', () => {
   let component: SelectItemComponent;
   let fixture: ComponentFixture<SelectItemComponent>;
-  let selectService: SelectItemService;
   let page: SelectItemComponentPage;
   let queryService: MysqlQueryService;
   let querySpy: Spy;
@@ -42,8 +39,6 @@ describe('SelectItem integration tests', () => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
-
-    selectService = TestBed.inject(SelectItemService);
 
     fixture = TestBed.createComponent(SelectItemComponent);
     page = new SelectItemComponentPage(fixture);

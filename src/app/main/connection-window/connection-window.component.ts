@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from 'ngx-typesafe-forms';
 import { ConnectionConfig, MysqlError } from 'mysql';
+import { FormControl, FormGroup } from 'ngx-typesafe-forms';
 import packageInfo from '../../../../package.json';
-
 import { MysqlService } from '../../shared/services/mysql.service';
 import { SubscriptionHandler } from '../../shared/utils/subscription-handler/subscription-handler';
 import { ConnectionWindowService } from './connection-window.service';

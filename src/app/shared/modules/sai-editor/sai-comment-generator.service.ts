@@ -1,10 +1,5 @@
 import { Injectable } from '@angular/core';
-
-import { SAI_TYPES, SmartScripts } from '@keira-types/smart-scripts.type';
-import { SAI_EVENTS } from '@keira-shared/modules/sai-editor/constants/sai-event';
 import { SAI_ACTION_COMMENTS, SAI_EVENT_COMMENTS } from '@keira-shared/modules/sai-editor/constants/sai-comments';
-import { MysqlQueryService } from '../../services/mysql-query.service';
-import { SAI_TARGETS } from '@keira-shared/modules/sai-editor/constants/sai-targets';
 import {
   DYNAMIC_FLAGS,
   EVENT_FLAGS,
@@ -12,13 +7,17 @@ import {
   NPC_FLAGS,
   phaseMask,
   templates,
-  UNIT_FLAGS,
   unitBytes1Flags,
   unitFieldBytes1Type,
   unitStandFlags,
   unitStandStateType,
+  UNIT_FLAGS,
 } from '@keira-shared/modules/sai-editor/constants/sai-constants';
+import { SAI_EVENTS } from '@keira-shared/modules/sai-editor/constants/sai-event';
+import { SAI_TARGETS } from '@keira-shared/modules/sai-editor/constants/sai-targets';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { SAI_TYPES, SmartScripts } from '@keira-types/smart-scripts.type';
+import { MysqlQueryService } from '../../services/mysql-query.service';
 
 @Injectable({
   providedIn: 'root',
