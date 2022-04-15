@@ -25,7 +25,7 @@ describe('HandlerService', () => {
     expect(service.selected).toBeUndefined();
     expect(service.selectedName).toBeUndefined();
     expect(service.isNew).toBe(false);
-    expect(service.canActivate({} as ActivatedRouteSnapshot)).toBe(false);
+    expect(service.canActivate()).toBe(false);
   });
 
   it('selection should behave correctly', () => {
@@ -39,7 +39,7 @@ describe('HandlerService', () => {
     expect(service.selected).toEqual(id);
     expect(service.selectedName).toEqual(name);
     expect(service.isNew).toEqual(isNew);
-    expect(service.canActivate({} as ActivatedRouteSnapshot)).toBe(true);
+    expect(service.canActivate()).toBe(true);
     expect(navigateSpy).toHaveBeenCalledWith(['creature/creature-template']);
   });
 });
