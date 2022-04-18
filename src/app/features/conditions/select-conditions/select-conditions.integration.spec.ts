@@ -13,26 +13,26 @@ import { SelectConditionsModule } from './select-conditions.module';
 import Spy = jasmine.Spy;
 
 class SelectConditionsComponentPage extends PageObject<SelectConditionsComponent> {
-  get searchIdSelect() {
+  get searchIdSelect(): HTMLInputElement {
     return this.query<HTMLInputElement>('select#SourceTypeOrReferenceId');
   }
-  get searchGroupInput() {
+  get searchGroupInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('input#SourceGroup');
   }
-  get searchEntryInput() {
+  get searchEntryInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('input#SourceEntry');
   }
-  get searchLimitInput() {
+  get searchLimitInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('input#limit');
   }
-  get searchBtn() {
+  get searchBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#search-btn');
   }
-  get createBtn() {
+  get createBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#create-new-btn');
   }
 
-  get topBar() {
+  get topBar(): HTMLElement {
     return this.query<HTMLElement>('keira-top-bar');
   }
 }

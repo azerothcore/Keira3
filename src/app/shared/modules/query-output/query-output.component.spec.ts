@@ -22,27 +22,27 @@ class TestHostComponent {
 }
 
 export class QueryOutputComponentPage extends PageObject<TestHostComponent> {
-  get diffQueryWrapper() {
+  get diffQueryWrapper(): HTMLElement {
     return this.query<HTMLElement>('keira-highlightjs-wrapper#diff-query');
   }
-  get fullQueryWrapper() {
+  get fullQueryWrapper(): HTMLElement {
     return this.query<HTMLElement>('keira-highlightjs-wrapper#full-query');
   }
 
-  get diffQueryInput() {
+  get diffQueryInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('#diff-query-input');
   }
-  get fullQueryInput() {
+  get fullQueryInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('#full-query-input');
   }
 
-  get copyBtn() {
+  get copyBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#copy-btn');
   }
-  get executeBtn() {
+  get executeBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#execute-btn');
   }
-  get reloadBtn() {
+  get reloadBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#reload-btn');
   }
 

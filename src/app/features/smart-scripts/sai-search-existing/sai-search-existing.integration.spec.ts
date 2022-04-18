@@ -12,16 +12,16 @@ import { SaiSearchExistingModule } from './sai-search-existing.module';
 import Spy = jasmine.Spy;
 
 class SaiSearchExistingComponentPage extends PageObject<SaiSearchExistingComponent> {
-  get searchSourceTypeSelect() {
+  get searchSourceTypeSelect(): HTMLInputElement {
     return this.query<HTMLInputElement>('select#source_type');
   }
-  get searchEntryOrGuid() {
+  get searchEntryOrGuid(): HTMLInputElement {
     return this.query<HTMLInputElement>('input#entryorguid');
   }
-  get searchLimitInput() {
+  get searchLimitInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('input#limit');
   }
-  get searchBtn() {
+  get searchBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#search-btn');
   }
 }

@@ -7,31 +7,31 @@ import { SaiSearchEntityComponent } from './sai-search-entity.component';
 import { SaiSearchEntityModule } from './sai-search-entity.module';
 
 class SaiSearchEntityComponentPage extends PageObject<SaiSearchEntityComponent> {
-  get entryOrGuidInput() {
+  get entryOrGuidInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('input#entryorguid', false);
   }
-  get entryOrGuidLabel() {
+  get entryOrGuidLabel(): HTMLLabelElement {
     return this.query<HTMLLabelElement>('label[for="entryorguid"]', false);
   }
-  get editBtn() {
+  get editBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#edit-btn', false);
   }
-  get creatureSelector() {
+  get creatureSelector(): HTMLElement {
     return this.query<HTMLElement>('keira-creature-selector-btn', false);
   }
-  get gameobjectSelector() {
+  get gameobjectSelector(): HTMLElement {
     return this.query<HTMLElement>('keira-gameobject-selector-btn', false);
   }
-  get sourceTypeCreature() {
+  get sourceTypeCreature(): HTMLSelectElement {
     return this.query<HTMLSelectElement>('.radio-container label#SAI_TYPE_CREATURE');
   }
-  get sourceTypeGameobject() {
+  get sourceTypeGameobject(): HTMLSelectElement {
     return this.query<HTMLSelectElement>('.radio-container label#SAI_TYPE_GAMEOBJECT');
   }
-  get sourceTypeAreatrigger() {
+  get sourceTypeAreatrigger(): HTMLSelectElement {
     return this.query<HTMLSelectElement>('.radio-container label#SAI_TYPE_AREATRIGGER');
   }
-  get sourceTypeTimedActionlist() {
+  get sourceTypeTimedActionlist(): HTMLSelectElement {
     return this.query<HTMLSelectElement>('.radio-container label#SAI_TYPE_TIMED_ACTIONLIST');
   }
 }

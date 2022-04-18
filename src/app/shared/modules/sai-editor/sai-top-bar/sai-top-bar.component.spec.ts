@@ -9,7 +9,7 @@ import { SaiHandlerService } from '../sai-handler.service';
 import { SaiTopBarComponent } from './sai-top-bar.component';
 
 class SaiTopBarComponentPage extends PageObject<TestHostComponent> {
-  get mainText() {
+  get mainText(): HTMLSpanElement {
     return this.query<HTMLSpanElement>('.main-text');
   }
 }

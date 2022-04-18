@@ -14,13 +14,13 @@ import { SpellDbcLocaleComponent } from './spell-dbc-locale.component';
 
 describe('SpellDbcLocaleComponent', () => {
   class SpellDbcLocaleComponentPage extends PageObject<TestHostComponent> {
-    getLabelByLocale(fieldName: string, locale: Locale) {
+    getLabelByLocale(fieldName: string, locale: Locale): HTMLLabelElement {
       return this.query<HTMLLabelElement>(`.control-label[for="${fieldName}_${locale}"]`);
     }
-    getInputByLocale(fieldName: string, locale: Locale) {
+    getInputByLocale(fieldName: string, locale: Locale): HTMLTextAreaElement {
       return this.query<HTMLTextAreaElement>(`textarea.form-control[id="${fieldName}_${locale}"]`);
     }
-    expectInputVisibleByLocale(fieldName: string, locale: Locale) {
+    expectInputVisibleByLocale(fieldName: string, locale: Locale): void {
       expect(this.getLabelByLocale(fieldName, locale)).toBeDefined();
     }
   }

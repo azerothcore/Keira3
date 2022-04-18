@@ -16,7 +16,7 @@ import Spy = jasmine.Spy;
 
 class SelectSpellComponentPage extends SelectPageObject<SelectSpellComponent> {
   ID_FIELD = SPELL_DBC_ID;
-  get searchSubnameInput() {
+  get searchSubnameInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('#subname');
   }
 }

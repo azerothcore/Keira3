@@ -28,7 +28,7 @@ class TestHostComponent {
 }
 
 class IconComponentPage extends PageObject<TestHostComponent> {
-  get img() {
+  get img(): HTMLImageElement {
     return this.query<HTMLImageElement>('img');
   }
 }

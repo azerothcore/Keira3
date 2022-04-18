@@ -15,100 +15,100 @@ import { QuestPreviewService } from './quest-preview.service';
 import Spy = jasmine.Spy;
 
 class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
-  get title() {
+  get title(): HTMLHeadElement {
     return this.query<HTMLHeadElement>('#title');
   }
-  get level() {
+  get level(): HTMLParagraphElement {
     return this.query<HTMLParagraphElement>('#level');
   }
-  get minLevel() {
+  get minLevel(): HTMLParagraphElement {
     return this.query<HTMLParagraphElement>('#minlevel');
   }
-  get creatureQuestStartIcon() {
+  get creatureQuestStartIcon(): HTMLImageElement {
     return this.query<HTMLImageElement>('#creatureQuestStartIcon');
   }
-  get creatureQuestEndIcon() {
+  get creatureQuestEndIcon(): HTMLImageElement {
     return this.query<HTMLImageElement>('#creatureQuestEndIcon');
   }
-  get questType() {
+  get questType(): HTMLParagraphElement {
     return this.query<HTMLParagraphElement>('#type');
   }
-  get classes() {
+  get classes(): HTMLParagraphElement {
     return this.query<HTMLParagraphElement>('#classes');
   }
-  get requiredSkill() {
+  get requiredSkill(): HTMLParagraphElement {
     return this.query<HTMLParagraphElement>('#requiredSkill');
   }
-  get rewardXP() {
+  get rewardXP(): HTMLParagraphElement {
     return this.query<HTMLParagraphElement>('#rewardXP');
   }
-  get rewardTalents() {
+  get rewardTalents(): HTMLParagraphElement {
     return this.query<HTMLParagraphElement>('#rewardTalents');
   }
-  get rewardReputations() {
+  get rewardReputations(): HTMLParagraphElement {
     return this.query<HTMLParagraphElement>('#rewardReputations');
   }
-  get providedItem() {
+  get providedItem(): HTMLParagraphElement {
     return this.query<HTMLParagraphElement>('#provided-item');
   }
-  get areaDescription() {
+  get areaDescription(): HTMLParagraphElement {
     return this.query<HTMLParagraphElement>('#areaDescription');
   }
-  get npcOrGoObjectives() {
+  get npcOrGoObjectives(): HTMLParagraphElement {
     return this.query<HTMLParagraphElement>('#npcOrGoObjectives');
   }
-  get itemObjectives() {
+  get itemObjectives(): HTMLParagraphElement {
     return this.query<HTMLParagraphElement>('#itemObjectives');
   }
-  get RequiredFaction() {
+  get RequiredFaction(): HTMLParagraphElement {
     return this.query<HTMLParagraphElement>('#RequiredFaction');
   }
-  get requiredMoney() {
+  get requiredMoney(): HTMLDivElement {
     return this.query<HTMLDivElement>('#required-money', false);
   }
-  get rewardMoney() {
+  get rewardMoney(): HTMLDivElement {
     return this.query<HTMLDivElement>('#reward-money', false);
   }
-  get rewardBonusMoney() {
+  get rewardBonusMoney(): HTMLDivElement {
     return this.query<HTMLDivElement>('#reward-bonus-money', false);
   }
-  get rewardSpell() {
+  get rewardSpell(): HTMLDivElement {
     return this.query<HTMLDivElement>('#rewardSpell', false);
   }
-  get rewardItems() {
+  get rewardItems(): HTMLDivElement {
     return this.query<HTMLDivElement>('#reward-items', false);
   }
-  get rewardChoiceItems() {
+  get rewardChoiceItems(): HTMLDivElement {
     return this.query<HTMLDivElement>('#reward-choice-items', false);
   }
 
-  get descriptionText() {
+  get descriptionText(): HTMLDivElement {
     return this.query<HTMLDivElement>('#description-text');
   }
-  get progressText() {
+  get progressText(): HTMLDivElement {
     return this.query<HTMLDivElement>('#progress-text');
   }
-  get completionText() {
+  get completionText(): HTMLDivElement {
     return this.query<HTMLDivElement>('#completion-text');
   }
-  get descriptionToggle() {
+  get descriptionToggle(): HTMLParagraphElement {
     return this.query<HTMLParagraphElement>('#description-toggle');
   }
-  get progressToggle() {
+  get progressToggle(): HTMLParagraphElement {
     return this.query<HTMLParagraphElement>('#progress-toggle');
   }
-  get completionToggle() {
+  get completionToggle(): HTMLParagraphElement {
     return this.query<HTMLParagraphElement>('#completion-toggle');
   }
 
-  expectCollapsed(element: HTMLElement) {
+  expectCollapsed(element: HTMLElement): void {
     expect(this.queryInsideElement(element, 'i')).toHaveClass('fa-caret-right');
   }
-  expectNotCollapsed(element: HTMLElement) {
+  expectNotCollapsed(element: HTMLElement): void {
     expect(this.queryInsideElement(element, 'i')).toHaveClass('fa-caret-down');
   }
 
-  getRaces(assert = true) {
+  getRaces(assert = true): HTMLParagraphElement {
     return this.query<HTMLParagraphElement>('#races', assert);
   }
 }

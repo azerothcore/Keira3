@@ -12,7 +12,7 @@ class TestHostComponent {
 }
 
 class EditorButtonsPage extends PageObject<TestHostComponent> {
-  get searchBtn() {
+  get searchBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#search-btn');
   }
 }

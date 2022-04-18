@@ -15,13 +15,13 @@ import { SpellDbcSpellEffectFieldPrefix, SPELL_DBC_SPELL_EFFECT_FIELDS } from '.
 
 describe('SpellDbcSpellEffectComponent', () => {
   class SpellDbcSpellEffectComponentPage extends PageObject<TestHostComponent> {
-    getLabelByIndex(fieldName: string, index: number) {
+    getLabelByIndex(fieldName: string, index: number): HTMLLabelElement {
       return this.query<HTMLLabelElement>(`.control-label[for="${fieldName}_${index}"]`);
     }
-    getInputByIndex(fieldName: string, index: number) {
+    getInputByIndex(fieldName: string, index: number): HTMLInputElement {
       return this.query<HTMLInputElement>(`input.form-control[id="${fieldName}_${index}"]`);
     }
-    expectInputVisibleByIndex(fieldName: string, index: number) {
+    expectInputVisibleByIndex(fieldName: string, index: number): void {
       expect(this.getLabelByIndex(fieldName, index)).toBeDefined();
       expect(this.getInputByIndex(fieldName, index)).toBeDefined();
     }
