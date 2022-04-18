@@ -12,37 +12,37 @@ import { ConnectionWindowModule } from './connection-window.module';
 import { ConnectionWindowService } from './connection-window.service';
 
 class ConnectionWindowComponentPage extends PageObject<ConnectionWindowComponent> {
-  get hostInput() {
+  get hostInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('#host');
   }
-  get portInput() {
+  get portInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('#port');
   }
-  get userInput() {
+  get userInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('#user');
   }
-  get passwordInput() {
+  get passwordInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('#password');
   }
-  get databaseInput() {
+  get databaseInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('#database');
   }
-  get connectBtn() {
+  get connectBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('.connect-button');
   }
-  get errorElement() {
+  get errorElement(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('keira-query-error');
   }
-  get savePasswordInput() {
+  get savePasswordInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('#save-password');
   }
-  get loadRecentBtn() {
+  get loadRecentBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#load-recent button');
   }
-  get clearAll() {
+  get clearAll(): HTMLUListElement {
     return this.query<HTMLUListElement>('#clear-all');
   }
-  get recentConfigs() {
+  get recentConfigs(): HTMLUListElement[] {
     return this.queryAll<HTMLUListElement>('.config-item');
   }
 }

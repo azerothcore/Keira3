@@ -12,7 +12,7 @@ import { QuestModule } from '../quest.module';
 import { QuestRequestItemsComponent } from './quest-request-items.component';
 
 class QuestRequestItemsPage extends EditorPageObject<QuestRequestItemsComponent> {
-  get progressText() {
+  get progressText(): HTMLDivElement {
     return this.query<HTMLDivElement>('#progress-text');
   }
 }

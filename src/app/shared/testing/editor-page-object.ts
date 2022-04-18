@@ -8,7 +8,7 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
   public readonly PREVIEW_CONTAINER_SELECTOR = '.preview-container';
   protected readonly queryPo: QueryOutputComponentPage;
 
-  get queryTypeSwitchWrapper() {
+  get queryTypeSwitchWrapper(): HTMLDivElement {
     return this.query<HTMLDivElement>('.query-type-switch');
   }
 

@@ -11,13 +11,13 @@ import { CreateComponent } from './create.component';
 import Spy = jasmine.Spy;
 
 class CreateComponentPage extends PageObject<CreateComponent<MockType>> {
-  get idInput() {
+  get idInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('#id');
   }
-  get selectBtn() {
+  get selectBtn(): HTMLInputElement {
     return this.query<HTMLInputElement>('#select-button');
   }
-  get idFreeStatusBox() {
+  get idFreeStatusBox(): HTMLDivElement {
     return this.query<HTMLDivElement>('#id-free-status');
   }
 }

@@ -12,10 +12,10 @@ class TestHostComponent {
 }
 
 class EditorButtonsPage extends PageObject<TestHostComponent> {
-  get addBtn() {
+  get addBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#add-new-row-btn');
   }
-  get deleteBtn() {
+  get deleteBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#delete-selected-row-btn');
   }
 }

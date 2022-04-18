@@ -12,7 +12,7 @@ import { QuestModule } from '../quest.module';
 import { QuestOfferRewardComponent } from './quest-offer-reward.component';
 
 class QuestOfferRewardPage extends EditorPageObject<QuestOfferRewardComponent> {
-  get completionText() {
+  get completionText(): HTMLDivElement {
     return this.query<HTMLDivElement>('#completion-text');
   }
 }

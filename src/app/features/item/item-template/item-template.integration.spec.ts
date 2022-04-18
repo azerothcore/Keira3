@@ -14,7 +14,7 @@ import { ItemTemplateComponent } from './item-template.component';
 import { ItemTemplateModule } from './item-template.module';
 
 class ItemTemplatePage extends EditorPageObject<ItemTemplateComponent> {
-  get itemStats() {
+  get itemStats(): HTMLDivElement {
     return this.query<HTMLDivElement>('.item-stats');
   }
 }

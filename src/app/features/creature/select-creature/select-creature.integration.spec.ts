@@ -17,7 +17,7 @@ import Spy = jasmine.Spy;
 
 class SelectCreatureComponentPage extends SelectPageObject<SelectCreatureComponent> {
   ID_FIELD = 'entry';
-  get searchSubnameInput() {
+  get searchSubnameInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('#subname');
   }
 }

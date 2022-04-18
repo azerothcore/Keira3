@@ -181,7 +181,7 @@ ITEM_SUBCLASS[16] = [
   { value: 11, name: 'Druid' },
 ];
 
-export enum ITEM_TYPE {
+export const enum ITEM_TYPE {
   CONTAINER = 1,
   WEAPON = 2,
   ARMOR = 4,
@@ -189,7 +189,7 @@ export enum ITEM_TYPE {
 }
 
 // ItemMod  (differ slightly from client, see g_statToJson)
-export enum ITEM_MOD {
+export const enum ITEM_MOD {
   WEAPON_DMG = 0, // < custom
   MANA = 1,
   HEALTH = 2,

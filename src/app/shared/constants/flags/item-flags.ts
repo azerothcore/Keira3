@@ -39,7 +39,7 @@ export const ITEM_FLAGS: Flag[] = [
 ];
 
 // ItemFlags values
-export enum ITEM_FLAG {
+export const enum ITEM_FLAG {
   CONJURED = 0x00000002,
   OPENABLE = 0x00000004,
   HEROIC = 0x00000008,

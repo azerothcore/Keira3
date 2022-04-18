@@ -10,19 +10,19 @@ import { DashboardComponent } from './dashboard.component';
 import { DashboardModule } from './dashboard.module';
 
 class DashboardComponentPage extends PageObject<DashboardComponent> {
-  get coreVersion() {
+  get coreVersion(): HTMLTableCellElement {
     return this.query<HTMLTableCellElement>('#core-version');
   }
-  get coreRevision() {
+  get coreRevision(): HTMLTableCellElement {
     return this.query<HTMLTableCellElement>('#core-revision');
   }
-  get dbVersion() {
+  get dbVersion(): HTMLTableCellElement {
     return this.query<HTMLTableCellElement>('#db-version');
   }
-  get dbWorldVersion() {
+  get dbWorldVersion(): HTMLTableCellElement {
     return this.query<HTMLTableCellElement>('#db-world-version');
   }
-  get dbWarning() {
+  get dbWarning(): HTMLDivElement {
     return this.query<HTMLDivElement>('#database-warning', false);
   }
 }

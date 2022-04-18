@@ -24,13 +24,13 @@ import { SidebarModule } from './sidebar.module';
 import { SidebarService } from './sidebar.service';
 
 class SidebarComponentPage extends PageObject<SidebarComponent> {
-  get toggleSidebarBtn() {
+  get toggleSidebarBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('.sidebar-button');
   }
-  get collapseAll() {
+  get collapseAll(): HTMLAnchorElement {
     return this.query<HTMLAnchorElement>('#collapse-all');
   }
-  get creatureEditorToggle() {
+  get creatureEditorToggle(): HTMLAnchorElement {
     return this.query<HTMLAnchorElement>('#creature-editor-toggle');
   }
 }

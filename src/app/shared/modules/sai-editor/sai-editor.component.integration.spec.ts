@@ -14,70 +14,70 @@ import { SaiHandlerService } from './sai-handler.service';
 import Spy = jasmine.Spy;
 
 class SaiEditorPage extends MultiRowEditorPageObject<SaiEditorComponent> {
-  get event1Name() {
+  get event1Name(): HTMLLabelElement {
     return this.query<HTMLLabelElement>('label#label-event-param1');
   }
-  get event2Name() {
+  get event2Name(): HTMLLabelElement {
     return this.query<HTMLLabelElement>('label#label-event-param2');
   }
-  get event3Name() {
+  get event3Name(): HTMLLabelElement {
     return this.query<HTMLLabelElement>('label#label-event-param3');
   }
-  get event4Name() {
+  get event4Name(): HTMLLabelElement {
     return this.query<HTMLLabelElement>('label#label-event-param4');
   }
-  get event5Name() {
+  get event5Name(): HTMLLabelElement {
     return this.query<HTMLLabelElement>('label#label-event-param5');
   }
-  get action1Name() {
+  get action1Name(): HTMLLabelElement {
     return this.query<HTMLLabelElement>('label#label-action-param1');
   }
-  get action2Name() {
+  get action2Name(): HTMLLabelElement {
     return this.query<HTMLLabelElement>('label#label-action-param2');
   }
-  get action3Name() {
+  get action3Name(): HTMLLabelElement {
     return this.query<HTMLLabelElement>('label#label-action-param3');
   }
-  get action4Name() {
+  get action4Name(): HTMLLabelElement {
     return this.query<HTMLLabelElement>('label#label-action-param4');
   }
-  get action5Name() {
+  get action5Name(): HTMLLabelElement {
     return this.query<HTMLLabelElement>('label#label-action-param5');
   }
-  get action6Name() {
+  get action6Name(): HTMLLabelElement {
     return this.query<HTMLLabelElement>('label#label-action-param6');
   }
-  get target1Name() {
+  get target1Name(): HTMLLabelElement {
     return this.query<HTMLLabelElement>('label#label-target-param1');
   }
-  get target2Name() {
+  get target2Name(): HTMLLabelElement {
     return this.query<HTMLLabelElement>('label#label-target-param2');
   }
-  get target3Name() {
+  get target3Name(): HTMLLabelElement {
     return this.query<HTMLLabelElement>('label#label-target-param3');
   }
-  get target4Name() {
+  get target4Name(): HTMLLabelElement {
     return this.query<HTMLLabelElement>('label#label-target-param4');
   }
-  get targetXName() {
+  get targetXName(): HTMLLabelElement {
     return this.query<HTMLLabelElement>('label#label-target-x');
   }
-  get targetYName() {
+  get targetYName(): HTMLLabelElement {
     return this.query<HTMLLabelElement>('label#label-target-y');
   }
-  get targetZName() {
+  get targetZName(): HTMLLabelElement {
     return this.query<HTMLLabelElement>('label#label-target-z');
   }
-  get targetOName() {
+  get targetOName(): HTMLLabelElement {
     return this.query<HTMLLabelElement>('label#label-target-o');
   }
-  get errors() {
+  get errors(): HTMLElement {
     return this.query<HTMLElement>('#errors');
   }
-  get eventType() {
+  get eventType(): HTMLInputElement {
     return this.getInputById('event_type');
   }
-  get generateCommentsBtn() {
+  get generateCommentsBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#generate-comments-btn');
   }
 }

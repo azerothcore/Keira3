@@ -13,19 +13,19 @@ import Spy = jasmine.Spy;
 export class SqlEditorPage extends PageObject<SqlEditorComponent> {
   readonly DT = 'ngx-datatable';
 
-  get affectedRows() {
+  get affectedRows(): HTMLTextAreaElement {
     return this.query<HTMLTextAreaElement>('#affected-rows-box');
   }
-  get code() {
+  get code(): HTMLTextAreaElement {
     return this.query<HTMLTextAreaElement>('textarea#code');
   }
-  get copyBtn() {
+  get copyBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#copy-btn');
   }
-  get executeBtn() {
+  get executeBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#execute-btn');
   }
-  get errorElement() {
+  get errorElement(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('keira-query-error');
   }
 }

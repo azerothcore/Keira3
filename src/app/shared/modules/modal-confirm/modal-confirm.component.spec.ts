@@ -6,10 +6,10 @@ import { ModalConfirmModule } from './modal-confirm.module';
 import { PageObject } from '../../testing/page-object';
 
 class ModalConfirmComponentPage extends PageObject<ModalConfirmComponent> {
-  get yesBtn() {
+  get yesBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#yes');
   }
-  get noBtn() {
+  get noBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#no');
   }
 }
