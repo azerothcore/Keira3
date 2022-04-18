@@ -1,23 +1,21 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
+import { GameobjectLootTemplate } from '@keira-types/gameobject-loot-template.type';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import Spy = jasmine.Spy;
-
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
+import { GameobjectHandlerService } from '../gameobject-handler.service';
+import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectLootTemplateComponent } from './gameobject-loot-template.component';
 import { GameobjectLootTemplateModule } from './gameobject-loot-template.module';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { GameobjectLootTemplate } from '@keira-types/gameobject-loot-template.type';
-import { GameobjectHandlerService } from '../gameobject-handler.service';
-import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
-import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
+import Spy = jasmine.Spy;
 
 class GameobjectLootTemplatePage extends MultiRowEditorPageObject<GameobjectLootTemplateComponent> {}
 
 describe('GameobjectLootTemplate integration tests', () => {
-  let component: GameobjectLootTemplateComponent;
   let fixture: ComponentFixture<GameobjectLootTemplateComponent>;
   let queryService: MysqlQueryService;
   let querySpy: Spy;
@@ -60,7 +58,6 @@ describe('GameobjectLootTemplate integration tests', () => {
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     fixture = TestBed.createComponent(GameobjectLootTemplateComponent);
-    component = fixture.componentInstance;
     page = new GameobjectLootTemplatePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();

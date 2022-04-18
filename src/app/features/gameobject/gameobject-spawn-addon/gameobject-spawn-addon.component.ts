@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-
 import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
-import { GameobjectHandlerService } from '../gameobject-handler.service';
-import { GameobjectSpawnAddon } from '@keira-types/gameobject-spawn-addon.type';
-import { GameobjectSpawnAddonService } from './gameobject-spawn-addon.service';
 import { INVISIBILITY_TYPE } from '@keira-constants/options/invisibility-type';
+import { GameobjectSpawnAddon } from '@keira-types/gameobject-spawn-addon.type';
+import { GameobjectHandlerService } from '../gameobject-handler.service';
+import { GameobjectSpawnAddonService } from './gameobject-spawn-addon.service';
 
 @Component({
   selector: 'keira-gameobject-spawn-addon',

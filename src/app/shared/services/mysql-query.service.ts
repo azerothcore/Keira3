@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, map, tap } from 'rxjs';
-import { Squel, Delete, Insert, Update } from 'squel';
-
-import { MysqlService } from './mysql.service';
-import { MaxRow, TableRow } from '../types/general';
-import { squelConfig } from '../../config/squel.config';
-import { ConfigService } from './config.service';
 import { QueryService } from '@keira-shared/services/query.service';
 import { SmartScripts } from '@keira-types/smart-scripts.type';
-import { from } from 'rxjs';
 import { QuestReputationReward } from 'app/features/quest/quest-preview/quest-preview.model';
+import { from, map, Observable, of, tap } from 'rxjs';
+import { Delete, Insert, Squel, Update } from 'squel';
+import { squelConfig } from '../../config/squel.config';
+import { MaxRow, TableRow } from '../types/general';
+import { ConfigService } from './config.service';
+import { MysqlService } from './mysql.service';
 
 declare const squel: Squel & { flavour: null };
 

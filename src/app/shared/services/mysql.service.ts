@@ -1,10 +1,9 @@
 import { Injectable, NgZone } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
 import * as mysql from 'mysql';
 import { Connection, ConnectionConfig, FieldInfo, MysqlError } from 'mysql';
-
-import { ElectronService } from './electron.service';
+import { Observable, Subject } from 'rxjs';
 import { MysqlResult, TableRow } from '../types/general';
+import { ElectronService } from './electron.service';
 
 @Injectable({
   providedIn: 'root',

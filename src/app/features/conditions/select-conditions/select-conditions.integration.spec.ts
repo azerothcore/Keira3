@@ -1,18 +1,16 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
-import { ModalModule } from 'ngx-bootstrap/modal';
-import Spy = jasmine.Spy;
-
+import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { SelectConditionsComponent } from './select-conditions.component';
-import { ConditionsSearchService } from '@keira-shared/modules/search/conditions-search.service';
-import { SelectConditionsModule } from './select-conditions.module';
 import { PageObject } from '@keira-testing/page-object';
 import { Conditions } from '@keira-types/conditions.type';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
 import { ConditionsHandlerService } from '../conditions-handler.service';
+import { SelectConditionsComponent } from './select-conditions.component';
+import { SelectConditionsModule } from './select-conditions.module';
+import Spy = jasmine.Spy;
 
 class SelectConditionsComponentPage extends PageObject<SelectConditionsComponent> {
   get searchIdSelect() {
@@ -40,9 +38,7 @@ class SelectConditionsComponentPage extends PageObject<SelectConditionsComponent
 }
 
 describe('SelectConditions integration tests', () => {
-  let component: SelectConditionsComponent;
   let fixture: ComponentFixture<SelectConditionsComponent>;
-  let selectService: ConditionsSearchService;
   let page: SelectConditionsComponentPage;
   let queryService: MysqlQueryService;
   let querySpy: Spy;
@@ -62,11 +58,8 @@ describe('SelectConditions integration tests', () => {
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
 
-    selectService = TestBed.inject(ConditionsSearchService);
-
     fixture = TestBed.createComponent(SelectConditionsComponent);
     page = new SelectConditionsComponentPage(fixture);
-    component = fixture.componentInstance;
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
   });

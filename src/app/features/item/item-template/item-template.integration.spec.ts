@@ -1,19 +1,17 @@
-import { ComponentFixture, TestBed, tick, fakeAsync, waitForAsync } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
-import { ModalModule } from 'ngx-bootstrap/modal';
-import Spy = jasmine.Spy;
-
-import { ItemTemplateComponent } from './item-template.component';
-import { ItemTemplateModule } from './item-template.module';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { EditorPageObject } from '@keira-testing/editor-page-object';
-import { ItemTemplate } from '@keira-types/item-template.type';
-import { ItemHandlerService } from '../item-handler.service';
 import { ITEM_SUBCLASS } from '@keira-constants/options/item-class';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { Lock } from '@keira-shared/types/lock.type';
+import { EditorPageObject } from '@keira-testing/editor-page-object';
+import { ItemTemplate } from '@keira-types/item-template.type';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
+import { ItemHandlerService } from '../item-handler.service';
+import { ItemTemplateComponent } from './item-template.component';
+import { ItemTemplateModule } from './item-template.module';
 
 class ItemTemplatePage extends EditorPageObject<ItemTemplateComponent> {
   get itemStats() {
@@ -107,8 +105,8 @@ describe('ItemTemplate integration tests', () => {
     fixture.detectChanges();
 
     const mysqlQueryService = TestBed.inject(MysqlQueryService);
-    spyOn(mysqlQueryService, 'getItemNameById').and.callFake((i) => of(mockItemNameById).toPromise());
-    spyOn(mysqlQueryService, 'queryValue').and.callFake((i) => of([234] as any));
+    spyOn(mysqlQueryService, 'getItemNameById').and.callFake(() => of(mockItemNameById).toPromise());
+    spyOn(mysqlQueryService, 'queryValue').and.callFake(() => of([234] as any));
 
     const sqliteQueryService = TestBed.inject(SqliteQueryService);
     spyOn(sqliteQueryService, 'getSpellNameById').and.callFake((i) => of(mockGetSpellNameById + i).toPromise());
@@ -118,11 +116,11 @@ describe('ItemTemplate integration tests', () => {
     spyOn(sqliteQueryService, 'getAreaNameById').and.callFake((i) => of(mockGetAreaNameById + i).toPromise());
     spyOn(sqliteQueryService, 'getEventNameByHolidayId').and.callFake((i) => of(mockGetEventNameByHolidayId + i).toPromise());
     spyOn(sqliteQueryService, 'getSocketBonusById').and.callFake((i) => of(mockGetSocketBonusById + i).toPromise());
-    spyOn(sqliteQueryService, 'getLockById').and.callFake((i) => of([lockData]).toPromise());
-    spyOn(sqliteQueryService, 'getSkillNameById').and.callFake((i) => of('profession').toPromise());
-    spyOn(sqliteQueryService, 'getIconByItemDisplayId').and.callFake((i) => of('inv_axe_60'));
-    spyOn(sqliteQueryService, 'queryValue').and.callFake((i) => of('inv_axe_60' as any));
-    spyOn(sqliteQueryService, 'query').and.callFake((i) => of([{ name: 'test' }] as any));
+    spyOn(sqliteQueryService, 'getLockById').and.callFake(() => of([lockData]).toPromise());
+    spyOn(sqliteQueryService, 'getSkillNameById').and.callFake(() => of('profession').toPromise());
+    spyOn(sqliteQueryService, 'getIconByItemDisplayId').and.callFake(() => of('inv_axe_60'));
+    spyOn(sqliteQueryService, 'queryValue').and.callFake(() => of('inv_axe_60' as any));
+    spyOn(sqliteQueryService, 'query').and.callFake(() => of([{ name: 'test' }] as any));
 
     return { handlerService, queryService, querySpy, fixture, component, page, mysqlQueryService, sqliteQueryService };
   }

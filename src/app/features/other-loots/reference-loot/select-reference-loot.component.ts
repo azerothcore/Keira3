@@ -1,15 +1,14 @@
 import { Component } from '@angular/core';
-
 import { SelectComponent } from '@keira-abstract/components/editors/select.component';
-import { SelectReferenceLootService } from './select-reference-loot.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { LOOT_TEMPLATE_ID } from '@keira-types/loot-template.type';
 import {
+  ReferenceLootTemplate,
   REFERENCE_LOOT_TEMPLATE_CUSTOM_STARTING_ID,
   REFERENCE_LOOT_TEMPLATE_TABLE,
-  ReferenceLootTemplate,
 } from '@keira-types/reference-loot-template.type';
-import { LOOT_TEMPLATE_ID } from '@keira-types/loot-template.type';
 import { ReferenceLootHandlerService } from './reference-loot-handler.service';
+import { SelectReferenceLootService } from './select-reference-loot.service';
 
 @Component({
   selector: 'keira-select-creature',

@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-
 import { SelectComponent } from '@keira-abstract/components/editors/select.component';
-import { ITEM_TEMPLATE_CUSTOM_STARTING_ID, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_TABLE, ItemTemplate } from '@keira-types/item-template.type';
-import { SelectItemService } from './select-item.service';
-import { ItemHandlerService } from '../item-handler.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { ItemTemplate, ITEM_TEMPLATE_CUSTOM_STARTING_ID, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_TABLE } from '@keira-types/item-template.type';
+import { ItemHandlerService } from '../item-handler.service';
+import { SelectItemService } from './select-item.service';
 
 @Component({
   selector: 'keira-select-item',

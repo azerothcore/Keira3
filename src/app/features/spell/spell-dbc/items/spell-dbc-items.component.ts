@@ -1,11 +1,9 @@
 import { Component, Input } from '@angular/core';
-import { FormGroup } from 'ngx-typesafe-forms';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { ToastrModule } from 'ngx-toastr';
-import { SpellDbc } from '@keira-types/spell-dbc.type';
+import { SPELL_DBC_INVENTORY_TYPE, SPELL_DBC_ITEM_SUBCLASS } from '@keira-shared/constants/flags/spell-dbc-item-flags';
 import { ITEM_CLASS } from '@keira-shared/constants/options/item-class';
 import { TOTEM_CATEGORY } from '@keira-shared/constants/options/totem-category';
-import { SPELL_DBC_ITEM_SUBCLASS, SPELL_DBC_INVENTORY_TYPE } from '@keira-shared/constants/flags/spell-dbc-item-flags';
+import { SpellDbc } from '@keira-types/spell-dbc.type';
+import { FormGroup } from 'ngx-typesafe-forms';
 
 @Component({
   selector: 'keira-spell-dbc-items',

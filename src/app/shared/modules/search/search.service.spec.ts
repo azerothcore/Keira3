@@ -1,13 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-import { instance } from 'ts-mockito';
 import { of } from 'rxjs';
-import Spy = jasmine.Spy;
-
-import { ItemSearchService } from './item-search.service';
+import { instance } from 'ts-mockito';
 import { MysqlQueryService } from '../../services/mysql-query.service';
 import { MockedMysqlQueryService } from '../../testing/mocks';
-import { SearchService } from './search.service';
 import { ItemTemplate } from '../../types/item-template.type';
+import { ItemSearchService } from './item-search.service';
+import { SearchService } from './search.service';
+import Spy = jasmine.Spy;
 
 describe('SearchService', () => {
   let service: SearchService<ItemTemplate>;

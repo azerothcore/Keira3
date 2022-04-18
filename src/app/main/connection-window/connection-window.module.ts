@@ -1,11 +1,10 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-
-import { ConnectionWindowComponent } from './connection-window.component';
 import { QueryOutputModule } from '../../shared/modules/query-output/query-output.module';
+import { ConnectionWindowComponent } from './connection-window.component';
 
 @NgModule({
   declarations: [ConnectionWindowComponent],

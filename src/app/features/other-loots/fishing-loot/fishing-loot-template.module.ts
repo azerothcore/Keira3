@@ -1,18 +1,17 @@
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CreateModule } from '@keira-shared/modules/create/create.module';
 import { HighlightjsWrapperModule } from '@keira-shared/modules/highlightjs-wrapper/highlightjs-wrapper.module';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-
+import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.module';
+import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { FishingLootHandlerService } from './fishing-loot-handler.service';
 import { FishingLootTemplateComponent } from './fishing-loot-template.component';
 import { FishingLootTemplateService } from './fishing-loot-template.service';
-import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.module';
-import { FishingLootHandlerService } from './fishing-loot-handler.service';
-import { SelectFishingLootService } from './select-fishing-loot.service';
 import { SelectFishingLootComponent } from './select-fishing-loot.component';
-import { CreateModule } from '@keira-shared/modules/create/create.module';
-import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
+import { SelectFishingLootService } from './select-fishing-loot.service';
 
 const components = [FishingLootTemplateComponent, SelectFishingLootComponent];
 

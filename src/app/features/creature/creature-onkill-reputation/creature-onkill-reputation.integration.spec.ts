@@ -1,23 +1,21 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
-import { ModalModule } from 'ngx-bootstrap/modal';
-import Spy = jasmine.Spy;
-
-import { CreatureOnkillReputationComponent } from './creature-onkill-reputation.component';
-import { CreatureOnkillReputationModule } from './creature-onkill-reputation.module';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { CreatureOnkillReputation } from '@keira-types/creature-onkill-reputation.type';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
-import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { CreatureOnkillReputationComponent } from './creature-onkill-reputation.component';
+import { CreatureOnkillReputationModule } from './creature-onkill-reputation.module';
+import Spy = jasmine.Spy;
 
 class CreatureOnkillReputationPage extends EditorPageObject<CreatureOnkillReputationComponent> {}
 
 describe('CreatureOnkillReputation integration tests', () => {
-  let component: CreatureOnkillReputationComponent;
   let fixture: ComponentFixture<CreatureOnkillReputationComponent>;
   let queryService: MysqlQueryService;
   let querySpy: Spy;
@@ -55,7 +53,6 @@ describe('CreatureOnkillReputation integration tests', () => {
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
 
     fixture = TestBed.createComponent(CreatureOnkillReputationComponent);
-    component = fixture.componentInstance;
     page = new CreatureOnkillReputationPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();

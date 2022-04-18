@@ -1,23 +1,21 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
+import { GameobjectSpawn } from '@keira-types/gameobject-spawn.type';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import Spy = jasmine.Spy;
-
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
+import { GameobjectHandlerService } from '../gameobject-handler.service';
+import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectSpawnComponent } from './gameobject-spawn.component';
 import { GameobjectSpawnModule } from './gameobject-spawn.module';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { GameobjectSpawn } from '@keira-types/gameobject-spawn.type';
-import { GameobjectHandlerService } from '../gameobject-handler.service';
-import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
-import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
-import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import Spy = jasmine.Spy;
 
 class GameobjectSpawnPage extends MultiRowEditorPageObject<GameobjectSpawnComponent> {}
 
 describe('GameobjectSpawn integration tests', () => {
-  let component: GameobjectSpawnComponent;
   let fixture: ComponentFixture<GameobjectSpawnComponent>;
   let queryService: MysqlQueryService;
   let querySpy: Spy;
@@ -54,7 +52,6 @@ describe('GameobjectSpawn integration tests', () => {
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     fixture = TestBed.createComponent(GameobjectSpawnComponent);
-    component = fixture.componentInstance;
     page = new GameobjectSpawnPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();

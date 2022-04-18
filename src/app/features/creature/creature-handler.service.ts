@@ -1,24 +1,23 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-
 import { HandlerService } from '@keira-abstract/service/handlers/handler.service';
-import { CREATURE_TEMPLATE_TABLE, CreatureTemplate } from '@keira-types/creature-template.type';
-import { SaiCreatureHandlerService } from './sai-creature-handler.service';
+import { CREATURE_EQUIP_TEMPLATE_TABLE } from '@keira-types/creature-equip-template.type';
+import { CREATURE_LOOT_TEMPLATE_TABLE } from '@keira-types/creature-loot-template.type';
+import { CREATURE_ONKLL_REPUTATION_TABLE } from '@keira-types/creature-onkill-reputation.type';
+import { CREATURE_QUESTITEM_TABLE } from '@keira-types/creature-questitem.type';
+import { CREATURE_SPAWN_ADDON_TABLE } from '@keira-types/creature-spawn-addon.type';
+import { CREATURE_SPAWN_TABLE } from '@keira-types/creature-spawn.type';
 import { CREATURE_TEMPLATE_ADDON_TABLE } from '@keira-types/creature-template-addon.type';
+import { CREATURE_TEMPLATE_MOVEMENT_TABLE } from '@keira-types/creature-template-movement.type';
 import { CREATURE_TEMPLATE_RESISTANCE_TABLE } from '@keira-types/creature-template-resistance.type';
 import { CREATURE_TEMPLATE_SPELL_TABLE } from '@keira-types/creature-template-spell.type';
-import { CREATURE_TEMPLATE_MOVEMENT_TABLE } from '@keira-types/creature-template-movement.type';
-import { CREATURE_ONKLL_REPUTATION_TABLE } from '@keira-types/creature-onkill-reputation.type';
-import { CREATURE_EQUIP_TEMPLATE_TABLE } from '@keira-types/creature-equip-template.type';
+import { CreatureTemplate, CREATURE_TEMPLATE_TABLE } from '@keira-types/creature-template.type';
+import { NPC_TRAINER_TABLE } from '@keira-types/npc-trainer.type';
 import { NPC_VENDOR_TABLE } from '@keira-types/npc-vendor.type';
-import { CREATURE_QUESTITEM_TABLE } from '@keira-types/creature-questitem.type';
-import { CREATURE_LOOT_TEMPLATE_TABLE } from '@keira-types/creature-loot-template.type';
 import { PICKPOCKETING_LOOT_TEMPLATE_TABLE } from '@keira-types/pickpocketing-loot-template.type';
 import { SKINNING_LOOT_TEMPLATE_TABLE } from '@keira-types/skinning-loot-template.type';
-import { CREATURE_SPAWN_TABLE } from '@keira-types/creature-spawn.type';
-import { CREATURE_SPAWN_ADDON_TABLE } from '@keira-types/creature-spawn-addon.type';
 import { SAI_TABLE } from '@keira-types/smart-scripts.type';
-import { NPC_TRAINER_TABLE } from '@keira-types/npc-trainer.type';
+import { SaiCreatureHandlerService } from './sai-creature-handler.service';
 
 @Injectable()
 export class CreatureHandlerService extends HandlerService<CreatureTemplate> {

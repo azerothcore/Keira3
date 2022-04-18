@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-
-import { CreatureHandlerService } from '../creature-handler.service';
-import { PickpocketingLootTemplate } from '@keira-types/pickpocketing-loot-template.type';
-import { PickpocketingLootTemplateService } from './pickpocketing-loot-template.service';
 import { LootTemplateIdComponent } from '@keira-abstract/components/editors/loot-template/loot-template-id.component';
+import { PickpocketingLootTemplate } from '@keira-types/pickpocketing-loot-template.type';
+import { CreatureHandlerService } from '../creature-handler.service';
+import { PickpocketingLootTemplateService } from './pickpocketing-loot-template.service';
 
 @Component({
   selector: 'keira-pickpocketing-loot-template',

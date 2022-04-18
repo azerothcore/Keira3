@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
-
 import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
-import { CreatureHandlerService } from '../creature-handler.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import {
+  CreatureEquipTemplate,
   CREATURE_EQUIP_TEMPLATE_ID,
   CREATURE_EQUIP_TEMPLATE_TABLE,
-  CreatureEquipTemplate,
 } from '@keira-types/creature-equip-template.type';
+import { ToastrService } from 'ngx-toastr';
+import { CreatureHandlerService } from '../creature-handler.service';
 
 @Injectable()
 export class CreatureEquipTemplateService extends SingleRowEditorService<CreatureEquipTemplate> {

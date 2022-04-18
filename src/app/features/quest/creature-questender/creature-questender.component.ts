@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-
 import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
-import { QuestHandlerService } from '../quest-handler.service';
-import { CreatureQuestenderService } from './creature-questender.service';
 import { CreatureQuestender } from '@keira-types/creature-questender.type';
+import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
+import { CreatureQuestenderService } from './creature-questender.service';
 
 @Component({
   selector: 'keira-creature-questender',

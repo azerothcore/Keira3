@@ -1,18 +1,17 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
+import { SAI_ACTIONS } from '@keira-shared/modules/sai-editor/constants/sai-actions';
+import { SAI_EVENTS } from '@keira-shared/modules/sai-editor/constants/sai-event';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import Spy = jasmine.Spy;
-
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
+import { MysqlQueryService } from '../../services/mysql-query.service';
+import { MultiRowEditorPageObject } from '../../testing/multi-row-editor-page-object';
+import { SAI_TYPES, SmartScripts } from '../../types/smart-scripts.type';
 import { SaiEditorComponent } from './sai-editor.component';
 import { SaiEditorModule } from './sai-editor.module';
 import { SaiHandlerService } from './sai-handler.service';
-import { MultiRowEditorPageObject } from '../../testing/multi-row-editor-page-object';
-import { SAI_TYPES, SmartScripts } from '../../types/smart-scripts.type';
-import { MysqlQueryService } from '../../services/mysql-query.service';
-import { SAI_EVENTS } from '@keira-shared/modules/sai-editor/constants/sai-event';
-import { SAI_ACTIONS } from '@keira-shared/modules/sai-editor/constants/sai-actions';
+import Spy = jasmine.Spy;
 
 class SaiEditorPage extends MultiRowEditorPageObject<SaiEditorComponent> {
   get event1Name() {

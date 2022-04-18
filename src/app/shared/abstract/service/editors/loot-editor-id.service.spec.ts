@@ -1,16 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { instance } from 'ts-mockito';
+import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { CreatureLootTemplate } from '@keira-types/creature-loot-template.type';
 import { ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
-
-import { MysqlQueryService } from '../../../services/mysql-query.service';
-import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
-import { LootEditorIdService } from './loot-editor-id.service';
-import { CreatureLootTemplate } from '@keira-types/creature-loot-template.type';
-import { CreatureLootTemplateService } from '../../../../features/creature/creature-loot-template/creature-loot-template.service';
+import { instance } from 'ts-mockito';
 import { CreatureHandlerService } from '../../../../features/creature/creature-handler.service';
+import { CreatureLootTemplateService } from '../../../../features/creature/creature-loot-template/creature-loot-template.service';
 import { SaiCreatureHandlerService } from '../../../../features/creature/sai-creature-handler.service';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { LootEditorIdService } from './loot-editor-id.service';
 
 describe('LootEditorService', () => {
   let service: LootEditorIdService<CreatureLootTemplate>;

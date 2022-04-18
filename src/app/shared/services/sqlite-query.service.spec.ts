@@ -1,6 +1,5 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
-
 import { SqliteQueryService } from './sqlite-query.service';
 
 describe('SqliteQueryService', () => {

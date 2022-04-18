@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
-
-import { CreatureHandlerService } from '../creature-handler.service';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import {
+  CreatureTemplateMovement,
   CREATURE_TEMPLATE_MOVEMENT_ID,
   CREATURE_TEMPLATE_MOVEMENT_TABLE,
-  CreatureTemplateMovement,
 } from '@keira-types/creature-template-movement.type';
+import { ToastrService } from 'ngx-toastr';
+import { CreatureHandlerService } from '../creature-handler.service';
 
 @Injectable()
 export class CreatureTemplateMovementService extends SingleRowEditorService<CreatureTemplateMovement> {

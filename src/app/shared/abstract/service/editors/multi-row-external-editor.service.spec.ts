@@ -1,15 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { instance } from 'ts-mockito';
-import { ToastrService } from 'ngx-toastr';
-
-import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
-import { MultiRowExternalEditorService } from './multi-row-external-editor.service';
 import { CreatureSpawnAddon } from '@keira-types/creature-spawn-addon.type';
-import { CreatureSpawnAddonService } from '../../../../features/creature/creature-spawn-addon/creature-spawn-addon.service';
+import { ToastrService } from 'ngx-toastr';
+import { instance } from 'ts-mockito';
 import { CreatureHandlerService } from '../../../../features/creature/creature-handler.service';
+import { CreatureSpawnAddonService } from '../../../../features/creature/creature-spawn-addon/creature-spawn-addon.service';
 import { SaiCreatureHandlerService } from '../../../../features/creature/sai-creature-handler.service';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MultiRowExternalEditorService } from './multi-row-external-editor.service';
 
 describe('MultiRowExternalEditorService', () => {
   let service: MultiRowExternalEditorService<CreatureSpawnAddon>;

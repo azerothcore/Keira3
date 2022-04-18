@@ -1,21 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
+import { MillingLootTemplate } from '@keira-types/milling-loot-template.type';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import Spy = jasmine.Spy;
-
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
+import { ItemHandlerService } from '../item-handler.service';
 import { MillingLootTemplateComponent } from './milling-loot-template.component';
 import { MillingLootTemplateModule } from './milling-loot-template.module';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { MillingLootTemplate } from '@keira-types/milling-loot-template.type';
-import { ItemHandlerService } from '../item-handler.service';
-import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
+import Spy = jasmine.Spy;
 
 class MillingLootTemplatePage extends MultiRowEditorPageObject<MillingLootTemplateComponent> {}
 
 describe('MillingLootTemplate integration tests', () => {
-  let component: MillingLootTemplateComponent;
   let fixture: ComponentFixture<MillingLootTemplateComponent>;
   let queryService: MysqlQueryService;
   let querySpy: Spy;
@@ -53,7 +51,6 @@ describe('MillingLootTemplate integration tests', () => {
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     fixture = TestBed.createComponent(MillingLootTemplateComponent);
-    component = fixture.componentInstance;
     page = new MillingLootTemplatePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();

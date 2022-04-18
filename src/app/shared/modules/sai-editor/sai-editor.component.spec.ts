@@ -1,10 +1,9 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-
+import { ToastrModule } from 'ngx-toastr';
 import { SaiEditorComponent } from './sai-editor.component';
 import { SaiEditorModule } from './sai-editor.module';
 import { SaiHandlerService } from './sai-handler.service';
-import { ToastrModule } from 'ngx-toastr';
 
 describe('SaiEditorComponent', () => {
   let component: SaiEditorComponent;

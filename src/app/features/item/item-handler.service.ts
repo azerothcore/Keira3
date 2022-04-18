@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-
 import { HandlerService } from '@keira-abstract/service/handlers/handler.service';
-import { ITEM_TEMPLATE_TABLE, ItemTemplate } from '@keira-types/item-template.type';
-import { ITEM_LOOT_TEMPLATE_TABLE } from '@keira-types/item-loot-template.type';
 import { DISENCHANT_LOOT_TEMPLATE_TABLE } from '@keira-types/disenchant-loot-template.type';
-import { PROSPECTING_LOOT_TEMPLATE_TABLE } from '@keira-types/prospecting-loot-template.type';
-import { MILLING_LOOT_TEMPLATE_TABLE } from '@keira-types/milling-loot-template.type';
 import { ITEM_ENCHANTMENT_TEMPLATE_TABLE } from '@keira-types/item-enchantment-template.type';
+import { ITEM_LOOT_TEMPLATE_TABLE } from '@keira-types/item-loot-template.type';
+import { ItemTemplate, ITEM_TEMPLATE_TABLE } from '@keira-types/item-template.type';
+import { MILLING_LOOT_TEMPLATE_TABLE } from '@keira-types/milling-loot-template.type';
+import { PROSPECTING_LOOT_TEMPLATE_TABLE } from '@keira-types/prospecting-loot-template.type';
 
 @Injectable()
 export class ItemHandlerService extends HandlerService<ItemTemplate> {

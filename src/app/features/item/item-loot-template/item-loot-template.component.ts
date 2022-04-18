@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-
-import { ItemHandlerService } from '../item-handler.service';
-import { ItemLootTemplate } from '@keira-types/item-loot-template.type';
-import { ItemLootTemplateService } from './item-loot-template.service';
 import { LootTemplateComponent } from '@keira-abstract/components/editors/loot-template/loot-template.component';
+import { ItemLootTemplate } from '@keira-types/item-loot-template.type';
+import { ItemHandlerService } from '../item-handler.service';
+import { ItemLootTemplateService } from './item-loot-template.service';
 
 @Component({
   selector: 'keira-item-loot-template',

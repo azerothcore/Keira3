@@ -1,17 +1,16 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
-import { ModalModule } from 'ngx-bootstrap/modal';
-
+import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { SelectPageObject } from '@keira-testing/select-page-object';
+import { ReferenceLootTemplate } from '@keira-types/reference-loot-template.type';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
+import { ReferenceLootHandlerService } from './reference-loot-handler.service';
+import { ReferenceLootTemplateModule } from './reference-loot-template.module';
 import { SelectReferenceLootComponent } from './select-reference-loot.component';
 import { SelectReferenceLootService } from './select-reference-loot.service';
-import { SelectPageObject } from '@keira-testing/select-page-object';
-import { ReferenceLootTemplateModule } from './reference-loot-template.module';
-import { ReferenceLootHandlerService } from './reference-loot-handler.service';
-import { ReferenceLootTemplate } from '@keira-types/reference-loot-template.type';
 
 class SelectReferenceLootComponentPage extends SelectPageObject<SelectReferenceLootComponent> {
   ID_FIELD = 'Entry';

@@ -1,9 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { FormGroup } from 'ngx-typesafe-forms';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { ToastrModule } from 'ngx-toastr';
-import { Locale, SPELL_DBC_TEXT_FIELDS, SpellDbcTextFieldPrefix } from '../spell-dbc-texts.model';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
+import { FormGroup } from 'ngx-typesafe-forms';
+import { Locale, SpellDbcTextFieldPrefix, SPELL_DBC_TEXT_FIELDS } from '../spell-dbc-texts.model';
 
 @Component({
   selector: 'keira-spell-dbc-locale',

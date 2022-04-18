@@ -1,26 +1,22 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
+import { CreatureSpawnAddon } from '@keira-types/creature-spawn-addon.type';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import Spy = jasmine.Spy;
-
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
+import { CreatureHandlerService } from '../creature-handler.service';
+import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureSpawnAddonComponent } from './creature-spawn-addon.component';
 import { CreatureSpawnAddonModule } from './creature-spawn-addon.module';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { CreatureSpawnAddon } from '@keira-types/creature-spawn-addon.type';
-import { CreatureHandlerService } from '../creature-handler.service';
-import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { CreatureSpawnAddonService } from './creature-spawn-addon.service';
-import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 
 class CreatureSpawnAddonPage extends MultiRowEditorPageObject<CreatureSpawnAddonComponent> {}
 
 describe('CreatureSpawnAddon integration tests', () => {
-  let component: CreatureSpawnAddonComponent;
   let fixture: ComponentFixture<CreatureSpawnAddonComponent>;
   let queryService: MysqlQueryService;
-  let querySpy: Spy;
   let handlerService: CreatureHandlerService;
   let page: CreatureSpawnAddonPage;
 
@@ -48,14 +44,14 @@ describe('CreatureSpawnAddon integration tests', () => {
     handlerService.isNew = creatingNew;
 
     queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    spyOn(queryService, 'query').and.returnValue(of([]));
 
     spyOn(TestBed.inject(CreatureSpawnAddonService), 'selectQuery').and.returnValue(
       of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]),
     );
 
     fixture = TestBed.createComponent(CreatureSpawnAddonComponent);
-    component = fixture.componentInstance;
+    // component = fixture.componentInstance;
     page = new CreatureSpawnAddonPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();

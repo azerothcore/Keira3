@@ -1,13 +1,12 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
 import { Component, ViewChild } from '@angular/core';
-import { of } from 'rxjs';
-
-import { ReferenceViewerComponent } from './reference-viewer.component';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.module';
-import { PageObject } from '@keira-testing/page-object';
 import { ReferenceViewerService } from '@keira-shared/modules/loot-editor/reference-viewer.service';
+import { PageObject } from '@keira-testing/page-object';
 import { LootTemplate } from '@keira-types/loot-template.type';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { of } from 'rxjs';
+import { ReferenceViewerComponent } from './reference-viewer.component';
 
 class ReferenceViewerComponentPage extends PageObject<TestHostComponent> {
   get referenceViewers() {

@@ -1,17 +1,16 @@
-import { TestBed } from '@angular/core/testing';
 import { Component, ViewChild } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-
-import { SpellDbcTextsComponent } from './spell-dbc-texts.component';
-import { SpellDbcModule } from '../spell-dbc.module';
 import { PageObject } from '@keira-testing/page-object';
-import { SpellDbcService } from '../spell-dbc.service';
-import { SpellHandlerService } from '../../spell-handler.service';
-import { LOCALES } from './spell-dbc-texts.model';
-import { FormGroup } from 'ngx-typesafe-forms';
+import { SpellDbc } from '@keira-types/spell-dbc.type';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
-import { SpellDbc } from '@keira-types/spell-dbc.type';
+import { FormGroup } from 'ngx-typesafe-forms';
+import { SpellHandlerService } from '../../spell-handler.service';
+import { SpellDbcModule } from '../spell-dbc.module';
+import { SpellDbcService } from '../spell-dbc.service';
+import { SpellDbcTextsComponent } from './spell-dbc-texts.component';
+import { LOCALES } from './spell-dbc-texts.model';
 
 describe('SpellDbcTextsComponent', () => {
   class SpellDbcTextsComponentPage extends PageObject<TestHostComponent> {

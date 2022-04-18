@@ -1,11 +1,13 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { SAI_ACTIONS } from '@keira-shared/modules/sai-editor/constants/sai-actions';
 import { SAI_EVENTS } from '@keira-shared/modules/sai-editor/constants/sai-event';
-import { MysqlQueryService } from '../../services/mysql-query.service';
+import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { SAI_TYPES, SmartScripts } from '@keira-types/smart-scripts.type';
 import { of } from 'rxjs';
+import { MysqlQueryService } from '../../services/mysql-query.service';
 import {
   DYNAMIC_FLAGS,
+  EVENT_FLAGS,
   GO_FLAGS,
   NPC_FLAGS,
   templates,
@@ -14,11 +16,9 @@ import {
   unitStandFlags,
   unitStandStateType,
   UNIT_FLAGS,
-  EVENT_FLAGS,
 } from './constants/sai-constants';
 import { SAI_TARGETS } from './constants/sai-targets';
 import { SaiCommentGeneratorService } from './sai-comment-generator.service';
-import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 
 describe('SaiCommentGeneratorService', () => {
   beforeEach(waitForAsync(() => TestBed.configureTestingModule({})));

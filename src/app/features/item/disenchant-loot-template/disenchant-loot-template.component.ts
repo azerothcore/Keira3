@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-
-import { ItemHandlerService } from '../item-handler.service';
-import { DisenchantLootTemplate } from '@keira-types/disenchant-loot-template.type';
-import { DisenchantLootTemplateService } from './disenchant-loot-template.service';
 import { LootTemplateIdComponent } from '@keira-abstract/components/editors/loot-template/loot-template-id.component';
+import { DisenchantLootTemplate } from '@keira-types/disenchant-loot-template.type';
+import { ItemHandlerService } from '../item-handler.service';
+import { DisenchantLootTemplateService } from './disenchant-loot-template.service';
 
 @Component({
   selector: 'keira-disenchant-loot-template',

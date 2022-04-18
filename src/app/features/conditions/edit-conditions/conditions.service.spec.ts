@@ -1,12 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { instance } from 'ts-mockito';
-import { ToastrService } from 'ngx-toastr';
-
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
-import { ConditionsService } from './conditions.service';
+import { ToastrService } from 'ngx-toastr';
+import { instance } from 'ts-mockito';
 import { ConditionsHandlerService } from '../conditions-handler.service';
+import { ConditionsService } from './conditions.service';
 
 describe('ConditionsService', () => {
   beforeEach(() =>

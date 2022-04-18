@@ -1,9 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-
-import { ConditionsHandlerService } from './conditions-handler.service';
-import { Conditions } from '@keira-types/conditions.type';
 import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { Conditions } from '@keira-types/conditions.type';
+import { ConditionsHandlerService } from './conditions-handler.service';
 
 describe('ConditionsHandlerService', () => {
   beforeEach(() =>

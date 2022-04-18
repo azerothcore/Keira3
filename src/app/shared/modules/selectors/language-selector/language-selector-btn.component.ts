@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { BsModalService } from 'ngx-bootstrap/modal';
-
-import { LanguageSelectorModalComponent } from './language-selector-modal.component';
 import { BaseSelectorBtnComponent } from '../base-selector/base-selector-btn.component';
+import { LanguageSelectorModalComponent } from './language-selector-modal.component';
 
 @Component({
   selector: 'keira-language-selector-btn',

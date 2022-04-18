@@ -1,15 +1,26 @@
 import { Component } from '@angular/core';
-
 import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
-import { ConditionsHandlerService } from '../conditions-handler.service';
+import { QUEST_STATE, RANKMASK, TYPEMASK } from '@keira-constants/flags/conditions';
 import {
+  CONDITION_DISTANCE_TO_CV3,
+  CONDITION_HP_PCT_CV2,
+  CONDITION_HP_VAL_CV2,
+  CONDITION_INSTANCE_INFO_CV3,
+  CONDITION_LEVEL_CV2,
+  CONDITION_NEAR_CREATURE_CV3,
+  CONDITION_OBJECT_ENTRY_GUID_CV1,
+  CONDITION_RELATION_TO_CV2,
+  CONDITION_STAND_STATE_CV1,
+  CONDITION_STAND_STATE_CV2,
+} from '@keira-constants/options/conditions';
+import {
+  Conditions,
   CONDITION_SOURCE_TYPES,
   CONDITION_SOURCE_TYPES_KEYS,
   CONDITION_TYPES,
   CONDITION_TYPES_KEYS,
-  Conditions,
 } from '@keira-types/conditions.type';
-import { ConditionsService } from './conditions.service';
+import { ConditionsHandlerService } from '../conditions-handler.service';
 import {
   CONDITION_TARGET_TOOLTIPS,
   CONDITION_VALUE_1_TOOLTIPS,
@@ -18,20 +29,7 @@ import {
   SOURCE_ENTRY_TOOLTIPS,
   SOURCE_GROUP_TOOLTIPS,
 } from './conditions-constants';
-
-import { QUEST_STATE, RANKMASK, TYPEMASK } from '@keira-constants/flags/conditions';
-import {
-  CONDITION_INSTANCE_INFO_CV3,
-  CONDITION_LEVEL_CV2,
-  CONDITION_NEAR_CREATURE_CV3,
-  CONDITION_OBJECT_ENTRY_GUID_CV1,
-  CONDITION_RELATION_TO_CV2,
-  CONDITION_DISTANCE_TO_CV3,
-  CONDITION_HP_VAL_CV2,
-  CONDITION_HP_PCT_CV2,
-  CONDITION_STAND_STATE_CV1,
-  CONDITION_STAND_STATE_CV2,
-} from '@keira-constants/options/conditions';
+import { ConditionsService } from './conditions.service';
 
 @Component({
   selector: 'keira-conditions',

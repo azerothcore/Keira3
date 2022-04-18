@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-
 import { UnsavedIconComponent } from './unsaved-icon.component';
 
 describe('UnsavedIconComponent', () => {

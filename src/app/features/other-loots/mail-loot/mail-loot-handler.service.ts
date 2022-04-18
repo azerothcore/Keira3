@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-
 import { HandlerService } from '@keira-abstract/service/handlers/handler.service';
-import { MAIL_LOOT_TEMPLATE_TABLE, MailLootTemplate } from '@keira-types/mail-loot-template.type';
+import { MailLootTemplate, MAIL_LOOT_TEMPLATE_TABLE } from '@keira-types/mail-loot-template.type';
 
 @Injectable()
 export class MailLootHandlerService extends HandlerService<MailLootTemplate> {

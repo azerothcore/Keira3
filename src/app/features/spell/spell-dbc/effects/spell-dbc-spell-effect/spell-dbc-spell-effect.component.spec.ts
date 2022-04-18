@@ -1,18 +1,17 @@
-import { TestBed } from '@angular/core/testing';
-
-import { SpellDbcSpellEffectComponent } from './spell-dbc-spell-effect.component';
-import { PageObject } from '@keira-testing/page-object';
 import { Component, ViewChild } from '@angular/core';
-import { SpellDbcService } from '../../spell-dbc.service';
-import { SpellDbcModule } from '../../spell-dbc.module';
+import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SpellHandlerService } from '../../../spell-handler.service';
-import { FormGroup } from 'ngx-typesafe-forms';
+import { PageObject } from '@keira-testing/page-object';
+import { SpellDbc } from '@keira-types/spell-dbc.type';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
-import { SpellDbc } from '@keira-types/spell-dbc.type';
-import { SPELL_DBC_SPELL_EFFECT_FIELDS, SpellDbcSpellEffectFieldPrefix } from './spell-dbc-spell-effect.model';
-import { ModalModule } from 'ngx-bootstrap/modal';
+import { FormGroup } from 'ngx-typesafe-forms';
+import { SpellHandlerService } from '../../../spell-handler.service';
+import { SpellDbcModule } from '../../spell-dbc.module';
+import { SpellDbcService } from '../../spell-dbc.service';
+import { SpellDbcSpellEffectComponent } from './spell-dbc-spell-effect.component';
+import { SpellDbcSpellEffectFieldPrefix, SPELL_DBC_SPELL_EFFECT_FIELDS } from './spell-dbc-spell-effect.model';
 
 describe('SpellDbcSpellEffectComponent', () => {
   class SpellDbcSpellEffectComponentPage extends PageObject<TestHostComponent> {

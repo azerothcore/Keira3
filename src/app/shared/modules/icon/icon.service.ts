@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, mergeMap, map } from 'rxjs';
-
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { map, mergeMap, Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',

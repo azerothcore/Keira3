@@ -1,15 +1,14 @@
 import { Component } from '@angular/core';
-
 import { SelectComponent } from '@keira-abstract/components/editors/select.component';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import {
+  QuestTemplate,
   QUEST_TEMPLATE_CUSTOM_STARTING_ID,
   QUEST_TEMPLATE_ID,
   QUEST_TEMPLATE_TABLE,
-  QuestTemplate,
 } from '@keira-types/quest-template.type';
-import { SelectQuestService } from './select-quest.service';
 import { QuestHandlerService } from '../quest-handler.service';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { SelectQuestService } from './select-quest.service';
 
 @Component({
   selector: 'keira-select-quest',

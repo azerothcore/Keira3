@@ -1,9 +1,8 @@
-import { Observable, map } from 'rxjs';
+import { squelConfig } from '@keira-config/squel.config';
+import { QueryForm, TableRow } from '@keira-types/general';
+import { map, Observable } from 'rxjs';
 import { escape } from 'sqlstring';
 import * as squel from 'squel';
-
-import { QueryForm, TableRow } from '@keira-types/general';
-import { squelConfig } from '@keira-config/squel.config';
 
 export abstract class QueryService {
   protected cache: { [key: string]: Promise<string>[] } = {};

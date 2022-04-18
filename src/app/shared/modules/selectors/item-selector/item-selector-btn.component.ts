@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { BsModalService } from 'ngx-bootstrap/modal';
-
-import { ItemSelectorModalComponent } from './item-selector-modal.component';
 import { BaseSelectorBtnComponent } from '../base-selector/base-selector-btn.component';
+import { ItemSelectorModalComponent } from './item-selector-modal.component';
 
 @Component({
   selector: 'keira-item-selector-btn',

@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
-import { PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarConfigInterface, PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+import { ModalConfirmModule } from '@keira-shared/modules/modal-confirm/modal-confirm.module';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-
-import { SidebarComponent } from './sidebar.component';
+import { PerfectScrollbarConfigInterface, PerfectScrollbarModule, PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
 import { LogoutBtnComponent } from './logout-btn/logout-btn.component';
-import { ModalConfirmModule } from '@keira-shared/modules/modal-confirm/modal-confirm.module';
+import { SidebarComponent } from './sidebar.component';
 import { UnsavedIconComponent } from './unsaved-icon/unsaved-icon.component';
+
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
 };

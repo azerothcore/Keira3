@@ -1,17 +1,16 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
-import { ModalModule } from 'ngx-bootstrap/modal';
-
+import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { SelectPageObject } from '@keira-testing/select-page-object';
+import { MailLootTemplate } from '@keira-types/mail-loot-template.type';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
+import { MailLootHandlerService } from './mail-loot-handler.service';
+import { MailLootTemplateModule } from './mail-loot-template.module';
 import { SelectMailLootComponent } from './select-mail-loot.component';
 import { SelectMailLootService } from './select-mail-loot.service';
-import { SelectPageObject } from '@keira-testing/select-page-object';
-import { MailLootTemplateModule } from './mail-loot-template.module';
-import { MailLootHandlerService } from './mail-loot-handler.service';
-import { MailLootTemplate } from '@keira-types/mail-loot-template.type';
 
 class SelectMailLootComponentPage extends SelectPageObject<SelectMailLootComponent> {
   ID_FIELD = 'Entry';

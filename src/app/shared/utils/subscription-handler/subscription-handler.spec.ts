@@ -1,5 +1,4 @@
 import { Subscription } from 'rxjs';
-
 import { SubscriptionHandler } from './subscription-handler';
 
 class TestClass extends SubscriptionHandler {

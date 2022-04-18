@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-
-import { SearchService } from './search.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
-import { HOLIDAY_SEARCH_FIELDS, HOLIDAY_TABLE, Holiday } from '../../types/holiday.type';
+import { Holiday, HOLIDAY_SEARCH_FIELDS, HOLIDAY_TABLE } from '../../types/holiday.type';
+import { SearchService } from './search.service';
 
 @Injectable({
   providedIn: 'root',

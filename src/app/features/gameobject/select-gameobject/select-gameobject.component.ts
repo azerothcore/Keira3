@@ -1,15 +1,14 @@
 import { Component } from '@angular/core';
-
 import { SelectComponent } from '@keira-abstract/components/editors/select.component';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import {
+  GameobjectTemplate,
   GAMEOBJECT_TEMPLATE_CUSTOM_STARTING_ID,
   GAMEOBJECT_TEMPLATE_ID,
   GAMEOBJECT_TEMPLATE_TABLE,
-  GameobjectTemplate,
 } from '@keira-types/gameobject-template.type';
-import { SelectGameobjectService } from './select-gameobject.service';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { SelectGameobjectService } from './select-gameobject.service';
 
 @Component({
   selector: 'keira-select-gameobject',

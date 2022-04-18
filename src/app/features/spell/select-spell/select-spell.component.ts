@@ -1,17 +1,17 @@
 import { Component } from '@angular/core';
 import { SelectComponent } from '@keira-abstract/components/editors/select.component';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import {
+  SpellDbc,
   SPELL_DBC_CUSTOM_STARTING_ID,
+  SPELL_DBC_DESCRIPTION,
   SPELL_DBC_ID,
   SPELL_DBC_NAME,
   SPELL_DBC_NAMESUBTEXT,
-  SPELL_DBC_DESCRIPTION,
   SPELL_DBC_TABLE,
-  SpellDbc,
 } from '@keira-types/spell-dbc.type';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { SelectSpellService } from './select-spell.service';
 import { SpellHandlerService } from '../spell-handler.service';
+import { SelectSpellService } from './select-spell.service';
 
 @Component({
   selector: 'keira-select-spell',

@@ -1,21 +1,20 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
-import { ModalModule } from 'ngx-bootstrap/modal';
-import Spy = jasmine.Spy;
-
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { QuestTemplateAddonComponent } from './quest-template-addon.component';
-import { EditorPageObject } from '@keira-testing/editor-page-object';
-import { QuestTemplateAddon } from '@keira-types/quest-template-addon.type';
-import { QuestHandlerService } from '../quest-handler.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
-import { instance } from 'ts-mockito';
-import { MockedSqliteService } from '@keira-testing/mocks';
 import { SqliteService } from '@keira-shared/services/sqlite.service';
-import { QuestModule } from '../quest.module';
+import { EditorPageObject } from '@keira-testing/editor-page-object';
+import { MockedSqliteService } from '@keira-testing/mocks';
+import { QuestTemplateAddon } from '@keira-types/quest-template-addon.type';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
+import { instance } from 'ts-mockito';
+import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
+import { QuestModule } from '../quest.module';
+import { QuestTemplateAddonComponent } from './quest-template-addon.component';
+import Spy = jasmine.Spy;
 
 class QuestTemplateAddonPage extends EditorPageObject<QuestTemplateAddonComponent> {
   get questPreviewReqLevel() {

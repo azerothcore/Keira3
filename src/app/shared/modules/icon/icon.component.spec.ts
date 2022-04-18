@@ -1,13 +1,13 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
-
-import { IconComponent } from './icon.component';
 import { Component, ViewChild } from '@angular/core';
-import { IconModule } from '@keira-shared/modules/icon/icon.module';
-import { PageObject } from '@keira-testing/page-object';
-import { IconService } from '@keira-shared/modules/icon/icon.service';
-import { of } from 'rxjs';
-import Spy = jasmine.Spy;
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { ICON_SKILLS } from '@keira-shared/constants/quest-preview';
+import { IconModule } from '@keira-shared/modules/icon/icon.module';
+import { IconService } from '@keira-shared/modules/icon/icon.service';
+import { PageObject } from '@keira-testing/page-object';
+import { of } from 'rxjs';
+import { IconComponent } from './icon.component';
+
+import Spy = jasmine.Spy;
 
 @Component({
   template: `<keira-icon

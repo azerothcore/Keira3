@@ -96,7 +96,7 @@ describe('NpcVendorService', () => {
       );
       const getIconByItemIdSpy = spyOn<any>(iconService, 'getIconByItemId').and.returnValue(of('inv_gorehowl'));
 
-      let resultText = await service['getItemExtendedCostReadable'](1);
+      const resultText = await service['getItemExtendedCostReadable'](1);
 
       expect(mockResult.replace(/ /g, '')).toBe(resultText.replace(/ /g, ''));
       expect(getItemExtendedCostSpy).toHaveBeenCalledTimes(1);
@@ -133,7 +133,7 @@ describe('NpcVendorService', () => {
       );
       const getIconByItemIdSpy = spyOn<any>(iconService, 'getIconByItemId').and.returnValue(of(''));
 
-      let resultText = await service['getItemExtendedCostReadable'](1);
+      const resultText = await service['getItemExtendedCostReadable'](1);
 
       expect(mockResult.replace(/ /g, '')).toBe(resultText.replace(/ /g, ''));
       expect(getItemExtendedCostSpy).toHaveBeenCalledTimes(1);

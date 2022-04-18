@@ -1,15 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { instance } from 'ts-mockito';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { GAMEOBJECT_TEMPLATE_TYPE } from '@keira-types/gameobject-template.type';
 import { ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
-
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
-import { GAMEOBJECT_TEMPLATE_TYPE } from '@keira-types/gameobject-template.type';
+import { instance } from 'ts-mockito';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
-import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
 
 describe('GameobjectLootTemplateService', () => {
   let service: GameobjectLootTemplateService;

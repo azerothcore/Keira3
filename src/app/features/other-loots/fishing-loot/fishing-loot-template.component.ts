@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-
-import { FishingLootTemplate } from '@keira-types/fishing-loot-template.type';
-import { FishingLootTemplateService } from './fishing-loot-template.service';
 import { LootTemplateComponent } from '@keira-abstract/components/editors/loot-template/loot-template.component';
+import { FishingLootTemplate } from '@keira-types/fishing-loot-template.type';
 import { FishingLootHandlerService } from './fishing-loot-handler.service';
+import { FishingLootTemplateService } from './fishing-loot-template.service';
 
 @Component({
   selector: 'keira-fishing-loot-template',

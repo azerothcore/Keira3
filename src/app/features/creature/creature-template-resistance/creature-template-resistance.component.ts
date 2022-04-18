@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
-
-import { CreatureHandlerService } from '../creature-handler.service';
-import { CreatureTemplateResistance } from '@keira-types/creature-template-resistance.type';
-import { CreatureTemplateResistanceService } from './creature-template-resistance.service';
-import { CREATURE_TEMPLATE_RESISTANCE_TABLE } from '@keira-types/creature-template-resistance.type';
-import { MultiRowEditorComponent } from '@keira-shared/abstract/components/editors/multi-row-editor.component';
 import { CREATURE_TEMPLATE_RESISTANCE_SCHOOL } from '@keira-constants/options/creature-template-resistance-school';
+import { MultiRowEditorComponent } from '@keira-shared/abstract/components/editors/multi-row-editor.component';
+import { CreatureTemplateResistance, CREATURE_TEMPLATE_RESISTANCE_TABLE } from '@keira-types/creature-template-resistance.type';
+import { CreatureHandlerService } from '../creature-handler.service';
+import { CreatureTemplateResistanceService } from './creature-template-resistance.service';
 
 @Component({
   selector: 'keira-creature-template-resistance',

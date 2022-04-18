@@ -1,14 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
 import { HttpClient } from '@angular/common/http';
-
-import { MysqlService } from '../shared/services/mysql.service';
-import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
-import { ElectronService } from '@keira-shared/services/electron.service';
+import { Component, OnInit } from '@angular/core';
 import { KEIRA3_REPO_URL, LATEST_RELEASE_API_URL } from '@keira-constants/general';
-import packageInfo from '../../../package.json';
+import { ElectronService } from '@keira-shared/services/electron.service';
+import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
+import { ToastrService } from 'ngx-toastr';
 import { distinctUntilChanged } from 'rxjs';
+import packageInfo from '../../../package.json';
+import { MysqlService } from '../shared/services/mysql.service';
 
 @Component({
   selector: 'keira-root',

@@ -1,19 +1,17 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
-import { ModalModule } from 'ngx-bootstrap/modal';
-import Spy = jasmine.Spy;
-
+import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { SelectGameobjectComponent } from './select-gameobject.component';
-import { SelectGameobjectService } from './select-gameobject.service';
-import { SelectGameobjectModule } from './select-gameobject.module';
 import { SelectPageObject } from '@keira-testing/select-page-object';
 import { GameobjectTemplate } from '@keira-types/gameobject-template.type';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
+import { SelectGameobjectComponent } from './select-gameobject.component';
+import { SelectGameobjectModule } from './select-gameobject.module';
+import Spy = jasmine.Spy;
 
 class SelectGameobjectComponentPage extends SelectPageObject<SelectGameobjectComponent> {
   ID_FIELD = 'entry';
@@ -22,7 +20,6 @@ class SelectGameobjectComponentPage extends SelectPageObject<SelectGameobjectCom
 describe('SelectGameobject integration tests', () => {
   let component: SelectGameobjectComponent;
   let fixture: ComponentFixture<SelectGameobjectComponent>;
-  let selectService: SelectGameobjectService;
   let page: SelectGameobjectComponentPage;
   let queryService: MysqlQueryService;
   let querySpy: Spy;
@@ -43,8 +40,6 @@ describe('SelectGameobject integration tests', () => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
-
-    selectService = TestBed.inject(SelectGameobjectService);
 
     fixture = TestBed.createComponent(SelectGameobjectComponent);
     page = new SelectGameobjectComponentPage(fixture);

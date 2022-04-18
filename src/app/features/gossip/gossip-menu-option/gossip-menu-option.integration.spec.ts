@@ -1,21 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
+import { GossipMenuOption } from '@keira-types/gossip-menu-option.type';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import Spy = jasmine.Spy;
-
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
+import { GossipHandlerService } from '../gossip-handler.service';
 import { GossipMenuOptionComponent } from './gossip-menu-option.component';
 import { GossipMenuOptionModule } from './gossip-menu-option.module';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { GossipMenuOption } from '@keira-types/gossip-menu-option.type';
-import { GossipHandlerService } from '../gossip-handler.service';
-import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
+import Spy = jasmine.Spy;
 
 class GossipMenuOptionPage extends MultiRowEditorPageObject<GossipMenuOptionComponent> {}
 
 describe('GossipMenu integration tests', () => {
-  let component: GossipMenuOptionComponent;
   let fixture: ComponentFixture<GossipMenuOptionComponent>;
   let queryService: MysqlQueryService;
   let querySpy: Spy;
@@ -52,7 +50,6 @@ describe('GossipMenu integration tests', () => {
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     fixture = TestBed.createComponent(GossipMenuOptionComponent);
-    component = fixture.componentInstance;
     page = new GossipMenuOptionPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();

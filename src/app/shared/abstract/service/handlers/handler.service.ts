@@ -1,5 +1,4 @@
-import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
-
+import { CanActivate, Router } from '@angular/router';
 import { TableRow } from '@keira-types/general';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
 
@@ -53,7 +52,7 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
     }
   }
 
-  canActivate(route: ActivatedRouteSnapshot): boolean {
+  canActivate(): boolean {
     if (!!this._selected) {
       return true;
     }

@@ -1,13 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { instance } from 'ts-mockito';
-import { ToastrService } from 'ngx-toastr';
-
-import { SaiEditorService } from './sai-editor.service';
-import { MysqlQueryService } from '../../services/mysql-query.service';
-import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
+import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { SmartScripts } from '@keira-types/smart-scripts.type';
+import { ToastrService } from 'ngx-toastr';
+import { instance } from 'ts-mockito';
+import { MysqlQueryService } from '../../services/mysql-query.service';
+import { SaiEditorService } from './sai-editor.service';
 
 describe('SAI Editor Service', () => {
   let service: SaiEditorService;

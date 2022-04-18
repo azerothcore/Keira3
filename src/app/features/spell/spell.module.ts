@@ -1,8 +1,8 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { SelectSpellModule } from './select-spell/select-spell.module';
-import { SpellHandlerService } from './spell-handler.service';
 import { SpellDbcModule } from './spell-dbc/spell-dbc.module';
+import { SpellHandlerService } from './spell-handler.service';
 
 @NgModule({
   declarations: [],

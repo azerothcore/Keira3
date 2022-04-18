@@ -1,17 +1,16 @@
-import { TestBed } from '@angular/core/testing';
-
-import { SpellDbcLocaleComponent } from './spell-dbc-locale.component';
-import { PageObject } from '@keira-testing/page-object';
 import { Component, ViewChild } from '@angular/core';
-import { SpellDbcService } from '../../spell-dbc.service';
-import { SpellDbcModule } from '../../spell-dbc.module';
+import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SpellHandlerService } from '../../../spell-handler.service';
-import { Locale, SPELL_DBC_TEXT_FIELDS, SpellDbcTextFieldPrefix } from '../spell-dbc-texts.model';
-import { FormGroup } from 'ngx-typesafe-forms';
+import { PageObject } from '@keira-testing/page-object';
+import { SpellDbc } from '@keira-types/spell-dbc.type';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
-import { SpellDbc } from '@keira-types/spell-dbc.type';
+import { FormGroup } from 'ngx-typesafe-forms';
+import { SpellHandlerService } from '../../../spell-handler.service';
+import { SpellDbcModule } from '../../spell-dbc.module';
+import { SpellDbcService } from '../../spell-dbc.service';
+import { Locale, SpellDbcTextFieldPrefix, SPELL_DBC_TEXT_FIELDS } from '../spell-dbc-texts.model';
+import { SpellDbcLocaleComponent } from './spell-dbc-locale.component';
 
 describe('SpellDbcLocaleComponent', () => {
   class SpellDbcLocaleComponentPage extends PageObject<TestHostComponent> {

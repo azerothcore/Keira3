@@ -1,12 +1,10 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
-import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
-import Spy = jasmine.Spy;
-
-import { LogoutBtnComponent } from './logout-btn.component';
-import { LocationService } from '@keira-shared/services/location.service';
 import { NgModule } from '@angular/core';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { ModalConfirmComponent } from '@keira-shared/modules/modal-confirm/modal-confirm.component';
-import { closeModalsAfterEach } from '@keira-testing/test-helpers';
+import { LocationService } from '@keira-shared/services/location.service';
+import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
+import { LogoutBtnComponent } from './logout-btn.component';
+import Spy = jasmine.Spy;
 
 @NgModule({
   declarations: [ModalConfirmComponent],
@@ -33,7 +31,7 @@ describe('LogoutBtnComponent', () => {
   }
 
   it('openModalConfirm() should correctly work', () => {
-    const { fixture, component } = setup();
+    const { component } = setup();
     const showSpy = spyOn(TestBed.inject(BsModalService), 'show').and.callThrough();
     const logoutSpy = spyOn(component, 'logout');
 

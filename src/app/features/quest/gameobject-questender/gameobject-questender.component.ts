@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-
 import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
-import { QuestHandlerService } from '../quest-handler.service';
-import { GameobjectQuestenderService } from './gameobject-questender.service';
 import { GameobjectQuestender } from '@keira-types/gameobject-questender.type';
+import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
+import { GameobjectQuestenderService } from './gameobject-questender.service';
 
 @Component({
   selector: 'keira-gameobject-questender',

@@ -1,9 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { instance } from 'ts-mockito';
-
-import { ItemSearchService } from './item-search.service';
 import { MysqlQueryService } from '../../services/mysql-query.service';
 import { MockedMysqlQueryService } from '../../testing/mocks';
+import { ItemSearchService } from './item-search.service';
 
 describe('ItemSearchService', () => {
   beforeEach(() =>

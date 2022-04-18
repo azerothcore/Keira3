@@ -1,17 +1,15 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
-import { ModalModule } from 'ngx-bootstrap/modal';
-import Spy = jasmine.Spy;
-
+import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { PageObject } from '@keira-testing/page-object';
-import { SaiSearchExistingComponent } from './sai-search-existing.component';
-import { SaiSearchService } from '@keira-shared/modules/search/sai-search.service';
-import { SaiSearchExistingModule } from './sai-search-existing.module';
 import { SmartScripts } from '@keira-types/smart-scripts.type';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
+import { SaiSearchExistingComponent } from './sai-search-existing.component';
+import { SaiSearchExistingModule } from './sai-search-existing.module';
+import Spy = jasmine.Spy;
 
 class SaiSearchExistingComponentPage extends PageObject<SaiSearchExistingComponent> {
   get searchSourceTypeSelect() {
@@ -29,9 +27,7 @@ class SaiSearchExistingComponentPage extends PageObject<SaiSearchExistingCompone
 }
 
 describe('SaiSearchExisting integration tests', () => {
-  let component: SaiSearchExistingComponent;
   let fixture: ComponentFixture<SaiSearchExistingComponent>;
-  let selectService: SaiSearchService;
   let page: SaiSearchExistingComponentPage;
   let queryService: MysqlQueryService;
   let querySpy: Spy;
@@ -50,11 +46,8 @@ describe('SaiSearchExisting integration tests', () => {
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
 
-    selectService = TestBed.inject(SaiSearchService);
-
     fixture = TestBed.createComponent(SaiSearchExistingComponent);
     page = new SaiSearchExistingComponentPage(fixture);
-    component = fixture.componentInstance;
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
   });

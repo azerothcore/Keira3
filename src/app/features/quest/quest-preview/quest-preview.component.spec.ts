@@ -1,19 +1,18 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import Spy = jasmine.Spy;
-
-import { QuestPreviewComponent } from './quest-preview.component';
-import { QuestModule } from '../quest.module';
 import { RouterTestingModule } from '@angular/router/testing';
-import { QuestPreviewService } from './quest-preview.service';
-import { PageObject } from '@keira-shared/testing/page-object';
-import { QuestTemplate } from '@keira-shared/types/quest-template.type';
-import { QuestTemplateAddon } from '@keira-shared/types/quest-template-addon.type';
-import { createMockObject } from '@keira-shared/utils/helpers';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
-import { QuestRequestItems } from '@keira-types/quest-request-items.type';
+import { PageObject } from '@keira-shared/testing/page-object';
+import { QuestTemplateAddon } from '@keira-shared/types/quest-template-addon.type';
+import { QuestTemplate } from '@keira-shared/types/quest-template.type';
+import { createMockObject } from '@keira-shared/utils/helpers';
 import { QuestOfferReward } from '@keira-types/quest-offer-reward.type';
+import { QuestRequestItems } from '@keira-types/quest-request-items.type';
 import { ToastrModule } from 'ngx-toastr';
+import { QuestModule } from '../quest.module';
+import { QuestPreviewComponent } from './quest-preview.component';
+import { QuestPreviewService } from './quest-preview.service';
+import Spy = jasmine.Spy;
 
 class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   get title() {

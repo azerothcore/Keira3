@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
-import { Observable } from 'rxjs';
-
+import { DTCFG } from '@keira-config/datatable.config';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SmartScripts } from '@keira-types/smart-scripts.type';
-import { DTCFG } from '@keira-config/datatable.config';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'keira-timed-actionlist',

@@ -1,10 +1,9 @@
 import { Component, Input, OnChanges } from '@angular/core';
-
-import { ReferenceViewerService } from '@keira-shared/modules/loot-editor/reference-viewer.service';
-import { ReferenceLootTemplate } from '@keira-types/reference-loot-template.type';
-import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { DTCFG } from '@keira-config/datatable.config';
+import { ReferenceViewerService } from '@keira-shared/modules/loot-editor/reference-viewer.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
+import { ReferenceLootTemplate } from '@keira-types/reference-loot-template.type';
 
 @Component({
   selector: 'keira-reference-viewer',

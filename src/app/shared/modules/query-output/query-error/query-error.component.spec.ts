@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-
 import { QueryErrorComponent } from './query-error.component';
 
 describe('QueryErrorComponent', () => {

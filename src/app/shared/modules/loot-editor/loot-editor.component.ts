@@ -1,10 +1,9 @@
 import { Component, Input } from '@angular/core';
-
+import { MultiRowEditorService } from '@keira-abstract/service/editors/multi-row-editor.service';
+import { DTCFG } from '@keira-config/datatable.config';
 import { LOOT_MODE } from '@keira-constants/flags/loot-mode';
 import { WIKI_BASE_URL } from '@keira-constants/general';
 import { LootTemplate } from '@keira-types/loot-template.type';
-import { MultiRowEditorService } from '@keira-abstract/service/editors/multi-row-editor.service';
-import { DTCFG } from '@keira-config/datatable.config';
 
 @Component({
   selector: 'keira-loot-editor',

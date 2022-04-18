@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-
-import { MailLootTemplate } from '@keira-types/mail-loot-template.type';
-import { MailLootTemplateService } from './mail-loot-template.service';
 import { LootTemplateComponent } from '@keira-abstract/components/editors/loot-template/loot-template.component';
+import { MailLootTemplate } from '@keira-types/mail-loot-template.type';
 import { MailLootHandlerService } from './mail-loot-handler.service';
+import { MailLootTemplateService } from './mail-loot-template.service';
 
 @Component({
   selector: 'keira-mail-loot-template',

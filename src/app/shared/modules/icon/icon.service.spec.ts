@@ -1,9 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-
-import { IconService } from './icon.service';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { of } from 'rxjs';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { IconService } from './icon.service';
 
 describe('IconService', () => {
   const mockArgument = '123';

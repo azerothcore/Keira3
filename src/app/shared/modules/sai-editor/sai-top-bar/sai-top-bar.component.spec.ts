@@ -1,14 +1,12 @@
+import { Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import Spy = jasmine.Spy;
-
-import { SaiTopBarComponent } from './sai-top-bar.component';
-import { SaiHandlerService } from '../sai-handler.service';
 import { PageObject } from '@keira-testing/page-object';
 import { SAI_TYPES } from '@keira-types/smart-scripts.type';
-import { MysqlQueryService } from '../../../services/mysql-query.service';
-import { Component, ViewChild } from '@angular/core';
 import { of } from 'rxjs';
+import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { SaiHandlerService } from '../sai-handler.service';
+import { SaiTopBarComponent } from './sai-top-bar.component';
 
 class SaiTopBarComponentPage extends PageObject<TestHostComponent> {
   get mainText() {
@@ -25,12 +23,9 @@ class TestHostComponent {
 }
 
 describe('SaiTopBarComponent', () => {
-  let host: TestHostComponent;
-  let component: SaiTopBarComponent;
   let fixture: ComponentFixture<TestHostComponent>;
   let handler: SaiHandlerService;
   let page: SaiTopBarComponentPage;
-  let querySpy: Spy;
 
   const entryorguid = 1234;
   const name = 'Francesco';
@@ -47,11 +42,9 @@ describe('SaiTopBarComponent', () => {
   beforeEach(() => {
     handler = TestBed.inject(SaiHandlerService);
     handler['_selected'] = JSON.stringify({ source_type: SAI_TYPES.SAI_TYPE_GAMEOBJECT, entryorguid });
-    querySpy = spyOn(TestBed.inject(MysqlQueryService), 'query').and.returnValue(of([]));
+    spyOn(TestBed.inject(MysqlQueryService), 'query').and.returnValue(of([]));
 
     fixture = TestBed.createComponent(TestHostComponent);
-    host = fixture.componentInstance;
-    component = host.child;
     page = new SaiTopBarComponentPage(fixture);
   });
 

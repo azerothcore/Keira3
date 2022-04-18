@@ -1,9 +1,8 @@
-import { ToastrService } from 'ngx-toastr';
-
-import { MultiRowEditorService } from './multi-row-editor.service';
 import { Class, TableRow } from '@keira-types/general';
-import { HandlerService } from '../handlers/handler.service';
+import { ToastrService } from 'ngx-toastr';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { HandlerService } from '../handlers/handler.service';
+import { MultiRowEditorService } from './multi-row-editor.service';
 
 // Used where none of the editors table's fields matches with the main entity ID. For example creature_addon (CreatureSpawnAddonService)
 

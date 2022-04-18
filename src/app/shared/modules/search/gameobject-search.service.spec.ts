@@ -1,9 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { instance } from 'ts-mockito';
-
-import { GameobjectSearchService } from './gameobject-search.service';
 import { MysqlQueryService } from '../../services/mysql-query.service';
 import { MockedMysqlQueryService } from '../../testing/mocks';
+import { GameobjectSearchService } from './gameobject-search.service';
 
 describe('GameobjectSearchService', () => {
   beforeEach(() =>

@@ -1,15 +1,15 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
-import { ModalModule } from 'ngx-bootstrap/modal';
-import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { SAI_TYPES, SmartScripts } from '@keira-types/smart-scripts.type';
-import { SaiGameobjectComponent } from './sai-gameobject.component';
-import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
-import { SaiGameobjectModule } from './sai-gameobject.module';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
+import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
+import { SaiGameobjectComponent } from './sai-gameobject.component';
+import { SaiGameobjectModule } from './sai-gameobject.module';
 
 class SaiGameobjectPage extends MultiRowEditorPageObject<SaiGameobjectComponent> {}
 
