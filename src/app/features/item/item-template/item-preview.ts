@@ -74,7 +74,7 @@ export const resistanceFields = [
   'arcane',
 ];
 
-export enum CLASSES {
+export const enum CLASSES {
   WARRIOR = 0x001,
   PALADIN = 0x002,
   HUNTER = 0x004,
@@ -88,7 +88,7 @@ export enum CLASSES {
   MASK_ALL = 0x5ff,
 }
 
-export enum RACE {
+export const enum RACE {
   HUMAN = 0x001,
   ORC = 0x002,
   DWARF = 0x004,

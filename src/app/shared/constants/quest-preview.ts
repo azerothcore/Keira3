@@ -22,7 +22,7 @@ export const ICON_SKILLS = {
   762: 'spell_nature_swiftness', // Riding
 };
 
-export enum QUEST_PERIOD {
+export const enum QUEST_PERIOD {
   DAILY = 'Daily',
   WEEKLY = 'Weekly',
   MONTHLY = 'Monthly',

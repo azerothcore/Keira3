@@ -11,7 +11,7 @@ export const ITEM_QUALITY: Option[] = [
   { value: 7, name: 'Gold (Bind to Account) [requires flags 134221824]' },
 ];
 
-export enum ITEMS_QUALITY {
+export const enum ITEMS_QUALITY {
   POOR = 0, // GREY
   NORMAL = 1, // WHITE
   UNCOMMON = 2, // GREEN
