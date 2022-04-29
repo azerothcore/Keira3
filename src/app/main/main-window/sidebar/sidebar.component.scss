@@ -190,8 +190,7 @@ $img-border-color: rgba(255, 255, 255, 0.1);
 
       .sidebar-dropdown {
         > a:after {
-          font-family: 'Font Awesome 5 Free', serif;
-          font-weight: 900;
+          font: var(--fa-font-solid);
           content: '\f105';
           display: inline-block;
           font-style: normal;
