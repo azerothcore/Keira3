@@ -31,7 +31,7 @@
               "src/favicon.512x512.png"
             ],
             "styles": ["src/app/scss/main.scss"],
-            "scripts": ["node_modules/squel/dist/squel.min.js"]
+            "scripts": ["node_modules/squel/dist/squel.min.js", "node_modules/jquery/dist/jquery.min.js"]
           },
           "configurations": {
             "dev": {
