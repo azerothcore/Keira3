@@ -7,6 +7,7 @@ import { AC_FORUM_URL, PAYPAL_DONATE_URL, KEIRA3_REPO_URL, AC_DISCORD_URL } from
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
 import { ConfigService } from '@keira-shared/services/config.service';
 import { MysqlService } from '@keira-shared/services/mysql.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Component({
   selector: 'keira-home',
@@ -28,13 +29,20 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
     return this.mysqlService.config.database;
   }
 
-  constructor(private queryService: MysqlQueryService, public configService: ConfigService, private readonly mysqlService: MysqlService) {
+  constructor(
+    private queryService: MysqlQueryService,
+    public configService: ConfigService,
+    private readonly mysqlService: MysqlService,
+    public saveQueryService: SaveQueryService,
+  ) {
     super();
   }
 
   ngOnInit() {
     this.getCoreVersion();
     this.getWorldDbVersion();
+
+    this.saveQueryService.setFilePath(process.cwd() + '\\changes.sql');
   }
 
   private getCoreVersion(): void {

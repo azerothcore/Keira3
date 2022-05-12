@@ -7,6 +7,7 @@ import { Class, StringKeys, TableRow } from '@keira-types/general';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { HandlerService } from '../handlers/handler.service';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 export abstract class EditorService<T extends TableRow> extends SubscriptionHandler {
   protected _loading = false;
@@ -49,6 +50,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     protected _entityIdField: string,
     protected handlerService: HandlerService<T>,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
     super();
@@ -151,5 +153,10 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     if (!query) {
       return;
     }
+
+    this._loading = true;
+
+    this.saveQueryService.appendToFile(query);
+    this._loading = false;
   }
 }
