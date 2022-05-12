@@ -9,6 +9,7 @@
         [docUrl]="docUrl"
         [editorService]="editorService"
         (executeQuery)="editorService.save($event)"
+        (saveToSQLFile)="editorService.saveToSQLFile($event)"
       ></keira-query-output>
     </div>
 

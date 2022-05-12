@@ -146,4 +146,10 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
       }),
     );
   }
+
+  saveToSQLFile(query: string) {
+    if (!query) {
+      return;
+    }
+  }
 }

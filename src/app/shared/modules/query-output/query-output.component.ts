@@ -16,6 +16,7 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
   @Input() docUrl: string;
   @Input() editorService: EditorService<T>;
   @Output() executeQuery = new EventEmitter<string>();
+  @Output() saveToSQLFile = new EventEmitter<string>();
   selectedQuery: 'diff' | 'full' = 'diff';
   private modalRef: BsModalRef;
 
@@ -43,6 +44,14 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
       this.executeQuery.emit(this.editorService.fullQuery);
     } else {
       this.executeQuery.emit(this.editorService.diffQuery);
+    }
+  }
+
+  saveToSQL(): void {
+    if (this.showFullQuery()) {
+      this.saveToSQLFile.emit(this.editorService.fullQuery);
+    } else {
+      this.saveToSQLFile.emit(this.editorService.diffQuery);
     }
   }
 
