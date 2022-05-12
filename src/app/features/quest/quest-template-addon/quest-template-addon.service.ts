@@ -4,6 +4,7 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { QuestTemplateAddon, QUEST_TEMPLATE_ADDON_ID, QUEST_TEMPLATE_ADDON_TABLE } from '@keira-types/quest-template-addon.type';
 import { ToastrService } from 'ngx-toastr';
 import { QuestHandlerService } from '../quest-handler.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Injectable()
 export class QuestTemplateAddonService extends SingleRowEditorService<QuestTemplateAddon> {
@@ -11,6 +12,7 @@ export class QuestTemplateAddonService extends SingleRowEditorService<QuestTempl
   constructor(
     protected handlerService: QuestHandlerService,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -21,6 +23,7 @@ export class QuestTemplateAddonService extends SingleRowEditorService<QuestTempl
       false,
       handlerService,
       queryService,
+      saveQueryService,
       toastrService,
     );
   }

@@ -5,6 +5,7 @@ import { LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2 } from '@keira-types/loot-template
 import { ReferenceLootTemplate, REFERENCE_LOOT_TEMPLATE_TABLE } from '@keira-types/reference-loot-template.type';
 import { ToastrService } from 'ngx-toastr';
 import { ReferenceLootHandlerService } from './reference-loot-handler.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Injectable()
 export class ReferenceLootTemplateService extends MultiRowEditorService<ReferenceLootTemplate> {
@@ -12,6 +13,7 @@ export class ReferenceLootTemplateService extends MultiRowEditorService<Referenc
   constructor(
     protected handlerService: ReferenceLootHandlerService,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -21,6 +23,7 @@ export class ReferenceLootTemplateService extends MultiRowEditorService<Referenc
       LOOT_TEMPLATE_ID_2,
       handlerService,
       queryService,
+      saveQueryService,
       toastrService,
     );
   }

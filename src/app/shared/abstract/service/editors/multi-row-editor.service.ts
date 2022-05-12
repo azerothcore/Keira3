@@ -4,6 +4,7 @@ import { distinctUntilChanged } from 'rxjs';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { HandlerService } from '../handlers/handler.service';
 import { EditorService } from './editor.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 export abstract class MultiRowEditorService<T extends TableRow> extends EditorService<T> {
   protected FIRST_ROW_START_VALUE = 0;
@@ -16,12 +17,15 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   get newRows(): T[] {
     return this._newRows;
   }
+
   get selectedRowId(): string | number {
     return this._selectedRowId;
   }
+
   get entitySecondIdField(): string {
     return this._entitySecondIdField;
   }
+
   get errors(): string[] {
     return this._errors;
   }
@@ -34,9 +38,10 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     protected _entitySecondIdField: string,
     protected handlerService: HandlerService<T>,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
-    super(_entityClass, _entityTable, _entityIdField, handlerService, queryService, toastrService);
+    super(_entityClass, _entityTable, _entityIdField, handlerService, queryService, saveQueryService, toastrService);
     this.initForm();
   }
 

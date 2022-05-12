@@ -5,6 +5,7 @@ import { DisenchantLootTemplate, DISENCHANT_LOOT_TEMPLATE_TABLE } from '@keira-t
 import { DISENCHANT_TEMPLATE_LOOT_ID, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_TABLE } from '@keira-types/item-template.type';
 import { ToastrService } from 'ngx-toastr';
 import { ItemHandlerService } from '../item-handler.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Injectable()
 export class DisenchantLootTemplateService extends LootEditorIdService<DisenchantLootTemplate> {
@@ -12,6 +13,7 @@ export class DisenchantLootTemplateService extends LootEditorIdService<Disenchan
   constructor(
     protected handlerService: ItemHandlerService,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -22,6 +24,7 @@ export class DisenchantLootTemplateService extends LootEditorIdService<Disenchan
       DISENCHANT_TEMPLATE_LOOT_ID,
       handlerService,
       queryService,
+      saveQueryService,
       toastrService,
     );
   }

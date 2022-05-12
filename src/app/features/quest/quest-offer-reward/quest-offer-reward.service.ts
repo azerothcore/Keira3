@@ -4,6 +4,7 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { QuestOfferReward, QUEST_OFFER_REWARD_ID, QUEST_OFFER_REWARD_TABLE } from '@keira-types/quest-offer-reward.type';
 import { ToastrService } from 'ngx-toastr';
 import { QuestHandlerService } from '../quest-handler.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Injectable()
 export class QuestOfferRewardService extends SingleRowEditorService<QuestOfferReward> {
@@ -11,8 +12,19 @@ export class QuestOfferRewardService extends SingleRowEditorService<QuestOfferRe
   constructor(
     protected handlerService: QuestHandlerService,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
-    super(QuestOfferReward, QUEST_OFFER_REWARD_TABLE, QUEST_OFFER_REWARD_ID, null, false, handlerService, queryService, toastrService);
+    super(
+      QuestOfferReward,
+      QUEST_OFFER_REWARD_TABLE,
+      QUEST_OFFER_REWARD_ID,
+      null,
+      false,
+      handlerService,
+      queryService,
+      saveQueryService,
+      toastrService,
+    );
   }
 }

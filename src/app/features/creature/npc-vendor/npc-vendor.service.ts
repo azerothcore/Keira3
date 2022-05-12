@@ -7,6 +7,7 @@ import { ItemExtendedCost } from '@keira-shared/types/item-extended-cost.type';
 import { NpcVendor, NPC_VENDOR_ID, NPC_VENDOR_ID_2, NPC_VENDOR_TABLE } from '@keira-types/npc-vendor.type';
 import { ToastrService } from 'ngx-toastr';
 import { CreatureHandlerService } from '../creature-handler.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Injectable()
 export class NpcVendorService extends MultiRowEditorService<NpcVendor> {
@@ -15,10 +16,11 @@ export class NpcVendorService extends MultiRowEditorService<NpcVendor> {
     protected handlerService: CreatureHandlerService,
     public readonly queryService: MysqlQueryService,
     public readonly sqliteQueryService: SqliteQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
     private iconService: IconService,
   ) {
-    super(NpcVendor, NPC_VENDOR_TABLE, NPC_VENDOR_ID, NPC_VENDOR_ID_2, handlerService, queryService, toastrService);
+    super(NpcVendor, NPC_VENDOR_TABLE, NPC_VENDOR_ID, NPC_VENDOR_ID_2, handlerService, queryService, saveQueryService, toastrService);
   }
 
   private cache: Promise<string>[] = [];

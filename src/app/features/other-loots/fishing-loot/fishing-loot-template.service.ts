@@ -5,6 +5,7 @@ import { FishingLootTemplate, FISHING_LOOT_TEMPLATE_TABLE } from '@keira-types/f
 import { LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2 } from '@keira-types/loot-template.type';
 import { ToastrService } from 'ngx-toastr';
 import { FishingLootHandlerService } from './fishing-loot-handler.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Injectable()
 export class FishingLootTemplateService extends MultiRowEditorService<FishingLootTemplate> {
@@ -12,6 +13,7 @@ export class FishingLootTemplateService extends MultiRowEditorService<FishingLoo
   constructor(
     protected handlerService: FishingLootHandlerService,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -21,6 +23,7 @@ export class FishingLootTemplateService extends MultiRowEditorService<FishingLoo
       LOOT_TEMPLATE_ID_2,
       handlerService,
       queryService,
+      saveQueryService,
       toastrService,
     );
   }

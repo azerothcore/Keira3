@@ -9,6 +9,7 @@ import {
 } from '@keira-types/gossip-menu-option.type';
 import { ToastrService } from 'ngx-toastr';
 import { GossipHandlerService } from '../gossip-handler.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Injectable()
 export class GossipMenuOptionService extends MultiRowEditorService<GossipMenuOption> {
@@ -16,6 +17,7 @@ export class GossipMenuOptionService extends MultiRowEditorService<GossipMenuOpt
   constructor(
     protected handlerService: GossipHandlerService,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -25,6 +27,7 @@ export class GossipMenuOptionService extends MultiRowEditorService<GossipMenuOpt
       GOSSIP_MENU_OPTION_ID_2,
       handlerService,
       queryService,
+      saveQueryService,
       toastrService,
     );
   }

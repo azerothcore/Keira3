@@ -4,6 +4,7 @@ import { SaiEditorService } from '@keira-shared/modules/sai-editor/sai-editor.se
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { ToastrService } from 'ngx-toastr';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Injectable()
 export class SaiCreatureEditorService extends SaiEditorService {
@@ -11,9 +12,10 @@ export class SaiCreatureEditorService extends SaiEditorService {
   constructor(
     protected handlerService: SaiCreatureHandlerService,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
     protected saiCommentGeneratorService: SaiCommentGeneratorService,
   ) {
-    super(handlerService, queryService, toastrService, saiCommentGeneratorService);
+    super(handlerService, queryService, saveQueryService, toastrService, saiCommentGeneratorService);
   }
 }

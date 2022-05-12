@@ -4,6 +4,7 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SpellDbc, SPELL_DBC_ID, SPELL_DBC_NAME, SPELL_DBC_TABLE } from '@keira-types/spell-dbc.type';
 import { ToastrService } from 'ngx-toastr';
 import { SpellHandlerService } from '../spell-handler.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,8 +14,9 @@ export class SpellDbcService extends SingleRowEditorService<SpellDbc> {
   constructor(
     protected handlerService: SpellHandlerService,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
-    super(SpellDbc, SPELL_DBC_TABLE, SPELL_DBC_ID, SPELL_DBC_NAME, true, handlerService, queryService, toastrService);
+    super(SpellDbc, SPELL_DBC_TABLE, SPELL_DBC_ID, SPELL_DBC_NAME, true, handlerService, queryService, saveQueryService, toastrService);
   }
 }

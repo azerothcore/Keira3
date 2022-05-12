@@ -5,6 +5,7 @@ import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.
 import { SAI_ID_2, SAI_ID_FIELDS, SAI_TABLE, SAI_TYPES, SmartScripts } from '@keira-types/smart-scripts.type';
 import { ToastrService } from 'ngx-toastr';
 import { MysqlQueryService } from '../../services/mysql-query.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Injectable({
   providedIn: 'root',
@@ -19,10 +20,11 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
   constructor(
     protected handlerService: SaiHandlerService,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
     protected saiCommentGeneratorService: SaiCommentGeneratorService,
   ) {
-    super(SmartScripts, SAI_TABLE, SAI_ID_FIELDS, SAI_ID_2, handlerService, queryService, toastrService);
+    super(SmartScripts, SAI_TABLE, SAI_ID_FIELDS, SAI_ID_2, handlerService, queryService, saveQueryService, toastrService);
   }
 
   protected updateFullQuery(): void {

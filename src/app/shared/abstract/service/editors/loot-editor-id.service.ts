@@ -5,12 +5,14 @@ import { Observable } from 'rxjs';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { HandlerService } from '../handlers/handler.service';
 import { MultiRowEditorService } from './multi-row-editor.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 // Extended only by the loot tables that require a template loot id
 export abstract class LootEditorIdService<T extends LootTemplate> extends MultiRowEditorService<T> {
   get entityTemplateTable(): string {
     return this._entityTemplateTable;
   }
+
   get entityTemplateLootField(): string {
     return this._entityTemplateLootField;
   }
@@ -24,9 +26,10 @@ export abstract class LootEditorIdService<T extends LootTemplate> extends MultiR
     protected _entityTemplateLootField: string, // e.g. lootid
     protected handlerService: HandlerService<T>,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
-    super(_entityClass, _entityTable, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, handlerService, queryService, toastrService);
+    super(_entityClass, _entityTable, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, handlerService, queryService, saveQueryService, toastrService);
   }
 
   getLootId(): Observable<{ lootId: number }[]> {

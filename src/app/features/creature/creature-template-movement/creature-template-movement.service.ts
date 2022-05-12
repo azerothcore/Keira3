@@ -8,6 +8,7 @@ import {
 } from '@keira-types/creature-template-movement.type';
 import { ToastrService } from 'ngx-toastr';
 import { CreatureHandlerService } from '../creature-handler.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Injectable()
 export class CreatureTemplateMovementService extends SingleRowEditorService<CreatureTemplateMovement> {
@@ -15,6 +16,7 @@ export class CreatureTemplateMovementService extends SingleRowEditorService<Crea
   constructor(
     protected handlerService: CreatureHandlerService,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -25,6 +27,7 @@ export class CreatureTemplateMovementService extends SingleRowEditorService<Crea
       false,
       handlerService,
       queryService,
+      saveQueryService,
       toastrService,
     );
   }

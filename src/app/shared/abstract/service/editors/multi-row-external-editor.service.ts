@@ -3,6 +3,7 @@ import { ToastrService } from 'ngx-toastr';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { HandlerService } from '../handlers/handler.service';
 import { MultiRowEditorService } from './multi-row-editor.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 // Used where none of the editors table's fields matches with the main entity ID. For example creature_addon (CreatureSpawnAddonService)
 
@@ -14,6 +15,7 @@ export abstract class MultiRowExternalEditorService<T extends TableRow> extends 
     protected _entitySecondIdField: string,
     protected handlerService: HandlerService<T>,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -23,6 +25,7 @@ export abstract class MultiRowExternalEditorService<T extends TableRow> extends 
       _entitySecondIdField,
       handlerService,
       queryService,
+      saveQueryService,
       toastrService,
     );
   }

@@ -10,6 +10,7 @@ import {
 import { PickpocketingLootTemplate, PICKPOCKETING_LOOT_TEMPLATE_TABLE } from '@keira-types/pickpocketing-loot-template.type';
 import { ToastrService } from 'ngx-toastr';
 import { CreatureHandlerService } from '../creature-handler.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Injectable()
 export class PickpocketingLootTemplateService extends LootEditorIdService<PickpocketingLootTemplate> {
@@ -17,6 +18,7 @@ export class PickpocketingLootTemplateService extends LootEditorIdService<Pickpo
   constructor(
     protected handlerService: CreatureHandlerService,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -27,6 +29,7 @@ export class PickpocketingLootTemplateService extends LootEditorIdService<Pickpo
       CREATURE_TEMPLATE_PICKPOCKETING_LOOT_ID,
       handlerService,
       queryService,
+      saveQueryService,
       toastrService,
     );
   }

@@ -9,6 +9,7 @@ import {
 } from '@keira-types/item-enchantment-template.type';
 import { ToastrService } from 'ngx-toastr';
 import { ItemHandlerService } from '../item-handler.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Injectable()
 export class ItemEnchantmentTemplateService extends MultiRowEditorService<ItemEnchantmentTemplate> {
@@ -16,6 +17,7 @@ export class ItemEnchantmentTemplateService extends MultiRowEditorService<ItemEn
   constructor(
     protected handlerService: ItemHandlerService,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -25,6 +27,7 @@ export class ItemEnchantmentTemplateService extends MultiRowEditorService<ItemEn
       ITEM_ENCHANTMENT_TEMPLATE_ID_2,
       handlerService,
       queryService,
+      saveQueryService,
       toastrService,
     );
   }

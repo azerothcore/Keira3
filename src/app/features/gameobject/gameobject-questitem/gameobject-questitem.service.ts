@@ -9,6 +9,7 @@ import {
 } from '@keira-types/gameobject-questitem.type';
 import { ToastrService } from 'ngx-toastr';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Injectable()
 export class GameobjectQuestitemService extends MultiRowEditorService<GameobjectQuestitem> {
@@ -16,6 +17,7 @@ export class GameobjectQuestitemService extends MultiRowEditorService<Gameobject
   constructor(
     protected handlerService: GameobjectHandlerService,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -25,6 +27,7 @@ export class GameobjectQuestitemService extends MultiRowEditorService<Gameobject
       GAMEOBJECT_QUESTITEM_ID_2,
       handlerService,
       queryService,
+      saveQueryService,
       toastrService,
     );
   }

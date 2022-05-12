@@ -5,6 +5,7 @@ import { LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2 } from '@keira-types/loot-template
 import { MailLootTemplate, MAIL_LOOT_TEMPLATE_TABLE } from '@keira-types/mail-loot-template.type';
 import { ToastrService } from 'ngx-toastr';
 import { MailLootHandlerService } from './mail-loot-handler.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Injectable()
 export class MailLootTemplateService extends MultiRowEditorService<MailLootTemplate> {
@@ -12,8 +13,18 @@ export class MailLootTemplateService extends MultiRowEditorService<MailLootTempl
   constructor(
     protected handlerService: MailLootHandlerService,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
-    super(MailLootTemplate, MAIL_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, handlerService, queryService, toastrService);
+    super(
+      MailLootTemplate,
+      MAIL_LOOT_TEMPLATE_TABLE,
+      LOOT_TEMPLATE_ID,
+      LOOT_TEMPLATE_ID_2,
+      handlerService,
+      queryService,
+      saveQueryService,
+      toastrService,
+    );
   }
 }

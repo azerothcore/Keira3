@@ -8,6 +8,7 @@ import {
 } from '@keira-types/gameobject-template-addon.type';
 import { ToastrService } from 'ngx-toastr';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Injectable()
 export class GameobjectTemplateAddonService extends SingleRowEditorService<GameobjectTemplateAddon> {
@@ -15,6 +16,7 @@ export class GameobjectTemplateAddonService extends SingleRowEditorService<Gameo
   constructor(
     protected handlerService: GameobjectHandlerService,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -25,6 +27,7 @@ export class GameobjectTemplateAddonService extends SingleRowEditorService<Gameo
       true,
       handlerService,
       queryService,
+      saveQueryService,
       toastrService,
     );
   }

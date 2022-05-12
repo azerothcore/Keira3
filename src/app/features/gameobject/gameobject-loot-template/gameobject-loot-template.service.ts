@@ -11,6 +11,7 @@ import {
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Injectable()
 export class GameobjectLootTemplateService extends LootEditorIdService<GameobjectLootTemplate> {
@@ -18,6 +19,7 @@ export class GameobjectLootTemplateService extends LootEditorIdService<Gameobjec
   constructor(
     protected handlerService: GameobjectHandlerService,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -28,6 +30,7 @@ export class GameobjectLootTemplateService extends LootEditorIdService<Gameobjec
       GAMEOBJECT_TEMPLATE_LOOT_ID,
       handlerService,
       queryService,
+      saveQueryService,
       toastrService,
     );
   }

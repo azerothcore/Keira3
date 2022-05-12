@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { HandlerService } from '../handlers/handler.service';
 import { MultiRowEditorService } from './multi-row-editor.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extends MultiRowEditorService<T> {
   get entityIdFields(): string[] {
@@ -19,9 +20,19 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
     protected _entitySecondIdField: string,
     protected handlerService: HandlerService<T>,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
-    super(_entityClass, _entityTable, JSON.stringify(_entityIdField), _entitySecondIdField, handlerService, queryService, toastrService);
+    super(
+      _entityClass,
+      _entityTable,
+      JSON.stringify(_entityIdField),
+      _entitySecondIdField,
+      handlerService,
+      queryService,
+      saveQueryService,
+      toastrService,
+    );
   }
 
   protected disableEntityIdField() {}

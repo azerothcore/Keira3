@@ -5,6 +5,7 @@ import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { getNumberOrString } from '../../../utils/helpers';
 import { HandlerService } from '../handlers/handler.service';
 import { EditorService } from './editor.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 export abstract class SingleRowEditorService<T extends TableRow> extends EditorService<T> {
   protected _originalValue: T;
@@ -18,9 +19,10 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     protected isMainEntity: boolean,
     protected handlerService: HandlerService<T>,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
-    super(_entityClass, _entityTable, _entityIdField, handlerService, queryService, toastrService);
+    super(_entityClass, _entityTable, _entityIdField, handlerService, queryService, saveQueryService, toastrService);
     this.initForm();
   }
 
@@ -116,5 +118,6 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     this.setLoadedEntity();
     this.updateFullQuery();
   }
+
   /* ****** */
 }

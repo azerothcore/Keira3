@@ -5,6 +5,7 @@ import { ItemLootTemplate, ITEM_LOOT_TEMPLATE_TABLE } from '@keira-types/item-lo
 import { LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2 } from '@keira-types/loot-template.type';
 import { ToastrService } from 'ngx-toastr';
 import { ItemHandlerService } from '../item-handler.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Injectable()
 export class ItemLootTemplateService extends MultiRowEditorService<ItemLootTemplate> {
@@ -12,8 +13,18 @@ export class ItemLootTemplateService extends MultiRowEditorService<ItemLootTempl
   constructor(
     protected handlerService: ItemHandlerService,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
-    super(ItemLootTemplate, ITEM_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, handlerService, queryService, toastrService);
+    super(
+      ItemLootTemplate,
+      ITEM_LOOT_TEMPLATE_TABLE,
+      LOOT_TEMPLATE_ID,
+      LOOT_TEMPLATE_ID_2,
+      handlerService,
+      queryService,
+      saveQueryService,
+      toastrService,
+    );
   }
 }

@@ -4,6 +4,7 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { NpcTrainer, NPC_TRAINER_ID, NPC_TRAINER_ID_2, NPC_TRAINER_TABLE } from '@keira-types/npc-trainer.type';
 import { ToastrService } from 'ngx-toastr';
 import { CreatureHandlerService } from '../creature-handler.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Injectable()
 export class NpcTrainerService extends MultiRowEditorService<NpcTrainer> {
@@ -11,8 +12,9 @@ export class NpcTrainerService extends MultiRowEditorService<NpcTrainer> {
   constructor(
     protected handlerService: CreatureHandlerService,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
-    super(NpcTrainer, NPC_TRAINER_TABLE, NPC_TRAINER_ID, NPC_TRAINER_ID_2, handlerService, queryService, toastrService);
+    super(NpcTrainer, NPC_TRAINER_TABLE, NPC_TRAINER_ID, NPC_TRAINER_ID_2, handlerService, queryService, saveQueryService, toastrService);
   }
 }

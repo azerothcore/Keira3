@@ -5,6 +5,7 @@ import { CreatureLootTemplate, CREATURE_LOOT_TEMPLATE_TABLE } from '@keira-types
 import { CREATURE_TEMPLATE_ID, CREATURE_TEMPLATE_LOOT_ID, CREATURE_TEMPLATE_TABLE } from '@keira-types/creature-template.type';
 import { ToastrService } from 'ngx-toastr';
 import { CreatureHandlerService } from '../creature-handler.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Injectable()
 export class CreatureLootTemplateService extends LootEditorIdService<CreatureLootTemplate> {
@@ -12,6 +13,7 @@ export class CreatureLootTemplateService extends LootEditorIdService<CreatureLoo
   constructor(
     protected handlerService: CreatureHandlerService,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -22,6 +24,7 @@ export class CreatureLootTemplateService extends LootEditorIdService<CreatureLoo
       CREATURE_TEMPLATE_LOOT_ID,
       handlerService,
       queryService,
+      saveQueryService,
       toastrService,
     );
   }

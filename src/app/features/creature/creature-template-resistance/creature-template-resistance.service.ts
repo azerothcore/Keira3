@@ -9,6 +9,7 @@ import {
 } from '@keira-types/creature-template-resistance.type';
 import { ToastrService } from 'ngx-toastr';
 import { CreatureHandlerService } from '../creature-handler.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Injectable()
 export class CreatureTemplateResistanceService extends MultiRowEditorService<CreatureTemplateResistance> {
@@ -18,6 +19,7 @@ export class CreatureTemplateResistanceService extends MultiRowEditorService<Cre
   constructor(
     protected handlerService: CreatureHandlerService,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -27,6 +29,7 @@ export class CreatureTemplateResistanceService extends MultiRowEditorService<Cre
       CREATURE_TEMPLATE_RESISTANCE_ID_2,
       handlerService,
       queryService,
+      saveQueryService,
       toastrService,
     );
   }

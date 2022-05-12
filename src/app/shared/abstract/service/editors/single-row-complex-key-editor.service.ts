@@ -7,6 +7,7 @@ import { HandlerService } from '../handlers/handler.service';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { getPartial } from '../../../utils/helpers';
 import { MysqlError } from 'mysql';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 export abstract class SingleRowComplexKeyEditorService<T extends TableRow> extends SingleRowEditorService<T> {
   get entityIdFields(): string[] {
@@ -22,6 +23,7 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
     protected isMainEntity: boolean,
     protected handlerService: HandlerService<T>,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -32,6 +34,7 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
       isMainEntity,
       handlerService,
       queryService,
+      saveQueryService,
       toastrService,
     );
   }
@@ -126,5 +129,6 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
     this.setLoadedEntity();
     this.updateFullQuery();
   }
+
   /* ****** */
 }

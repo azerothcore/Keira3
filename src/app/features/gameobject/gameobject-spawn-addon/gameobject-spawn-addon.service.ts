@@ -4,6 +4,7 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { GameobjectSpawnAddon, GAMEOBJECT_SPAWN_ADDON_ID_2, GAMEOBJECT_SPAWN_ADDON_TABLE } from '@keira-types/gameobject-spawn-addon.type';
 import { ToastrService } from 'ngx-toastr';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Injectable()
 export class GameobjectSpawnAddonService extends MultiRowExternalEditorService<GameobjectSpawnAddon> {
@@ -11,9 +12,18 @@ export class GameobjectSpawnAddonService extends MultiRowExternalEditorService<G
   constructor(
     protected handlerService: GameobjectHandlerService,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
-    super(GameobjectSpawnAddon, GAMEOBJECT_SPAWN_ADDON_TABLE, GAMEOBJECT_SPAWN_ADDON_ID_2, handlerService, queryService, toastrService);
+    super(
+      GameobjectSpawnAddon,
+      GAMEOBJECT_SPAWN_ADDON_TABLE,
+      GAMEOBJECT_SPAWN_ADDON_ID_2,
+      handlerService,
+      queryService,
+      saveQueryService,
+      toastrService,
+    );
   }
 
   selectQuery(id: string | number) {

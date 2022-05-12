@@ -11,6 +11,7 @@ import {
 import { FieldDefinition } from '@keira-types/general';
 import { ToastrService } from 'ngx-toastr';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Injectable()
 export class GameobjectTemplateService extends SingleRowEditorService<GameobjectTemplate> {
@@ -18,6 +19,7 @@ export class GameobjectTemplateService extends SingleRowEditorService<Gameobject
   constructor(
     protected handlerService: GameobjectHandlerService,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -28,6 +30,7 @@ export class GameobjectTemplateService extends SingleRowEditorService<Gameobject
       true,
       handlerService,
       queryService,
+      saveQueryService,
       toastrService,
     );
   }

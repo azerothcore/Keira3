@@ -4,6 +4,7 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { GossipMenu, GOSSIP_MENU_ID, GOSSIP_MENU_ID_2, GOSSIP_MENU_TABLE } from '@keira-types/gossip-menu.type';
 import { ToastrService } from 'ngx-toastr';
 import { GossipHandlerService } from '../gossip-handler.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Injectable()
 export class GossipMenuService extends MultiRowEditorService<GossipMenu> {
@@ -11,8 +12,9 @@ export class GossipMenuService extends MultiRowEditorService<GossipMenu> {
   constructor(
     protected handlerService: GossipHandlerService,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
-    super(GossipMenu, GOSSIP_MENU_TABLE, GOSSIP_MENU_ID, GOSSIP_MENU_ID_2, handlerService, queryService, toastrService);
+    super(GossipMenu, GOSSIP_MENU_TABLE, GOSSIP_MENU_ID, GOSSIP_MENU_ID_2, handlerService, queryService, saveQueryService, toastrService);
   }
 }

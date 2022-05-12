@@ -4,6 +4,7 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { ItemTemplate, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_NAME, ITEM_TEMPLATE_TABLE } from '@keira-types/item-template.type';
 import { ToastrService } from 'ngx-toastr';
 import { ItemHandlerService } from '../item-handler.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Injectable()
 export class ItemTemplateService extends SingleRowEditorService<ItemTemplate> {
@@ -11,8 +12,19 @@ export class ItemTemplateService extends SingleRowEditorService<ItemTemplate> {
   constructor(
     protected handlerService: ItemHandlerService,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
-    super(ItemTemplate, ITEM_TEMPLATE_TABLE, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_NAME, true, handlerService, queryService, toastrService);
+    super(
+      ItemTemplate,
+      ITEM_TEMPLATE_TABLE,
+      ITEM_TEMPLATE_ID,
+      ITEM_TEMPLATE_NAME,
+      true,
+      handlerService,
+      queryService,
+      saveQueryService,
+      toastrService,
+    );
   }
 }

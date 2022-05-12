@@ -5,6 +5,7 @@ import { LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2 } from '@keira-types/loot-template
 import { ProspectingLootTemplate, PROSPECTING_LOOT_TEMPLATE_TABLE } from '@keira-types/prospecting-loot-template.type';
 import { ToastrService } from 'ngx-toastr';
 import { ItemHandlerService } from '../item-handler.service';
+import { SaveQueryService } from '@keira-shared/services/save-query.service';
 
 @Injectable()
 export class ProspectingLootTemplateService extends MultiRowEditorService<ProspectingLootTemplate> {
@@ -12,6 +13,7 @@ export class ProspectingLootTemplateService extends MultiRowEditorService<Prospe
   constructor(
     protected handlerService: ItemHandlerService,
     public readonly queryService: MysqlQueryService,
+    public readonly saveQueryService: SaveQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -21,6 +23,7 @@ export class ProspectingLootTemplateService extends MultiRowEditorService<Prospe
       LOOT_TEMPLATE_ID_2,
       handlerService,
       queryService,
+      saveQueryService,
       toastrService,
     );
   }
