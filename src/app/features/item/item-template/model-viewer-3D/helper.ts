@@ -1,16 +1,17 @@
+import { AppConfig } from '../../../../../environments/environment';
 import {
   CHARACTER_PART,
   CONTENT_PATH,
-  DisplayInfo,
+  // DisplayInfo,
   GENDER,
   Gender,
   NOT_DISPLAYED_SLOTS,
   RACES,
-  wotlkToShadowlandSlots,
+  // wotlkToShadowlandSlots,
   WoWModel,
 } from './viewer.model';
 
-declare var ZamModelViewer: any;
+declare const ZamModelViewer: any;
 
 /**
  * Returns a 2 dimensional list the inner list contains on first position the item slot, the second the item
@@ -18,20 +19,20 @@ declare var ZamModelViewer: any;
  * @param {*[{item: {entry: number, displayid: number}, transmog: {entry: number, displayid: number}, slot: number}]} equipments
  * @returns {Promise<int[]>}
  */
-async function findItemsInEquipments(equipments: any[]): Promise<number[][]> {
-  for (const equipment of equipments) {
-    if (NOT_DISPLAYED_SLOTS.includes(equipment.slot)) {
-      continue;
-    }
+// async function findItemsInEquipments(equipments: any[]): Promise<number[][]> {
+//   for (const equipment of equipments) {
+//     if (NOT_DISPLAYED_SLOTS.includes(equipment.slot)) {
+//       continue;
+//     }
 
-    const displayedItem = Object.keys(equipment.transmog).length !== 0 ? equipment.transmog : equipment.item;
-    const displaySlot = await getDisplaySlot(displayedItem.entry, equipment.slot, displayedItem.displayid);
-    equipment.displaySlot = displaySlot.displaySlot;
-    equipment.displayId = displaySlot.displayId;
-    Object.assign(displaySlot, equipment);
-  }
-  return equipments.filter((e: any) => e.displaySlot).map((e: any) => [e.displaySlot, e.displayId]);
-}
+//     const displayedItem = Object.keys(equipment.transmog).length !== 0 ? equipment.transmog : equipment.item;
+//     const displaySlot = await getDisplaySlot(displayedItem.entry, equipment.slot, displayedItem.displayid);
+//     equipment.displaySlot = displaySlot.displaySlot;
+//     equipment.displayId = displaySlot.displayId;
+//     Object.assign(displaySlot, equipment);
+//   }
+//   return equipments.filter((e: any) => e.displaySlot).map((e: any) => [e.displaySlot, e.displayId]);
+// }
 
 async function findRaceGenderOptions(race: number, gender: Gender): Promise<any> {
   const options = await fetch(`${CONTENT_PATH}meta/charactercustomization2/${race}_${gender}.json`).then((response) => response.json());
@@ -42,35 +43,35 @@ async function findRaceGenderOptions(race: number, gender: Gender): Promise<any>
   return options;
 }
 
-async function getDisplaySlot(item: number, slot: number, displayId: number): Promise<DisplayInfo> {
-  const displayInfo: DisplayInfo = {
-    displaySlot: slot,
-    displayId: displayId,
-  };
+// async function getDisplaySlot(item: number, slot: number, displayId: number): Promise<DisplayInfo> {
+//   const displayInfo: DisplayInfo = {
+//     displaySlot: slot,
+//     displayId: displayId,
+//   };
 
-  try {
-    await fetch(`${CONTENT_PATH}meta/armor/${slot}/${displayId}.json`).then((response) => response.json());
+//   try {
+//     await fetch(`${CONTENT_PATH}meta/armor/${slot}/${displayId}.json`).then((response) => response.json());
 
-    return displayInfo;
-  } catch (e) {
-    const resp = await fetch(`https://wotlk.murlocvillage.com/api/items/${item}/${displayId}`).then((response) => response.json());
-    const res = resp.data ? resp.data : resp;
+//     return displayInfo;
+//   } catch (e) {
+//     const resp = await fetch(`https://wotlk.murlocvillage.com/api/items/${item}/${displayId}`).then((response) => response.json());
+//     const res = resp.data ? resp.data : resp;
 
-    if (res.newDisplayId !== displayId) {
-      displayInfo.displayId = res.newDisplayId;
-      return displayInfo;
-    }
-  }
+//     if (res.newDisplayId !== displayId) {
+//       displayInfo.displayId = res.newDisplayId;
+//       return displayInfo;
+//     }
+//   }
 
-  const retSlot = wotlkToShadowlandSlots[slot];
-  if (!retSlot) {
-    console.warn(`Item: ${item} display: ${displayId} or slot: ${slot} not found for `);
-  } else {
-    displayInfo.displaySlot = retSlot;
-  }
+//   const retSlot = wotlkToShadowlandSlots[slot];
+//   if (!retSlot) {
+//     console.warn(`Item: ${item} display: ${displayId} or slot: ${slot} not found for `);
+//   } else {
+//     displayInfo.displaySlot = retSlot;
+//   }
 
-  return displayInfo;
-}
+//   return displayInfo;
+// }
 
 /**
  *
@@ -160,16 +161,12 @@ export async function generateModels(aspect: number, containerSelector: string, 
 export function getShadowlandDisplayId(wotlkDisplayId: number): Promise<{ displayId: number; displayType: number }> {
   return new Promise(function (resolve, reject) {
     const sqlite = window.require('sqlite3');
-    const db = new sqlite.Database(
-      'src/app/features/item/item-template/model-viewer-3D/item_display.db' /* AppConfig.sqlitePath */,
-      sqlite.OPEN_READONLY,
-      (error) => {
-        if (error) {
-          console.log(`Error when opening sqlite database at DISPLAY ID`);
-          console.error(error);
-        }
-      },
-    );
+    const db = new sqlite.Database(AppConfig.sqliteItem3dPath, sqlite.OPEN_READONLY, (error) => {
+      if (error) {
+        console.log(`Error when opening sqlite database at DISPLAY ID`);
+        console.error(error);
+      }
+    });
 
     if (db) {
       return db.all(
@@ -191,4 +188,11 @@ export function getShadowlandDisplayId(wotlkDisplayId: number): Promise<{ displa
       console.error(`sqite db was not defined when trying to get the shadow lands display id`);
     }
   });
+}
+
+export function resetModel3dElement(): void {
+  const modelElement = document.querySelector('#model_3d1');
+  if (modelElement) {
+    modelElement.innerHTML = '';
+  }
 }

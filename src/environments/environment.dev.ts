@@ -7,4 +7,5 @@ export const AppConfig = {
   production: false,
   environment: 'DEV',
   sqlitePath: 'src/assets/sqlite.db',
+  sqliteItem3dPath: 'src/assets/item_display.db',
 };

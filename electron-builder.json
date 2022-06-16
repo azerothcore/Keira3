@@ -1,6 +1,6 @@
 {
   "productName": "Keira3",
-  "asarUnpack": ["dist/assets/sqlite.db"],
+  "asarUnpack": ["dist/assets/sqlite.db", "dist/assets/item_display.db"],
   "directories": {
     "output": "release/"
   },

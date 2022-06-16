@@ -23,13 +23,11 @@ import { PVP_RANK } from '@keira-shared/constants/options/item-honorrank';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { ItemTemplate } from '@keira-types/item-template.type';
 import * as jquery from 'jquery';
-import { BehaviorSubject, combineLatestWith, debounceTime, distinctUntilChanged, filter, map } from 'rxjs';
+import { BehaviorSubject, combineLatestWith, debounceTime, distinctUntilChanged, filter } from 'rxjs';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemPreviewService } from './item-preview.service';
 import { ItemTemplateService } from './item-template.service';
-import { generateModels, getShadowlandDisplayId } from './model-viewer-3D/helper';
-
-declare var WH: any;
+import { generateModels, getShadowlandDisplayId, resetModel3dElement } from './model-viewer-3D/helper';
 
 @Component({
   selector: 'keira-item-template',
@@ -77,7 +75,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
 
   public itemPreview: SafeHtml = this.sanitizer.bypassSecurityTrustHtml('loading...');
 
-  private async loadItemPreview() {
+  private async loadItemPreview(): Promise<void> {
     this.itemPreview = this.sanitizer.bypassSecurityTrustHtml(
       await this.itemPreviewService.calculatePreview(this.editorService.form.getRawValue()),
     );
@@ -85,6 +83,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
 
   ngOnInit(): void {
     super.ngOnInit();
+    resetModel3dElement();
     this.loadItemPreview();
 
     this.subscriptions.push(
@@ -105,11 +104,11 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
         .pipe(
           filter((loadedViewr) => loadedViewr),
           combineLatestWith(this.editorService.form.get('entry').valueChanges),
-          filter(([_, entry]) => !!entry),
+          filter(([, entry]) => !!entry),
         )
-        .subscribe(([_, entry]) => {
-          const inventoryType = this.editorService.form.get('inventoryType').value;
-          this.experiment(entry, inventoryType);
+        .subscribe(([, entry]) => {
+          // const inventoryType = this.editorService.form.get('inventoryType').value;
+          this.experiment(entry);
         }),
     );
 
@@ -118,18 +117,18 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
         .pipe(
           filter((loadedViewr) => loadedViewr),
           combineLatestWith(this.editorService.form.get('displayid').valueChanges),
-          filter(([_, displayId]) => !!displayId && !isNaN(displayId)),
+          filter(([, displayId]) => !!displayId && !isNaN(displayId)),
         )
-        .subscribe(([_, displayId]) => {
+        .subscribe(([, displayId]) => {
           this.subscriptions.push(
             this.queryService
               .query(`SELECT entry, inventoryType FROM item_template WHERE displayid=${displayId} LIMIT 1`)
               .subscribe((data) => {
                 if (data.length && 'entry' in data[0]) {
                   const entry = data[0].entry;
-                  const inventoryType = data[0].inventoryType;
+                  // const inventoryType = data[0].inventoryType;
                   if (!!entry) {
-                    this.experiment(Number(entry), Number(inventoryType));
+                    this.experiment(Number(entry));
                   }
                 }
               }),
@@ -138,13 +137,9 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     );
   }
 
-  public experiment(itemEntry: number, inventoryType: number): void {
-    const modelElement = document.querySelector('#model_3d1');
-    if (modelElement) {
-      modelElement.innerHTML = '';
-    }
-
+  experiment(itemEntry: number): void {
     getShadowlandDisplayId(itemEntry).then((displayInfo) => {
+      resetModel3dElement();
       generateModels(1, `#model_3d1`, {
         type: 1, // inventoryType,
         id: displayInfo.displayId,
