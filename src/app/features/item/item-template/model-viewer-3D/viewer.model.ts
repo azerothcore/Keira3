@@ -13,7 +13,7 @@ const enum SLOTS {
   FINGER2 = 12,
   TRINKET1 = 13,
   TRINKET2 = 14,
-  CHEST = 20,
+  CHEST = 20, // Robe/Chest
   MAIN_HAND = 21,
   OFF_HAND = 22,
 }

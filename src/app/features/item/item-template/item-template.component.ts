@@ -81,11 +81,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     );
   }
 
-  ngOnInit(): void {
-    super.ngOnInit();
-    resetModel3dElement();
-    this.loadItemPreview();
-
+  private loadItemPreviewDynamic(): void {
     this.subscriptions.push(
       this.editorService.form.valueChanges
         .pipe(
@@ -98,7 +94,46 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
         )
         .subscribe(this.loadItemPreview.bind(this)),
     );
+  }
 
+  ngOnInit(): void {
+    super.ngOnInit();
+
+    this.loadItemPreview();
+    this.loadItemPreviewDynamic();
+
+    resetModel3dElement();
+    this.viewerDynamic();
+  }
+
+  experiment(itemEntry: number): void {
+    getShadowlandDisplayId(itemEntry).then((displayInfo) => {
+      resetModel3dElement();
+      generateModels(1, `#model_3d1`, {
+        type: 1, // inventoryType,
+        id: displayInfo.displayId,
+      });
+    });
+  }
+
+  private setupViewer3D(): void {
+    window['jQuery'] = jquery;
+    window['$'] = jquery;
+
+    if (!window['WH']) {
+      window['WH'] = {};
+      window['WH'].debug = () => {};
+      window['WH'].defaultAnimation = `Stand`;
+    }
+
+    const loadedViewer$ = this.loadedViewer$;
+
+    jquery.getScript('https://wow.zamimg.com/modelviewer/live/viewer/viewer.min.js', function () {
+      loadedViewer$.next(true);
+    });
+  }
+
+  private viewerDynamic(): void {
     this.subscriptions.push(
       this.loadedViewer$
         .pipe(
@@ -135,32 +170,5 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
           );
         }),
     );
-  }
-
-  experiment(itemEntry: number): void {
-    getShadowlandDisplayId(itemEntry).then((displayInfo) => {
-      resetModel3dElement();
-      generateModels(1, `#model_3d1`, {
-        type: 1, // inventoryType,
-        id: displayInfo.displayId,
-      });
-    });
-  }
-
-  private setupViewer3D(): void {
-    window['jQuery'] = jquery;
-    window['$'] = jquery;
-
-    if (!window['WH']) {
-      window['WH'] = {};
-      window['WH'].debug = () => {};
-      window['WH'].defaultAnimation = `Stand`;
-    }
-
-    const loadedViewer$ = this.loadedViewer$;
-
-    jquery.getScript('https://wow.zamimg.com/modelviewer/live/viewer/viewer.min.js', function () {
-      loadedViewer$.next(true);
-    });
   }
 }
