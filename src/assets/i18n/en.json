@@ -16,6 +16,7 @@
     "YES": "Yes",
     "NO": "No"
   },
+  "SEARCH": "Search",
   "DOWNLOAD": "Download",
   "NEW_VERSION": "Psst...There is a newer version of Keira!",
   "CONNECTION_WINDOW": {
@@ -110,7 +111,12 @@
     "CONDITIONS": {
       "TITLE": "Conditions",
       "SELECT_CONDITIONS": "Select Conditions",
-      "CONDITIONS": "Conditions"
+      "CONDITIONS": "Conditions",
+      "SOURCE_TYPE": "Source Type",
+      "SOURCE_GROUP": "Source Group",
+      "SOURCE_ENTRY:": "Source Entry",
+      "LIMIT": "Limit",
+      "CREATE_NEW": "Create new"
     },
     "SMARTAI": {
       "TITLE": "SmartAI",

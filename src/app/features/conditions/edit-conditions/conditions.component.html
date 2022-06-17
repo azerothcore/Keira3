@@ -14,7 +14,9 @@
       <div class="content-block">
         <span class="category-title">Condition source</span>
         <div class="form-group row">
-          <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="SourceTypeOrReferenceId">Source Type:</label>
+          <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="SourceTypeOrReferenceId"
+            >{{ 'CONDITIONS.SOURCE_TYPE' | translate }}:</label
+          >
           <div class="col-sm-8 col-md-9 col-lg-10">
             <select [formControlName]="'SourceTypeOrReferenceId'" class="form-control form-control-sm" id="SourceTypeOrReferenceId">
               <option *ngFor="let key of CONDITION_SOURCE_TYPES_KEYS" [ngValue]="key" [label]="CONDITION_SOURCE_TYPES[key]"></option>
