@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import '../polyfills';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 import { UiSwitchModule } from 'ngx-ui-switch';
 import { uiSwitchConfig } from '@keira-config/ui-switch.config';
@@ -30,6 +30,13 @@ import { SqlEditorModule } from './features/sql-editor/sql-editor.module';
 import { OtherLootsModule } from './features/other-loots/other-loots.module';
 import { SpellModule } from './features/spell/spell.module';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+
+// AoT requires an exported function for factories
+export function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
 
 @NgModule({
   declarations: [AppComponent],
@@ -43,6 +50,14 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
     TooltipModule.forRoot(),
     ToastrModule.forRoot(toastrConfig),
     UiSwitchModule.forRoot(uiSwitchConfig),
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: createTranslateLoader,
+        deps: [HttpClient],
+      },
+      defaultLanguage: 'it',
+    }),
     /* Misc */
     AppRoutingModule,
     ConnectionWindowModule,

@@ -24,7 +24,7 @@ export class AppComponent extends SubscriptionHandler implements OnInit {
     public toastrService: ToastrService,
     private sqliteQueryService: SqliteQueryService,
     private electronService: ElectronService,
-    private http: HttpClient,
+    private http: HttpClient, // private readonly translateService: TranslateService,
   ) {
     super();
   }

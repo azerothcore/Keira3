@@ -4,6 +4,6 @@
 <div id="sqlite-e2e-test" [attr.e2e]="sqliteResult?.name" style="display: none"></div>
 
 <div class="newer-version-alert text-center" *ngIf="showNewerVersionAlert">
-  <span>Psst...There is a newer version of Keira!</span>
-  <a class="btn btn-secondary btn-sm ms-2" [href]="KEIRA3_REPO_URL + '/releases'" target="_blank">Download</a>
+  <span>{{ 'NEW_VERSION' | translate }}</span>
+  <a class="btn btn-secondary btn-sm ms-2" [href]="KEIRA3_REPO_URL + '/releases'" target="_blank">{{ 'DOWNLOAD' | translate }}</a>
 </div>

@@ -1,0 +1,29 @@
+{
+  "DOWNLOAD": "Download",
+  "NEW_VERSION": "Psst...There is a newer version of Keira!",
+  "SIDEBAR": {
+    "DASHBOARD": "Dashboard",
+    "SQL_EDITOR": "SQL Editor",
+    "COLLAPSE_ALL": "Collapse All",
+    "CREATURE": {
+      "TITLE": "Creatura",
+      "SELECT_CREATURE": "Seleziona Creature",
+      "CREATURE_TEMPLATE": "Template Creature",
+      "TEMPLATE_ADDON": "Template Addon",
+      "TEMPLATE_RESISTANCE": "Template Resistenza",
+      "TEMPLATE_SPELL": "Template Spell",
+      "TEMPLATE_MOVEMENT": "Template Movimento",
+      "ONKILL_REPUTATION": "Onkill Reputation",
+      "EQUIP_TEMPLATE": "Equip Template",
+      "VENDOR": "Vendor",
+      "TRAINER": "Trainer",
+      "QUEST_ITEM": "Quest Item",
+      "CREATURE_LOOT": "Creature Loot",
+      "PICKPOCKETING_LOOT": "Pickpocketing Loot",
+      "SKINNING_LOOT": "Skinning Loot",
+      "SPAWN": "Spawn",
+      "SPAWN ADDON": "Spawn Addon",
+      "SMARTAI": "SmartAI"
+    }
+  }
+}
