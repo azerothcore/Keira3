@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { ModalConfirmModule } from '@keira-shared/modules/modal-confirm/modal-confirm.module';
+import { SwitchLanguageModule } from '@keira-shared/modules/switch-language/switch-language.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -24,7 +25,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     ModalConfirmModule,
     TooltipModule,
     TranslateModule,
-    // SwitchLanguageModule,
+    SwitchLanguageModule,
   ],
   exports: [SidebarComponent],
   providers: [{ provide: PERFECT_SCROLLBAR_CONFIG, useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG }],

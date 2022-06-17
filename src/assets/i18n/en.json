@@ -12,9 +12,13 @@
     "GERMAN": "German",
     "POLISH": "Polish"
   },
+  "MODAL": {
+    "YES": "Yes",
+    "NO": "No"
+  },
   "DOWNLOAD": "Download",
   "NEW_VERSION": "Psst...There is a newer version of Keira!",
-  "MAIN_WINDOW": {
+  "CONNECTION_WINDOW": {
     "HOST": "Host",
     "PORT": "Port",
     "USERNAME": "Username",
@@ -23,12 +27,16 @@
     "SAVE_PASSWORD": "Save password",
     "LOAD_RECENT": "Load recent",
     "CLEAR_ALL": "Clear all",
-    "CONNECT": "Connect"
+    "CONNECT": "Connect",
+    "CREATED_BY": "Created by"
   },
   "SIDEBAR": {
     "DASHBOARD": "Dashboard",
     "SQL_EDITOR": "SQL Editor",
     "COLLAPSE_ALL": "Collapse All",
+    "UNSAVED_CHANGES": "Unsaved changes",
+    "DISCONNECT": "Disconnect",
+    "MODAL_DISCONNECT": "Are you sure you want to disconnect?",
     "CREATURE": {
       "TITLE": "Creature",
       "SELECT_CREATURE": "Select Creature",
@@ -48,6 +56,72 @@
       "SPAWN": "Spawn",
       "SPAWN ADDON": "Spawn Addon",
       "SMARTAI": "SmartAI"
+    },
+    "QUEST": {
+      "TITLE": "Quest",
+      "SELECT_QUEST": "Select Quest",
+      "QUEST_TEMPLATE": "Quest Template",
+      "QUEST_TEMPLATE_ADDON": "Quest Template Addon",
+      "QUEST_OFFER_REWARD": "Quest Offer Reward",
+      "QUEST_REQUEST_ITEMS": "Quest Request Items",
+      "CREATURE_QUESTSTARTER": "Creature Queststarter",
+      "CREATURE_QUESTENDER": "Creature Questender",
+      "GAMEOBJECT_QUESTSTARTER": "Gameobject Queststarter",
+      "GAMEOBJECT_QUESTENDER": "Gameobject Questender"
+    },
+    "GAME_OBJECT": {
+      "TITLE": "GameObject",
+      "SELECT_GAMEOBJECT": "Select Gameobject",
+      "GAMEOBJECT_TEMPLATE": "Gameobject Template",
+      "TEMPLATE_ADDON": "Template Addon",
+      "QUEST_ITEMS": "Quest Items",
+      "GAMEOBJECT_LOOT": "Gameobject Loot",
+      "SPAWN": "Spawn",
+      "SPAWN_ADDON": "Spawn Addon",
+      "SMART_AI": "SmartAI"
+    },
+    "ITEM": {
+      "TITLE": "Item",
+      "SELECT_ITEM": "Select Item",
+      "ITEM_TEMPLATE": "Item Template",
+      "ENCHANTMENT_TEMPLATE": "Enchantment Template",
+      "ITEM_LOOT": "Item Loot",
+      "DISENCHANT_LOOT": "Disenchant Loot",
+      "PROSPECTING_LOOT": "Prospecting Loot",
+      "MILLING_LOOT": "Milling Loot"
+    },
+    "OTHER_LOOTS": {
+      "TITLE": "Other Loots",
+      "SELECT_REFERENCE_LOOT": "Select Reference Loot",
+      "REFERENCE_LOOT_TEMPLATE": "Reference Loot Template",
+      "SELECT_SPELL_LOOT": "Select Spell Loot",
+      "SPELL_LOOT_TEMPLATE": "Spell Loot Template",
+      "SELECT_FISHING_LOOT": "Select Fishing Loot",
+      "FISHING_LOOT_TEMPLATE": "Fishing Loot Template",
+      "SELECT_MAIL_LOOT": "Select Mail Loot",
+      "MAIL_LOOT_TEMPLATE": "Mail Loot Template"
+    },
+    "GOSSIP": {
+      "TITLE": "Gossip",
+      "SELECT_GOSSIP_MENU": "Select Gossip Menu",
+      "GOSSIP_MENU": "Gossip Menu",
+      "GOSSIP_MENU_OPTION": "Gossip Menu Option"
+    },
+    "CONDITIONS": {
+      "TITLE": "Conditions",
+      "SELECT_CONDITIONS": "Select Conditions",
+      "CONDITIONS": "Conditions"
+    },
+    "SMARTAI": {
+      "TITLE": "SmartAI",
+      "SEARCH_BY_SAI": "Search by existing SAI",
+      "SEARCH_BY_ENTITY": "Search by entity",
+      "EDITOR": "SmartAI editor"
+    },
+    "SPELL_DBC_OVERRIDES": {
+      "TITLE": "Spell DBC overrides",
+      "SEARCH_SPELL": "Search Spell",
+      "SPELL_DBC_EDITOR": "Spell DBC editor"
     }
   }
 }
