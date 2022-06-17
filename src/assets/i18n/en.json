@@ -1,6 +1,30 @@
 {
+  "LANGUAGES": {
+    "ENGLISH": "English",
+    "SPANISH": "Spanish",
+    "ITALIAN": "Italian",
+    "CHINESE": "Chinese",
+    "RUSSIAN": "Russian",
+    "DUTCH": "Dutch",
+    "FRENCH": "French",
+    "GREEK": "Greek",
+    "SWEDEN": "Sweden",
+    "GERMAN": "German",
+    "POLISH": "Polish"
+  },
   "DOWNLOAD": "Download",
   "NEW_VERSION": "Psst...There is a newer version of Keira!",
+  "MAIN_WINDOW": {
+    "HOST": "Host",
+    "PORT": "Port",
+    "USERNAME": "Username",
+    "PASSWORD": "Password",
+    "DATABASE": "Database",
+    "SAVE_PASSWORD": "Save password",
+    "LOAD_RECENT": "Load recent",
+    "CLEAR_ALL": "Clear all",
+    "CONNECT": "Connect"
+  },
   "SIDEBAR": {
     "DASHBOARD": "Dashboard",
     "SQL_EDITOR": "SQL Editor",

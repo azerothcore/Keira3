@@ -8,31 +8,31 @@
       <form [formGroup]="form">
         <div class="form-group">
           <div class="input-group-prepend">
-            <span class="input-group-text"><i class="fas fa-server"></i>Host</span>
+            <span class="input-group-text"><i class="fas fa-server"></i>{{ 'MAIN_WINDOW.HOST' | translate }}</span>
           </div>
           <input [formControlName]="'host'" class="form-control" id="host" />
         </div>
         <div class="form-group">
           <div class="input-group-prepend">
-            <span class="input-group-text"><i class="fas fa-network-wired"></i>Port</span>
+            <span class="input-group-text"><i class="fas fa-network-wired"></i>{{ 'MAIN_WINDOW.PORT' | translate }}</span>
           </div>
           <input [formControlName]="'port'" type="number" class="form-control" id="port" />
         </div>
         <div class="form-group">
           <div class="input-group-prepend">
-            <span class="input-group-text"><i class="fas fa-user"></i>Username</span>
+            <span class="input-group-text"><i class="fas fa-user"></i>{{ 'MAIN_WINDOW.USERNAME' | translate }}</span>
           </div>
           <input [formControlName]="'user'" class="form-control" id="user" />
         </div>
         <div class="form-group">
           <div class="input-group-prepend">
-            <span class="input-group-text"><i class="fas fa-key"></i>Password</span>
+            <span class="input-group-text"><i class="fas fa-key"></i>{{ 'MAIN_WINDOW.PASSWORD' | translate }}</span>
           </div>
           <input [formControlName]="'password'" type="password" class="form-control" id="password" />
         </div>
         <div class="form-group">
           <div class="input-group-prepend">
-            <span class="input-group-text"><i class="fas fa-database"></i>Database</span>
+            <span class="input-group-text"><i class="fas fa-database"></i>{{ 'MAIN_WINDOW.DATABASE' | translate }}</span>
           </div>
           <input [formControlName]="'database'" class="form-control" id="database" />
         </div>
@@ -47,18 +47,18 @@
                   [(ngModel)]="savePassword"
                   [ngModelOptions]="{ standalone: true }"
                 />
-                <label class="form-check-label" for="save-password"> Save password </label>
+                <label class="form-check-label" for="save-password"> {{ 'MAIN_WINDOW.SAVE_PASSWORD' | translate }} </label>
               </div>
             </div>
             <div class="col">
               <div class="btn-group" id="load-recent" dropdown [dropup]="true" [isDisabled]="isRecentDropdownDisabled">
                 <button dropdownToggle type="button" class="btn btn-sm btn-primary dropdown-toggle">
-                  <i class="fas fa-history"></i> Load recent <span class="caret"></span>
+                  <i class="fas fa-history"></i> {{ 'MAIN_WINDOW.LOAD_RECENT' | translate }} <span class="caret"></span>
                 </button>
                 <ul *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
                   <li role="menuitem">
                     <a class="dropdown-item" href="#" (click)="removeAllConfigs()" id="clear-all"
-                      ><i class="fa fa-trash-alt"></i> Clear all</a
+                      ><i class="fa fa-trash-alt"></i> {{ 'MAIN_WINDOW.CLEAR_ALL' | translate }}</a
                     >
                   </li>
                   <li class="divider dropdown-divider"></li>
@@ -72,7 +72,7 @@
             </div>
           </div>
         </div>
-        <button class="btn btn-primary connect-button" (click)="onConnect()">Connect</button>
+        <button class="btn btn-primary connect-button" (click)="onConnect()">{{ 'MAIN_WINDOW.CONNECT' | translate }}</button>
       </form>
 
       <div class="login-error-box">
@@ -85,5 +85,7 @@
       Created by <a href="https://github.com/FrancescoBorzi" target="_blank">Shin</a> &&
       <a href="https://github.com/Helias" target="_blank">Helias</a>
     </div>
+
+    <!--     <keira3-switch-language [longVersion]="false"></keira3-switch-language> -->
   </div>
 </div>

@@ -7,7 +7,7 @@
 
       <div class="sidebar-profile">
         <div class="user-pic">
-          <img class="img-responsive img-rounded" [src]="'assets/img/ac.png'" alt="User picture" />
+          <img class="img-responsive img-rounded" src="assets/img/ac.png" alt="User picture" />
         </div>
         <div class="user-info" *ngIf="mysqlService.config">
           <span class="db-user">
@@ -26,6 +26,9 @@
           <span class="user-status">
             <i class="fa fa-circle connection-status" [ngClass]="mysqlService.getConnectionState()"></i>
             <span>{{ mysqlService.getConnectionState() | titlecase }}</span>
+          </span>
+          <span>
+            <!-- <keira3-switch-language></keira3-switch-language> -->
           </span>
           <span>
             <keira-logout-btn></keira-logout-btn>
@@ -76,37 +79,37 @@
                   <ng-container *ngIf="!creatureHandlerService.isNew">
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template-addon'">
-                        {{ 'SIDERBAR.CREATURE.TEMPLATE_ADDON' | translate }}
+                        {{ 'SIDEBAR.CREATURE.TEMPLATE_ADDON' | translate }}
                         <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureTemplateAddonUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template-resistance'">
-                        {{ 'SIDERBAR.CREATURE.TEMPLATE_RESISTANCE' | translate }}
+                        {{ 'SIDEBAR.CREATURE.TEMPLATE_RESISTANCE' | translate }}
                         <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureTemplateResistanceUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template-spell'">
-                        {{ 'SIDERBAR.CREATURE.TEMPLATE_SPELL' | translate }}
+                        {{ 'SIDEBAR.CREATURE.TEMPLATE_SPELL' | translate }}
                         <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureTemplateSpellUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template-movement'">
-                        {{ 'SIDERBAR.CREATURE.TEMPLATE_MOVEMENT' | translate }}
+                        {{ 'SIDEBAR.CREATURE.TEMPLATE_MOVEMENT' | translate }}
                         <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureTemplateMovementUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-onkill-reputation'">
-                        {{ 'SIDERBAR.CREATURE.ONKILL_REPUTATION' | translate }}
+                        {{ 'SIDEBAR.CREATURE.ONKILL_REPUTATION' | translate }}
                         <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureOnkillReputationUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-equip-template'">
-                        {{ 'SIDERBAR.CREATURE.EQUIP_TEMPLATE' | translate }}
+                        {{ 'SIDEBAR.CREATURE.EQUIP_TEMPLATE' | translate }}
                         <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureEquipTemplateUnsaved"></keira-unsaved-icon>
                       </a>
                     </li>

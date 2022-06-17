@@ -1,0 +1,35 @@
+<select class="btn btn-sm my-1" (change)="setLanguage($event)">
+  <option value="en">
+    🇬🇧 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.ENGLISH' | translate }}</span>
+  </option>
+  <option value="es">
+    🇪🇸 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.SPANISH' | translate }}</span>
+  </option>
+  <option value="ru">
+    🇷🇺 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.RUSSIAN' | translate }}</span>
+  </option>
+  <option value="zh">
+    🇨🇳 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.CHINESE' | translate }}</span>
+  </option>
+  <option value="it">
+    🇮🇹 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.ITALIAN' | translate }}</span>
+  </option>
+  <option value="fr">
+    🇫🇷 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.FRENCH' | translate }}</span>
+  </option>
+  <option value="el">
+    🇬🇷 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.GREEK' | translate }}</span>
+  </option>
+  <option value="sv">
+    🇸🇪 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.SWEDEN' | translate }}</span>
+  </option>
+  <option value="nl">
+    🇳🇱 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.DUTCH' | translate }}</span>
+  </option>
+  <option value="de">
+    🇩🇪 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.GERMAN' | translate }}</span>
+  </option>
+  <option value="pl">
+    🇵🇱 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.POLISH' | translate }}</span>
+  </option>
+</select>

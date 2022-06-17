@@ -15,7 +15,7 @@ export class LogoutBtnComponent extends SubscriptionHandler {
     super();
   }
 
-  openModalConfirm() {
+  openModalConfirm(): void {
     const initialState = {
       title: 'Logout',
       content: 'Are you sure you want to logout?',
@@ -32,7 +32,7 @@ export class LogoutBtnComponent extends SubscriptionHandler {
     );
   }
 
-  logout() {
+  logout(): void {
     this.locationService.reload();
   }
 }

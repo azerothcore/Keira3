@@ -56,7 +56,7 @@ export function createTranslateLoader(http: HttpClient) {
         useFactory: createTranslateLoader,
         deps: [HttpClient],
       },
-      defaultLanguage: 'it',
+      defaultLanguage: 'en',
     }),
     /* Misc */
     AppRoutingModule,
