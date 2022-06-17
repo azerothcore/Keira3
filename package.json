@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "@types/electron-settings": "4.0.0",
-    "acorn": "8.7.0",
+    "acorn": "8.7.1",
     "electron-settings": "4.0.2",
     "jquery": "3.6.0",
     "karma-coverage": "2.2.0",
