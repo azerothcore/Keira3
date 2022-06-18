@@ -144,6 +144,14 @@
     "AC_DB_VERSION": "AC World DB version:",
     "DEBUG_MODE": "Enable Keira3 Debug mode (slower performance, to be used only for development)"
   },
+  "SQL_EDITOR": {
+    "TITLE": "SQL Editor",
+    "TOOLTIP": "A minimalistic SQL Editor to run custom queries",
+    "COPY": "Copy",
+    "EXECUTE": "Execute (F9)",
+    "LEARN_SQL": "learn the SQL language",
+    "AFFECTED_ROWS": "Affected rows:"
+  },
   "CONDITIONS": {
     "SOURCE_TYPE": "Source Type",
     "SOURCE_GROUP": "Source Group",

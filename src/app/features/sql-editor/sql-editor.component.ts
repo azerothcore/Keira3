@@ -55,11 +55,11 @@ export class SqlEditorComponent extends SubscriptionHandler {
     super();
   }
 
-  copy() {
+  copy(): void {
     this.clipboardService.copyFromContent(this.service.code);
   }
 
-  execute() {
+  execute(): void {
     this.subscriptions.push(
       this.mysqlQueryService.query(this.service.code).subscribe({
         next: (rows: TableRow[] | { affectedRows: number; message: string }) => {
