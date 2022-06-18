@@ -6,6 +6,7 @@ import { HighlightjsWrapperModule } from '@keira-shared/modules/highlightjs-wrap
 import { QueryOutputModule } from '@keira-shared/modules/query-output/query-output.module';
 import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
+import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { SelectCreatureComponent } from './select-creature.component';
 import { SelectCreatureService } from './select-creature.service';
@@ -22,6 +23,7 @@ import { SelectCreatureService } from './select-creature.service';
     NgxDatatableModule,
     SearchButtonsModule,
     HighlightjsWrapperModule,
+    TranslateModule,
   ],
   exports: [SelectCreatureComponent],
   providers: [SelectCreatureService],

@@ -6,7 +6,7 @@
     <strong>{{ editorService.entityTemplateTable }}</strong> in order to enable this feature.
   </div>
 
-  <span *ngIf="editorService.loading">Loading...</span>
+  <span *ngIf="editorService.loading" [translate]="'LOADING'"></span>
 
   <div *ngIf="lootId > 0 && editorService.form && !!editorService.loadedEntityId && !editorService.loading">
     <keira-loot-editor [editorService]="editorService"></keira-loot-editor>

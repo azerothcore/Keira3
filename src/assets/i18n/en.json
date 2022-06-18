@@ -25,10 +25,12 @@
     "ALREADY_USE": "already in use"
   },
   "SEARCH": "Search",
+  "SELECT_EXISTING": "Select existing",
   "DOWNLOAD": "Download",
   "NEW_VERSION": "Psst...There is a newer version of Keira!",
   "LOADING": "Loading...",
   "ALWAYS_0": "",
+  "UNIQUE": "The <strong>{{ ENTITY_SECOND_ID_FIELD }}</strong> must be unique.",
   "CONNECTION_WINDOW": {
     "HOST": "Host",
     "PORT": "Port",
@@ -162,13 +164,18 @@
     "LEARN_SQL": "learn the SQL language",
     "AFFECTED_ROWS": "Affected rows:"
   },
+  "LOOT_EDITOR": {
+    "REFERENCE": "Include a group of loots. Linked to referenced_loot_template.entry",
+    "CHANCE": "Item drop chance",
+    "QUEST_REQUIRED": "The item should be shown only to characters having the appropriate quest.",
+    "GROUP_ID": "Set of loot definitions, check the wiki for more details",
+    "MIN_COUNT": "The minimum number of copies of the item that can drop in a single loot. For references, this is ignored.",
+    "MAX_COUNT": "The maximum number of copies of the item that can drop in a single loot. For references, this is the EXACT count value.",
+    "COMMENT": "A comment that is ignored by the core"
+  },
   "SOURCE_TYPE": "Source Type:",
   "LIMIT": "Limit:",
   "GOSSIP": {
-    "UNIQUE": "The <strong>{{ ENTITY_SECOND_ID_FIELD }}</strong> must be unique.",
-    "SELECT": {
-      "SELECT_EXISTING": "Select existing"
-    },
     "GOSSIP_MENU": {
       "TEXT_ID_TOOLTIP": "The npc_text.ID for the gossip you want to be initially displayed. Also this tells the NPC what to say at the top of the options menu when it is displayed."
     },

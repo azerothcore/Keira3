@@ -7,6 +7,7 @@ import { ReferenceViewerService } from '@keira-shared/modules/loot-editor/refere
 import { QueryOutputModule } from '@keira-shared/modules/query-output/query-output.module';
 import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selector/flags-selector.module';
 import { ItemSelectorModule } from '@keira-shared/modules/selectors/item-selector/item-selector.module';
+import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
@@ -27,6 +28,7 @@ import { ReferenceViewerComponent } from './reference-viewer.component';
     FlagsSelectorModule,
     QueryOutputModule,
     EditorButtonsModule,
+    TranslateModule,
   ],
   providers: [ReferenceViewerService],
 })
