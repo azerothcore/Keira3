@@ -16,6 +16,14 @@
     "YES": "Yes",
     "NO": "No"
   },
+  "CREATE": {
+    "CREATE_NEW": "Create New",
+    "CREATE_A_NEW": "Create a new <strong>{{ ENTITY_TABLE }}</strong> by selecting an empty <strong>{{ ENTITY_ID_FIELD }}</strong>:",
+    "SELECT": "Select",
+    "FREE_ENTRY": "The {{ ENTITY_ID_FIELD }} is",
+    "FREE": "free",
+    "ALREADY_USE": "already in use"
+  },
   "SEARCH": "Search",
   "DOWNLOAD": "Download",
   "NEW_VERSION": "Psst...There is a newer version of Keira!",
@@ -156,6 +164,27 @@
   },
   "SOURCE_TYPE": "Source Type:",
   "LIMIT": "Limit:",
+  "GOSSIP": {
+    "UNIQUE": "The <strong>{{ ENTITY_SECOND_ID_FIELD }}</strong> must be unique.",
+    "SELECT": {
+      "SELECT_EXISTING": "Select existing"
+    },
+    "GOSSIP_MENU": {
+      "TEXT_ID_TOOLTIP": "The npc_text.ID for the gossip you want to be initially displayed. Also this tells the NPC what to say at the top of the options menu when it is displayed."
+    },
+    "GOSSIP_MENU_OPTION": {
+      "OPTION_ID": "Must be unique for a given menu_id starting from 0 (zero).",
+      "OPTION_TEXT": "Text displayed in the player selectable option. Examples would be: “Learn Dual Spec“. Only if OptionBroadcastTextID contains a valid broadcast_text.ID",
+      "OPTION_BROADCAST_TEXT_ID": "The ID of the same text in broadcast_text.ID.",
+      "OPTION_NPC_FLAG": "Reference to creature_template.npcflag, this is the npcflag that the NPC must have",
+      "ACTION_MENU_ID": "If you want to create a sub-menu, this is the ID (gossip_menu.entry / gossip_menu_option.menu_id) to link to to create that sub-menu.",
+      "ACTION_POI_ID": "If you want a POI (point of interest) to display on the minimap (like how a city guard places a marker when you ask directions), this is the `entry` from Points_of_interest.entry",
+      "BOX_CODED": "If you want a box to display where you have to enter a code, this is the field you use.",
+      "BOX_MONEY": "The amount of money the player has to pay for the selected option, the value must be in copper. 10g = 100000 (10g 00s 00c)",
+      "BOX_TEXT": "This is the text of the window that appears that has “Yes” or “No” as clickable buttons. This is useful if you want a Yes/No confirmation window before the script executes",
+      "BOX_BROADCAST_TEXT_ID": "The ID of the same text in broadcast_text.ID."
+    }
+  },
   "CONDITIONS": {
     "SELECT": {
       "SOURCE_GROUP": "Source Group:",
