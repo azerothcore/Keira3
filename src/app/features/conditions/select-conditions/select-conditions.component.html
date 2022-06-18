@@ -7,9 +7,7 @@
     <form [formGroup]="selectService.queryForm">
       <ng-container [formGroup]="selectService.fields">
         <div class="form-group row">
-          <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="SourceTypeOrReferenceId"
-            >{{ 'CONDITIONS.SOURCE_TYPE' | translate }}:</label
-          >
+          <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="SourceTypeOrReferenceId">{{ 'SOURCE_TYPE' | translate }}</label>
           <div class="col-sm-8 col-md-9 col-lg-10">
             <select [formControlName]="'SourceTypeOrReferenceId'" class="form-control form-control-sm" id="SourceTypeOrReferenceId">
               <option *ngFor="let key of CONDITION_SOURCE_TYPES_KEYS" [ngValue]="key" [label]="CONDITION_SOURCE_TYPES[key]"></option>
@@ -17,7 +15,9 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="SourceGroup">{{ 'CONDITIONS.SOURCE_GROUP' | translate }}:</label>
+          <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="SourceGroup">{{
+            'CONDITIONS.SELECT.SOURCE_GROUP' | translate
+          }}</label>
           <div class="col-sm-8 col-md-9 col-lg-10">
             <input
               [formControlName]="'SourceGroup'"
@@ -29,7 +29,9 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="SourceEntry">{{ 'CONDITIONS.SOURCE_ENTRY' | translate }}:</label>
+          <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="SourceEntry">{{
+            'CONDITIONS.SELECT.SOURCE_ENTRY' | translate
+          }}</label>
           <div class="col-sm-8 col-md-9 col-lg-10">
             <input
               [formControlName]="'SourceEntry'"
@@ -42,7 +44,7 @@
         </div>
       </ng-container>
       <div class="form-group row">
-        <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="limit">{{ 'CONDITIONS.LIMIT' | translate }}:</label>
+        <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="limit">{{ 'LIMIT' | translate }}</label>
         <div class="col-sm-4 col-md-3 col-lg-2">
           <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Limit" />
         </div>
@@ -54,7 +56,7 @@
             [disabled]="selectService.queryForm.invalid"
             (click)="onCreateNew()"
           >
-            {{ 'CONDITIONS.CREATE_NEW' | translate }}
+            {{ 'CONDITIONS.SELECT.CREATE_NEW' | translate }}
           </button>
         </div>
       </div>
