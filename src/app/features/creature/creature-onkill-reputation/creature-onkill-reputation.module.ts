@@ -5,6 +5,7 @@ import { QueryOutputModule } from '@keira-shared/modules/query-output/query-outp
 import { FactionSelectorModule } from '@keira-shared/modules/selectors/faction-selector/faction-selector.module';
 import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
 import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
+import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
 import { CreatureOnkillReputationComponent } from './creature-onkill-reputation.component';
@@ -21,6 +22,7 @@ import { CreatureOnkillReputationService } from './creature-onkill-reputation.se
     ToastrModule,
     SingleValueSelectorModule,
     FactionSelectorModule,
+    TranslateModule,
   ],
   exports: [CreatureOnkillReputationComponent],
   providers: [CreatureOnkillReputationService],

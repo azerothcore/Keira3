@@ -8,6 +8,7 @@ import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selec
 import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
 import { SpellSelectorModule } from '@keira-shared/modules/selectors/spell-selector/spell-selector.module';
 import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
+import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
 import { CreatureTemplateComponent } from './creature-template.component';
@@ -27,6 +28,7 @@ import { CreatureTemplateService } from './creature-template.service';
     SpellSelectorModule,
     FactionSelectorModule,
     CreatureSelectorModule,
+    TranslateModule,
   ],
   exports: [CreatureTemplateComponent],
   providers: [CreatureTemplateService],

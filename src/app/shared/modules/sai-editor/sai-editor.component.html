@@ -1,7 +1,7 @@
 <keira-sai-top-bar [handler]="getHandler()"></keira-sai-top-bar>
 
 <div class="container-fluid">
-  <span *ngIf="editorService.loading">Loading...</span>
+  <span *ngIf="editorService.loading" [translate]="'LOADING'"></span>
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
     <div class="content-block">

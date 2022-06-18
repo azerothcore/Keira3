@@ -6,6 +6,7 @@ import { FactionSelectorModule } from '@keira-shared/modules/selectors/faction-s
 import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selector/flags-selector.module';
 import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
 import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
+import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
 import { GameobjectTemplateAddonComponent } from './gameobject-template-addon.component';
@@ -23,6 +24,7 @@ import { GameobjectTemplateAddonService } from './gameobject-template-addon.serv
     SingleValueSelectorModule,
     FlagsSelectorModule,
     FactionSelectorModule,
+    TranslateModule,
   ],
   exports: [GameobjectTemplateAddonComponent],
   providers: [GameobjectTemplateAddonService],
