@@ -22,7 +22,7 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
   public readonly AC_FORUM_URL = AC_FORUM_URL;
   public readonly AC_DISCORD_URL = AC_DISCORD_URL;
   public readonly KEIRA3_REPO_URL = KEIRA3_REPO_URL;
-  public readonly NAVIGATOR_APP_VERSION = window.navigator.appVersion;
+  public readonly NAVIGATOR_APP_VERSION = window.navigator.userAgent;
 
   get databaseName() {
     return this.mysqlService.config.database;
@@ -32,7 +32,7 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
     super();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.getCoreVersion();
     this.getWorldDbVersion();
   }
@@ -61,7 +61,7 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
     );
   }
 
-  private getWorldDbVersion() {
+  private getWorldDbVersion(): void {
     const query = 'SELECT * FROM version_db_world';
     this.subscriptions.push(
       this.queryService.query<VersionDbRow>(query).subscribe({
@@ -81,7 +81,7 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
     );
   }
 
-  getCommit(hash: string) {
+  getCommit(hash: string): string {
     return `https://github.com/azerothcore/azerothcore-wotlk/commit/${hash}`;
   }
 }

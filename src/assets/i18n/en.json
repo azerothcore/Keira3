@@ -111,12 +111,7 @@
     "CONDITIONS": {
       "TITLE": "Conditions",
       "SELECT_CONDITIONS": "Select Conditions",
-      "CONDITIONS": "Conditions",
-      "SOURCE_TYPE": "Source Type",
-      "SOURCE_GROUP": "Source Group",
-      "SOURCE_ENTRY:": "Source Entry",
-      "LIMIT": "Limit",
-      "CREATE_NEW": "Create new"
+      "CONDITIONS": "Conditions"
     },
     "SMARTAI": {
       "TITLE": "SmartAI",
@@ -129,5 +124,31 @@
       "SEARCH_SPELL": "Search Spell",
       "SPELL_DBC_EDITOR": "Spell DBC editor"
     }
+  },
+  "DASHBOARD": {
+    "WELCOME": "Welcome to Keira3",
+    "WELCOME_1": "You can always find the latest Keira3 version at the <a href=\" {{ REPO_URL }}/releases\" target=\"_blank\">releases page</a>. Join our <strong>#keira-editor</strong> channel on <a href=\"{{ DISCORD_URL }}\" target=\"_blank\">Discord</a> to stay up to date with the latest news and releases!",
+    "WELCOME_2": "Please report any bugs or suggestions using <a href=\"{{ REPO_URL }}/issues/new\" target=\"_blank\">the official repository</a>. If you like Keira3, don't forget to give us a &#11088; on GitHub!",
+    "WELCOME_3": "Keira3 is free and open source software that we build during our own spare time, you can <a href=\"{{ DONATE_URL }}\" target=\"_blank\">support us with a donation</a> ❤",
+    "WELCOME_4": "We hope that you enjoy using this software and don't forget to contribute with the community by <a href=\"http://www.azerothcore.org/wiki/Contribute#how-to-create-a-pull-request\" target=\"_blank\"> sharing your code </a>",
+    "SYSTEM_DETAILS": "System details",
+    "SYSTEM_WARNING": "<strong>WARNING:</strong> It looks like <strong><i>{{ DATABASE_NAME }}</i></strong> is not a valid AzerothCore world database.",
+    "SYSTEM_WARNING_1": "If you selected the wrong database by mistake, you can <strong>logout</strong> and change it.",
+    "SYSTEM_WARNING_2": "If you are using an old version of AzerothCore, we recommend to <a target=\"_blank\" href=\"http://www.azerothcore.org/wiki/Update\">update it</a> before using the editor.",
+    "SYSTEM_WARNING_3": "If you are using a different emulator than AzerothCore, <strong>be aware that some features will be broken</strong>. More info are available <a target=\"_blank\" href=\"https://github.com/azerothcore/forum/issues/43\">here</a>.",
+    "KEIRA_VERSION": "Keira Version:",
+    "KEIRA_DETAILS": "Keira Details:",
+    "AC_CORE_VERSION": "AC Core version:",
+    "AC_COMMIT": "AC commit hash:",
+    "AC_DB_RELEASE": "AC DB release:",
+    "AC_DB_VERSION": "AC World DB version:",
+    "DEBUG_MODE": "Enable Keira3 Debug mode (slower performance, to be used only for development)"
+  },
+  "CONDITIONS": {
+    "SOURCE_TYPE": "Source Type",
+    "SOURCE_GROUP": "Source Group",
+    "SOURCE_ENTRY:": "Source Entry",
+    "LIMIT": "Limit",
+    "CREATE_NEW": "Create new"
   }
 }
