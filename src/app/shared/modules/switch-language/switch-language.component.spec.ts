@@ -4,7 +4,6 @@ import { ModalConfirmComponent } from '@keira-shared/modules/modal-confirm/modal
 import { TranslateService } from '@ngx-translate/core';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { SwitchLanguageComponent } from './switch-language.component';
-import Spy = jasmine.Spy;
 
 @NgModule({
   declarations: [ModalConfirmComponent],
