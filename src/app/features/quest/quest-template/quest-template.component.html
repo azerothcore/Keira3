@@ -14,7 +14,7 @@
 
     <form [formGroup]="editorService.form" class="form-group edit-form">
       <div class="content-block">
-        <span class="category-title">Base</span>
+        <span class="category-title" [translate]="'QUEST.TEMPLATE.BASE'"></span>
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="ID">ID</label>
@@ -152,7 +152,7 @@
         </div>
       </div>
       <div class="content-block">
-        <span class="category-title">Point Of Interest</span>
+        <span class="category-title" [translate]="'QUEST.TEMPLATE.POINT_OF_INTEREST'"></span>
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="POIContinent">POIContinent</label>
@@ -191,7 +191,7 @@
         </div>
       </div>
       <div class="content-block">
-        <span class="category-title">Texts</span>
+        <span class="category-title" [translate]="'QUEST.TEMPLATE.TEXTS'"></span>
         <div class="row">
           <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
             <label class="control-label" for="QuestCompletionLog">QuestCompletionLog</label>
@@ -216,7 +216,7 @@
       </div>
       <div class="content-block">
         <span class="category-title">
-          ObjectiveTexts
+          {{ 'QUEST.TEMPLATE.OBJECTIVE_TEXTS' | translate }}
           <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Non-standard objective texts displayed in the quest log'"></i>
         </span>
         <div class="row">
@@ -228,7 +228,8 @@
       </div>
       <div class="content-block">
         <span class="category-title">
-          RequiredItems <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Items required to complete the quest'"></i>
+          {{ 'QUEST.TEMPLATE.REQUIRED_ITEMS' | translate }}
+          <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Items required to complete the quest'"></i>
         </span>
         <div class="row">
           <div *ngFor="let i of [1, 2, 3, 4, 5, 6]" class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
@@ -264,7 +265,7 @@
       </div>
       <div class="content-block">
         <span class="category-title">
-          Required Factions, NpcOrGo
+          {{ 'QUEST.TEMPLATE.REQUIRED_FACTION_OR_NPC' | translate }}
           <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'If > 0: creature; if < 0: gameobject'"></i>
         </span>
         <div class="row">
@@ -315,7 +316,7 @@
         </div>
       </div>
       <div class="content-block">
-        <span class="category-title">ItemDrops</span>
+        <span class="category-title" [translate]="'QUEST.TEMPLATE.ITEM_DROPS'"></span>
         <div class="row">
           <div *ngFor="let i of [1, 2, 3, 4]" class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <div class="row">
@@ -344,7 +345,7 @@
         </div>
       </div>
       <div class="content-block">
-        <span class="category-title">Rewards</span>
+        <span class="category-title" [translate]="'QUEST.TEMPLATE.REWARDS'"></span>
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="RewardTitle">RewardTitle</label>
@@ -463,7 +464,7 @@
         </div>
       </div>
       <div class="content-block">
-        <span class="category-title">RewardItems</span>
+        <span class="category-title" [translate]="'QUEST.TEMPLATE.REWARD_ITEMS'"></span>
         <div class="row">
           <div *ngFor="let i of [1, 2, 3, 4]" class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <div class="row">
@@ -487,7 +488,7 @@
         </div>
       </div>
       <div class="content-block">
-        <span class="category-title">RewardChoiceItems</span>
+        <span class="category-title" [translate]="'QUEST.TEMPLATE.REWARD_CHOICE_ITEMS'"></span>
         <div class="row">
           <div *ngFor="let i of [1, 2, 3, 4, 5, 6]" class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <div class="row">
@@ -522,7 +523,7 @@
       </div>
       <div class="content-block">
         <span class="category-title">
-          RewardFactions
+          {{ 'QUEST.TEMPLATE.REWARD_FACTIONS' | translate }}
           <i
             class="fas fa-info-circle ms-1"
             [placement]="'auto'"

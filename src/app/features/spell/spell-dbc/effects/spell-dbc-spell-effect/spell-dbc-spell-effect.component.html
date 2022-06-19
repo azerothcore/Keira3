@@ -1,6 +1,6 @@
 <form *ngIf="formGroup && index" [formGroup]="formGroup" class="form-group edit-form">
   <div class="content-block">
-    <span class="category-title"> Effect </span>
+    <span class="category-title" [translate]="'SPELL_DBC.SPELL.EFFECT'"></span>
     <div class="row">
       <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" [for]="getFieldName('Effect')">{{ getFieldName('Effect') }}</label>
@@ -186,7 +186,7 @@
     </div>
   </div>
   <div class="content-block">
-    <span class="category-title"> Effect Mechanic </span>
+    <span class="category-title" [translate]="'SPELL_DBC.SPELL.EFFECT_MECHANIC'"></span>
     <div class="row">
       <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" [for]="getFieldName('EffectMechanic')">{{ getFieldName('EffectMechanic') }}</label>
@@ -212,7 +212,7 @@
     </div>
   </div>
   <div class="content-block">
-    <span class="category-title"> Effect Aura </span>
+    <span class="category-title" [translate]="'SPELL_DBC.SPELL.EFFECT_AURA'"></span>
     <div class="row">
       <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" [for]="getFieldName('EffectAura')">{{ getFieldName('EffectAura') }}</label>
@@ -246,7 +246,7 @@
     </div>
   </div>
   <div class="content-block">
-    <span class="category-title"> Misc </span>
+    <span class="category-title" [translate]="'SPELL_DBC.SPELL.MISC'"></span>
     <div class="row">
       <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" [for]="getFieldName('SpellClassMask')">{{ getFieldName('SpellClassMask') }}</label>

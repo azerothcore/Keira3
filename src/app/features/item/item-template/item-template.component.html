@@ -14,7 +14,7 @@
 
     <form [formGroup]="editorService.form" class="form-group edit-form">
       <div class="content-block">
-        <span class="category-title"> Miscellaneous </span>
+        <span class="category-title" [translate]="'ITEM.TEMPLATE.MISCELLANEOUS'"></span>
         <div class="row">
           <div class="form-group col-12 col-sm-4 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="entry">entry</label>
@@ -315,7 +315,7 @@
       <div class="row">
         <div class="col-12 col-xl-6">
           <div class="content-block">
-            <span class="category-title"> Flags </span>
+            <span class="category-title" [translate]="'ITEM.TEMPLATE.FLAGS'"></span>
             <div class="row">
               <div class="form-group col-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
                 <label class="control-label" for="Flags">Flags</label>
@@ -349,7 +349,7 @@
         </div>
         <div class="col-12 col-xl-6">
           <div class="content-block">
-            <span class="category-title"> Texts </span>
+            <span class="category-title" [translate]="'ITEM.TEMPLATE.TEXTS'"></span>
             <div class="row">
               <div class="form-group col-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
                 <label class="control-label" for="PageText">PageText</label>
@@ -393,7 +393,7 @@
         </div>
       </div>
       <div class="content-block">
-        <span class="category-title"> Requirements </span>
+        <span class="category-title" [translate]="'ITEM.TEMPLATE.REQUIREMENTS'"></span>
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="AllowableClass">AllowableClass</label>
@@ -553,7 +553,8 @@
       </div>
       <div class="content-block">
         <span class="category-title">
-          Resistance <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Related resistance per type.'"></i>
+          {{ 'ITEM.TEMPLATE.RESISTANCE' | translate }}
+          <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Related resistance per type.'"></i>
         </span>
         <div class="row">
           <div
@@ -566,7 +567,7 @@
         </div>
       </div>
       <div class="content-block">
-        <span class="category-title"> Stats </span>
+        <span class="category-title" [translate]="'ITEM.TEMPLATE.STATS'"></span>
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-lg-4 col-xl-3">
             <label class="control-label" for="ScalingStatDistribution">ScalingStatDistribution</label>
@@ -621,7 +622,7 @@
         </div>
       </div>
       <div class="content-block">
-        <span class="category-title"> Socket </span>
+        <span class="category-title" [translate]="'ITEM.TEMPLATE.SOCKET'"></span>
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg col-xl-5">
             <label class="control-label" for="socketBonus">socketBonus</label>
@@ -664,7 +665,7 @@
         </div>
       </div>
       <div class="content-block">
-        <span class="category-title"> Weapon & Armor </span>
+        <span class="category-title" [translate]="'ITEM.TEMPLATE.WEAPON_ARMOR'"></span>
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="armor">armor</label>
@@ -726,7 +727,7 @@
         </div>
       </div>
       <div class="content-block">
-        <span class="category-title">Damage</span>
+        <span class="category-title" [translate]="'ITEM.TEMPLATE.DAMAGE'"></span>
         <div class="row">
           <ng-container *ngFor="let i of [1, 2]">
             <div class="col-sm-6 col-md-4">
@@ -753,7 +754,8 @@
       </div>
       <div class="content-block">
         <span class="category-title">
-          Spell <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The spells that the item can cast or trigger'"></i>
+          {{ 'ITEM.TEMPLATE.SPELL' | translate }}
+          <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The spells that the item can cast or trigger'"></i>
         </span>
         <div class="row">
           <div *ngFor="let i of [1, 2, 3, 4, 5]" class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl">

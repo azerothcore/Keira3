@@ -73,11 +73,7 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="orientation">orientation</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'The orientation of the creatures spawn point. (North = 0.0; South = pi (3.14159))'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'CREATURE.SPAWN.ORIENTATION' | translate"></i>
             <input [formControlName]="'orientation'" id="orientation" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
@@ -86,7 +82,7 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="wander_distance">wander_distance</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="SPAWN_DIST_TOOLTIP"></i>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'CREATURE.SPAWN.SPAWN_DIST_TOOLTIP' | translate"></i>
             <input [formControlName]="'wander_distance'" id="wander_distance" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
@@ -136,11 +132,7 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="ScriptName">ScriptName</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'The name of the C++ script that this creature uses, if any.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'CREATURE.SPAWN.SCRIPT_NAME' | translate"></i>
             <input [formControlName]="'ScriptName'" id="ScriptName" class="form-control form-control-sm" />
           </div>
 

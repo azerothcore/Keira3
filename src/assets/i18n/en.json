@@ -67,7 +67,7 @@
       "PICKPOCKETING_LOOT": "Pickpocketing Loot",
       "SKINNING_LOOT": "Skinning Loot",
       "SPAWN": "Spawn",
-      "SPAWN ADDON": "Spawn Addon",
+      "SPAWN_ADDON": "Spawn Addon",
       "SMARTAI": "SmartAI"
     },
     "QUEST": {
@@ -163,6 +163,90 @@
     "EXECUTE": "Execute (F9)",
     "LEARN_SQL": "learn the SQL language",
     "AFFECTED_ROWS": "Affected rows:"
+  },
+  "CREATURE": {
+    "TEMPLATE": {
+      "BASE": "Base",
+      "KILL_CREDITS": "KillCredits",
+      "MODELS": "Models",
+      "MONEY_LOOT": "Money Loot",
+      "TRAINER": "Trainer",
+      "LOOTS": "Loots",
+      "DIFFICULTY_ENTRIES": "Difficulty Entries",
+      "DAMAGE": "Damage",
+      "BEHAVIOUR": "Behaviour",
+      "MODIFIERS": "Modifiers"
+    },
+    "ONKILL_REPUTATION": {
+      "IS_TEAM_AWARD1": "Boolean (0 or 1) whether the player receives the reputation also the faction team or not.",
+      "REW_ON_KILL_REP_VALUE1": "The reputation value that the player gains (or loses if negative) by killing the creature.",
+      "IS_TEAM_AWARD2": "Boolean (0 or 1) whether the player receives the reputation also the faction team or not.",
+      "REW_ON_KILL_REP_VALUE2": "The reputation value that the player gains (or loses if negative) by killing the creature.",
+      "TEAM_DEPENDENT_TOOLTIP": "Boolean value. 0 - Will give reputation to the any player from both fields (RewOnKillRepFaction1 and RewOnKillRepFaction2); 1 - Will give reputation to alliance players from RewOnKillRepFaction1 and horde players from RewOnKillRepFaction2"
+    },
+    "SPAWN": {
+      "ORIENTATION": "The orientation of the creatures spawn point. (North = 0.0; South = pi (3.14159))",
+      "SPAWN_DIST_TOOLTIP": "The maximum distance that the creature may spawn from its spawn point. Also controls how far away the creature can walk from its spawn point if its MovementType = 1.",
+      "SCRIPT_NAME": "The name of the C++ script that this creature uses, if any."
+    },
+    "TEMPLATE_MOVEMENT": {
+      "GROUND": "0 = None; 1 = Run; 2 = Hover",
+      "SWIM": "0 = None; 1 = Swim",
+      "FLIGHT": "0 = None; 1 = Disable Gravity; 2 = CanFly",
+      "ROOTED": "0 = None; 1 = Rooted; ",
+      "CHASE": "0 = Run; 1 = CanWalk; 2 = AlwaysWalk",
+      "RANDOM": "0 = Walk; 1 = CanRun; 2 = AlwaysRun",
+      "INTERACTION_PAUSE_TIMER": "Time (in milliseconds) during which creature will not move after interaction with player"
+    },
+    "TEMPLATE_SPELL": {
+      "INDEX": "Allowed values: 0-7"
+    },
+    "NPC_TRAINER": {
+      "MONEY_COST": "The cost to pay to learn the spell represented in copper (1 gold = 100 silver = 10000 cooper)",
+      "REQ_SKILL_LINE": "The required skill the player needs to have in order to be able to learn the spell",
+      "REQ_SKILL_RANK": "The proficiency in the skill from reqskill that the player needs to meet to learn the spell",
+      "REQ_LEVEL": "The minimum level the player needs to be in order to learn the spell."
+    }
+  },
+  "QUEST": {
+    "TEMPLATE": {
+      "BASE": "Base",
+      "POINT_OF_INTEREST": "Point Of Interest",
+      "TEXTS": "Texts",
+      "ITEM_DROPS": "ItemDrops",
+      "REWARDS": "Rewards",
+      "REWARD_ITEMS": "RewardItems",
+      "REWARD_CHOICE_ITEMS": "RewardChoiceItems",
+      "OBJECTIVE_TEXTS": "ObjectiveTexts",
+      "REQUIRED_ITEMS": "RequiredItems",
+      "REWARD_FACTIONS": "RewardFactions",
+      "REQUIRED_FACTION_OR_NPC": "Required Factions, NpcOrGo"
+    },
+    "TEMPLATE_ADDON": {
+      "ADDON_BASE": "Addon Base",
+      "ADDON_REQUIREMENTS": "Addon Requirements",
+      "ADDON_REWARDS": "Addon Rewards"
+    }
+  },
+  "GAMEOBJECT": {
+    "TEMPLATE": {
+      "BASE": "Base",
+      "GAMEOBJECT_DATA": "Gameobject Data"
+    }
+  },
+  "ITEM": {
+    "TEMPLATE": {
+      "MISCELLANEOUS": "Miscellaneous",
+      "FLAGS": "Flags",
+      "TEXTS": "Texts",
+      "REQUIREMENTS": "Requirements",
+      "RESISTANCE": "Resistance",
+      "STATS": "Stats",
+      "SOCKET": "Socket",
+      "WEAPON_ARMOR": "Weapon Armor",
+      "DAMAGE": "Damage",
+      "SPELL": "Spell"
+    }
   },
   "LOOT_EDITOR": {
     "REFERENCE": "Include a group of loots. Linked to referenced_loot_template.entry",
@@ -345,6 +429,38 @@
         "CONDITION_DISTANCE_TO": "ComparisionType: 0 = distance must be equal to ConditionValue2; 1 = distance must be higher than ConditionValue2; 2 = distance must be lower than ConditionValue2; 3 = distance must be equal to or higher than ConditionValue2; 4 = distance must be equal to or lower than ConditionValue2",
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Quest Objective Count"
       }
+    }
+  },
+  "SMARTAI": {},
+  "SPELL_DBC": {
+    "BASE": {
+      "BASE": "Base",
+      "RESOURCES": "Resources",
+      "MECHANICS": "Mechanics",
+      "COOLDOWN_CAST_TIME": "Cooldown / CastTime",
+      "VISUAL": "Visual"
+    },
+    "SPELL": {
+      "EFFECT": "Effect",
+      "EFFECT_MECHANIC": "Effect Mechanic",
+      "EFFECT_AURA": "Effect Aura",
+      "MISC": "Misc"
+    },
+    "FLAGS": {
+      "GENERAL": "General",
+      "INTERRUPT_FLAGS": "Interrupt Flags",
+      "SPELL_ATTRIBUTES": "Spell Attributes"
+    },
+    "ITEMS": {
+      "GENERAL": "General",
+      "NON_CONSUMABLE_ITEMS": "Non-consumable items",
+      "CONSUMABLE_ITEMS": "Consumable items"
+    },
+    "TEXTS": {
+      "LANGUAGE": "Bitmask for Language string data",
+      "NAMESUBTEXT": "Bitmask for NameSubtext string data",
+      "DESCRIPTION": "Bitmask for Description string data",
+      "AURADESCRIPTION": "Bitmask for AuraDescription string data"
     }
   }
 }

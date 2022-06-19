@@ -17,32 +17,32 @@
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="Ground">Ground</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'0 = None; 1 = Run; 2 = Hover'"></i>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'CREATURE.TEMPLATE_MOVEMENT.GROUND' | translate"></i>
             <input [formControlName]="'Ground'" id="Ground" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="Swim">Swim</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'0 = None; 1 = Swim'"></i>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'CREATURE.TEMPLATE_MOVEMENT.SWIM' | translate"></i>
             <input [formControlName]="'Swim'" id="Swim" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="Flight">Flight</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'0 = None; 1 = Disable Gravity; 2 = CanFly'"></i>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'CREATURE.TEMPLATE_MOVEMENT.FLIGHT' | translate"></i>
             <input [formControlName]="'Flight'" id="Flight" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="Rooted">Rooted</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'0 = None; 1 = Rooted; '"></i>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'CREATURE.TEMPLATE_MOVEMENT.ROOTED' | translate"></i>
             <input [formControlName]="'Rooted'" id="Rooted" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="Chase">Chase</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'0 = Run; 1 = CanWalk; 2 = AlwaysWalk'"></i>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'CREATURE.TEMPLATE_MOVEMENT.CHASE' | translate"></i>
             <input [formControlName]="'Chase'" id="Chase" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="Random">Random</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'0 = Walk; 1 = CanRun; 2 = AlwaysRun'"></i>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'CREATURE.TEMPLATE_MOVEMENT.RANDOM' | translate"></i>
             <input [formControlName]="'Random'" id="Random" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -50,7 +50,7 @@
             <i
               class="fas fa-info-circle ms-1"
               [placement]="'auto'"
-              [tooltip]="'Time (in milliseconds) during which creature will not move after interaction with player'"
+              [tooltip]="'CREATURE.TEMPLATE_MOVEMENT.INTERACTION_PAUSE_TIMER' | translate"
             ></i>
             <input
               [formControlName]="'InteractionPauseTimer'"

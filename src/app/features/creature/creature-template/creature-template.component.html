@@ -14,7 +14,7 @@
 
     <form [formGroup]="editorService.form" class="form-group edit-form">
       <div class="content-block">
-        <span class="category-title">Base</span>
+        <span class="category-title" [translate]="'CREATURE.TEMPLATE.BASE'"></span>
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="entry">entry</label>
@@ -234,7 +234,7 @@
       <div class="content-block">
         <div class="row">
           <div class="col-12 col-xl-4">
-            <span class="category-title">KillCredits</span>
+            <span class="category-title" [translate]="'CREATURE.TEMPLATE.KILL_CREDITS'"></span>
             <div class="row">
               <div *ngFor="let i of [1, 2]" class="form-group col-12 col-sm-6 col-md-6 col-lg-3 col-xl-6">
                 <label class="control-label" for="KillCredit{{ i }}">KillCredit{{ i }}</label>
@@ -250,7 +250,8 @@
 
           <div class="col-12 col-xl-8">
             <span class="category-title">
-              Models <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="MODEL_ID_TOOLTIP"></i>
+              {{ 'CREATURE.TEMPLATE.MODELS' | translate }}
+              <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="MODEL_ID_TOOLTIP"></i>
             </span>
             <div class="row">
               <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
@@ -277,7 +278,7 @@
       <div class="content-block">
         <div class="row">
           <div class="col-12 col-xl-4">
-            <span class="category-title">Money Loot</span>
+            <span class="category-title" [translate]="'CREATURE.TEMPLATE.MONEY_LOOT'"></span>
             <div class="row">
               <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3 col-xl-6">
                 <label class="control-label" for="mingold">mingold</label>
@@ -301,7 +302,7 @@
           </div>
 
           <div class="col-12 col-xl-8">
-            <span class="category-title">Trainer</span>
+            <span class="category-title" [translate]="'CREATURE.TEMPLATE.TRAINER'"></span>
             <div class="row">
               <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
                 <label class="control-label" for="trainer_type">trainer_type</label>
@@ -348,7 +349,7 @@
       <div class="content-block">
         <div class="row">
           <div class="col-12 col-xl-6">
-            <span class="category-title">Loots</span>
+            <span class="category-title" [translate]="'CREATURE.TEMPLATE.LOOTS'"></span>
             <div class="row">
               <div class="form-group col-12 col-sm-6 col-md-4">
                 <label class="control-label" for="lootid">lootid</label>
@@ -369,7 +370,7 @@
           </div>
 
           <div class="col-12 col-xl-6">
-            <span class="category-title">Difficulty Entries</span>
+            <span class="category-title" [translate]="'CREATURE.TEMPLATE.DIFFICULTY_ENTRIES'"></span>
             <div class="row">
               <div class="form-group col-12 col-sm-6 col-md-4">
                 <label class="control-label" for="difficulty_entry_1">difficulty_entry_1</label>
@@ -431,7 +432,7 @@
       </div>
 
       <div class="content-block">
-        <span class="category-title">Damage</span>
+        <span class="category-title" [translate]="'CREATURE.TEMPLATE.DAMAGE'"></span>
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
             <label class="control-label" for="BaseVariance">BaseVariance</label>
@@ -474,7 +475,7 @@
       </div>
 
       <div class="content-block">
-        <span class="category-title">Behaviour</span>
+        <span class="category-title" [translate]="'CREATURE.TEMPLATE.BEHAVIOUR'"></span>
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="AIName">AIName</label>
@@ -530,7 +531,7 @@
       </div>
 
       <div class="content-block">
-        <span class="category-title">Modifiers</span>
+        <span class="category-title" [translate]="'CREATURE.TEMPLATE.MODIFIERS'"></span>
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="scale">scale</label>

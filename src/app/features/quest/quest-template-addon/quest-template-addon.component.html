@@ -14,7 +14,7 @@
 
     <form [formGroup]="editorService.form" class="form-group edit-form">
       <div class="content-block">
-        <span class="category-title">Addon Base</span>
+        <span class="category-title" [translate]="'QUEST.TEMPLATE_ADDON.ADDON_BASE'"></span>
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="ID">ID</label>
@@ -112,7 +112,7 @@
         </div>
       </div>
       <div class="content-block">
-        <span class="category-title">Addon Requirements</span>
+        <span class="category-title" [translate]="'QUEST.TEMPLATE_ADDON.ADDON_REQUIREMENTS'"></span>
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="RequiredSkillID">Req.SkillID</label>
@@ -188,7 +188,7 @@
         </div>
       </div>
       <div class="content-block">
-        <span class="category-title">Addon Rewards</span>
+        <span class="category-title" [translate]="'QUEST.TEMPLATE_ADDON.ADDON_REWARDS'"></span>
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="RewardMailTemplateID">RewardMailTemplateID</label>
