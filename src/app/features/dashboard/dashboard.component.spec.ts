@@ -81,7 +81,7 @@ describe('DashboardComponent', () => {
 
     fixture.detectChanges();
 
-    expect(errorSpy).toHaveBeenCalledTimes(2);
+    expect(errorSpy).toHaveBeenCalledTimes(1);
     expect(page.dbWarning).toBe(null);
     expect(component.error).toBe(false);
   });
@@ -93,7 +93,7 @@ describe('DashboardComponent', () => {
 
     fixture.detectChanges();
 
-    expect(errorSpy).toHaveBeenCalledTimes(1); // 2
+    expect(errorSpy).toHaveBeenCalledTimes(1);
     expect(errorSpy).toHaveBeenCalledWith(error);
     expect(page.dbWarning).toBeDefined();
     expect(component.error).toBe(true);
