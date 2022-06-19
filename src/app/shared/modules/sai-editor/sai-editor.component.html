@@ -57,7 +57,7 @@
             <div class="form-row">
               <div class="form-group col-6">
                 <label class="control-label" for="id">id</label>
-                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'A unique identifier for each row'"></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SMARTAI.EDITOR.UNIQUE_ID' | translate"></i>
               </div>
               <div class="form-group col">
                 <input [formControlName]="'id'" id="id" type="number" class="form-control form-control-sm" />
@@ -89,7 +89,7 @@
                   [config]="{ flags: EVENT_PHASE_MASK, name: 'event_phase_mask' }"
                   [modalClass]="'modal-lg'"
                 ></keira-flags-selector-btn>
-                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Use 0 for all phases'"></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SMARTAI.EDITOR.PHASE' | translate"></i>
               </div>
 
               <div class="form-group col">
@@ -100,13 +100,7 @@
             <div class="form-row">
               <div class="form-group col-6">
                 <label class="control-label" for="event_chance">chance</label>
-                <i
-                  class="fas fa-info-circle ms-1"
-                  placement="auto"
-                  [tooltip]="
-                    'This is the probability of the event to occur as a percentage from 0-100. Example: if you want the event to occur roughly half of the time, then set this to 50.'
-                  "
-                ></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SMARTAI.EDITOR.CHANCE' | translate"></i>
               </div>
 
               <div class="form-group col">
@@ -585,11 +579,7 @@
     <div class="content-block" *ngIf="showTimedActionlists">
       <p class="lead">
         Creature's Timed Actionlists
-        <i
-          class="fas fa-info-circle ms-1"
-          placement="auto"
-          [tooltip]="'All smart_scripts having source_type = 9 and entryorguid between CreatureID * 100 and CreatureID * 100 + 100'"
-        ></i>
+        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SMARTAI.EDITOR.TIMED_ACTIONLISTS' | translate"></i>
       </p>
       <keira-timed-actionlist [creatureId]="entryOrGuid"></keira-timed-actionlist>
     </div>
