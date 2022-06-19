@@ -3,7 +3,7 @@ import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/su
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'keira3-switch-language',
+  selector: 'keira-switch-language',
   templateUrl: './switch-language.component.html',
   styleUrls: ['./switch-language.component.scss'],
 })
