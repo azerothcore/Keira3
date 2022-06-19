@@ -19,12 +19,12 @@
   "CREATE": {
     "CREATE_NEW": "Create New",
     "CREATE_A_NEW": "Create a new <strong>{{ ENTITY_TABLE }}</strong> by selecting an empty <strong>{{ ENTITY_ID_FIELD }}</strong>:",
-    "SELECT": "Select",
     "FREE_ENTRY": "The {{ ENTITY_ID_FIELD }} is",
     "FREE": "free",
     "ALREADY_USE": "already in use"
   },
   "SEARCH": "Search",
+  "SELECT": "Select",
   "SELECT_EXISTING": "Select existing",
   "DOWNLOAD": "Download",
   "NEW_VERSION": "Psst...There is a newer version of Keira!",
@@ -37,6 +37,10 @@
   "ADD_NEW_ROW": "Add new row",
   "EMPTY": "",
   "UNKNOWN": "Unknown",
+  "COPY": "Copy",
+  "EXECUTE": "Execute",
+  "RELOAD": "Reload",
+  "CANCEL": "Cancel",
   "CONNECTION_WINDOW": {
     "HOST": "Host",
     "PORT": "Port",
@@ -165,7 +169,6 @@
   "SQL_EDITOR": {
     "TITLE": "SQL Editor",
     "TOOLTIP": "A minimalistic SQL Editor to run custom queries",
-    "COPY": "Copy",
     "EXECUTE": "Execute (F9)",
     "LEARN_SQL": "learn the SQL language",
     "AFFECTED_ROWS": "Affected rows:"

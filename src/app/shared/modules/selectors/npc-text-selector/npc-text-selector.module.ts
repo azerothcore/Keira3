@@ -9,10 +9,20 @@ import { HighlightjsWrapperModule } from '@keira-shared/modules/highlightjs-wrap
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { IconModule } from '@keira-shared/modules/icon/icon.module';
 import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [NpcTextSelectorBtnComponent, NpcTextSelectorModalComponent],
-  imports: [BrowserModule, ReactiveFormsModule, NgxDatatableModule, ModalModule, HighlightjsWrapperModule, IconModule, SearchButtonsModule],
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule,
+    NgxDatatableModule,
+    ModalModule,
+    HighlightjsWrapperModule,
+    IconModule,
+    SearchButtonsModule,
+    TranslateModule,
+  ],
   exports: [NpcTextSelectorBtnComponent],
 })
 export class NpcTextSelectorModule {}

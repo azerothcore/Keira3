@@ -8,10 +8,19 @@ import { HighlightjsWrapperModule } from '@keira-shared/modules/highlightjs-wrap
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [ItemLimitCategorySelectorBtnComponent, ItemLimitCategorySelectorModalComponent],
-  imports: [BrowserModule, ReactiveFormsModule, NgxDatatableModule, ModalModule, HighlightjsWrapperModule, SearchButtonsModule],
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule,
+    NgxDatatableModule,
+    ModalModule,
+    HighlightjsWrapperModule,
+    SearchButtonsModule,
+    TranslateModule,
+  ],
   exports: [ItemLimitCategorySelectorBtnComponent],
 })
 export class ItemLimitCategorySelectorModule {}
