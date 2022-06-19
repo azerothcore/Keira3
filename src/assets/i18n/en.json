@@ -29,6 +29,7 @@
   "DOWNLOAD": "Download",
   "NEW_VERSION": "Psst...There is a newer version of Keira!",
   "LOADING": "Loading...",
+  "TODO": "TODO",
   "ALWAYS_0": "",
   "UNIQUE": "The <strong>{{ ENTITY_SECOND_ID_FIELD }}</strong> must be unique.",
   "UNIQUE_ID": "The unique ID of the {{ ENTITY }}",
@@ -246,7 +247,29 @@
     "TEMPLATE_ADDON": {
       "ADDON_BASE": "Addon Base",
       "ADDON_REQUIREMENTS": "Addon Requirements",
-      "ADDON_REWARDS": "Addon Rewards"
+      "ADDON_REWARDS": "Addon Rewards",
+      "PREV_QUEST_ID": "if > 0: previous quest id; if < 0 parent quest id",
+      "NEXT_QUEST_ID": "Contains the next quest id, in case PrevQuestId of that other quest is not sufficient.",
+      "MAX_LEVEL": "Maximum player level at which a character can get the quest.",
+      "ALLOWABLE_CLASSES": "Use 0 to allow all classes",
+      "SOURCE_SPELL_ID": "The spell ID cast on player upon starting the quest.",
+      "EXCLUSIVE_GROUP": "If > 0: group of quests of which only one may be chosen and completed; if < 0  group of quests of which all must be completed and rewarded to start next quest",
+      "PROVIDED_ITEM_COUNT": "Number of items given to the player (inserted in the player’s bags) upon accepting the quest.",
+      "REQ_SKILL_ID": "Skill required to know to accept the quest. Use 0 for no skill required.",
+      "REQ_SKILL_POINTS": "Skill points required to have in order to accept the quest.",
+      "REQ_MIN_REP_VALUE": "Players must have this reputation or higher in order to receive the quest.",
+      "REQ_MAX_REP_VALUE": "The maximum reputation value that the player can have with a faction and still get the quest.",
+      "REWARD_MAIL_TEMPLATE_ID": "Corresponds to the loot template in quest_mail_loot_template; items will be sent by mail at quest completion",
+      "REWARD_MAIL_DELAY": "Delay (in seconds) after which the mail is sent to the character (defined in RewardMailTemplateId)"
+    },
+    "OFFER_REWARD": {
+      "REWARD_TEXT": "Quest gossip text shown when turning in a quest where no item delivery is involved.",
+      "EMOTE_DELAY": "Emote delay in milliseconds"
+    },
+    "REQUEST_ITEMS": {
+      "COMPLETION_TEXT": "Quest gossip text shown in the final gossip dialogue window when turning in an item delivery quest.",
+      "EMOTE_ON_COMPLETE": "Played by the quest ender NPC when all quest objectives are completed.",
+      "EMOTE_ON_INCOMPLETE": "Played by the quest ender NPC if any of the quest objectives are incomplete."
     }
   },
   "GAMEOBJECT": {
@@ -470,12 +493,6 @@
       "COOLDOWN_CAST_TIME": "Cooldown / CastTime",
       "VISUAL": "Visual"
     },
-    "SPELL": {
-      "EFFECT": "Effect",
-      "EFFECT_MECHANIC": "Effect Mechanic",
-      "EFFECT_AURA": "Effect Aura",
-      "MISC": "Misc"
-    },
     "FLAGS": {
       "GENERAL": "General",
       "INTERRUPT_FLAGS": "Interrupt Flags",
@@ -491,6 +508,42 @@
       "NAMESUBTEXT": "Bitmask for NameSubtext string data",
       "DESCRIPTION": "Bitmask for Description string data",
       "AURADESCRIPTION": "Bitmask for AuraDescription string data"
+    },
+    "EFFECTS": {
+      "TARGETS": "Which type of targets can be targeted by the Spell. 0 = TARGET_FLAG_NONE",
+      "PROC_TYPE_MASK": "Under which conditions a spell can proc. 0 = PROC_FLAG_NONE",
+      "PROC_CHANCE": "Most spells with 100% chance tend to have value 101.",
+      "PROC_CHARGES": "How many times a spell can proc. 0 = infinite"
+    },
+    "SPELL_EFFECTS": {
+      "EFFECT": "Effect",
+      "EFFECT_MECHANIC": "Effect Mechanic",
+      "EFFECT_AURA": "Effect Aura",
+      "MISC": "Misc",
+      "FIELD": {
+        "EFFECT": "Type of effect which spell has. All following effect fields refer to these.",
+        "EFFECT_BASE_POINTS": "Base points added to result of according effects rolled dice. e.g. EffectDieSides=26 and EffectBasePoints=49 will make 50-75.",
+        "EFFECT_REAL_POINTS_PER_LEVEL": "Base points added to according EffectBasePoints based on caster level.",
+        "EFFECT_RADIUS_INDEX": "According spell effect radius. May differ with caster level. Link to entry in SpellRadius.dbc",
+        "EFFECT_MULTIPLE_VALUE": "Number of stacks for Buffs/Debuffs",
+        "EFFECT_MISC_VALUE": "Used for according effects special misc values, commonly entries of called or used creature/item/gameobject.",
+        "EFFECT_MISC_VALUE_B": "Used for according effects special misc values, commonly entries of called or used creature/item/gameobject.",
+        "EFFECT_TRIGGER_SPELL": "Entry of spell triggered on affected target by this according effect.",
+        "EFFECT_POINTS_PER_COMBO": "Bonus to effect base value based on amount of combo points on target.",
+        "EFFECT_DIE_SIDES": "Number of sides of dice which is being rolled for random value of according effect.",
+        "EFFECT_CHAIN_AMPLITUDE": "Used for decreasing (or increasing) according effect value on next chained targets.",
+        "EFFECT_BONUS_MULTIPLIER": "Seems to be used for calculation of the according effect value of ticks for DoTs and HoTs.",
+        "EFFECT_MECHANIC": "Mechanic of according spell effect. Used by spells granting bonuses/immunities against certain effect types (stun, charm...).",
+        "EFFECT_AURA": "Type of aura (effect of effect) which according effect applies.",
+        "EFFECT_AURA_PERIOD": "How often the effect ticks in ms.",
+        "SPELL_CLASS_MASK": "?Mask for spells which are affected (buffed, ...) by this spell?",
+        "IMPLICIT_TARGET_A": "Type of implicit target(s) of according effect.",
+        "IMPLICIT_TARGET_B": "Type of implicit target(s) of according effect.",
+        "EFFECT_CHAIN_TARGETS": "?Used to create chaining visual effects (e.g. chain lightning)?",
+        "EFFECT_SPELL_CLASS_MASK_A": "Entry of fields 210-212 as hex value of the spell this spell is affecting. Used for effect #1",
+        "EFFECT_SPELL_CLASS_MASK_B": "Entry of fields 210-212 as hex value of the spell this spell is affecting. Used for effect #2",
+        "EFFECT_SPELL_CLASS_MASK_C": "Entry of fields 210-212 as hex value of the spell this spell is affecting. Used for effect #3"
+      }
     }
   }
 }

@@ -23,11 +23,7 @@
 
           <div class="form-group col-12 col-sm-12 col-md-8 col-lg-9 col-xl-9">
             <label class="control-label" for="CompletionText">CompletionText</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              placement="auto"
-              [tooltip]="'Quest gossip text shown in the final gossip dialogue window when turning in an item delivery quest.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.REQUEST_ITEMS.COMPLETION_TEXT' | translate"></i>
             <input [formControlName]="'CompletionText'" id="CompletionText" class="form-control form-control-sm" />
           </div>
 
@@ -38,11 +34,7 @@
               [config]="{ options: EMOTE, name: 'EmoteOnComplete' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
-            <i
-              class="fas fa-info-circle ms-1"
-              placement="auto"
-              [tooltip]="'Played by the quest ender NPC when all quest objectives are completed.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.REQUEST_ITEMS.EMOTE_ON_COMPLETE' | translate"></i>
             <input [formControlName]="'EmoteOnComplete'" id="EmoteOnComplete" type="number" class="form-control form-control-sm" />
           </div>
 
@@ -53,11 +45,7 @@
               [config]="{ options: EMOTE, name: 'EmoteOnIncomplete' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
-            <i
-              class="fas fa-info-circle ms-1"
-              placement="auto"
-              [tooltip]="'Played by the quest ender NPC if any of the quest objectives are incomplete.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.REQUEST_ITEMS.EMOTE_ON_INCOMPLETE' | translate"></i>
             <input [formControlName]="'EmoteOnIncomplete'" id="EmoteOnIncomplete" type="number" class="form-control form-control-sm" />
           </div>
         </div>

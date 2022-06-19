@@ -23,11 +23,7 @@
 
           <div class="form-group col-12 col-sm-12 col-md-8 col-lg-9 col-xl-9">
             <label class="control-label" for="RewardText">RewardText</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              placement="auto"
-              [tooltip]="'Quest gossip text shown when turning in a quest where no item delivery is involved.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.OFFER_REWARD.REWARD_TEXT' | translate"></i>
             <textarea [formControlName]="'RewardText'" id="RewardText" class="form-control form-control-sm"></textarea>
           </div>
         </div>
@@ -46,7 +42,7 @@
               </div>
               <div class="col-12">
                 <label class="control-label" for="EmoteDelay{{ i }}">EmoteDelay{{ i }}</label>
-                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Emote delay in milliseconds'"></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.OFFER_REWARD.EMOTE_DELAY' | translate"></i>
                 <input [formControlName]="'EmoteDelay' + i" id="EmoteDelay{{ i }}" type="number" class="form-control form-control-sm" />
               </div>
             </div>
