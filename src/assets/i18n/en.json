@@ -496,12 +496,29 @@
     "FLAGS": {
       "GENERAL": "General",
       "INTERRUPT_FLAGS": "Interrupt Flags",
-      "SPELL_ATTRIBUTES": "Spell Attributes"
+      "SPELL_ATTRIBUTES": "Spell Attributes",
+      "TARGET_CREATURE_TYPE": "Mask of creature types on which is spell usable. 0 = None",
+      "SHAPESHIFT_MASK": "Shapeshifts/Stances in which the spell is castable. 0 = No shape/stance required",
+      "SHAPESHIFT_EXCLUDE": "Shapeshifts/Stances in which the spell is not castable. 0 = No restriction",
+      "FACING_CASTER_FLAGS": "If marked, forces the Caster to use the ability in front of the enemy.",
+      "INTERRUPT_FLAGS_TOOLTIP": "Mask of cases which interrupt casting of a spell. 0 = None",
+      "AURA_INTERRUPT_FLAGS": "Mask of cases which interrupt casting of a spell. 0 = None",
+      "CHANNEL_INTERRUPT_FLAGS": "Mask of cases which interrupt casting of a spell. 0 = None",
+      "ATTRIBUTES": "General miscellaneous flags. 0 = None"
     },
     "ITEMS": {
       "GENERAL": "General",
       "NON_CONSUMABLE_ITEMS": "Non-consumable items",
-      "CONSUMABLE_ITEMS": "Consumable items"
+      "CONSUMABLE_ITEMS": "Consumable items",
+      "EQUIPPED_ITEM_CLASS": "item_template.class value which casters item held in hand must have",
+      "EQUIPPED_ITEM_SUBCLASS": "Mask of item_template.subclass values which caster's item held in hand must have",
+      "EQUIPPED_ITEM_INV_TYPES": "Mask of item_template.InventoryType values which targeted item must have",
+      "TOTEM_1": "Non consumable item required to cast the spell.",
+      "TOTEM_2": "Non consumable item required to cast the spell.",
+      "REQUIRED_TOTEM_CATEGORY_ID_1": "Non consumable items (e.g. enchanter rods) required to cast the spell.",
+      "REQUIRED_TOTEM_CATEGORY_ID_2": "Non consumable items (e.g. enchanter rods) required to cast the spell.",
+      "REAGENT": "Entry of item used by this spell as resources. Gets consumed. Materials for professions.",
+      "REAGENT_COUNT": "Number of reagent items needed by spell"
     },
     "TEXTS": {
       "LANGUAGE": "Bitmask for Language string data",
@@ -544,6 +561,15 @@
         "EFFECT_SPELL_CLASS_MASK_B": "Entry of fields 210-212 as hex value of the spell this spell is affecting. Used for effect #2",
         "EFFECT_SPELL_CLASS_MASK_C": "Entry of fields 210-212 as hex value of the spell this spell is affecting. Used for effect #3"
       }
+    },
+    "MISC": {
+      "UNK_320_2": "Unused since patch 3.2.0",
+      "UNK_320_3": "Unused since patch 3.2.0",
+      "START_RECOVERY_CATEGORY": "The only value which seems to be used here apart of 0 is 133 (spells affected by global CD).",
+      "START_RECOVERY_TIME": "The only value (in ms) which seems to be used here apart of 0 is 1500 (global CD value).",
+      "MODAL_NEXT_SPELL": "Seems to be only used for Hunter spells with the values 59 and 75.",
+      "SPELL_PRIORITY": "Unknown. Only used value is 50 for some spells.",
+      "REQUIRED_AURA_VISION": "Unknown. Only 16 Spells use another value as 0. Could be used for visual effects."
     }
   }
 }
