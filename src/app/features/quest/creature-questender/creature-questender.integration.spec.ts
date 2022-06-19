@@ -1,6 +1,7 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { CreatureQuestender } from '@keira-types/creature-questender.type';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -20,13 +21,11 @@ class CreatureQuestenderPage extends MultiRowEditorPageObject<CreatureQuestender
 describe('CreatureQuestender integration tests', () => {
   const id = 1234;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, QuestModule],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, QuestModule, TranslateTestingModule],
+    }).compileComponents();
+  }));
 
   function setup(creatingNew: boolean) {
     const originalRow0 = new CreatureQuestender();

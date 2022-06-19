@@ -12,9 +12,9 @@
 
     <form [formGroup]="editorService.form" class="form-group edit-form">
       <div class="content-block">
-        <span class="category-title">{{ 'CONDITIONS.EDITOR.CONDITIONS_SOURCE' | translate }}</span>
+        <span class="category-title" [translate]="'CONDITIONS.EDITOR.CONDITIONS_SOURCE'"></span>
         <div class="form-group row">
-          <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="SourceTypeOrReferenceId">{{ 'SOURCE_TYPE' | translate }}</label>
+          <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="SourceTypeOrReferenceId" [translate]="'SOURCE_TYPE'"></label>
           <div class="col-sm-8 col-md-9 col-lg-10">
             <select [formControlName]="'SourceTypeOrReferenceId'" class="form-control form-control-sm" id="SourceTypeOrReferenceId">
               <option *ngFor="let key of CONDITION_SOURCE_TYPES_KEYS" [ngValue]="key" [label]="CONDITION_SOURCE_TYPES[key]"></option>
@@ -67,7 +67,7 @@
         </div>
       </div>
       <div class="content-block">
-        <span class="category-title">{{ 'CONDITIONS.EDITOR.CONDITION_TYPE_VALUE' | translate }}</span>
+        <span class="category-title" [translate]="'CONDITIONS.EDITOR.CONDITION_TYPE_VALUE'"></span>
         <div class="form-group row">
           <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="ConditionTypeOrReference">{{
             'CONDITIONS.EDITOR.CONDITION_TYPE' | translate
@@ -180,7 +180,7 @@
         </div>
       </div>
       <div class="content-block">
-        <span class="category-title">{{ 'CONDITIONS.EDITOR.OTHER_PROPERTIES' | translate }}</span>
+        <span class="category-title" [translate]="'CONDITIONS.EDITOR.OTHER_PROPERTIES'"></span>
 
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">

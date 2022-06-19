@@ -17,6 +17,7 @@ import { MysqlQueryService } from '../../../../services/mysql-query.service';
 import { CreatureHandlerService } from '../../../../../features/creature/creature-handler.service';
 import { SaiCreatureHandlerService } from '../../../../../features/creature/sai-creature-handler.service';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 
 describe('LootTemplateComponent', () => {
   let component: LootTemplateIdComponent<CreatureLootTemplate>;
@@ -27,18 +28,23 @@ describe('LootTemplateComponent', () => {
 
   const lootId = 1230;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [CreatureLootTemplateModule, RouterTestingModule, ModalModule.forRoot(), TooltipModule.forRoot(), ToastrModule.forRoot()],
-        providers: [
-          { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-          CreatureHandlerService,
-          SaiCreatureHandlerService,
-        ],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        CreatureLootTemplateModule,
+        RouterTestingModule,
+        ModalModule.forRoot(),
+        TooltipModule.forRoot(),
+        ToastrModule.forRoot(),
+        TranslateTestingModule,
+      ],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+      ],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     when(MockedMysqlQueryService.query(anything(), anything())).thenReturn(of());

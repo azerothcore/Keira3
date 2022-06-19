@@ -10,6 +10,7 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureQuestitemComponent } from './creature-questitem.component';
 import { CreatureQuestitemModule } from './creature-questitem.module';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import Spy = jasmine.Spy;
 
 class CreatureQuestitemPage extends MultiRowEditorPageObject<CreatureQuestitemComponent> {}
@@ -31,14 +32,12 @@ describe('CreatureQuestitem integration tests', () => {
   originalRow1.Idx = 1;
   originalRow2.Idx = 2;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureQuestitemModule, RouterTestingModule],
-        providers: [CreatureHandlerService, SaiCreatureHandlerService],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureQuestitemModule, RouterTestingModule, TranslateTestingModule],
+      providers: [CreatureHandlerService, SaiCreatureHandlerService],
+    }).compileComponents();
+  }));
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(CreatureHandlerService);

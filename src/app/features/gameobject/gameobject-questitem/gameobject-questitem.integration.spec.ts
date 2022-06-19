@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { GameobjectQuestitem } from '@keira-types/gameobject-questitem.type';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -31,14 +32,12 @@ describe('GameobjectQuestitem integration tests', () => {
   originalRow1.Idx = 1;
   originalRow2.Idx = 2;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), GameobjectQuestitemModule, RouterTestingModule],
-        providers: [GameobjectHandlerService, SaiGameobjectHandlerService],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), GameobjectQuestitemModule, RouterTestingModule, TranslateTestingModule],
+      providers: [GameobjectHandlerService, SaiGameobjectHandlerService],
+    }).compileComponents();
+  }));
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(GameobjectHandlerService);

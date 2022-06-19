@@ -2,6 +2,7 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { SelectPageObject } from '@keira-testing/select-page-object';
 import { FishingLootTemplate } from '@keira-types/fishing-loot-template.type';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -19,14 +20,12 @@ class SelectFishingLootComponentPage extends SelectPageObject<SelectFishingLootC
 describe('SelectFishingLoot integration tests', () => {
   const value = 1200;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), FishingLootTemplateModule, RouterTestingModule],
-        providers: [FishingLootHandlerService],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), FishingLootTemplateModule, RouterTestingModule, TranslateTestingModule],
+      providers: [FishingLootHandlerService],
+    }).compileComponents();
+  }));
 
   function setup() {
     const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
@@ -44,58 +43,49 @@ describe('SelectFishingLoot integration tests', () => {
     return { component, fixture, selectService, page, queryService, querySpy, navigateSpy };
   }
 
-  it(
-    'should correctly initialise',
-    waitForAsync(async () => {
-      const { fixture, page, querySpy, component } = setup();
+  it('should correctly initialise', waitForAsync(async () => {
+    const { fixture, page, querySpy, component } = setup();
 
-      await fixture.whenStable();
-      expect(page.createInput.value).toEqual(`${component.customStartingId}`);
-      page.expectNewEntityFree();
-      expect(querySpy).toHaveBeenCalledWith('SELECT MAX(Entry) AS max FROM fishing_loot_template;');
-      expect(page.queryWrapper.innerText).toContain('SELECT `Entry` FROM `fishing_loot_template` GROUP BY Entry LIMIT 50');
-    }),
-  );
+    await fixture.whenStable();
+    expect(page.createInput.value).toEqual(`${component.customStartingId}`);
+    page.expectNewEntityFree();
+    expect(querySpy).toHaveBeenCalledWith('SELECT MAX(Entry) AS max FROM fishing_loot_template;');
+    expect(page.queryWrapper.innerText).toContain('SELECT `Entry` FROM `fishing_loot_template` GROUP BY Entry LIMIT 50');
+  }));
 
-  it(
-    'should correctly behave when inserting and selecting free entry',
-    waitForAsync(async () => {
-      const { fixture, page, querySpy, navigateSpy } = setup();
+  it('should correctly behave when inserting and selecting free entry', waitForAsync(async () => {
+    const { fixture, page, querySpy, navigateSpy } = setup();
 
-      await fixture.whenStable();
-      querySpy.calls.reset();
-      querySpy.and.returnValue(of([]));
+    await fixture.whenStable();
+    querySpy.calls.reset();
+    querySpy.and.returnValue(of([]));
 
-      page.setInputValue(page.createInput, value);
+    page.setInputValue(page.createInput, value);
 
-      expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`fishing_loot_template\` WHERE (Entry = ${value})`);
-      page.expectNewEntityFree();
+    expect(querySpy).toHaveBeenCalledTimes(1);
+    expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`fishing_loot_template\` WHERE (Entry = ${value})`);
+    page.expectNewEntityFree();
 
-      page.clickElement(page.selectNewBtn);
+    page.clickElement(page.selectNewBtn);
 
-      expect(navigateSpy).toHaveBeenCalledTimes(1);
-      expect(navigateSpy).toHaveBeenCalledWith(['other-loots/fishing']);
-      page.expectTopBarCreatingNew(value);
-    }),
-  );
+    expect(navigateSpy).toHaveBeenCalledTimes(1);
+    expect(navigateSpy).toHaveBeenCalledWith(['other-loots/fishing']);
+    page.expectTopBarCreatingNew(value);
+  }));
 
-  it(
-    'should correctly behave when inserting an existing entity',
-    waitForAsync(async () => {
-      const { fixture, page, querySpy } = setup();
+  it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
+    const { fixture, page, querySpy } = setup();
 
-      await fixture.whenStable();
-      querySpy.calls.reset();
-      querySpy.and.returnValue(of([{}]));
+    await fixture.whenStable();
+    querySpy.calls.reset();
+    querySpy.and.returnValue(of([{}]));
 
-      page.setInputValue(page.createInput, value);
+    page.setInputValue(page.createInput, value);
 
-      expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`fishing_loot_template\` WHERE (Entry = ${value})`);
-      page.expectEntityAlreadyInUse();
-    }),
-  );
+    expect(querySpy).toHaveBeenCalledTimes(1);
+    expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`fishing_loot_template\` WHERE (Entry = ${value})`);
+    page.expectEntityAlreadyInUse();
+  }));
 
   for (const { id, entry, limit, expectedQuery } of [
     {

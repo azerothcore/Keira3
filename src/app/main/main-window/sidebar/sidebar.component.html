@@ -59,7 +59,7 @@
           <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.creature === 'down' }">
             <a id="creature-editor-toggle" (click)="toggleState('creature')">
               <i class="fa fa-dragon"></i>
-              <span>{{ 'SIDEBAR.CREATURE.TITLE' | translate }}</span>
+              <span [translate]="'SIDEBAR.CREATURE.TITLE'"></span>
             </a>
 
             <div class="sidebar-submenu" [@slide]="menuStates.creature">
@@ -176,7 +176,7 @@
           <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.quest === 'down' }">
             <a (click)="toggleState('quest')">
               <i class="fa fa-scroll"></i>
-              <span>{{ 'SIDEBAR.QUEST.TITLE' | translate }}</span>
+              <span [translate]="'SIDEBAR.QUEST.TITLE'"></span>
             </a>
 
             <div class="sidebar-submenu" [@slide]="menuStates.quest">
@@ -248,7 +248,7 @@
           <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.gameobject === 'down' }">
             <a (click)="toggleState('gameobject')">
               <i class="fa fa-dungeon"></i>
-              <span>{{ 'SIDEBAR.GAME_OBJECT.TITLE' | translate }}</span>
+              <span [translate]="'SIDEBAR.GAME_OBJECT.TITLE'"></span>
             </a>
             <div class="sidebar-submenu" [@slide]="menuStates.gameobject">
               <ul>
@@ -311,7 +311,7 @@
           <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.item === 'down' }">
             <a (click)="toggleState('item')">
               <i class="fa fa-gavel"></i>
-              <span>{{ 'SIDEBAR.ITEM.TITLE' | translate }}</span>
+              <span [translate]="'SIDEBAR.ITEM.TITLE'"></span>
             </a>
             <div class="sidebar-submenu" [@slide]="menuStates.item">
               <ul>
@@ -369,7 +369,7 @@
           <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.otherLoot === 'down' }">
             <a (click)="toggleState('otherLoot')">
               <i class="fa fa-coins"></i>
-              <span>{{ 'SIDEBAR.OTHER_LOOTS.TITLE' | translate }}</span>
+              <span [translate]="'SIDEBAR.OTHER_LOOTS.TITLE'"></span>
             </a>
             <div class="sidebar-submenu" [@slide]="menuStates.otherLoot">
               <ul>
@@ -427,7 +427,7 @@
           <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.gossip === 'down' }">
             <a (click)="toggleState('gossip')">
               <i class="fa fa-comments"></i>
-              <span>{{ 'SIDEBAR.GOSSIP.TITLE' | translate }}</span>
+              <span [translate]="'SIDEBAR.GOSSIP.TITLE'"></span>
             </a>
             <div class="sidebar-submenu" [@slide]="menuStates.gossip">
               <ul>
@@ -460,7 +460,7 @@
           <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.conditions === 'down' }">
             <a (click)="toggleState('conditions')">
               <i class="fas fa-sort-amount-up"></i>
-              <span>{{ 'SIDEBAR.CONDITIONS.TITLE' | translate }}</span>
+              <span [translate]="'SIDEBAR.CONDITIONS.TITLE'"></span>
             </a>
 
             <div class="sidebar-submenu" [@slide]="menuStates.conditions">
@@ -485,7 +485,7 @@
           <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.smartAi === 'down' }">
             <a (click)="toggleState('smartAi')">
               <i class="fa fa-lightbulb"></i>
-              <span>{{ 'SIDEBAR.SMARTAI.TITLE' | translate }}</span>
+              <span [translate]="'SIDEBAR.SMARTAI.TITLE'"></span>
             </a>
 
             <div class="sidebar-submenu" [@slide]="menuStates.smartAi">
@@ -515,7 +515,7 @@
           <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.spell === 'down' }">
             <a (click)="toggleState('spell')">
               <i class="fa fa-magic"></i>
-              <span>{{ 'SIDEBAR.SPELL_DBC_OVERRIDES.TITLE' | translate }}</span>
+              <span [translate]="'SIDEBAR.SPELL_DBC_OVERRIDES.TITLE'"></span>
             </a>
 
             <div class="sidebar-submenu" [@slide]="menuStates.spell">

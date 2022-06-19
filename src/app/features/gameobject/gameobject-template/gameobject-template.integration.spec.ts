@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { GameobjectTemplate } from '@keira-types/gameobject-template.type';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -38,14 +39,12 @@ describe('GameobjectTemplate integration tests', () => {
   const originalEntity = new GameobjectTemplate();
   originalEntity.entry = id;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), GameobjectTemplateModule, RouterTestingModule],
-        providers: [GameobjectHandlerService, SaiGameobjectHandlerService],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), GameobjectTemplateModule, RouterTestingModule, TranslateTestingModule],
+      providers: [GameobjectHandlerService, SaiGameobjectHandlerService],
+    }).compileComponents();
+  }));
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(GameobjectHandlerService);
@@ -148,35 +147,32 @@ describe('GameobjectTemplate integration tests', () => {
       page.expectFullQueryToContain('35');
     });
 
-    xit(
-      'changing a value via SingleValueSelector should correctly work',
-      waitForAsync(async () => {
-        const field = 'type';
-        page.clickElement(page.getSelectorBtn(field));
-        await page.whenReady();
-        page.expectModalDisplayed();
+    xit('changing a value via SingleValueSelector should correctly work', waitForAsync(async () => {
+      const field = 'type';
+      page.clickElement(page.getSelectorBtn(field));
+      await page.whenReady();
+      page.expectModalDisplayed();
 
-        page.clickRowOfDatatableInModal(7);
-        await page.whenReady();
-        page.clickModalSelect();
-        await page.whenReady();
+      page.clickRowOfDatatableInModal(7);
+      await page.whenReady();
+      page.clickModalSelect();
+      await page.whenReady();
 
-        expect(page.getInputById(field).value).toEqual('7');
-        page.expectDiffQueryToContain('UPDATE `gameobject_template` SET `type` = 7 WHERE (`entry` = ' + id + ');');
-        page.expectFullQueryToContain(
-          'DELETE FROM `gameobject_template` WHERE (`entry` = ' +
-            id +
-            ');\n' +
-            'INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, ' +
-            '`unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, ' +
-            '`Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, ' +
-            '`Data21`, `Data22`, `Data23`, `AIName`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-            '(' +
-            id +
-            ", 7, 0, '', '', '', '', 1, 0, 0, 0, 0, 0, 0, 0, " +
-            "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', 0);",
-        );
-      }),
-    );
+      expect(page.getInputById(field).value).toEqual('7');
+      page.expectDiffQueryToContain('UPDATE `gameobject_template` SET `type` = 7 WHERE (`entry` = ' + id + ');');
+      page.expectFullQueryToContain(
+        'DELETE FROM `gameobject_template` WHERE (`entry` = ' +
+          id +
+          ');\n' +
+          'INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, ' +
+          '`unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, ' +
+          '`Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, ' +
+          '`Data21`, `Data22`, `Data23`, `AIName`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+          '(' +
+          id +
+          ", 7, 0, '', '', '', '', 1, 0, 0, 0, 0, 0, 0, 0, " +
+          "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', 0);",
+      );
+    }));
   });
 });

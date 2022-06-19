@@ -7,20 +7,19 @@ import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { GameobjectSearchService } from '../../search/gameobject-search.service';
 import { GameobjectSelectorModule } from './gameobject-selector.module';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 
 describe('GameobjectSelectorModalComponent', () => {
   let component: GameobjectSelectorModalComponent;
   let fixture: ComponentFixture<GameobjectSelectorModalComponent>;
   let searchService: GameobjectSearchService;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [GameobjectSelectorModule],
-        providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [GameobjectSelectorModule, TranslateTestingModule],
+      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     searchService = TestBed.inject(GameobjectSearchService);

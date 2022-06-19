@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { SingleValueSelectorModalComponent } from './single-value-selector-modal.component';
@@ -10,14 +11,12 @@ describe('SingleValueSelectorModalComponent', () => {
 
   const value = 'myValue';
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [SingleValueSelectorModule],
-        providers: [BsModalRef],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [SingleValueSelectorModule, TranslateTestingModule],
+      providers: [BsModalRef],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SingleValueSelectorModalComponent);

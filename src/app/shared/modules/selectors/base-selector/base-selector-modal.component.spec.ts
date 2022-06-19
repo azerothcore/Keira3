@@ -11,6 +11,7 @@ import { SearchService } from '../../search/search.service';
 import { ItemTemplate } from '@keira-types/item-template.type';
 import { ItemSearchService } from '../../search/item-search.service';
 import { ItemSelectorModule } from '../item-selector/item-selector.module';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 
 describe('BaseSelectorModalComponent', () => {
   let component: BaseSelectorModalComponent;
@@ -20,14 +21,12 @@ describe('BaseSelectorModalComponent', () => {
 
   const value = 'mock-value';
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ItemSelectorModule],
-        providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ItemSelectorModule, TranslateTestingModule],
+      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     searchService = TestBed.inject(ItemSearchService);

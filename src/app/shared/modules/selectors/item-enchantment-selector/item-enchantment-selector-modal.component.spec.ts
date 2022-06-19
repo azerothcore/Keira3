@@ -7,20 +7,19 @@ import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { ItemEnchantmentSearchService } from '../../search/item-enchantment-search.service';
 import { ItemEnchantmentSelectorModule } from './item-enchantment-selector.module';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 
 describe('ItemEnchantmentSelectorModalComponent', () => {
   let component: ItemEnchantmentSelectorModalComponent;
   let fixture: ComponentFixture<ItemEnchantmentSelectorModalComponent>;
   let searchService: ItemEnchantmentSearchService;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ItemEnchantmentSelectorModule],
-        providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ItemEnchantmentSelectorModule, TranslateTestingModule],
+      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     searchService = TestBed.inject(ItemEnchantmentSearchService);

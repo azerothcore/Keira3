@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MysqlService } from '@keira-shared/services/mysql.service';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { PageObject } from '@keira-testing/page-object';
 import { VersionDbRow, VersionRow } from '@keira-types/general';
@@ -45,14 +46,12 @@ describe('DashboardComponent', () => {
     [worldDbVersion]: null,
   };
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [DashboardModule],
-        providers: [{ provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [DashboardModule, TranslateTestingModule],
+      providers: [{ provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     when(MockedMysqlQueryService.query('SELECT * FROM version')).thenReturn(of([versionRow]));

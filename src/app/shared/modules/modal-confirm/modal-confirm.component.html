@@ -9,7 +9,7 @@
     {{ content }}
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-primary" (click)="onConfirm()" id="yes">{{ 'MODAL.YES' | translate }}</button>
-    <button type="button" class="btn btn-secondary" (click)="onCancel()" id="no">{{ 'MODAL.NO' | translate }}</button>
+    <button type="button" class="btn btn-primary" (click)="onConfirm()" id="yes" [translate]="'MODAL.YES'"></button>
+    <button type="button" class="btn btn-secondary" (click)="onCancel()" id="no" [translate]="'MODAL.NO'"></button>
   </div>
 </div>

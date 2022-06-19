@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { PageObject } from '@keira-testing/page-object';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -26,7 +27,14 @@ describe('SpellDbcFlagsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [TestHostComponent, SpellDbcFlagsComponent],
-      imports: [ModalModule.forRoot(), ToastrModule.forRoot(), TooltipModule.forRoot(), SpellDbcModule, RouterTestingModule],
+      imports: [
+        ModalModule.forRoot(),
+        ToastrModule.forRoot(),
+        TooltipModule.forRoot(),
+        SpellDbcModule,
+        RouterTestingModule,
+        TranslateTestingModule,
+      ],
       providers: [SpellHandlerService],
     }).compileComponents();
   });

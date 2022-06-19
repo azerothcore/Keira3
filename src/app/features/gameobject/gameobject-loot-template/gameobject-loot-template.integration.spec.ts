@@ -11,6 +11,7 @@ import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectLootTemplateComponent } from './gameobject-loot-template.component';
 import { GameobjectLootTemplateModule } from './gameobject-loot-template.module';
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import Spy = jasmine.Spy;
 
 class GameobjectLootTemplatePage extends MultiRowEditorPageObject<GameobjectLootTemplateComponent> {}
@@ -33,14 +34,12 @@ describe('GameobjectLootTemplate integration tests', () => {
   originalRow1.Item = 1;
   originalRow2.Item = 2;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), GameobjectLootTemplateModule, RouterTestingModule],
-        providers: [GameobjectHandlerService, SaiGameobjectHandlerService],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), GameobjectLootTemplateModule, RouterTestingModule, TranslateTestingModule],
+      providers: [GameobjectHandlerService, SaiGameobjectHandlerService],
+    }).compileComponents();
+  }));
 
   function setup(creatingNew: boolean, lootId = id, type = _type) {
     spyOn(TestBed.inject(GameobjectLootTemplateService), 'getLootId').and.returnValue(of([{ lootId }]));
