@@ -93,7 +93,7 @@ describe('DashboardComponent', () => {
 
     fixture.detectChanges();
 
-    expect(errorSpy).toHaveBeenCalledTimes(2);
+    expect(errorSpy).toHaveBeenCalledTimes(1); // 2
     expect(errorSpy).toHaveBeenCalledWith(error);
     expect(page.dbWarning).toBeDefined();
     expect(component.error).toBe(true);
