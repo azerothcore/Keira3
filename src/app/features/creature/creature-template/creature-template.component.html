@@ -27,11 +27,7 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="subname">subname</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              placement="auto"
-              [tooltip]="'The subname of the creature that appears in <> below the creature name'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.SUBNAME' | translate"></i>
             <input [formControlName]="'subname'" id="subname" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -45,20 +41,12 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="minlevel">minlevel</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              placement="auto"
-              [tooltip]="'The creature level will be in the range [minlevel, maxlevel]'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.MINLEVEL' | translate"></i>
             <input [formControlName]="'minlevel'" id="minlevel" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="maxlevel">maxlevel</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              placement="auto"
-              [tooltip]="'The creature level will be in the range [minlevel, maxlevel]'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.MAXLEVEL' | translate"></i>
             <input [formControlName]="'maxlevel'" id="maxlevel" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -94,13 +82,7 @@
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
 
-            <i
-              class="fas fa-info-circle ms-1"
-              placement="auto"
-              [tooltip]="
-                'If you want the creature to show a skull or “??” in the portrait (often with Bosses), you have to enable BOSS_MOB in type_flags'
-              "
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.RANK' | translate"></i>
             <input [formControlName]="'rank'" id="rank" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -164,11 +146,7 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="RegenHealth">RegenHealth</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              placement="auto"
-              [tooltip]="'Boolean (1 or 0) controlling whether the creature should regenerate its health or not.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.REGEN_HEALTH' | translate"></i>
             <input [formControlName]="'RegenHealth'" id="RegenHealth" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -207,25 +185,17 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="VehicleId">VehicleId</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="VEHICLE_ID_TOOLTIP"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.VEHICLE_ID_TOOLTIP' | translate"></i>
             <input [formControlName]="'VehicleId'" id="VehicleId" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="RacialLeader">RacialLeader</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              placement="auto"
-              [tooltip]="'Boolean (1 or 0) indicating whether the creature is a racial leader or not.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.RACIAL_LEADER' | translate"></i>
             <input [formControlName]="'RacialLeader'" id="RacialLeader" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="PetSpellDataId">PetSpellDataId</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              placement="auto"
-              [tooltip]="'ID, found in CreatureSpellData.dbc, that displays what spells the pet has in the client.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.PET_SPELL_DATA_ID' | translate"></i>
             <input [formControlName]="'PetSpellDataId'" id="PetSpellDataId" type="number" class="form-control form-control-sm" />
           </div>
         </div>
@@ -238,11 +208,7 @@
             <div class="row">
               <div *ngFor="let i of [1, 2]" class="form-group col-12 col-sm-6 col-md-6 col-lg-3 col-xl-6">
                 <label class="control-label" for="KillCredit{{ i }}">KillCredit{{ i }}</label>
-                <i
-                  class="fas fa-info-circle ms-1"
-                  placement="auto"
-                  [tooltip]="'Can be a link to the first entry of the creature that could be killed to give quest credit'"
-                ></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.KILL_CREDITS_DESC' | translate"></i>
                 <input [formControlName]="'KillCredit' + i" id="KillCredit{{ i }}" type="number" class="form-control form-control-sm" />
               </div>
             </div>
@@ -251,7 +217,7 @@
           <div class="col-12 col-xl-8">
             <span class="category-title">
               {{ 'CREATURE.TEMPLATE.MODELS' | translate }}
-              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="MODEL_ID_TOOLTIP"></i>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.MODEL_ID_TOOLTIP' | translate"></i>
             </span>
             <div class="row">
               <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
@@ -282,20 +248,12 @@
             <div class="row">
               <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3 col-xl-6">
                 <label class="control-label" for="mingold">mingold</label>
-                <i
-                  class="fas fa-info-circle ms-1"
-                  placement="auto"
-                  [tooltip]="'Minimum money that the creature drops when killed, in copper.'"
-                ></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.MINGOLD' | translate"></i>
                 <input [formControlName]="'mingold'" id="mingold" type="number" class="form-control form-control-sm" />
               </div>
               <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3 col-xl-6">
                 <label class="control-label" for="maxgold">maxgold</label>
-                <i
-                  class="fas fa-info-circle ms-1"
-                  placement="auto"
-                  [tooltip]="'Maximum money that the creature drops when killed, in copper.'"
-                ></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.MAXGOLD' | translate"></i>
                 <input [formControlName]="'maxgold'" id="maxgold" type="number" class="form-control form-control-sm" />
               </div>
             </div>
@@ -315,7 +273,7 @@
               </div>
               <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
                 <label class="control-label" for="trainer_spell">trainer_spell</label>
-                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="TRAINER_SPELL_TOOLTIP"></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.TRAINER_SPELL_TOOLTIP' | translate"></i>
                 <keira-spell-selector-btn
                   [control]="editorService.form.controls.trainer_spell"
                   [config]="{ name: 'trainer_spell' }"
@@ -353,17 +311,17 @@
             <div class="row">
               <div class="form-group col-12 col-sm-6 col-md-4">
                 <label class="control-label" for="lootid">lootid</label>
-                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Link to creature_loot_template.entry'"></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.LOOTID' | translate"></i>
                 <input [formControlName]="'lootid'" id="lootid" type="number" class="form-control form-control-sm" />
               </div>
               <div class="form-group col-12 col-sm-6 col-md-4">
                 <label class="control-label" for="pickpocketloot">pickpocketloot</label>
-                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Link to pickpocketing_loot_template.entry'"></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.PICKPOCKETLOOT' | translate"></i>
                 <input [formControlName]="'pickpocketloot'" id="pickpocketloot" type="number" class="form-control form-control-sm" />
               </div>
               <div class="form-group col-12 col-sm-6 col-md-4">
                 <label class="control-label" for="skinloot">skinloot</label>
-                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Link to skinning_loot_template.entry'"></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.SKINLOOT' | translate"></i>
                 <input [formControlName]="'skinloot'" id="skinloot" type="number" class="form-control form-control-sm" />
               </div>
             </div>
@@ -378,11 +336,7 @@
                   [control]="editorService.form.controls.difficulty_entry_1"
                   [config]="{ name: 'difficulty_entry_1' }"
                 ></keira-creature-selector-btn>
-                <i
-                  class="fas fa-info-circle ms-1"
-                  placement="auto"
-                  [tooltip]="'Entry of the equivalent creature in Heroic Dungeon or 25man Normal Raid'"
-                ></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.DIFFICULTY_ENTRY_1' | translate"></i>
                 <input
                   [formControlName]="'difficulty_entry_1'"
                   id="difficulty_entry_1"
@@ -396,7 +350,7 @@
                   [control]="editorService.form.controls.difficulty_entry_2"
                   [config]="{ name: 'difficulty_entry_2' }"
                 ></keira-creature-selector-btn>
-                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Entry of the equivalent creature in 10man Heroic Raid'"></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.DIFFICULTY_ENTRY_2' | translate"></i>
                 <input
                   [formControlName]="'difficulty_entry_2'"
                   id="difficulty_entry_2"
@@ -410,7 +364,7 @@
                   [control]="editorService.form.controls.difficulty_entry_3"
                   [config]="{ name: 'difficulty_entry_3' }"
                 ></keira-creature-selector-btn>
-                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Entry of the equivalent creature in 25man Heroic Raid'"></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.difficulty_entry_3' | translate"></i>
                 <input
                   [formControlName]="'difficulty_entry_3'"
                   id="difficulty_entry_3"
@@ -447,20 +401,12 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
             <label class="control-label" for="BaseAttackTime">BaseAttackTime</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              placement="auto"
-              [tooltip]="'Base time (milliseconds) that determines how long a creature must wait between melee attacks.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.BASE_ATTACK_TIME' | translate"></i>
             <input [formControlName]="'BaseAttackTime'" id="BaseAttackTime" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
             <label class="control-label" for="RangeAttackTime">RangeAttackTime</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              placement="auto"
-              [tooltip]="'Base time (milliseconds) that determines how long a creature must wait between ranged attacks.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.RANGE_ATTACK_TIME' | translate"></i>
             <input [formControlName]="'RangeAttackTime'" id="RangeAttackTime" type="number" class="form-control form-control-sm" />
           </div>
         </div>
@@ -480,16 +426,12 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="ScriptName">ScriptName</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              placement="auto"
-              [tooltip]="'Overrides AIName. The name of the C++ script that this creature uses, if any.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.SCRIPT_NAME' | translate"></i>
             <input [formControlName]="'ScriptName'" id="ScriptName" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="gossip_menu_id">gossip_menu_id</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Linked to gossip_menu.entry'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.GOSSIP_MENU_ID' | translate"></i>
             <input [formControlName]="'gossip_menu_id'" id="gossip_menu_id" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -503,20 +445,12 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="movementId">movementId</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              placement="auto"
-              [tooltip]="'It looks like this field is passed directly to the client and there is no info about it'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.MOVEMENT_ID' | translate"></i>
             <input [formControlName]="'movementId'" id="movementId" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="HoverHeight">HoverHeight</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              placement="auto"
-              [tooltip]="'Distance above the ground that the creature will hover if it has MOVEMENTFLAG_DISABLE_GRAVITY enabled'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.HOVER_HEIGHT' | translate"></i>
             <input [formControlName]="'HoverHeight'" id="HoverHeight" type="number" class="form-control form-control-sm" />
           </div>
         </div>
@@ -527,16 +461,12 @@
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="scale">scale</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              placement="auto"
-              [tooltip]="'Size multiplier (how big the creature model appears). If 0, it uses the DBC default model size.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.SCALE' | translate"></i>
             <input [formControlName]="'scale'" id="scale" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="DamageModifier">DamageModifier</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Damage multiplier, affects mindmg and maxdmg'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.DAMAGE_MODIFIER' | translate"></i>
             <input [formControlName]="'DamageModifier'" id="DamageModifier" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -557,39 +487,27 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="speed_walk">speed_walk</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              placement="auto"
-              [tooltip]="'Controls how fast the creature can walk. For vehicles it increases the flying speed.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.SPEED_RUN' | translate"></i>
             <input [formControlName]="'speed_walk'" id="speed_walk" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="speed_run">speed_run</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              placement="auto"
-              [tooltip]="'Controls how fast the creature can run. For vehicles it increases ground movement speed.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.SPEED_WALK' | translate"></i>
             <input [formControlName]="'speed_run'" id="speed_run" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="speed_run">speed_swim</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Controls how fast the creature can swim.'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.SPEED_SWIM' | translate"></i>
             <input [formControlName]="'speed_swim'" id="speed_swim" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="speed_run">speed_flight</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Controls how fast the creature can fly.'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.SPEED_FLIGHT' | translate"></i>
             <input [formControlName]="'speed_flight'" id="speed_flight" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="detection_range">detection_range</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              placement="auto"
-              [tooltip]="'Controls the range at which creatures detect and see players.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.DETECTION_RANGE' | translate"></i>
             <input [formControlName]="'detection_range'" id="detection_range" type="number" class="form-control form-control-sm" />
           </div>
         </div>
@@ -597,7 +515,7 @@
 
       <!-- <div class="content-block">
       <span class="category-title">
-        Spells <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="SPELLS_TOOLTIP"></i>
+        {{'CREATURE.TEMPLATE.SPELLS' | translate }} <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.SPELLS_TOOLTIP' | translate"></i>
       </span>
         <div class="row">
 
