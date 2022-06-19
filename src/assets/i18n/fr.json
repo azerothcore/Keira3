@@ -1,19 +1,19 @@
 {
   "LANGUAGES": {
-    "ENGLISH": "English",
-    "SPANISH": "Spanish",
-    "ITALIAN": "Italian",
-    "CHINESE": "Chinese",
-    "RUSSIAN": "Russian",
-    "DUTCH": "Dutch",
-    "FRENCH": "French",
-    "GREEK": "Greek",
-    "SWEDEN": "Sweden",
-    "GERMAN": "German",
-    "POLISH": "Polish",
-    "PORTUGUESE": "Portuguese",
-    "KOREAN": "Korean",
-    "ROMANIAN": "Romanian"
+    "ENGLISH": "Anglais",
+    "SPANISH": "Espagnol",
+    "ITALIAN": "Italien",
+    "CHINESE": "Chinois",
+    "RUSSIAN": "Russe",
+    "DUTCH": "Néerlandais",
+    "FRENCH": "Français",
+    "GREEK": "Grecque",
+    "SWEDEN": "Suédois",
+    "GERMAN": "Allemand",
+    "POLISH": "Polonais",
+    "PORTUGUESE": "Portugais",
+    "KOREAN": "Coréen",
+    "ROMANIAN": "Roumain"
   },
   "MODAL": {
     "YES": "Yes",
