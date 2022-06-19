@@ -8,6 +8,8 @@
 <a href="https://www.paypal.me/francesco92dev" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
 [![Discord](https://img.shields.io/discord/217589275766685707.svg)](https://discordapp.com/channels/217589275766685707/536630256048799744)
 
+## [Keira3 Website](https://www.azerothcore.org/Keira3/)
+
 ![Keira3](https://raw.githubusercontent.com/azerothcore/Keira3/master/screenshot.png)
 
 
