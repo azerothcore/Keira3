@@ -11,7 +11,7 @@ import { CreatureOnkillReputationService } from './creature-onkill-reputation.se
   styleUrls: ['./creature-onkill-reputation.component.scss'],
 })
 export class CreatureOnkillReputationComponent extends SingleRowEditorComponent<CreatureOnkillReputation> {
-  public readonly FACTION_RANK = FACTION_RANK;
+  readonly FACTION_RANK = FACTION_RANK;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(public editorService: CreatureOnkillReputationService, public handlerService: CreatureHandlerService) {

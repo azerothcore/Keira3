@@ -15,7 +15,7 @@ export class NpcTrainerComponent extends MultiRowEditorComponent<NpcTrainer> {
   constructor(
     public editorService: NpcTrainerService,
     public handlerService: CreatureHandlerService,
-    public readonly sqliteQueryService: SqliteQueryService,
+    readonly sqliteQueryService: SqliteQueryService,
   ) {
     super(editorService, handlerService);
   }

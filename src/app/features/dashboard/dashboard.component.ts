@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 
-import { MysqlQueryService } from '../../shared/services/mysql-query.service';
-import { VersionDbRow, VersionRow } from '@keira-types/general';
-import packageInfo from '../../../../package.json';
-import { AC_FORUM_URL, PAYPAL_DONATE_URL, KEIRA3_REPO_URL, AC_DISCORD_URL } from '@keira-constants/general';
-import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
+import { AC_DISCORD_URL, AC_FORUM_URL, KEIRA3_REPO_URL, PAYPAL_DONATE_URL } from '@keira-constants/general';
 import { ConfigService } from '@keira-shared/services/config.service';
 import { MysqlService } from '@keira-shared/services/mysql.service';
+import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
+import { VersionRow } from '@keira-types/general';
+import packageInfo from '../../../../package.json';
+import { MysqlQueryService } from '../../shared/services/mysql-query.service';
 
 @Component({
   selector: 'keira-home',
@@ -17,14 +17,14 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
   coreVersions: VersionRow;
   dbWorldVersion: string;
   error = false;
-  public readonly KEIRA_VERSION = packageInfo.version;
-  public readonly PAYPAL_DONATE_URL = PAYPAL_DONATE_URL;
-  public readonly AC_FORUM_URL = AC_FORUM_URL;
-  public readonly AC_DISCORD_URL = AC_DISCORD_URL;
-  public readonly KEIRA3_REPO_URL = KEIRA3_REPO_URL;
-  public readonly NAVIGATOR_APP_VERSION = window.navigator.userAgent;
+  readonly KEIRA_VERSION = packageInfo.version;
+  readonly PAYPAL_DONATE_URL = PAYPAL_DONATE_URL;
+  readonly AC_FORUM_URL = AC_FORUM_URL;
+  readonly AC_DISCORD_URL = AC_DISCORD_URL;
+  readonly KEIRA3_REPO_URL = KEIRA3_REPO_URL;
+  readonly NAVIGATOR_APP_VERSION = window.navigator.userAgent;
 
-  get databaseName() {
+  get databaseName(): string {
     return this.mysqlService.config.database;
   }
 
@@ -34,7 +34,7 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
 
   ngOnInit(): void {
     this.getCoreVersion();
-    this.getWorldDbVersion();
+    // this.getWorldDbVersion();
   }
 
   private getCoreVersion(): void {
@@ -61,25 +61,25 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
     );
   }
 
-  private getWorldDbVersion(): void {
-    const query = 'SELECT * FROM version_db_world';
-    this.subscriptions.push(
-      this.queryService.query<VersionDbRow>(query).subscribe({
-        next: (data) => {
-          if (data && data.length > 0) {
-            const keys = Object.keys(data[0]);
-            this.dbWorldVersion = keys[2];
-          } else {
-            console.error(`Query ${query} produced no results: ${data}`);
-          }
-        },
-        error: (error) => {
-          this.error = true;
-          console.error(error);
-        },
-      }),
-    );
-  }
+  // private getWorldDbVersion(): void {
+  //   const query = 'SELECT * FROM version_db_world';
+  //   this.subscriptions.push(
+  //     this.queryService.query<VersionDbRow>(query).subscribe({
+  //       next: (data) => {
+  //         if (data && data.length > 0) {
+  //           const keys = Object.keys(data[0]);
+  //           this.dbWorldVersion = keys[2];
+  //         } else {
+  //           console.error(`Query ${query} produced no results: ${data}`);
+  //         }
+  //       },
+  //       error: (error) => {
+  //         this.error = true;
+  //         console.error(error);
+  //       },
+  //     }),
+  //   );
+  // }
 
   getCommit(hash: string): string {
     return `https://github.com/azerothcore/azerothcore-wotlk/commit/${hash}`;

@@ -15,7 +15,7 @@ export class GossipMenuComponent extends MultiRowEditorComponent<GossipMenu> {
   constructor(
     public editorService: GossipMenuService,
     public handlerService: GossipHandlerService,
-    public readonly queryService: MysqlQueryService,
+    readonly queryService: MysqlQueryService,
   ) {
     super(editorService, handlerService);
   }

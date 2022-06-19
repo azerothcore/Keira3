@@ -10,8 +10,8 @@ import { SAI_TYPES, SAI_TYPES_KEYS, SmartScripts } from '@keira-types/smart-scri
   styleUrls: ['./sai-search-existing.component.scss'],
 })
 export class SaiSearchExistingComponent extends SelectComplexKeyComponent<SmartScripts> {
-  public readonly SAI_SEARCH_TYPES = SAI_TYPES;
-  public readonly SAI_SEARCH_TYPES_KEYS = SAI_TYPES_KEYS;
+  readonly SAI_SEARCH_TYPES = SAI_TYPES;
+  readonly SAI_SEARCH_TYPES_KEYS = SAI_TYPES_KEYS;
 
   constructor(public selectService: SaiSearchService, protected handlerService: SaiHandlerService) {
     super(selectService, handlerService);

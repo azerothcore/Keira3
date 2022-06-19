@@ -48,7 +48,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     protected _entityTable: string,
     protected _entityIdField: string,
     protected handlerService: HandlerService<T>,
-    public readonly queryService: MysqlQueryService,
+    readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super();

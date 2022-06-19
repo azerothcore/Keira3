@@ -1,7 +1,7 @@
 import { ComponentFixture } from '@angular/core/testing';
 
 export abstract class PageObject<ComponentType> {
-  public readonly DT_SELECTOR = 'ngx-datatable';
+  readonly DT_SELECTOR = 'ngx-datatable';
 
   constructor(protected fixture: ComponentFixture<ComponentType>, config: { clearStorage: boolean } = { clearStorage: true }) {
     if (config.clearStorage) {

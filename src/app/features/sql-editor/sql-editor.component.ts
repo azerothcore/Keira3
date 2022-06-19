@@ -13,8 +13,8 @@ import { SqlEditorService } from './sql-editor.service';
   styleUrls: ['./sql-editor.component.scss'],
 })
 export class SqlEditorComponent extends SubscriptionHandler {
-  public readonly DTCFG = DTCFG;
-  public readonly docUrl = 'https://www.w3schools.com/sql/sql_intro.asp';
+  readonly DTCFG = DTCFG;
+  readonly docUrl = 'https://www.w3schools.com/sql/sql_intro.asp';
   private readonly MAX_COL_SHOWN = 20;
 
   // displayLimit = 10;
@@ -50,7 +50,7 @@ export class SqlEditorComponent extends SubscriptionHandler {
   constructor(
     private mysqlQueryService: MysqlQueryService,
     private clipboardService: ClipboardService,
-    public readonly service: SqlEditorService,
+    readonly service: SqlEditorService,
   ) {
     super();
   }

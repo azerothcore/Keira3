@@ -21,7 +21,7 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
     protected _entityNameField: string,
     protected isMainEntity: boolean,
     protected handlerService: HandlerService<T>,
-    public readonly queryService: MysqlQueryService,
+    readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(

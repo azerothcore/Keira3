@@ -5,7 +5,7 @@ import { TableRow } from '../types/general';
 import { PageObject } from './page-object';
 
 export abstract class EditorPageObject<T> extends PageObject<T> {
-  public readonly PREVIEW_CONTAINER_SELECTOR = '.preview-container';
+  readonly PREVIEW_CONTAINER_SELECTOR = '.preview-container';
   protected readonly queryPo: QueryOutputComponentPage;
 
   get queryTypeSwitchWrapper(): HTMLDivElement {

@@ -9,7 +9,7 @@ import { SearchService } from './search.service';
 })
 export class NpcTextSearchService extends SearchService<ItemTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(public readonly queryService: MysqlQueryService) {
+  constructor(readonly queryService: MysqlQueryService) {
     super(queryService, NPC_TEXT_TABLE, NPC_TEXT_SEARCH_FIELDS);
   }
 }

@@ -17,7 +17,7 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     protected _entityNameField: string,
     protected isMainEntity: boolean,
     protected handlerService: HandlerService<T>,
-    public readonly queryService: MysqlQueryService,
+    readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(_entityClass, _entityTable, _entityIdField, handlerService, queryService, toastrService);

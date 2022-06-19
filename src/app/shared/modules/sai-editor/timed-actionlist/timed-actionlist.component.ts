@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimedActionlistComponent implements OnChanges {
-  public readonly DTCFG = DTCFG;
+  readonly DTCFG = DTCFG;
   @Input() creatureId: string | number;
 
   private _timedActionLists$: Observable<SmartScripts[]>;

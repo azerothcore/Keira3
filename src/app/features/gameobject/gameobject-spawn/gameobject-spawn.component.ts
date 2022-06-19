@@ -12,8 +12,8 @@ import { GameobjectSpawnService } from './gameobject-spawn.service';
   styleUrls: ['./gameobject-spawn.component.scss'],
 })
 export class GameobjectSpawnComponent extends MultiRowEditorComponent<GameobjectSpawn> {
-  public readonly SPAWN_MASK = SPAWN_MASK;
-  public readonly PHASE_MASK = PHASE_MASK;
+  readonly SPAWN_MASK = SPAWN_MASK;
+  readonly PHASE_MASK = PHASE_MASK;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(public editorService: GameobjectSpawnService, public handlerService: GameobjectHandlerService) {

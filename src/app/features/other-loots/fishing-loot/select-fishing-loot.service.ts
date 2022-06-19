@@ -8,7 +8,7 @@ import { FishingLootHandlerService } from './fishing-loot-handler.service';
 @Injectable()
 export class SelectFishingLootService extends SelectService<FishingLootTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(public readonly queryService: MysqlQueryService, public handlerService: FishingLootHandlerService) {
+  constructor(readonly queryService: MysqlQueryService, public handlerService: FishingLootHandlerService) {
     super(
       queryService,
       handlerService,
