@@ -11,7 +11,7 @@
         ></keira-single-value-selector-btn>
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="'item_template.class value which casters item held in hand must have'"
         ></i>
         <input [formControlName]="'EquippedItemClass'" id="EquippedItemClass" type="number" class="form-control form-control-sm" />
@@ -31,7 +31,7 @@
         ></keira-flags-selector-btn>
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="'Mask of item_template.subclass values which caster\'s item held in hand must have'"
         ></i>
         <input [formControlName]="'EquippedItemSubclass'" id="EquippedItemSubclass" type="number" class="form-control form-control-sm" />
@@ -45,7 +45,7 @@
         ></keira-flags-selector-btn>
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="'Mask of item_template.InventoryType values which targeted item must have'"
         ></i>
         <input [formControlName]="'EquippedItemInvTypes'" id="EquippedItemInvTypes" type="number" class="form-control form-control-sm" />
@@ -58,14 +58,14 @@
       <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" for="Totem_1">Totem_1</label>
         <keira-item-selector-btn [control]="formGroup.controls.Totem_1" [config]="{ name: 'Totem_1' }"></keira-item-selector-btn>
-        <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Non consumable item required to cast the spell.'"></i>
+        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Non consumable item required to cast the spell.'"></i>
         <input [formControlName]="'Totem_1'" id="Totem_1" type="number" class="form-control form-control-sm" />
       </div>
 
       <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" for="Totem_2">Totem_2</label>
         <keira-item-selector-btn [control]="formGroup.controls.Totem_2" [config]="{ name: 'Totem_2' }"></keira-item-selector-btn>
-        <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Non consumable item required to cast the spell.'"></i>
+        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Non consumable item required to cast the spell.'"></i>
         <input [formControlName]="'Totem_2'" id="Totem_2" type="number" class="form-control form-control-sm" />
       </div>
     </div>
@@ -79,7 +79,7 @@
         ></keira-single-value-selector-btn>
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="'Non consumable items (e.g. enchanter rods) required to cast the spell.'"
         ></i>
         <input
@@ -98,7 +98,7 @@
         ></keira-single-value-selector-btn>
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="'Non consumable items (e.g. enchanter rods) required to cast the spell.'"
         ></i>
         <input
@@ -122,7 +122,7 @@
           ></keira-item-selector-btn>
           <i
             class="fas fa-info-circle ms-1"
-            [placement]="'auto'"
+            placement="auto"
             [tooltip]="'Entry of item used by this spell as resources. Gets consumed. Materials for professions.'"
           ></i>
           <input [formControlName]="'Reagent_' + i" [id]="'Reagent_' + i" type="number" class="form-control form-control-sm" />
@@ -130,7 +130,7 @@
 
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" [for]="'ReagentCount_' + i">ReagentCount_{{ i }}</label>
-          <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Number of reagent items needed by spell'"></i>
+          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Number of reagent items needed by spell'"></i>
           <input [formControlName]="'ReagentCount_' + i" [id]="'ReagentCount_' + i" type="number" class="form-control form-control-sm" />
         </div>
       </div>

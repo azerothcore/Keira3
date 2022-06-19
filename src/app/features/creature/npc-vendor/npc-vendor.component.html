@@ -25,25 +25,17 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="slot">slot</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Position of the item in the vendor window'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.NPC_VENDOR.SLOT' | translate"></i>
             <input [formControlName]="'slot'" id="slot" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="maxcount">maxcount</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'The maximum number of items carried by the vendor at any time. 0 for infinite.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.NPC_VENDOR.MAXCOUNT' | translate"></i>
             <input [formControlName]="'maxcount'" id="maxcount" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="incrtime">incrtime</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'Combined with maxcount, how often (in seconds) the vendor list is refreshed'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.NPC_VENDOR.INCRTIME' | translate"></i>
             <input [formControlName]="'incrtime'" id="incrtime" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
@@ -52,11 +44,7 @@
               [config]="{ name: 'ExtendedCost' }"
               [control]="editorService.form.controls.ExtendedCost"
             ></keira-item-extended-cost-selector-btn>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'Value comes from DBC and a selector for this will be implemented later in Keira3'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.NPC_VENDOR.EXTENDED_COST' | translate"></i>
             <input [formControlName]="'ExtendedCost'" id="ExtendedCost" type="number" class="form-control form-control-sm" />
           </div>
 

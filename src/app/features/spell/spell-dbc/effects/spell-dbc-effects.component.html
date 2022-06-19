@@ -8,7 +8,7 @@
       ></keira-flags-selector-btn>
       <i
         class="fas fa-info-circle ms-1"
-        [placement]="'auto'"
+        placement="auto"
         [tooltip]="'Which type of targets can be targeted by the Spell. 0 = TARGET_FLAG_NONE'"
       ></i>
       <input [formControlName]="'Targets'" id="Targets" type="number" class="form-control form-control-sm" />
@@ -20,19 +20,19 @@
         [control]="formGroup.controls.ProcTypeMask"
         [config]="{ flags: SPELL_DBC_PROC_FLAGS, name: 'ProcTypeMask' }"
       ></keira-flags-selector-btn>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Under which conditions a spell can proc. 0 = PROC_FLAG_NONE'"></i>
+      <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Under which conditions a spell can proc. 0 = PROC_FLAG_NONE'"></i>
       <input [formControlName]="'ProcTypeMask'" id="ProcTypeMask" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="ProcChance">ProcChance</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Most spells with 100% chance tend to have value 101.'"></i>
+      <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Most spells with 100% chance tend to have value 101.'"></i>
       <input [formControlName]="'ProcChance'" id="ProcChance" type="number" class="form-control form-control-sm" />
     </div>
 
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="ProcCharges">ProcCharges</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'How many times a spell can proc. 0 = infinite'"></i>
+      <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'How many times a spell can proc. 0 = infinite'"></i>
       <input [formControlName]="'ProcCharges'" id="ProcCharges" type="number" class="form-control form-control-sm" />
     </div>
   </div>

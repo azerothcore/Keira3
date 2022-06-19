@@ -9,7 +9,7 @@
           [config]="{ flags: SPELL_DBC_CREATURE_TYPE_FLAGS, name: 'TargetCreatureType' }"
           [modalClass]="'modal-md'"
         ></keira-flags-selector-btn>
-        <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Mask of creature types on which is spell usable. 0 = None'"></i>
+        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Mask of creature types on which is spell usable. 0 = None'"></i>
         <input [formControlName]="'TargetCreatureType'" id="TargetCreatureType" type="number" class="form-control form-control-sm" />
       </div>
       <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -21,7 +21,7 @@
         ></keira-flags-selector-btn>
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="'Shapeshifts/Stances in which the spell is castable. 0 = No shape/stance required'"
         ></i>
         <input [formControlName]="'ShapeshiftMask'" id="ShapeshiftMask" type="number" class="form-control form-control-sm" />
@@ -35,7 +35,7 @@
         ></keira-flags-selector-btn>
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="'Shapeshifts/Stances in which the spell is not castable. 0 = No restriction'"
         ></i>
         <input [formControlName]="'ShapeshiftExclude'" id="ShapeshiftExclude" type="number" class="form-control form-control-sm" />
@@ -44,7 +44,7 @@
         <label class="control-label" for="FacingCasterFlags">FacingCasterFlags</label>
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="'If marked, forces the Caster to use the ability in front of the enemy.'"
         ></i>
         <keira-flags-selector-btn
@@ -65,11 +65,7 @@
           [config]="{ flags: SPELL_DBC_INTERRUPT_FLAGS, name: 'InterruptFlags' }"
           [modalClass]="'modal-md'"
         ></keira-flags-selector-btn>
-        <i
-          class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
-          [tooltip]="'Mask of cases which interrupt casting of a spell. 0 = None'"
-        ></i>
+        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Mask of cases which interrupt casting of a spell. 0 = None'"></i>
         <input [formControlName]="'InterruptFlags'" id="InterruptFlags" type="number" class="form-control form-control-sm" />
       </div>
       <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -79,11 +75,7 @@
           [config]="{ flags: SPELL_DBC_AURA_INTERRUPT_FLAGS, name: 'AuraInterruptFlags' }"
           [modalClass]="'modal-md'"
         ></keira-flags-selector-btn>
-        <i
-          class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
-          [tooltip]="'Mask of cases which interrupt casting of a spell. 0 = None'"
-        ></i>
+        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Mask of cases which interrupt casting of a spell. 0 = None'"></i>
         <input [formControlName]="'AuraInterruptFlags'" id="AuraInterruptFlags" type="number" class="form-control form-control-sm" />
       </div>
       <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -93,11 +85,7 @@
           [config]="{ flags: SPELL_DBC_CHANNEL_INTERRUPT_FLAGS, name: 'ChannelInterruptFlags' }"
           [modalClass]="'modal-md'"
         ></keira-flags-selector-btn>
-        <i
-          class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
-          [tooltip]="'Mask of cases which interrupt casting of a spell. 0 = None'"
-        ></i>
+        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Mask of cases which interrupt casting of a spell. 0 = None'"></i>
         <input [formControlName]="'ChannelInterruptFlags'" id="ChannelInterruptFlags" type="number" class="form-control form-control-sm" />
       </div>
     </div>
@@ -109,7 +97,7 @@
         class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
         *ngFor="let suffix of ['', 'Ex', 'Ex2', 'Ex3', 'Ex4', 'Ex5', 'Ex6', 'Ex7']"
       >
-        <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'General miscellaneous flags. 0 = None'"></i>
+        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'General miscellaneous flags. 0 = None'"></i>
         <keira-flags-selector-btn
           [control]="formGroup.controls['Attributes' + suffix]"
           [config]="{ flags: SPELL_DBC_ATTRIBUTES_FLAGS[suffix], name: 'Attributes' + suffix }"

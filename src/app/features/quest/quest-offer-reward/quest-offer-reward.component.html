@@ -17,7 +17,7 @@
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
             <label class="control-label" for="ID">ID</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The unique ID of the quest'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'quest'"></i>
             <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm" />
           </div>
 
@@ -25,7 +25,7 @@
             <label class="control-label" for="RewardText">RewardText</label>
             <i
               class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
+              placement="auto"
               [tooltip]="'Quest gossip text shown when turning in a quest where no item delivery is involved.'"
             ></i>
             <textarea [formControlName]="'RewardText'" id="RewardText" class="form-control form-control-sm"></textarea>
@@ -46,7 +46,7 @@
               </div>
               <div class="col-12">
                 <label class="control-label" for="EmoteDelay{{ i }}">EmoteDelay{{ i }}</label>
-                <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Emote delay in milliseconds'"></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Emote delay in milliseconds'"></i>
                 <input [formControlName]="'EmoteDelay' + i" id="EmoteDelay{{ i }}" type="number" class="form-control form-control-sm" />
               </div>
             </div>

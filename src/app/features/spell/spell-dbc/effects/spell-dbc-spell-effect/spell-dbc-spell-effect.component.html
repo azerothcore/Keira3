@@ -11,7 +11,7 @@
         ></keira-single-value-selector-btn>
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="'Type of effect which spell has. All following effect fields refer to these.'"
         ></i>
         <input
@@ -25,7 +25,7 @@
         <label class="control-label" [for]="getFieldName('EffectBasePoints')">{{ getFieldName('EffectBasePoints') }}</label>
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="
             'Base points added to result of according effects rolled dice. e.g. EffectDieSides=26 and EffectBasePoints=49 will make 50-75.'
           "
@@ -41,7 +41,7 @@
         <label class="control-label" [for]="getFieldName('EffectRealPointsPerLevel')">{{ getFieldName('EffectRealPointsPerLevel') }}</label>
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="'Base points added to according EffectBasePoints based on caster level.'"
         ></i>
         <input
@@ -55,7 +55,7 @@
         <label class="control-label" [for]="getFieldName('EffectRadiusIndex')">{{ getFieldName('EffectRadiusIndex') }}</label>
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="'According spell effect radius. May differ with caster level. Link to entry in SpellRadius.dbc'"
         ></i>
         <input
@@ -67,7 +67,7 @@
       </div>
       <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" [for]="getFieldName('EffectMultipleValue')">{{ getFieldName('EffectMultipleValue') }}</label>
-        <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Number of stacks for Buffs/Debuffs'"></i>
+        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Number of stacks for Buffs/Debuffs'"></i>
         <input
           [formControlName]="getFieldName('EffectMultipleValue')"
           type="number"
@@ -79,7 +79,7 @@
         <label class="control-label" [for]="getFieldName('EffectMiscValue')">{{ getFieldName('EffectMiscValue') }}</label>
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="'Used for according effects special misc values, commonly entries of called or used creature/item/gameobject.'"
         ></i>
         <input
@@ -93,7 +93,7 @@
         <label class="control-label" [for]="getFieldName('EffectMiscValueB')">{{ getFieldName('EffectMiscValueB') }}</label>
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="'Used for according effects special misc values, commonly entries of called or used creature/item/gameobject.'"
         ></i>
         <input
@@ -107,7 +107,7 @@
         <label class="control-label" [for]="getFieldName('EffectTriggerSpell')">{{ getFieldName('EffectTriggerSpell') }}</label>
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="'Entry of spell triggered on affected target by this according effect.'"
         ></i>
         <input
@@ -119,7 +119,7 @@
       </div>
       <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" [for]="getFieldName('EffectItemType')">{{ getFieldName('EffectItemType') }}</label>
-        <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO'"></i>
+        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'TODO'"></i>
         <input
           [formControlName]="getFieldName('EffectItemType')"
           type="number"
@@ -131,7 +131,7 @@
         <label class="control-label" [for]="getFieldName('EffectPointsPerCombo')">{{ getFieldName('EffectPointsPerCombo') }}</label>
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="'Bonus to effect base value based on amount of combo points on target.'"
         ></i>
         <input
@@ -145,7 +145,7 @@
         <label class="control-label" [for]="getFieldName('EffectDieSides')">{{ getFieldName('EffectDieSides') }}</label>
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="'Number of sides of dice which is being rolled for random value of according effect.'"
         ></i>
         <input
@@ -159,7 +159,7 @@
         <label class="control-label" [for]="getFieldName('EffectChainAmplitude')">{{ getFieldName('EffectChainAmplitude') }}</label>
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="'Used for decreasing (or increasing) according effect value on next chained targets.'"
         ></i>
         <input
@@ -173,7 +173,7 @@
         <label class="control-label" [for]="getFieldName('EffectBonusMultiplier')">{{ getFieldName('EffectBonusMultiplier') }}</label>
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="'Seems to be used for calculation of the according effect value of ticks for DoTs and HoTs.'"
         ></i>
         <input
@@ -197,7 +197,7 @@
         ></keira-single-value-selector-btn>
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="
             'Mechanic of according spell effect. Used by spells granting bonuses/immunities against certain effect types (stun, charm...).'
           "
@@ -223,7 +223,7 @@
         ></keira-single-value-selector-btn>
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="'Type of aura (effect of effect) which according effect applies.'"
         ></i>
         <input
@@ -236,7 +236,7 @@
     </div>
     <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" [for]="getFieldName('EffectAuraPeriod')">{{ getFieldName('EffectAuraPeriod') }}</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'How often the effect ticks in ms.'"></i>
+      <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'How often the effect ticks in ms.'"></i>
       <input
         [formControlName]="getFieldName('EffectAuraPeriod')"
         type="number"
@@ -252,7 +252,7 @@
         <label class="control-label" [for]="getFieldName('SpellClassMask')">{{ getFieldName('SpellClassMask') }}</label>
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="'?Mask for spells which are affected (buffed, ...) by this spell?'"
         ></i>
         <input
@@ -264,7 +264,7 @@
       </div>
       <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" [for]="getFieldName('ImplicitTargetA')">{{ getFieldName('ImplicitTargetA') }}</label>
-        <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Type of implicit target(s) of according effect.'"></i>
+        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Type of implicit target(s) of according effect.'"></i>
         <input
           [formControlName]="getFieldName('ImplicitTargetA')"
           type="number"
@@ -274,7 +274,7 @@
       </div>
       <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" [for]="getFieldName('ImplicitTargetB')">{{ getFieldName('ImplicitTargetB') }}</label>
-        <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Type of implicit target(s) of according effect.'"></i>
+        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Type of implicit target(s) of according effect.'"></i>
         <input
           [formControlName]="getFieldName('ImplicitTargetB')"
           type="number"
@@ -286,7 +286,7 @@
         <label class="control-label" [for]="getFieldName('EffectChainTargets')">{{ getFieldName('EffectChainTargets') }}</label>
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="'?Used to create chaining visual effects (e.g. chain lightning)?'"
         ></i>
         <input
@@ -304,7 +304,7 @@
         ></keira-flags-selector-btn>
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="'Entry of fields 210-212 as hex value of the spell this spell is affecting. Used for effect #1'"
         ></i>
         <input
@@ -322,7 +322,7 @@
         ></keira-flags-selector-btn>
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="'Entry of fields 210-212 as hex value of the spell this spell is affecting. Used for effect #2'"
         ></i>
         <input
@@ -340,7 +340,7 @@
         ></keira-flags-selector-btn>
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="'Entry of fields 210-212 as hex value of the spell this spell is affecting. Used for effect #3'"
         ></i>
         <input

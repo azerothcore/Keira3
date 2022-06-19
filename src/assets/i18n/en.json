@@ -31,6 +31,9 @@
   "LOADING": "Loading...",
   "ALWAYS_0": "",
   "UNIQUE": "The <strong>{{ ENTITY_SECOND_ID_FIELD }}</strong> must be unique.",
+  "UNIQUE_ID": "The unique ID of the {{ ENTITY }}",
+  "DELETE_SELECTED_ROW": "Delete selected row",
+  "ADD_NEW_ROW": "Add new row",
   "CONNECTION_WINDOW": {
     "HOST": "Host",
     "PORT": "Port",
@@ -140,7 +143,7 @@
   "DASHBOARD": {
     "WELCOME": "Welcome to Keira3",
     "WELCOME_1": "You can always find the latest Keira3 version at the <a href=\" {{ REPO_URL }}/releases\" target=\"_blank\">releases page</a>. Join our <strong>#keira-editor</strong> channel on <a href=\"{{ DISCORD_URL }}\" target=\"_blank\">Discord</a> to stay up to date with the latest news and releases!",
-    "WELCOME_2": "Please report any bugs or suggestions using <a href=\"{{ REPO_URL }}/issues/new\" target=\"_blank\">the official repository</a>. If you like Keira3, don't forget to give us a &#11088; on GitHub!",
+    "WELCOME_2": "Please report any bugs or suggestions using <a href=\"{{ REPO_URL }}/issues/new\" target=\"_blank\">the official repository</a>. If you like Keira3, don't forget to give us a &#11088;  on GitHub!",
     "WELCOME_3": "Keira3 is free and open source software that we build during our own spare time, you can <a href=\"{{ DONATE_URL }}\" target=\"_blank\">support us with a donation</a> ❤",
     "WELCOME_4": "We hope that you enjoy using this software and don't forget to contribute with the community by <a href=\"http://www.azerothcore.org/wiki/Contribute#how-to-create-a-pull-request\" target=\"_blank\"> sharing your code </a>",
     "SYSTEM_DETAILS": "System details",
@@ -177,6 +180,13 @@
       "BEHAVIOUR": "Behaviour",
       "MODIFIERS": "Modifiers"
     },
+    "TEMPLATE_ADDON": {
+      "ENTRY": "Link to creature_template.entry",
+      "PATH_ID": "If the creature has waypoint pathed movement, contains the waypoint_data.id for the path the creature is to follow.",
+      "MOUNT": "The model ID of the mount to be used to make the creature appear mounted. The value here overrides the value for the creature unit field UNIT_FIELD_MOUNTDISPLAYID.",
+      "VISIBILITY_DISTANCE_TYPE": "Controls the visibility distance of the creature. 0 = Normal (default 90 yards);  1 = Large (250 yards)",
+      "AURAS": "A list of comma-separated auras to be applied on the creature"
+    },
     "ONKILL_REPUTATION": {
       "IS_TEAM_AWARD1": "Boolean (0 or 1) whether the player receives the reputation also the faction team or not.",
       "REW_ON_KILL_REP_VALUE1": "The reputation value that the player gains (or loses if negative) by killing the creature.",
@@ -187,7 +197,12 @@
     "SPAWN": {
       "ORIENTATION": "The orientation of the creatures spawn point. (North = 0.0; South = pi (3.14159))",
       "SPAWN_DIST_TOOLTIP": "The maximum distance that the creature may spawn from its spawn point. Also controls how far away the creature can walk from its spawn point if its MovementType = 1.",
-      "SCRIPT_NAME": "The name of the C++ script that this creature uses, if any."
+      "SCRIPT_NAME": "The name of the C++ script that this creature uses, if any.",
+      "GUID": "Link to creature.guid",
+      "PATH_ID": "If the creature has waypoint pathed movement, contains the waypoint_data.id for the path the creature is to follow.",
+      "MOUNT": "The model ID of the mount to be used to make the creature appear mounted. The value here overrides the value for the creature unit field UNIT_FIELD_MOUNTDISPLAYID.",
+      "VISIBILITY_DISTANCE_TYPE": "Controls the visibility distance of the creature. 0 = Normal (default 90 yards);  1 = Large (250 yards)",
+      "AURAS": "A list of comma-separated auras to be applied on the creature"
     },
     "TEMPLATE_MOVEMENT": {
       "GROUND": "0 = None; 1 = Run; 2 = Hover",
@@ -206,6 +221,12 @@
       "REQ_SKILL_LINE": "The required skill the player needs to have in order to be able to learn the spell",
       "REQ_SKILL_RANK": "The proficiency in the skill from reqskill that the player needs to meet to learn the spell",
       "REQ_LEVEL": "The minimum level the player needs to be in order to learn the spell."
+    },
+    "NPC_VENDOR": {
+      "SLOT": "Position of the item in the vendor window",
+      "MAXCOUNT": "The maximum number of items carried by the vendor at any time. 0 for infinite.",
+      "INCRTIME": "Combined with maxcount, how often (in seconds) the vendor list is refreshed",
+      "EXTENDED_COST": "Value comes from DBC and a selector for this will be implemented later in Keira3"
     }
   },
   "QUEST": {
@@ -232,6 +253,15 @@
     "TEMPLATE": {
       "BASE": "Base",
       "GAMEOBJECT_DATA": "Gameobject Data"
+    },
+    "SPAWN": {
+      "ORIENTATION": "The orientation of the creatures spawn point. (North = 0.0; South = pi (3.14159))",
+      "ANIMPROGRESS": "Always 100 for chests.",
+      "STATE": "For chests or doors. 1 = closed  0 = open",
+      "SCRIPT_NAME": "The name of the C++ script that this creature uses, if any."
+    },
+    "SPAWN_ADDON": {
+      "GUID": "Link to gameobject.guid"
     }
   },
   "ITEM": {

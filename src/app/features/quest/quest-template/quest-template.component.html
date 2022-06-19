@@ -18,13 +18,13 @@
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="ID">ID</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The unique ID of the quest'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'UNIQUE_ID' | translate: { ENTITY: 'quest' }"></i>
             <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm" />
           </div>
 
           <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
             <label class="control-label" for="LogTitle">LogTitle</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Title of the quest'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Title of the quest'"></i>
             <input [formControlName]="'LogTitle'" id="LogTitle" class="form-control form-control-sm" />
           </div>
 
@@ -42,7 +42,7 @@
             <label class="control-label" for="QuestLevel">QuestLevel</label>
             <i
               class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
+              placement="auto"
               [tooltip]="
                 'Level of the quest. Players receive full experience amount only if their level is <= Level+5. If -1, the player level will be used as Quest Level for experience calculation.'
               "
@@ -52,7 +52,7 @@
 
           <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="MinLevel">MinLevel</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Minimum level at which a player can get the quest.'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Minimum level at which a player can get the quest.'"></i>
             <input [formControlName]="'MinLevel'" id="MinLevel" type="number" class="form-control form-control-sm" />
           </div>
 
@@ -60,7 +60,7 @@
             <label class="control-label" for="QuestSortID">QuestSortID</label>
             <i
               class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
+              placement="auto"
               [tooltip]="
                 'Defines under which category the quest falls in the quest log. Value taken from (if > 0) AreaTable.dbc or (if < 0) QuestSort.dbc'
               "
@@ -75,17 +75,13 @@
               [config]="{ options: QUEST_INFO, name: 'QuestInfoID' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'These values are ID taken from QuestInfo.dbc'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'These values are ID taken from QuestInfo.dbc'"></i>
             <input [formControlName]="'QuestInfoID'" id="QuestInfoID" type="number" class="form-control form-control-sm" />
           </div>
 
           <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="SuggestedGroupNum">SuggestedGroupNum</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'Recommended number of players to do the quest together.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Recommended number of players to do the quest together.'"></i>
             <input [formControlName]="'SuggestedGroupNum'" id="SuggestedGroupNum" type="number" class="form-control form-control-sm" />
           </div>
 
@@ -101,7 +97,7 @@
             ></keira-item-selector-btn>
             <i
               class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
+              placement="auto"
               [tooltip]="'Items given by the quest giver at beginning of the quest. They will be deleted when quest is abandoned.'"
             ></i>
             <input [formControlName]="'StartItem'" id="StartItem" type="number" class="form-control form-control-sm" />
@@ -120,7 +116,7 @@
             <label class="control-label" for="TimeAllowed">TimeAllowed</label>
             <i
               class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
+              placement="auto"
               [tooltip]="'Time (in seconds) that the player has to complete this quest'"
             ></i>
             <input [formControlName]="'TimeAllowed'" id="TimeAllowed" type="number" class="form-control form-control-sm" />
@@ -144,7 +140,7 @@
             <label class="control-label" for="RequiredPlayerKills">RequiredPlayerKills</label>
             <i
               class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
+              placement="auto"
               [tooltip]="'How many players you need to kill in order to complete the quest.'"
             ></i>
             <input [formControlName]="'RequiredPlayerKills'" id="RequiredPlayerKills" type="number" class="form-control form-control-sm" />
@@ -158,7 +154,7 @@
             <label class="control-label" for="POIContinent">POIContinent</label>
             <i
               class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
+              placement="auto"
               [tooltip]="'MapId of the Point Of Interest that will be shown on the map when the quest is active'"
             ></i>
             <input [formControlName]="'POIContinent'" id="POIContinent" type="number" class="form-control form-control-sm" />
@@ -168,7 +164,7 @@
             <label class="control-label" for="POIx">POIx</label>
             <i
               class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
+              placement="auto"
               [tooltip]="'X coordinate of the Point Of Interest that will be shown on the map when the quest is active'"
             ></i>
             <input [formControlName]="'POIx'" id="POIx" type="number" class="form-control form-control-sm" />
@@ -178,7 +174,7 @@
             <label class="control-label" for="POIy">POIy</label>
             <i
               class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
+              placement="auto"
               [tooltip]="'Y coordinate of the Point Of Interest that will be shown on the map when the quest is active'"
             ></i>
             <input [formControlName]="'POIy'" id="POIy" type="number" class="form-control form-control-sm" />
@@ -217,7 +213,7 @@
       <div class="content-block">
         <span class="category-title">
           {{ 'QUEST.TEMPLATE.OBJECTIVE_TEXTS' | translate }}
-          <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Non-standard objective texts displayed in the quest log'"></i>
+          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Non-standard objective texts displayed in the quest log'"></i>
         </span>
         <div class="row">
           <div *ngFor="let i of [1, 2, 3, 4]" class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
@@ -229,7 +225,7 @@
       <div class="content-block">
         <span class="category-title">
           {{ 'QUEST.TEMPLATE.REQUIRED_ITEMS' | translate }}
-          <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Items required to complete the quest'"></i>
+          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Items required to complete the quest'"></i>
         </span>
         <div class="row">
           <div *ngFor="let i of [1, 2, 3, 4, 5, 6]" class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
@@ -266,7 +262,7 @@
       <div class="content-block">
         <span class="category-title">
           {{ 'QUEST.TEMPLATE.REQUIRED_FACTION_OR_NPC' | translate }}
-          <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'If > 0: creature; if < 0: gameobject'"></i>
+          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'If > 0: creature; if < 0: gameobject'"></i>
         </span>
         <div class="row">
           <div *ngFor="let i of [1, 2, 3, 4]" class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
@@ -356,7 +352,7 @@
             <label class="control-label" for="RewardTalents">RewardTalents</label>
             <i
               class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
+              placement="auto"
               [tooltip]="'Amount of bonus talent points received when completing the quest'"
             ></i>
             <input [formControlName]="'RewardTalents'" id="RewardTalents" type="number" class="form-control form-control-sm" />
@@ -364,11 +360,7 @@
 
           <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="RewardArenaPoints">RewardArenaPoints</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'Amount of arena points received when completing the quest'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Amount of arena points received when completing the quest'"></i>
             <input [formControlName]="'RewardArenaPoints'" id="RewardArenaPoints" type="number" class="form-control form-control-sm" />
           </div>
 
@@ -376,7 +368,7 @@
             <label class="control-label" for="RewardNextQuest">RewardNextQuest</label>
             <i
               class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
+              placement="auto"
               [tooltip]="'The ID of the next quest that will be added automatically when completing the quest'"
             ></i>
             <input [formControlName]="'RewardNextQuest'" id="RewardNextQuest" type="number" class="form-control form-control-sm" />
@@ -386,7 +378,7 @@
             <label class="control-label" for="RewardXPDifficulty">RewardXPDifficulty</label>
             <i
               class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
+              placement="auto"
               [tooltip]="
                 'According to the Level, the basic experience with index RewardXPDifficulty is taken from QuestXP.dbc. Check the docs for more info.'
               "
@@ -398,7 +390,7 @@
             <label class="control-label" for="RewardMoney">RewardMoney</label>
             <i
               class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
+              placement="auto"
               [tooltip]="'If value > 0: money earned by completing the quest; if value < 0: money required to complete the quest'"
             ></i>
             <input [formControlName]="'RewardMoney'" id="RewardMoney" type="number" class="form-control form-control-sm" />
@@ -406,7 +398,7 @@
 
           <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="RewardMoneyDifficulty">Rew.MoneyDifficulty</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'TODO: RewardMoneyDifficulty tooltip'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'TODO: RewardMoneyDifficulty tooltip'"></i>
             <input
               [formControlName]="'RewardMoneyDifficulty'"
               id="RewardMoneyDifficulty"
@@ -419,7 +411,7 @@
             <label class="control-label" for="RewardBonusMoney">RewardBonusMoney</label>
             <i
               class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
+              placement="auto"
               [tooltip]="'The money a character at level 80 would get when they complete this quest.'"
             ></i>
             <input [formControlName]="'RewardBonusMoney'" id="RewardBonusMoney" type="number" class="form-control form-control-sm" />
@@ -434,7 +426,7 @@
             <label class="control-label" for="RewardSpell">RewardSpell</label>
             <i
               class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
+              placement="auto"
               [tooltip]="
                 'Spell that is shown to be casted on quest completion in the quest log. Note that this spell will NOT be casted if RewardSpellCast is non-zero.'
               "
@@ -451,7 +443,7 @@
             <label class="control-label" for="RewardHonor">RewardHonor</label>
             <i
               class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
+              placement="auto"
               [tooltip]="'Number of honorable kill honor rewarded for completing this quest'"
             ></i>
             <input [formControlName]="'RewardHonor'" id="RewardHonor" type="number" class="form-control form-control-sm" />
@@ -526,7 +518,7 @@
           {{ 'QUEST.TEMPLATE.REWARD_FACTIONS' | translate }}
           <i
             class="fas fa-info-circle ms-1"
-            [placement]="'auto'"
+            placement="auto"
             [tooltip]="'Faction ID for which the quest adds (or subtracts) reputation points.'"
           ></i>
         </span>

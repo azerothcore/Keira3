@@ -57,7 +57,7 @@
             <div class="form-row">
               <div class="form-group col-6">
                 <label class="control-label" for="id">id</label>
-                <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'A unique identifier for each row'"></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'A unique identifier for each row'"></i>
               </div>
               <div class="form-group col">
                 <input [formControlName]="'id'" id="id" type="number" class="form-control form-control-sm" />
@@ -69,7 +69,7 @@
                 <label class="control-label" for="link">link</label>
                 <i
                   class="fas fa-info-circle ms-1"
-                  [placement]="'auto'"
+                  placement="auto"
                   [tooltip]="
                     'Event linking. Example: if id = 0 and link = 1; id 1 will only be able to occur if id = 0 was triggered (id 1 has to use event_type SMART_EVENT_LINK)'
                   "
@@ -89,7 +89,7 @@
                   [config]="{ flags: EVENT_PHASE_MASK, name: 'event_phase_mask' }"
                   [modalClass]="'modal-lg'"
                 ></keira-flags-selector-btn>
-                <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Use 0 for all phases'"></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'Use 0 for all phases'"></i>
               </div>
 
               <div class="form-group col">
@@ -102,7 +102,7 @@
                 <label class="control-label" for="event_chance">chance</label>
                 <i
                   class="fas fa-info-circle ms-1"
-                  [placement]="'auto'"
+                  placement="auto"
                   [tooltip]="
                     'This is the probability of the event to occur as a percentage from 0-100. Example: if you want the event to occur roughly half of the time, then set this to 50.'
                   "
@@ -136,7 +136,7 @@
               {{ SAI_EVENTS[selectedEvent] }}
               <i
                 class="fas fa-info-circle ms-1"
-                [placement]="'auto'"
+                placement="auto"
                 [hidden]="!SAI_EVENT_TOOLTIPS[selectedEvent]"
                 [tooltip]="SAI_EVENT_TOOLTIPS[selectedEvent]"
               ></i>
@@ -150,7 +150,7 @@
                     {{ getName('param1', EVENT_PARAM1_NAMES[selectedEvent]) }}
                     <i
                       class="fas fa-info-circle ms-1"
-                      [placement]="'auto'"
+                      placement="auto"
                       [hidden]="!EVENT_PARAM1_TOOLTIPS[selectedEvent]"
                       [tooltip]="EVENT_PARAM1_TOOLTIPS[selectedEvent]"
                     ></i>
@@ -171,7 +171,7 @@
                     {{ getName('param2', EVENT_PARAM2_NAMES[selectedEvent]) }}
                     <i
                       class="fas fa-info-circle ms-1"
-                      [placement]="'auto'"
+                      placement="auto"
                       [hidden]="!EVENT_PARAM2_TOOLTIPS[selectedEvent]"
                       [tooltip]="EVENT_PARAM2_TOOLTIPS[selectedEvent]"
                     ></i>
@@ -191,7 +191,7 @@
                   {{ getName('param3', EVENT_PARAM3_NAMES[selectedEvent]) }}
                   <i
                     class="fas fa-info-circle ms-1"
-                    [placement]="'auto'"
+                    placement="auto"
                     [hidden]="!EVENT_PARAM3_TOOLTIPS[selectedEvent]"
                     [tooltip]="EVENT_PARAM3_TOOLTIPS[selectedEvent]"
                   ></i>
@@ -209,7 +209,7 @@
                   {{ getName('param4', EVENT_PARAM4_NAMES[selectedEvent]) }}
                   <i
                     class="fas fa-info-circle ms-1"
-                    [placement]="'auto'"
+                    placement="auto"
                     [hidden]="!EVENT_PARAM4_TOOLTIPS[selectedEvent]"
                     [tooltip]="EVENT_PARAM4_TOOLTIPS[selectedEvent]"
                   ></i>
@@ -227,7 +227,7 @@
                   {{ getName('param5', EVENT_PARAM5_NAMES[selectedEvent]) }}
                   <i
                     class="fas fa-info-circle ms-1"
-                    [placement]="'auto'"
+                    placement="auto"
                     [hidden]="!EVENT_PARAM5_TOOLTIPS[selectedEvent]"
                     [tooltip]="EVENT_PARAM5_TOOLTIPS[selectedEvent]"
                   ></i>
@@ -246,7 +246,7 @@
               {{ SAI_ACTIONS[selectedAction] }}
               <i
                 class="fas fa-info-circle ms-1"
-                [placement]="'auto'"
+                placement="auto"
                 [hidden]="!SAI_ACTION_TOOLTIPS[selectedAction]"
                 [tooltip]="SAI_ACTION_TOOLTIPS[selectedAction]"
               ></i>
@@ -258,7 +258,7 @@
                   {{ getName('param1', ACTION_PARAM1_NAMES[selectedAction]) }}
                   <i
                     class="fas fa-info-circle ms-1"
-                    [placement]="'auto'"
+                    placement="auto"
                     [hidden]="!ACTION_PARAM1_TOOLTIPS[selectedAction]"
                     [tooltip]="ACTION_PARAM1_TOOLTIPS[selectedAction]"
                   ></i>
@@ -276,7 +276,7 @@
                   {{ getName('param2', ACTION_PARAM2_NAMES[selectedAction]) }}
                   <i
                     class="fas fa-info-circle ms-1"
-                    [placement]="'auto'"
+                    placement="auto"
                     [hidden]="!ACTION_PARAM2_TOOLTIPS[selectedAction]"
                     [tooltip]="ACTION_PARAM2_TOOLTIPS[selectedAction]"
                   ></i>
@@ -294,7 +294,7 @@
                   {{ getName('param3', ACTION_PARAM3_NAMES[selectedAction]) }}
                   <i
                     class="fas fa-info-circle ms-1"
-                    [placement]="'auto'"
+                    placement="auto"
                     [hidden]="!ACTION_PARAM3_TOOLTIPS[selectedAction]"
                     [tooltip]="ACTION_PARAM3_TOOLTIPS[selectedAction]"
                   ></i>
@@ -312,7 +312,7 @@
                   {{ getName('param4', ACTION_PARAM4_NAMES[selectedAction]) }}
                   <i
                     class="fas fa-info-circle ms-1"
-                    [placement]="'auto'"
+                    placement="auto"
                     [hidden]="!ACTION_PARAM4_TOOLTIPS[selectedAction]"
                     [tooltip]="ACTION_PARAM4_TOOLTIPS[selectedAction]"
                   ></i>
@@ -330,7 +330,7 @@
                   {{ getName('param5', ACTION_PARAM5_NAMES[selectedAction]) }}
                   <i
                     class="fas fa-info-circle ms-1"
-                    [placement]="'auto'"
+                    placement="auto"
                     [hidden]="!ACTION_PARAM5_TOOLTIPS[selectedAction]"
                     [tooltip]="ACTION_PARAM5_TOOLTIPS[selectedAction]"
                   ></i>
@@ -348,7 +348,7 @@
                   {{ getName('param6', ACTION_PARAM6_NAMES[selectedAction]) }}
                   <i
                     class="fas fa-info-circle ms-1"
-                    [placement]="'auto'"
+                    placement="auto"
                     [hidden]="!ACTION_PARAM6_TOOLTIPS[selectedAction]"
                     [tooltip]="ACTION_PARAM6_TOOLTIPS[selectedAction]"
                   ></i>
@@ -367,7 +367,7 @@
               {{ SAI_TARGETS[selectedTarget] }}
               <i
                 class="fas fa-info-circle ms-1"
-                [placement]="'auto'"
+                placement="auto"
                 [hidden]="!SAI_TARGET_TOOLTIPS[selectedTarget]"
                 [tooltip]="SAI_TARGET_TOOLTIPS[selectedTarget]"
               ></i>
@@ -379,7 +379,7 @@
                   {{ getName('param1', TARGET_PARAM1_NAMES[selectedTarget]) }}
                   <i
                     class="fas fa-info-circle ms-1"
-                    [placement]="'auto'"
+                    placement="auto"
                     [hidden]="!TARGET_PARAM1_TOOLTIPS[selectedTarget]"
                     [tooltip]="TARGET_PARAM1_TOOLTIPS[selectedTarget]"
                   ></i>
@@ -397,7 +397,7 @@
                   {{ getName('param2', TARGET_PARAM2_NAMES[selectedTarget]) }}
                   <i
                     class="fas fa-info-circle ms-1"
-                    [placement]="'auto'"
+                    placement="auto"
                     [hidden]="!TARGET_PARAM2_TOOLTIPS[selectedTarget]"
                     [tooltip]="TARGET_PARAM2_TOOLTIPS[selectedTarget]"
                   ></i>
@@ -415,7 +415,7 @@
                   {{ getName('param3', TARGET_PARAM3_NAMES[selectedTarget]) }}
                   <i
                     class="fas fa-info-circle ms-1"
-                    [placement]="'auto'"
+                    placement="auto"
                     [hidden]="!TARGET_PARAM3_TOOLTIPS[selectedTarget]"
                     [tooltip]="TARGET_PARAM3_TOOLTIPS[selectedTarget]"
                   ></i>
@@ -433,7 +433,7 @@
                   {{ getName('param4', TARGET_PARAM4_NAMES[selectedTarget]) }}
                   <i
                     class="fas fa-info-circle ms-1"
-                    [placement]="'auto'"
+                    placement="auto"
                     [hidden]="!TARGET_PARAM4_TOOLTIPS[selectedTarget]"
                     [tooltip]="TARGET_PARAM4_TOOLTIPS[selectedTarget]"
                   ></i>
@@ -451,7 +451,7 @@
                   {{ getName('TargetX', TARGET_X_NAMES[selectedTarget]) }}
                   <i
                     class="fas fa-info-circle ms-1"
-                    [placement]="'auto'"
+                    placement="auto"
                     [hidden]="!TARGET_X_TOOLTIPS[selectedTarget]"
                     [tooltip]="TARGET_X_TOOLTIPS[selectedTarget]"
                   ></i>
@@ -469,7 +469,7 @@
                   {{ getName('TargetY', TARGET_Y_NAMES[selectedTarget]) }}
                   <i
                     class="fas fa-info-circle ms-1"
-                    [placement]="'auto'"
+                    placement="auto"
                     [hidden]="!TARGET_Y_TOOLTIPS[selectedTarget]"
                     [tooltip]="TARGET_Y_TOOLTIPS[selectedTarget]"
                   ></i>
@@ -487,7 +487,7 @@
                   {{ getName('TargetZ', TARGET_Z_NAMES[selectedTarget]) }}
                   <i
                     class="fas fa-info-circle ms-1"
-                    [placement]="'auto'"
+                    placement="auto"
                     [hidden]="!TARGET_Z_TOOLTIPS[selectedTarget]"
                     [tooltip]="TARGET_Z_TOOLTIPS[selectedTarget]"
                   ></i>
@@ -505,7 +505,7 @@
                   {{ getName('TargetO', TARGET_O_NAMES[selectedTarget]) }}
                   <i
                     class="fas fa-info-circle ms-1"
-                    [placement]="'auto'"
+                    placement="auto"
                     [hidden]="!TARGET_O_TOOLTIPS[selectedTarget]"
                     [tooltip]="TARGET_O_TOOLTIPS[selectedTarget]"
                   ></i>
@@ -587,7 +587,7 @@
         Creature's Timed Actionlists
         <i
           class="fas fa-info-circle ms-1"
-          [placement]="'auto'"
+          placement="auto"
           [tooltip]="'All smart_scripts having source_type = 9 and entryorguid between CreatureID * 100 and CreatureID * 100 + 100'"
         ></i>
       </p>

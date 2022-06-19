@@ -17,7 +17,7 @@
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="guid">guid</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Link to gameobject.guid'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'GAMEOBJECT.SPAWN_ADDON.GUID' | translate"></i>
             <input [formControlName]="'guid'" id="guid" type="number" class="form-control form-control-sm" />
           </div>
 
@@ -50,11 +50,16 @@
             class="btn btn-danger btn-sm me-2"
             (click)="editorService.deleteSelectedRow()"
             [disabled]="editorService.selectedRowId === null"
-          >
-            Delete selected row
-          </button>
+            [translate]="'DELETE_SELECTED_ROW'"
+          ></button>
 
-          <button id="add-new-row-btn" class="btn btn-success btn-sm" (click)="editorService.addNewRow()" disabled>Add new row</button>
+          <button
+            id="add-new-row-btn"
+            class="btn btn-success btn-sm"
+            (click)="editorService.addNewRow()"
+            [translate]="'ADD_NEW_ROW'"
+            disabled
+          ></button>
 
           <ngx-datatable
             id="editor-table"
