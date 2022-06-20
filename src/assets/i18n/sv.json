@@ -240,11 +240,11 @@
       "ORIENTATION": "Bestämmer den NPC Spawn Punkt. (North = 0.0; South = pi (3.14159))",
       "SPAWN_DIST_TOOLTIP": "Det maximala avståndet som den NPC kan spawna från dens Spawn Punkt. Kontrollerar också den hur långt ifrån NPC kan röra sig från din Spawn Punkt om dens MovementType = 1.",
       "SCRIPT_NAME": "Namnet på det C++ script som denna NPC använder, om det finns.",
-      "GUID": "Link to creature.guid",
-      "PATH_ID": "If the creature has waypoint pathed movement, contains the waypoint_data.id for the path the creature is to follow.",
-      "MOUNT": "The model ID of the mount to be used to make the creature appear mounted. The value here overrides the value for the creature unit field UNIT_FIELD_MOUNTDISPLAYID.",
-      "VISIBILITY_DISTANCE_TYPE": "Controls the visibility distance of the creature. 0 = Normal (default 90 yards);  1 = Large (250 yards)",
-      "AURAS": "A list of comma-separated auras to be applied on the creature"
+      "GUID": "Länk till creature.guid",
+      "PATH_ID": "Om den NPC har en Waypoint Pathed rörelse, innehåller waypoint_data.id för den väg denna NPC ska röra sig.",
+      "MOUNT": "Model ID av den Mount som ska användas för den NPC ska vara Mounted. Värdet här åsidosätter värdet för NPC unit field UNIT_FIELD_MOUNTDISPLAYID.",
+      "VISIBILITY_DISTANCE_TYPE": "Kontrollerar hur nära eller långt ifrån en NPC kan upptäcka NPC. 0 = Normal (default 90 yards);  1 = Large (250 yards)",
+      "AURAS": "En lista utav Comma-Separated Auras som appliceras på NPC."
     },
     "TEMPLATE_MOVEMENT": {
       "GROUND": "0 = None; 1 = Run; 2 = Hover",
@@ -259,10 +259,10 @@
       "INDEX": "Allowed values: 0-7"
     },
     "NPC_TRAINER": {
-      "MONEY_COST": "The cost to pay to learn the spell represented in copper (1 gold = 100 silver = 10000 cooper)",
-      "REQ_SKILL_LINE": "The required skill the player needs to have in order to be able to learn the spell",
-      "REQ_SKILL_RANK": "The proficiency in the skill from reqskill that the player needs to meet to learn the spell",
-      "REQ_LEVEL": "The minimum level the player needs to be in order to learn the spell."
+      "MONEY_COST": "Vad det kommer att kosta att lära sig en Spell i coppar (1 gold = 100 silver = 10000 copper)",
+      "REQ_SKILL_LINE": "Vilken Spell som behövs för att spelaren ska kunna lära sig denna Spell",
+      "REQ_SKILL_RANK": "Den rank som behövs från ReqSkill som spelaren behöver ha för att kunna lära sig denna Spell",
+      "REQ_LEVEL": "Den minimala leveln som spelaren måste vara för att kunna lära sig denna Spell."
     },
     "NPC_VENDOR": {
       "SLOT": "Position of the item in the vendor window",
