@@ -223,18 +223,18 @@
       "DETECTION_RANGE": "Kontrollerar hur nära eller långt ifrån en NPC kan upptäcka spelare."
     },
     "TEMPLATE_ADDON": {
-      "ENTRY": "Link to creature_template.entry",
-      "PATH_ID": "If the creature has waypoint pathed movement, contains the waypoint_data.id for the path the creature is to follow.",
-      "MOUNT": "The model ID of the mount to be used to make the creature appear mounted. The value here overrides the value for the creature unit field UNIT_FIELD_MOUNTDISPLAYID.",
-      "VISIBILITY_DISTANCE_TYPE": "Controls the visibility distance of the creature. 0 = Normal (default 90 yards);  1 = Large (250 yards)",
-      "AURAS": "A list of comma-separated auras to be applied on the creature"
+      "ENTRY": "Länk till creature_template.entry",
+      "PATH_ID": "Om NPC har en Waypoint Pathed rörelse, som innehåller waypoint_data.id för den väg/rörelse som NPC ska gå.",
+      "MOUNT": "Model ID utav den Mount ska ska användas för att få den NPC att sitta på en Mount. Värdet här åsidosätter det värdet för den NPC unit field UNIT_FIELD_MOUNTDISPLAYID.",
+      "VISIBILITY_DISTANCE_TYPE": "Kontrollerar hur långt ifrån du kan se den NPC. 0 = Normal (default 90 yards);  1 = Large (250 yards).",
+      "AURAS": "En lista utav Comma-Separated Auras som appliceras på NPC."
     },
     "ONKILL_REPUTATION": {
-      "IS_TEAM_AWARD1": "Boolean (0 or 1) whether the player receives the reputation also the faction team or not.",
-      "REW_ON_KILL_REP_VALUE1": "The reputation value that the player gains (or loses if negative) by killing the creature.",
-      "IS_TEAM_AWARD2": "Boolean (0 or 1) whether the player receives the reputation also the faction team or not.",
-      "REW_ON_KILL_REP_VALUE2": "The reputation value that the player gains (or loses if negative) by killing the creature.",
-      "TEAM_DEPENDENT_TOOLTIP": "Boolean value. 0 - Will give reputation to the any player from both fields (RewOnKillRepFaction1 and RewOnKillRepFaction2); 1 - Will give reputation to alliance players from RewOnKillRepFaction1 and horde players from RewOnKillRepFaction2"
+      "IS_TEAM_AWARD1": "Boolean (0 or 1) bestämmer om spelaren ska få Reputation samt Faction Team.",
+      "REW_ON_KILL_REP_VALUE1": "Bestämmer hur mycket Reputation spelaren ska få (eller förlora om negativt) för att döda NPC.",
+      "IS_TEAM_AWARD2": "Boolean (0 or 1) bestämmer om spelaren ska få Reputation samt Faction Team.",
+      "REW_ON_KILL_REP_VALUE2": "Bestämmer hur mycket Reputation spelaren ska få (eller förlora om negativt) för att döda NPC.",
+      "TEAM_DEPENDENT_TOOLTIP": "Boolean value. 0 - Ger Reputation till alla spelare från båda Fields (RewOnKillRepFaction1 och RewOnKillRepFaction2); 1 - Ger Reputation till Alliance Players från RewOnKillRepFaction1 och Horde Players från RewOnKillRepFaction2"
     },
     "SPAWN": {
       "ORIENTATION": "The orientation of the creatures spawn point. (North = 0.0; South = pi (3.14159))",
