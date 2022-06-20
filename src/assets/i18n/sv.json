@@ -315,7 +315,7 @@
       "ADDON_REQUIREMENTS": "Addon Krav",
       "ADDON_REWARDS": "Addon Belöningar",
       "PREV_QUEST_ID": "if > 0: föregående quest id; if < 0 parent quest id",
-      "NEXT_QUEST_ID": "Contains the next quest id, in case PrevQuestId of that other quest is not sufficient.",
+      "NEXT_QUEST_ID": "Innehåller nästa Quest id, om PrevQuestId utav det andra Quest inte är tillräckligt.",
       "MAX_LEVEL": "Maximum player level at which a character can get the quest.",
       "ALLOWABLE_CLASSES": "Use 0 to allow all classes",
       "SOURCE_SPELL_ID": "The spell ID cast on player upon starting the quest.",
