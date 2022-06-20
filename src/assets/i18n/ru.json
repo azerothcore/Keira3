@@ -152,30 +152,30 @@
     }
   },
   "DASHBOARD": {
-    "WELCOME": "Welcome to Keira3",
-    "WELCOME_1": "You can always find the latest Keira3 version at the <a href=\" {{ REPO_URL }}/releases\" target=\"_blank\">releases page</a>. Join our <strong>#keira-editor</strong> channel on <a href=\"{{ DISCORD_URL }}\" target=\"_blank\">Discord</a> to stay up to date with the latest news and releases!",
-    "WELCOME_2": "Please report any bugs or suggestions using <a href=\"{{ REPO_URL }}/issues/new\" target=\"_blank\">the official repository</a>. If you like Keira3, don't forget to give us a &#11088;  on GitHub!",
-    "WELCOME_3": "Keira3 is free and open source software that we build during our own spare time, you can <a href=\"{{ DONATE_URL }}\" target=\"_blank\">support us with a donation</a> ❤",
-    "WELCOME_4": "We hope that you enjoy using this software and don't forget to contribute with the community by <a href=\"http://www.azerothcore.org/wiki/Contribute#how-to-create-a-pull-request\" target=\"_blank\"> sharing your code </a>",
-    "SYSTEM_DETAILS": "System details",
-    "SYSTEM_WARNING": "<strong>WARNING:</strong> It looks like <strong><i>{{ DATABASE_NAME }}</i></strong> is not a valid AzerothCore world database.",
-    "SYSTEM_WARNING_1": "If you selected the wrong database by mistake, you can <strong>logout</strong> and change it.",
-    "SYSTEM_WARNING_2": "If you are using an old version of AzerothCore, we recommend to <a target=\"_blank\" href=\"http://www.azerothcore.org/wiki/Update\">update it</a> before using the editor.",
-    "SYSTEM_WARNING_3": "If you are using a different emulator than AzerothCore, <strong>be aware that some features will be broken</strong>. More info are available <a target=\"_blank\" href=\"https://github.com/azerothcore/forum/issues/43\">here</a>.",
-    "KEIRA_VERSION": "Keira Version:",
-    "KEIRA_DETAILS": "Keira Details:",
-    "AC_CORE_VERSION": "AC Core version:",
+    "WELCOME": "Добро пожаловать в Keira3",
+    "WELCOME_1": "Вы всегда можете найти последнюю версию Keira3 на <a href=\" {{ REPO_URL }}/releases\" target=\"_blank\">странице релизов</a>.  Присоединяйтесь к нашему каналу <strong>#keira-editor</strong> в <a href=\"{{ DISCORD_URL }}\" target=\"_blank\">Discord</a> чтобы быть в курсе последних новостей и релизов!",
+    "WELCOME_2": "Пожалуйста, сообщайте о любых ошибках или предложениях, используя <a href=\"{{ REPO_URL }}/issues/new\" target=\"_blank\">официальный репозиторий</a>. Если вам нравится Keira3, не забудьте поставить нам &#11088;  на GitHub!",
+    "WELCOME_3": "Keira3 - это бесплатное программное обеспечение с открытым исходным кодом, которое мы создаем в свободное время, вы можете <a href=\"{{ DONATE_URL }}\" target=\"_blank\">поддержать нас пожертвованием</a> ❤",
+    "WELCOME_4": "Мы надеемся, что вам понравится пользоваться этим программным обеспечением, и не забывайте вносить свой вклад в сообщество, <a href=\"http://www.azerothcore.org/wiki/Contribute#how-to-create-a-pull-request\" target=\"_blank\"> делясь своим кодом </a>",
+    "SYSTEM_DETAILS": "Системные данные",
+    "SYSTEM_WARNING": "<strong>ПРЕДУПРЕЖДЕНИЕ:</strong> Похоже, что <strong><i>{{ DATABASE_NAME }}</i></strong> не является актуальной базой данных мира AzerothCore.",
+    "SYSTEM_WARNING_1": "Если вы по ошибке выбрали неправильную базу данных, вы можете <strong>выйти</strong> из системы и изменить ее.",
+    "SYSTEM_WARNING_2": "Если вы используете старую версию AzerothCore, мы рекомендуем <a target=\"_blank\" href=\"http://www.azerothcore.org/wiki/Update\">обновить ее</a> перед использованием редактора.",
+    "SYSTEM_WARNING_3": "Если вы используете эмулятор, отличающийся от AzerothCore, <strong>имейте в виду, что некоторые функции будут нерабочими</strong>. Более подробная информация доступна <a target=\"_blank\" href=\"https://github.com/azerothcore/forum/issues/43\">здесь</a>.",
+    "KEIRA_VERSION": "Keira Версия:",
+    "KEIRA_DETAILS": "Keira Детали:",
+    "AC_CORE_VERSION": "AC Core версия:",
     "AC_COMMIT": "AC commit hash:",
-    "AC_DB_RELEASE": "AC DB release:",
-    "AC_DB_VERSION": "AC World DB version:",
-    "DEBUG_MODE": "Enable Keira3 Debug mode (slower performance, to be used only for development)"
+    "AC_DB_RELEASE": "AC DB релиз:",
+    "AC_DB_VERSION": "AC World DB версия:",
+    "DEBUG_MODE": "Включить режим отладки Keira3 (более низкая производительность, используется только для разработки)"
   },
   "SQL_EDITOR": {
-    "TITLE": "SQL Editor",
-    "TOOLTIP": "A minimalistic SQL Editor to run custom queries",
-    "EXECUTE": "Execute (F9)",
-    "LEARN_SQL": "learn the SQL language",
-    "AFFECTED_ROWS": "Affected rows:"
+    "TITLE": "SQL Редактор",
+    "TOOLTIP": "Оптимизированный SQL Редактор для выполнения пользовательских запросов",
+    "EXECUTE": "Выполнить (F9)",
+    "LEARN_SQL": "изучить язык SQL",
+    "AFFECTED_ROWS": "Затронутые строки:"
   },
   "CREATURE": {
     "TEMPLATE": {
