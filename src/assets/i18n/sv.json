@@ -237,9 +237,9 @@
       "TEAM_DEPENDENT_TOOLTIP": "Boolean value. 0 - Ger Reputation till alla spelare från båda Fields (RewOnKillRepFaction1 och RewOnKillRepFaction2); 1 - Ger Reputation till Alliance Players från RewOnKillRepFaction1 och Horde Players från RewOnKillRepFaction2"
     },
     "SPAWN": {
-      "ORIENTATION": "The orientation of the creatures spawn point. (North = 0.0; South = pi (3.14159))",
-      "SPAWN_DIST_TOOLTIP": "The maximum distance that the creature may spawn from its spawn point. Also controls how far away the creature can walk from its spawn point if its MovementType = 1.",
-      "SCRIPT_NAME": "The name of the C++ script that this creature uses, if any.",
+      "ORIENTATION": "Bestämmer den NPC Spawn Punkt. (North = 0.0; South = pi (3.14159))",
+      "SPAWN_DIST_TOOLTIP": "Det maximala avståndet som den NPC kan spawna från dens Spawn Punkt. Kontrollerar också den hur långt ifrån NPC kan röra sig från din Spawn Punkt om dens MovementType = 1.",
+      "SCRIPT_NAME": "Namnet på det C++ script som denna NPC använder, om det finns.",
       "GUID": "Link to creature.guid",
       "PATH_ID": "If the creature has waypoint pathed movement, contains the waypoint_data.id for the path the creature is to follow.",
       "MOUNT": "The model ID of the mount to be used to make the creature appear mounted. The value here overrides the value for the creature unit field UNIT_FIELD_MOUNTDISPLAYID.",
