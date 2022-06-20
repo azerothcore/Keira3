@@ -225,7 +225,7 @@
     "TEMPLATE_ADDON": {
       "ENTRY": "Länk till creature_template.entry",
       "PATH_ID": "Om NPC har en Waypoint Pathed rörelse, som innehåller waypoint_data.id för den väg/rörelse som NPC ska gå.",
-      "MOUNT": "Model ID utav den Mount ska ska användas för att få den NPC att sitta på en Mount. Värdet här åsidosätter det värdet för den NPC unit field UNIT_FIELD_MOUNTDISPLAYID.",
+      "MOUNT": "Model ID utav den Mount ska ska användas för att få den NPC att sitta på en Mount. ID här åsidosätter det ID för den NPC unit field UNIT_FIELD_MOUNTDISPLAYID.",
       "VISIBILITY_DISTANCE_TYPE": "Kontrollerar hur långt ifrån du kan se den NPC. 0 = Normal (default 90 yards);  1 = Large (250 yards).",
       "AURAS": "En lista utav Comma-Separated Auras som appliceras på NPC."
     },
@@ -242,7 +242,7 @@
       "SCRIPT_NAME": "Namnet på det C++ script som denna NPC använder, om det finns.",
       "GUID": "Länk till creature.guid",
       "PATH_ID": "Om den NPC har en Waypoint Pathed rörelse, innehåller waypoint_data.id för den väg denna NPC ska röra sig.",
-      "MOUNT": "Model ID av den Mount som ska användas för den NPC ska vara Mounted. Värdet här åsidosätter värdet för NPC unit field UNIT_FIELD_MOUNTDISPLAYID.",
+      "MOUNT": "Model ID av den Mount som ska användas för den NPC ska vara Mounted. ID här åsidosätter ID för NPC unit field UNIT_FIELD_MOUNTDISPLAYID.",
       "VISIBILITY_DISTANCE_TYPE": "Kontrollerar hur nära eller långt ifrån en NPC kan upptäcka NPC. 0 = Normal (default 90 yards);  1 = Large (250 yards)",
       "AURAS": "En lista utav Comma-Separated Auras som appliceras på NPC."
     },
@@ -265,10 +265,10 @@
       "REQ_LEVEL": "Den minimala leveln som spelaren måste vara för att kunna lära sig denna Spell."
     },
     "NPC_VENDOR": {
-      "SLOT": "Position of the item in the vendor window",
-      "MAXCOUNT": "The maximum number of items carried by the vendor at any time. 0 for infinite.",
-      "INCRTIME": "Combined with maxcount, how often (in seconds) the vendor list is refreshed",
-      "EXTENDED_COST": "Value comes from DBC and a selector for this will be implemented later in Keira3"
+      "SLOT": "Positionen för Item i Vendor Window",
+      "MAXCOUNT": "Det maximala antalet denna Vendor kan ha utav ett Item. 0 för oändligt.",
+      "INCRTIME": "Kombinerat med MaxCount, hur ofta (i sekunder) Vendor listan Refreshas",
+      "EXTENDED_COST": "ID kommer från DBC och kommer att implementeras senare i Keira3"
     }
   },
   "QUEST": {
@@ -284,11 +284,11 @@
       "REQUIRED_ITEMS": "RequiredItems",
       "REWARD_FACTIONS": "RewardFactions",
       "REQUIRED_FACTION_OR_NPC": "Required Factions, NpcOrGo",
-      "LOG_TITLE": "Title of the quest",
-      "QUEST_LEVEL": "Level of the quest. Players receive full experience amount only if their level is <= Level+5. If -1, the player level will be used as Quest Level for experience calculation.",
-      "MIN_LEVEL": "Minimum level at which a player can get the quest.",
-      "QUEST_SORT_ID": "Defines under which category the quest falls in the quest log. Value taken from (if > 0) AreaTable.dbc or (if < 0) QuestSort.dbc",
-      "QUEST_INFO_ID": "These values are ID taken from QuestInfo.dbc",
+      "LOG_TITLE": "Namnet på ditt Quest",
+      "QUEST_LEVEL": "Level på Quest. Spelare kommer få full XP om deras level är <= Level+5. Om det är -1, Spelarens level kommer att användas som Quest Level för att det ska kalkyleras.",
+      "MIN_LEVEL": "Den minimala leveln spelaren måste vara för Questet.",
+      "QUEST_SORT_ID": "Defineras under vilken kategori Questet klassa som i Quest Log. ID tagen ifrån (if > 0) AreaTable.dbc or (if < 0) QuestSort.dbc",
+      "QUEST_INFO_ID": "Dessa IDn är tagen från QuestInfo.dbc",
       "SUGGESTED_GROUP_NUM": "Recommended number of players to do the quest together.",
       "START_ITEM": "Items given by the quest giver at beginning of the quest. They will be deleted when quest is abandoned.",
       "TIME_ALLOWED": "Time (in seconds) that the player has to complete this quest",
