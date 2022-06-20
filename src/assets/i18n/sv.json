@@ -301,7 +301,7 @@
       "REQUIRED_FACTION_OR_NPC_TOOLTIP": "If > 0: creature; if < 0: gameobject",
       "REWARD_TALENTS": "Antal bonus talent points du får när du är klar med Quest",
       "REWARD_ARENA_POINTS": "Antal arena points du får när du är klar med Quest",
-      "REWARD_NEXT_QUEST": "ID utav nästa Quest som du får efter du har gjort klart det förgångna Quest",
+      "REWARD_NEXT_QUEST": "ID utav nästa Quest som du får efter du har gjort klart det föregående Quest",
       "REWARD_XP_DIFFICULTY": "Enligt Level, den bas XP med index RewardXPDifficulty är taget från QuestXP.dbc. Kolla Docs för mer information.",
       "REWARD_MONEY": "If value > 0: Pengar du får utav Quest; if value < 0: Pengar du måste ha för Quest",
       "REW_MONEY_DIFFICULTY": "TODO: RewardMoneyDifficulty tooltip",
@@ -311,10 +311,10 @@
       "REWARD_FACTIONS_TOOLTIP": "Faction ID for which the quest adds (or subtracts) reputation points."
     },
     "TEMPLATE_ADDON": {
-      "ADDON_BASE": "Addon Base",
-      "ADDON_REQUIREMENTS": "Addon Requirements",
-      "ADDON_REWARDS": "Addon Rewards",
-      "PREV_QUEST_ID": "if > 0: previous quest id; if < 0 parent quest id",
+      "ADDON_BASE": "Addon Bas",
+      "ADDON_REQUIREMENTS": "Addon Krav",
+      "ADDON_REWARDS": "Addon Belöningar",
+      "PREV_QUEST_ID": "if > 0: föregående quest id; if < 0 parent quest id",
       "NEXT_QUEST_ID": "Contains the next quest id, in case PrevQuestId of that other quest is not sufficient.",
       "MAX_LEVEL": "Maximum player level at which a character can get the quest.",
       "ALLOWABLE_CLASSES": "Use 0 to allow all classes",
