@@ -299,7 +299,7 @@
       "OBJECTIVE_TEXTS_TOOLTIP": "Non-standard objective text som visas i Quest log",
       "REQUIRED_ITEMS_TOOLTIP": "Items du behöver ha till ditt Quest",
       "REQUIRED_FACTION_OR_NPC_TOOLTIP": "If > 0: creature; if < 0: gameobject",
-      "REWARD_TALENTS": "Amount of bonus talent points received when completing the quest",
+      "REWARD_TALENTS": "Antal bonus talent points du får när du är klar med Quest",
       "REWARD_ARENA_POINTS": "Amount of arena points received when completing the quest",
       "REWARD_NEXT_QUEST": "The ID of the next quest that will be added automatically when completing the quest",
       "REWARD_XP_DIFFICULTY": "According to the Level, the basic experience with index RewardXPDifficulty is taken from QuestXP.dbc. Check the docs for more info.",
