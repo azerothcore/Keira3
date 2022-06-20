@@ -1,71 +1,71 @@
 {
   "LANGUAGES": {
-    "ENGLISH": "English",
-    "SPANISH": "Spanish",
-    "ITALIAN": "Italian",
-    "CHINESE": "Chinese",
-    "RUSSIAN": "Russian",
-    "DUTCH": "Dutch",
-    "FRENCH": "French",
-    "GREEK": "Greek",
-    "SWEDEN": "Sweden",
-    "GERMAN": "German",
-    "POLISH": "Polish",
-    "PORTUGUESE": "Portuguese",
-    "KOREAN": "Korean",
-    "ROMANIAN": "Romanian"
+    "ENGLISH": "Английский",
+    "SPANISH": "Испанский",
+    "ITALIAN": "Итальянский",
+    "CHINESE": "Китайский",
+    "RUSSIAN": "Русский",
+    "DUTCH": "Голландский",
+    "FRENCH": "Французский",
+    "GREEK": "Греческий",
+    "SWEDEN": "Шведский",
+    "GERMAN": "Немецкий",
+    "POLISH": "Польский",
+    "PORTUGUESE": "Португальский",
+    "KOREAN": "Корейский",
+    "ROMANIAN": "Румынский"
   },
   "MODAL": {
-    "YES": "Yes",
-    "NO": "No"
+    "YES": "Да",
+    "NO": "Нет"
   },
   "CREATE": {
-    "CREATE_NEW": "Create New",
-    "CREATE_A_NEW": "Create a new <strong>{{ ENTITY_TABLE }}</strong> by selecting an empty <strong>{{ ENTITY_ID_FIELD }}</strong>:",
-    "FREE_ENTRY": "The {{ ENTITY_ID_FIELD }} is",
-    "FREE": "free",
-    "ALREADY_USE": "already in use"
+    "CREATE_NEW": "Создать новый",
+    "CREATE_A_NEW": "Создать новый <strong>{{ ENTITY_TABLE }}</strong> выбрав пустой <strong>{{ ENTITY_ID_FIELD }}</strong>:",
+    "FREE_ENTRY": "Значение {{ ENTITY_ID_FIELD }}",
+    "FREE": "свободно",
+    "ALREADY_USE": "уже используется"
   },
-  "SEARCH": "Search",
-  "SELECT": "Select",
-  "SELECT_EXISTING": "Select existing",
-  "DOWNLOAD": "Download",
-  "NEW_VERSION": "Psst...There is a newer version of Keira!",
-  "LOADING": "Loading...",
+  "SEARCH": "Поиск",
+  "SELECT": "Выбрать",
+  "SELECT_EXISTING": "Выбрать существующий",
+  "DOWNLOAD": "Скачать",
+  "NEW_VERSION": "Пссс... Есть новая версия Keira!",
+  "LOADING": "Загрузка...",
   "TODO": "TODO",
-  "ALWAYS_0": "Always 0",
-  "UNIQUE": "The <strong>{{ ENTITY_SECOND_ID_FIELD }}</strong> must be unique.",
-  "UNIQUE_ID": "The unique ID of the {{ ENTITY }}",
-  "DELETE_SELECTED_ROW": "Delete selected row",
-  "ADD_NEW_ROW": "Add new row",
+  "ALWAYS_0": "Всегда 0",
+  "UNIQUE": "Значение <strong>{{ ENTITY_SECOND_ID_FIELD }}</strong> должно быть уникальным.",
+  "UNIQUE_ID": "Уникальный ID {{ ENTITY }}",
+  "DELETE_SELECTED_ROW": "Удалить выбранную строку",
+  "ADD_NEW_ROW": "Добавить новую строку",
   "EMPTY": "",
-  "UNKNOWN": "Unknown",
-  "COPY": "Copy",
-  "EXECUTE": "Execute",
-  "RELOAD": "Reload",
-  "CANCEL": "Cancel",
+  "UNKNOWN": "Неизвестно",
+  "COPY": "Копировать",
+  "EXECUTE": "Выполнить",
+  "RELOAD": "Перезагрузить",
+  "CANCEL": "Отменить",
   "CONNECTION_WINDOW": {
-    "HOST": "Host",
-    "PORT": "Port",
-    "USERNAME": "Username",
-    "PASSWORD": "Password",
-    "DATABASE": "Database",
-    "SAVE_PASSWORD": "Save password",
-    "LOAD_RECENT": "Load recent",
-    "CLEAR_ALL": "Clear all",
-    "CONNECT": "Connect",
-    "CREATED_BY": "Created by"
+    "HOST": "Хост",
+    "PORT": "Порт",
+    "USERNAME": "Имя пользователя",
+    "PASSWORD": "Пароль",
+    "DATABASE": "База данных",
+    "SAVE_PASSWORD": "Сохранить пароль",
+    "LOAD_RECENT": "Последнее",
+    "CLEAR_ALL": "Очистить все",
+    "CONNECT": "Подключиться",
+    "CREATED_BY": "Создано"
   },
   "SIDEBAR": {
-    "DASHBOARD": "Dashboard",
-    "SQL_EDITOR": "SQL Editor",
-    "COLLAPSE_ALL": "Collapse All",
-    "UNSAVED_CHANGES": "Unsaved changes",
-    "DISCONNECT": "Disconnect",
-    "MODAL_DISCONNECT": "Are you sure you want to disconnect?",
+    "DASHBOARD": "Панель управления",
+    "SQL_EDITOR": "SQL Редактор",
+    "COLLAPSE_ALL": "Свернуть все",
+    "UNSAVED_CHANGES": "Несохраненные изменения",
+    "DISCONNECT": "Отсоединить",
+    "MODAL_DISCONNECT": "Вы уверены, что хотите отсоединиться?",
     "CREATURE": {
-      "TITLE": "Creature",
-      "SELECT_CREATURE": "Select Creature",
+      "TITLE": "Существа",
+      "SELECT_CREATURE": "Выбрать существо",
       "CREATURE_TEMPLATE": "Creature Template",
       "TEMPLATE_ADDON": "Template Addon",
       "TEMPLATE_RESISTANCE": "Template Resistance",
@@ -84,8 +84,8 @@
       "SMARTAI": "SmartAI"
     },
     "QUEST": {
-      "TITLE": "Quest",
-      "SELECT_QUEST": "Select Quest",
+      "TITLE": "Задания",
+      "SELECT_QUEST": "Выбрать Задание",
       "QUEST_TEMPLATE": "Quest Template",
       "QUEST_TEMPLATE_ADDON": "Quest Template Addon",
       "QUEST_OFFER_REWARD": "Quest Offer Reward",
@@ -96,8 +96,8 @@
       "GAMEOBJECT_QUESTENDER": "Gameobject Questender"
     },
     "GAME_OBJECT": {
-      "TITLE": "GameObject",
-      "SELECT_GAMEOBJECT": "Select Gameobject",
+      "TITLE": "Игровые Объекты",
+      "SELECT_GAMEOBJECT": "Выбрать Объект",
       "GAMEOBJECT_TEMPLATE": "Gameobject Template",
       "TEMPLATE_ADDON": "Template Addon",
       "QUEST_ITEMS": "Quest Items",
@@ -107,8 +107,8 @@
       "SMART_AI": "SmartAI"
     },
     "ITEM": {
-      "TITLE": "Item",
-      "SELECT_ITEM": "Select Item",
+      "TITLE": "Предметы",
+      "SELECT_ITEM": "Выбрать Предмет",
       "ITEM_TEMPLATE": "Item Template",
       "ENCHANTMENT_TEMPLATE": "Enchantment Template",
       "ITEM_LOOT": "Item Loot",
@@ -117,7 +117,7 @@
       "MILLING_LOOT": "Milling Loot"
     },
     "OTHER_LOOTS": {
-      "TITLE": "Other Loots",
+      "TITLE": "Другие луты",
       "SELECT_REFERENCE_LOOT": "Select Reference Loot",
       "REFERENCE_LOOT_TEMPLATE": "Reference Loot Template",
       "SELECT_SPELL_LOOT": "Select Spell Loot",
@@ -128,26 +128,26 @@
       "MAIL_LOOT_TEMPLATE": "Mail Loot Template"
     },
     "GOSSIP": {
-      "TITLE": "Gossip",
-      "SELECT_GOSSIP_MENU": "Select Gossip Menu",
+      "TITLE": "Разговоры",
+      "SELECT_GOSSIP_MENU": "Выбрать меню разговоров",
       "GOSSIP_MENU": "Gossip Menu",
       "GOSSIP_MENU_OPTION": "Gossip Menu Option"
     },
     "CONDITIONS": {
-      "TITLE": "Conditions",
-      "SELECT_CONDITIONS": "Select Conditions",
+      "TITLE": "Условия",
+      "SELECT_CONDITIONS": "Выбрать Условия",
       "CONDITIONS": "Conditions"
     },
     "SMARTAI": {
       "TITLE": "SmartAI",
-      "SEARCH_BY_SAI": "Search by existing SAI",
-      "SEARCH_BY_ENTITY": "Search by entity",
-      "EDITOR": "SmartAI editor"
+      "SEARCH_BY_SAI": "Поиск по существующим SAI",
+      "SEARCH_BY_ENTITY": "Поиск по структуре",
+      "EDITOR": "SmartAI редактор"
     },
     "SPELL_DBC_OVERRIDES": {
       "TITLE": "Spell DBC overrides",
-      "SEARCH_SPELL": "Search Spell",
-      "SPELL_DBC_EDITOR": "Spell DBC editor"
+      "SEARCH_SPELL": "Искать заклинание",
+      "SPELL_DBC_EDITOR": "Редактор Spell DBC"
     }
   },
   "DASHBOARD": {
