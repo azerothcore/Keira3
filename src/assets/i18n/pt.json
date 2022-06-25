@@ -154,9 +154,9 @@
   "DASHBOARD": {
     "WELCOME": "Bem-vindo(a) a Keira3!",
     "WELCOME_1": "Vecê pode sempre encontrar a última versão de Keira3 na <a href=\" {{ REPO_URL }}/releases\" target=\"_blank\">página de versões</a>. Entre em nosso <strong>#keira-editor</strong> canal no <a href=\"{{ DISCORD_URL }}\" target=\"_blank\">Discord</a> para ficar por cima das últimas notícias e atualizações!",
-    "WELCOME_2": "Por favor relate qualquer bugs or sugestões <a href=\"{{ REPO_URL }}/issues/new\" target=\"_blank\">no repositório oficial</a>. Se você gostar de Keira3, não se esqueça de nos dar uma &#11088;  no GitHub!",
+    "WELCOME_2": "Por favor relate qualquer bugs ou sugestões <a href=\"{{ REPO_URL }}/issues/new\" target=\"_blank\">em repositório oficial</a>. Se você gostar de Keira3, não se esqueça de nos dar uma &#11088;  no GitHub!",
     "WELCOME_3": "Keira3 é um software grátis e open source que criamos em nosso tempo livre, você pode <a href=\"{{ DONATE_URL }}\" target=\"_blank\">nos apoiar com uma doação</a> ❤",
-    "WELCOME_4": "Esperamos que você goste deste software e não se esqueça de contribuir com a comunidade <a href=\"http://www.azerothcore.org/wiki/Contribute#how-to-create-a-pull-request\" target=\"_blank\">compartilhando seu código </a>",
+    "WELCOME_4": "Esperamos que você goste deste software e não se esqueça de contribuir para a comunidade <a href=\"http://www.azerothcore.org/wiki/Contribute#how-to-create-a-pull-request\" target=\"_blank\">compartilhando seu código </a>",
     "SYSTEM_DETAILS": "Detalhes do sistema",
     "SYSTEM_WARNING": "<strong>CUIDADO:</strong> Parece que <strong><i>{{ DATABASE_NAME }}</i></strong> não é uma database AzerothCore world válida.",
     "SYSTEM_WARNING_1": "Se você selecionou a database errada por engano, você pode fazer <strong>logout</strong> e mudar-lá.",
