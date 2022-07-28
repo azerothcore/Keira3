@@ -70,7 +70,7 @@
     "@angular/platform-browser": "13.3.11",
     "@angular/platform-browser-dynamic": "13.3.11",
     "@angular/router": "13.3.11",
-    "@fortawesome/fontawesome-free": "6.1.1",
+    "@fortawesome/fontawesome-free": "6.1.2",
     "@playwright/test": "1.23.4",
     "@swimlane/ngx-datatable": "20.0.0",
     "@types/jasmine": "4.0.3",
