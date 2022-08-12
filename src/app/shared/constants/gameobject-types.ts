@@ -103,7 +103,7 @@ GO_DATA_FIELDS[6][18] = { name: 'requireLOS', tooltip: null };
 
 GO_DATA_FIELDS[7] = [];
 GO_DATA_FIELDS[7][0] = { name: 'chairSlots', tooltip: 'number of players that can sit down on it' };
-GO_DATA_FIELDS[7][1] = { name: 'chairOrientation', tooltip: 'number of usable side' };
+GO_DATA_FIELDS[7][1] = { name: 'height', tooltip: 'null' };
 GO_DATA_FIELDS[7][2] = { name: 'onlyCreatorUse', tooltip: null };
 GO_DATA_FIELDS[7][3] = { name: 'triggeredEvent', tooltip: null };
 GO_DATA_FIELDS[7][4] = { name: 'conditionID1', tooltip: null };
