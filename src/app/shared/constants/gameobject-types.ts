@@ -100,7 +100,7 @@ GO_DATA_FIELDS[6][18] = { name: 'requireLOS', tooltip: 'EMPTY' };
 
 GO_DATA_FIELDS[7] = [];
 GO_DATA_FIELDS[7][0] = { name: 'chairSlots', tooltip: 'GAMEOBJECT.TEMPLATE.CHAIR_SLOTS' };
-GO_DATA_FIELDS[7][1] = { name: 'chairOrientation', tooltip: 'GAMEOBJECT.TEMPLATE.CHAIR_ORIENTATION' };
+GO_DATA_FIELDS[7][1] = { name: 'height', tooltip: 'EMPTY' };
 GO_DATA_FIELDS[7][2] = { name: 'onlyCreatorUse', tooltip: 'EMPTY' };
 GO_DATA_FIELDS[7][3] = { name: 'triggeredEvent', tooltip: 'EMPTY' };
 GO_DATA_FIELDS[7][4] = { name: 'conditionID1', tooltip: 'EMPTY' };

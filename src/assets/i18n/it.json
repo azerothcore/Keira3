@@ -374,7 +374,6 @@
       "IMMUNE": "Immune",
       "LEVEL_CASTED_SPELL": "npc equivalent level for casted spell",
       "CHAIR_SLOTS": "number of players that can sit down on it",
-      "CHAIR_ORIENTATION": "number of usable side",
       "PAGE_ID": "from table page_text",
       "EVENT_ID": "id from table event_script",
       "TIME_MS_BEFORE_STATE": "in ms before the initial state is restored",

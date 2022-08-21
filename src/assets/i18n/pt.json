@@ -375,7 +375,6 @@
       "IMMUNE": "Immune",
       "LEVEL_CASTED_SPELL": "o level do npc equivalente, usado para o spell castado",
       "CHAIR_SLOTS": "número de jogadores que podem sentar neste gameobject",
-      "CHAIR_ORIENTATION": "número do lado usável",
       "PAGE_ID": "da tabela page_text",
       "EVENT_ID": "id da tabela event_script",
       "TIME_MS_BEFORE_STATE": "em ms antes que o state inicial é restaurado",
