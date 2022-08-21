@@ -25,12 +25,14 @@
   <keira-highlightjs-wrapper id="full-query" [code]="editorService.fullQuery" [hidden]="!showFullQuery()"></keira-highlightjs-wrapper>
 
   <div>
-    <button type="button" class="btn btn-secondary btn-sm" (click)="copy()" id="copy-btn"><i class="fa fa-copy fa-sm"></i> Copy</button>
+    <button type="button" class="btn btn-secondary btn-sm" (click)="copy()" id="copy-btn">
+      <i class="fa fa-copy fa-sm"></i> {{ 'COPY' | translate }}
+    </button>
     <button type="button" class="btn btn-primary btn-sm" (click)="execute()" id="execute-btn">
-      <i class="fa fa-bolt fa-sm"></i> Execute
+      <i class="fa fa-bolt fa-sm"></i> {{ 'EXECUTE' | translate }}
     </button>
     <button type="button" class="btn btn-danger btn-sm float-end" (click)="reload()" id="reload-btn">
-      <i class="fa fa-sync fa-sm"></i> Reload
+      <i class="fa fa-sync fa-sm"></i> {{ 'RELOAD' | translate }}
     </button>
   </div>
 

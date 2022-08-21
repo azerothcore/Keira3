@@ -5,20 +5,19 @@ import { FlagsSelectorModalComponent } from './flags-selector-modal.component';
 import { FlagsService } from './flags.service';
 import { FlagsSelectorModule } from './flags-selector.module';
 import { Flag } from '@keira-types/general';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 
 describe('FlagsSelectorModalComponent', () => {
   let component: FlagsSelectorModalComponent;
   let fixture: ComponentFixture<FlagsSelectorModalComponent>;
   let flagsService: FlagsService;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [FlagsSelectorModule],
-        providers: [BsModalRef],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [FlagsSelectorModule, TranslateTestingModule],
+      providers: [BsModalRef],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     flagsService = TestBed.inject(FlagsService);

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance } from 'ts-mockito';
@@ -12,14 +13,12 @@ describe('ItemSelectorModalComponent', () => {
   let fixture: ComponentFixture<ItemSelectorModalComponent>;
   let searchService: ItemSearchService;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ItemSelectorModule],
-        providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ItemSelectorModule, TranslateTestingModule],
+      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     searchService = TestBed.inject(ItemSearchService);

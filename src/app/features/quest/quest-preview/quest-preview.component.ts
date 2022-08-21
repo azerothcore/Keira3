@@ -8,7 +8,7 @@ import { QuestPreviewService } from './quest-preview.service';
   styleUrls: ['./quest-preview.component.scss'],
 })
 export class QuestPreviewComponent implements OnInit {
-  constructor(public readonly service: QuestPreviewService, public readonly helper: PreviewHelperService) {}
+  constructor(readonly service: QuestPreviewService, readonly helper: PreviewHelperService) {}
 
   descriptionToggle = true;
   progressToggle = true;

@@ -1,7 +1,7 @@
 <keira-top-bar [handler]="handlerService"></keira-top-bar>
 
 <div class="container-fluid">
-  <span *ngIf="editorService.loading">Loading...</span>
+  <span *ngIf="editorService.loading" [translate]="'LOADING'"></span>
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
     <keira-loot-editor [editorService]="editorService"></keira-loot-editor>

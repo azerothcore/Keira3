@@ -1,5 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { PageObject } from '@keira-testing/page-object';
 import { MysqlError } from 'mysql';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -36,13 +37,11 @@ describe('SqlEditorComponent', () => {
     { col1: 'y1', col2: 'y2', col3: 'y3' },
   ];
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [TooltipModule.forRoot(), SqlEditorModule],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [TooltipModule.forRoot(), SqlEditorModule, TranslateTestingModule],
+    }).compileComponents();
+  }));
 
   const setup = () => {
     const fixture = TestBed.createComponent(SqlEditorComponent);

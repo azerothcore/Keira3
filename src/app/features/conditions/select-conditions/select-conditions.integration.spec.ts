@@ -10,6 +10,7 @@ import { of } from 'rxjs';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 import { SelectConditionsComponent } from './select-conditions.component';
 import { SelectConditionsModule } from './select-conditions.module';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import Spy = jasmine.Spy;
 
 class SelectConditionsComponentPage extends PageObject<SelectConditionsComponent> {
@@ -44,14 +45,12 @@ describe('SelectConditions integration tests', () => {
   let querySpy: Spy;
   let navigateSpy: Spy;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectConditionsModule, RouterTestingModule],
-        providers: [ConditionsHandlerService],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectConditionsModule, RouterTestingModule, TranslateTestingModule],
+      providers: [ConditionsHandlerService],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');

@@ -11,7 +11,7 @@ import { GameobjectTemplateAddonService } from './gameobject-template-addon.serv
   styleUrls: ['./gameobject-template-addon.component.scss'],
 })
 export class GameobjectTemplateAddonComponent extends SingleRowEditorComponent<GameobjectTemplateAddon> {
-  public readonly GAMEOBJECT_FLAGS = GAMEOBJECT_FLAGS;
+  readonly GAMEOBJECT_FLAGS = GAMEOBJECT_FLAGS;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(public editorService: GameobjectTemplateAddonService, public handlerService: GameobjectHandlerService) {

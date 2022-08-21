@@ -10,7 +10,7 @@ export class GameobjectSpawnAddonService extends MultiRowExternalEditorService<G
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: GameobjectHandlerService,
-    public readonly queryService: MysqlQueryService,
+    readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(GameobjectSpawnAddon, GAMEOBJECT_SPAWN_ADDON_TABLE, GAMEOBJECT_SPAWN_ADDON_ID_2, handlerService, queryService, toastrService);

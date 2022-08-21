@@ -13,8 +13,8 @@ import { ConnectionWindowService } from './connection-window.service';
 })
 export class ConnectionWindowComponent extends SubscriptionHandler implements OnInit {
   private readonly IMAGES_COUNT = 10;
-  public readonly RANDOM_IMAGE = Math.floor(Math.random() * this.IMAGES_COUNT) + 1;
-  public readonly KEIRA_VERSION = packageInfo.version;
+  readonly RANDOM_IMAGE = Math.floor(Math.random() * this.IMAGES_COUNT) + 1;
+  readonly KEIRA_VERSION = packageInfo.version;
   configs: Partial<ConnectionConfig>[];
   form: FormGroup<Partial<ConnectionConfig>>;
   error: MysqlError;

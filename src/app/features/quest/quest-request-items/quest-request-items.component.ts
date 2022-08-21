@@ -12,13 +12,13 @@ import { QuestRequestItemsService } from './quest-request-items.service';
   styleUrls: ['./quest-request-items.component.scss'],
 })
 export class QuestRequestItemsComponent extends SingleRowEditorComponent<QuestRequestItems> {
-  public readonly EMOTE = EMOTE;
+  readonly EMOTE = EMOTE;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: QuestRequestItemsService,
     public handlerService: QuestHandlerService,
-    public readonly questPreviewService: QuestPreviewService,
+    readonly questPreviewService: QuestPreviewService,
   ) {
     super(editorService, handlerService);
   }

@@ -3,6 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ITEM_SUBCLASS } from '@keira-constants/options/item-class';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { Lock } from '@keira-shared/types/lock.type';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { ItemTemplate } from '@keira-types/item-template.type';
@@ -51,14 +52,12 @@ describe('ItemTemplate integration tests', () => {
   const originalEntity = new ItemTemplate();
   originalEntity.entry = id;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ItemTemplateModule, RouterTestingModule],
-        providers: [ItemHandlerService],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ItemTemplateModule, RouterTestingModule, TranslateTestingModule],
+      providers: [ItemHandlerService],
+    }).compileComponents();
+  }));
 
   const mockItemNameById = 'mockItemNameById';
   const mockGetSpellNameById = 'mockGetSpellNameById';
@@ -219,130 +218,115 @@ describe('ItemTemplate integration tests', () => {
       page.expectFullQueryToContain('22');
     });
 
-    xit(
-      'changing a value via FlagsSelector should correctly work',
-      waitForAsync(async () => {
-        const { page } = setup(false);
-        const field = 'Flags';
-        page.clickElement(page.getSelectorBtn(field));
+    xit('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
+      const { page } = setup(false);
+      const field = 'Flags';
+      page.clickElement(page.getSelectorBtn(field));
 
-        await page.whenReady();
-        page.expectModalDisplayed();
+      await page.whenReady();
+      page.expectModalDisplayed();
 
-        page.toggleFlagInRowExternal(2);
-        await page.whenReady();
-        page.toggleFlagInRowExternal(12);
-        await page.whenReady();
-        page.clickModalSelect();
-        await page.whenReady();
+      page.toggleFlagInRowExternal(2);
+      await page.whenReady();
+      page.toggleFlagInRowExternal(12);
+      await page.whenReady();
+      page.clickModalSelect();
+      await page.whenReady();
 
-        expect(page.getInputById(field).value).toEqual('4100');
-        page.expectDiffQueryToContain('UPDATE `item_template` SET `Flags` = 4100 WHERE (`entry` = 1234);');
+      expect(page.getInputById(field).value).toEqual('4100');
+      page.expectDiffQueryToContain('UPDATE `item_template` SET `Flags` = 4100 WHERE (`entry` = 1234);');
 
-        // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
-        page.expectFullQueryToContain('4100');
-      }),
-    );
+      // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
+      page.expectFullQueryToContain('4100');
+    }));
 
-    xit(
-      'changing a value via ItemEnchantmentSelector should correctly work',
-      waitForAsync(async () => {
-        const { page, fixture } = setup(false);
-        const field = 'socketBonus';
-        const sqliteQueryService = TestBed.inject(SqliteQueryService);
-        spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock Enchantment', conditionId: 456 }]));
+    xit('changing a value via ItemEnchantmentSelector should correctly work', waitForAsync(async () => {
+      const { page, fixture } = setup(false);
+      const field = 'socketBonus';
+      const sqliteQueryService = TestBed.inject(SqliteQueryService);
+      spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock Enchantment', conditionId: 456 }]));
 
-        page.clickElement(page.getSelectorBtn(field));
-        await page.whenReady();
-        page.expectModalDisplayed();
+      page.clickElement(page.getSelectorBtn(field));
+      await page.whenReady();
+      page.expectModalDisplayed();
 
-        page.clickSearchBtn();
-        await fixture.whenStable();
-        page.clickRowOfDatatableInModal(0);
-        await page.whenReady();
-        page.clickModalSelect();
-        await page.whenReady();
+      page.clickSearchBtn();
+      await fixture.whenStable();
+      page.clickRowOfDatatableInModal(0);
+      await page.whenReady();
+      page.clickModalSelect();
+      await page.whenReady();
 
-        page.expectDiffQueryToContain('UPDATE `item_template` SET `socketBonus` = 1248 WHERE (`entry` = 1234);');
-        // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
-        page.expectFullQueryToContain('1248');
-      }),
-    );
+      page.expectDiffQueryToContain('UPDATE `item_template` SET `socketBonus` = 1248 WHERE (`entry` = 1234);');
+      // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
+      page.expectFullQueryToContain('1248');
+    }));
 
-    xit(
-      'changing a value via HolidaySelector should correctly work',
-      waitForAsync(async () => {
-        const { page, fixture } = setup(false);
-        const field = 'HolidayId';
-        const sqliteQueryService = TestBed.inject(SqliteQueryService);
-        spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock Holiday' }]));
+    xit('changing a value via HolidaySelector should correctly work', waitForAsync(async () => {
+      const { page, fixture } = setup(false);
+      const field = 'HolidayId';
+      const sqliteQueryService = TestBed.inject(SqliteQueryService);
+      spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock Holiday' }]));
 
-        page.clickElement(page.getSelectorBtn(field));
-        await page.whenReady();
-        page.expectModalDisplayed();
+      page.clickElement(page.getSelectorBtn(field));
+      await page.whenReady();
+      page.expectModalDisplayed();
 
-        page.clickSearchBtn();
-        await fixture.whenStable();
-        page.clickRowOfDatatableInModal(0);
-        await page.whenReady();
-        page.clickModalSelect();
-        await page.whenReady();
+      page.clickSearchBtn();
+      await fixture.whenStable();
+      page.clickRowOfDatatableInModal(0);
+      await page.whenReady();
+      page.clickModalSelect();
+      await page.whenReady();
 
-        page.expectDiffQueryToContain('UPDATE `item_template` SET `HolidayId` = 1248 WHERE (`entry` = 1234);');
-        // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
-        page.expectFullQueryToContain('1248');
-      }),
-    );
+      page.expectDiffQueryToContain('UPDATE `item_template` SET `HolidayId` = 1248 WHERE (`entry` = 1234);');
+      // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
+      page.expectFullQueryToContain('1248');
+    }));
 
-    xit(
-      'changing a value via ItemLimitCategorySelector should correctly work',
-      waitForAsync(async () => {
-        const { page, fixture } = setup(false);
-        const field = 'ItemLimitCategory';
-        const sqliteQueryService = TestBed.inject(SqliteQueryService);
-        spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock ItemLimitCategory', count: 2, isGem: 1 }]));
+    xit('changing a value via ItemLimitCategorySelector should correctly work', waitForAsync(async () => {
+      const { page, fixture } = setup(false);
+      const field = 'ItemLimitCategory';
+      const sqliteQueryService = TestBed.inject(SqliteQueryService);
+      spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock ItemLimitCategory', count: 2, isGem: 1 }]));
 
-        page.clickElement(page.getSelectorBtn(field));
-        await page.whenReady();
-        page.expectModalDisplayed();
+      page.clickElement(page.getSelectorBtn(field));
+      await page.whenReady();
+      page.expectModalDisplayed();
 
-        page.clickSearchBtn();
-        await fixture.whenStable();
-        page.clickRowOfDatatableInModal(0);
-        await page.whenReady();
-        page.clickModalSelect();
-        await page.whenReady();
+      page.clickSearchBtn();
+      await fixture.whenStable();
+      page.clickRowOfDatatableInModal(0);
+      await page.whenReady();
+      page.clickModalSelect();
+      await page.whenReady();
 
-        page.expectDiffQueryToContain('UPDATE `item_template` SET `ItemLimitCategory` = 1248 WHERE (`entry` = 1234);');
-        // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
-        page.expectFullQueryToContain('1248');
-      }),
-    );
+      page.expectDiffQueryToContain('UPDATE `item_template` SET `ItemLimitCategory` = 1248 WHERE (`entry` = 1234);');
+      // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
+      page.expectFullQueryToContain('1248');
+    }));
 
-    xit(
-      'changing a value via LanguageSelector should correctly work',
-      waitForAsync(async () => {
-        const { page, fixture } = setup(false);
-        const field = 'LanguageID';
-        const sqliteQueryService = TestBed.inject(SqliteQueryService);
-        spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock LanguageID' }]));
+    xit('changing a value via LanguageSelector should correctly work', waitForAsync(async () => {
+      const { page, fixture } = setup(false);
+      const field = 'LanguageID';
+      const sqliteQueryService = TestBed.inject(SqliteQueryService);
+      spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock LanguageID' }]));
 
-        page.clickElement(page.getSelectorBtn(field));
-        await page.whenReady();
-        page.expectModalDisplayed();
+      page.clickElement(page.getSelectorBtn(field));
+      await page.whenReady();
+      page.expectModalDisplayed();
 
-        page.clickSearchBtn();
-        await fixture.whenStable();
-        page.clickRowOfDatatableInModal(0);
-        await page.whenReady();
-        page.clickModalSelect();
-        await page.whenReady();
+      page.clickSearchBtn();
+      await fixture.whenStable();
+      page.clickRowOfDatatableInModal(0);
+      await page.whenReady();
+      page.clickModalSelect();
+      await page.whenReady();
 
-        page.expectDiffQueryToContain('UPDATE `item_template` SET `LanguageID` = 1248 WHERE (`entry` = 1234);');
-        // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
-        page.expectFullQueryToContain('1248');
-      }),
-    );
+      page.expectDiffQueryToContain('UPDATE `item_template` SET `LanguageID` = 1248 WHERE (`entry` = 1234);');
+      // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
+      page.expectFullQueryToContain('1248');
+    }));
 
     describe('the subclass field', () => {
       it('should show the selector button only if class has a valid value', () => {

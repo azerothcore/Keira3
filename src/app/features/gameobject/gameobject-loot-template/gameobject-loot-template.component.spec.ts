@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -25,24 +26,23 @@ describe('GameobjectTemplateComponent', () => {
   const lootId = 1230;
   const type = 3;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [
-          GameobjectLootTemplateModule,
-          RouterTestingModule,
-          ModalModule.forRoot(),
-          TooltipModule.forRoot(),
-          ToastrModule.forRoot(),
-        ],
-        providers: [
-          { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-          GameobjectHandlerService,
-          SaiGameobjectHandlerService,
-        ],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        GameobjectLootTemplateModule,
+        RouterTestingModule,
+        ModalModule.forRoot(),
+        TooltipModule.forRoot(),
+        ToastrModule.forRoot(),
+        TranslateTestingModule,
+      ],
+      providers: [
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        GameobjectHandlerService,
+        SaiGameobjectHandlerService,
+      ],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     when(MockedMysqlQueryService.query(anything(), anything())).thenReturn(of());

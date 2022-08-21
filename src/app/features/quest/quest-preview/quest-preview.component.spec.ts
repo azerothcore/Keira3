@@ -3,6 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { PageObject } from '@keira-shared/testing/page-object';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { QuestTemplateAddon } from '@keira-shared/types/quest-template-addon.type';
 import { QuestTemplate } from '@keira-shared/types/quest-template.type';
 import { createMockObject } from '@keira-shared/utils/helpers';
@@ -114,14 +115,12 @@ class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
 }
 
 describe('QuestPreviewComponent', () => {
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [QuestPreviewComponent],
-        imports: [ToastrModule.forRoot(), RouterTestingModule, QuestModule],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [QuestPreviewComponent],
+      imports: [ToastrModule.forRoot(), RouterTestingModule, QuestModule, TranslateTestingModule],
+    }).compileComponents();
+  }));
 
   function setup() {
     const service = TestBed.inject(QuestPreviewService);

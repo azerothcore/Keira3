@@ -15,7 +15,7 @@ export class GameobjectQuestenderComponent extends MultiRowEditorComponent<Gameo
   constructor(
     public editorService: GameobjectQuestenderService,
     public handlerService: QuestHandlerService,
-    public readonly questPreviewService: QuestPreviewService,
+    readonly questPreviewService: QuestPreviewService,
   ) {
     super(editorService, handlerService);
   }

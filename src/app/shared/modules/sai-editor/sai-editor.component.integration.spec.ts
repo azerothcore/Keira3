@@ -11,6 +11,7 @@ import { SAI_TYPES, SmartScripts } from '../../types/smart-scripts.type';
 import { SaiEditorComponent } from './sai-editor.component';
 import { SaiEditorModule } from './sai-editor.module';
 import { SaiHandlerService } from './sai-handler.service';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import Spy = jasmine.Spy;
 
 class SaiEditorPage extends MultiRowEditorPageObject<SaiEditorComponent> {
@@ -102,13 +103,11 @@ describe('SaiEditorComponent integration tests', () => {
   originalRow1.id = 1;
   originalRow2.id = 2;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SaiEditorModule, RouterTestingModule],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SaiEditorModule, RouterTestingModule, TranslateTestingModule],
+    }).compileComponents();
+  }));
 
   function setup(creatingNew: boolean, hasTemplateQuery = false, st = sourceType) {
     const selected = { source_type: st, entryorguid: id };
@@ -446,47 +445,44 @@ describe('SaiEditorComponent integration tests', () => {
       );
     });
 
-    xit(
-      'changing a value via FlagsSelector should correctly work',
-      waitForAsync(async () => {
-        const field = 'event_flags';
-        page.clickRowOfDatatable(0);
-        await page.whenReady();
-        page.clickElement(page.getSelectorBtn(field));
-        await page.whenReady();
-        page.expectModalDisplayed();
+    xit('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
+      const field = 'event_flags';
+      page.clickRowOfDatatable(0);
+      await page.whenReady();
+      page.clickElement(page.getSelectorBtn(field));
+      await page.whenReady();
+      page.expectModalDisplayed();
 
-        page.toggleFlagInRowExternal(1); // +2^1
-        await page.whenReady();
-        page.toggleFlagInRowExternal(3); // +2^3
-        await page.whenReady();
-        page.clickModalSelect();
-        await page.whenReady();
+      page.toggleFlagInRowExternal(1); // +2^1
+      await page.whenReady();
+      page.toggleFlagInRowExternal(3); // +2^3
+      await page.whenReady();
+      page.clickModalSelect();
+      await page.whenReady();
 
-        expect(page.getInputById(field).value).toEqual('10');
-        page.expectDiffQueryToContain(
-          'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (0));\n' +
-            'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
-            '`event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
-            '`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, ' +
-            '`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, ' +
-            '`target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES\n' +
-            "(1234, 0, 0, 0, 0, 0, 100, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '');",
-        );
+      expect(page.getInputById(field).value).toEqual('10');
+      page.expectDiffQueryToContain(
+        'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (0));\n' +
+          'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
+          '`event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
+          '`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, ' +
+          '`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, ' +
+          '`target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES\n' +
+          "(1234, 0, 0, 0, 0, 0, 100, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '');",
+      );
 
-        page.expectFullQueryToContain(
-          'DELETE FROM `smart_scripts` WHERE (`source_type` = 0 AND `entryorguid` = 1234);\n' +
-            'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
-            '`event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
-            '`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, ' +
-            '`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, ' +
-            '`target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES\n' +
-            "(1234, 0, 0, 0, 0, 0, 100, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ''),\n" +
-            "(1234, 0, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ''),\n" +
-            "(1234, 0, 2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '');\n",
-        );
-      }),
-    );
+      page.expectFullQueryToContain(
+        'DELETE FROM `smart_scripts` WHERE (`source_type` = 0 AND `entryorguid` = 1234);\n' +
+          'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
+          '`event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, ' +
+          '`action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, ' +
+          '`target_type`, `target_param1`, `target_param2`, `target_param3`, `target_param4`, ' +
+          '`target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES\n' +
+          "(1234, 0, 0, 0, 0, 0, 100, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ''),\n" +
+          "(1234, 0, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ''),\n" +
+          "(1234, 0, 2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '');\n",
+      );
+    }));
 
     it('shows error on wrong linked event', () => {
       const mockRows: Partial<SmartScripts>[] = [

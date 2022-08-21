@@ -10,7 +10,7 @@ export class QuestRequestItemsService extends SingleRowEditorService<QuestReques
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: QuestHandlerService,
-    public readonly queryService: MysqlQueryService,
+    readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(QuestRequestItems, QUEST_REQUEST_ITEMS_TABLE, QUEST_REQUEST_ITEMS_ID, null, false, handlerService, queryService, toastrService);

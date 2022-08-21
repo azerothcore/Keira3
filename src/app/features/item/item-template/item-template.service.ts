@@ -10,7 +10,7 @@ export class ItemTemplateService extends SingleRowEditorService<ItemTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: ItemHandlerService,
-    public readonly queryService: MysqlQueryService,
+    readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(ItemTemplate, ITEM_TEMPLATE_TABLE, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_NAME, true, handlerService, queryService, toastrService);

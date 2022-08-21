@@ -1,6 +1,7 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { ReferenceLootTemplate } from '@keira-types/reference-loot-template.type';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -23,14 +24,12 @@ describe('ReferenceLootTemplate integration tests', () => {
   originalRow1.Item = 1;
   originalRow2.Item = 2;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ReferenceLootTemplateModule, RouterTestingModule],
-        providers: [ReferenceLootHandlerService],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ReferenceLootTemplateModule, RouterTestingModule, TranslateTestingModule],
+      providers: [ReferenceLootHandlerService],
+    }).compileComponents();
+  }));
 
   function setup(creatingNew: boolean) {
     const handlerService = TestBed.inject(ReferenceLootHandlerService);

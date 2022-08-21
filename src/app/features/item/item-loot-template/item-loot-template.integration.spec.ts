@@ -9,6 +9,7 @@ import { of } from 'rxjs';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemLootTemplateComponent } from './item-loot-template.component';
 import { ItemLootTemplateModule } from './item-loot-template.module';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import Spy = jasmine.Spy;
 
 class ItemLootTemplatePage extends MultiRowEditorPageObject<ItemLootTemplateComponent> {}
@@ -30,14 +31,12 @@ describe('ItemLootTemplate integration tests', () => {
   originalRow1.Item = 1;
   originalRow2.Item = 2;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ItemLootTemplateModule, RouterTestingModule],
-        providers: [ItemHandlerService],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ItemLootTemplateModule, RouterTestingModule, TranslateTestingModule],
+      providers: [ItemHandlerService],
+    }).compileComponents();
+  }));
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(ItemHandlerService);

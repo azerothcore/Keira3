@@ -15,16 +15,16 @@ import { QuestTemplateService } from './quest-template.service';
   styleUrls: ['./quest-template.component.scss'],
 })
 export class QuestTemplateComponent extends SingleRowEditorComponent<QuestTemplate> {
-  public readonly QUEST_FLAGS = QUEST_FLAGS;
-  public readonly QUEST_TYPE = QUEST_TYPE;
-  public readonly ALLOWABLE_RACES = ALLOWABLE_RACES;
-  public readonly QUEST_INFO = QUEST_INFO;
+  readonly QUEST_FLAGS = QUEST_FLAGS;
+  readonly QUEST_TYPE = QUEST_TYPE;
+  readonly ALLOWABLE_RACES = ALLOWABLE_RACES;
+  readonly QUEST_INFO = QUEST_INFO;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: QuestTemplateService,
     public handlerService: QuestHandlerService,
-    public readonly questPreviewService: QuestPreviewService,
+    readonly questPreviewService: QuestPreviewService,
   ) {
     super(editorService, handlerService);
   }

@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.module';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { PageObject } from '@keira-testing/page-object';
 import { LootTemplate } from '@keira-types/loot-template.type';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -26,15 +27,13 @@ class TestHostComponent {
 }
 
 describe('LootEditorComponent', () => {
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [TestHostComponent],
-        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), LootEditorModule, RouterTestingModule],
-        providers: [CreatureLootTemplateService, CreatureHandlerService, SaiCreatureHandlerService],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [TestHostComponent],
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), LootEditorModule, RouterTestingModule, TranslateTestingModule],
+      providers: [CreatureLootTemplateService, CreatureHandlerService, SaiCreatureHandlerService],
+    }).compileComponents();
+  }));
 
   const setup = () => {
     const fixture = TestBed.createComponent(TestHostComponent);

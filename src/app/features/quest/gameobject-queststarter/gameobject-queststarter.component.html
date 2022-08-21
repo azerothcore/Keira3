@@ -1,7 +1,7 @@
 <keira-top-bar [handler]="handlerService"></keira-top-bar>
 
 <div class="container-fluid editor-with-preview" [ngClass]="{ 'show-preview': questPreviewService.showPreview }">
-  <span *ngIf="editorService.loading">Loading...</span>
+  <span *ngIf="editorService.loading" [translate]="'LOADING'"></span>
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
     <div class="content-block">
@@ -21,13 +21,13 @@
               [control]="editorService.form.controls.id"
               [config]="{ name: 'id' }"
             ></keira-gameobject-selector-btn>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'gameobject_template.entry'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'gameobject_template.entry'"></i>
             <input [formControlName]="'id'" id="id" type="number" class="form-control form-control-sm" />
           </div>
 
           <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
             <i class="fas fa-exclamation-triangle"></i>
-            The <strong>{{ editorService.entitySecondIdField }}</strong> must be unique.
+            <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
           </div>
         </div>
       </form>

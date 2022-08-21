@@ -16,6 +16,7 @@ import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/singl
 import { SkillSelectorModule } from '@keira-shared/modules/selectors/skill-selector/skill-selector.module';
 import { SpellSelectorModule } from '@keira-shared/modules/selectors/spell-selector/spell-selector.module';
 import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
+import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { ToastrModule } from 'ngx-toastr';
@@ -46,6 +47,7 @@ import { ItemTemplateService } from './item-template.service';
     QuestSelectorModule,
     SkillSelectorModule,
     IconModule,
+    TranslateModule,
   ],
   exports: [ItemTemplateComponent],
   providers: [ItemTemplateService, ItemPreviewService],

@@ -7,20 +7,19 @@ import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { SkillSearchService } from '../../search/skill-search.service';
 import { SkillSelectorModule } from './skill-selector.module';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 
 describe('SkillSelectorModalComponent', () => {
   let component: SkillSelectorModalComponent;
   let fixture: ComponentFixture<SkillSelectorModalComponent>;
   let searchService: SkillSearchService;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [SkillSelectorModule],
-        providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [SkillSelectorModule, TranslateTestingModule],
+      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     searchService = TestBed.inject(SkillSearchService);

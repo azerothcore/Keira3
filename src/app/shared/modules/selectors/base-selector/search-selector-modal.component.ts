@@ -4,7 +4,7 @@ import { DTCFG } from '@keira-config/datatable.config';
 import { BaseSelectorModalComponent } from './base-selector-modal.component';
 
 export abstract class SearchSelectorModalComponent extends BaseSelectorModalComponent {
-  public readonly DTCFG = DTCFG;
+  readonly DTCFG = DTCFG;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(protected entityIdField: string, protected bsModalRef: BsModalRef) {

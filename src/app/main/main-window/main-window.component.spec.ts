@@ -1,5 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { MockedElectronService, MockedMysqlService } from '@keira-testing/mocks';
 import { instance } from 'ts-mockito';
 import { ConditionsHandlerService } from '../../features/conditions/conditions-handler.service';
@@ -21,30 +22,28 @@ import { MainWindowComponent } from './main-window.component';
 import { MainWindowModule } from './main-window.module';
 
 describe('MainWindowComponent', () => {
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [MainWindowModule, RouterTestingModule],
-        providers: [
-          { provide: ElectronService, useValue: instance(MockedElectronService) },
-          { provide: MysqlService, useValue: instance(MockedMysqlService) },
-          CreatureHandlerService,
-          SaiCreatureHandlerService,
-          QuestHandlerService,
-          ItemHandlerService,
-          GameobjectHandlerService,
-          SaiGameobjectHandlerService,
-          GossipHandlerService,
-          ConditionsHandlerService,
-          ReferenceLootHandlerService,
-          SpellLootHandlerService,
-          FishingLootHandlerService,
-          MailLootHandlerService,
-          SpellHandlerService,
-        ],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [MainWindowModule, RouterTestingModule, TranslateTestingModule],
+      providers: [
+        { provide: ElectronService, useValue: instance(MockedElectronService) },
+        { provide: MysqlService, useValue: instance(MockedMysqlService) },
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        QuestHandlerService,
+        ItemHandlerService,
+        GameobjectHandlerService,
+        SaiGameobjectHandlerService,
+        GossipHandlerService,
+        ConditionsHandlerService,
+        ReferenceLootHandlerService,
+        SpellLootHandlerService,
+        FishingLootHandlerService,
+        MailLootHandlerService,
+        SpellHandlerService,
+      ],
+    }).compileComponents();
+  }));
 
   const setup = () => {
     const fixture = TestBed.createComponent(MainWindowComponent);

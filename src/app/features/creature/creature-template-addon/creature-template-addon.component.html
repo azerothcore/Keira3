@@ -1,7 +1,7 @@
 <keira-top-bar [handler]="handlerService"></keira-top-bar>
 
 <div class="container-fluid">
-  <span *ngIf="editorService.loading">Loading...</span>
+  <span *ngIf="editorService.loading" [translate]="'LOADING'"></span>
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
     <div class="content-block">
@@ -17,29 +17,17 @@
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="entry">entry</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Link to creature_template.entry'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE_ADDON.ENTRY' | translate"></i>
             <input [formControlName]="'entry'" id="entry" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="path_id">path_id</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="
-                'If the creature has waypoint pathed movement, contains the waypoint_data.id for the path the creature is to follow.'
-              "
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE_ADDON.PATH_ID' | translate"></i>
             <input [formControlName]="'path_id'" id="path_id" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="mount">mount</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="
-                'The model ID of the mount to be used to make the creature appear mounted. The value here overrides the value for the creature unit field UNIT_FIELD_MOUNTDISPLAYID.'
-              "
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE_ADDON.MOUNT' | translate"></i>
             <input [formControlName]="'mount'" id="mount" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -73,8 +61,8 @@
             <label class="control-label" for="visibilityDistanceType">visibilityDistanceType</label>
             <i
               class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'Controls the visibility distance of the creature. 0 = Normal (default 90 yards);  1 = Large (250 yards)'"
+              placement="auto"
+              [tooltip]="'CREATURE.TEMPLATE_ADDON.VISIBILITY_DISTANCE_TYPE' | translate"
             ></i>
             <input
               [formControlName]="'visibilityDistanceType'"
@@ -85,11 +73,7 @@
           </div>
           <div class="form-group col-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
             <label class="control-label" for="auras">auras</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'A list of comma-separated auras to be applied on the creature'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE_ADDON.AURAS' | translate"></i>
             <input [formControlName]="'auras'" id="auras" class="form-control form-control-sm" />
           </div>
         </div>

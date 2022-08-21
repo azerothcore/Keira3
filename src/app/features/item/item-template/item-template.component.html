@@ -1,7 +1,7 @@
 <keira-top-bar [handler]="handlerService"></keira-top-bar>
 
 <div class="container-fluid editor-with-preview" [ngClass]="{ 'show-preview': showItemPreview }">
-  <span *ngIf="editorService.loading">Loading...</span>
+  <span *ngIf="editorService.loading" [translate]="'LOADING'"></span>
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
     <div class="content-block">
@@ -14,33 +14,29 @@
 
     <form [formGroup]="editorService.form" class="form-group edit-form">
       <div class="content-block">
-        <span class="category-title"> Miscellaneous </span>
+        <span class="category-title" [translate]="'ITEM.TEMPLATE.MISCELLANEOUS'"></span>
         <div class="row">
           <div class="form-group col-12 col-sm-4 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="entry">entry</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The unique entry of the item'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.ENTRY' | translate"></i>
             <input [formControlName]="'entry'" id="entry" type="number" class="form-control form-control-sm" />
           </div>
 
           <div class="form-group col-12 col-sm-8 col-md-8 col-lg-4 col-xl-3">
             <label class="control-label" for="name">name</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The name of the item'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.NAME' | translate"></i>
             <input [formControlName]="'name'" id="name" class="form-control form-control-sm" />
           </div>
 
           <div class="form-group col-12 col-sm-7 col-md-7 col-lg-5 col-xl-4">
             <label class="control-label" for="description">description</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'The description that appears in orange letters at the bottom of the item tooltip.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.DESCRIPTION' | translate"></i>
             <input [formControlName]="'description'" id="description" class="form-control form-control-sm" />
           </div>
 
           <div class="form-group col-12 col-sm-5 col-md-5 col-lg-4 col-xl-3">
             <label class="control-label" for="ScriptName">ScriptName</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The name of the script that the item should use'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SCRIPT_NAME' | translate"></i>
             <input [formControlName]="'ScriptName'" id="ScriptName" class="form-control form-control-sm" />
           </div>
         </div>
@@ -68,20 +64,12 @@
               [config]="{ options: ITEM_SUBCLASS[editorService.form.controls.class.value], name: 'subclass' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'The subclass meaning varies according to the item class (so the class must be set BEFORE the subclass)'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SUBCLASS' | translate"></i>
             <input [formControlName]="'subclass'" id="subclass" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="SoundOverrideSubclass">SoundOverride</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'Weapons have special sounds on impact, this field is used to override them sounds by specifying another subclass'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SOUND_OVERRIDE_SUBCLASS' | translate"></i>
             <input
               [formControlName]="'SoundOverrideSubclass'"
               id="SoundOverrideSubclass"
@@ -91,11 +79,7 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="displayid">displayid</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'The model ID of the item. Controls both the model appearance and the icon.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.DISPLAYID' | translate"></i>
             <input [formControlName]="'displayid'" id="displayid" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -109,33 +93,17 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="BuyCount">BuyCount</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="
-                'The size of the item stack when sold by vendors. If a vendor has limited copies of this item available, every time the vendor list is refreshed (See npc_vendor.incrtime), the number of copies increases by this number.'
-              "
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.BUY_COUNT' | translate"></i>
             <input [formControlName]="'BuyCount'" id="BuyCount" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="BuyPrice">BuyPrice</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'The price required to pay to buy this item from a vendor, in copper.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.BUY_PRICE' | translate"></i>
             <input [formControlName]="'BuyPrice'" id="BuyPrice" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="SellPrice">SellPrice</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="
-                'The price that the vendor will pay you for the item when you sell it, in copper. 0 if the item cannot be sold to a vendor.'
-              "
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SELL_PRICE' | translate"></i>
             <input [formControlName]="'SellPrice'" id="SellPrice" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -149,20 +117,12 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="maxcount">maxcount</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'Maximum number of copies of this item which a player can have. Use 0 for infinite.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.MAXCOUNT' | translate"></i>
             <input [formControlName]="'maxcount'" id="maxcount" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="stackable">stackable</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'The number of copies of this item that can be stacked in the same slot.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.STACKABLE' | translate"></i>
             <input [formControlName]="'stackable'" id="stackable" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -172,11 +132,7 @@
               [config]="{ name: 'startquest' }"
               [modalClass]="'modal-lg'"
             ></keira-quest-selector-btn>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'The ID of the quest that this item will start if right-clicked. See quest_template.id'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.STARTQUEST' | translate"></i>
             <input [formControlName]="'startquest'" id="startquest" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -190,24 +146,12 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="RandomProperty">RandomProperty</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="
-                'Points to item_enchantment_template.entry and ties in an item’s chance at having a random property attached to it when it shows up for the first time. Cannot be non-zero if also RandomSuffix is non-zero.'
-              "
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.RANDOM_PROPERTY' | translate"></i>
             <input [formControlName]="'RandomProperty'" id="RandomProperty" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="RandomSuffix">RandomSuffix</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="
-                'Points to item_enchantment_template.entry and ties in an item’s chance at having a random suffix attached to it when it shows up for the first time. Cannot be non-zero if also RandomProperty is non-zero.'
-              "
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.RANDOM_SUFFIX' | translate"></i>
             <input [formControlName]="'RandomSuffix'" id="RandomSuffix" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -221,11 +165,7 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="ContainerSlots">ContainerSlots</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'If the item is a bag, this field controls the number of slots the bag has.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.CONTAINER_SLOTS' | translate"></i>
             <input [formControlName]="'ContainerSlots'" id="ContainerSlots" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -239,13 +179,7 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="duration">duration</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="
-                'The duration of the item in seconds ingame time. Set ITEM_FLAGS_CU_DURATION_REAL_TIME in flagsCustom for real time. In that case the item duration will tick even if player is offline.'
-              "
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.DURATION' | translate"></i>
             <input [formControlName]="'duration'" id="duration" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -258,11 +192,7 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="DisenchantID">DisenchantID</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'The disenchant loot template ID. Corresponds to disenchant_loot_template.entry'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.DISENCHANT_ID' | translate"></i>
             <input [formControlName]="'DisenchantID'" id="DisenchantID" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -276,29 +206,17 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="minMoneyLoot">minMoneyLoot</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'Minimum amount of money contained in the item, in copper.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.MIN_MONEY_LOOT' | translate"></i>
             <input [formControlName]="'minMoneyLoot'" id="minMoneyLoot" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="maxMoneyLoot">maxMoneyLoot</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'Maximum amount of money contained in the item, in copper.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.MAX_MONEY_LOOT' | translate"></i>
             <input [formControlName]="'maxMoneyLoot'" id="maxMoneyLoot" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="itemset">itemset</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'The ID of the item set that this item belongs to. Item sets are defined in the ItemSet DBC file.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.ITEMSET' | translate"></i>
             <input [formControlName]="'itemset'" id="itemset" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -315,7 +233,7 @@
       <div class="row">
         <div class="col-12 col-xl-6">
           <div class="content-block">
-            <span class="category-title"> Flags </span>
+            <span class="category-title" [translate]="'ITEM.TEMPLATE.FLAGS'"></span>
             <div class="row">
               <div class="form-group col-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
                 <label class="control-label" for="Flags">Flags</label>
@@ -349,28 +267,16 @@
         </div>
         <div class="col-12 col-xl-6">
           <div class="content-block">
-            <span class="category-title"> Texts </span>
+            <span class="category-title" [translate]="'ITEM.TEMPLATE.TEXTS'"></span>
             <div class="row">
               <div class="form-group col-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
                 <label class="control-label" for="PageText">PageText</label>
-                <i
-                  class="fas fa-info-circle ms-1"
-                  [placement]="'auto'"
-                  [tooltip]="
-                    'The ID referring to the text that the item will show (if it is a book or a letter, etc). The item will have a magnifying glass cursor in the game and will show the text when right-clicked. See page_text.entry'
-                  "
-                ></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.PAGE_TEXT' | translate"></i>
                 <input [formControlName]="'PageText'" id="PageText" type="number" class="form-control form-control-sm" />
               </div>
               <div class="form-group col-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
                 <label class="control-label" for="PageMaterial">PageMaterial</label>
-                <i
-                  class="fas fa-info-circle ms-1"
-                  [placement]="'auto'"
-                  [tooltip]="
-                    'The background texture that appears in the page text window. See the PageTextMaterial DBC file for the IDs of all of the material types.'
-                  "
-                ></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.PAGE_MATERIAL' | translate"></i>
                 <input [formControlName]="'PageMaterial'" id="PageMaterial" type="number" class="form-control form-control-sm" />
               </div>
               <div class="form-group col-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
@@ -379,13 +285,7 @@
                   [config]="{ name: 'LanguageID' }"
                   [control]="editorService.form.controls.LanguageID"
                 ></keira-language-selector-btn>
-                <i
-                  class="fas fa-info-circle ms-1"
-                  [placement]="'auto'"
-                  [tooltip]="
-                    'The language that the item text is written in. See the Languages DBC file for the IDs of all of the languages.'
-                  "
-                ></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.LANG_ID' | translate"></i>
                 <input [formControlName]="'LanguageID'" id="LanguageID" type="number" class="form-control form-control-sm" />
               </div>
             </div>
@@ -393,7 +293,7 @@
         </div>
       </div>
       <div class="content-block">
-        <span class="category-title"> Requirements </span>
+        <span class="category-title" [translate]="'ITEM.TEMPLATE.REQUIREMENTS'"></span>
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="AllowableClass">AllowableClass</label>
@@ -415,21 +315,17 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="ItemLevel">ItemLevel</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Base item level'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.ITEM_LEVEL' | translate"></i>
             <input [formControlName]="'ItemLevel'" id="ItemLevel" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="RequiredLevel">Req.Level</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The level required to equip the item'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.REQUIRED_LEVEL' | translate"></i>
             <input [formControlName]="'RequiredLevel'" id="RequiredLevel" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="RequiredSkill">Req.Skill</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'The skill required to use this item. See the SkillLine DBC file for IDs which can be used here.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.REQUIRED_SKILL' | translate"></i>
             <keira-skill-selector-btn
               [config]="{ name: 'RequiredSkill' }"
               [control]="editorService.form.controls.RequiredSkill"
@@ -438,16 +334,12 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="RequiredSkillRank">Req.SkillRank</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The skill rank required to use this item.'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.REQUIRED_SKILL_RANK' | translate"></i>
             <input [formControlName]="'RequiredSkillRank'" id="RequiredSkillRank" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="requiredspell">Req.spell</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'The required spell that the player needs to have to use this item.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.REQUIRED_SPELL' | translate"></i>
             <keira-spell-selector-btn
               [control]="editorService.form.controls.requiredspell"
               [config]="{ name: 'requiredspell' }"
@@ -457,7 +349,7 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="requiredhonorrank">Req.honorrank</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The honor rank required to use this item.'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.REQUIRED_HONORRANK' | translate"></i>
             <keira-single-value-selector-btn
               [control]="editorService.form.controls.requiredhonorrank"
               [config]="{ options: PVP_RANK, name: 'PvP Honor Rank' }"
@@ -467,7 +359,7 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="RequiredCityRank">Req.CityRank</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Its use is unknown. All items have 0'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.REQUIRED_CITY_RANK' | translate"></i>
             <input [formControlName]="'RequiredCityRank'" id="RequiredCityRank" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -499,13 +391,7 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="RequiredDisenchantSkill">Req.Disenchant</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="
-                'The required skill proficiency in disenchanting that the player needs to have to be able to disenchant this item.'
-              "
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.REQUIRED_DISENCHANT_SKILL' | translate"></i>
             <input
               [formControlName]="'RequiredDisenchantSkill'"
               id="RequiredDisenchantSkill"
@@ -516,13 +402,13 @@
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="Map">Map</label>
             <keira-map-selector-btn [config]="{ name: 'Map' }" [control]="editorService.form.controls.Map"></keira-map-selector-btn>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The ID of the map in which this item can be used.'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.MAP' | translate"></i>
             <input [formControlName]="'Map'" id="Map" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="area">area</label>
             <keira-area-selector-btn [config]="{ name: 'area' }" [control]="editorService.form.controls.area"></keira-area-selector-btn>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The ID of the zone in which this item can be used.'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.AREA' | translate"></i>
             <input [formControlName]="'area'" id="area" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -531,29 +417,20 @@
               [config]="{ name: 'HolidayId' }"
               [control]="editorService.form.controls.HolidayId"
             ></keira-holiday-selector-btn>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'See the Holidays DBC file for the IDs of all of the holidays.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.HOLIDAY_ID' | translate"></i>
             <input [formControlName]="'HolidayId'" id="HolidayId" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="lockid">lockid</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="
-                'The lock entry ID that this item (which serves as a key) is tied to. This field is used in key-door mechanics. See the Lock DBC file.'
-              "
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.LOCKID' | translate"></i>
             <input [formControlName]="'lockid'" id="lockid" type="number" class="form-control form-control-sm" />
           </div>
         </div>
       </div>
       <div class="content-block">
         <span class="category-title">
-          Resistance <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Related resistance per type.'"></i>
+          {{ 'ITEM.TEMPLATE.RESISTANCE' | translate }}
+          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.RESISTANCE_TOOLTIP' | translate"></i>
         </span>
         <div class="row">
           <div
@@ -566,17 +443,11 @@
         </div>
       </div>
       <div class="content-block">
-        <span class="category-title"> Stats </span>
+        <span class="category-title" [translate]="'ITEM.TEMPLATE.STATS'"></span>
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-lg-4 col-xl-3">
             <label class="control-label" for="ScalingStatDistribution">ScalingStatDistribution</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="
-                'Similar to Static Stats these are the Stats that grow along with the users level (mainly heirloom leveling gear) use like static stats.'
-              "
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SCALING_STAT_DISTRIBUTION' | translate"></i>
             <input
               [formControlName]="'ScalingStatDistribution'"
               id="ScalingStatDistribution"
@@ -586,16 +457,12 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-lg-4 col-xl-3">
             <label class="control-label" for="ScalingStatValue">ScalingStatValue</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Final (level 80) value of the scaling-stat.'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SCALING_STAT_VALUE' | translate"></i>
             <input [formControlName]="'ScalingStatValue'" id="ScalingStatValue" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-lg-4 col-xl-3">
             <label class="control-label" for="StatsCount">count</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'When an item has entries in stat_type, this must be updated to display those entries (Unknown how this works).'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.STATS_COUNT' | translate"></i>
             <input [formControlName]="'StatsCount'" id="StatsCount" type="number" class="form-control form-control-sm" />
           </div>
         </div>
@@ -613,7 +480,7 @@
               </div>
               <div class="col-12">
                 <label class="control-label" for="stat_value{{ i }}">value{{ i }}</label>
-                <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The value to change the stat type to.'"></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.STAT_VALUE' | translate"></i>
                 <input [formControlName]="'stat_value' + i" id="stat_value{{ i }}" type="number" class="form-control form-control-sm" />
               </div>
             </div>
@@ -621,7 +488,7 @@
         </div>
       </div>
       <div class="content-block">
-        <span class="category-title"> Socket </span>
+        <span class="category-title" [translate]="'ITEM.TEMPLATE.SOCKET'"></span>
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg col-xl-5">
             <label class="control-label" for="socketBonus">socketBonus</label>
@@ -633,7 +500,7 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg col-xl-5">
             <label class="control-label" for="GemProperties">GemProperties</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Corresponds to the ID in GemProperties.dbc.'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.GEM_PROPERTIES' | translate"></i>
             <input [formControlName]="'GemProperties'" id="GemProperties" type="number" class="form-control form-control-sm" />
           </div>
         </div>
@@ -651,7 +518,7 @@
               </div>
               <div class="col-12">
                 <label class="control-label" for="socketContent_{{ i }}">Content_{{ i }}</label>
-                <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The amount of Gems of SocketColor_' + i"></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SOCKET_CONTENTS' | translate: { idx: i }"></i>
                 <input
                   [formControlName]="'socketContent_' + i"
                   id="socketContent_{{ i }}"
@@ -664,11 +531,11 @@
         </div>
       </div>
       <div class="content-block">
-        <span class="category-title"> Weapon & Armor </span>
+        <span class="category-title" [translate]="'ITEM.TEMPLATE.WEAPON_ARMOR'"></span>
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="armor">armor</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The armor value of the item.'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.ARMOR' | translate"></i>
             <input [formControlName]="'armor'" id="armor" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -677,41 +544,27 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="delay">delay</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The time in milliseconds between successive hits.'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.ARMOR_DAMAGE_MODIFIER' | translate"></i>
             <input [formControlName]="'delay'" id="delay" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="ammo_type">ammo_type</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'The type of ammunition the item uses. Arrows = 2; Bullets = 3'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.DELAY' | translate"></i>
             <input [formControlName]="'ammo_type'" id="ammo_type" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="RangedModRange">RangModRange</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="
-                'Range Modifier for bows/guns/crossbows: Default range is somewhere between 0.3 and 0.4 yards, all blizzard ranged weapons have RangedModRange100'
-              "
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.AMMO_TYPE' | translate"></i>
             <input [formControlName]="'RangedModRange'" id="RangedModRange" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="block">block</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'If the item is a shield, the block chance of the shield.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.RANGED_MOD_RANGE' | translate"></i>
             <input [formControlName]="'block'" id="block" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="MaxDurability">MaxDurability</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The maximum durability of this item.'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.BLOCK' | translate"></i>
             <input [formControlName]="'MaxDurability'" id="MaxDurability" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -726,17 +579,17 @@
         </div>
       </div>
       <div class="content-block">
-        <span class="category-title">Damage</span>
+        <span class="category-title" [translate]="'ITEM.TEMPLATE.DAMAGE'"></span>
         <div class="row">
           <ng-container *ngFor="let i of [1, 2]">
             <div class="col-sm-6 col-md-4">
               <label class="control-label" for="dmg_min{{ i }}">min{{ i }}</label>
-              <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The minimum damage of the item.'"></i>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.MAX_DURABILITY' | translate"></i>
               <input [formControlName]="'dmg_min' + i" id="dmg_min{{ i }}" type="number" class="form-control form-control-sm" />
             </div>
             <div class="col-sm-6 col-md-4">
               <label class="control-label" for="dmg_max{{ i }}">max{{ i }}</label>
-              <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The maximum damage of the item.'"></i>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.DMG_MIN' | translate"></i>
               <input [formControlName]="'dmg_max' + i" id="dmg_max{{ i }}" type="number" class="form-control form-control-sm" />
             </div>
             <div class="col-sm-6 col-md-4">
@@ -753,7 +606,8 @@
       </div>
       <div class="content-block">
         <span class="category-title">
-          Spell <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The spells that the item can cast or trigger'"></i>
+          {{ 'ITEM.TEMPLATE.SPELL' | translate }}
+          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.DMG_MAX' | translate"></i>
         </span>
         <div class="row">
           <div *ngFor="let i of [1, 2, 3, 4, 5]" class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl">
@@ -778,13 +632,7 @@
               </div>
               <div class="col-12">
                 <label class="control-label" for="spellcharges_{{ i }}">charges_{{ i }}</label>
-                <i
-                  class="fas fa-info-circle ms-1"
-                  [placement]="'auto'"
-                  [tooltip]="
-                    'The number of times that the item can cast the spell. If 0, then infinite charges are possible. If negative, then after the number of charges is depleted, the item is deleted as well. If positive, then the item is not deleted after all the charges are spent.'
-                  "
-                ></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SPELL_CHARGES' | translate"></i>
                 <input
                   [formControlName]="'spellcharges_' + i"
                   id="spellcharges_{{ i }}"
@@ -794,11 +642,7 @@
               </div>
               <div class="col-12">
                 <label class="control-label" for="spellppmRate_{{ i }}">ppmRate_{{ i }}</label>
-                <i
-                  class="fas fa-info-circle ms-1"
-                  [placement]="'auto'"
-                  [tooltip]="'The proc per minute rate controlling how often the spell is triggered (if #spelltrigger == 2).'"
-                ></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SPELL_PPM_RATES' | translate"></i>
                 <input
                   [formControlName]="'spellppmRate_' + i"
                   id="spellppmRate_{{ i }}"
@@ -808,13 +652,7 @@
               </div>
               <div class="col-12">
                 <label class="control-label" for="spellcooldown_{{ i }}">cooldown_{{ i }}</label>
-                <i
-                  class="fas fa-info-circle ms-1"
-                  [placement]="'auto'"
-                  [tooltip]="
-                    'The cooldown in milliseconds for the specific spell controlling how often the spell can be used. Use -1 to use the default spell cooldown. Note: this is not the “internal cooldown” of procs commonly found on items such as trinkets with “Chance on hit” effects.'
-                  "
-                ></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SPELL_COOLDOWNS' | translate"></i>
                 <input
                   [formControlName]="'spellcooldown_' + i"
                   id="spellcooldown_{{ i }}"
@@ -824,7 +662,7 @@
               </div>
               <div class="col-12">
                 <label class="control-label" for="spellcategory_{{ i }}">category_{{ i }}</label>
-                <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The category that the spell is in.'"></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SPELL_CATEGORIES' | translate"></i>
                 <input
                   [formControlName]="'spellcategory_' + i"
                   id="spellcategory_{{ i }}"
@@ -834,13 +672,7 @@
               </div>
               <div class="col-12">
                 <label class="control-label" for="spellcategorycooldown_{{ i }}">categorycooldown_{{ i }}</label>
-                <i
-                  class="fas fa-info-circle ms-1"
-                  [placement]="'auto'"
-                  [tooltip]="
-                    'The cooldown time in milliseconds that is applied to all other spells in the category that the triggered spell is also in. Use -1 to use the default spell cooldown.'
-                  "
-                ></i>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SPELL_CATEGORY_COOLDOWNS' | translate"></i>
                 <input
                   [formControlName]="'spellcategorycooldown_' + i"
                   id="spellcategorycooldown_{{ i }}"

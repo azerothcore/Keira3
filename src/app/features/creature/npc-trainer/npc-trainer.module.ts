@@ -6,6 +6,7 @@ import { QueryOutputModule } from '@keira-shared/modules/query-output/query-outp
 import { SkillSelectorModule } from '@keira-shared/modules/selectors/skill-selector/skill-selector.module';
 import { SpellSelectorModule } from '@keira-shared/modules/selectors/spell-selector/spell-selector.module';
 import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
+import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
@@ -25,6 +26,7 @@ import { NpcTrainerService } from './npc-trainer.service';
     SpellSelectorModule,
     SkillSelectorModule,
     EditorButtonsModule,
+    TranslateModule,
   ],
   exports: [NpcTrainerComponent],
   providers: [NpcTrainerService],

@@ -23,7 +23,7 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
   }
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected router: Router, public readonly queryService: MysqlQueryService) {
+  constructor(protected router: Router, readonly queryService: MysqlQueryService) {
     super('smart-ai/editors', router, SAI_ID_FIELDS);
   }
 

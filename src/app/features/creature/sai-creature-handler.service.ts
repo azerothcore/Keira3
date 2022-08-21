@@ -6,7 +6,7 @@ import { MysqlQueryService } from '../../shared/services/mysql-query.service';
 @Injectable()
 export class SaiCreatureHandlerService extends SaiHandlerService {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected router: Router, public readonly queryService: MysqlQueryService) {
+  constructor(protected router: Router, readonly queryService: MysqlQueryService) {
     super(router, queryService);
   }
 }

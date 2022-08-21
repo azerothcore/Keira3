@@ -1,7 +1,7 @@
 <keira-top-bar [handler]="handlerService"></keira-top-bar>
 
 <div class="container-fluid editor-with-preview" [ngClass]="{ 'show-preview': questPreviewService.showPreview }">
-  <span *ngIf="editorService.loading">Loading...</span>
+  <span *ngIf="editorService.loading" [translate]="'LOADING'"></span>
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
     <div class="content-block">
@@ -14,11 +14,11 @@
 
     <form [formGroup]="editorService.form" class="form-group edit-form">
       <div class="content-block">
-        <span class="category-title">Addon Base</span>
+        <span class="category-title" [translate]="'QUEST.TEMPLATE_ADDON.ADDON_BASE'"></span>
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="ID">ID</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The unique ID of the quest'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'UNIQUE_ID' | translate: { ENTITY: 'quest' }"></i>
             <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm" />
           </div>
 
@@ -29,7 +29,7 @@
               [config]="{ name: 'PrevQuestID' }"
               [modalClass]="'modal-lg'"
             ></keira-quest-selector-btn>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'if > 0: previous quest id; if < 0 parent quest id'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.PREV_QUEST_ID' | translate"></i>
             <input [formControlName]="'PrevQuestID'" id="PrevQuestID" type="number" class="form-control form-control-sm" />
           </div>
 
@@ -40,21 +40,13 @@
               [config]="{ name: 'NextQuestID' }"
               [modalClass]="'modal-lg'"
             ></keira-quest-selector-btn>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'Contains the next quest id, in case PrevQuestId of that other quest is not sufficient.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.NEXT_QUEST_ID' | translate"></i>
             <input [formControlName]="'NextQuestID'" id="NextQuestID" type="number" class="form-control form-control-sm" />
           </div>
 
           <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="MaxLevel">MaxLevel</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'Maximum player level at which a character can get the quest.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.MAX_LEVEL' | translate"></i>
             <input [formControlName]="'MaxLevel'" id="MaxLevel" type="number" class="form-control form-control-sm" />
           </div>
 
@@ -64,13 +56,13 @@
               [control]="editorService.form.controls.AllowableClasses"
               [config]="{ flags: ALLOWABLE_CLASSES, name: 'AllowableClasses' }"
             ></keira-flags-selector-btn>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Use 0 to allow all classes'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.ALLOWABLE_CLASSES' | translate"></i>
             <input [formControlName]="'AllowableClasses'" id="AllowableClasses" type="number" class="form-control form-control-sm" />
           </div>
 
           <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="SourceSpellID">SourceSpellID</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The spell ID cast on player upon starting the quest.'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.SOURCE_SPELL_ID' | translate"></i>
             <keira-spell-selector-btn
               [control]="editorService.form.controls.SourceSpellID"
               [config]="{ name: 'SourceSpellID' }"
@@ -81,23 +73,13 @@
 
           <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="ExclusiveGroup">ExclusiveGroup</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="
-                'If > 0: group of quests of which only one may be chosen and completed; if < 0  group of quests of which all must be completed and rewarded to start next quest'
-              "
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.EXCLUSIVE_GROUP' | translate"></i>
             <input [formControlName]="'ExclusiveGroup'" id="ExclusiveGroup" type="number" class="form-control form-control-sm" />
           </div>
 
           <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="ProvidedItemCount">ProvidedItemCount</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'Number of items given to the player (inserted in the player’s bags) upon accepting the quest.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.PROVIDED_ITEM_COUNT' | translate"></i>
             <input [formControlName]="'ProvidedItemCount'" id="ProvidedItemCount" type="number" class="form-control form-control-sm" />
           </div>
 
@@ -112,15 +94,11 @@
         </div>
       </div>
       <div class="content-block">
-        <span class="category-title">Addon Requirements</span>
+        <span class="category-title" [translate]="'QUEST.TEMPLATE_ADDON.ADDON_REQUIREMENTS'"></span>
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="RequiredSkillID">Req.SkillID</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'Skill required to know to accept the quest. Use 0 for no skill required.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.REQ_SKILL_ID' | translate"></i>
             <keira-skill-selector-btn
               [config]="{ name: 'RequiredSkillID' }"
               [control]="editorService.form.controls.RequiredSkillID"
@@ -130,11 +108,7 @@
 
           <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="RequiredSkillPoints">Req.SkillPoints</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'Skill points required to have in order to accept the quest.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.REQ_SKILL_POINTS' | translate"></i>
             <input [formControlName]="'RequiredSkillPoints'" id="RequiredSkillPoints" type="number" class="form-control form-control-sm" />
           </div>
 
@@ -154,11 +128,7 @@
 
           <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="RequiredMinRepValue">Req.MinRepValue</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'Players must have this reputation or higher in order to receive the quest.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.REQ_MIN_REP_VALUE' | translate"></i>
             <input [formControlName]="'RequiredMinRepValue'" id="RequiredMinRepValue" type="number" class="form-control form-control-sm" />
           </div>
 
@@ -178,25 +148,17 @@
 
           <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="RequiredMaxRepValue">Req.MaxRepValue</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'The maximum reputation value that the player can have with a faction and still get the quest.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.REQ_MAX_REP_VALUE' | translate"></i>
             <input [formControlName]="'RequiredMaxRepValue'" id="RequiredMaxRepValue" type="number" class="form-control form-control-sm" />
           </div>
         </div>
       </div>
       <div class="content-block">
-        <span class="category-title">Addon Rewards</span>
+        <span class="category-title" [translate]="'QUEST.TEMPLATE_ADDON.ADDON_REWARDS'"></span>
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="RewardMailTemplateID">RewardMailTemplateID</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'Corresponds to the loot template in quest_mail_loot_template; items will be sent by mail at quest completion'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.REWARD_MAIL_TEMPLATE_ID' | translate"></i>
             <input
               [formControlName]="'RewardMailTemplateID'"
               id="RewardMailTemplateID"
@@ -207,11 +169,7 @@
 
           <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
             <label class="control-label" for="RewardMailDelay">RewardMailDelay</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'Delay (in seconds) after which the mail is sent to the character (defined in RewardMailTemplateId)'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.REWARD_MAIL_DELAY' | translate"></i>
             <input [formControlName]="'RewardMailDelay'" id="RewardMailDelay" type="number" class="form-control form-control-sm" />
           </div>
         </div>

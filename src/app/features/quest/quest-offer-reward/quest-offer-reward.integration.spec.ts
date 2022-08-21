@@ -1,6 +1,7 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { QuestOfferReward } from '@keira-types/quest-offer-reward.type';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -37,13 +38,11 @@ describe('QuestOfferReward integration tests', () => {
   originalEntity.EmoteDelay4 = 9;
   originalEntity.RewardText = '10';
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, QuestModule],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, QuestModule, TranslateTestingModule],
+    }).compileComponents();
+  }));
 
   function setup(creatingNew: boolean) {
     const handlerService = TestBed.inject(QuestHandlerService);
@@ -172,32 +171,29 @@ describe('QuestOfferReward integration tests', () => {
       page.removeElement();
     });
 
-    xit(
-      'changing a value via SingleValueSelector should correctly work',
-      waitForAsync(async () => {
-        const { page } = setup(false);
-        const field = 'Emote1';
-        page.clickElement(page.getSelectorBtn(field));
+    xit('changing a value via SingleValueSelector should correctly work', waitForAsync(async () => {
+      const { page } = setup(false);
+      const field = 'Emote1';
+      page.clickElement(page.getSelectorBtn(field));
 
-        await page.whenReady();
-        page.expectModalDisplayed();
+      await page.whenReady();
+      page.expectModalDisplayed();
 
-        page.clickRowOfDatatableInModal(4);
+      page.clickRowOfDatatableInModal(4);
 
-        await page.whenReady();
-        page.clickModalSelect();
-        await page.whenReady();
+      await page.whenReady();
+      page.clickModalSelect();
+      await page.whenReady();
 
-        expect(page.getInputById(field).value).toEqual('4');
-        page.expectDiffQueryToContain('UPDATE `quest_offer_reward` SET `Emote1` = 4 WHERE (`ID` = 1234);');
-        page.expectFullQueryToContain(
-          'DELETE FROM `quest_offer_reward` WHERE (`ID` = 1234);\n' +
-            'INSERT INTO `quest_offer_reward` (`ID`, `Emote1`, `Emote2`, `Emote3`, `Emote4`, ' +
-            '`EmoteDelay1`, `EmoteDelay2`, `EmoteDelay3`, `EmoteDelay4`, `RewardText`, `VerifiedBuild`) VALUES\n' +
-            "(1234, 4, 3, 4, 5, 6, 7, 8, 9, '10', 0);",
-        );
-        page.removeElement();
-      }),
-    );
+      expect(page.getInputById(field).value).toEqual('4');
+      page.expectDiffQueryToContain('UPDATE `quest_offer_reward` SET `Emote1` = 4 WHERE (`ID` = 1234);');
+      page.expectFullQueryToContain(
+        'DELETE FROM `quest_offer_reward` WHERE (`ID` = 1234);\n' +
+          'INSERT INTO `quest_offer_reward` (`ID`, `Emote1`, `Emote2`, `Emote3`, `Emote4`, ' +
+          '`EmoteDelay1`, `EmoteDelay2`, `EmoteDelay3`, `EmoteDelay4`, `RewardText`, `VerifiedBuild`) VALUES\n' +
+          "(1234, 4, 3, 4, 5, 6, 7, 8, 9, '10', 0);",
+      );
+      page.removeElement();
+    }));
   });
 });

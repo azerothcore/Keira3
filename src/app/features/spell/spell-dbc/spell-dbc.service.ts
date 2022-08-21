@@ -12,7 +12,7 @@ export class SpellDbcService extends SingleRowEditorService<SpellDbc> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: SpellHandlerService,
-    public readonly queryService: MysqlQueryService,
+    readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(SpellDbc, SPELL_DBC_TABLE, SPELL_DBC_ID, SPELL_DBC_NAME, true, handlerService, queryService, toastrService);

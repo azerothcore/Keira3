@@ -11,7 +11,7 @@ import { FlagsModalConfig } from './flags-selector.model';
   styleUrls: ['./flags-selector-modal.component.scss'],
 })
 export class FlagsSelectorModalComponent extends BaseSelectorModalComponent<FlagsModalConfig> implements OnInit {
-  public readonly pow = Math.pow;
+  readonly pow = Math.pow;
 
   flagValues: boolean[];
 

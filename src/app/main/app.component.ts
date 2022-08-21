@@ -15,7 +15,7 @@ import { MysqlService } from '../shared/services/mysql.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent extends SubscriptionHandler implements OnInit {
-  public readonly KEIRA3_REPO_URL = KEIRA3_REPO_URL;
+  readonly KEIRA3_REPO_URL = KEIRA3_REPO_URL;
   showNewerVersionAlert = false;
   sqliteResult: { id: number; name: string };
 

@@ -1,7 +1,7 @@
 <keira-top-bar [handler]="handlerService"></keira-top-bar>
 
 <div class="container-fluid">
-  <span *ngIf="editorService.loading">Loading...</span>
+  <span *ngIf="editorService.loading" [translate]="'LOADING'"></span>
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
     <div class="content-block">
@@ -29,7 +29,7 @@
 
           <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
             <i class="fas fa-exclamation-triangle"></i>
-            The <strong>{{ editorService.entitySecondIdField }}</strong> must be unique.
+            <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
           </div>
         </div>
       </form>

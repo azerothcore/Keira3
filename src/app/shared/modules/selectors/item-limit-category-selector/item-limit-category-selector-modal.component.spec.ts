@@ -7,20 +7,19 @@ import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { ItemLimitCategorySearchService } from '../../search/item-limit-category-search.service';
 import { ItemLimitCategorySelectorModule } from './item-limit-category-selector.module';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 
 describe('ItemLimitCategorySelectorModalComponent', () => {
   let component: ItemLimitCategorySelectorModalComponent;
   let fixture: ComponentFixture<ItemLimitCategorySelectorModalComponent>;
   let searchService: ItemLimitCategorySearchService;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ItemLimitCategorySelectorModule],
-        providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ItemLimitCategorySelectorModule, TranslateTestingModule],
+      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     searchService = TestBed.inject(ItemLimitCategorySearchService);

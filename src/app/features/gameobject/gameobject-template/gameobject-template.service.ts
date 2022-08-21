@@ -17,7 +17,7 @@ export class GameobjectTemplateService extends SingleRowEditorService<Gameobject
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: GameobjectHandlerService,
-    public readonly queryService: MysqlQueryService,
+    readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -35,6 +35,6 @@ export class GameobjectTemplateService extends SingleRowEditorService<Gameobject
   getFieldDefinition(type: number, dataIndex: number): FieldDefinition {
     return GO_DATA_FIELDS[type] && GO_DATA_FIELDS[type][dataIndex]
       ? GO_DATA_FIELDS[type][dataIndex]
-      : { name: `Data${dataIndex}`, tooltip: null };
+      : { name: `Data${dataIndex}`, tooltip: 'EMPTY' };
   }
 }

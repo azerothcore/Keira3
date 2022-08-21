@@ -14,7 +14,7 @@ export class CreatureTemplateResistanceComponent extends MultiRowEditorComponent
     return this.WIKI_BASE_URL + CREATURE_TEMPLATE_RESISTANCE_TABLE;
   }
 
-  public readonly CREATURE_TEMPLATE_RESISTANCE_SCHOOL = CREATURE_TEMPLATE_RESISTANCE_SCHOOL;
+  readonly CREATURE_TEMPLATE_RESISTANCE_SCHOOL = CREATURE_TEMPLATE_RESISTANCE_SCHOOL;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(public editorService: CreatureTemplateResistanceService, public handlerService: CreatureHandlerService) {

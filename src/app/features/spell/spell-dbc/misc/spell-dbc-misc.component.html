@@ -2,53 +2,37 @@
   <div class="row">
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="unk_320_2">unk_320_2</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Unused since patch 3.2.0'"></i>
+      <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.MISC.UNK_320_2' | translate"></i>
       <input [formControlName]="'unk_320_2'" id="unk_320_2" type="number" class="form-control form-control-sm" />
     </div>
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="unk_320_3">unk_320_3</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Unused since patch 3.2.0'"></i>
+      <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.MISC.UNK_320_3' | translate"></i>
       <input [formControlName]="'unk_320_3'" id="unk_320_3" type="number" class="form-control form-control-sm" />
     </div>
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="StartRecoveryCategory">StartRecoveryCategory</label>
-      <i
-        class="fas fa-info-circle ms-1"
-        [placement]="'auto'"
-        [tooltip]="'The only value which seems to be used here apart of 0 is 133 (spells affected by global CD).'"
-      ></i>
+      <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.MISC.START_RECOVERY_CATEGORY' | translate"></i>
       <input [formControlName]="'StartRecoveryCategory'" id="StartRecoveryCategory" type="number" class="form-control form-control-sm" />
     </div>
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="StartRecoveryTime">StartRecoveryTime</label>
-      <i
-        class="fas fa-info-circle ms-1"
-        [placement]="'auto'"
-        [tooltip]="'The only value (in ms) which seems to be used here apart of 0 is 1500 (global CD value).'"
-      ></i>
+      <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.MISC.START_RECOVERY_TIME' | translate"></i>
       <input [formControlName]="'StartRecoveryTime'" id="StartRecoveryTime" type="number" class="form-control form-control-sm" />
     </div>
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="ModalNextSpell">ModalNextSpell</label>
-      <i
-        class="fas fa-info-circle ms-1"
-        [placement]="'auto'"
-        [tooltip]="'Seems to be only used for Hunter spells with the values 59 and 75.'"
-      ></i>
+      <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.MISC.MODAL_NEXT_SPELL' | translate"></i>
       <input [formControlName]="'ModalNextSpell'" id="ModalNextSpell" type="number" class="form-control form-control-sm" />
     </div>
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="SpellPriority">SpellPriority</label>
-      <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Unknown. Only used value is 50 for some spells.'"></i>
+      <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.MISC.SPELL_PRIORITY' | translate"></i>
       <input [formControlName]="'SpellPriority'" id="SpellPriority" type="number" class="form-control form-control-sm" />
     </div>
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" for="RequiredAuraVision">RequiredAuraVision</label>
-      <i
-        class="fas fa-info-circle ms-1"
-        [placement]="'auto'"
-        [tooltip]="'Unknown. Only 16 Spells use another value as 0. Could be used for visual effects.'"
-      ></i>
+      <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.MISC.REQUIRED_AURA_VISION' | translate"></i>
       <input [formControlName]="'RequiredAuraVision'" id="RequiredAuraVision" type="number" class="form-control form-control-sm" />
     </div>
   </div>
