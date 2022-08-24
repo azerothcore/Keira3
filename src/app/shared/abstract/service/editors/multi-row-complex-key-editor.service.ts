@@ -1,5 +1,5 @@
 import { Class, TableRow } from '@keira-types/general';
-import { MysqlError } from 'mysql';
+import { QueryError as MysqlError } from 'mysql2';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { MysqlQueryService } from '../../../services/mysql-query.service';

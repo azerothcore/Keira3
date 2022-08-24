@@ -1,4 +1,4 @@
-import { FieldInfo } from 'mysql';
+import { FieldPacket as FieldInfo } from 'mysql2';
 
 export type StringKeys<T> = Extract<keyof T, string>;
 

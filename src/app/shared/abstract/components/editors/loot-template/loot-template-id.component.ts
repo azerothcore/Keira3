@@ -1,5 +1,5 @@
 import { OnInit, Component } from '@angular/core';
-import { MysqlError } from 'mysql';
+import { QueryError as MysqlError } from 'mysql2';
 
 import { LootTemplate } from '@keira-types/loot-template.type';
 import { HandlerService } from '../../../service/handlers/handler.service';

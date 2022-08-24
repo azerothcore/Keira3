@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ConnectionConfig, MysqlError } from 'mysql';
+import { ConnectionOptions as ConnectionConfig,QueryError as  MysqlError } from 'mysql2';
 import { FormControl, FormGroup } from 'ngx-typesafe-forms';
 import packageInfo from '../../../../package.json';
 import { MysqlService } from '../../shared/services/mysql.service';
