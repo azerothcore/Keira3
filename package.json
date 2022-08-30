@@ -44,7 +44,7 @@
     "@types/electron-settings": "4.0.0",
     "acorn": "8.8.0",
     "electron-settings": "4.0.2",
-    "jquery": "3.6.0",
+    "jquery": "3.6.1",
     "karma-coverage": "2.2.0",
     "mysql": "2.18.1",
     "ngx-toastr": "14.3.0",
