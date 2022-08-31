@@ -27,6 +27,7 @@
     "FREE": "свободно",
     "ALREADY_USE": "уже используется"
   },
+  "CONNECTED": "Connected",
   "SEARCH": "Поиск",
   "SELECT": "Выбрать",
   "SELECT_EXISTING": "Выбрать существующий",

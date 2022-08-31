@@ -2,7 +2,7 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { PageObject } from '@keira-testing/page-object';
-import { MysqlError } from 'mysql2';
+import { QueryError } from 'mysql2';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ClipboardService } from 'ngx-clipboard';
 import { of, throwError } from 'rxjs';
@@ -86,15 +86,15 @@ describe('SqlEditorComponent', () => {
     const error = {
       code: 'some error happened',
       errno: 1000,
-      sqlMessage: 'some SQL error message',
+      stack: 'some SQL error message',
       sqlState: 'some SQL state',
-    } as MysqlError;
+    } as QueryError;
     (mysqlQueryService.query as Spy).and.returnValue(throwError(error));
 
     page.clickElement(page.executeBtn);
 
     expect(page.errorElement.innerHTML).toContain(error.code);
-    expect(page.errorElement.innerHTML).toContain(error.sqlMessage);
+    expect(page.errorElement.innerHTML).toContain(error.stack);
     expect(page.errorElement.innerHTML).toContain(error.sqlState);
     expect(page.errorElement.innerHTML).toContain(`${error.errno}`);
   });

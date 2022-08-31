@@ -1,5 +1,5 @@
 import { Class, TableRow } from '@keira-types/general';
-import { QueryError as MysqlError } from 'mysql2';
+import { QueryError } from 'mysql2';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
@@ -69,7 +69,7 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
           this.onReloadSuccessful(data);
           this._loading = false;
         },
-        error: (error: MysqlError) => {
+        error: (error: QueryError) => {
           this._error = error;
           this._loading = false;
         },
