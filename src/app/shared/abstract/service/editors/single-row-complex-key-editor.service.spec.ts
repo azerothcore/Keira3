@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { MysqlError } from 'mysql2';
+import { QueryError } from 'mysql2';
 import { instance } from 'ts-mockito';
 import { ToastrService } from 'ngx-toastr';
 
@@ -108,7 +108,7 @@ describe('SingleRowComplexKeyEditorService', () => {
 
     it('reloadEntity()', () => {
       const selectQuerySpy = spyOn<any>(service, 'selectQuery');
-      const error = { code: 'mock error', errno: 1234 } as MysqlError;
+      const error = { code: 'mock error', errno: 1234 } as QueryError;
       selectQuerySpy.and.returnValue(of([{ [MOCK_NAME]: 'mockName' }]));
 
       service['reloadEntity']();

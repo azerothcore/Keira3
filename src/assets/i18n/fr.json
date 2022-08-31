@@ -27,6 +27,7 @@
     "FREE": "libre",
     "ALREADY_USE": "déjà utilisé"
   },
+  "CONNECTED": "Connected",
   "SEARCH": "Rechercher",
   "SELECT": "Sélectionner",
   "SELECT_EXISTING": "Sélectionner un existant",

@@ -3,7 +3,7 @@ import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { MockedMysqlService } from '@keira-testing/mocks';
 import { PageObject } from '@keira-testing/page-object';
 import { Spied } from '@keira-testing/test-helpers';
-import { ConnectionConfig, MysqlError } from 'mysql2';
+import { ConnectionOptions, QueryError } from 'mysql2';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { of, throwError } from 'rxjs';
 import { instance, reset } from 'ts-mockito';
@@ -49,7 +49,7 @@ class ConnectionWindowComponentPage extends PageObject<ConnectionWindowComponent
 }
 
 describe('ConnectionWindowComponent', () => {
-  const mockConfigsWithPass: Partial<ConnectionConfig>[] = [
+  const mockConfigsWithPass: Partial<ConnectionOptions>[] = [
     {
       host: 'localhost',
       port: 3306,
@@ -65,7 +65,7 @@ describe('ConnectionWindowComponent', () => {
       database: 'helias_world',
     },
   ];
-  const mockConfigsNoPass: Partial<ConnectionConfig>[] = [
+  const mockConfigsNoPass: Partial<ConnectionOptions>[] = [
     {
       host: 'localhost',
       port: 3306,
@@ -113,7 +113,7 @@ describe('ConnectionWindowComponent', () => {
 
   it('clicking on the connect button without altering the default values should correctly work', () => {
     const { page, component, connectSpy } = setup();
-    component.error = { code: 'some previous error', errno: 1234 } as MysqlError;
+    component.error = { code: 'some previous error', errno: 1234 } as QueryError;
 
     page.clickElement(page.connectBtn);
 
@@ -132,7 +132,7 @@ describe('ConnectionWindowComponent', () => {
   it('the latest config should be loaded by default (if any)', () => {
     const { fixture, page, component, connectSpy, connectionWindowService } = setup(false);
     connectionWindowService.getConfigs.and.returnValue(mockConfigsWithPass);
-    component.error = { code: 'some previous error', errno: 1234 } as MysqlError;
+    component.error = { code: 'some previous error', errno: 1234 } as QueryError;
     fixture.detectChanges();
 
     page.clickElement(page.connectBtn);
@@ -157,7 +157,7 @@ describe('ConnectionWindowComponent', () => {
     const user = 'shin';
     const password = 'helias';
     const database = 'my_world';
-    component.error = { code: 'some previous error', errno: 1234 } as MysqlError;
+    component.error = { code: 'some previous error', errno: 1234 } as QueryError;
 
     page.setInputValue(page.hostInput, host);
     page.setInputValue(page.portInput, port);
@@ -177,9 +177,9 @@ describe('ConnectionWindowComponent', () => {
     const error = {
       code: 'some error happened',
       errno: 1000,
-      sqlMessage: 'some SQL error message',
+      stack: 'some SQL error message',
       sqlState: 'some SQL state',
-    } as MysqlError;
+    } as QueryError;
     connectSpy.and.returnValue(throwError(error));
 
     page.clickElement(page.connectBtn);
@@ -188,7 +188,7 @@ describe('ConnectionWindowComponent', () => {
     expect(component.error).toEqual(error);
     expect(page.errorElement.innerHTML).toContain('error-box');
     expect(page.errorElement.innerHTML).toContain(error.code);
-    expect(page.errorElement.innerHTML).toContain(error.sqlMessage);
+    expect(page.errorElement.innerHTML).toContain(error.stack);
     expect(page.errorElement.innerHTML).toContain(error.sqlState);
     expect(page.errorElement.innerHTML).toContain(`${error.errno}`);
   });

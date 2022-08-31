@@ -1,6 +1,6 @@
 import { FormControl, FormGroup } from 'ngx-typesafe-forms';
 import { Observable } from 'rxjs';
-import { QueryError as MysqlError } from 'mysql2';
+import { QueryError } from 'mysql2';
 import { ToastrService } from 'ngx-toastr';
 
 import { Class, StringKeys, TableRow } from '@keira-types/general';
@@ -16,7 +16,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   protected _fullQuery: string;
   protected _isNew = false;
   protected _form: FormGroup<T>;
-  protected _error: MysqlError;
+  protected _error: QueryError;
 
   get loadedEntityId(): string {
     return typeof this._loadedEntityId === 'object' ? JSON.stringify(this._loadedEntityId) : String(this._loadedEntityId);
@@ -39,7 +39,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   get form(): FormGroup<T> {
     return this._form;
   }
-  get error(): MysqlError {
+  get error(): QueryError {
     return this._error;
   }
 
@@ -98,7 +98,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
           this.onReloadSuccessful(data, id);
           this._loading = false;
         },
-        error: (error: MysqlError) => {
+        error: (error: QueryError) => {
           this._error = error;
           this._loading = false;
         },
@@ -138,7 +138,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
           this.toastrService.success('Query executed successfully', 'Success');
           this._loading = false;
         },
-        error: (error: MysqlError) => {
+        error: (error: QueryError) => {
           this._error = error;
           this.toastrService.error('Error when executing the query!', 'Query error');
           this._loading = false;

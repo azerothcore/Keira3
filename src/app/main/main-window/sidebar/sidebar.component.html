@@ -25,7 +25,7 @@
           </span>
           <span class="user-status">
             <i class="fa fa-circle connection-status" [ngClass]="mysqlService.getConnectionState()"></i>
-            <span>{{ mysqlService.getConnectionState() | titlecase }}</span>
+            <span>{{ mysqlService.getConnectionState() | translate | titlecase }}</span>
           </span>
           <span>
             <keira-switch-language></keira-switch-language>
