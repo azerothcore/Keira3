@@ -2,7 +2,7 @@ import { Injectable, NgZone } from '@angular/core';
 import * as mysql from 'mysql2';
 import { Connection, ConnectionOptions as ConnectionConfig, FieldPacket as FieldInfo, QueryError as MysqlError } from 'mysql2';
 import { Observable, Subject } from 'rxjs';
-import { MysqlResult, TableRow } from '../types/general';
+import { MysqlResult, QueryCallback, TableRow } from '../types/general';
 import { ElectronService } from './electron.service';
 
 @Injectable({
@@ -116,7 +116,7 @@ export class MysqlService {
     });
   }
 
-  private getQueryCallback<T extends TableRow>(subscriber): any {
+  private getQueryCallback<T extends TableRow>(subscriber): QueryCallback {
     return (err: MysqlError, results?: T[], fields?: FieldInfo[]) => {
       this.ngZone.run(() => {
         if (err) {
