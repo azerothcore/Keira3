@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MysqlError } from 'mysql';
+import { QueryError as MysqlError } from 'mysql2';
 import { HandlerService } from '../../abstract/service/handlers/handler.service';
 import { MysqlQueryService } from '../../services/mysql-query.service';
 import { TableRow } from '../../types/general';

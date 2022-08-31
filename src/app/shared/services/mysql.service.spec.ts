@@ -1,5 +1,5 @@
 import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
-import { Connection, ConnectionConfig, MysqlError } from 'mysql';
+import { Connection, ConnectionConfig, MysqlError } from 'mysql2';
 import { Subscriber } from 'rxjs';
 import { instance, reset } from 'ts-mockito';
 import { MockedElectronService } from '../testing/mocks';

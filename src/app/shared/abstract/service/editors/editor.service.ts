@@ -1,6 +1,6 @@
 import { FormControl, FormGroup } from 'ngx-typesafe-forms';
 import { Observable } from 'rxjs';
-import { MysqlError } from 'mysql';
+import { QueryError as MysqlError } from 'mysql2';
 import { ToastrService } from 'ngx-toastr';
 
 import { Class, StringKeys, TableRow } from '@keira-types/general';

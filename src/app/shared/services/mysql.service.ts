@@ -1,8 +1,8 @@
 import { Injectable, NgZone } from '@angular/core';
-import * as mysql from 'mysql';
-import { Connection, ConnectionConfig, FieldInfo, MysqlError } from 'mysql';
+import * as mysql from 'mysql2';
+import { Connection, ConnectionOptions as ConnectionConfig, FieldPacket as FieldInfo, QueryError as MysqlError } from 'mysql2';
 import { Observable, Subject } from 'rxjs';
-import { MysqlResult, TableRow } from '../types/general';
+import { MysqlResult, QueryCallback, TableRow } from '../types/general';
 import { ElectronService } from './electron.service';
 
 @Injectable({
@@ -33,12 +33,12 @@ export class MysqlService {
   constructor(private electronService: ElectronService, private ngZone: NgZone) {
     /* istanbul ignore next */
     if (this.electronService.isElectron()) {
-      this.mysql = window.require('mysql');
+      this.mysql = window.require('mysql2');
     }
   }
 
   getConnectionState() {
-    return this._connection ? this._connection.state : null;
+    return this._connection ? 'connected' : null
   }
 
   connect(config: ConnectionConfig) {
@@ -116,11 +116,11 @@ export class MysqlService {
     });
   }
 
-  private getQueryCallback<T extends TableRow>(subscriber) {
+  private getQueryCallback<T extends TableRow>(subscriber): QueryCallback {
     return (err: MysqlError, results?: T[], fields?: FieldInfo[]) => {
       this.ngZone.run(() => {
         if (err) {
-          console.log(`Error when executing query: \n\n${err.sql}`);
+          console.log(`Error when executing query: \n\n${err.stack}`);
           subscriber.error(err);
         } else {
           subscriber.next({ results, fields });

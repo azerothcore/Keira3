@@ -1,4 +1,4 @@
-import { FieldInfo } from 'mysql';
+import { FieldPacket as FieldInfo, QueryError as MysqlError } from 'mysql2';
 
 export type StringKeys<T> = Extract<keyof T, string>;
 
@@ -52,3 +52,5 @@ export interface FieldDefinition {
   name: string;
   tooltip: string;
 }
+
+export type QueryCallback = (err: MysqlError, results?:[], fields?: FieldInfo[]) => void;

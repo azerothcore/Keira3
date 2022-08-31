@@ -46,7 +46,7 @@
     "electron-settings": "4.0.2",
     "jquery": "3.6.1",
     "karma-coverage": "2.2.0",
-    "mysql": "2.18.1",
+    "mysql2": "^2.3.3",
     "ngx-toastr": "14.3.0",
     "ngx-ui-switch": "13.0.2",
     "serialize-javascript": "6.0.0",

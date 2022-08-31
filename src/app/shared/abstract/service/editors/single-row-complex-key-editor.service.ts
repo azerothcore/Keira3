@@ -6,7 +6,7 @@ import { SingleRowEditorService } from './single-row-editor.service';
 import { HandlerService } from '../handlers/handler.service';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { getPartial } from '../../../utils/helpers';
-import { MysqlError } from 'mysql';
+import { QueryError as MysqlError } from 'mysql2';
 
 export abstract class SingleRowComplexKeyEditorService<T extends TableRow> extends SingleRowEditorService<T> {
   get entityIdFields(): string[] {

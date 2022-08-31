@@ -3,7 +3,7 @@ import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { MockedMysqlService } from '@keira-testing/mocks';
 import { PageObject } from '@keira-testing/page-object';
 import { Spied } from '@keira-testing/test-helpers';
-import { ConnectionConfig, MysqlError } from 'mysql';
+import { ConnectionConfig, MysqlError } from 'mysql2';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { of, throwError } from 'rxjs';
 import { instance, reset } from 'ts-mockito';

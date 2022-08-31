@@ -3,7 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { MockEntity, MockHandlerService, MockMultiRowComplexKeyEditorService } from '@keira-testing/mock-services';
 import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { TableRow } from '@keira-types/general';
-import { MysqlError } from 'mysql';
+import { MysqlError } from 'mysql2';
 import { ToastrService } from 'ngx-toastr';
 import { of, throwError } from 'rxjs';
 import { instance } from 'ts-mockito';
