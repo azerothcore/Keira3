@@ -24,7 +24,7 @@
             >
           </span>
           <span class="user-status">
-            <i class="fa fa-circle connection-status" [ngClass]="mysqlService.getConnectionState()"></i>
+            <i class="fa fa-circle connection-status" [ngClass]="mysqlService.getConnectionState() === 'CONNECTED' ? 'connected' : ''"></i>
             <span>{{ mysqlService.getConnectionState() | translate | titlecase }}</span>
           </span>
           <span>
