@@ -3,7 +3,7 @@ import { DTCFG } from '@keira-config/datatable.config';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
 import { TableRow } from '@keira-types/general';
-import { MysqlError } from 'mysql';
+import { QueryError } from 'mysql2';
 import { ClipboardService } from 'ngx-clipboard';
 import { SqlEditorService } from './sql-editor.service';
 
@@ -22,8 +22,8 @@ export class SqlEditorComponent extends SubscriptionHandler {
   //   return [10, 20, 50, 100, 200, 500, 1000];
   // }
 
-  private _error: MysqlError;
-  get error(): MysqlError {
+  private _error: QueryError;
+  get error(): QueryError {
     return this._error;
   }
 
@@ -83,7 +83,7 @@ export class SqlEditorComponent extends SubscriptionHandler {
 
           this._rows = rows as TableRow[];
         },
-        error: (error: MysqlError) => {
+        error: (error: QueryError) => {
           this._error = error;
           this._rows = [];
           this._columns = [];
