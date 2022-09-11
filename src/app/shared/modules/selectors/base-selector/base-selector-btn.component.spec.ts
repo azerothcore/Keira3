@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { MockedMysqlService } from '@keira-testing/mocks';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
@@ -25,19 +25,17 @@ describe('BaseSelectorBtnComponent', () => {
 
   const value = 'mock-value';
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [ItemSelectorBtnComponent],
-        imports: [ModalModule.forRoot(), ModalModule.forRoot(), TestModule],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [ItemSelectorBtnComponent],
+      imports: [ModalModule.forRoot(), ModalModule.forRoot(), TestModule],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ItemSelectorBtnComponent);
     component = fixture.componentInstance;
-    component.control = new FormControl();
+    component.control = new UntypedFormControl();
     fixture.detectChanges();
   });
 
