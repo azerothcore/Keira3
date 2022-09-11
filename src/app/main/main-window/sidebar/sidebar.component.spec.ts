@@ -105,10 +105,8 @@ describe('SidebarComponent', () => {
 
     page.clickElement(page.collapseAll);
 
-    for (const key in component.menuStates) {
-      if (component.menuStates.hasOwnProperty(key)) {
-        expect(component.menuStates[key]).toEqual('up');
-      }
+    for (const key of Object.keys(component.menuStates)) {
+      expect(component.menuStates[key]).toEqual('up');
     }
 
     page.removeElement();

@@ -35,7 +35,7 @@ export class AppComponent extends SubscriptionHandler implements OnInit {
     this.handleNewerVersionAlert();
   }
 
-  private handleSqliteTest() {
+  private handleSqliteTest(): void {
     /* istanbul ignore next */
     if (this.electronService.isElectron()) {
       this.subscriptions.push(
@@ -48,7 +48,7 @@ export class AppComponent extends SubscriptionHandler implements OnInit {
     }
   }
 
-  private handleConnectionLostAlerts() {
+  private handleConnectionLostAlerts(): void {
     this.subscriptions.push(
       this.mysqlService.connectionLost$.pipe(distinctUntilChanged()).subscribe((status) => {
         if (!status) {
@@ -60,7 +60,7 @@ export class AppComponent extends SubscriptionHandler implements OnInit {
     );
   }
 
-  private handleNewerVersionAlert() {
+  private handleNewerVersionAlert(): void {
     this.subscriptions.push(
       this.http.get<{ tag_name: string }>(LATEST_RELEASE_API_URL).subscribe((release) => {
         const currentTag = `v${packageInfo.version}`;

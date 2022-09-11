@@ -47,8 +47,8 @@ export abstract class QueryService {
 
     const filters = queryForm.fields;
 
-    for (const filter in filters) {
-      if (filters.hasOwnProperty(filter) && filters[filter] !== undefined && filters[filter] !== null) {
+    for (const filter of Object.keys(filters)) {
+      if (filters[filter] !== undefined && filters[filter] !== null) {
         const value = escape(`%${filters[filter]}%`);
 
         query.where(`\`${filter}\` LIKE ${value}`);
