@@ -46,7 +46,7 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
     this._diffQuery = this.queryService.getUpdateMultipleKeysQuery<T>(
       this._entityTable,
       this._originalValue,
-      this._form.getRawValue(),
+      this._form.getRawValue() as T,
       this.entityIdFields,
     );
 
@@ -57,8 +57,8 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
     const originalValue = this.isNew ? this._form.getRawValue() : this._originalValue;
     this._fullQuery = this.queryService.getFullDeleteInsertMultipleKeysQuery<T>(
       this._entityTable,
-      originalValue,
-      this._form.getRawValue(),
+      originalValue as T,
+      this._form.getRawValue() as T,
       this.entityIdFields,
     );
   }
@@ -79,22 +79,22 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
     );
   }
 
-  reload() {
+  reload(): void {
     this._loading = true;
     this.reset();
     this.reloadEntity();
   }
 
-  reloadSameEntity() {
+  reloadSameEntity(): void {
     this._isNew = false;
-    this.handlerService.select(false, getPartial<T>(this._form.getRawValue(), this.entityIdFields));
+    this.handlerService.select(false, getPartial<T>(this._form.getRawValue() as T, this.entityIdFields));
     this.reload();
   }
 
   /*
    *  ****** OVERRIDES of onReloadSuccessful() and some of its helpers ******
    */
-  protected onCreatingNewEntity() {
+  protected onCreatingNewEntity(): void {
     this._originalValue = new this._entityClass();
     const selected: Partial<T> = JSON.parse(this.handlerService.selected);
 
@@ -108,13 +108,13 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
     this._isNew = true;
   }
 
-  protected setLoadedEntity() {
+  protected setLoadedEntity(): void {
     const loadedEntity = getPartial<T>(this._originalValue, this.entityIdFields);
     this._loadedEntityId = JSON.stringify(loadedEntity);
     this.handlerService.select(this.handlerService.isNew, getPartial<T>(this._originalValue, this.entityIdFields));
   }
 
-  protected onReloadSuccessful(data: T[]) {
+  protected onReloadSuccessful(data: T[]): void {
     if (!this.handlerService.isNew) {
       // we are loading an existing entity
       this.onLoadedExistingEntity(data[0]);

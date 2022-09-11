@@ -44,14 +44,18 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
       this._entityTable,
       this._entityIdField,
       this._originalValue,
-      this._form.getRawValue(),
+      this._form.getRawValue() as T,
     );
 
     this.updateEditorStatus();
   }
 
   protected updateFullQuery(): void {
-    this._fullQuery = this.queryService.getFullDeleteInsertQuery<T>(this._entityTable, [this._form.getRawValue()], this._entityIdField);
+    this._fullQuery = this.queryService.getFullDeleteInsertQuery<T>(
+      this._entityTable,
+      [this._form.getRawValue() as T],
+      this._entityIdField,
+    );
   }
 
   /*

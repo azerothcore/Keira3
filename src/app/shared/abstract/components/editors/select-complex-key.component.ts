@@ -14,7 +14,7 @@ export abstract class SelectComplexKeyComponent<T extends TableRow> {
     this.handlerService.select(false, event.selected[0]);
   }
 
-  onCreateNew() {
-    this.handlerService.select(true, this.selectService.fields.getRawValue());
+  onCreateNew(): void {
+    this.handlerService.select(true, this.selectService.fields.getRawValue() as T);
   }
 }

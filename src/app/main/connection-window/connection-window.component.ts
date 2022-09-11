@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { ModelForm } from '@keira-shared/utils/helpers';
 import { ConnectionOptions as ConnectionOptions, QueryError } from 'mysql2';
-import { FormControl, FormGroup } from 'ngx-typesafe-forms';
 import packageInfo from '../../../../package.json';
 import { MysqlService } from '../../shared/services/mysql.service';
 import { SubscriptionHandler } from '../../shared/utils/subscription-handler/subscription-handler';
@@ -16,7 +17,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
   readonly RANDOM_IMAGE = Math.floor(Math.random() * this.IMAGES_COUNT) + 1;
   readonly KEIRA_VERSION = packageInfo.version;
   configs: Partial<ConnectionOptions>[];
-  form: FormGroup<Partial<ConnectionOptions>>;
+  form: FormGroup<ModelForm<Partial<ConnectionOptions>>>;
   error: QueryError;
   savePassword = true;
 
@@ -29,7 +30,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
   }
 
   ngOnInit(): void {
-    this.form = new FormGroup<ConnectionOptions>({
+    this.form = new FormGroup<ModelForm<Partial<ConnectionOptions>>>({
       host: new FormControl<string>('127.0.0.1'),
       port: new FormControl<number>(3306),
       user: new FormControl<string>('root'),

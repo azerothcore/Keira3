@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { ModelForm } from '@keira-shared/utils/helpers';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
-import { FormGroup } from 'ngx-typesafe-forms';
 import { Locale, SpellDbcTextFieldPrefix, SPELL_DBC_TEXT_FIELDS } from '../spell-dbc-texts.model';
 
 @Component({
@@ -10,7 +11,7 @@ import { Locale, SpellDbcTextFieldPrefix, SPELL_DBC_TEXT_FIELDS } from '../spell
 export class SpellDbcLocaleComponent {
   readonly FIELDS = SPELL_DBC_TEXT_FIELDS;
 
-  @Input() formGroup: FormGroup<SpellDbc>;
+  @Input() formGroup: FormGroup<ModelForm<SpellDbc>>;
   @Input() locale: Locale;
 
   getFieldName(field: SpellDbcTextFieldPrefix): string {

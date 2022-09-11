@@ -1,12 +1,13 @@
 import { Component, ViewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { FormGroup } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
+import { ModelForm } from '@keira-shared/utils/helpers';
 import { PageObject } from '@keira-testing/page-object';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
-import { FormGroup } from 'ngx-typesafe-forms';
 import { SpellHandlerService } from '../../../spell-handler.service';
 import { SpellDbcModule } from '../../spell-dbc.module';
 import { SpellDbcService } from '../../spell-dbc.service';
@@ -31,7 +32,7 @@ describe('SpellDbcLocaleComponent', () => {
   })
   class TestHostComponent {
     @ViewChild(SpellDbcLocaleComponent) child: SpellDbcLocaleComponent;
-    form: FormGroup<SpellDbc>;
+    form: FormGroup<ModelForm<SpellDbc>>;
     locale: Locale;
   }
 

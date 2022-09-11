@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { ModelForm } from '@keira-shared/utils/helpers';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
-import { FormGroup } from 'ngx-typesafe-forms';
 import { LOCALES } from './spell-dbc-texts.model';
 
 @Component({
@@ -9,5 +10,5 @@ import { LOCALES } from './spell-dbc-texts.model';
 })
 export class SpellDbcTextsComponent {
   readonly LOCALES = LOCALES;
-  @Input() formGroup: FormGroup<SpellDbc>;
+  @Input() formGroup: FormGroup<ModelForm<SpellDbc>>;
 }
