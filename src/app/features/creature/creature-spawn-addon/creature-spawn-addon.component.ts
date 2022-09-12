@@ -13,9 +13,9 @@ import { CreatureSpawnAddonService } from './creature-spawn-addon.service';
   styleUrls: ['./creature-spawn-addon.component.scss'],
 })
 export class CreatureSpawnAddonComponent extends MultiRowEditorComponent<CreatureSpawnAddon> {
-  public readonly EMOTE = EMOTE;
-  public readonly CREATURE_ADDON_BYTES_1 = CREATURE_ADDON_BYTES_1;
-  public readonly CREATURE_ADDON_BYTES_2 = CREATURE_ADDON_BYTES_2;
+  readonly EMOTE = EMOTE;
+  readonly CREATURE_ADDON_BYTES_1 = CREATURE_ADDON_BYTES_1;
+  readonly CREATURE_ADDON_BYTES_2 = CREATURE_ADDON_BYTES_2;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(public editorService: CreatureSpawnAddonService, public handlerService: CreatureHandlerService) {

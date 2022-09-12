@@ -64,11 +64,11 @@ export class SidebarComponent {
     private locationService: LocationService,
   ) {}
 
-  getSideBarState() {
+  getSideBarState(): boolean {
     return this.sidebarService.getSidebarState();
   }
 
-  toggleSidebar() {
+  toggleSidebar(): void {
     this.sidebarService.setSidebarState(!this.sidebarService.getSidebarState());
 
     /* istanbul ignore next */
@@ -78,24 +78,21 @@ export class SidebarComponent {
     }, animationTime + 100);
   }
 
-  hasBackgroundImage() {
+  hasBackgroundImage(): boolean {
     return this.sidebarService.hasBackgroundImage;
   }
 
-  toggleState(key: string) {
+  toggleState(key: string): void {
     this.menuStates[key] = this.menuStates[key] === 'up' ? 'down' : 'up';
   }
 
-  collapseAll() {
-    for (const key in this.menuStates) {
-      /* istanbul ignore else */
-      if (this.menuStates.hasOwnProperty(key)) {
-        this.menuStates[key] = 'up';
-      }
+  collapseAll(): void {
+    for (const key of Object.keys(this.menuStates)) {
+      this.menuStates[key] = 'up';
     }
   }
 
-  logout() {
+  logout(): void {
     this.locationService.reload();
   }
 }

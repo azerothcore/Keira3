@@ -3,6 +3,7 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { HighlightjsWrapperModule } from '@keira-shared/modules/highlightjs-wrapper/highlightjs-wrapper.module';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { ClipboardService } from 'ngx-clipboard';
 import { EditorService } from '../../abstract/service/editors/editor.service';
@@ -61,14 +62,12 @@ describe('QueryOutputComponent', () => {
   const diffQuery = '--diffQuery';
   const fullQuery = '--fullQuery';
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [TestHostComponent, QueryOutputComponent, HighlightjsWrapperComponent, QueryErrorComponent],
-        imports: [BrowserModule, FormsModule, HighlightjsWrapperModule, ModalModule.forRoot()],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [TestHostComponent, QueryOutputComponent, HighlightjsWrapperComponent, QueryErrorComponent],
+      imports: [BrowserModule, FormsModule, HighlightjsWrapperModule, ModalModule.forRoot(), TranslateTestingModule],
+    }).compileComponents();
+  }));
 
   const setup = () => {
     const fixture = TestBed.createComponent(TestHostComponent);

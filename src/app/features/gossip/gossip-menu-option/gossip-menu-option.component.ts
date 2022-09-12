@@ -12,8 +12,8 @@ import { GossipMenuOptionService } from './gossip-menu-option.service';
   styleUrls: ['./gossip-menu-option.component.scss'],
 })
 export class GossipMenuOptionComponent extends MultiRowEditorComponent<GossipMenuOption> {
-  public readonly OPTION_ICON = OPTION_ICON;
-  public readonly OPTION_TYPE = OPTION_TYPE;
+  readonly OPTION_ICON = OPTION_ICON;
+  readonly OPTION_TYPE = OPTION_TYPE;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(public editorService: GossipMenuOptionService, public handlerService: GossipHandlerService) {

@@ -7,20 +7,19 @@ import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { QuestSearchService } from '../../search/quest-search.service';
 import { QuestSelectorModule } from './quest-selector.module';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 
 describe('QuestSelectorModalComponent', () => {
   let component: QuestSelectorModalComponent;
   let fixture: ComponentFixture<QuestSelectorModalComponent>;
   let searchService: QuestSearchService;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [QuestSelectorModule],
-        providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [QuestSelectorModule, TranslateTestingModule],
+      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     searchService = TestBed.inject(QuestSearchService);

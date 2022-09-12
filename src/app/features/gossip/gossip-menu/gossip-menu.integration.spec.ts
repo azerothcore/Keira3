@@ -9,6 +9,7 @@ import { of } from 'rxjs';
 import { GossipHandlerService } from '../gossip-handler.service';
 import { GossipMenuComponent } from './gossip-menu.component';
 import { GossipMenuModule } from './gossip-menu.module';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import Spy = jasmine.Spy;
 
 class GossipMenuPage extends MultiRowEditorPageObject<GossipMenuComponent> {}
@@ -30,14 +31,12 @@ describe('GossipMenu integration tests', () => {
   originalRow1.TextID = 1;
   originalRow2.TextID = 2;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), GossipMenuModule, RouterTestingModule],
-        providers: [GossipHandlerService],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), GossipMenuModule, RouterTestingModule, TranslateTestingModule],
+      providers: [GossipHandlerService],
+    }).compileComponents();
+  }));
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(GossipHandlerService);

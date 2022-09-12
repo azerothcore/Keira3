@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { PageObject } from '@keira-testing/page-object';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -74,15 +75,20 @@ describe('SpellDbcBaseComponent', () => {
   ];
   const createMockVal = (field: string): number => field.length;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [TestHostComponent, SpellDbcBaseComponent],
-        imports: [ModalModule.forRoot(), ToastrModule.forRoot(), TooltipModule.forRoot(), SpellDbcModule, RouterTestingModule],
-        providers: [SpellHandlerService],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [TestHostComponent, SpellDbcBaseComponent],
+      imports: [
+        ModalModule.forRoot(),
+        ToastrModule.forRoot(),
+        TooltipModule.forRoot(),
+        SpellDbcModule,
+        RouterTestingModule,
+        TranslateTestingModule,
+      ],
+      providers: [SpellHandlerService],
+    }).compileComponents();
+  }));
 
   const setup = () => {
     const fixture = TestBed.createComponent(TestHostComponent);

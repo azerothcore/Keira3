@@ -14,10 +14,10 @@ export class SpellDbcSpellEffectComponent {
   @Input() formGroup: FormGroup<SpellDbc>;
   @Input() index: number;
 
-  public readonly SPELL_MECHANIC = SPELL_MECHANIC;
-  public readonly SPELL_DBC_EFFECT = SPELL_DBC_EFFECT;
-  public readonly SPELL_DBC_APPLY_AURA_NAME = SPELL_DBC_APPLY_AURA_NAME;
-  public readonly SPELL_DBC_CLASS_MASK_FLAGS = SPELL_DBC_CLASS_MASK_FLAGS;
+  readonly SPELL_MECHANIC = SPELL_MECHANIC;
+  readonly SPELL_DBC_EFFECT = SPELL_DBC_EFFECT;
+  readonly SPELL_DBC_APPLY_AURA_NAME = SPELL_DBC_APPLY_AURA_NAME;
+  readonly SPELL_DBC_CLASS_MASK_FLAGS = SPELL_DBC_CLASS_MASK_FLAGS;
 
   getFieldName(field: SpellDbcSpellEffectFieldPrefix): string {
     return `${field}_${this.index}`; // example: EffectSpellClassMaskA_3

@@ -5,8 +5,8 @@ import { DTCFG } from '@keira-config/datatable.config';
 import { WIKI_BASE_URL } from '@keira-constants/general';
 
 export abstract class SelectComplexKeyComponent<T extends TableRow> {
-  public readonly DTCFG = DTCFG;
-  public readonly WIKI_BASE_URL = WIKI_BASE_URL;
+  readonly DTCFG = DTCFG;
+  readonly WIKI_BASE_URL = WIKI_BASE_URL;
 
   constructor(public selectService: SearchService<T>, protected handlerService: ComplexKeyHandlerService<T>) {}
 

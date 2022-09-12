@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { SelectPageObject } from '@keira-testing/select-page-object';
 import { GameobjectTemplate } from '@keira-types/gameobject-template.type';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -27,14 +28,12 @@ describe('SelectGameobject integration tests', () => {
 
   const value = 1200;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectGameobjectModule, RouterTestingModule],
-        providers: [GameobjectHandlerService, SaiGameobjectHandlerService],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectGameobjectModule, RouterTestingModule, TranslateTestingModule],
+      providers: [GameobjectHandlerService, SaiGameobjectHandlerService],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
@@ -48,52 +47,43 @@ describe('SelectGameobject integration tests', () => {
     fixture.detectChanges();
   });
 
-  it(
-    'should correctly initialise',
-    waitForAsync(async () => {
-      await fixture.whenStable();
-      expect(page.createInput.value).toEqual(`${component.customStartingId}`);
-      page.expectNewEntityFree();
-      expect(querySpy).toHaveBeenCalledWith('SELECT MAX(entry) AS max FROM gameobject_template;');
-      expect(page.queryWrapper.innerText).toContain('SELECT * FROM `gameobject_template` LIMIT 50');
-    }),
-  );
+  it('should correctly initialise', waitForAsync(async () => {
+    await fixture.whenStable();
+    expect(page.createInput.value).toEqual(`${component.customStartingId}`);
+    page.expectNewEntityFree();
+    expect(querySpy).toHaveBeenCalledWith('SELECT MAX(entry) AS max FROM gameobject_template;');
+    expect(page.queryWrapper.innerText).toContain('SELECT * FROM `gameobject_template` LIMIT 50');
+  }));
 
-  it(
-    'should correctly behave when inserting and selecting free id',
-    waitForAsync(async () => {
-      await fixture.whenStable();
-      querySpy.calls.reset();
-      querySpy.and.returnValue(of([]));
+  it('should correctly behave when inserting and selecting free id', waitForAsync(async () => {
+    await fixture.whenStable();
+    querySpy.calls.reset();
+    querySpy.and.returnValue(of([]));
 
-      page.setInputValue(page.createInput, value);
+    page.setInputValue(page.createInput, value);
 
-      expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`gameobject_template\` WHERE (entry = ${value})`);
-      page.expectNewEntityFree();
+    expect(querySpy).toHaveBeenCalledTimes(1);
+    expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`gameobject_template\` WHERE (entry = ${value})`);
+    page.expectNewEntityFree();
 
-      page.clickElement(page.selectNewBtn);
+    page.clickElement(page.selectNewBtn);
 
-      expect(navigateSpy).toHaveBeenCalledTimes(1);
-      expect(navigateSpy).toHaveBeenCalledWith(['gameobject/gameobject-template']);
-      page.expectTopBarCreatingNew(value);
-    }),
-  );
+    expect(navigateSpy).toHaveBeenCalledTimes(1);
+    expect(navigateSpy).toHaveBeenCalledWith(['gameobject/gameobject-template']);
+    page.expectTopBarCreatingNew(value);
+  }));
 
-  it(
-    'should correctly behave when inserting an existing entity',
-    waitForAsync(async () => {
-      await fixture.whenStable();
-      querySpy.calls.reset();
-      querySpy.and.returnValue(of(['mock value']));
+  it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
+    await fixture.whenStable();
+    querySpy.calls.reset();
+    querySpy.and.returnValue(of(['mock value']));
 
-      page.setInputValue(page.createInput, value);
+    page.setInputValue(page.createInput, value);
 
-      expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`gameobject_template\` WHERE (entry = ${value})`);
-      page.expectEntityAlreadyInUse();
-    }),
-  );
+    expect(querySpy).toHaveBeenCalledTimes(1);
+    expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`gameobject_template\` WHERE (entry = ${value})`);
+    page.expectEntityAlreadyInUse();
+  }));
 
   for (const { testId, id, name, limit, expectedQuery } of [
     {

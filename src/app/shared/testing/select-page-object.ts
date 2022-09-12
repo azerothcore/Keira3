@@ -42,13 +42,13 @@ export abstract class SelectPageObject<T> extends PageObject<T> {
     const error = 'Expected new entity to be free';
     expect(this.selectNewBtn.disabled).toBe(false, error);
     expect(this.freeStatusWrapper.innerHTML).toContain('fa-check-circle', error);
-    expect(this.freeStatusWrapper.innerText).toContain(`The ${this.ID_FIELD} is free`, error);
+    expect(this.freeStatusWrapper.innerText).toContain(`CREATE.FREE_ENTRY CREATE.FREE`, error);
   }
 
   expectEntityAlreadyInUse(): void {
     const error = 'Expected new entity to be already in use';
     expect(this.selectNewBtn.disabled).toBe(true, error);
     expect(this.freeStatusWrapper.innerHTML).toContain('fa-times-circle', error);
-    expect(this.freeStatusWrapper.innerText).toContain(`The ${this.ID_FIELD} is already in use`, error);
+    expect(this.freeStatusWrapper.innerText).toContain(`CREATE.FREE_ENTRY CREATE.ALREADY_USE`, error);
   }
 }

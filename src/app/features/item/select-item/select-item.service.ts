@@ -13,7 +13,7 @@ import { ItemHandlerService } from '../item-handler.service';
 @Injectable()
 export class SelectItemService extends SelectService<ItemTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(public readonly queryService: MysqlQueryService, public handlerService: ItemHandlerService) {
+  constructor(readonly queryService: MysqlQueryService, public handlerService: ItemHandlerService) {
     super(queryService, handlerService, ITEM_TEMPLATE_TABLE, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_NAME, ITEM_TEMPLATE_SEARCH_FIELDS);
   }
 }

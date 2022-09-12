@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { PageObject } from '@keira-testing/page-object';
 import { EditorButtonsComponent } from './editor-buttons.component';
 
@@ -21,13 +22,12 @@ class EditorButtonsPage extends PageObject<TestHostComponent> {
 }
 
 describe('EditorButtonsComponent', () => {
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [EditorButtonsComponent, TestHostComponent],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [TranslateTestingModule],
+      declarations: [EditorButtonsComponent, TestHostComponent],
+    }).compileComponents();
+  }));
 
   const setup = () => {
     const editorService = {

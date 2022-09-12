@@ -10,6 +10,7 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureEquipTemplateComponent } from './creature-equip-template.component';
 import { CreatureEquipTemplateModule } from './creature-equip-template.module';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import Spy = jasmine.Spy;
 
 class CreatureEquipTemplatePage extends EditorPageObject<CreatureEquipTemplateComponent> {}
@@ -30,14 +31,12 @@ describe('CreatureEquipTemplate integration tests', () => {
   const originalEntity = new CreatureEquipTemplate();
   originalEntity.CreatureID = id;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureEquipTemplateModule, RouterTestingModule],
-        providers: [CreatureHandlerService, SaiCreatureHandlerService],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureEquipTemplateModule, RouterTestingModule, TranslateTestingModule],
+      providers: [CreatureHandlerService, SaiCreatureHandlerService],
+    }).compileComponents();
+  }));
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(CreatureHandlerService);
@@ -130,33 +129,30 @@ describe('CreatureEquipTemplate integration tests', () => {
       );
     });
 
-    xit(
-      'changing a value via ItemSelector should correctly work',
-      waitForAsync(async () => {
-        //  note: previously disabled because of:
-        //  https://stackoverflow.com/questions/57336982/how-to-make-angular-tests-wait-for-previous-async-operation-to-complete-before-e
+    xit('changing a value via ItemSelector should correctly work', waitForAsync(async () => {
+      //  note: previously disabled because of:
+      //  https://stackoverflow.com/questions/57336982/how-to-make-angular-tests-wait-for-previous-async-operation-to-complete-before-e
 
-        const itemEntry = 1200;
-        querySpy.and.returnValue(of([{ entry: itemEntry, name: 'Mock Item' }]));
-        const field = 'ItemID1';
-        page.clickElement(page.getSelectorBtn(field));
-        page.expectModalDisplayed();
-        await page.whenReady();
+      const itemEntry = 1200;
+      querySpy.and.returnValue(of([{ entry: itemEntry, name: 'Mock Item' }]));
+      const field = 'ItemID1';
+      page.clickElement(page.getSelectorBtn(field));
+      page.expectModalDisplayed();
+      await page.whenReady();
 
-        page.clickSearchBtn();
-        await page.whenReady();
-        page.clickRowOfDatatableInModal(0);
-        await page.whenReady();
-        page.clickModalSelect();
-        await page.whenReady();
+      page.clickSearchBtn();
+      await page.whenReady();
+      page.clickRowOfDatatableInModal(0);
+      await page.whenReady();
+      page.clickModalSelect();
+      await page.whenReady();
 
-        page.expectDiffQueryToContain('UPDATE `creature_equip_template` SET `ItemID1` = 1200 WHERE (`CreatureID` = 1234);');
-        page.expectFullQueryToContain(
-          'DELETE FROM `creature_equip_template` WHERE (`CreatureID` = 1234);\n' +
-            'INSERT INTO `creature_equip_template` (`CreatureID`, `ID`, `ItemID1`, `ItemID2`, `ItemID3`, `VerifiedBuild`) VALUES\n' +
-            '(1234, 1, 1200, 0, 0, 0);',
-        );
-      }),
-    );
+      page.expectDiffQueryToContain('UPDATE `creature_equip_template` SET `ItemID1` = 1200 WHERE (`CreatureID` = 1234);');
+      page.expectFullQueryToContain(
+        'DELETE FROM `creature_equip_template` WHERE (`CreatureID` = 1234);\n' +
+          'INSERT INTO `creature_equip_template` (`CreatureID`, `ID`, `ItemID1`, `ItemID2`, `ItemID3`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 1, 1200, 0, 0, 0);',
+      );
+    }));
   });
 });

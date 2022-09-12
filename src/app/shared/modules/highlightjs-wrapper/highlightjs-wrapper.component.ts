@@ -8,5 +8,5 @@ import { ElectronService } from '@keira-shared/services/electron.service';
 export class HighlightjsWrapperComponent {
   @Input() code: string;
 
-  constructor(public readonly electronService: ElectronService) {}
+  constructor(readonly electronService: ElectronService) {}
 }

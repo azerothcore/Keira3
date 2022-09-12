@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { MysqlError } from 'mysql';
+import { QueryError } from 'mysql2';
 
 @Component({
   selector: 'keira-query-error',
@@ -7,5 +7,5 @@ import { MysqlError } from 'mysql';
   styleUrls: ['./query-error.component.scss'],
 })
 export class QueryErrorComponent {
-  @Input() error: MysqlError;
+  @Input() error: QueryError;
 }

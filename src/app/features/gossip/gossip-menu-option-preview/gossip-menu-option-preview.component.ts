@@ -11,5 +11,5 @@ export class GossipMenuOptionPreviewComponent {
   @Input() options: GossipMenuOption[];
   @Input() show = true;
 
-  public readonly OPTION_IMG = OPTION_IMG;
+  readonly OPTION_IMG = OPTION_IMG;
 }

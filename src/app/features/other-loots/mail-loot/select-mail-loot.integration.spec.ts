@@ -2,6 +2,7 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { SelectPageObject } from '@keira-testing/select-page-object';
 import { MailLootTemplate } from '@keira-types/mail-loot-template.type';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -19,14 +20,12 @@ class SelectMailLootComponentPage extends SelectPageObject<SelectMailLootCompone
 describe('SelectMailLoot integration tests', () => {
   const value = 1200;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), MailLootTemplateModule, RouterTestingModule],
-        providers: [MailLootHandlerService],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), MailLootTemplateModule, RouterTestingModule, TranslateTestingModule],
+      providers: [MailLootHandlerService],
+    }).compileComponents();
+  }));
 
   function setup() {
     const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
@@ -44,58 +43,49 @@ describe('SelectMailLoot integration tests', () => {
     return { component, fixture, selectService, page, queryService, querySpy, navigateSpy };
   }
 
-  it(
-    'should correctly initialise',
-    waitForAsync(async () => {
-      const { fixture, page, querySpy, component } = setup();
+  it('should correctly initialise', waitForAsync(async () => {
+    const { fixture, page, querySpy, component } = setup();
 
-      await fixture.whenStable();
-      expect(page.createInput.value).toEqual(`${component.customStartingId}`);
-      page.expectNewEntityFree();
-      expect(querySpy).toHaveBeenCalledWith('SELECT MAX(Entry) AS max FROM mail_loot_template;');
-      expect(page.queryWrapper.innerText).toContain('SELECT `Entry` FROM `mail_loot_template` GROUP BY Entry LIMIT 50');
-    }),
-  );
+    await fixture.whenStable();
+    expect(page.createInput.value).toEqual(`${component.customStartingId}`);
+    page.expectNewEntityFree();
+    expect(querySpy).toHaveBeenCalledWith('SELECT MAX(Entry) AS max FROM mail_loot_template;');
+    expect(page.queryWrapper.innerText).toContain('SELECT `Entry` FROM `mail_loot_template` GROUP BY Entry LIMIT 50');
+  }));
 
-  it(
-    'should correctly behave when inserting and selecting free entry',
-    waitForAsync(async () => {
-      const { fixture, page, querySpy, navigateSpy } = setup();
+  it('should correctly behave when inserting and selecting free entry', waitForAsync(async () => {
+    const { fixture, page, querySpy, navigateSpy } = setup();
 
-      await fixture.whenStable();
-      querySpy.calls.reset();
-      querySpy.and.returnValue(of([]));
+    await fixture.whenStable();
+    querySpy.calls.reset();
+    querySpy.and.returnValue(of([]));
 
-      page.setInputValue(page.createInput, value);
+    page.setInputValue(page.createInput, value);
 
-      expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`mail_loot_template\` WHERE (Entry = ${value})`);
-      page.expectNewEntityFree();
+    expect(querySpy).toHaveBeenCalledTimes(1);
+    expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`mail_loot_template\` WHERE (Entry = ${value})`);
+    page.expectNewEntityFree();
 
-      page.clickElement(page.selectNewBtn);
+    page.clickElement(page.selectNewBtn);
 
-      expect(navigateSpy).toHaveBeenCalledTimes(1);
-      expect(navigateSpy).toHaveBeenCalledWith(['other-loots/mail']);
-      page.expectTopBarCreatingNew(value);
-    }),
-  );
+    expect(navigateSpy).toHaveBeenCalledTimes(1);
+    expect(navigateSpy).toHaveBeenCalledWith(['other-loots/mail']);
+    page.expectTopBarCreatingNew(value);
+  }));
 
-  it(
-    'should correctly behave when inserting an existing entity',
-    waitForAsync(async () => {
-      const { fixture, page, querySpy } = setup();
+  it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
+    const { fixture, page, querySpy } = setup();
 
-      await fixture.whenStable();
-      querySpy.calls.reset();
-      querySpy.and.returnValue(of([{}]));
+    await fixture.whenStable();
+    querySpy.calls.reset();
+    querySpy.and.returnValue(of([{}]));
 
-      page.setInputValue(page.createInput, value);
+    page.setInputValue(page.createInput, value);
 
-      expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`mail_loot_template\` WHERE (Entry = ${value})`);
-      page.expectEntityAlreadyInUse();
-    }),
-  );
+    expect(querySpy).toHaveBeenCalledTimes(1);
+    expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`mail_loot_template\` WHERE (Entry = ${value})`);
+    page.expectEntityAlreadyInUse();
+  }));
 
   for (const { id, entry, limit, expectedQuery } of [
     {

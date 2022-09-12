@@ -33,7 +33,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     protected _entityIdField: string,
     protected _entitySecondIdField: string,
     protected handlerService: HandlerService<T>,
-    public readonly queryService: MysqlQueryService,
+    readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(_entityClass, _entityTable, _entityIdField, handlerService, queryService, toastrService);
@@ -150,10 +150,8 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
       } else {
         console.error(`Control '${field}' does not exist!`);
         console.log(`----------- DEBUG CONTROL KEYS:`);
-        for (const k in this._form.controls) {
-          if (this._form.controls.hasOwnProperty(k)) {
-            console.log(k);
-          }
+        for (const k of Object.keys(this._form.controls)) {
+          console.log(k);
         }
       }
     }

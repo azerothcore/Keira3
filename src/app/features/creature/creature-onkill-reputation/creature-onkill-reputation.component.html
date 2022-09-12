@@ -1,7 +1,7 @@
 <keira-top-bar [handler]="handlerService"></keira-top-bar>
 
 <div class="container-fluid">
-  <span *ngIf="editorService.loading">Loading...</span>
+  <span *ngIf="editorService.loading" [translate]="'LOADING'"></span>
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
     <div class="content-block">
@@ -56,19 +56,15 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="IsTeamAward1">IsTeamAward1</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'Boolean (0 or 1) whether the player receives the reputation also the faction team or not.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.ONKILL_REPUTATION.IS_TEAM_AWARD1' | translate"></i>
             <input [formControlName]="'IsTeamAward1'" id="IsTeamAward1" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="RewOnKillRepValue1">RewOnKillRepValue1</label>
             <i
               class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'The reputation value that the player gains (or loses if negative) by killing the creature.'"
+              placement="auto"
+              [tooltip]="'CREATURE.ONKILL_REPUTATION.REW_ON_KILL_REP_VALUE1' | translate"
             ></i>
             <input [formControlName]="'RewOnKillRepValue1'" id="RewOnKillRepValue1" type="number" class="form-control form-control-sm" />
           </div>
@@ -83,25 +79,25 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="IsTeamAward2">IsTeamAward2</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'Boolean (0 or 1) whether the player receives the reputation also the faction team or not.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.ONKILL_REPUTATION.IS_TEAM_AWARD2' | translate"></i>
             <input [formControlName]="'IsTeamAward2'" id="IsTeamAward2" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="RewOnKillRepValue2">RewOnKillRepValue2</label>
             <i
               class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'The reputation value that the player gains (or loses if negative) by killing the creature.'"
+              placement="auto"
+              [tooltip]="'CREATURE.ONKILL_REPUTATION.REW_ON_KILL_REP_VALUE2' | translate"
             ></i>
             <input [formControlName]="'RewOnKillRepValue2'" id="RewOnKillRepValue2" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="TeamDependent">TeamDependent</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="TEAM_DEPENDENT_TOOLTIP"></i>
+            <i
+              class="fas fa-info-circle ms-1"
+              placement="auto"
+              [tooltip]="'CREATURE.ONKILL_REPUTATION.TEAM_DEPENDENT_TOOLTIP' | translate"
+            ></i>
             <input [formControlName]="'TeamDependent'" id="TeamDependent" type="number" class="form-control form-control-sm" />
           </div>
         </div>

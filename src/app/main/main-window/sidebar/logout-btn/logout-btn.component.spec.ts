@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { ModalConfirmComponent } from '@keira-shared/modules/modal-confirm/modal-confirm.component';
 import { LocationService } from '@keira-shared/services/location.service';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { LogoutBtnComponent } from './logout-btn.component';
 import Spy = jasmine.Spy;
@@ -13,14 +14,12 @@ import Spy = jasmine.Spy;
 class TestModule {}
 
 describe('LogoutBtnComponent', () => {
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [LogoutBtnComponent],
-        imports: [ModalModule.forRoot(), TestModule],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [LogoutBtnComponent],
+      imports: [ModalModule.forRoot(), TestModule, TranslateTestingModule],
+    }).compileComponents();
+  }));
 
   function setup() {
     const fixture = TestBed.createComponent(LogoutBtnComponent);

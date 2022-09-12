@@ -45,8 +45,8 @@ export class QuestPreviewService {
 
   constructor(
     private readonly helperService: PreviewHelperService,
-    public readonly mysqlQueryService: MysqlQueryService,
-    public readonly sqliteQueryService: SqliteQueryService,
+    readonly mysqlQueryService: MysqlQueryService,
+    readonly sqliteQueryService: SqliteQueryService,
     private readonly questHandlerService: QuestHandlerService,
     private readonly questTemplateService: QuestTemplateService,
     private readonly questRequestItemsService: QuestRequestItemsService,

@@ -10,8 +10,8 @@ import { ConditionsHandlerService } from '../conditions-handler.service';
   styleUrls: ['./select-conditions.component.scss'],
 })
 export class SelectConditionsComponent extends SelectComplexKeyComponent<Conditions> {
-  public readonly CONDITION_SOURCE_TYPES = CONDITION_SOURCE_TYPES;
-  public readonly CONDITION_SOURCE_TYPES_KEYS = CONDITION_SOURCE_TYPES_KEYS;
+  readonly CONDITION_SOURCE_TYPES = CONDITION_SOURCE_TYPES;
+  readonly CONDITION_SOURCE_TYPES_KEYS = CONDITION_SOURCE_TYPES_KEYS;
 
   constructor(public selectService: ConditionsSearchService, protected handlerService: ConditionsHandlerService) {
     super(selectService, handlerService);

@@ -13,14 +13,14 @@ import { QuestTemplateAddonService } from './quest-template-addon.service';
   styleUrls: ['./quest-template-addon.component.scss'],
 })
 export class QuestTemplateAddonComponent extends SingleRowEditorComponent<QuestTemplateAddon> {
-  public readonly ALLOWABLE_CLASSES = ALLOWABLE_CLASSES;
-  public readonly SPECIAL_FLAGS = SPECIAL_FLAGS;
+  readonly ALLOWABLE_CLASSES = ALLOWABLE_CLASSES;
+  readonly SPECIAL_FLAGS = SPECIAL_FLAGS;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     public editorService: QuestTemplateAddonService,
     public handlerService: QuestHandlerService,
-    public readonly questPreviewService: QuestPreviewService,
+    readonly questPreviewService: QuestPreviewService,
   ) {
     super(editorService, handlerService);
   }

@@ -16,25 +16,18 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="Reference">Reference</label>
-          <i
-            class="fas fa-info-circle ms-1"
-            [placement]="'auto'"
-            [tooltip]="'Include a group of loots. Linked to referenced_loot_template.entry'"
-          ></i>
+          <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'LOOT_EDITOR.REFERENCE' | translate"></i>
           <input [formControlName]="'Reference'" id="Reference" type="number" class="form-control form-control-sm" />
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="Chance">Chance</label>
-          <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'Item drop chance'"></i>
+          <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'LOOT_EDITOR.CHANCE' | translate"></i>
+
           <input [formControlName]="'Chance'" id="Chance" type="number" class="form-control form-control-sm" />
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="QuestRequired">QuestRequired</label>
-          <i
-            class="fas fa-info-circle ms-1"
-            [placement]="'auto'"
-            [tooltip]="'The item should be shown only to characters having the appropriate quest.'"
-          ></i>
+          <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'LOOT_EDITOR.QUEST_REQUIRED' | translate"></i>
           <input [formControlName]="'QuestRequired'" id="QuestRequired" type="number" class="form-control form-control-sm" />
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
@@ -48,42 +41,28 @@
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="GroupId">GroupId</label>
-          <i
-            class="fas fa-info-circle ms-1"
-            [placement]="'auto'"
-            [tooltip]="'Set of loot definitions, check the wiki for more details'"
-          ></i>
+          <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'LOOT_EDITOR.GROUP_ID' | translate"></i>
           <input [formControlName]="'GroupId'" id="GroupId" type="number" class="form-control form-control-sm" />
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="MinCount">MinCount</label>
-          <i
-            class="fas fa-info-circle ms-1"
-            [placement]="'auto'"
-            [tooltip]="'The minimum number of copies of the item that can drop in a single loot. For references, this is ignored.'"
-          ></i>
+          <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'LOOT_EDITOR.MIN_COUNT' | translate"></i>
           <input [formControlName]="'MinCount'" id="MinCount" type="number" class="form-control form-control-sm" />
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="MaxCount">MaxCount</label>
-          <i
-            class="fas fa-info-circle ms-1"
-            [placement]="'auto'"
-            [tooltip]="
-              'The maximum number of copies of the item that can drop in a single loot. For references, this is the EXACT count value.'
-            "
-          ></i>
+          <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'LOOT_EDITOR.MAX_COUNT' | translate"></i>
           <input [formControlName]="'MaxCount'" id="MaxCount" type="number" class="form-control form-control-sm" />
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="Comment">Comment</label>
-          <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'A comment that is ignored by the core'"></i>
+          <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'LOOT_EDITOR.COMMENT' | translate"></i>
           <input [formControlName]="'Comment'" id="Comment" class="form-control form-control-sm" />
         </div>
 
         <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
           <i class="fas fa-exclamation-triangle"></i>
-          The <strong>{{ editorService.entitySecondIdField }}</strong> must be unique.
+          <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
         </div>
       </div>
     </form>

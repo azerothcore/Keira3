@@ -35,26 +35,26 @@ import { generateModels, getShadowlandDisplayId, resetModel3dElement } from './m
   styleUrls: ['./item-template.component.scss'],
 })
 export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate> implements OnInit {
-  public readonly ITEM_CLASS = ITEM_CLASS;
-  public readonly ITEM_SUBCLASS = ITEM_SUBCLASS;
-  public readonly ITEM_QUALITY = ITEM_QUALITY;
-  public readonly ITEM_FLAGS = ITEM_FLAGS;
-  public readonly ITEM_FLAGS_EXTRA = ITEM_FLAGS_EXTRA;
-  public readonly INVENTORY_TYPE = INVENTORY_TYPE;
-  public readonly ALLOWABLE_CLASSES = ALLOWABLE_CLASSES;
-  public readonly ALLOWABLE_RACES = ALLOWABLE_RACES;
-  public readonly FACTION_RANK = FACTION_RANK;
-  public readonly BAG_FAMILY = BAG_FAMILY;
-  public readonly SOCKET_COLOR = SOCKET_COLOR;
-  public readonly ITEM_BONDING = ITEM_BONDING;
-  public readonly ITEM_MATERIAL = ITEM_MATERIAL;
-  public readonly ITEM_SHEAT = ITEM_SHEAT;
-  public readonly TOTEM_CATEGORY = TOTEM_CATEGORY;
-  public readonly FOOD_TYPE = FOOD_TYPE;
-  public readonly ITEM_FLAGS_CUSTOM = ITEM_FLAGS_CUSTOM;
-  public readonly DAMAGE_TYPE = DAMAGE_TYPE;
-  public readonly STAT_TYPE = STAT_TYPE;
-  public readonly PVP_RANK = PVP_RANK;
+  readonly ITEM_CLASS = ITEM_CLASS;
+  readonly ITEM_SUBCLASS = ITEM_SUBCLASS;
+  readonly ITEM_QUALITY = ITEM_QUALITY;
+  readonly ITEM_FLAGS = ITEM_FLAGS;
+  readonly ITEM_FLAGS_EXTRA = ITEM_FLAGS_EXTRA;
+  readonly INVENTORY_TYPE = INVENTORY_TYPE;
+  readonly ALLOWABLE_CLASSES = ALLOWABLE_CLASSES;
+  readonly ALLOWABLE_RACES = ALLOWABLE_RACES;
+  readonly FACTION_RANK = FACTION_RANK;
+  readonly BAG_FAMILY = BAG_FAMILY;
+  readonly SOCKET_COLOR = SOCKET_COLOR;
+  readonly ITEM_BONDING = ITEM_BONDING;
+  readonly ITEM_MATERIAL = ITEM_MATERIAL;
+  readonly ITEM_SHEAT = ITEM_SHEAT;
+  readonly TOTEM_CATEGORY = TOTEM_CATEGORY;
+  readonly FOOD_TYPE = FOOD_TYPE;
+  readonly ITEM_FLAGS_CUSTOM = ITEM_FLAGS_CUSTOM;
+  readonly DAMAGE_TYPE = DAMAGE_TYPE;
+  readonly STAT_TYPE = STAT_TYPE;
+  readonly PVP_RANK = PVP_RANK;
 
   showItemPreview = true;
 

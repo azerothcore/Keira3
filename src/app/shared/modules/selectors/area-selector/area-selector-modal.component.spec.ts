@@ -7,20 +7,19 @@ import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { AreaSearchService } from '../../search/area-search.service';
 import { AreaSelectorModule } from './area-selector.module';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 
 describe('AreaSelectorModalComponent', () => {
   let component: AreaSelectorModalComponent;
   let fixture: ComponentFixture<AreaSelectorModalComponent>;
   let searchService: AreaSearchService;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [AreaSelectorModule],
-        providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [AreaSelectorModule, TranslateTestingModule],
+      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     searchService = TestBed.inject(AreaSearchService);

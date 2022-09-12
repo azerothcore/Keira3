@@ -8,6 +8,8 @@
 <a href="https://www.paypal.me/francesco92dev" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
 [![Discord](https://img.shields.io/discord/217589275766685707.svg)](https://discordapp.com/channels/217589275766685707/536630256048799744)
 
+## [Keira3 Website](https://www.azerothcore.org/Keira3/)
+
 ![Keira3](https://raw.githubusercontent.com/azerothcore/Keira3/master/screenshot.png)
 
 
@@ -40,23 +42,6 @@ Alternatively, you can use a public database of AzerothCore with read-only acces
 To use Keira3, you don't need to install any dependency. Just [download](https://github.com/azerothcore/Keira3/releases) and run it.
 
 If you are using Arch Linux you can find the package on [AUR](https://aur.archlinux.org/packages/keira3/)
-
-If you're using a MySQL8.0 database you might encounter this error:
-
-_Client does not support authentication protocol requested by server; consider upgrading MySQL client_
-
-Before logging using Keira in remember to run this query on your database for your desired users:
-
-```
-ALTER USER 'acore'@'localhost' IDENTIFIED WITH mysql_native_password BY 'acore';
-flush privileges;
-```
-
-- The first `acore` refers to the user. Which uses AzerothCore by default.
-- `localhost`, is the type of connection.
-- The second `acore`, is the password, which by default is that.
-
-[More information about this issue here](https://stackoverflow.com/questions/50093144/mysql-8-0-client-does-not-support-authentication-protocol-requested-by-server)
 
 ## How to run Keira3 in development mode
 

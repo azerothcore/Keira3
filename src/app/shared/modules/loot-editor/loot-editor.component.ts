@@ -13,8 +13,8 @@ import { LootTemplate } from '@keira-types/loot-template.type';
 export class LootEditorComponent<T extends LootTemplate> {
   @Input() editorService: MultiRowEditorService<T>;
 
-  public readonly LOOT_MODE = LOOT_MODE;
-  public readonly DTCFG = DTCFG;
+  readonly LOOT_MODE = LOOT_MODE;
+  readonly DTCFG = DTCFG;
 
   public get docUrl(): string {
     // all loot tables have the same documentation page

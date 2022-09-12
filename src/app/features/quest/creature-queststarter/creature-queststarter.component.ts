@@ -15,7 +15,7 @@ export class CreatureQueststarterComponent extends MultiRowEditorComponent<Creat
   constructor(
     public editorService: CreatureQueststarterService,
     public handlerService: QuestHandlerService,
-    public readonly questPreviewService: QuestPreviewService,
+    readonly questPreviewService: QuestPreviewService,
   ) {
     super(editorService, handlerService);
   }

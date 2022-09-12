@@ -13,7 +13,7 @@ export abstract class MultiRowExternalEditorService<T extends TableRow> extends 
     protected _entityTable: string,
     protected _entitySecondIdField: string,
     protected handlerService: HandlerService<T>,
-    public readonly queryService: MysqlQueryService,
+    readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(

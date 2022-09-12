@@ -10,6 +10,7 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureTemplateAddonComponent } from './creature-template-addon.component';
 import { CreatureTemplateAddonModule } from './creature-template-addon.module';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import Spy = jasmine.Spy;
 
 class CreatureTemplateAddonPage extends EditorPageObject<CreatureTemplateAddonComponent> {}
@@ -36,14 +37,12 @@ describe('CreatureTemplateAddon integration tests', () => {
   originalEntity.mount = 0;
   originalEntity.path_id = 123;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureTemplateAddonModule, RouterTestingModule],
-        providers: [CreatureHandlerService, SaiCreatureHandlerService],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureTemplateAddonModule, RouterTestingModule, TranslateTestingModule],
+      providers: [CreatureHandlerService, SaiCreatureHandlerService],
+    }).compileComponents();
+  }));
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(CreatureHandlerService);
@@ -141,29 +140,26 @@ describe('CreatureTemplateAddon integration tests', () => {
       );
     });
 
-    xit(
-      'changing a value via SingleValueSelector should correctly work',
-      waitForAsync(async () => {
-        const field = 'bytes1';
-        page.clickElement(page.getSelectorBtn(field));
+    xit('changing a value via SingleValueSelector should correctly work', waitForAsync(async () => {
+      const field = 'bytes1';
+      page.clickElement(page.getSelectorBtn(field));
 
-        await page.whenReady();
-        page.expectModalDisplayed();
+      await page.whenReady();
+      page.expectModalDisplayed();
 
-        page.clickRowOfDatatableInModal(8);
+      page.clickRowOfDatatableInModal(8);
 
-        await page.whenReady();
-        page.clickModalSelect();
-        await page.whenReady();
+      await page.whenReady();
+      page.clickModalSelect();
+      await page.whenReady();
 
-        expect(page.getInputById(field).value).toEqual('8');
-        page.expectDiffQueryToContain('UPDATE `creature_template_addon` SET `bytes1` = 8 WHERE (`entry` = 1234);');
-        page.expectFullQueryToContain(
-          'DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
-            'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES\n' +
-            '(1234, 123, 0, 8, 2, 3, 0, NULL);',
-        );
-      }),
-    );
+      expect(page.getInputById(field).value).toEqual('8');
+      page.expectDiffQueryToContain('UPDATE `creature_template_addon` SET `bytes1` = 8 WHERE (`entry` = 1234);');
+      page.expectFullQueryToContain(
+        'DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
+          'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES\n' +
+          '(1234, 123, 0, 8, 2, 3, 0, NULL);',
+      );
+    }));
   });
 });

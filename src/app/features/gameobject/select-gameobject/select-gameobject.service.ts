@@ -13,7 +13,7 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 @Injectable()
 export class SelectGameobjectService extends SelectService<GameobjectTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(public readonly queryService: MysqlQueryService, public handlerService: GameobjectHandlerService) {
+  constructor(readonly queryService: MysqlQueryService, public handlerService: GameobjectHandlerService) {
     super(
       queryService,
       handlerService,

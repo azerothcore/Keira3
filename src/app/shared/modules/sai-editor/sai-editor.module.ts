@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
+import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
@@ -25,6 +26,7 @@ const components = [SaiEditorComponent, SaiTopBarComponent, TimedActionlistCompo
     ToastrModule,
     NgxDatatableModule,
     EditorButtonsModule,
+    TranslateModule,
   ],
 })
 export class SaiEditorModule {}

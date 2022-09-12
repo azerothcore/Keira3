@@ -8,6 +8,7 @@ import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selec
 import { MapSelectorModule } from '@keira-shared/modules/selectors/map-selector/map-selector.module';
 import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
 import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
+import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
@@ -29,6 +30,7 @@ import { GameobjectSpawnService } from './gameobject-spawn.service';
     MapSelectorModule,
     AreaSelectorModule,
     EditorButtonsModule,
+    TranslateModule,
   ],
   exports: [GameobjectSpawnComponent],
   providers: [GameobjectSpawnService],

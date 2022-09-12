@@ -10,10 +10,10 @@ import { FormGroup } from 'ngx-typesafe-forms';
   templateUrl: './spell-dbc-items.component.html',
 })
 export class SpellDbcItemsComponent {
-  public readonly ITEM_CLASS = ITEM_CLASS;
-  public readonly SPELL_DBC_ITEM_SUBCLASS = SPELL_DBC_ITEM_SUBCLASS;
-  public readonly SPELL_DBC_INVENTORY_TYPE = SPELL_DBC_INVENTORY_TYPE;
-  public readonly TOTEM_CATEGORY = TOTEM_CATEGORY;
+  readonly ITEM_CLASS = ITEM_CLASS;
+  readonly SPELL_DBC_ITEM_SUBCLASS = SPELL_DBC_ITEM_SUBCLASS;
+  readonly SPELL_DBC_INVENTORY_TYPE = SPELL_DBC_INVENTORY_TYPE;
+  readonly TOTEM_CATEGORY = TOTEM_CATEGORY;
 
   @Input() formGroup: FormGroup<SpellDbc>;
 }

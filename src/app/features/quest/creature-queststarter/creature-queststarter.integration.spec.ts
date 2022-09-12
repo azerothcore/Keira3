@@ -10,6 +10,7 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestModule } from '../quest.module';
 import { CreatureQueststarterComponent } from './creature-queststarter.component';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import Spy = jasmine.Spy;
 
 class CreatureQueststarterPage extends MultiRowEditorPageObject<CreatureQueststarterComponent> {
@@ -21,13 +22,11 @@ class CreatureQueststarterPage extends MultiRowEditorPageObject<CreatureQueststa
 describe('CreatureQueststarter integration tests', () => {
   const id = 1234;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, QuestModule],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, QuestModule, TranslateTestingModule],
+    }).compileComponents();
+  }));
 
   function setup(creatingNew: boolean) {
     const originalRow0 = new CreatureQueststarter();
@@ -253,44 +252,41 @@ describe('CreatureQueststarter integration tests', () => {
       page.removeElement();
     });
 
-    xit(
-      'changing a value via CreatureSelector should correctly work',
-      waitForAsync(async () => {
-        const { page, fixture } = setup(false);
-        const field = 'id';
-        const mysqlQueryService = TestBed.inject(MysqlQueryService);
-        (mysqlQueryService.query as Spy).and.returnValue(of([{ entry: 123, name: 'Mock Creature' }]));
+    xit('changing a value via CreatureSelector should correctly work', waitForAsync(async () => {
+      const { page, fixture } = setup(false);
+      const field = 'id';
+      const mysqlQueryService = TestBed.inject(MysqlQueryService);
+      (mysqlQueryService.query as Spy).and.returnValue(of([{ entry: 123, name: 'Mock Creature' }]));
 
-        // because this is a multi-row editor
-        page.clickRowOfDatatable(0);
-        await page.whenReady();
+      // because this is a multi-row editor
+      page.clickRowOfDatatable(0);
+      await page.whenReady();
 
-        page.clickElement(page.getSelectorBtn(field));
-        await page.whenReady();
-        page.expectModalDisplayed();
+      page.clickElement(page.getSelectorBtn(field));
+      await page.whenReady();
+      page.expectModalDisplayed();
 
-        page.clickSearchBtn();
+      page.clickSearchBtn();
 
-        await fixture.whenStable();
-        page.clickRowOfDatatableInModal(0);
-        await page.whenReady();
-        page.clickModalSelect();
-        await page.whenReady();
+      await fixture.whenStable();
+      page.clickRowOfDatatableInModal(0);
+      await page.whenReady();
+      page.clickModalSelect();
+      await page.whenReady();
 
-        page.expectDiffQueryToContain(
-          'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234) AND (`id` IN (0, 123));\n' +
-            'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
-            '(123, 1234);',
-        );
-        page.expectFullQueryToContain(
-          'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234);\n' +
-            'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
-            '(123, 1234),\n' +
-            '(1, 1234),\n' +
-            '(2, 1234);',
-        );
-        page.removeElement();
-      }),
-    );
+      page.expectDiffQueryToContain(
+        'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234) AND (`id` IN (0, 123));\n' +
+          'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
+          '(123, 1234);',
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234);\n' +
+          'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
+          '(123, 1234),\n' +
+          '(1, 1234),\n' +
+          '(2, 1234);',
+      );
+      page.removeElement();
+    }));
   });
 });

@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { PageObject } from '@keira-testing/page-object';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { SaiSearchEntityComponent } from './sai-search-entity.component';
@@ -40,13 +41,11 @@ describe('SaiSearchEntityComponent', () => {
   let fixture: ComponentFixture<SaiSearchEntityComponent>;
   let page: SaiSearchEntityComponentPage;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ModalModule.forRoot(), SaiSearchEntityModule, RouterTestingModule],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ModalModule.forRoot(), SaiSearchEntityModule, RouterTestingModule, TranslateTestingModule],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SaiSearchEntityComponent);

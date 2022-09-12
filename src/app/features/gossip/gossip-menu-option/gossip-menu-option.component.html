@@ -1,7 +1,7 @@
 <keira-top-bar [handler]="handlerService"></keira-top-bar>
 
 <div class="container-fluid editor-with-preview" [ngClass]="{ 'show-preview': showGossipPreview }">
-  <span *ngIf="editorService.loading">Loading...</span>
+  <span *ngIf="editorService.loading" [translate]="'LOADING' | translate"></span>
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
     <div class="content-block">
@@ -17,11 +17,7 @@
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
             <label class="control-label" for="OptionID">OptionID</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'Must be unique for a given menu_id starting from 0 (zero).'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'GOSSIP.GOSSIP_MENU_OPTION.OPTION_ID' | translate"></i>
             <input [formControlName]="'OptionID'" id="OptionID" type="number" class="form-control form-control-sm" />
           </div>
 
@@ -36,18 +32,16 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
             <label class="control-label" for="OptionText">OptionText</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="
-                'Text displayed in the player selectable option. Examples would be: “Learn Dual Spec“. Only if OptionBroadcastTextID contains a valid broadcast_text.ID'
-              "
-            ></i>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'GOSSIP.GOSSIP_MENU_OPTION.OPTION_TEXT' | translate"></i>
             <input [formControlName]="'OptionText'" id="OptionText" type="text" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
             <label class="control-label" for="OptionBroadcastTextID">OptionBroadcastTextID</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The ID of the same text in broadcast_text.ID.'"></i>
+            <i
+              class="fas fa-info-circle ms-1"
+              [placement]="'auto'"
+              [tooltip]="'GOSSIP.GOSSIP_MENU_OPTION.OPTION_BROADCAST_TEXT_ID' | translate"
+            ></i>
             <input
               [formControlName]="'OptionBroadcastTextID'"
               id="OptionBroadcastTextID"
@@ -66,75 +60,47 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
             <label class="control-label" for="OptionNpcFlag">OptionNpcFlag</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'Reference to creature_template.npcflag, this is the npcflag that the NPC must have'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'GOSSIP.GOSSIP_MENU_OPTION.OPTION_NPC_FLAG' | translate"></i>
             <input [formControlName]="'OptionNpcFlag'" id="OptionNpcFlag" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
             <label class="control-label" for="ActionMenuID">ActionMenuID</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="
-                'If you want to create a sub-menu, this is the ID (gossip_menu.entry / gossip_menu_option.menu_id) to link to to create that sub-menu.'
-              "
-            ></i>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'GOSSIP.GOSSIP_MENU_OPTION.ACTION_MENU_ID' | translate"></i>
             <input [formControlName]="'ActionMenuID'" id="ActionMenuID" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
             <label class="control-label" for="ActionPoiID">ActionPoiID</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="
-                'If you want a POI (point of interest) to display on the minimap (like how a city guard places a marker when you ask directions), this is the `entry` from Points_of_interest.entry'
-              "
-            ></i>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'GOSSIP.GOSSIP_MENU_OPTION.ACTION_POI_ID' | translate"></i>
             <input [formControlName]="'ActionPoiID'" id="ActionPoiID" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
             <label class="control-label" for="BoxCoded">BoxCoded</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'If you want a box to display where you have to enter a code, this is the field you use.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'GOSSIP.GOSSIP_MENU_OPTION.BOX_CODED' | translate"></i>
             <input [formControlName]="'BoxCoded'" id="BoxCoded" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
             <label class="control-label" for="BoxMoney">BoxMoney</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="
-                'The amount of money the player has to pay for the selected option, the value must be in copper. 10g = 100000 (10g 00s 00c)'
-              "
-            ></i>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'GOSSIP.GOSSIP_MENU_OPTION.BOX_MONEY' | translate"></i>
             <input [formControlName]="'BoxMoney'" id="BoxMoney" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
             <label class="control-label" for="BoxText">BoxText</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="
-                'This is the text of the window that appears that has “Yes” or “No” as clickable buttons. This is useful if you want a Yes/No confirmation window before the script executes'
-              "
-            ></i>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'GOSSIP.GOSSIP_MENU_OPTION.BOX_TEXT' | translate"></i>
             <input [formControlName]="'BoxText'" id="BoxText" type="text" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
             <label class="control-label" for="BoxBroadcastTextID">BoxBroadcastTextID</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The ID of the same text in broadcast_text.ID.'"></i>
+            <i
+              class="fas fa-info-circle ms-1"
+              [placement]="'auto'"
+              [tooltip]="'GOSSIP.GOSSIP_MENU_OPTION.BOX_BROADCAST_TEXT_ID' | translate"
+            ></i>
             <input [formControlName]="'BoxBroadcastTextID'" id="BoxBroadcastTextID" type="text" class="form-control form-control-sm" />
           </div>
 
           <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
             <i class="fas fa-exclamation-triangle"></i>
-            The <strong>{{ editorService.entitySecondIdField }}</strong> must be unique.
+            <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
           </div>
         </div>
       </form>

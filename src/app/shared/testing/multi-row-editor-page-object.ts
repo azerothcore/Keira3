@@ -31,6 +31,6 @@ export abstract class MultiRowEditorPageObject<T> extends EditorPageObject<T> {
 
   expectUniqueError(): void {
     expect(this.formError.hidden).toBe(false);
-    expect(this.formError.innerText).toContain('must be unique');
+    expect(this.formError.innerText).toContain('UNIQUE');
   }
 }

@@ -11,6 +11,7 @@ import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { PickpocketingLootTemplateComponent } from './pickpocketing-loot-template.component';
 import { PickpocketingLootTemplateModule } from './pickpocketing-loot-template.module';
 import { PickpocketingLootTemplateService } from './pickpocketing-loot-template.service';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import Spy = jasmine.Spy;
 
 class PickpocketingLootTemplatePage extends MultiRowEditorPageObject<PickpocketingLootTemplateComponent> {}
@@ -32,14 +33,18 @@ describe('PickpocketingLootTemplate integration tests', () => {
   originalRow1.Item = 1;
   originalRow2.Item = 2;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), PickpocketingLootTemplateModule, RouterTestingModule],
-        providers: [CreatureHandlerService, SaiCreatureHandlerService],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        PickpocketingLootTemplateModule,
+        RouterTestingModule,
+        TranslateTestingModule,
+      ],
+      providers: [CreatureHandlerService, SaiCreatureHandlerService],
+    }).compileComponents();
+  }));
 
   function setup(creatingNew: boolean, lootId = id) {
     spyOn(TestBed.inject(PickpocketingLootTemplateService), 'getLootId').and.returnValue(of([{ lootId }]));
