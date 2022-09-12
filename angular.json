@@ -165,7 +165,6 @@
       "architect": {}
     }
   },
-  "defaultProject": "Keira3",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "keira",
