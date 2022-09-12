@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
 
 @Component({ template: '' })
 export abstract class MultiRowEditorComponent<T extends TableRow> extends EditorComponent<T> {
-  public readonly DTCFG = DTCFG;
+  readonly DTCFG = DTCFG;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(public editorService: MultiRowEditorService<T>, protected handlerService: HandlerService<T>) {

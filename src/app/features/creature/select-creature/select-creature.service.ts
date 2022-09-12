@@ -13,7 +13,7 @@ import { CreatureHandlerService } from '../creature-handler.service';
 @Injectable()
 export class SelectCreatureService extends SelectService<CreatureTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(public readonly queryService: MysqlQueryService, public handlerService: CreatureHandlerService) {
+  constructor(readonly queryService: MysqlQueryService, public handlerService: CreatureHandlerService) {
     super(
       queryService,
       handlerService,

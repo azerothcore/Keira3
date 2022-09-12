@@ -1,6 +1,7 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { QuestRequestItems } from '@keira-types/quest-request-items.type';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -24,13 +25,11 @@ describe('QuestRequestItems integration tests', () => {
     'INSERT INTO `quest_request_items` (`ID`, `EmoteOnComplete`, `EmoteOnIncomplete`, `CompletionText`, `VerifiedBuild`) VALUES\n' +
     "(1234, 0, 0, '', 0);";
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, QuestModule],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, QuestModule, TranslateTestingModule],
+    }).compileComponents();
+  }));
 
   function setup(creatingNew: boolean) {
     const originalEntity = new QuestRequestItems();
@@ -113,20 +112,17 @@ describe('QuestRequestItems integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    it(
-      'should correctly initialise',
-      waitForAsync(async () => {
-        const { page } = setup(false);
-        page.expectDiffQueryToBeShown();
-        page.expectDiffQueryToBeEmpty();
-        page.expectFullQueryToContain(
-          'DELETE FROM `quest_request_items` WHERE (`ID` = 1234);\n' +
-            'INSERT INTO `quest_request_items` (`ID`, `EmoteOnComplete`, `EmoteOnIncomplete`, `CompletionText`, `VerifiedBuild`) VALUES\n' +
-            "(1234, 2, 3, '4', 0);",
-        );
-        page.removeElement();
-      }),
-    );
+    it('should correctly initialise', waitForAsync(async () => {
+      const { page } = setup(false);
+      page.expectDiffQueryToBeShown();
+      page.expectDiffQueryToBeEmpty();
+      page.expectFullQueryToContain(
+        'DELETE FROM `quest_request_items` WHERE (`ID` = 1234);\n' +
+          'INSERT INTO `quest_request_items` (`ID`, `EmoteOnComplete`, `EmoteOnIncomplete`, `CompletionText`, `VerifiedBuild`) VALUES\n' +
+          "(1234, 2, 3, '4', 0);",
+      );
+      page.removeElement();
+    }));
 
     it('changing all properties and executing the query should correctly work', () => {
       const { page, querySpy, originalEntity } = setup(false);
@@ -143,54 +139,48 @@ describe('QuestRequestItems integration tests', () => {
       page.removeElement();
     });
 
-    it(
-      'changing values should correctly update the queries',
-      waitForAsync(async () => {
-        const { page } = setup(false);
-        page.setInputValueById('EmoteOnComplete', '11');
-        page.expectDiffQueryToContain('UPDATE `quest_request_items` SET `EmoteOnComplete` = 11 WHERE (`ID` = 1234);');
-        page.expectFullQueryToContain(
-          'DELETE FROM `quest_request_items` WHERE (`ID` = 1234);\n' +
-            'INSERT INTO `quest_request_items` (`ID`, `EmoteOnComplete`, `EmoteOnIncomplete`, `CompletionText`, `VerifiedBuild`) VALUES\n' +
-            "(1234, 11, 3, '4', 0);\n",
-        );
+    it('changing values should correctly update the queries', waitForAsync(async () => {
+      const { page } = setup(false);
+      page.setInputValueById('EmoteOnComplete', '11');
+      page.expectDiffQueryToContain('UPDATE `quest_request_items` SET `EmoteOnComplete` = 11 WHERE (`ID` = 1234);');
+      page.expectFullQueryToContain(
+        'DELETE FROM `quest_request_items` WHERE (`ID` = 1234);\n' +
+          'INSERT INTO `quest_request_items` (`ID`, `EmoteOnComplete`, `EmoteOnIncomplete`, `CompletionText`, `VerifiedBuild`) VALUES\n' +
+          "(1234, 11, 3, '4', 0);\n",
+      );
 
-        page.setInputValueById('EmoteOnIncomplete', '22');
-        page.expectDiffQueryToContain(
-          'UPDATE `quest_request_items` SET `EmoteOnComplete` = 11, `EmoteOnIncomplete` = 22 WHERE (`ID` = 1234);',
-        );
-        page.expectFullQueryToContain(
-          'DELETE FROM `quest_request_items` WHERE (`ID` = 1234);\n' +
-            'INSERT INTO `quest_request_items` (`ID`, `EmoteOnComplete`, `EmoteOnIncomplete`, `CompletionText`, `VerifiedBuild`) VALUES\n' +
-            "(1234, 11, 22, '4', 0);\n",
-        );
-        page.removeElement();
-      }),
-    );
+      page.setInputValueById('EmoteOnIncomplete', '22');
+      page.expectDiffQueryToContain(
+        'UPDATE `quest_request_items` SET `EmoteOnComplete` = 11, `EmoteOnIncomplete` = 22 WHERE (`ID` = 1234);',
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `quest_request_items` WHERE (`ID` = 1234);\n' +
+          'INSERT INTO `quest_request_items` (`ID`, `EmoteOnComplete`, `EmoteOnIncomplete`, `CompletionText`, `VerifiedBuild`) VALUES\n' +
+          "(1234, 11, 22, '4', 0);\n",
+      );
+      page.removeElement();
+    }));
 
-    xit(
-      'changing a value via SingleValueSelector should correctly work',
-      waitForAsync(async () => {
-        const { page } = setup(false);
-        const field = 'EmoteOnComplete';
-        page.clickElement(page.getSelectorBtn(field));
-        await page.whenReady();
-        page.expectModalDisplayed();
+    xit('changing a value via SingleValueSelector should correctly work', waitForAsync(async () => {
+      const { page } = setup(false);
+      const field = 'EmoteOnComplete';
+      page.clickElement(page.getSelectorBtn(field));
+      await page.whenReady();
+      page.expectModalDisplayed();
 
-        page.clickRowOfDatatableInModal(4);
-        await page.whenReady();
-        page.clickModalSelect();
-        await page.whenReady();
+      page.clickRowOfDatatableInModal(4);
+      await page.whenReady();
+      page.clickModalSelect();
+      await page.whenReady();
 
-        expect(page.getInputById(field).value).toEqual('4');
-        page.expectDiffQueryToContain('UPDATE `quest_request_items` SET `EmoteOnComplete` = 4 WHERE (`ID` = 1234);');
-        page.expectFullQueryToContain(
-          'DELETE FROM `quest_request_items` WHERE (`ID` = 1234);\n' +
-            'INSERT INTO `quest_request_items` (`ID`, `EmoteOnComplete`, `EmoteOnIncomplete`, `CompletionText`, `VerifiedBuild`) VALUES\n' +
-            "(1234, 4, 3, '4', 0);\n",
-        );
-        page.removeElement();
-      }),
-    );
+      expect(page.getInputById(field).value).toEqual('4');
+      page.expectDiffQueryToContain('UPDATE `quest_request_items` SET `EmoteOnComplete` = 4 WHERE (`ID` = 1234);');
+      page.expectFullQueryToContain(
+        'DELETE FROM `quest_request_items` WHERE (`ID` = 1234);\n' +
+          'INSERT INTO `quest_request_items` (`ID`, `EmoteOnComplete`, `EmoteOnIncomplete`, `CompletionText`, `VerifiedBuild`) VALUES\n' +
+          "(1234, 4, 3, '4', 0);\n",
+      );
+      page.removeElement();
+    }));
   });
 });

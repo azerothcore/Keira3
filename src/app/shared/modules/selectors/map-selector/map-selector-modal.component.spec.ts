@@ -7,20 +7,19 @@ import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { MapSearchService } from '../../search/map-search.service';
 import { MapSelectorModule } from './map-selector.module';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 
 describe('MapSelectorModalComponent', () => {
   let component: MapSelectorModalComponent;
   let fixture: ComponentFixture<MapSelectorModalComponent>;
   let searchService: MapSearchService;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [MapSelectorModule],
-        providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [MapSelectorModule, TranslateTestingModule],
+      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     searchService = TestBed.inject(MapSearchService);

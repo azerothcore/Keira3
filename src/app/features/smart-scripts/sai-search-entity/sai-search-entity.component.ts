@@ -10,10 +10,10 @@ import { FormControl, FormGroup } from 'ngx-typesafe-forms';
   styleUrls: ['./sai-search-entity.component.scss'],
 })
 export class SaiSearchEntityComponent {
-  public readonly SAI_SEARCH_TYPES = SAI_TYPES;
-  public readonly SAI_SEARCH_TYPES_KEYS = SAI_TYPES_KEYS;
+  readonly SAI_SEARCH_TYPES = SAI_TYPES;
+  readonly SAI_SEARCH_TYPES_KEYS = SAI_TYPES_KEYS;
 
-  public readonly form = new FormGroup<Partial<SmartScripts>>({
+  readonly form = new FormGroup<Partial<SmartScripts>>({
     source_type: new FormControl<number>(null, [Validators.required]),
     entryorguid: new FormControl<number>(null, [Validators.required]),
   });

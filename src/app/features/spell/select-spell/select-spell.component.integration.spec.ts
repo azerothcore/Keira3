@@ -12,6 +12,7 @@ import { SelectSpellComponent } from './select-spell.component';
 import { SelectSpellModule } from './select-spell.module';
 import { SelectSpellService } from './select-spell.service';
 
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import Spy = jasmine.Spy;
 
 class SelectSpellComponentPage extends SelectPageObject<SelectSpellComponent> {
@@ -24,14 +25,12 @@ class SelectSpellComponentPage extends SelectPageObject<SelectSpellComponent> {
 describe('SelectSpell integration tests', () => {
   const value = 1200;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectSpellModule, RouterTestingModule],
-        providers: [SpellHandlerService],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectSpellModule, RouterTestingModule, TranslateTestingModule],
+      providers: [SpellHandlerService],
+    }).compileComponents();
+  }));
 
   const setup = () => {
     const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
@@ -49,55 +48,46 @@ describe('SelectSpell integration tests', () => {
     return { navigateSpy, queryService, querySpy, selectService, fixture, page, component };
   };
 
-  it(
-    'should correctly initialise',
-    waitForAsync(async () => {
-      const { querySpy, fixture, page, component } = setup();
-      await fixture.whenStable();
-      expect(page.createInput.value).toEqual(`${component.customStartingId}`);
-      page.expectNewEntityFree();
-      expect(querySpy).toHaveBeenCalledWith(`SELECT MAX(${SPELL_DBC_ID}) AS max FROM spell_dbc;`);
-      expect(page.queryWrapper.innerText).toContain('SELECT * FROM `spell_dbc` LIMIT 50');
-    }),
-  );
+  it('should correctly initialise', waitForAsync(async () => {
+    const { querySpy, fixture, page, component } = setup();
+    await fixture.whenStable();
+    expect(page.createInput.value).toEqual(`${component.customStartingId}`);
+    page.expectNewEntityFree();
+    expect(querySpy).toHaveBeenCalledWith(`SELECT MAX(${SPELL_DBC_ID}) AS max FROM spell_dbc;`);
+    expect(page.queryWrapper.innerText).toContain('SELECT * FROM `spell_dbc` LIMIT 50');
+  }));
 
-  it(
-    'should correctly behave when inserting and selecting free entry',
-    waitForAsync(async () => {
-      const { navigateSpy, querySpy, fixture, page } = setup();
-      await fixture.whenStable();
-      querySpy.calls.reset();
-      querySpy.and.returnValue(of([]));
+  it('should correctly behave when inserting and selecting free entry', waitForAsync(async () => {
+    const { navigateSpy, querySpy, fixture, page } = setup();
+    await fixture.whenStable();
+    querySpy.calls.reset();
+    querySpy.and.returnValue(of([]));
 
-      page.setInputValue(page.createInput, value);
+    page.setInputValue(page.createInput, value);
 
-      expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`spell_dbc\` WHERE (${SPELL_DBC_ID} = ${value})`);
-      page.expectNewEntityFree();
+    expect(querySpy).toHaveBeenCalledTimes(1);
+    expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`spell_dbc\` WHERE (${SPELL_DBC_ID} = ${value})`);
+    page.expectNewEntityFree();
 
-      page.clickElement(page.selectNewBtn);
+    page.clickElement(page.selectNewBtn);
 
-      expect(navigateSpy).toHaveBeenCalledTimes(1);
-      expect(navigateSpy).toHaveBeenCalledWith(['spell/spell-dbc']);
-      page.expectTopBarCreatingNew(value);
-    }),
-  );
+    expect(navigateSpy).toHaveBeenCalledTimes(1);
+    expect(navigateSpy).toHaveBeenCalledWith(['spell/spell-dbc']);
+    page.expectTopBarCreatingNew(value);
+  }));
 
-  it(
-    'should correctly behave when inserting an existing entity',
-    waitForAsync(async () => {
-      const { querySpy, fixture, page } = setup();
-      await fixture.whenStable();
-      querySpy.calls.reset();
-      querySpy.and.returnValue(of(['mock value']));
+  it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
+    const { querySpy, fixture, page } = setup();
+    await fixture.whenStable();
+    querySpy.calls.reset();
+    querySpy.and.returnValue(of(['mock value']));
 
-      page.setInputValue(page.createInput, value);
+    page.setInputValue(page.createInput, value);
 
-      expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`spell_dbc\` WHERE (${SPELL_DBC_ID} = ${value})`);
-      page.expectEntityAlreadyInUse();
-    }),
-  );
+    expect(querySpy).toHaveBeenCalledTimes(1);
+    expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`spell_dbc\` WHERE (${SPELL_DBC_ID} = ${value})`);
+    page.expectEntityAlreadyInUse();
+  }));
 
   for (const { id, entry, name, limit, expectedQuery } of [
     {

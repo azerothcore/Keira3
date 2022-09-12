@@ -8,7 +8,7 @@ import { SpellLootHandlerService } from './spell-loot-handler.service';
 @Injectable()
 export class SelectSpellLootService extends SelectService<SpellLootTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(public readonly queryService: MysqlQueryService, public handlerService: SpellLootHandlerService) {
+  constructor(readonly queryService: MysqlQueryService, public handlerService: SpellLootHandlerService) {
     super(
       queryService,
       handlerService,

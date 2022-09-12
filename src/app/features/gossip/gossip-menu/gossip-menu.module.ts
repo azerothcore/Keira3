@@ -5,6 +5,7 @@ import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor
 import { QueryOutputModule } from '@keira-shared/modules/query-output/query-output.module';
 import { NpcTextSelectorModule } from '@keira-shared/modules/selectors/npc-text-selector/npc-text-selector.module';
 import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
+import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
@@ -23,6 +24,7 @@ import { GossipMenuService } from './gossip-menu.service';
     NgxDatatableModule,
     EditorButtonsModule,
     NpcTextSelectorModule,
+    TranslateModule,
   ],
   exports: [GossipMenuComponent],
   providers: [GossipMenuService],

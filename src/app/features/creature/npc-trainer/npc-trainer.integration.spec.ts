@@ -11,6 +11,7 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { NpcTrainerComponent } from './npc-trainer.component';
 import { NpcTrainerModule } from './npc-trainer.module';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import Spy = jasmine.Spy;
 
 class NpcTrainerPage extends MultiRowEditorPageObject<NpcTrainerComponent> {}
@@ -32,14 +33,12 @@ describe('NpcTrainer integration tests', () => {
   originalRow1.SpellID = 1;
   originalRow2.SpellID = 2;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), NpcTrainerModule, RouterTestingModule],
-        providers: [CreatureHandlerService, SaiCreatureHandlerService],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), NpcTrainerModule, RouterTestingModule, TranslateTestingModule],
+      providers: [CreatureHandlerService, SaiCreatureHandlerService],
+    }).compileComponents();
+  }));
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(CreatureHandlerService);
@@ -254,41 +253,38 @@ describe('NpcTrainer integration tests', () => {
       page.expectUniqueError();
     });
 
-    xit(
-      'changing a value via SkillSelector should correctly work',
-      waitForAsync(async () => {
-        const field = 'ReqSkillLine';
-        const sqliteQueryService = TestBed.inject(SqliteQueryService);
-        spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 123, name: 'Mock Skill' }]));
+    xit('changing a value via SkillSelector should correctly work', waitForAsync(async () => {
+      const field = 'ReqSkillLine';
+      const sqliteQueryService = TestBed.inject(SqliteQueryService);
+      spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 123, name: 'Mock Skill' }]));
 
-        // because this is a multi-row editor
-        page.clickRowOfDatatable(0);
-        await page.whenReady();
+      // because this is a multi-row editor
+      page.clickRowOfDatatable(0);
+      await page.whenReady();
 
-        page.clickElement(page.getSelectorBtn(field));
-        await page.whenReady();
-        page.expectModalDisplayed();
+      page.clickElement(page.getSelectorBtn(field));
+      await page.whenReady();
+      page.expectModalDisplayed();
 
-        page.clickSearchBtn();
-        await fixture.whenStable();
-        page.clickRowOfDatatableInModal(0);
-        await page.whenReady();
-        page.clickModalSelect();
-        await page.whenReady();
+      page.clickSearchBtn();
+      await fixture.whenStable();
+      page.clickRowOfDatatableInModal(0);
+      await page.whenReady();
+      page.clickModalSelect();
+      await page.whenReady();
 
-        page.expectDiffQueryToContain(
-          'DELETE FROM `npc_trainer` WHERE (`ID` = 1234) AND (`SpellID` IN (0));\n' +
-            'INSERT INTO `npc_trainer` (`ID`, `SpellID`, `MoneyCost`, `ReqSkillLine`, `ReqSkillRank`, `ReqLevel`) VALUES\n' +
-            '(1234, 0, 0, 123, 0, 0);',
-        );
-        page.expectFullQueryToContain(
-          'DELETE FROM `npc_trainer` WHERE (`ID` = 1234);\n' +
-            'INSERT INTO `npc_trainer` (`ID`, `SpellID`, `MoneyCost`, `ReqSkillLine`, `ReqSkillRank`, `ReqLevel`) VALUES\n' +
-            '(1234, 0, 0, 123, 0, 0),\n' +
-            '(1234, 1, 0, 0, 0, 0),\n' +
-            '(1234, 2, 0, 0, 0, 0);',
-        );
-      }),
-    );
+      page.expectDiffQueryToContain(
+        'DELETE FROM `npc_trainer` WHERE (`ID` = 1234) AND (`SpellID` IN (0));\n' +
+          'INSERT INTO `npc_trainer` (`ID`, `SpellID`, `MoneyCost`, `ReqSkillLine`, `ReqSkillRank`, `ReqLevel`) VALUES\n' +
+          '(1234, 0, 0, 123, 0, 0);',
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `npc_trainer` WHERE (`ID` = 1234);\n' +
+          'INSERT INTO `npc_trainer` (`ID`, `SpellID`, `MoneyCost`, `ReqSkillLine`, `ReqSkillRank`, `ReqLevel`) VALUES\n' +
+          '(1234, 0, 0, 123, 0, 0),\n' +
+          '(1234, 1, 0, 0, 0, 0),\n' +
+          '(1234, 2, 0, 0, 0, 0);',
+      );
+    }));
   });
 });

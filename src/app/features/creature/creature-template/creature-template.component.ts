@@ -30,45 +30,26 @@ import { CreatureTemplateService } from './creature-template.service';
   styleUrls: ['./creature-template.component.scss'],
 })
 export class CreatureTemplateComponent extends SingleRowEditorComponent<CreatureTemplate> {
-  public readonly UNIT_FLAGS = UNIT_FLAGS;
-  public readonly UNIT_FLAGS_2 = UNIT_FLAGS_2;
-  public readonly TRAINER_TYPE = TRAINER_TYPE;
-  public readonly NPC_FLAGS = NPC_FLAGS;
-  public readonly CREATURE_FAMILY = CREATURE_FAMILY;
-  public readonly CREATURE_TYPE = CREATURE_TYPE;
-  public readonly CREATURE_TYPE_FLAGS = CREATURE_TYPE_FLAGS;
-  public readonly RANK = RANK;
-  public readonly DYNAMIC_FLAGS = DYNAMIC_FLAGS;
-  public readonly CREATURE_CLASS = CREATURE_CLASS;
-  public readonly CREATURE_RACE = CREATURE_RACE;
-  public readonly MOVEMENT_TYPE = MOVEMENT_TYPE;
-  public readonly FLAGS_EXTRA = FLAGS_EXTRA;
-  public readonly MECHANIC_IMMUNE_MASK = MECHANIC_IMMUNE_MASK;
-  public readonly SPELL_SCHOOL_IMMUNE_MASK = SPELL_SCHOOL_MASK;
-  public readonly CREATURE_ICON = CREATURE_ICON;
-  public readonly EXPANSION = EXPANSION;
-  public readonly UNIT_CLASS = UNIT_CLASS;
-  public readonly DAMAGE_TYPE = DAMAGE_TYPE;
-  public readonly CREATURE_AI_NAME = CREATURE_AI_NAME;
-
-  public readonly VEHICLE_ID_TOOLTIP =
-    'Entry of vehicle if creature is/has a vehicle entry. ' +
-    'This field determines how the player appears on the vehicle, how the vehicle moves, ' +
-    'and whether or not the vehicle action bar is shown. For example, a vehicleID of 292 will make the player invisible, ' +
-    'prevent the vehicle from strafing left/right (but will allow forwards/backwards), and will show the vehicle action bar spells ' +
-    '(which are defined in spell1-8). An npc_spellclick_spells entry must be made for this creature entry in order for this to work.';
-
-  public readonly MODEL_ID_TOOLTIP =
-    'A random graphical model that the client applies on this creature. ' +
-    'If you specify only one modelid and the rest will be equal to 0, model you have set won’t be chosen randomly. ' +
-    'From creature_model_info.modelid';
-
-  public readonly TRAINER_SPELL_TOOLTIP =
-    'If the NPC is a trainer that teaches professions (trainer_type = 2), ' +
-    'then the player must already know the spell ID specified here to be able to talk to this NPC.';
-
-  public readonly SPELLS_TOOLTIP =
-    'Spell ID that can be used for Mind Control of this creature. ' + 'For vehicle creatures: the spell on action bar with position X.';
+  readonly UNIT_FLAGS = UNIT_FLAGS;
+  readonly UNIT_FLAGS_2 = UNIT_FLAGS_2;
+  readonly TRAINER_TYPE = TRAINER_TYPE;
+  readonly NPC_FLAGS = NPC_FLAGS;
+  readonly CREATURE_FAMILY = CREATURE_FAMILY;
+  readonly CREATURE_TYPE = CREATURE_TYPE;
+  readonly CREATURE_TYPE_FLAGS = CREATURE_TYPE_FLAGS;
+  readonly RANK = RANK;
+  readonly DYNAMIC_FLAGS = DYNAMIC_FLAGS;
+  readonly CREATURE_CLASS = CREATURE_CLASS;
+  readonly CREATURE_RACE = CREATURE_RACE;
+  readonly MOVEMENT_TYPE = MOVEMENT_TYPE;
+  readonly FLAGS_EXTRA = FLAGS_EXTRA;
+  readonly MECHANIC_IMMUNE_MASK = MECHANIC_IMMUNE_MASK;
+  readonly SPELL_SCHOOL_IMMUNE_MASK = SPELL_SCHOOL_MASK;
+  readonly CREATURE_ICON = CREATURE_ICON;
+  readonly EXPANSION = EXPANSION;
+  readonly UNIT_CLASS = UNIT_CLASS;
+  readonly DAMAGE_TYPE = DAMAGE_TYPE;
+  readonly CREATURE_AI_NAME = CREATURE_AI_NAME;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(public editorService: CreatureTemplateService, public handlerService: CreatureHandlerService) {

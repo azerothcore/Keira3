@@ -7,7 +7,7 @@ import { SpellHandlerService } from '../spell-handler.service';
 @Injectable()
 export class SelectSpellService extends SelectService<SpellDbc> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(public readonly queryService: MysqlQueryService, public handlerService: SpellHandlerService) {
+  constructor(readonly queryService: MysqlQueryService, public handlerService: SpellHandlerService) {
     super(queryService, handlerService, SPELL_DBC_TABLE, SPELL_DBC_ID, SPELL_DBC_NAME, SPELL_DBC_SEARCH_FIELDS);
   }
 }

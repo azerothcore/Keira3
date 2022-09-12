@@ -9,6 +9,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { SaiSearchExistingComponent } from './sai-search-existing.component';
 import { SaiSearchExistingModule } from './sai-search-existing.module';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import Spy = jasmine.Spy;
 
 class SaiSearchExistingComponentPage extends PageObject<SaiSearchExistingComponent> {
@@ -33,13 +34,11 @@ describe('SaiSearchExisting integration tests', () => {
   let querySpy: Spy;
   let navigateSpy: Spy;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SaiSearchExistingModule, RouterTestingModule],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SaiSearchExistingModule, RouterTestingModule, TranslateTestingModule],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
@@ -52,15 +51,12 @@ describe('SaiSearchExisting integration tests', () => {
     fixture.detectChanges();
   });
 
-  it(
-    'should correctly initialise',
-    waitForAsync(async () => {
-      await fixture.whenStable();
-      expect(page.queryWrapper.innerText).toContain(
-        'SELECT `entryorguid`, `source_type` FROM `smart_scripts` GROUP BY entryorguid, source_type LIMIT 50',
-      );
-    }),
-  );
+  it('should correctly initialise', waitForAsync(async () => {
+    await fixture.whenStable();
+    expect(page.queryWrapper.innerText).toContain(
+      'SELECT `entryorguid`, `source_type` FROM `smart_scripts` GROUP BY entryorguid, source_type LIMIT 50',
+    );
+  }));
 
   for (const { testId, entryorguid, source_type, limit, expectedQuery } of [
     {

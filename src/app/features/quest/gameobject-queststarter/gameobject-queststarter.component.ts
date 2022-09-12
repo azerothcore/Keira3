@@ -15,7 +15,7 @@ export class GameobjectQueststarterComponent extends MultiRowEditorComponent<Gam
   constructor(
     public editorService: GameobjectQueststarterService,
     public handlerService: QuestHandlerService,
-    public readonly questPreviewService: QuestPreviewService,
+    readonly questPreviewService: QuestPreviewService,
   ) {
     super(editorService, handlerService);
   }

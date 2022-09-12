@@ -39,7 +39,7 @@ export class MockHandlerService extends HandlerService<MockEntity> {
 export class MockSingleRowEditorService extends SingleRowEditorService<MockEntity> {
   constructor(
     protected handlerService: MockHandlerService,
-    public readonly queryService: MysqlQueryService,
+    readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(MockEntity, MOCK_TABLE, MOCK_ID, MOCK_NAME, true, handlerService, queryService, toastrService);
@@ -52,7 +52,7 @@ export class MockSingleRowEditorService extends SingleRowEditorService<MockEntit
 export class MockSingleRowComplexKeyEditorService extends SingleRowComplexKeyEditorService<MockEntity> {
   constructor(
     protected handlerService: MockHandlerService,
-    public readonly queryService: MysqlQueryService,
+    readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(MockEntity, MOCK_TABLE, [MOCK_ID, MOCK_ID_2], MOCK_NAME, true, handlerService, queryService, toastrService);
@@ -65,7 +65,7 @@ export class MockSingleRowComplexKeyEditorService extends SingleRowComplexKeyEdi
 export class MockMultiRowEditorService extends MultiRowEditorService<MockEntity> {
   constructor(
     protected handlerService: MockHandlerService,
-    public readonly queryService: MysqlQueryService,
+    readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(MockEntity, MOCK_TABLE, MOCK_ID, MOCK_ID_2, handlerService, queryService, toastrService);
@@ -78,7 +78,7 @@ export class MockMultiRowEditorService extends MultiRowEditorService<MockEntity>
 export class MockMultiRowComplexKeyEditorService extends MultiRowComplexKeyEditorService<MockEntity> {
   constructor(
     protected handlerService: MockHandlerService,
-    public readonly queryService: MysqlQueryService,
+    readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(MockEntity, MOCK_TABLE, [MOCK_ID, MOCK_ID_2], MOCK_ID_2, handlerService, queryService, toastrService);

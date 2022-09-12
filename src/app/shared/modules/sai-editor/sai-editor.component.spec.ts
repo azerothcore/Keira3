@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { ToastrModule } from 'ngx-toastr';
 import { SaiEditorComponent } from './sai-editor.component';
 import { SaiEditorModule } from './sai-editor.module';
@@ -10,13 +11,11 @@ describe('SaiEditorComponent', () => {
   let fixture: ComponentFixture<SaiEditorComponent>;
   let handler: SaiHandlerService;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ToastrModule.forRoot(), SaiEditorModule, RouterTestingModule],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ToastrModule.forRoot(), SaiEditorModule, RouterTestingModule, TranslateTestingModule],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     const selected = { source_type: 1, entryorguid: 100 };

@@ -10,6 +10,7 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureTemplateComponent } from './creature-template.component';
 import { CreatureTemplateModule } from './creature-template.module';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import Spy = jasmine.Spy;
 
 class CreatureTemplatePage extends EditorPageObject<CreatureTemplateComponent> {}
@@ -39,14 +40,12 @@ describe('CreatureTemplate integration tests', () => {
   const originalEntity = new CreatureTemplate();
   originalEntity.entry = id;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureTemplateModule, RouterTestingModule],
-        providers: [CreatureHandlerService, SaiCreatureHandlerService],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureTemplateModule, RouterTestingModule, TranslateTestingModule],
+      providers: [CreatureHandlerService, SaiCreatureHandlerService],
+    }).compileComponents();
+  }));
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(CreatureHandlerService);
@@ -156,29 +155,26 @@ describe('CreatureTemplate integration tests', () => {
       page.expectFullQueryToContain('AC Developer');
     });
 
-    xit(
-      'changing a value via FlagsSelector should correctly work',
-      waitForAsync(async () => {
-        const field = 'unit_flags';
-        page.clickElement(page.getSelectorBtn(field));
-        page.expectModalDisplayed();
-        await page.whenReady();
+    xit('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
+      const field = 'unit_flags';
+      page.clickElement(page.getSelectorBtn(field));
+      page.expectModalDisplayed();
+      await page.whenReady();
 
-        page.toggleFlagInRowExternal(2);
+      page.toggleFlagInRowExternal(2);
 
-        await page.whenReady();
-        page.toggleFlagInRowExternal(12);
+      await page.whenReady();
+      page.toggleFlagInRowExternal(12);
 
-        await page.whenReady();
-        page.clickModalSelect();
-        await page.whenReady();
+      await page.whenReady();
+      page.clickModalSelect();
+      await page.whenReady();
 
-        expect(page.getInputById(field).value).toEqual('4100');
-        page.expectDiffQueryToContain('UPDATE `creature_template` SET `unit_flags` = 4100 WHERE (`entry` = 1234);');
+      expect(page.getInputById(field).value).toEqual('4100');
+      page.expectDiffQueryToContain('UPDATE `creature_template` SET `unit_flags` = 4100 WHERE (`entry` = 1234);');
 
-        // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
-        page.expectFullQueryToContain('4100');
-      }),
-    );
+      // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
+      page.expectFullQueryToContain('4100');
+    }));
   });
 });

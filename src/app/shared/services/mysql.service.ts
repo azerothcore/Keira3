@@ -1,8 +1,8 @@
 import { Injectable, NgZone } from '@angular/core';
-import * as mysql from 'mysql';
-import { Connection, ConnectionConfig, FieldInfo, MysqlError } from 'mysql';
+import * as mysql from 'mysql2';
+import { Connection, ConnectionOptions as ConnectionOptions, FieldPacket as FieldInfo, QueryError } from 'mysql2';
 import { Observable, Subject } from 'rxjs';
-import { MysqlResult, TableRow } from '../types/general';
+import { MysqlResult, QueryCallback, TableRow } from '../types/general';
 import { ElectronService } from './electron.service';
 
 @Injectable({
@@ -12,8 +12,8 @@ export class MysqlService {
   private mysql: typeof mysql;
   private _connection: Connection;
 
-  private _config: ConnectionConfig;
-  get config(): ConnectionConfig {
+  private _config: ConnectionOptions;
+  get config(): ConnectionOptions {
     return this._config;
   }
 
@@ -33,15 +33,15 @@ export class MysqlService {
   constructor(private electronService: ElectronService, private ngZone: NgZone) {
     /* istanbul ignore next */
     if (this.electronService.isElectron()) {
-      this.mysql = window.require('mysql');
+      this.mysql = window.require('mysql2');
     }
   }
 
-  getConnectionState() {
-    return this._connection ? this._connection.state : null;
+  getConnectionState(): string {
+    return this._connection ? 'CONNECTED' : 'EMPTY';
   }
 
-  connect(config: ConnectionConfig) {
+  connect(config: ConnectionOptions) {
     this._config = config;
     this._config.multipleStatements = true;
 
@@ -53,7 +53,7 @@ export class MysqlService {
   }
 
   private getConnectCallback(subscriber) {
-    return (err: MysqlError) => {
+    return (err: QueryError) => {
       this.ngZone.run(() => {
         if (err) {
           this._connectionEstablished = false;
@@ -86,7 +86,7 @@ export class MysqlService {
     }, RECONNECTION_TIME_MS);
   }
 
-  private reconnectCallback(err: MysqlError) {
+  private reconnectCallback(err: QueryError) {
     this.ngZone.run(() => {
       if (err) {
         // reconnection failed
@@ -116,11 +116,11 @@ export class MysqlService {
     });
   }
 
-  private getQueryCallback<T extends TableRow>(subscriber) {
-    return (err: MysqlError, results?: T[], fields?: FieldInfo[]) => {
+  private getQueryCallback<T extends TableRow>(subscriber): QueryCallback {
+    return (err: QueryError, results?: T[], fields?: FieldInfo[]) => {
       this.ngZone.run(() => {
         if (err) {
-          console.log(`Error when executing query: \n\n${err.sql}`);
+          console.log(`Error when executing query: \n\n${err.stack}`);
           subscriber.error(err);
         } else {
           subscriber.next({ results, fields });

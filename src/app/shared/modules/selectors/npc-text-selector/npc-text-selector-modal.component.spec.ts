@@ -7,16 +7,15 @@ import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { NpcTextSearchService } from '../../search/npc-text-search.service';
 import { NpcTextSelectorModule } from './npc-text-selector.module';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 
 describe('NpcTextSelectorModalComponent', () => {
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [NpcTextSelectorModule],
-        providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [NpcTextSelectorModule, TranslateTestingModule],
+      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+    }).compileComponents();
+  }));
 
   function setup() {
     const fixture = TestBed.createComponent(NpcTextSelectorModalComponent);

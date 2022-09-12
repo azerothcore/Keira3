@@ -3,7 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { MockEntity, MockHandlerService, MockMultiRowComplexKeyEditorService } from '@keira-testing/mock-services';
 import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { TableRow } from '@keira-types/general';
-import { MysqlError } from 'mysql';
+import { QueryError } from 'mysql2';
 import { ToastrService } from 'ngx-toastr';
 import { of, throwError } from 'rxjs';
 import { instance } from 'ts-mockito';
@@ -80,7 +80,7 @@ describe('MultiRowComplexKeyEditorService', () => {
 
   it('reloadEntity should correctly work', () => {
     spyOn<any>(service, 'onReloadSuccessful');
-    const error = { code: 'mock error', errno: 1234 } as MysqlError;
+    const error = { code: 'mock error', errno: 1234 } as QueryError;
     const selectQuerySpy: Spy = spyOn<any>(service, 'selectQuery').and.returnValue(of({ mock: 'data' }));
 
     service['reloadEntity']();

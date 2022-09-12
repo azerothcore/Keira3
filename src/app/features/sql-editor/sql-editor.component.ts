@@ -3,7 +3,7 @@ import { DTCFG } from '@keira-config/datatable.config';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
 import { TableRow } from '@keira-types/general';
-import { MysqlError } from 'mysql';
+import { QueryError } from 'mysql2';
 import { ClipboardService } from 'ngx-clipboard';
 import { SqlEditorService } from './sql-editor.service';
 
@@ -13,8 +13,8 @@ import { SqlEditorService } from './sql-editor.service';
   styleUrls: ['./sql-editor.component.scss'],
 })
 export class SqlEditorComponent extends SubscriptionHandler {
-  public readonly DTCFG = DTCFG;
-  public readonly docUrl = 'https://www.w3schools.com/sql/sql_intro.asp';
+  readonly DTCFG = DTCFG;
+  readonly docUrl = 'https://www.w3schools.com/sql/sql_intro.asp';
   private readonly MAX_COL_SHOWN = 20;
 
   // displayLimit = 10;
@@ -22,8 +22,8 @@ export class SqlEditorComponent extends SubscriptionHandler {
   //   return [10, 20, 50, 100, 200, 500, 1000];
   // }
 
-  private _error: MysqlError;
-  get error(): MysqlError {
+  private _error: QueryError;
+  get error(): QueryError {
     return this._error;
   }
 
@@ -50,16 +50,16 @@ export class SqlEditorComponent extends SubscriptionHandler {
   constructor(
     private mysqlQueryService: MysqlQueryService,
     private clipboardService: ClipboardService,
-    public readonly service: SqlEditorService,
+    readonly service: SqlEditorService,
   ) {
     super();
   }
 
-  copy() {
+  copy(): void {
     this.clipboardService.copyFromContent(this.service.code);
   }
 
-  execute() {
+  execute(): void {
     this.subscriptions.push(
       this.mysqlQueryService.query(this.service.code).subscribe({
         next: (rows: TableRow[] | { affectedRows: number; message: string }) => {
@@ -83,7 +83,7 @@ export class SqlEditorComponent extends SubscriptionHandler {
 
           this._rows = rows as TableRow[];
         },
-        error: (error: MysqlError) => {
+        error: (error: QueryError) => {
           this._error = error;
           this._rows = [];
           this._columns = [];

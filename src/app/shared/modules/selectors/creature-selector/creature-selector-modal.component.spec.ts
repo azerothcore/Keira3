@@ -7,20 +7,19 @@ import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { CreatureSearchService } from '../../search/creature-search.service';
 import { CreatureSelectorModule } from './creature-selector.module';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 
 describe('CreatureSelectorModalComponent', () => {
   let component: CreatureSelectorModalComponent;
   let fixture: ComponentFixture<CreatureSelectorModalComponent>;
   let searchService: CreatureSearchService;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [CreatureSelectorModule],
-        providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [CreatureSelectorModule, TranslateTestingModule],
+      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     searchService = TestBed.inject(CreatureSearchService);

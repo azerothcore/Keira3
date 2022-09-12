@@ -6,7 +6,7 @@ import { SingleRowEditorService } from './single-row-editor.service';
 import { HandlerService } from '../handlers/handler.service';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { getPartial } from '../../../utils/helpers';
-import { MysqlError } from 'mysql';
+import { QueryError } from 'mysql2';
 
 export abstract class SingleRowComplexKeyEditorService<T extends TableRow> extends SingleRowEditorService<T> {
   get entityIdFields(): string[] {
@@ -21,7 +21,7 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
     protected _entityNameField: string,
     protected isMainEntity: boolean,
     protected handlerService: HandlerService<T>,
-    public readonly queryService: MysqlQueryService,
+    readonly queryService: MysqlQueryService,
     protected toastrService: ToastrService,
   ) {
     super(
@@ -71,7 +71,7 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
           this.onReloadSuccessful(data);
           this._loading = false;
         },
-        error: (error: MysqlError) => {
+        error: (error: QueryError) => {
           this._error = error;
           this._loading = false;
         },

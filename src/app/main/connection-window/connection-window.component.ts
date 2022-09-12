@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ConnectionConfig, MysqlError } from 'mysql';
+import { ConnectionOptions as ConnectionOptions, QueryError } from 'mysql2';
 import { FormControl, FormGroup } from 'ngx-typesafe-forms';
 import packageInfo from '../../../../package.json';
 import { MysqlService } from '../../shared/services/mysql.service';
@@ -13,11 +13,11 @@ import { ConnectionWindowService } from './connection-window.service';
 })
 export class ConnectionWindowComponent extends SubscriptionHandler implements OnInit {
   private readonly IMAGES_COUNT = 10;
-  public readonly RANDOM_IMAGE = Math.floor(Math.random() * this.IMAGES_COUNT) + 1;
-  public readonly KEIRA_VERSION = packageInfo.version;
-  configs: Partial<ConnectionConfig>[];
-  form: FormGroup<Partial<ConnectionConfig>>;
-  error: MysqlError;
+  readonly RANDOM_IMAGE = Math.floor(Math.random() * this.IMAGES_COUNT) + 1;
+  readonly KEIRA_VERSION = packageInfo.version;
+  configs: Partial<ConnectionOptions>[];
+  form: FormGroup<Partial<ConnectionOptions>>;
+  error: QueryError;
   savePassword = true;
 
   get isRecentDropdownDisabled(): boolean {
@@ -29,7 +29,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
   }
 
   ngOnInit(): void {
-    this.form = new FormGroup<ConnectionConfig>({
+    this.form = new FormGroup<ConnectionOptions>({
       host: new FormControl<string>('127.0.0.1'),
       port: new FormControl<number>(3306),
       user: new FormControl<string>('root'),
@@ -49,7 +49,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
     }
   }
 
-  loadConfig(config: Partial<ConnectionConfig>): void {
+  loadConfig(config: Partial<ConnectionOptions>): void {
     this.form.setValue(config);
   }
 
@@ -70,7 +70,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
           this.connectionWindowService.saveNewConfig(newConfig);
           this.error = null;
         },
-        error: (error: MysqlError) => {
+        error: (error: QueryError) => {
           this.error = error;
         },
       }),

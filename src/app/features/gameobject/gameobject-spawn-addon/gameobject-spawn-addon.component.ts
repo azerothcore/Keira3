@@ -10,7 +10,7 @@ import { GameobjectSpawnAddonService } from './gameobject-spawn-addon.service';
   templateUrl: './gameobject-spawn-addon.component.html',
 })
 export class GameobjectSpawnAddonComponent extends MultiRowEditorComponent<GameobjectSpawnAddon> {
-  public readonly INVISIBILITY_TYPE = INVISIBILITY_TYPE;
+  readonly INVISIBILITY_TYPE = INVISIBILITY_TYPE;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(public editorService: GameobjectSpawnAddonService, public handlerService: GameobjectHandlerService) {

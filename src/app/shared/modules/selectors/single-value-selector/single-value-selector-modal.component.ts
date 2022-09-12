@@ -12,7 +12,7 @@ import { SingleValueModalConfig } from '@keira-shared/modules/selectors/single-v
   styleUrls: ['./single-value-selector-modal.component.scss'],
 })
 export class SingleValueSelectorModalComponent extends BaseSelectorModalComponent<SingleValueModalConfig> implements OnInit {
-  public readonly DTCFG = DTCFG;
+  readonly DTCFG = DTCFG;
   selected: Option[] = [];
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

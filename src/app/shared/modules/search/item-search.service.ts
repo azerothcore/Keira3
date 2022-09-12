@@ -8,7 +8,7 @@ import { SearchService } from './search.service';
 })
 export class ItemSearchService extends SearchService<ItemTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(public readonly queryService: MysqlQueryService) {
+  constructor(readonly queryService: MysqlQueryService) {
     super(queryService, ITEM_TEMPLATE_TABLE, ITEM_TEMPLATE_SEARCH_FIELDS);
   }
 }

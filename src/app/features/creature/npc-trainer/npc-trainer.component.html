@@ -1,7 +1,7 @@
 <keira-top-bar [handler]="handlerService"></keira-top-bar>
 
 <div class="container-fluid">
-  <span *ngIf="editorService.loading">Loading...</span>
+  <span *ngIf="editorService.loading" [translate]="'LOADING'"></span>
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
     <div class="content-block">
@@ -26,20 +26,12 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="MoneyCost">MoneyCost</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'The cost to pay to learn the spell represented in copper (1 gold = 100 silver = 10000 cooper)'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.NPC_TRAINER.MONEY_COST' | translate"></i>
             <input [formControlName]="'MoneyCost'" id="MoneyCost" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="ReqSkillLine">ReqSkillLine</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'The required skill the player needs to have in order to be able to learn the spell'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.NPC_TRAINER.REQ_SKILL_LINE' | translate"></i>
             <keira-skill-selector-btn
               [config]="{ name: 'ReqSkillLine' }"
               [control]="editorService.form.controls.ReqSkillLine"
@@ -48,26 +40,18 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="ReqSkillRank">ReqSkillRank</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'The proficiency in the skill from reqskill that the player needs to meet to learn the spell'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.NPC_TRAINER.REQ_SKILL_RANK' | translate"></i>
             <input [formControlName]="'ReqSkillRank'" id="ReqSkillRank" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="ReqLevel">ReqLevel</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'The minimum level the player needs to be in order to learn the spell.'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.NPC_TRAINER.REQ_LEVEL' | translate"></i>
             <input [formControlName]="'ReqLevel'" id="ReqLevel" type="number" class="form-control form-control-sm" />
           </div>
 
           <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
             <i class="fas fa-exclamation-triangle"></i>
-            The <strong>{{ editorService.entitySecondIdField }}</strong> must be unique.
+            <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
           </div>
         </div>
       </form>

@@ -15,6 +15,7 @@ import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/singl
 import { SkillSelectorModule } from '@keira-shared/modules/selectors/skill-selector/skill-selector.module';
 import { SpellSelectorModule } from '@keira-shared/modules/selectors/spell-selector/spell-selector.module';
 import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
+import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -79,6 +80,7 @@ const components = [
     IconModule,
     PerfectScrollbarModule,
     CollapseModule,
+    TranslateModule,
   ],
   providers: [
     QuestHandlerService,

@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { LATEST_RELEASE_API_URL } from '@keira-constants/general';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { MockedElectronService, MockedMysqlService } from '@keira-testing/mocks';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
@@ -21,34 +22,33 @@ import { LogoutBtnComponent } from './main-window/sidebar/logout-btn/logout-btn.
 import { SidebarComponent } from './main-window/sidebar/sidebar.component';
 
 describe('AppComponent', () => {
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [
-          MainWindowComponent,
-          ConnectionWindowComponent,
-          AppComponent,
-          SidebarComponent,
-          QueryErrorComponent,
-          LogoutBtnComponent,
-        ],
-        imports: [
-          FormsModule,
-          ReactiveFormsModule,
-          RouterTestingModule,
-          BrowserAnimationsModule,
-          PerfectScrollbarModule,
-          HttpClientTestingModule,
-          ModalConfirmModule,
-          ToastrModule.forRoot(),
-        ],
-        providers: [
-          { provide: ElectronService, useValue: instance(MockedElectronService) },
-          { provide: MysqlService, useValue: instance(MockedMysqlService) },
-        ],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [
+        MainWindowComponent,
+        ConnectionWindowComponent,
+        AppComponent,
+        SidebarComponent,
+        QueryErrorComponent,
+        LogoutBtnComponent,
+      ],
+      imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        RouterTestingModule,
+        BrowserAnimationsModule,
+        PerfectScrollbarModule,
+        HttpClientTestingModule,
+        ModalConfirmModule,
+        ToastrModule.forRoot(),
+        TranslateTestingModule,
+      ],
+      providers: [
+        { provide: ElectronService, useValue: instance(MockedElectronService) },
+        { provide: MysqlService, useValue: instance(MockedMysqlService) },
+      ],
+    }).compileComponents();
+  }));
 
   const setup = () => {
     const fixture = TestBed.createComponent(AppComponent);

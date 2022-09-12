@@ -5,7 +5,7 @@ import { HandlerService } from '../../service/handlers/handler.service';
 import { DTCFG } from '@keira-config/datatable.config';
 
 export abstract class SelectComponent<T extends TableRow> {
-  public readonly DTCFG = DTCFG;
+  readonly DTCFG = DTCFG;
 
   constructor(
     public entityTable: string,

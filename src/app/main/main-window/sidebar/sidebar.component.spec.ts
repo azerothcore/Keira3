@@ -3,6 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ElectronService } from '@keira-shared/services/electron.service';
 import { LocationService } from '@keira-shared/services/location.service';
 import { MysqlService } from '@keira-shared/services/mysql.service';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { MockedElectronService, MockedMysqlService } from '@keira-testing/mocks';
 import { PageObject } from '@keira-testing/page-object';
 import { instance } from 'ts-mockito';
@@ -36,30 +37,28 @@ class SidebarComponentPage extends PageObject<SidebarComponent> {
 }
 
 describe('SidebarComponent', () => {
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [SidebarModule, RouterTestingModule],
-        providers: [
-          { provide: ElectronService, useValue: instance(MockedElectronService) },
-          { provide: MysqlService, useValue: instance(MockedMysqlService) },
-          CreatureHandlerService,
-          SaiCreatureHandlerService,
-          QuestHandlerService,
-          ItemHandlerService,
-          GameobjectHandlerService,
-          SaiGameobjectHandlerService,
-          GossipHandlerService,
-          ConditionsHandlerService,
-          ReferenceLootHandlerService,
-          SpellLootHandlerService,
-          FishingLootHandlerService,
-          MailLootHandlerService,
-          SpellHandlerService,
-        ],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [SidebarModule, RouterTestingModule, TranslateTestingModule],
+      providers: [
+        { provide: ElectronService, useValue: instance(MockedElectronService) },
+        { provide: MysqlService, useValue: instance(MockedMysqlService) },
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        QuestHandlerService,
+        ItemHandlerService,
+        GameobjectHandlerService,
+        SaiGameobjectHandlerService,
+        GossipHandlerService,
+        ConditionsHandlerService,
+        ReferenceLootHandlerService,
+        SpellLootHandlerService,
+        FishingLootHandlerService,
+        MailLootHandlerService,
+        SpellHandlerService,
+      ],
+    }).compileComponents();
+  }));
 
   const setup = () => {
     const sidebarService = TestBed.inject(SidebarService);
@@ -106,10 +105,8 @@ describe('SidebarComponent', () => {
 
     page.clickElement(page.collapseAll);
 
-    for (const key in component.menuStates) {
-      if (component.menuStates.hasOwnProperty(key)) {
-        expect(component.menuStates[key]).toEqual('up');
-      }
+    for (const key of Object.keys(component.menuStates)) {
+      expect(component.menuStates[key]).toEqual('up');
     }
 
     page.removeElement();

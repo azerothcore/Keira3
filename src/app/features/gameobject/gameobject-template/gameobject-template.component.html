@@ -1,7 +1,7 @@
 <keira-top-bar [handler]="handlerService"></keira-top-bar>
 
 <div class="container-fluid">
-  <span *ngIf="editorService.loading">Loading...</span>
+  <span *ngIf="editorService.loading" [translate]="'LOADING'"></span>
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
     <div class="content-block">
@@ -14,12 +14,12 @@
 
     <form [formGroup]="editorService.form" class="form-group edit-form">
       <div class="content-block">
-        <span class="category-title">Base</span>
+        <span class="category-title" [translate]="'GAMEOBJECT.TEMPLATE.BASE'"></span>
 
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="entry">entry</label>
-            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'The unique ID of the gameobject'"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'UNIQUE_ID' | translate: { ENTITY: 'gameobject' }"></i>
             <input [formControlName]="'entry'" id="entry" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -37,11 +37,7 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="displayId">displayId</label>
-            <i
-              class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="'Graphic model id sent to the client from GameObjectDisplayInfo.dbc'"
-            ></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'GAMEOBJECT.TEMPLATE.DISPLAY_ID' | translate"></i>
             <input [formControlName]="'displayId'" id="displayId" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -77,8 +73,8 @@
       </div>
       <div class="content-block">
         <span class="category-title">
-          Gameobject Data
-          <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="GAMEOBJECT_DATA_TOOLTIP"></i>
+          {{ 'GAMEOBJECT.TEMPLATE.GAMEOBJECT_DATA' | translate }}
+          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'GAMEOBJECT.TEMPLATE.DATA_TOOLTIP' | translate"></i>
         </span>
 
         <div class="row">
@@ -86,8 +82,8 @@
             <label class="control-label" for="Data{{ i }}">{{ dataFieldDefinition(i).name }}</label>
             <i
               class="fas fa-info-circle ms-1"
-              [placement]="'auto'"
-              [tooltip]="dataFieldDefinition(i).tooltip"
+              placement="auto"
+              [tooltip]="dataFieldDefinition(i).tooltip | translate"
               *ngIf="!!dataFieldDefinition(i).tooltip"
             ></i>
             <input [formControlName]="'Data' + i" id="Data{{ i }}" type="number" class="form-control form-control-sm" />

@@ -8,7 +8,7 @@ import { MailLootHandlerService } from './mail-loot-handler.service';
 @Injectable()
 export class SelectMailLootService extends SelectService<MailLootTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(public readonly queryService: MysqlQueryService, public handlerService: MailLootHandlerService) {
+  constructor(readonly queryService: MysqlQueryService, public handlerService: MailLootHandlerService) {
     super(
       queryService,
       handlerService,
