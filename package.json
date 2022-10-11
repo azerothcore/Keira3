@@ -79,7 +79,7 @@
     "@types/jasminewd2": "2.0.10",
     "@types/jquery": "3.5.14",
     "@types/mysql": "2.15.21",
-    "@types/node": "16.11.64",
+    "@types/node": "16.11.65",
     "@types/sqlite3": "3.1.8",
     "@types/sqlstring": "2.3.0",
     "@typescript-eslint/eslint-plugin": "5.40.0",
