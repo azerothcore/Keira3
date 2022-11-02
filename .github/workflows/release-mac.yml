@@ -62,7 +62,6 @@ jobs:
           touch file.txt
           zip file.zip file.txt
           echo ${{ jobs.build-on-linux.steps.version.outputs.PACKAGE_VERSION }}
-
         # npm install
         # npm run electron:mac
         # zip Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip release/Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.dmg
@@ -72,8 +71,8 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: file.txt # ${{ steps.version.outputs.PACKAGE_VERSION }}
-          release_name: file.txt # ${{ steps.version.outputs.PACKAGE_VERSION }}
+          tag_name: ${{ steps.version.outputs.PACKAGE_VERSION }}
+          release_name: ${{ steps.version.outputs.PACKAGE_VERSION }}
           draft: true
           prerelease: false
           files: file.zip # Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip
