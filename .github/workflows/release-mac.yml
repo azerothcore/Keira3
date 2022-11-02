@@ -13,13 +13,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Get package version
-        run: |
-          echo "PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g'" >> $GITHUB_OUTPUT
         id: version
+        run: |
+        cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g'
       - name: Build project
         run: |
           npm electron:mac
-          zip Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip release/Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.dmg
+          zip Keira3-${{ steps.version.outputs.value }}.MAC.dmg.zip release/Keira3-${{ steps.version.outputs.value }}.dmg
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -37,6 +37,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip
-          asset_name: Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip
+          asset_path: ./Keira3-${{ steps.version.outputs.value }}.MAC.dmg.zip
+          asset_name: Keira3-${{ steps.version.outputs.value }}.MAC.dmg.zip
           asset_content_type: application/zip
