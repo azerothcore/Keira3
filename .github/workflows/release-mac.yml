@@ -62,10 +62,17 @@ jobs:
         run: |
           touch file.txt
           zip file.zip file.txt
-      - name: Upload Release Asset
-        id: upload-release-asset
+      - name: Create Release
+        id: create_release
         uses: softprops/action-gh-release@v1
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
           files: file.zip
         # env:
         #   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
