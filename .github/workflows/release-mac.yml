@@ -10,7 +10,12 @@ jobs:
     name: Get Package Version and upload Linux release asset
 
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.step1.outputs.PACKAGE_VERSION }}
     steps:
+      - id: step1
+        run: echo "test=hello" >> $GITHUB_OUTPUT
+      steps:
       - name: Extract version from package.json
         uses: sergeysova/jq-action@v2
         id: version
@@ -24,7 +29,7 @@ jobs:
       #   run: |
       #     npm install
       #     npm run electron:linux
-      #     zip Keira3-{{ jobs.build-on-linux.steps.version.outputs.PACKAGE_VERSION }}.WINDOWS.exe.zip "release/Keira3 {{ jobs.build-on-linux.steps.version.outputs.PACKAGE_VERSION }}.exe"
+      #     zip Keira3-${{ needs.build-on-linux.outputs.version }}.WINDOWS.exe.zip "release/Keira3 ${{ needs.build-on-linux.outputs.version }}.exe"
       # - name: Create Release
       #   id: create_release
       #   uses: actions/create-release@v1
@@ -42,8 +47,8 @@ jobs:
       #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       #   with:
       #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./Keira3-{{ jobs.build-on-linux.steps.version.outputs.PACKAGE_VERSION }}.WINDOWS.exe.zip
-      #     asset_name: Keira3-{{ jobs.build-on-linux.steps.version.outputs.PACKAGE_VERSION }}.WINDOWS.exe.zip
+      #     asset_path: ./Keira3-${{ needs.build-on-linux.outputs.version }}.WINDOWS.exe.zip
+      #     asset_name: Keira3-${{ needs.build-on-linux.outputs.version }}.WINDOWS.exe.zip
       #     asset_content_type: application/zip
 
 
@@ -59,20 +64,21 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          echo ${{needs.build-on-linux.outputs.version}}
           npm install
           npm run electron:mac
-          zip Keira3-{{ jobs.build-on-linux.steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip release/Keira3-{{ jobs.build-on-linux.steps.version.outputs.PACKAGE_VERSION }}.dmg
+          zip Keira3-${{ needs.build-on-linux.outputs.version }}.MAC.dmg.zip release/Keira3-${{ needs.build-on-linux.outputs.version }}.dmg
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: {{ jobs.build-on-linux.steps.version.outputs.PACKAGE_VERSION }}
-          release_name: {{ jobs.build-on-linux.steps.version.outputs.PACKAGE_VERSION }}
+          tag_name: ${{ needs.build-on-linux.outputs.version }}
+          release_name: ${{ needs.build-on-linux.outputs.version }}
           draft: true
           prerelease: false
-          files: Keira3-{{ jobs.build-on-linux.steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip
+          files: Keira3-${{ needs.build-on-linux.outputs.version }}.MAC.dmg.zip
       # - name: Upload binaries to release
       #   uses: svenstaro/upload-release-action@v2
       #   run: touch file.txt
@@ -80,7 +86,7 @@ jobs:
       #     repo_token: ${{ secrets.GITHUB_TOKEN }}
       #     file: file.txt
       #     asset_name: file.txt
-      #     tag: {{ jobs.build-on-linux.steps.version.outputs.PACKAGE_VERSION }}
+      #     tag: ${{ needs.build-on-linux.outputs.version }}
       #     overwrite: true
       #     body: "This is my release text"
 
@@ -95,7 +101,7 @@ jobs:
   #       run: |
   #         npm install
   #         npm run electron:windows
-  #         zip Keira3-{{ jobs.build-on-linux.steps.version.outputs.PACKAGE_VERSION }}.WINDOWS.exe.zip "release/Keira3 {{ jobs.build-on-linux.steps.version.outputs.PACKAGE_VERSION }}.exe"
+  #         zip Keira3-${{ needs.build-on-linux.outputs.version }}.WINDOWS.exe.zip "release/Keira3 ${{ needs.build-on-linux.outputs.version }}.exe"
   #     - name: Create Release
   #       id: create_release
   #       uses: actions/create-release@v1
@@ -113,6 +119,6 @@ jobs:
   #         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   #       with:
   #         upload_url: ${{ steps.create_release.outputs.upload_url }}
-  #         asset_path: ./Keira3-{{ jobs.build-on-linux.steps.version.outputs.PACKAGE_VERSION }}.WINDOWS.exe.zip
-  #         asset_name: Keira3-{{ jobs.build-on-linux.steps.version.outputs.PACKAGE_VERSION }}.WINDOWS.exe.zip
+  #         asset_path: ./Keira3-${{ needs.build-on-linux.outputs.version }}.WINDOWS.exe.zip
+  #         asset_name: Keira3-${{ needs.build-on-linux.outputs.version }}.WINDOWS.exe.zip
   #         asset_content_type: application/zip
