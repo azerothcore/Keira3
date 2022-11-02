@@ -8,14 +8,19 @@ name: Upload Release Asset
 jobs:
   build:
     name: Upload Release Asset
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract version from package.json
+        uses: sergeysova/jq-action@v2
+        id: version
+        with:
+          cmd: 'jq .version package.json -r'
+
     runs-on: macos-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Get package version
-        id: version
-        run: |
-        cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g'
       - name: Build project
         run: |
           npm electron:mac
