@@ -59,9 +59,6 @@ jobs:
           npm install
           npm run electron:mac
           zip Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip release/Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.dmg
-        run: |
-          touch file.txt
-          zip file.zip file.txt
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
