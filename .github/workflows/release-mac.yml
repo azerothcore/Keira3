@@ -1,3 +1,10 @@
+on:
+  push:
+    # tags:
+    # - 'v*'
+
+name: Upload Release Asset
+
 jobs:
   job1:
     runs-on: ubuntu-latest
