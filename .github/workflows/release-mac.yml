@@ -7,7 +7,7 @@ name: Upload Release Asset
 
 jobs:
   get-package-version:
-    name: Upload Release Asset
+    name: Get Package Version on Linux
 
     runs-on: ubuntu-latest
     steps:
@@ -17,6 +17,7 @@ jobs:
         run: echo "PACKAGE_VERSION=$(jq .version package.json -r)" >> $GITHUB_OUTPUT
 
   build:
+    name: Upload Release Asset
     runs-on: macos-latest
     steps:
       - name: Checkout code
