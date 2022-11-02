@@ -77,6 +77,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: file.zip # ./Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip
