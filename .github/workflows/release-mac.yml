@@ -74,15 +74,9 @@ jobs:
           prerelease: false
       - name: Upload Release Asset
         id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: uses: softprops/action-gh-release@v1
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: file.zip # ./Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip
-          asset_name: file.zip # Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip
-          asset_content_type: application/zip
+          files: file.zip
 
   # build-on-windows:
   #   needs: build-on-linux
