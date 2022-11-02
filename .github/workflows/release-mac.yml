@@ -72,6 +72,16 @@ jobs:
           draft: true
           prerelease: false
           files: Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        run: touch file.txt
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: file.txt
+          asset_name: mything
+          tag: ${{ steps.version.outputs.PACKAGE_VERSION }}
+          overwrite: true
+          body: "This is my release text"
 
   # build-on-windows:
   #   needs: build-on-linux
