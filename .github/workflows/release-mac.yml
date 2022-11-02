@@ -59,7 +59,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo ${{ jobs.build-on-linux.steps.version.outputs.PACKAGE_VERSION }}
+          echo "${{ jobs.build-on-linux.steps.version.outputs.PACKAGE_VERSION }}"
           npm install
           npm run electron:mac
           zip Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip release/Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.dmg
