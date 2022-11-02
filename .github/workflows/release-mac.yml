@@ -59,20 +59,24 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npm install
-          npm run electron:mac
-          zip Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip release/Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.dmg
+          touch file.txt
+          zip file.txt
+          echo ${{ jobs.build-on-linux.steps.version.outputs.PACKAGE_VERSION }}
+
+        # npm install
+        # npm run electron:mac
+        # zip Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip release/Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.dmg
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.version.outputs.PACKAGE_VERSION }}
-          release_name: ${{ steps.version.outputs.PACKAGE_VERSION }}
+          tag_name: file.txt # ${{ steps.version.outputs.PACKAGE_VERSION }}
+          release_name: file.txt # ${{ steps.version.outputs.PACKAGE_VERSION }}
           draft: true
           prerelease: false
-          files: Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip
+          files: file.zip # Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip
       # - name: Upload binaries to release
       #   uses: svenstaro/upload-release-action@v2
       #   run: touch file.txt
