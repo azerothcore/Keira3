@@ -11,10 +11,8 @@ jobs:
 
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.step1.outputs.PACKAGE_VERSION }}
+      version: ${{ steps.version.outputs.PACKAGE_VERSION }}
     steps:
-      - id: step1
-        run: echo "test=hello" >> $GITHUB_OUTPUT
       steps:
       - name: Extract version from package.json
         uses: sergeysova/jq-action@v2
