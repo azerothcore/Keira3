@@ -6,7 +6,7 @@ on:
 name: Upload Release Asset
 
 jobs:
-  build:
+  get-package-version:
     name: Upload Release Asset
 
     runs-on: ubuntu-latest
@@ -14,9 +14,9 @@ jobs:
       - name: Extract version from package.json
         uses: sergeysova/jq-action@v2
         id: version
-        with:
-          cmd: 'jq .version package.json -r'
+        run: echo "PACKAGE_VERSION=$(jq .version package.json -r)" >> $GITHUB_OUTPUT
 
+  build:
     runs-on: macos-latest
     steps:
       - name: Checkout code
@@ -24,7 +24,7 @@ jobs:
       - name: Build project
         run: |
           npm electron:mac
-          zip Keira3-${{ steps.version.outputs.value }}.MAC.dmg.zip release/Keira3-${{ steps.version.outputs.value }}.dmg
+          zip Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip release/Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.dmg
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -42,6 +42,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./Keira3-${{ steps.version.outputs.value }}.MAC.dmg.zip
-          asset_name: Keira3-${{ steps.version.outputs.value }}.MAC.dmg.zip
+          asset_path: ./Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip
+          asset_name: Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip
           asset_content_type: application/zip
