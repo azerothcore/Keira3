@@ -11,10 +11,9 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Extract version from package.json
-        uses: sergeysova/jq-action@v2
         id: version
         with:
-          cmd: 'jq .version package.json -r'
+          cmd: "cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g'"
 
       - name: Checkout code
         uses: actions/checkout@v2
