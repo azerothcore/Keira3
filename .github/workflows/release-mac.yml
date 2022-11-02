@@ -16,7 +16,7 @@ jobs:
         id: version
         with:
           run: |
-          echo "PACKAGE_VERSION=$(jq .version package.json -r)" >> $GITHUB_OUTPUT
+            echo "PACKAGE_VERSION=$(jq .version package.json -r)" >> $GITHUB_OUTPUT
 
       # - name: Checkout code
       #   uses: actions/checkout@v2
