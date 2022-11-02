@@ -13,7 +13,8 @@ jobs:
       output1: ${{ steps.step1.outputs.test }}
     steps:
       - id: step1
-        run: echo "test=hello" >> $GITHUB_OUTPUT
+        uses: sergeysova/jq-action@v2
+        run: echo "test=$(jq .version package.json -r)" >> $GITHUB_OUTPUT
       - name: Extract version from package.json
         uses: sergeysova/jq-action@v2
         id: version
