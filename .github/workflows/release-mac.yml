@@ -6,7 +6,20 @@ on:
 name: Upload Release Asset
 
 jobs:
+  get-package-version:
+    name: Get Package Version on Linux
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract version from package.json
+        uses: sergeysova/jq-action@v2
+        id: version
+        with:
+          cmd: 'jq .version package.json -r'
+          run: echo "PACKAGE_VERSION=$(jq .version package.json -r)" >> $GITHUB_OUTPUT
+
   build:
+    needs: get-package-version
     name: Upload Release Asset
     runs-on: macos-latest
     steps:
