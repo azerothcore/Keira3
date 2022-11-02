@@ -61,9 +61,6 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo ${{ needs.build-on-linux.outputs.version }}
-          npm install
-          npm run electron:mac
-          zip Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip release/Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.dmg
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
