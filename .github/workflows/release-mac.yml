@@ -60,7 +60,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           touch file.txt
-          zip file.txt
+          zip file.zip file.txt
           echo ${{ jobs.build-on-linux.steps.version.outputs.PACKAGE_VERSION }}
 
         # npm install
