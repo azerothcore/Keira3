@@ -26,7 +26,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Build project
         run: |
-          npm electron:mac
+          npm run electron:mac
           zip Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip release/Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.dmg
       - name: Create Release
         id: create_release
