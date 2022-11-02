@@ -17,8 +17,7 @@ jobs:
         uses: sergeysova/jq-action@v2
         id: version
         with:
-          run: |
-            echo "PACKAGE_VERSION=$(jq .version package.json -r)" >> $GITHUB_OUTPUT
+          cmd: echo "PACKAGE_VERSION=$(jq .version package.json -r)" >> $GITHUB_OUTPUT
 
       # - name: Checkout code
       #   uses: actions/checkout@v2
