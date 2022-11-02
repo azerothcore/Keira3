@@ -28,7 +28,7 @@ jobs:
       #   id: create_release
       #   uses: actions/create-release@v1
       #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       #   with:
       #     tag_name: ${{ github.ref }}
       #     release_name: Release ${{ github.ref }}
@@ -38,7 +38,7 @@ jobs:
       #   id: upload-release-asset
       #   uses: actions/upload-release-asset@v1
       #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       #   with:
       #     upload_url: ${{ steps.create_release.outputs.upload_url }}
       #     asset_path: ./Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.WINDOWS.exe.zip
@@ -55,15 +55,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Build project
+        # run: |
+        #   npm install
+        #   npm run electron:mac
+        #   zip Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip release/Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.dmg
         run: |
-          npm install
-          npm run electron:mac
-          zip Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip release/Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.dmg
+          touch file.txt
+          zip file.zip file.txt
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
-          github_token: ${{ secrets.github_token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
@@ -73,11 +76,11 @@ jobs:
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
-          github_token: ${{ secrets.github_token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip
-          asset_name: Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip
+          asset_path: file.zip # ./Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip
+          asset_name: file.zip # Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip
           asset_content_type: application/zip
 
   # build-on-windows:
@@ -96,7 +99,7 @@ jobs:
   #       id: create_release
   #       uses: actions/create-release@v1
   #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   #       with:
   #         tag_name: ${{ github.ref }}
   #         release_name: Release ${{ github.ref }}
@@ -106,7 +109,7 @@ jobs:
   #       id: upload-release-asset
   #       uses: actions/upload-release-asset@v1
   #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   #       with:
   #         upload_url: ${{ steps.create_release.outputs.upload_url }}
   #         asset_path: ./Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.WINDOWS.exe.zip
