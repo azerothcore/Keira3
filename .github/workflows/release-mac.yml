@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.version.outputs.PACKAGE_VERSION }}
-      app_name: ${{ steps.version.outputs.APP_NAME }}
+      app_name: ${{ steps.app_name.outputs.APP_NAME }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
