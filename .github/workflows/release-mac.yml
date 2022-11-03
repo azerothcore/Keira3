@@ -33,7 +33,7 @@ jobs:
         run: |
           npm install
           npm run electron:mac
-          zip Keira3${{needs.build-on-linux.outputs.version}}.MAC.dmg.zip release/Keira3${{needs.build-on-linux.outputs.version}}.dmg
+          zip Keira3-${{needs.build-on-linux.outputs.version}}.MAC.dmg.zip release/Keira3-${{needs.build-on-linux.outputs.version}}.dmg
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
@@ -44,7 +44,7 @@ jobs:
           release_name: ${{needs.build-on-linux.outputs.version}}
           draft: true
           prerelease: false
-          files: Keira3${{needs.build-on-linux.outputs.version}}.MAC.dmg.zip
+          files: Keira3-${{needs.build-on-linux.outputs.version}}.MAC.dmg.zip
       # - name: Upload binaries to release
       #   uses: svenstaro/upload-release-action@v2
       #   run: touch file.txt
