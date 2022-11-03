@@ -15,7 +15,7 @@ jobs:
       - id: step1
         run: |
           npm i -g json
-          PACKAGE_VERSION=json version -a < package.json
+          PACKAGE_VERSION=$(json version -a < package.json)
           echo "test=$(PACKAGE_VERSION)" >> $GITHUB_OUTPUT
 
   build-on-mac:
