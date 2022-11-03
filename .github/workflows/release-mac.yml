@@ -13,7 +13,7 @@ jobs:
       output1: ${{ steps.step1.outputs.test }}
     steps:
       - name: Extract version from package.json
-        uses: sergeysova/jq-action@v2
+        uses: sergeysova/jq-action@v2.2.1
         id: version
         with:
           cmd: 'jq .version package.json -r'
