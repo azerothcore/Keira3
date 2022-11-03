@@ -104,10 +104,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npm install
-          npm run electron:windows
-          mv "release/${{needs.get-package-version.outputs.app_name}} ${{needs.get-package-version.outputs.version}}.exe" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe && rm -rf release
-          7z a ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe
+          npm install && npm run electron:windows && mv "release/${{needs.get-package-version.outputs.app_name}} ${{needs.get-package-version.outputs.version}}.exe" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe && rm -rf release && 7z a ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe
         shell: bash
       - name: Create Release
         id: create_release
