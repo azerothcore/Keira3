@@ -24,10 +24,46 @@ jobs:
           npm i -g json
           echo "APP_NAME=$(json name -a < package.json)" >> $GITHUB_OUTPUT
 
-  build-on-mac:
+  # build-on-mac:
+  #   needs: build-on-linux
+  #   name: Upload Mac Release Asset
+  #   runs-on: macos-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
+  #     - name: Build project
+  #       env:
+  #         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       run: |
+  #         npm install
+  #         npm run electron:mac
+  #         zip ${{needs.build-on-linux.outputs.app_name}}-${{needs.build-on-linux.outputs.version}}.MAC.dmg.zip "release/${{needs.build-on-linux.outputs.app_name}}-${{needs.build-on-linux.outputs.version}}.dmg"
+  #     - name: Create Release
+  #       id: create_release
+  #       uses: softprops/action-gh-release@v1
+  #       env:
+  #         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         tag_name: ${{needs.build-on-linux.outputs.version}}
+  #         release_name: ${{needs.build-on-linux.outputs.version}}
+  #         draft: true
+  #         prerelease: false
+  #         files: ${{needs.build-on-linux.outputs.app_name}}-${{needs.build-on-linux.outputs.version}}.MAC.dmg.zip
+  #     # - name: Upload binaries to release
+  #     #   uses: svenstaro/upload-release-action@v2
+  #     #   run: touch file.txt
+  #     #   with:
+  #     #     repo_token: ${{ secrets.GITHUB_TOKEN }}
+  #     #     file: file.txt
+  #     #     asset_name: file.txt
+  #     #     tag: ${{needs.build-on-linux.outputs.version}}
+  #     #     overwrite: true
+  #     #     body: "This is my release text"
+
+  build-on-windows:
     needs: build-on-linux
-    name: Upload Mac Release Asset
-    runs-on: macos-latest
+    name: Upload Windows Release Asset
+    runs-on: windows-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -36,8 +72,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm install
-          npm run electron:mac
-          zip ${{needs.build-on-linux.outputs.app_name}}-${{needs.build-on-linux.outputs.version}}.MAC.dmg.zip "release/${{needs.build-on-linux.outputs.app_name}}-${{needs.build-on-linux.outputs.version}}.dmg"
+          npm run electron:windows
+          zip ${{needs.build-on-linux.outputs.app_name}}-${{needs.build-on-linux.outputs.version}}.WINDOWS.exe.zip "release/${{needs.build-on-linux.outputs.app_name}} ${{needs.build-on-linux.outputs.version}}.exe"
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
@@ -48,14 +84,4 @@ jobs:
           release_name: ${{needs.build-on-linux.outputs.version}}
           draft: true
           prerelease: false
-          files: ${{needs.build-on-linux.outputs.app_name}}-${{needs.build-on-linux.outputs.version}}.MAC.dmg.zip
-      # - name: Upload binaries to release
-      #   uses: svenstaro/upload-release-action@v2
-      #   run: touch file.txt
-      #   with:
-      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
-      #     file: file.txt
-      #     asset_name: file.txt
-      #     tag: ${{needs.build-on-linux.outputs.version}}
-      #     overwrite: true
-      #     body: "This is my release text"
+          files: ${{needs.build-on-linux.outputs.app_name}}-${{needs.build-on-linux.outputs.version}}.WINDOWS.exe.zip
