@@ -12,11 +12,17 @@ jobs:
     outputs:
       output1: ${{ steps.step1.outputs.test }}
     steps:
+      - name: test
+        run: |
+          npm i -g json
+          PACKAGE_VERSION=$(json version -a < package.json)
+          echo $PACKAGE_VERSION
+
       - id: step1
         run: |
           npm i -g json
           PACKAGE_VERSION=$(json version -a < package.json)
-          echo "test=$(PACKAGE_VERSION)" >> $GITHUB_OUTPUT
+          echo "test=$PACKAGE_VERSION" >> $GITHUB_OUTPUT
 
   build-on-mac:
     needs: build-on-linux
