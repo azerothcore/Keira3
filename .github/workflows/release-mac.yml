@@ -12,13 +12,10 @@ jobs:
     outputs:
       output1: ${{ steps.step1.outputs.test }}
     steps:
-      - name: Extract version from package.json
-        uses: sergeysova/jq-action@v2.2.1
-        id: version
-        with:
-          cmd: 'jq .version package.json -r'
       - id: step1
-        run: echo test=$(cat ./package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]') >> $GITHUB_OUTPUT
+        run: |
+        npm i -g json
+        echo "test=$(json version -a < package.json)" >> $GITHUB_OUTPUT
 
   build-on-mac:
     needs: build-on-linux
