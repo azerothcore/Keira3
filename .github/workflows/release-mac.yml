@@ -31,41 +31,32 @@ jobs:
           FIX_APP_NAME=$(echo "$(json name -a < package.json)" | sed s/3//g)
           echo "FIX_APP_NAME=$FIX_APP_NAME" >> $GITHUB_OUTPUT
 
-  # build-on-mac:
-  #   needs: build-on-linux
-  #   name: Upload Mac Release Asset
-  #   runs-on: macos-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v2
-  #     - name: Build project
-  #       env:
-  #         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       run: |
-  #         npm install
-  #         npm run electron:mac
-  #         zip ${{needs.build-on-linux.outputs.fix_app_name}}-${{needs.build-on-linux.outputs.version}}.MAC.dmg.zip "release/${{needs.build-on-linux.outputs.app_name}}-${{needs.build-on-linux.outputs.version}}.dmg"
-  #     - name: Create Release
-  #       id: create_release
-  #       uses: softprops/action-gh-release@v1
-  #       env:
-  #         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       with:
-  #         tag_name: ${{needs.build-on-linux.outputs.version}}
-  #         release_name: ${{needs.build-on-linux.outputs.version}}
-  #         draft: true
-  #         prerelease: false
-  #         files: ${{needs.build-on-linux.outputs.fix_app_name}}-${{needs.build-on-linux.outputs.version}}.MAC.dmg.zip
-  #     # - name: Upload binaries to release
-  #     #   uses: svenstaro/upload-release-action@v2
-  #     #   run: touch file.txt
-  #     #   with:
-  #     #     repo_token: ${{ secrets.GITHUB_TOKEN }}
-  #     #     file: file.txt
-  #     #     asset_name: file.txt
-  #     #     tag: ${{needs.build-on-linux.outputs.version}}
-  #     #     overwrite: true
-  #     #     body: "This is my release text"
+  build-on-mac:
+    needs: build-on-linux
+    name: Upload Mac Release Asset
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build project
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npm install
+          npm run electron:mac
+          mv "release/${{needs.build-on-linux.outputs.app_name}}-${{needs.build-on-linux.outputs.version}}.MAC.dmg" ${{needs.build-on-linux.outputs.fix_app_name}}-${{needs.build-on-linux.outputs.version}}.MAC.dmg
+          zip ${{needs.build-on-linux.outputs.fix_app_name}}-${{needs.build-on-linux.outputs.version}}.MAC.dmg.zip ${{needs.build-on-linux.outputs.fix_app_name}}-${{needs.build-on-linux.outputs.version}}.MAC.dmg
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{needs.build-on-linux.outputs.version}}
+          release_name: ${{needs.build-on-linux.outputs.version}}
+          draft: true
+          prerelease: false
+          files: ${{needs.build-on-linux.outputs.fix_app_name}}-${{needs.build-on-linux.outputs.version}}.MAC.dmg.zip
 
   build-on-windows:
     needs: build-on-linux
