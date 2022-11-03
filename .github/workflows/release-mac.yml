@@ -12,6 +12,8 @@ jobs:
     outputs:
       output1: ${{ steps.step1.outputs.test }}
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
       - name: test
         run: |
           npm i -g json
