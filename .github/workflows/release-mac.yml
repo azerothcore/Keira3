@@ -19,6 +19,9 @@ jobs:
         id: version
         with:
           run: |
+            echo "test"
+            echo "$(jq .version package.json -r)"
+            echo "test2"
             echo "PACKAGE_VERSION=$(jq .version package.json -r)" >> $GITHUB_OUTPUT
 
   build-on-mac:
