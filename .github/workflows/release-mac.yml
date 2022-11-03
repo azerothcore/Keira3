@@ -10,14 +10,15 @@ jobs:
     name: Get Package Version and upload Linux release asset
     runs-on: ubuntu-latest
     outputs:
-      output1: ${{ steps.version.outputs.PACKAGE_VERSION }}
+      output1: ${{ steps.step1.outputs.test }}
     steps:
       - id: step1
-        run: echo "test=hello" >> $GITHUB_OUTPUT
+        run: echo PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g') >> $GITHUB_OUTPUT
       - name: Extract version from package.json
         uses: sergeysova/jq-action@v2
         id: version
         with:
+          cmd:
           run: |
             echo "test"
             echo "$(jq .version package.json -r)"
