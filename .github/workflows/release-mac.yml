@@ -10,15 +10,19 @@ jobs:
     name: Get Package Version and upload Linux release asset
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.version.outputs.test }}
+      version: ${{ steps.version.outputs.PACKAGE_VERSION }}
+      app_name: ${{ steps.version.outputs.APP_NAME }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
       - id: version
         run: |
           npm i -g json
-          PACKAGE_VERSION=$(json version -a < package.json)
-          echo "test=$PACKAGE_VERSION" >> $GITHUB_OUTPUT
+          echo "PACKAGE_VERSION=$(json version -a < package.json)" >> $GITHUB_OUTPUT
+      - id: version
+        run: |
+          npm i -g json
+          echo "APP_NAME=$(json name -a < package.json)" >> $GITHUB_OUTPUT
 
   build-on-mac:
     needs: build-on-linux
@@ -33,7 +37,7 @@ jobs:
         run: |
           npm install
           npm run electron:mac
-          zip Keira3-${{needs.build-on-linux.outputs.version}}.MAC.dmg.zip release/Keira3-${{needs.build-on-linux.outputs.version}}.dmg
+          zip ${{needs.build-on-linux.outputs.app_name}}-${{needs.build-on-linux.outputs.version}}.MAC.dmg.zip release/${{needs.build-on-linux.outputs.app_name}}-${{needs.build-on-linux.outputs.version}}.dmg
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
@@ -44,7 +48,7 @@ jobs:
           release_name: ${{needs.build-on-linux.outputs.version}}
           draft: true
           prerelease: false
-          files: Keira3-${{needs.build-on-linux.outputs.version}}.MAC.dmg.zip
+          files: ${{needs.build-on-linux.outputs.app_name}}-${{needs.build-on-linux.outputs.version}}.MAC.dmg.zip
       # - name: Upload binaries to release
       #   uses: svenstaro/upload-release-action@v2
       #   run: touch file.txt
