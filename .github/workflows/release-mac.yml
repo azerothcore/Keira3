@@ -35,11 +35,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo ${{needs.build-on-linux.outputs.app_name}}-${{needs.build-on-linux.outputs.version}}.MAC.dmg.zip
-          echo "release/${{needs.build-on-linux.outputs.app_name}}-${{needs.build-on-linux.outputs.version}}.dmg"
-          # npm install
-          # npm run electron:mac
-          # zip ${{needs.build-on-linux.outputs.app_name}}-${{needs.build-on-linux.outputs.version}}.MAC.dmg.zip "release/${{needs.build-on-linux.outputs.app_name}}-${{needs.build-on-linux.outputs.version}}.dmg"
+          npm install
+          npm run electron:mac
+          zip ${{needs.build-on-linux.outputs.app_name}}-${{needs.build-on-linux.outputs.version}}.MAC.dmg.zip "release/${{needs.build-on-linux.outputs.app_name}}-${{needs.build-on-linux.outputs.version}}.dmg"
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
