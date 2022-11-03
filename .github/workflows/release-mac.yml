@@ -12,18 +12,13 @@ jobs:
     outputs:
       output1: ${{ steps.step1.outputs.test }}
     steps:
-      - id: step1
-        run: echo "test=hello" >> $GITHUB_OUTPUT
       - name: Extract version from package.json
         uses: sergeysova/jq-action@v2
         id: version
         with:
-          cmd:
-          run: |
-            echo "test"
-            echo "$(jq .version package.json -r)"
-            echo "test2"
-            echo "PACKAGE_VERSION=$(jq .version package.json -r)" >> $GITHUB_OUTPUT
+          cmd: 'jq .version package.json -r'
+      - id: step1
+        run: echo "test=${{ steps.version.outputs.value }}" >> $GITHUB_OUTPUT
 
   build-on-mac:
     needs: build-on-linux
