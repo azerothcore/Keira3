@@ -64,10 +64,10 @@ jobs:
           draft: true
           prerelease: false
           files: |
-            ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.AppImage.zip
-            ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.rpm.zip
-            ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.deb.zip
-            ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.snap.zip
+            "${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.AppImage.zip"
+            "${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.rpm.zip"
+            "${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.deb.zip"
+            "${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.snap.zip"
 
   build-on-mac:
     needs: get-package-version
@@ -95,7 +95,7 @@ jobs:
           release_name: ${{needs.get-package-version.outputs.version}}
           draft: true
           prerelease: false
-          files: ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.MAC.dmg.zip
+          files: "${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.MAC.dmg.zip"
 
   build-on-windows:
     needs: get-package-version
@@ -124,4 +124,4 @@ jobs:
           release_name: ${{needs.get-package-version.outputs.version}}
           draft: true
           prerelease: false
-          files: ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe.zip
+          files: "${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe.zip"
