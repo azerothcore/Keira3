@@ -6,7 +6,7 @@ on:
 name: Upload Release Asset
 
 jobs:
-  build-on-linux:
+  get-package-version:
     name: Get Package Version and upload Linux release asset
     runs-on: ubuntu-latest
     outputs:
@@ -31,8 +31,45 @@ jobs:
           FIX_APP_NAME=$(echo "$(json name -a < package.json)" | sed s/3//g)
           echo "FIX_APP_NAME=$FIX_APP_NAME" >> $GITHUB_OUTPUT
 
+  build-on-linux:
+    needs: get-package-version
+    name: Upload Linux Release Asset
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build project
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npm install
+          npm run electron:linux
+          mv "release/${{needs.get-package-version.outputs.app_name}}-${{needs.get-package-version.outputs.version}}.AppImage" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.AppImage
+          mv "release/${{needs.get-package-version.outputs.app_name}}-${{needs.get-package-version.outputs.version}}.x86_64.rpm" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.rpm
+          mv "release/${{needs.get-package-version.outputs.app_name}}-${{needs.get-package-version.outputs.version}}_amd64.deb" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.deb
+          mv "release/${{needs.get-package-version.outputs.app_name}}-${{needs.get-package-version.outputs.version}}_amd64.snap" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.snap
+          zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.AppImage.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.AppImage
+          zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.rpm.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.rpm
+          zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.deb.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.deb
+          zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.snap.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.snap
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{needs.get-package-version.outputs.version}}
+          release_name: ${{needs.get-package-version.outputs.version}}
+          draft: true
+          prerelease: false
+          files: |
+            ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.AppImage.zip
+            ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.rpm.zip
+            ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.deb.zip
+            ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.snap.zip
+
   build-on-mac:
-    needs: build-on-linux
+    needs: get-package-version
     name: Upload Mac Release Asset
     runs-on: macos-latest
     steps:
@@ -44,22 +81,22 @@ jobs:
         run: |
           npm install
           npm run electron:mac
-          mv "release/${{needs.build-on-linux.outputs.app_name}}-${{needs.build-on-linux.outputs.version}}.MAC.dmg" ${{needs.build-on-linux.outputs.fix_app_name}}-${{needs.build-on-linux.outputs.version}}.MAC.dmg
-          zip ${{needs.build-on-linux.outputs.fix_app_name}}-${{needs.build-on-linux.outputs.version}}.MAC.dmg.zip ${{needs.build-on-linux.outputs.fix_app_name}}-${{needs.build-on-linux.outputs.version}}.MAC.dmg
+          mv "release/${{needs.get-package-version.outputs.app_name}}-${{needs.get-package-version.outputs.version}}.MAC.dmg" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.MAC.dmg
+          zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.MAC.dmg.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.MAC.dmg
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{needs.build-on-linux.outputs.version}}
-          release_name: ${{needs.build-on-linux.outputs.version}}
+          tag_name: ${{needs.get-package-version.outputs.version}}
+          release_name: ${{needs.get-package-version.outputs.version}}
           draft: true
           prerelease: false
-          files: ${{needs.build-on-linux.outputs.fix_app_name}}-${{needs.build-on-linux.outputs.version}}.MAC.dmg.zip
+          files: ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.MAC.dmg.zip
 
   build-on-windows:
-    needs: build-on-linux
+    needs: get-package-version
     name: Upload Windows Release Asset
     runs-on: windows-latest
     steps:
@@ -71,16 +108,16 @@ jobs:
         run: |
           npm install
           npm run electron:windows
-          move "release/${{needs.build-on-linux.outputs.app_name}} ${{needs.build-on-linux.outputs.version}}.exe" ${{needs.build-on-linux.outputs.fix_app_name}}-${{needs.build-on-linux.outputs.version}}.WINDOWS.exe
-          7z a ${{needs.build-on-linux.outputs.fix_app_name}}-${{needs.build-on-linux.outputs.version}}.WINDOWS.exe.zip ${{needs.build-on-linux.outputs.fix_app_name}}-${{needs.build-on-linux.outputs.version}}.WINDOWS.exe
+          move "release/${{needs.get-package-version.outputs.app_name}} ${{needs.get-package-version.outputs.version}}.exe" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe
+          7z a ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{needs.build-on-linux.outputs.version}}
-          release_name: ${{needs.build-on-linux.outputs.version}}
+          tag_name: ${{needs.get-package-version.outputs.version}}
+          release_name: ${{needs.get-package-version.outputs.version}}
           draft: true
           prerelease: false
-          files: ${{needs.build-on-linux.outputs.fix_app_name}}-${{needs.build-on-linux.outputs.version}}.WINDOWS.exe.zip
+          files: ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe.zip
