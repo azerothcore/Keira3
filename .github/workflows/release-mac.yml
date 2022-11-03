@@ -16,7 +16,7 @@ jobs:
         uses: sergeysova/jq-action@v2
         id: version
         with:
-          cmd: 'jq .version package.json -r'
+          run: 'jq .version package.json -r'
       - id: step1
         run: echo "test=${{ steps.version.outputs.value }}" >> $GITHUB_OUTPUT
 
