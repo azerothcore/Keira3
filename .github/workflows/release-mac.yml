@@ -10,17 +10,11 @@ jobs:
     name: Get Package Version and upload Linux release asset
     runs-on: ubuntu-latest
     outputs:
-      output1: ${{ steps.step1.outputs.test }}
+      version: ${{ steps.version.outputs.test }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: test
-        run: |
-          npm i -g json
-          PACKAGE_VERSION=$(json version -a < package.json)
-          echo $PACKAGE_VERSION
-
-      - id: step1
+      - id: version
         run: |
           npm i -g json
           PACKAGE_VERSION=$(json version -a < package.json)
@@ -37,18 +31,20 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo ${{needs.build-on-linux.outputs.output1}}
+          npm install
+          npm run electron:mac
+          zip Keira3${{needs.build-on-linux.outputs.version}}.MAC.dmg.zip release/Keira3${{needs.build-on-linux.outputs.version}}.dmg
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.version.outputs.PACKAGE_VERSION }}
-          release_name: ${{ steps.version.outputs.PACKAGE_VERSION }}
+          tag_name: ${{needs.build-on-linux.outputs.version}}
+          release_name: ${{needs.build-on-linux.outputs.version}}
           draft: true
           prerelease: false
-          files: Keira3-${{ steps.version.outputs.PACKAGE_VERSION }}.MAC.dmg.zip
+          files: Keira3${{needs.build-on-linux.outputs.version}}.MAC.dmg.zip
       # - name: Upload binaries to release
       #   uses: svenstaro/upload-release-action@v2
       #   run: touch file.txt
@@ -56,6 +52,6 @@ jobs:
       #     repo_token: ${{ secrets.GITHUB_TOKEN }}
       #     file: file.txt
       #     asset_name: file.txt
-      #     tag: ${{ steps.version.outputs.PACKAGE_VERSION }}
+      #     tag: ${{needs.build-on-linux.outputs.version}}
       #     overwrite: true
       #     body: "This is my release text"
