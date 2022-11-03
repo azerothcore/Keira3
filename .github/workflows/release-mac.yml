@@ -81,7 +81,7 @@ jobs:
         run: |
           npm install
           npm run electron:mac
-          mv "release/${{needs.get-package-version.outputs.app_name}}-${{needs.get-package-version.outputs.version}}.MAC.dmg" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.MAC.dmg
+          mv "release/${{needs.get-package-version.outputs.app_name}}-${{needs.get-package-version.outputs.version}}.dmg" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.MAC.dmg
           zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.MAC.dmg.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.MAC.dmg
       - name: Create Release
         id: create_release
