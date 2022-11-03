@@ -57,6 +57,10 @@ jobs:
           rm -rf *.rpm
           rm -rf *.AppImage
           rm -rf *.snap
+          rm -rf release/*.deb
+          rm -rf release/*.rpm
+          rm -rf release/*.AppImage
+          rm -rf release/*.snap
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
@@ -91,6 +95,9 @@ jobs:
           rm -rf *.yml
           rm -rf *.blockmap
           rm -rf *.dmg
+          rm -rf release/*.yml
+          rm -rf release/*.blockmap
+          rm -rf release/*.dmg
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
@@ -120,6 +127,7 @@ jobs:
           7z a ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe
           rm -rf release
           rm -rf *.exe
+          rm -rf release/*.exe
         shell: bash
       - name: Create Release
         id: create_release
