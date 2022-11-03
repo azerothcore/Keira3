@@ -42,15 +42,15 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npm install
-          npm run electron:linux
-          mv "release/${{needs.get-package-version.outputs.app_name}}-${{needs.get-package-version.outputs.version}}.AppImage" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.AppImage
-          mv "release/${{needs.get-package-version.outputs.app_name}}-${{needs.get-package-version.outputs.version}}.x86_64.rpm" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.rpm
-          mv "release/${{needs.get-package-version.outputs.app_name}}_${{needs.get-package-version.outputs.version}}_amd64.deb" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.deb
-          mv "release/${{needs.get-package-version.outputs.app_name}}_${{needs.get-package-version.outputs.version}}_amd64.snap" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.snap
-          zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.AppImage.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.AppImage
-          zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.rpm.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.rpm
-          zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.deb.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.deb
+          npm install; \
+          npm run electron:linux; \
+          mv "release/${{needs.get-package-version.outputs.app_name}}-${{needs.get-package-version.outputs.version}}.AppImage" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.AppImage; \
+          mv "release/${{needs.get-package-version.outputs.app_name}}-${{needs.get-package-version.outputs.version}}.x86_64.rpm" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.rpm; \
+          mv "release/${{needs.get-package-version.outputs.app_name}}_${{needs.get-package-version.outputs.version}}_amd64.deb" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.deb; \
+          mv "release/${{needs.get-package-version.outputs.app_name}}_${{needs.get-package-version.outputs.version}}_amd64.snap" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.snap; \
+          zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.AppImage.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.AppImage; \
+          zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.rpm.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.rpm; \
+          zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.deb.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.deb; \
           zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.snap.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.snap
       - name: Create Release
         id: create_release
@@ -67,7 +67,6 @@ jobs:
             ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.rpm.zip
             ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.deb.zip
             ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.snap.zip
-
   build-on-mac:
     needs: get-package-version
     name: Build and upload the Mac release assets
@@ -79,8 +78,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npm install && npm run electron:mac && mv "release/${{needs.get-package-version.outputs.app_name}}-${{needs.get-package-version.outputs.version}}.dmg" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.MAC.dmg && zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.MAC.dmg.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.MAC.dmg && rm -rf release
-
+          npm install; \
+          npm run electron:mac; \
+          mv "release/${{needs.get-package-version.outputs.app_name}}-${{needs.get-package-version.outputs.version}}.dmg" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.MAC.dmg; \
+          zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.MAC.dmg.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.MAC.dmg; \
+          rm -rf release
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
@@ -104,7 +106,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npm install && npm run electron:windows && mv "release/${{needs.get-package-version.outputs.app_name}} ${{needs.get-package-version.outputs.version}}.exe" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe && rm -rf release && 7z a ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe
+          npm install;
+          npm run electron:windows; \
+          mv "release/${{needs.get-package-version.outputs.app_name}} ${{needs.get-package-version.outputs.version}}.exe" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe; \
+          7z a ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe \
+          rm -rf release
         shell: bash
       - name: Create Release
         id: create_release
