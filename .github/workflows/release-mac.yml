@@ -80,7 +80,8 @@ jobs:
         run: |
           npm install
           npm run electron:windows
-          7z a ${{needs.build-on-linux.outputs.fix_app_name}}-${{needs.build-on-linux.outputs.version}}.WINDOWS.exe.zip "release/${{needs.build-on-linux.outputs.app_name}} ${{needs.build-on-linux.outputs.version}}.exe"
+          move "release/${{needs.build-on-linux.outputs.app_name}} ${{needs.build-on-linux.outputs.version}}.exe" ${{needs.build-on-linux.outputs.fix_app_name}}-${{needs.build-on-linux.outputs.version}}.WINDOWS.exe
+          7z a ${{needs.build-on-linux.outputs.fix_app_name}}-${{needs.build-on-linux.outputs.version}}.WINDOWS.exe.zip ${{needs.build-on-linux.outputs.fix_app_name}}-${{needs.build-on-linux.outputs.version}}.WINDOWS.exe
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
