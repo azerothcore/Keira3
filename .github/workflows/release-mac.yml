@@ -19,7 +19,7 @@ jobs:
         run: |
           npm i -g json
           echo "PACKAGE_VERSION=$(json version -a < package.json)" >> $GITHUB_OUTPUT
-      - id: version
+      - id: app_name
         run: |
           npm i -g json
           echo "APP_NAME=$(json name -a < package.json)" >> $GITHUB_OUTPUT
