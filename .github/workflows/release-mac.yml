@@ -110,6 +110,7 @@ jobs:
           npm install
           npm run electron:windows
           move "release/${{needs.get-package-version.outputs.app_name}} ${{needs.get-package-version.outputs.version}}.exe" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe
+          rd /s /q release
           7z a ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe
       - name: Create Release
         id: create_release
