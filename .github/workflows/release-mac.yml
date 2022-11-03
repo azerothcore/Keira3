@@ -10,7 +10,7 @@ jobs:
     name: Get Package Version and upload Linux release asset
     runs-on: ubuntu-latest
     outputs:
-      output1: ${{ steps.version.outputs.PACKAGE_VERSION }}
+      output1: ${{ steps.step1.outputs.test }}
     steps:
       - id: step1
         run: echo "test=hello" >> $GITHUB_OUTPUT
