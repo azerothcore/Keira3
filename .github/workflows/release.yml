@@ -52,6 +52,11 @@ jobs:
           zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.rpm.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.rpm
           zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.deb.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.deb
           zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.snap.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.snap
+          rm -rf release
+          rm -rf *.deb
+          rm -rf *.rpm
+          rm -rf *.AppImage
+          rm -rf *.snap
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
@@ -83,6 +88,9 @@ jobs:
           mv "release/${{needs.get-package-version.outputs.app_name}}-${{needs.get-package-version.outputs.version}}.dmg" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.MAC.dmg
           zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.MAC.dmg.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.MAC.dmg
           rm -rf release
+          rm -rf *.yml
+          rm -rf *.blockmap
+          rm -rf *.dmg
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
@@ -111,6 +119,7 @@ jobs:
           mv "release/${{needs.get-package-version.outputs.app_name}} ${{needs.get-package-version.outputs.version}}.exe" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe
           7z a ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe
           rm -rf release
+          rm -rf *.exe
         shell: bash
       - name: Create Release
         id: create_release
