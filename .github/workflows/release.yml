@@ -19,7 +19,7 @@ on:
         type: environment
         required: true
 
-name: Upload Release Asset
+name: Release Draft
 
 jobs:
   get-package-version:
