@@ -1,7 +1,10 @@
 on:
-  push:
-    tags:
-    - 'v*'
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: 'Create a release draft'
+        required: false
+        type: boolean
 
 name: Upload Release Asset
 
