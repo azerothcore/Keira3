@@ -120,7 +120,7 @@
     "typescript": "4.8.4",
     "wait-on": "6.0.1",
     "webdriver-manager": "12.1.8",
-    "webpack": "5.74.0",
+    "webpack": "5.75.0",
     "zone.js": "0.12.0"
   },
   "husky": {
