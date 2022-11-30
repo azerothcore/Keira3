@@ -84,7 +84,7 @@
     "@types/sqlstring": "2.3.0",
     "@typescript-eslint/eslint-plugin": "5.45.0",
     "@typescript-eslint/parser": "5.45.0",
-    "bootstrap": "5.2.2",
+    "bootstrap": "5.2.3",
     "codelyzer": "6.0.2",
     "conventional-changelog-cli": "2.2.2",
     "coveralls": "3.1.1",
