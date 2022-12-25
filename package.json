@@ -103,7 +103,7 @@
     "karma-jasmine": "5.1.0",
     "karma-jasmine-html-reporter": "2.0.0",
     "lint-staged": "13.1.0",
-    "ngx-bootstrap": "9.0.0",
+    "ngx-bootstrap": "10.2.0",
     "ngx-clipboard": "15.1.0",
     "ngx-highlightjs": "7.0.1",
     "ngx-perfect-scrollbar": "10.1.1",
