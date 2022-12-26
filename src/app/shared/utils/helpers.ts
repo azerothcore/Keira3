@@ -1,8 +1,12 @@
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Class } from '@keira-shared/types/general';
 
 export type ModelForm<T> = {
   [K in keyof T]: FormControl<T[K]>;
+};
+
+export type ModelNestedForm<T> = {
+  [K in keyof T]: FormControl<T[K]> | FormGroup<ModelForm<T[K]>>;
 };
 
 // if value is a string that holds a number, return it as a number
