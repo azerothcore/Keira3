@@ -76,7 +76,7 @@ describe('SpellDbcMiscComponent', () => {
     const { page, form } = setup();
 
     for (const field of fields) {
-      form.getControl(field).setValue(createMockVal(field));
+      form.get(field).setValue(createMockVal(field));
     }
     page.detectChanges();
 
@@ -95,7 +95,7 @@ describe('SpellDbcMiscComponent', () => {
     page.detectChanges();
 
     for (const field of fields) {
-      expect(form.getControl(field).value).toEqual(createMockVal(field));
+      expect(form.get(field).value).toEqual(createMockVal(field));
     }
   });
 });

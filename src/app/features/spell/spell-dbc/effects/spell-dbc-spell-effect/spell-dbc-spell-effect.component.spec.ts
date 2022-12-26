@@ -86,7 +86,7 @@ describe('SpellDbcSpellEffectComponent', () => {
     host.index = testIndex;
 
     for (const field of SPELL_DBC_SPELL_EFFECT_FIELDS) {
-      form.getControl(`${field}_${testIndex}`).setValue(createMockVal(field));
+      form.get(`${field}_${testIndex}`).setValue(createMockVal(field));
     }
     page.detectChanges();
     await page.whenStable();
@@ -108,7 +108,7 @@ describe('SpellDbcSpellEffectComponent', () => {
     await page.whenStable();
 
     for (const field of SPELL_DBC_SPELL_EFFECT_FIELDS) {
-      expect(form.getControl(`${field}_${testIndex}`).value).toEqual(createMockVal(field));
+      expect(form.get(`${field}_${testIndex}`).value).toEqual(createMockVal(field));
     }
   });
 });

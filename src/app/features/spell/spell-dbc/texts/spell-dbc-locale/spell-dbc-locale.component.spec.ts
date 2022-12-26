@@ -76,7 +76,7 @@ describe('SpellDbcLocaleComponent', () => {
     host.locale = testLocale;
 
     for (const field of SPELL_DBC_TEXT_FIELDS) {
-      form.getControl(`${field}_${testLocale}`).setValue(createMockVal(field));
+      form.get(`${field}_${testLocale}`).setValue(createMockVal(field));
     }
     page.detectChanges();
 
@@ -96,7 +96,7 @@ describe('SpellDbcLocaleComponent', () => {
     page.detectChanges();
 
     for (const field of SPELL_DBC_TEXT_FIELDS) {
-      expect(form.getControl(`${field}_${testLocale}`).value).toEqual(createMockVal(field));
+      expect(form.get(`${field}_${testLocale}`).value).toEqual(createMockVal(field));
     }
   });
 });
