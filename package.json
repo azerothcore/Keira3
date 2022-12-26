@@ -107,6 +107,7 @@
     "ngx-clipboard": "15.1.0",
     "ngx-highlightjs": "7.0.1",
     "ngx-perfect-scrollbar": "10.1.1",
+    "ngx-typesafe-forms": "1.6.1",
     "npm-run-all": "4.1.5",
     "playwright": "1.29.1",
     "prettier": "2.8.1",
