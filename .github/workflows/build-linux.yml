@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [18]
-        os: [ubuntu-20.04]
+        os: [ubuntu-20.04, ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }}-node-${{ matrix.node-version }}
 
@@ -31,6 +31,6 @@ jobs:
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
       - name: electron:linux:ci
         run: npm run electron:linux:ci

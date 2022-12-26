@@ -20,6 +20,8 @@ import { ConnectionWindowComponent } from './connection-window/connection-window
 import { MainWindowComponent } from './main-window/main-window.component';
 import { LogoutBtnComponent } from './main-window/sidebar/logout-btn/logout-btn.component';
 import { SidebarComponent } from './main-window/sidebar/sidebar.component';
+import { SwitchLanguageModule } from '@keira-shared/modules/switch-language/switch-language.module';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 describe('AppComponent', () => {
   beforeEach(waitForAsync(() => {
@@ -33,6 +35,7 @@ describe('AppComponent', () => {
         LogoutBtnComponent,
       ],
       imports: [
+        BsDropdownModule,
         FormsModule,
         ReactiveFormsModule,
         RouterTestingModule,
@@ -40,6 +43,7 @@ describe('AppComponent', () => {
         PerfectScrollbarModule,
         HttpClientTestingModule,
         ModalConfirmModule,
+        SwitchLanguageModule,
         ToastrModule.forRoot(),
         TranslateTestingModule,
       ],

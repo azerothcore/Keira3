@@ -1,25 +1,26 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { UnsavedIconComponent } from './unsaved-icon.component';
 
 describe('UnsavedIconComponent', () => {
-  let component: UnsavedIconComponent;
-  let fixture: ComponentFixture<UnsavedIconComponent>;
-
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [TranslateTestingModule],
+      imports: [TranslateTestingModule, TooltipModule],
       declarations: [UnsavedIconComponent],
     }).compileComponents();
   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(UnsavedIconComponent);
-    component = fixture.componentInstance;
+  const setup = () => {
+    const fixture = TestBed.createComponent(UnsavedIconComponent);
+    const component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+
+    return { component };
+  };
 
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });
