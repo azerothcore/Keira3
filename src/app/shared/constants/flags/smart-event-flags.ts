@@ -10,4 +10,5 @@ export const SMART_EVENT_FLAGS: Flag[] = [
   { bit: 6, name: 'RESERVED_6 (not used)' },
   { bit: 7, name: 'DEBUG_ONLY (only used in debug build)' },
   { bit: 8, name: 'DONT_RESET (Event will not reset)' },
+  { bit: 9, name: 'WHILE_CHARMED (AI owner is charmed)' },
 ];
