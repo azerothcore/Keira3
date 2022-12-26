@@ -1,13 +1,14 @@
 import { Component, ViewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { FormGroup } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
+import { ModelForm } from '@keira-shared/utils/helpers';
 import { PageObject } from '@keira-testing/page-object';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
-import { FormGroup } from 'ngx-typesafe-forms';
 import { SpellHandlerService } from '../../../spell-handler.service';
 import { SpellDbcModule } from '../../spell-dbc.module';
 import { SpellDbcService } from '../../spell-dbc.service';
@@ -33,7 +34,7 @@ describe('SpellDbcSpellEffectComponent', () => {
   })
   class TestHostComponent {
     @ViewChild(SpellDbcSpellEffectComponent) child: SpellDbcSpellEffectComponent;
-    form: FormGroup<SpellDbc>;
+    form: FormGroup<ModelForm<SpellDbc>>;
     index: number;
   }
 
@@ -85,7 +86,7 @@ describe('SpellDbcSpellEffectComponent', () => {
     host.index = testIndex;
 
     for (const field of SPELL_DBC_SPELL_EFFECT_FIELDS) {
-      form.getControl(`${field}_${testIndex}`).setValue(createMockVal(field));
+      form.get(`${field}_${testIndex}`).setValue(createMockVal(field));
     }
     page.detectChanges();
     await page.whenStable();
@@ -107,7 +108,7 @@ describe('SpellDbcSpellEffectComponent', () => {
     await page.whenStable();
 
     for (const field of SPELL_DBC_SPELL_EFFECT_FIELDS) {
-      expect(form.getControl(`${field}_${testIndex}`).value).toEqual(createMockVal(field));
+      expect(form.get(`${field}_${testIndex}`).value).toEqual(createMockVal(field));
     }
   });
 });

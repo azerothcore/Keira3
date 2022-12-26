@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
+import { ModelForm } from '@keira-shared/utils/helpers';
 import { SAI_TYPES, SAI_TYPES_KEYS, SmartScripts } from '@keira-types/smart-scripts.type';
-import { FormControl, FormGroup } from 'ngx-typesafe-forms';
 
 @Component({
   selector: 'keira-sai-search-entity',
@@ -13,7 +13,7 @@ export class SaiSearchEntityComponent {
   readonly SAI_SEARCH_TYPES = SAI_TYPES;
   readonly SAI_SEARCH_TYPES_KEYS = SAI_TYPES_KEYS;
 
-  readonly form = new FormGroup<Partial<SmartScripts>>({
+  readonly form = new FormGroup<ModelForm<Partial<SmartScripts>>>({
     source_type: new FormControl<number>(null, [Validators.required]),
     entryorguid: new FormControl<number>(null, [Validators.required]),
   });
@@ -34,12 +34,12 @@ export class SaiSearchEntityComponent {
     return this.sourceTypeControl.value === SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST;
   }
 
-  get sourceTypeControl() {
-    return this.form.controls.source_type as FormGroup<number>;
+  get sourceTypeControl(): FormControl<number> {
+    return this.form.controls.source_type;
   }
 
-  get entryOrGuidControl() {
-    return this.form.controls.entryorguid as FormGroup<number>;
+  get entryOrGuidControl(): FormControl<number> {
+    return this.form.controls.entryorguid;
   }
 
   constructor(private handlerService: SaiHandlerService) {}

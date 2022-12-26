@@ -1,12 +1,13 @@
 import { Component, ViewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { FormGroup } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
+import { ModelForm } from '@keira-shared/utils/helpers';
 import { PageObject } from '@keira-testing/page-object';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
-import { FormGroup } from 'ngx-typesafe-forms';
 import { SpellHandlerService } from '../../../spell-handler.service';
 import { SpellDbcModule } from '../../spell-dbc.module';
 import { SpellDbcService } from '../../spell-dbc.service';
@@ -31,7 +32,7 @@ describe('SpellDbcLocaleComponent', () => {
   })
   class TestHostComponent {
     @ViewChild(SpellDbcLocaleComponent) child: SpellDbcLocaleComponent;
-    form: FormGroup<SpellDbc>;
+    form: FormGroup<ModelForm<SpellDbc>>;
     locale: Locale;
   }
 
@@ -75,7 +76,7 @@ describe('SpellDbcLocaleComponent', () => {
     host.locale = testLocale;
 
     for (const field of SPELL_DBC_TEXT_FIELDS) {
-      form.getControl(`${field}_${testLocale}`).setValue(createMockVal(field));
+      form.get(`${field}_${testLocale}`).setValue(createMockVal(field));
     }
     page.detectChanges();
 
@@ -95,7 +96,7 @@ describe('SpellDbcLocaleComponent', () => {
     page.detectChanges();
 
     for (const field of SPELL_DBC_TEXT_FIELDS) {
-      expect(form.getControl(`${field}_${testLocale}`).value).toEqual(createMockVal(field));
+      expect(form.get(`${field}_${testLocale}`).value).toEqual(createMockVal(field));
     }
   });
 });

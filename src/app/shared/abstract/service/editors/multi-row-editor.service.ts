@@ -47,7 +47,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
       this._form.valueChanges.pipe(distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))).subscribe(() => {
         if (!this._loading) {
           if (this._form.dirty && this.isFormIdUnique()) {
-            this._newRows[this.getSelectedRowIndex()] = this._form.getRawValue();
+            this._newRows[this.getSelectedRowIndex()] = this._form.getRawValue() as T;
             this._newRows = [...this._newRows];
             this._selectedRowId = this.form.controls[this._entitySecondIdField].value;
             this.checkRowsCorrectness();

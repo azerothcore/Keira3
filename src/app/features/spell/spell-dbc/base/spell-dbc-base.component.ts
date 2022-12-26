@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { SPELL_SCHOOL_MASK } from '@keira-shared/constants/flags/spell-school-mask';
 import { DISPEL_TYPE } from '@keira-shared/constants/options/dispel-type';
 import {
@@ -10,8 +11,8 @@ import {
   SPELL_DBC_TARGET_AURA_STATE,
 } from '@keira-shared/constants/options/spell-dbc-base-options';
 import { SPELL_MECHANIC } from '@keira-shared/constants/options/spell-mechanic';
+import { ModelForm } from '@keira-shared/utils/helpers';
 import { SpellDbc } from '@keira-types/spell-dbc.type';
-import { FormGroup } from 'ngx-typesafe-forms';
 
 @Component({
   selector: 'keira-spell-dbc-base',
@@ -28,5 +29,5 @@ export class SpellDbcBaseComponent {
   readonly SPELL_DBC_DAMAGE_CLASS = SPELL_DBC_DAMAGE_CLASS;
   readonly SPELL_DBC_PREVENTION_TYPE = SPELL_DBC_PREVENTION_TYPE;
 
-  @Input() formGroup: FormGroup<SpellDbc>;
+  @Input() formGroup: FormGroup<ModelForm<SpellDbc>>;
 }
