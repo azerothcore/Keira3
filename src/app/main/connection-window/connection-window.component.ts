@@ -13,7 +13,7 @@ import { ConnectionWindowService } from './connection-window.service';
   styleUrls: ['./connection-window.component.scss'],
 })
 export class ConnectionWindowComponent extends SubscriptionHandler implements OnInit {
-  private readonly IMAGES_COUNT = 10;
+  private readonly IMAGES_COUNT = 11;
   readonly RANDOM_IMAGE = Math.floor(Math.random() * this.IMAGES_COUNT) + 1;
   readonly KEIRA_VERSION = packageInfo.version;
   configs: Partial<ConnectionOptions>[];
