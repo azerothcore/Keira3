@@ -24,7 +24,7 @@
     "CREATE_NEW": "新建",
     "CREATE_A_NEW": "新建一个 <strong>{{ ENTITY_TABLE }}</strong>，选择一个空白的 <strong>{{ ENTITY_ID_FIELD }}</strong>:",
     "FREE_ENTRY": "{{ ENTITY_ID_FIELD }}是",
-    "FREE": "免费",
+    "FREE": "免费的",
     "ALREADY_USE": "已在使用中"
   },
   "CONNECTED": "连接",
@@ -73,16 +73,16 @@
       "TEMPLATE_RESISTANCE": "抗性模板",
       "TEMPLATE_SPELL": "技能模板",
       "TEMPLATE_MOVEMENT": "移动模板",
-      "ONKILL_REPUTATION": "Onkill Reputation",
+      "ONKILL_REPUTATION": "声望配置",
       "EQUIP_TEMPLATE": "装备模板",
-      "VENDOR": "Vendor",
-      "TRAINER": "Trainer",
+      "VENDOR": "商贩",
+      "TRAINER": "训练师",
       "QUEST_ITEM": "任务物品",
       "CREATURE_LOOT": "生物掉落",
       "PICKPOCKETING_LOOT": "扒窃掉落",
       "SKINNING_LOOT": "剥皮掉落",
-      "SPAWN": "Spawn",
-      "SPAWN_ADDON": "Spawn Addon",
+      "SPAWN": "生物刷新",
+      "SPAWN_ADDON": "生物刷新插件",
       "SMARTAI": "SmartAI"
     },
     "QUEST": {
@@ -91,11 +91,11 @@
       "QUEST_TEMPLATE": "任务模板",
       "QUEST_TEMPLATE_ADDON": "任务模板插件",
       "QUEST_OFFER_REWARD": "任务提供的奖励",
-      "QUEST_REQUEST_ITEMS": "Quest Request Items",
-      "CREATURE_QUESTSTARTER": "Creature Queststarter",
-      "CREATURE_QUESTENDER": "Creature Questender",
-      "GAMEOBJECT_QUESTSTARTER": "Gameobject Queststarter",
-      "GAMEOBJECT_QUESTENDER": "Gameobject Questender"
+      "QUEST_REQUEST_ITEMS": "接取任务道具配置",
+      "CREATURE_QUESTSTARTER": "接取任务NPC配置",
+      "CREATURE_QUESTENDER": "完成任务NPC配置",
+      "GAMEOBJECT_QUESTSTARTER": "接取任务设施配置",
+      "GAMEOBJECT_QUESTENDER": "完成任务设施配置"
     },
     "GAME_OBJECT": {
       "TITLE": "游戏设施",
@@ -104,8 +104,8 @@
       "TEMPLATE_ADDON": "模板插件",
       "QUEST_ITEMS": "任务物品",
       "GAMEOBJECT_LOOT": "游戏设施掉落",
-      "SPAWN": "Spawn",
-      "SPAWN_ADDON": "Spawn Addon",
+      "SPAWN": "设施刷新",
+      "SPAWN_ADDON": "设施刷新插件",
       "SMART_AI": "SmartAI"
     },
     "ITEM": {
@@ -120,20 +120,20 @@
     },
     "OTHER_LOOTS": {
       "TITLE": "其它掉落",
-      "SELECT_REFERENCE_LOOT": "Select Reference Loot",
-      "REFERENCE_LOOT_TEMPLATE": "Reference Loot Template",
+      "SELECT_REFERENCE_LOOT": "选择掉落范围",
+      "REFERENCE_LOOT_TEMPLATE": "掉落范围模板",
       "SELECT_SPELL_LOOT": "Select Spell Loot",
       "SPELL_LOOT_TEMPLATE": "Spell Loot Template",
-      "SELECT_FISHING_LOOT": "Select Fishing Loot",
-      "FISHING_LOOT_TEMPLATE": "Fishing Loot Template",
+      "SELECT_FISHING_LOOT": "选择钓鱼掉落",
+      "FISHING_LOOT_TEMPLATE": "钓鱼掉落模板",
       "SELECT_MAIL_LOOT": "Select Mail Loot",
       "MAIL_LOOT_TEMPLATE": "Mail Loot Template"
     },
     "GOSSIP": {
-      "TITLE": "闲聊",
-      "SELECT_GOSSIP_MENU": "Select Gossip Menu",
-      "GOSSIP_MENU": "Gossip Menu",
-      "GOSSIP_MENU_OPTION": "Gossip Menu Option"
+      "TITLE": "闲聊对话",
+      "SELECT_GOSSIP_MENU": "选择闲聊对话菜单",
+      "GOSSIP_MENU": "闲聊对话菜单",
+      "GOSSIP_MENU_OPTION": "闲聊对话选项"
     },
     "CONDITIONS": {
       "TITLE": "条件",
@@ -142,9 +142,9 @@
     },
     "SMARTAI": {
       "TITLE": "SmartAI",
-      "SEARCH_BY_SAI": "Search by existing SAI",
-      "SEARCH_BY_ENTITY": "Search by entity",
-      "EDITOR": "SmartAI editor"
+      "SEARCH_BY_SAI": "按现有的SmartAI进行搜索",
+      "SEARCH_BY_ENTITY": "按实例(Entity)搜索",
+      "EDITOR": "SmartAI编辑"
     },
     "SPELL_DBC_OVERRIDES": {
       "TITLE": "技能DBC覆盖",
@@ -158,23 +158,23 @@
     "WELCOME_2": "Please report any bugs or suggestions using <a href=\"{{ REPO_URL }}/issues/new\" target=\"_blank\">the official repository</a>. If you like Keira3, don't forget to give us a &#11088;  on GitHub!",
     "WELCOME_3": "Keira3 is free and open source software that we build during our own spare time, you can <a href=\"{{ DONATE_URL }}\" target=\"_blank\">support us with a donation</a> ❤",
     "WELCOME_4": "We hope that you enjoy using this software and don't forget to contribute with the community by <a href=\"http://www.azerothcore.org/wiki/Contribute#how-to-create-a-pull-request\" target=\"_blank\"> sharing your code </a>",
-    "SYSTEM_DETAILS": "System details",
-    "SYSTEM_WARNING": "<strong>WARNING:</strong> It looks like <strong><i>{{ DATABASE_NAME }}</i></strong> is not a valid AzerothCore world database.",
-    "SYSTEM_WARNING_1": "If you selected the wrong database by mistake, you can <strong>logout</strong> and change it.",
-    "SYSTEM_WARNING_2": "If you are using an old version of AzerothCore, we recommend to <a target=\"_blank\" href=\"http://www.azerothcore.org/wiki/Update\">update it</a> before using the editor.",
-    "SYSTEM_WARNING_3": "If you are using a different emulator than AzerothCore, <strong>be aware that some features will be broken</strong>. More info are available <a target=\"_blank\" href=\"https://github.com/azerothcore/forum/issues/43\">here</a>.",
+    "SYSTEM_DETAILS": "系统详情",
+    "SYSTEM_WARNING": "<strong>警告：</strong> 似乎 <strong><i>{{ DATABASE_NAME }}</i></strong> 不是有效的AzerothCore世界数据库",
+    "SYSTEM_WARNING_1": "如果您选择了错误的数据库，可以<strong>注销</strong>后进行修改。",
+    "SYSTEM_WARNING_2": "如果您使用旧版本的AzerothCore，建议在使用Keira3编辑器之前先对源代码进行<a target=\"_blank\" href=\"http://www.azerothcore.org/wiki/Update\">更新</a>。",
+    "SYSTEM_WARNING_3": "如果您使用的并非是AzerothCore，<strong>请特别注意某些功能可能会失效或导致数据库异常</strong>，更多信息您可以在<a target=\"_blank\" href=\"https://github.com/azerothcore/forum/issues/43\">这里</a>找到。",
     "KEIRA_VERSION": "Keira版本:",
     "KEIRA_DETAILS": "Keira详情:",
     "AC_CORE_VERSION": "AcCore版本:",
     "AC_COMMIT": "AC commit hash:",
     "AC_DB_RELEASE": "AC DB release:",
     "AC_DB_VERSION": "AC世界数据库版本:",
-    "DEBUG_MODE": "Enable Keira3 Debug mode (slower performance, to be used only for development)"
+    "DEBUG_MODE": "以调试模式启动Keira3(性能较慢，仅用于开发者)"
   },
   "SQL_EDITOR": {
     "TITLE": "SQL编辑",
-    "TOOLTIP": "A minimalistic SQL Editor to run custom queries",
-    "EXECUTE": "Execute (F9)",
+    "TOOLTIP": "运行精简的自定义SQL查询编辑器",
+    "EXECUTE": "执行 (F9)",
     "LEARN_SQL": "学习SQL语言",
     "AFFECTED_ROWS": "受影响的行:"
   },
@@ -184,13 +184,13 @@
       "KILL_CREDITS": "KillCredits",
       "MODELS": "模组",
       "MONEY_LOOT": "金钱掉落",
-      "TRAINER": "Trainer",
+      "TRAINER": "训练师",
       "LOOTS": "掉落",
       "DIFFICULTY_ENTRIES": "Difficulty Entries",
       "DAMAGE": "伤害",
-      "BEHAVIOUR": "Behaviour",
-      "MODIFIERS": "Modifiers",
-      "SPELLS": "Spells",
+      "BEHAVIOUR": "行为",
+      "MODIFIERS": "修改器",
+      "SPELLS": "技能",
       "VEHICLE_ID_TOOLTIP": "Entry of vehicle if creature is/has a vehicle entry. This field determines how the player appears on the vehicle, how the vehicle moves, and whether or not the vehicle action bar is shown. For example, a vehicleID of 292 will make the player invisible, prevent the vehicle from strafing left/right (but will allow forwards/backwards), and will show the vehicle action bar spells (which are defined in spell1-8). An npc_spellclick_spells entry must be made for this creature entry in order for this to work.",
       "MODEL_ID_TOOLTIP": "A random graphical model that the client applies on this creature. If you specify only one modelid and the rest will be equal to 0, model you have set won’t be chosen randomly. From creature_model_info.modelid",
       "TRAINER_SPELL_TOOLTIP": "If the NPC is a trainer that teaches professions (trainer_type = 2), then the player must already know the spell ID specified here to be able to talk to this NPC.",
@@ -249,27 +249,27 @@
       "AURAS": "A list of comma-separated auras to be applied on the creature"
     },
     "TEMPLATE_MOVEMENT": {
-      "GROUND": "0 = None; 1 = Run; 2 = Hover",
-      "SWIM": "0 = None; 1 = Swim",
-      "FLIGHT": "0 = None; 1 = Disable Gravity; 2 = CanFly",
-      "ROOTED": "0 = None; 1 = Rooted; ",
-      "CHASE": "0 = Run; 1 = CanWalk; 2 = AlwaysWalk",
-      "RANDOM": "0 = Walk; 1 = CanRun; 2 = AlwaysRun",
-      "INTERACTION_PAUSE_TIMER": "Time (in milliseconds) during which creature will not move after interaction with player"
+      "GROUND": "0 = 无; 1 = 奔跑; 2 = 巡逻",
+      "SWIM": "0 = 无; 1 = 游泳",
+      "FLIGHT": "0 = 无; 1 = 禁用重力; 2 = 可以飞行",
+      "ROOTED": "0 = 无; 1 = 扎根不动; ",
+      "CHASE": "0 = 奔跑; 1 = 可以行走; 2 = 一直行走",
+      "RANDOM": "0 = 行走; 1 = 可以奔跑; 2 = 一直奔跑",
+      "INTERACTION_PAUSE_TIMER": "生物在与玩家互动接触后禁止移动的时间(单位：毫秒)"
     },
     "TEMPLATE_SPELL": {
       "INDEX": "范围值：0-7"
     },
     "NPC_TRAINER": {
-      "MONEY_COST": "The cost to pay to learn the spell represented in copper (1 gold = 100 silver = 10000 cooper)",
-      "REQ_SKILL_LINE": "The required skill the player needs to have in order to be able to learn the spell",
-      "REQ_SKILL_RANK": "The proficiency in the skill from reqskill that the player needs to meet to learn the spell",
-      "REQ_LEVEL": "The minimum level the player needs to be in order to learn the spell."
+      "MONEY_COST": "学习该法术的金钱，用铜币表示(1金=100银=10000铜)",
+      "REQ_SKILL_LINE": "玩家学习技能所需的前置技能",
+      "REQ_SKILL_RANK": "玩家学习技能所需要的技能熟练度要求",
+      "REQ_LEVEL": "玩家学习技能锁需要的最低角色等级要求"
     },
     "NPC_VENDOR": {
-      "SLOT": "Position of the item in the vendor window",
-      "MAXCOUNT": "The maximum number of items carried by the vendor at any time. 0 for infinite.",
-      "INCRTIME": "Combined with maxcount, how often (in seconds) the vendor list is refreshed",
+      "SLOT": "物品在商贩售卖窗口中的显示位置",
+      "MAXCOUNT": "供应商在销售物品的最大数量。0表示无限制。",
+      "INCRTIME": "结合供应商销售物品的最大数量，如果设置了最大数量限制，则在此处设置物品在售卖窗口的刷新时间（单位：秒）",
       "EXTENDED_COST": "Value comes from DBC and a selector for this will be implemented later in Keira3"
     }
   },
@@ -281,13 +281,13 @@
       "ITEM_DROPS": "物品掉落",
       "REWARDS": "奖励",
       "REWARD_ITEMS": "奖励物品",
-      "REWARD_CHOICE_ITEMS": "RewardChoiceItems",
-      "OBJECTIVE_TEXTS": "ObjectiveTexts",
-      "REQUIRED_ITEMS": "RequiredItems",
-      "REWARD_FACTIONS": "RewardFactions",
-      "REQUIRED_FACTION_OR_NPC": "Required Factions, NpcOrGo",
-      "LOG_TITLE": "Title of the quest",
-      "QUEST_LEVEL": "Level of the quest. Players receive full experience amount only if their level is <= Level+5. If -1, the player level will be used as Quest Level for experience calculation.",
+      "REWARD_CHOICE_ITEMS": "奖励物品选择",
+      "OBJECTIVE_TEXTS": "目标文本",
+      "REQUIRED_ITEMS": "所需的物品",
+      "REWARD_FACTIONS": "阵营奖励",
+      "REQUIRED_FACTION_OR_NPC": "需要的阵营, NpcOrGo",
+      "LOG_TITLE": "任务的标题",
+      "QUEST_LEVEL": "任务的级别,玩家只有在等级<=等级+5时才能获得全部经验值；如果为-1，则玩家当前等级被视为任务等级进行经验计算。",
       "MIN_LEVEL": "Minimum level at which a player can get the quest.",
       "QUEST_SORT_ID": "Defines under which category the quest falls in the quest log. Value taken from (if > 0) AreaTable.dbc or (if < 0) QuestSort.dbc",
       "QUEST_INFO_ID": "These values are ID taken from QuestInfo.dbc",
@@ -315,7 +315,7 @@
     "TEMPLATE_ADDON": {
       "ADDON_BASE": "基础插件",
       "ADDON_REQUIREMENTS": "Addon Requirements",
-      "ADDON_REWARDS": "Addon Rewards",
+      "ADDON_REWARDS": "奖励插件",
       "PREV_QUEST_ID": "if > 0: previous quest id; if < 0 parent quest id",
       "NEXT_QUEST_ID": "Contains the next quest id, in case PrevQuestId of that other quest is not sufficient.",
       "MAX_LEVEL": "Maximum player level at which a character can get the quest.",
@@ -343,7 +343,7 @@
   "GAMEOBJECT": {
     "TEMPLATE": {
       "BASE": "基础",
-      "GAMEOBJECT_DATA": "Gameobject Data",
+      "GAMEOBJECT_DATA": "游戏设施数据",
       "DISPLAY_ID": "Graphic model id sent to the client from GameObjectDisplayInfo.dbc",
       "DATA_TOOLTIP": "Data0-Data23 fields change their meanings according to the selected TYPE. Keira3 will try to reflect their names and show tooltips accordingly whenever the gameobject TYPE is changed",
       "BOOLEAN_FLAG": "Boolean flag",
@@ -369,57 +369,57 @@
       "OPEN_TEXT_ID": "ID from table broadcast_text",
       "MIN_RESTOCK": "Min successful loot attempts for Mining, Herbalism etc",
       "MAX_RESTOCK": "Max successful loot attempts for Mining, Herbalism etc",
-      "LOOTED_EVENT": "Event ID from table event_scripts",
-      "QUEST_ID": "ID from quest_template",
-      "MINIMAL_LEVEL": "minimal level required to open this gameobject",
-      "DAMAGE": "Xp",
+      "LOOTED_EVENT": "来自table event_scripts表的事件ID",
+      "QUEST_ID": "来自quest_template表的ID",
+      "MINIMAL_LEVEL": "打开这个游戏设施的最低玩家角色等级要求",
+      "DAMAGE": "经验值",
       "IMMUNE": "Immune",
       "LEVEL_CASTED_SPELL": "npc equivalent level for casted spell",
       "CHAIR_SLOTS": "number of players that can sit down on it",
       "PAGE_ID": "from table page_text",
       "EVENT_ID": "id from table event_script",
       "TIME_MS_BEFORE_STATE": "in ms before the initial state is restored",
-      "TIME_MS": "Time in milliseconds",
-      "TIME_S": "Time in seconds",
-      "RADIUS_2": "So radius * 2",
-      "IGNORE_PATH": "Is ignored by pathfinding",
+      "TIME_MS": "时间（毫秒）",
+      "TIME_S": "时间（秒）",
+      "RADIUS_2": "半径*2",
+      "IGNORE_PATH": "忽略根据地形的路径查找",
       "LONG_UNKNOWN_FLAG": "Long unknown flag",
-      "UNKNOWN_FLAG": "Unknown flag",
-      "LOCK_ID_FROM_DBC": "LockId from Lock.dbc",
-      "SPELL_ID_FROM_DBC": "Spell Id from Spell.dbc",
-      "FROM_PAGE_MATERIAL": "from PageTextMaterial.dbc",
-      "FROM_LANGUAGE": "From Languages.dbc",
-      "FROM_AUCTIONHOUSE": "From AuctionHouse.dbc",
-      "FROM_AREATABLE": "From AreaTable.dbc",
-      "FROM_MAP": "From Map.dbc",
+      "UNKNOWN_FLAG": "未知标志",
+      "LOCK_ID_FROM_DBC": "Lock.dbc中的LockId",
+      "SPELL_ID_FROM_DBC": "Spell.dbc中的技能Id",
+      "FROM_PAGE_MATERIAL": "来自PageTextMaterial.dbc",
+      "FROM_LANGUAGE": "来自Languages.dbc",
+      "FROM_AUCTIONHOUSE": "来自AuctionHouse.dbc",
+      "FROM_AREATABLE": "来自AreaTable.dbc",
+      "FROM_MAP": "来自Map.dbc",
       "FROM_CINEMATIC": "Cinematic entry from CinematicCamera.dbc",
-      "FROM_TAXIPATH": "Id from TaxiPath.dbc"
+      "FROM_TAXIPATH": "来自TaxiPath.dbc中的Id"
     },
     "SPAWN": {
-      "ORIENTATION": "The orientation of the creatures spawn point. (North = 0.0; South = pi (3.14159))",
+      "ORIENTATION": "生物刷新的方向 (北 = 0.0; 南 = 圆周率 (3.14159))",
       "ANIMPROGRESS": "Always 100 for chests.",
-      "STATE": "For chests or doors. 1 = closed  0 = open",
-      "SCRIPT_NAME": "The name of the C++ script that this creature uses, if any."
+      "STATE": "用于宝箱或者门。 1 = 关闭  0 = 打开",
+      "SCRIPT_NAME": "此生物使用的C++脚本的名称(如果有的话)。"
     },
     "SPAWN_ADDON": {
-      "GUID": "Link to gameobject.guid"
+      "GUID": "链接到gameobject表的guid字段"
     }
   },
   "ITEM": {
     "TEMPLATE": {
-      "MISCELLANEOUS": "Miscellaneous",
-      "FLAGS": "Flags",
-      "TEXTS": "Texts",
+      "MISCELLANEOUS": "杂项",
+      "FLAGS": "标志",
+      "TEXTS": "文本",
       "REQUIREMENTS": "Requirements",
       "RESISTANCE": "Resistance",
-      "STATS": "Stats",
+      "STATS": "状态",
       "SOCKET": "Socket",
-      "WEAPON_ARMOR": "Weapon Armor",
-      "DAMAGE": "Damage",
-      "SPELL": "Spell",
-      "ENTRY": "The unique entry of the item",
-      "NAME": "The name of the item",
-      "DESCRIPTION": "The description that appears in orange letters at the bottom of the item tooltip.",
+      "WEAPON_ARMOR": "武器护甲",
+      "DAMAGE": "伤害",
+      "SPELL": "技能",
+      "ENTRY": "物品的唯一entry值",
+      "NAME": "物品的名称",
+      "DESCRIPTION": "以橙色文字显示在物品信息的底部描述。",
       "SCRIPT_NAME": "The name of the script that the item should use",
       "SUBCLASS": "The subclass meaning varies according to the item class (so the class must be set BEFORE the subclass)",
       "SOUND_OVERRIDE_SUBCLASS": "Weapons have special sounds on impact, this field is used to override them sounds by specifying another subclass",
@@ -478,7 +478,7 @@
   },
   "LOOT_EDITOR": {
     "REFERENCE": "Include a group of loots. Linked to referenced_loot_template.entry",
-    "CHANCE": "Item drop chance",
+    "CHANCE": "物品掉落几率",
     "QUEST_REQUIRED": "The item should be shown only to characters having the appropriate quest.",
     "GROUP_ID": "Set of loot definitions, check the wiki for more details",
     "MIN_COUNT": "The minimum number of copies of the item that can drop in a single loot. For references, this is ignored.",
@@ -508,7 +508,7 @@
     "SELECT": {
       "SOURCE_GROUP": "Source Group:",
       "SOURCE_ENTRY:": "Source Entry:",
-      "CREATE_NEW": "Create new"
+      "CREATE_NEW": "新建"
     },
     "EDITOR": {
       "CONDITIONS_SOURCE": "Condition source",
@@ -627,9 +627,9 @@
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "quest_template.id"
       },
       "VALUE2": {
-        "CONDITION_NONE": "(Never used)",
-        "CONDITION_AURA": "Effect index (0-2)",
-        "CONDITION_ITEM": "Item count",
+        "CONDITION_NONE": "(从未使用)",
+        "CONDITION_AURA": "影响指数 (0-2)",
+        "CONDITION_ITEM": "物品数量",
         "RANK_MASK": "Rank mask. 1=hated, 2=hostile, 4=unfriendly, 8=neutral, 16=friendly, 32=honored, 64=revered, 128=exalted",
         "CONDITION_SKILL": "Skill rank value (1-450)",
         "CONDITION_WORLD_STATE": "World state value",
@@ -647,7 +647,7 @@
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Quest Objective ID - see quest_template.RequiredNpcOrGo"
       },
       "VALUE3": {
-        "CONDITION_NONE": "(Never used)",
+        "CONDITION_NONE": "(从未使用)",
         "CONDITION_ITEM": "0 = not in bank; 1 = in bank",
         "CONDITION_INSTANCE_INFO": "0=INSTANCE_INFO_DATA; 1=INSTANCE_INFO_GUID_DATA; 2=INSTANCE_INFO_BOSS_STATE; 3=INSTANCE_INFO_DATA64; ",
         "CONDITION_NEAR_CREATURE": "Alive=0; Dead=1",
@@ -659,7 +659,7 @@
   },
   "SMARTAI": {
     "EDITOR": {
-      "UNIQUE_ID": "A unique identifier for each row",
+      "UNIQUE_ID": "每行的唯一标识符（主键）",
       "PHASE": "Use 0 for all phases",
       "CHANCE": "This is the probability of the event to occur as a percentage from 0-100. Example: if you want the event to occur roughly half of the time, then set this to 50.",
       "TIMED_ACTIONLISTS": "All smart_scripts having source_type = 9 and entryorguid between CreatureID * 100 and CreatureID * 100 + 100"
@@ -667,7 +667,7 @@
   },
   "SPELL_DBC": {
     "BASE": {
-      "BASE": "Base",
+      "BASE": "基础",
       "RESOURCES": "Resources",
       "MECHANICS": "Mechanics",
       "COOLDOWN_CAST_TIME": "Cooldown / CastTime",
@@ -717,7 +717,7 @@
       "POWER_DISPLAY_ID": "Link to entry in PowerDisplay.dbc"
     },
     "FLAGS": {
-      "GENERAL": "General",
+      "GENERAL": "常规",
       "INTERRUPT_FLAGS": "Interrupt Flags",
       "SPELL_ATTRIBUTES": "Spell Attributes",
       "TARGET_CREATURE_TYPE": "Mask of creature types on which is spell usable. 0 = None",
@@ -730,7 +730,7 @@
       "ATTRIBUTES": "General miscellaneous flags. 0 = None"
     },
     "ITEMS": {
-      "GENERAL": "General",
+      "GENERAL": "常规",
       "NON_CONSUMABLE_ITEMS": "Non-consumable items",
       "CONSUMABLE_ITEMS": "Consumable items",
       "EQUIPPED_ITEM_CLASS": "item_template.class value which casters item held in hand must have",
@@ -750,49 +750,49 @@
       "AURADESCRIPTION": "Bitmask for AuraDescription string data"
     },
     "EFFECTS": {
-      "TARGETS": "Which type of targets can be targeted by the Spell. 0 = TARGET_FLAG_NONE",
-      "PROC_TYPE_MASK": "Under which conditions a spell can proc. 0 = PROC_FLAG_NONE",
-      "PROC_CHANCE": "Most spells with 100% chance tend to have value 101.",
-      "PROC_CHARGES": "How many times a spell can proc. 0 = infinite"
+      "TARGETS": "哪种类型的目标可以被法术攻击。 0 = TARGET_FLAG_NONE",
+      "PROC_TYPE_MASK": "在什么条件下法术可以触发。 0 = PROC_FLAG_NONE",
+      "PROC_CHANCE": "大多数100%几率的法术值都是101。",
+      "PROC_CHARGES": "一个法术可以触发多少次。0=无限"
     },
     "SPELL_EFFECTS": {
-      "EFFECT": "Effect",
+      "EFFECT": "影响",
       "EFFECT_MECHANIC": "Effect Mechanic",
-      "EFFECT_AURA": "Effect Aura",
-      "MISC": "Misc",
+      "EFFECT_AURA": "光环效果",
+      "MISC": "其他",
       "FIELD": {
         "EFFECT": "Type of effect which spell has. All following effect fields refer to these.",
         "EFFECT_BASE_POINTS": "Base points added to result of according effects rolled dice. e.g. EffectDieSides=26 and EffectBasePoints=49 will make 50-75.",
-        "EFFECT_REAL_POINTS_PER_LEVEL": "Base points added to according EffectBasePoints based on caster level.",
-        "EFFECT_RADIUS_INDEX": "According spell effect radius. May differ with caster level. Link to entry in SpellRadius.dbc",
-        "EFFECT_MULTIPLE_VALUE": "Number of stacks for Buffs/Debuffs",
+        "EFFECT_REAL_POINTS_PER_LEVEL": "基准点根据施法者等级添加到EffectBasePoints中。",
+        "EFFECT_RADIUS_INDEX": "根据法术效果半径。可能与施法者级别有不同的差异。链接到SpellRadius.dbc中的条目",
+        "EFFECT_MULTIPLE_VALUE": "buff/debuff的堆叠数",
         "EFFECT_MISC_VALUE": "Used for according effects special misc values, commonly entries of called or used creature/item/gameobject.",
-        "EFFECT_MISC_VALUE_B": "Used for according effects special misc values, commonly entries of called or used creature/item/gameobject.",
-        "EFFECT_TRIGGER_SPELL": "Entry of spell triggered on affected target by this according effect.",
-        "EFFECT_POINTS_PER_COMBO": "Bonus to effect base value based on amount of combo points on target.",
-        "EFFECT_DIE_SIDES": "Number of sides of dice which is being rolled for random value of according effect.",
-        "EFFECT_CHAIN_AMPLITUDE": "Used for decreasing (or increasing) according effect value on next chained targets.",
-        "EFFECT_BONUS_MULTIPLIER": "Seems to be used for calculation of the according effect value of ticks for DoTs and HoTs.",
-        "EFFECT_MECHANIC": "Mechanic of according spell effect. Used by spells granting bonuses/immunities against certain effect types (stun, charm...).",
-        "EFFECT_AURA": "Type of aura (effect of effect) which according effect applies.",
-        "EFFECT_AURA_PERIOD": "How often the effect ticks in ms.",
+        "EFFECT_MISC_VALUE_B": "用于根据效果的特殊杂项值，通常是调用或使用的生物/物品/游戏对象的条目。",
+        "EFFECT_TRIGGER_SPELL": "在受影响的目标上触发法术。",
+        "EFFECT_POINTS_PER_COMBO": "根据目标上连击点数量，获得基础值的奖励。",
+        "EFFECT_DIE_SIDES": "根据效果，置随机数的骰子面数。",
+        "EFFECT_CHAIN_AMPLITUDE": "用于降低(或增加)下一个被连锁目标的效果值。",
+        "EFFECT_BONUS_MULTIPLIER": "似乎可以用来计算Dot（持续性伤害）和Hot(持续性治疗)的相应效果值。",
+        "EFFECT_MECHANIC": "根据法术效果的机制。用于对特定效果类型(晕眩，魅惑…)授予奖励/解除的法术。",
+        "EFFECT_AURA": "根据效果应用的光环类型（效果或效果）。",
+        "EFFECT_AURA_PERIOD": "这种效果的频率以毫秒为单位。",
         "SPELL_CLASS_MASK": "?Mask for spells which are affected (buffed, ...) by this spell?",
         "IMPLICIT_TARGET_A": "Type of implicit target(s) of according effect.",
         "IMPLICIT_TARGET_B": "Type of implicit target(s) of according effect.",
-        "EFFECT_CHAIN_TARGETS": "?Used to create chaining visual effects (e.g. chain lightning)?",
-        "EFFECT_SPELL_CLASS_MASK_A": "Entry of fields 210-212 as hex value of the spell this spell is affecting. Used for effect #1",
-        "EFFECT_SPELL_CLASS_MASK_B": "Entry of fields 210-212 as hex value of the spell this spell is affecting. Used for effect #2",
-        "EFFECT_SPELL_CLASS_MASK_C": "Entry of fields 210-212 as hex value of the spell this spell is affecting. Used for effect #3"
+        "EFFECT_CHAIN_TARGETS": "?用于创建连锁视觉效果（例如闪电链）?",
+        "EFFECT_SPELL_CLASS_MASK_A": "输入字段值210-212作为此法术效果的十六进制值。用于效果#1",
+        "EFFECT_SPELL_CLASS_MASK_B": "输入字段值210-212作为此法术效果的十六进制值。用于效果#2",
+        "EFFECT_SPELL_CLASS_MASK_C": "输入字段值210-212作为此法术效果的十六进制值。用于效果#3"
       }
     },
     "MISC": {
-      "UNK_320_2": "Unused since patch 3.2.0",
-      "UNK_320_3": "Unused since patch 3.2.0",
-      "START_RECOVERY_CATEGORY": "The only value which seems to be used here apart of 0 is 133 (spells affected by global CD).",
-      "START_RECOVERY_TIME": "The only value (in ms) which seems to be used here apart of 0 is 1500 (global CD value).",
-      "MODAL_NEXT_SPELL": "Seems to be only used for Hunter spells with the values 59 and 75.",
-      "SPELL_PRIORITY": "Unknown. Only used value is 50 for some spells.",
-      "REQUIRED_AURA_VISION": "Unknown. Only 16 Spells use another value as 0. Could be used for visual effects."
+      "UNK_320_2": "3.2.0补丁后未使用",
+      "UNK_320_3": "3.3.0补丁后未使用",
+      "START_RECOVERY_CATEGORY": "这里的值除了0之外，还可以使用的值是133(受公共CD影响的法术)。",
+      "START_RECOVERY_TIME": "这里的值除了0之外，还可以使用的是15000(单位：毫秒)，即受公共CD影响的值。",
+      "MODAL_NEXT_SPELL": "似乎只用于值为59与75的猎人技能。",
+      "SPELL_PRIORITY": "未知...某些法术的唯一使用的值是50。",
+      "REQUIRED_AURA_VISION": "未知...只有16个法术使用，其他均为0，可以用于视觉效果。"
     }
   }
 }
