@@ -64,7 +64,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{needs.get-package-version.outputs.version}}
+          tag_name: v${{needs.get-package-version.outputs.version}}
           release_name: ${{needs.get-package-version.outputs.version}}
           draft: true
           prerelease: false
@@ -101,7 +101,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{needs.get-package-version.outputs.version}}
+          tag_name: v${{needs.get-package-version.outputs.version}}
           release_name: ${{needs.get-package-version.outputs.version}}
           draft: true
           prerelease: false
@@ -132,7 +132,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{needs.get-package-version.outputs.version}}
+          tag_name: v${{needs.get-package-version.outputs.version}}
           release_name: ${{needs.get-package-version.outputs.version}}
           draft: true
           prerelease: false
