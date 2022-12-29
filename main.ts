@@ -191,6 +191,11 @@ try {
     win.webContents.on('context-menu', function () {
       ctxMenu.popup(win);
     });
+
+    win.webContents.setWindowOpenHandler(({ url }) => {
+      shell.openExternal(url);
+      return { action: 'deny' };
+    });
   });
 
   // Quit when all windows are closed.
