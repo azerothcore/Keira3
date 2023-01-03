@@ -94,7 +94,7 @@
     "electron-reload": "1.5.0",
     "eslint": "8.31.0",
     "highlight.js": "11.7.0",
-    "husky": "8.0.2",
+    "husky": "8.0.3",
     "jasmine-core": "4.5.0",
     "jasmine-spec-reporter": "7.0.0",
     "karma": "6.4.1",
