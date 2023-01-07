@@ -1,10 +1,24 @@
-export const CONTENT_PATH = 'https://wow.zamimg.com/modelviewer/live/';
+export const enum VIEWER_TYPE {
+  ITEM,
+  NPC,
+  OBJECT,
+}
+
+export const CONTENT_PATH = 'https://wow.zamimg.com/modelviewer/wrath/';
 
 export type Gender = 0 | 1;
 
 export const enum GENDER {
   MALE = 'male',
   FEMALE = 'female',
+}
+
+export const enum MODEL_TYPE {
+  WEAPON = 1,
+  HELMET = 2,
+  SHOULDER = 4,
+  NPC = 8,
+  OBJECT = 64,
 }
 
 const enum SLOTS {

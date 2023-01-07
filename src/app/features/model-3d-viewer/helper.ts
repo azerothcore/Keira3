@@ -1,4 +1,4 @@
-import { AppConfig } from '../../../../../environments/environment';
+// import { AppConfig } from '../../../environments/environment';
 import {
   CHARACTER_PART,
   CONTENT_PATH,
@@ -9,7 +9,7 @@ import {
   RACES,
   // wotlkToShadowlandSlots,
   WoWModel,
-} from './viewer.model';
+} from './model-3d-viewer.model';
 
 declare const ZamModelViewer: any;
 
@@ -150,7 +150,7 @@ export async function generateModels(aspect: number, containerSelector: string, 
     contentPath: CONTENT_PATH,
     container: jQuery(containerSelector),
     aspect: aspect,
-    hd: true,
+    hd: false,
     ...modelOptions,
   };
   window['models'] = models;
@@ -158,40 +158,40 @@ export async function generateModels(aspect: number, containerSelector: string, 
   return new ZamModelViewer(models);
 }
 
-export function getShadowlandDisplayId(wotlkDisplayId: number): Promise<{ displayId: number; displayType: number }> {
-  return new Promise(function (resolve, reject) {
-    const sqlite = window.require('sqlite3');
-    const db = new sqlite.Database(AppConfig.sqliteItem3dPath, sqlite.OPEN_READONLY, (error) => {
-      if (error) {
-        console.log(`Error when opening sqlite database at DISPLAY ID`);
-        console.error(error);
-      }
-    });
+// export function getShadowlandDisplayId(wotlkDisplayId: number): Promise<{ displayId: number; displayType: number }> {
+//   return new Promise(function (resolve, reject) {
+//     const sqlite = window.require('sqlite3');
+//     const db = new sqlite.Database(AppConfig.sqliteItem3dPath, sqlite.OPEN_READONLY, (error) => {
+//       if (error) {
+//         console.log(`Error when opening sqlite database at DISPLAY ID`);
+//         console.error(error);
+//       }
+//     });
 
-    if (db) {
-      return db.all(
-        `SELECT ItemDisplayInfoID, DisplayType FROM item_appearance WHERE ID = (SELECT ItemAppearanceID FROM item_modified_appearance WHERE ItemID = ${wotlkDisplayId})`,
-        function (err, data) {
-          if (err) {
-            reject(err);
-          } else {
-            if (data.length && 'ItemDisplayInfoID' in data[0]) {
-              resolve({ displayId: data[0].ItemDisplayInfoID, displayType: data[0].DisplayType });
-            } else {
-              console.log('no ItemDisplayInfoID available for this item');
-            }
-          }
-        },
-      );
-      /* istanbul ignore else */
-    } /* istanbul ignore next */ else if (this.electronService.isElectron()) {
-      console.error(`sqite db was not defined when trying to get the shadow lands display id`);
-    }
-  });
-}
+//     if (db) {
+//       return db.all(
+//         `SELECT ItemDisplayInfoID, DisplayType FROM item_appearance WHERE ID = (SELECT ItemAppearanceID FROM item_modified_appearance WHERE ItemID = ${wotlkDisplayId})`,
+//         function (err, data) {
+//           if (err) {
+//             reject(err);
+//           } else {
+//             if (data.length && 'ItemDisplayInfoID' in data[0]) {
+//               resolve({ displayId: data[0].ItemDisplayInfoID, displayType: data[0].DisplayType });
+//             } else {
+//               console.log('no ItemDisplayInfoID available for this item');
+//             }
+//           }
+//         },
+//       );
+//       /* istanbul ignore else */
+//     } /* istanbul ignore next */ else if (this.electronService.isElectron()) {
+//       console.error(`sqite db was not defined when trying to get the shadow lands display id`);
+//     }
+//   });
+// }
 
 export function resetModel3dElement(): void {
-  const modelElement = document.querySelector('#model_3d1');
+  const modelElement = document.querySelector('#model_3d');
   if (modelElement) {
     modelElement.innerHTML = '';
   }

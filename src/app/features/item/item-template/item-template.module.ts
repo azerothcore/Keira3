@@ -17,6 +17,7 @@ import { SkillSelectorModule } from '@keira-shared/modules/selectors/skill-selec
 import { SpellSelectorModule } from '@keira-shared/modules/selectors/spell-selector/spell-selector.module';
 import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { Model3DViewerModule } from 'app/features/model-3d-viewer/model-3d-viewer.module';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { ToastrModule } from 'ngx-toastr';
@@ -48,6 +49,7 @@ import { ItemTemplateService } from './item-template.service';
     SkillSelectorModule,
     IconModule,
     TranslateModule,
+    Model3DViewerModule,
   ],
   exports: [ItemTemplateComponent],
   providers: [ItemTemplateService, ItemPreviewService],
