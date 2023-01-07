@@ -155,7 +155,9 @@ export async function generateModels(aspect: number, containerSelector: string, 
   };
   window['models'] = models;
 
-  return new ZamModelViewer(models);
+  if (typeof ZamModelViewer !== 'undefined') {
+    return new ZamModelViewer(models);
+  }
 }
 
 // export function getShadowlandDisplayId(wotlkDisplayId: number): Promise<{ displayId: number; displayType: number }> {
