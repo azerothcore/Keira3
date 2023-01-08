@@ -4,7 +4,6 @@ import { ModalConfirmComponent } from '@keira-shared/modules/modal-confirm/modal
 import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { TranslateService } from '@ngx-translate/core';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import { SwitchLanguageComponent } from './switch-language.component';
 import { SwitchLanguageService } from './switch-language.service';
 
 @NgModule({
@@ -13,10 +12,9 @@ import { SwitchLanguageService } from './switch-language.service';
 })
 class TestModule {}
 
-describe('SwitchLanguageComponent', () => {
+describe('SwitchLanguageService', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [SwitchLanguageComponent],
       imports: [ModalModule.forRoot(), TestModule, TranslateTestingModule],
       providers: [SwitchLanguageService],
     }).compileComponents();

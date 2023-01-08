@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { ModalConfirmComponent } from '@keira-shared/modules/modal-confirm/modal-confirm.component';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { SwitchLanguageComponent } from './switch-language.component';
 
@@ -14,7 +15,7 @@ describe('SwitchLanguageComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [SwitchLanguageComponent],
-      imports: [ModalModule.forRoot(), TestModule],
+      imports: [ModalModule.forRoot(), TestModule, TranslateTestingModule],
     }).compileComponents();
   }));
 
