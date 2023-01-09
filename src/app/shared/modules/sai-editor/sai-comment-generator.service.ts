@@ -836,7 +836,8 @@ export class SaiCommentGeneratorService {
 
         if (event_phase_mask >= power) {
           event_phase_mask -= power;
-          arrayOfSplitPhases.push(power);
+          const smart_event_phase = Math.floor(Math.log(power) / Math.log(2)) + 1;
+          arrayOfSplitPhases.push(smart_event_phase);
         }
       }
 
