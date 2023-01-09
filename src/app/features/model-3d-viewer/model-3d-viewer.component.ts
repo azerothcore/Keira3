@@ -1,9 +1,11 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { TableRow } from '@keira-shared/types/general';
 import * as jquery from 'jquery';
-import { BehaviorSubject, filter, Subscription } from 'rxjs';
-import { generateModels, resetModel3dElement } from './helper';
-import { MODEL_TYPE, VIEWER_TYPE } from './model-3d-viewer.model';
+import { BehaviorSubject, filter, Observable, Subscription } from 'rxjs';
+import { generateModels, getShadowlandDisplayId, resetModel3dElement } from './helper';
+import { CONTENT_LIVE, CONTENT_WOTLK, MODEL_TYPE, VIEWER_TYPE } from './model-3d-viewer.model';
 
 @Component({
   selector: 'keira-model-3d-viewer',
@@ -22,7 +24,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private subscriptions: Subscription[] = [];
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(private readonly sanitizer: DomSanitizer) {
+  constructor(private readonly sanitizer: DomSanitizer, private readonly queryService: MysqlQueryService) {
     this.setupViewer3D();
   }
 
@@ -34,33 +36,83 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(): void {
-    if (!!this.displayId && this.displayId > 0 && this.viewerType) {
+    if (!!this.displayId && this.displayId > 0 && this.viewerType != null && this.viewerType != undefined) {
+      resetModel3dElement();
       this.show3Dmodel();
     }
   }
 
   show3Dmodel(): void {
-    const modelType = this.getModelType();
-
-    resetModel3dElement();
-    generateModels(1, `#model_3d`, {
-      type: modelType,
-      id: this.displayId,
-    });
+    if (this.viewerType === VIEWER_TYPE.ITEM) {
+      this.subscriptions.push(
+        this.getItemData().subscribe((data) => {
+          if (data.length && 'entry' in data[0]) {
+            this.verifyModelAndLoad(data[0]);
+          }
+        }),
+      );
+    } else {
+      this.generate3Dmodel();
+    }
   }
 
-  private getModelType(): number {
+  private getItemData(): Observable<TableRow[]> {
+    return this.queryService.query(
+      `SELECT entry, class AS _class, inventoryType FROM item_template WHERE displayid=${this.displayId} LIMIT 1`,
+    );
+  }
+
+  private verifyModelAndLoad({ entry, inventoryType, _class }: TableRow): void {
+    const modelType = this.getModelType(_class as number, inventoryType as number);
+
+    fetch(this.getContentPathUrl(inventoryType))
+      .then(() => {
+        this.generate3Dmodel(modelType, this.displayId);
+      })
+      .catch(() => {
+        getShadowlandDisplayId(entry as number).then((displayInfo) => {
+          this.generate3Dmodel(modelType, displayInfo.displayId, CONTENT_LIVE);
+        });
+      });
+  }
+
+  private generate3Dmodel(
+    modelType: number = this.getModelType(),
+    displayId: number = this.displayId,
+    contentPath: string = CONTENT_WOTLK,
+  ): void {
+    resetModel3dElement();
+    generateModels(
+      1,
+      `#model_3d`,
+      {
+        type: modelType,
+        id: displayId,
+      },
+      contentPath,
+    );
+  }
+
+  private getContentPathUrl(inventoryType: number | string): string {
+    if (inventoryType === 3 || inventoryType === 4) {
+      return `${CONTENT_WOTLK}meta/armor/${inventoryType}/${this.displayId}.json`;
+    }
+
+    return `${CONTENT_WOTLK}meta/item/${this.displayId}.json`;
+  }
+
+  private getModelType(itemClass = this.itemClass, itemInventoryType = this.itemInventoryType): number {
     if (this.viewerType === VIEWER_TYPE.ITEM) {
-      const _class = this.itemClass;
+      const _class = itemClass;
       if (_class == 2) {
         return MODEL_TYPE.WEAPON;
       }
 
-      if (this.itemInventoryType == 1) {
+      if (itemInventoryType == 1) {
         return MODEL_TYPE.HELMET;
       }
 
-      if (this.itemInventoryType == 3) {
+      if (itemInventoryType == 3) {
         return MODEL_TYPE.SHOULDER;
       }
     }
@@ -84,7 +136,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
 
     const loadedViewer$ = this.loadedViewer$;
 
-    jquery.getScript('https://wow.zamimg.com/modelviewer/wrath/viewer/viewer.min.js', function () {
+    jquery.getScript(`${CONTENT_WOTLK}viewer/viewer.min.js`, function () {
       loadedViewer$.next(true);
     });
   }

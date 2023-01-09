@@ -11,7 +11,6 @@ import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { Model3DViewerModule } from 'app/features/model-3d-viewer/model-3d-viewer.module';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { ToastrModule } from 'ngx-toastr';
 import { CreatureTemplateComponent } from './creature-template.component';
 import { CreatureTemplateService } from './creature-template.service';
@@ -32,7 +31,6 @@ import { CreatureTemplateService } from './creature-template.service';
     CreatureSelectorModule,
     TranslateModule,
     Model3DViewerModule,
-    PerfectScrollbarModule,
   ],
   exports: [CreatureTemplateComponent],
   providers: [CreatureTemplateService],

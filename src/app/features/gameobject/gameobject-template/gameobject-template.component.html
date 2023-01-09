@@ -93,14 +93,14 @@
     </form>
 
     <div class="preview-container" [ngClass]="showItemPreview ? 'show-preview' : 'hide-preview'">
-      <perfect-scrollbar class="transparent">
+      <div class="transparent">
         <div class="gameobject-preview">
           <keira-model-3d-viewer
             [viewerType]="OBJECT_VIEWER_TYPE"
             [displayId]="editorService.form.controls.displayId.value"
           ></keira-model-3d-viewer>
         </div>
-      </perfect-scrollbar>
+      </div>
     </div>
 
     <button class="btn btn-secondary btn-sm toggle-preview-button" (click)="showItemPreview = !showItemPreview">

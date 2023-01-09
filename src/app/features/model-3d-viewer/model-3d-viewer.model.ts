@@ -4,7 +4,8 @@ export const enum VIEWER_TYPE {
   OBJECT,
 }
 
-export const CONTENT_PATH = 'https://wow.zamimg.com/modelviewer/wrath/';
+export const CONTENT_WOTLK = 'https://wow.zamimg.com/modelviewer/wrath/';
+export const CONTENT_LIVE = 'https://wow.zamimg.com/modelviewer/wrath/';
 
 export type Gender = 0 | 1;
 
