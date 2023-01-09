@@ -9,4 +9,8 @@ export class GameobjectTemplateAddon extends TableRow {
   flags: number = 0;
   mingold: number = 0;
   maxgold: number = 0;
+  artkit0: number = 0;
+  artkit1: number = 0;
+  artkit2: number = 0;
+  artkit3: number = 0;
 }

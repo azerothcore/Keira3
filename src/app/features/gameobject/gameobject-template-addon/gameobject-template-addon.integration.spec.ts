@@ -27,10 +27,10 @@ describe('GameobjectTemplateAddon integration tests', () => {
     'DELETE FROM `gameobject_template_addon` WHERE (`entry` = ' +
     id +
     ');\n' +
-    'INSERT INTO `gameobject_template_addon` (`entry`, `faction`, `flags`, `mingold`, `maxgold`) VALUES\n' +
+    'INSERT INTO `gameobject_template_addon` (`entry`, `faction`, `flags`, `mingold`, `maxgold`, `artkit0`, `artkit1`, `artkit2`, `artkit3`) VALUES\n' +
     '(' +
     id +
-    ', 0, 0, 0, 0);';
+    ', 0, 0, 0, 0, 0, 0, 0, 0);';
 
   const originalEntity = new GameobjectTemplateAddon();
   originalEntity.entry = id;
@@ -81,10 +81,10 @@ describe('GameobjectTemplateAddon integration tests', () => {
         'DELETE FROM `gameobject_template_addon` WHERE (`entry` = ' +
         id +
         ');\n' +
-        'INSERT INTO `gameobject_template_addon` (`entry`, `faction`, `flags`, `mingold`, `maxgold`) VALUES\n' +
+        'INSERT INTO `gameobject_template_addon` (`entry`, `faction`, `flags`, `mingold`, `maxgold`, `artkit0`, `artkit1`, `artkit2`, `artkit3`) VALUES\n' +
         '(' +
         id +
-        ', 35, 0, 0, 0);';
+        ', 35, 0, 0, 0, 0, 0, 0, 0);';
 
       querySpy.calls.reset();
 
@@ -109,7 +109,10 @@ describe('GameobjectTemplateAddon integration tests', () => {
 
     it('changing all properties and executing the query should correctly work', () => {
       const expectedQuery =
-        'UPDATE `gameobject_template_addon` SET ' + '`flags` = 1, `mingold` = 2, `maxgold` = 3 WHERE (`entry` = ' + id + ');';
+        'UPDATE `gameobject_template_addon` SET ' +
+        '`flags` = 1, `mingold` = 2, `maxgold` = 3, `artkit0` = 4, `artkit1` = 5, `artkit2` = 6, `artkit3` = 7 WHERE (`entry` = ' +
+        id +
+        ');';
 
       querySpy.calls.reset();
 
@@ -147,10 +150,10 @@ describe('GameobjectTemplateAddon integration tests', () => {
         'DELETE FROM `gameobject_template_addon` WHERE (`entry` = ' +
           id +
           ');\n' +
-          'INSERT INTO `gameobject_template_addon` (`entry`, `faction`, `flags`, `mingold`, `maxgold`) VALUES\n' +
+          'INSERT INTO `gameobject_template_addon` (`entry`, `faction`, `flags`, `mingold`, `maxgold`, `artkit0`, `artkit1`, `artkit2`, `artkit3`) VALUES\n' +
           '(' +
           id +
-          ', 0, 10, 0, 0);',
+          ', 0, 10, 0, 0, 0, 0, 0, 0);',
       );
     }));
   });
