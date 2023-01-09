@@ -127,7 +127,6 @@
             "karmaConfig": "src/karma.conf.js",
             "codeCoverage": true,
             "codeCoverageExclude": [
-              "src/app/features/model-3d-viewer/helper.ts",
               "src/app/config/**/*",
               "src/app/constants/**/*",
               "src/app/shared/services/electron.service.ts",

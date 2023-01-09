@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 // import { AppConfig } from '../../../environments/environment';
 import {
   CHARACTER_PART,
