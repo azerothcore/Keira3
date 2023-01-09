@@ -5,7 +5,7 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { TableRow } from '@keira-shared/types/general';
 import * as jquery from 'jquery';
 import { BehaviorSubject, filter, Observable, Subscription } from 'rxjs';
-import { generateModels, getShadowlandDisplayId, resetModel3dElement } from './helper';
+import { generateModels, getShadowlandDisplayId } from './helper';
 import { CONTENT_LIVE, CONTENT_WOTLK, MODEL_TYPE, VIEWER_TYPE } from './model-3d-viewer.model';
 
 @Component({
@@ -20,6 +20,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   @Input() set modelId(modelId: number) {
     this.displayId = modelId;
   }
+  @Input() id? = 'model_3d';
 
   private loadedViewer$ = new BehaviorSubject<boolean>(false);
   private subscriptions: Subscription[] = [];
@@ -32,13 +33,13 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   public itemPreview: SafeHtml = this.sanitizer.bypassSecurityTrustHtml('loading...');
 
   ngOnInit(): void {
-    resetModel3dElement();
+    this.resetModel3dElement();
     this.viewerDynamic();
   }
 
   ngOnChanges(): void {
     if (!!this.displayId && this.displayId > 0 && this.viewerType != null && this.viewerType != undefined) {
-      resetModel3dElement();
+      this.resetModel3dElement();
       this.show3Dmodel();
     }
   }
@@ -82,10 +83,10 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     displayId: number = this.displayId,
     contentPath: string = CONTENT_WOTLK,
   ): void {
-    resetModel3dElement();
+    this.resetModel3dElement();
     generateModels(
       1,
-      `#model_3d`,
+      `#${this.id}`,
       {
         type: modelType,
         id: displayId,
@@ -148,6 +149,13 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
         this.show3Dmodel();
       }),
     );
+  }
+
+  private resetModel3dElement(): void {
+    const modelElement = document.querySelector(`#${this.id}`);
+    if (modelElement) {
+      modelElement.innerHTML = '';
+    }
   }
 
   ngOnDestroy(): void {

@@ -198,10 +198,3 @@ export function getShadowlandDisplayId(wotlkDisplayId: number): Promise<{ displa
     }
   });
 }
-
-export function resetModel3dElement(): void {
-  const modelElement = document.querySelector('#model_3d');
-  if (modelElement) {
-    modelElement.innerHTML = '';
-  }
-}
