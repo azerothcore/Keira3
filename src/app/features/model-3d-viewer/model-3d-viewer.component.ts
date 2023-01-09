@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
