@@ -1,7 +1,9 @@
-import { AppConfig } from '../../../../../environments/environment';
+/* istanbul ignore file */
+
+import { AppConfig } from '../../../environments/environment';
 import {
   CHARACTER_PART,
-  CONTENT_PATH,
+  CONTENT_WOTLK,
   // DisplayInfo,
   GENDER,
   Gender,
@@ -9,7 +11,7 @@ import {
   RACES,
   // wotlkToShadowlandSlots,
   WoWModel,
-} from './viewer.model';
+} from './model-3d-viewer.model';
 
 declare const ZamModelViewer: any;
 
@@ -35,7 +37,7 @@ declare const ZamModelViewer: any;
 // }
 
 async function findRaceGenderOptions(race: number, gender: Gender): Promise<any> {
-  const options = await fetch(`${CONTENT_PATH}meta/charactercustomization2/${race}_${gender}.json`).then((response) => response.json());
+  const options = await fetch(`${CONTENT_WOTLK}meta/charactercustomization2/${race}_${gender}.json`).then((response) => response.json());
   if (options.data) {
     return options.data;
   }
@@ -50,7 +52,7 @@ async function findRaceGenderOptions(race: number, gender: Gender): Promise<any>
 //   };
 
 //   try {
-//     await fetch(`${CONTENT_PATH}meta/armor/${slot}/${displayId}.json`).then((response) => response.json());
+//     await fetch(`${CONTENT_WOTLK}meta/armor/${slot}/${displayId}.json`).then((response) => response.json());
 
 //     return displayInfo;
 //   } catch (e) {
@@ -143,19 +145,26 @@ function getOptions(character: {}, fullOptions): any[] {
  * @param {WoWModel} model: A json representation of a character
  * @returns {Promise<WowModelViewer>}
  */
-export async function generateModels(aspect: number, containerSelector: string, model: WoWModel): Promise<any> {
+export async function generateModels(
+  aspect: number,
+  containerSelector: string,
+  model: WoWModel,
+  contentPath = CONTENT_WOTLK,
+): Promise<any> {
   const modelOptions = await optionsFromModel(model);
   const models = {
     type: 2,
-    contentPath: CONTENT_PATH,
+    contentPath,
     container: jQuery(containerSelector),
     aspect: aspect,
-    hd: true,
+    hd: false,
     ...modelOptions,
   };
   window['models'] = models;
 
-  return new ZamModelViewer(models);
+  if (typeof ZamModelViewer !== 'undefined') {
+    return new ZamModelViewer(models);
+  }
 }
 
 export function getShadowlandDisplayId(wotlkDisplayId: number): Promise<{ displayId: number; displayType: number }> {
@@ -191,7 +200,7 @@ export function getShadowlandDisplayId(wotlkDisplayId: number): Promise<{ displa
 }
 
 export function resetModel3dElement(): void {
-  const modelElement = document.querySelector('#model_3d1');
+  const modelElement = document.querySelector('#model_3d');
   if (modelElement) {
     modelElement.innerHTML = '';
   }

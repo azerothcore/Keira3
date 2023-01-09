@@ -9,6 +9,7 @@ import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/singl
 import { SpellSelectorModule } from '@keira-shared/modules/selectors/spell-selector/spell-selector.module';
 import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { Model3DViewerModule } from 'app/features/model-3d-viewer/model-3d-viewer.module';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
 import { CreatureTemplateComponent } from './creature-template.component';
@@ -29,6 +30,7 @@ import { CreatureTemplateService } from './creature-template.service';
     FactionSelectorModule,
     CreatureSelectorModule,
     TranslateModule,
+    Model3DViewerModule,
   ],
   exports: [CreatureTemplateComponent],
   providers: [CreatureTemplateService],
