@@ -42,7 +42,7 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
     );
   }
 
-  onSearch() {
+  onSearch(): void {
     this.subscriptions.push(
       this.queryService.query<T>(this.query).subscribe((data) => {
         this.rows = data;
