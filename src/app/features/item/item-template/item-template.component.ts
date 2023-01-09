@@ -20,14 +20,12 @@ import { ITEM_SHEAT } from '@keira-constants/options/item-sheath';
 import { STAT_TYPE } from '@keira-constants/options/stat-type';
 import { TOTEM_CATEGORY } from '@keira-constants/options/totem-category';
 import { PVP_RANK } from '@keira-shared/constants/options/item-honorrank';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { ItemTemplate } from '@keira-types/item-template.type';
-import * as jquery from 'jquery';
-import { BehaviorSubject, combineLatestWith, debounceTime, distinctUntilChanged, filter } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { VIEWER_TYPE } from '../../../features/model-3d-viewer/model-3d-viewer.model';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemPreviewService } from './item-preview.service';
 import { ItemTemplateService } from './item-template.service';
-import { generateModels, getShadowlandDisplayId, resetModel3dElement } from './model-viewer-3D/helper';
 
 @Component({
   selector: 'keira-item-template',
@@ -55,10 +53,9 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   readonly DAMAGE_TYPE = DAMAGE_TYPE;
   readonly STAT_TYPE = STAT_TYPE;
   readonly PVP_RANK = PVP_RANK;
+  readonly ITEM_VIEWER_TYPE = VIEWER_TYPE.ITEM;
 
   showItemPreview = true;
-
-  private loadedViewer$ = new BehaviorSubject<boolean>(false);
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
@@ -66,11 +63,8 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     public handlerService: ItemHandlerService,
     private readonly itemPreviewService: ItemPreviewService,
     private readonly sanitizer: DomSanitizer,
-    private readonly queryService: MysqlQueryService,
   ) {
     super(editorService, handlerService);
-
-    this.setupViewer3D();
   }
 
   public itemPreview: SafeHtml = this.sanitizer.bypassSecurityTrustHtml('loading...');
@@ -101,74 +95,5 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
 
     this.loadItemPreview();
     this.loadItemPreviewDynamic();
-
-    resetModel3dElement();
-    this.viewerDynamic();
-  }
-
-  experiment(itemEntry: number): void {
-    getShadowlandDisplayId(itemEntry).then((displayInfo) => {
-      resetModel3dElement();
-      generateModels(1, `#model_3d1`, {
-        type: 1, // inventoryType,
-        id: displayInfo.displayId,
-      });
-    });
-  }
-
-  private setupViewer3D(): void {
-    window['jQuery'] = jquery;
-    window['$'] = jquery;
-
-    if (!window['WH']) {
-      window['WH'] = {};
-      window['WH'].debug = () => {};
-      window['WH'].defaultAnimation = `Stand`;
-    }
-
-    const loadedViewer$ = this.loadedViewer$;
-
-    jquery.getScript('https://wow.zamimg.com/modelviewer/live/viewer/viewer.min.js', function () {
-      loadedViewer$.next(true);
-    });
-  }
-
-  private viewerDynamic(): void {
-    this.subscriptions.push(
-      this.loadedViewer$
-        .pipe(
-          filter((loadedViewr) => loadedViewr),
-          combineLatestWith(this.editorService.form.get('entry').valueChanges),
-          filter(([, entry]) => !!entry),
-        )
-        .subscribe(([, entry]) => {
-          // const inventoryType = this.editorService.form.get('inventoryType').value;
-          this.experiment(entry);
-        }),
-    );
-
-    this.subscriptions.push(
-      this.loadedViewer$
-        .pipe(
-          filter((loadedViewr) => loadedViewr),
-          combineLatestWith(this.editorService.form.get('displayid').valueChanges),
-          filter(([, displayId]) => !!displayId && !isNaN(displayId)),
-        )
-        .subscribe(([, displayId]) => {
-          this.subscriptions.push(
-            this.queryService
-              .query(`SELECT entry, inventoryType FROM item_template WHERE displayid=${displayId} LIMIT 1`)
-              .subscribe((data) => {
-                if (data.length && 'entry' in data[0]) {
-                  const entry = data[0].entry;
-                  // const inventoryType = data[0].inventoryType;
-                  if (!!entry) {
-                    this.experiment(Number(entry));
-                  }
-                }
-              }),
-          );
-        }),
-    );
   }
 }

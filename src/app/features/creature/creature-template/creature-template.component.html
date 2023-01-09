@@ -1,6 +1,6 @@
 <keira-top-bar [handler]="handlerService"></keira-top-bar>
 
-<div class="container-fluid">
+<div class="container-fluid editor-with-preview" [ngClass]="{ 'show-preview': showItemPreview }">
   <span *ngIf="editorService.loading" [translate]="'LOADING'"></span>
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
@@ -18,7 +18,7 @@
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="entry">entry</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'UNIQUE_ID' | translate: { ENTITY: 'creature' }"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'UNIQUE_ID' | translate : { ENTITY: 'creature' }"></i>
             <input [formControlName]="'entry'" id="entry" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -535,5 +535,20 @@
         </div>
       </div> -->
     </form>
+
+    <div class="preview-container" [ngClass]="showItemPreview ? 'show-preview' : 'hide-preview'">
+      <div class="transparent">
+        <div class="creature-preview">
+          <keira-model-3d-viewer
+            [viewerType]="NPC_VIEWER_TYPE"
+            [modelId]="editorService.form.controls.modelid1.value"
+          ></keira-model-3d-viewer>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-secondary btn-sm toggle-preview-button" (click)="showItemPreview = !showItemPreview">
+      <i class="fas {{ showItemPreview ? 'fa-angle-double-right' : 'fa-angle-double-left' }}"></i>
+    </button>
   </div>
 </div>

@@ -518,7 +518,11 @@
               </div>
               <div class="col-12">
                 <label class="control-label" for="socketContent_{{ i }}">Content_{{ i }}</label>
-                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SOCKET_CONTENTS' | translate: { idx: i }"></i>
+                <i
+                  class="fas fa-info-circle ms-1"
+                  placement="auto"
+                  [tooltip]="'ITEM.TEMPLATE.SOCKET_CONTENTS' | translate : { idx: i }"
+                ></i>
                 <input
                   [formControlName]="'socketContent_' + i"
                   id="socketContent_{{ i }}"
@@ -706,7 +710,12 @@
           <div class="item-stats">
             <div [innerHTML]="itemPreview"></div>
             <br />
-            <div id="model_3d1"></div>
+            <keira-model-3d-viewer
+              [viewerType]="ITEM_VIEWER_TYPE"
+              [displayId]="editorService.form.controls.displayid.value"
+              [itemClass]="editorService.form.controls.class.value"
+              [itemInventoryType]="editorService.form.controls.InventoryType.value"
+            ></keira-model-3d-viewer>
           </div>
         </div>
       </perfect-scrollbar>
