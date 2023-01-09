@@ -1,4 +1,9 @@
-<select class="btn btn-sm my-1" [ngClass]="longVersion ? 'btn-secondary' : ''" (change)="setLanguage($event)">
+<select
+  class="btn btn-sm my-1"
+  [ngClass]="longVersion ? 'btn-secondary' : ''"
+  (change)="switchLanguageService.setLanguage($event)"
+  [value]="switchLanguageService.currentLanguage"
+>
   <option value="en">
     🇬🇧 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.ENGLISH' | translate }}</span>
   </option>
