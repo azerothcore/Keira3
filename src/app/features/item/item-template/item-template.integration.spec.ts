@@ -200,7 +200,7 @@ describe('ItemTemplate integration tests', () => {
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
-      expect(querySpy).toHaveBeenCalledTimes(1);
+      expect(querySpy).toHaveBeenCalledTimes(3);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
 
