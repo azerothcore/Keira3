@@ -17,7 +17,7 @@
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="entry">entry</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'UNIQUE_ID' | translate: { ENTITY: 'gameobject' }"></i>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'UNIQUE_ID' | translate : { ENTITY: 'gameobject' }"></i>
             <input [formControlName]="'entry'" id="entry" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -44,6 +44,24 @@
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="maxgold">maxgold</label>
             <input [formControlName]="'maxgold'" id="maxgold" type="number" class="form-control form-control-sm" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="artkit0">artkit0</label>
+            <input [formControlName]="'artkit0'" id="artkit0" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="artkit1">artkit1</label>
+            <input [formControlName]="'artkit1'" id="artkit1" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="artkit2">artkit2</label>
+            <input [formControlName]="'artkit2'" id="artkit2" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="artkit3">artkit3</label>
+            <input [formControlName]="'artkit3'" id="artkit3" type="number" class="form-control form-control-sm" />
           </div>
         </div>
       </form>
