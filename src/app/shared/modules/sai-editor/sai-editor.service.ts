@@ -92,7 +92,7 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
   }
 
   async generateComments() {
-    for (const row of this._newRows) {
+    for (const row of structuredClone(this._newRows)) {
       row.comment = await this.saiCommentGeneratorService.generateComment(
         this._newRows,
         row,
