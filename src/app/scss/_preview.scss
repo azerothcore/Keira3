@@ -24,8 +24,9 @@ $preview-width: 240px;
   padding-top: 22px;
   height: 100%;
   background-color: #080d22;
+  overflow: auto;
 
-  perfect-scrollbar {
+  .perfect-scrollbar {
     max-height: 95vh;
   }
 }

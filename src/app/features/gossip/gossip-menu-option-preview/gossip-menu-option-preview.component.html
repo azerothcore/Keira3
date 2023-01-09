@@ -1,9 +1,9 @@
 <div class="preview-container" [ngClass]="show ? 'show-preview' : 'hide-preview'">
-  <perfect-scrollbar class="transparent">
+  <div class="transparent perfect-scrollbar">
     <div class="gossip-preview">
       <p *ngFor="let row of options">
         <img *ngIf="OPTION_IMG[row.OptionIcon]" [src]="'assets/img/gossip/' + OPTION_IMG[row.OptionIcon]" /> {{ row.OptionText }}
       </p>
     </div>
-  </perfect-scrollbar>
+  </div>
 </div>

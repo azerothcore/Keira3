@@ -1,5 +1,5 @@
 <div class="preview-container" [ngClass]="service.showPreview ? 'show-preview' : 'hide-preview'">
-  <perfect-scrollbar class="transparent">
+  <div class="transparent perfect-scrollbar">
     <div class="preview-content quest-preview">
       <h5 id="title" *ngIf="!!service.title">{{ service.title }}</h5>
       <p id="unavailable" *ngIf="service.isUnavailable()" class="text-center font-weight-bold red">Unavailable</p>
@@ -248,7 +248,7 @@
         </div>
       </div>
     </div>
-  </perfect-scrollbar>
+  </div>
 </div>
 
 <button class="btn btn-secondary btn-sm toggle-preview-button" (click)="service.showPreview = !service.showPreview">

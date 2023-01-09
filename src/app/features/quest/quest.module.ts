@@ -19,7 +19,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { ToastrModule } from 'ngx-toastr';
 import { CreatureQuestenderComponent } from './creature-questender/creature-questender.component';
 import { CreatureQuestenderService } from './creature-questender/creature-questender.service';
@@ -78,7 +77,6 @@ const components = [
     QuestSelectorModule,
     ItemSelectorModule,
     IconModule,
-    PerfectScrollbarModule,
     CollapseModule,
     TranslateModule,
   ],
