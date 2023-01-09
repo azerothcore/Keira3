@@ -49,20 +49,17 @@ describe('SaiCommentGeneratorService', () => {
       spyOn(sqliteQueryService, 'getSpellNameById').and.callFake((i) => of(mockGetSpellNameById + i).toPromise());
     });
 
-    it(
-      'should correctly handle linked events',
-      waitForAsync(async () => {
-        const rows: SmartScripts[] = [
-          createSai({ id: 1, event_type: SAI_EVENTS.ACCEPTED_QUEST, link: 2 }),
-          createSai({ id: 2, event_type: SAI_EVENTS.LINK, link: 3 }),
-          createSai({ id: 3, event_type: SAI_EVENTS.LINK }),
-        ];
-        const expected = `MockEntity - On Quest 'mockQuestTitleById0' Taken - No Action Type`;
-        const service: SaiCommentGeneratorService = TestBed.inject(SaiCommentGeneratorService);
+    it('should correctly handle linked events', waitForAsync(async () => {
+      const rows: SmartScripts[] = [
+        createSai({ id: 1, event_type: SAI_EVENTS.ACCEPTED_QUEST, link: 2 }),
+        createSai({ id: 2, event_type: SAI_EVENTS.LINK, link: 3 }),
+        createSai({ id: 3, event_type: SAI_EVENTS.LINK }),
+      ];
+      const expected = `MockEntity - On Quest 'mockQuestTitleById0' Taken - No Action Type`;
+      const service: SaiCommentGeneratorService = TestBed.inject(SaiCommentGeneratorService);
 
-        expect(await service.generateComment(rows, rows[2], mockName)).toEqual(expected);
-      }),
-    );
+      expect(await service.generateComment(rows, rows[2], mockName)).toEqual(expected);
+    }));
 
     const cases: { name: string; input: Partial<SmartScripts>; expected: string }[] = [
       {
@@ -1641,7 +1638,7 @@ describe('SaiCommentGeneratorService', () => {
           event_phase_mask: 9,
           event_flags: EVENT_FLAGS.NOT_REPEATABLE,
         },
-        expected: `MockEntity - In Combat - Mount To Model 1 (Phases 1 & 8) (No Repeat)`,
+        expected: `MockEntity - In Combat - Mount To Model 1 (Phases 1 & 4) (No Repeat)`,
       },
       {
         name: `SAI_ACTIONS.MOUNT_TO_ENTRY_OR_MODEL check action param 2 (1), event_phase_mask (2)`,
@@ -1753,14 +1750,11 @@ describe('SaiCommentGeneratorService', () => {
     ];
 
     for (const { name, input, expected } of cases) {
-      it(
-        `Case: ${name}`,
-        waitForAsync(async () => {
-          const service: SaiCommentGeneratorService = TestBed.inject(SaiCommentGeneratorService);
-          const sai = createSai(input);
-          expect(await service.generateComment([sai], sai, mockName)).toEqual(expected);
-        }),
-      );
+      it(`Case: ${name}`, waitForAsync(async () => {
+        const service: SaiCommentGeneratorService = TestBed.inject(SaiCommentGeneratorService);
+        const sai = createSai(input);
+        expect(await service.generateComment([sai], sai, mockName)).toEqual(expected);
+      }));
     }
   });
 });
