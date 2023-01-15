@@ -12,6 +12,7 @@ import { CreatureTemplateComponent } from './creature-template.component';
 import { CreatureTemplateModule } from './creature-template.module';
 import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import Spy = jasmine.Spy;
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 class CreatureTemplatePage extends EditorPageObject<CreatureTemplateComponent> {}
 
@@ -42,7 +43,14 @@ describe('CreatureTemplate integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureTemplateModule, RouterTestingModule, TranslateTestingModule],
+      imports: [
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        CreatureTemplateModule,
+        RouterTestingModule,
+        TranslateTestingModule,
+        HttpClientTestingModule,
+      ],
       providers: [CreatureHandlerService, SaiCreatureHandlerService],
     }).compileComponents();
   }));

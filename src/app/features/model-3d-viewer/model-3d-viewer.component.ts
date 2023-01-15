@@ -1,10 +1,10 @@
-/* istanbul ignore file */
-import { Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { TableRow } from '@keira-shared/types/general';
 import * as jquery from 'jquery';
-import { BehaviorSubject, filter, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, catchError, filter, Observable, of, Subscription } from 'rxjs';
 import { generateModels, getShadowlandDisplayId } from './helper';
 import { CONTENT_LIVE, CONTENT_WOTLK, MODEL_TYPE, VIEWER_TYPE } from './model-3d-viewer.model';
 
@@ -17,16 +17,13 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   @Input() displayId: number;
   @Input() itemClass?: number;
   @Input() itemInventoryType?: number;
-  @Input() set modelId(modelId: number) {
-    this.displayId = modelId;
-  }
   @Input() id? = 'model_3d';
 
   private loadedViewer$ = new BehaviorSubject<boolean>(false);
-  private subscriptions: Subscription[] = [];
+  private subscriptions = new Subscription();
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(private readonly sanitizer: DomSanitizer, private readonly queryService: MysqlQueryService) {
+  constructor(private readonly sanitizer: DomSanitizer, private readonly queryService: MysqlQueryService, private http: HttpClient) {
     this.setupViewer3D();
   }
 
@@ -37,8 +34,14 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     this.viewerDynamic();
   }
 
-  ngOnChanges(): void {
-    if (!!this.displayId && this.displayId > 0 && this.viewerType != null && this.viewerType != undefined) {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (
+      changes.displayId?.currentValue != changes.displayId?.previousValue &&
+      !!this.displayId &&
+      this.displayId > 0 &&
+      this.viewerType != null &&
+      this.viewerType != undefined
+    ) {
       this.resetModel3dElement();
       this.show3Dmodel();
     }
@@ -46,8 +49,8 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
 
   show3Dmodel(): void {
     if (this.viewerType === VIEWER_TYPE.ITEM) {
-      this.subscriptions.push(
-        this.getItemData().subscribe((data) => {
+      this.subscriptions.add(
+        this.getItemData$().subscribe((data) => {
           if (data.length && 'entry' in data[0]) {
             this.verifyModelAndLoad(data[0]);
           }
@@ -58,7 +61,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  private getItemData(): Observable<TableRow[]> {
+  private getItemData$(): Observable<TableRow[]> {
     return this.queryService.query(
       `SELECT entry, class AS _class, inventoryType FROM item_template WHERE displayid=${this.displayId} LIMIT 1`,
     );
@@ -67,15 +70,26 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private verifyModelAndLoad({ entry, inventoryType, _class }: TableRow): void {
     const modelType = this.getModelType(_class as number, inventoryType as number);
 
-    fetch(this.getContentPathUrl(inventoryType))
-      .then(() => {
-        this.generate3Dmodel(modelType, this.displayId);
-      })
-      .catch(() => {
-        getShadowlandDisplayId(entry as number).then((displayInfo) => {
-          this.generate3Dmodel(modelType, displayInfo.displayId, CONTENT_LIVE);
-        });
-      });
+    this.subscriptions.add(
+      this.http
+        .get(this.getContentPathUrl(inventoryType))
+        .pipe(
+          catchError(
+            /* istanbul ignore next */
+            () => {
+              /* istanbul ignore next */
+              getShadowlandDisplayId(entry as number).then((displayInfo) => {
+                this.generate3Dmodel(modelType, displayInfo.displayId, CONTENT_LIVE);
+              });
+              /* istanbul ignore next */
+              return of([]);
+            },
+          ),
+        )
+        .subscribe(() => {
+          this.generate3Dmodel(modelType, this.displayId);
+        }),
+    );
   }
 
   private generate3Dmodel(
@@ -123,9 +137,14 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
       return MODEL_TYPE.OBJECT;
     }
 
-    return MODEL_TYPE.NPC;
+    if (this.viewerType === VIEWER_TYPE.NPC) {
+      return MODEL_TYPE.NPC;
+    }
+
+    return null;
   }
 
+  /* istanbul ignore next */
   private setupViewer3D(): void {
     window['jQuery'] = jquery;
     window['$'] = jquery;
@@ -144,13 +163,14 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private viewerDynamic(): void {
-    this.subscriptions.push(
+    this.subscriptions.add(
       this.loadedViewer$.pipe(filter((loadedViewr) => loadedViewr)).subscribe(() => {
         this.show3Dmodel();
       }),
     );
   }
 
+  /* istanbul ignore next */
   private resetModel3dElement(): void {
     const modelElement = document.querySelector(`#${this.id}`);
     if (modelElement) {
@@ -159,6 +179,6 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach((sub) => sub.unsubscribe());
+    this.subscriptions.unsubscribe();
   }
 }

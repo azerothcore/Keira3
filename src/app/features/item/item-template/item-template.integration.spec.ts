@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ITEM_SUBCLASS } from '@keira-constants/options/item-class';
@@ -54,7 +55,14 @@ describe('ItemTemplate integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ItemTemplateModule, RouterTestingModule, TranslateTestingModule],
+      imports: [
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        ItemTemplateModule,
+        RouterTestingModule,
+        TranslateTestingModule,
+        HttpClientTestingModule,
+      ],
       providers: [ItemHandlerService],
     }).compileComponents();
   }));
@@ -200,7 +208,7 @@ describe('ItemTemplate integration tests', () => {
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
-      expect(querySpy).toHaveBeenCalledTimes(3);
+      expect(querySpy).toHaveBeenCalledTimes(2);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
 
