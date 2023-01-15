@@ -49,7 +49,7 @@
     "mysql2": "3.0.1",
     "ngx-toastr": "16.0.2",
     "ngx-ui-switch": "14.0.3",
-    "serialize-javascript": "6.0.0",
+    "serialize-javascript": "6.0.1",
     "sqlite3": "5.1.4",
     "tslib": "2.4.1",
     "webpack-sources": "3.2.3"
