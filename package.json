@@ -42,7 +42,7 @@
     "@ngx-translate/core": "14.0.0",
     "@ngx-translate/http-loader": "7.0.0",
     "@types/electron-settings": "4.0.0",
-    "acorn": "8.8.1",
+    "acorn": "8.8.2",
     "electron-settings": "4.0.2",
     "jquery": "3.6.3",
     "karma-coverage": "2.2.0",
