@@ -674,10 +674,13 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_RANGED_MOVEMENT] = 'AttackAngle';
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] = 'Calls a script for the source with a given entry.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] = 'ScriptEntry';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] = 'TimerType';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] = 'allowOverride';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] =
   'EntryOrGuid * 100 (entryorguid with 00 added after the entry, or 01, 02, 03 etc. for multiple action lists)';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] =
   'The timer update type. If set to 0, the script will only occur out of combat. If set to 1, it will only occur during combat and if set to 2 it will always occur.';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] =
+  '0 - Must finish current actionlist, 1 - Allow starting new actionlist during previous actionlist';
 
 // SMART_ACTION_SET_NPC_FLAG
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_NPC_FLAG] = 'Set the npc flags of the target (using creature_template.npcflag)';
