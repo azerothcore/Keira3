@@ -267,3 +267,5 @@ export const ITEM_CONSTANTS = {
     'Open From Vehicle',
   ],
 };
+
+export const SPELL_TRIGGERS = ['Use', 'On Equip', 'Chance on Hit', 'Unknown', 'Soulstone', 'Use with no delay', 'Learn Spell ID'] as const;

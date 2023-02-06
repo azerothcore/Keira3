@@ -627,12 +627,9 @@
               </div>
               <div class="col-12">
                 <label class="control-label" for="spelltrigger_{{ i }}">trigger_{{ i }}</label>
-                <input
-                  [formControlName]="'spelltrigger_' + i"
-                  id="spelltrigger_{{ i }}"
-                  type="number"
-                  class="form-control form-control-sm"
-                />
+                <select [formControlName]="'spelltrigger_' + i" id="spelltrigger_{{ i }}" class="form-control form-control-sm">
+                  <option *ngFor="let trigger of SPELL_TRIGGERS; let idx = index" [ngValue]="idx" [label]="idx + ' - ' + trigger"></option>
+                </select>
               </div>
               <div class="col-12">
                 <label class="control-label" for="spellcharges_{{ i }}">charges_{{ i }}</label>
