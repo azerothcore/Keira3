@@ -188,23 +188,37 @@ describe('ItemTemplate integration tests', () => {
         '`ScalingStatDistribution` = 47, `ScalingStatValue` = 48, `dmg_min1` = 49, `dmg_max1` = 50, `dmg_type1` = 51, ' +
         '`dmg_min2` = 52, `dmg_max2` = 53, `dmg_type2` = 54, `armor` = 55, `holy_res` = 56, `fire_res` = 57, `nature_res` = 58, ' +
         '`frost_res` = 59, `shadow_res` = 60, `arcane_res` = 61, `delay` = 62, `ammo_type` = 63, `RangedModRange` = 64, ' +
-        '`spellid_1` = 65, `spelltrigger_1` = 66, `spellcharges_1` = 67, `spellppmRate_1` = 68, `spellcooldown_1` = 69, ' +
-        '`spellcategory_1` = 70, `spellcategorycooldown_1` = 71, `spellid_2` = 72, `spelltrigger_2` = 73, `spellcharges_2` = 74, ' +
-        '`spellppmRate_2` = 75, `spellcooldown_2` = 76, `spellcategory_2` = 77, `spellcategorycooldown_2` = 78, `spellid_3` = 79, ' +
-        '`spelltrigger_3` = 80, `spellcharges_3` = 81, `spellppmRate_3` = 82, `spellcooldown_3` = 83, `spellcategory_3` = 84, ' +
-        '`spellcategorycooldown_3` = 85, `spellid_4` = 86, `spelltrigger_4` = 87, `spellcharges_4` = 88, `spellppmRate_4` = 89, ' +
-        '`spellcooldown_4` = 90, `spellcategory_4` = 91, `spellcategorycooldown_4` = 92, `spellid_5` = 93, `spelltrigger_5` = 94, ' +
-        '`spellcharges_5` = 95, `spellppmRate_5` = 96, `spellcooldown_5` = 97, `spellcategory_5` = 98, ' +
-        "`spellcategorycooldown_5` = 99, `bonding` = 100, `description` = '101', `PageText` = 102, `LanguageID` = 103, " +
-        '`PageMaterial` = 104, `startquest` = 105, `lockid` = 106, `Material` = 107, `sheath` = 108, `RandomProperty` = 109, ' +
-        '`RandomSuffix` = 110, `block` = 111, `itemset` = 112, `MaxDurability` = 113, `area` = 114, `Map` = 115, `BagFamily` = 116, ' +
-        '`TotemCategory` = 117, `socketColor_1` = 118, `socketContent_1` = 119, `socketColor_2` = 120, `socketContent_2` = 121, ' +
-        '`socketColor_3` = 122, `socketContent_3` = 123, `socketBonus` = 124, `GemProperties` = 125, `RequiredDisenchantSkill` = 126, ' +
-        "`ArmorDamageModifier` = 127, `duration` = 128, `ItemLimitCategory` = 129, `HolidayId` = 130, `ScriptName` = '131', " +
-        '`DisenchantID` = 132, `FoodType` = 133, `minMoneyLoot` = 134, `maxMoneyLoot` = 135, `flagsCustom` = 136 WHERE (`entry` = 1234);';
+        '`spellid_1` = 65, `spelltrigger_1` = 1, `spellcharges_1` = 66, `spellppmRate_1` = 67, `spellcooldown_1` = 68, ' +
+        '`spellcategory_1` = 69, `spellcategorycooldown_1` = 70, `spellid_2` = 71, `spelltrigger_2` = 2, `spellcharges_2` = 72, ' +
+        '`spellppmRate_2` = 73, `spellcooldown_2` = 74, `spellcategory_2` = 75, `spellcategorycooldown_2` = 76, `spellid_3` = 77, ' +
+        '`spelltrigger_3` = 4, `spellcharges_3` = 78, `spellppmRate_3` = 79, `spellcooldown_3` = 80, `spellcategory_3` = 81, ' +
+        '`spellcategorycooldown_3` = 82, `spellid_4` = 83, `spelltrigger_4` = 5, `spellcharges_4` = 84, `spellppmRate_4` = 85, ' +
+        '`spellcooldown_4` = 86, `spellcategory_4` = 87, `spellcategorycooldown_4` = 88, `spellid_5` = 89, `spelltrigger_5` = 6, ' +
+        '`spellcharges_5` = 90, `spellppmRate_5` = 91, `spellcooldown_5` = 92, `spellcategory_5` = 93, ' +
+        "`spellcategorycooldown_5` = 94, `bonding` = 95, `description` = '96', `PageText` = 97, `LanguageID` = 98, " +
+        '`PageMaterial` = 99, `startquest` = 100, `lockid` = 101, `Material` = 102, `sheath` = 103, `RandomProperty` = 104, ' +
+        '`RandomSuffix` = 105, `block` = 106, `itemset` = 107, `MaxDurability` = 108, `area` = 109, `Map` = 110, `BagFamily` = 111, ' +
+        '`TotemCategory` = 112, `socketColor_1` = 113, `socketContent_1` = 114, `socketColor_2` = 115, `socketContent_2` = 116, ' +
+        '`socketColor_3` = 117, `socketContent_3` = 118, `socketBonus` = 119, `GemProperties` = 120, `RequiredDisenchantSkill` = 121, ' +
+        "`ArmorDamageModifier` = 122, `duration` = 123, `ItemLimitCategory` = 124, `HolidayId` = 125, `ScriptName` = '126', " +
+        '`DisenchantID` = 127, `FoodType` = 128, `minMoneyLoot` = 129, `maxMoneyLoot` = 130, `flagsCustom` = 131 WHERE (`entry` = 1234);';
+
+      const spelltriggers = {
+        spelltrigger_1: 1,
+        spelltrigger_2: 2,
+        spelltrigger_3: 4,
+        spelltrigger_4: 5,
+        spelltrigger_5: 6,
+      };
+
       querySpy.calls.reset();
 
-      page.changeAllFields(originalEntity, ['VerifiedBuild']);
+      page.changeAllFields(originalEntity, [...Object.keys(spelltriggers), 'VerifiedBuild']);
+
+      for (const key of Object.keys(spelltriggers)) {
+        page.setSelectValueById(key, spelltriggers[key]);
+      }
+
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
@@ -434,35 +448,35 @@ describe('ItemTemplate integration tests', () => {
         page.setInputValueById('ammo_type', 123);
         page.setInputValueById('RangedModRange', 123);
         page.setInputValueById('spellid_1', 123);
-        page.setInputValueById('spelltrigger_1', 123);
+        page.setSelectValueById('spelltrigger_1', 1);
         page.setInputValueById('spellcharges_1', 123);
         page.setInputValueById('spellppmRate_1', 123);
         page.setInputValueById('spellcooldown_1', 123);
         page.setInputValueById('spellcategory_1', 123);
         page.setInputValueById('spellcategorycooldown_1', 123);
         page.setInputValueById('spellid_2', 123);
-        page.setInputValueById('spelltrigger_2', 123);
+        page.setSelectValueById('spelltrigger_2', 2);
         page.setInputValueById('spellcharges_2', 123);
         page.setInputValueById('spellppmRate_2', 123);
         page.setInputValueById('spellcooldown_2', 123);
         page.setInputValueById('spellcategory_2', 123);
         page.setInputValueById('spellcategorycooldown_2', 123);
         page.setInputValueById('spellid_3', 123);
-        page.setInputValueById('spelltrigger_3', 123);
+        page.setSelectValueById('spelltrigger_3', 3);
         page.setInputValueById('spellcharges_3', 123);
         page.setInputValueById('spellppmRate_3', 123);
         page.setInputValueById('spellcooldown_3', 123);
         page.setInputValueById('spellcategory_3', 123);
         page.setInputValueById('spellcategorycooldown_3', 123);
         page.setInputValueById('spellid_4', 123);
-        page.setInputValueById('spelltrigger_4', 123);
+        page.setSelectValueById('spelltrigger_4', 4);
         page.setInputValueById('spellcharges_4', 123);
         page.setInputValueById('spellppmRate_4', 123);
         page.setInputValueById('spellcooldown_4', 123);
         page.setInputValueById('spellcategory_4', 123);
         page.setInputValueById('spellcategorycooldown_4', 123);
         page.setInputValueById('spellid_5', 123);
-        page.setInputValueById('spelltrigger_5', 123);
+        page.setSelectValueById('spelltrigger_5', 5);
         page.setInputValueById('spellcharges_5', 123);
         page.setInputValueById('spellppmRate_5', 123);
         page.setInputValueById('spellcooldown_5', 123);
