@@ -155,7 +155,7 @@
   "DASHBOARD": {
     "WELCOME": "Bienvenido a Keira3",
     "WELCOME_1": "Siempre puedes hallar la última versión de Keira3 en la página <a href=\" {{ REPO_URL }}/releases\" target=\"_blank\">de lanzamientos</a>. ¡Únete a nuestro canal <strong>#keira-editor</strong> en <a href=\"{{ DISCORD_URL }}\" target=\"_blank\">Discord</a> para estar al día de las últimas noticias y comunicados!",
-    "WELCOME_2": "Por favor, notifique cualquier error o sugerencia utilizando <a href=\"{{ REPO_URL }}/issues/new\" target=\"_blank\">en el repositorio oficial</a>. Si gustas de Keira3, ¡no olvides darnos un &#11088; en GitHub!",
+    "WELCOME_2": "Por favor, notifique cualquier error o sugerencia utilizando <a href=\"{{ REPO_URL }}/issues/new\" target=\"_blank\">nuestro repositorio oficial</a>. Si gustas de Keira3, ¡no olvides darnos un &#11088; en GitHub!",
     "WELCOME_3": "Keira3 es un software gratuito y de código abierto que desarrollamos durante nuestro tiempo libre, puedes <a href=\"{{ DONATE_URL }}\" target=\"_blank\">apoyarnos con una donación</a> ❤",
     "WELCOME_4": "Esperamos se divierta utilizando este programa y no olvide contribuir con la comunidad <a href=\"http://www.azerothcore.org/wiki/Contribute#how-to-create-a-pull-request\" target=\"_blank\">compartiendo tu código</a>",
     "SYSTEM_DETAILS": "Detalles del Sistema",
