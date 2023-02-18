@@ -218,6 +218,7 @@
       "HOVER_HEIGHT": "如果设置了MOVEMENTFLAG_DISABLE_GRAVITY，则生物悬停在地面上的距离在这里设置",
       "SCALE": "生物尺寸控制(生物模型的大小)。如果为0，则使用DBC默认模型大小。",
       "DAMAGE_MODIFIER": "伤害倍数，影响mindmg和maxdmg",
+      "ARMOR_MODIFIER_TOOLTIP": "Damage taken from physical attacks, a value of 1 is normal; Values under 1 mean it will take more damage; Values over 1 mean it will take less damage",
       "SPEED_RUN": "控制生物的移动速度。对于飞行载具来说，提高飞行速度。",
       "SPEED_WALK": "控制生物的奔跑速度。对于陆地载具来说，提高地面移动速度。",
       "SPEED_SWIM": "控制生物游泳的速度。",
@@ -240,6 +241,7 @@
     },
     "SPAWN": {
       "ORIENTATION": "生物刷新的方向。(北=0.0;南=圆周率(3.14159)",
+      "EQUIPMENT_ID_TOOLTIP": "1 = uses the info set in equipment template 0 = no weapons equipped",
       "SPAWN_DIST_TOOLTIP": "生物刷新点的刷新范围距离。如果MovementType = 1，就是生物刷新后可以走多远。",
       "SCRIPT_NAME": "此生物使用的C++脚本的名称(如果有的话)。",
       "GUID": "creature表中的guid字段",

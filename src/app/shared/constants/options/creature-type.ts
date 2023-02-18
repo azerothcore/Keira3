@@ -10,7 +10,7 @@ export const CREATURE_TYPE: Option[] = [
   { value: 6, name: 'UNDEAD' },
   { value: 7, name: 'HUMANOID' },
   { value: 8, name: 'CRITTER' },
-  { value: 9, name: 'MECHANICAL' },
+  { value: 9, name: 'MECHANICAL (cannot be healed by healing spells)' },
   { value: 10, name: 'NOT_SPECIFIED' },
   { value: 11, name: 'TOTEM' },
   { value: 12, name: 'NON_COMBAT_PET' },
