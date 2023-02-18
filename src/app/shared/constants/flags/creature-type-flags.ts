@@ -5,7 +5,7 @@ export const CREATURE_TYPE_FLAGS: Flag[] = [
   { bit: 1, name: 'VISIBLE_TO_GHOSTS - Creature are also visible for not alive player.' },
   {
     bit: 2,
-    name: 'BOSS_MOB - Changes creature’s visible level to "??" in the creature’s portrait - Immune to Knockback.',
+    name: 'BOSS_MOB - Changes creature’s visible level to "??" in the creature’s portrait - Immune to Knockback. Always deal full damage and always same chance to hit attacks.',
   },
   { bit: 3, name: 'DO_NOT_PLAY_WOUND_PARRY_ANIMATION' },
   { bit: 4, name: 'NO_FACTION_TOOLTIP' },
