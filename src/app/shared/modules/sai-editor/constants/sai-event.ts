@@ -121,25 +121,25 @@ SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.UPDATE_OOC] = 'Repeat timer max';
 
 // SMART_EVENT_HEALTH_PCT
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.HEALTH_PCT] =
-  'At health percentage. First and second parameters function as min-max health percentage values, so if they are  50,80, the event will be called when the source is between 50% and 80% health. The last two parameters are repeat timers in milliseconds.';
+  'At health percentage. First and second parameters function as min-max health percentage values, so if they are  50,80, the event will be called when the source is between 50% and 80% health. The last two parameters are repeat timers in milliseconds. This event only works if the NPC is in combat.';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.HEALTH_PCT] = 'MinHealth%';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.HEALTH_PCT] = 'MaxHealth%';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.HEALTH_PCT] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.HEALTH_PCT] = 'RepeatMax';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.HEALTH_PCT] = 'Timer min';
-SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.HEALTH_PCT] = 'Timer max';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.HEALTH_PCT] = 'Lowest amount of health in % for the action to trigger';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.HEALTH_PCT] = 'Highest amount of health in % for the action to trigger';
 SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.HEALTH_PCT] = 'Repeat timer min';
 SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.HEALTH_PCT] = 'Repeat timer max';
 
 // SMART_EVENT_MANA_PCT
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.MANA_PCT] =
-  'At mana percentage. First and second parameters function as min-max mana percentage values, so if they are  50,80, the event will be called when the source is between 50% and 80% mana. The last two parameters are repeat timers in milliseconds.';
+  'At mana percentage. First and second parameters function as min-max mana percentage values, so if they are  50,80, the event will be called when the source is between 50% and 80% mana. The last two parameters are repeat timers in milliseconds. This event only works if the NPC is in combat.';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.MANA_PCT] = 'MinMana%';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.MANA_PCT] = 'MaxMana%';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.MANA_PCT] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.MANA_PCT] = 'RepeatMax';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.MANA_PCT] = 'Timer min';
-SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.MANA_PCT] = 'Timer max';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.MANA_PCT] = 'Lowest amount of mana in % for the action to trigger';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.MANA_PCT] = 'Highest amount of mana in % for the action to trigger';
 SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.MANA_PCT] = 'Repeat timer min';
 SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.MANA_PCT] = 'Repeat timer max';
 
@@ -222,12 +222,12 @@ SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.VICTIM_CASTING] =
 
 // SMART_EVENT_FRIENDLY_HEALTH
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.FRIENDLY_HEALTH] =
-  'When a friendly unit within a certain range reaches a certain amount of health (NOT PERCENTAGE). If you are looking for percentage, use event type 74.';
+  'When this NPC or a friendly unit within a certain range LOSES a certain amount of health (NOT PERCENTAGE). If you are looking for percentage, use event type 74.';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.FRIENDLY_HEALTH] = 'HPDeficit';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.FRIENDLY_HEALTH] = 'Radius';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.FRIENDLY_HEALTH] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.FRIENDLY_HEALTH] = 'RepeatMax';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.FRIENDLY_HEALTH] = 'Amount of Health the friendly unit must be at (NOT percentage)';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.FRIENDLY_HEALTH] = 'Amount of Health this NPC or nearby NPC must have lost (NOT percentage)';
 
 // SMART_EVENT_FRIENDLY_IS_CC
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.FRIENDLY_IS_CC] = 'When a friendly unit within a certain range is under the effect of a crowd control spell';
@@ -573,23 +573,23 @@ SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.COUNTER_SET] = 'CooldownMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.COUNTER_SET] = 'CooldownMax';
 
 // SMART_EVENT_NEAR_PLAYERS
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS] = 'If the value of minPlayers is met.';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.NEAR_PLAYERS] = 'minPlayers';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS] = 'Amount of Players needed within a range to Start the action.';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.NEAR_PLAYERS] = 'Amount of Players';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.NEAR_PLAYERS] = 'Range';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.NEAR_PLAYERS] = 'FirstCheck';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.NEAR_PLAYERS] = 'RepeatCheck';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS] = 'How many players are needed for the event to trigger.';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS] = 'Players needed to Start the Action';
 SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS] = 'Range in yards to check for players.';
 SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS] = 'First check for players after X milliseconds (ms).';
 SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS] = 'Repeating check for players every X milliseconds (ms).';
 
 // SMART_EVENT_NEAR_PLAYERS_NEGATION
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'If the value of maxPlayers is met.';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'maxPlayers';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'Amount of players needed within a range to STOP the action"';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'Amount of Players';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'Range';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'FirstCheck';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'RepeatCheck';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'Maximum amount of players for the event to trigger.';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'Players needed to STOP the Action';
 SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'Range in yards to check for players.';
 SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'First check for players after X milliseconds (ms).';
 SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'Repeating check for players every X milliseconds (ms).';

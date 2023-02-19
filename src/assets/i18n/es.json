@@ -218,6 +218,7 @@
       "HOVER_HEIGHT": "Distancia sobre el suelo a la que se elevará la criatura si tiene MOVEMENTFLAG_DISABLE_GRAVITY habilitado.",
       "SCALE": "Multiplicador de tamaño (qué tan grande (o pequeño) parece el modelo de criatura). Si es igual a 0, utiliza el tamaño del modelo dentro del DBC que viene por defecto.",
       "DAMAGE_MODIFIER": "Multiplicador de daño, afecta a mindmg (MínimoDaño) y maxdmg (MáximoDaño)",
+      "ARMOR_MODIFIER_TOOLTIP": "Damage taken from physical attacks, a value of 1 is normal; Values under 1 mean it will take more damage; Values over 1 mean it will take less damage",
       "SPEED_RUN": "Controla la velocidad promedio a la que puede correr la criatura. En el caso de los vehículos, aumenta la velocidad de vuelo.",
       "SPEED_WALK": "Controla la velocidad promedio a la que puede caminar la criatura. En el caso de los vehículos, aumenta la velocidad de movimiento por tierra.",
       "SPEED_SWIM": "Controla la velocidad promedio a la que puede nadar la criatura.",
@@ -240,6 +241,7 @@
     },
     "SPAWN": {
       "ORIENTATION": "La Orientación en el punto de aparición de la criatura. (Norte = 0.0; Sur = π (3.14159))",
+      "EQUIPMENT_ID_TOOLTIP": "1 = uses the info set in equipment template 0 = no weapons equipped",
       "SPAWN_DIST_TOOLTIP": "Distancia máxima a la que puede aparecer la criatura desde su punto inicial. También controla qué tan lejos la criatura puede caminar desde su punto inicial de aparición si su 'MovementType' es igual a 1.",
       "SCRIPT_NAME": "El nombre en clave del script escrito en C++ que utilizará esta criatura, si existe claro está.",
       "GUID": "Enlazado con creature.guid (Identificador Único Global de la Criatura)",
