@@ -158,7 +158,7 @@ SAI_TARGET_PARAM3_NAMES[SAI_TARGETS.CLOSEST_CREATURE] = 'MustBeDead';
 SAI_TARGET_PARAM1_TOOLTIPS[SAI_TARGETS.CLOSEST_CREATURE] = 'If left at 0, it will target the closest creature of ANY entry';
 SAI_TARGET_PARAM2_TOOLTIPS[SAI_TARGETS.CLOSEST_CREATURE] = 'Can be from 0 to 100 yards';
 SAI_TARGET_PARAM3_TOOLTIPS[SAI_TARGETS.CLOSEST_CREATURE] =
-  'If set to 0 it will only target alive creatures; if set to 1 it will target only alive creatures';
+  'if set to 0 it will only target alive targets, if set to 1 it will only target alive targets';
 
 // SMART_TARGET_CLOSEST_GAMEOBJECT
 SAI_TARGET_TOOLTIPS[SAI_TARGETS.CLOSEST_GAMEOBJECT] =
