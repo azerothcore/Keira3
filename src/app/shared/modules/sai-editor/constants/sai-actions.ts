@@ -458,7 +458,7 @@ SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.FORCE_DESPAWN] = 'Respawn in Seconds';
 // SMART_ACTION_SET_INVINCIBILITY_HP_LEVEL
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_INVINCIBILITY_HP_LEVEL] =
   "Sets the creature's invincibility health to a flat value or percentage. " +
-  'Either one of the parameters must be set (so not both), and you can not reverse this effect (both parameters at 0 will result in an error).';
+  'Either one of the parameters must be set (so not both). Setting both to 0 will remove the effect.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_INVINCIBILITY_HP_LEVEL] = 'Flat value';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_INVINCIBILITY_HP_LEVEL] = '% value';
 
