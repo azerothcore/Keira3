@@ -229,7 +229,7 @@
       "ENTRY": "Enlazado con creature_template.entry (ID de la Criatura)",
       "PATH_ID": "En caso de que la criatura se desplace por una ruta con Waypoints, contiene la misma ID que waypoint_data para la ruta que debe seguir.",
       "MOUNT": "ID del modelo de aquella montura que será utilizada para que la criatura aparezca montada sobre algo. El valor que aquí se encuentre anularía el valor del Campo de Unidad de la Criatura, o sea UNIT_FIELD_MOUNTDISPLAYID.",
-      "VISIBILITY_DISTANCE_TYPE": "Controla la distancia de visibilidad de la criatura. 0 = Normal (por defecto 90 yardas u 82 metros);  1 = Amplio (250 yardas u 228 metros)",
+      "VISIBILITY_DISTANCE_TYPE": "Normal = 0, 100.0f (default visible distance, 100 yards on continents); Tiny = 1, 25.0f; Small = 2, 50.0f; Large = 3, 200.0f; Gigantic = 4, 400.0f; Infinite = 5 (SIZE_OF_GRIDS max distance for visible objects)",
       "AURAS": "Una lista de auras separadas por comas que se aplicarán sobre ésta criatura en particular"
     },
     "ONKILL_REPUTATION": {
@@ -247,7 +247,7 @@
       "GUID": "Enlazado con creature.guid (Identificador Único Global de la Criatura)",
       "PATH_ID": "En tal caso de que la criatura posea un movimiento guiado por waypoints por ejemplo, este campo calmacena el waypoint_data.id del camino que debe recorrer.",
       "MOUNT": "Identificador (ID) del modelo de la montura que será utilizada para que aparezca sobre la misma al spawnear. El valor que aquí se preste sustituye al valor del Campo de Unidad de Criatura, o sea UNIT_FIELD_MOUNTDISPLAYID.",
-      "VISIBILITY_DISTANCE_TYPE": "Controla la distancia de visibilidad de la criatura. 0 = Normal (por defecto 90 yardas u 82 metros);  1 = mplio (250 yardas u 228 metros)",
+      "VISIBILITY_DISTANCE_TYPE": "Normal = 0, 100.0f (default visible distance, 100 yards on continents); Tiny = 1, 25.0f; Small = 2, 50.0f; Large = 3, 200.0f; Gigantic = 4, 400.0f; Infinite = 5 (SIZE_OF_GRIDS max distance for visible objects)",
       "AURAS": "Una lista de auras separadas por comas que se aplicarán sobre ésta criatura en particular"
     },
     "TEMPLATE_MOVEMENT": {
