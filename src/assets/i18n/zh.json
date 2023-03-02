@@ -229,7 +229,7 @@
       "ENTRY": "链接至creature_template表的entry字段",
       "PATH_ID": "如果该生物有航路点路径移动，则输入该生物要遵循的路径，取值自waypoint_data表中的id字段。",
       "MOUNT": "用于使生物显示为坐骑的坐骑的模型ID。此处的值会覆盖生物单位字段UNIT_FIELD_MOUNTDISPLAYID的值。",
-      "VISIBILITY_DISTANCE_TYPE": "控制生物的可见距离。0=正常（默认90码）；1=较远（250码）",
+      "VISIBILITY_DISTANCE_TYPE": "Normal = 0, 100.0f (default visible distance, 100 yards on continents); Tiny = 1, 25.0f; Small = 2, 50.0f; Large = 3, 200.0f; Gigantic = 4, 400.0f; Infinite = 5 (SIZE_OF_GRIDS max distance for visible objects)",
       "AURAS": "该生物的光环技能列表，用英文逗号分割"
     },
     "ONKILL_REPUTATION": {
@@ -247,7 +247,7 @@
       "GUID": "creature表中的guid字段",
       "PATH_ID": "如果该生物有航路点路径移动，则输入该生物要遵循的路径，取值自waypoint_data表中的id字段。",
       "MOUNT": "用于使生物显示为坐骑的坐骑的模型ID。此处的值会覆盖生物单位字段UNIT_FIELD_MOUNTDISPLAYID的值。",
-      "VISIBILITY_DISTANCE_TYPE": "控制生物的可见距离。0=正常（默认90码）；1=较远（250码）",
+      "VISIBILITY_DISTANCE_TYPE": "Normal = 0, 100.0f (default visible distance, 100 yards on continents); Tiny = 1, 25.0f; Small = 2, 50.0f; Large = 3, 200.0f; Gigantic = 4, 400.0f; Infinite = 5 (SIZE_OF_GRIDS max distance for visible objects)",
       "AURAS": "该生物的光环技能列表，用英文逗号分割"
     },
     "TEMPLATE_MOVEMENT": {

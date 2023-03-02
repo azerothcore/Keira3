@@ -229,7 +229,7 @@
       "ENTRY": "Länk till creature_template.entry",
       "PATH_ID": "Om NPC har en Waypoint Pathed rörelse, som innehåller waypoint_data.id för den väg/rörelse som NPC ska gå.",
       "MOUNT": "Model ID utav den Mount ska ska användas för att få den NPC att sitta på en Mount. ID här åsidosätter det ID för den NPC unit field UNIT_FIELD_MOUNTDISPLAYID.",
-      "VISIBILITY_DISTANCE_TYPE": "Kontrollerar hur långt ifrån du kan se den NPC. 0 = Normal (default 90 yards);  1 = Large (250 yards).",
+      "VISIBILITY_DISTANCE_TYPE": "Normal = 0, 100.0f (default visible distance, 100 yards on continents); Tiny = 1, 25.0f; Small = 2, 50.0f; Large = 3, 200.0f; Gigantic = 4, 400.0f; Infinite = 5 (SIZE_OF_GRIDS max distance for visible objects)",
       "AURAS": "En lista utav Comma-Separated Auras som appliceras på NPC."
     },
     "ONKILL_REPUTATION": {
@@ -247,7 +247,7 @@
       "GUID": "Länk till creature.guid",
       "PATH_ID": "Om den NPC har en Waypoint Pathed rörelse, innehåller waypoint_data.id för den väg denna NPC ska röra sig.",
       "MOUNT": "Model ID av den Mount som ska användas för den NPC ska vara Mounted. ID här åsidosätter ID för NPC unit field UNIT_FIELD_MOUNTDISPLAYID.",
-      "VISIBILITY_DISTANCE_TYPE": "Kontrollerar hur nära eller långt ifrån en NPC kan upptäcka NPC. 0 = Normal (default 90 yards);  1 = Large (250 yards)",
+      "VISIBILITY_DISTANCE_TYPE": "Normal = 0, 100.0f (default visible distance, 100 yards on continents); Tiny = 1, 25.0f; Small = 2, 50.0f; Large = 3, 200.0f; Gigantic = 4, 400.0f; Infinite = 5 (SIZE_OF_GRIDS max distance for visible objects)",
       "AURAS": "En lista utav Comma-Separated Auras som appliceras på NPC."
     },
     "TEMPLATE_MOVEMENT": {
