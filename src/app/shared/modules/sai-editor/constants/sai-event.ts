@@ -195,7 +195,7 @@ SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.OOC_LOS] = 'CooldownMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.OOC_LOS] = 'CooldownMax';
 SAI_EVENT_PARAM5_NAMES[SAI_EVENTS.OOC_LOS] = 'PlayerOnly';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.OOC_LOS] =
-  'If 0, only non-hostile units can trigger this event. If 1, only hostile units can trigger this event';
+  'If 0, only hostile units can trigger this event. If 1, only non-hostile units can trigger this event';
 SAI_EVENT_PARAM5_TOOLTIPS[SAI_EVENTS.OOC_LOS] = '0 or 1';
 
 // SMART_EVENT_RESPAWN
