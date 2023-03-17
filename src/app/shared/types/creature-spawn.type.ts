@@ -14,7 +14,6 @@ export class CreatureSpawn extends TableRow {
   areaId: number = 0;
   spawnMask: number = 1;
   phaseMask: number = 1;
-  modelid: number = 0;
   equipment_id: number = 0;
   position_x: number = 0;
   position_y: number = 0;
