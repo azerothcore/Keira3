@@ -189,7 +189,7 @@ SAI_ACTION_COMMENTS[
 
 // AC-only actions:
 SAI_ACTION_COMMENTS[SAI_ACTIONS.MOVE_TO_POS_TARGET] = 'Move to pos target _actionParamOne_';
-SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_GO_STATE] = 'Set GO state to _actionParamOne_';
+SAI_ACTION_COMMENTS[SAI_ACTIONS.GO_SET_GO_STATE] = 'Set GO state to _actionParamOne_';
 SAI_ACTION_COMMENTS[SAI_ACTIONS.EXIT_VEHICLE] = 'Exit vehicle';
 SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_UNIT_MOVEMENT_FLAGS] = 'Set unit movement flags to _actionParamOne_';
 SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_COMBAT_DISTANCE] = 'Set combat distance to _actionParamOne_';
