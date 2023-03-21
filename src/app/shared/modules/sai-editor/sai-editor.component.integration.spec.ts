@@ -594,7 +594,7 @@ describe('SaiEditorComponent integration tests', () => {
       expect(page.target4Name.innerText).toContain('AliveState');
 
       page.setInputValueById('target_type', '28: 201'); // need this hack because option values are no longer in sequence at this point
-      expect(page.targetOName.innerText).toContain('Resize');
+      expect(page.targetOName.innerText).toContain('TargetO');
 
       // TODO: add tests for target X, Y, Z dynamic names when they will be in use
     });
