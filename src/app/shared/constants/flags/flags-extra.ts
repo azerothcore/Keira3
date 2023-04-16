@@ -27,7 +27,7 @@ export const FLAGS_EXTRA: Flag[] = [
   { bit: 23, name: `NO_DODGE - target cannot dodge` },
   { bit: 24, name: `MODULE - Used by module creatures to avoid blizzlike checks` },
   { bit: 25, name: `IGNORE_ASSISTANCE_CALL - Creature is not aggroed by other mobs assistance functions` },
-  { bit: 26, name: `UNKNOWN` },
+  { bit: 26, name: `CREATURE_FLAG_EXTRA_DONT_OVERRIDE_SAI_ENTRY - Allows creatures to use both GUID and ENTRY specific SAI` },
   { bit: 27, name: `UNKNOWN` },
   // { bit: 28, name: `DUNGEON_BOSS - creature is a dungeon boss (SET DYNAMICALLY, DO NOT ADD IN DB)` },
   { bit: 29, name: `IGNORE_PATHFINDING - creature ignore pathfinding` },
