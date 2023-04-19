@@ -155,7 +155,7 @@ SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_NPC_FLAG] = `Set Npc Flag_getNpcFlags_`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.ADD_NPC_FLAG] = `Add Npc Flag_getNpcFlags_`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.REMOVE_NPC_FLAG] = `Remove Npc Flag_getNpcFlags_`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.SIMPLE_TALK] = `Say Line _actionParamOne_`;
-SAI_ACTION_COMMENTS[SAI_ACTIONS.INVOKER_CAST] = `Invoker Cast '_spellNameActionParamOne_'`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.SELF_CAST] = `Self Cast '_spellNameActionParamOne_'`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.CROSS_CAST] = `Cross Cast '_spellNameActionParamOne_'`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.CALL_RANDOM_TIMED_ACTIONLIST] = `Run Random Script`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.CALL_RANDOM_RANGE_TIMED_ACTIONLIST] = `Run Random Script`;
@@ -183,6 +183,7 @@ SAI_ACTION_COMMENTS[SAI_ACTIONS.ADD_POWER] = `Add _actionParamTwo_ _powerTypeAct
 SAI_ACTION_COMMENTS[SAI_ACTIONS.REMOVE_POWER] = `Remove _actionParamTwo_ _powerTypeActionParamOne_`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.GAME_EVENT_STOP] = `Stop game event _actionParamTwo_`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.GAME_EVENT_START] = `Start game event _actionParamTwo_`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.INVOKER_CAST] = `Invoker Cast '_spellNameActionParamOne_'`;
 SAI_ACTION_COMMENTS[
   SAI_ACTIONS.START_CLOSEST_WAYPOINT
 ] = `Pick Closest Waypoint _actionParamOne_ _actionParamTwo_ _actionParamThree_ _actionParamFour_ _actionParamFive_ _actionParamSix_`;
