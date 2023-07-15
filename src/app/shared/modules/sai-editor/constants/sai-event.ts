@@ -175,14 +175,14 @@ SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.SPELLHIT] = 'Use 0 for any';
 SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.SPELLHIT] = 'Use 0 for any';
 
 // SMART_EVENT_RANGE
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.RANGE] = 'When the creature is within a certain range of our target type';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.RANGE] = 'When the source\'s current target is within a certain range';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.RANGE] = 'MinDist';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.RANGE] = 'MaxDist';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.RANGE] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.RANGE] = 'RepeatMax';
 SAI_EVENT_PARAM5_NAMES[SAI_EVENTS.RANGE] = 'onlyFireOnRepeat';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.RANGE] = 'Minimum distance to target for the event to be triggered';
-SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.RANGE] = 'Maximum distance to target for the event to be triggered';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.RANGE] = 'Minimum distance to victim for the event to be triggered';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.RANGE] = 'Maximum distance to victim for the event to be triggered';
 SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.RANGE] = 'Timer min';
 SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.RANGE] = 'Timer max';
 SAI_EVENT_PARAM5_TOOLTIPS[SAI_EVENTS.RANGE] = 'If 1 event will not fire until repeat time has expired.';
