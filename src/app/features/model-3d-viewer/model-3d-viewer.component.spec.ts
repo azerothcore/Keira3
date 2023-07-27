@@ -6,7 +6,7 @@ import { of } from 'rxjs';
 import { Model3DViewerComponent } from './model-3d-viewer.component';
 import { CONTENT_WOTLK, MODEL_TYPE, VIEWER_TYPE } from './model-3d-viewer.model';
 
-fdescribe('Model3DViewerComponent', () => {
+describe('Model3DViewerComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [Model3DViewerComponent],
