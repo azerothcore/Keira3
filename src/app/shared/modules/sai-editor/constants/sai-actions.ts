@@ -626,13 +626,13 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.STORE_TARGET_LIST] = 'VarId';
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.WP_RESUME] = 'Resumes the waypoint path the creature was previously following.';
 
 // SMART_ACTION_SET_ORIENTATION
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ACTION_TYPE] = 'Used to alter the source\'s orientation. Depends on the script target. If SMART_TARGET_SELF, facing will be the same as in HomePosition, For SMART_TARGET_POSITION you need to set target_o : 0 = North, West = 1.5, South = 3, East = 4.5';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ACTION_TYPE] = 'Quick Change';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.ACTION_TYPE] = 'Random Orientation';
-SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.ACTION_TYPE] = 'Turning Angle';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.ACTION_TYPE] = '(0/1)';
-SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.ACTION_TYPE] = '(0/1)';
-SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.ACTION_TYPE] = 'The value in degrees which will turn the creature counterclockwise. target_type must be NONE';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_ORIENTATION] = 'Used to alter the source\'s orientation. Depends on the script target. If SMART_TARGET_SELF, facing will be the same as in HomePosition, For SMART_TARGET_POSITION you need to set target_o : 0 = North, West = 1.5, South = 3, East = 4.5';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_ORIENTATION] = 'Quick Change';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_ORIENTATION] = 'Random Orientation';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.SET_ORIENTATION] = 'Turning Angle';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_ORIENTATION] = '(0/1)';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SET_ORIENTATION] = '(0/1)';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.SET_ORIENTATION] = 'The value in degrees which will turn the creature counterclockwise. target_type must be NONE';
 
 // SMART_ACTION_CREATE_TIMED_EVENT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CREATE_TIMED_EVENT] = 'Calls SMART_EVENT_UPDATE after a specific time with given parameters.';
