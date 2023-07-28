@@ -66,15 +66,6 @@ describe('Model3DViewerComponent', () => {
     expect(component['resetModel3dElement']).toHaveBeenCalledTimes(1);
   });
 
-  xit('generate3Dmodel', () => {
-    const { component } = setup();
-    spyOn<any>(component, 'resetModel3dElement');
-
-    component['generate3Dmodel']();
-
-    expect(component['resetModel3dElement']).toHaveBeenCalledTimes(1);
-  });
-
   describe('show3Dmodel', () => {
     it('generate3Dmodel for non-item', () => {
       const { component } = setup();
