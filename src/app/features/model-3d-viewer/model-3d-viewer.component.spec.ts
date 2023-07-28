@@ -2,7 +2,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import { of, Subscription } from 'rxjs';
+import { of } from 'rxjs';
 import { Model3DViewerComponent } from './model-3d-viewer.component';
 import { CONTENT_WOTLK, MODEL_TYPE, VIEWER_TYPE } from './model-3d-viewer.model';
 
@@ -21,8 +21,11 @@ describe('Model3DViewerComponent', () => {
     const component = fixture.componentInstance;
     const queryService = TestBed.inject(MysqlQueryService);
     const httpTestingController = TestBed.inject(HttpTestingController);
+    const setupViewer3DSpy = spyOn<any>(component, 'setupViewer3D').and.callFake(() => {});
 
     fixture.detectChanges();
+
+    setupViewer3DSpy.calls.reset();
 
     return { fixture, component, queryService, httpTestingController };
   }
@@ -36,6 +39,7 @@ describe('Model3DViewerComponent', () => {
 
     expect(component['resetModel3dElement']).toHaveBeenCalledTimes(1);
     expect(component['viewerDynamic']).toHaveBeenCalledTimes(1);
+    expect(component['setupViewer3D']).toHaveBeenCalledTimes(1);
   });
 
   it('ngOnChanges', () => {
@@ -53,12 +57,13 @@ describe('Model3DViewerComponent', () => {
 
   it('ngOnDestroy', () => {
     const { component } = setup();
-    component['subscriptions'] = new Subscription();
     const unsubscribeSpy = spyOn<any>(component['subscriptions'], 'unsubscribe');
+    spyOn<any>(component, 'resetModel3dElement');
 
     component.ngOnDestroy();
 
     expect(unsubscribeSpy).toHaveBeenCalledTimes(1);
+    expect(component['resetModel3dElement']).toHaveBeenCalledTimes(1);
   });
 
   describe('show3Dmodel', () => {
@@ -75,7 +80,6 @@ describe('Model3DViewerComponent', () => {
     it('handles the item 3D model', (done) => {
       const { component } = setup();
       component.viewerType = VIEWER_TYPE.ITEM;
-      component['subscriptions'] = new Subscription();
       const subscriptionAddSpy = spyOn<any>(component['subscriptions'], 'add');
       const mockItemData$ = of([{ entry: 123 }]);
       spyOn<any>(component, 'getItemData$').and.returnValue(mockItemData$);
@@ -180,5 +184,14 @@ describe('Model3DViewerComponent', () => {
       expect(component['generate3Dmodel']).toHaveBeenCalledOnceWith(mockModelType, mockDisplayId);
       expect(component['getModelType']).toHaveBeenCalledOnceWith(2, 2);
     });
+  });
+
+  it('clean3DModels', () => {
+    const { component } = setup();
+    component['models3D'].push({ destroy: jasmine.createSpy('destroy') });
+
+    component['clean3DModels']();
+
+    expect(component['models3D'][0].destroy).toHaveBeenCalledTimes(1);
   });
 });

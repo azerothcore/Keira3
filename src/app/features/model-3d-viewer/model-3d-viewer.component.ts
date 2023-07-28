@@ -4,9 +4,11 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { TableRow } from '@keira-shared/types/general';
 import * as jquery from 'jquery';
-import { BehaviorSubject, catchError, filter, Observable, of, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, catchError, filter, of } from 'rxjs';
 import { generateModels, getShadowlandDisplayId } from './helper';
 import { CONTENT_LIVE, CONTENT_WOTLK, MODEL_TYPE, VIEWER_TYPE } from './model-3d-viewer.model';
+
+declare const ZamModelViewer: any;
 
 @Component({
   selector: 'keira-model-3d-viewer',
@@ -19,17 +21,17 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   @Input() itemInventoryType?: number;
   @Input() id? = 'model_3d';
 
-  private loadedViewer$ = new BehaviorSubject<boolean>(false);
-  private subscriptions = new Subscription();
+  private readonly loadedViewer$ = new BehaviorSubject<boolean>(false);
+  private readonly subscriptions = new Subscription();
+  private readonly models3D = [];
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(private readonly sanitizer: DomSanitizer, private readonly queryService: MysqlQueryService, private http: HttpClient) {
-    this.setupViewer3D();
-  }
+  constructor(private readonly sanitizer: DomSanitizer, private readonly queryService: MysqlQueryService, private http: HttpClient) {}
 
   public itemPreview: SafeHtml = this.sanitizer.bypassSecurityTrustHtml('loading...');
 
   ngOnInit(): void {
+    this.setupViewer3D();
     this.resetModel3dElement();
     this.viewerDynamic();
   }
@@ -98,6 +100,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     contentPath: string = CONTENT_WOTLK,
   ): void {
     this.resetModel3dElement();
+
     generateModels(
       1,
       `#${this.id}`,
@@ -106,7 +109,9 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
         id: displayId,
       },
       contentPath,
-    );
+    ).then((WoWModel) => {
+      this.models3D.push(WoWModel);
+    });
   }
 
   private getContentPathUrl(inventoryType: number | string): string {
@@ -157,9 +162,11 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
 
     const loadedViewer$ = this.loadedViewer$;
 
-    jquery.getScript(`${CONTENT_WOTLK}viewer/viewer.min.js`, function () {
-      loadedViewer$.next(true);
-    });
+    if (typeof ZamModelViewer === 'undefined') {
+      jquery.getScript(`${CONTENT_WOTLK}viewer/viewer.min.js`, function () {
+        loadedViewer$.next(true);
+      });
+    }
   }
 
   private viewerDynamic(): void {
@@ -173,12 +180,21 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   /* istanbul ignore next */
   private resetModel3dElement(): void {
     const modelElement = document.querySelector(`#${this.id}`);
+    this.clean3DModels();
     if (modelElement) {
       modelElement.innerHTML = '';
     }
   }
 
+  private clean3DModels(): void {
+    for (let i = 0; i < this.models3D.length; i++) {
+      this.models3D[i]?.destroy();
+    }
+    delete window['models'];
+  }
+
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+    this.resetModel3dElement();
   }
 }
