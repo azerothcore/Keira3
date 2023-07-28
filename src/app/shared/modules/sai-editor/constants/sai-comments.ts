@@ -68,10 +68,17 @@ SAI_EVENT_COMMENTS[SAI_EVENTS.ON_SPELLCLICK] = `On Spellclick`;
 SAI_EVENT_COMMENTS[SAI_EVENTS.DISTANCE_CREATURE] = `On Distance To Creature`;
 SAI_EVENT_COMMENTS[SAI_EVENTS.DISTANCE_GAMEOBJECT] = `On Distance To GameObject`;
 SAI_EVENT_COMMENTS[SAI_EVENTS.LINK] = `_previousLineComment_`;
+SAI_EVENT_COMMENTS[SAI_EVENTS.ACTION_DONE] = `On Action _eventParamOne_ Done`;
+SAI_EVENT_COMMENTS[SAI_EVENTS.COUNTER_SET] = `On Counter _eventParamOne_ Set To _eventParamTwo_`;
+SAI_EVENT_COMMENTS[SAI_EVENTS.SUMMONED_UNIT_DIES] = `On Summoned Unit Dies`;
 
 // AC-only Events:
-SAI_EVENT_COMMENTS[SAI_EVENTS.NEAR_PLAYERS] = `On Min Players in Range`;
-SAI_EVENT_COMMENTS[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = `On Max Players in Range`;
+SAI_EVENT_COMMENTS[SAI_EVENTS.NEAR_PLAYERS] = `On _eventParamOne_ or More Players in Range`;
+SAI_EVENT_COMMENTS[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = `On Less Than _eventParamOne_ Players in Range`;
+SAI_EVENT_COMMENTS[SAI_EVENTS.NEAR_UNIT] = `On _eventParamThree_ or More Units in Range`;
+SAI_EVENT_COMMENTS[SAI_EVENTS.NEAR_UNIT_NEGATION] = `On Less Than _eventParamThree_ Units in Range`;
+SAI_EVENT_COMMENTS[SAI_EVENTS.AREA_CASTING] = `On Hostile Casting in Range`;
+SAI_EVENT_COMMENTS[SAI_EVENTS.AREA_RANGE] = `On Hostile in Range`;
 
 export const SAI_ACTION_COMMENTS = [];
 SAI_ACTION_COMMENTS[SAI_ACTIONS.NONE] = `No Action Type`;
@@ -134,6 +141,7 @@ SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_RUN] = `Set Run _onOffActionParamOne_`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_FLY] = `Set Fly _onOffActionParamOne_`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_SWIM] = `Set Swim _onOffActionParamOne_`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.TELEPORT] = `Teleport`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_COUNTER] = `Add _actionParamTwo_ to Counter Id _actionParamOne_`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.STORE_TARGET_LIST] = `Store Targetlist`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.WP_RESUME] = `Resume Waypoint`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_ORIENTATION] = `Set Orientation _setOrientationTargetType_`;
@@ -189,21 +197,33 @@ SAI_ACTION_COMMENTS[
 ] = `Pick Closest Waypoint _actionParamOne_ _actionParamTwo_ _actionParamThree_ _actionParamFour_ _actionParamFive_ _actionParamSix_`;
 
 // AC-only actions:
-SAI_ACTION_COMMENTS[SAI_ACTIONS.MOVE_TO_POS_TARGET] = 'Move to pos target _actionParamOne_';
-SAI_ACTION_COMMENTS[SAI_ACTIONS.GO_SET_GO_STATE] = 'Set GO state to _actionParamOne_';
-SAI_ACTION_COMMENTS[SAI_ACTIONS.EXIT_VEHICLE] = 'Exit vehicle';
-SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_UNIT_MOVEMENT_FLAGS] = 'Set unit movement flags to _actionParamOne_';
-SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_COMBAT_DISTANCE] = 'Set combat distance to _actionParamOne_';
-SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_CASTER_COMBAT_DIST] = 'Set caster combat distance to _actionParamOne_ (RestToMax: _actionParamTwo_)';
-SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_HOVER] = 'Set hover _actionParamOne_';
-SAI_ACTION_COMMENTS[SAI_ACTIONS.ADD_IMMUNITY] = 'Add immunity Type: _actionParamOne_, Id: _actionParamTwo_, Value: _actionParamThree_';
+SAI_ACTION_COMMENTS[SAI_ACTIONS.MOVE_TO_POS_TARGET] = `Move to pos target _actionParamOne_`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.GO_SET_GO_STATE] = `Set GO state to _actionParamOne_`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.EXIT_VEHICLE] = `Exit vehicle`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_UNIT_MOVEMENT_FLAGS] = `Set unit movement flags to _actionParamOne_`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_COMBAT_DISTANCE] = `Set combat distance to _actionParamOne_`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_CASTER_COMBAT_DIST] = `Set caster combat distance to _actionParamOne_ (RestToMax: _actionParamTwo_)`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_HOVER] = `Set hover _actionParamOne_`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.ADD_IMMUNITY] = `Add immunity Type: _actionParamOne_, Id: _actionParamTwo_, Value: _actionParamThree_`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.REMOVE_IMMUNITY] =
-  'Remove immunity Type: _actionParamOne_, Id: _actionParamTwo_, Value: _actionParamThree_';
-SAI_ACTION_COMMENTS[SAI_ACTIONS.FALL] = 'Fall';
-SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_EVENT_FLAG_RESET] = 'Flag reset _actionParamOne_';
-SAI_ACTION_COMMENTS[SAI_ACTIONS.STOP_MOTION] = 'Stop motion (StopMoving: _actionParamOne_, MovementExpired: _actionParamTwo_)';
-SAI_ACTION_COMMENTS[SAI_ACTIONS.NO_ENVIRONMENT_UPDATE] = 'No environment update';
-SAI_ACTION_COMMENTS[SAI_ACTIONS.ZONE_UNDER_ATTACK] = 'Zone under attack';
-SAI_ACTION_COMMENTS[SAI_ACTIONS.LOAD_GRID] = 'Load Grid';
-SAI_ACTION_COMMENTS[SAI_ACTIONS.MUSIC] = 'Play music SoundId: _actionParamOne_, OnlySelf: _actionParamTwo_, Type: _actionParamThree_';
-SAI_ACTION_COMMENTS[SAI_ACTIONS.RANDOM_MUSIC] = 'Play random music OnlySelf: _actionParamFive_, Type: _actionParamSix_';
+  `Remove immunity Type: _actionParamOne_, Id: _actionParamTwo_, Value: _actionParamThree_`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.FALL] = `Fall`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_EVENT_FLAG_RESET] = `Flag reset _actionParamOne_`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.STOP_MOTION] = `Stop motion (StopMoving: _actionParamOne_, MovementExpired: _actionParamTwo_)`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.NO_ENVIRONMENT_UPDATE] = `No environment update`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.ZONE_UNDER_ATTACK] = `Zone under attack`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.LOAD_GRID] = `Load Grid`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.MUSIC] = `Play music SoundId: _actionParamOne_, OnlySelf: _actionParamTwo_, Type: _actionParamThree_`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.RANDOM_MUSIC] = `Play random music OnlySelf: _actionParamFive_, Type: _actionParamSix_`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.CUSTOM_CAST] = `Custom Cast _spellNameActionParamOne_`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.CONE_SUMMON] = `Do Cone Summon`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.PLAYER_TALK] = `Player Talk String _actionParamOne_`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.VORTEX_SUMMON] = `Do Vortex Summon`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.CU_ENCOUNTER_START] = `Reset Cooldowns`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.DO_ACTION] = `Do Action ID _actionParamOne_`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.ATTACK_STOP] = `Stop Attack`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_GUID] = `Send Guid`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.DISABLE] = `Set Creature _onOffActionParamOne_`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_SCALE] = `Set Scale to _actionParamOne_%`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.SUMMON_RADIAL] = `Do Radial Summon`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.PLAY_SPELL_VISUAL] = `Play Visual Kit Id _actionParamOne_`;
