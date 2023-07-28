@@ -26,13 +26,12 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private readonly models3D = [];
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(private readonly sanitizer: DomSanitizer, private readonly queryService: MysqlQueryService, private http: HttpClient) {
-    this.setupViewer3D();
-  }
+  constructor(private readonly sanitizer: DomSanitizer, private readonly queryService: MysqlQueryService, private http: HttpClient) {}
 
   public itemPreview: SafeHtml = this.sanitizer.bypassSecurityTrustHtml('loading...');
 
   ngOnInit(): void {
+    this.setupViewer3D();
     this.resetModel3dElement();
     this.viewerDynamic();
   }
