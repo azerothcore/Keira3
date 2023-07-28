@@ -165,6 +165,11 @@ export enum SAI_ACTIONS {
   CU_ENCOUNTER_START = 222,
   DO_ACTION = 223,
   ATTACK_STOP = 224,
+  SET_GUID = 225,
+  DISABLE = 226,
+  SET_SCALE = 227,
+  SUMMON_RADIAL = 228,
+  PLAY_SPELL_VISUAL = 229,
 }
 export const SAI_ACTIONS_KEYS = getEnumKeys(SAI_ACTIONS);
 export const SAI_ACTION_TOOLTIPS = [];
@@ -621,8 +626,13 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.STORE_TARGET_LIST] = 'VarId';
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.WP_RESUME] = 'Resumes the waypoint path the creature was previously following.';
 
 // SMART_ACTION_SET_ORIENTATION
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_ORIENTATION] =
-  'Sets the orientation of the creature to a given value. Must use SMART_TARGET_POSITION. If you, however, want the creature to face its spawn/home position, you can just use SMART_TARGET_SELF and leave all parameters at 0.';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ACTION_TYPE] = 'Used to alter the source\'s orientation. Depends on the script target. If SMART_TARGET_SELF, facing will be the same as in HomePosition, For SMART_TARGET_POSITION you need to set target_o : 0 = North, West = 1.5, South = 3, East = 4.5';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ACTION_TYPE] = 'Quick Change';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.ACTION_TYPE] = 'Random Orientation';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.ACTION_TYPE] = 'Turning Angle';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.ACTION_TYPE] = '(0/1)';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.ACTION_TYPE] = '(0/1)';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.ACTION_TYPE] = 'The value in degrees which will turn the creature counterclockwise. target_type must be NONE';
 
 // SMART_ACTION_CREATE_TIMED_EVENT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CREATE_TIMED_EVENT] = 'Calls SMART_EVENT_UPDATE after a specific time with given parameters.';
@@ -1163,3 +1173,39 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.DO_ACTION] = 'ActionId';
 
 // SMART_ACTION_ATTACK_STOP 
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ATTACK_STOP] = 'Stop melee, spell casting during combat, chasing the target and facing';
+
+// SMART_ACTION_SET_GUID
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_GUID] = 'Allows the target to perform an action similar to DO_ACTION, but allows a guid to be sent.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_GUID] = 'Method';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_GUID] = 'Index';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_GUID] = '0/1 (0 = Self Guid, 1 = Invoker Guid)';
+
+// SMART_ACTION_DISABLE
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.DISABLE] = 'Disable the target creatures, setting them Invisible and Immune to All';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.DISABLE] = 'State';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.DISABLE] = '0/1 (0 = Disable, 1 = Enable)';
+
+// SMART_ACTION_SET_SCALE
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_SCALE] = 'Sets the scale for the targeted creatures';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_SCALE] = 'Scale';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_SCALE] = 'This value is the percentage of the new scale the targets will take. 100 = default';
+
+// SMART_ACTION_SUMMON_RADIAL
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SUMMON_RADIAL] = 'Summons a set of creatures in a radial pattern, with orientation change specified in parameters.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SUMMON_RADIAL] = 'Summon Entry';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SUMMON_RADIAL] = 'Summon Duration';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.SUMMON_RADIAL] = 'Repetitions';
+SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.SUMMON_RADIAL] = 'Starting Angle';
+SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.SUMMON_RADIAL] = 'Step Angle';
+SAI_ACTION_PARAM6_NAMES[SAI_ACTIONS.SUMMON_RADIAL] = 'Distance';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SUMMON_RADIAL] = 'creature_template.entry to be summoned';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SUMMON_RADIAL] = 'Duration in ms which the summons will despawn after, if 0 then despawn on death';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.SUMMON_RADIAL] = 'Amount of creatures to be summoned';
+SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.SUMMON_RADIAL] = 'Offset in degrees, 0: same angle as source';
+SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.SUMMON_RADIAL] = 'How many degrees the creature will turn for each repetition';
+SAI_ACTION_PARAM6_TOOLTIPS[SAI_ACTIONS.SUMMON_RADIAL] = 'Distance offset from the source creature';
+
+// SMART_ACTION_PLAY_SPELL_VISUAL
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.PLAY_SPELL_VISUAL] = 'Makes the targets play the VisualKit ID specified.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.PLAY_SPELL_VISUAL] = 'Visual ID';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.PLAY_SPELL_VISUAL] = 'Can be found within SpellVisual.dbc';
