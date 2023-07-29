@@ -187,8 +187,8 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private clean3DModels(): void {
-    for (let i = 0; i < this.models3D.length; i++) {
-      this.models3D[i]?.destroy();
+    for (const model3D of this.models3D) {
+      model3D?.destroy();
     }
     delete window['models'];
   }
