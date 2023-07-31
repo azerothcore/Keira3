@@ -157,6 +157,12 @@ export class SaiCommentGeneratorService {
     if (eventLine.indexOf('_hasAuraEventParamOne_') > -1) {
       eventLine = eventLine.replace('_hasAuraEventParamOne_', await this.sqliteQueryService.getSpellNameById(smartScript.event_param1));
     }
+	if (eventLine.indexOf('_waypointParamOne_') == 0) {
+      eventLine = eventLine.replace('_waypointParamOne_', 'Any');
+    }
+	if (eventLine.indexOf('_waypointParamTwo_') == 0) {
+      eventLine = eventLine.replace('_waypointParamTwo_', 'Any');
+    }
 
     return eventLine;
   }
@@ -447,6 +453,14 @@ export class SaiCommentGeneratorService {
         actionLine = actionLine.replace('_enableDisableActionParamOne_', 'Enable');
       }
     }
+	
+	if (actionLine.indexOf('_enableDisableInvertActionParamOne_') > -1) {
+      if (`${smartScript.action_param1}` === '0') {
+        actionLine = actionLine.replace('_enableDisableInvertActionParamOne_', 'Enable');
+      } else {
+        actionLine = actionLine.replace('_enableDisableInvertActionParamOne_', 'Disable');
+      }
+    }
 
     if (actionLine.indexOf('_incrementOrDecrementActionParamOne_') > -1) {
       if (`${smartScript.action_param1}` === '1') {
@@ -472,6 +486,55 @@ export class SaiCommentGeneratorService {
           break;
         default:
           actionLine = actionLine.replace('_sheathActionParamOne_', '[Unknown Sheath]');
+          break;
+      }
+    }
+	
+	if (actionLine.indexOf('_waypointStartActionParamThree_') > -1) {
+      switch (Number(smartScript.action_param1)) {
+        case 0:
+          actionLine = actionLine.replace('_waypointStartActionParamThree_', 'Waypoint ');
+          break;
+        case 1:
+          actionLine = actionLine.replace('_waypointStartActionParamThree_', 'Patrol ');
+          break;
+        default:
+          actionLine = actionLine.replace('_waypointStartActionParamThree_', '[Unknown Value]');
+          break;
+      }
+    }
+	
+	if (actionLine.indexOf('_movementTypeActionParamOne_') > -1) {
+      switch (Number(smartScript.action_param1)) {
+        case 0:
+          actionLine = actionLine.replace('_movementTypeActionParamOne_', 'Walk');
+          break;
+        case 1:
+          actionLine = actionLine.replace('_movementTypeActionParamOne_', 'Run');
+          break;
+		 case 2:
+          actionLine = actionLine.replace('_movementTypeActionParamOne_', 'Run Back');
+          break;
+		 case 3:
+          actionLine = actionLine.replace('_movementTypeActionParamOne_', 'Swim');
+          break;
+		 case 4:
+          actionLine = actionLine.replace('_movementTypeActionParamOne_', 'Swim Back');
+          break;
+		 case 5:
+          actionLine = actionLine.replace('_movementTypeActionParamOne_', 'Turn Rate');
+          break;
+		 case 6:
+          actionLine = actionLine.replace('_movementTypeActionParamOne_', 'Flight');
+          break;
+		 case 7:
+          actionLine = actionLine.replace('_movementTypeActionParamOne_', 'Flight Back');
+          break;
+		 case 8:
+          actionLine = actionLine.replace('_movementTypeActionParamOne_', 'Pitch Rate');
+          break;
+        default:
+          actionLine = actionLine.replace('_movementTypeActionParamOne_', '[Unknown Value]');
           break;
       }
     }
