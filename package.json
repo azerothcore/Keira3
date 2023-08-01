@@ -86,7 +86,7 @@
     "@typescript-eslint/parser": "5.62.0",
     "bootstrap": "5.3.1",
     "codelyzer": "6.0.2",
-    "conventional-changelog-cli": "2.2.2",
+    "conventional-changelog-cli": "3.0.0",
     "coveralls": "3.1.1",
     "cross-env": "7.0.3",
     "electron": "24.6.5",
