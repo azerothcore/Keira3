@@ -1,8 +1,8 @@
-import { CanActivate, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { TableRow } from '@keira-types/general';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
 
-export abstract class HandlerService<T extends TableRow> extends SubscriptionHandler implements CanActivate {
+export abstract class HandlerService<T extends TableRow> extends SubscriptionHandler {
   protected _selected: string;
   selectedName: string;
   isNew = false;
