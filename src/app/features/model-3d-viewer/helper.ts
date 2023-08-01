@@ -2,13 +2,13 @@
 
 import { AppConfig } from '../../../environments/environment';
 import {
-  CHARACTER_PART,
+  // CHARACTER_PART,
   CONTENT_WOTLK,
   // DisplayInfo,
-  GENDER,
-  Gender,
-  NOT_DISPLAYED_SLOTS,
-  RACES,
+  // GENDER,
+  // Gender,
+  // NOT_DISPLAYED_SLOTS,
+  // RACES,
   // wotlkToShadowlandSlots,
   WoWModel,
 } from './model-3d-viewer.model';
@@ -36,14 +36,14 @@ declare const ZamModelViewer: any;
 //   return equipments.filter((e: any) => e.displaySlot).map((e: any) => [e.displaySlot, e.displayId]);
 // }
 
-async function findRaceGenderOptions(race: number, gender: Gender): Promise<any> {
-  const options = await fetch(`${CONTENT_WOTLK}meta/charactercustomization2/${race}_${gender}.json`).then((response) => response.json());
-  if (options.data) {
-    return options.data;
-  }
+// async function findRaceGenderOptions(race: number, gender: Gender): Promise<any> {
+//   const options = await fetch(`${CONTENT_WOTLK}meta/charactercustomization2/${race}_${gender}.json`).then((response) => response.json());
+//   if (options.data) {
+//     return options.data;
+//   }
 
-  return options;
-}
+//   return options;
+// }
 
 // async function getDisplaySlot(item: number, slot: number, displayId: number): Promise<DisplayInfo> {
 //   const displayInfo: DisplayInfo = {
@@ -87,56 +87,56 @@ async function optionsFromModel(model: WoWModel): Promise<{ models: WoWModel; ch
     return { models: { id, type } };
   }
 
-  const { race, gender } = model;
+  // const { race, gender } = model;
 
-  // CHARACTER OPTIONS
-  // This is how we describe a character properties
-  const fullOptions = await findRaceGenderOptions(race, gender);
+  // // CHARACTER OPTIONS
+  // // This is how we describe a character properties
+  // const fullOptions = await findRaceGenderOptions(race, gender);
 
-  // slot ids on model viewer
-  const characterItems = model.items ? model.items.filter((e) => !NOT_DISPLAYED_SLOTS.includes(e[0])) : [];
-  const options = getOptions(model, fullOptions);
+  // // slot ids on model viewer
+  // const characterItems = model.items ? model.items.filter((e) => !NOT_DISPLAYED_SLOTS.includes(e[0])) : [];
+  // const options = getOptions(model, fullOptions);
 
-  const retGender = gender === 1 ? GENDER.FEMALE : GENDER.MALE;
-  const raceToModelId = RACES[race] + retGender;
+  // const retGender = gender === 1 ? GENDER.FEMALE : GENDER.MALE;
+  // const raceToModelId = RACES[race] + retGender;
 
-  return {
-    items: characterItems,
-    charCustomization: {
-      options: options,
-    },
-    models: {
-      id: raceToModelId,
-      type: 16,
-    },
-  };
+  // return {
+  //   items: characterItems,
+  //   charCustomization: {
+  //     options: options,
+  //   },
+  //   models: {
+  //     id: raceToModelId,
+  //     type: 16,
+  //   },
+  // };
 }
 
-/**
- *
- * @param character
- * @param {{}}fullOptions: Zaming API character options payload
- * @return {[]}
- */
-function getOptions(character: {}, fullOptions): any[] {
-  const options = fullOptions.Options;
-  const ret = [];
-  for (const prop in CHARACTER_PART) {
-    const part = options.find((e) => e.Name === prop);
+// /**
+//  *
+//  * @param character
+//  * @param {{}}fullOptions: Zaming API character options payload
+//  * @return {[]}
+//  */
+// function getOptions(character: {}, fullOptions): any[] {
+//   const options = fullOptions.Options;
+//   const ret = [];
+//   for (const prop in CHARACTER_PART) {
+//     const part = options.find((e) => e.Name === prop);
 
-    if (!part) {
-      continue;
-    }
+//     if (!part) {
+//       continue;
+//     }
 
-    const newOption = {
-      optionId: part.Id,
-      choiceId: CHARACTER_PART[prop] ? part.Choices[character[CHARACTER_PART[prop]]]?.id : part.Choices[0].Id,
-    };
-    ret.push(newOption);
-  }
+//     const newOption = {
+//       optionId: part.Id,
+//       choiceId: CHARACTER_PART[prop] ? part.Choices[character[CHARACTER_PART[prop]]]?.id : part.Choices[0].Id,
+//     };
+//     ret.push(newOption);
+//   }
 
-  return ret;
-}
+//   return ret;
+// }
 
 /**
  *
@@ -197,11 +197,4 @@ export function getShadowlandDisplayId(wotlkDisplayId: number): Promise<{ displa
       console.error(`sqite db was not defined when trying to get the shadow lands display id`);
     }
   });
-}
-
-export function resetModel3dElement(): void {
-  const modelElement = document.querySelector('#model_3d');
-  if (modelElement) {
-    modelElement.innerHTML = '';
-  }
 }

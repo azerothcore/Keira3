@@ -43,6 +43,8 @@ To use Keira3, you don't need to install any dependency. Just [download](https:/
 
 If you are using Arch Linux you can find the package on [AUR](https://aur.archlinux.org/packages/keira3/)
 
+:warning: [Windows 7 or older Windows versions](https://github.com/azerothcore/Keira3/issues/2212) are not officially supported.
+
 ## How to run Keira3 in development mode
 
 ### Dependencies
@@ -64,7 +66,7 @@ Please follow [Angular-cli documentation](https://github.com/angular/angular-cli
 npm install -g @angular/cli
 ```
 
-Only for **Windows**, install windows-build-tools as administrator:
+Only for **Windows** ([Windows 7 or older versions](https://github.com/azerothcore/Keira3/issues/2212) are not officially supported), install `windows-build-tools` as administrator:
 ```
 npm install --global-production windows-build-tools
 ```

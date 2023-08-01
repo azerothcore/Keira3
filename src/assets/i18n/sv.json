@@ -218,6 +218,7 @@
       "HOVER_HEIGHT": "Avstånd över marken som NPC kommer att sväva om den har MOVEMENTFLAG_DISABLE_GRAVITY enabled",
       "SCALE": "Storleksmultiplikator (hur stor NPC modellen ska vara). Om den är 0, då använder den DBC standard model.",
       "DAMAGE_MODIFIER": "Skademultiplikator, påverkar mindmg and maxdmg.",
+      "ARMOR_MODIFIER_TOOLTIP": "Damage taken from physical attacks, a value of 1 is normal; Values under 1 mean it will take more damage; Values over 1 mean it will take less damage",
       "SPEED_RUN": "Kontrollerar hur snabbt en NPC ska gå. För fordon blir det snabbare i luften.",
       "SPEED_WALK": "Kontrollerar hur snabbt en NPC kan springa. För fordon blir det snabbare på marken.",
       "SPEED_SWIM": "Kontrollerar hur snabbt en NPC kan simma.",
@@ -228,7 +229,7 @@
       "ENTRY": "Länk till creature_template.entry",
       "PATH_ID": "Om NPC har en Waypoint Pathed rörelse, som innehåller waypoint_data.id för den väg/rörelse som NPC ska gå.",
       "MOUNT": "Model ID utav den Mount ska ska användas för att få den NPC att sitta på en Mount. ID här åsidosätter det ID för den NPC unit field UNIT_FIELD_MOUNTDISPLAYID.",
-      "VISIBILITY_DISTANCE_TYPE": "Kontrollerar hur långt ifrån du kan se den NPC. 0 = Normal (default 90 yards);  1 = Large (250 yards).",
+      "VISIBILITY_DISTANCE_TYPE": "Normal = 0, 100.0f (default visible distance, 100 yards on continents); Tiny = 1, 25.0f; Small = 2, 50.0f; Large = 3, 200.0f; Gigantic = 4, 400.0f; Infinite = 5 (SIZE_OF_GRIDS max distance for visible objects)",
       "AURAS": "En lista utav Comma-Separated Auras som appliceras på NPC."
     },
     "ONKILL_REPUTATION": {
@@ -240,12 +241,13 @@
     },
     "SPAWN": {
       "ORIENTATION": "Bestämmer den NPC Spawn Punkt. (North = 0.0; South = pi (3.14159))",
+      "EQUIPMENT_ID_TOOLTIP": "1 = uses the info set in equipment template 0 = no weapons equipped",
       "SPAWN_DIST_TOOLTIP": "Det maximala avståndet som den NPC kan spawna från dens Spawn Punkt. Kontrollerar också den hur långt ifrån NPC kan röra sig från din Spawn Punkt om dens MovementType = 1.",
       "SCRIPT_NAME": "Namnet på det C++ script som denna NPC använder, om det finns.",
       "GUID": "Länk till creature.guid",
       "PATH_ID": "Om den NPC har en Waypoint Pathed rörelse, innehåller waypoint_data.id för den väg denna NPC ska röra sig.",
       "MOUNT": "Model ID av den Mount som ska användas för den NPC ska vara Mounted. ID här åsidosätter ID för NPC unit field UNIT_FIELD_MOUNTDISPLAYID.",
-      "VISIBILITY_DISTANCE_TYPE": "Kontrollerar hur nära eller långt ifrån en NPC kan upptäcka NPC. 0 = Normal (default 90 yards);  1 = Large (250 yards)",
+      "VISIBILITY_DISTANCE_TYPE": "Normal = 0, 100.0f (default visible distance, 100 yards on continents); Tiny = 1, 25.0f; Small = 2, 50.0f; Large = 3, 200.0f; Gigantic = 4, 400.0f; Infinite = 5 (SIZE_OF_GRIDS max distance for visible objects)",
       "AURAS": "En lista utav Comma-Separated Auras som appliceras på NPC."
     },
     "TEMPLATE_MOVEMENT": {
@@ -386,7 +388,7 @@
       "LONG_UNKNOWN_FLAG": "Long unknown flag",
       "UNKNOWN_FLAG": "Unknown flag",
       "LOCK_ID_FROM_DBC": "LockId from Lock.dbc",
-      "SPELL_ID_FROM_DBC": "Spell Id from Spell.dbc",
+      "SPELL_ID_FROM_DBC": "Spell Id from Spell.dbc. If the spell is a teleport spell, also needs info set in spell_target_position table in world DB",
       "FROM_PAGE_MATERIAL": "from PageTextMaterial.dbc",
       "FROM_LANGUAGE": "From Languages.dbc",
       "FROM_AUCTIONHOUSE": "From AuctionHouse.dbc",

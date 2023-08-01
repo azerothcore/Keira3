@@ -52,11 +52,8 @@
             <input [formControlName]="'phaseMask'" id="phaseMask" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-            <label class="control-label" for="modelid">modelid</label>
-            <input [formControlName]="'modelid'" id="modelid" type="number" class="form-control form-control-sm" />
-          </div>
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="equipment_id">equipment_id</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.SPAWN.EQUIPMENT_ID_TOOLTIP' | translate"></i>
             <input [formControlName]="'equipment_id'" id="equipment_id" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
@@ -138,7 +135,7 @@
 
           <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
             <i class="fas fa-exclamation-triangle"></i>
-            <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
+            <span [innerHTML]="'UNIQUE' | translate : { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
           </div>
         </div>
       </form>
@@ -170,7 +167,6 @@
             <ngx-datatable-column name="A" prop="areaId" [minWidth]="42"></ngx-datatable-column>
             <ngx-datatable-column name="SM" prop="spawnMask" [minWidth]="42"></ngx-datatable-column>
             <ngx-datatable-column name="PM" prop="phaseMask" [minWidth]="42"></ngx-datatable-column>
-            <ngx-datatable-column name="Model" prop="modelid" [minWidth]="42"></ngx-datatable-column>
             <ngx-datatable-column name="Equip" prop="equipment_id" [minWidth]="42"></ngx-datatable-column>
             <ngx-datatable-column name="position_x" prop="position_x" [minWidth]="90"></ngx-datatable-column>
             <ngx-datatable-column name="position_y" prop="position_y" [minWidth]="90"></ngx-datatable-column>

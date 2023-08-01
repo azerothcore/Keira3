@@ -479,6 +479,7 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="ArmorModifier">ArmorModifier</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.ARMOR_MODIFIER_TOOLTIP' | translate"></i>
             <input [formControlName]="'ArmorModifier'" id="ArmorModifier" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -537,11 +538,39 @@
     </form>
 
     <div class="preview-container" [ngClass]="showItemPreview ? 'show-preview' : 'hide-preview'">
-      <div class="transparent">
+      <div class="transparent perfect-scrollbar">
         <div class="creature-preview">
           <keira-model-3d-viewer
+            *ngIf="editorService.form.controls.modelid1.value"
             [viewerType]="NPC_VIEWER_TYPE"
-            [modelId]="editorService.form.controls.modelid1.value"
+            [displayId]="editorService.form.controls.modelid1.value"
+            [id]="'model3d_1'"
+          >
+            <div id="model3d_1"></div>
+          </keira-model-3d-viewer>
+          <keira-model-3d-viewer
+            *ngIf="editorService.form.controls.modelid2.value"
+            [viewerType]="NPC_VIEWER_TYPE"
+            [displayId]="editorService.form.controls.modelid2.value"
+            [id]="'model3d_2'"
+          >
+            <div id="model3d_2"></div
+          ></keira-model-3d-viewer>
+          <keira-model-3d-viewer
+            *ngIf="editorService.form.controls.modelid3.value"
+            [viewerType]="NPC_VIEWER_TYPE"
+            [displayId]="editorService.form.controls.modelid3.value"
+            [id]="'model3d_3'"
+          >
+            <div id="model3d_3"></div
+          ></keira-model-3d-viewer>
+          <keira-model-3d-viewer
+            *ngIf="editorService.form.controls.modelid4.value"
+            [viewerType]="NPC_VIEWER_TYPE"
+            [displayId]="editorService.form.controls.modelid4.value"
+            [id]="'model3d_4'"
+          >
+            <div id="model3d_4"></div
           ></keira-model-3d-viewer>
         </div>
       </div>

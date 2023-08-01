@@ -67,7 +67,7 @@ export enum SAI_EVENTS {
   JUST_CREATED = 63,
   GOSSIP_HELLO = 64,
   FOLLOW_COMPLETED = 65,
-  // UNUSED_66                = 66, // unused
+  EVENT_PHASE_CHANGE = 66,
   IS_BEHIND_TARGET = 67,
   GAME_EVENT_START = 68,
   GAME_EVENT_END = 69,
@@ -79,8 +79,13 @@ export enum SAI_EVENTS {
   DISTANCE_CREATURE = 75,
   DISTANCE_GAMEOBJECT = 76,
   COUNTER_SET = 77,
+  SUMMONED_UNIT_DIES = 82,
   NEAR_PLAYERS = 101,
   NEAR_PLAYERS_NEGATION = 102,
+  NEAR_UNIT = 103,
+  NEAR_UNIT_NEGATION = 104,
+  AREA_CASTING = 105,
+  AREA_RANGE = 106,
 }
 export const SAI_EVENTS_KEYS = getEnumKeys(SAI_EVENTS);
 export const SAI_EVENT_TOOLTIPS: string[] = [];
@@ -121,25 +126,25 @@ SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.UPDATE_OOC] = 'Repeat timer max';
 
 // SMART_EVENT_HEALTH_PCT
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.HEALTH_PCT] =
-  'At health percentage. First and second parameters function as min-max health percentage values, so if they are  50,80, the event will be called when the source is between 50% and 80% health. The last two parameters are repeat timers in milliseconds.';
+  'At health percentage. First and second parameters function as min-max health percentage values, so if they are  50,80, the event will be called when the source is between 50% and 80% health. The last two parameters are repeat timers in milliseconds. This event only works if the NPC is in combat.';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.HEALTH_PCT] = 'MinHealth%';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.HEALTH_PCT] = 'MaxHealth%';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.HEALTH_PCT] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.HEALTH_PCT] = 'RepeatMax';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.HEALTH_PCT] = 'Timer min';
-SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.HEALTH_PCT] = 'Timer max';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.HEALTH_PCT] = 'Lowest amount of health in % for the action to trigger';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.HEALTH_PCT] = 'Highest amount of health in % for the action to trigger';
 SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.HEALTH_PCT] = 'Repeat timer min';
 SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.HEALTH_PCT] = 'Repeat timer max';
 
 // SMART_EVENT_MANA_PCT
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.MANA_PCT] =
-  'At mana percentage. First and second parameters function as min-max mana percentage values, so if they are  50,80, the event will be called when the source is between 50% and 80% mana. The last two parameters are repeat timers in milliseconds.';
+  'At mana percentage. First and second parameters function as min-max mana percentage values, so if they are  50,80, the event will be called when the source is between 50% and 80% mana. The last two parameters are repeat timers in milliseconds. This event only works if the NPC is in combat.';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.MANA_PCT] = 'MinMana%';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.MANA_PCT] = 'MaxMana%';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.MANA_PCT] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.MANA_PCT] = 'RepeatMax';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.MANA_PCT] = 'Timer min';
-SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.MANA_PCT] = 'Timer max';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.MANA_PCT] = 'Lowest amount of mana in % for the action to trigger';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.MANA_PCT] = 'Highest amount of mana in % for the action to trigger';
 SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.MANA_PCT] = 'Repeat timer min';
 SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.MANA_PCT] = 'Repeat timer max';
 
@@ -174,15 +179,17 @@ SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.SPELLHIT] = 'Use 0 for any';
 SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.SPELLHIT] = 'Use 0 for any';
 
 // SMART_EVENT_RANGE
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.RANGE] = 'When the creature is within a certain range of our target type';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.RANGE] = 'When the source\'s current target is within a certain range';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.RANGE] = 'MinDist';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.RANGE] = 'MaxDist';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.RANGE] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.RANGE] = 'RepeatMax';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.RANGE] = 'Minimum distance to target for the event to be triggered';
-SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.RANGE] = 'Maximum distance to target for the event to be triggered';
+SAI_EVENT_PARAM5_NAMES[SAI_EVENTS.RANGE] = 'onlyFireOnRepeat';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.RANGE] = 'Minimum distance to victim for the event to be triggered';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.RANGE] = 'Maximum distance to victim for the event to be triggered';
 SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.RANGE] = 'Timer min';
 SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.RANGE] = 'Timer max';
+SAI_EVENT_PARAM5_TOOLTIPS[SAI_EVENTS.RANGE] = 'If 1 event will not fire until repeat time has expired.';
 
 // SMART_EVENT_OOC_LOS
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.OOC_LOS] =
@@ -193,7 +200,7 @@ SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.OOC_LOS] = 'CooldownMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.OOC_LOS] = 'CooldownMax';
 SAI_EVENT_PARAM5_NAMES[SAI_EVENTS.OOC_LOS] = 'PlayerOnly';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.OOC_LOS] =
-  'If 0, only non-hostile units can trigger this event. If 1, only hostile units can trigger this event';
+  'If 0, only hostile units can trigger this event. If 1, only non-hostile units can trigger this event';
 SAI_EVENT_PARAM5_TOOLTIPS[SAI_EVENTS.OOC_LOS] = '0 or 1';
 
 // SMART_EVENT_RESPAWN
@@ -222,12 +229,12 @@ SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.VICTIM_CASTING] =
 
 // SMART_EVENT_FRIENDLY_HEALTH
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.FRIENDLY_HEALTH] =
-  'When a friendly unit within a certain range reaches a certain amount of health (NOT PERCENTAGE). If you are looking for percentage, use event type 74.';
+  'When this NPC or a friendly unit within a certain range LOSES a certain amount of health (NOT PERCENTAGE). If you are looking for percentage, use event type 74.';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.FRIENDLY_HEALTH] = 'HPDeficit';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.FRIENDLY_HEALTH] = 'Radius';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.FRIENDLY_HEALTH] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.FRIENDLY_HEALTH] = 'RepeatMax';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.FRIENDLY_HEALTH] = 'Amount of Health the friendly unit must be at (NOT percentage)';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.FRIENDLY_HEALTH] = 'Amount of Health this NPC or nearby NPC must have lost (NOT percentage)';
 
 // SMART_EVENT_FRIENDLY_IS_CC
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.FRIENDLY_IS_CC] = 'When a friendly unit within a certain range is under the effect of a crowd control spell';
@@ -266,12 +273,16 @@ SAI_EVENT_TOOLTIPS[SAI_EVENTS.ACCEPTED_QUEST] = 'When the creature successfully 
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.ACCEPTED_QUEST] = 'QuestId';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.ACCEPTED_QUEST] =
   'Quest id to trigger this event; if the parameter is 0 it means it will be triggered by ANY quest.';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.ACCEPTED_QUEST] = 'RepeatMin';
+SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.ACCEPTED_QUEST] = 'RepeatMax';
 
 // SMART_EVENT_REWARD_QUEST
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.REWARD_QUEST] = 'When the creature successfully rewarded a quest of a player';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.REWARD_QUEST] = 'QuestId';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.REWARD_QUEST] =
   'Quest id to trigger this event; if the parameter is 0 it means it will be triggered by ANY quest.';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.REWARD_QUEST] = 'RepeatMin';
+SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.REWARD_QUEST] = 'RepeatMax';
 
 // SMART_EVENT_REACHED_HOME
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.REACHED_HOME] = 'When the creature reached its home position';
@@ -326,6 +337,8 @@ SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.PASSENGER_REMOVED] = 'CooldownMax';
 
 // SMART_EVENT_CHARMED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.CHARMED] = 'On creature charmed';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.CHARMED] = 'onRemove';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.CHARMED] = '0 - on apply, 1 - on remove';
 
 // SMART_EVENT_CHARMED_TARGET
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.CHARMED_TARGET] = 'On target charmed';
@@ -494,6 +507,10 @@ SAI_EVENT_TOOLTIPS[SAI_EVENTS.GOSSIP_HELLO] = 'On Right-Click Creature/Gameobjec
 // SMART_EVENT_FOLLOW_COMPLETED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.FOLLOW_COMPLETED] = 'On follow completed/finished';
 
+// SMART_EVENT_EVENT_PHASE_CHANGE
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.EVENT_PHASE_CHANGE] = 'On event phase mask set.';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.EVENT_PHASE_CHANGE] = 'PhaseMask';
+
 // SMART_EVENT_IS_BEHIND_TARGET
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.IS_BEHIND_TARGET] = 'On behind target within a certain cooldown time';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.IS_BEHIND_TARGET] = 'CooldownMin';
@@ -536,6 +553,7 @@ SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.FRIENDLY_HEALTH_PCT] = 'MinHealth%';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.FRIENDLY_HEALTH_PCT] = 'MaxHealth%';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.FRIENDLY_HEALTH_PCT] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.FRIENDLY_HEALTH_PCT] = 'RepeatMax';
+SAI_EVENT_PARAM5_NAMES[SAI_EVENTS.FRIENDLY_HEALTH_PCT] = 'Range';
 
 // SMART_EVENT_DISTANCE_CREATURE
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] = 'On creature guid OR any instance of creature entry is within distance.';
@@ -572,24 +590,81 @@ SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.COUNTER_SET] = 'Value';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.COUNTER_SET] = 'CooldownMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.COUNTER_SET] = 'CooldownMax';
 
+// SMART_EVENT_SUMMONED_UNIT_DIES
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.SUMMONED_UNIT_DIES] = 'When specified summoned creature (or 0, for all) dies.';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.SUMMONED_UNIT_DIES] = 'CreatureId';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.SUMMONED_UNIT_DIES] = 'CooldownMin';
+SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.SUMMONED_UNIT_DIES] = 'CooldownMax';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.SUMMONED_UNIT_DIES] = '0 for all';
+
 // SMART_EVENT_NEAR_PLAYERS
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS] = 'If the value of minPlayers is met.';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.NEAR_PLAYERS] = 'minPlayers';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS] = 'Event will trigger if there are more or equal than amount of Players in range.';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.NEAR_PLAYERS] = 'Amount of Players';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.NEAR_PLAYERS] = 'Range';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.NEAR_PLAYERS] = 'FirstCheck';
-SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.NEAR_PLAYERS] = 'RepeatCheck';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS] = 'How many players are needed for the event to trigger.';
+SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.NEAR_PLAYERS] = 'RepeatMin';
+SAI_EVENT_PARAM5_NAMES[SAI_EVENTS.NEAR_PLAYERS] = 'RepeatMax';
 SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS] = 'Range in yards to check for players.';
 SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS] = 'First check for players after X milliseconds (ms).';
-SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS] = 'Repeating check for players every X milliseconds (ms).';
 
 // SMART_EVENT_NEAR_PLAYERS_NEGATION
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'If the value of maxPlayers is met.';
-SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'maxPlayers';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'Event will trigger if there are less than the amount of Players in range.';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'Amount of Players';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'Range';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'FirstCheck';
-SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'RepeatCheck';
-SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'Maximum amount of players for the event to trigger.';
+SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'RepeatMin';
+SAI_EVENT_PARAM5_NAMES[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'RepeatMax';
 SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'Range in yards to check for players.';
 SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'First check for players after X milliseconds (ms).';
-SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.NEAR_PLAYERS_NEGATION] = 'Repeating check for players every X milliseconds (ms).';
+
+// SMART_EVENT_NEAR_UNIT
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.NEAR_UNIT] = 'Event will trigger if there are more or equal than amount of Units in range.';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.NEAR_UNIT] = 'Unit Type';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.NEAR_UNIT] = 'Entry';
+SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.NEAR_UNIT] = 'Count';
+SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.NEAR_UNIT] = 'Range';
+SAI_EVENT_PARAM5_NAMES[SAI_EVENTS.NEAR_UNIT] = 'Timer';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.NEAR_UNIT] = '0: creature 1: gob';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.NEAR_UNIT] = 'creature_template.entry or gameobject_template.entry';
+SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.NEAR_UNIT] = 'Amount of Units.';
+SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.NEAR_UNIT] = 'Range in yards to check for units.';
+SAI_EVENT_PARAM5_TOOLTIPS[SAI_EVENTS.NEAR_UNIT] = 'Check Timer (ms).';
+
+// SMART_EVENT_NEAR_UNIT_NEGATION
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.NEAR_UNIT_NEGATION] = 'Event will trigger if there are less than the amount of Units in range.';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.NEAR_UNIT_NEGATION] = 'Unit Type';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.NEAR_UNIT_NEGATION] = 'Entry';
+SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.NEAR_UNIT_NEGATION] = 'Count';
+SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.NEAR_UNIT_NEGATION] = 'Range';
+SAI_EVENT_PARAM5_NAMES[SAI_EVENTS.NEAR_UNIT_NEGATION] = 'Timer';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.NEAR_UNIT_NEGATION] = '0: creature 1: gob';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.NEAR_UNIT_NEGATION] = 'creature_template.entry or gameobject_template.entry';
+SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.NEAR_UNIT_NEGATION] = 'Amount of Units.';
+SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.NEAR_UNIT_NEGATION] = 'Range in yards to check for units.';
+SAI_EVENT_PARAM5_TOOLTIPS[SAI_EVENTS.NEAR_UNIT_NEGATION] = 'Check Timer (ms).';
+
+// SMART_EVENT_AREA_CASTING
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.AREA_CASTING] = 'Check threat list for hostiles casting. If none are found, repeat in 1200ms. This is mostly used for interrupt spells when used with CAST Action and INVOKER Target.';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.AREA_CASTING] = 'InitialMin';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.AREA_CASTING] = 'InitialMax';
+SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.AREA_CASTING] = 'RepeatMin';
+SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.AREA_CASTING] = 'RepeatMax';
+SAI_EVENT_PARAM5_NAMES[SAI_EVENTS.AREA_CASTING] = 'Range';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.AREA_CASTING] = 'ms';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.AREA_CASTING] = 'ms';
+SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.AREA_CASTING] = 'ms';
+SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.AREA_CASTING] = 'ms';
+SAI_EVENT_PARAM5_TOOLTIPS[SAI_EVENTS.AREA_CASTING] = '0: unlimited';
+
+// SMART_EVENT_AREA_RANGE
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.AREA_RANGE] = 'Check threat list for hostiles in range. If none are found, repeat in 1200ms. This is mostly used to make creatures cast AoEs if a player is within range.';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.AREA_RANGE] = 'InitialMin';
+SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.AREA_RANGE] = 'InitialMax';
+SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.AREA_RANGE] = 'RepeatMin';
+SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.AREA_RANGE] = 'RepeatMax';
+SAI_EVENT_PARAM5_NAMES[SAI_EVENTS.AREA_RANGE] = 'Range';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.AREA_RANGE] = 'ms';
+SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.AREA_RANGE] = 'ms';
+SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.AREA_RANGE] = 'ms';
+SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.AREA_RANGE] = 'ms';
+SAI_EVENT_PARAM5_TOOLTIPS[SAI_EVENTS.AREA_RANGE] = 'yards';

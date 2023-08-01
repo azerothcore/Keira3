@@ -6,7 +6,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { LATEST_RELEASE_API_URL } from '@keira-constants/general';
 import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { MockedElectronService, MockedMysqlService } from '@keira-testing/mocks';
-import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
 import { instance, reset } from 'ts-mockito';
@@ -40,7 +39,6 @@ describe('AppComponent', () => {
         ReactiveFormsModule,
         RouterTestingModule,
         BrowserAnimationsModule,
-        PerfectScrollbarModule,
         HttpClientTestingModule,
         ModalConfirmModule,
         SwitchLanguageModule,

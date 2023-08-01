@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
@@ -41,7 +42,14 @@ describe('GameobjectTemplate integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), GameobjectTemplateModule, RouterTestingModule, TranslateTestingModule],
+      imports: [
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        GameobjectTemplateModule,
+        RouterTestingModule,
+        TranslateTestingModule,
+        HttpClientTestingModule,
+      ],
       providers: [GameobjectHandlerService, SaiGameobjectHandlerService],
     }).compileComponents();
   }));

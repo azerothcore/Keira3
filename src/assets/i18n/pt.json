@@ -218,6 +218,7 @@
       "HOVER_HEIGHT": "Distância acima do chão que a creature irá pairar se tiver MOVEMENTFLAG_DISABLE_GRAVITY habilitado",
       "SCALE": "Multiplicador de tamanho (quão grande o modelo da creature aparecerá). Se 0, usará o tamanho de modelo padrão do DBC.",
       "DAMAGE_MODIFIER": "Multiplicador de dano, afeta mindmg e maxdmg",
+      "ARMOR_MODIFIER_TOOLTIP": "Damage taken from physical attacks, a value of 1 is normal; Values under 1 mean it will take more damage; Values over 1 mean it will take less damage",
       "SPEED_RUN": "Controla quão rápido a creature pode andar. Para veículos, aumenta a velocidade de voo.",
       "SPEED_WALK": "Controla quão rápido a creature pode correr. Para veículos, aumenta a velocidade terrestre.",
       "SPEED_SWIM": "Controla quão rápido a creature pode nadar.",
@@ -228,7 +229,7 @@
       "ENTRY": "Link para creature_template.entry",
       "PATH_ID": "Se a creature apresenta movimento de waypoints, contém o waypoint_data.id para o caminho que a creature deve seguir.",
       "MOUNT": "O model ID da montaria a ser usada para fazer com que a creature apareça montada. O valor aqui sobrepõe o valor do campo UNIT_FIELD_MOUNTDISPLAYID.",
-      "VISIBILITY_DISTANCE_TYPE": "Controla a distância de visibilidade da creature. 0 = Normal (padrão 90 jardas);  1 = Grande (250 jardas)",
+      "VISIBILITY_DISTANCE_TYPE": "Normal = 0, 100.0f (default visible distance, 100 yards on continents); Tiny = 1, 25.0f; Small = 2, 50.0f; Large = 3, 200.0f; Gigantic = 4, 400.0f; Infinite = 5 (SIZE_OF_GRIDS max distance for visible objects)",
       "AURAS": "Uma lista de auras, separadas por vírgulas, para ser aplicadas na creature."
     },
     "ONKILL_REPUTATION": {
@@ -240,12 +241,13 @@
     },
     "SPAWN": {
       "ORIENTATION": "A orientação do spawn point da creature. (Norte = 0.0; Sul = pi (3.14159))",
+      "EQUIPMENT_ID_TOOLTIP": "1 = uses the info set in equipment template 0 = no weapons equipped",
       "SPAWN_DIST_TOOLTIP": "A distância máxima que a creature pode spawnar da sua spawn point. Também controla quão longe a creature pode se mover do seu spawn point se MovementType = 1.",
       "SCRIPT_NAME": "O nome do script C++ que esta creature usa, caso exista.",
       "GUID": "Link para creature.guid",
       "PATH_ID": "Se a creature tem movimentação por waypoints, então este campo contém o waypoint_data.id para o trajeto que a creature deve seguir.",
       "MOUNT": "O model ID da montaria a ser usada para fazer com que a creature apareça montada. O valor aqui sobrepõe o valor do campo UNIT_FIELD_MOUNTDISPLAYID.%",
-      "VISIBILITY_DISTANCE_TYPE": "Controla a distância de visibilidade da creature. 0 = Normal (padrão 90 jardas);  1 = Grande (250 jardas)",
+      "VISIBILITY_DISTANCE_TYPE": "Normal = 0, 100.0f (default visible distance, 100 yards on continents); Tiny = 1, 25.0f; Small = 2, 50.0f; Large = 3, 200.0f; Gigantic = 4, 400.0f; Infinite = 5 (SIZE_OF_GRIDS max distance for visible objects)",
       "AURAS": "Uma lista de auras, separadas por vírgulas, para ser aplicadas na creature."
     },
     "TEMPLATE_MOVEMENT": {

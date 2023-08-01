@@ -86,7 +86,7 @@ export enum SAI_ACTIONS {
   ADD_NPC_FLAG = 82,
   REMOVE_NPC_FLAG = 83,
   SIMPLE_TALK = 84,
-  INVOKER_CAST = 85,
+  SELF_CAST = 85,
   CROSS_CAST = 86,
   CALL_RANDOM_TIMED_ACTIONLIST = 87,
   CALL_RANDOM_RANGE_TIMED_ACTIONLIST = 88,
@@ -117,9 +117,9 @@ export enum SAI_ACTIONS {
   START_CLOSEST_WAYPOINT = 113,
   RISE_UP = 114,
   RANDOM_SOUND = 115,
-  // SET_CORPSE_DELAY                   = 116, //  NOT SUPPORTED YET
-  // DISABLE_EVADE                      = 117, //  NOT SUPPORTED YET
-  // GO_SET_GO_STATE                    = 118, //  NOT SUPPORTED YET
+  SET_CORPSE_DELAY = 116,
+  DISABLE_EVADE = 117,
+  GO_SET_GO_STATE = 118,
   // SET_CAN_FLY                        = 119, //  NOT SUPPORTED YET
   // REMOVE_AURAS_BY_TYPE               = 120, //  NOT SUPPORTED YET
   SET_SIGHT_DIST = 121,
@@ -135,10 +135,14 @@ export enum SAI_ACTIONS {
   // SPAWN_SPAWNGROUP                   = 131, // NOT SUPPORTED YET
   // DESPAWN_SPAWNGROUP                 = 132, // NOT SUPPORTED YET
   // RESPAWN_BY_SPAWNID                 = 133, // NOT SUPPORTED YET
+  INVOKER_CAST = 134,
+  PLAY_CINEMATIC = 135,
+  SET_MOVEMENT_SPEED = 136,
+  SET_HEALTH_PCT = 142,
 
   // AC-only SmartActions:
   MOVE_TO_POS_TARGET = 201,
-  SET_GO_STATE = 202,
+  // SET_GO_STATE = 202, // Replaced by GO_SET_GO_STATE
   EXIT_VEHICLE = 203,
   SET_UNIT_MOVEMENT_FLAGS = 204,
   SET_COMBAT_DISTANCE = 205,
@@ -154,6 +158,18 @@ export enum SAI_ACTIONS {
   LOAD_GRID = 215,
   MUSIC = 216,
   RANDOM_MUSIC = 217,
+  CUSTOM_CAST = 218,
+  CONE_SUMMON = 219,
+  PLAYER_TALK = 220,
+  VORTEX_SUMMON = 221,
+  CU_ENCOUNTER_START = 222,
+  DO_ACTION = 223,
+  ATTACK_STOP = 224,
+  SET_GUID = 225,
+  DISABLE = 226,
+  SET_SCALE = 227,
+  SUMMON_RADIAL = 228,
+  PLAY_SPELL_VISUAL = 229,
 }
 export const SAI_ACTIONS_KEYS = getEnumKeys(SAI_ACTIONS);
 export const SAI_ACTION_TOOLTIPS = [];
@@ -203,7 +219,9 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.MORPH_TO_ENTRY_OR_MODEL] = 'ModelId';
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SOUND] = 'Play a sound';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SOUND] = 'SoundId';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SOUND] = 'OnlySelf';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.SOUND] = 'Distance';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SOUND] = '0 = sends sound to everyone in visibility range; 1 = sends sound to self';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.SOUND] = '0 or 1 - determines whether or not to play the sound from distance';
 
 // SMART_ACTION_PLAY_EMOTE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.PLAY_EMOTE] = 'Play en emote';
@@ -216,6 +234,8 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.FAIL_QUEST] = 'QuestId';
 // SMART_ACTION_OFFER_QUEST
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.OFFER_QUEST] = "Add a quest to our (player) target's quest list";
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.OFFER_QUEST] = 'QuestId';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.OFFER_QUEST] = 'directAdd';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.OFFER_QUEST] = '0 or 1';
 
 // SMART_ACTION_SET_REACT_STATE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_REACT_STATE] = 'ReactState. Can be Passive (0), Defensive (1), Aggressive (2).';
@@ -239,9 +259,13 @@ SAI_ACTION_PARAM6_NAMES[SAI_ACTIONS.RANDOM_EMOTE] = 'EmoteId6';
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CAST] = 'Cast a spell to our target type';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CAST] = 'SpellId';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.CAST] = 'CastFlags';
-SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.CAST] = 'LimitTargets';
-SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.CAST] = 'http://www.azerothcore.org/wiki/smart_scripts#cast-flags'; // TODO
-SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.CAST] = '0 = all targets';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.CAST] = 'TriggerFlags';
+SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.CAST] = 'LimitTargets';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.CAST] = `1 - Interrupt any spell casting;
+2 - Triggered (this makes spell cost zero mana and have no cast time);
+32 - Only casts the spell if the target does not have an aura from the spell;
+64 - Prevent combat movement on cast, allow on fail range, mana, LOS`;
+SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.CAST] = '0 = all targets';
 
 // SMART_ACTION_SUMMON_CREATURE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SUMMON_CREATURE] =
@@ -251,10 +275,18 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SUMMON_CREATURE] = 'SummonType';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.SUMMON_CREATURE] = 'Duration';
 SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.SUMMON_CREATURE] = 'AttackInvoker';
 SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.SUMMON_CREATURE] = 'AttackScriptOwner';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SUMMON_CREATURE] = `1 - Despawns after a specified time OR when the creature disappears;
+2 - Despawns after a specified time OR when the creature dies;
+3 - Despawns after a specified time;
+4 - Despawns after a specified time after the creature is out of combat;
+5 - Despawns instantly after death;
+6 - Despawns after a specified time after death;
+7 - Despawns when the creature disappears;
+8 - Despawns when UnSummon() (or Force Despawn action) is called.`;
 SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.SUMMON_CREATURE] = 'Duration (milliseconds)';
 SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.SUMMON_CREATURE] =
   "Whether or not the summoned creature should attack the action invoker (SMART_TARGET_ACTION_INVOKER) when it's summoned. " +
-  '0 = it will not attack, 1 = it will attack.';
+  '0: it will not attack; 1: attack target; 2: attack actual invoker';
 SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.SUMMON_CREATURE] = '0 = it will not attack, 1 = it will attack';
 
 // SMART_ACTION_THREAT_SINGLE_PCT
@@ -409,7 +441,7 @@ SAI_ACTION_TOOLTIPS[SAI_ACTIONS.DIE] = 'Instantly kills the target';
 
 // SMART_ACTION_SET_IN_COMBAT_WITH_ZONE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_IN_COMBAT_WITH_ZONE] =
-  'Sets the creature in combat with its zone, can be used in instances and open world. Useful for creatures inside instances so all players will be set in combat until the fight ends.';
+  'Sets the creature in combat with its zone, can be used in instances and open world. Useful for creatures inside instances so all players will be set in combat until the fight ends. It only sets NPCs in combat with players';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_IN_COMBAT_WITH_ZONE] = 'Range';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_IN_COMBAT_WITH_ZONE] =
   'Range in yards for all players to be forced into combat with the creature. Only used in the open world. Leave as 0 if used in an instance.';
@@ -432,13 +464,15 @@ SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_SHEATH] = '0-unarmed, 1-melee, 2-rang
 
 // SMART_ACTION_FORCE_DESPAWN
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.FORCE_DESPAWN] = 'Despawns the creature/gameobject within a given time (in milliseconds).';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.FORCE_DESPAWN] = 'DespawnTime';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.FORCE_DESPAWN] = 'Milliseconds';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.FORCE_DESPAWN] = 'Despawn Timer';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.FORCE_DESPAWN] = 'Respawn Timer';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.FORCE_DESPAWN] = 'Despawn Target in Milliseconds';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.FORCE_DESPAWN] = 'Respawn in Seconds';
 
 // SMART_ACTION_SET_INVINCIBILITY_HP_LEVEL
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_INVINCIBILITY_HP_LEVEL] =
   "Sets the creature's invincibility health to a flat value or percentage. " +
-  'Either one of the parameters must be set (so not both), and you can not reverse this effect (both parameters at 0 will result in an error).';
+  'Either one of the parameters must be set (so not both). Setting both to 0 will remove the effect.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_INVINCIBILITY_HP_LEVEL] = 'Flat value';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_INVINCIBILITY_HP_LEVEL] = '% value';
 
@@ -489,8 +523,10 @@ SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SUMMON_GO] =
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SUMMON_GO] = 'GameobjectId';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SUMMON_GO] = 'DespawnTime';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.SUMMON_GO] = 'SummonTarget';
+SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.SUMMON_GO] = 'SummonType';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SUMMON_GO] = 'Despawn time in seconds';
 SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.SUMMON_GO] = 'If SummonTarget is 1, the target will summon the Gobject at the position of the actor';
+SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.SUMMON_GO] = '0 - despawn after a specified time OR when the summoner dies, 1 - after a specified time';
 
 // SMART_ACTION_KILL_UNIT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.KILL_UNIT] = 'Kills the unit target instantly';
@@ -513,7 +549,8 @@ SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.WP_START] = 'waypoints.entry';
 SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.WP_START] = "Repeat the path when the it's finished";
 SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.WP_START] =
   'Quest entry to give credit for once the path has finished. Will use the target type and take all player entities from this list';
-SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.WP_START] = 'Time in milliseconds to wait after the path ended before we despawn';
+SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.WP_START] =
+  'Time in milliseconds to wait after the path ended before we despawn. 0 = will not despawn';
 SAI_ACTION_PARAM6_TOOLTIPS[SAI_ACTIONS.WP_START] = 'ReactState that is set when the waypoint starts';
 
 // SMART_ACTION_WP_PAUSE
@@ -558,7 +595,10 @@ SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_RUN] = '0 = off; 1 = on';
 // SMART_ACTION_SET_FLY
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_FLY] = 'Sets flying flag on or off.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_FLY] = SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_RUN];
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_FLY] = 'Speed';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.SET_FLY] = 'Disable Gravity';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_FLY] = SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_RUN];
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.SET_FLY] = '1 = enabled 0 = disabled';
 
 // SMART_ACTION_SET_SWIM
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_SWIM] = 'Sets swimming flag on or off.';
@@ -572,7 +612,7 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.TELEPORT] = 'MapId';
 
 // SMART_ACTION_SET_COUNTER
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_COUNTER] =
-  'Stores a decimal variable (number) under a variable id to store information for the creature during runtime.';
+  'Stores a decimal variable (number) under a variable id to store information for the creature during runtime. (The values set here can stack together compared to in Set Data).';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_COUNTER] = 'CounterId';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_COUNTER] = 'Value';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.SET_COUNTER] = 'Reset';
@@ -586,8 +626,13 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.STORE_TARGET_LIST] = 'VarId';
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.WP_RESUME] = 'Resumes the waypoint path the creature was previously following.';
 
 // SMART_ACTION_SET_ORIENTATION
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_ORIENTATION] =
-  'Sets the orientation of the creature to a given value. Must use SMART_TARGET_POSITION. If you, however, want the creature to face its spawn/home position, you can just use SMART_TARGET_SELF and leave all parameters at 0.';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_ORIENTATION] = 'Used to alter the source\'s orientation. Depends on the script target. If SMART_TARGET_SELF, facing will be the same as in HomePosition, For SMART_TARGET_POSITION you need to set target_o : 0 = North, West = 1.5, South = 3, East = 4.5';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_ORIENTATION] = 'Quick Change';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_ORIENTATION] = 'Random Orientation';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.SET_ORIENTATION] = 'Turning Angle';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_ORIENTATION] = '(0/1)';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SET_ORIENTATION] = '(0/1)';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.SET_ORIENTATION] = 'The value in degrees which will turn the creature counterclockwise. target_type must be NONE';
 
 // SMART_ACTION_CREATE_TIMED_EVENT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CREATE_TIMED_EVENT] = 'Calls SMART_EVENT_UPDATE after a specific time with given parameters.';
@@ -612,11 +657,12 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.MOVE_TO_POS] = 'isTransport';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.MOVE_TO_POS] = 'isControlled';
 SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.MOVE_TO_POS] = 'ContactDistance';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.MOVE_TO_POS] = BOOLEAN_VALUE_TOOLTIP;
-SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.MOVE_TO_POS] = BOOLEAN_VALUE_TOOLTIP;
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.MOVE_TO_POS] =
+  '0 = aggro/threat will make it focus on player instead, 1 = Fixated to run to the xyzo position no matter what';
 
 // SMART_ACTION_RESPAWN_TARGET
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.RESPAWN_TARGET] =
-  'Respawns the target. Only works for gameobject target. Action does not actually respawn the target, it just sets the respawn time of the target, but this is how gameobject respawning is handled.';
+  'Respawns the target. Also works for creatures if target used is 12 Stored. Action does not actually respawn the target, it just sets the respawn time of the target, but this is how gameobject respawning is handled.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.RESPAWN_TARGET] = 'RespawnTime';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.RESPAWN_TARGET] = TIME_IN_MILLISECONDS_TOOLTIP;
 
@@ -674,10 +720,13 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_RANGED_MOVEMENT] = 'AttackAngle';
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] = 'Calls a script for the source with a given entry.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] = 'ScriptEntry';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] = 'TimerType';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] = 'allowOverride';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] =
   'EntryOrGuid * 100 (entryorguid with 00 added after the entry, or 01, 02, 03 etc. for multiple action lists)';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] =
   'The timer update type. If set to 0, the script will only occur out of combat. If set to 1, it will only occur during combat and if set to 2 it will always occur.';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.CALL_TIMED_ACTIONLIST] =
+  '0 - Must finish current actionlist, 1 - Allow starting new actionlist during previous actionlist';
 
 // SMART_ACTION_SET_NPC_FLAG
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_NPC_FLAG] = 'Set the npc flags of the target (using creature_template.npcflag)';
@@ -699,11 +748,16 @@ SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SIMPLE_TALK] =
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SIMPLE_TALK] = 'GroupId';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SIMPLE_TALK] = 'creature_text.GroupID';
 
-// SMART_ACTION_INVOKER_CAST
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.INVOKER_CAST] = 'Make our action invoker type cast a spell to our target type';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.INVOKER_CAST] = 'SpellId';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.INVOKER_CAST] = 'CastFlags';
-SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.INVOKER_CAST] = 'TriggeredFlags';
+// SMART_ACTION_SELF_CAST
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SELF_CAST] = 'Make the target cast spell on it self';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SELF_CAST] = 'SpellId';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SELF_CAST] = 'CastFlags';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.SELF_CAST] = 'TriggerFlags';
+SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.SELF_CAST] = 'LimitTargets';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SELF_CAST] = `1 - Interrupt any spell casting;
+2 - Triggered (this makes spell cost zero mana and have no cast time);
+32 - Only casts the spell if the target does not have an aura from the spell;`;
+SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.SELF_CAST] = '0 = all targets';
 
 // SMART_ACTION_CROSS_CAST
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CROSS_CAST] = 'Make the specified target type (in parameters) cast a spell to our target type';
@@ -743,13 +797,15 @@ SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.CALL_RANDOM_RANGE_TIMED_ACTIONLIST] = ENT
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.CALL_RANDOM_RANGE_TIMED_ACTIONLIST] = ENTRYORGUID_100_N_TOOLTIP;
 
 // SMART_ACTION_RANDOM_MOVE
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.RANDOM_MOVE] = 'Creature moves to A random position in given radius.';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.RANDOM_MOVE] = 'Creature moves to A random position in given radius. (Only works when it is not in combat)';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.RANDOM_MOVE] = 'Radius';
 
 // SMART_ACTION_SET_UNIT_FIELD_BYTES_1
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1] = 'Set the unit field bytes 1 flags of the target to a specific value';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1] = 'UnitFieldBytes';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1] = 'Type';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1] =
+  'https://github.com/azerothcore/azerothcore-wotlk/blob/master/src/server/game/Entities/Unit/Unit.h';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1] =
   '0 = targets the stand states (stand/sit/sleep/etc..); ' +
   '1 = targets something talent-related for pets; 2 = targets the stand flags (creep/untrackable/etc..); 3 = targets the stand misc. flags (hover/always-stand/etc..)';
@@ -758,6 +814,7 @@ SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1] =
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.REMOVE_UNIT_FIELD_BYTES_1] = 'Removes specific unit field bytes 1 flags of the target';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.REMOVE_UNIT_FIELD_BYTES_1] = SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1];
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.REMOVE_UNIT_FIELD_BYTES_1] = SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1];
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.REMOVE_UNIT_FIELD_BYTES_1] = SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1];
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.REMOVE_UNIT_FIELD_BYTES_1] = SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1];
 
 // SMART_ACTION_INTERRUPT_SPELL
@@ -794,9 +851,10 @@ SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.REMOVE_DYNAMIC_FLAG] = DYNAMIC_FLAGS_TOOL
 
 // SMART_ACTION_JUMP_TO_POS
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.JUMP_TO_POS] =
-  'Jump to a given position with a given speed. Must use SMART_TARGET_POSITION with this action_type. ' +
+  'Jump to a given position with a given speed. Must use SMART_TARGET_SELF with this action_type. ' +
   "If selfJump is 1 the actor will jump to the target (you can add an offset from the target's position by also specifying target coordinates); " +
-  'if selfJump is 0 the targeted creature will jump to the target position';
+  'if selfJump is 0 the targeted creature will jump to the target XYZO position; ' +
+  'A speed value around 12 is normal speed';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.JUMP_TO_POS] = 'Speed XY';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.JUMP_TO_POS] = 'Speed Z';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.JUMP_TO_POS] = 'SelfJump';
@@ -906,12 +964,29 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.RISE_UP] = 'Distance';
 
 // SMART_ACTION_RANDOM_SOUND
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.RANDOM_SOUND] = 'Play a random sound';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SOUND] = 'SoundId1';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SOUND] = 'SoundId2';
-SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.SOUND] = 'SoundId3';
-SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.SOUND] = 'SoundId4';
-SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.SOUND] = 'OnlySelf';
-SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.SOUND] = 'If 0, everybody within the visibility range will hear the sound';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.RANDOM_SOUND] = 'SoundId1';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.RANDOM_SOUND] = 'SoundId2';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.RANDOM_SOUND] = 'SoundId3';
+SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.RANDOM_SOUND] = 'SoundId4';
+SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.RANDOM_SOUND] = 'OnlySelf';
+SAI_ACTION_PARAM6_NAMES[SAI_ACTIONS.RANDOM_SOUND] = 'Distance';
+SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.RANDOM_SOUND] = '0 = sends sound to everyone in visibility range; 1 = sends sound to self';
+SAI_ACTION_PARAM6_TOOLTIPS[SAI_ACTIONS.RANDOM_SOUND] = '0 or 1 - determines whether or not to play the sound from distance';
+
+// SMART_ACTION_SET_CORPSE_DELAY
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_CORPSE_DELAY] = 'Allows setting the delay of corpse decay time.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_CORPSE_DELAY] = 'Timer';
+
+// SMART_ACTION_DISABLE_EVADE
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.DISABLE_EVADE] = 'Allows toggling if target can evade or not.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.DISABLE_EVADE] = '0 or 1';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.DISABLE_EVADE] = '1 = disabled, 0 = enabled';
+
+// SMART_ACTION_GO_SET_GO_STATE
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.GO_SET_GO_STATE] = 'Control the specified Gameobject GO State.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.GO_SET_GO_STATE] = 'State';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.GO_SET_GO_STATE] =
+'0:(GO_STATE_ACTIVE) show in world as used and not reset (closed door open), 1:(GO_STATE_READY) show in world as ready (closed door close), 2:(GO_STATE_ACTIVE_ALTERNATIVE) show in world as used in alt way and not reset (closed door open by cannon fire)';
 
 // SMART_ACTION_SET_SIGHT_DIST
 // SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_SIGHT_DIST] = 'SET_SIGHT_DIST';
@@ -939,6 +1014,32 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.TRIGGER_RANDOM_TIMED_EVENT] = 'IdMaxRange';
 // SMART_ACTION_REMOVE_ALL_GAMEOBJECTS
 // SAI_ACTION_TOOLTIPS[SAI_ACTIONS.REMOVE_ALL_GAMEOBJECTS] = 'REMOVE_ALL_GAMEOBJECTS';
 
+// SMART_ACTION_INVOKER_CAST
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.INVOKER_CAST] = 'Make our action invoker type cast a spell to our target type';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.INVOKER_CAST] = 'SpellId';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.INVOKER_CAST] = 'CastFlags';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.INVOKER_CAST] = 'TriggerFlags';
+SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.INVOKER_CAST] = 'LimitTargets';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.INVOKER_CAST] = `1 - Interrupt any spell casting;
+2 - Triggered (this makes spell cost zero mana and have no cast time);
+32 - Only casts the spell if the target does not have an aura from the spell;`;
+SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.INVOKER_CAST] = '0 = all targets';
+
+// SMART_ACTION_PLAY_CINEMATIC
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.PLAY_CINEMATIC] = 'Plays a cinematic.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.PLAY_CINEMATIC] = 'Entry';
+
+// SMART_ACTION_SET_MOVEMENT_SPEED
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_MOVEMENT_SPEED] = 'Modifies the current speed and movementType.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_MOVEMENT_SPEED] = 'MovementType';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_MOVEMENT_SPEED] = 'SpeedInteger';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.SET_MOVEMENT_SPEED] = 'SpeedFraction';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_MOVEMENT_SPEED] = '0:Walk,1:Run,2:Run_Back,3:Swim,4:Swim_Back,5:Turn_Rate,6:Flight,7:Flight_Back,8:Pitch_Rate';
+
+// SMART_ACTION_SET_HEALTH_PCT
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_HEALTH_PCT] = "Sets the specified target's health percentage.";
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_HEALTH_PCT] = 'Percent';
+
 /*** AC-only Actions below ***/
 
 // SMART_ACTION_MOVE_TO_POS_TARGET
@@ -947,7 +1048,7 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.MOVE_TO_POS_TARGET] = 'PointId';
 
 // SMART_ACTION_SET_GO_STATE
 // SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_GO_STATE] = 'SET_GO_STATE';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_GO_STATE] = 'State';
+// SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_GO_STATE] = 'State';
 
 // SMART_ACTION_EXIT_VEHICLE
 // SAI_ACTION_TOOLTIPS[SAI_ACTIONS.EXIT_VEHICLE] = 'EXIT_VEHICLE';
@@ -955,6 +1056,7 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_GO_STATE] = 'State';
 // SMART_ACTION_SET_UNIT_MOVEMENT_FLAGS
 // SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_UNIT_MOVEMENT_FLAGS] = 'SET_UNIT_MOVEMENT_FLAGS';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_UNIT_MOVEMENT_FLAGS] = 'Flags';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.REMOVE_UNIT_FIELD_BYTES_1] = SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_UNIT_FIELD_BYTES_1];
 
 // SMART_ACTION_SET_COMBAT_DISTANCE
 // SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_COMBAT_DISTANCE] = 'SET_COMBAT_DISTANCE';
@@ -1016,3 +1118,94 @@ SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.RANDOM_MUSIC] = 'SoundId 3';
 SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.RANDOM_MUSIC] = 'SoundId 4';
 SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.RANDOM_MUSIC] = SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.MUSIC];
 SAI_ACTION_PARAM6_NAMES[SAI_ACTIONS.RANDOM_MUSIC] = SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.MUSIC];
+
+// SMART_ACTION_CUSTOM_CAST
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CUSTOM_CAST] = 'CUSTOM_CAST';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CUSTOM_CAST] = 'SpellId';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.CUSTOM_CAST] = 'CastFlag';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.CUSTOM_CAST] = 'bp0';
+SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.CUSTOM_CAST] = 'bp1';
+SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.CUSTOM_CAST] = 'bp2';
+
+// SMART_ACTION_CONE_SUMMON
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CONE_SUMMON] = 'Allows you to spawn creatures in a cone (As seen in later expansions). Useful for custom cone aoes';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CONE_SUMMON] = 'Entry';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.CONE_SUMMON] = 'Duration';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.CONE_SUMMON] = 'Distance Rings';
+SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.CONE_SUMMON] = 'Distance Summons';
+SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.CONE_SUMMON] = 'Length';
+SAI_ACTION_PARAM6_NAMES[SAI_ACTIONS.CONE_SUMMON] = 'Width';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.CONE_SUMMON] = 'Creature Entry';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.CONE_SUMMON] = 'Duration (ms) 0 = permanent';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.CONE_SUMMON] = 'Distance between rings (yards)';
+SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.CONE_SUMMON] = 'Distance between each summons in a row (yards)';
+SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.CONE_SUMMON] = 'Length of the cone (yards)';
+SAI_ACTION_PARAM6_TOOLTIPS[SAI_ACTIONS.CONE_SUMMON] = 'Width of the cone (angle 1°-360°)';
+
+// SMART_ACTION_PLAYER_TALK
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.PLAYER_TALK] = 'Make the player say something';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.PLAYER_TALK] = 'acore_string.id';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.PLAYER_TALK] = 'yell?';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.PLAYER_TALK] = '(0/1)';
+
+// SMART_ACTION_VORTEX_SUMMON
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.VORTEX_SUMMON] = `Allows you to summon creature in a customizable spiral(/vortex). Parameters can be confusing, example parameters for testing: 
+5000 - summon duration; 
+5 - Spiral Scaling; 
+25 - spiral appearance; 
+60 - range max; 
+40 - phi delta';`
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.VORTEX_SUMMON] = 'Entry';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.VORTEX_SUMMON] = 'Duration';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.VORTEX_SUMMON] = 'Spiral Scaling';
+SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.VORTEX_SUMMON] = 'Spiral Appearance';
+SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.VORTEX_SUMMON] = 'Range Max';
+SAI_ACTION_PARAM6_NAMES[SAI_ACTIONS.VORTEX_SUMMON] = 'phi_delta';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.VORTEX_SUMMON] = 'Creature Entry';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.VORTEX_SUMMON] = 'Duration (ms) 0 = permanent';
+
+// SMART_ACTION_CU_ENCOUNTER_START
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.PLAYER_TALK] = 'Resets all cooldowns and removes exhausted debuffs when action is called';
+
+// SMART_ACTION_DO_ACTION
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.DO_ACTION] = 'Allows to call for a DoAction in code';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.DO_ACTION] = 'ActionId';
+
+// SMART_ACTION_ATTACK_STOP 
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ATTACK_STOP] = 'Stop melee, spell casting during combat, chasing the target and facing';
+
+// SMART_ACTION_SET_GUID
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_GUID] = 'Allows the target to perform an action similar to DO_ACTION, but allows a guid to be sent.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_GUID] = 'Method';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_GUID] = 'Index';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_GUID] = '0/1 (0 = Self Guid, 1 = Invoker Guid)';
+
+// SMART_ACTION_DISABLE
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.DISABLE] = 'Disable the target creatures, setting them Invisible and Immune to All';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.DISABLE] = 'State';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.DISABLE] = '0/1 (0 = Disable, 1 = Enable)';
+
+// SMART_ACTION_SET_SCALE
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_SCALE] = 'Sets the scale for the targeted creatures';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_SCALE] = 'Scale';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_SCALE] = 'This value is the percentage of the new scale the targets will take. 100 = default';
+
+// SMART_ACTION_SUMMON_RADIAL
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SUMMON_RADIAL] = 'Summons a set of creatures in a radial pattern, with orientation change specified in parameters.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SUMMON_RADIAL] = 'Summon Entry';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SUMMON_RADIAL] = 'Summon Duration';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.SUMMON_RADIAL] = 'Repetitions';
+SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.SUMMON_RADIAL] = 'Starting Angle';
+SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.SUMMON_RADIAL] = 'Step Angle';
+SAI_ACTION_PARAM6_NAMES[SAI_ACTIONS.SUMMON_RADIAL] = 'Distance';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SUMMON_RADIAL] = 'creature_template.entry to be summoned';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SUMMON_RADIAL] = 'Duration in ms which the summons will despawn after, if 0 then despawn on death';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.SUMMON_RADIAL] = 'Amount of creatures to be summoned';
+SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.SUMMON_RADIAL] = 'Offset in degrees, 0: same angle as source';
+SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.SUMMON_RADIAL] = 'How many degrees the creature will turn for each repetition';
+SAI_ACTION_PARAM6_TOOLTIPS[SAI_ACTIONS.SUMMON_RADIAL] = 'Distance offset from the source creature';
+
+// SMART_ACTION_PLAY_SPELL_VISUAL
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.PLAY_SPELL_VISUAL] = 'Makes the targets play the VisualKit ID specified.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.PLAY_SPELL_VISUAL] = 'Visual ID';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.PLAY_SPELL_VISUAL] = 'Can be found within SpellVisual.dbc';

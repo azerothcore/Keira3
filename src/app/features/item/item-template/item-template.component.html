@@ -627,12 +627,9 @@
               </div>
               <div class="col-12">
                 <label class="control-label" for="spelltrigger_{{ i }}">trigger_{{ i }}</label>
-                <input
-                  [formControlName]="'spelltrigger_' + i"
-                  id="spelltrigger_{{ i }}"
-                  type="number"
-                  class="form-control form-control-sm"
-                />
+                <select [formControlName]="'spelltrigger_' + i" id="spelltrigger_{{ i }}" class="form-control form-control-sm">
+                  <option *ngFor="let trigger of SPELL_TRIGGERS; let idx = index" [ngValue]="idx" [label]="idx + ' - ' + trigger"></option>
+                </select>
               </div>
               <div class="col-12">
                 <label class="control-label" for="spellcharges_{{ i }}">charges_{{ i }}</label>
@@ -691,7 +688,7 @@
     </form>
 
     <div class="preview-container" [ngClass]="showItemPreview ? 'show-preview' : 'hide-preview'">
-      <perfect-scrollbar class="transparent">
+      <div class="transparent perfect-scrollbar">
         <div class="item-preview">
           <div class="icon-container">
             <keira-icon [size]="'large'" [itemDisplayId]="editorService.form.controls.displayid.value" class="icon"></keira-icon>
@@ -715,10 +712,11 @@
               [displayId]="editorService.form.controls.displayid.value"
               [itemClass]="editorService.form.controls.class.value"
               [itemInventoryType]="editorService.form.controls.InventoryType.value"
-            ></keira-model-3d-viewer>
+              ><div id="model_3d"></div>
+            </keira-model-3d-viewer>
           </div>
         </div>
-      </perfect-scrollbar>
+      </div>
     </div>
 
     <button class="btn btn-secondary btn-sm toggle-preview-button" (click)="showItemPreview = !showItemPreview">

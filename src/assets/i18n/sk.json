@@ -200,7 +200,7 @@
       "RANK": "If you want the creature to show a skull or “??” in the portrait (often with Bosses), you have to enable BOSS_MOB in type_flags",
       "REGEN_HEALTH": "Boolean (1 or 0) controlling whether the creature should regenerate its health or not.",
       "RACIAL_LEADER": "Boolean (1 or 0) indicating whether the creature is a racial leader or not.",
-      "PET_SPELL_DATA_ID": "ID, found in CreatureSpellData.dbc, that displays what spells the pet has in the client.",
+      "PET_SPELL_DATA_ID": "ID, found in CreatureSpellData.dbc, that displays what spells the pet has in the client. If the value here is 0 and it's a summoned pet, then it uses spells from creature_template_spell. If you have set values in both then a value above 0 here will override template_spell",
       "KILL_CREDITS_DESC": "Can be a link to the first entry of the creature that could be killed to give quest credit",
       "MINGOLD": "Minimum money that the creature drops when killed, in copper.",
       "MAXGOLD": "Maximum money that the creature drops when killed, in copper.",
@@ -217,7 +217,8 @@
       "MOVEMENT_ID": "It looks like this field is passed directly to the client and there is no info about it",
       "HOVER_HEIGHT": "Distance above the ground that the creature will hover if it has MOVEMENTFLAG_DISABLE_GRAVITY enabled",
       "SCALE": "Size multiplier (how big the creature model appears). If 0, it uses the DBC default model size.",
-      "DAMAGE_MODIFIER": "Damage multiplier, affects mindmg and maxdmg",
+      "DAMAGE_MODIFIER": "Damage multiplier, affects mindmg and maxdmg. Increases auto attack damage and damage from spells or abilities that deals WEAPON based damage.",
+      "ARMOR_MODIFIER_TOOLTIP": "Damage taken from physical attacks, a value of 1 is normal; Values under 1 mean it will take more damage; Values over 1 mean it will take less damage",
       "SPEED_RUN": "Controls how fast the creature can walk. For vehicles it increases the flying speed.",
       "SPEED_WALK": "Controls how fast the creature can run. For vehicles it increases ground movement speed.",
       "SPEED_SWIM": "Controls how fast the creature can swim.",
@@ -228,8 +229,8 @@
       "ENTRY": "Link to creature_template.entry",
       "PATH_ID": "If the creature has waypoint pathed movement, contains the waypoint_data.id for the path the creature is to follow.",
       "MOUNT": "The model ID of the mount to be used to make the creature appear mounted. The value here overrides the value for the creature unit field UNIT_FIELD_MOUNTDISPLAYID.",
-      "VISIBILITY_DISTANCE_TYPE": "Controls the visibility distance of the creature. 0 = Normal (default 90 yards);  1 = Large (250 yards)",
-      "AURAS": "A list of comma-separated auras to be applied on the creature"
+      "VISIBILITY_DISTANCE_TYPE": "Normal = 0, 100.0f (default visible distance, 100 yards on continents); Tiny = 1, 25.0f; Small = 2, 50.0f; Large = 3, 200.0f; Gigantic = 4, 400.0f; Infinite = 5 (SIZE_OF_GRIDS max distance for visible objects)",
+      "AURAS": "A list of space separated auras to be applied on the creature. if the creature have data in spawn addon it will overide this"
     },
     "ONKILL_REPUTATION": {
       "IS_TEAM_AWARD1": "Boolean (0 or 1) whether the player receives the reputation also the faction team or not.",
@@ -240,13 +241,14 @@
     },
     "SPAWN": {
       "ORIENTATION": "The orientation of the creatures spawn point. (North = 0.0; South = pi (3.14159))",
+      "EQUIPMENT_ID_TOOLTIP": "1 = uses the info set in equipment template 0 = no weapons equipped",
       "SPAWN_DIST_TOOLTIP": "The maximum distance that the creature may spawn from its spawn point. Also controls how far away the creature can walk from its spawn point if its MovementType = 1.",
       "SCRIPT_NAME": "The name of the C++ script that this creature uses, if any.",
       "GUID": "Link to creature.guid",
       "PATH_ID": "If the creature has waypoint pathed movement, contains the waypoint_data.id for the path the creature is to follow.",
       "MOUNT": "The model ID of the mount to be used to make the creature appear mounted. The value here overrides the value for the creature unit field UNIT_FIELD_MOUNTDISPLAYID.",
-      "VISIBILITY_DISTANCE_TYPE": "Controls the visibility distance of the creature. 0 = Normal (default 90 yards);  1 = Large (250 yards)",
-      "AURAS": "A list of comma-separated auras to be applied on the creature"
+      "VISIBILITY_DISTANCE_TYPE": "Normal = 0, 100.0f (default visible distance, 100 yards on continents); Tiny = 1, 25.0f; Small = 2, 50.0f; Large = 3, 200.0f; Gigantic = 4, 400.0f; Infinite = 5 (SIZE_OF_GRIDS max distance for visible objects)",
+      "AURAS": "A list of space separated auras to be applied on the creature."
     },
     "TEMPLATE_MOVEMENT": {
       "GROUND": "0 = None; 1 = Run; 2 = Hover",
@@ -268,7 +270,7 @@
     },
     "NPC_VENDOR": {
       "SLOT": "Position of the item in the vendor window",
-      "MAXCOUNT": "The maximum number of items carried by the vendor at any time. 0 for infinite.",
+      "MAXCOUNT": "The maximum number of items carried by the vendor at any time. 0 for infinite (if choosing a value of 1 or higher also requires incrtime value to work)",
       "INCRTIME": "Combined with maxcount, how often (in seconds) the vendor list is refreshed",
       "EXTENDED_COST": "Value comes from DBC and a selector for this will be implemented later in Keira3"
     }
@@ -386,7 +388,7 @@
       "LONG_UNKNOWN_FLAG": "Long unknown flag",
       "UNKNOWN_FLAG": "Unknown flag",
       "LOCK_ID_FROM_DBC": "LockId from Lock.dbc",
-      "SPELL_ID_FROM_DBC": "Spell Id from Spell.dbc",
+      "SPELL_ID_FROM_DBC": "Spell Id from Spell.dbc. If the spell is a teleport spell, also needs info set in spell_target_position table in world DB",
       "FROM_PAGE_MATERIAL": "from PageTextMaterial.dbc",
       "FROM_LANGUAGE": "From Languages.dbc",
       "FROM_AUCTIONHOUSE": "From AuctionHouse.dbc",

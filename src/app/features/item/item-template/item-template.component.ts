@@ -24,6 +24,7 @@ import { ItemTemplate } from '@keira-types/item-template.type';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { VIEWER_TYPE } from '../../../features/model-3d-viewer/model-3d-viewer.model';
 import { ItemHandlerService } from '../item-handler.service';
+import { SPELL_TRIGGERS } from './item-constants';
 import { ItemPreviewService } from './item-preview.service';
 import { ItemTemplateService } from './item-template.service';
 
@@ -54,6 +55,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   readonly STAT_TYPE = STAT_TYPE;
   readonly PVP_RANK = PVP_RANK;
   readonly ITEM_VIEWER_TYPE = VIEWER_TYPE.ITEM;
+  readonly SPELL_TRIGGERS = SPELL_TRIGGERS;
 
   showItemPreview = true;
 

@@ -19,7 +19,6 @@ import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { Model3DViewerModule } from 'app/features/model-3d-viewer/model-3d-viewer.module';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { ToastrModule } from 'ngx-toastr';
 import { ItemPreviewService } from './item-preview.service';
 import { ItemTemplateComponent } from './item-template.component';
@@ -34,7 +33,6 @@ import { ItemTemplateService } from './item-template.service';
     QueryOutputModule,
     TooltipModule,
     ToastrModule,
-    PerfectScrollbarModule,
     SingleValueSelectorModule,
     FlagsSelectorModule,
     SpellSelectorModule,
