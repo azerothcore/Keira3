@@ -114,7 +114,7 @@ describe('MysqlService', () => {
     let errorSpy: Spy;
     let nextSpy: Spy;
     let completeSpy: Spy;
-    let callback: Function;
+    let callback: (err?: QueryError, results?: any, fields?: any) => void;
 
     const error = { code: 'some error', errno: 1234 } as QueryError;
 
