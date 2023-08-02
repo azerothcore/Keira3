@@ -15,6 +15,5 @@ export class SaiSearchExistingComponent extends SelectComplexKeyComponent<SmartS
 
   constructor(public selectService: SaiSearchService, protected handlerService: SaiHandlerService) {
     super(selectService, handlerService);
-    this.selectService.fields.controls.source_type.setValue(SAI_TYPES.SAI_TYPE_CREATURE); // default value
   }
 }
