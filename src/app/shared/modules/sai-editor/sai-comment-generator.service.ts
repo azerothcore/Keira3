@@ -488,17 +488,20 @@ export class SaiCommentGeneratorService {
     }
 	
 	if (actionLine.indexOf('_waypointStartActionParamThree_') > -1) {
+      let waypointReplace: string;
       switch (Number(smartScript.action_param1)) {
         case 0:
-          actionLine = actionLine.replace('_waypointStartActionParamThree_', 'Waypoint ');
+          waypointReplace = 'Waypoint ';
           break;
         case 1:
-          actionLine = actionLine.replace('_waypointStartActionParamThree_', 'Patrol ');
+          waypointReplace = 'Patrol ';
           break;
         default:
-          actionLine = actionLine.replace('_waypointStartActionParamThree_', '[Unknown Value]');
+          waypointReplace = '[Unknown Value]';
           break;
       }
+
+      actionLine = actionLine.replace('_waypointStartActionParamThree_', waypointReplace);
     }
 	
 	if (actionLine.indexOf('_movementTypeActionParamOne_') > -1) {
