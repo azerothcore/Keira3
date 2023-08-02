@@ -9,7 +9,7 @@
         <div class="form-group row">
           <label class="col-sm-5 col-md-4 col-lg-3 col-form-label" for="source_type" [translate]="'SOURCE_TYPE'"></label>
           <div class="col-sm-7 col-md-8 col-lg-9">
-            <select [formControlName]="'source_type'" class="form-control form-control-sm" id="source_type">
+            <select formControlName="source_type" class="form-control form-control-sm" id="source_type">
               <option *ngFor="let key of SAI_SEARCH_TYPES_KEYS" [ngValue]="key" [label]="SAI_SEARCH_TYPES[key]"></option>
             </select>
           </div>
