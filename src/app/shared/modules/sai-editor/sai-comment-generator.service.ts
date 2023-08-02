@@ -505,38 +505,40 @@ export class SaiCommentGeneratorService {
     }
 	
 	if (actionLine.indexOf('_movementTypeActionParamOne_') > -1) {
+      let movementType: string;
       switch (Number(smartScript.action_param1)) {
         case 0:
-          actionLine = actionLine.replace('_movementTypeActionParamOne_', 'Walk');
+          movementType = 'Walk';
           break;
         case 1:
-          actionLine = actionLine.replace('_movementTypeActionParamOne_', 'Run');
+          movementType = 'Run';
           break;
-		 case 2:
-          actionLine = actionLine.replace('_movementTypeActionParamOne_', 'Run Back');
+        case 2:
+          movementType = 'Run Back';
           break;
-		 case 3:
-          actionLine = actionLine.replace('_movementTypeActionParamOne_', 'Swim');
+        case 3:
+          movementType = 'Swim';
           break;
-		 case 4:
-          actionLine = actionLine.replace('_movementTypeActionParamOne_', 'Swim Back');
+        case 4:
+          movementType = 'Swim Back';
           break;
-		 case 5:
-          actionLine = actionLine.replace('_movementTypeActionParamOne_', 'Turn Rate');
+        case 5:
+          movementType = 'Turn Rate';
           break;
-		 case 6:
-          actionLine = actionLine.replace('_movementTypeActionParamOne_', 'Flight');
+        case 6:
+          movementType = 'Flight';
           break;
-		 case 7:
-          actionLine = actionLine.replace('_movementTypeActionParamOne_', 'Flight Back');
+        case 7:
+          movementType = 'Flight Back';
           break;
-		 case 8:
-          actionLine = actionLine.replace('_movementTypeActionParamOne_', 'Pitch Rate');
+        case 8:
+          movementType = 'Pitch Rate';
           break;
         default:
-          actionLine = actionLine.replace('_movementTypeActionParamOne_', '[Unknown Value]');
+          movementType = '[Unknown Value]';
           break;
       }
+      actionLine = actionLine.replace('_movementTypeActionParamOne_', movementType);
     }
 
     if (actionLine.indexOf('_forceDespawnActionParamOne_') > -1) {
