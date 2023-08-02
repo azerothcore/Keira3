@@ -455,11 +455,8 @@ export class SaiCommentGeneratorService {
     }
 	
 	if (actionLine.indexOf('_enableDisableInvertActionParamOne_') > -1) {
-      if (`${smartScript.action_param1}` === '0') {
-        actionLine = actionLine.replace('_enableDisableInvertActionParamOne_', 'Enable');
-      } else {
-        actionLine = actionLine.replace('_enableDisableInvertActionParamOne_', 'Disable');
-      }
+      const enableOrDisable = `${smartScript.action_param1}` === '0' ? 'Enable' : 'Disable';
+      actionLine = actionLine.replace('_enableDisableInvertActionParamOne_', enableOrDisable);
     }
 
     if (actionLine.indexOf('_incrementOrDecrementActionParamOne_') > -1) {
