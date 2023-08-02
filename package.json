@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "@ngx-translate/core": "15.0.0",
-    "@ngx-translate/http-loader": "7.0.0",
+    "@ngx-translate/http-loader": "8.0.0",
     "@types/electron-settings": "4.0.0",
     "acorn": "8.10.0",
     "electron-settings": "4.0.2",
