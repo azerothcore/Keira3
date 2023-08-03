@@ -47,6 +47,8 @@ export class SaiCommentGeneratorService {
       case SAI_TARGETS.CREATURE_DISTANCE:
       case SAI_TARGETS.CLOSEST_CREATURE:
         return `Closest Creature '${await this.queryService.getCreatureNameById(smartScript.target_param1)}'`;
+      case SAI_TARGETS.STORED:
+        return 'Stored';
       case SAI_TARGETS.CREATURE_GUID:
         return `Closest Creature '${await this.queryService.getCreatureNameByGuid(smartScript.target_param1)}'`;
       case SAI_TARGETS.GAMEOBJECT_RANGE:
@@ -56,9 +58,11 @@ export class SaiCommentGeneratorService {
       case SAI_TARGETS.GAMEOBJECT_GUID:
         return `Closest Creature '${await this.queryService.getGameObjectNameByGuid(smartScript.target_param1)}'`;
       case SAI_TARGETS.INVOKER_PARTY:
-        return "Invoker's Party";
+        return 'Invoker\'s Party';
       case SAI_TARGETS.PLAYER_RANGE:
+        return 'Players in Range';
       case SAI_TARGETS.PLAYER_DISTANCE:
+        return 'Players in Distance';
       case SAI_TARGETS.CLOSEST_PLAYER:
         return 'Closest Player';
       case SAI_TARGETS.ACTION_INVOKER_VEHICLE:
@@ -66,11 +70,27 @@ export class SaiCommentGeneratorService {
       case SAI_TARGETS.OWNER_OR_SUMMONER:
         return 'Owner Or Summoner';
       case SAI_TARGETS.THREAT_LIST:
-        return 'First Unit On Threatlist';
+        return 'Threatlist';
       case SAI_TARGETS.CLOSEST_ENEMY:
         return 'Closest Enemy';
       case SAI_TARGETS.CLOSEST_FRIENDLY:
         return 'Closest Friendly Unit';
+      case SAI_TARGETS.LOOT_RECIPIENTS:
+        return 'Loot Recipients';
+      case SAI_TARGETS.FARTHEST:
+        return 'Farthest Target';
+      case SAI_TARGETS.VEHICLE_PASSENGER:
+        return 'Vehicle Seat';
+      case SAI_TARGETS.PLAYER_WITH_AURA:
+        return 'Player With Aura';
+      case SAI_TARGETS.RANDOM_POINT:
+        return 'Random Point';
+      case SAI_TARGETS.ROLE_SELECTION:
+        return 'Class Roles';
+      case SAI_TARGETS.SUMMONED_CREATURES:
+        return 'Summoned Creatures';
+      case SAI_TARGETS.INSTANCE_STORAGE:
+        return 'Instance Storage';
       default:
         return '[unsupported target type]';
     }
@@ -156,12 +176,6 @@ export class SaiCommentGeneratorService {
     }
     if (eventLine.indexOf('_hasAuraEventParamOne_') > -1) {
       eventLine = eventLine.replace('_hasAuraEventParamOne_', await this.sqliteQueryService.getSpellNameById(smartScript.event_param1));
-    }
-	if (eventLine.indexOf('_waypointParamOne_') == 0) {
-      eventLine = eventLine.replace('_waypointParamOne_', 'Any');
-    }
-	if (eventLine.indexOf('_waypointParamTwo_') == 0) {
-      eventLine = eventLine.replace('_waypointParamTwo_', 'Any');
     }
 
     return eventLine;
@@ -486,10 +500,10 @@ export class SaiCommentGeneratorService {
           break;
       }
     }
-	
-	if (actionLine.indexOf('_waypointStartActionParamThree_') > -1) {
+
+    if (actionLine.indexOf('_waypointStartActionParamThree_') > -1) {
       let waypointReplace: string;
-      switch (Number(smartScript.action_param1)) {
+      switch (Number(smartScript.action_param3)) {
         case 0:
           waypointReplace = 'Waypoint ';
           break;
@@ -503,7 +517,14 @@ export class SaiCommentGeneratorService {
 
       actionLine = actionLine.replace('_waypointStartActionParamThree_', waypointReplace);
     }
-	
+
+    if (eventLine.indexOf('_waypointParamOne_') == 0) {
+      eventLine = eventLine.replace('_waypointParamOne_', 'Any');
+    } else eventLine = eventLine.replace('_waypointParamOne_', `${smartScript.action_param1}`);
+    if (eventLine.indexOf('_waypointParamTwo_') == 0) {
+      eventLine = eventLine.replace('_waypointParamTwo_', 'Any');
+    } else eventLine = eventLine.replace('_waypointParamTwo_', `${smartScript.action_param2}`);
+
 	if (actionLine.indexOf('_movementTypeActionParamOne_') > -1) {
       let movementType: string;
       switch (Number(smartScript.action_param1)) {
