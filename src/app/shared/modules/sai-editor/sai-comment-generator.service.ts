@@ -177,6 +177,13 @@ export class SaiCommentGeneratorService {
     if (eventLine.indexOf('_hasAuraEventParamOne_') > -1) {
       eventLine = eventLine.replace('_hasAuraEventParamOne_', await this.sqliteQueryService.getSpellNameById(smartScript.event_param1));
     }
+	
+	if (eventLine.indexOf('_waypointParamOne_') == 0) {
+      eventLine = eventLine.replace('_waypointParamOne_', 'Any');
+    } else eventLine = eventLine.replace('_waypointParamOne_', `${smartScript.action_param1}`);
+    if (eventLine.indexOf('_waypointParamTwo_') == 0) {
+      eventLine = eventLine.replace('_waypointParamTwo_', 'Any');
+    } else eventLine = eventLine.replace('_waypointParamTwo_', `${smartScript.action_param2}`);
 
     return eventLine;
   }
@@ -517,13 +524,6 @@ export class SaiCommentGeneratorService {
 
       actionLine = actionLine.replace('_waypointStartActionParamThree_', waypointReplace);
     }
-
-    if (eventLine.indexOf('_waypointParamOne_') == 0) {
-      eventLine = eventLine.replace('_waypointParamOne_', 'Any');
-    } else eventLine = eventLine.replace('_waypointParamOne_', `${smartScript.action_param1}`);
-    if (eventLine.indexOf('_waypointParamTwo_') == 0) {
-      eventLine = eventLine.replace('_waypointParamTwo_', 'Any');
-    } else eventLine = eventLine.replace('_waypointParamTwo_', `${smartScript.action_param2}`);
 
 	if (actionLine.indexOf('_movementTypeActionParamOne_') > -1) {
       let movementType: string;
