@@ -10,12 +10,12 @@ import {
   EVENT_FLAGS,
   GO_FLAGS,
   NPC_FLAGS,
+  UNIT_FLAGS,
   templates,
   unitBytes1Flags,
   unitFieldBytes1Type,
   unitStandFlags,
   unitStandStateType,
-  UNIT_FLAGS,
 } from './constants/sai-constants';
 import { SAI_TARGETS } from './constants/sai-targets';
 import { SaiCommentGeneratorService } from './sai-comment-generator.service';
@@ -1037,7 +1037,7 @@ describe('SaiCommentGeneratorService', () => {
           action_type: SAI_ACTIONS.MOVE_TO_POS,
           target_type: SAI_TARGETS.PLAYER_RANGE,
         },
-        expected: `MockEntity - In Combat - Move To Closest Player`,
+        expected: `MockEntity - In Combat - Move To Players in Range`,
       },
       {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.PLAYER_DISTANCE)`,
@@ -1045,7 +1045,7 @@ describe('SaiCommentGeneratorService', () => {
           action_type: SAI_ACTIONS.MOVE_TO_POS,
           target_type: SAI_TARGETS.PLAYER_DISTANCE,
         },
-        expected: `MockEntity - In Combat - Move To Closest Player`,
+        expected: `MockEntity - In Combat - Move To Players in Distance`,
       },
       {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.CLOSEST_PLAYER)`,
@@ -1077,7 +1077,7 @@ describe('SaiCommentGeneratorService', () => {
           action_type: SAI_ACTIONS.MOVE_TO_POS,
           target_type: SAI_TARGETS.THREAT_LIST,
         },
-        expected: `MockEntity - In Combat - Move To First Unit On Threatlist`,
+        expected: `MockEntity - In Combat - Move To Threatlist`,
       },
       {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.CLOSEST_ENEMY)`,
@@ -1096,12 +1096,12 @@ describe('SaiCommentGeneratorService', () => {
         expected: `MockEntity - In Combat - Move To Closest Friendly Unit`,
       },
       {
-        name: `SAI_ACTIONS.MOVE_TO_POS check target type (27)`,
+        name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.LOOT_RECIPIENTS)`,
         input: {
           action_type: SAI_ACTIONS.MOVE_TO_POS,
           target_type: 27,
         },
-        expected: `MockEntity - In Combat - Move To [unsupported target type]`,
+        expected: `MockEntity - In Combat - Move To Loot Recipients`,
       },
       {
         name: `SAI_ACTIONS.GO_SET_LOOT_STATE check action param 1 (0)`,
