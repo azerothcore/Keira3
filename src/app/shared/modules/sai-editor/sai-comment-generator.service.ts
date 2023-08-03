@@ -178,12 +178,12 @@ export class SaiCommentGeneratorService {
       eventLine = eventLine.replace('_hasAuraEventParamOne_', await this.sqliteQueryService.getSpellNameById(smartScript.event_param1));
     }
 	
-	if (eventLine.indexOf('_waypointParamOne_') == 0) {
-      eventLine = eventLine.replace('_waypointParamOne_', 'Any');
-    } else eventLine = eventLine.replace('_waypointParamOne_', `${smartScript.action_param1}`);
-    if (eventLine.indexOf('_waypointParamTwo_') == 0) {
-      eventLine = eventLine.replace('_waypointParamTwo_', 'Any');
-    } else eventLine = eventLine.replace('_waypointParamTwo_', `${smartScript.action_param2}`);
+    if (eventLine.indexOf('_waypointParamOne_') > -1) {
+      (smartScript.event_param1 > 0) ? (eventLine = eventLine.replace('_waypointParamOne_', `${smartScript.event_param1}`)) : (eventLine = eventLine.replace('_waypointParamOne_', 'Any'));
+    }
+    if (eventLine.indexOf('_waypointParamTwo_') > -1) {
+      (smartScript.event_param2 > 0) ? (eventLine = eventLine.replace('_waypointParamTwo_', `${smartScript.event_param2}`)) : (eventLine = eventLine.replace('_waypointParamTwo_', 'Any'));
+    }
 
     return eventLine;
   }
