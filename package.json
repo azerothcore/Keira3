@@ -72,7 +72,7 @@
     "@angular/platform-browser": "16.1.8",
     "@angular/platform-browser-dynamic": "16.1.8",
     "@angular/router": "16.1.8",
-    "@fortawesome/fontawesome-free": "6.4.0",
+    "@fortawesome/fontawesome-free": "6.4.2",
     "@playwright/test": "1.36.2",
     "@swimlane/ngx-datatable": "20.1.0",
     "@types/jasmine": "4.3.5",
