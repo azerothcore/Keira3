@@ -53,6 +53,7 @@
     "PASSWORD": "Password",
     "DATABASE": "Database",
     "SAVE_PASSWORD": "Save password",
+    "REMEMBER_ME": "Remember me",
     "LOAD_RECENT": "Load recent",
     "CLEAR_ALL": "Clear all",
     "CONNECT": "Connect",

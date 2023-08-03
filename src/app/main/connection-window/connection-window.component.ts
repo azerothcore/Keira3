@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ModelForm } from '@keira-shared/utils/helpers';
-import { ConnectionOptions as ConnectionOptions, QueryError } from 'mysql2';
+import { ConnectionOptions, QueryError } from 'mysql2';
 import packageInfo from '../../../../package.json';
 import { MysqlService } from '../../shared/services/mysql.service';
 import { SubscriptionHandler } from '../../shared/utils/subscription-handler/subscription-handler';
@@ -20,12 +20,13 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
   form: FormGroup<ModelForm<Partial<ConnectionOptions>>>;
   error: QueryError;
   savePassword = true;
+  rememberMe = true;
 
   get isRecentDropdownDisabled(): boolean {
     return !this.configs || this.configs.length === 0;
   }
 
-  constructor(private mysqlService: MysqlService, private connectionWindowService: ConnectionWindowService) {
+  constructor(private readonly mysqlService: MysqlService, private readonly connectionWindowService: ConnectionWindowService) {
     super();
   }
 
@@ -46,6 +47,10 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
 
       if (!this.form.getRawValue().password) {
         this.savePassword = false;
+      }
+
+      if (this.connectionWindowService.isRemember()) {
+        this.onConnect();
       }
     }
   }
@@ -68,6 +73,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
           if (!this.savePassword) {
             newConfig.password = '';
           }
+          this.connectionWindowService.saveRememberPreference(this.rememberMe);
           this.connectionWindowService.saveNewConfig(newConfig);
           this.error = null;
         },

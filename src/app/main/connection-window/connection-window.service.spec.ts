@@ -34,6 +34,22 @@ describe('ConnectionWindowService', () => {
     expect(localStorageService.removeItem).toHaveBeenCalledWith(service.KEY);
   });
 
+  it('saveRememberPreference', () => {
+    const { service, localStorageService } = setup();
+    service.saveRememberPreference(true);
+    expect(localStorageService.setItem).toHaveBeenCalledOnceWith('rememberMe', String(true));
+  });
+
+  it('isRemember', () => {
+    const { service, localStorageService } = setup();
+    localStorageService.getItem.and.returnValue('true');
+
+    const res = service.isRemember();
+
+    expect(localStorageService.getItem).toHaveBeenCalledOnceWith('rememberMe');
+    expect(res).toBeTrue();
+  });
+
   describe('saveNewConfig(newConfig)', () => {
     it('saving an existing config should correctly update its password', () => {
       const { service, localStorageService } = setup();

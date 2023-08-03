@@ -53,6 +53,7 @@
     "PASSWORD": "Lösenord",
     "DATABASE": "Databas",
     "SAVE_PASSWORD": "Spara lösenord",
+    "REMEMBER_ME": "Remember me",
     "LOAD_RECENT": "Ladda senaste",
     "CLEAR_ALL": "Rensa allt",
     "CONNECT": "Anslut",

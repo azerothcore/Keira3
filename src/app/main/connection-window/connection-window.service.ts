@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LocalStorageService } from '@keira-shared/services/local-storage.service';
-import { ConnectionOptions as ConnectionOptions } from 'mysql2';
+import { ConnectionOptions } from 'mysql2';
 
 declare type Config = Partial<ConnectionOptions>;
 
@@ -43,6 +43,14 @@ export class ConnectionWindowService {
     }
 
     return configs;
+  }
+
+  saveRememberPreference(rememberMe: boolean): void {
+    this.localStorageService.setItem('rememberMe', String(rememberMe));
+  }
+
+  isRemember(): boolean {
+    return this.localStorageService.getItem('rememberMe') === 'true';
   }
 
   private isSameConfig(config1: Config, config2: Config): boolean {
