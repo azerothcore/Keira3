@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MockEntity, MockMultiRowEditorService, MOCK_ID, MOCK_ID_2, MOCK_NAME } from '@keira-testing/mock-services';
+import { MOCK_ID, MOCK_ID_2, MOCK_NAME, MockEntity, MockMultiRowEditorService } from '@keira-testing/mock-services';
 import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { ToastrService } from 'ngx-toastr';
 import { instance } from 'ts-mockito';
@@ -317,5 +317,11 @@ describe('MultiRowEditorService', () => {
       service['_selectedRowId'] = 2;
       expect(service.isFormIdUnique()).toBe(true);
     });
+  });
+
+  it('refreshDatatable', () => {
+    const oldRows = service['_newRows'];
+    service.refreshDatatable();
+    expect(oldRows).not.toBe(service['_newRows']);
   });
 });

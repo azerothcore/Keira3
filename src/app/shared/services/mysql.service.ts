@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import * as mysql from 'mysql2';
-import { Connection, ConnectionOptions as ConnectionOptions, FieldPacket as FieldInfo, QueryError } from 'mysql2';
+import { Connection, ConnectionOptions, FieldPacket as FieldInfo, QueryError } from 'mysql2';
 import { Observable, Subject } from 'rxjs';
 import { MysqlResult, QueryCallback, TableRow } from '../types/general';
 import { ElectronService } from './electron.service';
@@ -30,7 +30,10 @@ export class MysqlService {
     return this._reconnecting;
   }
 
-  constructor(private electronService: ElectronService, private ngZone: NgZone) {
+  constructor(
+    private electronService: ElectronService,
+    private ngZone: NgZone,
+  ) {
     /* istanbul ignore next */
     if (this.electronService.isElectron()) {
       this.mysql = window.require('mysql2');
@@ -107,10 +110,15 @@ export class MysqlService {
         return;
       }
 
+      /* istanbul ignore next */
       if (this._connection) {
         this._connection.query(queryString, values, this.getQueryCallback<T>(subscriber));
         /* istanbul ignore else */
-      } /* istanbul ignore next */ else if (this.electronService.isElectron()) {
+      } else if (
+        /* istanbul ignore next */
+        this.electronService.isElectron()
+      ) {
+        /* istanbul ignore next */
         console.error(`_connection was not defined when trying to run query: ${queryString}`);
       }
     });

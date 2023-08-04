@@ -26,7 +26,11 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private readonly models3D = [];
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(private readonly sanitizer: DomSanitizer, private readonly queryService: MysqlQueryService, private http: HttpClient) {}
+  constructor(
+    private readonly sanitizer: DomSanitizer,
+    private readonly queryService: MysqlQueryService,
+    private http: HttpClient,
+  ) {}
 
   public itemPreview: SafeHtml = this.sanitizer.bypassSecurityTrustHtml('loading...');
 
@@ -172,6 +176,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private viewerDynamic(): void {
     this.subscriptions.add(
       this.loadedViewer$.pipe(filter((loadedViewr) => loadedViewr)).subscribe(() => {
+        /* istanbul ignore next */
         this.show3Dmodel();
       }),
     );

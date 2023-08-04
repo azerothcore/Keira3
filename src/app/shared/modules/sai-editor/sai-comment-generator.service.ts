@@ -5,13 +5,13 @@ import {
   EVENT_FLAGS,
   GO_FLAGS,
   NPC_FLAGS,
+  UNIT_FLAGS,
   phaseMask,
   templates,
   unitBytes1Flags,
   unitFieldBytes1Type,
   unitStandFlags,
   unitStandStateType,
-  UNIT_FLAGS,
 } from '@keira-shared/modules/sai-editor/constants/sai-constants';
 import { SAI_EVENTS } from '@keira-shared/modules/sai-editor/constants/sai-event';
 import { SAI_TARGETS } from '@keira-shared/modules/sai-editor/constants/sai-targets';
@@ -177,12 +177,12 @@ export class SaiCommentGeneratorService {
     if (eventLine.indexOf('_hasAuraEventParamOne_') > -1) {
       eventLine = eventLine.replace('_hasAuraEventParamOne_', await this.sqliteQueryService.getSpellNameById(smartScript.event_param1));
     }
-	
+
     if (eventLine.indexOf('_waypointParamOne_') > -1) {
-      (smartScript.event_param1 > 0) ? (eventLine = eventLine.replace('_waypointParamOne_', `${smartScript.event_param1}`)) : (eventLine = eventLine.replace('_waypointParamOne_', 'Any'));
+      eventLine = eventLine.replace('_waypointParamOne_', smartScript.event_param1 > 0 ? `${smartScript.event_param1}` : 'Any');
     }
     if (eventLine.indexOf('_waypointParamTwo_') > -1) {
-      (smartScript.event_param2 > 0) ? (eventLine = eventLine.replace('_waypointParamTwo_', `${smartScript.event_param2}`)) : (eventLine = eventLine.replace('_waypointParamTwo_', 'Any'));
+      eventLine = eventLine.replace('_waypointParamTwo_',  smartScript.event_param2 > 0 ? `${smartScript.event_param2}` : 'Any');
     }
 
     return eventLine;
@@ -474,7 +474,7 @@ export class SaiCommentGeneratorService {
         actionLine = actionLine.replace('_enableDisableActionParamOne_', 'Enable');
       }
     }
-	
+
 	if (actionLine.indexOf('_enableDisableInvertActionParamOne_') > -1) {
       const enableOrDisable = `${smartScript.action_param1}` === '0' ? 'Enable' : 'Disable';
       actionLine = actionLine.replace('_enableDisableInvertActionParamOne_', enableOrDisable);
@@ -518,7 +518,7 @@ export class SaiCommentGeneratorService {
           waypointReplace = 'Patrol ';
           break;
         default:
-          waypointReplace = '[Unknown Value]';
+          waypointReplace = '[Unknown Value] ';
           break;
       }
 

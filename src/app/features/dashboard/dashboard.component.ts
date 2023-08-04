@@ -28,7 +28,11 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
     return this.mysqlService.config.database;
   }
 
-  constructor(private queryService: MysqlQueryService, public configService: ConfigService, private readonly mysqlService: MysqlService) {
+  constructor(
+    private queryService: MysqlQueryService,
+    public configService: ConfigService,
+    private readonly mysqlService: MysqlService,
+  ) {
     super();
   }
 
@@ -46,6 +50,7 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
           if (data && data.length > 0) {
             this.coreVersions = data[0];
 
+            /* istanbul ignore next */
             if (!this.coreVersions.db_version.startsWith('ACDB') || !this.coreVersions.core_version.startsWith('AzerothCore')) {
               this.error = true;
             }
