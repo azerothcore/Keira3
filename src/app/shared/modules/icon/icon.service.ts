@@ -3,7 +3,7 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { map, mergeMap, Observable, of } from 'rxjs';
 
-const trade_engineering_icon_ID = 1;
+export const trade_engineering_icon_ID = 1;
 
 @Injectable({
   providedIn: 'root',
