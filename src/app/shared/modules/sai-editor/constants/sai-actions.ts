@@ -264,7 +264,8 @@ SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.CAST] = 'LimitTargets';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.CAST] = `1 - Interrupt any spell casting;
 2 - Triggered (this makes spell cost zero mana and have no cast time);
 32 - Only casts the spell if the target does not have an aura from the spell;
-64 - Prevent combat movement on cast, allow on fail range, mana, LOS`;
+64 - Prevent combat movement on cast, allow on fail range, mana, LOS;
+128 - Only cast if the source's threatlist is higher than one. This includes pets`;
 SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.CAST] = '0 = all targets';
 
 // SMART_ACTION_SUMMON_CREATURE
