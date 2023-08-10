@@ -53,6 +53,7 @@
     "PASSWORD": "Mot de passe",
     "DATABASE": "Base de données",
     "SAVE_PASSWORD": "Enregistrer le mot de passe",
+    "REMEMBER_ME": "Remember me",
     "LOAD_RECENT": "Charger un connexion récente",
     "CLEAR_ALL": "Tout effacer",
     "CONNECT": "Connecter",

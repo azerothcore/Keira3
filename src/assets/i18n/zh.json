@@ -53,6 +53,7 @@
     "PASSWORD": "密码",
     "DATABASE": "数据库",
     "SAVE_PASSWORD": "保存密码",
+    "REMEMBER_ME": "Remember me",
     "LOAD_RECENT": "加载最近的",
     "CLEAR_ALL": "全部清除",
     "CONNECT": "连接",

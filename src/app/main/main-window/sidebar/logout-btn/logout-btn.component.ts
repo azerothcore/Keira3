@@ -3,6 +3,7 @@ import { ModalConfirmComponent } from '@keira-shared/modules/modal-confirm/modal
 import { LocationService } from '@keira-shared/services/location.service';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
 import { TranslateService } from '@ngx-translate/core';
+import { ConnectionWindowService } from 'app/main/connection-window/connection-window.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
@@ -12,7 +13,12 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 })
 export class LogoutBtnComponent extends SubscriptionHandler {
   public modalRef: BsModalRef;
-  constructor(private modalService: BsModalService, private locationService: LocationService, private translateService: TranslateService) {
+  constructor(
+    private readonly modalService: BsModalService,
+    private readonly locationService: LocationService,
+    private readonly translateService: TranslateService,
+    private readonly connectionWindowService: ConnectionWindowService,
+  ) {
     super();
   }
 
@@ -34,6 +40,7 @@ export class LogoutBtnComponent extends SubscriptionHandler {
   }
 
   logout(): void {
+    this.connectionWindowService.saveRememberPreference(false);
     this.locationService.reload();
   }
 }
