@@ -29,8 +29,8 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
   }
 
   constructor(
-    private queryService: MysqlQueryService,
-    public configService: ConfigService,
+    private readonly queryService: MysqlQueryService,
+    public readonly configService: ConfigService,
     private readonly mysqlService: MysqlService,
   ) {
     super();
