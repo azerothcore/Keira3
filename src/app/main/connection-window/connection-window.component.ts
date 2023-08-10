@@ -26,7 +26,10 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
     return !this.configs || this.configs.length === 0;
   }
 
-  constructor(private readonly mysqlService: MysqlService, private readonly connectionWindowService: ConnectionWindowService) {
+  constructor(
+    private readonly mysqlService: MysqlService,
+    private readonly connectionWindowService: ConnectionWindowService,
+  ) {
     super();
   }
 
@@ -49,7 +52,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
         this.savePassword = false;
       }
 
-      if (this.connectionWindowService.isRemember()) {
+      if (this.connectionWindowService.isRememberMeEnabled()) {
         this.onConnect();
       }
     }

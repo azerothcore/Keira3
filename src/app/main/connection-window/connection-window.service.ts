@@ -49,7 +49,7 @@ export class ConnectionWindowService {
     this.localStorageService.setItem('rememberMe', String(rememberMe));
   }
 
-  isRemember(): boolean {
+  isRememberMeEnabled(): boolean {
     return this.localStorageService.getItem('rememberMe') === 'true';
   }
 

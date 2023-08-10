@@ -40,11 +40,11 @@ describe('ConnectionWindowService', () => {
     expect(localStorageService.setItem).toHaveBeenCalledOnceWith('rememberMe', String(true));
   });
 
-  it('isRemember', () => {
+  it('isRememberMeEnabled', () => {
     const { service, localStorageService } = setup();
     localStorageService.getItem.and.returnValue('true');
 
-    const res = service.isRemember();
+    const res = service.isRememberMeEnabled();
 
     expect(localStorageService.getItem).toHaveBeenCalledOnceWith('rememberMe');
     expect(res).toBeTrue();

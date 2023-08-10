@@ -96,7 +96,7 @@ describe('ConnectionWindowComponent', () => {
             'getConfigs',
             'removeAllConfigs',
             'saveNewConfig',
-            'isRemember',
+            'isRememberMeEnabled',
             'saveRememberPreference',
           ]),
         },
@@ -293,11 +293,11 @@ describe('ConnectionWindowComponent', () => {
   });
 
   describe('remember me checkbox', () => {
-    it('when isRemember return true it should call onConnect', waitForAsync(async () => {
+    it('when isRememberMeEnabled return true it should call onConnect', waitForAsync(async () => {
       const { page, component, connectionWindowService } = setup(false);
       spyOn(component, 'onConnect');
       connectionWindowService.getConfigs.and.returnValue(mockConfigsWithPass);
-      connectionWindowService.isRemember.and.returnValue(true);
+      connectionWindowService.isRememberMeEnabled.and.returnValue(true);
 
       page.detectChanges();
       await page.whenStable();
