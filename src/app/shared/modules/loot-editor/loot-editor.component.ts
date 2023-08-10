@@ -16,12 +16,12 @@ export class LootEditorComponent<T extends LootTemplate> {
   readonly LOOT_MODE = LOOT_MODE;
   readonly DTCFG = DTCFG;
 
-  public get docUrl(): string {
+  get docUrl(): string {
     // all loot tables have the same documentation page
     return WIKI_BASE_URL + 'loot_template';
   }
 
-  public get referenceIds(): number[] {
+  get referenceIds(): number[] {
     return this.editorService.newRows.filter((row) => row.Reference > 0).map((row) => row.Reference);
   }
 

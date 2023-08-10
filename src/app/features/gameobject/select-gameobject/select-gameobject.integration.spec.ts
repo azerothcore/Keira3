@@ -85,11 +85,12 @@ describe('SelectGameobject integration tests', () => {
     page.expectEntityAlreadyInUse();
   }));
 
-  for (const { testId, id, name, limit, expectedQuery } of [
+  for (const { testId, id, name, scriptName, limit, expectedQuery } of [
     {
       testId: 1,
       id: 1200,
       name: `Solid Chest`,
+      scriptName: '',
       limit: '100',
       expectedQuery: "SELECT * FROM `gameobject_template` WHERE (`entry` LIKE '%1200%') AND (`name` LIKE '%Solid Chest%') LIMIT 100",
     },
@@ -97,6 +98,7 @@ describe('SelectGameobject integration tests', () => {
       testId: 2,
       id: '',
       name: `Solid Chest`,
+      scriptName: '',
       limit: '100',
       expectedQuery: "SELECT * FROM `gameobject_template` WHERE (`name` LIKE '%Solid Chest%') LIMIT 100",
     },
@@ -104,6 +106,7 @@ describe('SelectGameobject integration tests', () => {
       testId: 3,
       id: '',
       name: `Solid Chest`,
+      scriptName: '',
       limit: '100',
       expectedQuery: "SELECT * FROM `gameobject_template` WHERE (`name` LIKE '%Solid Chest%') LIMIT 100",
     },
@@ -111,8 +114,17 @@ describe('SelectGameobject integration tests', () => {
       testId: 4,
       id: 1200,
       name: '',
+      scriptName: '',
       limit: '',
       expectedQuery: "SELECT * FROM `gameobject_template` WHERE (`entry` LIKE '%1200%')",
+    },
+    {
+      testId: 5,
+      id: '',
+      name: '',
+      scriptName: 'go_f',
+      limit: '',
+      expectedQuery: "SELECT * FROM `gameobject_template` WHERE (`ScriptName` LIKE '%go_f%')",
     },
   ]) {
     it(`searching an existing entity should correctly work [${testId}]`, () => {
@@ -122,6 +134,9 @@ describe('SelectGameobject integration tests', () => {
       }
       if (name) {
         page.setInputValue(page.searchNameInput, name);
+      }
+      if (scriptName) {
+        page.setInputValue(page.searchScriptNameInput, scriptName);
       }
       page.setInputValue(page.searchLimitInput, limit);
 

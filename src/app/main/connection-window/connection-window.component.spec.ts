@@ -37,6 +37,9 @@ class ConnectionWindowComponentPage extends PageObject<ConnectionWindowComponent
   get savePasswordInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('#save-password');
   }
+  get rememberMeInput(): HTMLInputElement {
+    return this.query<HTMLInputElement>('#remember-me');
+  }
   get loadRecentBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#load-recent button');
   }
@@ -89,7 +92,13 @@ describe('ConnectionWindowComponent', () => {
         { provide: MysqlService, useValue: instance(MockedMysqlService) },
         {
           provide: ConnectionWindowService,
-          useValue: jasmine.createSpyObj('ConnectionWindowService', ['getConfigs', 'removeAllConfigs', 'saveNewConfig']),
+          useValue: jasmine.createSpyObj('ConnectionWindowService', [
+            'getConfigs',
+            'removeAllConfigs',
+            'saveNewConfig',
+            'isRememberMeEnabled',
+            'saveRememberPreference',
+          ]),
         },
       ],
     }).compileComponents();
@@ -212,6 +221,7 @@ describe('ConnectionWindowComponent', () => {
       await page.whenStable();
 
       expect(page.savePasswordInput.checked).toBe(true);
+      expect(page.rememberMeInput.disabled).toBe(false);
     }));
 
     it('should be unchecked by default when the last used config has an empty password', waitForAsync(async () => {
@@ -222,6 +232,7 @@ describe('ConnectionWindowComponent', () => {
       await page.whenStable();
 
       expect(page.savePasswordInput.checked).toBe(false);
+      expect(page.rememberMeInput.disabled).toBe(true);
     }));
 
     it('when selected, the password should be saved', waitForAsync(async () => {
@@ -278,6 +289,20 @@ describe('ConnectionWindowComponent', () => {
         password: 'helias123',
         database: 'helias_world',
       });
+    }));
+  });
+
+  describe('remember me checkbox', () => {
+    it('when isRememberMeEnabled return true it should call onConnect', waitForAsync(async () => {
+      const { page, component, connectionWindowService } = setup(false);
+      spyOn(component, 'onConnect');
+      connectionWindowService.getConfigs.and.returnValue(mockConfigsWithPass);
+      connectionWindowService.isRememberMeEnabled.and.returnValue(true);
+
+      page.detectChanges();
+      await page.whenStable();
+
+      expect(component.onConnect).toHaveBeenCalledTimes(1);
     }));
   });
 

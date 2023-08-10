@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { PageObject } from '@keira-testing/page-object';
 import { SmartScripts } from '@keira-types/smart-scripts.type';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -9,7 +10,6 @@ import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { SaiSearchExistingComponent } from './sai-search-existing.component';
 import { SaiSearchExistingModule } from './sai-search-existing.module';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import Spy = jasmine.Spy;
 
 class SaiSearchExistingComponentPage extends PageObject<SaiSearchExistingComponent> {
@@ -58,10 +58,11 @@ describe('SaiSearchExisting integration tests', () => {
     );
   }));
 
-  for (const { testId, entryorguid, source_type, limit, expectedQuery } of [
+  for (const { testId, entryorguid, selectIndex, source_type, limit, expectedQuery } of [
     {
       testId: 1,
       entryorguid: 1,
+      selectIndex: 3,
       source_type: 2,
       limit: '100',
       expectedQuery:
@@ -70,6 +71,7 @@ describe('SaiSearchExisting integration tests', () => {
     {
       testId: 2,
       entryorguid: '',
+      selectIndex: 3,
       source_type: 2,
       limit: '100',
       expectedQuery:
@@ -78,6 +80,7 @@ describe('SaiSearchExisting integration tests', () => {
     {
       testId: 3,
       entryorguid: 123,
+      selectIndex: '',
       source_type: '',
       limit: '100',
       expectedQuery:
@@ -86,6 +89,7 @@ describe('SaiSearchExisting integration tests', () => {
     {
       testId: 4,
       entryorguid: 123,
+      selectIndex: '',
       source_type: '',
       limit: '',
       expectedQuery:
@@ -95,7 +99,7 @@ describe('SaiSearchExisting integration tests', () => {
     it(`searching an existing entity should correctly work [${testId}]`, () => {
       querySpy.calls.reset();
       if (source_type) {
-        page.setInputValue(page.searchSourceTypeSelect, source_type + ': ' + source_type);
+        page.setInputValue(page.searchSourceTypeSelect, selectIndex + ': ' + source_type);
       }
       if (entryorguid) {
         page.setInputValue(page.searchEntryOrGuid, entryorguid);

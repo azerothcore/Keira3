@@ -53,6 +53,7 @@
     "PASSWORD": "Пароль",
     "DATABASE": "База данных",
     "SAVE_PASSWORD": "Сохранить пароль",
+    "REMEMBER_ME": "Remember me",
     "LOAD_RECENT": "Последнее",
     "CLEAR_ALL": "Очистить все",
     "CONNECT": "Подключиться",
