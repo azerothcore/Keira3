@@ -31,8 +31,8 @@ export class MysqlService {
   }
 
   constructor(
-    private electronService: ElectronService,
-    private ngZone: NgZone,
+    private  readonly electronService: ElectronService,
+    private  readonly ngZone: NgZone,
   ) {
     /* istanbul ignore next */
     if (this.electronService.isElectron()) {
