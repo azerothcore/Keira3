@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
 import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
@@ -111,5 +111,31 @@ describe('SAI Editor Service', () => {
       expect(spy).toHaveBeenCalledTimes(1);
       expect(service['_diffQuery']).toEqual(expectedQuery);
     });
+  });
+
+  describe('generateComments', () => {
+    it('should work correctly', fakeAsync(() => {
+      const mockRows: Partial<SmartScripts>[] = [
+        { entryorguid: 0, source_type: 0, id: 0, link: 1, event_type: 0 },
+        { entryorguid: 0, source_type: 0, id: 1, link: 0, event_type: 61 },
+      ];
+
+      service['_newRows'] = mockRows as SmartScripts[];
+
+      const updateDiffQuerySpy = spyOn<any>(service, 'updateDiffQuery');
+      const updateFullQuerySpy = spyOn<any>(service, 'updateFullQuery');
+      const refreshDatatableSpy = spyOn(service, 'refreshDatatable');
+      const isRowSelectedSpy = spyOn(service, 'isRowSelected').and.returnValue(true);
+      const getNameSpy = spyOn<any>(handlerService, 'getName');
+
+      service.generateComments();
+      tick(100);
+
+      expect(updateDiffQuerySpy).toHaveBeenCalledTimes(1);
+      expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
+      expect(refreshDatatableSpy).toHaveBeenCalledTimes(1);
+      expect(isRowSelectedSpy).toHaveBeenCalledTimes(2);
+      expect(getNameSpy).toHaveBeenCalledTimes(2);
+    }));
   });
 });

@@ -979,6 +979,15 @@ describe('SaiCommentGeneratorService', () => {
         expected: `MockEntity - In Combat - Move To Closest Creature 'mockCreatureNameById0'`,
       },
       {
+        name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.STORED)`,
+        input: {
+          action_type: SAI_ACTIONS.MOVE_TO_POS,
+          target_type: SAI_TARGETS.STORED,
+          target_param1: 0,
+        },
+        expected: `MockEntity - In Combat - Move To Stored`,
+      },
+      {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.CREATURE_GUID)`,
         input: {
           action_type: SAI_ACTIONS.MOVE_TO_POS,
@@ -1730,6 +1739,37 @@ describe('SaiCommentGeneratorService', () => {
         expected: `MockEntity - On Spellhit 'mockGetSpellNameById123' - Cast 'mockGetSpellNameById456'`,
       },
       {
+        name: `SAI_EVENTS.WAYPOINT_START`,
+        input: {
+          event_type: SAI_EVENTS.WAYPOINT_START,
+          event_param2: 124,
+        },
+        expected: `MockEntity - On Path 124 Started - No Action Type`,
+      },
+      {
+        name: `SAI_EVENTS.WAYPOINT_START`,
+        input: {
+          event_type: SAI_EVENTS.WAYPOINT_START,
+        },
+        expected: `MockEntity - On Path Any Started - No Action Type`,
+      },
+      {
+        name: `SAI_EVENTS.WAYPOINT_REACHED`,
+        input: {
+          event_type: SAI_EVENTS.WAYPOINT_REACHED,
+          event_param1: 123,
+          event_param2: 124,
+        },
+        expected: `MockEntity - On Point 123 of Path 124 Reached - No Action Type`,
+      },
+      {
+        name: `SAI_EVENTS.WAYPOINT_REACHED`,
+        input: {
+          event_type: SAI_EVENTS.WAYPOINT_REACHED,
+        },
+        expected: `MockEntity - On Point Any of Path Any Reached - No Action Type`,
+      },
+      {
         name: `SAI_EVENTS.VICTIM_CASTING, SAI_ACTIONS.INTERRUPT_SPELL`,
         input: {
           event_type: SAI_EVENTS.VICTIM_CASTING,
@@ -1746,6 +1786,154 @@ describe('SaiCommentGeneratorService', () => {
           event_param1: 123,
         },
         expected: `MockEntity - On Aura 'mockGetSpellNameById123' - No Action Type`,
+      },
+      {
+        name: `SAI_ACTIONS.DISABLE_EVADE`,
+        input: {
+          action_type: SAI_ACTIONS.DISABLE_EVADE,
+          action_param1: 1,
+        },
+        expected: `MockEntity - In Combat - Disable Evade`,
+      },
+      {
+        name: `SAI_ACTIONS.DISABLE_EVADE`,
+        input: {
+          action_type: SAI_ACTIONS.DISABLE_EVADE,
+          action_param1: 0,
+        },
+        expected: `MockEntity - In Combat - Enable Evade`,
+      },
+      {
+        name: `SAI_ACTIONS.WP_START`,
+        input: {
+          action_type: SAI_ACTIONS.WP_START,
+          action_param3: 0,
+        },
+        expected: `MockEntity - In Combat - Start Waypoint Path 0`,
+      },
+      {
+        name: `SAI_ACTIONS.WP_START`,
+        input: {
+          action_type: SAI_ACTIONS.WP_START,
+          action_param3: 1,
+        },
+        expected: `MockEntity - In Combat - Start Patrol Path 0`,
+      },
+      {
+        name: `SAI_ACTIONS.WP_START`,
+        input: {
+          action_type: SAI_ACTIONS.WP_START,
+          action_param3: 123,
+        },
+        expected: `MockEntity - In Combat - Start [Unknown Value] Path 0`,
+      },
+      {
+        name: `SAI_ACTIONS.SET_MOVEMENT_SPEED`,
+        input: {
+          action_type: SAI_ACTIONS.SET_MOVEMENT_SPEED,
+          action_param1: 0,
+        },
+        expected: `MockEntity - In Combat - Set Walk Speed to 0.0`,
+      },
+      ...[
+        { action_param1:  0, comment: 'Walk' },
+        { action_param1: 1, comment: 'Run' },
+        { action_param1: 2, comment: 'Run Back' },
+        { action_param1: 3, comment: 'Swim' },
+        { action_param1: 4, comment: 'Swim Back' },
+        { action_param1: 5, comment: 'Turn Rate' },
+        { action_param1: 6, comment: 'Flight' },
+        { action_param1: 7, comment: 'Flight Back' },
+        { action_param1: 8, comment: 'Pitch Rate' },
+        { action_param1: 123, comment: '[Unknown Value]' },
+        ].map(({ action_param1, comment }) => ({
+          name: `SAI_ACTIONS.SET_MOVEMENT_SPEED`,
+          input: {
+            action_type: SAI_ACTIONS.SET_MOVEMENT_SPEED,
+            action_param1,
+          },
+          expected: `MockEntity - In Combat - Set ${comment} Speed to 0.0`,
+        })),
+      {
+        name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.STORED)`,
+        input: {
+          action_type: SAI_ACTIONS.MOVE_TO_POS,
+          target_type: SAI_TARGETS.STORED,
+          target_param1: 0,
+        },
+        expected: `MockEntity - In Combat - Move To Stored`,
+      },
+      {
+        name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.FARTHEST)`,
+        input: {
+          action_type: SAI_ACTIONS.MOVE_TO_POS,
+          target_type: SAI_TARGETS.FARTHEST,
+          target_param1: 0,
+        },
+        expected: `MockEntity - In Combat - Move To Farthest Target`,
+      },
+      {
+        name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.VEHICLE_PASSENGER)`,
+        input: {
+          action_type: SAI_ACTIONS.MOVE_TO_POS,
+          target_type: SAI_TARGETS.VEHICLE_PASSENGER,
+          target_param1: 0,
+        },
+        expected: `MockEntity - In Combat - Move To Vehicle Seat`,
+      },
+      {
+        name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.PLAYER_WITH_AURA)`,
+        input: {
+          action_type: SAI_ACTIONS.MOVE_TO_POS,
+          target_type: SAI_TARGETS.PLAYER_WITH_AURA,
+          target_param1: 0,
+        },
+        expected: `MockEntity - In Combat - Move To Player With Aura`,
+      },
+      {
+        name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.RANDOM_POINT)`,
+        input: {
+          action_type: SAI_ACTIONS.MOVE_TO_POS,
+          target_type: SAI_TARGETS.RANDOM_POINT,
+          target_param1: 0,
+        },
+        expected: `MockEntity - In Combat - Move To Random Point`,
+      },
+      {
+        name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.ROLE_SELECTION)`,
+        input: {
+          action_type: SAI_ACTIONS.MOVE_TO_POS,
+          target_type: SAI_TARGETS.ROLE_SELECTION,
+          target_param1: 0,
+        },
+        expected: `MockEntity - In Combat - Move To Class Roles`,
+      },
+      {
+        name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.SUMMONED_CREATURES)`,
+        input: {
+          action_type: SAI_ACTIONS.MOVE_TO_POS,
+          target_type: SAI_TARGETS.SUMMONED_CREATURES,
+          target_param1: 0,
+        },
+        expected: `MockEntity - In Combat - Move To Summoned Creatures`,
+      },
+      {
+        name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.INSTANCE_STORAGE)`,
+        input: {
+          action_type: SAI_ACTIONS.MOVE_TO_POS,
+          target_type: SAI_TARGETS.INSTANCE_STORAGE,
+          target_param1: 0,
+        },
+        expected: `MockEntity - In Combat - Move To Instance Storage`,
+      },
+      {
+        name: `SAI_ACTIONS.MOVE_TO_POS check target type (unsupported target type)`,
+        input: {
+          action_type: SAI_ACTIONS.MOVE_TO_POS,
+          target_type: 10000,
+          target_param1: 0,
+        },
+        expected: `MockEntity - In Combat - Move To [unsupported target type]`,
       },
     ];
 
