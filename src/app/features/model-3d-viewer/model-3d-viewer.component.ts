@@ -29,7 +29,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   constructor(
     private readonly sanitizer: DomSanitizer,
     private readonly queryService: MysqlQueryService,
-    private http: HttpClient,
+    private readonly http: HttpClient,
   ) {}
 
   public itemPreview: SafeHtml = this.sanitizer.bypassSecurityTrustHtml('loading...');
