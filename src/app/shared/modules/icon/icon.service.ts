@@ -3,7 +3,7 @@ import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { map, mergeMap, Observable, of } from 'rxjs';
 
-export const trade_engineering_icon_ID = 1;
+export const TRADE_ENGINEERING_ICON_ID = 1;
 
 @Injectable({
   providedIn: 'root',
@@ -27,6 +27,6 @@ export class IconService {
   getIconBySpellId(spellId: string | number): Observable<string> {
     return this.sqliteQueryService
       .getDisplayIdBySpellId(spellId)
-      .pipe(mergeMap((displayId) => this.sqliteQueryService.getIconBySpellDisplayId(!!displayId ? displayId : trade_engineering_icon_ID)));
+      .pipe(mergeMap((displayId) => this.sqliteQueryService.getIconBySpellDisplayId(!!displayId ? displayId : TRADE_ENGINEERING_ICON_ID)));
   }
 }

@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { of } from 'rxjs';
-import { IconService, trade_engineering_icon_ID } from './icon.service';
+import { IconService, TRADE_ENGINEERING_ICON_ID } from './icon.service';
 
 describe('IconService', () => {
   const mockArgument = '123';
@@ -91,7 +91,7 @@ describe('IconService', () => {
     spyOn(sqliteQueryService, 'getIconBySpellDisplayId').and.callFake((displayId) => of(String(displayId)));
 
     service.getIconBySpellId(mockArgument).subscribe((result) => {
-      expect(result).toEqual(String(trade_engineering_icon_ID));
+      expect(result).toEqual(String(TRADE_ENGINEERING_ICON_ID));
       done();
     });
     expect(sqliteQueryService.getDisplayIdBySpellId).toHaveBeenCalledTimes(1);
