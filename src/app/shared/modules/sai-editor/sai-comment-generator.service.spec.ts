@@ -190,6 +190,22 @@ describe('SaiCommentGeneratorService', () => {
         },
         expected: `MockEntity - In Combat - Set Reactstate [Unknown Reactstate]`,
       },
+      ...[
+        { action_param2: 1, comment: 'Circle' },
+        { action_param2: 2, comment: 'Semi-Circle Behind' },
+        { action_param2: 3, comment: 'Semi-Circle Front' },
+        { action_param2: 4, comment: 'Line' },
+        { action_param2: 5, comment: 'Column' },
+        { action_param2: 6, comment: 'Angular' },
+        { action_param2: 123, comment: '[Unknown Follow Type]' },
+      ].map(({ action_param2, comment }) => ({
+        name: `SAI_ACTIONS.FOLLOW_GROUP - action param 2 - ${comment}`,
+        input: {
+          action_type: SAI_ACTIONS.FOLLOW_GROUP,
+          action_param2,
+        },
+        expected: `MockEntity - In Combat - Follow Type ${comment}`,
+      })),
       {
         name: 'SAI_ACTIONS.RANDOM_EMOTE check action params 1,2,3,4,5,6',
         input: {
@@ -1836,7 +1852,7 @@ describe('SaiCommentGeneratorService', () => {
         expected: `MockEntity - In Combat - Set Walk Speed to 0.0`,
       },
       ...[
-        { action_param1:  0, comment: 'Walk' },
+        { action_param1: 0, comment: 'Walk' },
         { action_param1: 1, comment: 'Run' },
         { action_param1: 2, comment: 'Run Back' },
         { action_param1: 3, comment: 'Swim' },
@@ -1846,14 +1862,14 @@ describe('SaiCommentGeneratorService', () => {
         { action_param1: 7, comment: 'Flight Back' },
         { action_param1: 8, comment: 'Pitch Rate' },
         { action_param1: 123, comment: '[Unknown Value]' },
-        ].map(({ action_param1, comment }) => ({
-          name: `SAI_ACTIONS.SET_MOVEMENT_SPEED`,
-          input: {
-            action_type: SAI_ACTIONS.SET_MOVEMENT_SPEED,
-            action_param1,
-          },
-          expected: `MockEntity - In Combat - Set ${comment} Speed to 0.0`,
-        })),
+      ].map(({ action_param1, comment }) => ({
+        name: `SAI_ACTIONS.SET_MOVEMENT_SPEED ${comment}`,
+        input: {
+          action_type: SAI_ACTIONS.SET_MOVEMENT_SPEED,
+          action_param1,
+        },
+        expected: `MockEntity - In Combat - Set ${comment} Speed to 0.0`,
+      })),
       {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.STORED)`,
         input: {
