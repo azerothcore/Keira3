@@ -247,6 +247,32 @@ export class SaiCommentGeneratorService {
           break;
       }
     }
+    	
+	if (actionLine.indexOf('_followGroupParamTwo_') > -1) {
+      switch (Number(smartScript.action_param2)) {
+        case 1:
+          actionLine = actionLine.replace('_followGroupParamTwo_', 'Circle');
+          break;
+        case 2:
+          actionLine = actionLine.replace('_followGroupParamTwo_', 'Semi-Circle Behind');
+          break;
+        case 3:
+          actionLine = actionLine.replace('_followGroupParamTwo_', 'Semi-Circle Front');
+          break;
+		case 4:
+          actionLine = actionLine.replace('_followGroupParamTwo_', 'Line');
+          break;
+		case 5:
+          actionLine = actionLine.replace('_followGroupParamTwo_', 'Column');
+          break;
+		case 6:
+          actionLine = actionLine.replace('_followGroupParamTwo_', 'Angular');
+          break;
+        default:
+          actionLine = actionLine.replace('_followGroupParamTwo_', '[Unknown Follow Type]');
+          break;
+      }
+    }
 
     if (actionLine.indexOf('_actionRandomParameters_') > -1) {
       let randomEmotes = smartScript.action_param1 + ', ' + smartScript.action_param2;
