@@ -16,8 +16,10 @@ jobs:
       matrix:
         node-version: [18]
         os: [ubuntu-20.04, ubuntu-22.04, macos-11]
-    runs-on: ${{ matrix.os }}
-    name: ${{ matrix.os }}-node-${{ matrix.node-version }}
+    # runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-20.04
+    # name: ${{ matrix.os }}-node-${{ matrix.node-version }}
+    name: ubuntu-20.04
 
     steps:
       - uses: actions/checkout@v3
