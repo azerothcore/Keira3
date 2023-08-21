@@ -16,8 +16,10 @@ jobs:
       matrix:
         node-version: [18]
         os: [macos-12]
-    runs-on: ${{ matrix.os }}
-    name: ${{ matrix.os }}-node-${{ matrix.node-version }}
+    # runs-on: ${{ matrix.os }}
+    runs-on: macos-12
+    # name: ${{ matrix.os }}-node-${{ matrix.node-version }}
+    name: macos-12-build
 
     steps:
       - uses: actions/checkout@v3
