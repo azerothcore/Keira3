@@ -114,6 +114,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
       },
       contentPath,
     ).then((WoWModel) => {
+      /* istanbul ignore next */
       this.models3D.push(WoWModel);
     });
   }

@@ -23,7 +23,10 @@ import { MysqlQueryService } from '../../services/mysql-query.service';
   providedIn: 'root',
 })
 export class SaiCommentGeneratorService {
-  constructor(private queryService: MysqlQueryService, private sqliteQueryService: SqliteQueryService) {}
+  constructor(
+    private queryService: MysqlQueryService,
+    private sqliteQueryService: SqliteQueryService,
+  ) {}
 
   private async getStringByTargetType(smartScript: SmartScripts): Promise<string> {
     switch (Number(smartScript.target_type)) {
@@ -58,7 +61,7 @@ export class SaiCommentGeneratorService {
       case SAI_TARGETS.GAMEOBJECT_GUID:
         return `Closest Creature '${await this.queryService.getGameObjectNameByGuid(smartScript.target_param1)}'`;
       case SAI_TARGETS.INVOKER_PARTY:
-        return 'Invoker\'s Party';
+        return "Invoker's Party";
       case SAI_TARGETS.PLAYER_RANGE:
         return 'Players in Range';
       case SAI_TARGETS.PLAYER_DISTANCE:
@@ -182,7 +185,7 @@ export class SaiCommentGeneratorService {
       eventLine = eventLine.replace('_waypointParamOne_', smartScript.event_param1 > 0 ? `${smartScript.event_param1}` : 'Any');
     }
     if (eventLine.indexOf('_waypointParamTwo_') > -1) {
-      eventLine = eventLine.replace('_waypointParamTwo_',  smartScript.event_param2 > 0 ? `${smartScript.event_param2}` : 'Any');
+      eventLine = eventLine.replace('_waypointParamTwo_', smartScript.event_param2 > 0 ? `${smartScript.event_param2}` : 'Any');
     }
 
     return eventLine;
@@ -246,6 +249,34 @@ export class SaiCommentGeneratorService {
           actionLine = actionLine.replace('_reactStateParamOne_', '[Unknown Reactstate]');
           break;
       }
+    }
+
+    if (actionLine.indexOf('_followGroupParamTwo_') > -1) {
+      let _followGroupParamTwo_ = '[Unknown Follow Type]';
+      switch (Number(smartScript.action_param2)) {
+        case 1:
+          _followGroupParamTwo_ = 'Circle';
+          break;
+        case 2:
+          _followGroupParamTwo_ = 'Semi-Circle Behind';
+          break;
+        case 3:
+          _followGroupParamTwo_ = 'Semi-Circle Front';
+          break;
+        case 4:
+          _followGroupParamTwo_ = 'Line';
+          break;
+        case 5:
+          _followGroupParamTwo_ = 'Column';
+          break;
+        case 6:
+          _followGroupParamTwo_ = 'Angular';
+          break;
+        default:
+          _followGroupParamTwo_ = '[Unknown Follow Type]';
+          break;
+      }
+      actionLine = actionLine.replace('_followGroupParamTwo_', _followGroupParamTwo_);
     }
 
     if (actionLine.indexOf('_actionRandomParameters_') > -1) {
@@ -475,7 +506,7 @@ export class SaiCommentGeneratorService {
       }
     }
 
-	if (actionLine.indexOf('_enableDisableInvertActionParamOne_') > -1) {
+    if (actionLine.indexOf('_enableDisableInvertActionParamOne_') > -1) {
       const enableOrDisable = `${smartScript.action_param1}` === '0' ? 'Enable' : 'Disable';
       actionLine = actionLine.replace('_enableDisableInvertActionParamOne_', enableOrDisable);
     }
@@ -525,7 +556,7 @@ export class SaiCommentGeneratorService {
       actionLine = actionLine.replace('_waypointStartActionParamThree_', waypointReplace);
     }
 
-	if (actionLine.indexOf('_movementTypeActionParamOne_') > -1) {
+    if (actionLine.indexOf('_movementTypeActionParamOne_') > -1) {
       let movementType: string;
       switch (Number(smartScript.action_param1)) {
         case 0:
