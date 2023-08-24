@@ -1,8 +1,8 @@
-import { QueryService } from '@keira-shared/services/query.service';
 import { FormControl, FormGroup } from '@angular/forms';
+import { QueryService } from '@keira-shared/services/query.service';
+import { ModelForm, ModelNestedForm } from '@keira-shared/utils/helpers';
 import { QueryForm, StringKeys, TableRow } from '../../types/general';
 import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
-import { ModelForm, ModelNestedForm } from '@keira-shared/utils/helpers';
 
 export abstract class SearchService<T extends TableRow> extends SubscriptionHandler {
   query: string;

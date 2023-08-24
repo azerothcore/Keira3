@@ -1,25 +1,28 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
-import { ToastrModule } from 'ngx-toastr';
+import { RouterTestingModule } from '@angular/router/testing';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
 
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { SelectCreatureComponent } from './select-creature.component';
-import { SelectCreatureService } from './select-creature.service';
-import { SelectCreatureModule } from './select-creature.module';
-import { CreatureTemplate } from '@keira-types/creature-template.type';
+import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { SelectPageObject } from '@keira-testing/select-page-object';
+import { CreatureTemplate } from '@keira-types/creature-template.type';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
+import { SelectCreatureComponent } from './select-creature.component';
+import { SelectCreatureModule } from './select-creature.module';
+import { SelectCreatureService } from './select-creature.service';
 import Spy = jasmine.Spy;
 
 class SelectCreatureComponentPage extends SelectPageObject<SelectCreatureComponent> {
   ID_FIELD = 'entry';
   get searchSubnameInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('#subname');
+  }
+  get searchScriptNameInput(): HTMLInputElement {
+    return this.query<HTMLInputElement>('#ScriptName');
   }
 }
 
@@ -90,12 +93,13 @@ describe('SelectCreature integration tests', () => {
     page.expectEntityAlreadyInUse();
   }));
 
-  for (const { id, entry, name, subname, limit, expectedQuery } of [
+  for (const { id, entry, name, subname, scriptName, limit, expectedQuery } of [
     {
       id: 1,
       entry: 1200,
       name: 'Helias',
       subname: 'Dev',
+      scriptName: '',
       limit: '100',
       expectedQuery:
         'SELECT * FROM `creature_template` ' +
@@ -106,6 +110,7 @@ describe('SelectCreature integration tests', () => {
       entry: '',
       name: 'Helias',
       subname: 'Dev',
+      scriptName: '',
       limit: '100',
       expectedQuery: "SELECT * FROM `creature_template` WHERE (`name` LIKE '%Helias%') AND (`subname` LIKE '%Dev%') LIMIT 100",
     },
@@ -114,6 +119,7 @@ describe('SelectCreature integration tests', () => {
       entry: '',
       name: 'Helias',
       subname: '',
+      scriptName: '',
       limit: '100',
       expectedQuery: "SELECT * FROM `creature_template` WHERE (`name` LIKE '%Helias%') LIMIT 100",
     },
@@ -122,8 +128,18 @@ describe('SelectCreature integration tests', () => {
       entry: '',
       name: '',
       subname: `it's a cool dev!`,
+      scriptName: '',
       limit: '',
       expectedQuery: "SELECT * FROM `creature_template` WHERE (`subname` LIKE '%it\\'s a cool dev!%')",
+    },
+    {
+      id: 5,
+      entry: '',
+      name: '',
+      subname: '',
+      scriptName: 'npc_tyrion',
+      limit: '',
+      expectedQuery: "SELECT * FROM `creature_template` WHERE (`ScriptName` LIKE '%npc_tyrion%')",
     },
   ]) {
     it(`searching an existing entity should correctly work [${id}]`, () => {
@@ -137,6 +153,9 @@ describe('SelectCreature integration tests', () => {
       }
       if (subname) {
         page.setInputValue(page.searchSubnameInput, subname);
+      }
+      if (scriptName) {
+        page.setInputValue(page.searchScriptNameInput, scriptName);
       }
       page.setInputValue(page.searchLimitInput, limit);
 

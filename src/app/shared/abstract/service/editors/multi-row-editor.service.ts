@@ -40,7 +40,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     this.initForm();
   }
 
-  protected initForm() {
+  protected initForm(): void {
     super.initForm();
 
     this.subscriptions.push(
@@ -214,7 +214,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     return true;
   }
 
-  refreshDatatable() {
+  refreshDatatable(): void {
     this._newRows = [...this._newRows];
   }
 }

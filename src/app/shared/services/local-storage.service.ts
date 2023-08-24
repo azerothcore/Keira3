@@ -19,15 +19,15 @@ export class LocalStorageService implements Storage {
     this.storage.setItem(key, value);
   }
 
-  getItem(key: string) {
+  getItem(key: string): string | null {
     return this.storage.getItem(key);
   }
 
-  removeItem(key: string) {
+  removeItem(key: string): void {
     this.storage.removeItem(key);
   }
 
-  clear() {
+  clear(): void {
     this.storage.clear();
   }
 }

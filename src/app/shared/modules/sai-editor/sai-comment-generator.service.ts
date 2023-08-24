@@ -5,13 +5,13 @@ import {
   EVENT_FLAGS,
   GO_FLAGS,
   NPC_FLAGS,
+  UNIT_FLAGS,
   phaseMask,
   templates,
   unitBytes1Flags,
   unitFieldBytes1Type,
   unitStandFlags,
   unitStandStateType,
-  UNIT_FLAGS,
 } from '@keira-shared/modules/sai-editor/constants/sai-constants';
 import { SAI_EVENTS } from '@keira-shared/modules/sai-editor/constants/sai-event';
 import { SAI_TARGETS } from '@keira-shared/modules/sai-editor/constants/sai-targets';
@@ -23,7 +23,10 @@ import { MysqlQueryService } from '../../services/mysql-query.service';
   providedIn: 'root',
 })
 export class SaiCommentGeneratorService {
-  constructor(private queryService: MysqlQueryService, private sqliteQueryService: SqliteQueryService) {}
+  constructor(
+    private queryService: MysqlQueryService,
+    private sqliteQueryService: SqliteQueryService,
+  ) {}
 
   private async getStringByTargetType(smartScript: SmartScripts): Promise<string> {
     switch (Number(smartScript.target_type)) {
@@ -47,6 +50,8 @@ export class SaiCommentGeneratorService {
       case SAI_TARGETS.CREATURE_DISTANCE:
       case SAI_TARGETS.CLOSEST_CREATURE:
         return `Closest Creature '${await this.queryService.getCreatureNameById(smartScript.target_param1)}'`;
+      case SAI_TARGETS.STORED:
+        return 'Stored';
       case SAI_TARGETS.CREATURE_GUID:
         return `Closest Creature '${await this.queryService.getCreatureNameByGuid(smartScript.target_param1)}'`;
       case SAI_TARGETS.GAMEOBJECT_RANGE:
@@ -58,7 +63,9 @@ export class SaiCommentGeneratorService {
       case SAI_TARGETS.INVOKER_PARTY:
         return "Invoker's Party";
       case SAI_TARGETS.PLAYER_RANGE:
+        return 'Players in Range';
       case SAI_TARGETS.PLAYER_DISTANCE:
+        return 'Players in Distance';
       case SAI_TARGETS.CLOSEST_PLAYER:
         return 'Closest Player';
       case SAI_TARGETS.ACTION_INVOKER_VEHICLE:
@@ -66,11 +73,27 @@ export class SaiCommentGeneratorService {
       case SAI_TARGETS.OWNER_OR_SUMMONER:
         return 'Owner Or Summoner';
       case SAI_TARGETS.THREAT_LIST:
-        return 'First Unit On Threatlist';
+        return 'Threatlist';
       case SAI_TARGETS.CLOSEST_ENEMY:
         return 'Closest Enemy';
       case SAI_TARGETS.CLOSEST_FRIENDLY:
         return 'Closest Friendly Unit';
+      case SAI_TARGETS.LOOT_RECIPIENTS:
+        return 'Loot Recipients';
+      case SAI_TARGETS.FARTHEST:
+        return 'Farthest Target';
+      case SAI_TARGETS.VEHICLE_PASSENGER:
+        return 'Vehicle Seat';
+      case SAI_TARGETS.PLAYER_WITH_AURA:
+        return 'Player With Aura';
+      case SAI_TARGETS.RANDOM_POINT:
+        return 'Random Point';
+      case SAI_TARGETS.ROLE_SELECTION:
+        return 'Class Roles';
+      case SAI_TARGETS.SUMMONED_CREATURES:
+        return 'Summoned Creatures';
+      case SAI_TARGETS.INSTANCE_STORAGE:
+        return 'Instance Storage';
       default:
         return '[unsupported target type]';
     }
@@ -158,6 +181,13 @@ export class SaiCommentGeneratorService {
       eventLine = eventLine.replace('_hasAuraEventParamOne_', await this.sqliteQueryService.getSpellNameById(smartScript.event_param1));
     }
 
+    if (eventLine.indexOf('_waypointParamOne_') > -1) {
+      eventLine = eventLine.replace('_waypointParamOne_', smartScript.event_param1 > 0 ? `${smartScript.event_param1}` : 'Any');
+    }
+    if (eventLine.indexOf('_waypointParamTwo_') > -1) {
+      eventLine = eventLine.replace('_waypointParamTwo_', smartScript.event_param2 > 0 ? `${smartScript.event_param2}` : 'Any');
+    }
+
     return eventLine;
   }
 
@@ -219,6 +249,34 @@ export class SaiCommentGeneratorService {
           actionLine = actionLine.replace('_reactStateParamOne_', '[Unknown Reactstate]');
           break;
       }
+    }
+
+    if (actionLine.indexOf('_followGroupParamTwo_') > -1) {
+      let _followGroupParamTwo_ = '[Unknown Follow Type]';
+      switch (Number(smartScript.action_param2)) {
+        case 1:
+          _followGroupParamTwo_ = 'Circle';
+          break;
+        case 2:
+          _followGroupParamTwo_ = 'Semi-Circle Behind';
+          break;
+        case 3:
+          _followGroupParamTwo_ = 'Semi-Circle Front';
+          break;
+        case 4:
+          _followGroupParamTwo_ = 'Line';
+          break;
+        case 5:
+          _followGroupParamTwo_ = 'Column';
+          break;
+        case 6:
+          _followGroupParamTwo_ = 'Angular';
+          break;
+        default:
+          _followGroupParamTwo_ = '[Unknown Follow Type]';
+          break;
+      }
+      actionLine = actionLine.replace('_followGroupParamTwo_', _followGroupParamTwo_);
     }
 
     if (actionLine.indexOf('_actionRandomParameters_') > -1) {
@@ -448,6 +506,11 @@ export class SaiCommentGeneratorService {
       }
     }
 
+    if (actionLine.indexOf('_enableDisableInvertActionParamOne_') > -1) {
+      const enableOrDisable = `${smartScript.action_param1}` === '0' ? 'Enable' : 'Disable';
+      actionLine = actionLine.replace('_enableDisableInvertActionParamOne_', enableOrDisable);
+    }
+
     if (actionLine.indexOf('_incrementOrDecrementActionParamOne_') > -1) {
       if (`${smartScript.action_param1}` === '1') {
         actionLine = actionLine.replace('_incrementOrDecrementActionParamOne_', 'Increment');
@@ -474,6 +537,60 @@ export class SaiCommentGeneratorService {
           actionLine = actionLine.replace('_sheathActionParamOne_', '[Unknown Sheath]');
           break;
       }
+    }
+
+    if (actionLine.indexOf('_waypointStartActionParamThree_') > -1) {
+      let waypointReplace: string;
+      switch (Number(smartScript.action_param3)) {
+        case 0:
+          waypointReplace = 'Waypoint ';
+          break;
+        case 1:
+          waypointReplace = 'Patrol ';
+          break;
+        default:
+          waypointReplace = '[Unknown Value] ';
+          break;
+      }
+
+      actionLine = actionLine.replace('_waypointStartActionParamThree_', waypointReplace);
+    }
+
+    if (actionLine.indexOf('_movementTypeActionParamOne_') > -1) {
+      let movementType: string;
+      switch (Number(smartScript.action_param1)) {
+        case 0:
+          movementType = 'Walk';
+          break;
+        case 1:
+          movementType = 'Run';
+          break;
+        case 2:
+          movementType = 'Run Back';
+          break;
+        case 3:
+          movementType = 'Swim';
+          break;
+        case 4:
+          movementType = 'Swim Back';
+          break;
+        case 5:
+          movementType = 'Turn Rate';
+          break;
+        case 6:
+          movementType = 'Flight';
+          break;
+        case 7:
+          movementType = 'Flight Back';
+          break;
+        case 8:
+          movementType = 'Pitch Rate';
+          break;
+        default:
+          movementType = '[Unknown Value]';
+          break;
+      }
+      actionLine = actionLine.replace('_movementTypeActionParamOne_', movementType);
     }
 
     if (actionLine.indexOf('_forceDespawnActionParamOne_') > -1) {

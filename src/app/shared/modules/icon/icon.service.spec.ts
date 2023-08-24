@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { of } from 'rxjs';
-import { IconService } from './icon.service';
+import { IconService, TRADE_ENGINEERING_ICON_ID } from './icon.service';
 
 describe('IconService', () => {
   const mockArgument = '123';
@@ -69,26 +69,30 @@ describe('IconService', () => {
     expect(service.getIconByItemDisplayId).toHaveBeenCalledTimes(0);
   });
 
-  it('getIconBySpellId() should correctly work [case sqliteQuery return non-null]', () => {
+  it('getIconBySpellId() should correctly work [case sqliteQuery return non-null]', (done) => {
     const service = TestBed.inject(IconService);
     const sqliteQueryService = TestBed.inject(SqliteQueryService);
-    const mockIntermediateResult = 'some intermediate result';
+    const mockIntermediateResult = 'some result';
     spyOn(sqliteQueryService, 'getDisplayIdBySpellId').and.returnValue(of(mockIntermediateResult));
+    spyOn(sqliteQueryService, 'getIconBySpellDisplayId').and.callFake((displayId) => of(String(displayId)));
 
     service.getIconBySpellId(mockArgument).subscribe((result) => {
       expect(result).toEqual(mockResult);
+      done();
     });
     expect(sqliteQueryService.getDisplayIdBySpellId).toHaveBeenCalledTimes(1);
     expect(sqliteQueryService.getDisplayIdBySpellId).toHaveBeenCalledWith(mockArgument);
   });
 
-  it('getIconBySpellId() should correctly work [case sqliteQuery return null]', () => {
+  it('getIconBySpellId() should correctly work [case sqliteQuery return null]', (done) => {
     const service = TestBed.inject(IconService);
     const sqliteQueryService = TestBed.inject(SqliteQueryService);
     spyOn(sqliteQueryService, 'getDisplayIdBySpellId').and.returnValue(of(null));
+    spyOn(sqliteQueryService, 'getIconBySpellDisplayId').and.callFake((displayId) => of(String(displayId)));
 
     service.getIconBySpellId(mockArgument).subscribe((result) => {
-      expect(result).toEqual(null);
+      expect(result).toEqual(String(TRADE_ENGINEERING_ICON_ID));
+      done();
     });
     expect(sqliteQueryService.getDisplayIdBySpellId).toHaveBeenCalledTimes(1);
     expect(sqliteQueryService.getDisplayIdBySpellId).toHaveBeenCalledWith(mockArgument);

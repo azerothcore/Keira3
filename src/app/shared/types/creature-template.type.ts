@@ -4,7 +4,7 @@ export const CREATURE_TEMPLATE_TABLE = 'creature_template';
 export const CREATURE_TEMPLATE_ID = 'entry';
 export const CREATURE_TEMPLATE_NAME = 'name';
 export const CREATURE_TEMPLATE_CUSTOM_STARTING_ID = 9_000_000;
-export const CREATURE_TEMPLATE_SEARCH_FIELDS = [CREATURE_TEMPLATE_ID, CREATURE_TEMPLATE_NAME, 'subname'];
+export const CREATURE_TEMPLATE_SEARCH_FIELDS = [CREATURE_TEMPLATE_ID, CREATURE_TEMPLATE_NAME, 'subname', 'ScriptName'];
 
 export const CREATURE_TEMPLATE_LOOT_ID = 'lootid';
 export const CREATURE_TEMPLATE_PICKPOCKETING_LOOT_ID = 'pickpocketloot';

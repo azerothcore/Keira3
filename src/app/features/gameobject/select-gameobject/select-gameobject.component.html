@@ -16,15 +16,18 @@
     <form [formGroup]="selectService.queryForm">
       <div class="row">
         <ng-container [formGroup]="selectService.fields">
-          <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
-            <input [formControlName]="'entry'" type="number" class="form-control form-control-sm" id="search-id" placeholder="entry" />
+          <div class="form-group col-sm-6 col-md-4 col-lg-2 col-xl-2">
+            <input formControlName="entry" type="number" class="form-control form-control-sm" id="search-id" placeholder="entry" />
           </div>
-          <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-3">
-            <input [formControlName]="'name'" class="form-control form-control-sm" id="name" placeholder="Name" />
+          <div class="form-group col-sm-6 col-md-4 col-lg-2 col-xl-2">
+            <input formControlName="name" class="form-control form-control-sm" id="name" placeholder="Name" />
+          </div>
+          <div class="form-group col-sm-6 col-md-4 col-lg-2 col-xl-2">
+            <input formControlName="ScriptName" class="form-control form-control-sm" id="ScriptName" placeholder="ScriptName" />
           </div>
         </ng-container>
         <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Limit" />
+          <input formControlName="limit" class="form-control form-control-sm" id="limit" placeholder="Limit" />
         </div>
         <div class="mb-2 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <keira-search-button [searchService]="selectService"></keira-search-button>
@@ -54,6 +57,7 @@
         <ngx-datatable-column name="Display Id" prop="displayId" [minWidth]="75" [maxWidth]="100"></ngx-datatable-column>
         <ngx-datatable-column name="Type" prop="type" [minWidth]="75" [maxWidth]="100"></ngx-datatable-column>
         <ngx-datatable-column name="AIName" prop="AIName" [minWidth]="75" [maxWidth]="130"></ngx-datatable-column>
+        <ngx-datatable-column name="ScriptName" prop="ScriptName" [minWidth]="75" [maxWidth]="130"></ngx-datatable-column>
       </ngx-datatable>
     </div>
   </div>

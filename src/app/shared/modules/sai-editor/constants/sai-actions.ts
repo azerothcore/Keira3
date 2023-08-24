@@ -170,6 +170,7 @@ export enum SAI_ACTIONS {
   SET_SCALE = 227,
   SUMMON_RADIAL = 228,
   PLAY_SPELL_VISUAL = 229,
+  FOLLOW_GROUP = 230,
 }
 export const SAI_ACTIONS_KEYS = getEnumKeys(SAI_ACTIONS);
 export const SAI_ACTION_TOOLTIPS = [];
@@ -264,7 +265,8 @@ SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.CAST] = 'LimitTargets';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.CAST] = `1 - Interrupt any spell casting;
 2 - Triggered (this makes spell cost zero mana and have no cast time);
 32 - Only casts the spell if the target does not have an aura from the spell;
-64 - Prevent combat movement on cast, allow on fail range, mana, LOS`;
+64 - Prevent combat movement on cast, allow on fail range, mana, LOS;
+128 - Only cast if the source's threatlist is higher than one. This includes pets`;
 SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.CAST] = '0 = all targets';
 
 // SMART_ACTION_SUMMON_CREATURE
@@ -1209,3 +1211,18 @@ SAI_ACTION_PARAM6_TOOLTIPS[SAI_ACTIONS.SUMMON_RADIAL] = 'Distance offset from th
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.PLAY_SPELL_VISUAL] = 'Makes the targets play the VisualKit ID specified.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.PLAY_SPELL_VISUAL] = 'Visual ID';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.PLAY_SPELL_VISUAL] = 'Can be found within SpellVisual.dbc';
+
+// SMART_ACTION_FOLLOW_GROUP
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.FOLLOW_GROUP] = 'Makes the targets follow the source creature in the specified formation.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.FOLLOW_GROUP] = 'Follow State';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.FOLLOW_GROUP] = 'Follow Type';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.FOLLOW_GROUP] = 'Distance';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.FOLLOW_GROUP] = 'Follow State (0: Stop Follow, 1: Start Follow)';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.FOLLOW_GROUP] = `Smart Follow Type: 
+1 - FOLLOW_TYPE_CIRCLE; 
+2 - FOLLOW_TYPE_SEMI_CIRCLE_BEHIND; 
+3 - FOLLOW_TYPE_SEMI_CIRCLE_FRONT; 
+4 - FOLLOW_TYPE_LINE; 
+5 - FOLLOW_TYPE_COLUMN;
+5 - FOLLOW_TYPE_ANGULAR';`
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.FOLLOW_GROUP] = 'Distance from Leader divided by 100 (300 = 3.f yards)';

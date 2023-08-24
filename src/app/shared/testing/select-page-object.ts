@@ -19,6 +19,9 @@ export abstract class SelectPageObject<T> extends PageObject<T> {
   get searchNameInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('input#name');
   }
+  get searchScriptNameInput(): HTMLInputElement {
+    return this.query<HTMLInputElement>('input#ScriptName');
+  }
   get searchLimitInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('input#limit');
   }
