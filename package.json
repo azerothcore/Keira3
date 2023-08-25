@@ -94,7 +94,7 @@
     "eslint": "8.47.0",
     "highlight.js": "11.8.0",
     "husky": "8.0.3",
-    "jasmine-core": "5.1.0",
+    "jasmine-core": "5.1.1",
     "jasmine-spec-reporter": "7.0.0",
     "karma": "6.4.2",
     "karma-chrome-launcher": "3.2.0",
