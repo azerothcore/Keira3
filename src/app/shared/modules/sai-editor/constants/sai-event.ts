@@ -94,11 +94,13 @@ export const SAI_EVENT_PARAM2_NAMES: string[] = [];
 export const SAI_EVENT_PARAM3_NAMES: string[] = [];
 export const SAI_EVENT_PARAM4_NAMES: string[] = [];
 export const SAI_EVENT_PARAM5_NAMES: string[] = [];
+export const SAI_EVENT_PARAM6_NAMES: string[] = [];
 export const SAI_EVENT_PARAM1_TOOLTIPS: string[] = [];
 export const SAI_EVENT_PARAM2_TOOLTIPS: string[] = [];
 export const SAI_EVENT_PARAM3_TOOLTIPS: string[] = [];
 export const SAI_EVENT_PARAM4_TOOLTIPS: string[] = [];
 export const SAI_EVENT_PARAM5_TOOLTIPS: string[] = [];
+export const SAI_EVENT_PARAM6_TOOLTIPS: string[] = [];
 
 // SMART_EVENT_UPDATE_IC
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.UPDATE_IC] =
@@ -179,7 +181,7 @@ SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.SPELLHIT] = 'Use 0 for any';
 SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.SPELLHIT] = 'Use 0 for any';
 
 // SMART_EVENT_RANGE
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.RANGE] = 'When the source\'s current target is within a certain range';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.RANGE] = "When the source's current target is within a certain range";
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.RANGE] = 'MinDist';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.RANGE] = 'MaxDist';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.RANGE] = 'RepeatMin';
@@ -644,7 +646,8 @@ SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.NEAR_UNIT_NEGATION] = 'Range in yards to ch
 SAI_EVENT_PARAM5_TOOLTIPS[SAI_EVENTS.NEAR_UNIT_NEGATION] = 'Check Timer (ms).';
 
 // SMART_EVENT_AREA_CASTING
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.AREA_CASTING] = 'Check threat list for hostiles casting. If none are found, repeat in 1200ms. This is mostly used for interrupt spells when used with CAST Action and INVOKER Target.';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.AREA_CASTING] =
+  'Check threat list for hostiles casting. If none are found, repeat in 1200ms. This is mostly used for interrupt spells when used with CAST Action and INVOKER Target.';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.AREA_CASTING] = 'InitialMin';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.AREA_CASTING] = 'InitialMax';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.AREA_CASTING] = 'RepeatMin';
@@ -657,7 +660,8 @@ SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.AREA_CASTING] = 'ms';
 SAI_EVENT_PARAM5_TOOLTIPS[SAI_EVENTS.AREA_CASTING] = '0: unlimited';
 
 // SMART_EVENT_AREA_RANGE
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.AREA_RANGE] = 'Check threat list for hostiles in range. If none are found, repeat in 1200ms. This is mostly used to make creatures cast AoEs if a player is within range.';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.AREA_RANGE] =
+  'Check threat list for hostiles in range. If none are found, repeat in 1200ms. This is mostly used to make creatures cast AoEs if a player is within range.';
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.AREA_RANGE] = 'InitialMin';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.AREA_RANGE] = 'InitialMax';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.AREA_RANGE] = 'RepeatMin';

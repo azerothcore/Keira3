@@ -29,6 +29,7 @@ export class SmartScripts extends TableRow {
   event_param3: number = 0;
   event_param4: number = 0;
   event_param5: number = 0;
+  event_param6: number = 0;
   action_type: number = 0;
   action_param1: number = 0;
   action_param2: number = 0;

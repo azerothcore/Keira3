@@ -232,6 +232,24 @@
                 <input [formControlName]="'event_param5'" id="event_param5" type="number" class="form-control form-control-sm" />
               </div>
             </div>
+
+            <div class="form-row" [hidden]="isTimedActionlists">
+              <div class="form-group col-7">
+                <label class="control-label" id="label-event-param6">
+                  {{ getName('param6', EVENT_PARAM6_NAMES[selectedEvent]) }}
+                  <i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    [hidden]="!EVENT_PARAM6_TOOLTIPS[selectedEvent]"
+                    [tooltip]="EVENT_PARAM6_TOOLTIPS[selectedEvent]"
+                  ></i>
+                </label>
+              </div>
+
+              <div class="form-group col-5">
+                <input [formControlName]="'event_param6'" id="event_param6" type="number" class="form-control form-control-sm" />
+              </div>
+            </div>
           </div>
 
           <div class="col-sm-6 col-lg-3 sai-category">
@@ -527,7 +545,7 @@
 
         <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
           <i class="fas fa-exclamation-triangle"></i>
-          <span [innerHTML]="'UNIQUE' | translate : { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
+          <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
         </div>
       </form>
 

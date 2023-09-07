@@ -83,10 +83,12 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
       this._form.controls.event_param3.disable();
       this._form.controls.event_param4.disable();
       this._form.controls.event_param5.disable();
+      this._form.controls.event_param6.disable();
       this._form.controls.event_type.setValue(0);
       this._form.controls.event_param3.setValue(0);
       this._form.controls.event_param4.setValue(0);
       this._form.controls.event_param5.setValue(0);
+      this._form.controls.event_param6.setValue(0);
       return true;
     }
   }

@@ -33,6 +33,8 @@ import {
   SAI_EVENT_PARAM4_TOOLTIPS,
   SAI_EVENT_PARAM5_NAMES,
   SAI_EVENT_PARAM5_TOOLTIPS,
+  SAI_EVENT_PARAM6_NAMES,
+  SAI_EVENT_PARAM6_TOOLTIPS,
   SAI_EVENT_TOOLTIPS,
 } from './constants/sai-event';
 import {
@@ -81,6 +83,7 @@ export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> im
   readonly EVENT_PARAM3_NAMES = SAI_EVENT_PARAM3_NAMES;
   readonly EVENT_PARAM4_NAMES = SAI_EVENT_PARAM4_NAMES;
   readonly EVENT_PARAM5_NAMES = SAI_EVENT_PARAM5_NAMES;
+  readonly EVENT_PARAM6_NAMES = SAI_EVENT_PARAM6_NAMES;
   readonly ACTION_PARAM1_NAMES = SAI_ACTION_PARAM1_NAMES;
   readonly ACTION_PARAM2_NAMES = SAI_ACTION_PARAM2_NAMES;
   readonly ACTION_PARAM3_NAMES = SAI_ACTION_PARAM3_NAMES;
@@ -100,6 +103,7 @@ export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> im
   readonly EVENT_PARAM3_TOOLTIPS = SAI_EVENT_PARAM3_TOOLTIPS;
   readonly EVENT_PARAM4_TOOLTIPS = SAI_EVENT_PARAM4_TOOLTIPS;
   readonly EVENT_PARAM5_TOOLTIPS = SAI_EVENT_PARAM5_TOOLTIPS;
+  readonly EVENT_PARAM6_TOOLTIPS = SAI_EVENT_PARAM6_TOOLTIPS;
   readonly ACTION_PARAM1_TOOLTIPS = SAI_ACTION_PARAM1_TOOLTIPS;
   readonly ACTION_PARAM2_TOOLTIPS = SAI_ACTION_PARAM2_TOOLTIPS;
   readonly ACTION_PARAM3_TOOLTIPS = SAI_ACTION_PARAM3_TOOLTIPS;
@@ -142,7 +146,10 @@ export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> im
   }
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(public editorService: SaiEditorService, protected handlerService: SaiHandlerService) {
+  constructor(
+    public editorService: SaiEditorService,
+    protected handlerService: SaiHandlerService,
+  ) {
     super(editorService, handlerService);
   }
 
