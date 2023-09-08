@@ -167,6 +167,8 @@ export class SaiCommentGeneratorService {
     eventLine = eventLine.replace('_eventParamTwo_', `${smartScript.event_param2}`);
     eventLine = eventLine.replace('_eventParamThree_', `${smartScript.event_param3}`);
     eventLine = eventLine.replace('_eventParamFour_', `${smartScript.event_param4}`);
+    eventLine = eventLine.replace('_eventParamFive_', `${smartScript.event_param5}`);
+	  eventLine = eventLine.replace('_eventParamSix_', `${smartScript.event_param6}`);
 
     if (eventLine.indexOf('_questNameEventParamOne_') > -1) {
       eventLine = eventLine.replace('_questNameEventParamOne_', await this.queryService.getQuestTitleById(smartScript.event_param1));
