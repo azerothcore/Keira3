@@ -76,7 +76,7 @@
     "@swimlane/ngx-datatable": "20.1.0",
     "@types/jasmine": "4.3.6",
     "@types/jasminewd2": "2.0.10",
-    "@types/jquery": "3.5.18",
+    "@types/jquery": "3.5.19",
     "@types/mysql": "2.15.21",
     "@types/node": "18.17.16",
     "@types/sqlite3": "3.1.8",
