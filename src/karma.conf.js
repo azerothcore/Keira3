@@ -11,6 +11,7 @@ module.exports = function (config) {
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
+      require('karma-time-stats-reporter'),
       require('karma-coverage-istanbul-reporter'),
       require('@angular-devkit/build-angular/plugins/karma'),
     ],
@@ -34,19 +35,18 @@ module.exports = function (config) {
       check: {
         global: {
           // TODO: fix the coverage bug and set them 100% again
-          statements: 98,
-          lines: 98,
-          branches: 80,
+          statements: 100,
+          lines: 100,
+          branches: 100,
           functions: 96,
         },
       },
     },
-    reporters: ['progress', 'kjhtml'],
+    reporters: ['progress', 'kjhtml', 'time-stats'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    // browsers: ['Chrome'],
     browsers: ["Chrome"],
     customLaunchers: {
       "ChromeHeadless": {
