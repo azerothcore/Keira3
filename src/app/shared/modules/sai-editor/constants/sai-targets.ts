@@ -113,8 +113,7 @@ SAI_TARGET_PARAM3_TOOLTIPS[SAI_TARGETS.HOSTILE_RANDOM] = `Power Types:
 SAI_TARGET_PARAM4_TOOLTIPS[SAI_TARGETS.HOSTILE_RANDOM] = 'only target units without this aura';
 
 // SMART_TARGET_HOSTILE_RANDOM_NOT_TOP
-SAI_TARGET_TOOLTIPS[SAI_TARGETS.HOSTILE_RANDOM_NOT_TOP] =
-  'A random unit on the current threatlist of the creature. Ignores the last unit on the threatlist (so it can never target unit with lowest threat)';
+SAI_TARGET_TOOLTIPS[SAI_TARGETS.HOSTILE_RANDOM_NOT_TOP] = 'A random unit on the current threatlist, except top threat.';
 SAI_TARGET_PARAM1_NAMES[SAI_TARGETS.HOSTILE_RANDOM_NOT_TOP] = 'Max Range';
 SAI_TARGET_PARAM2_NAMES[SAI_TARGETS.HOSTILE_RANDOM_NOT_TOP] = 'Player Only';
 SAI_TARGET_PARAM3_NAMES[SAI_TARGETS.HOSTILE_RANDOM_NOT_TOP] = 'Power Type';
