@@ -445,7 +445,7 @@ SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.RECEIVE_HEAL] = 'Minimum required value the
 SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.RECEIVE_HEAL] = 'Maximum allowed value of the heal effect to allow this event to trigger';
 
 // SMART_EVENT_JUST_SUMMONED
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.JUST_SUMMONED] = 'Called when the creature or gameobject has just been summoned';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.JUST_SUMMONED] = 'On Creature just spawned (Use 63|JUST_CREATED for objects)';
 
 // SMART_EVENT_WAYPOINT_PAUSED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.WAYPOINT_PAUSED] = 'On Creature Paused at Waypoint ID';
@@ -503,7 +503,7 @@ SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.GOSSIP_SELECT] = 'This is gossip_menu_optio
 SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.GOSSIP_SELECT] = 'gossip_menu_option.OptionID';
 
 // SMART_EVENT_JUST_CREATED
-SAI_EVENT_TOOLTIPS[SAI_EVENTS.JUST_CREATED] = 'On gameobject just created (so when it spawns for the first time)';
+SAI_EVENT_TOOLTIPS[SAI_EVENTS.JUST_CREATED] = 'On Gameobject just spawned/created (Use 54|JUST_SUMMONED for creatures)';
 
 // SMART_EVENT_GOSSIP_HELLO
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.GOSSIP_HELLO] = 'On Right-Click Creature/Gameobject that have gossip enabled.';
