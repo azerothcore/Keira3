@@ -75,7 +75,7 @@
     "@playwright/test": "1.39.0",
     "@swimlane/ngx-datatable": "20.1.0",
     "@types/jasmine": "5.1.0",
-    "@types/jasminewd2": "2.0.11",
+    "@types/jasminewd2": "2.0.12",
     "@types/jquery": "3.5.24",
     "@types/mysql": "2.15.22",
     "@types/node": "18.18.6",
