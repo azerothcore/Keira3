@@ -652,6 +652,7 @@
         "CONDITION_ITEM": "0 = 不在银行中; 1 = 在银行中",
         "CONDITION_INSTANCE_INFO": "0=INSTANCE_INFO_DATA; 1=INSTANCE_INFO_GUID_DATA; 2=INSTANCE_INFO_BOSS_STATE; 3=INSTANCE_INFO_DATA64; ",
         "CONDITION_NEAR_CREATURE": "活着=0; 死亡=1",
+        "CONDITION_NEAR_GAMEOBJECT": "GoState |0 Ignore |1 Ready |2 Not Ready",
         "CONDITION_OBJECT_ENTRY_GUID": "0 = 给定类型的任何对象;  1 - 500k = 生物/游戏对象GUID",
         "CONDITION_DISTANCE_TO": "比较类型: 0 = distance must be equal to ConditionValue2; 1 = distance must be higher than ConditionValue2; 2 = distance must be lower than ConditionValue2; 3 = distance must be equal to or higher than ConditionValue2; 4 = distance must be equal to or lower than ConditionValue2",
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "任务对象(目标)数"
