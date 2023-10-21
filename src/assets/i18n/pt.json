@@ -654,6 +654,7 @@
         "CONDITION_ITEM": "0 = não no banco; 1 = no banco",
         "CONDITION_INSTANCE_INFO": "0=INSTANCE_INFO_DATA; 1=INSTANCE_INFO_GUID_DATA; 2=INSTANCE_INFO_BOSS_STATE; 3=INSTANCE_INFO_DATA64; ",
         "CONDITION_NEAR_CREATURE": "Vivo=0; Morto=1",
+        "CONDITION_NEAR_GAMEOBJECT": "GoState |0 Ignore |1 Ready |2 Not Ready",
         "CONDITION_OBJECT_ENTRY_GUID": "0 = Qualquer objeto de um dado tipo;  1 - 500k = creature/gameobject GUID",
         "CONDITION_DISTANCE_TO": "ComparisionType: 0 = distância tem que ser igual à ConditionValue2; 1 = distância tem que ser maior que ConditionValue2; 2 = distância tem que ser menor que ConditionValue2; 3 = distância tem que ser igual ou maior que ConditionValue2; 4 = distância tem que ser igual ou menor que ConditionValue2",
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Quest Objective Count"
