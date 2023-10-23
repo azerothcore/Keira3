@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { AC_DISCORD_URL, AC_FORUM_URL, KEIRA3_REPO_URL, PAYPAL_DONATE_URL } from '@keira-constants/general';
+import { AC_DISCORD_URL, KEIRA3_REPO_URL, PAYPAL_DONATE_URL } from '@keira-constants/general';
 import { ConfigService } from '@keira-shared/services/config.service';
 import { MysqlService } from '@keira-shared/services/mysql.service';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
