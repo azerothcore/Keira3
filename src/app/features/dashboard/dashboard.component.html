@@ -37,10 +37,10 @@
           <tr>
             <td [translate]="'DASHBOARD.AC_COMMIT'"></td>
             <td id="core-revision">
-              <a [href]="getCommit(coreVersions.core_revision)" target="_blank">
+              <a [href]="commitUrl" target="_blank" id="commit-hash-url">
                 {{ coreVersions.core_revision }}
               </a>
-              <button class="btn btn-secondary btn-sm ms-2 px-2 py-1" [ngxClipboard] [cbContent]="getCommit(coreVersions.core_revision)">
+              <button class="btn btn-secondary btn-sm ms-2 px-2 py-1" [ngxClipboard] [cbContent]="commitUrl">
                 <i class="far fa-copy fa-sm"></i>
               </button>
             </td>

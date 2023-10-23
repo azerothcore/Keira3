@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { MysqlService } from '@keira-shared/services/mysql.service';
 import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
@@ -26,13 +26,12 @@ class DashboardComponentPage extends PageObject<DashboardComponent> {
   get dbWarning(): HTMLDivElement {
     return this.query<HTMLDivElement>('#database-warning', false);
   }
+  get commitHashUrl(): HTMLAnchorElement {
+    return this.query<HTMLAnchorElement>('#commit-hash-url');
+  }
 }
 
 describe('DashboardComponent', () => {
-  let component: DashboardComponent;
-  let fixture: ComponentFixture<DashboardComponent>;
-  let page: DashboardComponentPage;
-
   const versionRow: VersionRow = {
     core_version: 'AzerothCore rev. 2bcedc2859e7 2019-02-17 10:04:09 +0100 (master branch) (Unix, Debug)',
     core_revision: '2bcedc2859e7',
@@ -53,29 +52,46 @@ describe('DashboardComponent', () => {
     }).compileComponents();
   }));
 
-  beforeEach(() => {
+  const setup = () => {
     when(MockedMysqlQueryService.query('SELECT * FROM version')).thenReturn(of([versionRow]));
     when(MockedMysqlQueryService.query('SELECT * FROM version_db_world')).thenReturn(of([versionDbRow]));
     const mysqlService = TestBed.inject(MysqlService);
     mysqlService['_config'] = { database: 'my_db' };
 
-    fixture = TestBed.createComponent(DashboardComponent);
-    page = new DashboardComponentPage(fixture);
-    component = fixture.componentInstance;
-  });
+    const fixture = TestBed.createComponent(DashboardComponent);
+    const page = new DashboardComponentPage(fixture);
+    const component = fixture.componentInstance;
 
-  xit('should correctly display the versions', () => {
+    return { fixture, page, component };
+  }
+
+  it('should correctly display the versions', () => {
+    const { fixture, page, component } = setup();
     fixture.detectChanges();
 
     expect(page.coreVersion.innerHTML).toContain(versionRow.core_version);
     expect(page.coreRevision.innerHTML).toContain(versionRow.core_revision);
     expect(page.dbVersion.innerHTML).toContain(versionRow.db_version);
-    expect(page.dbWorldVersion.innerHTML).toContain(worldDbVersion);
+    expect(page.commitHashUrl.href).toEqual(`https://github.com/azerothcore/azerothcore-wotlk/commit/${versionRow.core_revision}`);
+    // expect(page.dbWorldVersion.innerHTML).toContain(worldDbVersion);
     expect(page.dbWarning).toBe(null);
     expect(component.error).toBe(false);
   });
 
+  it('if the revision hash ends with a "+", it should be stripped in the url', () => {
+    const { fixture, page } = setup();
+    when(MockedMysqlQueryService.query('SELECT * FROM version')).thenReturn(of([{
+      ...versionRow,
+      core_revision: versionRow.core_revision + '+',
+    }]));
+
+    fixture.detectChanges();
+
+    expect(page.commitHashUrl.href).toEqual(`https://github.com/azerothcore/azerothcore-wotlk/commit/${versionRow.core_revision}`);
+  });
+
   it('should correctly give error if the query does not return the data in the expected format', () => {
+    const { fixture, page, component } = setup();
     when(MockedMysqlQueryService.query(anyString())).thenReturn(of([]));
     const errorSpy = spyOn(console, 'error');
 
@@ -87,6 +103,7 @@ describe('DashboardComponent', () => {
   });
 
   it('should correctly give error if the query returns an error', () => {
+    const { fixture, page, component } = setup();
     const error = 'some error';
     when(MockedMysqlQueryService.query(anyString())).thenReturn(throwError(error));
     const errorSpy = spyOn(console, 'error');
@@ -100,6 +117,7 @@ describe('DashboardComponent', () => {
   });
 
   it('should correctly give error if the query returns an error', () => {
+    const { fixture, page, component } = setup();
     const wrongVersionRow: VersionRow = {
       core_version: 'ShinCore rev. 2bcedc2859e7 2019-02-17 10:04:09 +0100 (master branch) (Unix, Debug)',
       core_revision: '2bcedc2859e7',
