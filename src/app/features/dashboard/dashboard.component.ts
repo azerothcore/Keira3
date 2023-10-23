@@ -14,16 +14,15 @@ import { MysqlQueryService } from '../../shared/services/mysql-query.service';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent extends SubscriptionHandler implements OnInit {
-  coreVersions: VersionRow;
-  commitUrl: string;
-  dbWorldVersion: string;
+  protected coreVersions: VersionRow;
+  protected commitUrl: string;
+  protected dbWorldVersion: string;
   error = false;
-  readonly KEIRA_VERSION = packageInfo.version;
-  readonly PAYPAL_DONATE_URL = PAYPAL_DONATE_URL;
-  readonly AC_FORUM_URL = AC_FORUM_URL;
-  readonly AC_DISCORD_URL = AC_DISCORD_URL;
-  readonly KEIRA3_REPO_URL = KEIRA3_REPO_URL;
-  readonly NAVIGATOR_APP_VERSION = window.navigator.userAgent;
+  protected readonly KEIRA_VERSION = packageInfo.version;
+  protected readonly PAYPAL_DONATE_URL = PAYPAL_DONATE_URL;
+  protected readonly AC_DISCORD_URL = AC_DISCORD_URL;
+  protected readonly KEIRA3_REPO_URL = KEIRA3_REPO_URL;
+  protected readonly NAVIGATOR_APP_VERSION = window.navigator.userAgent;
 
   get databaseName(): string {
     return this.mysqlService.config.database;
