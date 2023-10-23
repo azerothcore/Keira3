@@ -15,6 +15,7 @@ import { MysqlQueryService } from '../../shared/services/mysql-query.service';
 })
 export class DashboardComponent extends SubscriptionHandler implements OnInit {
   coreVersions: VersionRow;
+  commitUrl: string;
   dbWorldVersion: string;
   error = false;
   readonly KEIRA_VERSION = packageInfo.version;
@@ -49,6 +50,7 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
         next: (data) => {
           if (data && data.length > 0) {
             this.coreVersions = data[0];
+            this.commitUrl = this.getCommitUrl(this.coreVersions.core_revision);
 
             /* istanbul ignore next */
             if (!this.coreVersions.db_version.startsWith('ACDB') || !this.coreVersions.core_version.startsWith('AzerothCore')) {
@@ -64,6 +66,15 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
         },
       }),
     );
+  }
+
+  private getCommitUrl(hash: string): string {
+    // if the hash ends with "+", remove it from the link
+    if (hash.substring(hash.length - 1, hash.length) === '+') {
+      hash = hash.substring(0, hash.length - 1);
+    }
+
+    return `https://github.com/azerothcore/azerothcore-wotlk/commit/${hash}`;
   }
 
   // private getWorldDbVersion(): void {
@@ -85,8 +96,4 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
   //     }),
   //   );
   // }
-
-  getCommit(hash: string): string {
-    return `https://github.com/azerothcore/azerothcore-wotlk/commit/${hash}`;
-  }
 }
