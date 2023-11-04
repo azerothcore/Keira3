@@ -91,7 +91,7 @@
     "electron": "27.0.3",
     "electron-builder": "24.6.4",
     "electron-reload": "1.5.0",
-    "eslint": "8.52.0",
+    "eslint": "8.53.0",
     "eslint-plugin-prettier": "5.0.1",
     "highlight.js": "11.9.0",
     "husky": "8.0.3",
