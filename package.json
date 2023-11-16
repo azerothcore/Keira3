@@ -46,7 +46,7 @@
     "electron-settings": "4.0.2",
     "jquery": "3.7.1",
     "mysql2": "3.6.3",
-    "ngx-toastr": "17.0.2",
+    "ngx-toastr": "18.0.0",
     "ngx-ui-switch": "15.0.0",
     "serialize-javascript": "6.0.1",
     "sqlite3": "5.1.6",
