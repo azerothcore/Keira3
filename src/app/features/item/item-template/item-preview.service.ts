@@ -289,7 +289,7 @@ export class ItemPreviewService {
 
         name = ITEM_CONSTANTS.lockType[prop];
 
-        if (rank > 0) {
+        if (+rank > 0) {
           name += ` (${rank})`;
         }
       } else {
@@ -1121,7 +1121,7 @@ export class ItemPreviewService {
       for (let j = 1; j <= 5; j++) {
         const spellid = itemTemplate['spellid_' + j];
 
-        if (spellid > 0) {
+        if (+spellid > 0) {
           let cooldown = itemTemplate['spellcooldown_' + j];
           const cooldownCategory = itemTemplate['spellcategory_' + j];
 
@@ -1129,7 +1129,7 @@ export class ItemPreviewService {
             cooldown = cooldownCategory;
           }
 
-          cooldown = cooldown < 5000 ? '' : ` ( ${this.formatTime(Number(cooldown))} cooldown)`;
+          cooldown = +cooldown < 5000 ? '' : ` ( ${this.formatTime(Number(cooldown))} cooldown)`;
 
           itemSpellsAndTrigger[spellid] = [itemTemplate['spelltrigger_' + j], cooldown];
         }
