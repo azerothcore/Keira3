@@ -49,7 +49,7 @@ export class NpcVendorService extends MultiRowEditorService<NpcVendor> {
       }
 
       for (const index of [1, 2, 3, 4, 5]) {
-        if (extCost['reqItemId' + index] > 0) {
+        if (+extCost['reqItemId' + index] > 0) {
           const itemIcon = await this.iconService.getIconByItemId(extCost['reqItemId' + index]).toPromise();
 
           resultText += `<span class="mx-2">${extCost['itemCount' + index]}</span>

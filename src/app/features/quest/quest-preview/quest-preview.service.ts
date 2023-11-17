@@ -401,7 +401,7 @@ export class QuestPreviewService {
 
   getObjectiveCount(field: string | number): string {
     const reqNpcOrGo = this.questTemplate[`RequiredNpcOrGoCount${field}`];
-    return !!reqNpcOrGo && reqNpcOrGo > 1 ? `(${reqNpcOrGo})` : '';
+    return !!reqNpcOrGo && +reqNpcOrGo > 1 ? `(${reqNpcOrGo})` : '';
   }
 
   isNpcOrGoObj(field: string | number): boolean {
@@ -411,7 +411,7 @@ export class QuestPreviewService {
 
   getObjItemCount(field: string | number) {
     const reqItemCount = this.questTemplate[`RequiredItemCount${field}`];
-    return !!reqItemCount && reqItemCount > 1 ? `(${reqItemCount})` : '';
+    return !!reqItemCount && +reqItemCount > 1 ? `(${reqItemCount})` : '';
   }
 
   getFactionByValue(field: string | number) {
@@ -433,7 +433,7 @@ export class QuestPreviewService {
   }
 
   isFieldAvailable(field: string, fieldAmount: string, idx: string | number): boolean {
-    return !!this.questTemplate[`${field}${idx}`] && this.questTemplate[`${fieldAmount}${idx}`] > 0;
+    return !!this.questTemplate[`${field}${idx}`] && +this.questTemplate[`${fieldAmount}${idx}`] > 0;
   }
 
   isRewardReputation(): boolean {
