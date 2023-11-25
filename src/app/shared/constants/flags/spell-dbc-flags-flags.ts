@@ -344,7 +344,7 @@ SPELL_DBC_ATTRIBUTES_FLAGS['Ex6'] = [
   { bit: 28, name: 'Do Not Auto Select Target with Initiates Combat' },
   { bit: 29, name: 'Ignore Caster Damage Modifiers' },
   { bit: 30, name: 'Disable Tied Effect Points' },
-  { bit: 21, name: 'No Category Cooldown Mods' },
+  { bit: 31, name: 'No Category Cooldown Mods' },
 ];
 
 SPELL_DBC_ATTRIBUTES_FLAGS['Ex7'] = [
