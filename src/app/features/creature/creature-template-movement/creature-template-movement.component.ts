@@ -7,7 +7,7 @@ import { CreatureTemplateMovementService } from './creature-template-movement.se
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
   selector: 'keira-creature-template-movement',
   templateUrl: './creature-template-movement.component.html',
 })

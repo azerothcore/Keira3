@@ -7,7 +7,7 @@ import { GameobjectQuestenderService } from './gameobject-questender.service';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
   selector: 'keira-gameobject-questender',
   templateUrl: './gameobject-questender.component.html',
   styleUrls: ['./gameobject-questender.component.scss'],

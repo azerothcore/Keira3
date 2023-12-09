@@ -6,7 +6,7 @@ import { SkinningLootTemplateService } from './skinning-loot-template.service';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
   selector: 'keira-skinning-loot-template',
   templateUrl: '../../../shared/abstract/components/editors/loot-template/loot-template-id.component.html',
 })

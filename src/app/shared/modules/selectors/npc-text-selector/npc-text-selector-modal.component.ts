@@ -7,7 +7,7 @@ import { NPC_TEXT_ID } from '@keira-shared/types/npc-text.type';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
   selector: 'keira-npc-text-selector-modal',
   templateUrl: './npc-text-selector-modal.component.html',
   styleUrls: ['./npc-text-selector-modal.component.scss'],
