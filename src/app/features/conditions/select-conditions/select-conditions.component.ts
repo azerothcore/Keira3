@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SelectComplexKeyComponent } from '@keira-abstract/components/editors/select-complex-key.component';
 import { ConditionsSearchService } from '@keira-shared/modules/search/conditions-search.service';
 import { Conditions, CONDITION_SOURCE_TYPES, CONDITION_SOURCE_TYPES_KEYS } from '@keira-types/conditions.type';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'keira-select-creature',
   templateUrl: './select-conditions.component.html',
   styleUrls: ['./select-conditions.component.scss'],

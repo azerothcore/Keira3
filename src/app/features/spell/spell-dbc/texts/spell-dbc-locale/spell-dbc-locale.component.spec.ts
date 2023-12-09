@@ -28,6 +28,8 @@ describe('SpellDbcLocaleComponent', () => {
   }
 
   @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
     template: '<keira-spell-dbc-locale [formGroup]="form" [locale]="locale"></keira-spell-dbc-locale>',
   })
   class TestHostComponent {

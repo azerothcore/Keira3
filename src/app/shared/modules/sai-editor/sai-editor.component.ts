@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MultiRowEditorComponent } from '../../abstract/components/editors/multi-row-editor.component';
 import { EVENT_PHASE_MASK } from '../../constants/flags/event-phase-mask';
 import { SMART_EVENT_FLAGS } from '../../constants/flags/smart-event-flags';
@@ -62,6 +62,8 @@ import { SaiEditorService } from './sai-editor.service';
 import { SaiHandlerService } from './sai-handler.service';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'keira-sai-editor',
   templateUrl: './sai-editor.component.html',
   styleUrls: ['./sai-editor.component.scss'],

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { SPELL_DBC_CLASS_MASK_FLAGS } from '@keira-shared/constants/flags/spell-dbc-effect-flags';
 import { SPELL_DBC_APPLY_AURA_NAME, SPELL_DBC_EFFECT } from '@keira-shared/constants/options/spell-dbc-effects-options';
@@ -8,6 +8,8 @@ import { SpellDbc } from '@keira-types/spell-dbc.type';
 import { SpellDbcSpellEffectFieldPrefix } from './spell-dbc-spell-effect.model';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'keira-spell-dbc-spell-effect',
   templateUrl: './spell-dbc-spell-effect.component.html',
 })

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
 import { FACTION_RANK } from '@keira-constants/options/faction-rank';
 import { CreatureOnkillReputation } from '@keira-types/creature-onkill-reputation.type';
@@ -6,6 +6,8 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureOnkillReputationService } from './creature-onkill-reputation.service';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'keira-creature-onkill-reputation',
   templateUrl: './creature-onkill-reputation.component.html',
   styleUrls: ['./creature-onkill-reputation.component.scss'],

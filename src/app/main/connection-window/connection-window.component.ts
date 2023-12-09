@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ModelForm } from '@keira-shared/utils/helpers';
 import { ConnectionOptions, QueryError } from 'mysql2';
@@ -8,6 +8,8 @@ import { SubscriptionHandler } from '../../shared/utils/subscription-handler/sub
 import { ConnectionWindowService } from './connection-window.service';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'keira-connection-window',
   templateUrl: './connection-window.component.html',
   styleUrls: ['./connection-window.component.scss'],

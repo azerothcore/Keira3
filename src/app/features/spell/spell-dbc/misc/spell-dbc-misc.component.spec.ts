@@ -18,6 +18,8 @@ describe('SpellDbcMiscComponent', () => {
   class SpellDbcMiscComponentPage extends PageObject<TestHostComponent> {}
 
   @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
     template: '<keira-spell-dbc-misc [formGroup]="form"></keira-spell-dbc-misc>',
   })
   class TestHostComponent {

@@ -8,6 +8,8 @@ import { of } from 'rxjs';
 import { TimedActionlistComponent } from './timed-actionlist.component';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
   template: `<keira-timed-actionlist [creatureId]="creatureId"></keira-timed-actionlist>`,
 })
 class TestHostComponent {

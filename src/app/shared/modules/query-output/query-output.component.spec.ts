@@ -14,6 +14,8 @@ import { QueryErrorComponent } from './query-error/query-error.component';
 import { QueryOutputComponent } from './query-output.component';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
   template: `<keira-query-output [editorService]="editorService"></keira-query-output>`,
 })
 class TestHostComponent {

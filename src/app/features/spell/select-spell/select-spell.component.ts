@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SelectComponent } from '@keira-abstract/components/editors/select.component';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import {
@@ -14,6 +14,8 @@ import { SpellHandlerService } from '../spell-handler.service';
 import { SelectSpellService } from './select-spell.service';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'keira-select-spell',
   templateUrl: './select-spell.component.html',
 })

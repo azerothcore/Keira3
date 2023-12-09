@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
 import { DYNAMIC_FLAGS } from '@keira-constants/flags/dynamic-flags';
 import { NPC_FLAGS } from '@keira-constants/flags/npc-flags';
@@ -11,6 +11,8 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureSpawnService } from './creature-spawn.service';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'keira-creature-spawn',
   templateUrl: './creature-spawn.component.html',
   styleUrls: ['./creature-spawn.component.scss'],

@@ -1,10 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { SAI_TYPES, SmartScripts } from '@keira-types/smart-scripts.type';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
 import { SaiHandlerService } from '../sai-handler.service';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'keira-sai-top-bar',
   templateUrl: './sai-top-bar.component.html',
 })

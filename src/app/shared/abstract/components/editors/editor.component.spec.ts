@@ -2,9 +2,11 @@ import { EditorComponent } from './editor.component';
 import { MockEntity } from '@keira-testing/mock-services';
 import { EditorService } from '../../service/editors/editor.service';
 import { HandlerService } from '../../service/handlers/handler.service';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-@Component({})
+@Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,})
 class MockComponent extends EditorComponent<MockEntity> {}
 
 describe('EditorComponent', () => {

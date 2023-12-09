@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { KEIRA3_REPO_URL, LATEST_RELEASE_API_URL } from '@keira-constants/general';
 import { ElectronService } from '@keira-shared/services/electron.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
@@ -10,6 +10,8 @@ import packageInfo from '../../../package.json';
 import { MysqlService } from '../shared/services/mysql.service';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'keira-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],

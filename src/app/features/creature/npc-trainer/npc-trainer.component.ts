@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
 import { NpcTrainer } from '@keira-types/npc-trainer.type';
@@ -6,6 +6,8 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { NpcTrainerService } from './npc-trainer.service';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'keira-npc-trainer',
   templateUrl: './npc-trainer.component.html',
   styleUrls: ['./npc-trainer.component.scss'],

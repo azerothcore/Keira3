@@ -30,6 +30,8 @@ describe('SpellDbcSpellEffectComponent', () => {
   }
 
   @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
     template: '<keira-spell-dbc-spell-effect [formGroup]="form" [index]="index"></keira-spell-dbc-spell-effect>',
   })
   class TestHostComponent {

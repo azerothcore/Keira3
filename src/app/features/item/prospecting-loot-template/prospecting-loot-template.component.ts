@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { LootTemplateComponent } from '@keira-abstract/components/editors/loot-template/loot-template.component';
 import { ProspectingLootTemplate } from '@keira-types/prospecting-loot-template.type';
 import { ItemHandlerService } from '../item-handler.service';
 import { ProspectingLootTemplateService } from './prospecting-loot-template.service';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'keira-prospecting-loot-template',
   templateUrl: '../../../shared/abstract/components/editors/loot-template/loot-template.component.html',
 })

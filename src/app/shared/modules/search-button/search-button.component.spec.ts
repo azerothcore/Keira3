@@ -5,6 +5,8 @@ import { PageObject } from '@keira-testing/page-object';
 import { SearchButtonComponent } from './search-button.component';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
   template: `<keira-search-button [searchService]="searchService"></keira-search-button>`,
 })
 class TestHostComponent {

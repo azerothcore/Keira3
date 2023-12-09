@@ -15,6 +15,8 @@ class ReferenceViewerComponentPage extends PageObject<TestHostComponent> {
 }
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
   template: '<keira-reference-viewer [referenceId]="referenceId"></keira-reference-viewer>',
 })
 class TestHostComponent {

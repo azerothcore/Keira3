@@ -1,5 +1,5 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
 import { LocationService } from '@keira-shared/services/location.service';
 import { MysqlService } from '@keira-shared/services/mysql.service';
@@ -19,6 +19,8 @@ import { SidebarService } from './sidebar.service';
 const animationTime = 200;
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'keira-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],

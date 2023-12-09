@@ -31,11 +31,18 @@
             "type": "attribute"
           }
         ],
+        "@angular-eslint/prefer-on-push-component-change-detection": "error",
         "@typescript-eslint/no-unused-vars": ["error"],
         "@typescript-eslint/no-inferrable-types": "off",
         "@typescript-eslint/no-empty-function": "off",
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/ban-ts-comment": "off"
+      }
+    },
+    {
+      "files": ["*.spec.ts", "*.po.ts"],
+      "rules": {
+        "@angular-eslint/prefer-on-push-component-change-detection": "off"
       }
     },
     {

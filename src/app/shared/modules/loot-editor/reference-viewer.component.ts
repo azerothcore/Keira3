@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
 import { DTCFG } from '@keira-config/datatable.config';
 import { ReferenceViewerService } from '@keira-shared/modules/loot-editor/reference-viewer.service';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
@@ -6,6 +6,8 @@ import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/su
 import { ReferenceLootTemplate } from '@keira-types/reference-loot-template.type';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'keira-reference-viewer',
   templateUrl: './reference-viewer.component.html',
   styleUrls: ['./loot-editor.component.scss'],

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
 import { CreatureQuestender } from '@keira-types/creature-questender.type';
 import { QuestHandlerService } from '../quest-handler.service';
@@ -6,6 +6,8 @@ import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { CreatureQuestenderService } from './creature-questender.service';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'keira-creature-questender',
   templateUrl: './creature-questender.component.html',
   styleUrls: ['./creature-questender.component.scss'],

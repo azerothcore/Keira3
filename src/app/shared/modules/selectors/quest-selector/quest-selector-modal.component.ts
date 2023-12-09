@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { QuestSearchService } from '../../search/quest-search.service';
@@ -6,6 +6,8 @@ import { QUEST_TEMPLATE_ID } from '@keira-types/quest-template.type';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'keira-quest-selector-modal',
   templateUrl: './quest-selector-modal.component.html',
   styleUrls: ['./quest-selector-modal.component.scss'],

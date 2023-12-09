@@ -3,9 +3,11 @@ import { HandlerService } from '../../service/handlers/handler.service';
 import { EditorComponent } from './editor.component';
 import { MultiRowEditorService } from '../../service/editors/multi-row-editor.service';
 import { DTCFG } from '@keira-config/datatable.config';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-@Component({ template: '' })
+@Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default, template: '' })
 export abstract class MultiRowEditorComponent<T extends TableRow> extends EditorComponent<T> {
   readonly DTCFG = DTCFG;
 

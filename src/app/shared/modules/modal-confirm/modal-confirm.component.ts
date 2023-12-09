@@ -1,8 +1,10 @@
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { OnInit, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'keira-modal-confirm',
   templateUrl: './modal-confirm.component.html',
 })
