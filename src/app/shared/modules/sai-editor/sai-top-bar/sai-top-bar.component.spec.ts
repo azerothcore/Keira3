@@ -16,8 +16,6 @@ class SaiTopBarComponentPage extends PageObject<TestHostComponent> {
 }
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
   template: '<keira-sai-top-bar [handler]="handlerService"><</keira-sai-top-bar>',
 })
 class TestHostComponent {

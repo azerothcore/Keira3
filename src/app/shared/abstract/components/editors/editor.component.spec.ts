@@ -4,9 +4,7 @@ import { EditorService } from '../../service/editors/editor.service';
 import { HandlerService } from '../../service/handlers/handler.service';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-@Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602})
+@Component({})
 class MockComponent extends EditorComponent<MockEntity> {}
 
 describe('EditorComponent', () => {

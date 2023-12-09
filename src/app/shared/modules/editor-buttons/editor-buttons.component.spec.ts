@@ -5,8 +5,6 @@ import { PageObject } from '@keira-testing/page-object';
 import { EditorButtonsComponent } from './editor-buttons.component';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
   template: `<keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>`,
 })
 class TestHostComponent {
