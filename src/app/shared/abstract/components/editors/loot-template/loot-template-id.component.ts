@@ -9,7 +9,9 @@ import { LootTemplateComponent } from '@keira-abstract/components/editors/loot-t
 // Extended only by the loot tables that require a template loot id
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602 template: '' })
+  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
+  template: '',
+}
 export abstract class LootTemplateIdComponent<T extends LootTemplate> extends LootTemplateComponent<T> implements OnInit {
   protected _lootId: number;
   get lootId(): number {
