@@ -10,7 +10,7 @@ import { SubscriptionHandler } from '../../../utils/subscription-handler/subscri
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
   template: '',
-}))
+})
 export abstract class EditorComponent<T extends TableRow> extends SubscriptionHandler implements OnInit {
   readonly WIKI_BASE_URL = WIKI_BASE_URL;
   public get docUrl(): string {
