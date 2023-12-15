@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ModalConfirmComponent } from '@keira-shared/modules/modal-confirm/modal-confirm.component';
 import { LocationService } from '@keira-shared/services/location.service';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
@@ -7,6 +7,8 @@ import { ConnectionWindowService } from 'app/main/connection-window/connection-w
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
   selector: 'keira-logout-btn',
   templateUrl: './logout-btn.component.html',
   styleUrls: ['./logout-btn.component.scss'],

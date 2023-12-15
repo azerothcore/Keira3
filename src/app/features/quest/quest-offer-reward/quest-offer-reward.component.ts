@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
 import { EMOTE } from '@keira-constants/options/emote';
 import { QuestOfferReward } from '@keira-types/quest-offer-reward.type';
@@ -7,6 +7,8 @@ import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestOfferRewardService } from './quest-offer-reward.service';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
   selector: 'keira-quest-offer-reward',
   templateUrl: './quest-offer-reward.component.html',
   styleUrls: ['./quest-offer-reward.component.scss'],

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
 import { CREATURE_TYPE_FLAGS } from '@keira-constants/flags/creature-type-flags';
 import { DYNAMIC_FLAGS } from '@keira-constants/flags/dynamic-flags';
@@ -26,6 +26,8 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateService } from './creature-template.service';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
   selector: 'keira-creature-template',
   templateUrl: './creature-template.component.html',
   styleUrls: ['./creature-template.component.scss'],

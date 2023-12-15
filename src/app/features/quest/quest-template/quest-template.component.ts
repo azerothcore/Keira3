@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
 import { ALLOWABLE_RACES } from '@keira-constants/flags/allowable-races';
 import { QUEST_FLAGS } from '@keira-constants/flags/quest-flags';
@@ -10,6 +10,8 @@ import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestTemplateService } from './quest-template.service';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
   selector: 'keira-quest-template',
   templateUrl: './quest-template.component.html',
   styleUrls: ['./quest-template.component.scss'],

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
 import { GAMEOBJECT_ICON } from '@keira-constants/options/gameobject-icon';
 import { GAMEOBJECT_TYPE } from '@keira-constants/options/gameobject-type';
@@ -9,6 +9,8 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectTemplateService } from './gameobject-template.service';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
   selector: 'keira-gameobject-template',
   templateUrl: './gameobject-template.component.html',
   styleUrls: ['./gameobject-template.component.scss'],

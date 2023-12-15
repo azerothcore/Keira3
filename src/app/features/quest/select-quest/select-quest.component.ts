@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SelectComponent } from '@keira-abstract/components/editors/select.component';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import {
@@ -11,6 +11,8 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { SelectQuestService } from './select-quest.service';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
   selector: 'keira-select-quest',
   templateUrl: './select-quest.component.html',
   styleUrls: ['./select-quest.component.scss'],

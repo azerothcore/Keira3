@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { SkillSearchService } from '../../search/skill-search.service';
@@ -6,6 +6,8 @@ import { SKILL_ID } from '@keira-types/skill.type';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
   selector: 'keira-skill-selector-modal',
   templateUrl: './skill-selector-modal.component.html',
   styleUrls: ['./skill-selector-modal.component.scss'],

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
 import { CREATURE_ADDON_BYTES_1 } from '@keira-constants/options/creature-addon-bytes1';
 import { CREATURE_ADDON_BYTES_2 } from '@keira-constants/options/creature-addon-bytes2';
@@ -8,6 +8,8 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureSpawnAddonService } from './creature-spawn-addon.service';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
   selector: 'keira-creature-spawn-addon',
   templateUrl: './creature-spawn-addon.component.html',
   styleUrls: ['./creature-spawn-addon.component.scss'],

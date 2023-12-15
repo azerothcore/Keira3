@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
 import { GameobjectQueststarter } from '@keira-types/gameobject-queststarter.type';
 import { QuestHandlerService } from '../quest-handler.service';
@@ -6,6 +6,8 @@ import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { GameobjectQueststarterService } from './gameobject-queststarter.service';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
   selector: 'keira-gameobject-queststarter',
   templateUrl: './gameobject-queststarter.component.html',
   styleUrls: ['./gameobject-queststarter.component.scss'],
