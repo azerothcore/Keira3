@@ -5,7 +5,7 @@ name: Release Draft
 jobs:
   get-package-version:
     name: Get Package Version
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       version: ${{ steps.version.outputs.PACKAGE_VERSION }}
       app_name: ${{ steps.app_name.outputs.APP_NAME }}
