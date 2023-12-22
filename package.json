@@ -117,7 +117,7 @@
     "squel": "5.13.0",
     "ts-mockito": "2.6.1",
     "ts-node": "10.9.1",
-    "typescript": "5.2.2",
+    "typescript": "5.3.3",
     "wait-on": "7.2.0",
     "webdriver-manager": "13.0.2",
     "webpack": "5.89.0",
