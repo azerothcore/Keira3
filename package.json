@@ -116,7 +116,7 @@
     "sqlstring": "2.3.3",
     "squel": "5.13.0",
     "ts-mockito": "2.6.1",
-    "ts-node": "10.9.1",
+    "ts-node": "10.9.2",
     "typescript": "5.2.2",
     "wait-on": "7.2.0",
     "webdriver-manager": "13.0.2",
