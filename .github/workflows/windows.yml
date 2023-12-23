@@ -14,8 +14,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [18]
-        os: [windows-2019]
+        node-version: [20]
+        os: [windows-2019, windows-2022]
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }}-node-${{ matrix.node-version }}
 
