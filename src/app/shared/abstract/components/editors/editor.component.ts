@@ -7,8 +7,7 @@ import { EditorService } from '../../service/editors/editor.service';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: '',
 })
 export abstract class EditorComponent<T extends TableRow> extends SubscriptionHandler implements OnInit {
