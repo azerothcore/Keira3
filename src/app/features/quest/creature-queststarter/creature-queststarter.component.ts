@@ -6,8 +6,7 @@ import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { CreatureQueststarterService } from './creature-queststarter.service';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-queststarter',
   templateUrl: './creature-queststarter.component.html',
   styleUrls: ['./creature-queststarter.component.scss'],
