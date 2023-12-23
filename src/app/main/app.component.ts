@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { KEIRA3_REPO_URL, LATEST_RELEASE_API_URL } from '@keira-constants/general';
 import { ElectronService } from '@keira-shared/services/electron.service';
 import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
@@ -26,6 +26,7 @@ export class AppComponent extends SubscriptionHandler implements OnInit {
     private readonly sqliteQueryService: SqliteQueryService,
     private readonly electronService: ElectronService,
     private readonly http: HttpClient,
+    private readonly changeDetectorRef: ChangeDetectorRef,
   ) {
     super();
   }
@@ -44,6 +45,7 @@ export class AppComponent extends SubscriptionHandler implements OnInit {
           .query<{ id: number; name: string }>('SELECT * FROM achievements WHERE id = 970', true)
           .subscribe((result) => {
             this.sqliteResult = result ? result[0] : null;
+            this.changeDetectorRef.detectChanges();
           }),
       );
     }
