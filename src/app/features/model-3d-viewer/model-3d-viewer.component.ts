@@ -4,9 +4,9 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { TableRow } from '@keira-shared/types/general';
 import * as jquery from 'jquery';
-import { BehaviorSubject, catchError, filter, Observable, of, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, catchError, filter, of } from 'rxjs';
 import { generateModels, getShadowlandDisplayId } from './helper';
-import { CONTENT_LIVE, CONTENT_WOTLK, MODEL_TYPE, VIEWER_TYPE } from './model-3d-viewer.model';
+import { CONTENT_WOTLK, MODEL_TYPE, VIEWER_TYPE } from './model-3d-viewer.model';
 
 declare const ZamModelViewer: any;
 
@@ -87,7 +87,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
             () => {
               /* istanbul ignore next */
               getShadowlandDisplayId(entry as number).then((displayInfo) => {
-                this.generate3Dmodel(modelType, displayInfo.displayId, CONTENT_LIVE);
+                this.generate3Dmodel(modelType, displayInfo.displayId, CONTENT_WOTLK);
               });
               /* istanbul ignore next */
               return of([]);
@@ -170,7 +170,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     const loadedViewer$ = this.loadedViewer$;
 
     if (typeof ZamModelViewer === 'undefined') {
-      jquery.getScript(`${CONTENT_WOTLK}viewer/viewer.min.js`, function () {
+      jquery.getScript(`https://wow.zamimg.com/modelviewer/wrath/viewer/viewer.min.js`, function () {
         loadedViewer$.next(true);
       });
     }

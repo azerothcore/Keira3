@@ -1,11 +1,12 @@
-import { app, BrowserWindow, shell, Menu, MenuItem, nativeImage } from 'electron';
+import { BrowserWindow, Menu, MenuItem, app, nativeImage, shell } from 'electron';
+import * as settings from 'electron-settings';
 import * as path from 'path';
 import * as url from 'url';
-import * as settings from 'electron-settings';
+import { appRest } from './cors';
 
-let win, serve;
+let win;
 const args = process.argv.slice(1);
-serve = args.some((val) => val === '--serve');
+const serve = args.some((val) => val === '--serve');
 
 function createWindow() {
   const hasPreviousSettings = settings.hasSync('user_settings.width');
@@ -23,6 +24,7 @@ function createWindow() {
     minWidth: 800,
     minHeight: 600,
     webPreferences: {
+      webSecurity: false,
       nodeIntegration: true,
       contextIsolation: false, // TODO: change this once Spectron supports it
     },
@@ -73,6 +75,11 @@ function createWindow() {
     shell.openExternal(link);
   });
 }
+
+const PORT = 3003;
+appRest.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
 
 try {
   // This method will be called when Electron has finished

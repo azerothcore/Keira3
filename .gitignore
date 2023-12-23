@@ -40,6 +40,8 @@ src/coverage
 npm-debug.log
 testem.log
 /typings
+/storage-3d-cache
+/cors.js
 
 # e2e
 /e2e/*.js
