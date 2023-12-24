@@ -34,3 +34,6 @@ export function getEnumKeys(enumInput: { [s: number]: string }): number[] {
 export function createMockObject(partial: Partial<Class>, c: Class) {
   return Object.assign(new c(), partial);
 }
+
+export const compareObjFn = (a: object, b: object) => JSON.stringify(a) === JSON.stringify(b);
+
