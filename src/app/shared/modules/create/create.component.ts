@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, OnInit } from '@angular/core';
 import { QueryError } from 'mysql2';
 import { HandlerService } from '../../abstract/service/handlers/handler.service';
 import { MysqlQueryService } from '../../services/mysql-query.service';
@@ -6,8 +6,7 @@ import { TableRow } from '../../types/general';
 import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-create',
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss'],
@@ -18,6 +17,8 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
   @Input() customStartingId: number;
   @Input() handlerService: HandlerService<T>;
   @Input() queryService: MysqlQueryService;
+
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   public idModel: number;
   private _loading = false;
@@ -40,6 +41,7 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
         next: (data) => {
           this.isIdFree = data.length <= 0;
           this._loading = false;
+          this.changeDetectorRef.detectChanges();
         },
         error: (error: QueryError) => {
           console.error(error);
@@ -58,6 +60,7 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
           this.idModel = this.calculateNextId(currentMax);
           this.isIdFree = true;
           this._loading = false;
+          this.changeDetectorRef.detectChanges();
         },
         error: (error: QueryError) => {
           console.error(error);
