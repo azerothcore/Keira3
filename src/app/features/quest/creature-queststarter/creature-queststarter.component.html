@@ -17,7 +17,8 @@
         <div class="row">
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
             <label class="control-label" for="id">id</label>
-            <keira-creature-selector-btn [control]="editorService.form.controls.id" [config]="{ name: 'id' }"></keira-creature-selector-btn>
+            <keira-creature-selector-btn [control]="editorService.form.controls.id"
+              [disabled]="editorService.form.controls.id.disabled" [config]="{ name: 'id' }"></keira-creature-selector-btn>
             <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'creature_template.entry'"></i>
             <input [formControlName]="'id'" id="id" type="number" class="form-control form-control-sm" />
           </div>

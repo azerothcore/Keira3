@@ -26,6 +26,8 @@
             </label>
             <keira-item-selector-btn
               [control]="editorService.form.controls.ItemID1"
+              [disabled]="editorService.form.controls.ItemID1.disabled"
+              [disabled]="editorService.form.controls.ItemID1.disabled"
               [config]="{ name: 'ItemID1' }"
             ></keira-item-selector-btn>
             <input [formControlName]="'ItemID1'" id="ItemID1" type="number" class="form-control form-control-sm" />
@@ -37,6 +39,7 @@
             </label>
             <keira-item-selector-btn
               [control]="editorService.form.controls.ItemID2"
+              [disabled]="editorService.form.controls.ItemID2.disabled"
               [config]="{ name: 'ItemID2' }"
             ></keira-item-selector-btn>
             <input [formControlName]="'ItemID2'" id="ItemID2" type="number" class="form-control form-control-sm" />
@@ -48,6 +51,7 @@
             </label>
             <keira-item-selector-btn
               [control]="editorService.form.controls.ItemID3"
+              [disabled]="editorService.form.controls.ItemID3.disabled"
               [config]="{ name: 'ItemID3' }"
             ></keira-item-selector-btn>
             <input [formControlName]="'ItemID3'" id="ItemID3" type="number" class="form-control form-control-sm" />

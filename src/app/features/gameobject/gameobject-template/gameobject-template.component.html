@@ -30,6 +30,7 @@
             <label class="control-label" for="type">type</label>
             <keira-single-value-selector-btn
               [control]="editorService.form.controls.type"
+              [disabled]="editorService.form.controls.type.disabled"
               [config]="{ options: GAMEOBJECT_TYPE, name: 'type' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
@@ -44,6 +45,7 @@
             <label class="control-label" for="IconName">IconName</label>
             <keira-single-value-selector-btn
               [control]="editorService.form.controls.IconName"
+              [disabled]="editorService.form.controls.IconName.disabled"
               [config]="{ options: GAMEOBJECT_ICON, name: 'IconName' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>

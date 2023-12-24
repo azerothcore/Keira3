@@ -21,7 +21,8 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="map">map</label>
-            <keira-map-selector-btn [config]="{ name: 'map' }" [control]="editorService.form.controls.map"></keira-map-selector-btn>
+            <keira-map-selector-btn [config]="{ name: 'map' }" [control]="editorService.form.controls.map"
+              [disabled]="editorService.form.controls.map.disabled"></keira-map-selector-btn>
             <input [formControlName]="'map'" id="map" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
@@ -30,13 +31,15 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="areaId">areaId</label>
-            <keira-area-selector-btn [config]="{ name: 'areaId' }" [control]="editorService.form.controls.areaId"></keira-area-selector-btn>
+            <keira-area-selector-btn [config]="{ name: 'areaId' }" [control]="editorService.form.controls.areaId"
+              [disabled]="editorService.form.controls.areaId.disabled"></keira-area-selector-btn>
             <input [formControlName]="'areaId'" id="areaId" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="spawnMask">spawnMask</label>
             <keira-flags-selector-btn
               [control]="editorService.form.controls.spawnMask"
+              [disabled]="editorService.form.controls.spawnMask.disabled"
               [config]="{ flags: SPAWN_MASK, name: 'spawnMask' }"
               [modalClass]="'modal-lg'"
             ></keira-flags-selector-btn>
@@ -46,6 +49,7 @@
             <label class="control-label" for="phaseMask">phaseMask</label>
             <keira-flags-selector-btn
               [control]="editorService.form.controls.phaseMask"
+              [disabled]="editorService.form.controls.phaseMask.disabled"
               [config]="{ flags: PHASE_MASK, name: 'phaseMask' }"
               [modalClass]="'modal-lg'"
             ></keira-flags-selector-btn>

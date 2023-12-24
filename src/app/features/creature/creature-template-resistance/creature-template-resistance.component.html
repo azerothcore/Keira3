@@ -19,6 +19,7 @@
             <label class="control-label" for="School">School</label>
             <keira-single-value-selector-btn
               [control]="editorService.form.controls.School"
+              [disabled]="editorService.form.controls.School.disabled"
               [config]="{ options: CREATURE_TEMPLATE_RESISTANCE_SCHOOL, name: 'School' }"
               [modalClass]="'modal-lg'"
             ></keira-single-value-selector-btn>

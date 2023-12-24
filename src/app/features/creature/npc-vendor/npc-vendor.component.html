@@ -20,7 +20,12 @@
               <keira-icon [itemId]="editorService.form.controls.item.value"></keira-icon>
               item
             </label>
-            <keira-item-selector-btn [control]="editorService.form.controls.item" [config]="{ name: 'item' }"></keira-item-selector-btn>
+            <keira-item-selector-btn
+              [control]="editorService.form.controls.item"
+              [disabled]="editorService.form.controls.item.disabled"
+              [disabled]="editorService.form.controls.item.disabled"
+              [config]="{ name: 'item' }"
+            ></keira-item-selector-btn>
             <input [formControlName]="'item'" id="item" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
@@ -43,6 +48,8 @@
             <keira-item-extended-cost-selector-btn
               [config]="{ name: 'ExtendedCost' }"
               [control]="editorService.form.controls.ExtendedCost"
+              [disabled]="editorService.form.controls.ExtendedCost.disabled"
+              [disabled]="editorService.form.controls.ExtendedCost.disabled"
             ></keira-item-extended-cost-selector-btn>
             <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.NPC_VENDOR.EXTENDED_COST' | translate"></i>
             <input [formControlName]="'ExtendedCost'" id="ExtendedCost" type="number" class="form-control form-control-sm" />

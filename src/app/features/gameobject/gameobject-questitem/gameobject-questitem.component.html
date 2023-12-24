@@ -20,7 +20,8 @@
               <keira-icon [itemId]="editorService.form.controls.ItemId.value"></keira-icon>
               ItemId
             </label>
-            <keira-item-selector-btn [control]="editorService.form.controls.ItemId" [config]="{ name: 'ItemId' }"></keira-item-selector-btn>
+            <keira-item-selector-btn [control]="editorService.form.controls.ItemId"
+              [disabled]="editorService.form.controls.ItemId.disabled" [config]="{ name: 'ItemId' }"></keira-item-selector-btn>
             <input [formControlName]="'ItemId'" id="ItemId" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">

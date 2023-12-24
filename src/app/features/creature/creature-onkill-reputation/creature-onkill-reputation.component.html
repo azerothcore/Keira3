@@ -24,6 +24,7 @@
             <keira-faction-selector-btn
               [config]="{ name: 'RewOnKillRepFaction1' }"
               [control]="editorService.form.controls.RewOnKillRepFaction1"
+              [disabled]="editorService.form.controls.RewOnKillRepFaction1.disabled"
             ></keira-faction-selector-btn>
             <input
               [formControlName]="'RewOnKillRepFaction1'"
@@ -37,6 +38,7 @@
             <keira-faction-selector-btn
               [config]="{ name: 'RewOnKillRepFaction2' }"
               [control]="editorService.form.controls.RewOnKillRepFaction2"
+              [disabled]="editorService.form.controls.RewOnKillRepFaction2.disabled"
             ></keira-faction-selector-btn>
             <input
               [formControlName]="'RewOnKillRepFaction2'"
@@ -49,6 +51,7 @@
             <label class="control-label" for="MaxStanding1">MaxStanding1</label>
             <keira-single-value-selector-btn
               [control]="editorService.form.controls.MaxStanding1"
+              [disabled]="editorService.form.controls.MaxStanding1.disabled"
               [config]="{ options: FACTION_RANK, name: 'MaxStanding1' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
@@ -72,6 +75,7 @@
             <label class="control-label" for="MaxStanding2">MaxStanding2</label>
             <keira-single-value-selector-btn
               [control]="editorService.form.controls.MaxStanding2"
+              [disabled]="editorService.form.controls.MaxStanding2.disabled"
               [config]="{ options: FACTION_RANK, name: 'MaxStanding2' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>

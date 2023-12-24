@@ -46,6 +46,7 @@
             <label class="control-label" for="class">class</label>
             <keira-single-value-selector-btn
               [control]="editorService.form.controls.class"
+              [disabled]="editorService.form.controls.class.disabled"
               [config]="{ options: ITEM_CLASS, name: 'class' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
@@ -61,6 +62,7 @@
                 editorService.form.controls.class.value < ITEM_SUBCLASS.length
               "
               [control]="editorService.form.controls.subclass"
+              [disabled]="editorService.form.controls.subclass.disabled"
               [config]="{ options: ITEM_SUBCLASS[editorService.form.controls.class.value], name: 'subclass' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
@@ -86,6 +88,7 @@
             <label class="control-label" for="Quality">Quality</label>
             <keira-single-value-selector-btn
               [control]="editorService.form.controls.Quality"
+              [disabled]="editorService.form.controls.Quality.disabled"
               [config]="{ options: ITEM_QUALITY, name: 'Quality' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
@@ -110,6 +113,7 @@
             <label class="control-label" for="InventoryType">InventoryType</label>
             <keira-single-value-selector-btn
               [control]="editorService.form.controls.InventoryType"
+              [disabled]="editorService.form.controls.InventoryType.disabled"
               [config]="{ options: INVENTORY_TYPE, name: 'InventoryType' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
@@ -129,6 +133,7 @@
             <label class="control-label" for="startquest">startquest</label>
             <keira-quest-selector-btn
               [control]="editorService.form.controls.startquest"
+              [disabled]="editorService.form.controls.startquest.disabled"
               [config]="{ name: 'startquest' }"
               [modalClass]="'modal-lg'"
             ></keira-quest-selector-btn>
@@ -139,6 +144,7 @@
             <label class="control-label" for="Material">Material</label>
             <keira-single-value-selector-btn
               [control]="editorService.form.controls.Material"
+              [disabled]="editorService.form.controls.Material.disabled"
               [config]="{ options: ITEM_MATERIAL, name: 'Material' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
@@ -158,6 +164,7 @@
             <label class="control-label" for="BagFamily">BagFamily</label>
             <keira-flags-selector-btn
               [control]="editorService.form.controls.BagFamily"
+              [disabled]="editorService.form.controls.BagFamily.disabled"
               [config]="{ flags: BAG_FAMILY, name: 'BagFamily' }"
               [modalClass]="'modal-md'"
             ></keira-flags-selector-btn>
@@ -172,6 +179,7 @@
             <label class="control-label" for="TotemCategory">TotemCategory</label>
             <keira-single-value-selector-btn
               [control]="editorService.form.controls.TotemCategory"
+              [disabled]="editorService.form.controls.TotemCategory.disabled"
               [config]="{ options: TOTEM_CATEGORY, name: 'TotemCategory' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
@@ -187,6 +195,7 @@
             <keira-item-limit-category-selector-btn
               [config]="{ name: 'ItemLimitCategory' }"
               [control]="editorService.form.controls.ItemLimitCategory"
+              [disabled]="editorService.form.controls.ItemLimitCategory.disabled"
             ></keira-item-limit-category-selector-btn>
             <input [formControlName]="'ItemLimitCategory'" id="ItemLimitCategory" type="number" class="form-control form-control-sm" />
           </div>
@@ -199,6 +208,7 @@
             <label class="control-label" for="FoodType">FoodType</label>
             <keira-single-value-selector-btn
               [control]="editorService.form.controls.FoodType"
+              [disabled]="editorService.form.controls.FoodType.disabled"
               [config]="{ options: FOOD_TYPE, name: 'FoodType' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
@@ -223,6 +233,7 @@
             <label class="control-label" for="bonding">bonding</label>
             <keira-single-value-selector-btn
               [control]="editorService.form.controls.bonding"
+              [disabled]="editorService.form.controls.bonding.disabled"
               [config]="{ options: ITEM_BONDING, name: 'bonding' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
@@ -239,6 +250,7 @@
                 <label class="control-label" for="Flags">Flags</label>
                 <keira-flags-selector-btn
                   [control]="editorService.form.controls.Flags"
+              [disabled]="editorService.form.controls.Flags.disabled"
                   [config]="{ flags: ITEM_FLAGS, name: 'Flags' }"
                   [modalClass]="'modal-lg'"
                 ></keira-flags-selector-btn>
@@ -248,6 +260,7 @@
                 <label class="control-label" for="FlagsExtra">FlagsExtra</label>
                 <keira-flags-selector-btn
                   [control]="editorService.form.controls.FlagsExtra"
+              [disabled]="editorService.form.controls.FlagsExtra.disabled"
                   [config]="{ flags: ITEM_FLAGS_EXTRA, name: 'FlagsExtra' }"
                   [modalClass]="'modal-lg'"
                 ></keira-flags-selector-btn>
@@ -257,6 +270,7 @@
                 <label class="control-label" for="flagsCustom">flagsCustom</label>
                 <keira-flags-selector-btn
                   [control]="editorService.form.controls.flagsCustom"
+              [disabled]="editorService.form.controls.flagsCustom.disabled"
                   [config]="{ flags: ITEM_FLAGS_CUSTOM, name: 'flagsCustom' }"
                   [modalClass]="'modal-lg'"
                 ></keira-flags-selector-btn>
@@ -284,6 +298,7 @@
                 <keira-language-selector-btn
                   [config]="{ name: 'LanguageID' }"
                   [control]="editorService.form.controls.LanguageID"
+              [disabled]="editorService.form.controls.LanguageID.disabled"
                 ></keira-language-selector-btn>
                 <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.LANG_ID' | translate"></i>
                 <input [formControlName]="'LanguageID'" id="LanguageID" type="number" class="form-control form-control-sm" />
@@ -299,6 +314,7 @@
             <label class="control-label" for="AllowableClass">AllowableClass</label>
             <keira-flags-selector-btn
               [control]="editorService.form.controls.AllowableClass"
+              [disabled]="editorService.form.controls.AllowableClass.disabled"
               [config]="{ flags: ALLOWABLE_CLASSES, name: 'AllowableClass' }"
               [modalClass]="'modal-lg'"
             ></keira-flags-selector-btn>
@@ -308,6 +324,7 @@
             <label class="control-label" for="AllowableRace">AllowableRace</label>
             <keira-flags-selector-btn
               [control]="editorService.form.controls.AllowableRace"
+              [disabled]="editorService.form.controls.AllowableRace.disabled"
               [config]="{ flags: ALLOWABLE_RACES, name: 'AllowableRace' }"
               [modalClass]="'modal-lg'"
             ></keira-flags-selector-btn>
@@ -329,6 +346,7 @@
             <keira-skill-selector-btn
               [config]="{ name: 'RequiredSkill' }"
               [control]="editorService.form.controls.RequiredSkill"
+              [disabled]="editorService.form.controls.RequiredSkill.disabled"
             ></keira-skill-selector-btn>
             <input [formControlName]="'RequiredSkill'" id="RequiredSkill" type="number" class="form-control form-control-sm" />
           </div>
@@ -342,6 +360,7 @@
             <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.REQUIRED_SPELL' | translate"></i>
             <keira-spell-selector-btn
               [control]="editorService.form.controls.requiredspell"
+              [disabled]="editorService.form.controls.requiredspell.disabled"
               [config]="{ name: 'requiredspell' }"
               [modalClass]="'modal-lg'"
             ></keira-spell-selector-btn>
@@ -352,6 +371,7 @@
             <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.REQUIRED_HONORRANK' | translate"></i>
             <keira-single-value-selector-btn
               [control]="editorService.form.controls.requiredhonorrank"
+              [disabled]="editorService.form.controls.requiredhonorrank.disabled"
               [config]="{ options: PVP_RANK, name: 'PvP Honor Rank' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
@@ -367,6 +387,7 @@
             <keira-faction-selector-btn
               [config]="{ name: 'RequiredReputationFaction' }"
               [control]="editorService.form.controls.RequiredReputationFaction"
+              [disabled]="editorService.form.controls.RequiredReputationFaction.disabled"
             ></keira-faction-selector-btn>
             <input
               [formControlName]="'RequiredReputationFaction'"
@@ -379,6 +400,7 @@
             <label class="control-label" for="RequiredReputationRank">Req.Rep.Rank</label>
             <keira-single-value-selector-btn
               [control]="editorService.form.controls.RequiredReputationRank"
+              [disabled]="editorService.form.controls.RequiredReputationRank.disabled"
               [config]="{ options: FACTION_RANK, name: 'RequiredReputationRank' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
@@ -401,13 +423,15 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="Map">Map</label>
-            <keira-map-selector-btn [config]="{ name: 'Map' }" [control]="editorService.form.controls.Map"></keira-map-selector-btn>
+            <keira-map-selector-btn [config]="{ name: 'Map' }" [control]="editorService.form.controls.Map"
+              [disabled]="editorService.form.controls.Map.disabled"></keira-map-selector-btn>
             <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.MAP' | translate"></i>
             <input [formControlName]="'Map'" id="Map" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <label class="control-label" for="area">area</label>
-            <keira-area-selector-btn [config]="{ name: 'area' }" [control]="editorService.form.controls.area"></keira-area-selector-btn>
+            <keira-area-selector-btn [config]="{ name: 'area' }" [control]="editorService.form.controls.area"
+              [disabled]="editorService.form.controls.area.disabled"></keira-area-selector-btn>
             <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.AREA' | translate"></i>
             <input [formControlName]="'area'" id="area" type="number" class="form-control form-control-sm" />
           </div>
@@ -416,6 +440,7 @@
             <keira-holiday-selector-btn
               [config]="{ name: 'HolidayId' }"
               [control]="editorService.form.controls.HolidayId"
+              [disabled]="editorService.form.controls.HolidayId.disabled"
             ></keira-holiday-selector-btn>
             <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.HOLIDAY_ID' | translate"></i>
             <input [formControlName]="'HolidayId'" id="HolidayId" type="number" class="form-control form-control-sm" />
@@ -473,6 +498,7 @@
                 <label class="control-label" for="stat_type{{ i }}">type{{ i }}</label>
                 <keira-single-value-selector-btn
                   [control]="editorService.form.controls['stat_type' + i]"
+                  [disabled]="editorService.form.controls['stat_type' + i].disabled"
                   [config]="{ options: STAT_TYPE, name: 'stat_type' + i }"
                   [modalClass]="'modal-md'"
                 ></keira-single-value-selector-btn>
@@ -495,6 +521,7 @@
             <keira-item-enchantment-selector-btn
               [config]="{ name: 'socketBonus' }"
               [control]="editorService.form.controls.socketBonus"
+              [disabled]="editorService.form.controls.socketBonus.disabled"
             ></keira-item-enchantment-selector-btn>
             <input [formControlName]="'socketBonus'" id="socketBonus" type="number" class="form-control form-control-sm" />
           </div>
@@ -511,6 +538,7 @@
                 <label class="control-label" for="socketColor_{{ i }}">Color_{{ i }}</label>
                 <keira-flags-selector-btn
                   [control]="editorService.form.controls['socketColor_' + i]"
+                  [disabled]="editorService.form.controls['socketColor_' + i].disabled"
                   [config]="{ flags: SOCKET_COLOR, name: 'socketColor_' + i }"
                   [modalClass]="'modal-md'"
                 ></keira-flags-selector-btn>
@@ -575,6 +603,7 @@
             <label class="control-label" for="sheath">sheath</label>
             <keira-single-value-selector-btn
               [control]="editorService.form.controls.sheath"
+              [disabled]="editorService.form.controls.sheath.disabled"
               [config]="{ options: ITEM_SHEAT, name: 'sheath' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
@@ -600,6 +629,7 @@
               <label class="control-label" for="dmg_type{{ i }}">type{{ i }}</label>
               <keira-single-value-selector-btn
                 [control]="editorService.form.controls['dmg_type' + i]"
+                [disabled]="editorService.form.controls['dmg_type' + i].disabled"
                 [config]="{ options: DAMAGE_TYPE, name: 'dmg_type' + i }"
                 [modalClass]="'modal-md'"
               ></keira-single-value-selector-btn>
@@ -620,6 +650,7 @@
                 <label class="control-label" for="spellid_{{ i }}">id_{{ i }}</label>
                 <keira-spell-selector-btn
                   [control]="editorService.form.controls['spellid_' + i]"
+                  [disabled]="editorService.form.controls['spellid_' + i].disabled"
                   [config]="{ name: 'spellid_' + i }"
                   [modalClass]="'modal-lg'"
                 ></keira-spell-selector-btn>
