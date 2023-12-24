@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
 import { HandlerService } from '../handlers/handler.service';
 import { MultiRowEditorService } from './multi-row-editor.service';
+import { ChangeDetectorRef } from '@angular/core';
 
 export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extends MultiRowEditorService<T> {
   get entityIdFields(): string[] {
@@ -48,27 +49,29 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
     }
   }
 
-  reload() {
+  reload(changeDetectorRef: ChangeDetectorRef) {
     this._loading = true;
     this.reset();
-    this.reloadEntity();
+    this.reloadEntity(changeDetectorRef);
   }
 
   protected selectQuery(): Observable<T[]> {
     return this.queryService.selectAllMultipleKeys<T>(this._entityTable, JSON.parse(this.handlerService.selected));
   }
 
-  protected reloadEntity() {
+  protected reloadEntity(changeDetectorRef: ChangeDetectorRef) {
     this.subscriptions.push(
       this.selectQuery().subscribe({
         next: (data) => {
           this._error = null;
           this.onReloadSuccessful(data);
           this._loading = false;
+          changeDetectorRef.detectChanges();
         },
         error: (error: QueryError) => {
           this._error = error;
           this._loading = false;
+          changeDetectorRef.detectChanges();
         },
       }),
     );

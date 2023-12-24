@@ -29,7 +29,7 @@ export abstract class LootTemplateIdComponent<T extends LootTemplate> extends Lo
 
             if (this.editorService.loadedEntityId !== `${this._lootId}`) {
               // the rows haven't been loaded or the lootId has changed
-              this.editorService.reload(this._lootId);
+              this.editorService.reload(this.changeDetectorRef, this._lootId);
             }
           }
         },

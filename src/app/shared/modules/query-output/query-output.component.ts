@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { ModalConfirmComponent } from '@keira-shared/modules/modal-confirm/modal-confirm.component';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
@@ -20,6 +20,8 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
   @Output() executeQuery = new EventEmitter<string>();
   selectedQuery: 'diff' | 'full' = 'diff';
   private modalRef: BsModalRef;
+
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   constructor(private clipboardService: ClipboardService, private modalService: BsModalService) {
     super();
@@ -51,7 +53,7 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
   reload(): void {
     if (!this.editorService.diffQuery) {
       // if no changes to discard, just reload without asking confirmation
-      this.editorService.reloadSameEntity();
+      this.editorService.reloadSameEntity(this.changeDetectorRef);
       return;
     }
 

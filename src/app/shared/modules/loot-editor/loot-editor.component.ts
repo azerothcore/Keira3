@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input } from '@angular/core';
 import { MultiRowEditorService } from '@keira-abstract/service/editors/multi-row-editor.service';
 import { DTCFG } from '@keira-config/datatable.config';
 import { LOOT_MODE } from '@keira-constants/flags/loot-mode';
@@ -14,6 +14,8 @@ import { LootTemplate } from '@keira-types/loot-template.type';
 export class LootEditorComponent<T extends LootTemplate> {
   @Input() editorService: MultiRowEditorService<T>;
 
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
+
   readonly LOOT_MODE = LOOT_MODE;
   readonly DTCFG = DTCFG;
 
@@ -28,5 +30,9 @@ export class LootEditorComponent<T extends LootTemplate> {
 
   isReference(row): boolean {
     return row.Reference !== 0;
+  }
+
+  save(query: string): void {
+    this.editorService.save(this.changeDetectorRef, query);
   }
 }
