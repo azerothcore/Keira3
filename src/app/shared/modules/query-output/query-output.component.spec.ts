@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { HighlightjsWrapperModule } from '@keira-shared/modules/highlightjs-wrapper/highlightjs-wrapper.module';
@@ -135,15 +135,16 @@ describe('QueryOutputComponent', () => {
   });
 
   describe('reload', () => {
-    it('should not ask for confirmation if diffQuery is empty', () => {
+    it('should not ask for confirmation if diffQuery is empty', fakeAsync(() => {
       const { page, host } = setup();
       (host.editorService as any).diffQuery = '';
       spyOn(host.editorService, 'reloadSameEntity');
 
       page.clickElement(page.reloadBtn);
+      tick();
 
       expect(host.editorService.reloadSameEntity).toHaveBeenCalledTimes(1);
-    });
+    }));
 
     it('should ask for confirmation if diffQuery is empty, and reset if confirmed', () => {
       const { page, host, component } = setup();

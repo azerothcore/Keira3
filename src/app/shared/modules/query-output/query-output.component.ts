@@ -53,7 +53,11 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
   reload(): void {
     if (!this.editorService.diffQuery) {
       // if no changes to discard, just reload without asking confirmation
-      this.editorService.reloadSameEntity(this.changeDetectorRef);
+      setTimeout(() => {
+        // since the OnPush migration, for some reasons we need to wrap this inside a setTimeout otherwise it does not work
+        this.editorService.reloadSameEntity(this.changeDetectorRef);
+      });
+
       return;
     }
 
@@ -66,7 +70,9 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
     this.subscriptions.push(
       this.modalRef.content.onClose
         .pipe(filter((result) => !!result))
-        .subscribe(this.editorService.reloadSameEntity.bind(this.editorService)),
+        .subscribe(() => {
+          this.editorService.reloadSameEntity(this.changeDetectorRef);
+        }),
     );
   }
 }
