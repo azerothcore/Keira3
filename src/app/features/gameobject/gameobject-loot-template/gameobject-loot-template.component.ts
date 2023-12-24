@@ -39,5 +39,6 @@ export class GameobjectLootTemplateComponent extends LootTemplateIdComponent<Gam
     this.editorService.clearCache();
     this.checkTemplateType();
     this.checkTemplateLootId();
+    this.watchFormForChanges();
   }
 }

@@ -32,6 +32,10 @@ export abstract class EditorComponent<T extends TableRow> extends SubscriptionHa
       this.editorService.reload(this.changeDetectorRef, this.handlerService.selected);
     }
 
+    this.watchFormForChanges();
+  }
+
+  protected watchFormForChanges(): void {
     this.subscriptions.push(
       this.editorService.form.valueChanges.pipe(
         debounceTime(200),

@@ -32,6 +32,7 @@ export abstract class LootTemplateIdComponent<T extends LootTemplate> extends Lo
               this.editorService.reload(this.changeDetectorRef, this._lootId);
             }
           }
+          this.changeDetectorRef.detectChanges();
         },
         error: (error: QueryError) => {
           console.error(error);
@@ -48,5 +49,6 @@ export abstract class LootTemplateIdComponent<T extends LootTemplate> extends Lo
   ngOnInit() {
     this.editorService.clearCache();
     this.checkTemplateLootId();
+    this.watchFormForChanges();
   }
 }
