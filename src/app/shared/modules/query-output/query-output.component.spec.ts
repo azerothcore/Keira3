@@ -79,7 +79,7 @@ describe('QueryOutputComponent', () => {
       diffQuery,
       fullQuery,
       error: null,
-      reloadSameEntity(changeDetectorRef) {},
+      reloadSameEntity(_changeDetectorRef) {},
     } as EditorService<MockType>;
 
     fixture.autoDetectChanges(true);
