@@ -10,7 +10,9 @@ import packageInfo from '../../../package.json';
 import { MysqlService } from '../shared/services/mysql.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
+  // TODO: currently OnPush would break the auto reconnect of the login page
   selector: 'keira-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
