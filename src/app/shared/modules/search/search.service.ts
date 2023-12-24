@@ -43,11 +43,11 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
     );
   }
 
-  onSearch(changeDetectorRef?: ChangeDetectorRef): void {
+  onSearch(changeDetectorRef: ChangeDetectorRef): void {
     this.subscriptions.push(
       this.queryService.query<T>(this.query).subscribe((data) => {
         this.rows = data;
-        changeDetectorRef?.detectChanges();
+        changeDetectorRef.detectChanges();
       }),
     );
   }

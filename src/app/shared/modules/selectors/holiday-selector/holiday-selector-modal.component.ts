@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { HolidaySearchService } from '../../search/holiday-search.service';
-import { HOLIDAY_ID } from '@keira-types/holiday.type';
+import { Holiday, HOLIDAY_ID } from '@keira-types/holiday.type';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 
 @Component({
@@ -11,9 +11,9 @@ import { SearchSelectorModalComponent } from '../base-selector/search-selector-m
   templateUrl: './holiday-selector-modal.component.html',
   styleUrls: ['./holiday-selector-modal.component.scss'],
 })
-export class HolidaySelectorModalComponent extends SearchSelectorModalComponent {
+export class HolidaySelectorModalComponent extends SearchSelectorModalComponent<Holiday> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(protected bsModalRef: BsModalRef, public searchService: HolidaySearchService) {
-    super(HOLIDAY_ID, bsModalRef);
+    super(HOLIDAY_ID, bsModalRef, searchService);
   }
 }

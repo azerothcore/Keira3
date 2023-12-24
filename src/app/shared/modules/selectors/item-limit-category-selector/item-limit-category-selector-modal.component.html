@@ -21,7 +21,7 @@
         <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Unlimited" />
       </div>
       <div class="col-2">
-        <button id="search-btn" class="btn btn-primary btn-sm" [disabled]="searchService.queryForm.invalid" (click)="searchService.onSearch()">
+        <button id="search-btn" class="btn btn-primary btn-sm" [disabled]="searchService.queryForm.invalid" (click)="onSearch()">
           <i class="fa fa-search"></i> {{ 'SEARCH' | translate }}
         </button>
       </div>

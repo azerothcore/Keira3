@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { SpellSearchService } from '../../search/spell-search.service';
-import { SPELL_ID } from '@keira-types/spell.type';
+import { Spell, SPELL_ID } from '@keira-types/spell.type';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 
 @Component({
@@ -11,9 +11,9 @@ import { SearchSelectorModalComponent } from '../base-selector/search-selector-m
   templateUrl: './spell-selector-modal.component.html',
   styleUrls: ['./spell-selector-modal.component.scss'],
 })
-export class SpellSelectorModalComponent extends SearchSelectorModalComponent {
+export class SpellSelectorModalComponent extends SearchSelectorModalComponent<Spell> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(protected bsModalRef: BsModalRef, public searchService: SpellSearchService) {
-    super(SPELL_ID, bsModalRef);
+    super(SPELL_ID, bsModalRef, searchService);
   }
 }
