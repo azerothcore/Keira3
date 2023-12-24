@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 
 import { AC_DISCORD_URL, KEIRA3_REPO_URL, PAYPAL_DONATE_URL } from '@keira-constants/general';
 import { ConfigService } from '@keira-shared/services/config.service';
@@ -33,6 +33,7 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
     private readonly queryService: MysqlQueryService,
     public readonly configService: ConfigService,
     private readonly mysqlService: MysqlService,
+    private readonly changeDetectorRef: ChangeDetectorRef,
   ) {
     super();
   }
@@ -56,6 +57,8 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
             if (!this.coreVersions.db_version.startsWith('ACDB') || !this.coreVersions.core_version.startsWith('AzerothCore')) {
               this.error = true;
             }
+
+            this.changeDetectorRef.detectChanges();
           } else {
             console.error(`Query ${query} produced no results: ${data}`);
           }

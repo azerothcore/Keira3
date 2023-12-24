@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { DTCFG } from '@keira-config/datatable.config';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
@@ -52,6 +52,7 @@ export class SqlEditorComponent extends SubscriptionHandler {
     private mysqlQueryService: MysqlQueryService,
     private clipboardService: ClipboardService,
     readonly service: SqlEditorService,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
     super();
   }
@@ -83,6 +84,7 @@ export class SqlEditorComponent extends SubscriptionHandler {
           }
 
           this._rows = rows as TableRow[];
+          this.changeDetectorRef.detectChanges();
         },
         error: (error: QueryError) => {
           this._error = error;
