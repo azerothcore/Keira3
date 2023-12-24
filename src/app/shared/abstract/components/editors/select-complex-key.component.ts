@@ -3,10 +3,13 @@ import { ComplexKeyHandlerService } from '../../service/handlers/complex-key.han
 import { TableRow } from '@keira-types/general';
 import { DTCFG } from '@keira-config/datatable.config';
 import { WIKI_BASE_URL } from '@keira-constants/general';
+import { ChangeDetectorRef, inject } from '@angular/core';
 
 export abstract class SelectComplexKeyComponent<T extends TableRow> {
   readonly DTCFG = DTCFG;
   readonly WIKI_BASE_URL = WIKI_BASE_URL;
+
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   constructor(public selectService: SearchService<T>, protected handlerService: ComplexKeyHandlerService<T>) {}
 
@@ -16,5 +19,9 @@ export abstract class SelectComplexKeyComponent<T extends TableRow> {
 
   onCreateNew(): void {
     this.handlerService.select(true, this.selectService.fields.getRawValue() as T);
+  }
+
+  onSearch() {
+    this.selectService.onSearch(this.changeDetectorRef);
   }
 }

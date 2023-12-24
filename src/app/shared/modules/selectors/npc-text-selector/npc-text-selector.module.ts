@@ -8,7 +8,6 @@ import { NpcTextSelectorBtnComponent } from './npc-text-selector-btn.component';
 import { HighlightjsWrapperModule } from '@keira-shared/modules/highlightjs-wrapper/highlightjs-wrapper.module';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { IconModule } from '@keira-shared/modules/icon/icon.module';
-import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
@@ -20,7 +19,6 @@ import { TranslateModule } from '@ngx-translate/core';
     ModalModule,
     HighlightjsWrapperModule,
     IconModule,
-    SearchButtonsModule,
     TranslateModule,
   ],
   exports: [NpcTextSelectorBtnComponent],
