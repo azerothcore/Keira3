@@ -54,7 +54,7 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
     if (!this.editorService.diffQuery) {
       // if no changes to discard, just reload without asking confirmation
       setTimeout(() => {
-        // since the OnPush migration, for some reasons we need to wrap this inside a setTimeout otherwise it does not work
+        // since the OnPush migration, for some reason we need to wrap this inside a setTimeout otherwise it does not work
         this.editorService.reloadSameEntity(this.changeDetectorRef);
       });
 
