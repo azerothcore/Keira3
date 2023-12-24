@@ -79,6 +79,7 @@ describe('QueryOutputComponent', () => {
       diffQuery,
       fullQuery,
       error: null,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       reloadSameEntity(_changeDetectorRef) {},
     } as EditorService<MockType>;
 
