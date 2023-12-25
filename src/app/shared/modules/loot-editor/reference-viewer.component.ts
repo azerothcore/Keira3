@@ -37,7 +37,7 @@ export class ReferenceViewerComponent extends SubscriptionHandler implements OnC
     );
   }
 
-  isReference(row): boolean {
+  isReference(row: ReferenceLootTemplate): boolean {
     return row.Reference !== 0;
   }
 }

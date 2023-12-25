@@ -21,7 +21,7 @@ export abstract class SelectComplexKeyComponent<T extends TableRow> {
     this.handlerService.select(true, this.selectService.fields.getRawValue() as T);
   }
 
-  onSearch() {
+  onSearch(): void {
     this.selectService.onSearch(this.changeDetectorRef);
   }
 }

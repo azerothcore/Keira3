@@ -4,7 +4,7 @@
       <label class="control-label" for="Targets">Targets</label>
       <keira-flags-selector-btn
         [control]="formGroup.controls.Targets"
-          [disabled]="formGroup.controls.Targets.disabled"
+        [disabled]="formGroup.controls.Targets.disabled"
         [config]="{ flags: SPELL_DBC_TARGETS, name: 'Targets' }"
       ></keira-flags-selector-btn>
       <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.EFFECTS.TARGETS' | translate"></i>

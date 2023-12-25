@@ -87,14 +87,12 @@
               *ngIf="showTypeMask"
               [control]="editorService.form.controls.ConditionValue1"
               [disabled]="editorService.form.controls.ConditionValue1.disabled"
-              [disabled]="editorService.form.controls.ConditionValue1.disabled"
               [config]="{ flags: TYPEMASK, name: 'ConditionValue1' }"
               [modalClass]="'modal-lg'"
             ></keira-flags-selector-btn>
             <keira-single-value-selector-btn
               *ngIf="showObjectEntryGuid"
               [control]="editorService.form.controls.ConditionValue1"
-              [disabled]="editorService.form.controls.ConditionValue1.disabled"
               [disabled]="editorService.form.controls.ConditionValue1.disabled"
               [config]="{ options: CONDITION_OBJECT_ENTRY_GUID_CV1, name: 'ConditionValue1' }"
               [modalClass]="'modal-md'"

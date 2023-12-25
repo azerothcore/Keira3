@@ -19,7 +19,7 @@ export abstract class SelectComponent<T extends TableRow> {
     public queryService: MysqlQueryService,
   ) {}
 
-  onSearch() {
+  onSearch(): void {
     this.selectService.onSearch(this.changeDetectorRef);
   }
 }

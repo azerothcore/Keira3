@@ -47,7 +47,7 @@ export class LootEditorComponent<T extends LootTemplate> extends SubscriptionHan
     )
   }
 
-  isReference(row): boolean {
+  isReference(row: LootTemplate): boolean {
     return row.Reference !== 0;
   }
 
