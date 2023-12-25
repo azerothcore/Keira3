@@ -6,7 +6,7 @@ import { PageObject } from '@keira-testing/page-object';
 import { VersionDbRow, VersionRow } from '@keira-types/general';
 import { of, throwError } from 'rxjs';
 import { anyString, instance, when } from 'ts-mockito';
-import { MysqlQueryService } from '../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { DashboardComponent } from './dashboard.component';
 import { DashboardModule } from './dashboard.module';
 

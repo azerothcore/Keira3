@@ -6,7 +6,7 @@ import { MysqlService } from '@keira-shared/services/mysql.service';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
 import { VersionRow } from '@keira-types/general';
 import packageInfo from '../../../../package.json';
-import { MysqlQueryService } from '../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

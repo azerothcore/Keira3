@@ -13,7 +13,7 @@ import { LootEditorIdService } from '../../../service/editors/loot-editor-id.ser
 import { CreatureLootTemplateModule } from '../../../../../features/creature/creature-loot-template/creature-loot-template.module';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
-import { MysqlQueryService } from '../../../../services/mysql-query.service';
+import { MysqlQueryService } from '../../../../services/query/mysql-query.service';
 import { CreatureHandlerService } from '../../../../../features/creature/creature-handler.service';
 import { SaiCreatureHandlerService } from '../../../../../features/creature/sai-creature-handler.service';
 import { ModalModule } from 'ngx-bootstrap/modal';

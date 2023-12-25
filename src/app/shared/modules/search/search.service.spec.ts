@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { instance } from 'ts-mockito';
-import { MysqlQueryService } from '../../services/mysql-query.service';
+import { MysqlQueryService } from '../../services/query/mysql-query.service';
 import { mockChangeDetectorRef, MockedMysqlQueryService } from '../../testing/mocks';
 import { ItemTemplate } from '../../types/item-template.type';
 import { ItemSearchService } from './item-search.service';

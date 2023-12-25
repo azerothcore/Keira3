@@ -6,7 +6,7 @@ import { MultiRowEditorService } from '../abstract/service/editors/multi-row-edi
 import { SingleRowComplexKeyEditorService } from '../abstract/service/editors/single-row-complex-key-editor.service';
 import { SingleRowEditorService } from '../abstract/service/editors/single-row-editor.service';
 import { HandlerService } from '../abstract/service/handlers/handler.service';
-import { MysqlQueryService } from '../services/mysql-query.service';
+import { MysqlQueryService } from '../services/query/mysql-query.service';
 import { TableRow } from '../types/general';
 
 export const MOCK_TABLE = 'mock_table';

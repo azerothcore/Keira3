@@ -6,7 +6,7 @@ import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
-import { MysqlQueryService } from '../../services/mysql-query.service';
+import { MysqlQueryService } from '../../services/query/mysql-query.service';
 import { MultiRowEditorPageObject } from '../../testing/multi-row-editor-page-object';
 import { SAI_TYPES, SmartScripts } from '../../types/smart-scripts.type';
 import { SaiEditorComponent } from './sai-editor.component';

@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { PageObject } from '@keira-testing/page-object';
 import { SmartScripts } from '@keira-types/smart-scripts.type';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';

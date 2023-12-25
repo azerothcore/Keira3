@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { QuestTemplate, QUEST_TEMPLATE_SEARCH_FIELDS, QUEST_TEMPLATE_TABLE } from '../../types/quest-template.type';
 import { SearchService } from './search.service';
 

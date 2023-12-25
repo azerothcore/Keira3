@@ -23,8 +23,7 @@ describe('SqliteQueryService', () => {
         service.queryValue(query).subscribe((result) => {
           expect(result).toEqual(value);
         });
-        expect(service.query).toHaveBeenCalledTimes(1);
-        expect(service.query).toHaveBeenCalledWith(query);
+        expect(service.query).toHaveBeenCalledOnceWith(query);
       }),
     );
 
@@ -37,8 +36,7 @@ describe('SqliteQueryService', () => {
         service.queryValue(query).subscribe((result) => {
           expect(result).toEqual(null);
         });
-        expect(service.query).toHaveBeenCalledTimes(1);
-        expect(service.query).toHaveBeenCalledWith(query);
+        expect(service.query).toHaveBeenCalledOnceWith(query);
       }),
     );
   });

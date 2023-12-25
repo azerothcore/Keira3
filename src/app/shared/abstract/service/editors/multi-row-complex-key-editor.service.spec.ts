@@ -7,7 +7,7 @@ import { QueryError } from 'mysql2';
 import { ToastrService } from 'ngx-toastr';
 import { of, throwError } from 'rxjs';
 import { instance } from 'ts-mockito';
-import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { MultiRowComplexKeyEditorService } from './multi-row-complex-key-editor.service';
 
 import Spy = jasmine.Spy;

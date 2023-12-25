@@ -2,11 +2,11 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { SmartScripts } from '@keira-types/smart-scripts.type';
 import { of } from 'rxjs';
 import { instance } from 'ts-mockito';
-import { MockedMysqlService } from '../testing/mocks';
-import { MaxRow, QueryForm, TableRow } from '../types/general';
-import { ConfigService } from './config.service';
+import { MockedMysqlService } from '@keira-testing/mocks';
+import { MaxRow, TableRow } from '@keira-types/general';
+import { ConfigService } from '../config.service';
 import { MysqlQueryService } from './mysql-query.service';
-import { MysqlService } from './mysql.service';
+import { MysqlService } from '../mysql.service';
 
 interface MockRow extends TableRow {
   entry: number;
@@ -72,82 +72,6 @@ describe('MysqlQueryService', () => {
     });
 
     expect(querySpy).toHaveBeenCalledWith(myQuery, undefined);
-  });
-
-  describe('getSearchQuery()', () => {
-    const table = 'my_keira3';
-
-    it('should properly work when using fields', () => {
-      const queryForm: QueryForm<any> = {
-        fields: {
-          myField1: 'myValue1',
-          myField2: 'myValue2',
-        },
-      };
-
-      expect(service.getSearchQuery(table, queryForm)).toEqual(
-        'SELECT * ' + "FROM `my_keira3` WHERE (`myField1` LIKE '%myValue1%') AND (`myField2` LIKE '%myValue2%')",
-      );
-    });
-
-    it('should properly work when using fields that contain special characters', () => {
-      const queryForm: QueryForm<any> = {
-        fields: {
-          myField1: `The People's Militia`,
-          myField2: `Mi illumino d'immenso`,
-        },
-      };
-
-      expect(service.getSearchQuery(table, queryForm)).toEqual(
-        'SELECT * ' +
-          "FROM `my_keira3` WHERE (`myField1` LIKE '%The People\\'s Militia%') " +
-          "AND (`myField2` LIKE '%Mi illumino d\\'immenso%')",
-      );
-    });
-
-    it('should properly work when using fields and limit', () => {
-      const queryForm: QueryForm<any> = {
-        fields: {
-          myField1: 'myValue1',
-          myField2: 'myValue2',
-        },
-        limit: 20,
-      };
-
-      expect(service.getSearchQuery(table, queryForm)).toEqual(
-        'SELECT * ' + "FROM `my_keira3` WHERE (`myField1` LIKE '%myValue1%') AND (`myField2` LIKE '%myValue2%') LIMIT 20",
-      );
-    });
-
-    it('should properly work when using limit only', () => {
-      const queryForm: QueryForm<any> = {
-        fields: {
-          param: null,
-        },
-        limit: 20,
-      };
-
-      expect(service.getSearchQuery(table, queryForm)).toEqual('SELECT * ' + 'FROM `my_keira3` LIMIT 20');
-    });
-
-    it('should properly work when using fields, limit, selectFields and groupField', () => {
-      const queryForm: QueryForm<any> = {
-        fields: {
-          myField1: 'myValue1',
-          myField2: 'myValue2',
-        },
-        limit: 20,
-      };
-
-      const selectFields = ['sel1', 'sel2'];
-      const groupFields = ['sel1', 'sel2', 'sel3'];
-
-      expect(service.getSearchQuery(table, queryForm, selectFields, groupFields)).toEqual(
-        'SELECT `sel1`, `sel2` ' +
-          "FROM `my_keira3` WHERE (`myField1` LIKE '%myValue1%') AND (`myField2` LIKE '%myValue2%') " +
-          'GROUP BY sel1, sel2, sel3 LIMIT 20',
-      );
-    });
   });
 
   it(
@@ -841,33 +765,6 @@ describe('MysqlQueryService', () => {
         });
       }
     });
-  });
-
-  describe('queryValue()', () => {
-    it(
-      'should correctly work',
-      waitForAsync(async () => {
-        const value = 'mock result value';
-        spyOn(service, 'query').and.returnValue(of([{ v: value }]));
-        const query = 'SELECT something AS v FROM my_table WHERE index = 123';
-
-        expect(await service.queryValueToPromise(query)).toEqual(value);
-        expect(service.query).toHaveBeenCalledTimes(1);
-        expect(service.query).toHaveBeenCalledWith(query);
-      }),
-    );
-
-    it(
-      'should be safe in case of no results',
-      waitForAsync(async () => {
-        spyOn(service, 'query').and.returnValue(of([]));
-        const query = 'SELECT something AS v FROM my_table WHERE index = 123';
-
-        expect(await service.queryValueToPromise(query)).toEqual(null);
-        expect(service.query).toHaveBeenCalledTimes(1);
-        expect(service.query).toHaveBeenCalledWith(query);
-      }),
-    );
   });
 
   describe('get helpers', () => {

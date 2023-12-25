@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MultiRowEditorService } from '@keira-shared/abstract/service/editors/multi-row-editor.service';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import {
   CreatureTemplateSpell,
   CREATURE_TEMPLATE_SPELL_ID,

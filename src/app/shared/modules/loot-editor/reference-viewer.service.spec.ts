@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.module';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { TableRow } from '@keira-types/general';
 import { ReferenceLootTemplate } from '@keira-types/reference-loot-template.type';
 import { of } from 'rxjs';

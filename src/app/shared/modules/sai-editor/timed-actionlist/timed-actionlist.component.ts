@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
 import { DTCFG } from '@keira-config/datatable.config';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { SmartScripts } from '@keira-types/smart-scripts.type';
 import { Observable } from 'rxjs';
 
