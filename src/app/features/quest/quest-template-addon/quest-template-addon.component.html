@@ -8,7 +8,7 @@
       <keira-query-output
         [docUrl]="docUrl"
         [editorService]="editorService"
-        (executeQuery)="editorService.save($event)"
+        (executeQuery)="save($event)"
       ></keira-query-output>
     </div>
 
@@ -26,6 +26,7 @@
             <label class="control-label" for="PrevQuestID">PrevQuestID</label>
             <keira-quest-selector-btn
               [control]="editorService.form.controls.PrevQuestID"
+              [disabled]="editorService.form.controls.PrevQuestID.disabled"
               [config]="{ name: 'PrevQuestID' }"
               [modalClass]="'modal-lg'"
             ></keira-quest-selector-btn>
@@ -37,6 +38,7 @@
             <label class="control-label" for="NextQuestID">NextQuestID</label>
             <keira-quest-selector-btn
               [control]="editorService.form.controls.NextQuestID"
+              [disabled]="editorService.form.controls.NextQuestID.disabled"
               [config]="{ name: 'NextQuestID' }"
               [modalClass]="'modal-lg'"
             ></keira-quest-selector-btn>
@@ -54,6 +56,7 @@
             <label class="control-label" for="AllowableClasses">AllowableClasses</label>
             <keira-flags-selector-btn
               [control]="editorService.form.controls.AllowableClasses"
+              [disabled]="editorService.form.controls.AllowableClasses.disabled"
               [config]="{ flags: ALLOWABLE_CLASSES, name: 'AllowableClasses' }"
             ></keira-flags-selector-btn>
             <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.ALLOWABLE_CLASSES' | translate"></i>
@@ -65,6 +68,7 @@
             <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.SOURCE_SPELL_ID' | translate"></i>
             <keira-spell-selector-btn
               [control]="editorService.form.controls.SourceSpellID"
+              [disabled]="editorService.form.controls.SourceSpellID.disabled"
               [config]="{ name: 'SourceSpellID' }"
               [modalClass]="'modal-lg'"
             ></keira-spell-selector-btn>
@@ -87,6 +91,7 @@
             <label class="control-label" for="SpecialFlags">SpecialFlags</label>
             <keira-flags-selector-btn
               [control]="editorService.form.controls.SpecialFlags"
+              [disabled]="editorService.form.controls.SpecialFlags.disabled"
               [config]="{ flags: SPECIAL_FLAGS, name: 'SpecialFlags' }"
             ></keira-flags-selector-btn>
             <input [formControlName]="'SpecialFlags'" id="SpecialFlags" type="number" class="form-control form-control-sm" />
@@ -102,6 +107,7 @@
             <keira-skill-selector-btn
               [config]="{ name: 'RequiredSkillID' }"
               [control]="editorService.form.controls.RequiredSkillID"
+              [disabled]="editorService.form.controls.RequiredSkillID.disabled"
             ></keira-skill-selector-btn>
             <input [formControlName]="'RequiredSkillID'" id="RequiredSkillID" type="number" class="form-control form-control-sm" />
           </div>
@@ -117,6 +123,7 @@
             <keira-faction-selector-btn
               [config]="{ name: 'RequiredMinRepFaction' }"
               [control]="editorService.form.controls.RequiredMinRepFaction"
+              [disabled]="editorService.form.controls.RequiredMinRepFaction.disabled"
             ></keira-faction-selector-btn>
             <input
               [formControlName]="'RequiredMinRepFaction'"
@@ -137,6 +144,7 @@
             <keira-faction-selector-btn
               [config]="{ name: 'RequiredMaxRepFaction' }"
               [control]="editorService.form.controls.RequiredMaxRepFaction"
+              [disabled]="editorService.form.controls.RequiredMaxRepFaction.disabled"
             ></keira-faction-selector-btn>
             <input
               [formControlName]="'RequiredMaxRepFaction'"

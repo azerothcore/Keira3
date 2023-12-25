@@ -6,8 +6,7 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureOnkillReputationService } from './creature-onkill-reputation.service';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-onkill-reputation',
   templateUrl: './creature-onkill-reputation.component.html',
   styleUrls: ['./creature-onkill-reputation.component.scss'],

@@ -11,8 +11,7 @@ import { CONTENT_LIVE, CONTENT_WOTLK, MODEL_TYPE, VIEWER_TYPE } from './model-3d
 declare const ZamModelViewer: any;
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-model-3d-viewer',
   templateUrl: './model-3d-viewer.component.html',
 })

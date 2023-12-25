@@ -7,8 +7,7 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectSpawnService } from './gameobject-spawn.service';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-gameobject-spawn',
   templateUrl: './gameobject-spawn.component.html',
   styleUrls: ['./gameobject-spawn.component.scss'],

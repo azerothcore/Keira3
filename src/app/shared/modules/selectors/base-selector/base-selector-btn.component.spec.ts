@@ -10,7 +10,6 @@ import { instance } from 'ts-mockito';
 import { MysqlService } from '../../../services/mysql.service';
 import { ItemSelectorBtnComponent } from '../item-selector/item-selector-btn.component';
 import { ItemSelectorModalComponent } from '../item-selector/item-selector-modal.component';
-import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 import { HighlightjsWrapperModule } from '@keira-shared/modules/highlightjs-wrapper/highlightjs-wrapper.module';
 import { TranslateTestingModule } from '@keira-testing/translate-module';
 
@@ -23,7 +22,6 @@ import { TranslateTestingModule } from '@keira-testing/translate-module';
     FormsModule,
     ReactiveFormsModule,
     NgxDatatableModule,
-    SearchButtonsModule,
     HighlightjsWrapperModule,
     TranslateTestingModule,
   ],

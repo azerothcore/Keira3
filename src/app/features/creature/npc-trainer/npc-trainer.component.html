@@ -8,7 +8,7 @@
       <keira-query-output
         [docUrl]="docUrl"
         [editorService]="editorService"
-        (executeQuery)="editorService.save($event)"
+        (executeQuery)="save($event)"
       ></keira-query-output>
     </div>
 
@@ -19,6 +19,7 @@
             <label class="control-label" for="SpellID">SpellID</label>
             <keira-spell-selector-btn
               [control]="editorService.form.controls.SpellID"
+              [disabled]="editorService.form.controls.SpellID.disabled"
               [config]="{ name: 'SpellID' }"
               [modalClass]="'modal-lg'"
             ></keira-spell-selector-btn>
@@ -35,6 +36,7 @@
             <keira-skill-selector-btn
               [config]="{ name: 'ReqSkillLine' }"
               [control]="editorService.form.controls.ReqSkillLine"
+              [disabled]="editorService.form.controls.ReqSkillLine.disabled"
             ></keira-skill-selector-btn>
             <input [formControlName]="'ReqSkillLine'" id="ReqSkillLine" type="number" class="form-control form-control-sm" />
           </div>

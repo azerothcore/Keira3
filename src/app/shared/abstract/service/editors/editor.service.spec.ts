@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MockEntity, MockSingleRowEditorService } from '@keira-testing/mock-services';
-import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { mockChangeDetectorRef, MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { QueryError } from 'mysql2';
 import { ToastrService } from 'ngx-toastr';
 import { of, throwError } from 'rxjs';
@@ -54,7 +54,7 @@ describe('EditorService', () => {
       selectAllSpy.and.returnValue(of(data));
       spyOn<any>(service, 'updateEditorStatus');
 
-      service.reload(id);
+      service.reload(mockChangeDetectorRef, id);
 
       expect(service.loading).toBe(false);
       expect(service.error).toBe(null);
@@ -72,7 +72,7 @@ describe('EditorService', () => {
       selectAllSpy.and.returnValue(throwError(error));
       spyOn<any>(service, 'updateEditorStatus');
 
-      service.reload(id);
+      service.reload(mockChangeDetectorRef, id);
 
       expect(service.loading).toBe(false);
       expect(service.error).toEqual(error);
@@ -102,7 +102,7 @@ describe('EditorService', () => {
     });
 
     it('should do nothing if the query is null', () => {
-      service.save(null);
+      service.save(mockChangeDetectorRef, null);
 
       expect(querySpy).toHaveBeenCalledTimes(0);
       expect(reloadSpy).toHaveBeenCalledTimes(0);
@@ -115,10 +115,10 @@ describe('EditorService', () => {
       service['_error'] = { code: 'some previous error', errno: 123 } as QueryError;
       querySpy.and.returnValue(of('mock result'));
 
-      service.save(query);
+      service.save(mockChangeDetectorRef, query);
 
       expect(querySpy).toHaveBeenCalledWith(query);
-      expect(reloadSpy).toHaveBeenCalledWith(service.loadedEntityId);
+      expect(reloadSpy).toHaveBeenCalledWith(mockChangeDetectorRef, service.loadedEntityId);
       expect(toastrSucessSpy).toHaveBeenCalledTimes(1);
       expect(toastrErrorSpy).toHaveBeenCalledTimes(0);
       expect(service.loading).toBe(false);
@@ -128,7 +128,7 @@ describe('EditorService', () => {
     it('should correctly work when the query errors', () => {
       querySpy.and.returnValue(throwError(error));
 
-      service.save(query);
+      service.save(mockChangeDetectorRef, query);
 
       expect(querySpy).toHaveBeenCalledWith(query);
       expect(reloadSpy).toHaveBeenCalledTimes(0);

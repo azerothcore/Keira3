@@ -6,6 +6,7 @@
         <label class="control-label" for="TargetCreatureType">TargetCreatureType</label>
         <keira-flags-selector-btn
           [control]="formGroup.controls.TargetCreatureType"
+          [disabled]="formGroup.controls.TargetCreatureType.disabled"
           [config]="{ flags: SPELL_DBC_CREATURE_TYPE_FLAGS, name: 'TargetCreatureType' }"
           [modalClass]="'modal-md'"
         ></keira-flags-selector-btn>
@@ -16,6 +17,7 @@
         <label class="control-label" for="ShapeshiftMask">ShapeshiftMask</label>
         <keira-flags-selector-btn
           [control]="formGroup.controls.ShapeshiftMask"
+          [disabled]="formGroup.controls.ShapeshiftMask.disabled"
           [config]="{ flags: SPELL_DBC_STANCES_FLAGS, name: 'ShapeshiftMask' }"
           [modalClass]="'modal-md'"
         ></keira-flags-selector-btn>
@@ -26,6 +28,7 @@
         <label class="control-label" for="ShapeshiftExclude">ShapeshiftExclude</label>
         <keira-flags-selector-btn
           [control]="formGroup.controls.ShapeshiftMask"
+          [disabled]="formGroup.controls.ShapeshiftMask.disabled"
           [config]="{ flags: SPELL_DBC_STANCES_FLAGS, name: 'ShapeshiftMask' }"
           [modalClass]="'modal-md'"
         ></keira-flags-selector-btn>
@@ -37,6 +40,7 @@
         <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.FLAGS.FACING_CASTER_FLAGS' | translate"></i>
         <keira-flags-selector-btn
           [control]="formGroup.controls.FacingCasterFlags"
+          [disabled]="formGroup.controls.FacingCasterFlags.disabled"
           [config]="{ flags: SPELL_DBC_FACING_FRONT_FLAG, name: 'FacingCasterFlags' }"
         ></keira-flags-selector-btn>
         <input [formControlName]="'FacingCasterFlags'" id="FacingCasterFlags" type="number" class="form-control form-control-sm" />
@@ -50,6 +54,7 @@
         <label class="control-label" for="InterruptFlags">InterruptFlags</label>
         <keira-flags-selector-btn
           [control]="formGroup.controls.InterruptFlags"
+          [disabled]="formGroup.controls.InterruptFlags.disabled"
           [config]="{ flags: SPELL_DBC_INTERRUPT_FLAGS, name: 'InterruptFlags' }"
           [modalClass]="'modal-md'"
         ></keira-flags-selector-btn>
@@ -60,6 +65,7 @@
         <label class="control-label" for="AuraInterruptFlags">AuraInterruptFlags</label>
         <keira-flags-selector-btn
           [control]="formGroup.controls.AuraInterruptFlags"
+          [disabled]="formGroup.controls.AuraInterruptFlags.disabled"
           [config]="{ flags: SPELL_DBC_AURA_INTERRUPT_FLAGS, name: 'AuraInterruptFlags' }"
           [modalClass]="'modal-md'"
         ></keira-flags-selector-btn>
@@ -70,6 +76,7 @@
         <label class="control-label" for="ChannelInterruptFlags">ChannelInterruptFlags</label>
         <keira-flags-selector-btn
           [control]="formGroup.controls.ChannelInterruptFlags"
+          [disabled]="formGroup.controls.ChannelInterruptFlags.disabled"
           [config]="{ flags: SPELL_DBC_CHANNEL_INTERRUPT_FLAGS, name: 'ChannelInterruptFlags' }"
           [modalClass]="'modal-md'"
         ></keira-flags-selector-btn>
@@ -88,6 +95,7 @@
         <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.FLAGS.ATTRIBUTES' | translate"></i>
         <keira-flags-selector-btn
           [control]="formGroup.controls['Attributes' + suffix]"
+          [disabled]="formGroup.controls['Attributes' + suffix].disabled"
           [config]="{ flags: SPELL_DBC_ATTRIBUTES_FLAGS[suffix], name: 'Attributes' + suffix }"
           [modalClass]="'modal-md'"
         ></keira-flags-selector-btn>

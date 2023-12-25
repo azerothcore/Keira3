@@ -2,7 +2,7 @@ import { Class, TableRow } from '@keira-types/general';
 import { ToastrService } from 'ngx-toastr';
 import { distinctUntilChanged } from 'rxjs';
 import { MysqlQueryService } from '../../../services/mysql-query.service';
-import { getNumberOrString } from '../../../utils/helpers';
+import { compareObjFn, getNumberOrString } from '../../../utils/helpers';
 import { HandlerService } from '../handlers/handler.service';
 import { EditorService } from './editor.service';
 
@@ -28,7 +28,7 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     super.initForm();
 
     this.subscriptions.push(
-      this._form.valueChanges.pipe(distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))).subscribe(() => {
+      this._form.valueChanges.pipe(distinctUntilChanged(compareObjFn)).subscribe(() => {
         if (!this._loading) {
           if (this._form.dirty) {
             this.updateDiffQuery();

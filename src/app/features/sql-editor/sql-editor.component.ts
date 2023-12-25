@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { DTCFG } from '@keira-config/datatable.config';
 import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
@@ -8,8 +8,7 @@ import { ClipboardService } from 'ngx-clipboard';
 import { SqlEditorService } from './sql-editor.service';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sql-editor',
   templateUrl: './sql-editor.component.html',
   styleUrls: ['./sql-editor.component.scss'],
@@ -53,6 +52,7 @@ export class SqlEditorComponent extends SubscriptionHandler {
     private mysqlQueryService: MysqlQueryService,
     private clipboardService: ClipboardService,
     readonly service: SqlEditorService,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
     super();
   }
@@ -84,6 +84,7 @@ export class SqlEditorComponent extends SubscriptionHandler {
           }
 
           this._rows = rows as TableRow[];
+          this.changeDetectorRef.detectChanges();
         },
         error: (error: QueryError) => {
           this._error = error;

@@ -1,6 +1,6 @@
 <ng-container *ngIf="!!editorService">
   <div class="content-block">
-    <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="editorService.save($event)"></keira-query-output>
+    <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
   </div>
 
   <div class="content-block">
@@ -11,7 +11,8 @@
             <keira-icon [itemId]="editorService.form.controls.Item.value"></keira-icon>
             Item
           </label>
-          <keira-item-selector-btn [control]="editorService.form.controls.Item" [config]="{ name: 'Item' }"></keira-item-selector-btn>
+          <keira-item-selector-btn [control]="editorService.form.controls.Item"
+              [disabled]="editorService.form.controls.Item.disabled" [config]="{ name: 'Item' }"></keira-item-selector-btn>
           <input [formControlName]="'Item'" id="Item" type="number" class="form-control form-control-sm" />
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
@@ -34,6 +35,7 @@
           <label class="control-label" for="LootMode">LootMode</label>
           <keira-flags-selector-btn
             [control]="editorService.form.controls.LootMode"
+              [disabled]="editorService.form.controls.LootMode.disabled"
             [config]="{ flags: LOOT_MODE, name: 'LootMode' }"
             [modalClass]="'modal-lg'"
           ></keira-flags-selector-btn>

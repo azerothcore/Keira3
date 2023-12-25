@@ -8,7 +8,7 @@
       <keira-query-output
         [docUrl]="docUrl"
         [editorService]="editorService"
-        (executeQuery)="editorService.save($event)"
+        (executeQuery)="save($event)"
       ></keira-query-output>
     </div>
 
@@ -25,6 +25,7 @@
             <keira-faction-selector-btn
               [config]="{ name: 'faction' }"
               [control]="editorService.form.controls.faction"
+              [disabled]="editorService.form.controls.faction.disabled"
             ></keira-faction-selector-btn>
             <input [formControlName]="'faction'" id="faction" type="number" class="form-control form-control-sm" />
           </div>
@@ -32,6 +33,7 @@
             <label class="control-label" for="flags">flags</label>
             <keira-flags-selector-btn
               [control]="editorService.form.controls.flags"
+              [disabled]="editorService.form.controls.flags.disabled"
               [config]="{ flags: GAMEOBJECT_FLAGS, name: 'flags' }"
               [modalClass]="'modal-lg'"
             ></keira-flags-selector-btn>

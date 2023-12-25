@@ -8,7 +8,7 @@
       <keira-query-output
         [docUrl]="docUrl"
         [editorService]="editorService"
-        (executeQuery)="editorService.save($event)"
+        (executeQuery)="save($event)"
       ></keira-query-output>
     </div>
 
@@ -25,6 +25,7 @@
             <label class="control-label" for="OptionIcon">OptionIcon</label>
             <keira-single-value-selector-btn
               [control]="editorService.form.controls.OptionIcon"
+              [disabled]="editorService.form.controls.OptionIcon.disabled"
               [config]="{ options: OPTION_ICON, name: 'OptionIcon' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
@@ -53,6 +54,7 @@
             <label class="control-label" for="OptionType">OptionType</label>
             <keira-single-value-selector-btn
               [control]="editorService.form.controls.OptionType"
+              [disabled]="editorService.form.controls.OptionType.disabled"
               [config]="{ options: OPTION_TYPE, name: 'OptionType' }"
               [modalClass]="'modal-xl'"
             ></keira-single-value-selector-btn>

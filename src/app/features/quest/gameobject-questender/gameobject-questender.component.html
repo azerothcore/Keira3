@@ -8,7 +8,7 @@
       <keira-query-output
         [docUrl]="docUrl"
         [editorService]="editorService"
-        (executeQuery)="editorService.save($event)"
+        (executeQuery)="save($event)"
       ></keira-query-output>
     </div>
 
@@ -19,6 +19,8 @@
             <label class="control-label" for="id">id</label>
             <keira-gameobject-selector-btn
               [control]="editorService.form.controls.id"
+              [control]="editorService.form.controls.id"
+              [disabled]="editorService.form.controls.id.disabled"
               [config]="{ name: 'id' }"
             ></keira-gameobject-selector-btn>
             <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'gameobject_template.entry'"></i>

@@ -6,7 +6,7 @@
       <keira-query-output
         [docUrl]="docUrl"
         [editorService]="editorService"
-        (executeQuery)="editorService.save($event)"
+        (executeQuery)="save($event)"
       ></keira-query-output>
     </div>
 
@@ -86,18 +86,21 @@
             <keira-flags-selector-btn
               *ngIf="showTypeMask"
               [control]="editorService.form.controls.ConditionValue1"
+              [disabled]="editorService.form.controls.ConditionValue1.disabled"
               [config]="{ flags: TYPEMASK, name: 'ConditionValue1' }"
               [modalClass]="'modal-lg'"
             ></keira-flags-selector-btn>
             <keira-single-value-selector-btn
               *ngIf="showObjectEntryGuid"
               [control]="editorService.form.controls.ConditionValue1"
+              [disabled]="editorService.form.controls.ConditionValue1.disabled"
               [config]="{ options: CONDITION_OBJECT_ENTRY_GUID_CV1, name: 'ConditionValue1' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
             <keira-single-value-selector-btn
               *ngIf="showStandState"
               [control]="editorService.form.controls.ConditionValue1"
+              [disabled]="editorService.form.controls.ConditionValue1.disabled"
               [config]="{ options: CONDITION_STAND_STATE_CV1, name: 'ConditionValue1' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
@@ -111,6 +114,7 @@
               id="queststate-flag-selector"
               *ngIf="showQuestState"
               [control]="editorService.form.controls.ConditionValue2"
+              [disabled]="editorService.form.controls.ConditionValue2.disabled"
               [config]="{ flags: QUEST_STATE, name: 'ConditionValue2' }"
               [modalClass]="'modal-lg'"
             ></keira-flags-selector-btn>
@@ -118,36 +122,42 @@
               id="rankmask-flag-selector"
               *ngIf="showReactionTo"
               [control]="editorService.form.controls.ConditionValue2"
+              [disabled]="editorService.form.controls.ConditionValue2.disabled"
               [config]="{ flags: RANKMASK, name: 'ConditionValue2' }"
               [modalClass]="'modal-lg'"
             ></keira-flags-selector-btn>
             <keira-single-value-selector-btn
               *ngIf="showLevel"
               [control]="editorService.form.controls.ConditionValue2"
+              [disabled]="editorService.form.controls.ConditionValue2.disabled"
               [config]="{ options: CONDITION_LEVEL_CV2, name: 'ConditionValue2' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
             <keira-single-value-selector-btn
               *ngIf="showRelationTo"
               [control]="editorService.form.controls.ConditionValue2"
+              [disabled]="editorService.form.controls.ConditionValue2.disabled"
               [config]="{ options: CONDITION_RELATION_TO_CV2, name: 'ConditionValue2' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
             <keira-single-value-selector-btn
               *ngIf="showHPVal"
               [control]="editorService.form.controls.ConditionValue2"
+              [disabled]="editorService.form.controls.ConditionValue2.disabled"
               [config]="{ options: CONDITION_HP_VAL_CV2, name: 'ConditionValue2' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
             <keira-single-value-selector-btn
               *ngIf="showHPPct"
               [control]="editorService.form.controls.ConditionValue2"
+              [disabled]="editorService.form.controls.ConditionValue2.disabled"
               [config]="{ options: CONDITION_HP_PCT_CV2, name: 'ConditionValue2' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
             <keira-single-value-selector-btn
               *ngIf="showStandState"
               [control]="editorService.form.controls.ConditionValue2"
+              [disabled]="editorService.form.controls.ConditionValue2.disabled"
               [config]="{ options: CONDITION_STAND_STATE_CV2, name: 'ConditionValue2' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
@@ -160,18 +170,21 @@
             <keira-single-value-selector-btn
               *ngIf="showInstanceInfo"
               [control]="editorService.form.controls.ConditionValue3"
+              [disabled]="editorService.form.controls.ConditionValue3.disabled"
               [config]="{ options: CONDITION_INSTANCE_INFO_CV3, name: 'ConditionValue3' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
             <keira-single-value-selector-btn
               *ngIf="showNearCreature"
               [control]="editorService.form.controls.ConditionValue3"
+              [disabled]="editorService.form.controls.ConditionValue3.disabled"
               [config]="{ options: CONDITION_NEAR_CREATURE_CV3, name: 'ConditionValue3' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
             <keira-single-value-selector-btn
               *ngIf="showDistanceTo"
               [control]="editorService.form.controls.ConditionValue3"
+              [disabled]="editorService.form.controls.ConditionValue3.disabled"
               [config]="{ options: CONDITION_DISTANCE_TO_CV3, name: 'ConditionValue3' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
