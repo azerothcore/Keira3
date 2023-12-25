@@ -7,6 +7,7 @@ import { Class, StringKeys, TableRow } from '@keira-types/general';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
 import { HandlerService } from '../handlers/handler.service';
+import { ChangeDetectorRef } from '@angular/core';
 
 export abstract class EditorService<T extends TableRow> extends SubscriptionHandler {
   protected _loading = false;
@@ -90,17 +91,19 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     return this.queryService.selectAll<T>(this._entityTable, this._entityIdField, id);
   }
 
-  protected reloadEntity(id: string | number) {
+  protected reloadEntity(changeDetectorRef: ChangeDetectorRef, id?: string | number) {
     this.subscriptions.push(
       this.selectQuery(id).subscribe({
         next: (data) => {
           this._error = null;
           this.onReloadSuccessful(data, id);
           this._loading = false;
+          changeDetectorRef.detectChanges();
         },
         error: (error: QueryError) => {
           this._error = error;
           this._loading = false;
+          changeDetectorRef.detectChanges();
         },
       }),
     );
@@ -113,17 +116,17 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     this.updateEditorStatus();
   }
 
-  reload(id: string | number) {
+  reload(changeDetectorRef: ChangeDetectorRef, id?: string | number) {
     this._loading = true;
     this.reset();
-    this.reloadEntity(id);
+    this.reloadEntity(changeDetectorRef, id);
   }
 
-  reloadSameEntity(): void {
-    this.reload(this.loadedEntityId);
+  reloadSameEntity(changeDetectorRef: ChangeDetectorRef): void {
+    this.reload(changeDetectorRef, this.loadedEntityId);
   }
 
-  save(query: string): void {
+  save(changeDetectorRef: ChangeDetectorRef, query: string): void {
     if (!query) {
       return;
     }
@@ -134,14 +137,16 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
       this.queryService.query<T>(query).subscribe({
         next: () => {
           this._error = null;
-          this.reloadSameEntity();
+          this.reloadSameEntity(changeDetectorRef);
           this.toastrService.success('Query executed successfully', 'Success');
           this._loading = false;
+          changeDetectorRef.detectChanges();
         },
         error: (error: QueryError) => {
           this._error = error;
           this.toastrService.error('Error when executing the query!', 'Query error');
           this._loading = false;
+          changeDetectorRef.detectChanges();
         },
       }),
     );

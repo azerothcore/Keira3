@@ -35,11 +35,13 @@
           <keira-creature-selector-btn
             *ngIf="isTypeCreatureSelected"
             [control]="entryOrGuidControl"
+            [disabled]="entryOrGuidControl.disabled"
             [config]="{ name: 'entryorguid' }"
           ></keira-creature-selector-btn>
           <keira-gameobject-selector-btn
             *ngIf="isTypeGameobjectSelected"
             [control]="entryOrGuidControl"
+            [disabled]="entryOrGuidControl.disabled"
             [config]="{ name: 'entryorguid' }"
           ></keira-gameobject-selector-btn>
 

@@ -1,3 +1,4 @@
+import { ChangeDetectorRef, inject } from '@angular/core';
 import { TableRow } from '@keira-types/general';
 import { SelectService } from '../../service/select/select.service';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
@@ -7,6 +8,8 @@ import { DTCFG } from '@keira-config/datatable.config';
 export abstract class SelectComponent<T extends TableRow> {
   readonly DTCFG = DTCFG;
 
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
+
   constructor(
     public entityTable: string,
     public entityIdField: string,
@@ -15,4 +18,8 @@ export abstract class SelectComponent<T extends TableRow> {
     public handlerService: HandlerService<T>,
     public queryService: MysqlQueryService,
   ) {}
+
+  onSearch(): void {
+    this.selectService.onSearch(this.changeDetectorRef);
+  }
 }

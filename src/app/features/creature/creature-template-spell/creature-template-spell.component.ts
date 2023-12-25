@@ -5,8 +5,7 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateSpellService } from './creature-template-spell.service';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-template-spell',
   templateUrl: './creature-template-spell.component.html',
 })

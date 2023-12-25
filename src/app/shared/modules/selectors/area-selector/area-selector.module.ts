@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { HighlightjsWrapperModule } from '@keira-shared/modules/highlightjs-wrapper/highlightjs-wrapper.module';
-import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -17,7 +16,6 @@ import { AreaSelectorModalComponent } from './area-selector-modal.component';
     NgxDatatableModule,
     ModalModule,
     HighlightjsWrapperModule,
-    SearchButtonsModule,
     TranslateModule,
   ],
   exports: [AreaSelectorBtnComponent],

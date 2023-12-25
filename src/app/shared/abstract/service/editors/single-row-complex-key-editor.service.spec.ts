@@ -7,7 +7,7 @@ import { instance } from 'ts-mockito';
 import { ToastrService } from 'ngx-toastr';
 
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
-import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { mockChangeDetectorRef, MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { SingleRowComplexKeyEditorService } from './single-row-complex-key-editor.service';
 import { MockSingleRowComplexKeyEditorService, MockEntity, MockHandlerService, MOCK_NAME } from '@keira-testing/mock-services';
 
@@ -88,7 +88,7 @@ describe('SingleRowComplexKeyEditorService', () => {
       const resetSpy = spyOn<any>(service, 'reset');
       const reloadEntitySpy = spyOn<any>(service, 'reloadEntity');
 
-      service.reload();
+      service.reload(mockChangeDetectorRef);
 
       expect(service['_loading']).toBe(true);
       expect(resetSpy).toHaveBeenCalled();
@@ -99,7 +99,7 @@ describe('SingleRowComplexKeyEditorService', () => {
       const selectSpy = spyOn(TestBed.inject(MockHandlerService), 'select');
       const reloadSpy = spyOn(service, 'reload');
 
-      service['reloadSameEntity']();
+      service['reloadSameEntity'](mockChangeDetectorRef);
 
       expect(service['_isNew']).toBe(false);
       expect(reloadSpy).toHaveBeenCalled();
@@ -111,14 +111,14 @@ describe('SingleRowComplexKeyEditorService', () => {
       const error = { code: 'mock error', errno: 1234 } as QueryError;
       selectQuerySpy.and.returnValue(of([{ [MOCK_NAME]: 'mockName' }]));
 
-      service['reloadEntity']();
+      service['reloadEntity'](mockChangeDetectorRef);
 
       expect(selectQuerySpy).toHaveBeenCalled();
       expect(service['_loading']).toBe(false);
 
       selectQuerySpy.and.returnValue(throwError(error));
 
-      service['reloadEntity']();
+      service['reloadEntity'](mockChangeDetectorRef);
 
       expect(service['_error']).toBe(error);
     });

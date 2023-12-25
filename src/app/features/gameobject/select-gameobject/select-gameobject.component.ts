@@ -11,8 +11,7 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SelectGameobjectService } from './select-gameobject.service';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-select-gameobject',
   templateUrl: './select-gameobject.component.html',
   styleUrls: ['./select-gameobject.component.scss'],

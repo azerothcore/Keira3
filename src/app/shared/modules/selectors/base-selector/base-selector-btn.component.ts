@@ -9,9 +9,10 @@ import { BaseModalConfig } from './base-selector.model';
 @Directive()
 // eslint-disable-next-line @angular-eslint/directive-class-suffix
 export abstract class BaseSelectorBtnComponent<ModalConfigType extends BaseModalConfig = BaseModalConfig> extends SubscriptionHandler {
-  @Input() control: AbstractControl;
+  @Input({ required: true }) control: AbstractControl;
   @Input() config: ModalConfigType;
   @Input() modalClass = 'modal-xl';
+  @Input({ required: true }) disabled: boolean;
 
   private modalRef: BsModalRef;
 

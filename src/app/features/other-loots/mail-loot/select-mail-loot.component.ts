@@ -7,8 +7,7 @@ import { MailLootHandlerService } from './mail-loot-handler.service';
 import { SelectMailLootService } from './select-mail-loot.service';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-select-creature',
   templateUrl: '../select-loot.component.html',
 })

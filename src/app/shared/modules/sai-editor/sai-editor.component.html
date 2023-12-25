@@ -8,7 +8,7 @@
       <keira-query-output
         [docUrl]="docUrl"
         [editorService]="editorService"
-        (executeQuery)="editorService.save($event)"
+        (executeQuery)="save($event)"
       ></keira-query-output>
     </div>
 
@@ -86,6 +86,7 @@
                 <label class="control-label" for="event_phase_mask">phase</label>
                 <keira-flags-selector-btn
                   [control]="editorService.form.controls.event_phase_mask"
+                  [disabled]="editorService.form.controls.event_phase_mask.disabled"
                   [config]="{ flags: EVENT_PHASE_MASK, name: 'event_phase_mask' }"
                   [modalClass]="'modal-lg'"
                 ></keira-flags-selector-btn>
@@ -113,6 +114,7 @@
                 <label class="control-label" for="event_flags">flags</label>
                 <keira-flags-selector-btn
                   [control]="editorService.form.controls.event_flags"
+                  [disabled]="editorService.form.controls.event_flags.disabled"
                   [config]="{ flags: SMART_EVENT_FLAGS, name: 'event_flags' }"
                   [modalClass]="'modal-lg'"
                 ></keira-flags-selector-btn>

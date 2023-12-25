@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { PreviewHelperService } from '@keira-shared/services/preview-helper.service';
 import { QuestPreviewService } from './quest-preview.service';
 
@@ -10,6 +10,8 @@ import { QuestPreviewService } from './quest-preview.service';
   styleUrls: ['./quest-preview.component.scss'],
 })
 export class QuestPreviewComponent implements OnInit {
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
+
   constructor(readonly service: QuestPreviewService, readonly helper: PreviewHelperService) {}
 
   descriptionToggle = true;
@@ -47,7 +49,7 @@ export class QuestPreviewComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.service.initializeServices();
+    this.service.initializeServices(this.changeDetectorRef);
   }
 
   getCollapseClass(isCollapsed: boolean): string {

@@ -8,7 +8,7 @@
       <keira-query-output
         [docUrl]="docUrl"
         [editorService]="editorService"
-        (executeQuery)="editorService.save($event)"
+        (executeQuery)="save($event)"
       ></keira-query-output>
     </div>
 
@@ -31,6 +31,7 @@
             <label class="control-label" for="EmoteOnComplete">EmoteOnComplete</label>
             <keira-single-value-selector-btn
               [control]="editorService.form.controls.EmoteOnComplete"
+              [disabled]="editorService.form.controls.EmoteOnComplete.disabled"
               [config]="{ options: EMOTE, name: 'EmoteOnComplete' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
@@ -42,6 +43,7 @@
             <label class="control-label" for="EmoteOnIncomplete">EmoteOnIncomplete</label>
             <keira-single-value-selector-btn
               [control]="editorService.form.controls.EmoteOnIncomplete"
+              [disabled]="editorService.form.controls.EmoteOnIncomplete.disabled"
               [config]="{ options: EMOTE, name: 'EmoteOnIncomplete' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>

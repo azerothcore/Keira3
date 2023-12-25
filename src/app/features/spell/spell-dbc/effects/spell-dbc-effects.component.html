@@ -4,6 +4,7 @@
       <label class="control-label" for="Targets">Targets</label>
       <keira-flags-selector-btn
         [control]="formGroup.controls.Targets"
+        [disabled]="formGroup.controls.Targets.disabled"
         [config]="{ flags: SPELL_DBC_TARGETS, name: 'Targets' }"
       ></keira-flags-selector-btn>
       <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.EFFECTS.TARGETS' | translate"></i>
@@ -14,6 +15,7 @@
       <label class="control-label" for="ProcTypeMask">ProcTypeMask</label>
       <keira-flags-selector-btn
         [control]="formGroup.controls.ProcTypeMask"
+          [disabled]="formGroup.controls.ProcTypeMask.disabled"
         [config]="{ flags: SPELL_DBC_PROC_FLAGS, name: 'ProcTypeMask' }"
       ></keira-flags-selector-btn>
       <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.EFFECTS.PROC_TYPE_MASK' | translate"></i>
