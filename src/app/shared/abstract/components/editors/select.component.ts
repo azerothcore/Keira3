@@ -1,6 +1,6 @@
 import { TableRow } from '@keira-types/general';
 import { SelectService } from '../../service/select/select.service';
-import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { HandlerService } from '../../service/handlers/handler.service';
 import { DTCFG } from '@keira-config/datatable.config';
 

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
 import { CreatureLootTemplate } from '@keira-types/creature-loot-template.type';
 import { ModalModule } from 'ngx-bootstrap/modal';

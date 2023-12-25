@@ -5,7 +5,7 @@ import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/moc
 import { SmartScripts } from '@keira-types/smart-scripts.type';
 import { ToastrService } from 'ngx-toastr';
 import { instance } from 'ts-mockito';
-import { MysqlQueryService } from '../../services/mysql-query.service';
+import { MysqlQueryService } from '../../services/query/mysql-query.service';
 import { SaiEditorService } from './sai-editor.service';
 
 describe('SAI Editor Service', () => {

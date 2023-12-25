@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
 import { GO_DATA_FIELDS } from '@keira-constants/gameobject-types';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import {
   GameobjectTemplate,
   GAMEOBJECT_TEMPLATE_ID,

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SelectComponent } from '@keira-abstract/components/editors/select.component';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { LOOT_TEMPLATE_ID } from '@keira-types/loot-template.type';
 import { MailLootTemplate, MAIL_LOOT_TEMPLATE_CUSTOM_STARTING_ID, MAIL_LOOT_TEMPLATE_TABLE } from '@keira-types/mail-loot-template.type';
 import { MailLootHandlerService } from './mail-loot-handler.service';

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
+import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
 import { of } from 'rxjs';
 import { IconService, TRADE_ENGINEERING_ICON_ID } from './icon.service';
 

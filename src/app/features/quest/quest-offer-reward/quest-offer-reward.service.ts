@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { QuestOfferReward, QUEST_OFFER_REWARD_ID, QUEST_OFFER_REWARD_TABLE } from '@keira-types/quest-offer-reward.type';
 import { ToastrService } from 'ngx-toastr';
 import { QuestHandlerService } from '../quest-handler.service';

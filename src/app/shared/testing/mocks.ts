@@ -1,9 +1,9 @@
-import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
 import { SqliteService } from '@keira-shared/services/sqlite.service';
 import { ToastrService } from 'ngx-toastr';
 import { mock } from 'ts-mockito';
 import { ElectronService } from '../services/electron.service';
-import { MysqlQueryService } from '../services/mysql-query.service';
+import { MysqlQueryService } from '../services/query/mysql-query.service';
 import { MysqlService } from '../services/mysql.service';
 import { TableRow } from '../types/general';
 

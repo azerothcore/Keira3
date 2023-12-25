@@ -3,7 +3,7 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance } from 'ts-mockito';
 
 import { QuestSelectorModalComponent } from './quest-selector-modal.component';
-import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { QuestSearchService } from '../../search/quest-search.service';
 import { QuestSelectorModule } from './quest-selector.module';

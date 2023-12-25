@@ -3,7 +3,7 @@ import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance } from 'ts-mockito';
-import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { ItemSearchService } from '../../search/item-search.service';
 import { ItemSelectorModalComponent } from './item-selector-modal.component';
 import { ItemSelectorModule } from './item-selector.module';

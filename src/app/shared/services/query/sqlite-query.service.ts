@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ConfigService } from '@keira-shared/services/config.service';
-import { QueryService } from '@keira-shared/services/query.service';
+import { BaseQueryService } from '@keira-shared/services/query/base-query.service';
 import { SqliteService } from '@keira-shared/services/sqlite.service';
-import { ItemExtendedCost } from '@keira-shared/types/item-extended-cost.type';
+import { ItemExtendedCost } from '@keira-types/item-extended-cost.type';
 import { TableRow } from '@keira-types/general';
 import { Lock } from '@keira-types/lock.type';
 import { from, Observable, of, shareReplay, tap } from 'rxjs';
@@ -10,7 +10,7 @@ import { from, Observable, of, shareReplay, tap } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class SqliteQueryService extends QueryService {
+export class SqliteQueryService extends BaseQueryService {
   private itemDisplayIdCache: Observable<string>[] = [];
   private spellDisplayIdCache: Observable<string>[] = [];
 

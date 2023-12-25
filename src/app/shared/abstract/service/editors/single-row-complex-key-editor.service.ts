@@ -4,7 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { TableRow, Class } from '@keira-types/general';
 import { SingleRowEditorService } from './single-row-editor.service';
 import { HandlerService } from '../handlers/handler.service';
-import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { getPartial } from '../../../utils/helpers';
 import { QueryError } from 'mysql2';
 

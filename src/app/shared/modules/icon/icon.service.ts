@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
+import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
 import { map, mergeMap, Observable, of } from 'rxjs';
 
 export const TRADE_ENGINEERING_ICON_ID = 1;

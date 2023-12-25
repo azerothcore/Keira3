@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { SAI_TYPES, SmartScripts } from '@keira-types/smart-scripts.type';
-import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
 import { SaiHandlerService } from '../sai-handler.service';
 

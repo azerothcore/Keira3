@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
 import { Map, MAP_SEARCH_FIELDS, MAP_TABLE } from '../../types/map.type';
 import { SearchService } from './search.service';
 

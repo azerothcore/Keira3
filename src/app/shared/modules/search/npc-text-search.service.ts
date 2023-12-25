@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { NPC_TEXT_SEARCH_FIELDS, NPC_TEXT_TABLE } from '@keira-shared/types/npc-text.type';
-import { MysqlQueryService } from '../../services/mysql-query.service';
+import { MysqlQueryService } from '../../services/query/mysql-query.service';
 import { ItemTemplate } from '../../types/item-template.type';
 import { SearchService } from './search.service';
 

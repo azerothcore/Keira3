@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { instance } from 'ts-mockito';
-import { MysqlQueryService } from '../../services/mysql-query.service';
+import { MysqlQueryService } from '../../services/query/mysql-query.service';
 import { MockedMysqlQueryService } from '../../testing/mocks';
 import { CreatureSearchService } from './creature-search.service';
 

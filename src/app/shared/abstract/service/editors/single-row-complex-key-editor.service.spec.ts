@@ -6,7 +6,7 @@ import { QueryError } from 'mysql2';
 import { instance } from 'ts-mockito';
 import { ToastrService } from 'ngx-toastr';
 
-import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { SingleRowComplexKeyEditorService } from './single-row-complex-key-editor.service';
 import { MockSingleRowComplexKeyEditorService, MockEntity, MockHandlerService, MOCK_NAME } from '@keira-testing/mock-services';

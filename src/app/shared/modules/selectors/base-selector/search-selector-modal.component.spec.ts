@@ -3,7 +3,7 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance } from 'ts-mockito';
 
 import { ItemSelectorModalComponent } from '../item-selector/item-selector-modal.component';
-import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { SearchService } from '../../search/search.service';
 import { ItemTemplate } from '@keira-types/item-template.type';

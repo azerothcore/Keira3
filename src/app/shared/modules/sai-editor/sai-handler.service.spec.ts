@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { of } from 'rxjs';
 import { instance } from 'ts-mockito';
-import { MysqlQueryService } from '../../services/mysql-query.service';
+import { MysqlQueryService } from '../../services/query/mysql-query.service';
 import { SAI_TYPES } from '../../types/smart-scripts.type';
 import { SaiHandlerService } from './sai-handler.service';
 

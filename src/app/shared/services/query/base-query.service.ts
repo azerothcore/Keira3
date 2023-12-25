@@ -4,7 +4,7 @@ import { map, Observable } from 'rxjs';
 import { escape } from 'sqlstring';
 import * as squel from 'squel';
 
-export abstract class QueryService {
+export abstract class BaseQueryService {
   protected cache: { [key: string]: Promise<string>[] } = {};
 
   abstract query<T extends TableRow>(queryString: string): Observable<T[]>;
@@ -47,11 +47,12 @@ export abstract class QueryService {
 
     const filters = queryForm.fields;
 
-    for (const filter of Object.keys(filters)) {
-      if (filters[filter] !== undefined && filters[filter] !== null) {
-        const value = escape(`%${filters[filter]}%`);
+    for (const filterKey of Object.keys(filters)) {
+      const filter = filters[filterKey];
+      if (filter !== undefined && filter !== null && filter !== '') {
+        const value = escape(`%${filter}%`);
 
-        query.where(`\`${filter}\` LIKE ${value}`);
+        query.where(`\`${filterKey}\` LIKE ${value}`);
       }
     }
 

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { SelectPageObject } from '@keira-testing/select-page-object';
 import { QuestTemplate } from '@keira-types/quest-template.type';
 import { ModalModule } from 'ngx-bootstrap/modal';

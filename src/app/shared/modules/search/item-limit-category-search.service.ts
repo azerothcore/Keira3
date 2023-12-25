@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
 import { ItemLimitCategory, ITEM_LIMIT_CATEGORY_SEARCH_FIELDS, ITEM_LIMIT_CATEGORY_TABLE } from '../../types/item-limit-category.type';
 import { SearchService } from './search.service';
 

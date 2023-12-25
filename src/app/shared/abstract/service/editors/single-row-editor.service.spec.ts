@@ -4,7 +4,7 @@ import { MockEntity, MockHandlerService, MockSingleRowEditorService } from '@kei
 import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { ToastrService } from 'ngx-toastr';
 import { instance } from 'ts-mockito';
-import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { SingleRowEditorService } from './single-row-editor.service';
 
 import Spy = jasmine.Spy;

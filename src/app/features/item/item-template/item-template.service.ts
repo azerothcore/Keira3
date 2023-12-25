@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { ItemTemplate, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_NAME, ITEM_TEMPLATE_TABLE } from '@keira-types/item-template.type';
 import { ToastrService } from 'ngx-toastr';
 import { ItemHandlerService } from '../item-handler.service';

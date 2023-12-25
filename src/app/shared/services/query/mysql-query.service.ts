@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
-import { QueryService } from '@keira-shared/services/query.service';
+import { BaseQueryService } from '@keira-shared/services/query/base-query.service';
 import { SmartScripts } from '@keira-types/smart-scripts.type';
-import { QuestReputationReward } from 'app/features/quest/quest-preview/quest-preview.model';
+import { QuestReputationReward } from '../../../features/quest/quest-preview/quest-preview.model';
 import { from, map, Observable, of, tap } from 'rxjs';
 import { Delete, Insert, Squel, Update } from 'squel';
-import { squelConfig } from '../../config/squel.config';
-import { MaxRow, TableRow } from '../types/general';
-import { ConfigService } from './config.service';
-import { MysqlService } from './mysql.service';
+import { squelConfig } from '@keira-config/squel.config';
+import { MaxRow, TableRow } from '@keira-types/general';
+import { ConfigService } from '../config.service';
+import { MysqlService } from '../mysql.service';
 
 declare const squel: Squel & { flavour: null };
 
 @Injectable({
   providedIn: 'root',
 })
-export class MysqlQueryService extends QueryService {
+export class MysqlQueryService extends BaseQueryService {
   constructor(private mysqlService: MysqlService, private configService: ConfigService) {
     super();
   }
