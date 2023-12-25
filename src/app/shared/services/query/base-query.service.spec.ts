@@ -34,8 +34,7 @@ describe('BaseQueryService', () => {
         const query = 'SELECT something AS v FROM my_table WHERE index = 123';
 
         expect(await service.queryValueToPromise(query)).toEqual(value);
-        expect(service.query).toHaveBeenCalledTimes(1);
-        expect(service.query).toHaveBeenCalledWith(query);
+        expect(service.query).toHaveBeenCalledOnceWith(query);
       }),
     );
 
@@ -47,8 +46,7 @@ describe('BaseQueryService', () => {
         const query = 'SELECT something AS v FROM my_table WHERE index = 123';
 
         expect(await service.queryValueToPromise(query)).toEqual(null);
-        expect(service.query).toHaveBeenCalledTimes(1);
-        expect(service.query).toHaveBeenCalledWith(query);
+        expect(service.query).toHaveBeenCalledOnceWith(query);
       }),
     );
   });
