@@ -10,8 +10,8 @@ describe('BaseQueryService', () => {
     providedIn: 'root',
   })
   class TestQueryService extends BaseQueryService {
-    query(queryString: string) {
-      return of([queryString]);
+    query(_queryString: string) {
+      return of([]);
     };
   }
 
