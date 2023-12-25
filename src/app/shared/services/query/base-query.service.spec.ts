@@ -11,7 +11,7 @@ describe('BaseQueryService', () => {
   })
   class TestQueryService extends BaseQueryService {
     query(queryString: string) {
-      return of([]);
+      return of([queryString]);
     };
   }
 

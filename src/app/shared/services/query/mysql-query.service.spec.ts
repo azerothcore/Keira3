@@ -3,7 +3,7 @@ import { SmartScripts } from '@keira-types/smart-scripts.type';
 import { of } from 'rxjs';
 import { instance } from 'ts-mockito';
 import { MockedMysqlService } from '@keira-testing/mocks';
-import { MaxRow, QueryForm, TableRow } from '@keira-types/general';
+import { MaxRow, TableRow } from '@keira-types/general';
 import { ConfigService } from '../config.service';
 import { MysqlQueryService } from './mysql-query.service';
 import { MysqlService } from '../mysql.service';
