@@ -5,7 +5,7 @@ import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { PageObject } from '@keira-testing/page-object';
 import { SAI_TYPES } from '@keira-types/smart-scripts.type';
 import { of } from 'rxjs';
-import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { SaiHandlerService } from '../sai-handler.service';
 import { SaiTopBarComponent } from './sai-top-bar.component';
 

@@ -7,7 +7,7 @@ import { instance } from 'ts-mockito';
 import { CreatureHandlerService } from '../../../../features/creature/creature-handler.service';
 import { CreatureSpawnAddonService } from '../../../../features/creature/creature-spawn-addon/creature-spawn-addon.service';
 import { SaiCreatureHandlerService } from '../../../../features/creature/sai-creature-handler.service';
-import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { MultiRowExternalEditorService } from './multi-row-external-editor.service';
 
 describe('MultiRowExternalEditorService', () => {

@@ -1,5 +1,5 @@
 import { StringKeys, TableRow } from '@keira-types/general';
-import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { HandlerService } from '../handlers/handler.service';
 import { SearchService } from '../../../modules/search/search.service';
 

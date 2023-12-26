@@ -8,7 +8,7 @@
       <keira-query-output
         [docUrl]="docUrl"
         [editorService]="editorService"
-        (executeQuery)="editorService.save($event)"
+        (executeQuery)="save($event)"
       ></keira-query-output>
     </div>
 
@@ -34,6 +34,7 @@
             <label class="control-label" for="bytes1">bytes1</label>
             <keira-single-value-selector-btn
               [control]="editorService.form.controls.bytes1"
+              [disabled]="editorService.form.controls.bytes1.disabled"
               [config]="{ options: CREATURE_ADDON_BYTES_1, name: 'bytes1' }"
               [modalClass]="'modal-xl'"
             ></keira-single-value-selector-btn>
@@ -43,6 +44,7 @@
             <label class="control-label" for="bytes2">bytes2</label>
             <keira-single-value-selector-btn
               [control]="editorService.form.controls.bytes2"
+              [disabled]="editorService.form.controls.bytes2.disabled"
               [config]="{ options: CREATURE_ADDON_BYTES_2, name: 'bytes2' }"
               [modalClass]="'modal-lg'"
             ></keira-single-value-selector-btn>
@@ -52,6 +54,7 @@
             <label class="control-label" for="emote">emote</label>
             <keira-single-value-selector-btn
               [control]="editorService.form.controls.emote"
+              [disabled]="editorService.form.controls.emote.disabled"
               [config]="{ options: EMOTE, name: 'emote' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>

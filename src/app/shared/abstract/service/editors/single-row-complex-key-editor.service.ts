@@ -4,9 +4,10 @@ import { ToastrService } from 'ngx-toastr';
 import { TableRow, Class } from '@keira-types/general';
 import { SingleRowEditorService } from './single-row-editor.service';
 import { HandlerService } from '../handlers/handler.service';
-import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { getPartial } from '../../../utils/helpers';
 import { QueryError } from 'mysql2';
+import { ChangeDetectorRef } from '@angular/core';
 
 export abstract class SingleRowComplexKeyEditorService<T extends TableRow> extends SingleRowEditorService<T> {
   get entityIdFields(): string[] {
@@ -63,32 +64,34 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
     );
   }
 
-  protected reloadEntity() {
+  protected reloadEntity(changeDetectorRef: ChangeDetectorRef) {
     this.subscriptions.push(
       this.selectQuery().subscribe({
         next: (data) => {
           this._error = null;
           this.onReloadSuccessful(data);
           this._loading = false;
+          changeDetectorRef.detectChanges();
         },
         error: (error: QueryError) => {
           this._error = error;
           this._loading = false;
+          changeDetectorRef.detectChanges();
         },
       }),
     );
   }
 
-  reload(): void {
+  reload(changeDetectorRef: ChangeDetectorRef): void {
     this._loading = true;
     this.reset();
-    this.reloadEntity();
+    this.reloadEntity(changeDetectorRef);
   }
 
-  reloadSameEntity(): void {
+  reloadSameEntity(changeDetectorRef: ChangeDetectorRef): void {
     this._isNew = false;
     this.handlerService.select(false, getPartial<T>(this._form.getRawValue() as T, this.entityIdFields));
-    this.reload();
+    this.reload(changeDetectorRef);
   }
 
   /*

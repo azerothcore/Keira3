@@ -8,8 +8,7 @@ import { LootTemplateComponent } from '@keira-abstract/components/editors/loot-t
 
 // Extended only by the loot tables that require a template loot id
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: '',
 })
 export abstract class LootTemplateIdComponent<T extends LootTemplate> extends LootTemplateComponent<T> implements OnInit {
@@ -30,9 +29,10 @@ export abstract class LootTemplateIdComponent<T extends LootTemplate> extends Lo
 
             if (this.editorService.loadedEntityId !== `${this._lootId}`) {
               // the rows haven't been loaded or the lootId has changed
-              this.editorService.reload(this._lootId);
+              this.editorService.reload(this.changeDetectorRef, this._lootId);
             }
           }
+          this.changeDetectorRef.detectChanges();
         },
         error: (error: QueryError) => {
           console.error(error);
@@ -49,5 +49,6 @@ export abstract class LootTemplateIdComponent<T extends LootTemplate> extends Lo
   ngOnInit() {
     this.editorService.clearCache();
     this.checkTemplateLootId();
+    this.watchFormForChanges();
   }
 }

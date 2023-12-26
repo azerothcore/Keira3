@@ -1,8 +1,9 @@
 import { FormControl, FormGroup } from '@angular/forms';
-import { QueryService } from '@keira-shared/services/query.service';
+import { BaseQueryService } from '@keira-shared/services/query/base-query.service';
 import { ModelForm, ModelNestedForm } from '@keira-shared/utils/helpers';
 import { QueryForm, StringKeys, TableRow } from '../../types/general';
 import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
+import { ChangeDetectorRef } from '@angular/core';
 
 export abstract class SearchService<T extends TableRow> extends SubscriptionHandler {
   query: string;
@@ -14,7 +15,7 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
   });
 
   constructor(
-    protected queryService: QueryService,
+    protected queryService: BaseQueryService,
     protected entityTable: string,
     protected fieldList: StringKeys<T>[],
     protected selectFields: string[] = null,
@@ -42,10 +43,11 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
     );
   }
 
-  onSearch(): void {
+  onSearch(changeDetectorRef: ChangeDetectorRef): void {
     this.subscriptions.push(
       this.queryService.query<T>(this.query).subscribe((data) => {
         this.rows = data;
+        changeDetectorRef.detectChanges();
       }),
     );
   }

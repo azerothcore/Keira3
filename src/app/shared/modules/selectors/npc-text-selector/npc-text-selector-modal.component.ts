@@ -3,18 +3,17 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { NpcTextSearchService } from '../../search/npc-text-search.service';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
-import { NPC_TEXT_ID } from '@keira-shared/types/npc-text.type';
+import { NPC_TEXT_ID, NpcText } from '@keira-shared/types/npc-text.type';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-npc-text-selector-modal',
   templateUrl: './npc-text-selector-modal.component.html',
   styleUrls: ['./npc-text-selector-modal.component.scss'],
 })
-export class NpcTextSelectorModalComponent extends SearchSelectorModalComponent {
+export class NpcTextSelectorModalComponent extends SearchSelectorModalComponent<NpcText> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(protected bsModalRef: BsModalRef, public searchService: NpcTextSearchService) {
-    super(NPC_TEXT_ID, bsModalRef);
+    super(NPC_TEXT_ID, bsModalRef, searchService);
   }
 }

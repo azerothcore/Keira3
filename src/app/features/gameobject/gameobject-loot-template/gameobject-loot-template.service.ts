@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LootEditorIdService } from '@keira-abstract/service/editors/loot-editor-id.service';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { GameobjectLootTemplate, GAMEOBJECT_LOOT_TEMPLATE_TABLE } from '@keira-types/gameobject-loot-template.type';
 import {
   GAMEOBJECT_TEMPLATE_ID,

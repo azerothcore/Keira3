@@ -4,7 +4,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CreateModule } from '@keira-shared/modules/create/create.module';
 import { HighlightjsWrapperModule } from '@keira-shared/modules/highlightjs-wrapper/highlightjs-wrapper.module';
 import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.module';
-import { SearchButtonsModule } from '@keira-shared/modules/search-button/search-buttons.module';
 import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { SelectSpellLootComponent } from './select-spell-loot.component';
@@ -12,6 +11,7 @@ import { SelectSpellLootService } from './select-spell-loot.service';
 import { SpellLootHandlerService } from './spell-loot-handler.service';
 import { SpellLootTemplateComponent } from './spell-loot-template.component';
 import { SpellLootTemplateService } from './spell-loot-template.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 const components = [SpellLootTemplateComponent, SelectSpellLootComponent];
 
@@ -24,9 +24,9 @@ const components = [SpellLootTemplateComponent, SelectSpellLootComponent];
     LootEditorModule,
     CreateModule,
     ReactiveFormsModule,
-    SearchButtonsModule,
     HighlightjsWrapperModule,
     NgxDatatableModule,
+    TranslateModule,
   ],
   providers: [SpellLootTemplateService, SelectSpellLootService, SpellLootHandlerService],
 })

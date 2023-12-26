@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SelectComponent } from '@keira-abstract/components/editors/select.component';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { LOOT_TEMPLATE_ID } from '@keira-types/loot-template.type';
 import {
   ReferenceLootTemplate,
@@ -11,8 +11,7 @@ import { ReferenceLootHandlerService } from './reference-loot-handler.service';
 import { SelectReferenceLootService } from './select-reference-loot.service';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-select-creature',
   templateUrl: '../select-loot.component.html',
 })

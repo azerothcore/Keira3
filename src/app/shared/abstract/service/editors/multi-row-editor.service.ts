@@ -1,9 +1,10 @@
 import { Class, TableRow } from '@keira-types/general';
 import { ToastrService } from 'ngx-toastr';
 import { distinctUntilChanged } from 'rxjs';
-import { MysqlQueryService } from '../../../services/mysql-query.service';
+import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { HandlerService } from '../handlers/handler.service';
 import { EditorService } from './editor.service';
+import { compareObjFn } from '@keira-shared/utils/helpers';
 
 export abstract class MultiRowEditorService<T extends TableRow> extends EditorService<T> {
   protected FIRST_ROW_START_VALUE = 0;
@@ -44,7 +45,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     super.initForm();
 
     this.subscriptions.push(
-      this._form.valueChanges.pipe(distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))).subscribe(() => {
+      this._form.valueChanges.pipe(distinctUntilChanged(compareObjFn)).subscribe(() => {
         if (!this._loading) {
           if (this._form.dirty && this.isFormIdUnique()) {
             this._newRows[this.getSelectedRowIndex()] = this._form.getRawValue() as T;

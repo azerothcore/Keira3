@@ -1,13 +1,12 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
 import { DTCFG } from '@keira-config/datatable.config';
 import { ReferenceViewerService } from '@keira-shared/modules/loot-editor/reference-viewer.service';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
 import { ReferenceLootTemplate } from '@keira-types/reference-loot-template.type';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-reference-viewer',
   templateUrl: './reference-viewer.component.html',
   styleUrls: ['./loot-editor.component.scss'],
@@ -38,7 +37,7 @@ export class ReferenceViewerComponent extends SubscriptionHandler implements OnC
     );
   }
 
-  isReference(row): boolean {
+  isReference(row: ReferenceLootTemplate): boolean {
     return row.Reference !== 0;
   }
 }

@@ -6,6 +6,7 @@
         <label class="control-label" [for]="getFieldName('Effect')">{{ getFieldName('Effect') }}</label>
         <keira-single-value-selector-btn
           [control]="formGroup.controls[getFieldName('Effect')]"
+          [disabled]="formGroup.controls[getFieldName('Effect')].disabled"
           [config]="{ options: SPELL_DBC_EFFECT, name: getFieldName('Effect') }"
           [modalClass]="'modal-md'"
         ></keira-single-value-selector-btn>
@@ -170,6 +171,7 @@
         <label class="control-label" [for]="getFieldName('EffectMechanic')">{{ getFieldName('EffectMechanic') }}</label>
         <keira-single-value-selector-btn
           [control]="formGroup.controls[getFieldName('EffectMechanic')]"
+          [disabled]="formGroup.controls[getFieldName('EffectMechanic')].disabled"
           [config]="{ options: SPELL_MECHANIC, name: getFieldName('EffectMechanic') }"
           [modalClass]="'modal-md'"
         ></keira-single-value-selector-btn>
@@ -190,6 +192,7 @@
         <label class="control-label" [for]="getFieldName('EffectAura')">{{ getFieldName('EffectAura') }}</label>
         <keira-single-value-selector-btn
           [control]="formGroup.controls[getFieldName('EffectAura')]"
+          [disabled]="formGroup.controls[getFieldName('EffectAura')].disabled"
           [config]="{ options: SPELL_DBC_APPLY_AURA_NAME, name: getFieldName('EffectAura') }"
           [modalClass]="'modal-md'"
         ></keira-single-value-selector-btn>
@@ -264,6 +267,7 @@
         <label class="control-label" [for]="getFieldName('EffectSpellClassMaskA')">{{ getFieldName('EffectSpellClassMaskA') }}</label>
         <keira-flags-selector-btn
           [control]="formGroup.controls[getFieldName('EffectSpellClassMaskA')]"
+          [disabled]="formGroup.controls[getFieldName('EffectSpellClassMaskA')].disabled"
           [config]="{ flags: SPELL_DBC_CLASS_MASK_FLAGS, name: getFieldName('EffectSpellClassMaskA') }"
         ></keira-flags-selector-btn>
         <i
@@ -282,6 +286,7 @@
         <label class="control-label" [for]="getFieldName('EffectSpellClassMaskB')">{{ getFieldName('EffectSpellClassMaskB') }}</label>
         <keira-flags-selector-btn
           [control]="formGroup.controls[getFieldName('EffectSpellClassMaskB')]"
+          [disabled]="formGroup.controls[getFieldName('EffectSpellClassMaskB')].disabled"
           [config]="{ flags: SPELL_DBC_CLASS_MASK_FLAGS, name: getFieldName('EffectSpellClassMaskB') }"
         ></keira-flags-selector-btn>
         <i
@@ -300,6 +305,7 @@
         <label class="control-label" [for]="getFieldName('EffectSpellClassMaskC')">{{ getFieldName('EffectSpellClassMaskC') }}</label>
         <keira-flags-selector-btn
           [control]="formGroup.controls[getFieldName('EffectSpellClassMaskC')]"
+          [disabled]="formGroup.controls[getFieldName('EffectSpellClassMaskC')].disabled"
           [config]="{ flags: SPELL_DBC_CLASS_MASK_FLAGS, name: getFieldName('EffectSpellClassMaskC') }"
         ></keira-flags-selector-btn>
         <i

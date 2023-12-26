@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 
 import { AC_DISCORD_URL, KEIRA3_REPO_URL, PAYPAL_DONATE_URL } from '@keira-constants/general';
 import { ConfigService } from '@keira-shared/services/config.service';
@@ -6,11 +6,10 @@ import { MysqlService } from '@keira-shared/services/mysql.service';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
 import { VersionRow } from '@keira-types/general';
 import packageInfo from '../../../../package.json';
-import { MysqlQueryService } from '../../shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-home',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
@@ -34,6 +33,7 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
     private readonly queryService: MysqlQueryService,
     public readonly configService: ConfigService,
     private readonly mysqlService: MysqlService,
+    private readonly changeDetectorRef: ChangeDetectorRef,
   ) {
     super();
   }
@@ -57,6 +57,8 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
             if (!this.coreVersions.db_version.startsWith('ACDB') || !this.coreVersions.core_version.startsWith('AzerothCore')) {
               this.error = true;
             }
+
+            this.changeDetectorRef.detectChanges();
           } else {
             console.error(`Query ${query} produced no results: ${data}`);
           }

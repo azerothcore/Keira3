@@ -1,8 +1,8 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { IconService } from '@keira-shared/modules/icon/icon.service';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
+import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
 import { ItemExtendedCost } from '@keira-shared/types/item-extended-cost.type';
 import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
 import { ToastrService } from 'ngx-toastr';

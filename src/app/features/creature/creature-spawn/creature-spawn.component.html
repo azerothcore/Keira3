@@ -8,7 +8,7 @@
       <keira-query-output
         [docUrl]="docUrl"
         [editorService]="editorService"
-        (executeQuery)="editorService.save($event)"
+        (executeQuery)="save($event)"
       ></keira-query-output>
     </div>
 
@@ -21,7 +21,8 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="map">map</label>
-            <keira-map-selector-btn [config]="{ name: 'map' }" [control]="editorService.form.controls.map"></keira-map-selector-btn>
+            <keira-map-selector-btn [config]="{ name: 'map' }" [control]="editorService.form.controls.map"
+              [disabled]="editorService.form.controls.map.disabled"></keira-map-selector-btn>
             <input [formControlName]="'map'" id="map" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
@@ -30,13 +31,15 @@
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="areaId">areaId</label>
-            <keira-area-selector-btn [config]="{ name: 'areaId' }" [control]="editorService.form.controls.areaId"></keira-area-selector-btn>
+            <keira-area-selector-btn [config]="{ name: 'areaId' }" [control]="editorService.form.controls.areaId"
+              [disabled]="editorService.form.controls.areaId.disabled"></keira-area-selector-btn>
             <input [formControlName]="'areaId'" id="areaId" type="number" class="form-control form-control-sm" />
           </div>
           <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <label class="control-label" for="spawnMask">spawnMask</label>
             <keira-flags-selector-btn
               [control]="editorService.form.controls.spawnMask"
+              [disabled]="editorService.form.controls.spawnMask.disabled"
               [config]="{ flags: SPAWN_MASK, name: 'spawnMask' }"
               [modalClass]="'modal-lg'"
             ></keira-flags-selector-btn>
@@ -46,6 +49,7 @@
             <label class="control-label" for="phaseMask">phaseMask</label>
             <keira-flags-selector-btn
               [control]="editorService.form.controls.phaseMask"
+              [disabled]="editorService.form.controls.phaseMask.disabled"
               [config]="{ flags: PHASE_MASK, name: 'phaseMask' }"
               [modalClass]="'modal-lg'"
             ></keira-flags-selector-btn>
@@ -98,6 +102,7 @@
             <label class="control-label" for="MovementType">MovementType</label>
             <keira-single-value-selector-btn
               [control]="editorService.form.controls.MovementType"
+              [disabled]="editorService.form.controls.MovementType.disabled"
               [config]="{ options: MOVEMENT_TYPE, name: 'MovementType' }"
               [modalClass]="'modal-md'"
             ></keira-single-value-selector-btn>
@@ -107,6 +112,7 @@
             <label class="control-label" for="npcflag">npcflag</label>
             <keira-flags-selector-btn
               [control]="editorService.form.controls.npcflag"
+              [disabled]="editorService.form.controls.npcflag.disabled"
               [config]="{ flags: NPC_FLAGS, name: 'npcflag' }"
             ></keira-flags-selector-btn>
             <input [formControlName]="'npcflag'" id="npcflag" type="number" class="form-control form-control-sm" />
@@ -115,6 +121,7 @@
             <label class="control-label" for="unit_flags">unit_flags</label>
             <keira-flags-selector-btn
               [control]="editorService.form.controls.unit_flags"
+              [disabled]="editorService.form.controls.unit_flags.disabled"
               [config]="{ flags: UNIT_FLAGS, name: 'unit_flags' }"
             ></keira-flags-selector-btn>
             <input [formControlName]="'unit_flags'" id="unit_flags" type="number" class="form-control form-control-sm" />
@@ -123,6 +130,7 @@
             <label class="control-label" for="dynamicflags">dynamicflags</label>
             <keira-flags-selector-btn
               [control]="editorService.form.controls.dynamicflags"
+              [disabled]="editorService.form.controls.dynamicflags.disabled"
               [config]="{ flags: DYNAMIC_FLAGS, name: 'dynamicflags' }"
             ></keira-flags-selector-btn>
             <input [formControlName]="'dynamicflags'" id="dynamicflags" type="number" class="form-control form-control-sm" />

@@ -8,7 +8,7 @@
       <keira-query-output
         [docUrl]="docUrl"
         [editorService]="editorService"
-        (executeQuery)="editorService.save($event)"
+        (executeQuery)="save($event)"
       ></keira-query-output>
     </div>
 
@@ -19,6 +19,8 @@
             <label class="control-label" for="TextID">TextID</label>
             <keira-npc-text-selector-btn
               [control]="editorService.form.controls.TextID"
+              [control]="editorService.form.controls.TextID"
+              [disabled]="editorService.form.controls.TextID.disabled"
               [config]="{ name: 'TextID' }"
             ></keira-npc-text-selector-btn>
             <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'GOSSIP.GOSSIP_MENU.TEXT_ID_TOOLTIP' | translate"></i>

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { ChangeDetectorRef, Injectable } from '@angular/core';
 import { EditorService } from '@keira-shared/abstract/service/editors/editor.service';
 import { QUEST_FLAG_SHARABLE } from '@keira-shared/constants/flags/quest-flags';
 import { QUEST_INFO } from '@keira-shared/constants/options/quest-info';
@@ -12,9 +12,9 @@ import {
   QUEST_FLAG_WEEKLY,
   QUEST_PERIOD,
 } from '@keira-shared/constants/quest-preview';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
+import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { PreviewHelperService } from '@keira-shared/services/preview-helper.service';
-import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
 import { CreatureQuestender } from '@keira-shared/types/creature-questender.type';
 import { CreatureQueststarter } from '@keira-shared/types/creature-queststarter.type';
 import { GameobjectQuestender } from '@keira-shared/types/gameobject-questender.type';
@@ -161,20 +161,20 @@ export class QuestPreviewService {
     return this.getDifficultyLevels();
   }
 
-  initializeServices() {
-    this.initService(this.questTemplateService);
-    this.initService(this.questRequestItemsService);
-    this.initService(this.questOfferRewardService);
-    this.initService(this.questTemplateAddonService);
-    this.initService(this.gameobjectQueststarterService);
-    this.initService(this.gameobjectQuestenderService);
-    this.initService(this.creatureQueststarterService);
-    this.initService(this.creatureQuestenderService);
+  initializeServices(changeDetectorRef: ChangeDetectorRef) {
+    this.initService(changeDetectorRef, this.questTemplateService);
+    this.initService(changeDetectorRef, this.questRequestItemsService);
+    this.initService(changeDetectorRef, this.questOfferRewardService);
+    this.initService(changeDetectorRef, this.questTemplateAddonService);
+    this.initService(changeDetectorRef, this.gameobjectQueststarterService);
+    this.initService(changeDetectorRef, this.gameobjectQuestenderService);
+    this.initService(changeDetectorRef, this.creatureQueststarterService);
+    this.initService(changeDetectorRef, this.creatureQuestenderService);
   }
 
-  private initService<T extends TableRow>(service: EditorService<T>) {
+  private initService<T extends TableRow>(changeDetectorRef: ChangeDetectorRef, service: EditorService<T>) {
     if (!!this.questHandlerService.selected && service.loadedEntityId !== this.questHandlerService.selected) {
-      service.reload(this.questHandlerService.selected);
+      service.reload(changeDetectorRef, this.questHandlerService.selected);
     }
   }
 

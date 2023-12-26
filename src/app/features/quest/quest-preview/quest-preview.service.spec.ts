@@ -8,8 +8,8 @@ import {
   QUEST_FLAG_WEEKLY,
   QUEST_PERIOD,
 } from '@keira-shared/constants/quest-preview';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
+import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
 import { ToastrModule } from 'ngx-toastr';
 import { CreatureQuestenderService } from '../creature-questender/creature-questender.service';
 import { CreatureQueststarterService } from '../creature-queststarter/creature-queststarter.service';
@@ -24,6 +24,7 @@ import { QuestModule } from '../quest.module';
 import { DifficultyLevel } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
 import Spy = jasmine.Spy;
+import { mockChangeDetectorRef } from '@keira-testing/mocks';
 
 describe('QuestPreviewService', () => {
   beforeEach(
@@ -281,16 +282,16 @@ describe('QuestPreviewService', () => {
     questTemplateService['_loadedEntityId'] = mockEntity;
     TestBed.inject(QuestHandlerService)['_selected'] = mockEntity;
 
-    service.initializeServices();
+    service.initializeServices(mockChangeDetectorRef);
 
-    expect(initServiceSpy).toHaveBeenCalledWith(TestBed.inject(QuestTemplateService));
-    expect(initServiceSpy).toHaveBeenCalledWith(TestBed.inject(QuestRequestItemsService));
-    expect(initServiceSpy).toHaveBeenCalledWith(TestBed.inject(QuestTemplateAddonService));
-    expect(initServiceSpy).toHaveBeenCalledWith(TestBed.inject(GameobjectQueststarterService));
-    expect(initServiceSpy).toHaveBeenCalledWith(TestBed.inject(GameobjectQuestenderService));
-    expect(initServiceSpy).toHaveBeenCalledWith(TestBed.inject(CreatureQueststarterService));
-    expect(initServiceSpy).toHaveBeenCalledWith(TestBed.inject(CreatureQuestenderService));
-    expect(initServiceSpy).toHaveBeenCalledWith(TestBed.inject(QuestOfferRewardService));
+    expect(initServiceSpy).toHaveBeenCalledWith(mockChangeDetectorRef, TestBed.inject(QuestTemplateService));
+    expect(initServiceSpy).toHaveBeenCalledWith(mockChangeDetectorRef, TestBed.inject(QuestRequestItemsService));
+    expect(initServiceSpy).toHaveBeenCalledWith(mockChangeDetectorRef, TestBed.inject(QuestTemplateAddonService));
+    expect(initServiceSpy).toHaveBeenCalledWith(mockChangeDetectorRef, TestBed.inject(GameobjectQueststarterService));
+    expect(initServiceSpy).toHaveBeenCalledWith(mockChangeDetectorRef, TestBed.inject(GameobjectQuestenderService));
+    expect(initServiceSpy).toHaveBeenCalledWith(mockChangeDetectorRef, TestBed.inject(CreatureQueststarterService));
+    expect(initServiceSpy).toHaveBeenCalledWith(mockChangeDetectorRef, TestBed.inject(CreatureQuestenderService));
+    expect(initServiceSpy).toHaveBeenCalledWith(mockChangeDetectorRef, TestBed.inject(QuestOfferRewardService));
     expect(initServiceSpy).toHaveBeenCalledTimes(8);
 
     // initService
@@ -301,14 +302,14 @@ describe('QuestPreviewService', () => {
     expect(gameObjectQuestenderLoadReloadSpy).toHaveBeenCalledTimes(1);
     expect(creatureQueststarterLoadReloadSpy).toHaveBeenCalledTimes(1);
     expect(creatureQuestenderLoadReloadSpy).toHaveBeenCalledTimes(1);
-    expect(questTemplateLoadReloadSpy).not.toHaveBeenCalledWith(mockEntity);
-    expect(questRequestItemLoadReloadSpy).toHaveBeenCalledWith(mockEntity);
-    expect(questTemplateAddonLoadReloadSpy).toHaveBeenCalledWith(mockEntity);
-    expect(gameObjectQueststarterLoadReloadSpy).toHaveBeenCalledWith(mockEntity);
-    expect(gameObjectQuestenderLoadReloadSpy).toHaveBeenCalledWith(mockEntity);
-    expect(creatureQueststarterLoadReloadSpy).toHaveBeenCalledWith(mockEntity);
-    expect(creatureQuestenderLoadReloadSpy).toHaveBeenCalledWith(mockEntity);
-    expect(questOfferRewardServiceLoadReloadSpy).toHaveBeenCalledWith(mockEntity);
+    expect(questTemplateLoadReloadSpy).not.toHaveBeenCalledWith(mockChangeDetectorRef, mockEntity);
+    expect(questRequestItemLoadReloadSpy).toHaveBeenCalledWith(mockChangeDetectorRef, mockEntity);
+    expect(questTemplateAddonLoadReloadSpy).toHaveBeenCalledWith(mockChangeDetectorRef, mockEntity);
+    expect(gameObjectQueststarterLoadReloadSpy).toHaveBeenCalledWith(mockChangeDetectorRef, mockEntity);
+    expect(gameObjectQuestenderLoadReloadSpy).toHaveBeenCalledWith(mockChangeDetectorRef, mockEntity);
+    expect(creatureQueststarterLoadReloadSpy).toHaveBeenCalledWith(mockChangeDetectorRef, mockEntity);
+    expect(creatureQuestenderLoadReloadSpy).toHaveBeenCalledWith(mockChangeDetectorRef, mockEntity);
+    expect(questOfferRewardServiceLoadReloadSpy).toHaveBeenCalledWith(mockChangeDetectorRef, mockEntity);
   });
 
   describe('prevQuestList', () => {

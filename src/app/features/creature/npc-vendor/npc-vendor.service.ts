@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { MultiRowEditorService } from '@keira-abstract/service/editors/multi-row-editor.service';
 import { IconService } from '@keira-shared/modules/icon/icon.service';
-import { MysqlQueryService } from '@keira-shared/services/mysql-query.service';
-import { SqliteQueryService } from '@keira-shared/services/sqlite-query.service';
+import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
+import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
 import { ItemExtendedCost } from '@keira-shared/types/item-extended-cost.type';
 import { NpcVendor, NPC_VENDOR_ID, NPC_VENDOR_ID_2, NPC_VENDOR_TABLE } from '@keira-types/npc-vendor.type';
 import { ToastrService } from 'ngx-toastr';

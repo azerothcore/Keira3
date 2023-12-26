@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MysqlQueryService } from '../../services/mysql-query.service';
+import { MysqlQueryService } from '../../services/query/mysql-query.service';
 import { CreatureTemplate, CREATURE_TEMPLATE_SEARCH_FIELDS, CREATURE_TEMPLATE_TABLE } from '../../types/creature-template.type';
 import { SearchService } from './search.service';
 

@@ -5,8 +5,7 @@ import { SaiSearchService } from '@keira-shared/modules/search/sai-search.servic
 import { SAI_TYPES, SAI_TYPES_KEYS, SmartScripts } from '@keira-types/smart-scripts.type';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sai-search-existing',
   templateUrl: './sai-search-existing.component.html',
   styleUrls: ['./sai-search-existing.component.scss'],
