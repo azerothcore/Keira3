@@ -58,7 +58,6 @@ function createWindow() {
     minWidth: 800,
     minHeight: 600,
     webPreferences: {
-      webSecurity: false,
       nodeIntegration: true,
       contextIsolation: false, // TODO: change this once Spectron supports it
     },
