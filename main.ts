@@ -3,22 +3,25 @@ import { BrowserWindow, Menu, MenuItem, app, nativeImage, shell } from 'electron
 import * as settings from 'electron-settings';
 import * as express from 'express';
 import * as morgan from 'morgan';
+import * as fetch from 'node-fetch';
 import * as path from 'path';
 import * as url from 'url';
 
-// Inspired by https://github.com/Miorey/bypass-cors-policies
-export const appRest = express();
+/*
+ * Inspired by https://github.com/Miorey/bypass-cors-policies
+ * bypass cors running a web server in port 3003 making a new http request from nodejs
+ * using node-fetch (as fetch) and return the response to the web application
+ */
 const TIMEOUT = 2000;
+const PORT = 3003;
 const SERVER_NAME = 'https://wow.zamimg.com';
-const fetch = require(`node-fetch`);
-
+const appRest = express();
 appRest.use(morgan(`dev`));
 appRest.use(express.json());
 appRest.use(express.urlencoded({ extended: true }));
 appRest.use(cors());
 
-async function getFile(req) {
-  console.log(`${SERVER_NAME}${req.url}`);
+async function bypassCORS(req) {
   const timeout = new Promise((_, reject) => {
     setTimeout(() => {
       reject(new Error(`Request timed out after ${TIMEOUT} milli-seconds`));
@@ -33,9 +36,12 @@ async function getFile(req) {
   return Buffer.from(buffer);
 }
 
-appRest.use(`/`, async (req, res, next) => {
-  const content = await getFile(req);
+appRest.use(`/`, async (req, res /* , next */) => {
+  const content = await bypassCORS(req);
   res.send(content);
+});
+appRest.listen(PORT).on('error', (err) => {
+  console.log('err', err);
 });
 
 let win;
@@ -108,11 +114,6 @@ function createWindow() {
     shell.openExternal(link);
   });
 }
-
-const PORT = 3003;
-appRest.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
 
 try {
   // This method will be called when Electron has finished
