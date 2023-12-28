@@ -62,8 +62,7 @@ import { SaiEditorService } from './sai-editor.service';
 import { SaiHandlerService } from './sai-handler.service';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sai-editor',
   templateUrl: './sai-editor.component.html',
   styleUrls: ['./sai-editor.component.scss'],
