@@ -160,6 +160,6 @@ export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> im
   }
 
   generateComments() {
-    this.editorService.generateComments(this.changeDetectorRef);
+    this.editorService.generateComments();
   }
 }
