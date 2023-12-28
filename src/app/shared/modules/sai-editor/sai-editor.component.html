@@ -1,6 +1,6 @@
 <keira-sai-top-bar
   [selected]="handlerService.selected"
-  [selectedName]="handlerService.getName(changeDetectorRef) | async"
+  [selectedName]="handlerService.getName() | async"
   [isNew]="handlerService.isNew"
 ></keira-sai-top-bar>
 
