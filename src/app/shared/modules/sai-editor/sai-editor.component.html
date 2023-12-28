@@ -1,4 +1,8 @@
-<keira-sai-top-bar [handler]="getHandler()"></keira-sai-top-bar>
+<keira-sai-top-bar
+  [selected]="handlerService.selected"
+  [selectedName]="handlerService.getName(changeDetectorRef) | async"
+  [isNew]="handlerService.isNew"
+></keira-sai-top-bar>
 
 <div class="container-fluid">
   <span *ngIf="editorService.loading" [translate]="'LOADING'"></span>
@@ -561,7 +565,7 @@
         <div class="col-12">
           <keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>
 
-          <button id="generate-comments-btn" class="btn btn-primary btn-sm float-end" (click)="editorService.generateComments()">
+          <button id="generate-comments-btn" class="btn btn-primary btn-sm float-end" (click)="generateComments()">
             Generate comments
           </button>
 

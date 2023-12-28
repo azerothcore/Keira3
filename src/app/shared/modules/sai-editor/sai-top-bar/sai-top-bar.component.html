@@ -1,6 +1,11 @@
 <div class="top-bar">
-  <span class="main-text" *ngIf="handler && handler.selected">
-    <ng-container *ngIf="!handler.isNew">Editing {{ selectedText }}</ng-container>
-    <ng-container *ngIf="handler.isNew">Creating new {{ selectedText }}</ng-container>
-  </span>
+  @if (selected) {
+    <span class="main-text">
+      @if (isNew) {
+        Creating new: {{ selected }}
+      } @else {
+        Editing: {{ selectedText }} ({{ selected }})
+      }
+    </span>
+  }
 </div>

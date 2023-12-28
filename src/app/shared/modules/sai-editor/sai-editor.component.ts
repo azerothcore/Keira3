@@ -159,7 +159,7 @@ export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> im
     return value ? value : defaultParamName;
   }
 
-  getHandler(): SaiHandlerService {
-    return this.handlerService;
+  generateComments() {
+    this.editorService.generateComments(this.changeDetectorRef);
   }
 }

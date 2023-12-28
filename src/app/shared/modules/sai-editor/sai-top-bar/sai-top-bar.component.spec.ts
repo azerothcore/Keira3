@@ -1,32 +1,39 @@
 import { Component, ViewChild } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { of } from 'rxjs';
 import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { PageObject } from '@keira-testing/page-object';
 import { SAI_TYPES } from '@keira-types/smart-scripts.type';
-import { of } from 'rxjs';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
-import { SaiHandlerService } from '../sai-handler.service';
 import { SaiTopBarComponent } from './sai-top-bar.component';
 
-class SaiTopBarComponentPage extends PageObject<TestHostComponent> {
-  get mainText(): HTMLSpanElement {
-    return this.query<HTMLSpanElement>('.main-text');
-  }
-}
-
-@Component({
-  template: '<keira-sai-top-bar [handler]="handlerService"><</keira-sai-top-bar>',
-})
-class TestHostComponent {
-  @ViewChild(SaiTopBarComponent, { static: true }) child: SaiTopBarComponent;
-  constructor(public handlerService: SaiHandlerService) {}
-}
-
 describe('SaiTopBarComponent', () => {
-  let fixture: ComponentFixture<TestHostComponent>;
-  let handler: SaiHandlerService;
-  let page: SaiTopBarComponentPage;
+  @Component({
+    template: `
+      <keira-sai-top-bar
+        [selected]="selected"
+        [selectedName]="selectedName"
+        [isNew]="isNew"
+      ></keira-sai-top-bar>
+    `,
+  })
+  class TestHostComponent {
+    @ViewChild(SaiTopBarComponent, { static: true }) child: SaiTopBarComponent;
+    selected: string;
+    selectedName: string;
+    isNew: boolean;
+  }
+
+  class Page extends PageObject<TestHostComponent> {
+    mainWrapper() {
+      return this.getDebugElementByCss('.top-bar');
+    }
+
+    mainText(assert = true) {
+      return this.getDebugElementByCss('.top-bar .main-text', assert);
+    }
+  }
 
   const entryorguid = 1234;
   const name = 'Francesco';
@@ -38,23 +45,50 @@ describe('SaiTopBarComponent', () => {
     }).compileComponents();
   }));
 
-  beforeEach(() => {
-    handler = TestBed.inject(SaiHandlerService);
-    handler['_selected'] = JSON.stringify({ source_type: SAI_TYPES.SAI_TYPE_GAMEOBJECT, entryorguid });
+  const setup =() => {
     spyOn(TestBed.inject(MysqlQueryService), 'query').and.returnValue(of([]));
+    const fixture = TestBed.createComponent(TestHostComponent);
+    const host = fixture.componentInstance;
+    host.selected = JSON.stringify({ source_type: SAI_TYPES.SAI_TYPE_GAMEOBJECT, entryorguid });
+    const page = new Page(fixture);
 
-    fixture = TestBed.createComponent(TestHostComponent);
-    page = new SaiTopBarComponentPage(fixture);
+    return { page, host };
+  };
+
+  describe('when there is no selected value', () => {
+    it('should only show the main wrapper', () => {
+      const { host, page } = setup();
+
+      host.selected = undefined;
+      page.detectChanges();
+
+      expect(page.mainWrapper()).toBeTruthy();
+      expect(page.mainText(false)).toBeFalsy();
+    });
   });
 
-  it('should correctly distinguish between editing an existing entity and creating a new one', () => {
-    handler.isNew = false;
-    fixture.detectChanges();
-    expect(page.mainText.innerText).toContain('Editing');
+  describe('when there is a selected', () => {
+    it('should correctly show a new selection', () => {
+      const selected = '1234';
+      const { host, page } = setup();
 
-    handler.isNew = true;
-    fixture.detectChanges();
-    expect(page.mainText.innerText).toContain('Creating new');
+      host.selected = selected;
+      host.isNew = true;
+      page.detectChanges();
+
+      expect(page.mainText().nativeElement.innerText).toContain(`Creating new: ${selected}`);
+    });
+
+    it('should correctly show an existing selection', () => {
+      const selected = '1234';
+      const { host, page } = setup();
+
+      host.selected = selected;
+      host.isNew = false;
+      page.detectChanges();
+
+      expect(page.mainText().nativeElement.innerText).toContain(`Editing: (${selected})`);
+    });
   });
 
   for (const { testId, type, positive, expected } of [
@@ -71,13 +105,17 @@ describe('SaiTopBarComponent', () => {
     { testId: 6, type: SAI_TYPES.SAI_TYPE_CREATURE, positive: false, expected: `Creature GUID ${entryorguid}` },
   ]) {
     it(`should correctly handle different types [${testId}]`, () => {
-      handler['_selected'] = JSON.stringify({ source_type: type, entryorguid: positive ? entryorguid : -entryorguid });
-      spyOn(handler, 'getName').and.returnValue(of(name));
-      // TODO: for some reasons this test cannot get the async name
+      const { page, host } = setup();
+      host.selected = JSON.stringify({ source_type: type, entryorguid: positive ? entryorguid : -entryorguid });
+      host.selectedName = name;
 
-      fixture.detectChanges();
+      page.detectChanges();
 
-      expect(page.mainText.innerText).toContain(expected);
+      const actualText = page.mainText().nativeElement.innerText;
+      expect(actualText).toContain(expected);
+      if ([SAI_TYPES.SAI_TYPE_CREATURE, SAI_TYPES.SAI_TYPE_GAMEOBJECT].includes(type)) {
+        expect(actualText).toContain(name);
+      }
     });
   }
 });

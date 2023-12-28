@@ -192,6 +192,8 @@ describe('SaiEditorComponent integration tests', () => {
     });
 
     it('adding new rows and executing the query should correctly work', () => {
+      // we need to mock 'getName' because otherwise it will also queryService.query() and pollute the expectations
+      spyOn(handlerService, 'getName').and.returnValue(of('MockName'));
       const expectedQuery =
         'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (0, 1, 2));\n' +
         'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
