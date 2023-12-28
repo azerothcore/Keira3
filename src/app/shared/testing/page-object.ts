@@ -1,4 +1,6 @@
 import { ComponentFixture } from '@angular/core/testing';
+import { DebugElement } from '@angular/core';
+import { By } from '@angular/platform-browser';
 
 export abstract class PageObject<ComponentType> {
   readonly DT_SELECTOR = 'ngx-datatable';
@@ -107,6 +109,16 @@ export abstract class PageObject<ComponentType> {
 
   get queryWrapper(): HTMLElement {
     return this.query<HTMLElement>('#no-highlight-query-wrapper');
+  }
+
+  getDebugElementByCss(cssSelector: string, assert = true): DebugElement {
+    const debugElement = this.fixture.debugElement.query(By.css(cssSelector));
+
+    if (assert) {
+      expect(debugElement).withContext(`Element with selector "${cssSelector}" was not found.`).toBeTruthy();
+    }
+
+    return debugElement;
   }
 
   /*** ngx-datatable utilities ***/

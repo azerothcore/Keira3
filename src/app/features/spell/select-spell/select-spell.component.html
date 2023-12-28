@@ -1,4 +1,8 @@
-<keira-top-bar [handler]="handlerService"></keira-top-bar>
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+></keira-top-bar>
 <div class="container-fluid">
   <div class="content-block">
     <p class="h5 mb-3">Help us improving this feature</p>

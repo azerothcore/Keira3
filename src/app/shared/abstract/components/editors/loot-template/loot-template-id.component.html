@@ -1,4 +1,8 @@
-<keira-top-bar [handler]="handlerService"></keira-top-bar>
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+></keira-top-bar>
 
 <div class="container-fluid" *ngIf="lootId !== null">
   <div *ngIf="lootId === 0" class="alert alert-info mt-2">
