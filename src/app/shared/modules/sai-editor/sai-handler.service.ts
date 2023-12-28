@@ -87,6 +87,7 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
         query = `SELECT name FROM gameobject_template WHERE entry = ${sai.entryorguid}`;
       }
     } else {
+      console.error(`Unknown source_type`);
       return;
     }
 
