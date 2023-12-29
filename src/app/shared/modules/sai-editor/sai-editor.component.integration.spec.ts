@@ -487,27 +487,37 @@ describe('SaiEditorComponent integration tests', () => {
       );
     }));
 
-    it('shows error on wrong linked event', () => {
-      const mockRows: Partial<SmartScripts>[] = [
-        { entryorguid: 0, source_type: 0, id: 0, link: 1, event_type: 0 },
-        { entryorguid: 0, source_type: 0, id: 1, link: 0, event_type: 61 },
-      ];
+    describe('errors on wrong linked event', () => {
+      it('case: no errors', () => {
+        page.addNewRow();
+        page.addNewRow();
+        fixture.detectChanges();
 
-      component.editorService['_newRows'] = mockRows as SmartScripts[];
-      component.editorService['checkRowsCorrectness']();
-      expect(page.errors.innerText).not.toContain('ERROR');
+        expect(page.errors.innerText).not.toContain('ERROR');
+      });
 
-      mockRows[1].event_type = 0;
-      component.editorService['checkRowsCorrectness']();
-      fixture.detectChanges();
+      it('ERROR: the SAI (id:', () => {
+        page.addNewRow();
+        page.addNewRow();
+        page.clickRowOfDatatable(1);
+        page.setInputValueById('link', 1);
+        page.clickRowOfDatatable(2);
+        page.setInputValueById('event_type', 0);
+        fixture.detectChanges();
 
-      expect(page.errors.innerText).toContain(`ERROR: the SAI (id: `);
+        expect(page.errors.innerText).toContain(`ERROR: the SAI (id: `);
+      });
 
-      mockRows[1].link = 3;
-      component.editorService['checkRowsCorrectness']();
-      fixture.detectChanges();
+      it('ERROR: non-existing links:', () => {
+        page.addNewRow();
+        page.addNewRow();
+        page.clickRowOfDatatable(1);
+        page.setInputValueById('event_type', 61);
+        page.setInputValueById('link', 5);
+        fixture.detectChanges();
 
-      expect(page.errors.innerText).toContain(`ERROR: non-existing links:`);
+        expect(page.errors.innerText).toContain(`ERROR: non-existing links:`);
+      });
     });
   });
 
