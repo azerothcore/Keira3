@@ -77,6 +77,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     this.itemPreview = this.sanitizer.bypassSecurityTrustHtml(
       await this.itemPreviewService.calculatePreview(this.editorService.form.getRawValue()),
     );
+    this.changeDetectorRef.markForCheck();
   }
 
   private loadItemPreviewDynamic(): void {
