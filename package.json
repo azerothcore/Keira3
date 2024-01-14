@@ -114,7 +114,7 @@
     "ngx-highlightjs": "10.0.0",
     "npm-run-all": "4.1.5",
     "playwright": "1.40.1",
-    "prettier": "3.2.1",
+    "prettier": "3.2.2",
     "pretty-quick": "3.1.3",
     "puppeteer": "21.7.0",
     "rxjs": "7.8.1",
