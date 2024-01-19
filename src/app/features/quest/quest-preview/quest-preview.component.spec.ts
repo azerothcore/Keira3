@@ -12,6 +12,7 @@ import { QuestRequestItems } from '@keira-types/quest-request-items.type';
 import { ToastrModule } from 'ngx-toastr';
 import { QuestModule } from '../quest.module';
 import { QuestPreviewComponent } from './quest-preview.component';
+import { QUEST_FACTION_REWARD } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
 import Spy = jasmine.Spy;
 
@@ -285,12 +286,13 @@ describe('QuestPreviewComponent', () => {
 
   it('should show rewardReputations', () => {
     const { fixture, page, service } = setup();
-    const questTemplate = createMockObject({ RewardFactionID1: 72, RewardFactionValue1: 123 }, QuestTemplate);
+    const RewardFactionValue1 = 1;
+    const questTemplate = createMockObject({ RewardFactionID1: 72, RewardFactionValue1 }, QuestTemplate);
     spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
 
     fixture.detectChanges();
 
-    expect(page.rewardReputations.innerText).toContain('123');
+    expect(page.rewardReputations.innerText).toContain(`${QUEST_FACTION_REWARD[RewardFactionValue1]}`);
     fixture.debugElement.nativeElement.remove();
   });
 

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { PreviewHelperService } from '@keira-shared/services/preview-helper.service';
+import { QUEST_FACTION_REWARD } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
 
 @Component({
@@ -12,11 +13,16 @@ import { QuestPreviewService } from './quest-preview.service';
 export class QuestPreviewComponent implements OnInit {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
-  constructor(readonly service: QuestPreviewService, readonly helper: PreviewHelperService) {}
+  constructor(
+    readonly service: QuestPreviewService,
+    readonly helper: PreviewHelperService,
+  ) {}
 
   descriptionToggle = true;
   progressToggle = true;
   completionToggle = true;
+
+  readonly QUEST_FACTION_REWARD = QUEST_FACTION_REWARD;
 
   get showMaxLevel(): boolean {
     return !!this.service.maxLevel && this.service.maxLevel !== '0';
@@ -48,7 +54,7 @@ export class QuestPreviewComponent implements OnInit {
       : '';
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.service.initializeServices(this.changeDetectorRef);
   }
 

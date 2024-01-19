@@ -240,7 +240,7 @@
           <div id="rewardReputations" *ngFor="let i of [1, 2, 3, 4, 5]">
             <div *ngIf="service.isFieldAvailable('RewardFactionID', 'RewardFactionValue', i)">
               <p *ngIf="service.getRewardReputation(i, service.getRepReward$(i) | async); let repReward">
-                • {{ repReward }} reputation with
+                • {{ QUEST_FACTION_REWARD[repReward] }} reputation with
                 {{ service.sqliteQueryService.getFactionNameByNameId(service.questTemplate['RewardFactionID' + i]) | async }}
               </p>
             </div>
