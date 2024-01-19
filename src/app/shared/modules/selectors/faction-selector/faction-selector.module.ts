@@ -1,24 +1,24 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
 
-import { FactionSelectorModalComponent } from './faction-selector-modal.component';
-import { FactionSelectorBtnComponent } from './faction-selector-btn.component';
 import { HighlightjsWrapperModule } from '@keira-shared/modules/highlightjs-wrapper/highlightjs-wrapper.module';
+import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import { TranslateModule } from '@ngx-translate/core';
+import { FactionSelectorBtnComponent } from './faction-selector-btn.component';
+import { FactionSelectorModalComponent } from './faction-selector-modal.component';
+import { QuestFactionSelectorBtnComponent } from './quest-faction-selector-btn.component';
+import { QuestFactionSelectorModalComponent } from './quest-faction-selector-modal.component copy';
 
 @NgModule({
-  declarations: [FactionSelectorBtnComponent, FactionSelectorModalComponent],
-  imports: [
-    BrowserModule,
-    ReactiveFormsModule,
-    NgxDatatableModule,
-    ModalModule,
-    HighlightjsWrapperModule,
-    TranslateModule,
+  declarations: [
+    FactionSelectorBtnComponent,
+    QuestFactionSelectorBtnComponent,
+    FactionSelectorModalComponent,
+    QuestFactionSelectorModalComponent,
   ],
-  exports: [FactionSelectorBtnComponent],
+  imports: [BrowserModule, ReactiveFormsModule, NgxDatatableModule, ModalModule, HighlightjsWrapperModule, TranslateModule],
+  exports: [FactionSelectorBtnComponent, QuestFactionSelectorBtnComponent],
 })
 export class FactionSelectorModule {}
