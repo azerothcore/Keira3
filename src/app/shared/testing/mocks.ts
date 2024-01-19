@@ -14,7 +14,7 @@ export const MockedSqliteQueryService = mock(SqliteQueryService);
 export const MockedSqliteService = mock(SqliteService);
 export const MockedMysqlService = mock(MysqlService);
 export const MockedElectronService = mock(ElectronService);
-export const mockChangeDetectorRef = { detectChanges: jasmine.createSpy() } as unknown as ChangeDetectorRef;
+export const mockChangeDetectorRef = { markForCheck: jasmine.createSpy() } as unknown as ChangeDetectorRef;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface MockType extends TableRow {}

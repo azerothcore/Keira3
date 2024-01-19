@@ -47,7 +47,7 @@ export class AppComponent extends SubscriptionHandler implements OnInit {
           .query<{ id: number; name: string }>('SELECT * FROM achievements WHERE id = 970', true)
           .subscribe((result) => {
             this.sqliteResult = result ? result[0] : null;
-            this.changeDetectorRef.detectChanges();
+            this.changeDetectorRef.markForCheck();
           }),
       );
     }

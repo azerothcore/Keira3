@@ -71,12 +71,12 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
           this._error = null;
           this.onReloadSuccessful(data);
           this._loading = false;
-          changeDetectorRef.detectChanges();
+          changeDetectorRef.markForCheck();
         },
         error: (error: QueryError) => {
           this._error = error;
           this._loading = false;
-          changeDetectorRef.detectChanges();
+          changeDetectorRef.markForCheck();
         },
       }),
     );

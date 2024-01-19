@@ -84,7 +84,7 @@ export class SqlEditorComponent extends SubscriptionHandler {
           }
 
           this._rows = rows as TableRow[];
-          this.changeDetectorRef.detectChanges();
+          this.changeDetectorRef.markForCheck();
         },
         error: (error: QueryError) => {
           this._error = error;
