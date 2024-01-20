@@ -13,15 +13,15 @@ export interface DifficultyLevel {
   grey?: number;
 }
 
-export class QuestReputationReward extends TableRow {
-  faction: number = 1;
-  quest_rate: number = 1;
-  quest_daily_rate: number = 1;
-  quest_weekly_rate: number = 1;
-  quest_monthly_rate: number = 1;
-  quest_repeatable_rate: number = 1;
-  creature_rate: number = 1;
-  spell_rate: number = 1;
+export interface QuestReputationReward extends TableRow {
+  faction: number;
+  quest_rate: number;
+  quest_daily_rate: number;
+  quest_weekly_rate: number;
+  quest_monthly_rate: number;
+  quest_repeatable_rate: number;
+  creature_rate: number;
+  spell_rate: number;
 }
 
 export const QUEST_FACTION_REWARD = {
