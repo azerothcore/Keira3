@@ -15,8 +15,8 @@ export class SqliteQueryService extends BaseQueryService {
   private spellDisplayIdCache: Observable<string>[] = [];
 
   constructor(
-    private sqliteService: SqliteService,
-    private configService: ConfigService,
+    private readonly sqliteService: SqliteService,
+    private readonly configService: ConfigService,
   ) {
     super();
   }

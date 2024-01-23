@@ -9,7 +9,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { FactionSelectorBtnComponent } from './faction-selector-btn.component';
 import { FactionSelectorModalComponent } from './faction-selector-modal.component';
 import { QuestFactionSelectorBtnComponent } from './quest-faction-selector-btn.component';
-import { QuestFactionSelectorModalComponent } from './quest-faction-selector-modal.component copy';
+import { QuestFactionSelectorModalComponent } from './quest-faction-selector-modal.component';
 
 @NgModule({
   declarations: [

@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance } from 'ts-mockito';
 
@@ -7,30 +7,27 @@ import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { FactionSearchService } from '../../search/faction-search.service';
 import { FactionSelectorModule } from './faction-selector.module';
-import { QuestFactionSelectorModalComponent } from './quest-faction-selector-modal.component copy';
+import { QuestFactionSelectorModalComponent } from './quest-faction-selector-modal.component';
 
 describe('FactionSelectorModalComponent', () => {
-  let component: QuestFactionSelectorModalComponent;
-  let fixture: ComponentFixture<QuestFactionSelectorModalComponent>;
-  let searchService: FactionSearchService;
-
-  beforeEach(waitForAsync(() => {
+  function setup() {
     TestBed.configureTestingModule({
       imports: [FactionSelectorModule, TranslateTestingModule],
       providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
-    searchService = TestBed.inject(FactionSearchService);
+    const fixture: ComponentFixture<QuestFactionSelectorModalComponent> = TestBed.createComponent(QuestFactionSelectorModalComponent);
+    const component: QuestFactionSelectorModalComponent = fixture.componentInstance;
+    fixture.detectChanges();
+
+    const searchService: FactionSearchService = TestBed.inject(FactionSearchService);
     searchService.query = '--mock query';
 
-    fixture = TestBed.createComponent(QuestFactionSelectorModalComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    return { fixture, component, searchService };
+  }
 
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });

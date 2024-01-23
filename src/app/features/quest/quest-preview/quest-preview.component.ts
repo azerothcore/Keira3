@@ -12,11 +12,8 @@ import { QuestPreviewService } from './quest-preview.service';
 })
 export class QuestPreviewComponent implements OnInit {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
-
-  constructor(
-    readonly service: QuestPreviewService,
-    readonly helper: PreviewHelperService,
-  ) {}
+  readonly service: QuestPreviewService = inject(QuestPreviewService);
+  readonly helper: PreviewHelperService = inject(PreviewHelperService);
 
   descriptionToggle = true;
   progressToggle = true;

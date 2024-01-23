@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BsModalService } from 'ngx-bootstrap/modal';
 
 import { BaseSelectorBtnComponent } from '../base-selector/base-selector-btn.component';
-import { QuestFactionSelectorModalComponent } from './quest-faction-selector-modal.component copy';
+import { QuestFactionSelectorModalComponent } from './quest-faction-selector-modal.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
