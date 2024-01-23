@@ -1,21 +1,21 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
-import { Faction, FACTION_ID } from '@keira-types/faction.type';
+import { Faction, FACTION_SEARCH_FIELDS } from '@keira-types/faction.type';
 import { FactionSearchService } from '../../search/faction-search.service';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'keira-faction-selector-modal',
+  selector: 'keira-quest-faction-selector-modal',
   templateUrl: './faction-selector-modal.component.html',
 })
-export class FactionSelectorModalComponent extends SearchSelectorModalComponent<Faction> {
+export class QuestFactionSelectorModalComponent extends SearchSelectorModalComponent<Faction> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected bsModalRef: BsModalRef,
     public searchService: FactionSearchService,
   ) {
-    super(FACTION_ID, bsModalRef, searchService);
+    super(FACTION_SEARCH_FIELDS[1], bsModalRef, searchService);
   }
 }

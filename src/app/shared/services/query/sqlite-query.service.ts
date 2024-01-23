@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { ConfigService } from '@keira-shared/services/config.service';
 import { BaseQueryService } from '@keira-shared/services/query/base-query.service';
 import { SqliteService } from '@keira-shared/services/sqlite.service';
-import { ItemExtendedCost } from '@keira-types/item-extended-cost.type';
 import { TableRow } from '@keira-types/general';
+import { ItemExtendedCost } from '@keira-types/item-extended-cost.type';
 import { Lock } from '@keira-types/lock.type';
 import { from, Observable, of, shareReplay, tap } from 'rxjs';
 
@@ -14,7 +14,10 @@ export class SqliteQueryService extends BaseQueryService {
   private itemDisplayIdCache: Observable<string>[] = [];
   private spellDisplayIdCache: Observable<string>[] = [];
 
-  constructor(private sqliteService: SqliteService, private configService: ConfigService) {
+  constructor(
+    private readonly sqliteService: SqliteService,
+    private readonly configService: ConfigService,
+  ) {
     super();
   }
 
@@ -77,6 +80,14 @@ export class SqliteQueryService extends BaseQueryService {
       'getFactionNameById',
       String(id),
       `SELECT m_name_lang_1 AS v FROM factions WHERE m_ID = ${id}`,
+    );
+  }
+
+  getFactionNameByNameId(id: string | number): Promise<string> {
+    return this.queryValueToPromiseCached<string>(
+      'getFactionNameByNameId',
+      String(id),
+      `SELECT m_name_lang_1 AS v FROM factions WHERE faction_name_id = ${id}`,
     );
   }
 

@@ -1,4 +1,4 @@
-import { Input, Directive } from '@angular/core';
+import { Directive, Input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
