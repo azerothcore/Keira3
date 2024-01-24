@@ -41,7 +41,7 @@ export class LootEditorComponent<T extends LootTemplate> extends SubscriptionHan
         distinctUntilChanged(compareObjFn),
       ).subscribe(() => {
         setTimeout(() => {
-          this.changeDetectorRef.detectChanges();
+          this.changeDetectorRef.markForCheck();
         });
       }),
     )

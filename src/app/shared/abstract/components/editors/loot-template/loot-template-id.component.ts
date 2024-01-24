@@ -32,7 +32,7 @@ export abstract class LootTemplateIdComponent<T extends LootTemplate> extends Lo
               this.editorService.reload(this.changeDetectorRef, this._lootId);
             }
           }
-          this.changeDetectorRef.detectChanges();
+          this.changeDetectorRef.markForCheck();
         },
         error: (error: QueryError) => {
           console.error(error);

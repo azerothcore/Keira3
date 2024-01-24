@@ -98,12 +98,12 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
           this._error = null;
           this.onReloadSuccessful(data, id);
           this._loading = false;
-          changeDetectorRef.detectChanges();
+          changeDetectorRef.markForCheck();
         },
         error: (error: QueryError) => {
           this._error = error;
           this._loading = false;
-          changeDetectorRef.detectChanges();
+          changeDetectorRef.markForCheck();
         },
       }),
     );
@@ -140,13 +140,13 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
           this.reloadSameEntity(changeDetectorRef);
           this.toastrService.success('Query executed successfully', 'Success');
           this._loading = false;
-          changeDetectorRef.detectChanges();
+          changeDetectorRef.markForCheck();
         },
         error: (error: QueryError) => {
           this._error = error;
           this.toastrService.error('Error when executing the query!', 'Query error');
           this._loading = false;
-          changeDetectorRef.detectChanges();
+          changeDetectorRef.markForCheck();
         },
       }),
     );

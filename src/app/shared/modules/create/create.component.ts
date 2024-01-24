@@ -41,7 +41,7 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
         next: (data) => {
           this.isIdFree = data.length <= 0;
           this._loading = false;
-          this.changeDetectorRef.detectChanges();
+          this.changeDetectorRef.markForCheck();
         },
         error: (error: QueryError) => {
           console.error(error);
@@ -60,7 +60,7 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
           this.idModel = this.calculateNextId(currentMax);
           this.isIdFree = true;
           this._loading = false;
-          this.changeDetectorRef.detectChanges();
+          this.changeDetectorRef.markForCheck();
         },
         error: (error: QueryError) => {
           console.error(error);

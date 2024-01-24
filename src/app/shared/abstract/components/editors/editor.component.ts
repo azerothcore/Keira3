@@ -42,7 +42,7 @@ export abstract class EditorComponent<T extends TableRow> extends SubscriptionHa
         distinctUntilChanged(compareObjFn),
       ).subscribe(() => {
         setTimeout(() => {
-          this.changeDetectorRef.detectChanges();
+          this.changeDetectorRef.markForCheck();
         });
       }),
     )

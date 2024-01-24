@@ -58,7 +58,7 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
               this.error = true;
             }
 
-            this.changeDetectorRef.detectChanges();
+            this.changeDetectorRef.markForCheck();
           } else {
             console.error(`Query ${query} produced no results: ${data}`);
           }

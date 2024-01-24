@@ -66,12 +66,12 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
           this._error = null;
           this.onReloadSuccessful(data);
           this._loading = false;
-          changeDetectorRef.detectChanges();
+          changeDetectorRef.markForCheck();
         },
         error: (error: QueryError) => {
           this._error = error;
           this._loading = false;
-          changeDetectorRef.detectChanges();
+          changeDetectorRef.markForCheck();
         },
       }),
     );
