@@ -9,11 +9,7 @@
 
   <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
     <div class="content-block">
-      <keira-query-output
-        [docUrl]="docUrl"
-        [editorService]="editorService"
-        (executeQuery)="save($event)"
-      ></keira-query-output>
+      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
     </div>
 
     <form [formGroup]="editorService.form" class="form-group edit-form">
@@ -470,11 +466,11 @@
             <div class="row">
               <div class="col-12">
                 <label class="control-label" for="RewardFactionID{{ i }}">Rew.FactionID{{ i }}</label>
-                <keira-faction-selector-btn
+                <keira-quest-faction-selector-btn
                   [config]="{ name: 'RewardFactionID' + i }"
                   [control]="editorService.form.controls['RewardFactionID' + i]"
                   [disabled]="editorService.form.controls['RewardFactionID' + i].disabled"
-                ></keira-faction-selector-btn>
+                ></keira-quest-faction-selector-btn>
                 <input
                   [formControlName]="'RewardFactionID' + i"
                   id="RewardFactionID{{ i }}"
