@@ -40,7 +40,7 @@ jobs:
       - name: Lint
         run: npm run lint
       - name: Unit and Integration tests
-        uses: nick-invision/retry@v2
+        uses: nick-invision/retry@v3
         with:
           max_attempts: 5
           command: npm run test-ci
