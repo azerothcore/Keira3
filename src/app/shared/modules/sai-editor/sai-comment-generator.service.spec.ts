@@ -1225,6 +1225,14 @@ describe('SaiCommentGeneratorService', () => {
         expected: `MockEntity - In Combat - Set Gameobject Flags Triggered`,
       },
       {
+        name: `SAI_ACTIONS.SET_GO_FLAG check action param 1 (GO_FLAGS.FREEZE_ANIMATION)`,
+        input: {
+          action_type: SAI_ACTIONS.SET_GO_FLAG,
+          action_param1: GO_FLAGS.FREEZE_ANIMATION,
+        },
+        expected: `MockEntity - In Combat - Set Gameobject Flags Freezed`,
+      },
+      {
         name: `SAI_ACTIONS.SET_GO_FLAG check action param 1 (GO_FLAGS.DAMAGED)`,
         input: {
           action_type: SAI_ACTIONS.SET_GO_FLAG,
