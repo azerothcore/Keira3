@@ -741,6 +741,9 @@ export class SaiCommentGeneratorService {
       if ((goFlags & GO_FLAGS.TRIGGERED) !== 0) {
         commentGoFlag += 'Triggered & ';
       }
+      if ((goFlags & GO_FLAGS.FREEZE_ANIMATION) !== 0) {
+        commentGoFlag += 'Freezed & ';
+      }
       if ((goFlags & GO_FLAGS.DAMAGED) !== 0) {
         commentGoFlag += 'Damaged & ';
       }

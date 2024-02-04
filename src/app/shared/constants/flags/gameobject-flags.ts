@@ -8,6 +8,7 @@ export const GAMEOBJECT_FLAGS: Flag[] = [
   { bit: 4, name: 'NOT_SELECTABLE' },
   { bit: 5, name: 'NODESPAWN' },
   { bit: 6, name: 'TRIGGERED' },
-  { bit: 7, name: 'DAMAGED' },
-  { bit: 8, name: 'DESTROYED' },
+  { bit: 7, name: 'FREEZE_ANIMATION (unused)' },
+  { bit: 9, name: 'DAMAGED' },
+  { bit: 10, name: 'DESTROYED' },
 ];
