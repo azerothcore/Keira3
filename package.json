@@ -116,7 +116,7 @@
     "playwright": "1.41.2",
     "prettier": "3.2.5",
     "pretty-quick": "4.0.0",
-    "puppeteer": "21.11.0",
+    "puppeteer": "22.0.0",
     "rxjs": "7.8.1",
     "sqlstring": "2.3.3",
     "squel": "5.13.0",
