@@ -126,7 +126,7 @@
     "wait-on": "7.2.0",
     "webdriver-manager": "13.0.2",
     "webpack": "5.90.1",
-    "zone.js": "0.14.3"
+    "zone.js": "0.14.4"
   },
   "husky": {
     "hooks": {
