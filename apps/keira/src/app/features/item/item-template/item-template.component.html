@@ -1,0 +1,759 @@
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+></keira-top-bar>
+
+<div class="container-fluid editor-with-preview" [ngClass]="{ 'show-preview': showItemPreview }">
+  <span *ngIf="editorService.loading" [translate]="'LOADING'"></span>
+
+  <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
+    <div class="content-block">
+      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+    </div>
+
+    <form [formGroup]="editorService.form" class="form-group edit-form">
+      <div class="content-block">
+        <span class="category-title" [translate]="'ITEM.TEMPLATE.MISCELLANEOUS'"></span>
+        <div class="row">
+          <div class="form-group col-12 col-sm-4 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="entry">entry</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.ENTRY' | translate"></i>
+            <input [formControlName]="'entry'" id="entry" type="number" class="form-control form-control-sm" />
+          </div>
+
+          <div class="form-group col-12 col-sm-8 col-md-8 col-lg-4 col-xl-3">
+            <label class="control-label" for="name">name</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.NAME' | translate"></i>
+            <input [formControlName]="'name'" id="name" class="form-control form-control-sm" />
+          </div>
+
+          <div class="form-group col-12 col-sm-7 col-md-7 col-lg-5 col-xl-4">
+            <label class="control-label" for="description">description</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.DESCRIPTION' | translate"></i>
+            <input [formControlName]="'description'" id="description" class="form-control form-control-sm" />
+          </div>
+
+          <div class="form-group col-12 col-sm-5 col-md-5 col-lg-4 col-xl-3">
+            <label class="control-label" for="ScriptName">ScriptName</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SCRIPT_NAME' | translate"></i>
+            <input [formControlName]="'ScriptName'" id="ScriptName" class="form-control form-control-sm" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="class">class</label>
+            <keira-single-value-selector-btn
+              [control]="editorService.form.controls.class"
+              [disabled]="editorService.form.controls.class.disabled"
+              [config]="{ options: ITEM_CLASS, name: 'class' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
+            <input [formControlName]="'class'" id="class" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="subclass">subclass</label>
+            <keira-single-value-selector-btn
+              *ngIf="
+                editorService.form.controls.class &&
+                editorService.form.controls.class.value !== null &&
+                editorService.form.controls.class.value >= 0 &&
+                editorService.form.controls.class.value < ITEM_SUBCLASS.length
+              "
+              [control]="editorService.form.controls.subclass"
+              [disabled]="editorService.form.controls.subclass.disabled"
+              [config]="{ options: ITEM_SUBCLASS[editorService.form.controls.class.value], name: 'subclass' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SUBCLASS' | translate"></i>
+            <input [formControlName]="'subclass'" id="subclass" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="SoundOverrideSubclass">SoundOverride</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SOUND_OVERRIDE_SUBCLASS' | translate"></i>
+            <input
+              [formControlName]="'SoundOverrideSubclass'"
+              id="SoundOverrideSubclass"
+              type="number"
+              class="form-control form-control-sm"
+            />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="displayid">displayid</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.DISPLAYID' | translate"></i>
+            <input [formControlName]="'displayid'" id="displayid" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="Quality">Quality</label>
+            <keira-single-value-selector-btn
+              [control]="editorService.form.controls.Quality"
+              [disabled]="editorService.form.controls.Quality.disabled"
+              [config]="{ options: ITEM_QUALITY, name: 'Quality' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
+            <input [formControlName]="'Quality'" id="Quality" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="BuyCount">BuyCount</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.BUY_COUNT' | translate"></i>
+            <input [formControlName]="'BuyCount'" id="BuyCount" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="BuyPrice">BuyPrice</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.BUY_PRICE' | translate"></i>
+            <input [formControlName]="'BuyPrice'" id="BuyPrice" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="SellPrice">SellPrice</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SELL_PRICE' | translate"></i>
+            <input [formControlName]="'SellPrice'" id="SellPrice" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="InventoryType">InventoryType</label>
+            <keira-single-value-selector-btn
+              [control]="editorService.form.controls.InventoryType"
+              [disabled]="editorService.form.controls.InventoryType.disabled"
+              [config]="{ options: INVENTORY_TYPE, name: 'InventoryType' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
+            <input [formControlName]="'InventoryType'" id="InventoryType" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="maxcount">maxcount</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.MAXCOUNT' | translate"></i>
+            <input [formControlName]="'maxcount'" id="maxcount" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="stackable">stackable</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.STACKABLE' | translate"></i>
+            <input [formControlName]="'stackable'" id="stackable" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="startquest">startquest</label>
+            <keira-quest-selector-btn
+              [control]="editorService.form.controls.startquest"
+              [disabled]="editorService.form.controls.startquest.disabled"
+              [config]="{ name: 'startquest' }"
+              [modalClass]="'modal-lg'"
+            ></keira-quest-selector-btn>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.STARTQUEST' | translate"></i>
+            <input [formControlName]="'startquest'" id="startquest" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="Material">Material</label>
+            <keira-single-value-selector-btn
+              [control]="editorService.form.controls.Material"
+              [disabled]="editorService.form.controls.Material.disabled"
+              [config]="{ options: ITEM_MATERIAL, name: 'Material' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
+            <input [formControlName]="'Material'" id="Material" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="RandomProperty">RandomProperty</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.RANDOM_PROPERTY' | translate"></i>
+            <input [formControlName]="'RandomProperty'" id="RandomProperty" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="RandomSuffix">RandomSuffix</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.RANDOM_SUFFIX' | translate"></i>
+            <input [formControlName]="'RandomSuffix'" id="RandomSuffix" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="BagFamily">BagFamily</label>
+            <keira-flags-selector-btn
+              [control]="editorService.form.controls.BagFamily"
+              [disabled]="editorService.form.controls.BagFamily.disabled"
+              [config]="{ flags: BAG_FAMILY, name: 'BagFamily' }"
+              [modalClass]="'modal-md'"
+            ></keira-flags-selector-btn>
+            <input [formControlName]="'BagFamily'" id="BagFamily" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="ContainerSlots">ContainerSlots</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.CONTAINER_SLOTS' | translate"></i>
+            <input [formControlName]="'ContainerSlots'" id="ContainerSlots" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="TotemCategory">TotemCategory</label>
+            <keira-single-value-selector-btn
+              [control]="editorService.form.controls.TotemCategory"
+              [disabled]="editorService.form.controls.TotemCategory.disabled"
+              [config]="{ options: TOTEM_CATEGORY, name: 'TotemCategory' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
+            <input [formControlName]="'TotemCategory'" id="TotemCategory" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="duration">duration</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.DURATION' | translate"></i>
+            <input [formControlName]="'duration'" id="duration" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="ItemLimitCategory">ItemLimitCat.</label>
+            <keira-item-limit-category-selector-btn
+              [config]="{ name: 'ItemLimitCategory' }"
+              [control]="editorService.form.controls.ItemLimitCategory"
+              [disabled]="editorService.form.controls.ItemLimitCategory.disabled"
+            ></keira-item-limit-category-selector-btn>
+            <input [formControlName]="'ItemLimitCategory'" id="ItemLimitCategory" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="DisenchantID">DisenchantID</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.DISENCHANT_ID' | translate"></i>
+            <input [formControlName]="'DisenchantID'" id="DisenchantID" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="FoodType">FoodType</label>
+            <keira-single-value-selector-btn
+              [control]="editorService.form.controls.FoodType"
+              [disabled]="editorService.form.controls.FoodType.disabled"
+              [config]="{ options: FOOD_TYPE, name: 'FoodType' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
+            <input [formControlName]="'FoodType'" id="FoodType" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="minMoneyLoot">minMoneyLoot</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.MIN_MONEY_LOOT' | translate"></i>
+            <input [formControlName]="'minMoneyLoot'" id="minMoneyLoot" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="maxMoneyLoot">maxMoneyLoot</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.MAX_MONEY_LOOT' | translate"></i>
+            <input [formControlName]="'maxMoneyLoot'" id="maxMoneyLoot" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="itemset">itemset</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.ITEMSET' | translate"></i>
+            <input [formControlName]="'itemset'" id="itemset" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="bonding">bonding</label>
+            <keira-single-value-selector-btn
+              [control]="editorService.form.controls.bonding"
+              [disabled]="editorService.form.controls.bonding.disabled"
+              [config]="{ options: ITEM_BONDING, name: 'bonding' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
+            <input [formControlName]="'bonding'" id="bonding" type="number" class="form-control form-control-sm" />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-xl-6">
+          <div class="content-block">
+            <span class="category-title" [translate]="'ITEM.TEMPLATE.FLAGS'"></span>
+            <div class="row">
+              <div class="form-group col-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
+                <label class="control-label" for="Flags">Flags</label>
+                <keira-flags-selector-btn
+                  [control]="editorService.form.controls.Flags"
+                  [disabled]="editorService.form.controls.Flags.disabled"
+                  [config]="{ flags: ITEM_FLAGS, name: 'Flags' }"
+                  [modalClass]="'modal-lg'"
+                ></keira-flags-selector-btn>
+                <input [formControlName]="'Flags'" id="Flags" type="number" class="form-control form-control-sm" />
+              </div>
+              <div class="form-group col-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
+                <label class="control-label" for="FlagsExtra">FlagsExtra</label>
+                <keira-flags-selector-btn
+                  [control]="editorService.form.controls.FlagsExtra"
+                  [disabled]="editorService.form.controls.FlagsExtra.disabled"
+                  [config]="{ flags: ITEM_FLAGS_EXTRA, name: 'FlagsExtra' }"
+                  [modalClass]="'modal-lg'"
+                ></keira-flags-selector-btn>
+                <input [formControlName]="'FlagsExtra'" id="FlagsExtra" type="number" class="form-control form-control-sm" />
+              </div>
+              <div class="form-group col-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
+                <label class="control-label" for="flagsCustom">flagsCustom</label>
+                <keira-flags-selector-btn
+                  [control]="editorService.form.controls.flagsCustom"
+                  [disabled]="editorService.form.controls.flagsCustom.disabled"
+                  [config]="{ flags: ITEM_FLAGS_CUSTOM, name: 'flagsCustom' }"
+                  [modalClass]="'modal-lg'"
+                ></keira-flags-selector-btn>
+                <input [formControlName]="'flagsCustom'" id="flagsCustom" type="number" class="form-control form-control-sm" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-xl-6">
+          <div class="content-block">
+            <span class="category-title" [translate]="'ITEM.TEMPLATE.TEXTS'"></span>
+            <div class="row">
+              <div class="form-group col-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
+                <label class="control-label" for="PageText">PageText</label>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.PAGE_TEXT' | translate"></i>
+                <input [formControlName]="'PageText'" id="PageText" type="number" class="form-control form-control-sm" />
+              </div>
+              <div class="form-group col-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
+                <label class="control-label" for="PageMaterial">PageMaterial</label>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.PAGE_MATERIAL' | translate"></i>
+                <input [formControlName]="'PageMaterial'" id="PageMaterial" type="number" class="form-control form-control-sm" />
+              </div>
+              <div class="form-group col-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
+                <label class="control-label" for="LanguageID">Lang.ID</label>
+                <keira-language-selector-btn
+                  [config]="{ name: 'LanguageID' }"
+                  [control]="editorService.form.controls.LanguageID"
+                  [disabled]="editorService.form.controls.LanguageID.disabled"
+                ></keira-language-selector-btn>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.LANG_ID' | translate"></i>
+                <input [formControlName]="'LanguageID'" id="LanguageID" type="number" class="form-control form-control-sm" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="content-block">
+        <span class="category-title" [translate]="'ITEM.TEMPLATE.REQUIREMENTS'"></span>
+        <div class="row">
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="AllowableClass">AllowableClass</label>
+            <keira-flags-selector-btn
+              [control]="editorService.form.controls.AllowableClass"
+              [disabled]="editorService.form.controls.AllowableClass.disabled"
+              [config]="{ flags: ALLOWABLE_CLASSES, name: 'AllowableClass' }"
+              [modalClass]="'modal-lg'"
+            ></keira-flags-selector-btn>
+            <input [formControlName]="'AllowableClass'" id="AllowableClass" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="AllowableRace">AllowableRace</label>
+            <keira-flags-selector-btn
+              [control]="editorService.form.controls.AllowableRace"
+              [disabled]="editorService.form.controls.AllowableRace.disabled"
+              [config]="{ flags: ALLOWABLE_RACES, name: 'AllowableRace' }"
+              [modalClass]="'modal-lg'"
+            ></keira-flags-selector-btn>
+            <input [formControlName]="'AllowableRace'" id="AllowableRace" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="ItemLevel">ItemLevel</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.ITEM_LEVEL' | translate"></i>
+            <input [formControlName]="'ItemLevel'" id="ItemLevel" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="RequiredLevel">Req.Level</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.REQUIRED_LEVEL' | translate"></i>
+            <input [formControlName]="'RequiredLevel'" id="RequiredLevel" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="RequiredSkill">Req.Skill</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.REQUIRED_SKILL' | translate"></i>
+            <keira-skill-selector-btn
+              [config]="{ name: 'RequiredSkill' }"
+              [control]="editorService.form.controls.RequiredSkill"
+              [disabled]="editorService.form.controls.RequiredSkill.disabled"
+            ></keira-skill-selector-btn>
+            <input [formControlName]="'RequiredSkill'" id="RequiredSkill" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="RequiredSkillRank">Req.SkillRank</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.REQUIRED_SKILL_RANK' | translate"></i>
+            <input [formControlName]="'RequiredSkillRank'" id="RequiredSkillRank" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="requiredspell">Req.spell</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.REQUIRED_SPELL' | translate"></i>
+            <keira-spell-selector-btn
+              [control]="editorService.form.controls.requiredspell"
+              [disabled]="editorService.form.controls.requiredspell.disabled"
+              [config]="{ name: 'requiredspell' }"
+              [modalClass]="'modal-lg'"
+            ></keira-spell-selector-btn>
+            <input [formControlName]="'requiredspell'" id="requiredspell" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="requiredhonorrank">Req.honorrank</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.REQUIRED_HONORRANK' | translate"></i>
+            <keira-single-value-selector-btn
+              [control]="editorService.form.controls.requiredhonorrank"
+              [disabled]="editorService.form.controls.requiredhonorrank.disabled"
+              [config]="{ options: PVP_RANK, name: 'PvP Honor Rank' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
+            <input [formControlName]="'requiredhonorrank'" id="requiredhonorrank" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="RequiredCityRank">Req.CityRank</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.REQUIRED_CITY_RANK' | translate"></i>
+            <input [formControlName]="'RequiredCityRank'" id="RequiredCityRank" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="RequiredReputationFaction">Req.Rep.Faction</label>
+            <keira-faction-selector-btn
+              [config]="{ name: 'RequiredReputationFaction' }"
+              [control]="editorService.form.controls.RequiredReputationFaction"
+              [disabled]="editorService.form.controls.RequiredReputationFaction.disabled"
+            ></keira-faction-selector-btn>
+            <input
+              [formControlName]="'RequiredReputationFaction'"
+              id="RequiredReputationFaction"
+              type="number"
+              class="form-control form-control-sm"
+            />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="RequiredReputationRank">Req.Rep.Rank</label>
+            <keira-single-value-selector-btn
+              [control]="editorService.form.controls.RequiredReputationRank"
+              [disabled]="editorService.form.controls.RequiredReputationRank.disabled"
+              [config]="{ options: FACTION_RANK, name: 'RequiredReputationRank' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
+            <input
+              [formControlName]="'RequiredReputationRank'"
+              id="RequiredReputationRank"
+              type="number"
+              class="form-control form-control-sm"
+            />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="RequiredDisenchantSkill">Req.Disenchant</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.REQUIRED_DISENCHANT_SKILL' | translate"></i>
+            <input
+              [formControlName]="'RequiredDisenchantSkill'"
+              id="RequiredDisenchantSkill"
+              type="number"
+              class="form-control form-control-sm"
+            />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="Map">Map</label>
+            <keira-map-selector-btn
+              [config]="{ name: 'Map' }"
+              [control]="editorService.form.controls.Map"
+              [disabled]="editorService.form.controls.Map.disabled"
+            ></keira-map-selector-btn>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.MAP' | translate"></i>
+            <input [formControlName]="'Map'" id="Map" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="area">area</label>
+            <keira-area-selector-btn
+              [config]="{ name: 'area' }"
+              [control]="editorService.form.controls.area"
+              [disabled]="editorService.form.controls.area.disabled"
+            ></keira-area-selector-btn>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.AREA' | translate"></i>
+            <input [formControlName]="'area'" id="area" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="HolidayId">HolidayId</label>
+            <keira-holiday-selector-btn
+              [config]="{ name: 'HolidayId' }"
+              [control]="editorService.form.controls.HolidayId"
+              [disabled]="editorService.form.controls.HolidayId.disabled"
+            ></keira-holiday-selector-btn>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.HOLIDAY_ID' | translate"></i>
+            <input [formControlName]="'HolidayId'" id="HolidayId" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="lockid">lockid</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.LOCKID' | translate"></i>
+            <input [formControlName]="'lockid'" id="lockid" type="number" class="form-control form-control-sm" />
+          </div>
+        </div>
+      </div>
+      <div class="content-block">
+        <span class="category-title">
+          {{ 'ITEM.TEMPLATE.RESISTANCE' | translate }}
+          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.RESISTANCE_TOOLTIP' | translate"></i>
+        </span>
+        <div class="row">
+          <div
+            *ngFor="let resistance of ['holy', 'fire', 'nature', 'frost', 'shadow', 'arcane']"
+            class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
+          >
+            <label class="control-label" for="{{ resistance }}_res">{{ resistance }}_res</label>
+            <input [formControlName]="resistance + '_res'" id="{{ resistance }}_res" type="number" class="form-control form-control-sm" />
+          </div>
+        </div>
+      </div>
+      <div class="content-block">
+        <span class="category-title" [translate]="'ITEM.TEMPLATE.STATS'"></span>
+        <div class="row">
+          <div class="form-group col-12 col-sm-6 col-lg-4 col-xl-3">
+            <label class="control-label" for="ScalingStatDistribution">ScalingStatDistribution</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SCALING_STAT_DISTRIBUTION' | translate"></i>
+            <input
+              [formControlName]="'ScalingStatDistribution'"
+              id="ScalingStatDistribution"
+              type="number"
+              class="form-control form-control-sm"
+            />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-lg-4 col-xl-3">
+            <label class="control-label" for="ScalingStatValue">ScalingStatValue</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SCALING_STAT_VALUE' | translate"></i>
+            <input [formControlName]="'ScalingStatValue'" id="ScalingStatValue" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-lg-4 col-xl-3">
+            <label class="control-label" for="StatsCount">count</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.STATS_COUNT' | translate"></i>
+            <input [formControlName]="'StatsCount'" id="StatsCount" type="number" class="form-control form-control-sm" />
+          </div>
+        </div>
+        <div class="row">
+          <div *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]" class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <div class="row">
+              <div class="col-12">
+                <label class="control-label" for="stat_type{{ i }}">type{{ i }}</label>
+                <keira-single-value-selector-btn
+                  [control]="editorService.form.controls['stat_type' + i]"
+                  [disabled]="editorService.form.controls['stat_type' + i].disabled"
+                  [config]="{ options: STAT_TYPE, name: 'stat_type' + i }"
+                  [modalClass]="'modal-md'"
+                ></keira-single-value-selector-btn>
+                <input [formControlName]="'stat_type' + i" id="stat_type{{ i }}" type="number" class="form-control form-control-sm" />
+              </div>
+              <div class="col-12">
+                <label class="control-label" for="stat_value{{ i }}">value{{ i }}</label>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.STAT_VALUE' | translate"></i>
+                <input [formControlName]="'stat_value' + i" id="stat_value{{ i }}" type="number" class="form-control form-control-sm" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="content-block">
+        <span class="category-title" [translate]="'ITEM.TEMPLATE.SOCKET'"></span>
+        <div class="row">
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg col-xl-5">
+            <label class="control-label" for="socketBonus">socketBonus</label>
+            <keira-item-enchantment-selector-btn
+              [config]="{ name: 'socketBonus' }"
+              [control]="editorService.form.controls.socketBonus"
+              [disabled]="editorService.form.controls.socketBonus.disabled"
+            ></keira-item-enchantment-selector-btn>
+            <input [formControlName]="'socketBonus'" id="socketBonus" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg col-xl-5">
+            <label class="control-label" for="GemProperties">GemProperties</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.GEM_PROPERTIES' | translate"></i>
+            <input [formControlName]="'GemProperties'" id="GemProperties" type="number" class="form-control form-control-sm" />
+          </div>
+        </div>
+        <div class="row">
+          <div *ngFor="let i of [1, 2, 3]" class="form-group col-12 col-sm-4 col-md-3 col-lg">
+            <div class="row">
+              <div class="col-12">
+                <label class="control-label" for="socketColor_{{ i }}">Color_{{ i }}</label>
+                <keira-flags-selector-btn
+                  [control]="editorService.form.controls['socketColor_' + i]"
+                  [disabled]="editorService.form.controls['socketColor_' + i].disabled"
+                  [config]="{ flags: SOCKET_COLOR, name: 'socketColor_' + i }"
+                  [modalClass]="'modal-md'"
+                ></keira-flags-selector-btn>
+                <input [formControlName]="'socketColor_' + i" id="socketColor_{{ i }}" type="number" class="form-control form-control-sm" />
+              </div>
+              <div class="col-12">
+                <label class="control-label" for="socketContent_{{ i }}">Content_{{ i }}</label>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SOCKET_CONTENTS' | translate: { idx: i }"></i>
+                <input
+                  [formControlName]="'socketContent_' + i"
+                  id="socketContent_{{ i }}"
+                  type="number"
+                  class="form-control form-control-sm"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="content-block">
+        <span class="category-title" [translate]="'ITEM.TEMPLATE.WEAPON_ARMOR'"></span>
+        <div class="row">
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="armor">armor</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.ARMOR' | translate"></i>
+            <input [formControlName]="'armor'" id="armor" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="ArmorDamageModifier">ArmorDamageModifier</label>
+            <input [formControlName]="'ArmorDamageModifier'" id="ArmorDamageModifier" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="delay">delay</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.ARMOR_DAMAGE_MODIFIER' | translate"></i>
+            <input [formControlName]="'delay'" id="delay" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="ammo_type">ammo_type</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.DELAY' | translate"></i>
+            <input [formControlName]="'ammo_type'" id="ammo_type" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="RangedModRange">RangModRange</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.AMMO_TYPE' | translate"></i>
+            <input [formControlName]="'RangedModRange'" id="RangedModRange" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="block">block</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.RANGED_MOD_RANGE' | translate"></i>
+            <input [formControlName]="'block'" id="block" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="MaxDurability">MaxDurability</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.BLOCK' | translate"></i>
+            <input [formControlName]="'MaxDurability'" id="MaxDurability" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="sheath">sheath</label>
+            <keira-single-value-selector-btn
+              [control]="editorService.form.controls.sheath"
+              [disabled]="editorService.form.controls.sheath.disabled"
+              [config]="{ options: ITEM_SHEAT, name: 'sheath' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
+            <input [formControlName]="'sheath'" id="sheath" type="number" class="form-control form-control-sm" />
+          </div>
+        </div>
+      </div>
+      <div class="content-block">
+        <span class="category-title" [translate]="'ITEM.TEMPLATE.DAMAGE'"></span>
+        <div class="row">
+          <ng-container *ngFor="let i of [1, 2]">
+            <div class="col-sm-6 col-md-4">
+              <label class="control-label" for="dmg_min{{ i }}">min{{ i }}</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.MAX_DURABILITY' | translate"></i>
+              <input [formControlName]="'dmg_min' + i" id="dmg_min{{ i }}" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="col-sm-6 col-md-4">
+              <label class="control-label" for="dmg_max{{ i }}">max{{ i }}</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.DMG_MIN' | translate"></i>
+              <input [formControlName]="'dmg_max' + i" id="dmg_max{{ i }}" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="col-sm-6 col-md-4">
+              <label class="control-label" for="dmg_type{{ i }}">type{{ i }}</label>
+              <keira-single-value-selector-btn
+                [control]="editorService.form.controls['dmg_type' + i]"
+                [disabled]="editorService.form.controls['dmg_type' + i].disabled"
+                [config]="{ options: DAMAGE_TYPE, name: 'dmg_type' + i }"
+                [modalClass]="'modal-md'"
+              ></keira-single-value-selector-btn>
+              <input [formControlName]="'dmg_type' + i" id="dmg_type{{ i }}" type="number" class="form-control form-control-sm" />
+            </div>
+          </ng-container>
+        </div>
+      </div>
+      <div class="content-block">
+        <span class="category-title">
+          {{ 'ITEM.TEMPLATE.SPELL' | translate }}
+          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.DMG_MAX' | translate"></i>
+        </span>
+        <div class="row">
+          <div *ngFor="let i of [1, 2, 3, 4, 5]" class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl">
+            <div class="row">
+              <div class="col-12">
+                <label class="control-label" for="spellid_{{ i }}">id_{{ i }}</label>
+                <keira-spell-selector-btn
+                  [control]="editorService.form.controls['spellid_' + i]"
+                  [disabled]="editorService.form.controls['spellid_' + i].disabled"
+                  [config]="{ name: 'spellid_' + i }"
+                  [modalClass]="'modal-lg'"
+                ></keira-spell-selector-btn>
+                <input [formControlName]="'spellid_' + i" id="spellid_{{ i }}" type="number" class="form-control form-control-sm" />
+              </div>
+              <div class="col-12">
+                <label class="control-label" for="spelltrigger_{{ i }}">trigger_{{ i }}</label>
+                <select [formControlName]="'spelltrigger_' + i" id="spelltrigger_{{ i }}" class="form-control form-control-sm">
+                  <option *ngFor="let trigger of SPELL_TRIGGERS; let idx = index" [ngValue]="idx" [label]="idx + ' - ' + trigger"></option>
+                </select>
+              </div>
+              <div class="col-12">
+                <label class="control-label" for="spellcharges_{{ i }}">charges_{{ i }}</label>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SPELL_CHARGES' | translate"></i>
+                <input
+                  [formControlName]="'spellcharges_' + i"
+                  id="spellcharges_{{ i }}"
+                  type="number"
+                  class="form-control form-control-sm"
+                />
+              </div>
+              <div class="col-12">
+                <label class="control-label" for="spellppmRate_{{ i }}">ppmRate_{{ i }}</label>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SPELL_PPM_RATES' | translate"></i>
+                <input
+                  [formControlName]="'spellppmRate_' + i"
+                  id="spellppmRate_{{ i }}"
+                  type="number"
+                  class="form-control form-control-sm"
+                />
+              </div>
+              <div class="col-12">
+                <label class="control-label" for="spellcooldown_{{ i }}">cooldown_{{ i }}</label>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SPELL_COOLDOWNS' | translate"></i>
+                <input
+                  [formControlName]="'spellcooldown_' + i"
+                  id="spellcooldown_{{ i }}"
+                  type="number"
+                  class="form-control form-control-sm"
+                />
+              </div>
+              <div class="col-12">
+                <label class="control-label" for="spellcategory_{{ i }}">category_{{ i }}</label>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SPELL_CATEGORIES' | translate"></i>
+                <input
+                  [formControlName]="'spellcategory_' + i"
+                  id="spellcategory_{{ i }}"
+                  type="number"
+                  class="form-control form-control-sm"
+                />
+              </div>
+              <div class="col-12">
+                <label class="control-label" for="spellcategorycooldown_{{ i }}">categorycooldown_{{ i }}</label>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SPELL_CATEGORY_COOLDOWNS' | translate"></i>
+                <input
+                  [formControlName]="'spellcategorycooldown_' + i"
+                  id="spellcategorycooldown_{{ i }}"
+                  type="number"
+                  class="form-control form-control-sm"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="preview-container" [ngClass]="showItemPreview ? 'show-preview' : 'hide-preview'">
+      <div class="transparent perfect-scrollbar">
+        <div class="item-preview">
+          <div class="icon-container">
+            <keira-icon [size]="'large'" [itemDisplayId]="editorService.form.controls.displayid.value" class="icon"></keira-icon>
+            <div class="item-stock-container">
+              <span
+                class="item-stock q1 stackable"
+                *ngIf="editorService.form.controls.stackable.value > 1 && editorService.form.controls.stackable.value < 100"
+                >{{ editorService.form.controls.stackable.value }}</span
+              >
+              <span class="item-stock q1 stackable stackable-100" *ngIf="editorService.form.controls.stackable.value >= 100">{{
+                editorService.form.controls.stackable.value
+              }}</span>
+            </div>
+          </div>
+
+          <div class="item-stats">
+            <div [innerHTML]="itemPreview"></div>
+            <br />
+            <keira-model-3d-viewer
+              [viewerType]="ITEM_VIEWER_TYPE"
+              [displayId]="editorService.form.controls.displayid.value"
+              [itemClass]="editorService.form.controls.class.value"
+              [itemInventoryType]="editorService.form.controls.InventoryType.value"
+              ><div id="model_3d"></div>
+            </keira-model-3d-viewer>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-secondary btn-sm toggle-preview-button" (click)="showItemPreview = !showItemPreview">
+      <i class="fas {{ showItemPreview ? 'fa-angle-double-right' : 'fa-angle-double-left' }}"></i>
+    </button>
+  </div>
+</div>

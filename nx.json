@@ -1,0 +1,40 @@
+{
+  "affected": {
+    "defaultBase": "main"
+  },
+  "namedInputs": {
+    "sharedGlobals": [],
+    "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "production": [
+      "default",
+      "!{projectRoot}/tsconfig.spec.json",
+      "!{projectRoot}/**/*.spec.[jt]s",
+      "!{projectRoot}/karma.conf.js",
+      "!{projectRoot}/.eslintrc.json",
+      "!{projectRoot}/eslint.config.js"
+    ]
+  },
+  "targetDefaults": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"],
+      "cache": true
+    },
+    "test": {
+      "inputs": ["default", "^production", "{workspaceRoot}/karma.conf.js"],
+      "cache": true
+    },
+    "lint": {
+      "inputs": ["default", "{workspaceRoot}/.eslintrc.json", "{workspaceRoot}/eslint.config.js"],
+      "cache": true
+    }
+  },
+  "plugins": [
+    {
+      "plugin": "@nx/eslint/plugin",
+      "options": {
+        "targetName": "lint"
+      }
+    }
+  ]
+}

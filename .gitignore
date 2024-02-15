@@ -34,6 +34,7 @@ src/**/*.js
 .nx/
 /.angular/cache
 src/coverage
+apps/keira/coverage/*
 /.sass-cache
 /connect.lock
 /coverage
@@ -48,7 +49,11 @@ testem.log
 /e2e/*.map
 /e2e/tracing
 /e2e/screenshots
+/apps/keira-e2e/screenshots
 
 # System Files
 .DS_Store
 Thumbs.db
+
+
+.nx/cache

@@ -1,0 +1,57 @@
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+></keira-top-bar>
+
+<div class="container-fluid editor-with-preview" [ngClass]="{ 'show-preview': questPreviewService.showPreview }">
+  <span *ngIf="editorService.loading" [translate]="'LOADING'"></span>
+
+  <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
+    <div class="content-block">
+      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+    </div>
+
+    <div class="content-block">
+      <form [formGroup]="editorService.form" class="form-group edit-form">
+        <div class="row">
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
+            <label class="control-label" for="ID">ID</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'quest'"></i>
+            <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm" />
+          </div>
+
+          <div class="form-group col-12 col-sm-12 col-md-8 col-lg-9 col-xl-9">
+            <label class="control-label" for="RewardText">RewardText</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.OFFER_REWARD.REWARD_TEXT' | translate"></i>
+            <textarea [formControlName]="'RewardText'" id="RewardText" class="form-control form-control-sm"></textarea>
+          </div>
+        </div>
+
+        <div class="row">
+          <div *ngFor="let i of [1, 2, 3, 4]" class="form-group col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3">
+            <div class="row">
+              <div class="col-12">
+                <label class="control-label" for="Emote{{ i }}">Emote{{ i }}</label>
+                <keira-single-value-selector-btn
+                  [control]="editorService.form.controls['Emote' + i]"
+                  [disabled]="editorService.form.controls['Emote' + i].disabled"
+                  [config]="{ options: EMOTE, name: 'Emote' + i }"
+                  [modalClass]="'modal-md'"
+                ></keira-single-value-selector-btn>
+                <input [formControlName]="'Emote' + i" id="Emote{{ i }}" type="number" class="form-control form-control-sm" />
+              </div>
+              <div class="col-12">
+                <label class="control-label" for="EmoteDelay{{ i }}">EmoteDelay{{ i }}</label>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.OFFER_REWARD.EMOTE_DELAY' | translate"></i>
+                <input [formControlName]="'EmoteDelay' + i" id="EmoteDelay{{ i }}" type="number" class="form-control form-control-sm" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <keira-quest-preview></keira-quest-preview>
+  </div>
+</div>

@@ -1,0 +1,61 @@
+{
+  "ignorePatterns": ["!**/*", "src/environments/*"],
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "parserOptions": {
+        "project": ["apps/keira/src/tsconfig.*?.json"],
+        "createDefaultProgram": true
+      },
+      "extends": [
+        "plugin:@angular-eslint/recommended",
+        "plugin:@angular-eslint/template/process-inline-templates",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended"
+      ],
+      "rules": {
+        "@angular-eslint/component-selector": [
+          "error",
+          {
+            "prefix": "keira",
+            "style": "kebab-case",
+            "type": "element"
+          }
+        ],
+        "@angular-eslint/directive-selector": [
+          "error",
+          {
+            "prefix": "app",
+            "style": "camelCase",
+            "type": "attribute"
+          }
+        ],
+        "@angular-eslint/prefer-on-push-component-change-detection": "error",
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          {
+            "argsIgnorePattern": "^_",
+            "varsIgnorePattern": "^_",
+            "caughtErrorsIgnorePattern": "^_"
+          }
+        ],
+        "@typescript-eslint/no-inferrable-types": "off",
+        "@typescript-eslint/no-empty-function": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/ban-ts-comment": "off"
+      }
+    },
+    {
+      "files": ["*.spec.ts", "*.po.ts"],
+      "rules": {
+        "@angular-eslint/prefer-on-push-component-change-detection": "off"
+      }
+    },
+    {
+      "files": ["*.html"],
+      "extends": ["plugin:@angular-eslint/template/recommended"],
+      "rules": {}
+    }
+  ],
+  "extends": "../../.eslintrc.json"
+}
