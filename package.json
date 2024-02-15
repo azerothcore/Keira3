@@ -30,7 +30,7 @@
     "electron:all": "npm run build:prod && electron-builder build --linux && electron-builder build --mac && electron-builder build --windows",
     "format": "prettier --config ./.prettierrc --ignore-path ./.prettierignore --no-editorconfig --write .",
     "format-staged": "pretty-quick --staged",
-    "lint": "ng lint Keira3",
+    "lint": "ng lint keira",
     "test": "ng test",
     "test-ci": "ng test --watch=false --browsers ChromeHeadless --code-coverage && (cat ./coverage/lcov.info | coveralls || true)",
     "e2e": "playwright test -c e2e/playwright.config.ts e2e/",
