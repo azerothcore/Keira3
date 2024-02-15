@@ -25,7 +25,7 @@
     "useDefineForClassFields": false,
     "rootDir": "."
   },
-  "include": ["main.ts", "src/**/*"],
+  "include": ["main.ts"],
   "exclude": ["node_modules", "tmp"],
   "angularCompilerOptions": {
     "strictTemplates": true,

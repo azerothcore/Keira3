@@ -1,5 +1,5 @@
 {
-  "ignorePatterns": ["!**/*"],
+  "ignorePatterns": ["!**/*", "src/environments/*"],
   "overrides": [
     {
       "files": ["*.ts"],

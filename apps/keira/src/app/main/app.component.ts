@@ -6,6 +6,7 @@ import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.se
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
 import { ToastrService } from 'ngx-toastr';
 import { distinctUntilChanged } from 'rxjs';
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import packageInfo from '../../../../../package.json';
 import { MysqlService } from '../shared/services/mysql.service';
 

@@ -5,6 +5,7 @@ import { ConfigService } from '@keira-shared/services/config.service';
 import { MysqlService } from '@keira-shared/services/mysql.service';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
 import { VersionRow } from '@keira-types/general';
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import packageInfo from '../../../../../../package.json';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 

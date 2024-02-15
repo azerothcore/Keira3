@@ -9,6 +9,7 @@ import { MockedElectronService, MockedMysqlService } from '@keira-testing/mocks'
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
 import { instance, reset } from 'ts-mockito';
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import packageInfo from '../../../../../package.json';
 import { ModalConfirmModule } from '../shared/modules/modal-confirm/modal-confirm.module';
 import { QueryErrorComponent } from '../shared/modules/query-output/query-error/query-error.component';
