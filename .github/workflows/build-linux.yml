@@ -35,6 +35,6 @@ jobs:
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --include=optional
       - name: electron:linux:ci
         run: npm run electron:linux:ci
