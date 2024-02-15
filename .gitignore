@@ -34,6 +34,7 @@ src/**/*.js
 .nx/
 /.angular/cache
 src/coverage
+apps/keira/coverage/*
 /.sass-cache
 /connect.lock
 /coverage
