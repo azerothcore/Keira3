@@ -49,6 +49,7 @@ testem.log
 /e2e/*.map
 /e2e/tracing
 /e2e/screenshots
+/apps/keira-e2e/screenshots
 
 # System Files
 .DS_Store
