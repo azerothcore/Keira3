@@ -1,0 +1,154 @@
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+></keira-top-bar>
+
+<div class="container-fluid editor-with-preview" [ngClass]="{ 'show-preview': showGossipPreview }">
+  <span *ngIf="editorService.loading" [translate]="'LOADING' | translate"></span>
+
+  <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
+    <div class="content-block">
+      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+    </div>
+
+    <div class="content-block">
+      <form [formGroup]="editorService.form" class="form-group edit-form">
+        <div class="row">
+          <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+            <label class="control-label" for="OptionID">OptionID</label>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'GOSSIP.GOSSIP_MENU_OPTION.OPTION_ID' | translate"></i>
+            <input [formControlName]="'OptionID'" id="OptionID" type="number" class="form-control form-control-sm" />
+          </div>
+
+          <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+            <label class="control-label" for="OptionIcon">OptionIcon</label>
+            <keira-single-value-selector-btn
+              [control]="editorService.form.controls.OptionIcon"
+              [disabled]="editorService.form.controls.OptionIcon.disabled"
+              [config]="{ options: OPTION_ICON, name: 'OptionIcon' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
+            <input [formControlName]="'OptionIcon'" id="OptionIcon" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+            <label class="control-label" for="OptionText">OptionText</label>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'GOSSIP.GOSSIP_MENU_OPTION.OPTION_TEXT' | translate"></i>
+            <input [formControlName]="'OptionText'" id="OptionText" type="text" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+            <label class="control-label" for="OptionBroadcastTextID">OptionBroadcastTextID</label>
+            <i
+              class="fas fa-info-circle ms-1"
+              [placement]="'auto'"
+              [tooltip]="'GOSSIP.GOSSIP_MENU_OPTION.OPTION_BROADCAST_TEXT_ID' | translate"
+            ></i>
+            <input
+              [formControlName]="'OptionBroadcastTextID'"
+              id="OptionBroadcastTextID"
+              type="number"
+              class="form-control form-control-sm"
+            />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+            <label class="control-label" for="OptionType">OptionType</label>
+            <keira-single-value-selector-btn
+              [control]="editorService.form.controls.OptionType"
+              [disabled]="editorService.form.controls.OptionType.disabled"
+              [config]="{ options: OPTION_TYPE, name: 'OptionType' }"
+              [modalClass]="'modal-xl'"
+            ></keira-single-value-selector-btn>
+            <input [formControlName]="'OptionType'" id="OptionType" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+            <label class="control-label" for="OptionNpcFlag">OptionNpcFlag</label>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'GOSSIP.GOSSIP_MENU_OPTION.OPTION_NPC_FLAG' | translate"></i>
+            <input [formControlName]="'OptionNpcFlag'" id="OptionNpcFlag" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+            <label class="control-label" for="ActionMenuID">ActionMenuID</label>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'GOSSIP.GOSSIP_MENU_OPTION.ACTION_MENU_ID' | translate"></i>
+            <input [formControlName]="'ActionMenuID'" id="ActionMenuID" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+            <label class="control-label" for="ActionPoiID">ActionPoiID</label>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'GOSSIP.GOSSIP_MENU_OPTION.ACTION_POI_ID' | translate"></i>
+            <input [formControlName]="'ActionPoiID'" id="ActionPoiID" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+            <label class="control-label" for="BoxCoded">BoxCoded</label>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'GOSSIP.GOSSIP_MENU_OPTION.BOX_CODED' | translate"></i>
+            <input [formControlName]="'BoxCoded'" id="BoxCoded" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+            <label class="control-label" for="BoxMoney">BoxMoney</label>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'GOSSIP.GOSSIP_MENU_OPTION.BOX_MONEY' | translate"></i>
+            <input [formControlName]="'BoxMoney'" id="BoxMoney" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+            <label class="control-label" for="BoxText">BoxText</label>
+            <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'GOSSIP.GOSSIP_MENU_OPTION.BOX_TEXT' | translate"></i>
+            <input [formControlName]="'BoxText'" id="BoxText" type="text" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
+            <label class="control-label" for="BoxBroadcastTextID">BoxBroadcastTextID</label>
+            <i
+              class="fas fa-info-circle ms-1"
+              [placement]="'auto'"
+              [tooltip]="'GOSSIP.GOSSIP_MENU_OPTION.BOX_BROADCAST_TEXT_ID' | translate"
+            ></i>
+            <input [formControlName]="'BoxBroadcastTextID'" id="BoxBroadcastTextID" type="text" class="form-control form-control-sm" />
+          </div>
+
+          <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
+          </div>
+        </div>
+      </form>
+
+      <div class="row">
+        <div class="col-12">
+          <keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>
+
+          <ngx-datatable
+            id="editor-table"
+            class="bootstrap table table-striped text-center datatable-select"
+            [rows]="editorService.newRows"
+            [headerHeight]="DTCFG.headerHeight"
+            [footerHeight]="DTCFG.footerHeight"
+            [columnMode]="DTCFG.columnMode"
+            [rowHeight]="DTCFG.rowHeight"
+            [selectionType]="DTCFG.selectionType"
+            (select)="editorService.onRowSelection($event)"
+            (keydown.delete)="editorService.deleteSelectedRow()"
+          >
+            <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="OptionID" prop="OptionID" [minWidth]="35"></ngx-datatable-column>
+            <ngx-datatable-column name="OptionIcon" prop="OptionIcon" [minWidth]="35"></ngx-datatable-column>
+            <ngx-datatable-column name="OptionText" prop="OptionText" [minWidth]="50"></ngx-datatable-column>
+            <ngx-datatable-column name="OptionBroadcastTextID" prop="OptionBroadcastTextID" [minWidth]="50"></ngx-datatable-column>
+            <ngx-datatable-column name="OptionType" prop="OptionType" [minWidth]="35"></ngx-datatable-column>
+            <ngx-datatable-column name="OptionNpcFlag" prop="OptionNpcFlag" [minWidth]="50"></ngx-datatable-column>
+            <ngx-datatable-column name="ActionMenuID" prop="ActionMenuID" [minWidth]="50"></ngx-datatable-column>
+            <ngx-datatable-column name="ActionPoiID" prop="ActionPoiID" [minWidth]="50"></ngx-datatable-column>
+            <ngx-datatable-column name="BoxCoded" prop="BoxCoded" [minWidth]="50"></ngx-datatable-column>
+            <ngx-datatable-column name="BoxMoney" prop="BoxMoney" [minWidth]="35"></ngx-datatable-column>
+            <ngx-datatable-column name="BoxText" prop="BoxText" [minWidth]="50"></ngx-datatable-column>
+            <!-- <ngx-datatable-column name="BoxBroadcastTextID"     prop="BoxBroadcastTextID"    [minWidth]="70"></ngx-datatable-column> -->
+          </ngx-datatable>
+        </div>
+      </div>
+    </div>
+
+    <keira-gossip-menu-option-preview [options]="editorService.newRows" [show]="showGossipPreview"></keira-gossip-menu-option-preview>
+
+    <button class="btn btn-secondary btn-sm toggle-preview-button" (click)="showGossipPreview = !showGossipPreview">
+      <i class="fas {{ showGossipPreview ? 'fa-angle-double-right' : 'fa-angle-double-left' }}"></i>
+    </button>
+  </div>
+</div>

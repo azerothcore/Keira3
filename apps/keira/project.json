@@ -1,0 +1,156 @@
+{
+  "name": "keira",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/keira/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@angular-builders/custom-webpack:browser",
+      "options": {
+        "customWebpackConfig": {
+          "allowedCommonJsDependencies": ["highlight.js", "squel", "sqlstring"],
+          "extractCss": true,
+          "path": "./angular.webpack.js"
+        },
+        "aot": true,
+        "outputPath": "dist",
+        "index": "apps/keira/src/index.html",
+        "main": "apps/keira/src/main.ts",
+        "tsConfig": "apps/keira/src/tsconfig.app.json",
+        "polyfills": "apps/keira/src/polyfills.ts",
+        "assets": [
+          "apps/keira/src/assets",
+          "apps/keira/src/favicon.ico",
+          "apps/keira/src/favicon.png",
+          "apps/keira/src/favicon.icns",
+          "apps/keira/src/favicon.256x256.png",
+          "apps/keira/src/favicon.512x512.png"
+        ],
+        "styles": ["apps/keira/src/app/scss/main.scss"],
+        "scripts": ["node_modules/squel/dist/squel.min.js", "node_modules/jquery/dist/jquery.min.js"]
+      },
+      "configurations": {
+        "dev": {
+          "budgets": [
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "7kb"
+            }
+          ],
+          "optimization": false,
+          "outputHashing": "all",
+          "sourceMap": true,
+          "namedChunks": false,
+          "aot": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/keira/src/environments/environment.ts",
+              "with": "apps/keira/src/environments/environment.dev.ts"
+            }
+          ]
+        },
+        "dev-web": {
+          "optimization": false,
+          "outputHashing": "all",
+          "sourceMap": true,
+          "namedChunks": false,
+          "aot": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/keira/src/environments/environment.ts",
+              "with": "apps/keira/src/environments/environment.web.ts"
+            }
+          ]
+        },
+        "production": {
+          "budgets": [
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "7kb"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "aot": true,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "fileReplacements": [
+            {
+              "replace": "apps/keira/src/environments/environment.ts",
+              "with": "apps/keira/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@angular-builders/custom-webpack:dev-server",
+      "options": {
+        "browserTarget": "keira:build"
+      },
+      "configurations": {
+        "dev": {
+          "browserTarget": "keira:build:dev"
+        },
+        "dev-web": {
+          "browserTarget": "angular-electron:build:dev-web"
+        },
+        "production": {
+          "browserTarget": "keira:build:production"
+        }
+      }
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "buildTarget": "keira:build"
+      }
+    },
+    "test": {
+      "executor": "@angular-builders/custom-webpack:karma",
+      "options": {
+        "polyfills": ["zone.js", "zone.js/testing"],
+        "tsConfig": "apps/keira/src/tsconfig.spec.json",
+        "karmaConfig": "apps/keira/src/karma.conf.js",
+        "codeCoverage": true,
+        "codeCoverageExclude": [
+          "apps/keira/src/app/config/**/*",
+          "apps/keira/src/app/constants/**/*",
+          "apps/keira/src/app/shared/services/electron.service.ts",
+          "apps/keira/src/app/shared/types/**/*",
+          "apps/keira/src/app/shared/testing/**/*",
+          "apps/keira/src/app/shared/testing/test-helpers.ts"
+        ],
+        "scripts": ["node_modules/squel/dist/squel.min.js"],
+        "styles": ["apps/keira/src/app/scss/main.scss"],
+        "assets": [
+          "apps/keira/src/assets",
+          "apps/keira/src/favicon.ico",
+          "apps/keira/src/favicon.png",
+          "apps/keira/src/favicon.icns",
+          "apps/keira/src/favicon.256x256.png",
+          "apps/keira/src/favicon.512x512.png"
+        ],
+        "customWebpackConfig": {
+          "path": "./angular.webpack.js",
+          "target": "web"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "lintFilePatterns": ["apps/keira/**/*.ts", "apps/keira/**/*.html"]
+      }
+    }
+  }
+}

@@ -1,0 +1,111 @@
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+></keira-top-bar>
+
+<div class="container-fluid">
+  <span *ngIf="editorService.loading" [translate]="'LOADING'"></span>
+
+  <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
+    <div class="content-block">
+      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+    </div>
+
+    <form [formGroup]="editorService.form" class="form-group edit-form">
+      <div class="content-block">
+        <div class="row">
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="creature_id">creature_id</label>
+            <input [formControlName]="'creature_id'" id="creature_id" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="RewOnKillRepFaction1">RewOnKillRepFaction1</label>
+            <keira-faction-selector-btn
+              [config]="{ name: 'RewOnKillRepFaction1' }"
+              [control]="editorService.form.controls.RewOnKillRepFaction1"
+              [disabled]="editorService.form.controls.RewOnKillRepFaction1.disabled"
+            ></keira-faction-selector-btn>
+            <input
+              [formControlName]="'RewOnKillRepFaction1'"
+              id="RewOnKillRepFaction1"
+              type="number"
+              class="form-control form-control-sm"
+            />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="RewOnKillRepFaction2">RewOnKillRepFaction2</label>
+            <keira-faction-selector-btn
+              [config]="{ name: 'RewOnKillRepFaction2' }"
+              [control]="editorService.form.controls.RewOnKillRepFaction2"
+              [disabled]="editorService.form.controls.RewOnKillRepFaction2.disabled"
+            ></keira-faction-selector-btn>
+            <input
+              [formControlName]="'RewOnKillRepFaction2'"
+              id="RewOnKillRepFaction2"
+              type="number"
+              class="form-control form-control-sm"
+            />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="MaxStanding1">MaxStanding1</label>
+            <keira-single-value-selector-btn
+              [control]="editorService.form.controls.MaxStanding1"
+              [disabled]="editorService.form.controls.MaxStanding1.disabled"
+              [config]="{ options: FACTION_RANK, name: 'MaxStanding1' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
+            <input [formControlName]="'MaxStanding1'" id="MaxStanding1" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="IsTeamAward1">IsTeamAward1</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.ONKILL_REPUTATION.IS_TEAM_AWARD1' | translate"></i>
+            <input [formControlName]="'IsTeamAward1'" id="IsTeamAward1" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="RewOnKillRepValue1">RewOnKillRepValue1</label>
+            <i
+              class="fas fa-info-circle ms-1"
+              placement="auto"
+              [tooltip]="'CREATURE.ONKILL_REPUTATION.REW_ON_KILL_REP_VALUE1' | translate"
+            ></i>
+            <input [formControlName]="'RewOnKillRepValue1'" id="RewOnKillRepValue1" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="MaxStanding2">MaxStanding2</label>
+            <keira-single-value-selector-btn
+              [control]="editorService.form.controls.MaxStanding2"
+              [disabled]="editorService.form.controls.MaxStanding2.disabled"
+              [config]="{ options: FACTION_RANK, name: 'MaxStanding2' }"
+              [modalClass]="'modal-md'"
+            ></keira-single-value-selector-btn>
+            <input [formControlName]="'MaxStanding2'" id="MaxStanding2" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="IsTeamAward2">IsTeamAward2</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.ONKILL_REPUTATION.IS_TEAM_AWARD2' | translate"></i>
+            <input [formControlName]="'IsTeamAward2'" id="IsTeamAward2" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="RewOnKillRepValue2">RewOnKillRepValue2</label>
+            <i
+              class="fas fa-info-circle ms-1"
+              placement="auto"
+              [tooltip]="'CREATURE.ONKILL_REPUTATION.REW_ON_KILL_REP_VALUE2' | translate"
+            ></i>
+            <input [formControlName]="'RewOnKillRepValue2'" id="RewOnKillRepValue2" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" for="TeamDependent">TeamDependent</label>
+            <i
+              class="fas fa-info-circle ms-1"
+              placement="auto"
+              [tooltip]="'CREATURE.ONKILL_REPUTATION.TEAM_DEPENDENT_TOOLTIP' | translate"
+            ></i>
+            <input [formControlName]="'TeamDependent'" id="TeamDependent" type="number" class="form-control form-control-sm" />
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,168 @@
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+></keira-top-bar>
+
+<div class="container-fluid">
+  <span *ngIf="editorService.loading" [translate]="'LOADING'"></span>
+
+  <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
+    <div class="content-block">
+      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+    </div>
+
+    <div class="content-block">
+      <form [formGroup]="editorService.form" class="form-group edit-form">
+        <div class="row">
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+            <label class="control-label" for="guid">guid</label>
+            <input [formControlName]="'guid'" id="guid" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+            <label class="control-label" for="map">map</label>
+            <keira-map-selector-btn
+              [config]="{ name: 'map' }"
+              [control]="editorService.form.controls.map"
+              [disabled]="editorService.form.controls.map.disabled"
+            ></keira-map-selector-btn>
+            <input [formControlName]="'map'" id="map" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+            <label class="control-label" for="zoneId">zoneId</label>
+            <input [formControlName]="'zoneId'" id="zoneId" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+            <label class="control-label" for="areaId">areaId</label>
+            <keira-area-selector-btn
+              [config]="{ name: 'areaId' }"
+              [control]="editorService.form.controls.areaId"
+              [disabled]="editorService.form.controls.areaId.disabled"
+            ></keira-area-selector-btn>
+            <input [formControlName]="'areaId'" id="areaId" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+            <label class="control-label" for="spawnMask">spawnMask</label>
+            <keira-flags-selector-btn
+              [control]="editorService.form.controls.spawnMask"
+              [disabled]="editorService.form.controls.spawnMask.disabled"
+              [config]="{ flags: SPAWN_MASK, name: 'spawnMask' }"
+              [modalClass]="'modal-lg'"
+            ></keira-flags-selector-btn>
+            <input [formControlName]="'spawnMask'" id="spawnMask" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+            <label class="control-label" for="phaseMask">phaseMask</label>
+            <keira-flags-selector-btn
+              [control]="editorService.form.controls.phaseMask"
+              [disabled]="editorService.form.controls.phaseMask.disabled"
+              [config]="{ flags: PHASE_MASK, name: 'phaseMask' }"
+              [modalClass]="'modal-lg'"
+            ></keira-flags-selector-btn>
+            <input [formControlName]="'phaseMask'" id="phaseMask" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+            <label class="control-label" for="position_x">position_x</label>
+            <input [formControlName]="'position_x'" id="position_x" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+            <label class="control-label" for="position_y">position_y</label>
+            <input [formControlName]="'position_y'" id="position_y" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+            <label class="control-label" for="position_z">position_z</label>
+            <input [formControlName]="'position_z'" id="position_z" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+            <label class="control-label" for="orientation">orientation</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'GAMEOBJECT.SPAWN.ORIENTATION' | translate"></i>
+            <input [formControlName]="'orientation'" id="orientation" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+            <label class="control-label" for="rotation0">rotation0</label>
+            <input [formControlName]="'rotation0'" id="rotation0" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+            <label class="control-label" for="rotation1">rotation1</label>
+            <input [formControlName]="'rotation1'" id="rotation1" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+            <label class="control-label" for="rotation2">rotation2</label>
+            <input [formControlName]="'rotation2'" id="rotation2" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+            <label class="control-label" for="rotation3">rotation3</label>
+            <input [formControlName]="'rotation3'" id="rotation3" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+            <label class="control-label" for="spawntimesecs">spawntimesecs</label>
+            <input [formControlName]="'spawntimesecs'" id="spawntimesecs" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+            <label class="control-label" for="animprogress">animprogress</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'GAMEOBJECT.SPAWN.ANIMPROGRESS' | translate"></i>
+            <input [formControlName]="'animprogress'" id="animprogress" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+            <label class="control-label" for="state">state</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'GAMEOBJECT.SPAWN.STATE' | translate"></i>
+            <input [formControlName]="'state'" id="state" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+            <label class="control-label" for="ScriptName">ScriptName</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'GAMEOBJECT.SPAWN.SCRIPT_NAME' | translate"></i>
+            <input [formControlName]="'ScriptName'" id="ScriptName" class="form-control form-control-sm" />
+          </div>
+
+          <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
+          </div>
+        </div>
+      </form>
+
+      <div class="row">
+        <div class="col-12">
+          <keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>
+
+          <ngx-datatable
+            id="editor-table"
+            class="bootstrap table table-striped text-center datatable-select"
+            [rows]="editorService.newRows"
+            [headerHeight]="DTCFG.headerHeight"
+            [footerHeight]="DTCFG.footerHeight"
+            [columnMode]="DTCFG.columnMode"
+            [rowHeight]="DTCFG.rowHeight"
+            [selectionType]="DTCFG.selectionType"
+            (select)="editorService.onRowSelection($event)"
+            (keydown.delete)="editorService.deleteSelectedRow()"
+          >
+            <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="guid" prop="guid" [minWidth]="80"></ngx-datatable-column>
+            <ngx-datatable-column name="M" prop="map" [minWidth]="42"></ngx-datatable-column>
+            <ngx-datatable-column name="Z" prop="zoneId" [minWidth]="42"></ngx-datatable-column>
+            <ngx-datatable-column name="A" prop="areaId" [minWidth]="42"></ngx-datatable-column>
+            <ngx-datatable-column name="SM" prop="spawnMask" [minWidth]="42"></ngx-datatable-column>
+            <ngx-datatable-column name="PM" prop="phaseMask" [minWidth]="42"></ngx-datatable-column>
+            <ngx-datatable-column name="position_x" prop="position_x" [minWidth]="90"></ngx-datatable-column>
+            <ngx-datatable-column name="position_y" prop="position_y" [minWidth]="90"></ngx-datatable-column>
+            <ngx-datatable-column name="position_z" prop="position_z" [minWidth]="90"></ngx-datatable-column>
+            <ngx-datatable-column name="orient." prop="orientation" [minWidth]="90"></ngx-datatable-column>
+            <ngx-datatable-column name="rot.0" prop="rotation0" [minWidth]="90"></ngx-datatable-column>
+            <ngx-datatable-column name="rot.1" prop="rotation1" [minWidth]="90"></ngx-datatable-column>
+            <ngx-datatable-column name="rot.2" prop="rotation2" [minWidth]="90"></ngx-datatable-column>
+            <ngx-datatable-column name="rot.3" prop="rotation3" [minWidth]="90"></ngx-datatable-column>
+            <ngx-datatable-column name="Time" prop="spawntimesecs" [minWidth]="50"></ngx-datatable-column>
+            <ngx-datatable-column name="anim" prop="animprogress" [minWidth]="90"></ngx-datatable-column>
+            <ngx-datatable-column name="state" prop="state" [minWidth]="90"></ngx-datatable-column>
+            <ngx-datatable-column name="ScriptName" prop="ScriptName" [minWidth]="80"></ngx-datatable-column>
+          </ngx-datatable>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
