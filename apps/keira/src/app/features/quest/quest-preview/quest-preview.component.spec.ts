@@ -71,9 +71,6 @@ class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   get rewardMoney(): HTMLDivElement {
     return this.query<HTMLDivElement>('#reward-money', false);
   }
-  get rewardBonusMoney(): HTMLDivElement {
-    return this.query<HTMLDivElement>('#reward-bonus-money', false);
-  }
   get rewardSpell(): HTMLDivElement {
     return this.query<HTMLDivElement>('#rewardSpell', false);
   }
@@ -449,25 +446,6 @@ describe('QuestPreviewComponent', () => {
       expect(page.rewardMoney.innerHTML).toContain('<span class="moneygold">12</span>');
       expect(page.rewardMoney.innerHTML).toContain('<span class="moneysilver">34</span>');
       expect(page.rewardMoney.innerHTML).toContain('<span class="moneycopper">56</span>');
-
-      page.removeElement();
-    });
-
-    it('should correctly show the reward money', () => {
-      const { fixture, service, page } = setup();
-      const spy = spyOnProperty(service, 'rewardBonusMoney', 'get');
-      spy.and.returnValue(0);
-      fixture.detectChanges();
-
-      expect(page.rewardBonusMoney).toBe(null);
-
-      spy.and.returnValue(123456);
-      fixture.detectChanges();
-
-      expect(page.rewardBonusMoney).toBeDefined();
-      expect(page.rewardBonusMoney.innerHTML).toContain('<span class="moneygold">12</span>');
-      expect(page.rewardBonusMoney.innerHTML).toContain('<span class="moneysilver">34</span>');
-      expect(page.rewardBonusMoney.innerHTML).toContain('<span class="moneycopper">56</span>');
 
       page.removeElement();
     });

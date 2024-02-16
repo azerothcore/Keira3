@@ -24,7 +24,7 @@ describe('QuestTemplate integration tests', () => {
     'DELETE FROM `quest_template` WHERE (`ID` = 1234);\n' +
     'INSERT INTO `quest_template` (`ID`, `QuestType`, `QuestLevel`, `MinLevel`, `QuestSortID`, `QuestInfoID`, `SuggestedGroupNum`, ' +
     '`RequiredFactionId1`, `RequiredFactionId2`, `RequiredFactionValue1`, `RequiredFactionValue2`, ' +
-    '`RewardNextQuest`, `RewardXPDifficulty`, `RewardMoney`, `RewardMoneyDifficulty`, `RewardBonusMoney`, ' +
+    '`RewardNextQuest`, `RewardXPDifficulty`, `RewardMoney`, `RewardMoneyDifficulty`, ' +
     '`RewardDisplaySpell`, `RewardSpell`, `RewardHonor`, `RewardKillHonor`, `StartItem`, `Flags`, `RequiredPlayerKills`, ' +
     '`RewardItem1`, `RewardAmount1`, `RewardItem2`, `RewardAmount2`, `RewardItem3`, `RewardAmount3`, `RewardItem4`, `RewardAmount4`, ' +
     '`ItemDrop1`, `ItemDropQuantity1`, `ItemDrop2`, `ItemDropQuantity2`, `ItemDrop3`, `ItemDropQuantity3`, `ItemDrop4`, `ItemDropQuantity4`, ' +
@@ -41,7 +41,7 @@ describe('QuestTemplate integration tests', () => {
     '`RequiredItemId1`, `RequiredItemId2`, `RequiredItemId3`, `RequiredItemId4`, `RequiredItemId5`, `RequiredItemId6`, ' +
     '`RequiredItemCount1`, `RequiredItemCount2`, `RequiredItemCount3`, `RequiredItemCount4`, `RequiredItemCount5`, `RequiredItemCount6`, ' +
     '`Unknown0`, `ObjectiveText1`, `ObjectiveText2`, `ObjectiveText3`, `ObjectiveText4`, `VerifiedBuild`) VALUES\n' +
-    "(1234, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', '', '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', '', '', 0);";
+    "(1234, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', '', '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', '', '', 0);";
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -136,30 +136,29 @@ describe('QuestTemplate integration tests', () => {
     it('changing all properties and executing the query should correctly work', () => {
       const { page, querySpy, originalEntity } = setup(false);
       const expectedQuery =
-        'UPDATE `quest_template` SET `QuestLevel` = 1, `MinLevel` = 2, `QuestSortID` = 3, `QuestInfoID` = 4, ' +
-        '`SuggestedGroupNum` = 5, `RequiredFactionId1` = 6, `RequiredFactionId2` = 7, `RequiredFactionValue1` = 8, ' +
-        '`RequiredFactionValue2` = 9, `RewardNextQuest` = 10, `RewardXPDifficulty` = 11, `RewardMoney` = 12, ' +
-        '`RewardMoneyDifficulty` = 13, `RewardBonusMoney` = 14, `RewardDisplaySpell` = 15, `RewardSpell` = 16, ' +
-        '`RewardHonor` = 17, `RewardKillHonor` = 18, `StartItem` = 19, `Flags` = 20, `RequiredPlayerKills` = 21, ' +
-        '`RewardItem1` = 22, `RewardAmount1` = 23, `RewardItem2` = 24, `RewardAmount2` = 25, `RewardItem3` = 26, ' +
-        '`RewardAmount3` = 27, `RewardItem4` = 28, `RewardAmount4` = 29, `ItemDrop1` = 30, `ItemDropQuantity1` = 31, ' +
-        '`ItemDrop2` = 32, `ItemDropQuantity2` = 33, `ItemDrop3` = 34, `ItemDropQuantity3` = 35, `ItemDrop4` = 36, ' +
-        '`ItemDropQuantity4` = 37, `RewardChoiceItemID1` = 38, `RewardChoiceItemQuantity1` = 39, `RewardChoiceItemID2` = 40, ' +
-        '`RewardChoiceItemQuantity2` = 41, `RewardChoiceItemID3` = 42, `RewardChoiceItemQuantity3` = 43, `RewardChoiceItemID4` = 44, ' +
-        '`RewardChoiceItemQuantity4` = 45, `RewardChoiceItemID5` = 46, `RewardChoiceItemQuantity5` = 47, `RewardChoiceItemID6` = 48, ' +
-        '`RewardChoiceItemQuantity6` = 49, `POIContinent` = 50, `POIx` = 51, `POIy` = 52, `POIPriority` = 53, `RewardTitle` = 54, ' +
-        '`RewardTalents` = 55, `RewardArenaPoints` = 56, `RewardFactionID1` = 57, `RewardFactionValue1` = 58, ' +
-        '`RewardFactionOverride1` = 59, `RewardFactionID2` = 60, `RewardFactionValue2` = 61, `RewardFactionOverride2` = 62, ' +
-        '`RewardFactionID3` = 63, `RewardFactionValue3` = 64, `RewardFactionOverride3` = 65, `RewardFactionID4` = 66, ' +
-        '`RewardFactionValue4` = 67, `RewardFactionOverride4` = 68, `RewardFactionID5` = 69, `RewardFactionValue5` = 70, ' +
-        "`RewardFactionOverride5` = 71, `TimeAllowed` = 72, `AllowableRaces` = 73, `LogTitle` = '74', `LogDescription` = '75', " +
-        "`QuestDescription` = '76', `AreaDescription` = '77', `QuestCompletionLog` = '78', `RequiredNpcOrGo1` = 79, " +
-        '`RequiredNpcOrGo2` = 80, `RequiredNpcOrGo3` = 81, `RequiredNpcOrGo4` = 82, `RequiredNpcOrGoCount1` = 83, ' +
-        '`RequiredNpcOrGoCount2` = 84, `RequiredNpcOrGoCount3` = 85, `RequiredNpcOrGoCount4` = 86, `RequiredItemId1` = 87, ' +
-        '`RequiredItemId2` = 88, `RequiredItemId3` = 89, `RequiredItemId4` = 90, `RequiredItemId5` = 91, `RequiredItemId6` = 92, ' +
-        '`RequiredItemCount1` = 93, `RequiredItemCount2` = 94, `RequiredItemCount3` = 95, `RequiredItemCount4` = 96, ' +
-        "`RequiredItemCount5` = 97, `RequiredItemCount6` = 98, `Unknown0` = 99, `ObjectiveText1` = '100', `ObjectiveText2` = '101', " +
-        "`ObjectiveText3` = '102', `ObjectiveText4` = '103' WHERE (`ID` = 1234);";
+        'UPDATE `quest_template` SET `QuestLevel` = 1, `MinLevel` = 2, `QuestSortID` = 3, `QuestInfoID` = 4, `SuggestedGroupNum` = 5, ' +
+        '`RequiredFactionId1` = 6, `RequiredFactionId2` = 7, `RequiredFactionValue1` = 8, `RequiredFactionValue2` = 9, ' +
+        '`RewardNextQuest` = 10, `RewardXPDifficulty` = 11, `RewardMoney` = 12, `RewardMoneyDifficulty` = 13, ' +
+        '`RewardDisplaySpell` = 14, `RewardSpell` = 15, `RewardHonor` = 16, `RewardKillHonor` = 17, `StartItem` = 18, ' +
+        '`Flags` = 19, `RequiredPlayerKills` = 20, `RewardItem1` = 21, `RewardAmount1` = 22, `RewardItem2` = 23, `RewardAmount2` = 24, ' +
+        '`RewardItem3` = 25, `RewardAmount3` = 26, `RewardItem4` = 27, `RewardAmount4` = 28, `ItemDrop1` = 29, `ItemDropQuantity1` = 30, ' +
+        '`ItemDrop2` = 31, `ItemDropQuantity2` = 32, `ItemDrop3` = 33, `ItemDropQuantity3` = 34, `ItemDrop4` = 35, ' +
+        '`ItemDropQuantity4` = 36, `RewardChoiceItemID1` = 37, `RewardChoiceItemQuantity1` = 38, `RewardChoiceItemID2` = 39, ' +
+        '`RewardChoiceItemQuantity2` = 40, `RewardChoiceItemID3` = 41, `RewardChoiceItemQuantity3` = 42, `RewardChoiceItemID4` = 43, ' +
+        '`RewardChoiceItemQuantity4` = 44, `RewardChoiceItemID5` = 45, `RewardChoiceItemQuantity5` = 46, `RewardChoiceItemID6` = 47, ' +
+        '`RewardChoiceItemQuantity6` = 48, `POIContinent` = 49, `POIx` = 50, `POIy` = 51, `POIPriority` = 52, `RewardTitle` = 53, ' +
+        '`RewardTalents` = 54, `RewardArenaPoints` = 55, `RewardFactionID1` = 56, `RewardFactionValue1` = 57, ' +
+        '`RewardFactionOverride1` = 58, `RewardFactionID2` = 59, `RewardFactionValue2` = 60, `RewardFactionOverride2` = 61, ' +
+        '`RewardFactionID3` = 62, `RewardFactionValue3` = 63, `RewardFactionOverride3` = 64, `RewardFactionID4` = 65, ' +
+        '`RewardFactionValue4` = 66, `RewardFactionOverride4` = 67, `RewardFactionID5` = 68, `RewardFactionValue5` = 69, ' +
+        '`RewardFactionOverride5` = 70, `TimeAllowed` = 71, `AllowableRaces` = 72, ' +
+        "`LogTitle` = '73', `LogDescription` = '74', `QuestDescription` = '75', `AreaDescription` = '76'," +
+        " `QuestCompletionLog` = '77', `RequiredNpcOrGo1` = 78, `RequiredNpcOrGo2` = 79, `RequiredNpcOrGo3` = 80, " +
+        '`RequiredNpcOrGo4` = 81, `RequiredNpcOrGoCount1` = 82, `RequiredNpcOrGoCount2` = 83, `RequiredNpcOrGoCount3` = 84, ' +
+        '`RequiredNpcOrGoCount4` = 85, `RequiredItemId1` = 86, `RequiredItemId2` = 87, `RequiredItemId3` = 88, `RequiredItemId4` = 89, ' +
+        '`RequiredItemId5` = 90, `RequiredItemId6` = 91, `RequiredItemCount1` = 92, `RequiredItemCount2` = 93, `RequiredItemCount3` = 94,' +
+        " `RequiredItemCount4` = 95, `RequiredItemCount5` = 96, `RequiredItemCount6` = 97, `Unknown0` = 98, `ObjectiveText1` = '99', " +
+        "`ObjectiveText2` = '100', `ObjectiveText3` = '101', `ObjectiveText4` = '102' WHERE (`ID` = 1234);";
       querySpy.calls.reset();
 
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
