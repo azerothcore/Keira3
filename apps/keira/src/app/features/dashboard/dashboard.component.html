@@ -14,7 +14,7 @@
         <i class="fa fa-sync fa-sm"></i> {{ 'RELOAD' | translate }}
       </button>
     </p>
-    <div *ngIf="error" class="alert alert-danger error-box mt-2" id="database-warning">
+    <div *ngIf="wrongEmuWarning" class="alert alert-danger error-box mt-2" id="database-warning">
       <p [innerHTML]="'DASHBOARD.SYSTEM_WARNING' | translate: { DATABASE_NAME: databaseName }"></p>
       <ul>
         <li [innerHTML]="'DASHBOARD.SYSTEM_WARNING_1' | translate"></li>
