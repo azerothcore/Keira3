@@ -20,9 +20,9 @@ class DashboardComponentPage extends PageObject<DashboardComponent> {
   get dbVersion(): HTMLTableCellElement {
     return this.query<HTMLTableCellElement>('#db-version');
   }
-  get dbWorldVersion(): HTMLTableCellElement {
-    return this.query<HTMLTableCellElement>('#db-world-version');
-  }
+  // get dbWorldVersion(): HTMLTableCellElement {
+  //   return this.query<HTMLTableCellElement>('#db-world-version');
+  // }
   dbWarning(assert = true): HTMLDivElement {
     return this.query<HTMLDivElement>('#database-warning', assert);
   }
@@ -75,8 +75,8 @@ describe('DashboardComponent', () => {
   };
 
   it('should correctly display the versions', () => {
-    const { fixture, page, component } = setup();
-    fixture.detectChanges();
+    const { page } = setup();
+    page.detectChanges();
 
     expect(page.coreVersion.innerHTML).toContain(versionRow.core_version);
     expect(page.coreRevision.innerHTML).toContain(versionRow.core_revision);
@@ -87,7 +87,7 @@ describe('DashboardComponent', () => {
   });
 
   it('if the revision hash ends with a "+", it should be stripped in the url', () => {
-    const { fixture, page } = setup();
+    const { page } = setup();
     when(MockedMysqlQueryService.query('SELECT * FROM version')).thenReturn(
       of([
         {
@@ -97,15 +97,15 @@ describe('DashboardComponent', () => {
       ]),
     );
 
-    fixture.detectChanges();
+    page.detectChanges();
 
     expect(page.commitHashUrl.href).toEqual(`https://github.com/azerothcore/azerothcore-wotlk/commit/${versionRow.core_revision}`);
   });
 
   describe('refresh button', () => {
     it('when the refresh button is clicked, it should correctly reload the data', () => {
-      const { fixture, page } = setup();
-      fixture.detectChanges();
+      const { page } = setup();
+      page.detectChanges();
       expect(page.coreVersion.innerHTML).toContain(versionRow.core_version);
 
       const newVersion = 'A new fantastic AzerothCore version!';
@@ -118,45 +118,45 @@ describe('DashboardComponent', () => {
         ]),
       );
       page.reloadBtn.click();
-      fixture.detectChanges();
+      page.detectChanges();
 
       expect(page.coreVersion.innerHTML).not.toContain(versionRow.core_version);
       expect(page.coreVersion.innerHTML).toContain(newVersion);
     });
 
     it('when clicked after an error, it should clear the error out', () => {
-      const { fixture, page, component } = setup();
+      const { page } = setup();
 
       when(MockedMysqlQueryService.query(anyString())).thenReturn(of([wrongVersionRow]));
-      fixture.detectChanges();
+      page.detectChanges();
       expect(page.dbWarning()).toBeDefined();
 
       when(MockedMysqlQueryService.query(anyString())).thenReturn(of([versionRow]));
       page.reloadBtn.click();
-      fixture.detectChanges();
+      page.detectChanges();
 
       expect(page.dbWarning(false)).toBeFalsy();
     });
   });
 
   it('should correctly give error if the query does not return the data in the expected format', () => {
-    const { fixture, page, component } = setup();
+    const { page } = setup();
     when(MockedMysqlQueryService.query(anyString())).thenReturn(of([]));
     const errorSpy = spyOn(console, 'error');
 
-    fixture.detectChanges();
+    page.detectChanges();
 
     expect(errorSpy).toHaveBeenCalledTimes(1);
     expect(page.dbWarning(false)).toBeFalsy();
   });
 
   it('should correctly give error if the query returns an error', () => {
-    const { fixture, page, component } = setup();
+    const { page } = setup();
     const error = 'some error';
     when(MockedMysqlQueryService.query(anyString())).thenReturn(throwError(error));
     const errorSpy = spyOn(console, 'error');
 
-    fixture.detectChanges();
+    page.detectChanges();
 
     expect(errorSpy).toHaveBeenCalledTimes(1);
     expect(errorSpy).toHaveBeenCalledWith(error);
@@ -164,10 +164,10 @@ describe('DashboardComponent', () => {
   });
 
   it('should correctly give error if the query returns an error', () => {
-    const { fixture, page, component } = setup();
+    const { page } = setup();
     when(MockedMysqlQueryService.query(anyString())).thenReturn(of([wrongVersionRow]));
 
-    fixture.detectChanges();
+    page.detectChanges();
 
     expect(page.dbWarning()).toBeDefined();
   });
