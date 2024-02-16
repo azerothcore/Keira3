@@ -123,9 +123,6 @@ export class QuestPreviewService {
   get rewardMoney(): number {
     return this.questTemplate.RewardMoney;
   }
-  get rewardBonusMoney(): number {
-    return this.questTemplate.RewardBonusMoney;
-  }
 
   // get QuestTemplateAddon values
   get maxLevel(): string {
@@ -472,12 +469,8 @@ export class QuestPreviewService {
     return this.rewardMoney > 0;
   }
 
-  isRewardBonusMoney(): boolean {
-    return this.rewardBonusMoney > 0;
-  }
-
   isReward(): boolean {
-    return this.isRewardItems() || this.isRewardChoiceItems() || !!this.rewardSpell() || this.isRewardMoney() || this.isRewardBonusMoney();
+    return this.isRewardItems() || this.isRewardChoiceItems() || !!this.rewardSpell() || this.isRewardMoney();
   }
 
   rewardSpell(): number {

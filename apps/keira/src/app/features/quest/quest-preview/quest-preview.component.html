@@ -190,11 +190,6 @@
           You will receive: <span [innerHTML]="helper.formatMoney(service.rewardMoney)"></span>
         </div>
 
-        <!-- Reward Bonus Money -->
-        <div *ngIf="service.isRewardBonusMoney()" class="mt-1" id="reward-bonus-money">
-          Level 80 bonus: <span [innerHTML]="helper.formatMoney(service.rewardBonusMoney)"></span>
-        </div>
-
         <!-- Reward Spell -->
         <div id="rewardSpell" *ngIf="service.rewardSpell(); let spell" class="mt-3">
           <p>You will learn:</p>

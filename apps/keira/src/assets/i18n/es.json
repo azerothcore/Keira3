@@ -310,7 +310,6 @@
       "REWARD_XP_DIFFICULTY": "Según el Nivel, la experiencia básica ligada con el índice de RewardXPDifficulty (Recompensa de Experiencia por Dificultad) que es tomado directamente del archivo QuestXP.dbc. Puede hallar más información al respecto en la documentación.",
       "REWARD_MONEY": "Si el valor es > (mayor que) 0, será el dinero obtenido al completar la Misión; En otro caso, si el valor es < (menor que), será el dinero requerido para completar la Misión",
       "REW_MONEY_DIFFICULTY": "Si lo requiere, RewardMoneyDifficulty (Recompensa de Dinero por Dificultad)",
-      "REWARD_BONUS_MONEY": "La cantidad de dinero que obtendría un jugador cualquiera de nivel 80 en específico al completar esta Misión.",
       "REWARD_SPELL": "Hechizo que será aprendido como recompensa al completar la Misión dentro del Registro de Misiones. Tenga en cuenta que este hechizo NO se enseñará si el campo RewardSpellCast no es igual a cero.",
       "REWARD_HONOR": "Número de Honor recompensado por completar esta Misión",
       "REWARD_FACTIONS_TOOLTIP": "Identificador (ID) de la facción respectiva, para que al momento de completar la Misión sume (o reste) puntos de reputación."
