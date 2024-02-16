@@ -29,6 +29,9 @@ class DashboardComponentPage extends PageObject<DashboardComponent> {
   get commitHashUrl(): HTMLAnchorElement {
     return this.query<HTMLAnchorElement>('#commit-hash-url');
   }
+  get reloadBtn(): HTMLButtonElement {
+    return this.query<HTMLButtonElement>('#reload-btn');
+  }
 }
 
 describe('DashboardComponent', () => {
@@ -92,6 +95,27 @@ describe('DashboardComponent', () => {
     fixture.detectChanges();
 
     expect(page.commitHashUrl.href).toEqual(`https://github.com/azerothcore/azerothcore-wotlk/commit/${versionRow.core_revision}`);
+  });
+
+  it('when the refresh button is clicked, it should correctly reload the data', () => {
+    const { fixture, page } = setup();
+    fixture.detectChanges();
+    expect(page.coreVersion.innerHTML).toContain(versionRow.core_version);
+
+    const newVersion = 'A new fantastic AzerothCore version!';
+    when(MockedMysqlQueryService.query('SELECT * FROM version')).thenReturn(
+      of([
+        {
+          ...versionRow,
+          core_version: newVersion,
+        },
+      ]),
+    );
+    page.reloadBtn.click();
+    fixture.detectChanges();
+
+    expect(page.coreVersion.innerHTML).not.toContain(versionRow.core_version);
+    expect(page.coreVersion.innerHTML).toContain(newVersion);
   });
 
   it('should correctly give error if the query does not return the data in the expected format', () => {

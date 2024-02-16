@@ -40,10 +40,14 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
   }
 
   ngOnInit(): void {
+    this.reload();
+  }
+
+  protected reload(): void {
+    this.error = false;
     this.getCoreVersion();
     // this.getWorldDbVersion();
   }
-
   private getCoreVersion(): void {
     const query = 'SELECT * FROM version';
 
