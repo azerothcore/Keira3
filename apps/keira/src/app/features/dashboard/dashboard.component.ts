@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 
 import { AC_DISCORD_URL, KEIRA3_REPO_URL, PAYPAL_DONATE_URL } from '@keira-constants/general';
 import { ConfigService } from '@keira-shared/services/config.service';
@@ -19,31 +19,31 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
   protected coreVersions: VersionRow;
   protected commitUrl: string;
   protected dbWorldVersion: string;
-  error = false;
+  protected wrongEmuWarning = false;
   protected readonly KEIRA_VERSION = packageInfo.version;
   protected readonly PAYPAL_DONATE_URL = PAYPAL_DONATE_URL;
   protected readonly AC_DISCORD_URL = AC_DISCORD_URL;
   protected readonly KEIRA3_REPO_URL = KEIRA3_REPO_URL;
   protected readonly NAVIGATOR_APP_VERSION = window.navigator.userAgent;
 
+  private readonly queryService = inject(MysqlQueryService);
+  protected readonly configService = inject(ConfigService);
+  private readonly mysqlService = inject(MysqlService);
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
+
   get databaseName(): string {
     return this.mysqlService.config.database;
   }
 
-  constructor(
-    private readonly queryService: MysqlQueryService,
-    public readonly configService: ConfigService,
-    private readonly mysqlService: MysqlService,
-    private readonly changeDetectorRef: ChangeDetectorRef,
-  ) {
-    super();
+  ngOnInit(): void {
+    this.reload();
   }
 
-  ngOnInit(): void {
+  protected reload(): void {
+    this.wrongEmuWarning = false;
     this.getCoreVersion();
     // this.getWorldDbVersion();
   }
-
   private getCoreVersion(): void {
     const query = 'SELECT * FROM version';
 
@@ -56,7 +56,7 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
 
             /* istanbul ignore next */
             if (!this.coreVersions.db_version.startsWith('ACDB') || !this.coreVersions.core_version.startsWith('AzerothCore')) {
-              this.error = true;
+              this.wrongEmuWarning = true;
             }
 
             this.changeDetectorRef.markForCheck();
@@ -65,7 +65,7 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
           }
         },
         error: (error) => {
-          this.error = true;
+          this.wrongEmuWarning = true;
           console.error(error);
         },
       }),
