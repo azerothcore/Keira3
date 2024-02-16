@@ -8,10 +8,14 @@
   </div>
 
   <div class="content-block">
-    <p class="lead mb-3" [translate]="'DASHBOARD.SYSTEM_DETAILS'"></p>
-    <div *ngIf="error" class="alert alert-danger error-box mt-2" id="database-warning">
+    <p class="lead mb-3">
+      {{ 'DASHBOARD.SYSTEM_DETAILS' | translate }}
+      <button type="button" class="btn btn-primary btn-sm float-end" id="reload-btn" (click)="reload()">
+        <i class="fa fa-sync fa-sm"></i> {{ 'RELOAD' | translate }}
+      </button>
+    </p>
+    <div *ngIf="wrongEmuWarning" class="alert alert-danger error-box mt-2" id="database-warning">
       <p [innerHTML]="'DASHBOARD.SYSTEM_WARNING' | translate: { DATABASE_NAME: databaseName }"></p>
-
       <ul>
         <li [innerHTML]="'DASHBOARD.SYSTEM_WARNING_1' | translate"></li>
         <li [innerHTML]="'DASHBOARD.SYSTEM_WARNING_2' | translate"></li>
