@@ -5,13 +5,13 @@ import { ITEM_MOD, ITEM_TYPE } from '@keira-shared/constants/options/item-class'
 import { PVP_RANK } from '@keira-shared/constants/options/item-honorrank';
 import { ITEMS_QUALITY } from '@keira-shared/constants/options/item-quality';
 import { CLASSES_TEXT, RACES_TEXT } from '@keira-shared/constants/preview';
-import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { PreviewHelperService } from '@keira-shared/services/preview-helper.service';
+import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
 import { ItemExtendedCost } from '@keira-shared/types/item-extended-cost.type';
 import { ItemTemplate } from '@keira-shared/types/item-template.type';
 import { ITEM_CONSTANTS } from './item-constants';
-import { gtCombatRatings, lvlIndepRating, MAX_LEVEL, resistanceFields } from './item-preview';
+import { MAX_LEVEL, gtCombatRatings, lvlIndepRating, resistanceFields } from './item-preview';
 
 @Injectable()
 export class ItemPreviewService {
@@ -546,9 +546,10 @@ export class ItemPreviewService {
       const type = Number(itemTemplate['stat_type' + i]);
       const qty = Number(itemTemplate['stat_value' + i]);
 
-      if (!qty || !type || type <= 0) {
+      if (!qty || (!type && type !== 0) || type < 0) {
         continue;
       }
+
       // base stat
       switch (type) {
         case ITEM_MOD.MANA:
