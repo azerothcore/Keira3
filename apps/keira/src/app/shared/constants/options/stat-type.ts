@@ -1,8 +1,9 @@
 import { Option } from '../../types/general';
 
 export const STAT_TYPE: Option[] = [
-  { value: 0, name: 'MANA' },
+  { value: 0, name: '' },
   { value: 1, name: 'HEALTH' },
+  { value: 2, name: 'MANA' },
   { value: 3, name: 'AGILITY' },
   { value: 4, name: 'STRENGTH' },
   { value: 5, name: 'INTELLECT' },

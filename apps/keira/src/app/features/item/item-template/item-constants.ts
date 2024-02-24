@@ -190,9 +190,9 @@ export const ITEM_CONSTANTS = {
   ],
   statType: [
     // ITEM_MOD_*
-    'Mana',
+    '',
     'Health',
-    null,
+    'Mana',
     'Agility',
     'Strength',
     'Intellect',
