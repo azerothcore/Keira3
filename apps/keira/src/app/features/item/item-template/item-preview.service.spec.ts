@@ -441,6 +441,7 @@ describe('ItemPreviewService', () => {
       output: `<br>Sell Price: <span class="moneycopper">99</span> &nbsp;`,
     },
     { name: 'Sell Price-3', template: { SellPrice: -1 }, output: `` },
+    { name: 'Stats 0 Mana', template: { stat_type1: 0, stat_value1: 100 }, output: `<br><span><!--stat0-->+100 Mana</span>` },
     { name: 'Stats 1', template: { stat_type1: 1, stat_value1: 1 }, output: `<br><span><!--stat1-->+1 Health</span>` },
     {
       name: 'Stats -1',
