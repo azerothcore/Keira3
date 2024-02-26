@@ -190,9 +190,8 @@ export const enum ITEM_TYPE {
 
 // ItemMod  (differ slightly from client, see g_statToJson)
 export const enum ITEM_MOD {
-  WEAPON_DMG = 0, // < custom
-  MANA = 1,
-  HEALTH = 2,
+  MANA = 0,
+  HEALTH = 1,
   AGILITY = 3, // stats v
   STRENGTH = 4,
   INTELLECT = 5,
