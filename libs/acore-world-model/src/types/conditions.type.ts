@@ -1,5 +1,5 @@
-import { getEnumKeys } from '../utils/helpers';
 import { TableRow } from './general';
+import { getEnumKeys } from '../../../../apps/keira/src/app/shared/utils/helpers';
 
 export const CONDITIONS_TABLE = 'conditions';
 export const CONDITIONS_ID_FIELDS = [

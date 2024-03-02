@@ -1,4 +1,4 @@
-import { Flag } from '../../types/general';
+import { Flag } from '@keira/acore-world-model';
 
 export const ITEM_FLAGS_CUSTOM: Flag[] = [
   { bit: 0, name: 'CU_DURATION_REAL_TIME' },

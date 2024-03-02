@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
-import { ItemEnchantmentTemplate } from '@keira-types/item-enchantment-template.type';
+import { ItemEnchantmentTemplate } from '@keira/acore-world-model';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemEnchantmentTemplateService } from './item-enchantment-template.service';
 

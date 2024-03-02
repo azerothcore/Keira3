@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
-import { ItemEnchantment, ITEM_ENCHANTMENT_SEARCH_FIELDS, ITEM_ENCHANTMENT_TABLE } from '../../types/item-enchantment.type';
+import { ItemEnchantment, ITEM_ENCHANTMENT_SEARCH_FIELDS, ITEM_ENCHANTMENT_TABLE } from '@keira/acore-world-model';
 import { SearchService } from './search.service';
 
 @Injectable({

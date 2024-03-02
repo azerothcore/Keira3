@@ -2,7 +2,7 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { SAI_ACTIONS } from '@keira-shared/modules/sai-editor/constants/sai-actions';
 import { SAI_EVENTS } from '@keira-shared/modules/sai-editor/constants/sai-event';
 import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
-import { SAI_TYPES, SmartScripts } from '@keira-types/smart-scripts.type';
+import { SAI_TYPES, SmartScripts } from '@keira/acore-world-model';
 import { of } from 'rxjs';
 import { MysqlQueryService } from '../../services/query/mysql-query.service';
 import {

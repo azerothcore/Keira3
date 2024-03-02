@@ -6,7 +6,7 @@ import {
   GAMEOBJECT_QUESTITEM_ID,
   GAMEOBJECT_QUESTITEM_ID_2,
   GAMEOBJECT_QUESTITEM_TABLE,
-} from '@keira-types/gameobject-questitem.type';
+} from '@keira/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 

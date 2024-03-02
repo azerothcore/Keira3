@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MultiRowEditorComponent } from '@keira-shared/abstract/components/editors/multi-row-editor.component';
-import { CreatureTemplateSpell, CREATURE_TEMPLATE_SPELL_TABLE } from '@keira-types/creature-template-spell.type';
+import { CreatureTemplateSpell, CREATURE_TEMPLATE_SPELL_TABLE } from '@keira/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateSpellService } from './creature-template-spell.service';
 

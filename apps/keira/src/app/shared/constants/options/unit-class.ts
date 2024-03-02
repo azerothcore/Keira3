@@ -1,4 +1,4 @@
-import { Option } from '../../types/general';
+import { Option } from '@keira/acore-world-model';
 
 export const UNIT_CLASS: Option[] = [
   { value: 1, name: 'WARRIOR - Health only (equal to ROGUE)' },

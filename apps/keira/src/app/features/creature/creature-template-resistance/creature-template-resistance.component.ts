@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CREATURE_TEMPLATE_RESISTANCE_SCHOOL } from '@keira-constants/options/creature-template-resistance-school';
 import { MultiRowEditorComponent } from '@keira-shared/abstract/components/editors/multi-row-editor.component';
-import { CreatureTemplateResistance, CREATURE_TEMPLATE_RESISTANCE_TABLE } from '@keira-types/creature-template-resistance.type';
+import { CreatureTemplateResistance, CREATURE_TEMPLATE_RESISTANCE_TABLE } from '@keira/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateResistanceService } from './creature-template-resistance.service';
 

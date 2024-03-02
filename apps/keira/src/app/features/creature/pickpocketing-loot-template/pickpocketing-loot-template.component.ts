@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { LootTemplateIdComponent } from '@keira-abstract/components/editors/loot-template/loot-template-id.component';
-import { PickpocketingLootTemplate } from '@keira-types/pickpocketing-loot-template.type';
+import { PickpocketingLootTemplate } from '@keira/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { PickpocketingLootTemplateService } from './pickpocketing-loot-template.service';
 

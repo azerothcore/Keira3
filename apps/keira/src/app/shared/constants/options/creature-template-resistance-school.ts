@@ -1,4 +1,4 @@
-import { Option } from '../../types/general';
+import { Option } from '@keira/acore-world-model';
 
 export const CREATURE_TEMPLATE_RESISTANCE_SCHOOL: Option[] = [
   { value: 1, name: 'SPELL_SCHOOL_HOLY' },

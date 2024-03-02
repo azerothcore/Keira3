@@ -9,7 +9,7 @@ import {
   SPELL_DBC_NAME,
   SPELL_DBC_NAMESUBTEXT,
   SPELL_DBC_TABLE,
-} from '@keira-types/spell-dbc.type';
+} from '@keira/acore-world-model';
 import { SpellHandlerService } from '../spell-handler.service';
 import { SelectSpellService } from './select-spell.service';
 

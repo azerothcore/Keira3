@@ -7,7 +7,7 @@ import {
   CREATURE_TEMPLATE_NAME,
   CREATURE_TEMPLATE_SEARCH_FIELDS,
   CREATURE_TEMPLATE_TABLE,
-} from '@keira-types/creature-template.type';
+} from '@keira/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 
 @Injectable()

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MysqlQueryService } from '../../services/query/mysql-query.service';
-import { ItemTemplate, ITEM_TEMPLATE_SEARCH_FIELDS, ITEM_TEMPLATE_TABLE } from '../../types/item-template.type';
+import { ItemTemplate, ITEM_TEMPLATE_SEARCH_FIELDS, ITEM_TEMPLATE_TABLE } from '@keira/acore-world-model';
 import { SearchService } from './search.service';
 
 @Injectable({

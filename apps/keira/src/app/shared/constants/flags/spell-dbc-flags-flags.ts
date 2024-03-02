@@ -1,5 +1,5 @@
 import { CREATURE_TYPE } from '@keira-constants/options/creature-type';
-import { Flag } from '../../types/general';
+import { Flag } from '@keira/acore-world-model';
 
 export const SPELL_DBC_CREATURE_TYPE_FLAGS: Flag[] = CREATURE_TYPE.slice(1, CREATURE_TYPE.length).map((option) => ({
   bit: (option.value as number) - 1,

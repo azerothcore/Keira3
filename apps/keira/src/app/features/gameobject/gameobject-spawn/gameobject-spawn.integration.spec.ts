@@ -4,7 +4,7 @@ import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.serv
 import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
 import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
-import { GameobjectSpawn } from '@keira-types/gameobject-spawn.type';
+import { GameobjectSpawn } from '@keira/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';

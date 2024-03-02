@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HandlerService } from '@keira-abstract/service/handlers/handler.service';
-import { GAMEOBJECT_LOOT_TEMPLATE_TABLE } from '@keira-types/gameobject-loot-template.type';
-import { GAMEOBJECT_QUESTITEM_TABLE } from '@keira-types/gameobject-questitem.type';
-import { GAMEOBJECT_SPAWN_ADDON_TABLE } from '@keira-types/gameobject-spawn-addon.type';
-import { GAMEOBJECT_SPAWN_TABLE } from '@keira-types/gameobject-spawn.type';
-import { GAMEOBJECT_TEMPLATE_ADDON_TABLE } from '@keira-types/gameobject-template-addon.type';
-import { GameobjectTemplate, GAMEOBJECT_TEMPLATE_TABLE } from '@keira-types/gameobject-template.type';
-import { SAI_TABLE } from '@keira-types/smart-scripts.type';
+import { GAMEOBJECT_LOOT_TEMPLATE_TABLE } from '@keira/acore-world-model';
+import { GAMEOBJECT_QUESTITEM_TABLE } from '@keira/acore-world-model';
+import { GAMEOBJECT_SPAWN_ADDON_TABLE } from '@keira/acore-world-model';
+import { GAMEOBJECT_SPAWN_TABLE } from '@keira/acore-world-model';
+import { GAMEOBJECT_TEMPLATE_ADDON_TABLE } from '@keira/acore-world-model';
+import { GameobjectTemplate, GAMEOBJECT_TEMPLATE_TABLE } from '@keira/acore-world-model';
+import { SAI_TABLE } from '@keira/acore-world-model';
 import { SaiGameobjectHandlerService } from './sai-gameobject-handler.service';
 
 @Injectable()

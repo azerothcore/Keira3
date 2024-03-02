@@ -6,7 +6,7 @@ import {
   ITEM_ENCHANTMENT_TEMPLATE_ID,
   ITEM_ENCHANTMENT_TEMPLATE_ID_2,
   ITEM_ENCHANTMENT_TEMPLATE_TABLE,
-} from '@keira-types/item-enchantment-template.type';
+} from '@keira/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { ItemHandlerService } from '../item-handler.service';
 

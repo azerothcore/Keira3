@@ -20,7 +20,7 @@ import { ITEM_SHEAT } from '@keira-constants/options/item-sheath';
 import { STAT_TYPE } from '@keira-constants/options/stat-type';
 import { TOTEM_CATEGORY } from '@keira-constants/options/totem-category';
 import { PVP_RANK } from '@keira-shared/constants/options/item-honorrank';
-import { ItemTemplate } from '@keira-types/item-template.type';
+import { ItemTemplate } from '@keira/acore-world-model';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { VIEWER_TYPE } from '../../../features/model-3d-viewer/model-3d-viewer.model';
 import { ItemHandlerService } from '../item-handler.service';

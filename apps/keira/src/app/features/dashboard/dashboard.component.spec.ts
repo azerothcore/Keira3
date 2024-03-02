@@ -3,7 +3,7 @@ import { MysqlService } from '@keira-shared/services/mysql.service';
 import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { PageObject } from '@keira-testing/page-object';
-import { VersionDbRow, VersionRow } from '@keira-types/general';
+import { VersionDbRow, VersionRow } from '@keira/acore-world-model';
 import { of, throwError } from 'rxjs';
 import { anyString, instance, when } from 'ts-mockito';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';

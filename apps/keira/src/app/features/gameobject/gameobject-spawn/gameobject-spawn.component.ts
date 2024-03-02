@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
 import { PHASE_MASK } from '@keira-constants/flags/phase-mask';
 import { SPAWN_MASK } from '@keira-constants/flags/spawn-mask';
-import { GameobjectSpawn } from '@keira-types/gameobject-spawn.type';
+import { GameobjectSpawn } from '@keira/acore-world-model';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectSpawnService } from './gameobject-spawn.service';
 

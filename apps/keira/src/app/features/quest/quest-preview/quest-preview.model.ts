@@ -1,4 +1,4 @@
-import { TableRow } from '@keira-shared/types/general';
+import { TableRow } from '@keira/acore-world-model';
 
 export interface Quest {
   id: number;

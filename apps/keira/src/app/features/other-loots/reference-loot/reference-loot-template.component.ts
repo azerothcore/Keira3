@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { LootTemplateComponent } from '@keira-abstract/components/editors/loot-template/loot-template.component';
-import { ReferenceLootTemplate } from '@keira-types/reference-loot-template.type';
+import { ReferenceLootTemplate } from '@keira/acore-world-model';
 import { ReferenceLootHandlerService } from './reference-loot-handler.service';
 import { ReferenceLootTemplateService } from './reference-loot-template.service';
 

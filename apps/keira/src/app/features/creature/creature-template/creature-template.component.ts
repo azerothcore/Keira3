@@ -20,7 +20,7 @@ import { MOVEMENT_TYPE } from '@keira-constants/options/movement-type';
 import { RANK } from '@keira-constants/options/rank';
 import { TRAINER_TYPE } from '@keira-constants/options/trainer-type';
 import { UNIT_CLASS } from '@keira-constants/options/unit-class';
-import { CreatureTemplate } from '@keira-types/creature-template.type';
+import { CreatureTemplate } from '@keira/acore-world-model';
 import { VIEWER_TYPE } from 'app/features/model-3d-viewer/model-3d-viewer.model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateService } from './creature-template.service';

@@ -4,11 +4,11 @@ import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.serv
 import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
 import { PageObject } from '@keira-shared/testing/page-object';
 import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
-import { QuestTemplateAddon } from '@keira-shared/types/quest-template-addon.type';
-import { QuestTemplate } from '@keira-shared/types/quest-template.type';
+import { QuestTemplateAddon } from '@keira/acore-world-model';
+import { QuestTemplate } from '@keira/acore-world-model';
 import { createMockObject } from '@keira-shared/utils/helpers';
-import { QuestOfferReward } from '@keira-types/quest-offer-reward.type';
-import { QuestRequestItems } from '@keira-types/quest-request-items.type';
+import { QuestOfferReward } from '@keira/acore-world-model';
+import { QuestRequestItems } from '@keira/acore-world-model';
 import { ToastrModule } from 'ngx-toastr';
 import { QuestModule } from '../quest.module';
 import { QuestPreviewComponent } from './quest-preview.component';

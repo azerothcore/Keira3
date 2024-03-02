@@ -1,4 +1,4 @@
-import { Flag } from '../../types/general';
+import { Flag } from '@keira/acore-world-model';
 
 export const SOCKET_COLOR: Flag[] = [
   { bit: 1, name: 'Meta' },

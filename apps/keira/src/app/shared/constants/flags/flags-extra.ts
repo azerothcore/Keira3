@@ -1,4 +1,4 @@
-import { Flag } from '../../types/general';
+import { Flag } from '@keira/acore-world-model';
 
 export const FLAGS_EXTRA: Flag[] = [
   { bit: 0, name: `INSTANCE_BIND - creature kill bind instance with killer and killer's group` },

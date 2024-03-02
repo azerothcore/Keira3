@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { LootTemplateComponent } from '@keira-abstract/components/editors/loot-template/loot-template.component';
-import { MillingLootTemplate } from '@keira-types/milling-loot-template.type';
+import { MillingLootTemplate } from '@keira/acore-world-model';
 import { ItemHandlerService } from '../item-handler.service';
 import { MillingLootTemplateService } from './milling-loot-template.service';
 

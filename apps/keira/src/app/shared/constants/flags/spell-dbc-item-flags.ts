@@ -1,4 +1,4 @@
-import { Flag } from '../../types/general';
+import { Flag } from '@keira/acore-world-model';
 import { INVENTORY_TYPE } from '@keira-constants/options/inventory-type';
 import { ITEM_SUBCLASS } from '@keira-constants/options/item-class';
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { ReferenceLootTemplate } from '@keira-types/reference-loot-template.type';
+import { ReferenceLootTemplate } from '@keira/acore-world-model';
 import { Observable } from 'rxjs';
 
 @Injectable()

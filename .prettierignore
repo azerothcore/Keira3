@@ -13,3 +13,5 @@ dist/
 **/*.yml
 package.json
 package-lock.json
+
+.angular

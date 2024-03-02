@@ -6,7 +6,7 @@ import {
   CREATURE_TEMPLATE_SPELL_ID,
   CREATURE_TEMPLATE_SPELL_ID_2,
   CREATURE_TEMPLATE_SPELL_TABLE,
-} from '@keira-types/creature-template-spell.type';
+} from '@keira/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { CreatureHandlerService } from '../creature-handler.service';
 

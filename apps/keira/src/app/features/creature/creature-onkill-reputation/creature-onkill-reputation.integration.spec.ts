@@ -3,7 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
-import { CreatureOnkillReputation } from '@keira-types/creature-onkill-reputation.type';
+import { CreatureOnkillReputation } from '@keira/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';

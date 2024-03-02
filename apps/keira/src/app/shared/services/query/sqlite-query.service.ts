@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { ConfigService } from '@keira-shared/services/config.service';
 import { BaseQueryService } from '@keira-shared/services/query/base-query.service';
 import { SqliteService } from '@keira-shared/services/sqlite.service';
-import { TableRow } from '@keira-types/general';
-import { ItemExtendedCost } from '@keira-types/item-extended-cost.type';
-import { Lock } from '@keira-types/lock.type';
+import { TableRow } from '@keira/acore-world-model';
+import { ItemExtendedCost } from '@keira/acore-world-model';
+import { Lock } from '@keira/acore-world-model';
 import { from, Observable, of, shareReplay, tap } from 'rxjs';
 
 @Injectable({

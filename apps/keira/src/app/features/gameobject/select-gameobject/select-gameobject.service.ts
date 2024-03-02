@@ -7,7 +7,7 @@ import {
   GAMEOBJECT_TEMPLATE_NAME,
   GAMEOBJECT_TEMPLATE_SEARCH_FIELDS,
   GAMEOBJECT_TEMPLATE_TABLE,
-} from '@keira-types/gameobject-template.type';
+} from '@keira/acore-world-model';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 
 @Injectable()

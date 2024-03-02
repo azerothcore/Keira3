@@ -6,7 +6,7 @@ import {
   CREATURE_QUESTSTARTER_ID,
   CREATURE_QUESTSTARTER_ID_2,
   CREATURE_QUESTSTARTER_TABLE,
-} from '@keira-types/creature-queststarter.type';
+} from '@keira/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { QuestHandlerService } from '../quest-handler.service';
 

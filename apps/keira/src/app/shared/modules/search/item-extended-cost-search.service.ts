@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
-import { ItemExtendedCost, ITEM_EXTENDED_COST_SEARCH_FIELDS, ITEM_EXTENDED_COST_TABLE } from '../../types/item-extended-cost.type';
+import { ItemExtendedCost, ITEM_EXTENDED_COST_SEARCH_FIELDS, ITEM_EXTENDED_COST_TABLE } from '@keira/acore-world-model';
 import { SearchService } from './search.service';
 
 @Injectable({

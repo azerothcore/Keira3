@@ -1,4 +1,4 @@
-import { Option } from '../../types/general';
+import { Option } from '@keira/acore-world-model';
 
 export const MOVEMENT_TYPE: Option[] = [
   { value: 0, name: 'Idle (stay in place)' },

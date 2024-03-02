@@ -8,7 +8,7 @@ import { of } from 'rxjs';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { SelectPageObject } from '@keira-testing/select-page-object';
-import { CreatureTemplate } from '@keira-types/creature-template.type';
+import { CreatureTemplate } from '@keira/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { SelectCreatureComponent } from './select-creature.component';

@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HandlerService } from '@keira-abstract/service/handlers/handler.service';
-import { CREATURE_QUESTENDER_TABLE } from '@keira-types/creature-questender.type';
-import { CREATURE_QUESTSTARTER_TABLE } from '@keira-types/creature-queststarter.type';
-import { GAMEOBJECT_QUESTENDER_TABLE } from '@keira-types/gameobject-questender.type';
-import { GAMEOBJECT_QUESTSTARTER_TABLE } from '@keira-types/gameobject-queststarter.type';
-import { QUEST_OFFER_REWARD_TABLE } from '@keira-types/quest-offer-reward.type';
-import { QUEST_REQUEST_ITEMS_TABLE } from '@keira-types/quest-request-items.type';
-import { QUEST_TEMPLATE_ADDON_TABLE } from '@keira-types/quest-template-addon.type';
-import { QuestTemplate, QUEST_TEMPLATE_TABLE } from '@keira-types/quest-template.type';
+import { CREATURE_QUESTENDER_TABLE } from '@keira/acore-world-model';
+import { CREATURE_QUESTSTARTER_TABLE } from '@keira/acore-world-model';
+import { GAMEOBJECT_QUESTENDER_TABLE } from '@keira/acore-world-model';
+import { GAMEOBJECT_QUESTSTARTER_TABLE } from '@keira/acore-world-model';
+import { QUEST_OFFER_REWARD_TABLE } from '@keira/acore-world-model';
+import { QUEST_REQUEST_ITEMS_TABLE } from '@keira/acore-world-model';
+import { QUEST_TEMPLATE_ADDON_TABLE } from '@keira/acore-world-model';
+import { QuestTemplate, QUEST_TEMPLATE_TABLE } from '@keira/acore-world-model';
 
 @Injectable()
 export class QuestHandlerService extends HandlerService<QuestTemplate> {

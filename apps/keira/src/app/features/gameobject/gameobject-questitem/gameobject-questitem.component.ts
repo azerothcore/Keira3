@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
-import { GameobjectQuestitem } from '@keira-types/gameobject-questitem.type';
+import { GameobjectQuestitem } from '@keira/acore-world-model';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectQuestitemService } from './gameobject-questitem.service';
 

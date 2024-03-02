@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MultiRowEditorComponent } from '../../abstract/components/editors/multi-row-editor.component';
 import { EVENT_PHASE_MASK } from '../../constants/flags/event-phase-mask';
 import { SMART_EVENT_FLAGS } from '../../constants/flags/smart-event-flags';
-import { SAI_TYPES, SmartScripts } from '../../types/smart-scripts.type';
+import { SAI_TYPES, SmartScripts } from '@keira/acore-world-model';
 import {
   SAI_ACTIONS,
   SAI_ACTIONS_KEYS,

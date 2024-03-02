@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
 import { ModelForm } from '@keira-shared/utils/helpers';
-import { SAI_TYPES, SAI_TYPES_KEYS, SmartScripts } from '@keira-types/smart-scripts.type';
+import { SAI_TYPES, SAI_TYPES_KEYS, SmartScripts } from '@keira/acore-world-model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

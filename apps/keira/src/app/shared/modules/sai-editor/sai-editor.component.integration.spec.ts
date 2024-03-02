@@ -8,7 +8,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { MysqlQueryService } from '../../services/query/mysql-query.service';
 import { MultiRowEditorPageObject } from '../../testing/multi-row-editor-page-object';
-import { SAI_TYPES, SmartScripts } from '../../types/smart-scripts.type';
+import { SAI_TYPES, SmartScripts } from '@keira/acore-world-model';
 import { SaiEditorComponent } from './sai-editor.component';
 import { SaiEditorModule } from './sai-editor.module';
 import { SaiHandlerService } from './sai-handler.service';

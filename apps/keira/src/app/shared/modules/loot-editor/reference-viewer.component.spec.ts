@@ -3,7 +3,7 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.module';
 import { ReferenceViewerService } from '@keira-shared/modules/loot-editor/reference-viewer.service';
 import { PageObject } from '@keira-testing/page-object';
-import { LootTemplate } from '@keira-types/loot-template.type';
+import { LootTemplate } from '@keira/acore-world-model';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { of } from 'rxjs';
 import { ReferenceViewerComponent } from './reference-viewer.component';

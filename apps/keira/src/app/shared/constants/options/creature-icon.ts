@@ -1,4 +1,4 @@
-import { Option } from '../../types/general';
+import { Option } from '@keira/acore-world-model';
 
 export const CREATURE_ICON: Option[] = [
   { value: null, name: 'None' },

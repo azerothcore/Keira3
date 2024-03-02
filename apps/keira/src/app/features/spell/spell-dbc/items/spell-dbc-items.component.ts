@@ -4,7 +4,7 @@ import { SPELL_DBC_INVENTORY_TYPE, SPELL_DBC_ITEM_SUBCLASS } from '@keira-shared
 import { ITEM_CLASS } from '@keira-shared/constants/options/item-class';
 import { TOTEM_CATEGORY } from '@keira-shared/constants/options/totem-category';
 import { ModelForm } from '@keira-shared/utils/helpers';
-import { SpellDbc } from '@keira-types/spell-dbc.type';
+import { SpellDbc } from '@keira/acore-world-model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,4 +1,4 @@
-import { Flag } from '../../types/general';
+import { Flag } from '@keira/acore-world-model';
 
 export const SPELL_SCHOOL_MASK: Flag[] = [
   { bit: 0, name: 'SPELL_SCHOOL_NORMAL' },

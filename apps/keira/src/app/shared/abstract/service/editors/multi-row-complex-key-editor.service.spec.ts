@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MockEntity, MockHandlerService, MockMultiRowComplexKeyEditorService } from '@keira-testing/mock-services';
 import { mockChangeDetectorRef, MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
-import { TableRow } from '@keira-types/general';
+import { TableRow } from '@keira/acore-world-model';
 import { QueryError } from 'mysql2';
 import { ToastrService } from 'ngx-toastr';
 import { of, throwError } from 'rxjs';

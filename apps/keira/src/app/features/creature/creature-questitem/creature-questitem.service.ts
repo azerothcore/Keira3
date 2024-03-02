@@ -1,12 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MultiRowEditorService } from '@keira-abstract/service/editors/multi-row-editor.service';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import {
-  CreatureQuestitem,
-  CREATURE_QUESTITEM_ID,
-  CREATURE_QUESTITEM_ID_2,
-  CREATURE_QUESTITEM_TABLE,
-} from '@keira-types/creature-questitem.type';
+import { CreatureQuestitem, CREATURE_QUESTITEM_ID, CREATURE_QUESTITEM_ID_2, CREATURE_QUESTITEM_TABLE } from '@keira/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { CreatureHandlerService } from '../creature-handler.service';
 

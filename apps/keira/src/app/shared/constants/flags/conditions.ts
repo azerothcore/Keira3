@@ -1,4 +1,4 @@
-import { Flag } from '../../types/general';
+import { Flag } from '@keira/acore-world-model';
 import { FACTION_RANK } from '../options/faction-rank';
 
 export const QUEST_STATE: Flag[] = [

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
-import { Faction, FACTION_SEARCH_FIELDS, FACTION_TABLE } from '../../types/faction.type';
+import { Faction, FACTION_SEARCH_FIELDS, FACTION_TABLE } from '@keira/acore-world-model';
 import { SearchService } from './search.service';
 
 @Injectable({

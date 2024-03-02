@@ -8,8 +8,8 @@ import { CLASSES_TEXT, RACES_TEXT } from '@keira-shared/constants/preview';
 import { PreviewHelperService } from '@keira-shared/services/preview-helper.service';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
-import { ItemExtendedCost } from '@keira-shared/types/item-extended-cost.type';
-import { ItemTemplate } from '@keira-shared/types/item-template.type';
+import { ItemExtendedCost } from '@keira/acore-world-model';
+import { ItemTemplate } from '@keira/acore-world-model';
 import { ITEM_CONSTANTS } from './item-constants';
 import { MAX_LEVEL, gtCombatRatings, lvlIndepRating, resistanceFields } from './item-preview';
 

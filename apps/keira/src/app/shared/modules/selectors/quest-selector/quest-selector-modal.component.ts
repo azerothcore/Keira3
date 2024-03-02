@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { QuestSearchService } from '../../search/quest-search.service';
-import { QUEST_TEMPLATE_ID, QuestTemplate } from '@keira-types/quest-template.type';
+import { QUEST_TEMPLATE_ID, QuestTemplate } from '@keira/acore-world-model';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 
 @Component({

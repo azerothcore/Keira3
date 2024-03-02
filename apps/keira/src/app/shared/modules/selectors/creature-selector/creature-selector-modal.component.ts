@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { CreatureSearchService } from '../../search/creature-search.service';
-import { CREATURE_TEMPLATE_ID, CreatureTemplate } from '@keira-types/creature-template.type';
+import { CREATURE_TEMPLATE_ID, CreatureTemplate } from '@keira/acore-world-model';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 
 @Component({

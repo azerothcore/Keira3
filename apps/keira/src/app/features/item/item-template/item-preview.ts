@@ -1,5 +1,5 @@
 import { ITEM_MOD } from '@keira-shared/constants/options/item-class';
-import { TableRow } from '@keira-shared/types/general';
+import { TableRow } from '@keira/acore-world-model';
 
 export class Lock extends TableRow {
   id: number;

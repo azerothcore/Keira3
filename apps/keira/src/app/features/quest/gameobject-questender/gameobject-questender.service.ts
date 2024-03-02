@@ -6,7 +6,7 @@ import {
   GAMEOBJECT_QUESTENDER_ID,
   GAMEOBJECT_QUESTENDER_ID_2,
   GAMEOBJECT_QUESTENDER_TABLE,
-} from '@keira-types/gameobject-questender.type';
+} from '@keira/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { QuestHandlerService } from '../quest-handler.service';
 

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SelectComplexKeyComponent } from '@keira-abstract/components/editors/select-complex-key.component';
 import { ConditionsSearchService } from '@keira-shared/modules/search/conditions-search.service';
-import { Conditions, CONDITION_SOURCE_TYPES, CONDITION_SOURCE_TYPES_KEYS } from '@keira-types/conditions.type';
+import { Conditions, CONDITION_SOURCE_TYPES, CONDITION_SOURCE_TYPES_KEYS } from '@keira/acore-world-model';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 
 @Component({

@@ -3,7 +3,7 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { BaseSelectorModalComponent } from '../base-selector/base-selector-modal.component';
 import { DTCFG } from '@keira-config/datatable.config';
-import { Option } from '@keira-types/general';
+import { Option } from '@keira/acore-world-model';
 import { SingleValueModalConfig } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.model';
 
 @Component({

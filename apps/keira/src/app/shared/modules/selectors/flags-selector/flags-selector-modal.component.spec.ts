@@ -4,7 +4,7 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 import { FlagsSelectorModalComponent } from './flags-selector-modal.component';
 import { FlagsService } from './flags.service';
 import { FlagsSelectorModule } from './flags-selector.module';
-import { Flag } from '@keira-types/general';
+import { Flag } from '@keira/acore-world-model';
 import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 
 describe('FlagsSelectorModalComponent', () => {

@@ -6,7 +6,7 @@ import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { of } from 'rxjs';
 import { instance } from 'ts-mockito';
 import { MysqlQueryService } from '../../services/query/mysql-query.service';
-import { SAI_TYPES } from '../../types/smart-scripts.type';
+import { SAI_TYPES } from '@keira/acore-world-model';
 import { SaiHandlerService } from './sai-handler.service';
 
 describe('SaiHandlerService', () => {

@@ -6,7 +6,7 @@ import {
   CREATURE_TEMPLATE_ID,
   CREATURE_TEMPLATE_TABLE,
   CreatureTemplate,
-} from '@keira-types/creature-template.type';
+} from '@keira/acore-world-model';
 import { SelectCreatureService } from './select-creature.service';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MultiRowEditorService } from '@keira-abstract/service/editors/multi-row-editor.service';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { GameobjectSpawn, GAMEOBJECT_SPAWN_ID, GAMEOBJECT_SPAWN_ID_2, GAMEOBJECT_SPAWN_TABLE } from '@keira-types/gameobject-spawn.type';
+import { GameobjectSpawn, GAMEOBJECT_SPAWN_ID, GAMEOBJECT_SPAWN_ID_2, GAMEOBJECT_SPAWN_TABLE } from '@keira/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 

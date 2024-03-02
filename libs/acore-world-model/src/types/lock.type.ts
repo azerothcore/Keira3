@@ -1,4 +1,4 @@
-import { TableRow } from '@keira-types/general';
+import { TableRow } from '@keira/acore-world-model';
 
 export class Lock extends TableRow {
   id: number;

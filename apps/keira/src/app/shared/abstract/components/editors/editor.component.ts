@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
-import { TableRow } from '@keira-types/general';
+import { TableRow } from '@keira/acore-world-model';
 import { WIKI_BASE_URL } from '@keira-constants/general';
 import { HandlerService } from '../../service/handlers/handler.service';
 import { EditorService } from '../../service/editors/editor.service';

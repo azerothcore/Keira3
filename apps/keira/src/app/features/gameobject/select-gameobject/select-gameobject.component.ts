@@ -6,7 +6,7 @@ import {
   GAMEOBJECT_TEMPLATE_CUSTOM_STARTING_ID,
   GAMEOBJECT_TEMPLATE_ID,
   GAMEOBJECT_TEMPLATE_TABLE,
-} from '@keira-types/gameobject-template.type';
+} from '@keira/acore-world-model';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SelectGameobjectService } from './select-gameobject.service';
 

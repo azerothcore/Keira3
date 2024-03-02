@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
 import { EMOTE } from '@keira-constants/options/emote';
-import { QuestRequestItems } from '@keira-types/quest-request-items.type';
+import { QuestRequestItems } from '@keira/acore-world-model';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestRequestItemsService } from './quest-request-items.service';

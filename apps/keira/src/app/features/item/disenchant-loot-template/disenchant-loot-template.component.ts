@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { LootTemplateIdComponent } from '@keira-abstract/components/editors/loot-template/loot-template-id.component';
-import { DisenchantLootTemplate } from '@keira-types/disenchant-loot-template.type';
+import { DisenchantLootTemplate } from '@keira/acore-world-model';
 import { ItemHandlerService } from '../item-handler.service';
 import { DisenchantLootTemplateService } from './disenchant-loot-template.service';
 

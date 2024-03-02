@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { ItemEnchantmentSearchService } from '../../search/item-enchantment-search.service';
-import { ITEM_ENCHANTMENT_ID, ItemEnchantment } from '@keira-types/item-enchantment.type';
+import { ITEM_ENCHANTMENT_ID, ItemEnchantment } from '@keira/acore-world-model';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 
 @Component({

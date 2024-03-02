@@ -1,5 +1,5 @@
-import { getEnumKeys } from '../utils/helpers';
 import { TableRow } from './general';
+import { getEnumKeys } from '../../../../apps/keira/src/app/shared/utils/helpers';
 
 export const SAI_TABLE = 'smart_scripts';
 

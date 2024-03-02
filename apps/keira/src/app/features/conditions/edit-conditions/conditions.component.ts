@@ -19,7 +19,7 @@ import {
   CONDITION_SOURCE_TYPES_KEYS,
   CONDITION_TYPES,
   CONDITION_TYPES_KEYS,
-} from '@keira-types/conditions.type';
+} from '@keira/acore-world-model';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 import {
   CONDITION_TARGET_TOOLTIPS,

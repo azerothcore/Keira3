@@ -12,7 +12,7 @@ import {
 } from '@keira-shared/constants/options/spell-dbc-base-options';
 import { SPELL_MECHANIC } from '@keira-shared/constants/options/spell-mechanic';
 import { ModelForm } from '@keira-shared/utils/helpers';
-import { SpellDbc } from '@keira-types/spell-dbc.type';
+import { SpellDbc } from '@keira/acore-world-model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

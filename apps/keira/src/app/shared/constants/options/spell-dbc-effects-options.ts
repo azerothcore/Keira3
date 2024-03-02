@@ -1,4 +1,4 @@
-import { Option } from '../../types/general';
+import { Option } from '@keira/acore-world-model';
 
 export const SPELL_DBC_EFFECT: Option[] = [
   { value: 0, name: 'NONE' },

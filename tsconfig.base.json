@@ -20,7 +20,7 @@
       "@keira-constants/*": ["app/shared/constants/*"],
       "@keira-shared/*": ["app/shared/*"],
       "@keira-testing/*": ["app/shared/testing/*"],
-      "@keira-types/*": ["app/shared/types/*"]
+      "@keira/acore-world-model": ["../../../libs/acore-world-model/src/index.ts"]
     },
     "useDefineForClassFields": false,
     "rootDir": "."
