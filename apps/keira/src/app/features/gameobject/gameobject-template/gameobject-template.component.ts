@@ -4,9 +4,9 @@ import { GAMEOBJECT_ICON } from '@keira-constants/options/gameobject-icon';
 import { GAMEOBJECT_TYPE } from '@keira-constants/options/gameobject-type';
 import { GameobjectTemplate } from '@keira/acore-world-model';
 import { FieldDefinition } from '@keira/acore-world-model';
-import { VIEWER_TYPE } from 'app/features/model-3d-viewer/model-3d-viewer.model';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectTemplateService } from './gameobject-template.service';
+import { VIEWER_TYPE } from '../../model-3d-viewer/model-3d-viewer.model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
