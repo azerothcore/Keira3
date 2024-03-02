@@ -14,7 +14,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { highlightOptions } from '@keira-config/highlight.config';
 
-import { AppRoutingModule } from './config/app-routing.module';
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './main/app.component';
 import { ConnectionWindowModule } from './main/connection-window/connection-window.module';
 import { DashboardModule } from './features/dashboard/dashboard.module';
