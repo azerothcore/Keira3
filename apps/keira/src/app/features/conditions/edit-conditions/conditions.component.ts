@@ -13,7 +13,7 @@ import {
   CONDITION_STAND_STATE_CV1,
   CONDITION_STAND_STATE_CV2,
 } from '@keira-constants/options/conditions';
-import { Conditions, CONDITION_SOURCE_TYPES, CONDITION_TYPES, CONDITION_TYPES_KEYS } from '@keira/acore-world-model';
+import { Conditions, CONDITION_SOURCE_TYPES, CONDITION_TYPES } from '@keira/acore-world-model';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 import {
   CONDITION_TARGET_TOOLTIPS,
@@ -36,7 +36,7 @@ export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
   readonly CONDITION_SOURCE_TYPES = CONDITION_SOURCE_TYPES;
   readonly CONDITION_SOURCE_TYPES_KEYS = getEnumKeys(CONDITION_SOURCE_TYPES);
   readonly CONDITION_TYPES = CONDITION_TYPES;
-  readonly CONDITION_TYPES_KEYS = CONDITION_TYPES_KEYS;
+  readonly CONDITION_TYPES_KEYS = getEnumKeys(CONDITION_TYPES);
 
   readonly SOURCE_GROUP_TOOLTIPS = SOURCE_GROUP_TOOLTIPS;
   readonly SOURCE_ENTRY_TOOLTIPS = SOURCE_ENTRY_TOOLTIPS;
