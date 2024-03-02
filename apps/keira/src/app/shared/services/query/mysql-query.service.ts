@@ -4,7 +4,7 @@ import { SmartScripts } from '@keira/acore-world-model';
 import { QuestReputationReward } from '../../../features/quest/quest-preview/quest-preview.model';
 import { from, map, Observable, of, tap } from 'rxjs';
 import { Delete, Insert, Squel, Update } from 'squel';
-import { squelConfig } from '@keira-config/squel.config';
+import { squelConfig } from '@keira/config';
 import { MaxRow, TableRow } from '@keira/acore-world-model';
 import { ConfigService } from '../config.service';
 import { MysqlService } from '../mysql.service';

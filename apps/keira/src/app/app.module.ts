@@ -5,14 +5,14 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 import { UiSwitchModule } from 'ngx-ui-switch';
-import { uiSwitchConfig } from '@keira-config/ui-switch.config';
-import { toastrConfig } from '@keira-config/toastr.config';
+import { uiSwitchConfig } from '@keira/config';
+import { toastrConfig } from '@keira/config';
 import { ToastrModule } from 'ngx-toastr';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
-import { highlightOptions } from '@keira-config/highlight.config';
+import { highlightOptions } from '@keira/config';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './main/app.component';

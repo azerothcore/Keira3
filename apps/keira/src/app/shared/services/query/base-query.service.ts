@@ -1,4 +1,4 @@
-import { squelConfig } from '@keira-config/squel.config';
+import { squelConfig } from '@keira/config';
 import { QueryForm, TableRow } from '@keira/acore-world-model';
 import { map, Observable } from 'rxjs';
 import { escape } from 'sqlstring';
