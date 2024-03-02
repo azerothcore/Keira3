@@ -13,13 +13,7 @@ import {
   CONDITION_STAND_STATE_CV1,
   CONDITION_STAND_STATE_CV2,
 } from '@keira-constants/options/conditions';
-import {
-  Conditions,
-  CONDITION_SOURCE_TYPES,
-  CONDITION_SOURCE_TYPES_KEYS,
-  CONDITION_TYPES,
-  CONDITION_TYPES_KEYS,
-} from '@keira/acore-world-model';
+import { Conditions, CONDITION_SOURCE_TYPES, CONDITION_TYPES, CONDITION_TYPES_KEYS } from '@keira/acore-world-model';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 import {
   CONDITION_TARGET_TOOLTIPS,
@@ -30,6 +24,7 @@ import {
   SOURCE_GROUP_TOOLTIPS,
 } from './conditions-constants';
 import { ConditionsService } from './conditions.service';
+import { getEnumKeys } from '@keira-shared/utils/helpers';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -39,7 +34,7 @@ import { ConditionsService } from './conditions.service';
 })
 export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
   readonly CONDITION_SOURCE_TYPES = CONDITION_SOURCE_TYPES;
-  readonly CONDITION_SOURCE_TYPES_KEYS = CONDITION_SOURCE_TYPES_KEYS;
+  readonly CONDITION_SOURCE_TYPES_KEYS = getEnumKeys(CONDITION_SOURCE_TYPES);
   readonly CONDITION_TYPES = CONDITION_TYPES;
   readonly CONDITION_TYPES_KEYS = CONDITION_TYPES_KEYS;
 

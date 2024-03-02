@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SelectComplexKeyComponent } from '@keira-abstract/components/editors/select-complex-key.component';
 import { ConditionsSearchService } from '@keira-shared/modules/search/conditions-search.service';
-import { Conditions, CONDITION_SOURCE_TYPES, CONDITION_SOURCE_TYPES_KEYS } from '@keira/acore-world-model';
+import { Conditions, CONDITION_SOURCE_TYPES } from '@keira/acore-world-model';
 import { ConditionsHandlerService } from '../conditions-handler.service';
+import { getEnumKeys } from '@keira-shared/utils/helpers';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -12,7 +13,7 @@ import { ConditionsHandlerService } from '../conditions-handler.service';
 })
 export class SelectConditionsComponent extends SelectComplexKeyComponent<Conditions> {
   readonly CONDITION_SOURCE_TYPES = CONDITION_SOURCE_TYPES;
-  readonly CONDITION_SOURCE_TYPES_KEYS = CONDITION_SOURCE_TYPES_KEYS;
+  readonly CONDITION_SOURCE_TYPES_KEYS = getEnumKeys(CONDITION_SOURCE_TYPES);
 
   constructor(
     public selectService: ConditionsSearchService,

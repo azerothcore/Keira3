@@ -1,5 +1,4 @@
 import { TableRow } from './general';
-import { getEnumKeys } from '../../../../apps/keira/src/app/shared/utils/helpers';
 
 export const CONDITIONS_TABLE = 'conditions';
 export const CONDITIONS_ID_FIELDS = [
@@ -61,7 +60,6 @@ export enum CONDITION_SOURCE_TYPES {
   SOURCE_TYPE_NPC_VENDOR,
   SOURCE_TYPE_SPELL_PROC,
 }
-export const CONDITION_SOURCE_TYPES_KEYS = getEnumKeys(CONDITION_SOURCE_TYPES);
 
 export enum CONDITION_TYPES {
   CONDITION_NONE,
