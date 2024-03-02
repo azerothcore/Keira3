@@ -1,4 +1,4 @@
-import { Flag } from '../../types/general';
+import { Flag } from '@keira/acore-world-model';
 
 export const SPECIAL_FLAGS: Flag[] = [
   { bit: 0, name: 'Makes the quest repeatable' },

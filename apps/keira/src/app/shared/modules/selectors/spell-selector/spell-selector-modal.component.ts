@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { SpellSearchService } from '../../search/spell-search.service';
-import { Spell, SPELL_ID } from '@keira-types/spell.type';
+import { Spell, SPELL_ID } from '@keira/acore-world-model';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 
 @Component({

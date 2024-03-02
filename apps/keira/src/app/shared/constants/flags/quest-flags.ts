@@ -1,4 +1,4 @@
-import { Flag } from '../../types/general';
+import { Flag } from '@keira/acore-world-model';
 
 export const QUEST_FLAG_SHARABLE = 0x00008;
 

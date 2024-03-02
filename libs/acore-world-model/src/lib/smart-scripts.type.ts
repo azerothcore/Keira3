@@ -1,4 +1,3 @@
-import { getEnumKeys } from '../utils/helpers';
 import { TableRow } from './general';
 
 export const SAI_TABLE = 'smart_scripts';
@@ -13,7 +12,6 @@ export enum SAI_TYPES {
   SAI_TYPE_AREATRIGGER,
   SAI_TYPE_TIMED_ACTIONLIST = 9,
 }
-export const SAI_TYPES_KEYS = getEnumKeys(SAI_TYPES);
 
 export class SmartScripts extends TableRow {
   entryorguid: number = 0;

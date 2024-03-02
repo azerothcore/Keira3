@@ -1,4 +1,4 @@
-import { TableRow } from '@keira-types/general';
+import { TableRow } from '@keira/acore-world-model';
 import { SingleRowEditorService } from '../../service/editors/single-row-editor.service';
 import { HandlerService } from '../../service/handlers/handler.service';
 import { EditorComponent } from './editor.component';

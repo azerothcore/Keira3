@@ -1,4 +1,4 @@
-import { Flag } from '../../types/general';
+import { Flag } from '@keira/acore-world-model';
 
 export const NPC_FLAGS: Flag[] = [
   { bit: 0, name: 'GOSSIP - If creature has more gossip options, add this flag to bring up a menu.' },

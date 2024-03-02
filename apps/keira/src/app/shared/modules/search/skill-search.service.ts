@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
-import { Skill, SKILL_SEARCH_FIELDS, SKILL_TABLE } from '../../types/skill.type';
+import { Skill, SKILL_SEARCH_FIELDS, SKILL_TABLE } from '@keira/acore-world-model';
 import { SearchService } from './search.service';
 
 @Injectable({

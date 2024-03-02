@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { SelectPageObject } from '@keira-testing/select-page-object';
-import { SpellDbc, SPELL_DBC_ID, SPELL_DBC_NAME } from '@keira-types/spell-dbc.type';
+import { SpellDbc, SPELL_DBC_ID, SPELL_DBC_NAME } from '@keira/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';

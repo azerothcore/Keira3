@@ -4,7 +4,7 @@ import { ALLOWABLE_RACES } from '@keira-constants/flags/allowable-races';
 import { QUEST_FLAGS } from '@keira-constants/flags/quest-flags';
 import { QUEST_TYPE } from '@keira-constants/options/quest-type';
 import { QUEST_INFO } from '@keira-shared/constants/options/quest-info';
-import { QuestTemplate } from '@keira-types/quest-template.type';
+import { QuestTemplate } from '@keira/acore-world-model';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestTemplateService } from './quest-template.service';

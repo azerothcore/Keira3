@@ -7,7 +7,7 @@ import {
   ITEM_TEMPLATE_NAME,
   ITEM_TEMPLATE_SEARCH_FIELDS,
   ITEM_TEMPLATE_TABLE,
-} from '@keira-types/item-template.type';
+} from '@keira/acore-world-model';
 import { ItemHandlerService } from '../item-handler.service';
 
 @Injectable()

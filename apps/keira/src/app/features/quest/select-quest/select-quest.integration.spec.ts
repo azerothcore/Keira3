@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { SelectPageObject } from '@keira-testing/select-page-object';
-import { QuestTemplate } from '@keira-types/quest-template.type';
+import { QuestTemplate } from '@keira/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';

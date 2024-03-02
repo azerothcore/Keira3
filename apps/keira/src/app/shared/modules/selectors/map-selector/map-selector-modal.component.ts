@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { MapSearchService } from '../../search/map-search.service';
-import { Map, MAP_ID } from '@keira-types/map.type';
+import { Map, MAP_ID } from '@keira/acore-world-model';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 
 @Component({

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
 import { INVISIBILITY_TYPE } from '@keira-constants/options/invisibility-type';
-import { GameobjectSpawnAddon } from '@keira-types/gameobject-spawn-addon.type';
+import { GameobjectSpawnAddon } from '@keira/acore-world-model';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectSpawnAddonService } from './gameobject-spawn-addon.service';
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MysqlQueryService } from '../../services/query/mysql-query.service';
-import { GameobjectTemplate, GAMEOBJECT_TEMPLATE_SEARCH_FIELDS, GAMEOBJECT_TEMPLATE_TABLE } from '../../types/gameobject-template.type';
+import { GameobjectTemplate, GAMEOBJECT_TEMPLATE_SEARCH_FIELDS, GAMEOBJECT_TEMPLATE_TABLE } from '@keira/acore-world-model';
 import { SearchService } from './search.service';
 
 @Injectable({

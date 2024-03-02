@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { TableRow } from '@keira-shared/types/general';
+import { TableRow } from '@keira/acore-world-model';
 import * as jquery from 'jquery';
 import { BehaviorSubject, Observable, Subscription, catchError, filter, of } from 'rxjs';
 import { generateModels, getShadowlandDisplayId } from './helper';

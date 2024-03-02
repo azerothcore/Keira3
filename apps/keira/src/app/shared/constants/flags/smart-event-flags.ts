@@ -1,4 +1,4 @@
-import { Flag } from '../../types/general';
+import { Flag } from '@keira/acore-world-model';
 
 export const SMART_EVENT_FLAGS: Flag[] = [
   { bit: 0, name: 'NOT_REPEATABLE (Event can not repeat)' },

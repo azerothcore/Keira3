@@ -5,7 +5,7 @@ import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.se
 import { SqliteService } from '@keira-shared/services/sqlite.service';
 import { EditorPageObject } from '@keira-testing/editor-page-object';
 import { MockedSqliteService } from '@keira-testing/mocks';
-import { QuestTemplateAddon } from '@keira-types/quest-template-addon.type';
+import { QuestTemplateAddon } from '@keira/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';

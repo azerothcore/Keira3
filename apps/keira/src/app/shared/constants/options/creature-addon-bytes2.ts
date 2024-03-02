@@ -1,4 +1,4 @@
-import { Option } from '../../types/general';
+import { Option } from '@keira/acore-world-model';
 
 // TODO: not all possible values are listed here
 

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { HolidaySearchService } from '../../search/holiday-search.service';
-import { Holiday, HOLIDAY_ID } from '@keira-types/holiday.type';
+import { Holiday, HOLIDAY_ID } from '@keira/acore-world-model';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 
 @Component({

@@ -1,5 +1,5 @@
 import { Router } from '@angular/router';
-import { TableRow } from '@keira-types/general';
+import { TableRow } from '@keira/acore-world-model';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
 
 export abstract class HandlerService<T extends TableRow> extends SubscriptionHandler {

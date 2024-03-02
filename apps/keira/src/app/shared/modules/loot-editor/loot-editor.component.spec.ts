@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.module';
 import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { PageObject } from '@keira-testing/page-object';
-import { LootTemplate } from '@keira-types/loot-template.type';
+import { LootTemplate } from '@keira/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { CreatureHandlerService } from '../../../features/creature/creature-handler.service';

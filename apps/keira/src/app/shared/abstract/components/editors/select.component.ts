@@ -1,9 +1,9 @@
 import { ChangeDetectorRef, inject } from '@angular/core';
-import { TableRow } from '@keira-types/general';
+import { TableRow } from '@keira/acore-world-model';
 import { SelectService } from '../../service/select/select.service';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { HandlerService } from '../../service/handlers/handler.service';
-import { DTCFG } from '@keira-config/datatable.config';
+import { DTCFG } from '@keira/config';
 
 export abstract class SelectComponent<T extends TableRow> {
   readonly DTCFG = DTCFG;

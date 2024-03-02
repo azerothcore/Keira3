@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { ElectronService } from '@keira-shared/services/electron.service';
-import { TableRow } from '@keira-types/general';
+import { TableRow } from '@keira/acore-world-model';
 import { Observable } from 'rxjs';
 import { AppConfig } from '../../../environments/environment';
 

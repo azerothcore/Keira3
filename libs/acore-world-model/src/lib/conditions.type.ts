@@ -1,4 +1,3 @@
-import { getEnumKeys } from '../utils/helpers';
 import { TableRow } from './general';
 
 export const CONDITIONS_TABLE = 'conditions';
@@ -61,7 +60,6 @@ export enum CONDITION_SOURCE_TYPES {
   SOURCE_TYPE_NPC_VENDOR,
   SOURCE_TYPE_SPELL_PROC,
 }
-export const CONDITION_SOURCE_TYPES_KEYS = getEnumKeys(CONDITION_SOURCE_TYPES);
 
 export enum CONDITION_TYPES {
   CONDITION_NONE,
@@ -115,4 +113,3 @@ export enum CONDITION_TYPES {
   CONDITION_QUEST_OBJECTIVE_PROGRESS,
   CONDITION_DIFFICULTY_ID,
 }
-export const CONDITION_TYPES_KEYS = getEnumKeys(CONDITION_TYPES);

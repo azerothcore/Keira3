@@ -1,4 +1,4 @@
-import { Flag } from '../../types/general';
+import { Flag } from '@keira/acore-world-model';
 
 export const UNIT_FLAGS: Flag[] = [
   { bit: 0, name: 'SERVER_CONTROLLED' },

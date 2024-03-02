@@ -1,4 +1,4 @@
-import { Class, TableRow } from '@keira-types/general';
+import { Class, TableRow } from '@keira/acore-world-model';
 import { QueryError } from 'mysql2';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';

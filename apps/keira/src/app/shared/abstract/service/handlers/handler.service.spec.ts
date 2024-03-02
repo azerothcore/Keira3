@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { CreatureTemplate } from '@keira-types/creature-template.type';
+import { CreatureTemplate } from '@keira/acore-world-model';
 import { CreatureHandlerService } from '../../../../features/creature/creature-handler.service';
 import { SaiCreatureHandlerService } from '../../../../features/creature/sai-creature-handler.service';
 import { HandlerService } from './handler.service';

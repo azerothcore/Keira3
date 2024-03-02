@@ -1,4 +1,4 @@
-import { Option } from '../../types/general';
+import { Option } from '@keira/acore-world-model';
 
 export const ITEM_SHEAT: Option[] = [
   { value: 1, name: `Two Handed Weapon - Diagonally across the back pointing downwards.` },

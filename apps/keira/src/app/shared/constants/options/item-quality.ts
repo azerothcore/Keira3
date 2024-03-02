@@ -1,4 +1,4 @@
-import { Option } from '../../types/general';
+import { Option } from '@keira/acore-world-model';
 
 export const ITEM_QUALITY: Option[] = [
   { value: 0, name: 'Grey (Poor)' },

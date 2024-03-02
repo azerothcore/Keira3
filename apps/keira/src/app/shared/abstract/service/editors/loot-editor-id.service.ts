@@ -1,5 +1,5 @@
-import { Class } from '@keira-types/general';
-import { LootTemplate, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2 } from '@keira-types/loot-template.type';
+import { Class } from '@keira/acore-world-model';
+import { LootTemplate, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2 } from '@keira/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';

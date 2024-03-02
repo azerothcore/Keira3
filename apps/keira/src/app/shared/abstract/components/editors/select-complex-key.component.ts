@@ -1,7 +1,7 @@
 import { SearchService } from '../../../modules/search/search.service';
 import { ComplexKeyHandlerService } from '../../service/handlers/complex-key.handler.service';
-import { TableRow } from '@keira-types/general';
-import { DTCFG } from '@keira-config/datatable.config';
+import { TableRow } from '@keira/acore-world-model';
+import { DTCFG } from '@keira/config';
 import { WIKI_BASE_URL } from '@keira-constants/general';
 import { ChangeDetectorRef, inject } from '@angular/core';
 

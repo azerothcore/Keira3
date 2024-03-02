@@ -1,4 +1,4 @@
-import { Flag } from '../../types/general';
+import { Flag } from '@keira/acore-world-model';
 
 export const UNIT_FLAGS_2: Flag[] = [
   { bit: 0, name: 'FEIGN_DEATH' },

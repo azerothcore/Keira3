@@ -5,7 +5,7 @@ import { mock } from 'ts-mockito';
 import { ElectronService } from '../services/electron.service';
 import { MysqlQueryService } from '../services/query/mysql-query.service';
 import { MysqlService } from '../services/mysql.service';
-import { TableRow } from '../types/general';
+import { TableRow } from '@keira/acore-world-model';
 import { ChangeDetectorRef } from '@angular/core';
 
 export const MockedToastrService = mock(ToastrService);

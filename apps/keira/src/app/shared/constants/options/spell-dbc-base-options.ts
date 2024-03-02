@@ -1,4 +1,4 @@
-import { Option } from '@keira-types/general';
+import { Option } from '@keira/acore-world-model';
 
 export const SPELL_DBC_CAST_TIME: Option[] = [
   { value: 1, name: '0' },

@@ -7,7 +7,7 @@ import {
   QUEST_TEMPLATE_NAME,
   QUEST_TEMPLATE_SEARCH_FIELDS,
   QUEST_TEMPLATE_TABLE,
-} from '@keira-types/quest-template.type';
+} from '@keira/acore-world-model';
 import { QuestHandlerService } from '../quest-handler.service';
 
 @Injectable()

@@ -1,4 +1,4 @@
-import { Flag } from '../../types/general';
+import { Flag } from '@keira/acore-world-model';
 
 export const BAG_FAMILY: Flag[] = [
   { bit: 0, name: 'Arrows' },

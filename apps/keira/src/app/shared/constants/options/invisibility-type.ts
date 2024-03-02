@@ -1,4 +1,4 @@
-import { Option } from '../../types/general';
+import { Option } from '@keira/acore-world-model';
 
 export const INVISIBILITY_TYPE: Option[] = [
   { value: 0, name: 'INVISIBILITY_GENERAL' },

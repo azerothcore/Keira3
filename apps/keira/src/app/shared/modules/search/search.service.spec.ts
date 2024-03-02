@@ -3,7 +3,7 @@ import { of } from 'rxjs';
 import { instance } from 'ts-mockito';
 import { MysqlQueryService } from '../../services/query/mysql-query.service';
 import { mockChangeDetectorRef, MockedMysqlQueryService } from '../../testing/mocks';
-import { ItemTemplate } from '../../types/item-template.type';
+import { ItemTemplate } from '@keira/acore-world-model';
 import { ItemSearchService } from './item-search.service';
 import { SearchService } from './search.service';
 import Spy = jasmine.Spy;

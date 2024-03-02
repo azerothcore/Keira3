@@ -1,4 +1,4 @@
-import { Flag } from '../../types/general';
+import { Flag } from '@keira/acore-world-model';
 
 export const ALLOWABLE_CLASSES: Flag[] = [
   { bit: 0, name: 'Warrior' },

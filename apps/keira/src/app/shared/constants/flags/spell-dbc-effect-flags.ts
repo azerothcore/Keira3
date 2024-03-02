@@ -1,4 +1,4 @@
-import { Flag } from '@keira-types/general';
+import { Flag } from '@keira/acore-world-model';
 
 export const SPELL_DBC_TARGETS: Flag[] = [
   { bit: 0, name: 'TARGET_FLAG_UNUSED_1' },

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
-import { CreatureQuestitem } from '@keira-types/creature-questitem.type';
+import { CreatureQuestitem } from '@keira/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureQuestitemService } from './creature-questitem.service';
 

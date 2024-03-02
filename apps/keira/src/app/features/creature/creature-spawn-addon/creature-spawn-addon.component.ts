@@ -3,7 +3,7 @@ import { MultiRowEditorComponent } from '@keira-abstract/components/editors/mult
 import { CREATURE_ADDON_BYTES_1 } from '@keira-constants/options/creature-addon-bytes1';
 import { CREATURE_ADDON_BYTES_2 } from '@keira-constants/options/creature-addon-bytes2';
 import { EMOTE } from '@keira-constants/options/emote';
-import { CreatureSpawnAddon } from '@keira-types/creature-spawn-addon.type';
+import { CreatureSpawnAddon } from '@keira/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureSpawnAddonService } from './creature-spawn-addon.service';
 

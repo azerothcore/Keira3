@@ -1,4 +1,4 @@
-import { FieldDefinition } from '../types/general';
+import { FieldDefinition } from '@keira/acore-world-model';
 
 export const GO_DATA_FIELDS: FieldDefinition[][] = [];
 GO_DATA_FIELDS[0] = [];

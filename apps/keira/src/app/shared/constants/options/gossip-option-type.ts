@@ -1,4 +1,4 @@
-import { Option } from '../../types/general';
+import { Option } from '@keira/acore-world-model';
 
 export const OPTION_TYPE: Option[] = [
   { value: 0, name: 'NONE - UNIT_NPC_FLAG_NONE (npcflag=0)' },

@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { PageObject } from '@keira-testing/page-object';
-import { SAI_TYPES } from '@keira-types/smart-scripts.type';
+import { SAI_TYPES } from '@keira/acore-world-model';
 import { of } from 'rxjs';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { SaiHandlerService } from '../sai-handler.service';

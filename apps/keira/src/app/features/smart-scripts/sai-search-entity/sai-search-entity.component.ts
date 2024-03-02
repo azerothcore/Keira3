@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
-import { ModelForm } from '@keira-shared/utils/helpers';
-import { SAI_TYPES, SAI_TYPES_KEYS, SmartScripts } from '@keira-types/smart-scripts.type';
+import { getEnumKeys, ModelForm } from '@keira-shared/utils/helpers';
+import { SAI_TYPES, SmartScripts } from '@keira/acore-world-model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -12,7 +12,7 @@ import { SAI_TYPES, SAI_TYPES_KEYS, SmartScripts } from '@keira-types/smart-scri
 })
 export class SaiSearchEntityComponent {
   readonly SAI_SEARCH_TYPES = SAI_TYPES;
-  readonly SAI_SEARCH_TYPES_KEYS = SAI_TYPES_KEYS;
+  readonly SAI_SEARCH_TYPES_KEYS = getEnumKeys(SAI_TYPES);
 
   readonly form = new FormGroup<ModelForm<Partial<SmartScripts>>>({
     source_type: new FormControl<number>(null, [Validators.required]),

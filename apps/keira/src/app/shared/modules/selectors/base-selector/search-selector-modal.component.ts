@@ -1,8 +1,8 @@
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
-import { DTCFG } from '@keira-config/datatable.config';
+import { DTCFG } from '@keira/config';
 import { BaseSelectorModalComponent } from './base-selector-modal.component';
-import { TableRow } from '@keira-types/general';
+import { TableRow } from '@keira/acore-world-model';
 import { SearchService } from '@keira-shared/modules/search/search.service';
 
 export abstract class SearchSelectorModalComponent<T extends TableRow> extends BaseSelectorModalComponent {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HandlerService } from '@keira-abstract/service/handlers/handler.service';
-import { FishingLootTemplate, FISHING_LOOT_TEMPLATE_TABLE } from '@keira-types/fishing-loot-template.type';
+import { FishingLootTemplate, FISHING_LOOT_TEMPLATE_TABLE } from '@keira/acore-world-model';
 
 @Injectable()
 export class FishingLootHandlerService extends HandlerService<FishingLootTemplate> {

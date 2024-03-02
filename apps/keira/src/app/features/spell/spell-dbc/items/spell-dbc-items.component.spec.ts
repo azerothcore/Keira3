@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
 import { ModelForm } from '@keira-shared/utils/helpers';
 import { PageObject } from '@keira-testing/page-object';
-import { SpellDbc } from '@keira-types/spell-dbc.type';
+import { SpellDbc } from '@keira/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { QuestRequestItems, QUEST_REQUEST_ITEMS_ID, QUEST_REQUEST_ITEMS_TABLE } from '@keira-types/quest-request-items.type';
+import { QuestRequestItems, QUEST_REQUEST_ITEMS_ID, QUEST_REQUEST_ITEMS_TABLE } from '@keira/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { QuestHandlerService } from '../quest-handler.service';
 

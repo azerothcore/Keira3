@@ -8,7 +8,7 @@ import { BaseSelectorModalComponent } from './base-selector-modal.component';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { SearchService } from '../../search/search.service';
-import { ItemTemplate } from '@keira-types/item-template.type';
+import { ItemTemplate } from '@keira/acore-world-model';
 import { ItemSearchService } from '../../search/item-search.service';
 import { ItemSelectorModule } from '../item-selector/item-selector.module';
 import { TranslateTestingModule } from '@keira-shared/testing/translate-module';

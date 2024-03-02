@@ -1,4 +1,4 @@
-import { Flag } from '../../types/general';
+import { Flag } from '@keira/acore-world-model';
 
 export const MECHANIC_IMMUNE_MASK: Flag[] = [
   { bit: 0, name: 'CHARM' },

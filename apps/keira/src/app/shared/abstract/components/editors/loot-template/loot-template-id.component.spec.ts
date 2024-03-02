@@ -6,7 +6,7 @@ import Spy = jasmine.Spy;
 
 import { MockedMysqlQueryService } from '@keira-testing/mocks';
 import { LootTemplateIdComponent } from './loot-template-id.component';
-import { CreatureLootTemplate } from '@keira-types/creature-loot-template.type';
+import { CreatureLootTemplate } from '@keira/acore-world-model';
 import { CreatureLootTemplateComponent } from '../../../../../features/creature/creature-loot-template/creature-loot-template.component';
 import { CreatureLootTemplateService } from '../../../../../features/creature/creature-loot-template/creature-loot-template.service';
 import { LootEditorIdService } from '../../../service/editors/loot-editor-id.service';

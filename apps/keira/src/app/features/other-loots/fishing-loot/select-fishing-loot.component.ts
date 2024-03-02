@@ -1,12 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SelectComponent } from '@keira-abstract/components/editors/select.component';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import {
-  FishingLootTemplate,
-  FISHING_LOOT_TEMPLATE_CUSTOM_STARTING_ID,
-  FISHING_LOOT_TEMPLATE_TABLE,
-} from '@keira-types/fishing-loot-template.type';
-import { LOOT_TEMPLATE_ID } from '@keira-types/loot-template.type';
+import { FishingLootTemplate, FISHING_LOOT_TEMPLATE_CUSTOM_STARTING_ID, FISHING_LOOT_TEMPLATE_TABLE } from '@keira/acore-world-model';
+import { LOOT_TEMPLATE_ID } from '@keira/acore-world-model';
 import { FishingLootHandlerService } from './fishing-loot-handler.service';
 import { SelectFishingLootService } from './select-fishing-loot.service';
 

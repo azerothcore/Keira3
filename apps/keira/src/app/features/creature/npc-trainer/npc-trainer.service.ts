@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MultiRowEditorService } from '@keira-abstract/service/editors/multi-row-editor.service';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { NpcTrainer, NPC_TRAINER_ID, NPC_TRAINER_ID_2, NPC_TRAINER_TABLE } from '@keira-types/npc-trainer.type';
+import { NpcTrainer, NPC_TRAINER_ID, NPC_TRAINER_ID_2, NPC_TRAINER_TABLE } from '@keira/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { CreatureHandlerService } from '../creature-handler.service';
 

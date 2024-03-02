@@ -1,4 +1,4 @@
-import { Option } from '../../types/general';
+import { Option } from '@keira/acore-world-model';
 
 export const CREATURE_AI_NAME: Option[] = [
   { value: 'NullCreatureAI', name: 'Empty AI, creature does nothing; cannot be charmed.' },

@@ -3,7 +3,7 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { NpcTextSearchService } from '../../search/npc-text-search.service';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
-import { NPC_TEXT_ID, NpcText } from '@keira-shared/types/npc-text.type';
+import { NPC_TEXT_ID, NpcText } from '@keira/acore-world-model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

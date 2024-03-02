@@ -2,7 +2,7 @@ import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
 import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
-import { SmartScripts } from '@keira-types/smart-scripts.type';
+import { SmartScripts } from '@keira/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { instance } from 'ts-mockito';
 import { MysqlQueryService } from '../../services/query/mysql-query.service';

@@ -1,5 +1,5 @@
 import { FormControl, FormGroup } from '@angular/forms';
-import { Class } from '@keira-shared/types/general';
+import { Class } from '@keira/acore-world-model';
 
 export type ModelForm<T> = {
   [K in keyof T]: FormControl<T[K]>;

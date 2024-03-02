@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
-import { DTCFG } from '@keira-config/datatable.config';
+import { DTCFG } from '@keira/config';
 import { ReferenceViewerService } from '@keira-shared/modules/loot-editor/reference-viewer.service';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
-import { ReferenceLootTemplate } from '@keira-types/reference-loot-template.type';
+import { ReferenceLootTemplate } from '@keira/acore-world-model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

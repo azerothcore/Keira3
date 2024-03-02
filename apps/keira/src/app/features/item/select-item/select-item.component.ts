@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SelectComponent } from '@keira-abstract/components/editors/select.component';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { ItemTemplate, ITEM_TEMPLATE_CUSTOM_STARTING_ID, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_TABLE } from '@keira-types/item-template.type';
+import { ItemTemplate, ITEM_TEMPLATE_CUSTOM_STARTING_ID, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_TABLE } from '@keira/acore-world-model';
 import { ItemHandlerService } from '../item-handler.service';
 import { SelectItemService } from './select-item.service';
 

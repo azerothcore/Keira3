@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MultiRowEditorService } from '@keira-abstract/service/editors/multi-row-editor.service';
-import { TableRow } from '@keira-types/general';
+import { TableRow } from '@keira/acore-world-model';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection

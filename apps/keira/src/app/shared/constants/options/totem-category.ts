@@ -1,4 +1,4 @@
-import { Option } from '../../types/general';
+import { Option } from '@keira/acore-world-model';
 
 export const TOTEM_CATEGORY: Option[] = [
   { value: 1, name: 'Skinning Knife (OLD)' },

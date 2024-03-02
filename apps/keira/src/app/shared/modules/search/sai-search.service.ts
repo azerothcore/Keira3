@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MysqlQueryService } from '../../services/query/mysql-query.service';
-import { SAI_ID_FIELDS, SAI_SEARCH_FIELDS, SAI_TABLE, SmartScripts } from '../../types/smart-scripts.type';
+import { SAI_ID_FIELDS, SAI_SEARCH_FIELDS, SAI_TABLE, SmartScripts } from '@keira/acore-world-model';
 import { SearchService } from './search.service';
 
 @Injectable({
