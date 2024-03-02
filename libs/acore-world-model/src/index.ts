@@ -1,4 +1,4 @@
-export * from './typeslib/area.type';
+export * from './lib/area.type';
 export * from './lib/conditions.type';
 export * from './lib/creature-equip-template.type';
 export * from './lib/creature-loot-template.type';
