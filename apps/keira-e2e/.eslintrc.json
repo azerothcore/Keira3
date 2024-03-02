@@ -1,0 +1,13 @@
+{
+  "extends": ["../../.eslintrc.json", "plugin:playwright/playwright-test"],
+  "ignorePatterns": ["!**/*", "src/typings.d.ts"],
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "parserOptions": {
+        "project": ["apps/keira-e2e/tsconfig.*?.json"],
+        "createDefaultProgram": true
+      }
+    }
+  ]
+}
