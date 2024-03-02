@@ -12,15 +12,14 @@
     "target": "ES2022",
     "typeRoots": ["node_modules/@types"],
     "lib": ["es2017", "es2016", "es2015", "dom"],
-    "baseUrl": ".",
     "allowSyntheticDefaultImports": true,
     "paths": {
-      "@keira-abstract/*": ["app/shared/abstract/*"],
-      "@keira-config/*": ["app/config/*"],
-      "@keira-constants/*": ["app/shared/constants/*"],
-      "@keira-shared/*": ["app/shared/*"],
-      "@keira-testing/*": ["app/shared/testing/*"],
-      "@keira/acore-world-model": ["../../../libs/acore-world-model/src/index.ts"]
+      "@keira-abstract/*": ["apps/keira/app/shared/abstract/*"],
+      "@keira-config/*": ["apps/keira/app/config/*"],
+      "@keira-constants/*": ["apps/keira/app/shared/constants/*"],
+      "@keira-shared/*": ["apps/keira/app/shared/*"],
+      "@keira-testing/*": ["apps/keira/app/shared/testing/*"],
+      "@keira/acore-world-model": ["libs/acore-world-model/src/index.ts"]
     },
     "useDefineForClassFields": false,
     "rootDir": "."
