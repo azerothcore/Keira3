@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { RACES_TEXT } from '@keira-shared/constants/preview';
+import { RACES_TEXT } from '@keira/shared-constants';
 import { CLASSES, RACE } from '../../features/item/item-template/item-preview';
 
 @Injectable({ providedIn: 'root' })

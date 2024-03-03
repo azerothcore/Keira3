@@ -1,7 +1,7 @@
 import { FormControl, FormGroup } from '@angular/forms';
 import { BaseQueryService } from '@keira-shared/services/query/base-query.service';
 import { ModelForm, ModelNestedForm } from '@keira-shared/utils/helpers';
-import { QueryForm, StringKeys, TableRow } from '@keira/acore-world-model';
+import { QueryForm, StringKeys, TableRow } from '@keira/shared-constants';
 import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
 import { ChangeDetectorRef } from '@angular/core';
 

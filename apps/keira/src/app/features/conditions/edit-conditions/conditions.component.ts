@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
-import { QUEST_STATE, RANKMASK, TYPEMASK } from '@keira-constants/flags/conditions';
 import {
   CONDITION_DISTANCE_TO_CV3,
   CONDITION_HP_PCT_CV2,
@@ -12,7 +11,10 @@ import {
   CONDITION_RELATION_TO_CV2,
   CONDITION_STAND_STATE_CV1,
   CONDITION_STAND_STATE_CV2,
-} from '@keira-constants/options/conditions';
+  QUEST_STATE,
+  RANKMASK,
+  TYPEMASK,
+} from '@keira/acore-world-model';
 import { Conditions, CONDITION_SOURCE_TYPES, CONDITION_TYPES } from '@keira/acore-world-model';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 import {

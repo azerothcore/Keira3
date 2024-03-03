@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { SPELL_SCHOOL_MASK } from '@keira-shared/constants/flags/spell-school-mask';
-import { DISPEL_TYPE } from '@keira-shared/constants/options/dispel-type';
+import { SPELL_SCHOOL_MASK } from '@keira/acore-world-model';
+import { DISPEL_TYPE } from '@keira/acore-world-model';
 import {
   SPELL_DBC_CASTER_AURA_STATE,
   SPELL_DBC_CAST_TIME,
@@ -9,8 +9,8 @@ import {
   SPELL_DBC_POWER_TYPE,
   SPELL_DBC_PREVENTION_TYPE,
   SPELL_DBC_TARGET_AURA_STATE,
-} from '@keira-shared/constants/options/spell-dbc-base-options';
-import { SPELL_MECHANIC } from '@keira-shared/constants/options/spell-mechanic';
+} from '@keira/acore-world-model';
+import { SPELL_MECHANIC } from '@keira/acore-world-model';
 import { ModelForm } from '@keira-shared/utils/helpers';
 import { SpellDbc } from '@keira/acore-world-model';
 

@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 
-import { AC_DISCORD_URL, KEIRA3_REPO_URL, PAYPAL_DONATE_URL } from '@keira-constants/general';
+import { AC_DISCORD_URL, KEIRA3_REPO_URL, PAYPAL_DONATE_URL } from '@keira/shared-constants';
 import { ConfigService } from '@keira-shared/services/config.service';
 import { MysqlService } from '@keira-shared/services/mysql.service';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
-import { VersionRow } from '@keira/acore-world-model';
+import { VersionRow } from '@keira/shared-constants';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import packageInfo from '../../../../../../package.json';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';

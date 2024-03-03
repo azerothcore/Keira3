@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
-import { GO_DATA_FIELDS } from '@keira-constants/gameobject-types';
+import { GO_DATA_FIELDS } from '@keira/shared-constants';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { GameobjectTemplate, GAMEOBJECT_TEMPLATE_ID, GAMEOBJECT_TEMPLATE_NAME, GAMEOBJECT_TEMPLATE_TABLE } from '@keira/acore-world-model';
-import { FieldDefinition } from '@keira/acore-world-model';
+import { FieldDefinition } from '@keira/shared-constants';
 import { ToastrService } from 'ngx-toastr';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 

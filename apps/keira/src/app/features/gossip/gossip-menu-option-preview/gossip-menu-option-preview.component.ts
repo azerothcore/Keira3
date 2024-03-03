@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { OPTION_IMG } from '@keira-constants/options/gossip-option-icon';
+import { OPTION_IMG } from '@keira/acore-world-model';
 import { GossipMenuOption } from '@keira/acore-world-model';
 
 @Component({

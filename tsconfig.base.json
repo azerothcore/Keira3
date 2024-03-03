@@ -16,11 +16,11 @@
     "baseUrl": ".",
     "paths": {
       "@keira-abstract/*": ["apps/keira/src/app/shared/abstract/*"],
-      "@keira-constants/*": ["apps/keira/src/app/shared/constants/*"],
       "@keira-shared/*": ["apps/keira/src/app/shared/*"],
       "@keira-testing/*": ["apps/keira/src/app/shared/testing/*"],
       "@keira/acore-world-model": ["libs/acore-world-model/src/index.ts"],
-      "@keira/config": ["libs/keira-config/src/index.ts"]
+      "@keira/config": ["libs/keira-config/src/index.ts"],
+      "@keira/shared-constants": ["libs/keira-shared-constants/src/index.ts"]
     },
     "useDefineForClassFields": false,
     "rootDir": "."

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { SPELL_DBC_PROC_FLAGS, SPELL_DBC_TARGETS } from '@keira-shared/constants/flags/spell-dbc-effect-flags';
+import { SPELL_DBC_PROC_FLAGS, SPELL_DBC_TARGETS } from '@keira/acore-world-model';
 import { ModelForm } from '@keira-shared/utils/helpers';
 import { SpellDbc } from '@keira/acore-world-model';
 

@@ -1,7 +1,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ITEM_SUBCLASS } from '@keira-constants/options/item-class';
+import { ITEM_SUBCLASS } from '@keira/acore-world-model';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
 import { TranslateTestingModule } from '@keira-shared/testing/translate-module';

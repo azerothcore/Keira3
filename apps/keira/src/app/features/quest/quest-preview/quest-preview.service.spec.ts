@@ -7,7 +7,7 @@ import {
   QUEST_FLAG_SPECIAL_REPEATABLE,
   QUEST_FLAG_WEEKLY,
   QUEST_PERIOD,
-} from '@keira-shared/constants/quest-preview';
+} from '@keira/shared-constants';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
 import { ToastrModule } from 'ngx-toastr';

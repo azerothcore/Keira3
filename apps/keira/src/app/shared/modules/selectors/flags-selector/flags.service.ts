@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Flag } from '@keira/acore-world-model';
+import { Flag } from '@keira/shared-constants';
 
 @Injectable({
   providedIn: 'root',

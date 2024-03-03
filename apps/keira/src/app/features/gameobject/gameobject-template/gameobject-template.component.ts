@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
-import { GAMEOBJECT_ICON } from '@keira-constants/options/gameobject-icon';
-import { GAMEOBJECT_TYPE } from '@keira-constants/options/gameobject-type';
+import { GAMEOBJECT_ICON } from '@keira/acore-world-model';
+import { GAMEOBJECT_TYPE } from '@keira/acore-world-model';
 import { GameobjectTemplate } from '@keira/acore-world-model';
-import { FieldDefinition } from '@keira/acore-world-model';
+import { FieldDefinition } from '@keira/shared-constants';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectTemplateService } from './gameobject-template.service';
 import { VIEWER_TYPE } from '../../model-3d-viewer/model-3d-viewer.model';

@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
-import { CREATURE_ADDON_BYTES_1 } from '@keira-constants/options/creature-addon-bytes1';
-import { CREATURE_ADDON_BYTES_2 } from '@keira-constants/options/creature-addon-bytes2';
-import { EMOTE } from '@keira-constants/options/emote';
+import { CREATURE_ADDON_BYTES_1 } from '@keira/acore-world-model';
+import { CREATURE_ADDON_BYTES_2 } from '@keira/acore-world-model';
+import { EMOTE } from '@keira/acore-world-model';
 import { CREATURE_SPAWN_ADDON_TABLE } from '@keira/acore-world-model';
 import { CreatureTemplateAddon } from '@keira/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';

@@ -1,9 +1,10 @@
 import { ChangeDetectorRef, Injectable } from '@angular/core';
 import { EditorService } from '@keira-shared/abstract/service/editors/editor.service';
-import { QUEST_FLAG_SHARABLE } from '@keira-shared/constants/flags/quest-flags';
-import { QUEST_INFO } from '@keira-shared/constants/options/quest-info';
-import { CLASSES_TEXT, RACES_TEXT } from '@keira-shared/constants/preview';
+import { QUEST_FLAG_SHARABLE } from '@keira/acore-world-model';
+import { QUEST_INFO } from '@keira/acore-world-model';
 import {
+  CLASSES_TEXT,
+  RACES_TEXT,
   ICON_SKILLS,
   QUEST_FLAG_DAILY,
   QUEST_FLAG_REPEATABLE,
@@ -11,7 +12,7 @@ import {
   QUEST_FLAG_SPECIAL_REPEATABLE,
   QUEST_FLAG_WEEKLY,
   QUEST_PERIOD,
-} from '@keira-shared/constants/quest-preview';
+} from '@keira/shared-constants';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { PreviewHelperService } from '@keira-shared/services/preview-helper.service';
 import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
@@ -20,7 +21,7 @@ import { CreatureQueststarter } from '@keira/acore-world-model';
 import { GameobjectQuestender } from '@keira/acore-world-model';
 import { GameobjectQueststarter } from '@keira/acore-world-model';
 import { QuestTemplate } from '@keira/acore-world-model';
-import { TableRow } from '@keira/acore-world-model';
+import { TableRow } from '@keira/shared-constants';
 import { QuestOfferReward } from '@keira/acore-world-model';
 import { QuestRequestItems } from '@keira/acore-world-model';
 import { QuestTemplateAddon } from '@keira/acore-world-model';

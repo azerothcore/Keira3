@@ -3,7 +3,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ModelForm } from '@keira-shared/utils/helpers';
-import { Class, StringKeys, TableRow } from '@keira/acore-world-model';
+import { Class, StringKeys, TableRow } from '@keira/shared-constants';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
 import { HandlerService } from '../handlers/handler.service';

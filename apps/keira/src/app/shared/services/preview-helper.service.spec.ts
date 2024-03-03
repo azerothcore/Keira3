@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { RACES_TEXT } from '@keira-shared/constants/preview';
+import { RACES_TEXT } from '@keira/shared-constants';
 import { PreviewHelperService } from './preview-helper.service';
 import { RACE } from '../../features/item/item-template/item-preview';
 

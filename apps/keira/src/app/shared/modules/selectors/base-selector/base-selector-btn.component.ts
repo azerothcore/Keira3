@@ -2,7 +2,7 @@ import { Directive, Input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
-import { Class } from '@keira/acore-world-model';
+import { Class } from '@keira/shared-constants';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
 import { BaseModalConfig } from './base-selector.model';
 

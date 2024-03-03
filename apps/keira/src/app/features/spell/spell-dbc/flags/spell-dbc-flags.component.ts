@@ -8,7 +8,7 @@ import {
   SPELL_DBC_FACING_FRONT_FLAG,
   SPELL_DBC_INTERRUPT_FLAGS,
   SPELL_DBC_STANCES_FLAGS,
-} from '@keira-shared/constants/flags/spell-dbc-flags-flags';
+} from '@keira/acore-world-model';
 import { ModelForm } from '@keira-shared/utils/helpers';
 import { SpellDbc } from '@keira/acore-world-model';
 
