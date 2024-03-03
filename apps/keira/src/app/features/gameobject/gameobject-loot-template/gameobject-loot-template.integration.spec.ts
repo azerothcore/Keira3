@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
+import { MultiRowEditorPageObject } from '@keira/test-utils';
 import { GameobjectLootTemplate } from '@keira/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
@@ -11,7 +11,7 @@ import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectLootTemplateComponent } from './gameobject-loot-template.component';
 import { GameobjectLootTemplateModule } from './gameobject-loot-template.module';
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
+import { TranslateTestingModule } from '@keira/test-utils';
 import Spy = jasmine.Spy;
 
 class GameobjectLootTemplatePage extends MultiRowEditorPageObject<GameobjectLootTemplateComponent> {}

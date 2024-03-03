@@ -4,7 +4,7 @@ import { anything, instance, when } from 'ts-mockito';
 import { of, throwError } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { MockedMysqlQueryService } from '@keira-testing/mocks';
+import { MockedMysqlQueryService } from '@keira/test-utils';
 import { LootTemplateIdComponent } from './loot-template-id.component';
 import { CreatureLootTemplate } from '@keira/acore-world-model';
 import { CreatureLootTemplateComponent } from '../../../../../features/creature/creature-loot-template/creature-loot-template.component';
@@ -17,7 +17,7 @@ import { MysqlQueryService } from '../../../../services/query/mysql-query.servic
 import { CreatureHandlerService } from '../../../../../features/creature/creature-handler.service';
 import { SaiCreatureHandlerService } from '../../../../../features/creature/sai-creature-handler.service';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
+import { TranslateTestingModule } from '@keira/test-utils';
 
 describe('LootTemplateComponent', () => {
   let component: LootTemplateIdComponent<CreatureLootTemplate>;

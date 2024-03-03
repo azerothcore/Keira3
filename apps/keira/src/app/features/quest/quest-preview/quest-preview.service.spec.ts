@@ -24,7 +24,7 @@ import { QuestModule } from '../quest.module';
 import { DifficultyLevel } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
 import Spy = jasmine.Spy;
-import { mockChangeDetectorRef } from '@keira-testing/mocks';
+import { mockChangeDetectorRef } from '@keira/test-utils';
 
 describe('QuestPreviewService', () => {
   beforeEach(waitForAsync(() => {

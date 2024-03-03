@@ -6,12 +6,12 @@ import Spy = jasmine.Spy;
 import { ItemSelectorModalComponent } from '../item-selector/item-selector-modal.component';
 import { BaseSelectorModalComponent } from './base-selector-modal.component';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
-import { MockedMysqlQueryService } from '@keira-testing/mocks';
+import { MockedMysqlQueryService } from '@keira/test-utils';
 import { SearchService } from '../../search/search.service';
 import { ItemTemplate } from '@keira/acore-world-model';
 import { ItemSearchService } from '../../search/item-search.service';
 import { ItemSelectorModule } from '../item-selector/item-selector.module';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
+import { TranslateTestingModule } from '@keira/test-utils';
 
 describe('BaseSelectorModalComponent', () => {
   let component: BaseSelectorModalComponent;

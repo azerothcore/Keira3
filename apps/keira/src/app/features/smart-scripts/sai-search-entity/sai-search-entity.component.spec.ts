@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
-import { PageObject } from '@keira-testing/page-object';
+import { TranslateTestingModule } from '@keira/test-utils';
+import { PageObject } from '@keira/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { SaiSearchEntityComponent } from './sai-search-entity.component';
 import { SaiSearchEntityModule } from './sai-search-entity.module';

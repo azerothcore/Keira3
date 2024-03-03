@@ -2,7 +2,7 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MockedMysqlQueryService } from '@keira-testing/mocks';
+import { MockedMysqlQueryService } from '@keira/test-utils';
 import { of } from 'rxjs';
 import { instance } from 'ts-mockito';
 import { MysqlQueryService } from '../../services/query/mysql-query.service';

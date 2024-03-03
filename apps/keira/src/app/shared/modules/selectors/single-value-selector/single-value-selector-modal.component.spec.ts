@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
+import { TranslateTestingModule } from '@keira/test-utils';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { SingleValueSelectorModalComponent } from './single-value-selector-modal.component';

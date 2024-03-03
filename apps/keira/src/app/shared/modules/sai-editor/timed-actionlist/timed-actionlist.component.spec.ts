@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { PageObject } from '@keira-testing/page-object';
+import { PageObject } from '@keira/test-utils';
 import { SmartScripts } from '@keira/acore-world-model';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { of } from 'rxjs';

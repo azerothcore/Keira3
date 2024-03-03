@@ -1,7 +1,7 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
+import { MultiRowEditorPageObject } from '@keira/test-utils';
 import { CreatureQueststarter } from '@keira/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
@@ -10,7 +10,7 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestModule } from '../quest.module';
 import { CreatureQueststarterComponent } from './creature-queststarter.component';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
+import { TranslateTestingModule } from '@keira/test-utils';
 import Spy = jasmine.Spy;
 
 class CreatureQueststarterPage extends MultiRowEditorPageObject<CreatureQueststarterComponent> {

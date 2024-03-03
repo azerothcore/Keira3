@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { MockedMysqlService } from '@keira-testing/mocks';
+import { MockedMysqlService } from '@keira/test-utils';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { instance } from 'ts-mockito';
@@ -11,7 +11,7 @@ import { MysqlService } from '../../../services/mysql.service';
 import { ItemSelectorBtnComponent } from '../item-selector/item-selector-btn.component';
 import { ItemSelectorModalComponent } from '../item-selector/item-selector-modal.component';
 import { HighlightjsWrapperModule } from '@keira-shared/modules/highlightjs-wrapper/highlightjs-wrapper.module';
-import { TranslateTestingModule } from '@keira-testing/translate-module';
+import { TranslateTestingModule } from '@keira/test-utils';
 
 @NgModule({
   declarations: [ItemSelectorModalComponent],

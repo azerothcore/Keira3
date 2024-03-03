@@ -7,9 +7,9 @@ import { instance } from 'ts-mockito';
 import { ToastrService } from 'ngx-toastr';
 
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
-import { mockChangeDetectorRef, MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { mockChangeDetectorRef, MockedMysqlQueryService, MockedToastrService } from '@keira/test-utils';
 import { SingleRowComplexKeyEditorService } from './single-row-complex-key-editor.service';
-import { MockSingleRowComplexKeyEditorService, MockEntity, MockHandlerService, MOCK_NAME } from '@keira-testing/mock-services';
+import { MockSingleRowComplexKeyEditorService, MockEntity, MockHandlerService, MOCK_NAME } from '@keira/test-utils';
 
 import { getPartial } from '../../../utils/helpers';
 

@@ -2,7 +2,7 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { SmartScripts } from '@keira/acore-world-model';
 import { of } from 'rxjs';
 import { instance } from 'ts-mockito';
-import { MockedMysqlService } from '@keira-testing/mocks';
+import { MockedMysqlService } from '@keira/test-utils';
 import { MaxRow, TableRow } from '@keira/shared-constants';
 import { ConfigService } from '../config.service';
 import { MysqlQueryService } from './mysql-query.service';

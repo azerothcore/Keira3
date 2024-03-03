@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
 import { instance } from 'ts-mockito';
-import { MockedSqliteQueryService } from '../../testing/mocks';
+import { MockedSqliteQueryService } from '@keira/test-utils';
 import { QuestSearchService } from './quest-search.service';
 
 describe('QuestSearchService', () => {

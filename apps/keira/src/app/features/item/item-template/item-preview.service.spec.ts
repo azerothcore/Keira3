@@ -5,7 +5,7 @@ import { ITEM_TYPE } from '@keira/acore-world-model';
 import { ITEMS_QUALITY } from '@keira/acore-world-model';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
-import { MockedToastrService } from '@keira-shared/testing/mocks';
+import { MockedToastrService } from '@keira/test-utils';
 import { ItemTemplate } from '@keira/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';

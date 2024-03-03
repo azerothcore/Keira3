@@ -1,8 +1,8 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
-import { MockedMysqlService } from '@keira-testing/mocks';
-import { PageObject } from '@keira-testing/page-object';
-import { Spied } from '@keira-testing/test-helpers';
+import { TranslateTestingModule } from '@keira/test-utils';
+import { MockedMysqlService } from '@keira/test-utils';
+import { PageObject } from '@keira/test-utils';
+import { Spied } from '@keira/test-utils';
 import { ConnectionOptions, QueryError } from 'mysql2';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { of, throwError } from 'rxjs';

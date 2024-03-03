@@ -4,10 +4,10 @@ import { instance } from 'ts-mockito';
 
 import { ItemEnchantmentSelectorModalComponent } from './item-enchantment-selector-modal.component';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
-import { MockedMysqlQueryService } from '@keira-testing/mocks';
+import { MockedMysqlQueryService } from '@keira/test-utils';
 import { ItemEnchantmentSearchService } from '../../search/item-enchantment-search.service';
 import { ItemEnchantmentSelectorModule } from './item-enchantment-selector.module';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
+import { TranslateTestingModule } from '@keira/test-utils';
 
 describe('ItemEnchantmentSelectorModalComponent', () => {
   let component: ItemEnchantmentSelectorModalComponent;

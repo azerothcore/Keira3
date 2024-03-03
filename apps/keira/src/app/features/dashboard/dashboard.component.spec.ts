@@ -1,8 +1,8 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { MysqlService } from '@keira-shared/services/mysql.service';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
-import { MockedMysqlQueryService } from '@keira-testing/mocks';
-import { PageObject } from '@keira-testing/page-object';
+import { TranslateTestingModule } from '@keira/test-utils';
+import { MockedMysqlQueryService } from '@keira/test-utils';
+import { PageObject } from '@keira/test-utils';
 import { VersionDbRow, VersionRow } from '@keira/shared-constants';
 import { of, throwError } from 'rxjs';
 import { anyString, instance, when } from 'ts-mockito';

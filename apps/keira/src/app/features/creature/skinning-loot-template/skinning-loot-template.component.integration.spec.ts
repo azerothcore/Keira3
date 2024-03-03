@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { MultiRowEditorPageObject } from '@keira-testing/multi-row-editor-page-object';
+import { MultiRowEditorPageObject } from '@keira/test-utils';
 import { SkinningLootTemplate } from '@keira/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
@@ -11,7 +11,7 @@ import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { SkinningLootTemplateComponent } from './skinning-loot-template.component';
 import { SkinningLootTemplateModule } from './skinning-loot-template.module';
 import { SkinningLootTemplateService } from './skinning-loot-template.service';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
+import { TranslateTestingModule } from '@keira/test-utils';
 import Spy = jasmine.Spy;
 
 class SkinningLootTemplatePage extends MultiRowEditorPageObject<SkinningLootTemplateComponent> {}

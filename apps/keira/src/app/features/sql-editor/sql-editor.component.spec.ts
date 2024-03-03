@@ -1,7 +1,7 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
-import { PageObject } from '@keira-testing/page-object';
+import { TranslateTestingModule } from '@keira/test-utils';
+import { PageObject } from '@keira/test-utils';
 import { QueryError } from 'mysql2';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ClipboardService } from 'ngx-clipboard';

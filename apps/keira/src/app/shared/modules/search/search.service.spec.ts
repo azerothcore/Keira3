@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { instance } from 'ts-mockito';
 import { MysqlQueryService } from '../../services/query/mysql-query.service';
-import { mockChangeDetectorRef, MockedMysqlQueryService } from '../../testing/mocks';
+import { mockChangeDetectorRef, MockedMysqlQueryService } from '@keira/test-utils';
 import { ItemTemplate } from '@keira/acore-world-model';
 import { ItemSearchService } from './item-search.service';
 import { SearchService } from './search.service';

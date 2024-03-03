@@ -4,10 +4,10 @@ import { instance } from 'ts-mockito';
 
 import { SkillSelectorModalComponent } from './skill-selector-modal.component';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
-import { MockedMysqlQueryService } from '@keira-testing/mocks';
+import { MockedMysqlQueryService } from '@keira/test-utils';
 import { SkillSearchService } from '../../search/skill-search.service';
 import { SkillSelectorModule } from './skill-selector.module';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
+import { TranslateTestingModule } from '@keira/test-utils';
 
 describe('SkillSelectorModalComponent', () => {
   let component: SkillSelectorModalComponent;

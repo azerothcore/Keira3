@@ -3,12 +3,10 @@ import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { HighlightjsWrapperModule } from '@keira-shared/modules/highlightjs-wrapper/highlightjs-wrapper.module';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
+import { MockType, QueryOutputComponentPage, TranslateTestingModule } from '@keira/test-utils';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { ClipboardService } from 'ngx-clipboard';
 import { EditorService } from '../../abstract/service/editors/editor.service';
-import { MockType } from '../../testing/mocks';
-import { PageObject } from '../../testing/page-object';
 import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-wrapper.component';
 import { QueryErrorComponent } from './query-error/query-error.component';
 import { QueryOutputComponent } from './query-output.component';
@@ -20,42 +18,6 @@ class TestHostComponent {
   @ViewChild(QueryOutputComponent) child: QueryOutputComponent<MockType>;
   docUrl: string;
   editorService: EditorService<any>;
-}
-
-export class QueryOutputComponentPage extends PageObject<TestHostComponent> {
-  get diffQueryWrapper(): HTMLElement {
-    return this.query<HTMLElement>('keira-highlightjs-wrapper#diff-query');
-  }
-  get fullQueryWrapper(): HTMLElement {
-    return this.query<HTMLElement>('keira-highlightjs-wrapper#full-query');
-  }
-
-  get diffQueryInput(): HTMLInputElement {
-    return this.query<HTMLInputElement>('#diff-query-input');
-  }
-  get fullQueryInput(): HTMLInputElement {
-    return this.query<HTMLInputElement>('#full-query-input');
-  }
-
-  get copyBtn(): HTMLButtonElement {
-    return this.query<HTMLButtonElement>('#copy-btn');
-  }
-  get executeBtn(): HTMLButtonElement {
-    return this.query<HTMLButtonElement>('#execute-btn');
-  }
-  get reloadBtn(): HTMLButtonElement {
-    return this.query<HTMLButtonElement>('#reload-btn');
-  }
-
-  expectDiffQueryToBeShown() {
-    expect(this.isHidden(this.diffQueryWrapper)).toBe(false, 'Expected diff query wrapper NOT to be hidden');
-    expect(this.isHidden(this.fullQueryWrapper)).toBe(true, 'Expected full query wrapper to be Hidden');
-  }
-
-  expectFullQueryToBeShown() {
-    expect(this.isHidden(this.diffQueryWrapper)).toBe(true, 'Expected diff query wrapper to be hidden');
-    expect(this.isHidden(this.fullQueryWrapper)).toBe(false, 'Expected full query wrapper NOT to be hidden');
-  }
 }
 
 describe('QueryOutputComponent', () => {
@@ -71,7 +33,7 @@ describe('QueryOutputComponent', () => {
 
   const setup = () => {
     const fixture = TestBed.createComponent(TestHostComponent);
-    const page = new QueryOutputComponentPage(fixture);
+    const page = new QueryOutputComponentPage<TestHostComponent>(fixture);
     const host = fixture.componentInstance;
 
     host.editorService = {

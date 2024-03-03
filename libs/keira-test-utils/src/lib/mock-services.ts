@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { MultiRowComplexKeyEditorService } from '../abstract/service/editors/multi-row-complex-key-editor.service';
-import { MultiRowEditorService } from '../abstract/service/editors/multi-row-editor.service';
-import { SingleRowComplexKeyEditorService } from '../abstract/service/editors/single-row-complex-key-editor.service';
-import { SingleRowEditorService } from '../abstract/service/editors/single-row-editor.service';
-import { HandlerService } from '../abstract/service/handlers/handler.service';
-import { MysqlQueryService } from '../services/query/mysql-query.service';
 import { TableRow } from '@keira/shared-constants';
+import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
+import { HandlerService } from '@keira-abstract/service/handlers/handler.service';
+import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
+import { SingleRowComplexKeyEditorService } from '@keira-abstract/service/editors/single-row-complex-key-editor.service';
+import { MultiRowEditorService } from '@keira-abstract/service/editors/multi-row-editor.service';
+import { MultiRowComplexKeyEditorService } from '@keira-abstract/service/editors/multi-row-complex-key-editor.service';
 
 export const MOCK_TABLE = 'mock_table';
 export const MOCK_ID = 'id';

@@ -1,7 +1,7 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
-import { MockedElectronService, MockedMysqlService } from '@keira-testing/mocks';
+import { TranslateTestingModule } from '@keira/test-utils';
+import { MockedElectronService, MockedMysqlService } from '@keira/test-utils';
 import { instance } from 'ts-mockito';
 import { ConditionsHandlerService } from '../../features/conditions/conditions-handler.service';
 import { CreatureHandlerService } from '../../features/creature/creature-handler.service';

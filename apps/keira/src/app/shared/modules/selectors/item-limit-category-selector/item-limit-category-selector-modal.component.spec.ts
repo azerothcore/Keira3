@@ -4,10 +4,10 @@ import { instance } from 'ts-mockito';
 
 import { ItemLimitCategorySelectorModalComponent } from './item-limit-category-selector-modal.component';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
-import { MockedMysqlQueryService } from '@keira-testing/mocks';
+import { MockedMysqlQueryService } from '@keira/test-utils';
 import { ItemLimitCategorySearchService } from '../../search/item-limit-category-search.service';
 import { ItemLimitCategorySelectorModule } from './item-limit-category-selector.module';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
+import { TranslateTestingModule } from '@keira/test-utils';
 
 describe('ItemLimitCategorySelectorModalComponent', () => {
   let component: ItemLimitCategorySelectorModalComponent;

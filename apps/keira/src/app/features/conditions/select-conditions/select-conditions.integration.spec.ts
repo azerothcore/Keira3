@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { PageObject } from '@keira-testing/page-object';
+import { PageObject } from '@keira/test-utils';
 import { Conditions } from '@keira/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
@@ -10,7 +10,7 @@ import { of } from 'rxjs';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 import { SelectConditionsComponent } from './select-conditions.component';
 import { SelectConditionsModule } from './select-conditions.module';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
+import { TranslateTestingModule } from '@keira/test-utils';
 import Spy = jasmine.Spy;
 
 class SelectConditionsComponentPage extends PageObject<SelectConditionsComponent> {
