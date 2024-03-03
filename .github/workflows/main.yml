@@ -21,6 +21,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - name: Fetch main branch
+        if: github.ref != 'refs/heads/master'
+        run: git rev-parse --verify master || git remote set-branches origin master && git fetch --depth 1 origin master && git branch master origin/master
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
