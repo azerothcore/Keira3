@@ -43,7 +43,9 @@
       "unitTestRunner": "none"
     },
     "@nx/angular:component": {
-      "style": "css"
+      "style": "scss",
+      "standalone": true,
+      "changeDetection": "OnPush"
     }
   }
 }
