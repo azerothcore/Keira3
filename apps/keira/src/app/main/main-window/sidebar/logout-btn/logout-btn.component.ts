@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ModalConfirmComponent } from '@keira-shared/modules/modal-confirm/modal-confirm.component';
-import { LocationService } from '@keira-shared/services/location.service';
-import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
+
 import { TranslateService } from '@ngx-translate/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ConnectionWindowService } from '../../../connection-window/connection-window.service';
+import { LocationService, ModalConfirmComponent, SubscriptionHandler } from '@keira/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

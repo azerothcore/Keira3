@@ -1,9 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
-import { TranslateTestingModule } from '@keira/test-utils';
-import { MultiRowEditorPageObject } from '@keira/test-utils';
+import { MysqlQueryService, SqliteQueryService } from '@keira/core';
+import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/test-utils';
 import { GameobjectSpawn } from '@keira/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';

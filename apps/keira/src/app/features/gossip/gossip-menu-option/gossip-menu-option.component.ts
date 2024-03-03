@@ -1,8 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
-import { OPTION_ICON } from '@keira/acore-world-model';
-import { OPTION_TYPE } from '@keira/acore-world-model';
-import { GossipMenuOption } from '@keira/acore-world-model';
+import { MultiRowEditorComponent } from '@keira/core';
+import { GossipMenuOption, OPTION_ICON, OPTION_TYPE } from '@keira/acore-world-model';
 import { GossipHandlerService } from '../gossip-handler.service';
 import { GossipMenuOptionService } from './gossip-menu-option.service';
 

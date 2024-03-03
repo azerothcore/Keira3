@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { SelectComplexKeyComponent } from '@keira-abstract/components/editors/select-complex-key.component';
-import { ConditionsSearchService } from '@keira-shared/modules/search/conditions-search.service';
-import { Conditions, CONDITION_SOURCE_TYPES } from '@keira/acore-world-model';
+import { ConditionsSearchService, getEnumKeys, SelectComplexKeyComponent } from '@keira/core';
+import { CONDITION_SOURCE_TYPES, Conditions } from '@keira/acore-world-model';
 import { ConditionsHandlerService } from '../conditions-handler.service';
-import { getEnumKeys } from '@keira-shared/utils/helpers';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { MultiRowEditorPageObject } from '@keira/test-utils';
+import { MysqlQueryService } from '@keira/core';
+import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/test-utils';
 import { ItemEnchantmentTemplate } from '@keira/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
@@ -9,7 +9,6 @@ import { of } from 'rxjs';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemEnchantmentTemplateComponent } from './item-enchantment-template.component';
 import { ItemEnchantmentTemplateModule } from './item-enchantment-template.module';
-import { TranslateTestingModule } from '@keira/test-utils';
 import Spy = jasmine.Spy;
 
 class ItemEnchantmentTemplatePage extends MultiRowEditorPageObject<ItemEnchantmentTemplateComponent> {}

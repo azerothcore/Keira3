@@ -1,26 +1,28 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
-import { CREATURE_TYPE_FLAGS } from '@keira/acore-world-model';
-import { DYNAMIC_FLAGS } from '@keira/acore-world-model';
-import { FLAGS_EXTRA } from '@keira/acore-world-model';
-import { MECHANIC_IMMUNE_MASK } from '@keira/acore-world-model';
-import { NPC_FLAGS } from '@keira/acore-world-model';
-import { SPELL_SCHOOL_MASK } from '@keira/acore-world-model';
-import { UNIT_FLAGS } from '@keira/acore-world-model';
-import { UNIT_FLAGS_2 } from '@keira/acore-world-model';
-import { CREATURE_AI_NAME } from '@keira/acore-world-model';
-import { CREATURE_CLASS } from '@keira/acore-world-model';
-import { CREATURE_FAMILY } from '@keira/acore-world-model';
-import { CREATURE_ICON } from '@keira/acore-world-model';
-import { CREATURE_RACE } from '@keira/acore-world-model';
-import { CREATURE_TYPE } from '@keira/acore-world-model';
-import { DAMAGE_TYPE } from '@keira/acore-world-model';
-import { EXPANSION } from '@keira/acore-world-model';
-import { MOVEMENT_TYPE } from '@keira/acore-world-model';
-import { RANK } from '@keira/acore-world-model';
-import { TRAINER_TYPE } from '@keira/acore-world-model';
-import { UNIT_CLASS } from '@keira/acore-world-model';
-import { CreatureTemplate } from '@keira/acore-world-model';
+import { SingleRowEditorComponent } from '@keira/core';
+import {
+  CREATURE_AI_NAME,
+  CREATURE_CLASS,
+  CREATURE_FAMILY,
+  CREATURE_ICON,
+  CREATURE_RACE,
+  CREATURE_TYPE,
+  CREATURE_TYPE_FLAGS,
+  CreatureTemplate,
+  DAMAGE_TYPE,
+  DYNAMIC_FLAGS,
+  EXPANSION,
+  FLAGS_EXTRA,
+  MECHANIC_IMMUNE_MASK,
+  MOVEMENT_TYPE,
+  NPC_FLAGS,
+  RANK,
+  SPELL_SCHOOL_MASK,
+  TRAINER_TYPE,
+  UNIT_CLASS,
+  UNIT_FLAGS,
+  UNIT_FLAGS_2,
+} from '@keira/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateService } from './creature-template.service';
 import { VIEWER_TYPE } from '../../model-3d-viewer/model-3d-viewer.model';

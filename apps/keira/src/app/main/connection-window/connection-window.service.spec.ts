@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { LocalStorageService } from '@keira-shared/services/local-storage.service';
+
 import { Spied } from '@keira/test-utils';
 import { ConnectionOptions } from 'mysql2';
 import { ConnectionWindowService } from './connection-window.service';
+import { LocalStorageService } from '@keira/core';
 
 declare type Config = Partial<ConnectionOptions>;
 

@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ModelForm } from '@keira-shared/utils/helpers';
+import { ModelForm } from '@keira/core';
 import { SpellDbc } from '@keira/acore-world-model';
-import { Locale, SpellDbcTextFieldPrefix, SPELL_DBC_TEXT_FIELDS } from '../spell-dbc-texts.model';
+import { Locale, SPELL_DBC_TEXT_FIELDS, SpellDbcTextFieldPrefix } from '../spell-dbc-texts.model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

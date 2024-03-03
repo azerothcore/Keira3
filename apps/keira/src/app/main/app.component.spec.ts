@@ -4,24 +4,21 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { LATEST_RELEASE_API_URL } from '@keira/shared-constants';
-import { TranslateTestingModule } from '@keira/test-utils';
-import { MockedElectronService, MockedMysqlService } from '@keira/test-utils';
+import { MockedElectronService, MockedMysqlService, TranslateTestingModule } from '@keira/test-utils';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
 import { instance, reset } from 'ts-mockito';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import packageInfo from '../../../../../package.json';
-import { ModalConfirmModule } from '../shared/modules/modal-confirm/modal-confirm.module';
-import { QueryErrorComponent } from '../shared/modules/query-output/query-error/query-error.component';
-import { ElectronService } from '../shared/services/electron.service';
-import { MysqlService } from '../shared/services/mysql.service';
+
 import { AppComponent } from './app.component';
 import { ConnectionWindowComponent } from './connection-window/connection-window.component';
 import { MainWindowComponent } from './main-window/main-window.component';
 import { LogoutBtnComponent } from './main-window/sidebar/logout-btn/logout-btn.component';
 import { SidebarComponent } from './main-window/sidebar/sidebar.component';
-import { SwitchLanguageModule } from '@keira-shared/modules/switch-language/switch-language.module';
+
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { ElectronService, ModalConfirmModule, MysqlService, QueryErrorComponent, SwitchLanguageModule } from '@keira/core';
 
 describe('AppComponent', () => {
   beforeEach(waitForAsync(() => {

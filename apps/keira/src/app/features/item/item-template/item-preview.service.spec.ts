@@ -1,12 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ITEM_FLAG } from '@keira/acore-world-model';
-import { ITEM_TYPE } from '@keira/acore-world-model';
-import { ITEMS_QUALITY } from '@keira/acore-world-model';
-import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
+import { ITEM_FLAG, ITEM_TYPE, ITEMS_QUALITY, ItemTemplate } from '@keira/acore-world-model';
+import { MysqlQueryService, SqliteQueryService } from '@keira/core';
 import { MockedToastrService } from '@keira/test-utils';
-import { ItemTemplate } from '@keira/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { instance } from 'ts-mockito';

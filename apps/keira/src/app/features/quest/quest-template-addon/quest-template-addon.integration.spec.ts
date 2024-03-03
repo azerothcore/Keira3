@@ -1,10 +1,7 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
-import { SqliteService } from '@keira-shared/services/sqlite.service';
-import { EditorPageObject } from '@keira/test-utils';
-import { MockedSqliteService } from '@keira/test-utils';
+import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/core';
+import { EditorPageObject, MockedSqliteService, TranslateTestingModule } from '@keira/test-utils';
 import { QuestTemplateAddon } from '@keira/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
@@ -14,7 +11,6 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestModule } from '../quest.module';
 import { QuestTemplateAddonComponent } from './quest-template-addon.component';
-import { TranslateTestingModule } from '@keira/test-utils';
 import Spy = jasmine.Spy;
 
 class QuestTemplateAddonPage extends EditorPageObject<QuestTemplateAddonComponent> {

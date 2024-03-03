@@ -1,8 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
-import { LocationService } from '@keira-shared/services/location.service';
-import { MysqlService } from '@keira-shared/services/mysql.service';
+
 import { ConditionsHandlerService } from '../../../features/conditions/conditions-handler.service';
 import { CreatureHandlerService } from '../../../features/creature/creature-handler.service';
 import { GameobjectHandlerService } from '../../../features/gameobject/gameobject-handler.service';
@@ -15,6 +13,7 @@ import { SpellLootHandlerService } from '../../../features/other-loots/spell-loo
 import { QuestHandlerService } from '../../../features/quest/quest-handler.service';
 import { SpellHandlerService } from '../../../features/spell/spell-handler.service';
 import { SidebarService } from './sidebar.service';
+import { LocationService, MysqlService, SaiHandlerService } from '@keira/core';
 
 const animationTime = 200;
 

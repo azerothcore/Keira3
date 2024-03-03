@@ -1,18 +1,18 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { SPELL_SCHOOL_MASK } from '@keira/acore-world-model';
-import { DISPEL_TYPE } from '@keira/acore-world-model';
 import {
-  SPELL_DBC_CASTER_AURA_STATE,
+  DISPEL_TYPE,
   SPELL_DBC_CAST_TIME,
+  SPELL_DBC_CASTER_AURA_STATE,
   SPELL_DBC_DAMAGE_CLASS,
   SPELL_DBC_POWER_TYPE,
   SPELL_DBC_PREVENTION_TYPE,
   SPELL_DBC_TARGET_AURA_STATE,
+  SPELL_MECHANIC,
+  SPELL_SCHOOL_MASK,
+  SpellDbc,
 } from '@keira/acore-world-model';
-import { SPELL_MECHANIC } from '@keira/acore-world-model';
-import { ModelForm } from '@keira-shared/utils/helpers';
-import { SpellDbc } from '@keira/acore-world-model';
+import { ModelForm } from '@keira/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

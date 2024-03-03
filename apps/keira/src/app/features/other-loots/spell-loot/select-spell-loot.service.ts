@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { SelectService } from '@keira-abstract/service/select/select.service';
-import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { LOOT_TEMPLATE_ID } from '@keira/acore-world-model';
-import { SpellLootTemplate, SPELL_LOOT_TEMPLATE_TABLE } from '@keira/acore-world-model';
+import { MysqlQueryService, SelectService } from '@keira/core';
+import { LOOT_TEMPLATE_ID, SPELL_LOOT_TEMPLATE_TABLE, SpellLootTemplate } from '@keira/acore-world-model';
 import { SpellLootHandlerService } from './spell-loot-handler.service';
 
 @Injectable()

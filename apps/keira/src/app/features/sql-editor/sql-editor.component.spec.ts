@@ -1,14 +1,12 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { TranslateTestingModule } from '@keira/test-utils';
-import { PageObject } from '@keira/test-utils';
+import { MysqlQueryService } from '@keira/core';
+import { PageObject, TranslateTestingModule } from '@keira/test-utils';
 import { QueryError } from 'mysql2';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ClipboardService } from 'ngx-clipboard';
 import { of, throwError } from 'rxjs';
 import { SqlEditorComponent } from './sql-editor.component';
 import { SqlEditorModule } from './sql-editor.module';
-
 import Spy = jasmine.Spy;
 
 export class SqlEditorPage extends PageObject<SqlEditorComponent> {

@@ -1,8 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
-import { ALLOWABLE_CLASSES } from '@keira/acore-world-model';
-import { SPECIAL_FLAGS } from '@keira/acore-world-model';
-import { QuestTemplateAddon } from '@keira/acore-world-model';
+import { SingleRowEditorComponent } from '@keira/core';
+import { ALLOWABLE_CLASSES, QuestTemplateAddon, SPECIAL_FLAGS } from '@keira/acore-world-model';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestTemplateAddonService } from './quest-template-addon.service';

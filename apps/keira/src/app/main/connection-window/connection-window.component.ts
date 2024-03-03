@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ModelForm } from '@keira-shared/utils/helpers';
+
 import { ConnectionOptions, QueryError } from 'mysql2';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import packageInfo from '../../../../../../package.json';
-import { MysqlService } from '../../shared/services/mysql.service';
-import { SubscriptionHandler } from '../../shared/utils/subscription-handler/subscription-handler';
+
 import { ConnectionWindowService } from './connection-window.service';
+import { ModelForm, MysqlService, SubscriptionHandler } from '@keira/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

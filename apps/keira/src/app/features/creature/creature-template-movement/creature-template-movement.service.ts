@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
-import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { CreatureTemplateMovement, CREATURE_TEMPLATE_MOVEMENT_ID, CREATURE_TEMPLATE_MOVEMENT_TABLE } from '@keira/acore-world-model';
+import { MysqlQueryService, SingleRowEditorService } from '@keira/core';
+import { CREATURE_TEMPLATE_MOVEMENT_ID, CREATURE_TEMPLATE_MOVEMENT_TABLE, CreatureTemplateMovement } from '@keira/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { CreatureHandlerService } from '../creature-handler.service';
 

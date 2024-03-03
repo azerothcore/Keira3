@@ -1,13 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 
-import { AC_DISCORD_URL, KEIRA3_REPO_URL, PAYPAL_DONATE_URL } from '@keira/shared-constants';
-import { ConfigService } from '@keira-shared/services/config.service';
-import { MysqlService } from '@keira-shared/services/mysql.service';
-import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';
-import { VersionRow } from '@keira/shared-constants';
+import { AC_DISCORD_URL, KEIRA3_REPO_URL, PAYPAL_DONATE_URL, VersionRow } from '@keira/shared-constants';
+import { ConfigService, MysqlQueryService, MysqlService, SubscriptionHandler } from '@keira/core';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import packageInfo from '../../../../../../package.json';
-import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

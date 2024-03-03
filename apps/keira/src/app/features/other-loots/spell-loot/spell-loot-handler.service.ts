@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { HandlerService } from '@keira-abstract/service/handlers/handler.service';
-import { SpellLootTemplate, SPELL_LOOT_TEMPLATE_TABLE } from '@keira/acore-world-model';
+import { HandlerService } from '@keira/core';
+import { SPELL_LOOT_TEMPLATE_TABLE, SpellLootTemplate } from '@keira/acore-world-model';
 
 @Injectable()
 export class SpellLootHandlerService extends HandlerService<SpellLootTemplate> {

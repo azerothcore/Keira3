@@ -1,13 +1,15 @@
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { QueryOutputModule } from '@keira-shared/modules/query-output/query-output.module';
-import { CreatureSelectorModule } from '@keira-shared/modules/selectors/creature-selector/creature-selector.module';
-import { FactionSelectorModule } from '@keira-shared/modules/selectors/faction-selector/faction-selector.module';
-import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selector/flags-selector.module';
-import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
-import { SpellSelectorModule } from '@keira-shared/modules/selectors/spell-selector/spell-selector.module';
-import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
+import {
+  CreatureSelectorModule,
+  FactionSelectorModule,
+  FlagsSelectorModule,
+  QueryOutputModule,
+  SingleValueSelectorModule,
+  SpellSelectorModule,
+  TopBarModule,
+} from '@keira/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';

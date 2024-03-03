@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 
@@ -53,7 +53,6 @@ import { SelectConditionsComponent } from './features/conditions/select-conditio
 import { ConditionsHandlerService } from './features/conditions/conditions-handler.service';
 import { SaiSearchExistingComponent } from './features/smart-scripts/sai-search-existing/sai-search-existing.component';
 import { SaiSearchEntityComponent } from './features/smart-scripts/sai-search-entity/sai-search-entity.component';
-import { SaiHandlerService } from './shared/modules/sai-editor/sai-handler.service';
 import { SaiCreatureComponent } from './features/creature/sai-creature/sai-creature.component';
 import { SaiFullEditorComponent } from './features/smart-scripts/sai-full-editor/sai-full-editor.component';
 import { SaiGameobjectComponent } from './features/gameobject/sai-gameobject/sai-gameobject.component';
@@ -74,6 +73,7 @@ import { MailLootHandlerService } from './features/other-loots/mail-loot/mail-lo
 import { SelectSpellComponent } from './features/spell/select-spell/select-spell.component';
 import { SpellDbcComponent } from './features/spell/spell-dbc/spell-dbc.component';
 import { GameobjectSpawnAddonComponent } from './features/gameobject/gameobject-spawn-addon/gameobject-spawn-addon.component';
+import { SaiHandlerService } from '@keira/core';
 
 const routes: Routes = [
   {

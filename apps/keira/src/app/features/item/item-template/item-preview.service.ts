@@ -1,17 +1,18 @@
 import { Injectable } from '@angular/core';
-import { ITEM_FLAG } from '@keira/acore-world-model';
-import { FACTION_RANK } from '@keira/acore-world-model';
-import { ITEM_MOD, ITEM_TYPE } from '@keira/acore-world-model';
-import { PVP_RANK } from '@keira/acore-world-model';
-import { ITEMS_QUALITY } from '@keira/acore-world-model';
+import {
+  FACTION_RANK,
+  ITEM_FLAG,
+  ITEM_MOD,
+  ITEM_TYPE,
+  ItemExtendedCost,
+  ITEMS_QUALITY,
+  ItemTemplate,
+  PVP_RANK,
+} from '@keira/acore-world-model';
 import { CLASSES_TEXT, RACES_TEXT } from '@keira/shared-constants';
-import { PreviewHelperService } from '@keira-shared/services/preview-helper.service';
-import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
-import { ItemExtendedCost } from '@keira/acore-world-model';
-import { ItemTemplate } from '@keira/acore-world-model';
+import { MysqlQueryService, PreviewHelperService, SqliteQueryService } from '@keira/core';
 import { ITEM_CONSTANTS } from './item-constants';
-import { MAX_LEVEL, gtCombatRatings, lvlIndepRating, resistanceFields } from './item-preview';
+import { gtCombatRatings, lvlIndepRating, MAX_LEVEL, resistanceFields } from './item-preview';
 
 @Injectable()
 export class ItemPreviewService {

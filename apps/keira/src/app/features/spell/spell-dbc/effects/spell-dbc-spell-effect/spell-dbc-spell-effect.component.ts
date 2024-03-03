@@ -1,10 +1,13 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { SPELL_DBC_CLASS_MASK_FLAGS } from '@keira/acore-world-model';
-import { SPELL_DBC_APPLY_AURA_NAME, SPELL_DBC_EFFECT } from '@keira/acore-world-model';
-import { SPELL_MECHANIC } from '@keira/acore-world-model';
-import { ModelForm } from '@keira-shared/utils/helpers';
-import { SpellDbc } from '@keira/acore-world-model';
+import {
+  SPELL_DBC_APPLY_AURA_NAME,
+  SPELL_DBC_CLASS_MASK_FLAGS,
+  SPELL_DBC_EFFECT,
+  SPELL_MECHANIC,
+  SpellDbc,
+} from '@keira/acore-world-model';
+import { ModelForm } from '@keira/core';
 import { SpellDbcSpellEffectFieldPrefix } from './spell-dbc-spell-effect.model';
 
 @Component({

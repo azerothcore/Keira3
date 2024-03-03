@@ -1,9 +1,13 @@
 import { Injectable } from '@angular/core';
-import { LootEditorIdService } from '@keira-abstract/service/editors/loot-editor-id.service';
-import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { CreatureLootTemplate } from '@keira/acore-world-model';
-import { CREATURE_TEMPLATE_ID, CREATURE_TEMPLATE_PICKPOCKETING_LOOT_ID, CREATURE_TEMPLATE_TABLE } from '@keira/acore-world-model';
-import { PickpocketingLootTemplate, PICKPOCKETING_LOOT_TEMPLATE_TABLE } from '@keira/acore-world-model';
+import { LootEditorIdService, MysqlQueryService } from '@keira/core';
+import {
+  CREATURE_TEMPLATE_ID,
+  CREATURE_TEMPLATE_PICKPOCKETING_LOOT_ID,
+  CREATURE_TEMPLATE_TABLE,
+  CreatureLootTemplate,
+  PICKPOCKETING_LOOT_TEMPLATE_TABLE,
+  PickpocketingLootTemplate,
+} from '@keira/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { CreatureHandlerService } from '../creature-handler.service';
 

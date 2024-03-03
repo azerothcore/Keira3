@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { EditorPageObject } from '@keira/test-utils';
+import { MysqlQueryService } from '@keira/core';
+import { EditorPageObject, TranslateTestingModule } from '@keira/test-utils';
 import { CreatureTemplate } from '@keira/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
@@ -10,9 +10,8 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureTemplateComponent } from './creature-template.component';
 import { CreatureTemplateModule } from './creature-template.module';
-import { TranslateTestingModule } from '@keira/test-utils';
-import Spy = jasmine.Spy;
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import Spy = jasmine.Spy;
 
 class CreatureTemplatePage extends EditorPageObject<CreatureTemplateComponent> {}
 

@@ -1,22 +1,25 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { HandlerService } from '@keira-abstract/service/handlers/handler.service';
-import { CREATURE_EQUIP_TEMPLATE_TABLE } from '@keira/acore-world-model';
-import { CREATURE_LOOT_TEMPLATE_TABLE } from '@keira/acore-world-model';
-import { CREATURE_ONKLL_REPUTATION_TABLE } from '@keira/acore-world-model';
-import { CREATURE_QUESTITEM_TABLE } from '@keira/acore-world-model';
-import { CREATURE_SPAWN_ADDON_TABLE } from '@keira/acore-world-model';
-import { CREATURE_SPAWN_TABLE } from '@keira/acore-world-model';
-import { CREATURE_TEMPLATE_ADDON_TABLE } from '@keira/acore-world-model';
-import { CREATURE_TEMPLATE_MOVEMENT_TABLE } from '@keira/acore-world-model';
-import { CREATURE_TEMPLATE_RESISTANCE_TABLE } from '@keira/acore-world-model';
-import { CREATURE_TEMPLATE_SPELL_TABLE } from '@keira/acore-world-model';
-import { CreatureTemplate, CREATURE_TEMPLATE_TABLE } from '@keira/acore-world-model';
-import { NPC_TRAINER_TABLE } from '@keira/acore-world-model';
-import { NPC_VENDOR_TABLE } from '@keira/acore-world-model';
-import { PICKPOCKETING_LOOT_TEMPLATE_TABLE } from '@keira/acore-world-model';
-import { SKINNING_LOOT_TEMPLATE_TABLE } from '@keira/acore-world-model';
-import { SAI_TABLE } from '@keira/acore-world-model';
+import { HandlerService } from '@keira/core';
+import {
+  CREATURE_EQUIP_TEMPLATE_TABLE,
+  CREATURE_LOOT_TEMPLATE_TABLE,
+  CREATURE_ONKLL_REPUTATION_TABLE,
+  CREATURE_QUESTITEM_TABLE,
+  CREATURE_SPAWN_ADDON_TABLE,
+  CREATURE_SPAWN_TABLE,
+  CREATURE_TEMPLATE_ADDON_TABLE,
+  CREATURE_TEMPLATE_MOVEMENT_TABLE,
+  CREATURE_TEMPLATE_RESISTANCE_TABLE,
+  CREATURE_TEMPLATE_SPELL_TABLE,
+  CREATURE_TEMPLATE_TABLE,
+  CreatureTemplate,
+  NPC_TRAINER_TABLE,
+  NPC_VENDOR_TABLE,
+  PICKPOCKETING_LOOT_TEMPLATE_TABLE,
+  SAI_TABLE,
+  SKINNING_LOOT_TEMPLATE_TABLE,
+} from '@keira/acore-world-model';
 import { SaiCreatureHandlerService } from './sai-creature-handler.service';
 
 @Injectable()

@@ -8,9 +8,9 @@ import {
   SPELL_DBC_FACING_FRONT_FLAG,
   SPELL_DBC_INTERRUPT_FLAGS,
   SPELL_DBC_STANCES_FLAGS,
+  SpellDbc,
 } from '@keira/acore-world-model';
-import { ModelForm } from '@keira-shared/utils/helpers';
-import { SpellDbc } from '@keira/acore-world-model';
+import { ModelForm } from '@keira/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

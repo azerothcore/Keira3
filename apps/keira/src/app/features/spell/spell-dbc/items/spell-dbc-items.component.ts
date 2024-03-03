@@ -1,10 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { SPELL_DBC_INVENTORY_TYPE, SPELL_DBC_ITEM_SUBCLASS } from '@keira/acore-world-model';
-import { ITEM_CLASS } from '@keira/acore-world-model';
-import { TOTEM_CATEGORY } from '@keira/acore-world-model';
-import { ModelForm } from '@keira-shared/utils/helpers';
-import { SpellDbc } from '@keira/acore-world-model';
+import { ITEM_CLASS, SPELL_DBC_INVENTORY_TYPE, SPELL_DBC_ITEM_SUBCLASS, SpellDbc, TOTEM_CATEGORY } from '@keira/acore-world-model';
+import { ModelForm } from '@keira/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

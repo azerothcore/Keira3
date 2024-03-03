@@ -1,17 +1,7 @@
 /* istanbul ignore file */
 
 import { AppConfig } from '../../../environments/environment';
-import {
-  // CHARACTER_PART,
-  CONTENT_WOTLK,
-  // DisplayInfo,
-  // GENDER,
-  // Gender,
-  // NOT_DISPLAYED_SLOTS,
-  // RACES,
-  // wotlkToShadowlandSlots,
-  WoWModel,
-} from './model-3d-viewer.model';
+import { CONTENT_WOTLK, WoWModel } from './model-3d-viewer.model';
 
 declare const ZamModelViewer: any;
 

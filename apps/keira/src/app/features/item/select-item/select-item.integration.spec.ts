@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { SelectPageObject } from '@keira/test-utils';
+import { MysqlQueryService } from '@keira/core';
+import { SelectPageObject, TranslateTestingModule } from '@keira/test-utils';
 import { ItemTemplate } from '@keira/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
@@ -10,7 +10,6 @@ import { of } from 'rxjs';
 import { ItemHandlerService } from '../item-handler.service';
 import { SelectItemComponent } from './select-item.component';
 import { SelectItemModule } from './select-item.module';
-import { TranslateTestingModule } from '@keira/test-utils';
 import Spy = jasmine.Spy;
 
 class SelectItemComponentPage extends SelectPageObject<SelectItemComponent> {

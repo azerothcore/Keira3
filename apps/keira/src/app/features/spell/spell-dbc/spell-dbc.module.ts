@@ -1,11 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputModule } from '@keira-shared/modules/query-output/query-output.module';
-import { FlagsSelectorModule } from '@keira-shared/modules/selectors/flags-selector/flags-selector.module';
-import { ItemSelectorModule } from '@keira-shared/modules/selectors/item-selector/item-selector.module';
-import { SingleValueSelectorModule } from '@keira-shared/modules/selectors/single-value-selector/single-value-selector.module';
-import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
+import { FlagsSelectorModule, ItemSelectorModule, QueryOutputModule, SingleValueSelectorModule, TopBarModule } from '@keira/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
