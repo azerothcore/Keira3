@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ITEM_FLAG } from '@keira-shared/constants/flags/item-flags';
-import { ITEM_TYPE } from '@keira-shared/constants/options/item-class';
-import { ITEMS_QUALITY } from '@keira-shared/constants/options/item-quality';
+import { ITEM_FLAG } from '@keira/acore-world-model';
+import { ITEM_TYPE } from '@keira/acore-world-model';
+import { ITEMS_QUALITY } from '@keira/acore-world-model';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
 import { MockedToastrService } from '@keira-shared/testing/mocks';

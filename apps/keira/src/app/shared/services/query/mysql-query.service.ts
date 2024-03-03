@@ -5,7 +5,7 @@ import { QuestReputationReward } from '../../../features/quest/quest-preview/que
 import { from, map, Observable, of, tap } from 'rxjs';
 import { Delete, Insert, Squel, Update } from 'squel';
 import { squelConfig } from '@keira/config';
-import { MaxRow, TableRow } from '@keira/acore-world-model';
+import { MaxRow, TableRow } from '@keira/shared-constants';
 import { ConfigService } from '../config.service';
 import { MysqlService } from '../mysql.service';
 

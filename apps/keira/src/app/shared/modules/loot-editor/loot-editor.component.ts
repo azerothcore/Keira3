@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, O
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { MultiRowEditorService } from '@keira-abstract/service/editors/multi-row-editor.service';
 import { DTCFG } from '@keira/config';
-import { LOOT_MODE } from '@keira-constants/flags/loot-mode';
-import { WIKI_BASE_URL } from '@keira-constants/general';
+import { LOOT_MODE } from '@keira/acore-world-model';
+import { WIKI_BASE_URL } from '@keira/shared-constants';
 import { LootTemplate } from '@keira/acore-world-model';
 import { compareObjFn } from '@keira-shared/utils/helpers';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';

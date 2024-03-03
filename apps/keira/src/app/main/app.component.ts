@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { KEIRA3_REPO_URL, LATEST_RELEASE_API_URL } from '@keira-constants/general';
+import { KEIRA3_REPO_URL, LATEST_RELEASE_API_URL } from '@keira/shared-constants';
 import { ElectronService } from '@keira-shared/services/electron.service';
 import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
 import { SubscriptionHandler } from '@keira-shared/utils/subscription-handler/subscription-handler';

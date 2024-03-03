@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { ITEM_FLAG } from '@keira-shared/constants/flags/item-flags';
-import { FACTION_RANK } from '@keira-shared/constants/options/faction-rank';
-import { ITEM_MOD, ITEM_TYPE } from '@keira-shared/constants/options/item-class';
-import { PVP_RANK } from '@keira-shared/constants/options/item-honorrank';
-import { ITEMS_QUALITY } from '@keira-shared/constants/options/item-quality';
-import { CLASSES_TEXT, RACES_TEXT } from '@keira-shared/constants/preview';
+import { ITEM_FLAG } from '@keira/acore-world-model';
+import { FACTION_RANK } from '@keira/acore-world-model';
+import { ITEM_MOD, ITEM_TYPE } from '@keira/acore-world-model';
+import { PVP_RANK } from '@keira/acore-world-model';
+import { ITEMS_QUALITY } from '@keira/acore-world-model';
+import { CLASSES_TEXT, RACES_TEXT } from '@keira/shared-constants';
 import { PreviewHelperService } from '@keira-shared/services/preview-helper.service';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
 import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';

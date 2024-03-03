@@ -1,4 +1,4 @@
-import { Class } from '@keira/acore-world-model';
+import { Class } from '@keira/shared-constants';
 import { LootTemplate, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2 } from '@keira/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';

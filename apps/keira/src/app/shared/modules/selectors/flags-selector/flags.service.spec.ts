@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { FlagsService } from './flags.service';
-import { Flag } from '@keira/acore-world-model';
+import { Flag } from '@keira/shared-constants';
 
 describe('FlagsService', () => {
   const toInt = (binary: string) => parseInt(binary, 2);

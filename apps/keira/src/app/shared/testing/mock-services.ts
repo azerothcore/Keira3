@@ -7,7 +7,7 @@ import { SingleRowComplexKeyEditorService } from '../abstract/service/editors/si
 import { SingleRowEditorService } from '../abstract/service/editors/single-row-editor.service';
 import { HandlerService } from '../abstract/service/handlers/handler.service';
 import { MysqlQueryService } from '../services/query/mysql-query.service';
-import { TableRow } from '@keira/acore-world-model';
+import { TableRow } from '@keira/shared-constants';
 
 export const MOCK_TABLE = 'mock_table';
 export const MOCK_ID = 'id';

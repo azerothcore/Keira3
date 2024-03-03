@@ -1,6 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
-import { QueryForm } from '@keira/acore-world-model';
+import { QueryForm } from '@keira/shared-constants';
 import { Injectable } from '@angular/core';
 import { BaseQueryService } from '@keira-shared/services/query/base-query.service';
 

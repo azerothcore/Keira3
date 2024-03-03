@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, O
 import { QueryError } from 'mysql2';
 import { HandlerService } from '../../abstract/service/handlers/handler.service';
 import { MysqlQueryService } from '../../services/query/mysql-query.service';
-import { TableRow } from '@keira/acore-world-model';
+import { TableRow } from '@keira/shared-constants';
 import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
 
 @Component({

@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
-import { ALLOWABLE_RACES } from '@keira-constants/flags/allowable-races';
-import { QUEST_FLAGS } from '@keira-constants/flags/quest-flags';
-import { QUEST_TYPE } from '@keira-constants/options/quest-type';
-import { QUEST_INFO } from '@keira-shared/constants/options/quest-info';
+import { ALLOWABLE_RACES } from '@keira/acore-world-model';
+import { QUEST_FLAGS } from '@keira/acore-world-model';
+import { QUEST_TYPE } from '@keira/acore-world-model';
+import { QUEST_INFO } from '@keira/acore-world-model';
 import { QuestTemplate } from '@keira/acore-world-model';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';

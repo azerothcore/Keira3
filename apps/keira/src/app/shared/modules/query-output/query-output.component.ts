@@ -5,7 +5,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ClipboardService } from 'ngx-clipboard';
 import { filter } from 'rxjs';
 import { EditorService } from '../../abstract/service/editors/editor.service';
-import { TableRow } from '@keira/acore-world-model';
+import { TableRow } from '@keira/shared-constants';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection

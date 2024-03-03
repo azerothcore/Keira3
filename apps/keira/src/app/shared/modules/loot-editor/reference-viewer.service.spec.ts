@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { LootEditorModule } from '@keira-shared/modules/loot-editor/loot-editor.module';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { TableRow } from '@keira/acore-world-model';
+import { TableRow } from '@keira/shared-constants';
 import { ReferenceLootTemplate } from '@keira/acore-world-model';
 import { of } from 'rxjs';
 import { ReferenceViewerService } from './reference-viewer.service';

@@ -1,5 +1,5 @@
 import { squelConfig } from '@keira/config';
-import { QueryForm, TableRow } from '@keira/acore-world-model';
+import { QueryForm, TableRow } from '@keira/shared-constants';
 import { map, Observable } from 'rxjs';
 import { escape } from 'sqlstring';
 import * as squel from 'squel';

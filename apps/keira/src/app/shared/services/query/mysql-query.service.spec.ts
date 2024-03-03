@@ -3,7 +3,7 @@ import { SmartScripts } from '@keira/acore-world-model';
 import { of } from 'rxjs';
 import { instance } from 'ts-mockito';
 import { MockedMysqlService } from '@keira-testing/mocks';
-import { MaxRow, TableRow } from '@keira/acore-world-model';
+import { MaxRow, TableRow } from '@keira/shared-constants';
 import { ConfigService } from '../config.service';
 import { MysqlQueryService } from './mysql-query.service';
 import { MysqlService } from '../mysql.service';

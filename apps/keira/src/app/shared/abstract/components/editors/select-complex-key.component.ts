@@ -1,8 +1,8 @@
 import { SearchService } from '../../../modules/search/search.service';
 import { ComplexKeyHandlerService } from '../../service/handlers/complex-key.handler.service';
-import { TableRow } from '@keira/acore-world-model';
+import { TableRow } from '@keira/shared-constants';
 import { DTCFG } from '@keira/config';
-import { WIKI_BASE_URL } from '@keira-constants/general';
+import { WIKI_BASE_URL } from '@keira/shared-constants';
 import { ChangeDetectorRef, inject } from '@angular/core';
 
 export abstract class SelectComplexKeyComponent<T extends TableRow> {

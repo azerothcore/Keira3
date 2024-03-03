@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
-import { FACTION_RANK } from '@keira-constants/options/faction-rank';
+import { FACTION_RANK } from '@keira/acore-world-model';
 import { CreatureOnkillReputation } from '@keira/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureOnkillReputationService } from './creature-onkill-reputation.service';
