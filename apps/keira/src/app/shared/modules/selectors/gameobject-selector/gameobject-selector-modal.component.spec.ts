@@ -4,10 +4,10 @@ import { instance } from 'ts-mockito';
 
 import { GameobjectSelectorModalComponent } from './gameobject-selector-modal.component';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
-import { MockedMysqlQueryService } from '@keira-testing/mocks';
+import { MockedMysqlQueryService } from '@keira/test-utils';
 import { GameobjectSearchService } from '../../search/gameobject-search.service';
 import { GameobjectSelectorModule } from './gameobject-selector.module';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
+import { TranslateTestingModule } from '@keira/test-utils';
 
 describe('GameobjectSelectorModalComponent', () => {
   let component: GameobjectSelectorModalComponent;

@@ -4,10 +4,10 @@ import { instance } from 'ts-mockito';
 
 import { FactionSelectorModalComponent } from './faction-selector-modal.component';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
-import { MockedMysqlQueryService } from '@keira-testing/mocks';
+import { MockedMysqlQueryService } from '@keira/test-utils';
 import { FactionSearchService } from '../../search/faction-search.service';
 import { FactionSelectorModule } from './faction-selector.module';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
+import { TranslateTestingModule } from '@keira/test-utils';
 
 describe('FactionSelectorModalComponent', () => {
   let component: FactionSelectorModalComponent;

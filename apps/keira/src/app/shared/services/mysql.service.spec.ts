@@ -2,10 +2,10 @@ import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { Connection, ConnectionOptions, QueryError } from 'mysql2';
 import { Subscriber } from 'rxjs';
 import { instance, reset } from 'ts-mockito';
-import { MockedElectronService } from '../testing/mocks';
 import { ElectronService } from './electron.service';
 import { MysqlService } from './mysql.service';
 import Spy = jasmine.Spy;
+import { MockedElectronService } from '@keira/test-utils';
 
 class MockMySql {
   createConnection() {}

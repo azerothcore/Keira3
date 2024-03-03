@@ -6,8 +6,8 @@ import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
-import { SelectPageObject } from '@keira-testing/select-page-object';
+import { TranslateTestingModule } from '@keira/test-utils';
+import { SelectPageObject } from '@keira/test-utils';
 import { CreatureTemplate } from '@keira/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';

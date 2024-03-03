@@ -3,8 +3,8 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 import Spy = jasmine.Spy;
 import { ModalConfirmComponent } from './modal-confirm.component';
 import { ModalConfirmModule } from './modal-confirm.module';
-import { PageObject } from '../../testing/page-object';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
+import { PageObject } from '@keira/test-utils';
+import { TranslateTestingModule } from '@keira/test-utils';
 
 class ModalConfirmComponentPage extends PageObject<ModalConfirmComponent> {
   get yesBtn(): HTMLButtonElement {

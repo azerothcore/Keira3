@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { QueryOutputComponentPage } from '../modules/query-output/query-output.component.spec';
+import { QueryOutputComponentPage } from './query-output-page-object';
 import { TableRow } from '@keira/shared-constants';
 import { PageObject } from './page-object';
 
 export abstract class EditorPageObject<T> extends PageObject<T> {
   readonly PREVIEW_CONTAINER_SELECTOR = '.preview-container';
-  protected readonly queryPo: QueryOutputComponentPage;
+  protected readonly queryPo: QueryOutputComponentPage<unknown>;
 
   get queryTypeSwitchWrapper(): HTMLDivElement {
     return this.query<HTMLDivElement>('.query-type-switch');

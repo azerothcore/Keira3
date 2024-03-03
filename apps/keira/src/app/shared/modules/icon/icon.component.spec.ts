@@ -3,7 +3,7 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { ICON_SKILLS } from '@keira/shared-constants';
 import { IconModule } from '@keira-shared/modules/icon/icon.module';
 import { IconService } from '@keira-shared/modules/icon/icon.service';
-import { PageObject } from '@keira-testing/page-object';
+import { PageObject } from '@keira/test-utils';
 import { of } from 'rxjs';
 import { IconComponent } from './icon.component';
 

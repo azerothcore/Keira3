@@ -1,6 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
+import { TranslateTestingModule } from '@keira/test-utils';
 import { UnsavedIconComponent } from './unsaved-icon.component';
 
 describe('UnsavedIconComponent', () => {

@@ -4,11 +4,11 @@ import { instance } from 'ts-mockito';
 
 import { ItemSelectorModalComponent } from '../item-selector/item-selector-modal.component';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
-import { MockedMysqlQueryService } from '@keira-testing/mocks';
+import { MockedMysqlQueryService } from '@keira/test-utils';
 
 import { ItemSearchService } from '../../search/item-search.service';
 import { ItemSelectorModule } from '../item-selector/item-selector.module';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
+import { TranslateTestingModule } from '@keira/test-utils';
 
 describe('SearchSelectorModalComponent', () => {
   beforeEach(waitForAsync(() => {

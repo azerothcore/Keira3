@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MockEntity, MockSingleRowEditorService } from '@keira-testing/mock-services';
-import { mockChangeDetectorRef, MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { MockEntity, MockSingleRowEditorService } from '@keira/test-utils';
+import { mockChangeDetectorRef, MockedMysqlQueryService, MockedToastrService } from '@keira/test-utils';
 import { QueryError } from 'mysql2';
 import { ToastrService } from 'ngx-toastr';
 import { of, throwError } from 'rxjs';

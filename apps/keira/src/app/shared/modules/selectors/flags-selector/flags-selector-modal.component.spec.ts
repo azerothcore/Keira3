@@ -5,7 +5,7 @@ import { FlagsSelectorModalComponent } from './flags-selector-modal.component';
 import { FlagsService } from './flags.service';
 import { FlagsSelectorModule } from './flags-selector.module';
 import { Flag } from '@keira/shared-constants';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
+import { TranslateTestingModule } from '@keira/test-utils';
 
 describe('FlagsSelectorModalComponent', () => {
   let component: FlagsSelectorModalComponent;

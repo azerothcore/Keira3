@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
-import { MockedMysqlQueryService } from '@keira-testing/mocks';
+import { TranslateTestingModule } from '@keira/test-utils';
+import { MockedMysqlQueryService } from '@keira/test-utils';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance } from 'ts-mockito';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';

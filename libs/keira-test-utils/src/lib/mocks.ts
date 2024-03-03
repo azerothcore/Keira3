@@ -2,11 +2,12 @@ import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.se
 import { SqliteService } from '@keira-shared/services/sqlite.service';
 import { ToastrService } from 'ngx-toastr';
 import { mock } from 'ts-mockito';
-import { ElectronService } from '../services/electron.service';
-import { MysqlQueryService } from '../services/query/mysql-query.service';
-import { MysqlService } from '../services/mysql.service';
+
 import { TableRow } from '@keira/shared-constants';
 import { ChangeDetectorRef } from '@angular/core';
+import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
+import { MysqlService } from '@keira-shared/services/mysql.service';
+import { ElectronService } from '@keira-shared/services/electron.service';
 
 export const MockedToastrService = mock(ToastrService);
 export const MockedMysqlQueryService = mock(MysqlQueryService);

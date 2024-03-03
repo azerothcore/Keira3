@@ -4,10 +4,10 @@ import { instance } from 'ts-mockito';
 
 import { AreaSelectorModalComponent } from './area-selector-modal.component';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
-import { MockedMysqlQueryService } from '@keira-testing/mocks';
+import { MockedMysqlQueryService } from '@keira/test-utils';
 import { AreaSearchService } from '../../search/area-search.service';
 import { AreaSelectorModule } from './area-selector.module';
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
+import { TranslateTestingModule } from '@keira/test-utils';
 
 describe('AreaSelectorModalComponent', () => {
   let component: AreaSelectorModalComponent;

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MOCK_ID, MOCK_ID_2, MOCK_NAME, MockEntity, MockMultiRowEditorService } from '@keira-testing/mock-services';
-import { MockedMysqlQueryService, MockedToastrService } from '@keira-testing/mocks';
+import { MOCK_ID, MOCK_ID_2, MOCK_NAME, MockEntity, MockMultiRowEditorService } from '@keira/test-utils';
+import { MockedMysqlQueryService, MockedToastrService } from '@keira/test-utils';
 import { ToastrService } from 'ngx-toastr';
 import { instance } from 'ts-mockito';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';

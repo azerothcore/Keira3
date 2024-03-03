@@ -2,7 +2,7 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { SelectPageObject } from '@keira-testing/select-page-object';
+import { SelectPageObject } from '@keira/test-utils';
 import { SpellDbc, SPELL_DBC_ID, SPELL_DBC_NAME } from '@keira/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
@@ -12,7 +12,7 @@ import { SelectSpellComponent } from './select-spell.component';
 import { SelectSpellModule } from './select-spell.module';
 import { SelectSpellService } from './select-spell.service';
 
-import { TranslateTestingModule } from '@keira-shared/testing/translate-module';
+import { TranslateTestingModule } from '@keira/test-utils';
 import Spy = jasmine.Spy;
 
 class SelectSpellComponentPage extends SelectPageObject<SelectSpellComponent> {
