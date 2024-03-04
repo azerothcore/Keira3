@@ -1,8 +1,12 @@
 import { Injectable } from '@angular/core';
-import { LootEditorIdService } from '@keira-abstract/service/editors/loot-editor-id.service';
-import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { DisenchantLootTemplate, DISENCHANT_LOOT_TEMPLATE_TABLE } from '@keira/acore-world-model';
-import { DISENCHANT_TEMPLATE_LOOT_ID, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_TABLE } from '@keira/acore-world-model';
+import { LootEditorIdService, MysqlQueryService } from '@keira/core';
+import {
+  DISENCHANT_LOOT_TEMPLATE_TABLE,
+  DISENCHANT_TEMPLATE_LOOT_ID,
+  DisenchantLootTemplate,
+  ITEM_TEMPLATE_ID,
+  ITEM_TEMPLATE_TABLE,
+} from '@keira/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { ItemHandlerService } from '../item-handler.service';
 

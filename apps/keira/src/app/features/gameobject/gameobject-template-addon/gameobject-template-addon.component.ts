@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
-import { GAMEOBJECT_FLAGS } from '@keira/acore-world-model';
-import { GameobjectTemplateAddon } from '@keira/acore-world-model';
+import { SingleRowEditorComponent } from '@keira/core';
+import { GAMEOBJECT_FLAGS, GameobjectTemplateAddon } from '@keira/acore-world-model';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectTemplateAddonService } from './gameobject-template-addon.service';
 

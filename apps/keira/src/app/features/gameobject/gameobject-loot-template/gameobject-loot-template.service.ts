@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { LootEditorIdService } from '@keira-abstract/service/editors/loot-editor-id.service';
-import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { GameobjectLootTemplate, GAMEOBJECT_LOOT_TEMPLATE_TABLE } from '@keira/acore-world-model';
+import { LootEditorIdService, MysqlQueryService } from '@keira/core';
 import {
+  GAMEOBJECT_LOOT_TEMPLATE_TABLE,
   GAMEOBJECT_TEMPLATE_ID,
   GAMEOBJECT_TEMPLATE_LOOT_ID,
   GAMEOBJECT_TEMPLATE_TABLE,
   GAMEOBJECT_TEMPLATE_TYPE,
+  GameobjectLootTemplate,
 } from '@keira/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';

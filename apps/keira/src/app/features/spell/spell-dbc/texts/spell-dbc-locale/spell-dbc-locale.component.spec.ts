@@ -2,16 +2,15 @@ import { Component, ViewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { TranslateTestingModule } from '@keira/test-utils';
-import { ModelForm } from '@keira-shared/utils/helpers';
-import { PageObject } from '@keira/test-utils';
+import { PageObject, TranslateTestingModule } from '@keira/test-utils';
+import { ModelForm } from '@keira/core';
 import { SpellDbc } from '@keira/acore-world-model';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
 import { SpellHandlerService } from '../../../spell-handler.service';
 import { SpellDbcModule } from '../../spell-dbc.module';
 import { SpellDbcService } from '../../spell-dbc.service';
-import { Locale, SpellDbcTextFieldPrefix, SPELL_DBC_TEXT_FIELDS } from '../spell-dbc-texts.model';
+import { Locale, SPELL_DBC_TEXT_FIELDS, SpellDbcTextFieldPrefix } from '../spell-dbc-texts.model';
 import { SpellDbcLocaleComponent } from './spell-dbc-locale.component';
 
 describe('SpellDbcLocaleComponent', () => {

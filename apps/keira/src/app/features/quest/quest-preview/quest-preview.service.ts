@@ -1,10 +1,19 @@
 import { ChangeDetectorRef, Injectable } from '@angular/core';
-import { EditorService } from '@keira-shared/abstract/service/editors/editor.service';
-import { QUEST_FLAG_SHARABLE } from '@keira/acore-world-model';
-import { QUEST_INFO } from '@keira/acore-world-model';
+import { EditorService, MysqlQueryService, PreviewHelperService, SqliteQueryService } from '@keira/core';
+import {
+  CreatureQuestender,
+  CreatureQueststarter,
+  GameobjectQuestender,
+  GameobjectQueststarter,
+  QUEST_FLAG_SHARABLE,
+  QUEST_INFO,
+  QuestOfferReward,
+  QuestRequestItems,
+  QuestTemplate,
+  QuestTemplateAddon,
+} from '@keira/acore-world-model';
 import {
   CLASSES_TEXT,
-  RACES_TEXT,
   ICON_SKILLS,
   QUEST_FLAG_DAILY,
   QUEST_FLAG_REPEATABLE,
@@ -12,19 +21,9 @@ import {
   QUEST_FLAG_SPECIAL_REPEATABLE,
   QUEST_FLAG_WEEKLY,
   QUEST_PERIOD,
+  RACES_TEXT,
+  TableRow,
 } from '@keira/shared-constants';
-import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { PreviewHelperService } from '@keira-shared/services/preview-helper.service';
-import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
-import { CreatureQuestender } from '@keira/acore-world-model';
-import { CreatureQueststarter } from '@keira/acore-world-model';
-import { GameobjectQuestender } from '@keira/acore-world-model';
-import { GameobjectQueststarter } from '@keira/acore-world-model';
-import { QuestTemplate } from '@keira/acore-world-model';
-import { TableRow } from '@keira/shared-constants';
-import { QuestOfferReward } from '@keira/acore-world-model';
-import { QuestRequestItems } from '@keira/acore-world-model';
-import { QuestTemplateAddon } from '@keira/acore-world-model';
 import { CreatureQuestenderService } from '../creature-questender/creature-questender.service';
 import { CreatureQueststarterService } from '../creature-queststarter/creature-queststarter.service';
 import { GameobjectQuestenderService } from '../gameobject-questender/gameobject-questender.service';
@@ -34,7 +33,8 @@ import { QuestOfferRewardService } from '../quest-offer-reward/quest-offer-rewar
 import { QuestRequestItemsService } from '../quest-request-items/quest-request-items.service';
 import { QuestTemplateAddonService } from '../quest-template-addon/quest-template-addon.service';
 import { QuestTemplateService } from '../quest-template/quest-template.service';
-import { DifficultyLevel, Quest, QuestReputationReward } from './quest-preview.model';
+import { DifficultyLevel, Quest } from './quest-preview.model';
+import { QuestReputationReward } from '@keira/shared-constants';
 
 @Injectable()
 export class QuestPreviewService {

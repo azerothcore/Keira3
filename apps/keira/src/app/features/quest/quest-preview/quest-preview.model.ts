@@ -1,5 +1,3 @@
-import { TableRow } from '@keira/shared-constants';
-
 export interface Quest {
   id: number;
   title: string;
@@ -11,17 +9,6 @@ export interface DifficultyLevel {
   yellow?: number;
   green?: number;
   grey?: number;
-}
-
-export interface QuestReputationReward extends TableRow {
-  faction: number;
-  quest_rate: number;
-  quest_daily_rate: number;
-  quest_weekly_rate: number;
-  quest_monthly_rate: number;
-  quest_repeatable_rate: number;
-  creature_rate: number;
-  spell_rate: number;
 }
 
 export const QUEST_FACTION_REWARD = {

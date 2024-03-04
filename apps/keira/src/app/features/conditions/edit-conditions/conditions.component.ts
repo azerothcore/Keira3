@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
+import { getEnumKeys, SingleRowEditorComponent } from '@keira/core';
 import {
   CONDITION_DISTANCE_TO_CV3,
   CONDITION_HP_PCT_CV2,
@@ -9,13 +9,15 @@ import {
   CONDITION_NEAR_CREATURE_CV3,
   CONDITION_OBJECT_ENTRY_GUID_CV1,
   CONDITION_RELATION_TO_CV2,
+  CONDITION_SOURCE_TYPES,
   CONDITION_STAND_STATE_CV1,
   CONDITION_STAND_STATE_CV2,
+  CONDITION_TYPES,
+  Conditions,
   QUEST_STATE,
   RANKMASK,
   TYPEMASK,
 } from '@keira/acore-world-model';
-import { Conditions, CONDITION_SOURCE_TYPES, CONDITION_TYPES } from '@keira/acore-world-model';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 import {
   CONDITION_TARGET_TOOLTIPS,
@@ -26,7 +28,6 @@ import {
   SOURCE_GROUP_TOOLTIPS,
 } from './conditions-constants';
 import { ConditionsService } from './conditions.service';
-import { getEnumKeys } from '@keira-shared/utils/helpers';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

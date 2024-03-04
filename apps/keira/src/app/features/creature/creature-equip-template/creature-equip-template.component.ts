@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
+import { SingleRowEditorComponent } from '@keira/core';
 import { CreatureEquipTemplate } from '@keira/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureEquipTemplateService } from './creature-equip-template.service';

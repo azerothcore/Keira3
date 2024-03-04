@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { SelectService } from '@keira-abstract/service/select/select.service';
-import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { FishingLootTemplate, FISHING_LOOT_TEMPLATE_TABLE } from '@keira/acore-world-model';
-import { LOOT_TEMPLATE_ID } from '@keira/acore-world-model';
+import { MysqlQueryService, SelectService } from '@keira/core';
+import { FISHING_LOOT_TEMPLATE_TABLE, FishingLootTemplate, LOOT_TEMPLATE_ID } from '@keira/acore-world-model';
 import { FishingLootHandlerService } from './fishing-loot-handler.service';
 
 @Injectable()

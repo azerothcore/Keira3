@@ -1,9 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { SelectComplexKeyComponent } from '@keira-abstract/components/editors/select-complex-key.component';
-import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
-import { SaiSearchService } from '@keira-shared/modules/search/sai-search.service';
+import { getEnumKeys, SaiHandlerService, SaiSearchService, SelectComplexKeyComponent } from '@keira/core';
 import { SAI_TYPES, SmartScripts } from '@keira/acore-world-model';
-import { getEnumKeys } from '@keira-shared/utils/helpers';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

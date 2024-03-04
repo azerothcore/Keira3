@@ -2,11 +2,12 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { SwitchLanguageModule } from '@keira-shared/modules/switch-language/switch-language.module';
+
 import { TranslateModule } from '@ngx-translate/core';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { QueryOutputModule } from '../../shared/modules/query-output/query-output.module';
+
 import { ConnectionWindowComponent } from './connection-window.component';
+import { QueryOutputModule, SwitchLanguageModule } from '@keira/core';
 
 @NgModule({
   declarations: [ConnectionWindowComponent],

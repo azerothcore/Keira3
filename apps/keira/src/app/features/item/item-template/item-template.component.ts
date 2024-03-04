@@ -1,26 +1,29 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
-import { ALLOWABLE_CLASSES } from '@keira/acore-world-model';
-import { ALLOWABLE_RACES } from '@keira/acore-world-model';
-import { BAG_FAMILY } from '@keira/acore-world-model';
-import { ITEM_FLAGS } from '@keira/acore-world-model';
-import { ITEM_FLAGS_CUSTOM } from '@keira/acore-world-model';
-import { ITEM_FLAGS_EXTRA } from '@keira/acore-world-model';
-import { SOCKET_COLOR } from '@keira/acore-world-model';
-import { DAMAGE_TYPE } from '@keira/acore-world-model';
-import { FACTION_RANK } from '@keira/acore-world-model';
-import { FOOD_TYPE } from '@keira/acore-world-model';
-import { INVENTORY_TYPE } from '@keira/acore-world-model';
-import { ITEM_BONDING } from '@keira/acore-world-model';
-import { ITEM_CLASS, ITEM_SUBCLASS } from '@keira/acore-world-model';
-import { ITEM_MATERIAL } from '@keira/acore-world-model';
-import { ITEM_QUALITY } from '@keira/acore-world-model';
-import { ITEM_SHEAT } from '@keira/acore-world-model';
-import { STAT_TYPE } from '@keira/acore-world-model';
-import { TOTEM_CATEGORY } from '@keira/acore-world-model';
-import { PVP_RANK } from '@keira/acore-world-model';
-import { ItemTemplate } from '@keira/acore-world-model';
+import { SingleRowEditorComponent } from '@keira/core';
+import {
+  ALLOWABLE_CLASSES,
+  ALLOWABLE_RACES,
+  BAG_FAMILY,
+  DAMAGE_TYPE,
+  FACTION_RANK,
+  FOOD_TYPE,
+  INVENTORY_TYPE,
+  ITEM_BONDING,
+  ITEM_CLASS,
+  ITEM_FLAGS,
+  ITEM_FLAGS_CUSTOM,
+  ITEM_FLAGS_EXTRA,
+  ITEM_MATERIAL,
+  ITEM_QUALITY,
+  ITEM_SHEAT,
+  ITEM_SUBCLASS,
+  ItemTemplate,
+  PVP_RANK,
+  SOCKET_COLOR,
+  STAT_TYPE,
+  TOTEM_CATEGORY,
+} from '@keira/acore-world-model';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { VIEWER_TYPE } from '../../../features/model-3d-viewer/model-3d-viewer.model';
 import { ItemHandlerService } from '../item-handler.service';

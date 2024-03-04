@@ -1,10 +1,7 @@
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { EditorButtonsModule } from '@keira-shared/modules/editor-buttons/editor-buttons.module';
-import { QueryOutputModule } from '@keira-shared/modules/query-output/query-output.module';
-import { NpcTextSelectorModule } from '@keira-shared/modules/selectors/npc-text-selector/npc-text-selector.module';
-import { TopBarModule } from '@keira-shared/modules/top-bar/top-bar.module';
+import { EditorButtonsModule, NpcTextSelectorModule, QueryOutputModule, TopBarModule } from '@keira/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';

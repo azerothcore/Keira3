@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
+import { MultiRowEditorComponent } from '@keira/core';
 import { NpcVendor } from '@keira/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { NpcVendorService } from './npc-vendor.service';

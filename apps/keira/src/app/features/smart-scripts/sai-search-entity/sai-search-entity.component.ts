@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { SaiHandlerService } from '@keira-shared/modules/sai-editor/sai-handler.service';
-import { getEnumKeys, ModelForm } from '@keira-shared/utils/helpers';
+import { getEnumKeys, ModelForm, SaiHandlerService } from '@keira/core';
 import { SAI_TYPES, SmartScripts } from '@keira/acore-world-model';
 
 @Component({

@@ -1,7 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { TranslateTestingModule } from '@keira/test-utils';
-import { MockedElectronService, MockedMysqlService } from '@keira/test-utils';
+import { MockedElectronService, MockedMysqlService, TranslateTestingModule } from '@keira/test-utils';
 import { instance } from 'ts-mockito';
 import { ConditionsHandlerService } from '../../features/conditions/conditions-handler.service';
 import { CreatureHandlerService } from '../../features/creature/creature-handler.service';
@@ -16,10 +15,9 @@ import { ReferenceLootHandlerService } from '../../features/other-loots/referenc
 import { SpellLootHandlerService } from '../../features/other-loots/spell-loot/spell-loot-handler.service';
 import { QuestHandlerService } from '../../features/quest/quest-handler.service';
 import { SpellHandlerService } from '../../features/spell/spell-handler.service';
-import { ElectronService } from '../../shared/services/electron.service';
-import { MysqlService } from '../../shared/services/mysql.service';
 import { MainWindowComponent } from './main-window.component';
 import { MainWindowModule } from './main-window.module';
+import { ElectronService, MysqlService } from '@keira/core';
 
 describe('MainWindowComponent', () => {
   beforeEach(waitForAsync(() => {

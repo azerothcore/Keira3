@@ -2,9 +2,8 @@ import { Component, ViewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { TranslateTestingModule } from '@keira/test-utils';
-import { ModelForm } from '@keira-shared/utils/helpers';
-import { PageObject } from '@keira/test-utils';
+import { PageObject, TranslateTestingModule } from '@keira/test-utils';
+import { ModelForm } from '@keira/core';
 import { SpellDbc } from '@keira/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -13,7 +12,7 @@ import { SpellHandlerService } from '../../../spell-handler.service';
 import { SpellDbcModule } from '../../spell-dbc.module';
 import { SpellDbcService } from '../../spell-dbc.service';
 import { SpellDbcSpellEffectComponent } from './spell-dbc-spell-effect.component';
-import { SpellDbcSpellEffectFieldPrefix, SPELL_DBC_SPELL_EFFECT_FIELDS } from './spell-dbc-spell-effect.model';
+import { SPELL_DBC_SPELL_EFFECT_FIELDS, SpellDbcSpellEffectFieldPrefix } from './spell-dbc-spell-effect.model';
 
 describe('SpellDbcSpellEffectComponent', () => {
   class SpellDbcSpellEffectComponentPage extends PageObject<TestHostComponent> {

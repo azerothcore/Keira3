@@ -1,11 +1,7 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ElectronService } from '@keira-shared/services/electron.service';
-import { LocationService } from '@keira-shared/services/location.service';
-import { MysqlService } from '@keira-shared/services/mysql.service';
-import { TranslateTestingModule } from '@keira/test-utils';
-import { MockedElectronService, MockedMysqlService } from '@keira/test-utils';
-import { PageObject } from '@keira/test-utils';
+
+import { MockedElectronService, MockedMysqlService, PageObject, TranslateTestingModule } from '@keira/test-utils';
 import { instance } from 'ts-mockito';
 import { ConditionsHandlerService } from '../../../features/conditions/conditions-handler.service';
 import { CreatureHandlerService } from '../../../features/creature/creature-handler.service';
@@ -23,6 +19,7 @@ import { SpellHandlerService } from '../../../features/spell/spell-handler.servi
 import { SidebarComponent } from './sidebar.component';
 import { SidebarModule } from './sidebar.module';
 import { SidebarService } from './sidebar.service';
+import { ElectronService, LocationService, MysqlService } from '@keira/core';
 
 class SidebarComponentPage extends PageObject<SidebarComponent> {
   get toggleSidebarBtn(): HTMLButtonElement {

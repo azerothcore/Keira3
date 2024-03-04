@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { MultiRowEditorService } from '@keira-shared/abstract/service/editors/multi-row-editor.service';
-import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
+import { MultiRowEditorService, MysqlQueryService } from '@keira/core';
 import {
-  CreatureTemplateSpell,
   CREATURE_TEMPLATE_SPELL_ID,
   CREATURE_TEMPLATE_SPELL_ID_2,
   CREATURE_TEMPLATE_SPELL_TABLE,
+  CreatureTemplateSpell,
 } from '@keira/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { CreatureHandlerService } from '../creature-handler.service';

@@ -1,13 +1,9 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ITEM_SUBCLASS } from '@keira/acore-world-model';
-import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
-import { TranslateTestingModule } from '@keira/test-utils';
-import { Lock } from '@keira/acore-world-model';
-import { EditorPageObject } from '@keira/test-utils';
-import { ItemTemplate } from '@keira/acore-world-model';
+import { ITEM_SUBCLASS, ItemTemplate, Lock } from '@keira/acore-world-model';
+import { MysqlQueryService, SqliteQueryService } from '@keira/core';
+import { EditorPageObject, TranslateTestingModule } from '@keira/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';

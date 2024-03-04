@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { SingleRowEditorComponent } from '@keira-abstract/components/editors/single-row-editor.component';
+import { SingleRowEditorComponent } from '@keira/core';
 import { SpellDbc } from '@keira/acore-world-model';
 import { SpellHandlerService } from '../spell-handler.service';
 import { SpellDbcService } from './spell-dbc.service';

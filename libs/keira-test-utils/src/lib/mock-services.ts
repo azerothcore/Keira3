@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { TableRow } from '@keira/shared-constants';
-import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { HandlerService } from '@keira-abstract/service/handlers/handler.service';
-import { SingleRowEditorService } from '@keira-abstract/service/editors/single-row-editor.service';
-import { SingleRowComplexKeyEditorService } from '@keira-abstract/service/editors/single-row-complex-key-editor.service';
-import { MultiRowEditorService } from '@keira-abstract/service/editors/multi-row-editor.service';
-import { MultiRowComplexKeyEditorService } from '@keira-abstract/service/editors/multi-row-complex-key-editor.service';
+import { MysqlQueryService } from '@keira/core';
+import { HandlerService } from '@keira/core';
+import { SingleRowEditorService } from '@keira/core';
+import { SingleRowComplexKeyEditorService } from '@keira/core';
+import { MultiRowEditorService } from '@keira/core';
+import { MultiRowComplexKeyEditorService } from '@keira/core';
 
 export const MOCK_TABLE = 'mock_table';
 export const MOCK_ID = 'id';

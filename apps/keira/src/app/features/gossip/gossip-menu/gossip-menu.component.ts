@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
-import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
+import { MultiRowEditorComponent, MysqlQueryService } from '@keira/core';
 import { GossipMenu } from '@keira/acore-world-model';
 import { GossipHandlerService } from '../gossip-handler.service';
 import { GossipMenuService } from './gossip-menu.service';

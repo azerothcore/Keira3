@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { HandlerService } from '@keira-abstract/service/handlers/handler.service';
-import { DISENCHANT_LOOT_TEMPLATE_TABLE } from '@keira/acore-world-model';
-import { ITEM_ENCHANTMENT_TEMPLATE_TABLE } from '@keira/acore-world-model';
-import { ITEM_LOOT_TEMPLATE_TABLE } from '@keira/acore-world-model';
-import { ItemTemplate, ITEM_TEMPLATE_TABLE } from '@keira/acore-world-model';
-import { MILLING_LOOT_TEMPLATE_TABLE } from '@keira/acore-world-model';
-import { PROSPECTING_LOOT_TEMPLATE_TABLE } from '@keira/acore-world-model';
+import { HandlerService } from '@keira/core';
+import {
+  DISENCHANT_LOOT_TEMPLATE_TABLE,
+  ITEM_ENCHANTMENT_TEMPLATE_TABLE,
+  ITEM_LOOT_TEMPLATE_TABLE,
+  ITEM_TEMPLATE_TABLE,
+  ItemTemplate,
+  MILLING_LOOT_TEMPLATE_TABLE,
+  PROSPECTING_LOOT_TEMPLATE_TABLE,
+} from '@keira/acore-world-model';
 
 @Injectable()
 export class ItemHandlerService extends HandlerService<ItemTemplate> {

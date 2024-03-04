@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { GO_DATA_FIELDS } from '@keira/shared-constants';
-import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
+import { MysqlQueryService } from '@keira/core';
 import { MockedMysqlQueryService, MockedToastrService } from '@keira/test-utils';
 import { ToastrService } from 'ngx-toastr';
 import { instance } from 'ts-mockito';

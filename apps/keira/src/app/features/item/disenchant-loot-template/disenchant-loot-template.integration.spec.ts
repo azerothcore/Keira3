@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira-shared/services/query/mysql-query.service';
-import { MultiRowEditorPageObject } from '@keira/test-utils';
+import { MysqlQueryService } from '@keira/core';
+import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/test-utils';
 import { DisenchantLootTemplate } from '@keira/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
@@ -10,7 +10,6 @@ import { ItemHandlerService } from '../item-handler.service';
 import { DisenchantLootTemplateComponent } from './disenchant-loot-template.component';
 import { DisenchantLootTemplateModule } from './disenchant-loot-template.module';
 import { DisenchantLootTemplateService } from './disenchant-loot-template.service';
-import { TranslateTestingModule } from '@keira/test-utils';
 import Spy = jasmine.Spy;
 
 class DisenchantLootTemplatePage extends MultiRowEditorPageObject<DisenchantLootTemplateComponent> {}

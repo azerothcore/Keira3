@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MultiRowEditorComponent } from '@keira-abstract/components/editors/multi-row-editor.component';
-import { SqliteQueryService } from '@keira-shared/services/query/sqlite-query.service';
+import { MultiRowEditorComponent, SqliteQueryService } from '@keira/core';
 import { NpcTrainer } from '@keira/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { NpcTrainerService } from './npc-trainer.service';
