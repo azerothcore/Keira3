@@ -7,6 +7,9 @@
       "parserOptions": {
         "createDefaultProgram": true
       },
+      "env": {
+        "es6": true
+      },
       "extends": [
         "plugin:@angular-eslint/recommended",
         "plugin:@angular-eslint/template/process-inline-templates",
