@@ -1,4 +1,4 @@
-import { Option } from '@keira/shared-constants';
+import { Option } from '@keira/shared/constants';
 
 export const FOOD_TYPE: Option[] = [
   { value: 1, name: 'Meat' },

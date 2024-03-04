@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { BaseSelectorModalComponent } from '../base-selector/base-selector-modal.component';
-import { DTCFG } from '@keira/config';
-import { Option } from '@keira/shared-constants';
+import { DTCFG } from '@keira/shared/config';
+import { Option } from '@keira/shared/constants';
 import { SingleValueModalConfig } from './single-value-selector.model';
 
 @Component({

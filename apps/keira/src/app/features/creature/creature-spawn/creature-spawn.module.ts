@@ -9,7 +9,7 @@ import {
   QueryOutputModule,
   SingleValueSelectorModule,
   TopBarModule,
-} from '@keira/core';
+} from '@keira/shared/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';

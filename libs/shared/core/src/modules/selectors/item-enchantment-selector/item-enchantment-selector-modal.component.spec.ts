@@ -4,7 +4,7 @@ import { instance } from 'ts-mockito';
 
 import { ItemEnchantmentSelectorModalComponent } from './item-enchantment-selector-modal.component';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
-import { MockedMysqlQueryService, TranslateTestingModule } from '@keira/test-utils';
+import { MockedMysqlQueryService, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ItemEnchantmentSearchService } from '../../search/item-enchantment-search.service';
 import { ItemEnchantmentSelectorModule } from './item-enchantment-selector.module';
 

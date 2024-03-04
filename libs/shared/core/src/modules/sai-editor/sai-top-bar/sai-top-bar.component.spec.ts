@@ -1,8 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { PageObject, TranslateTestingModule } from '@keira/test-utils';
-import { SAI_TYPES } from '@keira/acore-world-model';
+import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { SAI_TYPES } from '@keira/shared/acore-world-model';
 import { of } from 'rxjs';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { SaiHandlerService } from '../sai-handler.service';

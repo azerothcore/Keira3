@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { SmartScripts } from '@keira/acore-world-model';
+import { SmartScripts } from '@keira/shared/acore-world-model';
 import { from, map, Observable, of, tap } from 'rxjs';
 import { Delete, Insert, Squel, Update } from 'squel';
-import { squelConfig } from '@keira/config';
-import { MaxRow, QuestReputationReward, TableRow } from '@keira/shared-constants';
+import { squelConfig } from '@keira/shared/config';
+import { MaxRow, QuestReputationReward, TableRow } from '@keira/shared/constants';
 import { ConfigService } from '../config.service';
 import { MysqlService } from '../mysql.service';
 import { BaseQueryService } from './base-query.service';

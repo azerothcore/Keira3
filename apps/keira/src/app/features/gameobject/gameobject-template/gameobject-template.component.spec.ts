@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira/core';
-import { TranslateTestingModule } from '@keira/test-utils';
-import { FieldDefinition } from '@keira/shared-constants';
+import { MysqlQueryService } from '@keira/shared/core';
+import { TranslateTestingModule } from '@keira/shared/test-utils';
+import { FieldDefinition } from '@keira/shared/constants';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';

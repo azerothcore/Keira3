@@ -1,4 +1,4 @@
-import { Option } from '@keira/shared-constants';
+import { Option } from '@keira/shared/constants';
 
 export const OPTION_ICON: Option[] = [
   { value: 0, name: 'CHAT (White chat bubble)' },

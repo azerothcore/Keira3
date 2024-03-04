@@ -1,8 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 
-import { PageObject } from '@keira/test-utils';
-import { LootTemplate } from '@keira/acore-world-model';
+import { PageObject } from '@keira/shared/test-utils';
+import { LootTemplate } from '@keira/shared/acore-world-model';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { of } from 'rxjs';
 import { ReferenceViewerComponent } from './reference-viewer.component';

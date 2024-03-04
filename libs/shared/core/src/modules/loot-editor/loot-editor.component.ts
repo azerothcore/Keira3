@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, OnInit } from '@angular/core';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
-import { DTCFG } from '@keira/config';
-import { LOOT_MODE, LootTemplate } from '@keira/acore-world-model';
-import { WIKI_BASE_URL } from '@keira/shared-constants';
+import { DTCFG } from '@keira/shared/config';
+import { LOOT_MODE, LootTemplate } from '@keira/shared/acore-world-model';
+import { WIKI_BASE_URL } from '@keira/shared/constants';
 import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
 import { MultiRowEditorService } from '../../abstract/service/editors/multi-row-editor.service';
 import { compareObjFn } from '../../utils/helpers';

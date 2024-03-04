@@ -1,4 +1,4 @@
-import { TableRow } from '../../../shared-constants/src/types/general';
+import { TableRow } from '../../../constants/src/types/general';
 
 export const GAMEOBJECT_TEMPLATE_TABLE = 'gameobject_template';
 export const GAMEOBJECT_TEMPLATE_ID = 'entry';

@@ -1,6 +1,6 @@
 import { FormControl, FormGroup } from '@angular/forms';
 
-import { QueryForm, StringKeys, TableRow } from '@keira/shared-constants';
+import { QueryForm, StringKeys, TableRow } from '@keira/shared/constants';
 import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
 import { ChangeDetectorRef } from '@angular/core';
 import { ModelForm, ModelNestedForm } from '../../utils/helpers';

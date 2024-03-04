@@ -2,8 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { instance } from 'ts-mockito';
 
-import { MockedMysqlQueryService } from '@keira/test-utils';
-import { MysqlQueryService } from '@keira/core';
+import { MockedMysqlQueryService } from '@keira/shared/test-utils';
+import { MysqlQueryService } from '@keira/shared/core';
 import { SelectCreatureService } from '../../../../../../../apps/keira/src/app/features/creature/select-creature/select-creature.service';
 import { CreatureHandlerService } from '../../../../../../../apps/keira/src/app/features/creature/creature-handler.service';
 import { SaiCreatureHandlerService } from '../../../../../../../apps/keira/src/app/features/creature/sai-creature-handler.service';

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { SingleRowEditorComponent } from '@keira/core';
+import { SingleRowEditorComponent } from '@keira/shared/core';
 import {
   ALLOWABLE_CLASSES,
   ALLOWABLE_RACES,
@@ -23,7 +23,7 @@ import {
   SOCKET_COLOR,
   STAT_TYPE,
   TOTEM_CATEGORY,
-} from '@keira/acore-world-model';
+} from '@keira/shared/acore-world-model';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { VIEWER_TYPE } from '../../../features/model-3d-viewer/model-3d-viewer.model';
 import { ItemHandlerService } from '../item-handler.service';

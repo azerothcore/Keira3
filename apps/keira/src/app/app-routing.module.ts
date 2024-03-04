@@ -73,7 +73,7 @@ import { MailLootHandlerService } from './features/other-loots/mail-loot/mail-lo
 import { SelectSpellComponent } from './features/spell/select-spell/select-spell.component';
 import { SpellDbcComponent } from './features/spell/spell-dbc/spell-dbc.component';
 import { GameobjectSpawnAddonComponent } from './features/gameobject/gameobject-spawn-addon/gameobject-spawn-addon.component';
-import { SaiHandlerService } from '@keira/core';
+import { SaiHandlerService } from '@keira/shared/core';
 
 const routes: Routes = [
   {

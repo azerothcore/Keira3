@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
-import { TableRow } from '@keira/shared-constants';
+import { TableRow } from '@keira/shared/constants';
 import { MultiRowEditorService } from '../../abstract/service/editors/multi-row-editor.service';
 
 @Component({

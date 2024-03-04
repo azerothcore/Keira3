@@ -3,7 +3,7 @@ import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { MockType, QueryOutputComponentPage, TranslateTestingModule } from '@keira/test-utils';
+import { MockType, QueryOutputComponentPage, TranslateTestingModule } from '@keira/shared/test-utils';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { ClipboardService } from 'ngx-clipboard';
 import { EditorService } from '../../abstract/service/editors/editor.service';

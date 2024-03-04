@@ -1,4 +1,4 @@
-import { Flag } from '@keira/shared-constants';
+import { Flag } from '@keira/shared/constants';
 
 export const ALLOWABLE_RACES: Flag[] = [
   { bit: 0, name: 'Human' },

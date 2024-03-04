@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
-import { Faction, FACTION_SEARCH_FIELDS } from '@keira/acore-world-model';
+import { Faction, FACTION_SEARCH_FIELDS } from '@keira/shared/acore-world-model';
 import { FactionSearchService } from '../../search/faction-search.service';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 

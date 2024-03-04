@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { MockedMysqlQueryService, MockType, PageObject, TranslateTestingModule } from '@keira/test-utils';
+import { MockedMysqlQueryService, MockType, PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { of, throwError } from 'rxjs';
 import { anything, instance, mock, reset, when } from 'ts-mockito';
 import { CreateComponent } from './create.component';

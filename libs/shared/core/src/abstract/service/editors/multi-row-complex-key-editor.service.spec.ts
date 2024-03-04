@@ -7,8 +7,8 @@ import {
   MockEntity,
   MockHandlerService,
   MockMultiRowComplexKeyEditorService,
-} from '@keira/test-utils';
-import { TableRow } from '@keira/shared-constants';
+} from '@keira/shared/test-utils';
+import { TableRow } from '@keira/shared/constants';
 import { QueryError } from 'mysql2';
 import { ToastrService } from 'ngx-toastr';
 import { of, throwError } from 'rxjs';

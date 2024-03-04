@@ -4,8 +4,8 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 import { FlagsSelectorModalComponent } from './flags-selector-modal.component';
 import { FlagsService } from './flags.service';
 import { FlagsSelectorModule } from './flags-selector.module';
-import { Flag } from '@keira/shared-constants';
-import { TranslateTestingModule } from '@keira/test-utils';
+import { Flag } from '@keira/shared/constants';
+import { TranslateTestingModule } from '@keira/shared/test-utils';
 
 describe('FlagsSelectorModalComponent', () => {
   let component: FlagsSelectorModalComponent;

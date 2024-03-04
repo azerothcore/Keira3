@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
-import { TableRow } from '@keira/shared-constants';
-import { ReferenceLootTemplate } from '@keira/acore-world-model';
+import { TableRow } from '@keira/shared/constants';
+import { ReferenceLootTemplate } from '@keira/shared/acore-world-model';
 import { of } from 'rxjs';
 import { ReferenceViewerService } from './reference-viewer.service';
 import { LootEditorModule } from './loot-editor.module';

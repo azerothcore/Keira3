@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { SingleRowEditorComponent } from '@keira/core';
+import { SingleRowEditorComponent } from '@keira/shared/core';
 import {
   CREATURE_AI_NAME,
   CREATURE_CLASS,
@@ -22,7 +22,7 @@ import {
   UNIT_CLASS,
   UNIT_FLAGS,
   UNIT_FLAGS_2,
-} from '@keira/acore-world-model';
+} from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateService } from './creature-template.service';
 import { VIEWER_TYPE } from '../../model-3d-viewer/model-3d-viewer.model';

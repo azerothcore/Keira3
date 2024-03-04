@@ -1,4 +1,4 @@
-import { Option } from '@keira/shared-constants';
+import { Option } from '@keira/shared/constants';
 
 export const GAMEOBJECT_ICON: Option[] = [
   { value: null, name: 'None' },

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { ItemLimitCategorySearchService } from '../../search/item-limit-category-search.service';
-import { ITEM_LIMIT_CATEGORY_ID, ItemLimitCategory } from '@keira/acore-world-model';
+import { ITEM_LIMIT_CATEGORY_ID, ItemLimitCategory } from '@keira/shared/acore-world-model';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 
 @Component({

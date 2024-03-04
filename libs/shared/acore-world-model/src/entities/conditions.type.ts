@@ -1,4 +1,4 @@
-import { TableRow } from '../../../shared-constants/src/types/general';
+import { TableRow } from '../../../constants/src/types/general';
 
 export const CONDITIONS_TABLE = 'conditions';
 export const CONDITIONS_ID_FIELDS = [

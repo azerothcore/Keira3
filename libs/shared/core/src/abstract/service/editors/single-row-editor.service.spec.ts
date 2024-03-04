@@ -6,7 +6,7 @@ import {
   MockEntity,
   MockHandlerService,
   MockSingleRowEditorService,
-} from '@keira/test-utils';
+} from '@keira/shared/test-utils';
 import { ToastrService } from 'ngx-toastr';
 import { instance } from 'ts-mockito';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';

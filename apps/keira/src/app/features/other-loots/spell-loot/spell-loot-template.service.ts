@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { MultiRowEditorService, MysqlQueryService } from '@keira/core';
-import { LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, SPELL_LOOT_TEMPLATE_TABLE, SpellLootTemplate } from '@keira/acore-world-model';
+import { MultiRowEditorService, MysqlQueryService } from '@keira/shared/core';
+import { LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, SPELL_LOOT_TEMPLATE_TABLE, SpellLootTemplate } from '@keira/shared/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { SpellLootHandlerService } from './spell-loot-handler.service';
 

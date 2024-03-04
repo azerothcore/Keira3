@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SAI_TYPES, SmartScripts } from '@keira/acore-world-model';
+import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { MysqlQueryService } from '../../services/query/mysql-query.service';
 import { SAI_ACTION_COMMENTS, SAI_EVENT_COMMENTS } from './constants/sai-comments';
 import {

@@ -1,4 +1,4 @@
-import { Flag } from '@keira/shared-constants';
+import { Flag } from '@keira/shared/constants';
 
 export const CREATURE_TYPE_FLAGS: Flag[] = [
   { bit: 0, name: 'TAMEABLE - Makes the mob tameable (must also be a beast and have family set)' },

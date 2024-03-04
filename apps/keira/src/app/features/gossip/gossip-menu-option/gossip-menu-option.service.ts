@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
-import { MultiRowEditorService, MysqlQueryService } from '@keira/core';
-import { GOSSIP_MENU_OPTION_ID, GOSSIP_MENU_OPTION_ID_2, GOSSIP_MENU_OPTION_TABLE, GossipMenuOption } from '@keira/acore-world-model';
+import { MultiRowEditorService, MysqlQueryService } from '@keira/shared/core';
+import {
+  GOSSIP_MENU_OPTION_ID,
+  GOSSIP_MENU_OPTION_ID_2,
+  GOSSIP_MENU_OPTION_TABLE,
+  GossipMenuOption,
+} from '@keira/shared/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { GossipHandlerService } from '../gossip-handler.service';
 

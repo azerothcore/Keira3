@@ -1,4 +1,4 @@
-import { TableRow } from '../../../shared-constants/src/types/general';
+import { TableRow } from '../../../constants/src/types/general';
 
 export const FACTION_TABLE = 'factions'; // sqlite
 export const FACTION_ID = 'm_ID';

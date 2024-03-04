@@ -1,6 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 
-import { SAI_TYPES, SmartScripts } from '@keira/acore-world-model';
+import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { of } from 'rxjs';
 import { MysqlQueryService } from '../../services/query/mysql-query.service';
 import {

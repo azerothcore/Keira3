@@ -6,7 +6,7 @@ import {
   MockedToastrService,
   MockEntity,
   MockSingleRowEditorService,
-} from '@keira/test-utils';
+} from '@keira/shared/test-utils';
 import { QueryError } from 'mysql2';
 import { ToastrService } from 'ngx-toastr';
 import { of, throwError } from 'rxjs';

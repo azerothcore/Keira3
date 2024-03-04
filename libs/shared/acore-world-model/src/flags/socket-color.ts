@@ -1,4 +1,4 @@
-import { Flag } from '@keira/shared-constants';
+import { Flag } from '@keira/shared/constants';
 
 export const SOCKET_COLOR: Flag[] = [
   { bit: 1, name: 'Meta' },

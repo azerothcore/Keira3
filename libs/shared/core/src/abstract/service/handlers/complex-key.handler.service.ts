@@ -2,7 +2,7 @@ import { Router } from '@angular/router';
 
 import { HandlerService } from './handler.service';
 import { getPartial } from '../../../utils/helpers';
-import { TableRow } from '@keira/shared-constants';
+import { TableRow } from '@keira/shared/constants';
 
 export abstract class ComplexKeyHandlerService<T extends TableRow> extends HandlerService<T> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

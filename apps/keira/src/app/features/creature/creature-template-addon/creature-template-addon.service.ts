@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { MysqlQueryService, SingleRowEditorService } from '@keira/core';
-import { CREATURE_TEMPLATE_ADDON_ID, CREATURE_TEMPLATE_ADDON_TABLE, CreatureTemplateAddon } from '@keira/acore-world-model';
+import { MysqlQueryService, SingleRowEditorService } from '@keira/shared/core';
+import { CREATURE_TEMPLATE_ADDON_ID, CREATURE_TEMPLATE_ADDON_TABLE, CreatureTemplateAddon } from '@keira/shared/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { CreatureHandlerService } from '../creature-handler.service';
 

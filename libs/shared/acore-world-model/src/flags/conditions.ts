@@ -1,4 +1,4 @@
-import { Flag } from '@keira/shared-constants';
+import { Flag } from '@keira/shared/constants';
 import { FACTION_RANK } from '../options/faction-rank';
 
 export const QUEST_STATE: Flag[] = [

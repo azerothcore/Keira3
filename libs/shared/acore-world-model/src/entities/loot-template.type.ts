@@ -1,4 +1,4 @@
-import { TableRow } from '../../../shared-constants/src/types/general';
+import { TableRow } from '../../../constants/src/types/general';
 
 export const LOOT_TEMPLATE_ID = 'Entry';
 export const LOOT_TEMPLATE_ID_2 = 'Item';

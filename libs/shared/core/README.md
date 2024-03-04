@@ -1,4 +1,4 @@
-# keira-core
+# @keira/shared/core
 
 A collection of base classes, components, services and utilities that are used by most of the keira features.
 

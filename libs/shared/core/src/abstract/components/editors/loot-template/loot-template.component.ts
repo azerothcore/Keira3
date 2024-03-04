@@ -1,4 +1,4 @@
-import { LootTemplate } from '@keira/acore-world-model';
+import { LootTemplate } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '../multi-row-editor.component';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 

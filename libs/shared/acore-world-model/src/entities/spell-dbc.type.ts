@@ -1,4 +1,4 @@
-import { TableRow } from '../../../shared-constants/src/types/general';
+import { TableRow } from '../../../constants/src/types/general';
 
 export const SPELL_DBC_TABLE = 'spell_dbc';
 export const SPELL_DBC_CUSTOM_STARTING_ID = 200000;

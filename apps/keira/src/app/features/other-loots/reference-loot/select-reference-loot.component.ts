@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MysqlQueryService, SelectComponent } from '@keira/core';
+import { MysqlQueryService, SelectComponent } from '@keira/shared/core';
 import {
   LOOT_TEMPLATE_ID,
   REFERENCE_LOOT_TEMPLATE_CUSTOM_STARTING_ID,
   REFERENCE_LOOT_TEMPLATE_TABLE,
   ReferenceLootTemplate,
-} from '@keira/acore-world-model';
+} from '@keira/shared/acore-world-model';
 import { ReferenceLootHandlerService } from './reference-loot-handler.service';
 import { SelectReferenceLootService } from './select-reference-loot.service';
 

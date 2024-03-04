@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { LootTemplateComponent } from '@keira/core';
-import { SpellLootTemplate } from '@keira/acore-world-model';
+import { LootTemplateComponent } from '@keira/shared/core';
+import { SpellLootTemplate } from '@keira/shared/acore-world-model';
 import { SpellLootHandlerService } from './spell-loot-handler.service';
 import { SpellLootTemplateService } from './spell-loot-template.service';
 

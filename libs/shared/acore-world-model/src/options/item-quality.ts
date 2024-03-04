@@ -1,4 +1,4 @@
-import { Option } from '@keira/shared-constants';
+import { Option } from '@keira/shared/constants';
 
 export const ITEM_QUALITY: Option[] = [
   { value: 0, name: 'Grey (Poor)' },

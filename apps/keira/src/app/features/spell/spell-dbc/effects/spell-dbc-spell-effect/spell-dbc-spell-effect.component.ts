@@ -6,8 +6,8 @@ import {
   SPELL_DBC_EFFECT,
   SPELL_MECHANIC,
   SpellDbc,
-} from '@keira/acore-world-model';
-import { ModelForm } from '@keira/core';
+} from '@keira/shared/acore-world-model';
+import { ModelForm } from '@keira/shared/core';
 import { SpellDbcSpellEffectFieldPrefix } from './spell-dbc-spell-effect.model';
 
 @Component({

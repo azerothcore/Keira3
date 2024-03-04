@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ModelForm } from '@keira/core';
-import { SpellDbc } from '@keira/acore-world-model';
+import { ModelForm } from '@keira/shared/core';
+import { SpellDbc } from '@keira/shared/acore-world-model';
 import { LOCALES } from './spell-dbc-texts.model';
 
 @Component({

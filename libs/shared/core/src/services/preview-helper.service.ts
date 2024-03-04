@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { RACES_TEXT } from '@keira/shared-constants';
+import { RACES_TEXT } from '@keira/shared/constants';
 
 export const enum RACE {
   HUMAN = 0x001,

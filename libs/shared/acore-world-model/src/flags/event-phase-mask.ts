@@ -1,4 +1,4 @@
-import { Flag } from '@keira/shared-constants';
+import { Flag } from '@keira/shared/constants';
 
 export const EVENT_PHASE_MASK: Flag[] = [
   { bit: 0, name: 'SMART_EVENT_PHASE_1' },

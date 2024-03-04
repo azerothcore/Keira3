@@ -1,4 +1,4 @@
-import { Option } from '@keira/shared-constants';
+import { Option } from '@keira/shared/constants';
 
 export const CREATURE_AI_NAME: Option[] = [
   { value: 'NullCreatureAI', name: 'Empty AI, creature does nothing; cannot be charmed.' },

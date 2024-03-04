@@ -4,7 +4,7 @@ import { instance } from 'ts-mockito';
 
 import { MapSelectorModalComponent } from './map-selector-modal.component';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
-import { MockedMysqlQueryService, TranslateTestingModule } from '@keira/test-utils';
+import { MockedMysqlQueryService, TranslateTestingModule } from '@keira/shared/test-utils';
 import { MapSearchService } from '../../search/map-search.service';
 import { MapSelectorModule } from './map-selector.module';
 

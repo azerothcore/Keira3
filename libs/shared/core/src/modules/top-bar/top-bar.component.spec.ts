@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
-import { PageObject } from '@keira/test-utils';
+import { PageObject } from '@keira/shared/test-utils';
 import { TopBarComponent } from './top-bar.component';
 import { TopBarModule } from './top-bar.module';
 

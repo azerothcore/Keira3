@@ -1,4 +1,4 @@
-import { Flag } from '@keira/shared-constants';
+import { Flag } from '@keira/shared/constants';
 
 export const SPAWN_MASK: Flag[] = [
   { bit: 0, name: '10-man-normal (maps withouth heroic mode)' },

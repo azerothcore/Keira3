@@ -1,4 +1,4 @@
-import { Option } from '@keira/shared-constants';
+import { Option } from '@keira/shared/constants';
 
 export const ITEM_MATERIAL: Option[] = [
   { value: -1, name: 'Consumables (Food, reagents, etc...)' },

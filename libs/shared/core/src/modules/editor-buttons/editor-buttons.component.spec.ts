@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { PageObject, TranslateTestingModule } from '@keira/test-utils';
+import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { EditorButtonsComponent } from './editor-buttons.component';
 
 @Component({

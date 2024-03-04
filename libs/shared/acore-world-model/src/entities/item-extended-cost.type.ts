@@ -1,4 +1,4 @@
-import { TableRow } from '../../../shared-constants/src/types/general';
+import { TableRow } from '../../../constants/src/types/general';
 
 export const ITEM_EXTENDED_COST_TABLE = 'item_extended_cost'; // sqlite
 export const ITEM_EXTENDED_COST_ID = 'id';

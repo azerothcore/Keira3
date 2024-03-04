@@ -11,8 +11,8 @@ import {
   SPELL_MECHANIC,
   SPELL_SCHOOL_MASK,
   SpellDbc,
-} from '@keira/acore-world-model';
-import { ModelForm } from '@keira/core';
+} from '@keira/shared/acore-world-model';
+import { ModelForm } from '@keira/shared/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

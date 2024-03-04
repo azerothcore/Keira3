@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 
-import { TableRow } from '@keira/shared-constants';
+import { TableRow } from '@keira/shared/constants';
 import { Observable } from 'rxjs';
 import { AppConfig } from '../../../../../apps/keira/src/environments/environment';
 import { ElectronService } from './electron.service';

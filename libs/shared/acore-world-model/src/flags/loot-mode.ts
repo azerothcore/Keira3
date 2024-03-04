@@ -1,4 +1,4 @@
-import { Flag } from '@keira/shared-constants';
+import { Flag } from '@keira/shared/constants';
 
 export const LOOT_MODE: Flag[] = [
   { bit: 0, name: 'Default' },

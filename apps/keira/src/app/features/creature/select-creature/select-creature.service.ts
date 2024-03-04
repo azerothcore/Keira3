@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { MysqlQueryService, SelectService } from '@keira/core';
+import { MysqlQueryService, SelectService } from '@keira/shared/core';
 import {
   CREATURE_TEMPLATE_ID,
   CREATURE_TEMPLATE_NAME,
   CREATURE_TEMPLATE_SEARCH_FIELDS,
   CREATURE_TEMPLATE_TABLE,
   CreatureTemplate,
-} from '@keira/acore-world-model';
+} from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 
 @Injectable()

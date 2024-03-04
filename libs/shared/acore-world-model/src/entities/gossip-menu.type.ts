@@ -1,4 +1,4 @@
-import { TableRow } from '../../../shared-constants/src/types/general';
+import { TableRow } from '../../../constants/src/types/general';
 
 export const GOSSIP_MENU_TABLE = 'gossip_menu';
 export const GOSSIP_MENU_ID = 'MenuID';

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { SingleRowEditorComponent } from '@keira/core';
-import { EMOTE, QuestRequestItems } from '@keira/acore-world-model';
+import { SingleRowEditorComponent } from '@keira/shared/core';
+import { EMOTE, QuestRequestItems } from '@keira/shared/acore-world-model';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestRequestItemsService } from './quest-request-items.service';

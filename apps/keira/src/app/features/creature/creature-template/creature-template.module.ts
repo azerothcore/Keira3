@@ -9,7 +9,7 @@ import {
   SingleValueSelectorModule,
   SpellSelectorModule,
   TopBarModule,
-} from '@keira/core';
+} from '@keira/shared/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';

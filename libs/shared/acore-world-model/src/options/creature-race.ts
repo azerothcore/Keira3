@@ -1,4 +1,4 @@
-import { Option } from '@keira/shared-constants';
+import { Option } from '@keira/shared/constants';
 
 export const CREATURE_RACE: Option[] = [
   { value: 1, name: 'HUMAN' },

@@ -1,4 +1,4 @@
-import { TableRow } from '../../../shared-constants/src/types/general';
+import { TableRow } from '../../../constants/src/types/general';
 
 export const SPELL_TABLE = 'spells'; // sqlite
 export const SPELL_ID = 'ID';

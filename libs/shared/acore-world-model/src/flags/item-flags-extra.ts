@@ -1,4 +1,4 @@
-import { Flag } from '@keira/shared-constants';
+import { Flag } from '@keira/shared/constants';
 
 export const ITEM_FLAGS_EXTRA: Flag[] = [
   { bit: 0, name: 'HORDE_ONLY' },

@@ -1,8 +1,8 @@
-import { TableRow } from '@keira/shared-constants';
+import { TableRow } from '@keira/shared/constants';
 import { HandlerService } from '../../service/handlers/handler.service';
 import { EditorComponent } from './editor.component';
 import { MultiRowEditorService } from '../../service/editors/multi-row-editor.service';
-import { DTCFG } from '@keira/config';
+import { DTCFG } from '@keira/shared/config';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({

@@ -1,4 +1,4 @@
-import { Option } from '@keira/shared-constants';
+import { Option } from '@keira/shared/constants';
 
 export const PVP_RANK: Option[] = [
   { value: 0, name: 'None' },

@@ -1,4 +1,4 @@
-import { Flag } from '@keira/shared-constants';
+import { Flag } from '@keira/shared/constants';
 
 export const UNIT_FLAGS_2: Flag[] = [
   { bit: 0, name: 'FEIGN_DEATH' },

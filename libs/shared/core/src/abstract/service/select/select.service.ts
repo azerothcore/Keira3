@@ -1,4 +1,4 @@
-import { StringKeys, TableRow } from '@keira/shared-constants';
+import { StringKeys, TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { HandlerService } from '../handlers/handler.service';
 import { SearchService } from '../../../modules/search/search.service';

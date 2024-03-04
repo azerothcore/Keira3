@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { LootTemplateComponent } from '@keira/core';
-import { MailLootTemplate } from '@keira/acore-world-model';
+import { LootTemplateComponent } from '@keira/shared/core';
+import { MailLootTemplate } from '@keira/shared/acore-world-model';
 import { MailLootHandlerService } from './mail-loot-handler.service';
 import { MailLootTemplateService } from './mail-loot-template.service';
 

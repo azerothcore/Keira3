@@ -2,8 +2,8 @@ import { Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { PageObject, TranslateTestingModule } from '@keira/test-utils';
-import { LootTemplate } from '@keira/acore-world-model';
+import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { LootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { LootEditorComponent } from './loot-editor.component';

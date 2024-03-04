@@ -4,7 +4,7 @@ import { instance } from 'ts-mockito';
 
 import { CreatureSelectorModalComponent } from './creature-selector-modal.component';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
-import { MockedMysqlQueryService, TranslateTestingModule } from '@keira/test-utils';
+import { MockedMysqlQueryService, TranslateTestingModule } from '@keira/shared/test-utils';
 import { CreatureSearchService } from '../../search/creature-search.service';
 import { CreatureSelectorModule } from './creature-selector.module';
 

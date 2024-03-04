@@ -4,7 +4,7 @@ import { instance } from 'ts-mockito';
 
 import { FactionSelectorModalComponent } from './faction-selector-modal.component';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
-import { MockedMysqlQueryService, TranslateTestingModule } from '@keira/test-utils';
+import { MockedMysqlQueryService, TranslateTestingModule } from '@keira/shared/test-utils';
 import { FactionSearchService } from '../../search/faction-search.service';
 import { FactionSelectorModule } from './faction-selector.module';
 

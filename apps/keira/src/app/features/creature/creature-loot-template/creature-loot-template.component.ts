@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { LootTemplateIdComponent } from '@keira/core';
-import { CreatureLootTemplate } from '@keira/acore-world-model';
+import { LootTemplateIdComponent } from '@keira/shared/core';
+import { CreatureLootTemplate } from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureLootTemplateService } from './creature-loot-template.service';
 

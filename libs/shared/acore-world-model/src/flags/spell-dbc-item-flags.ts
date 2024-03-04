@@ -1,4 +1,4 @@
-import { Flag } from '@keira/shared-constants';
+import { Flag } from '@keira/shared/constants';
 import { INVENTORY_TYPE } from '../options/inventory-type';
 import { ITEM_SUBCLASS } from '../options/item-class';
 

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { MultiRowEditorService, MysqlQueryService } from '@keira/core';
+import { MultiRowEditorService, MysqlQueryService } from '@keira/shared/core';
 import {
   GAMEOBJECT_QUESTSTARTER_ID,
   GAMEOBJECT_QUESTSTARTER_ID_2,
   GAMEOBJECT_QUESTSTARTER_TABLE,
   GameobjectQueststarter,
-} from '@keira/acore-world-model';
+} from '@keira/shared/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { QuestHandlerService } from '../quest-handler.service';
 

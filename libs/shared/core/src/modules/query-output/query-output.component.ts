@@ -4,7 +4,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ClipboardService } from 'ngx-clipboard';
 import { filter } from 'rxjs';
 import { EditorService } from '../../abstract/service/editors/editor.service';
-import { TableRow } from '@keira/shared-constants';
+import { TableRow } from '@keira/shared/constants';
 import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
 import { ModalConfirmComponent } from '../modal-confirm/modal-confirm.component';
 

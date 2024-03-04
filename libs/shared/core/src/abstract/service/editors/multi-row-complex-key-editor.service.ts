@@ -1,4 +1,4 @@
-import { Class, TableRow } from '@keira/shared-constants';
+import { Class, TableRow } from '@keira/shared/constants';
 import { QueryError } from 'mysql2';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';

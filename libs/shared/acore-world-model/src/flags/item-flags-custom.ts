@@ -1,4 +1,4 @@
-import { Flag } from '@keira/shared-constants';
+import { Flag } from '@keira/shared/constants';
 
 export const ITEM_FLAGS_CUSTOM: Flag[] = [
   { bit: 0, name: 'CU_DURATION_REAL_TIME' },

@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/test-utils';
+import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { MysqlQueryService } from '../../services/query/mysql-query.service';
-import { SAI_TYPES, SmartScripts } from '@keira/acore-world-model';
+import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { SaiEditorComponent } from './sai-editor.component';
 import { SaiEditorModule } from './sai-editor.module';
 import { SaiHandlerService } from './sai-handler.service';

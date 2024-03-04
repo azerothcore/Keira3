@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { HandlerService } from '@keira/core';
+import { HandlerService } from '@keira/shared/core';
 import {
   CREATURE_EQUIP_TEMPLATE_TABLE,
   CREATURE_LOOT_TEMPLATE_TABLE,
@@ -19,7 +19,7 @@ import {
   PICKPOCKETING_LOOT_TEMPLATE_TABLE,
   SAI_TABLE,
   SKINNING_LOOT_TEMPLATE_TABLE,
-} from '@keira/acore-world-model';
+} from '@keira/shared/acore-world-model';
 import { SaiCreatureHandlerService } from './sai-creature-handler.service';
 
 @Injectable()

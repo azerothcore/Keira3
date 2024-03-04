@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { HandlerService } from '@keira/core';
+import { HandlerService } from '@keira/shared/core';
 import {
   CREATURE_QUESTENDER_TABLE,
   CREATURE_QUESTSTARTER_TABLE,
@@ -11,7 +11,7 @@ import {
   QUEST_TEMPLATE_ADDON_TABLE,
   QUEST_TEMPLATE_TABLE,
   QuestTemplate,
-} from '@keira/acore-world-model';
+} from '@keira/shared/acore-world-model';
 
 @Injectable()
 export class QuestHandlerService extends HandlerService<QuestTemplate> {

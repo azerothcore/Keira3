@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Spell, SPELL_SEARCH_FIELDS, SPELL_TABLE } from '@keira/acore-world-model';
+import { Spell, SPELL_SEARCH_FIELDS, SPELL_TABLE } from '@keira/shared/acore-world-model';
 import { SearchService } from './search.service';
 import { SqliteQueryService } from '../../services/query/sqlite-query.service';
 

@@ -13,7 +13,7 @@ import { SpellLootHandlerService } from '../../../features/other-loots/spell-loo
 import { QuestHandlerService } from '../../../features/quest/quest-handler.service';
 import { SpellHandlerService } from '../../../features/spell/spell-handler.service';
 import { SidebarService } from './sidebar.service';
-import { LocationService, MysqlService, SaiHandlerService } from '@keira/core';
+import { LocationService, MysqlService, SaiHandlerService } from '@keira/shared/core';
 
 const animationTime = 200;
 

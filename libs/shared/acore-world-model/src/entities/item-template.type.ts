@@ -1,4 +1,4 @@
-import { TableRow } from '../../../shared-constants/src/types/general';
+import { TableRow } from '../../../constants/src/types/general';
 
 export const ITEM_TEMPLATE_TABLE = 'item_template';
 export const ITEM_TEMPLATE_ID = 'entry';

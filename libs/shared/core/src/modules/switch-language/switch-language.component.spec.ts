@@ -1,5 +1,5 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { TranslateTestingModule } from '@keira/test-utils';
+import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { SwitchLanguageComponent } from './switch-language.component';
 

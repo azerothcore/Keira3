@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MultiRowEditorComponent } from '@keira/core';
-import { CreatureQueststarter } from '@keira/acore-world-model';
+import { MultiRowEditorComponent } from '@keira/shared/core';
+import { CreatureQueststarter } from '@keira/shared/acore-world-model';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { CreatureQueststarterService } from './creature-queststarter.service';

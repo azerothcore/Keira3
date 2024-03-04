@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 
-import { Spied, TranslateTestingModule } from '@keira/test-utils';
+import { Spied, TranslateTestingModule } from '@keira/shared/test-utils';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { ConnectionWindowService } from '../../../connection-window/connection-window.service';
 import { LogoutBtnComponent } from './logout-btn.component';
-import { LocationService, ModalConfirmComponent } from '@keira/core';
+import { LocationService, ModalConfirmComponent } from '@keira/shared/core';
 import Spy = jasmine.Spy;
 
 @NgModule({

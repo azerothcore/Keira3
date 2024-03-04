@@ -1,4 +1,4 @@
-import { Flag } from '@keira/shared-constants';
+import { Flag } from '@keira/shared/constants';
 
 export const BAG_FAMILY: Flag[] = [
   { bit: 0, name: 'Arrows' },

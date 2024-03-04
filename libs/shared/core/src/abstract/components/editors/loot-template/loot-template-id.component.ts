@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { QueryError } from 'mysql2';
 
-import { LootTemplate } from '@keira/acore-world-model';
+import { LootTemplate } from '@keira/shared/acore-world-model';
 import { HandlerService } from '../../../service/handlers/handler.service';
 import { LootEditorIdService } from '../../../service/editors/loot-editor-id.service';
 import { LootTemplateComponent } from './loot-template.component';

@@ -1,5 +1,5 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { MockedMysqlService, PageObject, Spied, TranslateTestingModule } from '@keira/test-utils';
+import { MockedMysqlService, PageObject, Spied, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ConnectionOptions, QueryError } from 'mysql2';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { of, throwError } from 'rxjs';
@@ -8,7 +8,7 @@ import { instance, reset } from 'ts-mockito';
 import { ConnectionWindowComponent } from './connection-window.component';
 import { ConnectionWindowModule } from './connection-window.module';
 import { ConnectionWindowService } from './connection-window.service';
-import { MysqlService } from '@keira/core';
+import { MysqlService } from '@keira/shared/core';
 
 class ConnectionWindowComponentPage extends PageObject<ConnectionWindowComponent> {
   get hostInput(): HTMLInputElement {

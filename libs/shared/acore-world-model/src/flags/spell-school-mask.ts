@@ -1,4 +1,4 @@
-import { Flag } from '@keira/shared-constants';
+import { Flag } from '@keira/shared/constants';
 
 export const SPELL_SCHOOL_MASK: Flag[] = [
   { bit: 0, name: 'SPELL_SCHOOL_NORMAL' },

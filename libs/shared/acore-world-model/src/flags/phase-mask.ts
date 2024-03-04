@@ -1,4 +1,4 @@
-import { Flag } from '@keira/shared-constants';
+import { Flag } from '@keira/shared/constants';
 
 export const PHASE_MASK: Flag[] = [
   { bit: 0, name: 'Phase 0' },

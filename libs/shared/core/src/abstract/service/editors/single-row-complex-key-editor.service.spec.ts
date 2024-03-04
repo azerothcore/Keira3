@@ -15,7 +15,7 @@ import {
   MockEntity,
   MockHandlerService,
   MockSingleRowComplexKeyEditorService,
-} from '@keira/test-utils';
+} from '@keira/shared/test-utils';
 import { SingleRowComplexKeyEditorService } from './single-row-complex-key-editor.service';
 
 import { getPartial } from '../../../utils/helpers';

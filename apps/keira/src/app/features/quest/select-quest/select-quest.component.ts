@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MysqlQueryService, SelectComponent } from '@keira/core';
-import { QUEST_TEMPLATE_CUSTOM_STARTING_ID, QUEST_TEMPLATE_ID, QUEST_TEMPLATE_TABLE, QuestTemplate } from '@keira/acore-world-model';
+import { MysqlQueryService, SelectComponent } from '@keira/shared/core';
+import { QUEST_TEMPLATE_CUSTOM_STARTING_ID, QUEST_TEMPLATE_ID, QUEST_TEMPLATE_TABLE, QuestTemplate } from '@keira/shared/acore-world-model';
 import { QuestHandlerService } from '../quest-handler.service';
 import { SelectQuestService } from './select-quest.service';
 

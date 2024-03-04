@@ -1,4 +1,4 @@
-import { Option } from '@keira/shared-constants';
+import { Option } from '@keira/shared/constants';
 
 export const STAT_TYPE: Option[] = [
   { value: 0, name: 'MANA' },

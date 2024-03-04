@@ -1,4 +1,4 @@
-import { TableRow } from '../../../shared-constants/src/types/general';
+import { TableRow } from '../../../constants/src/types/general';
 
 export const GAMEOBJECT_QUESTSTARTER_TABLE = 'gameobject_queststarter';
 export const GAMEOBJECT_QUESTSTARTER_ID = 'quest';

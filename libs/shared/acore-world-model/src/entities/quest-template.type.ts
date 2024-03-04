@@ -1,4 +1,4 @@
-import { TableRow } from '../../../shared-constants/src/types/general';
+import { TableRow } from '../../../constants/src/types/general';
 
 export const QUEST_TEMPLATE_TABLE = 'quest_template';
 export const QUEST_TEMPLATE_ID = 'ID';

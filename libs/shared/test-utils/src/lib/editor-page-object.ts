@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { QueryOutputComponentPage } from './query-output-page-object';
-import { TableRow } from '@keira/shared-constants';
+import { TableRow } from '@keira/shared/constants';
 import { PageObject } from './page-object';
 
 export abstract class EditorPageObject<T> extends PageObject<T> {

@@ -1,5 +1,5 @@
 {
-  "name": "keira-test-utils",
+  "name": "keira-shared-test-utils",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/shared/test-utils/src",
   "prefix": "lib",

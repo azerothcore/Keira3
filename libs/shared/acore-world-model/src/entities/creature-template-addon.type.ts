@@ -1,4 +1,4 @@
-import { TableRow } from '../../../shared-constants/src/types/general';
+import { TableRow } from '../../../constants/src/types/general';
 
 export const CREATURE_TEMPLATE_ADDON_TABLE = 'creature_template_addon';
 export const CREATURE_TEMPLATE_ADDON_ID = 'entry';

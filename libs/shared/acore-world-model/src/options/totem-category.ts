@@ -1,4 +1,4 @@
-import { Option } from '@keira/shared-constants';
+import { Option } from '@keira/shared/constants';
 
 export const TOTEM_CATEGORY: Option[] = [
   { value: 1, name: 'Skinning Knife (OLD)' },

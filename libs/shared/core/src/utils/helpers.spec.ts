@@ -1,4 +1,4 @@
-import { Conditions } from '@keira/acore-world-model';
+import { Conditions } from '@keira/shared/acore-world-model';
 import { getNumberOrString, getPartial } from './helpers';
 
 describe('Helpers', () => {

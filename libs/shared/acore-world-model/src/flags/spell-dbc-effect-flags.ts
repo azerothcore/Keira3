@@ -1,4 +1,4 @@
-import { Flag } from '@keira/shared-constants';
+import { Flag } from '@keira/shared/constants';
 
 export const SPELL_DBC_TARGETS: Flag[] = [
   { bit: 0, name: 'TARGET_FLAG_UNUSED_1' },

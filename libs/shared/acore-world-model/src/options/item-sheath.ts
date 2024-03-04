@@ -1,4 +1,4 @@
-import { Option } from '@keira/shared-constants';
+import { Option } from '@keira/shared/constants';
 
 export const ITEM_SHEAT: Option[] = [
   { value: 1, name: `Two Handed Weapon - Diagonally across the back pointing downwards.` },

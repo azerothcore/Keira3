@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { getEnumKeys, SingleRowEditorComponent } from '@keira/core';
+import { getEnumKeys, SingleRowEditorComponent } from '@keira/shared/core';
 import {
   CONDITION_DISTANCE_TO_CV3,
   CONDITION_HP_PCT_CV2,
@@ -17,7 +17,7 @@ import {
   QUEST_STATE,
   RANKMASK,
   TYPEMASK,
-} from '@keira/acore-world-model';
+} from '@keira/shared/acore-world-model';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 import {
   CONDITION_TARGET_TOOLTIPS,

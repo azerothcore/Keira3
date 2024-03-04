@@ -4,7 +4,7 @@ import { instance } from 'ts-mockito';
 
 import { NpcTextSelectorModalComponent } from './npc-text-selector-modal.component';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
-import { MockedMysqlQueryService, TranslateTestingModule } from '@keira/test-utils';
+import { MockedMysqlQueryService, TranslateTestingModule } from '@keira/shared/test-utils';
 import { NpcTextSearchService } from '../../search/npc-text-search.service';
 import { NpcTextSelectorModule } from './npc-text-selector.module';
 

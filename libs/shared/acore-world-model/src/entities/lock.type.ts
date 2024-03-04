@@ -1,4 +1,4 @@
-import { TableRow } from '@keira/shared-constants';
+import { TableRow } from '@keira/shared/constants';
 
 export class Lock extends TableRow {
   id: number;

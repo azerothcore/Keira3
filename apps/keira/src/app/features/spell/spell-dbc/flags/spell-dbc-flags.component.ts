@@ -9,8 +9,8 @@ import {
   SPELL_DBC_INTERRUPT_FLAGS,
   SPELL_DBC_STANCES_FLAGS,
   SpellDbc,
-} from '@keira/acore-world-model';
-import { ModelForm } from '@keira/core';
+} from '@keira/shared/acore-world-model';
+import { ModelForm } from '@keira/shared/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

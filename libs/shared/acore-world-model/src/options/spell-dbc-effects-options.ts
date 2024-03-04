@@ -1,4 +1,4 @@
-import { Option } from '@keira/shared-constants';
+import { Option } from '@keira/shared/constants';
 
 export const SPELL_DBC_EFFECT: Option[] = [
   { value: 0, name: 'NONE' },

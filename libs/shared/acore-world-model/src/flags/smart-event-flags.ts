@@ -1,4 +1,4 @@
-import { Flag } from '@keira/shared-constants';
+import { Flag } from '@keira/shared/constants';
 
 export const SMART_EVENT_FLAGS: Flag[] = [
   { bit: 0, name: 'NOT_REPEATABLE (Event can not repeat)' },

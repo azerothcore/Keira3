@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { MysqlQueryService, SelectService } from '@keira/core';
-import { LOOT_TEMPLATE_ID, MAIL_LOOT_TEMPLATE_TABLE, MailLootTemplate } from '@keira/acore-world-model';
+import { MysqlQueryService, SelectService } from '@keira/shared/core';
+import { LOOT_TEMPLATE_ID, MAIL_LOOT_TEMPLATE_TABLE, MailLootTemplate } from '@keira/shared/acore-world-model';
 import { MailLootHandlerService } from './mail-loot-handler.service';
 
 @Injectable()

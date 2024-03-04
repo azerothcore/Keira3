@@ -1,4 +1,4 @@
-import { CONDITION_SOURCE_TYPES as ST, CONDITION_TYPES as CT } from '@keira/acore-world-model';
+import { CONDITION_SOURCE_TYPES as ST, CONDITION_TYPES as CT } from '@keira/shared/acore-world-model';
 
 export const SOURCE_GROUP_TOOLTIPS = [];
 SOURCE_GROUP_TOOLTIPS[ST.SOURCE_TYPE_NONE] = 'EMPTY';

@@ -1,4 +1,4 @@
-import { Option } from '@keira/shared-constants';
+import { Option } from '@keira/shared/constants';
 
 export const CREATURE_TEMPLATE_RESISTANCE_SCHOOL: Option[] = [
   { value: 1, name: 'SPELL_SCHOOL_HOLY' },

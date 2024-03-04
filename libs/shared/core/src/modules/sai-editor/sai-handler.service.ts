@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { map, Observable } from 'rxjs';
 import { ComplexKeyHandlerService } from '../../abstract/service/handlers/complex-key.handler.service';
 import { MysqlQueryService } from '../../services/query/mysql-query.service';
-import { SAI_ID_FIELDS, SAI_TABLE, SAI_TYPES, SmartScripts } from '@keira/acore-world-model';
+import { SAI_ID_FIELDS, SAI_TABLE, SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 
 @Injectable({
   providedIn: 'root',

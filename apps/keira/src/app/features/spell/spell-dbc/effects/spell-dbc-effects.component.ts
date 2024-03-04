@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { SPELL_DBC_PROC_FLAGS, SPELL_DBC_TARGETS, SpellDbc } from '@keira/acore-world-model';
-import { ModelForm } from '@keira/core';
+import { SPELL_DBC_PROC_FLAGS, SPELL_DBC_TARGETS, SpellDbc } from '@keira/shared/acore-world-model';
+import { ModelForm } from '@keira/shared/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

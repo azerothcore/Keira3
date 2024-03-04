@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService, SqliteQueryService } from '@keira/core';
-import { EditorPageObject, TranslateTestingModule } from '@keira/test-utils';
-import { CreatureOnkillReputation } from '@keira/acore-world-model';
+import { MysqlQueryService, SqliteQueryService } from '@keira/shared/core';
+import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { CreatureOnkillReputation } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';

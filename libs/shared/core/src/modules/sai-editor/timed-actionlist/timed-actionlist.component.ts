@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
-import { DTCFG } from '@keira/config';
+import { DTCFG } from '@keira/shared/config';
 
-import { SmartScripts } from '@keira/acore-world-model';
+import { SmartScripts } from '@keira/shared/acore-world-model';
 import { Observable } from 'rxjs';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 

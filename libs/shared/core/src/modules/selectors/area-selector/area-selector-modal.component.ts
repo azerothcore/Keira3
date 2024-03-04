@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Area, AREA_ID } from '@keira/acore-world-model';
+import { Area, AREA_ID } from '@keira/shared/acore-world-model';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { AreaSearchService } from '../../search/area-search.service';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';

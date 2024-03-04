@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { GameobjectSearchService } from '../../search/gameobject-search.service';
-import { GAMEOBJECT_TEMPLATE_ID, GameobjectTemplate } from '@keira/acore-world-model';
+import { GAMEOBJECT_TEMPLATE_ID, GameobjectTemplate } from '@keira/shared/acore-world-model';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 
 @Component({

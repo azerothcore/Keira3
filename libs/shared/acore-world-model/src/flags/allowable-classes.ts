@@ -1,4 +1,4 @@
-import { Flag } from '@keira/shared-constants';
+import { Flag } from '@keira/shared/constants';
 
 export const ALLOWABLE_CLASSES: Flag[] = [
   { bit: 0, name: 'Warrior' },

@@ -1,8 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { ICON_SKILLS } from '@keira/shared-constants';
+import { ICON_SKILLS } from '@keira/shared/constants';
 
-import { PageObject } from '@keira/test-utils';
+import { PageObject } from '@keira/shared/test-utils';
 import { of } from 'rxjs';
 import { IconComponent } from './icon.component';
 import { IconModule } from './icon.module';

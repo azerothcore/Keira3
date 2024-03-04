@@ -1,8 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 
-import { PageObject } from '@keira/test-utils';
-import { SmartScripts } from '@keira/acore-world-model';
+import { PageObject } from '@keira/shared/test-utils';
+import { SmartScripts } from '@keira/shared/acore-world-model';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { of } from 'rxjs';
 import { TimedActionlistComponent } from './timed-actionlist.component';

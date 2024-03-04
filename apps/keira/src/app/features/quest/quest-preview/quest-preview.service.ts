@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Injectable } from '@angular/core';
-import { EditorService, MysqlQueryService, PreviewHelperService, SqliteQueryService } from '@keira/core';
+import { EditorService, MysqlQueryService, PreviewHelperService, SqliteQueryService } from '@keira/shared/core';
 import {
   CreatureQuestender,
   CreatureQueststarter,
@@ -11,7 +11,7 @@ import {
   QuestRequestItems,
   QuestTemplate,
   QuestTemplateAddon,
-} from '@keira/acore-world-model';
+} from '@keira/shared/acore-world-model';
 import {
   CLASSES_TEXT,
   ICON_SKILLS,
@@ -23,7 +23,7 @@ import {
   QUEST_PERIOD,
   RACES_TEXT,
   TableRow,
-} from '@keira/shared-constants';
+} from '@keira/shared/constants';
 import { CreatureQuestenderService } from '../creature-questender/creature-questender.service';
 import { CreatureQueststarterService } from '../creature-queststarter/creature-queststarter.service';
 import { GameobjectQuestenderService } from '../gameobject-questender/gameobject-questender.service';
@@ -34,7 +34,7 @@ import { QuestRequestItemsService } from '../quest-request-items/quest-request-i
 import { QuestTemplateAddonService } from '../quest-template-addon/quest-template-addon.service';
 import { QuestTemplateService } from '../quest-template/quest-template.service';
 import { DifficultyLevel, Quest } from './quest-preview.model';
-import { QuestReputationReward } from '@keira/shared-constants';
+import { QuestReputationReward } from '@keira/shared/constants';
 
 @Injectable()
 export class QuestPreviewService {

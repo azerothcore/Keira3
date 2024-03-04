@@ -6,7 +6,7 @@ import { ConnectionOptions, QueryError } from 'mysql2';
 import packageInfo from '../../../../../../package.json';
 
 import { ConnectionWindowService } from './connection-window.service';
-import { ModelForm, MysqlService, SubscriptionHandler } from '@keira/core';
+import { ModelForm, MysqlService, SubscriptionHandler } from '@keira/shared/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

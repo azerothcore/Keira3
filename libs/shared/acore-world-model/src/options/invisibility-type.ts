@@ -1,4 +1,4 @@
-import { Option } from '@keira/shared-constants';
+import { Option } from '@keira/shared/constants';
 
 export const INVISIBILITY_TYPE: Option[] = [
   { value: 0, name: 'INVISIBILITY_GENERAL' },

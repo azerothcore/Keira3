@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LootEditorIdService, MysqlQueryService } from '@keira/core';
+import { LootEditorIdService, MysqlQueryService } from '@keira/shared/core';
 import {
   GAMEOBJECT_LOOT_TEMPLATE_TABLE,
   GAMEOBJECT_TEMPLATE_ID,
@@ -7,7 +7,7 @@ import {
   GAMEOBJECT_TEMPLATE_TABLE,
   GAMEOBJECT_TEMPLATE_TYPE,
   GameobjectLootTemplate,
-} from '@keira/acore-world-model';
+} from '@keira/shared/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { GameobjectHandlerService } from '../gameobject-handler.service';

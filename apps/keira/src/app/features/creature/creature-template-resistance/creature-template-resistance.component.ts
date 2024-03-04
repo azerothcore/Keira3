@@ -3,8 +3,8 @@ import {
   CREATURE_TEMPLATE_RESISTANCE_SCHOOL,
   CREATURE_TEMPLATE_RESISTANCE_TABLE,
   CreatureTemplateResistance,
-} from '@keira/acore-world-model';
-import { MultiRowEditorComponent } from '@keira/core';
+} from '@keira/shared/acore-world-model';
+import { MultiRowEditorComponent } from '@keira/shared/core';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateResistanceService } from './creature-template-resistance.service';
 

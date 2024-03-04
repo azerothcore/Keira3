@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira/core';
-import { MockedMysqlQueryService } from '@keira/test-utils';
+import { MysqlQueryService } from '@keira/shared/core';
+import { MockedMysqlQueryService } from '@keira/shared/test-utils';
 import { instance } from 'ts-mockito';
 import { QuestHandlerService } from '../quest-handler.service';
 import { SelectQuestService } from './select-quest.service';

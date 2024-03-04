@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { MockedMysqlService, TranslateTestingModule } from '@keira/test-utils';
+import { MockedMysqlService, TranslateTestingModule } from '@keira/shared/test-utils';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { instance } from 'ts-mockito';

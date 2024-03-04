@@ -5,7 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 import { UiSwitchModule } from 'ngx-ui-switch';
-import { highlightOptions, toastrConfig, uiSwitchConfig } from '@keira/config';
+import { highlightOptions, toastrConfig, uiSwitchConfig } from '@keira/shared/config';
 import { ToastrModule } from 'ngx-toastr';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TabsModule } from 'ngx-bootstrap/tabs';
