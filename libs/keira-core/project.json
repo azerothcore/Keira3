@@ -13,7 +13,8 @@
         "karmaConfig": "libs/keira-core/karma.conf.js",
         "polyfills": ["zone.js", "zone.js/testing"],
         "sourceMap": true,
-        "codeCoverage": true
+        "codeCoverage": true,
+        "scripts": ["node_modules/squel/dist/squel.min.js"]
       }
     },
     "lint": {
