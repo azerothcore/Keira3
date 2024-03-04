@@ -1,5 +1,3 @@
-import { TableRow } from '@keira/shared-constants';
-
 export interface Quest {
   id: number;
   title: string;
