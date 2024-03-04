@@ -7,7 +7,7 @@ import { ProspectingLootTemplateService } from './prospecting-loot-template.serv
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-prospecting-loot-template',
-  templateUrl: '../../../../../../../libs/keira-core/src/abstract/components/editors/loot-template/loot-template.component.html',
+  templateUrl: '../../../../../../../libs/shared/core/src/abstract/components/editors/loot-template/loot-template.component.html',
 })
 export class ProspectingLootTemplateComponent extends LootTemplateComponent<ProspectingLootTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

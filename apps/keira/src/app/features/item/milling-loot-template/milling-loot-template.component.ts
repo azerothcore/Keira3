@@ -7,7 +7,7 @@ import { MillingLootTemplateService } from './milling-loot-template.service';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-milling-loot-template',
-  templateUrl: '../../../../../../../libs/keira-core/src/abstract/components/editors/loot-template/loot-template.component.html',
+  templateUrl: '../../../../../../../libs/shared/core/src/abstract/components/editors/loot-template/loot-template.component.html',
 })
 export class MillingLootTemplateComponent extends LootTemplateComponent<MillingLootTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

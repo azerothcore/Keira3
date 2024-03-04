@@ -6,8 +6,8 @@ import { SaiGameobjectEditorService } from './sai-gameobject-editor.service';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sai-gameobject',
-  templateUrl: '../../../../../../../libs/keira-core/src/modules/sai-editor/sai-editor.component.html',
-  styleUrls: ['../../../../../../../libs/keira-core/src/modules/sai-editor/sai-editor.component.scss'],
+  templateUrl: '../../../../../../../libs/shared/core/src/modules/sai-editor/sai-editor.component.html',
+  styleUrls: ['../../../../../../../libs/shared/core/src/modules/sai-editor/sai-editor.component.scss'],
 })
 export class SaiGameobjectComponent extends SaiEditorComponent {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
