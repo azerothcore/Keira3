@@ -1,9 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 
 import { instance } from 'ts-mockito';
-import { MockedSqliteQueryService } from '@keira/shared/test-utils';
+
 import { ItemLimitCategorySearchService } from './item-limit-category-search.service';
 import { SqliteQueryService } from '../../services/query/sqlite-query.service';
+import { MockedSqliteQueryService } from '../../services/mocks';
 
 describe('ItemLimitCategorySearchService', () => {
   beforeEach(() =>

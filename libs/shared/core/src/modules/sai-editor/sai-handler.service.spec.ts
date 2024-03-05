@@ -2,12 +2,13 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MockedMysqlQueryService } from '@keira/shared/test-utils';
+
 import { of } from 'rxjs';
 import { instance } from 'ts-mockito';
 import { MysqlQueryService } from '../../services/query/mysql-query.service';
 import { SAI_TYPES } from '@keira/shared/acore-world-model';
 import { SaiHandlerService } from './sai-handler.service';
+import { MockedMysqlQueryService } from '../../services/mocks';
 
 describe('SaiHandlerService', () => {
   beforeEach(() =>

@@ -4,9 +4,10 @@ import { instance } from 'ts-mockito';
 
 import { HolidaySelectorModalComponent } from './holiday-selector-modal.component';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
-import { MockedMysqlQueryService, TranslateTestingModule } from '@keira/shared/test-utils';
+import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { HolidaySearchService } from '../../search/holiday-search.service';
 import { HolidaySelectorModule } from './holiday-selector.module';
+import { MockedMysqlQueryService } from '../../../services/mocks';
 
 describe('HolidaySelectorModalComponent', () => {
   let component: HolidaySelectorModalComponent;

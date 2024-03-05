@@ -3,18 +3,19 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { anything, instance, when } from 'ts-mockito';
 import { of, throwError } from 'rxjs';
 
-import { MockedMysqlQueryService, TranslateTestingModule } from '@keira/shared/test-utils';
+import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { CreatureLootTemplate } from '@keira/shared/acore-world-model';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import Spy = jasmine.Spy;
 import { CreatureLootTemplateComponent } from '../../../../../../../../apps/keira/src/app/features/creature/creature-loot-template/creature-loot-template.component';
 import { CreatureLootTemplateModule } from '../../../../../../../../apps/keira/src/app/features/creature/creature-loot-template/creature-loot-template.module';
 import { CreatureHandlerService } from '../../../../../../../../apps/keira/src/app/features/creature/creature-handler.service';
 import { SaiCreatureHandlerService } from '../../../../../../../../apps/keira/src/app/features/creature/sai-creature-handler.service';
 import { CreatureLootTemplateService } from '../../../../../../../../apps/keira/src/app/features/creature/creature-loot-template/creature-loot-template.service';
 import { LootEditorIdService, LootTemplateIdComponent, MysqlQueryService } from '@keira/shared/core';
+import Spy = jasmine.Spy;
+import { MockedMysqlQueryService } from '../../../../services/mocks';
 
 describe('LootTemplateComponent', () => {
   let component: LootTemplateIdComponent<CreatureLootTemplate>;

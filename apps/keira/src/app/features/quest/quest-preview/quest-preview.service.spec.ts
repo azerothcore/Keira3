@@ -8,7 +8,7 @@ import {
   QUEST_FLAG_WEEKLY,
   QUEST_PERIOD,
 } from '@keira/shared/constants';
-import { MysqlQueryService, SqliteQueryService } from '@keira/shared/core';
+import { mockChangeDetectorRef, MysqlQueryService, SqliteQueryService } from '@keira/shared/core';
 import { ToastrModule } from 'ngx-toastr';
 import { CreatureQuestenderService } from '../creature-questender/creature-questender.service';
 import { CreatureQueststarterService } from '../creature-queststarter/creature-queststarter.service';
@@ -22,7 +22,6 @@ import { QuestTemplateService } from '../quest-template/quest-template.service';
 import { QuestModule } from '../quest.module';
 import { DifficultyLevel } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
-import { mockChangeDetectorRef } from '@keira/shared/test-utils';
 import Spy = jasmine.Spy;
 
 describe('QuestPreviewService', () => {

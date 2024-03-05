@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MockedMysqlQueryService, MockedToastrService } from '@keira/shared/test-utils';
+
 import { CreatureLootTemplate } from '@keira/shared/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
@@ -10,6 +10,7 @@ import { LootEditorIdService } from './loot-editor-id.service';
 import { CreatureHandlerService } from '../../../../../../../apps/keira/src/app/features/creature/creature-handler.service';
 import { SaiCreatureHandlerService } from '../../../../../../../apps/keira/src/app/features/creature/sai-creature-handler.service';
 import { CreatureLootTemplateService } from '../../../../../../../apps/keira/src/app/features/creature/creature-loot-template/creature-loot-template.service';
+import { MockedMysqlQueryService, MockedToastrService } from '../../../services/mocks';
 
 describe('LootEditorService', () => {
   let service: LootEditorIdService<CreatureLootTemplate>;

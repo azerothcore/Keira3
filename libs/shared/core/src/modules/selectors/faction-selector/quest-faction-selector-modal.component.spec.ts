@@ -2,11 +2,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance } from 'ts-mockito';
 
-import { MockedMysqlQueryService, TranslateTestingModule } from '@keira/shared/test-utils';
+import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { FactionSearchService } from '../../search/faction-search.service';
 import { FactionSelectorModule } from './faction-selector.module';
 import { QuestFactionSelectorModalComponent } from './quest-faction-selector-modal.component';
+import { MockedMysqlQueryService } from '../../../services/mocks';
 
 describe('FactionSelectorModalComponent', () => {
   function setup() {

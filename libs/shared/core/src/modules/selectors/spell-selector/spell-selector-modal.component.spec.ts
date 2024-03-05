@@ -4,9 +4,10 @@ import { instance } from 'ts-mockito';
 
 import { SpellSelectorModalComponent } from './spell-selector-modal.component';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
-import { MockedMysqlQueryService, TranslateTestingModule } from '@keira/shared/test-utils';
+import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { SpellSearchService } from '../../search/spell-search.service';
 import { SpellSelectorModule } from './spell-selector.module';
+import { MockedMysqlQueryService } from '../../../services/mocks';
 
 describe('SpellSelectorModalComponent', () => {
   let component: SpellSelectorModalComponent;

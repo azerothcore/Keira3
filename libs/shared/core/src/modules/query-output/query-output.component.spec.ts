@@ -3,7 +3,7 @@ import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { MockType, QueryOutputComponentPage, TranslateTestingModule } from '@keira/shared/test-utils';
+import { QueryOutputComponentPage, TranslateTestingModule } from '@keira/shared/test-utils';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { ClipboardService } from 'ngx-clipboard';
 import { EditorService } from '../../abstract/service/editors/editor.service';
@@ -11,6 +11,7 @@ import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-
 import { QueryErrorComponent } from './query-error/query-error.component';
 import { QueryOutputComponent } from './query-output.component';
 import { HighlightjsWrapperModule } from '../highlightjs-wrapper/highlightjs-wrapper.module';
+import { MockType } from '../../services/mocks';
 
 @Component({
   template: `<keira-query-output [editorService]="editorService"></keira-query-output>`,

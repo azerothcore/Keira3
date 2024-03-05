@@ -1,7 +1,7 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/core';
-import { EditorPageObject, MockedSqliteService, TranslateTestingModule } from '@keira/shared/test-utils';
+import { MockedSqliteService, MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/core';
+import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { QuestTemplateAddon } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
