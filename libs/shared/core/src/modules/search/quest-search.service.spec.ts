@@ -4,7 +4,7 @@ import { instance } from 'ts-mockito';
 
 import { QuestSearchService } from './quest-search.service';
 import { SqliteQueryService } from '../../services/query/sqlite-query.service';
-import { MockedSqliteQueryService } from '../../services/services.mock';
+import { MockedSqliteQueryService } from '../../services/services-mock.spec';
 
 describe('QuestSearchService', () => {
   beforeEach(() =>

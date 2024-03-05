@@ -7,7 +7,7 @@ import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { MapSearchService } from '../../search/map-search.service';
 import { MapSelectorModule } from './map-selector.module';
-import { MockedMysqlQueryService } from '../../../services/services.mock';
+import { MockedMysqlQueryService } from '../../../services/services-mock.spec';
 
 describe('MapSelectorModalComponent', () => {
   let component: MapSelectorModalComponent;

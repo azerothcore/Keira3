@@ -7,7 +7,7 @@ import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { SkillSearchService } from '../../search/skill-search.service';
 import { SkillSelectorModule } from './skill-selector.module';
-import { MockedMysqlQueryService } from '../../../services/services.mock';
+import { MockedMysqlQueryService } from '../../../services/services-mock.spec';
 
 describe('SkillSelectorModalComponent', () => {
   let component: SkillSelectorModalComponent;

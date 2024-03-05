@@ -4,7 +4,7 @@ import { instance } from 'ts-mockito';
 
 import { HolidaySearchService } from './holiday-search.service';
 import { SqliteQueryService } from '../../services/query/sqlite-query.service';
-import { MockedSqliteQueryService } from '../../services/services.mock';
+import { MockedSqliteQueryService } from '../../services/services-mock.spec';
 
 describe('HolidaySearchService', () => {
   beforeEach(() =>

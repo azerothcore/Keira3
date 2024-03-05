@@ -7,7 +7,7 @@ import { ItemTemplate } from '@keira/shared/acore-world-model';
 import { ItemSearchService } from './item-search.service';
 import { SearchService } from './search.service';
 import Spy = jasmine.Spy;
-import { mockChangeDetectorRef, MockedMysqlQueryService } from '../../services/services.mock';
+import { mockChangeDetectorRef, MockedMysqlQueryService } from '../../services/services-mock.spec';
 
 describe('SearchService', () => {
   let service: SearchService<ItemTemplate>;

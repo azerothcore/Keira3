@@ -9,7 +9,7 @@ import { MultiRowExternalEditorService } from './multi-row-external-editor.servi
 import { CreatureHandlerService } from '../../../../../../../apps/keira/src/app/features/creature/creature-handler.service';
 import { SaiCreatureHandlerService } from '../../../../../../../apps/keira/src/app/features/creature/sai-creature-handler.service';
 import { CreatureSpawnAddonService } from '../../../../../../../apps/keira/src/app/features/creature/creature-spawn-addon/creature-spawn-addon.service';
-import { MockedMysqlQueryService, MockedToastrService } from '../../../services/services.mock';
+import { MockedMysqlQueryService, MockedToastrService } from '../../../services/services-mock.spec';
 
 describe('MultiRowExternalEditorService', () => {
   let service: MultiRowExternalEditorService<CreatureSpawnAddon>;

@@ -11,7 +11,7 @@ import { MysqlService } from '../../../services/mysql.service';
 import { ItemSelectorBtnComponent } from '../item-selector/item-selector-btn.component';
 import { ItemSelectorModalComponent } from '../item-selector/item-selector-modal.component';
 import { HighlightjsWrapperModule } from '../../highlightjs-wrapper/highlightjs-wrapper.module';
-import { MockedMysqlService } from '../../../services/services.mock';
+import { MockedMysqlService } from '../../../services/services-mock.spec';
 
 @NgModule({
   declarations: [ItemSelectorModalComponent],

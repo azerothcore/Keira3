@@ -7,7 +7,7 @@ import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { NpcTextSearchService } from '../../search/npc-text-search.service';
 import { NpcTextSelectorModule } from './npc-text-selector.module';
-import { MockedMysqlQueryService } from '../../../services/services.mock';
+import { MockedMysqlQueryService } from '../../../services/services-mock.spec';
 
 describe('NpcTextSelectorModalComponent', () => {
   beforeEach(waitForAsync(() => {

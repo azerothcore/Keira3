@@ -4,7 +4,7 @@ import { instance } from 'ts-mockito';
 
 import { ItemEnchantmentSearchService } from './item-enchantment-search.service';
 import { SqliteQueryService } from '../../services/query/sqlite-query.service';
-import { MockedSqliteQueryService } from '../../services/services.mock';
+import { MockedSqliteQueryService } from '../../services/services-mock.spec';
 
 describe('ItemEnchantmentSearchService', () => {
   beforeEach(() =>

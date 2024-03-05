@@ -8,7 +8,7 @@ import { instance } from 'ts-mockito';
 import { MysqlQueryService } from '../../services/query/mysql-query.service';
 import { SAI_TYPES } from '@keira/shared/acore-world-model';
 import { SaiHandlerService } from './sai-handler.service';
-import { MockedMysqlQueryService } from '../../services/services.mock';
+import { MockedMysqlQueryService } from '../../services/services-mock.spec';
 
 describe('SaiHandlerService', () => {
   beforeEach(() =>

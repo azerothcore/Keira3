@@ -6,7 +6,7 @@ import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { SelectCreatureService } from '../../../../../../../apps/keira/src/app/features/creature/select-creature/select-creature.service';
 import { CreatureHandlerService } from '../../../../../../../apps/keira/src/app/features/creature/creature-handler.service';
 import { SaiCreatureHandlerService } from '../../../../../../../apps/keira/src/app/features/creature/sai-creature-handler.service';
-import { MockedMysqlQueryService } from '../../../services/services.mock';
+import { MockedMysqlQueryService } from '../../../services/services-mock.spec';
 
 describe('SelectService', () => {
   beforeEach(() =>

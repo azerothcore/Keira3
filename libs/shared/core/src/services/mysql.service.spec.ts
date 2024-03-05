@@ -4,7 +4,7 @@ import { Subscriber } from 'rxjs';
 import { instance, reset } from 'ts-mockito';
 import { ElectronService } from './electron.service';
 import { MysqlService } from './mysql.service';
-import { MockedElectronService } from './services.mock';
+import { MockedElectronService } from './services-mock.spec';
 import Spy = jasmine.Spy;
 
 class MockMySql {

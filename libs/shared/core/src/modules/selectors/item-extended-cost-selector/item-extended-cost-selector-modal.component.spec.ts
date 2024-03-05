@@ -7,7 +7,7 @@ import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ItemExtendedCostSearchService } from '../../search/item-extended-cost-search.service';
 import { ItemExtendedCostSelectorModule } from './item-extended-cost-selector.module';
-import { MockedMysqlQueryService } from '../../../services/services.mock';
+import { MockedMysqlQueryService } from '../../../services/services-mock.spec';
 
 describe('ItemExtendedCostSelectorModalComponent', () => {
   let component: ItemExtendedCostSelectorModalComponent;

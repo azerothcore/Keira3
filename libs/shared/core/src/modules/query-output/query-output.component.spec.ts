@@ -11,7 +11,7 @@ import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-
 import { QueryErrorComponent } from './query-error/query-error.component';
 import { QueryOutputComponent } from './query-output.component';
 import { HighlightjsWrapperModule } from '../highlightjs-wrapper/highlightjs-wrapper.module';
-import { MockType } from '../../services/services.mock';
+import { MockType } from '../../services/services-mock.spec';
 
 @Component({
   template: `<keira-query-output [editorService]="editorService"></keira-query-output>`,

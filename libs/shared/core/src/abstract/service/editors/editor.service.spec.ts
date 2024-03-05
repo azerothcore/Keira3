@@ -8,7 +8,7 @@ import { instance } from 'ts-mockito';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { EditorService } from './editor.service';
 import Spy = jasmine.Spy;
-import { mockChangeDetectorRef, MockedMysqlQueryService, MockedToastrService } from '../../../services/services.mock';
+import { mockChangeDetectorRef, MockedMysqlQueryService, MockedToastrService } from '../../../services/services-mock.spec';
 
 describe('EditorService', () => {
   let service: EditorService<MockEntity>;

@@ -7,7 +7,7 @@ import { instance } from 'ts-mockito';
 import { MysqlQueryService } from '../../services/query/mysql-query.service';
 import { SaiEditorService } from './sai-editor.service';
 import { SaiHandlerService } from './sai-handler.service';
-import { MockedMysqlQueryService, MockedToastrService } from '../../services/services.mock';
+import { MockedMysqlQueryService, MockedToastrService } from '../../services/services-mock.spec';
 
 describe('SAI Editor Service', () => {
   let service: SaiEditorService;

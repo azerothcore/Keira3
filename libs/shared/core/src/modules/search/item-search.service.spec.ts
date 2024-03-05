@@ -3,7 +3,7 @@ import { instance } from 'ts-mockito';
 import { MysqlQueryService } from '../../services/query/mysql-query.service';
 
 import { ItemSearchService } from './item-search.service';
-import { MockedMysqlQueryService } from '../../services/services.mock';
+import { MockedMysqlQueryService } from '../../services/services-mock.spec';
 
 describe('ItemSearchService', () => {
   beforeEach(() =>
