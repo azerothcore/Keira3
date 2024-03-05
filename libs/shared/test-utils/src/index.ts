@@ -1,6 +1,5 @@
 export * from './lib/editor-page-object';
 export * from './lib/mock-services';
-export * from './lib/mocks';
 export * from './lib/multi-row-editor-page-object';
 export * from './lib/page-object';
 export * from './lib/query-output-page-object';

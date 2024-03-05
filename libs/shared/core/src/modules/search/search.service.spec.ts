@@ -2,11 +2,13 @@ import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { instance } from 'ts-mockito';
 import { MysqlQueryService } from '../../services/query/mysql-query.service';
-import { mockChangeDetectorRef, MockedMysqlQueryService } from '@keira/shared/test-utils';
+
 import { ItemTemplate } from '@keira/shared/acore-world-model';
 import { ItemSearchService } from './item-search.service';
 import { SearchService } from './search.service';
 import Spy = jasmine.Spy;
+import { MockedMysqlQueryService } from '../../services/services.mock';
+import { mockChangeDetectorRef } from '@keira/shared/test-utils';
 
 describe('SearchService', () => {
   let service: SearchService<ItemTemplate>;

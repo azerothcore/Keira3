@@ -4,9 +4,10 @@ import { instance } from 'ts-mockito';
 
 import { ItemExtendedCostSelectorModalComponent } from './item-extended-cost-selector-modal.component';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
-import { MockedMysqlQueryService, TranslateTestingModule } from '@keira/shared/test-utils';
+import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ItemExtendedCostSearchService } from '../../search/item-extended-cost-search.service';
 import { ItemExtendedCostSelectorModule } from './item-extended-cost-selector.module';
+import { MockedMysqlQueryService } from '../../../services/services.mock';
 
 describe('ItemExtendedCostSelectorModalComponent', () => {
   let component: ItemExtendedCostSelectorModalComponent;

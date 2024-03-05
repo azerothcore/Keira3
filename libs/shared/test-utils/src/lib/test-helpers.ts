@@ -1,5 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { BsModalService } from 'ngx-bootstrap/modal';
+import { ChangeDetectorRef } from '@angular/core';
+export const mockChangeDetectorRef = { markForCheck: jasmine.createSpy() } as unknown as ChangeDetectorRef;
 
 export function closeModalsAfterEach() {
   afterEach(() => {

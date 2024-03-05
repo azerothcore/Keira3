@@ -5,12 +5,13 @@ import { instance } from 'ts-mockito';
 import { ItemSelectorModalComponent } from '../item-selector/item-selector-modal.component';
 import { BaseSelectorModalComponent } from './base-selector-modal.component';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
-import { MockedMysqlQueryService, TranslateTestingModule } from '@keira/shared/test-utils';
+import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { SearchService } from '../../search/search.service';
 import { ItemTemplate } from '@keira/shared/acore-world-model';
 import { ItemSearchService } from '../../search/item-search.service';
 import { ItemSelectorModule } from '../item-selector/item-selector.module';
 import Spy = jasmine.Spy;
+import { MockedMysqlQueryService } from '../../../services/services.mock';
 
 describe('BaseSelectorModalComponent', () => {
   let component: BaseSelectorModalComponent;

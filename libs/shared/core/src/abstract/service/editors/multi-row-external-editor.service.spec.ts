@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MockedMysqlQueryService, MockedToastrService } from '@keira/shared/test-utils';
+
 import { CreatureSpawnAddon } from '@keira/shared/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { instance } from 'ts-mockito';
@@ -9,6 +9,7 @@ import { MultiRowExternalEditorService } from './multi-row-external-editor.servi
 import { CreatureHandlerService } from '../../../../../../../apps/keira/src/app/features/creature/creature-handler.service';
 import { SaiCreatureHandlerService } from '../../../../../../../apps/keira/src/app/features/creature/sai-creature-handler.service';
 import { CreatureSpawnAddonService } from '../../../../../../../apps/keira/src/app/features/creature/creature-spawn-addon/creature-spawn-addon.service';
+import { MockedMysqlQueryService, MockedToastrService } from '../../../services/services.mock';
 
 describe('MultiRowExternalEditorService', () => {
   let service: MultiRowExternalEditorService<CreatureSpawnAddon>;

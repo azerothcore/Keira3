@@ -21,6 +21,7 @@ import {
   QUEST_FLAG_SPECIAL_REPEATABLE,
   QUEST_FLAG_WEEKLY,
   QUEST_PERIOD,
+  QuestReputationReward,
   RACES_TEXT,
   TableRow,
 } from '@keira/shared/constants';
@@ -34,7 +35,6 @@ import { QuestRequestItemsService } from '../quest-request-items/quest-request-i
 import { QuestTemplateAddonService } from '../quest-template-addon/quest-template-addon.service';
 import { QuestTemplateService } from '../quest-template/quest-template.service';
 import { DifficultyLevel, Quest } from './quest-preview.model';
-import { QuestReputationReward } from '@keira/shared/constants';
 
 @Injectable()
 export class QuestPreviewService {

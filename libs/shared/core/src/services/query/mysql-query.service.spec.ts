@@ -2,11 +2,11 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { SmartScripts } from '@keira/shared/acore-world-model';
 import { of } from 'rxjs';
 import { instance } from 'ts-mockito';
-import { MockedMysqlService } from '@keira/shared/test-utils';
 import { MaxRow, TableRow } from '@keira/shared/constants';
 import { ConfigService } from '../config.service';
 import { MysqlQueryService } from './mysql-query.service';
 import { MysqlService } from '../mysql.service';
+import { MockedMysqlService } from '../services.mock';
 
 interface MockRow extends TableRow {
   entry: number;

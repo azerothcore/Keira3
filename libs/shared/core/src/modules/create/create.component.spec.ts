@@ -1,12 +1,13 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { MockedMysqlQueryService, MockType, PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { of, throwError } from 'rxjs';
 import { anything, instance, mock, reset, when } from 'ts-mockito';
 import { CreateComponent } from './create.component';
 import Spy = jasmine.Spy;
 import { CreatureHandlerService } from '../../../../../../apps/keira/src/app/features/creature/creature-handler.service';
+import { MockedMysqlQueryService, MockType } from '../../services/services.mock';
 
 class CreateComponentPage extends PageObject<CreateComponent<MockType>> {
   get idInput(): HTMLInputElement {

@@ -1,13 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import {
-  mockChangeDetectorRef,
-  MockedMysqlQueryService,
-  MockedToastrService,
-  MockEntity,
-  MockHandlerService,
-  MockMultiRowComplexKeyEditorService,
-} from '@keira/shared/test-utils';
+import { MockEntity, MockHandlerService, MockMultiRowComplexKeyEditorService } from '@keira/shared/test-utils';
 import { TableRow } from '@keira/shared/constants';
 import { QueryError } from 'mysql2';
 import { ToastrService } from 'ngx-toastr';
@@ -16,6 +9,8 @@ import { instance } from 'ts-mockito';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { MultiRowComplexKeyEditorService } from './multi-row-complex-key-editor.service';
 import Spy = jasmine.Spy;
+import { MockedMysqlQueryService, MockedToastrService } from '../../../services/services.mock';
+import { mockChangeDetectorRef } from '@keira/shared/test-utils';
 
 describe('MultiRowComplexKeyEditorService', () => {
   let service: MultiRowComplexKeyEditorService<MockEntity>;
