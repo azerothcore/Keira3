@@ -9,7 +9,7 @@ import { instance } from 'ts-mockito';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { MultiRowComplexKeyEditorService } from './multi-row-complex-key-editor.service';
 import Spy = jasmine.Spy;
-import { mockChangeDetectorRef, MockedMysqlQueryService, MockedToastrService } from '../../../services/mocks';
+import { mockChangeDetectorRef, MockedMysqlQueryService, MockedToastrService } from '../../../services/mocks.spec';
 
 describe('MultiRowComplexKeyEditorService', () => {
   let service: MultiRowComplexKeyEditorService<MockEntity>;

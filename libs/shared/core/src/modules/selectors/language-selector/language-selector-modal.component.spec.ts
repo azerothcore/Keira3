@@ -6,7 +6,7 @@ import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { LanguageSearchService } from '../../search/language-search.service';
 import { LanguageSelectorModalComponent } from './language-selector-modal.component';
 import { LanguageSelectorModule } from './language-selector.module';
-import { MockedMysqlQueryService } from '../../../services/mocks';
+import { MockedMysqlQueryService } from '../../../services/mocks.spec';
 
 describe('LanguageSelectorModalComponent', () => {
   let component: LanguageSelectorModalComponent;

@@ -7,7 +7,7 @@ import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ItemLimitCategorySearchService } from '../../search/item-limit-category-search.service';
 import { ItemLimitCategorySelectorModule } from './item-limit-category-selector.module';
-import { MockedMysqlQueryService } from '../../../services/mocks';
+import { MockedMysqlQueryService } from '../../../services/mocks.spec';
 
 describe('ItemLimitCategorySelectorModalComponent', () => {
   let component: ItemLimitCategorySelectorModalComponent;

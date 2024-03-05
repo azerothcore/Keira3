@@ -7,7 +7,7 @@ import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ItemEnchantmentSearchService } from '../../search/item-enchantment-search.service';
 import { ItemEnchantmentSelectorModule } from './item-enchantment-selector.module';
-import { MockedMysqlQueryService } from '../../../services/mocks';
+import { MockedMysqlQueryService } from '../../../services/mocks.spec';
 
 describe('ItemEnchantmentSelectorModalComponent', () => {
   let component: ItemEnchantmentSelectorModalComponent;

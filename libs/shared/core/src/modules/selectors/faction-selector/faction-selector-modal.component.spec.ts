@@ -7,7 +7,7 @@ import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { FactionSearchService } from '../../search/faction-search.service';
 import { FactionSelectorModule } from './faction-selector.module';
-import { MockedMysqlQueryService } from '../../../services/mocks';
+import { MockedMysqlQueryService } from '../../../services/mocks.spec';
 
 describe('FactionSelectorModalComponent', () => {
   let component: FactionSelectorModalComponent;

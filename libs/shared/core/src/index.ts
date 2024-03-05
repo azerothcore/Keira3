@@ -140,4 +140,4 @@ export * from './services/query/sqlite-query.service';
 export * from './services/config.service';
 export * from './services/location.service';
 export * from './services/local-storage.service';
-export * from './services/mocks';
+export * from './services/mocks.spec';

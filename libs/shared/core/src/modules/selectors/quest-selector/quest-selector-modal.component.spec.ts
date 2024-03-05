@@ -7,7 +7,7 @@ import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { QuestSearchService } from '../../search/quest-search.service';
 import { QuestSelectorModule } from './quest-selector.module';
-import { MockedMysqlQueryService } from '../../../services/mocks';
+import { MockedMysqlQueryService } from '../../../services/mocks.spec';
 
 describe('QuestSelectorModalComponent', () => {
   let component: QuestSelectorModalComponent;

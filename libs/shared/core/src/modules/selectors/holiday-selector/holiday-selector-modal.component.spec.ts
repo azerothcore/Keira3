@@ -7,7 +7,7 @@ import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { HolidaySearchService } from '../../search/holiday-search.service';
 import { HolidaySelectorModule } from './holiday-selector.module';
-import { MockedMysqlQueryService } from '../../../services/mocks';
+import { MockedMysqlQueryService } from '../../../services/mocks.spec';
 
 describe('HolidaySelectorModalComponent', () => {
   let component: HolidaySelectorModalComponent;

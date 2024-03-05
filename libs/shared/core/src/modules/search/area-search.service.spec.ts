@@ -4,7 +4,7 @@ import { instance } from 'ts-mockito';
 
 import { AreaSearchService } from './area-search.service';
 import { SqliteQueryService } from '../../services/query/sqlite-query.service';
-import { MockedSqliteQueryService } from '../../services/mocks';
+import { MockedSqliteQueryService } from '../../services/mocks.spec';
 
 describe('AreaSearchService', () => {
   beforeEach(() =>
