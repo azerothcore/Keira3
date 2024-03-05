@@ -10,7 +10,7 @@ import { LootEditorIdService } from './loot-editor-id.service';
 import { CreatureHandlerService } from '../../../../../../../apps/keira/src/app/features/creature/creature-handler.service';
 import { SaiCreatureHandlerService } from '../../../../../../../apps/keira/src/app/features/creature/sai-creature-handler.service';
 import { CreatureLootTemplateService } from '../../../../../../../apps/keira/src/app/features/creature/creature-loot-template/creature-loot-template.service';
-import { MockedMysqlQueryService, MockedToastrService } from '../../../services/mocks.spec';
+import { MockedMysqlQueryService, MockedToastrService } from '../../../services/services.mock';
 
 describe('LootEditorService', () => {
   let service: LootEditorIdService<CreatureLootTemplate>;

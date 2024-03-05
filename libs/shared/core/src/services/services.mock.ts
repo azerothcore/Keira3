@@ -16,6 +16,7 @@ export const MockedSqliteQueryService = mock(SqliteQueryService);
 export const MockedSqliteService = mock(SqliteService);
 export const MockedMysqlService = mock(MysqlService);
 export const MockedElectronService = mock(ElectronService);
+// @ts-ignore
 export const mockChangeDetectorRef = { markForCheck: jasmine.createSpy() } as unknown as ChangeDetectorRef;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

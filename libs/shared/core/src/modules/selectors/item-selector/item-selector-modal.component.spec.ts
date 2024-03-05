@@ -6,7 +6,7 @@ import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { ItemSearchService } from '../../search/item-search.service';
 import { ItemSelectorModalComponent } from './item-selector-modal.component';
 import { ItemSelectorModule } from './item-selector.module';
-import { MockedMysqlQueryService } from '../../../services/mocks.spec';
+import { MockedMysqlQueryService } from '../../../services/services.mock';
 
 describe('ItemSelectorModalComponent', () => {
   let component: ItemSelectorModalComponent;

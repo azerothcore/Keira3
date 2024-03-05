@@ -6,7 +6,7 @@ import { instance } from 'ts-mockito';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { SingleRowEditorService } from './single-row-editor.service';
 import Spy = jasmine.Spy;
-import { MockedMysqlQueryService, MockedToastrService } from '../../../services/mocks.spec';
+import { MockedMysqlQueryService, MockedToastrService } from '../../../services/services.mock';
 
 describe('SingleRowEditorService', () => {
   let service: SingleRowEditorService<MockEntity>;

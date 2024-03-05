@@ -14,7 +14,7 @@ import { CreatureHandlerService } from '../../../../../../../../apps/keira/src/a
 import { SaiCreatureHandlerService } from '../../../../../../../../apps/keira/src/app/features/creature/sai-creature-handler.service';
 import { CreatureLootTemplateService } from '../../../../../../../../apps/keira/src/app/features/creature/creature-loot-template/creature-loot-template.service';
 import Spy = jasmine.Spy;
-import { MockedMysqlQueryService } from '../../../../services/mocks.spec';
+import { MockedMysqlQueryService } from '../../../../services/services.mock';
 import { LootTemplateIdComponent } from './loot-template-id.component';
 import { LootEditorIdService } from '../../../service/editors/loot-editor-id.service';
 import { MysqlQueryService } from '../../../../services/query/mysql-query.service';

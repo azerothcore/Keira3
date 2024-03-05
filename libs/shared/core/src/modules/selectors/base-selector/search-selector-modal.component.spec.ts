@@ -8,7 +8,7 @@ import { TranslateTestingModule } from '@keira/shared/test-utils';
 
 import { ItemSearchService } from '../../search/item-search.service';
 import { ItemSelectorModule } from '../item-selector/item-selector.module';
-import { MockedMysqlQueryService } from '../../../services/mocks.spec';
+import { MockedMysqlQueryService } from '../../../services/services.mock';
 
 describe('SearchSelectorModalComponent', () => {
   beforeEach(waitForAsync(() => {

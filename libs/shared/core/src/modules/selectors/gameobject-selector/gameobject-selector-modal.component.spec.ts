@@ -7,7 +7,7 @@ import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { GameobjectSearchService } from '../../search/gameobject-search.service';
 import { GameobjectSelectorModule } from './gameobject-selector.module';
-import { MockedMysqlQueryService } from '../../../services/mocks.spec';
+import { MockedMysqlQueryService } from '../../../services/services.mock';
 
 describe('GameobjectSelectorModalComponent', () => {
   let component: GameobjectSelectorModalComponent;

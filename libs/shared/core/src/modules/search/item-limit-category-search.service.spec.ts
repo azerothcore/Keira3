@@ -4,7 +4,7 @@ import { instance } from 'ts-mockito';
 
 import { ItemLimitCategorySearchService } from './item-limit-category-search.service';
 import { SqliteQueryService } from '../../services/query/sqlite-query.service';
-import { MockedSqliteQueryService } from '../../services/mocks.spec';
+import { MockedSqliteQueryService } from '../../services/services.mock';
 
 describe('ItemLimitCategorySearchService', () => {
   beforeEach(() =>

@@ -6,7 +6,7 @@ import { MaxRow, TableRow } from '@keira/shared/constants';
 import { ConfigService } from '../config.service';
 import { MysqlQueryService } from './mysql-query.service';
 import { MysqlService } from '../mysql.service';
-import { MockedMysqlService } from '../mocks.spec';
+import { MockedMysqlService } from '../services.mock';
 
 interface MockRow extends TableRow {
   entry: number;
