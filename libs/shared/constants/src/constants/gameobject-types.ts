@@ -1,4 +1,4 @@
-import { FieldDefinition } from '@keira/shared/constants';
+import { FieldDefinition } from '../types/general';
 
 export const GO_DATA_FIELDS: FieldDefinition[][] = [];
 GO_DATA_FIELDS[0] = [];

@@ -13,9 +13,11 @@ import { CreatureLootTemplateModule } from '../../../../../../../../apps/keira/s
 import { CreatureHandlerService } from '../../../../../../../../apps/keira/src/app/features/creature/creature-handler.service';
 import { SaiCreatureHandlerService } from '../../../../../../../../apps/keira/src/app/features/creature/sai-creature-handler.service';
 import { CreatureLootTemplateService } from '../../../../../../../../apps/keira/src/app/features/creature/creature-loot-template/creature-loot-template.service';
-import { LootEditorIdService, LootTemplateIdComponent, MysqlQueryService } from '@keira/shared/core';
 import Spy = jasmine.Spy;
 import { MockedMysqlQueryService } from '../../../../services/mocks';
+import { LootTemplateIdComponent } from './loot-template-id.component';
+import { LootEditorIdService } from '../../../service/editors/loot-editor-id.service';
+import { MysqlQueryService } from '../../../../services/query/mysql-query.service';
 
 describe('LootTemplateComponent', () => {
   let component: LootTemplateIdComponent<CreatureLootTemplate>;
