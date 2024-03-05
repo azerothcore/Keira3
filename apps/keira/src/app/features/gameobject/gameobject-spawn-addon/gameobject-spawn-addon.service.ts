@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { MultiRowExternalEditorService, MysqlQueryService } from '@keira/core';
-import { GAMEOBJECT_SPAWN_ADDON_ID_2, GAMEOBJECT_SPAWN_ADDON_TABLE, GameobjectSpawnAddon } from '@keira/acore-world-model';
+import { MultiRowExternalEditorService, MysqlQueryService } from '@keira/shared/core';
+import { GAMEOBJECT_SPAWN_ADDON_ID_2, GAMEOBJECT_SPAWN_ADDON_TABLE, GameobjectSpawnAddon } from '@keira/shared/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 

@@ -15,11 +15,11 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
-      "@keira/acore-world-model": ["libs/acore-world-model/src/index.ts"],
-      "@keira/config": ["libs/keira-config/src/index.ts"],
-      "@keira/core": ["libs/keira-core/src/index.ts"],
-      "@keira/shared-constants": ["libs/keira-shared-constants/src/index.ts"],
-      "@keira/test-utils": ["libs/keira-test-utils/src/index.ts"]
+      "@keira/shared/acore-world-model": ["libs/shared/acore-world-model/src/index.ts"],
+      "@keira/shared/config": ["libs/shared/config/src/index.ts"],
+      "@keira/shared/core": ["libs/shared/core/src/index.ts"],
+      "@keira/shared/constants": ["libs/shared/constants/src/index.ts"],
+      "@keira/shared/test-utils": ["libs/shared/test-utils/src/index.ts"]
     },
     "useDefineForClassFields": false,
     "rootDir": "."

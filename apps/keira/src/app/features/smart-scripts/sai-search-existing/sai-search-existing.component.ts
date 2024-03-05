@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { getEnumKeys, SaiHandlerService, SaiSearchService, SelectComplexKeyComponent } from '@keira/core';
-import { SAI_TYPES, SmartScripts } from '@keira/acore-world-model';
+import { getEnumKeys, SaiHandlerService, SaiSearchService, SelectComplexKeyComponent } from '@keira/shared/core';
+import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

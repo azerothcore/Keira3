@@ -1,0 +1,9 @@
+{
+  "name": "keira-shared-acore-world-model",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/acore-world-model/src",
+  "prefix": "lib",
+  "tags": [],
+  "projectType": "library",
+  "targets": {}
+}

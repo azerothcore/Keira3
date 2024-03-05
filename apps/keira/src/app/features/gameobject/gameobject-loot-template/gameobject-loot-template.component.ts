@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { LootTemplateIdComponent } from '@keira/core';
-import { GameobjectLootTemplate } from '@keira/acore-world-model';
+import { LootTemplateIdComponent } from '@keira/shared/core';
+import { GameobjectLootTemplate } from '@keira/shared/acore-world-model';
 import { QueryError } from 'mysql2';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';

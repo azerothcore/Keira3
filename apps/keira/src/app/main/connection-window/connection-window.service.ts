@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { ConnectionOptions } from 'mysql2';
-import { LocalStorageService } from '@keira/core';
+import { LocalStorageService } from '@keira/shared/core';
 
 declare type Config = Partial<ConnectionOptions>;
 

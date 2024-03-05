@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 
-import { AC_DISCORD_URL, KEIRA3_REPO_URL, PAYPAL_DONATE_URL, VersionRow } from '@keira/shared-constants';
-import { ConfigService, MysqlQueryService, MysqlService, SubscriptionHandler } from '@keira/core';
+import { AC_DISCORD_URL, KEIRA3_REPO_URL, PAYPAL_DONATE_URL, VersionRow } from '@keira/shared/constants';
+import { ConfigService, MysqlQueryService, MysqlService, SubscriptionHandler } from '@keira/shared/core';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import packageInfo from '../../../../../../package.json';
 

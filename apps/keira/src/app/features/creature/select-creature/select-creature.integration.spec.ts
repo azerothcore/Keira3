@@ -5,9 +5,9 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 
-import { MysqlQueryService } from '@keira/core';
-import { SelectPageObject, TranslateTestingModule } from '@keira/test-utils';
-import { CreatureTemplate } from '@keira/acore-world-model';
+import { MysqlQueryService } from '@keira/shared/core';
+import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { CreatureTemplate } from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { SelectCreatureComponent } from './select-creature.component';

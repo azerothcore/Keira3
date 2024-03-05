@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FlagsSelectorModule, ItemSelectorModule, QueryOutputModule, SingleValueSelectorModule, TopBarModule } from '@keira/core';
+import { FlagsSelectorModule, ItemSelectorModule, QueryOutputModule, SingleValueSelectorModule, TopBarModule } from '@keira/shared/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';

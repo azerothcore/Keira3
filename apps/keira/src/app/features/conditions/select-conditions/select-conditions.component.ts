@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ConditionsSearchService, getEnumKeys, SelectComplexKeyComponent } from '@keira/core';
-import { CONDITION_SOURCE_TYPES, Conditions } from '@keira/acore-world-model';
+import { ConditionsSearchService, getEnumKeys, SelectComplexKeyComponent } from '@keira/shared/core';
+import { CONDITION_SOURCE_TYPES, Conditions } from '@keira/shared/acore-world-model';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 
 @Component({

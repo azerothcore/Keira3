@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { GossipMenuOption, OPTION_IMG } from '@keira/acore-world-model';
+import { GossipMenuOption, OPTION_IMG } from '@keira/shared/acore-world-model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

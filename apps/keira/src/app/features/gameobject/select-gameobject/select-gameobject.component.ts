@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MysqlQueryService, SelectComponent } from '@keira/core';
+import { MysqlQueryService, SelectComponent } from '@keira/shared/core';
 import {
   GAMEOBJECT_TEMPLATE_CUSTOM_STARTING_ID,
   GAMEOBJECT_TEMPLATE_ID,
   GAMEOBJECT_TEMPLATE_TABLE,
   GameobjectTemplate,
-} from '@keira/acore-world-model';
+} from '@keira/shared/acore-world-model';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SelectGameobjectService } from './select-gameobject.service';
 

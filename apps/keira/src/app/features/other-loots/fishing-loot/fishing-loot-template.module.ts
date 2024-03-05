@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { CreateModule, HighlightjsWrapperModule, LootEditorModule, TopBarModule } from '@keira/core';
+import { CreateModule, HighlightjsWrapperModule, LootEditorModule, TopBarModule } from '@keira/shared/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { FishingLootHandlerService } from './fishing-loot-handler.service';
 import { FishingLootTemplateComponent } from './fishing-loot-template.component';

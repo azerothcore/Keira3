@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { LootEditorModule, TopBarModule } from '@keira/core';
+import { LootEditorModule, TopBarModule } from '@keira/shared/core';
 import { ProspectingLootTemplateComponent } from './prospecting-loot-template.component';
 import { ProspectingLootTemplateService } from './prospecting-loot-template.service';
 

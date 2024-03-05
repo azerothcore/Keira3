@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MysqlQueryService, SelectComponent } from '@keira/core';
+import { MysqlQueryService, SelectComponent } from '@keira/shared/core';
 import {
   SPELL_DBC_CUSTOM_STARTING_ID,
   SPELL_DBC_DESCRIPTION,
@@ -8,7 +8,7 @@ import {
   SPELL_DBC_NAMESUBTEXT,
   SPELL_DBC_TABLE,
   SpellDbc,
-} from '@keira/acore-world-model';
+} from '@keira/shared/acore-world-model';
 import { SpellHandlerService } from '../spell-handler.service';
 import { SelectSpellService } from './select-spell.service';
 

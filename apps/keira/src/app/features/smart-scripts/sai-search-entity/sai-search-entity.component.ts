@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { getEnumKeys, ModelForm, SaiHandlerService } from '@keira/core';
-import { SAI_TYPES, SmartScripts } from '@keira/acore-world-model';
+import { getEnumKeys, ModelForm, SaiHandlerService } from '@keira/shared/core';
+import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

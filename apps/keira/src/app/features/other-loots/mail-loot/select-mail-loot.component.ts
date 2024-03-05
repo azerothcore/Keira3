@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MysqlQueryService, SelectComponent } from '@keira/core';
+import { MysqlQueryService, SelectComponent } from '@keira/shared/core';
 import {
   LOOT_TEMPLATE_ID,
   MAIL_LOOT_TEMPLATE_CUSTOM_STARTING_ID,
   MAIL_LOOT_TEMPLATE_TABLE,
   MailLootTemplate,
-} from '@keira/acore-world-model';
+} from '@keira/shared/acore-world-model';
 import { MailLootHandlerService } from './mail-loot-handler.service';
 import { SelectMailLootService } from './select-mail-loot.service';
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LootEditorIdService, MysqlQueryService } from '@keira/core';
+import { LootEditorIdService, MysqlQueryService } from '@keira/shared/core';
 import {
   CREATURE_TEMPLATE_ID,
   CREATURE_TEMPLATE_SKINNING_LOOT_ID,
@@ -7,7 +7,7 @@ import {
   CreatureLootTemplate,
   SKINNING_LOOT_TEMPLATE_TABLE,
   SkinningLootTemplate,
-} from '@keira/acore-world-model';
+} from '@keira/shared/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { CreatureHandlerService } from '../creature-handler.service';
 

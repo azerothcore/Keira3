@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { IconService, MultiRowEditorService, MysqlQueryService, SqliteQueryService } from '@keira/core';
-import { ItemExtendedCost, NPC_VENDOR_ID, NPC_VENDOR_ID_2, NPC_VENDOR_TABLE, NpcVendor } from '@keira/acore-world-model';
+import { IconService, MultiRowEditorService, MysqlQueryService, SqliteQueryService } from '@keira/shared/core';
+import { ItemExtendedCost, NPC_VENDOR_ID, NPC_VENDOR_ID_2, NPC_VENDOR_TABLE, NpcVendor } from '@keira/shared/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { CreatureHandlerService } from '../creature-handler.service';
 

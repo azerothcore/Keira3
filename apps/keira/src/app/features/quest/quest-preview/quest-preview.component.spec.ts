@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { createMockObject, MysqlQueryService, SqliteQueryService } from '@keira/core';
-import { PageObject, TranslateTestingModule } from '@keira/test-utils';
-import { QuestOfferReward, QuestRequestItems, QuestTemplate, QuestTemplateAddon } from '@keira/acore-world-model';
+import { createMockObject, MysqlQueryService, SqliteQueryService } from '@keira/shared/core';
+import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { QuestOfferReward, QuestRequestItems, QuestTemplate, QuestTemplateAddon } from '@keira/shared/acore-world-model';
 import { ToastrModule } from 'ngx-toastr';
 import { QuestModule } from '../quest.module';
 import { QuestPreviewComponent } from './quest-preview.component';

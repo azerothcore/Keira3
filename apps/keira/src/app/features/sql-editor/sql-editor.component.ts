@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
-import { DTCFG } from '@keira/config';
-import { MysqlQueryService, SubscriptionHandler } from '@keira/core';
-import { TableRow } from '@keira/shared-constants';
+import { DTCFG } from '@keira/shared/config';
+import { MysqlQueryService, SubscriptionHandler } from '@keira/shared/core';
+import { TableRow } from '@keira/shared/constants';
 import { QueryError } from 'mysql2';
 import { ClipboardService } from 'ngx-clipboard';
 import { SqlEditorService } from './sql-editor.service';

@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { LootEditorIdService, MysqlQueryService } from '@keira/core';
+import { LootEditorIdService, MysqlQueryService } from '@keira/shared/core';
 import {
   DISENCHANT_LOOT_TEMPLATE_TABLE,
   DISENCHANT_TEMPLATE_LOOT_ID,
   DisenchantLootTemplate,
   ITEM_TEMPLATE_ID,
   ITEM_TEMPLATE_TABLE,
-} from '@keira/acore-world-model';
+} from '@keira/shared/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { ItemHandlerService } from '../item-handler.service';
 

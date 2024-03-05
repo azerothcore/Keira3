@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { KEIRA3_REPO_URL, LATEST_RELEASE_API_URL } from '@keira/shared-constants';
+import { KEIRA3_REPO_URL, LATEST_RELEASE_API_URL } from '@keira/shared/constants';
 
 import { ToastrService } from 'ngx-toastr';
 import { distinctUntilChanged } from 'rxjs';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import packageInfo from '../../../../../package.json';
 
-import { ElectronService, MysqlService, SqliteQueryService, SubscriptionHandler } from '@keira/core';
+import { ElectronService, MysqlService, SqliteQueryService, SubscriptionHandler } from '@keira/shared/core';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection

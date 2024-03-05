@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { ComplexKeyHandlerService } from '@keira/core';
-import { Conditions, CONDITIONS_ID_FIELDS, CONDITIONS_TABLE } from '@keira/acore-world-model';
+import { ComplexKeyHandlerService } from '@keira/shared/core';
+import { Conditions, CONDITIONS_ID_FIELDS, CONDITIONS_TABLE } from '@keira/shared/acore-world-model';
 
 @Injectable()
 export class ConditionsHandlerService extends ComplexKeyHandlerService<Conditions> {

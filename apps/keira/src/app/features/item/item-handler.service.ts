@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { HandlerService } from '@keira/core';
+import { HandlerService } from '@keira/shared/core';
 import {
   DISENCHANT_LOOT_TEMPLATE_TABLE,
   ITEM_ENCHANTMENT_TEMPLATE_TABLE,
@@ -9,7 +9,7 @@ import {
   ItemTemplate,
   MILLING_LOOT_TEMPLATE_TABLE,
   PROSPECTING_LOOT_TEMPLATE_TABLE,
-} from '@keira/acore-world-model';
+} from '@keira/shared/acore-world-model';
 
 @Injectable()
 export class ItemHandlerService extends HandlerService<ItemTemplate> {

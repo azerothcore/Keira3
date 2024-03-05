@@ -1,8 +1,8 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { IconService, MysqlQueryService, SqliteQueryService } from '@keira/core';
-import { ItemExtendedCost } from '@keira/acore-world-model';
-import { MockedMysqlQueryService, MockedToastrService } from '@keira/test-utils';
+import { IconService, MysqlQueryService, SqliteQueryService } from '@keira/shared/core';
+import { ItemExtendedCost } from '@keira/shared/acore-world-model';
+import { MockedMysqlQueryService, MockedToastrService } from '@keira/shared/test-utils';
 import { ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { instance } from 'ts-mockito';

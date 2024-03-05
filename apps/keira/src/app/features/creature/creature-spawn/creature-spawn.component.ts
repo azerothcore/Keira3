@@ -1,6 +1,14 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MultiRowEditorComponent } from '@keira/core';
-import { CreatureSpawn, DYNAMIC_FLAGS, MOVEMENT_TYPE, NPC_FLAGS, PHASE_MASK, SPAWN_MASK, UNIT_FLAGS } from '@keira/acore-world-model';
+import { MultiRowEditorComponent } from '@keira/shared/core';
+import {
+  CreatureSpawn,
+  DYNAMIC_FLAGS,
+  MOVEMENT_TYPE,
+  NPC_FLAGS,
+  PHASE_MASK,
+  SPAWN_MASK,
+  UNIT_FLAGS,
+} from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureSpawnService } from './creature-spawn.service';
 

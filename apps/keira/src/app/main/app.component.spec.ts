@@ -3,8 +3,8 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { LATEST_RELEASE_API_URL } from '@keira/shared-constants';
-import { MockedElectronService, MockedMysqlService, TranslateTestingModule } from '@keira/test-utils';
+import { LATEST_RELEASE_API_URL } from '@keira/shared/constants';
+import { MockedElectronService, MockedMysqlService, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
 import { instance, reset } from 'ts-mockito';
@@ -18,7 +18,7 @@ import { LogoutBtnComponent } from './main-window/sidebar/logout-btn/logout-btn.
 import { SidebarComponent } from './main-window/sidebar/sidebar.component';
 
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { ElectronService, ModalConfirmModule, MysqlService, QueryErrorComponent, SwitchLanguageModule } from '@keira/core';
+import { ElectronService, ModalConfirmModule, MysqlService, QueryErrorComponent, SwitchLanguageModule } from '@keira/shared/core';
 
 describe('AppComponent', () => {
   beforeEach(waitForAsync(() => {

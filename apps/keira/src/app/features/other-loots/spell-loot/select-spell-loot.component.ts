@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MysqlQueryService, SelectComponent } from '@keira/core';
+import { MysqlQueryService, SelectComponent } from '@keira/shared/core';
 import {
   LOOT_TEMPLATE_ID,
   SPELL_LOOT_TEMPLATE_CUSTOM_STARTING_ID,
   SPELL_LOOT_TEMPLATE_TABLE,
   SpellLootTemplate,
-} from '@keira/acore-world-model';
+} from '@keira/shared/acore-world-model';
 import { SelectSpellLootService } from './select-spell-loot.service';
 import { SpellLootHandlerService } from './spell-loot-handler.service';
 

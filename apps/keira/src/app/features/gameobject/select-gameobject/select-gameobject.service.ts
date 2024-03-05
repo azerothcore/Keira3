@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { MysqlQueryService, SelectService } from '@keira/core';
+import { MysqlQueryService, SelectService } from '@keira/shared/core';
 import {
   GAMEOBJECT_TEMPLATE_ID,
   GAMEOBJECT_TEMPLATE_NAME,
   GAMEOBJECT_TEMPLATE_SEARCH_FIELDS,
   GAMEOBJECT_TEMPLATE_TABLE,
   GameobjectTemplate,
-} from '@keira/acore-world-model';
+} from '@keira/shared/acore-world-model';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 
 @Injectable()

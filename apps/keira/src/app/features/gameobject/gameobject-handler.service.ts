@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { HandlerService } from '@keira/core';
+import { HandlerService } from '@keira/shared/core';
 import {
   GAMEOBJECT_LOOT_TEMPLATE_TABLE,
   GAMEOBJECT_QUESTITEM_TABLE,
@@ -10,7 +10,7 @@ import {
   GAMEOBJECT_TEMPLATE_TABLE,
   GameobjectTemplate,
   SAI_TABLE,
-} from '@keira/acore-world-model';
+} from '@keira/shared/acore-world-model';
 import { SaiGameobjectHandlerService } from './sai-gameobject-handler.service';
 
 @Injectable()

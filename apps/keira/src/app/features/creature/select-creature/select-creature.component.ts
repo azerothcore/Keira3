@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-import { MysqlQueryService, SelectComponent } from '@keira/core';
+import { MysqlQueryService, SelectComponent } from '@keira/shared/core';
 import {
   CREATURE_TEMPLATE_CUSTOM_STARTING_ID,
   CREATURE_TEMPLATE_ID,
   CREATURE_TEMPLATE_TABLE,
   CreatureTemplate,
-} from '@keira/acore-world-model';
+} from '@keira/shared/acore-world-model';
 import { SelectCreatureService } from './select-creature.service';
 import { CreatureHandlerService } from '../creature-handler.service';
 

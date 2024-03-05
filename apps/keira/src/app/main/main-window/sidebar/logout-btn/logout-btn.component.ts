@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ConnectionWindowService } from '../../../connection-window/connection-window.service';
-import { LocationService, ModalConfirmComponent, SubscriptionHandler } from '@keira/core';
+import { LocationService, ModalConfirmComponent, SubscriptionHandler } from '@keira/shared/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

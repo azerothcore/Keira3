@@ -1,8 +1,8 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira/core';
-import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/test-utils';
-import { SAI_TYPES, SmartScripts } from '@keira/acore-world-model';
+import { MysqlQueryService } from '@keira/shared/core';
+import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { SingleRowEditorComponent } from '@keira/core';
-import { SpellDbc } from '@keira/acore-world-model';
+import { SingleRowEditorComponent } from '@keira/shared/core';
+import { SpellDbc } from '@keira/shared/acore-world-model';
 import { SpellHandlerService } from '../spell-handler.service';
 import { SpellDbcService } from './spell-dbc.service';
 

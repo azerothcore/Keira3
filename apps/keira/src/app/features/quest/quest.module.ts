@@ -16,7 +16,7 @@ import {
   SkillSelectorModule,
   SpellSelectorModule,
   TopBarModule,
-} from '@keira/core';
+} from '@keira/shared/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
