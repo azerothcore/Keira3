@@ -7,7 +7,7 @@ import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { FactionSearchService } from '../../search/faction-search.service';
 import { FactionSelectorModule } from './faction-selector.module';
 import { QuestFactionSelectorModalComponent } from './quest-faction-selector-modal.component';
-import { MockedMysqlQueryService } from '../../../services/services-mock.spec';
+import { MockedMysqlQueryService } from '../../../services/services.mock';
 
 describe('FactionSelectorModalComponent', () => {
   function setup() {

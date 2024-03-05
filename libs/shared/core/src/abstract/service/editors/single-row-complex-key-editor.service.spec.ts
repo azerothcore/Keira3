@@ -11,7 +11,8 @@ import { MOCK_NAME, MockEntity, MockHandlerService, MockSingleRowComplexKeyEdito
 import { SingleRowComplexKeyEditorService } from './single-row-complex-key-editor.service';
 
 import { getPartial } from '../../../utils/helpers';
-import { mockChangeDetectorRef, MockedMysqlQueryService, MockedToastrService } from '../../../services/services-mock.spec';
+import { MockedMysqlQueryService, MockedToastrService } from '../../../services/services.mock';
+import { mockChangeDetectorRef } from '@keira/shared/test-utils';
 
 describe('SingleRowComplexKeyEditorService', () => {
   let service: SingleRowComplexKeyEditorService<MockEntity>;

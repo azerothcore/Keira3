@@ -4,8 +4,11 @@ import { Subscriber } from 'rxjs';
 import { instance, reset } from 'ts-mockito';
 import { ElectronService } from './electron.service';
 import { MysqlService } from './mysql.service';
-import { MockedElectronService } from './services-mock.spec';
+import { MockedElectronService } from './services.mock';
 import Spy = jasmine.Spy;
+import { ChangeDetectorRef } from '@angular/core';
+
+export const mockChangeDetectorRef = { markForCheck: jasmine.createSpy() } as unknown as ChangeDetectorRef;
 
 class MockMySql {
   createConnection() {}

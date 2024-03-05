@@ -7,7 +7,7 @@ import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { CreatureSearchService } from '../../search/creature-search.service';
 import { CreatureSelectorModule } from './creature-selector.module';
-import { MockedMysqlQueryService } from '../../../services/services-mock.spec';
+import { MockedMysqlQueryService } from '../../../services/services.mock';
 
 describe('CreatureSelectorModalComponent', () => {
   let component: CreatureSelectorModalComponent;

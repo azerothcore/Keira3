@@ -3,7 +3,7 @@ import { instance } from 'ts-mockito';
 import { MysqlQueryService } from '../../services/query/mysql-query.service';
 
 import { NpcTextSearchService } from './npc-text-search.service';
-import { MockedMysqlQueryService } from '../../services/services-mock.spec';
+import { MockedMysqlQueryService } from '../../services/services.mock';
 
 describe('NpcTextSearchService', () => {
   beforeEach(() =>

@@ -7,7 +7,7 @@ import { anything, instance, mock, reset, when } from 'ts-mockito';
 import { CreateComponent } from './create.component';
 import Spy = jasmine.Spy;
 import { CreatureHandlerService } from '../../../../../../apps/keira/src/app/features/creature/creature-handler.service';
-import { MockedMysqlQueryService, MockType } from '../../services/services-mock.spec';
+import { MockedMysqlQueryService, MockType } from '../../services/services.mock';
 
 class CreateComponentPage extends PageObject<CreateComponent<MockType>> {
   get idInput(): HTMLInputElement {

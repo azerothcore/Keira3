@@ -11,7 +11,7 @@ import { ItemTemplate } from '@keira/shared/acore-world-model';
 import { ItemSearchService } from '../../search/item-search.service';
 import { ItemSelectorModule } from '../item-selector/item-selector.module';
 import Spy = jasmine.Spy;
-import { MockedMysqlQueryService } from '../../../services/services-mock.spec';
+import { MockedMysqlQueryService } from '../../../services/services.mock';
 
 describe('BaseSelectorModalComponent', () => {
   let component: BaseSelectorModalComponent;
