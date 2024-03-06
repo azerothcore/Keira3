@@ -6,8 +6,8 @@ import { of, throwError } from 'rxjs';
 import { anything, instance, mock, reset, when } from 'ts-mockito';
 import { CreateComponent } from './create.component';
 import Spy = jasmine.Spy;
-import { CreatureHandlerService } from '../../../../../../apps/keira/src/app/features/creature/creature-handler.service';
 import { MockedMysqlQueryService, MockType } from '../../services/services.mock';
+import { MockHandlerService } from '../../core.mock';
 
 class CreateComponentPage extends PageObject<CreateComponent<MockType>> {
   get idInput(): HTMLInputElement {
@@ -50,7 +50,7 @@ describe('CreateComponent', () => {
     component = fixture.componentInstance;
     component.entityTable = mockTable;
     component.entityIdField = mockId;
-    component.handlerService = instance(mock(CreatureHandlerService));
+    component.handlerService = instance(mock(MockHandlerService));
     component.queryService = instance(MockedMysqlQueryService);
     page = new CreateComponentPage(fixture);
     fixture.autoDetectChanges(true);
