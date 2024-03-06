@@ -177,10 +177,12 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
 
   private viewerDynamic(): void {
     this.subscriptions.add(
-      this.loadedViewer$.pipe(filter((loadedViewr) => loadedViewr)).subscribe(() => {
+      this.loadedViewer$.pipe(filter((loadedViewr) => loadedViewr)).subscribe(
         /* istanbul ignore next */
-        this.show3Dmodel();
-      }),
+        () => {
+          this.show3Dmodel();
+        },
+      ),
     );
   }
 

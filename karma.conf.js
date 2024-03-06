@@ -30,11 +30,10 @@ module.exports = (config) => {
       ],
       check: {
         global: {
-          // TODO: fix the coverage bug and set them 100% again
-          statements: 98,
-          lines: 98,
-          branches: 98,
-          functions: 96,
+          statements: 100,
+          lines: 100,
+          branches: 100,
+          functions: 100,
         },
       },
     },
