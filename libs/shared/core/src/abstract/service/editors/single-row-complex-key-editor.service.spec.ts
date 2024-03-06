@@ -12,7 +12,7 @@ import { SingleRowComplexKeyEditorService } from './single-row-complex-key-edito
 import { getPartial } from '../../../utils/helpers';
 import { MockedMysqlQueryService, MockedToastrService } from '../../../services/services.mock';
 import { mockChangeDetectorRef } from '@keira/shared/test-utils';
-import { MOCK_NAME, MockEntity, MockHandlerService, MockSingleRowComplexKeyEditorService } from '../../../mock-services';
+import { MOCK_NAME, MockEntity, MockHandlerService, MockSingleRowComplexKeyEditorService } from '../../../core.mock';
 
 describe('SingleRowComplexKeyEditorService', () => {
   let service: SingleRowComplexKeyEditorService<MockEntity>;

@@ -6,7 +6,7 @@ import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { MultiRowEditorService } from './multi-row-editor.service';
 import Spy = jasmine.Spy;
 import { MockedMysqlQueryService, MockedToastrService } from '../../../services/services.mock';
-import { MOCK_ID, MOCK_ID_2, MOCK_NAME, MockEntity, MockMultiRowEditorService } from '../../../mock-services';
+import { MOCK_ID, MOCK_ID_2, MOCK_NAME, MockEntity, MockMultiRowEditorService } from '../../../core.mock';
 
 describe('MultiRowEditorService', () => {
   let service: MultiRowEditorService<MockEntity>;
