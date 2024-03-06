@@ -7,7 +7,7 @@ import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { SingleRowEditorService } from './single-row-editor.service';
 import Spy = jasmine.Spy;
 import { MockedMysqlQueryService, MockedToastrService } from '../../../services/services.mock';
-import { MockEntity, MockHandlerService, MockSingleRowEditorService } from '../../../services/mock-services';
+import { MockEntity, MockHandlerService, MockSingleRowEditorService } from '../../../mock-services';
 
 describe('SingleRowEditorService', () => {
   let service: SingleRowEditorService<MockEntity>;

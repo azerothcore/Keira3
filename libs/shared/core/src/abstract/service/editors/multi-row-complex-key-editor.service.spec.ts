@@ -11,7 +11,7 @@ import { MultiRowComplexKeyEditorService } from './multi-row-complex-key-editor.
 import Spy = jasmine.Spy;
 import { MockedMysqlQueryService, MockedToastrService } from '../../../services/services.mock';
 import { mockChangeDetectorRef } from '@keira/shared/test-utils';
-import { MockEntity, MockHandlerService, MockMultiRowComplexKeyEditorService } from '../../../services/mock-services';
+import { MockEntity, MockHandlerService, MockMultiRowComplexKeyEditorService } from '../../../mock-services';
 
 describe('MultiRowComplexKeyEditorService', () => {
   let service: MultiRowComplexKeyEditorService<MockEntity>;
