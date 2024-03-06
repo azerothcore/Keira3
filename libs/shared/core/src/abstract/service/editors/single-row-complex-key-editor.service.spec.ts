@@ -7,12 +7,12 @@ import { instance } from 'ts-mockito';
 import { ToastrService } from 'ngx-toastr';
 
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
-import { MOCK_NAME, MockEntity, MockHandlerService, MockSingleRowComplexKeyEditorService } from '@keira/shared/test-utils';
 import { SingleRowComplexKeyEditorService } from './single-row-complex-key-editor.service';
 
 import { getPartial } from '../../../utils/helpers';
 import { MockedMysqlQueryService, MockedToastrService } from '../../../services/services.mock';
 import { mockChangeDetectorRef } from '@keira/shared/test-utils';
+import { MOCK_NAME, MockEntity, MockHandlerService, MockSingleRowComplexKeyEditorService } from '../../../services/mock-services';
 
 describe('SingleRowComplexKeyEditorService', () => {
   let service: SingleRowComplexKeyEditorService<MockEntity>;
