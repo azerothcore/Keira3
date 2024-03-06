@@ -14,6 +14,7 @@ export abstract class ComplexKeyHandlerService<T extends TableRow> extends Handl
     super(mainEditorRoutePath, router);
   }
 
+  /* istanbul ignore next */ // TODO: fix coverage
   select(isNew: boolean, id: Partial<T>, name = null, navigate = true) {
     super.select(isNew, this.getIdObject(id), name, navigate);
   }

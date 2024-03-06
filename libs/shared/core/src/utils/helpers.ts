@@ -1,5 +1,4 @@
 import { FormControl, FormGroup } from '@angular/forms';
-import { Class } from '@keira/shared/constants';
 
 export type ModelForm<T> = {
   [K in keyof T]: FormControl<T[K]>;
@@ -29,10 +28,6 @@ export function getEnumKeys(enumInput: { [s: number]: string }): number[] {
   return Object.keys(enumInput)
     .filter((k) => !isNaN(Number(k)))
     .map((k) => +k);
-}
-
-export function createMockObject(partial: Partial<Class>, c: Class) {
-  return Object.assign(new c(), partial);
 }
 
 export const compareObjFn = (a: object, b: object) => JSON.stringify(a) === JSON.stringify(b);

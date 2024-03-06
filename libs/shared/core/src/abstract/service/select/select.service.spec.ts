@@ -3,10 +3,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { instance } from 'ts-mockito';
 
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
-import { SelectCreatureService } from '../../../../../../../apps/keira/src/app/features/creature/select-creature/select-creature.service';
-import { CreatureHandlerService } from '../../../../../../../apps/keira/src/app/features/creature/creature-handler.service';
-import { SaiCreatureHandlerService } from '../../../../../../../apps/keira/src/app/features/creature/sai-creature-handler.service';
 import { MockedMysqlQueryService } from '../../../services/services.mock';
+import { MockHandlerService, SelectMockService } from '../../../core.mock';
+import { SaiHandlerService } from '@keira/shared/core';
 
 describe('SelectService', () => {
   beforeEach(() =>
@@ -14,16 +13,16 @@ describe('SelectService', () => {
       imports: [RouterTestingModule],
       providers: [
         { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-        SelectCreatureService,
-        CreatureHandlerService,
-        SaiCreatureHandlerService,
+        SelectMockService,
+        MockHandlerService,
+        SaiHandlerService,
       ],
     }),
   );
 
   it('onSelect() should correctly work', () => {
-    const service = TestBed.inject(SelectCreatureService);
-    const spy = spyOn(TestBed.inject(CreatureHandlerService), 'select');
+    const service = TestBed.inject(SelectMockService);
+    const spy = spyOn(TestBed.inject(MockHandlerService), 'select');
     const selected = [{ [service['entityIdField']]: 'myId', [service['entityNameField']]: 'myName' }];
 
     service.onSelect({ selected });
@@ -32,8 +31,8 @@ describe('SelectService', () => {
   });
 
   it('onSelect() should use the table name when the entityNameField is not defined', () => {
-    const service = TestBed.inject(SelectCreatureService);
-    const spy = spyOn(TestBed.inject(CreatureHandlerService), 'select');
+    const service = TestBed.inject(SelectMockService);
+    const spy = spyOn(TestBed.inject(MockHandlerService), 'select');
     const selected = [{ [service['entityIdField']]: 'myId', [service['entityNameField']]: 'myName' }];
     service['entityNameField'] = null;
 

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { createMockObject, MysqlQueryService, SqliteQueryService } from '@keira/shared/core';
+import { MysqlQueryService, SqliteQueryService } from '@keira/shared/core';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { QuestOfferReward, QuestRequestItems, QuestTemplate, QuestTemplateAddon } from '@keira/shared/acore-world-model';
 import { ToastrModule } from 'ngx-toastr';
@@ -9,6 +9,7 @@ import { QuestPreviewComponent } from './quest-preview.component';
 import { QUEST_FACTION_REWARD } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
 import Spy = jasmine.Spy;
+import { Class } from '@keira/shared/constants';
 
 class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   get title(): HTMLHeadElement {
@@ -107,6 +108,10 @@ class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
 }
 
 describe('QuestPreviewComponent', () => {
+  function createMockObject(partial: Partial<Class>, c: Class) {
+    return Object.assign(new c(), partial);
+  }
+
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [QuestPreviewComponent],

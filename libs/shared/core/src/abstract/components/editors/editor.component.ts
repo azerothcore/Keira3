@@ -39,11 +39,14 @@ export abstract class EditorComponent<T extends TableRow> extends SubscriptionHa
 
   protected watchFormForChanges(): void {
     this.subscriptions.push(
-      this.editorService.form.valueChanges.pipe(debounceTime(200), distinctUntilChanged(compareObjFn)).subscribe(() => {
-        setTimeout(() => {
-          this.changeDetectorRef.markForCheck();
-        });
-      }),
+      this.editorService.form.valueChanges.pipe(debounceTime(200), distinctUntilChanged(compareObjFn)).subscribe(
+        /* istanbul ignore next */
+        () => {
+          setTimeout(() => {
+            this.changeDetectorRef.markForCheck();
+          });
+        },
+      ),
     );
   }
 

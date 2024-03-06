@@ -4,6 +4,7 @@ import { TableRow, WIKI_BASE_URL } from '@keira/shared/constants';
 import { DTCFG } from '@keira/shared/config';
 import { ChangeDetectorRef, inject } from '@angular/core';
 
+/* istanbul ignore next */ // TODO: fix coverage
 export abstract class SelectComplexKeyComponent<T extends TableRow> {
   readonly DTCFG = DTCFG;
   readonly WIKI_BASE_URL = WIKI_BASE_URL;

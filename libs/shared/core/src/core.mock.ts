@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -8,6 +9,8 @@ import { MultiRowEditorService } from './abstract/service/editors/multi-row-edit
 import { MysqlQueryService } from './services/query/mysql-query.service';
 import { SingleRowComplexKeyEditorService } from './abstract/service/editors/single-row-complex-key-editor.service';
 import { SingleRowEditorService } from './abstract/service/editors/single-row-editor.service';
+import { SelectService } from './abstract/service/select/select.service';
+import { MultiRowExternalEditorService } from './abstract/service/editors/multi-row-external-editor.service';
 
 export const MOCK_TABLE = 'mock_table';
 export const MOCK_ID = 'id';
@@ -30,6 +33,18 @@ export class MockHandlerService extends HandlerService<MockEntity> {
 
   constructor(protected router: Router) {
     super('mock/route', router);
+  }
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class SelectMockService extends SelectService<MockEntity> {
+  constructor(
+    readonly queryService: MysqlQueryService,
+    public handlerService: MockHandlerService,
+  ) {
+    super(queryService, handlerService, MOCK_TABLE, MOCK_ID, MOCK_NAME, []);
   }
 }
 
@@ -69,6 +84,23 @@ export class MockMultiRowEditorService extends MultiRowEditorService<MockEntity>
     protected toastrService: ToastrService,
   ) {
     super(MockEntity, MOCK_TABLE, MOCK_ID, MOCK_ID_2, handlerService, queryService, toastrService);
+  }
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class MockMultiRowExternalEditorService extends MultiRowExternalEditorService<MockEntity> {
+  constructor(
+    protected handlerService: MockHandlerService,
+    readonly queryService: MysqlQueryService,
+    protected toastrService: ToastrService,
+  ) {
+    super(MockEntity, MOCK_TABLE, MOCK_ID_2, handlerService, queryService, toastrService);
+  }
+
+  selectQuery(id: string | number) {
+    return this.queryService.query(`SELECT a.* FROM creature AS c INNER JOIN creature_addon AS a ON c.guid = a.guid WHERE c.id1 = ${id}`);
   }
 }
 

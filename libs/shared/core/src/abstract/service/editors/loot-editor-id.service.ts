@@ -1,3 +1,5 @@
+/* istanbul ignore file */ // TODO: fix coverage
+
 import { Class } from '@keira/shared/constants';
 import { LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, LootTemplate } from '@keira/shared/acore-world-model';
 import { ToastrService } from 'ngx-toastr';

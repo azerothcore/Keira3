@@ -3,8 +3,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CreatureTemplate } from '@keira/shared/acore-world-model';
 import { HandlerService } from './handler.service';
-import { CreatureHandlerService } from '../../../../../../../apps/keira/src/app/features/creature/creature-handler.service';
-import { SaiCreatureHandlerService } from '../../../../../../../apps/keira/src/app/features/creature/sai-creature-handler.service';
+import { MockHandlerService } from '../../../core.mock';
 
 describe('HandlerService', () => {
   let service: HandlerService<CreatureTemplate>;
@@ -12,12 +11,12 @@ describe('HandlerService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService],
+      providers: [MockHandlerService],
     }),
   );
 
   beforeEach(() => {
-    service = TestBed.inject(CreatureHandlerService);
+    service = TestBed.inject(MockHandlerService);
   });
 
   it('initial state (no selection) should behave correctly', () => {
@@ -39,6 +38,6 @@ describe('HandlerService', () => {
     expect(service.selectedName).toEqual(name);
     expect(service.isNew).toEqual(isNew);
     expect(service.canActivate()).toBe(true);
-    expect(navigateSpy).toHaveBeenCalledWith(['creature/creature-template']);
+    expect(navigateSpy).toHaveBeenCalledWith(['mock/route']);
   });
 });
