@@ -7,7 +7,8 @@ import { instance } from 'ts-mockito';
 import { MysqlQueryService } from '../../services/query/mysql-query.service';
 import { SaiEditorService } from './sai-editor.service';
 import { SaiHandlerService } from './sai-handler.service';
-import { MockedMysqlQueryService, MockedToastrService } from '../../services/services.mock';
+import { MockedMysqlQueryService, MockedSqliteService, MockedToastrService } from '../../services/services.mock';
+import { SqliteService } from '@keira/shared/core';
 
 describe('SAI Editor Service', () => {
   let service: SaiEditorService;
@@ -22,6 +23,7 @@ describe('SAI Editor Service', () => {
       providers: [
         { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
         { provide: ToastrService, useValue: instance(MockedToastrService) },
+        { provide: SqliteService, useValue: instance(MockedSqliteService) },
       ],
     }),
   );

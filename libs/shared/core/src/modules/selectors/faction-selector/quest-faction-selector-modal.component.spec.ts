@@ -7,13 +7,18 @@ import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { FactionSearchService } from '../../search/faction-search.service';
 import { FactionSelectorModule } from './faction-selector.module';
 import { QuestFactionSelectorModalComponent } from './quest-faction-selector-modal.component';
-import { MockedMysqlQueryService } from '../../../services/services.mock';
+import { MockedMysqlQueryService, MockedSqliteService } from '../../../services/services.mock';
+import { SqliteService } from '@keira/shared/core';
 
-describe('FactionSelectorModalComponent', () => {
+describe('QuestFactionSelectorModalComponent', () => {
   function setup() {
     TestBed.configureTestingModule({
       imports: [FactionSelectorModule, TranslateTestingModule],
-      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+      providers: [
+        BsModalRef,
+        { provide: SqliteService, useValue: instance(MockedSqliteService) },
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+      ],
     }).compileComponents();
 
     const fixture: ComponentFixture<QuestFactionSelectorModalComponent> = TestBed.createComponent(QuestFactionSelectorModalComponent);

@@ -1,12 +1,16 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { SqliteQueryService } from './sqlite-query.service';
+import { MockedSqliteService, SqliteService } from '@keira/shared/core';
+import { instance } from 'ts-mockito';
 
 describe('SqliteQueryService', () => {
   let service: SqliteQueryService;
 
   beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [{ provide: SqliteService, useValue: instance(MockedSqliteService) }],
+    });
     service = TestBed.inject(SqliteQueryService);
   }));
 

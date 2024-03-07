@@ -8,6 +8,8 @@ import { of } from 'rxjs';
 import { ReferenceViewerComponent } from './reference-viewer.component';
 import { LootEditorModule } from './loot-editor.module';
 import { ReferenceViewerService } from './reference-viewer.service';
+import { MockedSqliteService, SqliteService } from '@keira/shared/core';
+import { instance } from 'ts-mockito';
 
 class ReferenceViewerComponentPage extends PageObject<TestHostComponent> {
   get referenceViewers() {
@@ -28,6 +30,7 @@ describe('ReferenceViewerComponent', () => {
     TestBed.configureTestingModule({
       declarations: [TestHostComponent, ReferenceViewerComponent],
       imports: [TooltipModule.forRoot(), LootEditorModule],
+      providers: [{ provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));
 

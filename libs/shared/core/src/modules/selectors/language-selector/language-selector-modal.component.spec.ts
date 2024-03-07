@@ -6,7 +6,8 @@ import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { LanguageSearchService } from '../../search/language-search.service';
 import { LanguageSelectorModalComponent } from './language-selector-modal.component';
 import { LanguageSelectorModule } from './language-selector.module';
-import { MockedMysqlQueryService } from '../../../services/services.mock';
+import { MockedMysqlQueryService, MockedSqliteService } from '../../../services/services.mock';
+import { SqliteService } from '@keira/shared/core';
 
 describe('LanguageSelectorModalComponent', () => {
   let component: LanguageSelectorModalComponent;
@@ -16,7 +17,11 @@ describe('LanguageSelectorModalComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [LanguageSelectorModule, TranslateTestingModule],
-      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+      providers: [
+        BsModalRef,
+        { provide: SqliteService, useValue: instance(MockedSqliteService) },
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+      ],
     }).compileComponents();
   }));
 

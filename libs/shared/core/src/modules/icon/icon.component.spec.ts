@@ -8,6 +8,8 @@ import { IconComponent } from './icon.component';
 import { IconModule } from './icon.module';
 import { IconService } from './icon.service';
 import Spy = jasmine.Spy;
+import { MockedSqliteService, SqliteService } from '@keira/shared/core';
+import { instance } from 'ts-mockito';
 
 @Component({
   template: `<keira-icon
@@ -38,6 +40,7 @@ describe('ItemIconComponent', () => {
     TestBed.configureTestingModule({
       declarations: [IconComponent, TestHostComponent],
       imports: [IconModule],
+      providers: [{ provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));
 
