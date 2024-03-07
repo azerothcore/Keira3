@@ -8,7 +8,6 @@ import { SpellDbc } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SpellHandlerService } from '../../spell-handler.service';
 
 import { SpellDbcService } from '../spell-dbc.service';

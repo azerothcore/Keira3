@@ -5,7 +5,6 @@ import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of, throwError } from 'rxjs';
 import { anything, instance, when } from 'ts-mockito';
 import { GameobjectHandlerService } from '../gameobject-handler.service';

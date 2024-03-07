@@ -5,7 +5,6 @@ import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/
 import { ItemEnchantmentTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemEnchantmentTemplateComponent } from './item-enchantment-template.component';

@@ -5,7 +5,6 @@ import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { FieldDefinition } from '@keira/shared/constants';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';

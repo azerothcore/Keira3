@@ -7,7 +7,6 @@ import { ModelForm } from '@keira/shared/core';
 import { SpellDbc } from '@keira/shared/acore-world-model';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SpellHandlerService } from '../../../spell-handler.service';
 import { SpellDbcService } from '../../spell-dbc.service';
 import { Locale, SPELL_DBC_TEXT_FIELDS, SpellDbcTextFieldPrefix } from '../spell-dbc-texts.model';

@@ -10,7 +10,6 @@ import {
 } from '@keira/shared/constants';
 import { MysqlQueryService, SqliteQueryService } from '@keira/shared/core';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CreatureQuestenderService } from '../creature-questender/creature-questender.service';
 import { CreatureQueststarterService } from '../creature-queststarter/creature-queststarter.service';
 import { GameobjectQuestenderService } from '../gameobject-questender/gameobject-questender.service';
