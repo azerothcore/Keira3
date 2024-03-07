@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira/shared/core';
+import { MockedSqliteService, MysqlQueryService, SqliteService } from '@keira/shared/core';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { GameobjectQuestitem } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -11,6 +11,7 @@ import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectQuestitemComponent } from './gameobject-questitem.component';
 import { GameobjectQuestitemModule } from './gameobject-questitem.module';
 import Spy = jasmine.Spy;
+import { instance } from 'ts-mockito';
 
 class GameobjectQuestitemPage extends MultiRowEditorPageObject<GameobjectQuestitemComponent> {}
 
@@ -34,7 +35,11 @@ describe('GameobjectQuestitem integration tests', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), GameobjectQuestitemModule, RouterTestingModule, TranslateTestingModule],
-      providers: [GameobjectHandlerService, SaiGameobjectHandlerService],
+      providers: [
+        GameobjectHandlerService,
+        SaiGameobjectHandlerService,
+        { provide: SqliteService, useValue: instance(MockedSqliteService) },
+      ],
     }).compileComponents();
   }));
 

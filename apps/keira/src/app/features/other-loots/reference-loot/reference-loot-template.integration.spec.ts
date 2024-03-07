@@ -9,6 +9,7 @@ import { of } from 'rxjs';
 import { ReferenceLootHandlerService } from './reference-loot-handler.service';
 import { ReferenceLootTemplateComponent } from './reference-loot-template.component';
 import { ReferenceLootTemplateModule } from './reference-loot-template.module';
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 
 class ReferenceLootTemplatePage extends MultiRowEditorPageObject<ReferenceLootTemplateComponent> {}
 
@@ -26,7 +27,7 @@ describe('ReferenceLootTemplate integration tests', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ReferenceLootTemplateModule, RouterTestingModule, TranslateTestingModule],
-      providers: [ReferenceLootHandlerService],
+      providers: [ReferenceLootHandlerService, { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG }],
     }).compileComponents();
   }));
 

@@ -20,9 +20,15 @@ import { SaiCommentGeneratorService } from './sai-comment-generator.service';
 import { SqliteQueryService } from '../../services/query/sqlite-query.service';
 import { SAI_EVENTS } from './constants/sai-event';
 import { SAI_ACTIONS } from './constants/sai-actions';
+import { MockedSqliteService } from '../../services/services.mock';
+import { SqliteService } from '../../services/sqlite.service';
+import { instance } from 'ts-mockito';
 
 describe('SaiCommentGeneratorService', () => {
-  beforeEach(waitForAsync(() => TestBed.configureTestingModule({})));
+  beforeEach(waitForAsync(() =>
+    TestBed.configureTestingModule({
+      providers: [{ provide: SqliteService, useValue: instance(MockedSqliteService) }],
+    })));
 
   describe('Comment generation should correctly work', () => {
     const createSai = (partial: Partial<SmartScripts>) => Object.assign(new SmartScripts(), partial);

@@ -10,6 +10,7 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestModule } from '../quest.module';
 import { QuestTemplateComponent } from './quest-template.component';
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 
 class QuestTemplatePage extends EditorPageObject<QuestTemplateComponent> {
   get questPreviewTitle() {
@@ -45,6 +46,7 @@ describe('QuestTemplate integration tests', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, QuestModule, TranslateTestingModule],
+      providers: [{ provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG }],
     }).compileComponents();
   }));
 

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira/shared/core';
+import { MockedSqliteService, MysqlQueryService, SqliteService } from '@keira/shared/core';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { SkinningLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -12,6 +12,7 @@ import { SkinningLootTemplateComponent } from './skinning-loot-template.componen
 import { SkinningLootTemplateModule } from './skinning-loot-template.module';
 import { SkinningLootTemplateService } from './skinning-loot-template.service';
 import Spy = jasmine.Spy;
+import { instance } from 'ts-mockito';
 
 class SkinningLootTemplatePage extends MultiRowEditorPageObject<SkinningLootTemplateComponent> {}
 
@@ -35,7 +36,7 @@ describe('SkinningLootTemplate integration tests', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SkinningLootTemplateModule, RouterTestingModule, TranslateTestingModule],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService],
+      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));
 

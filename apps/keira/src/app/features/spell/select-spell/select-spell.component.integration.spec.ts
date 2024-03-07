@@ -12,6 +12,7 @@ import { SelectSpellComponent } from './select-spell.component';
 import { SelectSpellModule } from './select-spell.module';
 import { SelectSpellService } from './select-spell.service';
 import Spy = jasmine.Spy;
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 
 class SelectSpellComponentPage extends SelectPageObject<SelectSpellComponent> {
   ID_FIELD = SPELL_DBC_ID;
@@ -26,7 +27,7 @@ describe('SelectSpell integration tests', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectSpellModule, RouterTestingModule, TranslateTestingModule],
-      providers: [SpellHandlerService],
+      providers: [SpellHandlerService, { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG }],
     }).compileComponents();
   }));
 

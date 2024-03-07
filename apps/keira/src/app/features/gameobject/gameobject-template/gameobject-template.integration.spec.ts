@@ -1,7 +1,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira/shared/core';
+import { MockedSqliteService, MysqlQueryService, SqliteService } from '@keira/shared/core';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { GameobjectTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -12,6 +12,7 @@ import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectTemplateComponent } from './gameobject-template.component';
 import { GameobjectTemplateModule } from './gameobject-template.module';
 import Spy = jasmine.Spy;
+import { instance } from 'ts-mockito';
 
 class GameobjectTemplatePage extends EditorPageObject<GameobjectTemplateComponent> {}
 
@@ -49,7 +50,11 @@ describe('GameobjectTemplate integration tests', () => {
         TranslateTestingModule,
         HttpClientTestingModule,
       ],
-      providers: [GameobjectHandlerService, SaiGameobjectHandlerService],
+      providers: [
+        GameobjectHandlerService,
+        SaiGameobjectHandlerService,
+        { provide: SqliteService, useValue: instance(MockedSqliteService) },
+      ],
     }).compileComponents();
   }));
 

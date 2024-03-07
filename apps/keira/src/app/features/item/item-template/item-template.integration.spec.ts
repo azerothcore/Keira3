@@ -2,7 +2,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ITEM_SUBCLASS, ItemTemplate, Lock } from '@keira/shared/acore-world-model';
-import { MysqlQueryService, SqliteQueryService } from '@keira/shared/core';
+import { MockedSqliteService, MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/core';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
@@ -10,6 +10,7 @@ import { of } from 'rxjs';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemTemplateComponent } from './item-template.component';
 import { ItemTemplateModule } from './item-template.module';
+import { instance } from 'ts-mockito';
 
 class ItemTemplatePage extends EditorPageObject<ItemTemplateComponent> {
   get itemStats(): HTMLDivElement {
@@ -59,7 +60,7 @@ describe('ItemTemplate integration tests', () => {
         TranslateTestingModule,
         HttpClientTestingModule,
       ],
-      providers: [ItemHandlerService],
+      providers: [ItemHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));
 

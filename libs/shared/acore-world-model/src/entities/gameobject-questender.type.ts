@@ -1,4 +1,4 @@
-import { TableRow } from '../../../constants/src/types/general';
+import { TableRow } from '@keira/shared/constants';
 
 export const GAMEOBJECT_QUESTENDER_TABLE = 'gameobject_questender';
 export const GAMEOBJECT_QUESTENDER_ID = 'quest';

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira/shared/core';
+import { MockedSqliteService, MysqlQueryService, SqliteService } from '@keira/shared/core';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { DisenchantLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -11,6 +11,7 @@ import { DisenchantLootTemplateComponent } from './disenchant-loot-template.comp
 import { DisenchantLootTemplateModule } from './disenchant-loot-template.module';
 import { DisenchantLootTemplateService } from './disenchant-loot-template.service';
 import Spy = jasmine.Spy;
+import { instance } from 'ts-mockito';
 
 class DisenchantLootTemplatePage extends MultiRowEditorPageObject<DisenchantLootTemplateComponent> {}
 
@@ -34,7 +35,7 @@ describe('DisenchantLootTemplate integration tests', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), DisenchantLootTemplateModule, RouterTestingModule, TranslateTestingModule],
-      providers: [ItemHandlerService],
+      providers: [ItemHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));
 

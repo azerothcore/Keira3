@@ -1,4 +1,4 @@
-import { TableRow } from '../../../constants/src/types/general';
+import { TableRow } from '@keira/shared/constants';
 
 export const ITEM_LIMIT_CATEGORY_TABLE = 'item_limit_category'; // sqlite
 export const ITEM_LIMIT_CATEGORY_ID = 'id';

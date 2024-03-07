@@ -5,7 +5,7 @@ import { instance } from 'ts-mockito';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { MockedMysqlQueryService } from '../../../services/services.mock';
 import { MockHandlerService, SelectMockService } from '../../../core.mock';
-import { SaiHandlerService } from '@keira/shared/core';
+import { SaiHandlerService } from '../../../modules/sai-editor/sai-handler.service';
 
 describe('SelectService', () => {
   beforeEach(() =>

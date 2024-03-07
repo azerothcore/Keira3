@@ -1,4 +1,4 @@
-import { TableRow } from '../../../constants/src/types/general';
+import { TableRow } from '@keira/shared/constants';
 
 export const CONDITIONS_TABLE = 'conditions';
 export const CONDITIONS_ID_FIELDS = [

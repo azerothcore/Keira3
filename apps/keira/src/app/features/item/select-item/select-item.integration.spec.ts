@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira/shared/core';
+import { MockedSqliteService, MysqlQueryService, SqliteService } from '@keira/shared/core';
 import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ItemTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -11,6 +11,7 @@ import { ItemHandlerService } from '../item-handler.service';
 import { SelectItemComponent } from './select-item.component';
 import { SelectItemModule } from './select-item.module';
 import Spy = jasmine.Spy;
+import { instance } from 'ts-mockito';
 
 class SelectItemComponentPage extends SelectPageObject<SelectItemComponent> {
   ID_FIELD = 'entry';
@@ -29,7 +30,7 @@ describe('SelectItem integration tests', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectItemModule, RouterTestingModule, TranslateTestingModule],
-      providers: [ItemHandlerService],
+      providers: [ItemHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));
 

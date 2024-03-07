@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira/shared/core';
+import { MockedSqliteService, MysqlQueryService, SqliteService } from '@keira/shared/core';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { PickpocketingLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -12,6 +12,7 @@ import { PickpocketingLootTemplateComponent } from './pickpocketing-loot-templat
 import { PickpocketingLootTemplateModule } from './pickpocketing-loot-template.module';
 import { PickpocketingLootTemplateService } from './pickpocketing-loot-template.service';
 import Spy = jasmine.Spy;
+import { instance } from 'ts-mockito';
 
 class PickpocketingLootTemplatePage extends MultiRowEditorPageObject<PickpocketingLootTemplateComponent> {}
 
@@ -41,7 +42,7 @@ describe('PickpocketingLootTemplate integration tests', () => {
         RouterTestingModule,
         TranslateTestingModule,
       ],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService],
+      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));
 

@@ -1,4 +1,4 @@
-import { TableRow } from '../../../constants/src/types/general';
+import { TableRow } from '@keira/shared/constants';
 
 export const NPC_TEXT_TABLE = 'npc_text';
 export const NPC_TEXT_ID = 'ID';

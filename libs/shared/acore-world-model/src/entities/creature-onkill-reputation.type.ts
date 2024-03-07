@@ -1,4 +1,4 @@
-import { TableRow } from '../../../constants/src/types/general';
+import { TableRow } from '@keira/shared/constants';
 
 export const CREATURE_ONKLL_REPUTATION_TABLE = 'creature_onkill_reputation';
 export const CREATURE_ONKLL_REPUTATION_ID = 'creature_id';

@@ -4,12 +4,17 @@ import { of } from 'rxjs';
 import { IconService, TRADE_ENGINEERING_ICON_ID } from './icon.service';
 import { SqliteQueryService } from '../../services/query/sqlite-query.service';
 import { MysqlQueryService } from '../../services/query/mysql-query.service';
+import { MockedSqliteService } from '../../services/services.mock';
+import { SqliteService } from '../../services/sqlite.service';
+import { instance } from 'ts-mockito';
 
 describe('IconService', () => {
   const mockArgument = '123';
   const mockResult = 'some result';
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [{ provide: SqliteService, useValue: instance(MockedSqliteService) }],
+    });
   });
 
   it('getIconByItemDisplayId() should correctly work', () => {

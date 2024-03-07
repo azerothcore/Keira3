@@ -1,4 +1,4 @@
-import { TableRow } from '../../../constants/src/types/general';
+import { TableRow } from '@keira/shared/constants';
 
 export const SPELL_DBC_TABLE = 'spell_dbc';
 export const SPELL_DBC_CUSTOM_STARTING_ID = 200000;

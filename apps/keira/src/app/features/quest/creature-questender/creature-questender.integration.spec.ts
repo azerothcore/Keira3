@@ -10,6 +10,7 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestModule } from '../quest.module';
 import { CreatureQuestenderComponent } from './creature-questender.component';
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 
 class CreatureQuestenderPage extends MultiRowEditorPageObject<CreatureQuestenderComponent> {
   get questPreviewNpcEnd() {
@@ -23,6 +24,7 @@ describe('CreatureQuestender integration tests', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, QuestModule, TranslateTestingModule],
+      providers: [{ provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG }],
     }).compileComponents();
   }));
 

@@ -6,11 +6,15 @@ import { of } from 'rxjs';
 import { ReferenceViewerService } from './reference-viewer.service';
 import { LootEditorModule } from './loot-editor.module';
 import { MysqlQueryService } from '../../services/query/mysql-query.service';
+import { MockedSqliteService } from '../../services/services.mock';
+import { SqliteService } from '../../services/sqlite.service';
+import { instance } from 'ts-mockito';
 
 describe('ReferenceViewerService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [LootEditorModule],
+      providers: [{ provide: SqliteService, useValue: instance(MockedSqliteService) }],
     });
   });
 

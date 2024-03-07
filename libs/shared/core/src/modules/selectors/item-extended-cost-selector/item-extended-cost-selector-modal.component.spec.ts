@@ -7,7 +7,8 @@ import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ItemExtendedCostSearchService } from '../../search/item-extended-cost-search.service';
 import { ItemExtendedCostSelectorModule } from './item-extended-cost-selector.module';
-import { MockedMysqlQueryService } from '../../../services/services.mock';
+import { MockedMysqlQueryService, MockedSqliteService } from '../../../services/services.mock';
+import { SqliteService } from '../../../services/sqlite.service';
 
 describe('ItemExtendedCostSelectorModalComponent', () => {
   let component: ItemExtendedCostSelectorModalComponent;
@@ -17,7 +18,11 @@ describe('ItemExtendedCostSelectorModalComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ItemExtendedCostSelectorModule, TranslateTestingModule],
-      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+      providers: [
+        BsModalRef,
+        { provide: SqliteService, useValue: instance(MockedSqliteService) },
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+      ],
     }).compileComponents();
   }));
 

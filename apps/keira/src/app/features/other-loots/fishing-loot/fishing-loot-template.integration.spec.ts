@@ -1,6 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira/shared/core';
+import { MockedSqliteService, MysqlQueryService, SqliteService } from '@keira/shared/core';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { FishingLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -9,6 +9,7 @@ import { of } from 'rxjs';
 import { FishingLootHandlerService } from './fishing-loot-handler.service';
 import { FishingLootTemplateComponent } from './fishing-loot-template.component';
 import { FishingLootTemplateModule } from './fishing-loot-template.module';
+import { instance } from 'ts-mockito';
 
 class FishingLootTemplatePage extends MultiRowEditorPageObject<FishingLootTemplateComponent> {}
 
@@ -26,7 +27,7 @@ describe('FishingLootTemplate integration tests', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), FishingLootTemplateModule, RouterTestingModule, TranslateTestingModule],
-      providers: [FishingLootHandlerService],
+      providers: [FishingLootHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));
 

@@ -11,6 +11,7 @@ import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { NpcTrainerComponent } from './npc-trainer.component';
 import { NpcTrainerModule } from './npc-trainer.module';
 import Spy = jasmine.Spy;
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 
 class NpcTrainerPage extends MultiRowEditorPageObject<NpcTrainerComponent> {}
 
@@ -34,7 +35,7 @@ describe('NpcTrainer integration tests', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), NpcTrainerModule, RouterTestingModule, TranslateTestingModule],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService],
+      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG }],
     }).compileComponents();
   }));
 

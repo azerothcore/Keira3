@@ -4,12 +4,16 @@ import { instance } from 'ts-mockito';
 
 import { SkillSearchService } from './skill-search.service';
 import { SqliteQueryService } from '../../services/query/sqlite-query.service';
-import { MockedSqliteQueryService } from '../../services/services.mock';
+import { MockedSqliteQueryService, MockedSqliteService } from '../../services/services.mock';
+import { SqliteService } from '../../services/sqlite.service';
 
 describe('SkillSearchService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [{ provide: SqliteQueryService, useValue: instance(MockedSqliteQueryService) }],
+      providers: [
+        { provide: SqliteService, useValue: instance(MockedSqliteService) },
+        { provide: SqliteQueryService, useValue: instance(MockedSqliteQueryService) },
+      ],
     }),
   );
 

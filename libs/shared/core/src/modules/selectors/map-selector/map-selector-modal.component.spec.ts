@@ -7,7 +7,8 @@ import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { MapSearchService } from '../../search/map-search.service';
 import { MapSelectorModule } from './map-selector.module';
-import { MockedMysqlQueryService } from '../../../services/services.mock';
+import { MockedMysqlQueryService, MockedSqliteService } from '../../../services/services.mock';
+import { SqliteService } from '../../../services/sqlite.service';
 
 describe('MapSelectorModalComponent', () => {
   let component: MapSelectorModalComponent;
@@ -17,7 +18,11 @@ describe('MapSelectorModalComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [MapSelectorModule, TranslateTestingModule],
-      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+      providers: [
+        { provide: SqliteService, useValue: instance(MockedSqliteService) },
+        BsModalRef,
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+      ],
     }).compileComponents();
   }));
 

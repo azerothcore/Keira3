@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira/shared/core';
+import { MockedSqliteService, MysqlQueryService, SqliteService } from '@keira/shared/core';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { CreatureTemplateMovement } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -11,6 +11,7 @@ import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureTemplateMovementComponent } from './creature-template-movement.component';
 import { CreatureTemplateMovementModule } from './creature-template-movement.module';
 import Spy = jasmine.Spy;
+import { instance } from 'ts-mockito';
 
 class CreatureTemplateMovementPage extends EditorPageObject<CreatureTemplateMovementComponent> {}
 
@@ -40,7 +41,7 @@ describe('CreatureTemplateMovement integration tests', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureTemplateMovementModule, RouterTestingModule, TranslateTestingModule],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService],
+      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));
 

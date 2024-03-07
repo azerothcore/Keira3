@@ -1,6 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira/shared/core';
+import { MockedSqliteService, MysqlQueryService, SqliteService } from '@keira/shared/core';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { CreatureTemplateResistance } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -9,6 +9,7 @@ import { of } from 'rxjs';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureModule } from '../creature.module';
 import { CreatureTemplateResistanceComponent } from './creature-template-resistance.component';
+import { instance } from 'ts-mockito';
 
 class CreatureTemplateResistancePage extends MultiRowEditorPageObject<CreatureTemplateResistanceComponent> {}
 
@@ -18,6 +19,7 @@ describe('CreatureTemplateResistance integration tests', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, CreatureModule, TranslateTestingModule],
+      providers: [{ provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));
 

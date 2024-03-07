@@ -1,6 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira/shared/core';
+import { MockedSqliteService, MysqlQueryService, SqliteService } from '@keira/shared/core';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { MailLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -9,6 +9,7 @@ import { of } from 'rxjs';
 import { MailLootHandlerService } from './mail-loot-handler.service';
 import { MailLootTemplateComponent } from './mail-loot-template.component';
 import { MailLootTemplateModule } from './mail-loot-template.module';
+import { instance } from 'ts-mockito';
 
 class MailLootTemplatePage extends MultiRowEditorPageObject<MailLootTemplateComponent> {}
 
@@ -26,7 +27,7 @@ describe('MailLootTemplate integration tests', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), MailLootTemplateModule, RouterTestingModule, TranslateTestingModule],
-      providers: [MailLootHandlerService],
+      providers: [MailLootHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));
 

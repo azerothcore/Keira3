@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira/shared/core';
+import { MockedSqliteService, MysqlQueryService, SqliteService } from '@keira/shared/core';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { Conditions } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -11,6 +11,7 @@ import { ConditionsHandlerService } from '../conditions-handler.service';
 import { SelectConditionsComponent } from './select-conditions.component';
 import { SelectConditionsModule } from './select-conditions.module';
 import Spy = jasmine.Spy;
+import { instance } from 'ts-mockito';
 
 class SelectConditionsComponentPage extends PageObject<SelectConditionsComponent> {
   get searchIdSelect(): HTMLInputElement {
@@ -47,7 +48,7 @@ describe('SelectConditions integration tests', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectConditionsModule, RouterTestingModule, TranslateTestingModule],
-      providers: [ConditionsHandlerService],
+      providers: [ConditionsHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));
 

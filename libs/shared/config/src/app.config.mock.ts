@@ -1,6 +1,6 @@
-import { KeiraAppConfig } from '@keira/shared/config';
+import { KeiraAppConfig } from './app.config';
 
-export const KEIRA_APP_CONFIG: KeiraAppConfig = {
+export const KEIRA_MOCK_CONFIG: KeiraAppConfig = {
   production: false,
   environment: 'LOCAL',
   sqlitePath: 'src/assets/sqlite.db',

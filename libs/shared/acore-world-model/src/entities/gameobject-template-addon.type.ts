@@ -1,4 +1,4 @@
-import { TableRow } from '../../../constants/src/types/general';
+import { TableRow } from '@keira/shared/constants';
 
 export const GAMEOBJECT_TEMPLATE_ADDON_TABLE = 'gameobject_template_addon';
 export const GAMEOBJECT_TEMPLATE_ADDON_ID = 'entry';

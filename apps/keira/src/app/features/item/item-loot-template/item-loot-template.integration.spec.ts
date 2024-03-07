@@ -10,6 +10,7 @@ import { ItemHandlerService } from '../item-handler.service';
 import { ItemLootTemplateComponent } from './item-loot-template.component';
 import { ItemLootTemplateModule } from './item-loot-template.module';
 import Spy = jasmine.Spy;
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 
 class ItemLootTemplatePage extends MultiRowEditorPageObject<ItemLootTemplateComponent> {}
 
@@ -33,7 +34,7 @@ describe('ItemLootTemplate integration tests', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ItemLootTemplateModule, RouterTestingModule, TranslateTestingModule],
-      providers: [ItemHandlerService],
+      providers: [ItemHandlerService, { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG }],
     }).compileComponents();
   }));
 

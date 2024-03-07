@@ -7,7 +7,8 @@ import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { HolidaySearchService } from '../../search/holiday-search.service';
 import { HolidaySelectorModule } from './holiday-selector.module';
-import { MockedMysqlQueryService } from '../../../services/services.mock';
+import { MockedMysqlQueryService, MockedSqliteService } from '../../../services/services.mock';
+import { SqliteService } from '../../../services/sqlite.service';
 
 describe('HolidaySelectorModalComponent', () => {
   let component: HolidaySelectorModalComponent;
@@ -17,7 +18,11 @@ describe('HolidaySelectorModalComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [HolidaySelectorModule, TranslateTestingModule],
-      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+      providers: [
+        BsModalRef,
+        { provide: SqliteService, useValue: instance(MockedSqliteService) },
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+      ],
     }).compileComponents();
   }));
 

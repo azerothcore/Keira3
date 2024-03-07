@@ -7,7 +7,8 @@ import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { FactionSearchService } from '../../search/faction-search.service';
 import { FactionSelectorModule } from './faction-selector.module';
-import { MockedMysqlQueryService } from '../../../services/services.mock';
+import { MockedMysqlQueryService, MockedSqliteService } from '../../../services/services.mock';
+import { SqliteService } from '../../../services/sqlite.service';
 
 describe('FactionSelectorModalComponent', () => {
   let component: FactionSelectorModalComponent;
@@ -17,7 +18,11 @@ describe('FactionSelectorModalComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [FactionSelectorModule, TranslateTestingModule],
-      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+      providers: [
+        BsModalRef,
+        { provide: SqliteService, useValue: instance(MockedSqliteService) },
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+      ],
     }).compileComponents();
   }));
 

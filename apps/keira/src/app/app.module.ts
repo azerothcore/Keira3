@@ -5,7 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 import { UiSwitchModule } from 'ngx-ui-switch';
-import { highlightOptions, toastrConfig, uiSwitchConfig } from '@keira/shared/config';
+import { highlightOptions, KEIRA_APP_CONFIG_TOKEN, toastrConfig, uiSwitchConfig } from '@keira/shared/config';
 import { ToastrModule } from 'ngx-toastr';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TabsModule } from 'ngx-bootstrap/tabs';
@@ -30,6 +30,7 @@ import { SpellModule } from './features/spell/spell.module';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { KEIRA_APP_CONFIG } from '../environments/environment';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -74,6 +75,7 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   bootstrap: [AppComponent],
   providers: [
+    { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_APP_CONFIG },
     {
       provide: HIGHLIGHT_OPTIONS,
       useValue: highlightOptions,

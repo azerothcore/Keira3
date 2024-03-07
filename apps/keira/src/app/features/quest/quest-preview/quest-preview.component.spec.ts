@@ -10,6 +10,7 @@ import { QUEST_FACTION_REWARD } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
 import Spy = jasmine.Spy;
 import { Class } from '@keira/shared/constants';
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 
 class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   get title(): HTMLHeadElement {
@@ -116,6 +117,7 @@ describe('QuestPreviewComponent', () => {
     TestBed.configureTestingModule({
       declarations: [QuestPreviewComponent],
       imports: [ToastrModule.forRoot(), RouterTestingModule, QuestModule, TranslateTestingModule],
+      providers: [{ provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG }],
     }).compileComponents();
   }));
 

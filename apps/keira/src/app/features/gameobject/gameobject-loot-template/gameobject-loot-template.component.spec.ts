@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MockedMysqlQueryService, MysqlQueryService } from '@keira/shared/core';
+import { MockedMysqlQueryService, MockedSqliteService, MysqlQueryService, SqliteService } from '@keira/shared/core';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -37,6 +37,7 @@ describe('GameobjectTemplateComponent', () => {
       ],
       providers: [
         { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: SqliteService, useValue: instance(MockedSqliteService) },
         GameobjectHandlerService,
         SaiGameobjectHandlerService,
       ],
