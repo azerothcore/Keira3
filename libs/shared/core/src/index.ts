@@ -28,8 +28,6 @@ export * from './modules/sai-editor/timed-actionlist/timed-actionlist.component'
 export * from './modules/sai-editor/sai-editor.component';
 export * from './modules/sai-editor/sai-top-bar/sai-top-bar.component';
 export * from './modules/sai-editor/sai-handler.service';
-export * from './modules/sai-editor/sai-editor.module';
-export * from './modules/loot-editor/loot-editor.module';
 export * from './modules/loot-editor/loot-editor.component';
 export * from './modules/loot-editor/reference-viewer.component';
 export * from './modules/loot-editor/reference-viewer.service';
@@ -55,7 +53,6 @@ export * from './modules/search/item-search.service';
 export * from './modules/search/language-search.service';
 export * from './modules/search/skill-search.service';
 export * from './modules/search/sai-search.service';
-export * from './modules/switch-language/switch-language.module';
 export * from './modules/switch-language/switch-language.component';
 export * from './modules/switch-language/switch-language.service';
 export * from './modules/modal-confirm/modal-confirm.component';
