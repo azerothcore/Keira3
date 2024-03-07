@@ -24,12 +24,13 @@ import { DifficultyLevel } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
 import Spy = jasmine.Spy;
 import { mockChangeDetectorRef } from '@keira/shared/test-utils';
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 
 describe('QuestPreviewService', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), RouterTestingModule, QuestModule],
-      providers: [QuestTemplateService],
+      providers: [QuestTemplateService, { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG }],
     });
   }));
 

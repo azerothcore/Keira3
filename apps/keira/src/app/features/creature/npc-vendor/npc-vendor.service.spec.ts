@@ -1,6 +1,14 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { IconService, MockedMysqlQueryService, MockedToastrService, MysqlQueryService, SqliteQueryService } from '@keira/shared/core';
+import {
+  IconService,
+  MockedMysqlQueryService,
+  MockedSqliteService,
+  MockedToastrService,
+  MysqlQueryService,
+  SqliteQueryService,
+  SqliteService,
+} from '@keira/shared/core';
 import { ItemExtendedCost } from '@keira/shared/acore-world-model';
 
 import { ToastrService } from 'ngx-toastr';
@@ -17,6 +25,7 @@ describe('NpcVendorService', () => {
       providers: [
         { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
         { provide: ToastrService, useValue: instance(MockedToastrService) },
+        { provide: SqliteService, useValue: instance(MockedSqliteService) },
         CreatureHandlerService,
         SaiCreatureHandlerService,
         NpcVendorService,

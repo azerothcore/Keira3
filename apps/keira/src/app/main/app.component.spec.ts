@@ -27,6 +27,7 @@ import {
   QueryErrorComponent,
   SwitchLanguageModule,
 } from '@keira/shared/core';
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 
 describe('AppComponent', () => {
   beforeEach(waitForAsync(() => {
@@ -54,6 +55,7 @@ describe('AppComponent', () => {
       providers: [
         { provide: ElectronService, useValue: instance(MockedElectronService) },
         { provide: MysqlService, useValue: instance(MockedMysqlService) },
+        { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
       ],
     }).compileComponents();
   }));

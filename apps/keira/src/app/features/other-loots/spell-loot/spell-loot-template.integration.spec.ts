@@ -1,6 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira/shared/core';
+import { MockedSqliteService, MysqlQueryService, SqliteService } from '@keira/shared/core';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { SpellLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -9,6 +9,7 @@ import { of } from 'rxjs';
 import { SpellLootHandlerService } from './spell-loot-handler.service';
 import { SpellLootTemplateComponent } from './spell-loot-template.component';
 import { SpellLootTemplateModule } from './spell-loot-template.module';
+import { instance } from 'ts-mockito';
 
 class SpellLootTemplatePage extends MultiRowEditorPageObject<SpellLootTemplateComponent> {}
 
@@ -26,7 +27,7 @@ describe('SpellLootTemplate integration tests', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SpellLootTemplateModule, RouterTestingModule, TranslateTestingModule],
-      providers: [SpellLootHandlerService],
+      providers: [SpellLootHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));
 

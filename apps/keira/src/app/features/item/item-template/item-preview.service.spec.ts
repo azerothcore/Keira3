@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ITEM_FLAG, ITEM_TYPE, ITEMS_QUALITY, ItemTemplate } from '@keira/shared/acore-world-model';
-import { MysqlQueryService, SqliteQueryService } from '@keira/shared/core';
+import { MockedSqliteService, MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/core';
 import { MockedToastrService } from '@keira/shared/core';
 import { ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
@@ -14,7 +14,12 @@ describe('ItemPreviewService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      providers: [{ provide: ToastrService, useValue: instance(MockedToastrService) }, ItemPreviewService, ItemHandlerService],
+      providers: [
+        { provide: ToastrService, useValue: instance(MockedToastrService) },
+        { provide: SqliteService, useValue: instance(MockedSqliteService) },
+        ItemPreviewService,
+        ItemHandlerService,
+      ],
     }),
   );
 
