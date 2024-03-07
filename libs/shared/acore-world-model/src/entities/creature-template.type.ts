@@ -1,4 +1,4 @@
-import { TableRow } from '../../../constants/src/types/general';
+import { TableRow } from '@keira/shared/constants';
 
 export const CREATURE_TEMPLATE_TABLE = 'creature_template';
 export const CREATURE_TEMPLATE_ID = 'entry';

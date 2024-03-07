@@ -1,4 +1,4 @@
-import { TableRow } from '../../../constants/src/types/general';
+import { TableRow } from '@keira/shared/constants';
 
 export const LANGUAGE_TABLE = 'languages'; // sqlite
 export const LANGUAGE_ID = 'id';

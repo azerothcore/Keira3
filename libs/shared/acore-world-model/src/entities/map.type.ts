@@ -1,4 +1,4 @@
-import { TableRow } from '../../../constants/src/types/general';
+import { TableRow } from '@keira/shared/constants';
 
 export const MAP_TABLE = 'maps'; // sqlite
 export const MAP_ID = 'm_ID';

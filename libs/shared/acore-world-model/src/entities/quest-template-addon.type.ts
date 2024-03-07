@@ -1,4 +1,4 @@
-import { TableRow } from '../../../constants/src/types/general';
+import { TableRow } from '@keira/shared/constants';
 
 export const QUEST_TEMPLATE_ADDON_TABLE = 'quest_template_addon';
 export const QUEST_TEMPLATE_ADDON_ID = 'ID';

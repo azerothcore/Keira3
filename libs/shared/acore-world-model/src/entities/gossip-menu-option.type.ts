@@ -1,4 +1,4 @@
-import { TableRow } from '../../../constants/src/types/general';
+import { TableRow } from '@keira/shared/constants';
 
 export const GOSSIP_MENU_OPTION_TABLE = 'gossip_menu_option';
 export const GOSSIP_MENU_OPTION_ID = 'MenuID';

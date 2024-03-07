@@ -1,4 +1,4 @@
-import { TableRow } from '../../../constants/src/types/general';
+import { TableRow } from '@keira/shared/constants';
 
 export const SKILL_TABLE = 'skills'; // sqlite
 export const SKILL_ID = 'id';

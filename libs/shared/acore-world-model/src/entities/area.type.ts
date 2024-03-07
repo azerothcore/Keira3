@@ -1,4 +1,4 @@
-import { TableRow } from '../../../constants/src/types/general';
+import { TableRow } from '@keira/shared/constants';
 
 export const AREA_TABLE = 'areas_and_zones'; // sqlite
 export const AREA_ID = 'm_ID';

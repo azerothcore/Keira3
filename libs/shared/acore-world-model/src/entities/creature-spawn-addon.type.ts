@@ -1,4 +1,4 @@
-import { TableRow } from '../../../constants/src/types/general';
+import { TableRow } from '@keira/shared/constants';
 
 export const CREATURE_SPAWN_ADDON_TABLE = 'creature_addon';
 export const CREATURE_SPAWN_ADDON_ID_2 = 'guid';

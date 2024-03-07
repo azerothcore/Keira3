@@ -1,4 +1,4 @@
-import { TableRow } from '../../../constants/src/types/general';
+import { TableRow } from '@keira/shared/constants';
 
 export const QUEST_OFFER_REWARD_TABLE = 'quest_offer_reward';
 export const QUEST_OFFER_REWARD_ID = 'ID';

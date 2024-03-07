@@ -1,4 +1,4 @@
-import { TableRow } from '../../../constants/src/types/general';
+import { TableRow } from '@keira/shared/constants';
 
 export const ITEM_ENCHANTMENT_TEMPLATE_TABLE = 'item_enchantment_template';
 export const ITEM_ENCHANTMENT_TEMPLATE_ID = 'entry';
