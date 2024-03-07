@@ -24,7 +24,7 @@ import { withInterceptorsFromDi, provideHttpClient, HttpClient } from '@angular/
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { KEIRA_APP_CONFIG_TOKEN, highlightOptions, toastrConfig, uiSwitchConfig } from '@keira/shared/config';
-import { provideRouter, RouterHashLocationFeature, withHashLocation } from '@angular/router';
+import { provideRouter, withHashLocation } from '@angular/router';
 import { KEIRA_ROUTES } from './app/routes';
 
 if (KEIRA_APP_CONFIG.production) {
