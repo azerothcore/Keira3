@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { FlagsSelectorBtnComponent } from './flags-selector-btn.component';
-import { FlagsSelectorModule } from './flags-selector.module';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
 describe('FlagsSelectorBtnComponent', () => {
@@ -10,7 +9,7 @@ describe('FlagsSelectorBtnComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), FlagsSelectorModule],
+      imports: [ModalModule.forRoot(), FlagsSelectorBtnComponent],
     }).compileComponents();
   }));
 

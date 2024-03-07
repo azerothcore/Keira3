@@ -4,7 +4,9 @@ import { CREATURE_SPAWN_ADDON_ID_2, CREATURE_SPAWN_ADDON_TABLE, CreatureSpawnAdd
 import { ToastrService } from 'ngx-toastr';
 import { CreatureHandlerService } from '../creature-handler.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class CreatureSpawnAddonService extends MultiRowExternalEditorService<CreatureSpawnAddon> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

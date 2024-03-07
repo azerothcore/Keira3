@@ -3,12 +3,15 @@ import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
 import { SaiHandlerService } from '../sai-handler.service';
+import { NgIf } from '@angular/common';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'keira-sai-top-bar',
   templateUrl: './sai-top-bar.component.html',
+  standalone: true,
+  imports: [NgIf],
 })
 export class SaiTopBarComponent extends SubscriptionHandler implements OnInit {
   @Input() public handler: SaiHandlerService;

@@ -14,6 +14,7 @@ declare const ZamModelViewer: any;
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-model-3d-viewer',
   templateUrl: './model-3d-viewer.component.html',
+  standalone: true,
 })
 export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   @Input() viewerType: VIEWER_TYPE;

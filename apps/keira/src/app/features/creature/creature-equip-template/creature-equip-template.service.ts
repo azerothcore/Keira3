@@ -4,7 +4,9 @@ import { CREATURE_EQUIP_TEMPLATE_ID, CREATURE_EQUIP_TEMPLATE_TABLE, CreatureEqui
 import { ToastrService } from 'ngx-toastr';
 import { CreatureHandlerService } from '../creature-handler.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class CreatureEquipTemplateService extends SingleRowEditorService<CreatureEquipTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

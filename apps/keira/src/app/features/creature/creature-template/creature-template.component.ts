@@ -26,12 +26,42 @@ import {
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateService } from './creature-template.service';
 import { VIEWER_TYPE } from '../../model-3d-viewer/model-3d-viewer.model';
+import { Model3DViewerComponent } from '../../model-3d-viewer/model-3d-viewer.component';
+import { CreatureSelectorBtnComponent } from '@keira/shared/core';
+import { SpellSelectorBtnComponent } from '@keira/shared/core';
+import { FlagsSelectorBtnComponent } from '@keira/shared/core';
+import { FactionSelectorBtnComponent } from '@keira/shared/core';
+import { SingleValueSelectorBtnComponent } from '@keira/shared/core';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { QueryOutputComponent } from '@keira/shared/core';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgClass, NgIf, NgFor } from '@angular/common';
+import { TopBarComponent } from '@keira/shared/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-template',
   templateUrl: './creature-template.component.html',
   styleUrls: ['./creature-template.component.scss'],
+  standalone: true,
+  imports: [
+    TopBarComponent,
+    NgClass,
+    NgIf,
+    TranslateModule,
+    QueryOutputComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    TooltipModule,
+    SingleValueSelectorBtnComponent,
+    FactionSelectorBtnComponent,
+    FlagsSelectorBtnComponent,
+    NgFor,
+    SpellSelectorBtnComponent,
+    CreatureSelectorBtnComponent,
+    Model3DViewerComponent,
+  ],
 })
 export class CreatureTemplateComponent extends SingleRowEditorComponent<CreatureTemplate> {
   readonly UNIT_FLAGS = UNIT_FLAGS;

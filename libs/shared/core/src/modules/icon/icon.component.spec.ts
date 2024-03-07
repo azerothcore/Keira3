@@ -5,7 +5,6 @@ import { ICON_SKILLS } from '@keira/shared/constants';
 import { PageObject } from '@keira/shared/test-utils';
 import { of } from 'rxjs';
 import { IconComponent } from './icon.component';
-import { IconModule } from './icon.module';
 import { IconService } from './icon.service';
 import Spy = jasmine.Spy;
 import { MockedSqliteService } from '../../services/services.mock';
@@ -20,6 +19,8 @@ import { instance } from 'ts-mockito';
     [skillId]="skillId"
     [spellId]="spellId"
   ></keira-icon>`,
+  standalone: true,
+  imports: [IconComponent],
 })
 class TestHostComponent {
   @ViewChild(IconComponent) child: IconComponent;
@@ -39,8 +40,7 @@ class IconComponentPage extends PageObject<TestHostComponent> {
 describe('ItemIconComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [IconComponent, TestHostComponent],
-      imports: [IconModule],
+      imports: [IconComponent, TestHostComponent],
       providers: [{ provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));

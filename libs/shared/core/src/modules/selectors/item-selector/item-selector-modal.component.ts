@@ -3,12 +3,20 @@ import { ITEM_TEMPLATE_ID, ItemTemplate } from '@keira/shared/acore-world-model'
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ItemSearchService } from '../../search/item-search.service';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { IconComponent } from '../../icon/icon.component';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgIf } from '@angular/common';
+import { HighlightjsWrapperComponent } from '../../highlightjs-wrapper/highlightjs-wrapper.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-item-selector-modal',
   templateUrl: './item-selector-modal.component.html',
   styleUrls: ['./item-selector-modal.component.scss'],
+  standalone: true,
+  imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgIf, NgxDatatableModule, IconComponent, TranslateModule],
 })
 export class ItemSelectorModalComponent extends SearchSelectorModalComponent<ItemTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

@@ -3,7 +3,9 @@ import { Router } from '@angular/router';
 import { HandlerService } from '@keira/shared/core';
 import { SPELL_DBC_TABLE, SpellDbc } from '@keira/shared/acore-world-model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class SpellHandlerService extends HandlerService<SpellDbc> {
   get isSpellDbcUnsaved(): boolean {
     return this.statusMap[SPELL_DBC_TABLE];

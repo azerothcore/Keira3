@@ -1,7 +1,9 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export abstract class SubscriptionHandler implements OnDestroy {
   protected subscriptions: Subscription[] = [];
 

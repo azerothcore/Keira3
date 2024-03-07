@@ -6,7 +6,6 @@ import { CreatureSelectorModalComponent } from './creature-selector-modal.compon
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { CreatureSearchService } from '../../search/creature-search.service';
-import { CreatureSelectorModule } from './creature-selector.module';
 import { MockedMysqlQueryService } from '../../../services/services.mock';
 
 describe('CreatureSelectorModalComponent', () => {
@@ -16,7 +15,7 @@ describe('CreatureSelectorModalComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [CreatureSelectorModule, TranslateTestingModule],
+      imports: [CreatureSelectorModalComponent, TranslateTestingModule],
       providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
     }).compileComponents();
   }));

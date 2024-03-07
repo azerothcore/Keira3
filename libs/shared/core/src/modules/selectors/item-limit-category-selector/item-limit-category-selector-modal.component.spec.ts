@@ -6,7 +6,6 @@ import { ItemLimitCategorySelectorModalComponent } from './item-limit-category-s
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ItemLimitCategorySearchService } from '../../search/item-limit-category-search.service';
-import { ItemLimitCategorySelectorModule } from './item-limit-category-selector.module';
 import { MockedMysqlQueryService, MockedSqliteService } from '../../../services/services.mock';
 import { SqliteService } from '../../../services/sqlite.service';
 
@@ -17,7 +16,7 @@ describe('ItemLimitCategorySelectorModalComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ItemLimitCategorySelectorModule, TranslateTestingModule],
+      imports: [ItemLimitCategorySelectorModalComponent, TranslateTestingModule],
       providers: [
         BsModalRef,
         { provide: SqliteService, useValue: instance(MockedSqliteService) },

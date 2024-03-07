@@ -6,7 +6,6 @@ import { SkillSelectorModalComponent } from './skill-selector-modal.component';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { SkillSearchService } from '../../search/skill-search.service';
-import { SkillSelectorModule } from './skill-selector.module';
 import { MockedMysqlQueryService, MockedSqliteService } from '../../../services/services.mock';
 import { SqliteService } from '../../../services/sqlite.service';
 
@@ -17,7 +16,7 @@ describe('SkillSelectorModalComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [SkillSelectorModule, TranslateTestingModule],
+      imports: [SkillSelectorModalComponent, TranslateTestingModule],
       providers: [
         BsModalRef,
         { provide: SqliteService, useValue: instance(MockedSqliteService) },

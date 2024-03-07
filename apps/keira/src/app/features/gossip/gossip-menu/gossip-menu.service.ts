@@ -4,7 +4,9 @@ import { GOSSIP_MENU_ID, GOSSIP_MENU_ID_2, GOSSIP_MENU_TABLE, GossipMenu } from 
 import { ToastrService } from 'ngx-toastr';
 import { GossipHandlerService } from '../gossip-handler.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class GossipMenuService extends MultiRowEditorService<GossipMenu> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

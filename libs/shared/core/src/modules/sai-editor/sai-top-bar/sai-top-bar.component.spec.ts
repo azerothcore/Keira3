@@ -16,6 +16,8 @@ class SaiTopBarComponentPage extends PageObject<TestHostComponent> {
 
 @Component({
   template: '<keira-sai-top-bar [handler]="handlerService"><</keira-sai-top-bar>',
+  standalone: true,
+  imports: [SaiTopBarComponent, RouterTestingModule, TranslateTestingModule],
 })
 class TestHostComponent {
   @ViewChild(SaiTopBarComponent, { static: true }) child: SaiTopBarComponent;
@@ -32,8 +34,7 @@ describe('SaiTopBarComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [TestHostComponent, SaiTopBarComponent],
-      imports: [RouterTestingModule, TranslateTestingModule],
+      imports: [RouterTestingModule, TranslateTestingModule, TestHostComponent],
     }).compileComponents();
   }));
 

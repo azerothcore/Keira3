@@ -4,11 +4,17 @@ import { GameobjectLootTemplate } from '@keira/shared/acore-world-model';
 import { QueryError } from 'mysql2';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
+import { LootEditorComponent } from '@keira/shared/core';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgIf } from '@angular/common';
+import { TopBarComponent } from '@keira/shared/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-gameobject-loot-template',
   templateUrl: './gameobject-loot-template.component.html',
+  standalone: true,
+  imports: [TopBarComponent, NgIf, TranslateModule, LootEditorComponent],
 })
 export class GameobjectLootTemplateComponent extends LootTemplateIdComponent<GameobjectLootTemplate> implements OnInit {
   private _type: number;

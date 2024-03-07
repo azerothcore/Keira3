@@ -7,13 +7,20 @@ import { EditorService } from '../../abstract/service/editors/editor.service';
 import { TableRow } from '@keira/shared/constants';
 import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
 import { ModalConfirmComponent } from '../modal-confirm/modal-confirm.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { QueryErrorComponent } from './query-error/query-error.component';
+import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-wrapper.component';
+import { FormsModule } from '@angular/forms';
+import { NgIf } from '@angular/common';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'keira-query-output',
   templateUrl: './query-output.component.html',
   styleUrls: ['./query-output.component.scss'],
+  standalone: true,
+  imports: [NgIf, FormsModule, HighlightjsWrapperComponent, QueryErrorComponent, TranslateModule],
 })
 export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandler {
   @Input() docUrl: string;

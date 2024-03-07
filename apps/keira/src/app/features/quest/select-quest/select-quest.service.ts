@@ -9,7 +9,9 @@ import {
 } from '@keira/shared/acore-world-model';
 import { QuestHandlerService } from '../quest-handler.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class SelectQuestService extends SelectService<QuestTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

@@ -4,7 +4,9 @@ import { CREATURE_ONKLL_REPUTATION_ID, CREATURE_ONKLL_REPUTATION_TABLE, Creature
 import { ToastrService } from 'ngx-toastr';
 import { CreatureHandlerService } from '../creature-handler.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class CreatureOnkillReputationService extends SingleRowEditorService<CreatureOnkillReputation> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

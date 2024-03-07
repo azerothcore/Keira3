@@ -4,7 +4,9 @@ import { CREATURE_TEMPLATE_MOVEMENT_ID, CREATURE_TEMPLATE_MOVEMENT_TABLE, Creatu
 import { ToastrService } from 'ngx-toastr';
 import { CreatureHandlerService } from '../creature-handler.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class CreatureTemplateMovementService extends SingleRowEditorService<CreatureTemplateMovement> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

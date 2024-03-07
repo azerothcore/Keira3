@@ -11,7 +11,9 @@ import {
   PROSPECTING_LOOT_TEMPLATE_TABLE,
 } from '@keira/shared/acore-world-model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class ItemHandlerService extends HandlerService<ItemTemplate> {
   get isItemTemplateUnsaved(): boolean {
     return this.statusMap[ITEM_TEMPLATE_TABLE];

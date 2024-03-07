@@ -30,6 +30,8 @@ describe('SpellDbcSpellEffectComponent', () => {
 
   @Component({
     template: '<keira-spell-dbc-spell-effect [formGroup]="form" [index]="index"></keira-spell-dbc-spell-effect>',
+    standalone: true,
+    imports: [SpellDbcModule, RouterTestingModule, TranslateTestingModule],
   })
   class TestHostComponent {
     @ViewChild(SpellDbcSpellEffectComponent) child: SpellDbcSpellEffectComponent;
@@ -39,7 +41,6 @@ describe('SpellDbcSpellEffectComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [TestHostComponent, SpellDbcSpellEffectComponent],
       imports: [
         ModalModule.forRoot(),
         ToastrModule.forRoot(),
@@ -47,6 +48,8 @@ describe('SpellDbcSpellEffectComponent', () => {
         SpellDbcModule,
         RouterTestingModule,
         TranslateTestingModule,
+        TestHostComponent,
+        SpellDbcSpellEffectComponent,
       ],
       providers: [SpellHandlerService],
     }).compileComponents();

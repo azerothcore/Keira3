@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { AreaSelectorBtnComponent } from './area-selector-btn.component';
-import { AreaSelectorModule } from './area-selector.module';
 
 describe('AreaSelectorBtnComponent', () => {
   let component: AreaSelectorBtnComponent;
@@ -9,7 +8,7 @@ describe('AreaSelectorBtnComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), AreaSelectorModule],
+      imports: [ModalModule.forRoot(), AreaSelectorBtnComponent],
     }).compileComponents();
   }));
 

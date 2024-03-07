@@ -1,12 +1,15 @@
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'keira-modal-confirm',
   templateUrl: './modal-confirm.component.html',
+  standalone: true,
+  imports: [TranslateModule],
 })
 export class ModalConfirmComponent implements OnInit {
   public onClose: Subject<boolean>;

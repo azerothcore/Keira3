@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { CreatureSelectorBtnComponent } from './creature-selector-btn.component';
-import { CreatureSelectorModule } from './creature-selector.module';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
 describe('CreatureSelectorBtnComponent', () => {
@@ -10,7 +9,7 @@ describe('CreatureSelectorBtnComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), CreatureSelectorModule],
+      imports: [ModalModule.forRoot(), CreatureSelectorBtnComponent],
     }).compileComponents();
   }));
 

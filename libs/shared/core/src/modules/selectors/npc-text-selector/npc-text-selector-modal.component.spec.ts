@@ -6,13 +6,12 @@ import { NpcTextSelectorModalComponent } from './npc-text-selector-modal.compone
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { NpcTextSearchService } from '../../search/npc-text-search.service';
-import { NpcTextSelectorModule } from './npc-text-selector.module';
 import { MockedMysqlQueryService } from '../../../services/services.mock';
 
 describe('NpcTextSelectorModalComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NpcTextSelectorModule, TranslateTestingModule],
+      imports: [NpcTextSelectorModalComponent, TranslateTestingModule],
       providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
     }).compileComponents();
   }));

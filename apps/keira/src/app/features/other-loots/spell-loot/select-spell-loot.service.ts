@@ -3,7 +3,9 @@ import { MysqlQueryService, SelectService } from '@keira/shared/core';
 import { LOOT_TEMPLATE_ID, SPELL_LOOT_TEMPLATE_TABLE, SpellLootTemplate } from '@keira/shared/acore-world-model';
 import { SpellLootHandlerService } from './spell-loot-handler.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class SelectSpellLootService extends SelectService<SpellLootTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

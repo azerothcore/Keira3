@@ -4,7 +4,9 @@ import { QUEST_TEMPLATE_ID, QUEST_TEMPLATE_NAME, QUEST_TEMPLATE_TABLE, QuestTemp
 import { ToastrService } from 'ngx-toastr';
 import { QuestHandlerService } from '../quest-handler.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class QuestTemplateService extends SingleRowEditorService<QuestTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

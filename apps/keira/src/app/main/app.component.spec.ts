@@ -32,14 +32,6 @@ import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config'
 describe('AppComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        MainWindowComponent,
-        ConnectionWindowComponent,
-        AppComponent,
-        SidebarComponent,
-        QueryErrorComponent,
-        LogoutBtnComponent,
-      ],
       imports: [
         BsDropdownModule,
         FormsModule,
@@ -51,6 +43,12 @@ describe('AppComponent', () => {
         SwitchLanguageModule,
         ToastrModule.forRoot(),
         TranslateTestingModule,
+        MainWindowComponent,
+        ConnectionWindowComponent,
+        SidebarComponent,
+        QueryErrorComponent,
+        LogoutBtnComponent,
+        AppComponent,
       ],
       providers: [
         { provide: ElectronService, useValue: instance(MockedElectronService) },

@@ -1,13 +1,12 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 
 import { NpcTextSelectorBtnComponent } from './npc-text-selector-btn.component';
-import { NpcTextSelectorModule } from './npc-text-selector.module';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
 describe('NpcTextSelectorBtnComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), NpcTextSelectorModule],
+      imports: [ModalModule.forRoot(), NpcTextSelectorBtnComponent],
     }).compileComponents();
   }));
 

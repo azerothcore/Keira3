@@ -3,7 +3,9 @@ import { Router } from '@angular/router';
 import { HandlerService } from '@keira/shared/core';
 import { GOSSIP_MENU_OPTION_TABLE, GOSSIP_MENU_TABLE, GossipMenu } from '@keira/shared/acore-world-model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class GossipHandlerService extends HandlerService<GossipMenu> {
   get isGossipMenuTableUnsaved(): boolean {
     return this.statusMap[GOSSIP_MENU_TABLE];

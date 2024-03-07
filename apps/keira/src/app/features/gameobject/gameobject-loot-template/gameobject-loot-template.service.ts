@@ -12,7 +12,9 @@ import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class GameobjectLootTemplateService extends LootEditorIdService<GameobjectLootTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

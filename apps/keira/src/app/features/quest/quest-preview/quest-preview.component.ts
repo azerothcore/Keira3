@@ -2,13 +2,18 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit }
 import { PreviewHelperService } from '@keira/shared/core';
 import { QUEST_FACTION_REWARD } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { IconComponent } from '@keira/shared/core';
+import { NgClass, NgIf, NgFor, AsyncPipe } from '@angular/common';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'keira-quest-preview',
   templateUrl: './quest-preview.component.html',
   styleUrls: ['./quest-preview.component.scss'],
+  standalone: true,
+  imports: [NgClass, NgIf, NgFor, IconComponent, CollapseModule, AsyncPipe],
 })
 export class QuestPreviewComponent implements OnInit {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);

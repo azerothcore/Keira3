@@ -3,7 +3,9 @@ import { Router } from '@angular/router';
 import { HandlerService } from '@keira/shared/core';
 import { SPELL_LOOT_TEMPLATE_TABLE, SpellLootTemplate } from '@keira/shared/acore-world-model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class SpellLootHandlerService extends HandlerService<SpellLootTemplate> {
   get isUnsaved(): boolean {
     return this.statusMap[SPELL_LOOT_TEMPLATE_TABLE];

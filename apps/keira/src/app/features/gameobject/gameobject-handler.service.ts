@@ -13,7 +13,9 @@ import {
 } from '@keira/shared/acore-world-model';
 import { SaiGameobjectHandlerService } from './sai-gameobject-handler.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class GameobjectHandlerService extends HandlerService<GameobjectTemplate> {
   get isGameobjectTemplateUnsaved(): boolean {
     return this.statusMap[GAMEOBJECT_TEMPLATE_TABLE];

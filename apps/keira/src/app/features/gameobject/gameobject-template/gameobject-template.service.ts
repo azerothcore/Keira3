@@ -10,7 +10,9 @@ import {
 import { ToastrService } from 'ngx-toastr';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class GameobjectTemplateService extends SingleRowEditorService<GameobjectTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

@@ -9,7 +9,9 @@ import {
 } from '@keira/shared/acore-world-model';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class SelectGameobjectService extends SelectService<GameobjectTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

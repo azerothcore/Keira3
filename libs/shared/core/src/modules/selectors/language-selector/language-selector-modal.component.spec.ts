@@ -5,7 +5,6 @@ import { instance } from 'ts-mockito';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { LanguageSearchService } from '../../search/language-search.service';
 import { LanguageSelectorModalComponent } from './language-selector-modal.component';
-import { LanguageSelectorModule } from './language-selector.module';
 import { MockedMysqlQueryService, MockedSqliteService } from '../../../services/services.mock';
 import { SqliteService } from '../../../services/sqlite.service';
 
@@ -16,7 +15,7 @@ describe('LanguageSelectorModalComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [LanguageSelectorModule, TranslateTestingModule],
+      imports: [LanguageSelectorModalComponent, TranslateTestingModule],
       providers: [
         BsModalRef,
         { provide: SqliteService, useValue: instance(MockedSqliteService) },

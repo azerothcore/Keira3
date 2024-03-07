@@ -4,7 +4,9 @@ import { FISHING_LOOT_TEMPLATE_TABLE, FishingLootTemplate, LOOT_TEMPLATE_ID, LOO
 import { ToastrService } from 'ngx-toastr';
 import { FishingLootHandlerService } from './fishing-loot-handler.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class FishingLootTemplateService extends MultiRowEditorService<FishingLootTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

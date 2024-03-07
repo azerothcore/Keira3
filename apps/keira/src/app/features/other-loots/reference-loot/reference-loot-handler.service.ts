@@ -3,7 +3,9 @@ import { Router } from '@angular/router';
 import { HandlerService } from '@keira/shared/core';
 import { REFERENCE_LOOT_TEMPLATE_TABLE, ReferenceLootTemplate } from '@keira/shared/acore-world-model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class ReferenceLootHandlerService extends HandlerService<ReferenceLootTemplate> {
   get isUnsaved(): boolean {
     return this.statusMap[REFERENCE_LOOT_TEMPLATE_TABLE];

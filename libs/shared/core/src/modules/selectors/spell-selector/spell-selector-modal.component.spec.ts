@@ -6,7 +6,6 @@ import { SpellSelectorModalComponent } from './spell-selector-modal.component';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { SpellSearchService } from '../../search/spell-search.service';
-import { SpellSelectorModule } from './spell-selector.module';
 import { MockedMysqlQueryService, MockedSqliteService } from '../../../services/services.mock';
 import { SqliteService } from '../../../services/sqlite.service';
 
@@ -17,7 +16,7 @@ describe('SpellSelectorModalComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [SpellSelectorModule, TranslateTestingModule],
+      imports: [SpellSelectorModalComponent, TranslateTestingModule],
       providers: [
         BsModalRef,
         { provide: SqliteService, useValue: instance(MockedSqliteService) },

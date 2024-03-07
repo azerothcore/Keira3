@@ -5,12 +5,18 @@ import { ReferenceLootTemplate } from '@keira/shared/acore-world-model';
 import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
 import { ReferenceViewerService } from './reference-viewer.service';
 import { MysqlQueryService } from '../../services/query/mysql-query.service';
+import { IconComponent } from '../icon/icon.component';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { NgIf, NgClass, NgFor, AsyncPipe } from '@angular/common';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-reference-viewer',
   templateUrl: './reference-viewer.component.html',
   styleUrls: ['./loot-editor.component.scss'],
+  standalone: true,
+  imports: [NgIf, TooltipModule, NgxDatatableModule, IconComponent, NgClass, NgFor, AsyncPipe],
 })
 export class ReferenceViewerComponent extends SubscriptionHandler implements OnChanges {
   @Input() referenceId: number;

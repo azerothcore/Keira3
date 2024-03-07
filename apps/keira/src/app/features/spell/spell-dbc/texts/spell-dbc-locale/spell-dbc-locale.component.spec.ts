@@ -28,6 +28,8 @@ describe('SpellDbcLocaleComponent', () => {
 
   @Component({
     template: '<keira-spell-dbc-locale [formGroup]="form" [locale]="locale"></keira-spell-dbc-locale>',
+    standalone: true,
+    imports: [SpellDbcModule, RouterTestingModule, TranslateTestingModule],
   })
   class TestHostComponent {
     @ViewChild(SpellDbcLocaleComponent) child: SpellDbcLocaleComponent;
@@ -37,8 +39,15 @@ describe('SpellDbcLocaleComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [TestHostComponent, SpellDbcLocaleComponent],
-      imports: [ToastrModule.forRoot(), TooltipModule.forRoot(), SpellDbcModule, RouterTestingModule, TranslateTestingModule],
+      imports: [
+        ToastrModule.forRoot(),
+        TooltipModule.forRoot(),
+        SpellDbcModule,
+        RouterTestingModule,
+        TranslateTestingModule,
+        TestHostComponent,
+        SpellDbcLocaleComponent,
+      ],
       providers: [SpellHandlerService],
     }).compileComponents();
   });

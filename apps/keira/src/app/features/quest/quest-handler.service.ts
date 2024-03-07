@@ -13,7 +13,9 @@ import {
   QuestTemplate,
 } from '@keira/shared/acore-world-model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class QuestHandlerService extends HandlerService<QuestTemplate> {
   get isQuestTemplateUnsaved(): boolean {
     return this.statusMap[QUEST_TEMPLATE_TABLE];

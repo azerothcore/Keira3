@@ -18,6 +18,8 @@ describe('SpellDbcFlagsComponent', () => {
 
   @Component({
     template: '<keira-spell-dbc-flags [formGroup]="form"></keira-spell-dbc-flags>',
+    standalone: true,
+    imports: [SpellDbcModule, RouterTestingModule, TranslateTestingModule],
   })
   class TestHostComponent {
     @ViewChild(SpellDbcFlagsComponent) child: SpellDbcFlagsComponent;
@@ -26,7 +28,6 @@ describe('SpellDbcFlagsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [TestHostComponent, SpellDbcFlagsComponent],
       imports: [
         ModalModule.forRoot(),
         ToastrModule.forRoot(),
@@ -34,6 +35,8 @@ describe('SpellDbcFlagsComponent', () => {
         SpellDbcModule,
         RouterTestingModule,
         TranslateTestingModule,
+        TestHostComponent,
+        SpellDbcFlagsComponent,
       ],
       providers: [SpellHandlerService],
     }).compileComponents();

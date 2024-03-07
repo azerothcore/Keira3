@@ -5,7 +5,6 @@ import { instance } from 'ts-mockito';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { ItemSearchService } from '../../search/item-search.service';
 import { ItemSelectorModalComponent } from './item-selector-modal.component';
-import { ItemSelectorModule } from './item-selector.module';
 import { MockedMysqlQueryService } from '../../../services/services.mock';
 
 describe('ItemSelectorModalComponent', () => {
@@ -15,7 +14,7 @@ describe('ItemSelectorModalComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ItemSelectorModule, TranslateTestingModule],
+      imports: [ItemSelectorModalComponent, TranslateTestingModule],
       providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
     }).compileComponents();
   }));

@@ -6,7 +6,6 @@ import { GameobjectSelectorModalComponent } from './gameobject-selector-modal.co
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { GameobjectSearchService } from '../../search/gameobject-search.service';
-import { GameobjectSelectorModule } from './gameobject-selector.module';
 import { MockedMysqlQueryService } from '../../../services/services.mock';
 
 describe('GameobjectSelectorModalComponent', () => {
@@ -16,7 +15,7 @@ describe('GameobjectSelectorModalComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [GameobjectSelectorModule, TranslateTestingModule],
+      imports: [GameobjectSelectorModalComponent, TranslateTestingModule],
       providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
     }).compileComponents();
   }));

@@ -3,7 +3,9 @@ import { Router } from '@angular/router';
 import { ComplexKeyHandlerService } from '@keira/shared/core';
 import { Conditions, CONDITIONS_ID_FIELDS, CONDITIONS_TABLE } from '@keira/shared/acore-world-model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class ConditionsHandlerService extends ComplexKeyHandlerService<Conditions> {
   get isConditionsUnsaved(): boolean {
     return this.statusMap[CONDITIONS_TABLE];

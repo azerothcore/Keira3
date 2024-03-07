@@ -115,8 +115,7 @@ describe('QuestPreviewComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [QuestPreviewComponent],
-      imports: [ToastrModule.forRoot(), RouterTestingModule, QuestModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), RouterTestingModule, QuestModule, TranslateTestingModule, QuestPreviewComponent],
       providers: [{ provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG }],
     }).compileComponents();
   }));

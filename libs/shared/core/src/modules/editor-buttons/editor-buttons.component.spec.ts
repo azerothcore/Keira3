@@ -5,6 +5,8 @@ import { EditorButtonsComponent } from './editor-buttons.component';
 
 @Component({
   template: `<keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>`,
+  standalone: true,
+  imports: [TranslateTestingModule, EditorButtonsComponent],
 })
 class TestHostComponent {
   @ViewChild(EditorButtonsComponent) child: EditorButtonsComponent<null>;
@@ -23,8 +25,7 @@ class EditorButtonsPage extends PageObject<TestHostComponent> {
 describe('EditorButtonsComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [TranslateTestingModule],
-      declarations: [EditorButtonsComponent, TestHostComponent],
+      imports: [TranslateTestingModule, EditorButtonsComponent, TestHostComponent],
     }).compileComponents();
   }));
 

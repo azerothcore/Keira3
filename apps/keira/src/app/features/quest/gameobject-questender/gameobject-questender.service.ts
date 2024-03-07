@@ -9,7 +9,9 @@ import {
 import { ToastrService } from 'ngx-toastr';
 import { QuestHandlerService } from '../quest-handler.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class GameobjectQuestenderService extends MultiRowEditorService<GameobjectQuestender> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

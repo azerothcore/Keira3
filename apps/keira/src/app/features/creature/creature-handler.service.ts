@@ -22,7 +22,9 @@ import {
 } from '@keira/shared/acore-world-model';
 import { SaiCreatureHandlerService } from './sai-creature-handler.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
   get isCreatureTemplateUnsaved(): boolean {
     return this.statusMap[CREATURE_TEMPLATE_TABLE];

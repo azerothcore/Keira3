@@ -3,7 +3,9 @@ import { MysqlQueryService, SelectService } from '@keira/shared/core';
 import { LOOT_TEMPLATE_ID, MAIL_LOOT_TEMPLATE_TABLE, MailLootTemplate } from '@keira/shared/acore-world-model';
 import { MailLootHandlerService } from './mail-loot-handler.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class SelectMailLootService extends SelectService<MailLootTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

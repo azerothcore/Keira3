@@ -58,12 +58,37 @@ import {
 } from './constants/sai-targets';
 import { SaiEditorService } from './sai-editor.service';
 import { SaiHandlerService } from './sai-handler.service';
+import { TimedActionlistComponent } from './timed-actionlist/timed-actionlist.component';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { EditorButtonsComponent } from '../editor-buttons/editor-buttons.component';
+import { FlagsSelectorBtnComponent } from '../selectors/flags-selector/flags-selector-btn.component';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { QueryOutputComponent } from '../query-output/query-output.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgIf, NgFor } from '@angular/common';
+import { SaiTopBarComponent } from './sai-top-bar/sai-top-bar.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sai-editor',
   templateUrl: './sai-editor.component.html',
   styleUrls: ['./sai-editor.component.scss'],
+  standalone: true,
+  imports: [
+    SaiTopBarComponent,
+    NgIf,
+    TranslateModule,
+    QueryOutputComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    NgFor,
+    TooltipModule,
+    FlagsSelectorBtnComponent,
+    EditorButtonsComponent,
+    NgxDatatableModule,
+    TimedActionlistComponent,
+  ],
 })
 export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> implements OnInit {
   readonly EVENT_PHASE_MASK = EVENT_PHASE_MASK;

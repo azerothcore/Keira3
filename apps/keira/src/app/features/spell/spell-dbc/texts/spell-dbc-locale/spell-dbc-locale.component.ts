@@ -1,13 +1,16 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModelForm } from '@keira/shared/core';
 import { SpellDbc } from '@keira/shared/acore-world-model';
 import { Locale, SPELL_DBC_TEXT_FIELDS, SpellDbcTextFieldPrefix } from '../spell-dbc-texts.model';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-dbc-locale',
   templateUrl: './spell-dbc-locale.component.html',
+  standalone: true,
+  imports: [NgIf, FormsModule, ReactiveFormsModule, NgFor],
 })
 export class SpellDbcLocaleComponent {
   readonly FIELDS = SPELL_DBC_TEXT_FIELDS;

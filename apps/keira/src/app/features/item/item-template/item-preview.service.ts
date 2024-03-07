@@ -14,7 +14,9 @@ import { MysqlQueryService, PreviewHelperService, SqliteQueryService } from '@ke
 import { ITEM_CONSTANTS } from './item-constants';
 import { gtCombatRatings, lvlIndepRating, MAX_LEVEL, resistanceFields } from './item-preview';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class ItemPreviewService {
   private readonly ITEM_CONSTANTS = ITEM_CONSTANTS;
 

@@ -1,13 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ModalModule } from 'ngx-bootstrap/modal';
-import { FactionSelectorModule } from './faction-selector.module';
 import { QuestFactionSelectorBtnComponent } from './quest-faction-selector-btn.component';
+import { FactionSelectorBtnComponent } from './faction-selector-btn.component';
 
 describe('QuestFactionSelectorBtnComponent', () => {
   function setup() {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), FactionSelectorModule],
+      imports: [ModalModule.forRoot(), FactionSelectorBtnComponent],
     }).compileComponents();
 
     const fixture: ComponentFixture<QuestFactionSelectorBtnComponent> = TestBed.createComponent(QuestFactionSelectorBtnComponent);

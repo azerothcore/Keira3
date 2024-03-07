@@ -7,13 +7,12 @@ import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 
 import { ItemSearchService } from '../../search/item-search.service';
-import { ItemSelectorModule } from '../item-selector/item-selector.module';
 import { MockedMysqlQueryService } from '../../../services/services.mock';
 
 describe('SearchSelectorModalComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ItemSelectorModule, TranslateTestingModule],
+      imports: [ItemSelectorModalComponent, TranslateTestingModule],
       providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
     }).compileComponents();
   }));

@@ -1,13 +1,18 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { getEnumKeys, ModelForm, SaiHandlerService } from '@keira/shared/core';
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
+import { GameobjectSelectorBtnComponent } from '@keira/shared/core';
+import { CreatureSelectorBtnComponent } from '@keira/shared/core';
+import { NgFor, NgIf } from '@angular/common';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sai-search-entity',
   templateUrl: './sai-search-entity.component.html',
   styleUrls: ['./sai-search-entity.component.scss'],
+  standalone: true,
+  imports: [FormsModule, ReactiveFormsModule, NgFor, NgIf, CreatureSelectorBtnComponent, GameobjectSelectorBtnComponent],
 })
 export class SaiSearchEntityComponent {
   readonly SAI_SEARCH_TYPES = SAI_TYPES;

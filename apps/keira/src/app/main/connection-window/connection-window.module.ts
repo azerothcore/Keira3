@@ -7,19 +7,18 @@ import { TranslateModule } from '@ngx-translate/core';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 import { ConnectionWindowComponent } from './connection-window.component';
-import { QueryOutputModule, SwitchLanguageModule } from '@keira/shared/core';
+import { SwitchLanguageModule } from '@keira/shared/core';
 
 @NgModule({
-  declarations: [ConnectionWindowComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
-    QueryOutputModule,
     BsDropdownModule,
     FormsModule,
     TranslateModule,
     SwitchLanguageModule,
+    ConnectionWindowComponent,
   ],
   exports: [ConnectionWindowComponent],
 })

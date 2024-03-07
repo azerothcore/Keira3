@@ -3,7 +3,6 @@ import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { SingleValueSelectorModalComponent } from './single-value-selector-modal.component';
-import { SingleValueSelectorModule } from './single-value-selector.module';
 
 describe('SingleValueSelectorModalComponent', () => {
   let component: SingleValueSelectorModalComponent;
@@ -13,7 +12,7 @@ describe('SingleValueSelectorModalComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [SingleValueSelectorModule, TranslateTestingModule],
+      imports: [SingleValueSelectorModalComponent, TranslateTestingModule],
       providers: [BsModalRef],
     }).compileComponents();
   }));

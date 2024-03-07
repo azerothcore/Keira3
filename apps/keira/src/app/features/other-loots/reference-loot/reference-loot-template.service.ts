@@ -9,7 +9,9 @@ import {
 import { ToastrService } from 'ngx-toastr';
 import { ReferenceLootHandlerService } from './reference-loot-handler.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class ReferenceLootTemplateService extends MultiRowEditorService<ReferenceLootTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

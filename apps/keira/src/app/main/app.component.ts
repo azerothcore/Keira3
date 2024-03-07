@@ -8,14 +8,20 @@ import { distinctUntilChanged } from 'rxjs';
 import packageInfo from '../../../../../package.json';
 
 import { ElectronService, MysqlService, SqliteQueryService, SubscriptionHandler } from '@keira/shared/core';
+import { TranslateModule } from '@ngx-translate/core';
+import { MainWindowComponent } from './main-window/main-window.component';
+import { ConnectionWindowComponent } from './connection-window/connection-window.component';
+import { NgIf } from '@angular/common';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
+  changeDetection: ChangeDetectionStrategy.Default,
   // TODO: currently OnPush would break the auto reconnect of the login page
   selector: 'keira-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  standalone: true,
+  imports: [NgIf, ConnectionWindowComponent, MainWindowComponent, TranslateModule],
 })
 export class AppComponent extends SubscriptionHandler implements OnInit {
   readonly KEIRA3_REPO_URL = KEIRA3_REPO_URL;

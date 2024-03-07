@@ -6,8 +6,7 @@ import { UnsavedIconComponent } from './unsaved-icon.component';
 describe('UnsavedIconComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [TranslateTestingModule, TooltipModule],
-      declarations: [UnsavedIconComponent],
+      imports: [TranslateTestingModule, TooltipModule, UnsavedIconComponent],
     }).compileComponents();
   }));
 

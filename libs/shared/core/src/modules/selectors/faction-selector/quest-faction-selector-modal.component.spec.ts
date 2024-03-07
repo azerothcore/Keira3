@@ -5,15 +5,15 @@ import { instance } from 'ts-mockito';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { FactionSearchService } from '../../search/faction-search.service';
-import { FactionSelectorModule } from './faction-selector.module';
 import { QuestFactionSelectorModalComponent } from './quest-faction-selector-modal.component';
 import { MockedMysqlQueryService, MockedSqliteService } from '../../../services/services.mock';
 import { SqliteService } from '../../../services/sqlite.service';
+import { FactionSelectorModalComponent } from './faction-selector-modal.component';
 
 describe('QuestFactionSelectorModalComponent', () => {
   function setup() {
     TestBed.configureTestingModule({
-      imports: [FactionSelectorModule, TranslateTestingModule],
+      imports: [FactionSelectorModalComponent, TranslateTestingModule],
       providers: [
         BsModalRef,
         { provide: SqliteService, useValue: instance(MockedSqliteService) },

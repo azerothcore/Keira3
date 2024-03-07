@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { MysqlQueryService, SaiHandlerService } from '@keira/shared/core';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class SaiGameobjectHandlerService extends SaiHandlerService {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
