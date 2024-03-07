@@ -2,8 +2,6 @@
 
 [![CodeFactor](https://www.codefactor.io/repository/github/azerothcore/keira3/badge)](https://www.codefactor.io/repository/github/azerothcore/keira3)
 [![Actions Status](https://github.com/azerothcore/Keira3/workflows/main/badge.svg)](https://github.com/azerothcore/Keira3/actions)
-[![dependencies Status](https://david-dm.org/azerothcore/Keira3/status.svg)](https://david-dm.org/azerothcore/Keira3/)
-[![devDependencies Status](https://david-dm.org/francescoborzi/ngx-duration-picker/dev-status.svg)](https://david-dm.org/francescoborzi/ngx-duration-picker?type=dev)
 <a href="https://www.paypal.me/francesco92dev" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
 [![Discord](https://img.shields.io/discord/217589275766685707.svg)](https://discordapp.com/channels/217589275766685707/536630256048799744)
 
