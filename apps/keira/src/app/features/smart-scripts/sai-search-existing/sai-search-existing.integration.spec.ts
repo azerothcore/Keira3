@@ -6,6 +6,7 @@ import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { SmartScripts } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { SaiSearchExistingComponent } from './sai-search-existing.component';
 import Spy = jasmine.Spy;
@@ -34,7 +35,14 @@ describe('SaiSearchExisting integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SaiSearchExistingComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        SaiSearchExistingComponent,
+        RouterTestingModule,
+        TranslateTestingModule,
+      ],
     }).compileComponents();
   }));
 

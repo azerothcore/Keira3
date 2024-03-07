@@ -5,11 +5,11 @@ import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/
 import { SkinningLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { SkinningLootTemplateComponent } from './skinning-loot-template.component';
-import { SkinningLootTemplateModule } from './skinning-loot-template.module';
 import { SkinningLootTemplateService } from './skinning-loot-template.service';
 import Spy = jasmine.Spy;
 import { instance } from 'ts-mockito';
@@ -35,7 +35,14 @@ describe('SkinningLootTemplate integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SkinningLootTemplateModule, RouterTestingModule, TranslateTestingModule],
+      imports: [
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        SkinningLootTemplateComponent,
+        RouterTestingModule,
+        TranslateTestingModule,
+      ],
       providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));

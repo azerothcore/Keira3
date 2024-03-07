@@ -5,11 +5,11 @@ import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { SaiCreatureComponent } from './sai-creature.component';
-import { SaiCreatureModule } from './sai-creature.module';
 import { instance } from 'ts-mockito';
 
 class SaiCreaturePage extends MultiRowEditorPageObject<SaiCreatureComponent> {}
@@ -29,7 +29,14 @@ describe('SaiCreatureComponent integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SaiCreatureModule, RouterTestingModule, TranslateTestingModule],
+      imports: [
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        SaiCreatureComponent,
+        RouterTestingModule,
+        TranslateTestingModule,
+      ],
       providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));

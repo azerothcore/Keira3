@@ -6,10 +6,10 @@ import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-uti
 import { ItemTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { ItemHandlerService } from '../item-handler.service';
 import { SelectItemComponent } from './select-item.component';
-import { SelectItemModule } from './select-item.module';
 import Spy = jasmine.Spy;
 import { instance } from 'ts-mockito';
 
@@ -29,7 +29,14 @@ describe('SelectItem integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectItemModule, RouterTestingModule, TranslateTestingModule],
+      imports: [
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        SelectItemComponent,
+        RouterTestingModule,
+        TranslateTestingModule,
+      ],
       providers: [ItemHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));

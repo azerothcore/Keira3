@@ -5,10 +5,10 @@ import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/
 import { ProspectingLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { ItemHandlerService } from '../item-handler.service';
 import { ProspectingLootTemplateComponent } from './prospecting-loot-template.component';
-import { ProspectingLootTemplateModule } from './prospecting-loot-template.module';
 import Spy = jasmine.Spy;
 import { instance } from 'ts-mockito';
 
@@ -33,7 +33,14 @@ describe('ProspectingLootTemplate integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ProspectingLootTemplateModule, RouterTestingModule, TranslateTestingModule],
+      imports: [
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        ProspectingLootTemplateComponent,
+        RouterTestingModule,
+        TranslateTestingModule,
+      ],
       providers: [ItemHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));

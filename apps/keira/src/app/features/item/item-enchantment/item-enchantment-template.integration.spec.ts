@@ -8,7 +8,6 @@ import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemEnchantmentTemplateComponent } from './item-enchantment-template.component';
-import { ItemEnchantmentTemplateModule } from './item-enchantment-template.module';
 import Spy = jasmine.Spy;
 
 class ItemEnchantmentTemplatePage extends MultiRowEditorPageObject<ItemEnchantmentTemplateComponent> {}
@@ -35,7 +34,7 @@ describe('ItemEnchantmentTemplate integration tests', () => {
       imports: [
         ToastrModule.forRoot(),
         ModalModule.forRoot(),
-        ItemEnchantmentTemplateModule,
+        ItemEnchantmentTemplateComponent,
         RouterTestingModule,
         ModalModule.forRoot(),
         TranslateTestingModule,

@@ -9,7 +9,6 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
 import { SpellHandlerService } from '../../spell-handler.service';
-import { SpellDbcModule } from '../spell-dbc.module';
 import { SpellDbcService } from '../spell-dbc.service';
 import { SpellDbcMiscComponent } from './spell-dbc-misc.component';
 
@@ -19,7 +18,7 @@ describe('SpellDbcMiscComponent', () => {
   @Component({
     template: '<keira-spell-dbc-misc [formGroup]="form"></keira-spell-dbc-misc>',
     standalone: true,
-    imports: [SpellDbcModule, RouterTestingModule, TranslateTestingModule, SpellDbcMiscComponent],
+    imports: [RouterTestingModule, TranslateTestingModule, SpellDbcMiscComponent],
   })
   class TestHostComponent {
     @ViewChild(SpellDbcMiscComponent) child: SpellDbcMiscComponent;
@@ -43,7 +42,6 @@ describe('SpellDbcMiscComponent', () => {
         ModalModule.forRoot(),
         ToastrModule.forRoot(),
         TooltipModule.forRoot(),
-        SpellDbcModule,
         RouterTestingModule,
         TranslateTestingModule,
         TestHostComponent,

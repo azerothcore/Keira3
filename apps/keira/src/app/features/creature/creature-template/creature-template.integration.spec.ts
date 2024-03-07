@@ -9,7 +9,6 @@ import { of } from 'rxjs';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureTemplateComponent } from './creature-template.component';
-import { CreatureTemplateModule } from './creature-template.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import Spy = jasmine.Spy;
 import { instance } from 'ts-mockito';
@@ -46,7 +45,7 @@ describe('CreatureTemplate integration tests', () => {
       imports: [
         ToastrModule.forRoot(),
         ModalModule.forRoot(),
-        CreatureTemplateModule,
+        CreatureTemplateComponent,
         RouterTestingModule,
         TranslateTestingModule,
         HttpClientTestingModule,

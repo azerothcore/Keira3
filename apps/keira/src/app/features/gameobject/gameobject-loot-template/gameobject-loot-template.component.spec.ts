@@ -10,7 +10,6 @@ import { anything, instance, when } from 'ts-mockito';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectLootTemplateComponent } from './gameobject-loot-template.component';
-import { GameobjectLootTemplateModule } from './gameobject-loot-template.module';
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
 import Spy = jasmine.Spy;
 
@@ -28,7 +27,7 @@ describe('GameobjectTemplateComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
-        GameobjectLootTemplateModule,
+        GameobjectLootTemplateComponent,
         RouterTestingModule,
         ModalModule.forRoot(),
         TooltipModule.forRoot(),

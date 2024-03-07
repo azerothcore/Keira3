@@ -5,11 +5,11 @@ import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/
 import { GameobjectSpawn } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectSpawnComponent } from './gameobject-spawn.component';
-import { GameobjectSpawnModule } from './gameobject-spawn.module';
 import Spy = jasmine.Spy;
 import { instance } from 'ts-mockito';
 
@@ -34,7 +34,14 @@ describe('GameobjectSpawn integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), GameobjectSpawnModule, RouterTestingModule, TranslateTestingModule],
+      imports: [
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        GameobjectSpawnComponent,
+        RouterTestingModule,
+        TranslateTestingModule,
+      ],
       providers: [
         GameobjectHandlerService,
         SaiGameobjectHandlerService,

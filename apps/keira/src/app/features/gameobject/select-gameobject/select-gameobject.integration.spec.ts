@@ -6,11 +6,11 @@ import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-uti
 import { GameobjectTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { SelectGameobjectComponent } from './select-gameobject.component';
-import { SelectGameobjectModule } from './select-gameobject.module';
 import Spy = jasmine.Spy;
 import { instance } from 'ts-mockito';
 
@@ -30,7 +30,14 @@ describe('SelectGameobject integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectGameobjectModule, RouterTestingModule, TranslateTestingModule],
+      imports: [
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        SelectGameobjectComponent,
+        RouterTestingModule,
+        TranslateTestingModule,
+      ],
       providers: [
         GameobjectHandlerService,
         SaiGameobjectHandlerService,

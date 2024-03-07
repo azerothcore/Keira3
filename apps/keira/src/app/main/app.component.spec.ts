@@ -25,7 +25,6 @@ import {
   ModalConfirmComponent,
   MysqlService,
   QueryErrorComponent,
-  SwitchLanguageModule,
 } from '@keira/shared/core';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 
@@ -40,7 +39,6 @@ describe('AppComponent', () => {
         BrowserAnimationsModule,
         HttpClientTestingModule,
         ModalConfirmComponent,
-        SwitchLanguageModule,
         ToastrModule.forRoot(),
         TranslateTestingModule,
         MainWindowComponent,

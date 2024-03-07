@@ -4,7 +4,7 @@ import { MysqlQueryService, SqliteQueryService } from '@keira/shared/core';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { QuestOfferReward, QuestRequestItems, QuestTemplate, QuestTemplateAddon } from '@keira/shared/acore-world-model';
 import { ToastrModule } from 'ngx-toastr';
-import { QuestModule } from '../quest.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { QuestPreviewComponent } from './quest-preview.component';
 import { QUEST_FACTION_REWARD } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
@@ -115,7 +115,14 @@ describe('QuestPreviewComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), RouterTestingModule, QuestModule, TranslateTestingModule, QuestPreviewComponent],
+      imports: [
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        RouterTestingModule,
+        QuestPreviewComponent,
+        TranslateTestingModule,
+        QuestPreviewComponent,
+      ],
       providers: [{ provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG }],
     }).compileComponents();
   }));

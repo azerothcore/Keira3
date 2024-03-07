@@ -6,7 +6,6 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ClipboardService } from 'ngx-clipboard';
 import { of, throwError } from 'rxjs';
 import { SqlEditorComponent } from './sql-editor.component';
-import { SqlEditorModule } from './sql-editor.module';
 import Spy = jasmine.Spy;
 
 export class SqlEditorPage extends PageObject<SqlEditorComponent> {
@@ -37,7 +36,7 @@ describe('SqlEditorComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [TooltipModule.forRoot(), SqlEditorModule, TranslateTestingModule],
+      imports: [TooltipModule.forRoot(), SqlEditorComponent, TranslateTestingModule],
     }).compileComponents();
   }));
 

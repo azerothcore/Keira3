@@ -5,10 +5,10 @@ import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/
 import { GossipMenu } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { GossipHandlerService } from '../gossip-handler.service';
 import { GossipMenuComponent } from './gossip-menu.component';
-import { GossipMenuModule } from './gossip-menu.module';
 import Spy = jasmine.Spy;
 import { instance } from 'ts-mockito';
 
@@ -33,7 +33,14 @@ describe('GossipMenu integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), GossipMenuModule, RouterTestingModule, TranslateTestingModule],
+      imports: [
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        GossipMenuComponent,
+        RouterTestingModule,
+        TranslateTestingModule,
+      ],
       providers: [GossipHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));

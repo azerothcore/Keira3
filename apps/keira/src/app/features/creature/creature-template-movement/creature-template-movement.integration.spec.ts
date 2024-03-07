@@ -5,11 +5,11 @@ import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-uti
 import { CreatureTemplateMovement } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureTemplateMovementComponent } from './creature-template-movement.component';
-import { CreatureTemplateMovementModule } from './creature-template-movement.module';
 import Spy = jasmine.Spy;
 import { instance } from 'ts-mockito';
 
@@ -40,7 +40,14 @@ describe('CreatureTemplateMovement integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureTemplateMovementModule, RouterTestingModule, TranslateTestingModule],
+      imports: [
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        CreatureTemplateMovementComponent,
+        RouterTestingModule,
+        TranslateTestingModule,
+      ],
       providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));

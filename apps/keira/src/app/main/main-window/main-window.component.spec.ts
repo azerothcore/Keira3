@@ -16,13 +16,13 @@ import { SpellLootHandlerService } from '../../features/other-loots/spell-loot/s
 import { QuestHandlerService } from '../../features/quest/quest-handler.service';
 import { SpellHandlerService } from '../../features/spell/spell-handler.service';
 import { MainWindowComponent } from './main-window.component';
-import { MainWindowModule } from './main-window.module';
 import { ElectronService, MockedElectronService, MockedMysqlService, MysqlService } from '@keira/shared/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('MainWindowComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [MainWindowModule, RouterTestingModule, TranslateTestingModule],
+      imports: [BrowserAnimationsModule, MainWindowComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
         { provide: ElectronService, useValue: instance(MockedElectronService) },
         { provide: MysqlService, useValue: instance(MockedMysqlService) },

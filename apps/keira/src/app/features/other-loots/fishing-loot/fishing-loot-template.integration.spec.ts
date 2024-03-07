@@ -5,10 +5,10 @@ import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/
 import { FishingLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { FishingLootHandlerService } from './fishing-loot-handler.service';
 import { FishingLootTemplateComponent } from './fishing-loot-template.component';
-import { FishingLootTemplateModule } from './fishing-loot-template.module';
 import { instance } from 'ts-mockito';
 
 class FishingLootTemplatePage extends MultiRowEditorPageObject<FishingLootTemplateComponent> {}
@@ -26,7 +26,14 @@ describe('FishingLootTemplate integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), FishingLootTemplateModule, RouterTestingModule, TranslateTestingModule],
+      imports: [
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        FishingLootTemplateComponent,
+        RouterTestingModule,
+        TranslateTestingModule,
+      ],
       providers: [FishingLootHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));

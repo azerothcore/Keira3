@@ -6,9 +6,9 @@ import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-uti
 import { FishingLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { FishingLootHandlerService } from './fishing-loot-handler.service';
-import { FishingLootTemplateModule } from './fishing-loot-template.module';
 import { SelectFishingLootComponent } from './select-fishing-loot.component';
 import { SelectFishingLootService } from './select-fishing-loot.service';
 
@@ -21,7 +21,14 @@ describe('SelectFishingLoot integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), FishingLootTemplateModule, RouterTestingModule, TranslateTestingModule],
+      imports: [
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        SelectFishingLootComponent,
+        RouterTestingModule,
+        TranslateTestingModule,
+      ],
       providers: [FishingLootHandlerService],
     }).compileComponents();
   }));

@@ -5,11 +5,11 @@ import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/
 import { CreatureSpawn } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureSpawnComponent } from './creature-spawn.component';
-import { CreatureSpawnModule } from './creature-spawn.module';
 import Spy = jasmine.Spy;
 import { instance } from 'ts-mockito';
 
@@ -34,7 +34,14 @@ describe('CreatureSpawn integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureSpawnModule, RouterTestingModule, TranslateTestingModule],
+      imports: [
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        CreatureSpawnComponent,
+        RouterTestingModule,
+        TranslateTestingModule,
+      ],
       providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));

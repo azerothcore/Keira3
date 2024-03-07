@@ -9,7 +9,6 @@ import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemTemplateComponent } from './item-template.component';
-import { ItemTemplateModule } from './item-template.module';
 import { instance } from 'ts-mockito';
 
 class ItemTemplatePage extends EditorPageObject<ItemTemplateComponent> {
@@ -55,7 +54,7 @@ describe('ItemTemplate integration tests', () => {
       imports: [
         ToastrModule.forRoot(),
         ModalModule.forRoot(),
-        ItemTemplateModule,
+        ItemTemplateComponent,
         RouterTestingModule,
         TranslateTestingModule,
         HttpClientTestingModule,

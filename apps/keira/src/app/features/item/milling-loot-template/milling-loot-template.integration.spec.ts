@@ -5,10 +5,10 @@ import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/
 import { MillingLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { ItemHandlerService } from '../item-handler.service';
 import { MillingLootTemplateComponent } from './milling-loot-template.component';
-import { MillingLootTemplateModule } from './milling-loot-template.module';
 import Spy = jasmine.Spy;
 import { instance } from 'ts-mockito';
 
@@ -33,7 +33,14 @@ describe('MillingLootTemplate integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), MillingLootTemplateModule, RouterTestingModule, TranslateTestingModule],
+      imports: [
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        MillingLootTemplateComponent,
+        RouterTestingModule,
+        TranslateTestingModule,
+      ],
       providers: [ItemHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));

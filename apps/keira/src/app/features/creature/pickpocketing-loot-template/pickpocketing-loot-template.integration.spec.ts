@@ -9,7 +9,6 @@ import { of } from 'rxjs';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { PickpocketingLootTemplateComponent } from './pickpocketing-loot-template.component';
-import { PickpocketingLootTemplateModule } from './pickpocketing-loot-template.module';
 import { PickpocketingLootTemplateService } from './pickpocketing-loot-template.service';
 import Spy = jasmine.Spy;
 import { instance } from 'ts-mockito';
@@ -38,7 +37,7 @@ describe('PickpocketingLootTemplate integration tests', () => {
       imports: [
         ToastrModule.forRoot(),
         ModalModule.forRoot(),
-        PickpocketingLootTemplateModule,
+        PickpocketingLootTemplateComponent,
         RouterTestingModule,
         TranslateTestingModule,
       ],

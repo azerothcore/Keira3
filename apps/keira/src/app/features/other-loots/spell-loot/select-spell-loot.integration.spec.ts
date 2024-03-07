@@ -6,11 +6,11 @@ import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-uti
 import { SpellLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { SelectSpellLootComponent } from './select-spell-loot.component';
 import { SelectSpellLootService } from './select-spell-loot.service';
 import { SpellLootHandlerService } from './spell-loot-handler.service';
-import { SpellLootTemplateModule } from './spell-loot-template.module';
 
 class SelectSpellLootComponentPage extends SelectPageObject<SelectSpellLootComponent> {
   ID_FIELD = 'Entry';
@@ -21,7 +21,14 @@ describe('SelectSpellLoot integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SpellLootTemplateModule, RouterTestingModule, TranslateTestingModule],
+      imports: [
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        SelectSpellLootComponent,
+        RouterTestingModule,
+        TranslateTestingModule,
+      ],
       providers: [SpellLootHandlerService],
     }).compileComponents();
   }));

@@ -6,9 +6,9 @@ import { of, throwError } from 'rxjs';
 import { instance, reset } from 'ts-mockito';
 
 import { ConnectionWindowComponent } from './connection-window.component';
-import { ConnectionWindowModule } from './connection-window.module';
 import { ConnectionWindowService } from './connection-window.service';
 import { MockedMysqlService, MysqlService } from '@keira/shared/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 class ConnectionWindowComponentPage extends PageObject<ConnectionWindowComponent> {
   get hostInput(): HTMLInputElement {
@@ -85,7 +85,7 @@ describe('ConnectionWindowComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [TooltipModule.forRoot(), ConnectionWindowModule, TranslateTestingModule],
+      imports: [BrowserAnimationsModule, TooltipModule.forRoot(), ConnectionWindowComponent, TranslateTestingModule],
       providers: [
         { provide: MysqlService, useValue: instance(MockedMysqlService) },
         {
