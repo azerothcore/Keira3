@@ -8,8 +8,8 @@ import { SpellDbc } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SpellHandlerService } from '../../../spell-handler.service';
-import { SpellDbcModule } from '../../spell-dbc.module';
 import { SpellDbcService } from '../../spell-dbc.service';
 import { SpellDbcSpellEffectComponent } from './spell-dbc-spell-effect.component';
 import { SPELL_DBC_SPELL_EFFECT_FIELDS, SpellDbcSpellEffectFieldPrefix } from './spell-dbc-spell-effect.model';
@@ -31,7 +31,7 @@ describe('SpellDbcSpellEffectComponent', () => {
   @Component({
     template: '<keira-spell-dbc-spell-effect [formGroup]="form" [index]="index"></keira-spell-dbc-spell-effect>',
     standalone: true,
-    imports: [SpellDbcModule, RouterTestingModule, TranslateTestingModule, SpellDbcSpellEffectComponent],
+    imports: [RouterTestingModule, TranslateTestingModule, SpellDbcSpellEffectComponent],
   })
   class TestHostComponent {
     @ViewChild(SpellDbcSpellEffectComponent) child: SpellDbcSpellEffectComponent;
@@ -45,7 +45,6 @@ describe('SpellDbcSpellEffectComponent', () => {
         ModalModule.forRoot(),
         ToastrModule.forRoot(),
         TooltipModule.forRoot(),
-        SpellDbcModule,
         RouterTestingModule,
         TranslateTestingModule,
         TestHostComponent,

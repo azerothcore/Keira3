@@ -7,8 +7,8 @@ import { ModelForm } from '@keira/shared/core';
 import { SpellDbc } from '@keira/shared/acore-world-model';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SpellHandlerService } from '../../../spell-handler.service';
-import { SpellDbcModule } from '../../spell-dbc.module';
 import { SpellDbcService } from '../../spell-dbc.service';
 import { Locale, SPELL_DBC_TEXT_FIELDS, SpellDbcTextFieldPrefix } from '../spell-dbc-texts.model';
 import { SpellDbcLocaleComponent } from './spell-dbc-locale.component';
@@ -29,7 +29,7 @@ describe('SpellDbcLocaleComponent', () => {
   @Component({
     template: '<keira-spell-dbc-locale [formGroup]="form" [locale]="locale"></keira-spell-dbc-locale>',
     standalone: true,
-    imports: [SpellDbcModule, RouterTestingModule, TranslateTestingModule, SpellDbcLocaleComponent],
+    imports: [RouterTestingModule, TranslateTestingModule, SpellDbcLocaleComponent],
   })
   class TestHostComponent {
     @ViewChild(SpellDbcLocaleComponent) child: SpellDbcLocaleComponent;
@@ -42,7 +42,6 @@ describe('SpellDbcLocaleComponent', () => {
       imports: [
         ToastrModule.forRoot(),
         TooltipModule.forRoot(),
-        SpellDbcModule,
         RouterTestingModule,
         TranslateTestingModule,
         TestHostComponent,

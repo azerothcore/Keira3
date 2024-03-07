@@ -5,9 +5,9 @@ import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-uti
 import { SpellDbc } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { SpellHandlerService } from '../spell-handler.service';
-import { SpellModule } from '../spell.module';
 import { SpellDbcComponent } from './spell-dbc.component';
 import { LOCALES } from './texts/spell-dbc-texts.model';
 
@@ -25,7 +25,14 @@ describe('SpellDbc integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, SpellModule, TranslateTestingModule],
+      imports: [
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        RouterTestingModule,
+        SpellDbcComponent,
+        TranslateTestingModule,
+      ],
     }).compileComponents();
   }));
 

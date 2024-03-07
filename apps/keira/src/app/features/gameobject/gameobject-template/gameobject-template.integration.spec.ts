@@ -6,11 +6,11 @@ import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-uti
 import { GameobjectTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectTemplateComponent } from './gameobject-template.component';
-import { GameobjectTemplateModule } from './gameobject-template.module';
 import Spy = jasmine.Spy;
 import { instance } from 'ts-mockito';
 
@@ -45,7 +45,7 @@ describe('GameobjectTemplate integration tests', () => {
       imports: [
         ToastrModule.forRoot(),
         ModalModule.forRoot(),
-        GameobjectTemplateModule,
+        GameobjectTemplateComponent,
         RouterTestingModule,
         TranslateTestingModule,
         HttpClientTestingModule,

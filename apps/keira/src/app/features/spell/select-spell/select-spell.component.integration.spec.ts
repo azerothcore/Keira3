@@ -6,10 +6,10 @@ import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-uti
 import { SPELL_DBC_ID, SPELL_DBC_NAME, SpellDbc } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { SpellHandlerService } from '../spell-handler.service';
 import { SelectSpellComponent } from './select-spell.component';
-import { SelectSpellModule } from './select-spell.module';
 import { SelectSpellService } from './select-spell.service';
 import Spy = jasmine.Spy;
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
@@ -26,7 +26,7 @@ describe('SelectSpell integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectSpellModule, RouterTestingModule, TranslateTestingModule],
+      imports: [BrowserAnimationsModule, ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, TranslateTestingModule],
       providers: [SpellHandlerService, { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG }],
     }).compileComponents();
   }));

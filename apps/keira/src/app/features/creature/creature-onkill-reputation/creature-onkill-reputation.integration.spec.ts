@@ -5,11 +5,11 @@ import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-uti
 import { CreatureOnkillReputation } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureOnkillReputationComponent } from './creature-onkill-reputation.component';
-import { CreatureOnkillReputationModule } from './creature-onkill-reputation.module';
 import Spy = jasmine.Spy;
 import { instance } from 'ts-mockito';
 
@@ -35,7 +35,14 @@ describe('CreatureOnkillReputation integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureOnkillReputationModule, RouterTestingModule, TranslateTestingModule],
+      imports: [
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        CreatureOnkillReputationComponent,
+        RouterTestingModule,
+        TranslateTestingModule,
+      ],
       providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));

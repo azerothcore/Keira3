@@ -17,9 +17,9 @@ import { SpellLootHandlerService } from '../../../features/other-loots/spell-loo
 import { QuestHandlerService } from '../../../features/quest/quest-handler.service';
 import { SpellHandlerService } from '../../../features/spell/spell-handler.service';
 import { SidebarComponent } from './sidebar.component';
-import { SidebarModule } from './sidebar.module';
 import { SidebarService } from './sidebar.service';
 import { ElectronService, LocationService, MockedElectronService, MockedMysqlService, MysqlService } from '@keira/shared/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 class SidebarComponentPage extends PageObject<SidebarComponent> {
   get toggleSidebarBtn(): HTMLButtonElement {
@@ -36,7 +36,7 @@ class SidebarComponentPage extends PageObject<SidebarComponent> {
 describe('SidebarComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [SidebarModule, RouterTestingModule, TranslateTestingModule],
+      imports: [BrowserAnimationsModule, SidebarComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
         { provide: ElectronService, useValue: instance(MockedElectronService) },
         { provide: MysqlService, useValue: instance(MockedMysqlService) },

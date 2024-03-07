@@ -5,11 +5,11 @@ import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-uti
 import { QuestTemplateAddon } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { instance } from 'ts-mockito';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
-import { QuestModule } from '../quest.module';
 import { QuestTemplateAddonComponent } from './quest-template-addon.component';
 import Spy = jasmine.Spy;
 
@@ -50,7 +50,14 @@ describe('QuestTemplateAddon integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, QuestModule, TranslateTestingModule],
+      imports: [
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        RouterTestingModule,
+        QuestTemplateAddonComponent,
+        TranslateTestingModule,
+      ],
       providers: [{ provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));

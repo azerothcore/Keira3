@@ -6,10 +6,10 @@ import { MockedSqliteService, MysqlQueryService, SqliteQueryService, SqliteServi
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemTemplateComponent } from './item-template.component';
-import { ItemTemplateModule } from './item-template.module';
 import { instance } from 'ts-mockito';
 
 class ItemTemplatePage extends EditorPageObject<ItemTemplateComponent> {
@@ -55,7 +55,7 @@ describe('ItemTemplate integration tests', () => {
       imports: [
         ToastrModule.forRoot(),
         ModalModule.forRoot(),
-        ItemTemplateModule,
+        ItemTemplateComponent,
         RouterTestingModule,
         TranslateTestingModule,
         HttpClientTestingModule,

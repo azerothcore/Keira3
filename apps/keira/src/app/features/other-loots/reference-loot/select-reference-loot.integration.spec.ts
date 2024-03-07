@@ -6,9 +6,9 @@ import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-uti
 import { ReferenceLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { ReferenceLootHandlerService } from './reference-loot-handler.service';
-import { ReferenceLootTemplateModule } from './reference-loot-template.module';
 import { SelectReferenceLootComponent } from './select-reference-loot.component';
 import { SelectReferenceLootService } from './select-reference-loot.service';
 
@@ -21,7 +21,14 @@ describe('SelectReferenceLoot integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ReferenceLootTemplateModule, RouterTestingModule, TranslateTestingModule],
+      imports: [
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        SelectReferenceLootComponent,
+        RouterTestingModule,
+        TranslateTestingModule,
+      ],
       providers: [ReferenceLootHandlerService],
     }).compileComponents();
   }));

@@ -6,7 +6,6 @@ import { LootTemplate } from '@keira/shared/acore-world-model';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { of } from 'rxjs';
 import { ReferenceViewerComponent } from './reference-viewer.component';
-import { LootEditorModule } from './loot-editor.module';
 import { ReferenceViewerService } from './reference-viewer.service';
 import { MockedSqliteService } from '../../services/services.mock';
 import { SqliteService } from '../../services/sqlite.service';
@@ -31,7 +30,7 @@ class TestHostComponent {
 describe('ReferenceViewerComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [TooltipModule.forRoot(), LootEditorModule, TestHostComponent, ReferenceViewerComponent],
+      imports: [TooltipModule.forRoot(), TestHostComponent, ReferenceViewerComponent],
       providers: [{ provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));

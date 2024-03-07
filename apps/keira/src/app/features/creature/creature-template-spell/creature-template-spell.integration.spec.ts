@@ -5,9 +5,9 @@ import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/
 import { CreatureTemplateSpell } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { CreatureHandlerService } from '../creature-handler.service';
-import { CreatureModule } from '../creature.module';
 import { CreatureTemplateSpellComponent } from './creature-template-spell.component';
 import { instance } from 'ts-mockito';
 
@@ -18,7 +18,14 @@ describe('CreatureTemplateSpell integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, CreatureModule, TranslateTestingModule],
+      imports: [
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        RouterTestingModule,
+        CreatureTemplateSpellComponent,
+        TranslateTestingModule,
+      ],
       providers: [{ provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));

@@ -5,11 +5,11 @@ import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { FieldDefinition } from '@keira/shared/constants';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectTemplateComponent } from './gameobject-template.component';
-import { GameobjectTemplateModule } from './gameobject-template.module';
 import { GameobjectTemplateService } from './gameobject-template.service';
 import Spy = jasmine.Spy;
 
@@ -22,7 +22,7 @@ describe('GameobjectComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), ToastrModule.forRoot(), GameobjectTemplateModule, RouterTestingModule, TranslateTestingModule],
+      imports: [ModalModule.forRoot(), ToastrModule.forRoot(), GameobjectTemplateComponent, RouterTestingModule, TranslateTestingModule],
       providers: [GameobjectHandlerService, SaiGameobjectHandlerService],
     }).compileComponents();
   }));

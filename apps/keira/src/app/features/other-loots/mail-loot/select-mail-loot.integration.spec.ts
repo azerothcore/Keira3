@@ -6,9 +6,9 @@ import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-uti
 import { MailLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { MailLootHandlerService } from './mail-loot-handler.service';
-import { MailLootTemplateModule } from './mail-loot-template.module';
 import { SelectMailLootComponent } from './select-mail-loot.component';
 import { SelectMailLootService } from './select-mail-loot.service';
 
@@ -21,7 +21,14 @@ describe('SelectMailLoot integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), MailLootTemplateModule, RouterTestingModule, TranslateTestingModule],
+      imports: [
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        SelectMailLootComponent,
+        RouterTestingModule,
+        TranslateTestingModule,
+      ],
       providers: [MailLootHandlerService],
     }).compileComponents();
   }));

@@ -6,9 +6,9 @@ import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-uti
 import { Conditions } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { ConditionsHandlerService } from '../conditions-handler.service';
-import { ConditionsEditorModule } from './conditions-editor.module';
 import { ConditionsComponent } from './conditions.component';
 import Spy = jasmine.Spy;
 import { instance } from 'ts-mockito';
@@ -64,7 +64,14 @@ describe('Conditions integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ConditionsEditorModule, RouterTestingModule, TranslateTestingModule],
+      imports: [
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        ConditionsComponent,
+        RouterTestingModule,
+        TranslateTestingModule,
+      ],
       providers: [ConditionsHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));
