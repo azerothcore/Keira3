@@ -1,5 +1,4 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 
@@ -75,7 +74,7 @@ import { SpellDbcComponent } from './features/spell/spell-dbc/spell-dbc.componen
 import { GameobjectSpawnAddonComponent } from './features/gameobject/gameobject-spawn-addon/gameobject-spawn-addon.component';
 import { SaiHandlerService } from '@keira/shared/core';
 
-const routes: Routes = [
+export const KEIRA_ROUTES: Routes = [
   {
     path: '',
     component: DashboardComponent,
@@ -411,9 +410,3 @@ const routes: Routes = [
     ],
   },
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: true })],
-  exports: [RouterModule],
-})
-export class AppRoutingModule {}

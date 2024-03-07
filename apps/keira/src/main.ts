@@ -12,7 +12,6 @@ import { CreatureModule } from './app/features/creature/creature.module';
 import { SqlEditorModule } from './app/features/sql-editor/sql-editor.module';
 import { MainWindowModule } from './app/main/main-window/main-window.module';
 import { ConnectionWindowModule } from './app/main/connection-window/connection-window.module';
-import { AppRoutingModule } from './app/app-routing.module';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { UiSwitchModule } from 'ngx-ui-switch';
@@ -25,6 +24,8 @@ import { withInterceptorsFromDi, provideHttpClient, HttpClient } from '@angular/
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { KEIRA_APP_CONFIG_TOKEN, highlightOptions, toastrConfig, uiSwitchConfig } from '@keira/shared/config';
+import { provideRouter, RouterHashLocationFeature, withHashLocation } from '@angular/router';
+import { KEIRA_ROUTES } from './app/routes';
 
 if (KEIRA_APP_CONFIG.production) {
   enableProdMode();
@@ -36,6 +37,7 @@ export function createTranslateLoader(http: HttpClient) {
 
 bootstrapApplication(AppComponent, {
   providers: [
+    provideRouter(KEIRA_ROUTES, withHashLocation()),
     importProvidersFrom(
       BrowserModule,
       /* Libraries */
@@ -54,7 +56,6 @@ bootstrapApplication(AppComponent, {
         defaultLanguage: 'en',
       }),
       /* Misc */
-      AppRoutingModule,
       ConnectionWindowModule,
       MainWindowModule,
       /* Editors */
