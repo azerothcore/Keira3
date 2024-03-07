@@ -8,7 +8,8 @@ import { IconComponent } from './icon.component';
 import { IconModule } from './icon.module';
 import { IconService } from './icon.service';
 import Spy = jasmine.Spy;
-import { MockedSqliteService, SqliteService } from '@keira/shared/core';
+import { MockedSqliteService } from '../../services/services.mock';
+import { SqliteService } from '../../services/sqlite.service';
 import { instance } from 'ts-mockito';
 
 @Component({

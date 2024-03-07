@@ -8,7 +8,7 @@ import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { HolidaySearchService } from '../../search/holiday-search.service';
 import { HolidaySelectorModule } from './holiday-selector.module';
 import { MockedMysqlQueryService, MockedSqliteService } from '../../../services/services.mock';
-import { SqliteService } from '@keira/shared/core';
+import { SqliteService } from '../../../services/sqlite.service';
 
 describe('HolidaySelectorModalComponent', () => {
   let component: HolidaySelectorModalComponent;

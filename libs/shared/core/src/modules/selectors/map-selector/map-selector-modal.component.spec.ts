@@ -8,7 +8,7 @@ import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { MapSearchService } from '../../search/map-search.service';
 import { MapSelectorModule } from './map-selector.module';
 import { MockedMysqlQueryService, MockedSqliteService } from '../../../services/services.mock';
-import { SqliteService } from '@keira/shared/core';
+import { SqliteService } from '../../../services/sqlite.service';
 
 describe('MapSelectorModalComponent', () => {
   let component: MapSelectorModalComponent;

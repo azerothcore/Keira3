@@ -8,7 +8,7 @@ import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { FactionSearchService } from '../../search/faction-search.service';
 import { FactionSelectorModule } from './faction-selector.module';
 import { MockedMysqlQueryService, MockedSqliteService } from '../../../services/services.mock';
-import { SqliteService } from '@keira/shared/core';
+import { SqliteService } from '../../../services/sqlite.service';
 
 describe('FactionSelectorModalComponent', () => {
   let component: FactionSelectorModalComponent;

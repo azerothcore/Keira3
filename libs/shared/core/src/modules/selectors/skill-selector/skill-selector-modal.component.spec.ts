@@ -8,7 +8,7 @@ import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { SkillSearchService } from '../../search/skill-search.service';
 import { SkillSelectorModule } from './skill-selector.module';
 import { MockedMysqlQueryService, MockedSqliteService } from '../../../services/services.mock';
-import { SqliteService } from '@keira/shared/core';
+import { SqliteService } from '../../../services/sqlite.service';
 
 describe('SkillSelectorModalComponent', () => {
   let component: SkillSelectorModalComponent;

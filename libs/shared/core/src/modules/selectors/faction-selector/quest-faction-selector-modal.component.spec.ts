@@ -8,7 +8,7 @@ import { FactionSearchService } from '../../search/faction-search.service';
 import { FactionSelectorModule } from './faction-selector.module';
 import { QuestFactionSelectorModalComponent } from './quest-faction-selector-modal.component';
 import { MockedMysqlQueryService, MockedSqliteService } from '../../../services/services.mock';
-import { SqliteService } from '@keira/shared/core';
+import { SqliteService } from '../../../services/sqlite.service';
 
 describe('QuestFactionSelectorModalComponent', () => {
   function setup() {

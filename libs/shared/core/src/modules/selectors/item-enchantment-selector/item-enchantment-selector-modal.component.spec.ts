@@ -8,7 +8,7 @@ import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ItemEnchantmentSearchService } from '../../search/item-enchantment-search.service';
 import { ItemEnchantmentSelectorModule } from './item-enchantment-selector.module';
 import { MockedMysqlQueryService, MockedSqliteService } from '../../../services/services.mock';
-import { SqliteService } from '@keira/shared/core';
+import { SqliteService } from '../../../services/sqlite.service';
 
 describe('ItemEnchantmentSelectorModalComponent', () => {
   let component: ItemEnchantmentSelectorModalComponent;

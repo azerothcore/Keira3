@@ -5,7 +5,7 @@ import { instance } from 'ts-mockito';
 import { SkillSearchService } from './skill-search.service';
 import { SqliteQueryService } from '../../services/query/sqlite-query.service';
 import { MockedSqliteQueryService, MockedSqliteService } from '../../services/services.mock';
-import { SqliteService } from '@keira/shared/core';
+import { SqliteService } from '../../services/sqlite.service';
 
 describe('SkillSearchService', () => {
   beforeEach(() =>

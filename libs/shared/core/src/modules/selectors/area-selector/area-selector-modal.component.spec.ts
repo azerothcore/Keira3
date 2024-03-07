@@ -8,7 +8,7 @@ import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { AreaSearchService } from '../../search/area-search.service';
 import { AreaSelectorModule } from './area-selector.module';
 import { MockedMysqlQueryService, MockedSqliteService } from '../../../services/services.mock';
-import { SqliteService } from '@keira/shared/core';
+import { SqliteService } from '../../../services/sqlite.service';
 
 describe('AreaSelectorModalComponent', () => {
   let component: AreaSelectorModalComponent;

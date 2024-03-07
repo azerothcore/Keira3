@@ -8,7 +8,7 @@ import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ItemLimitCategorySearchService } from '../../search/item-limit-category-search.service';
 import { ItemLimitCategorySelectorModule } from './item-limit-category-selector.module';
 import { MockedMysqlQueryService, MockedSqliteService } from '../../../services/services.mock';
-import { SqliteService } from '@keira/shared/core';
+import { SqliteService } from '../../../services/sqlite.service';
 
 describe('ItemLimitCategorySelectorModalComponent', () => {
   let component: ItemLimitCategorySelectorModalComponent;

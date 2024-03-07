@@ -8,7 +8,7 @@ import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ItemExtendedCostSearchService } from '../../search/item-extended-cost-search.service';
 import { ItemExtendedCostSelectorModule } from './item-extended-cost-selector.module';
 import { MockedMysqlQueryService, MockedSqliteService } from '../../../services/services.mock';
-import { SqliteService } from '@keira/shared/core';
+import { SqliteService } from '../../../services/sqlite.service';
 
 describe('ItemExtendedCostSelectorModalComponent', () => {
   let component: ItemExtendedCostSelectorModalComponent;

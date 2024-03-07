@@ -5,8 +5,6 @@ import { ToastrModule } from 'ngx-toastr';
 import { SaiEditorComponent } from './sai-editor.component';
 import { SaiEditorModule } from './sai-editor.module';
 import { SaiHandlerService } from './sai-handler.service';
-import { MockedSqliteService, SqliteService } from '@keira/shared/core';
-import { instance } from 'ts-mockito';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 
 describe('SaiEditorComponent', () => {

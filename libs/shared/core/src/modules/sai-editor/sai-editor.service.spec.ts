@@ -8,7 +8,7 @@ import { MysqlQueryService } from '../../services/query/mysql-query.service';
 import { SaiEditorService } from './sai-editor.service';
 import { SaiHandlerService } from './sai-handler.service';
 import { MockedMysqlQueryService, MockedSqliteService, MockedToastrService } from '../../services/services.mock';
-import { SqliteService } from '@keira/shared/core';
+import { SqliteService } from '../../services/sqlite.service';
 
 describe('SAI Editor Service', () => {
   let service: SaiEditorService;
