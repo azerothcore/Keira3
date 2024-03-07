@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 
-import { AppConfig } from '../../../environments/environment';
+import { KEIRA_APP_CONFIG } from '../../../environments/environment';
 import { CONTENT_WOTLK, WoWModel } from './model-3d-viewer.model';
 
 declare const ZamModelViewer: any;
@@ -160,7 +160,7 @@ export async function generateModels(
 export function getShadowlandDisplayId(wotlkDisplayId: number): Promise<{ displayId: number; displayType: number }> {
   return new Promise(function (resolve, reject) {
     const sqlite = window.require('sqlite3');
-    const db = new sqlite.Database(AppConfig.sqliteItem3dPath, sqlite.OPEN_READONLY, (error) => {
+    const db = new sqlite.Database(KEIRA_APP_CONFIG.sqliteItem3dPath, sqlite.OPEN_READONLY, (error) => {
       if (error) {
         console.log(`Error when opening sqlite database at DISPLAY ID`);
         console.error(error);
