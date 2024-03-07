@@ -10,11 +10,12 @@ import { EditorService } from '../../abstract/service/editors/editor.service';
 import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-wrapper.component';
 import { QueryErrorComponent } from './query-error/query-error.component';
 import { QueryOutputComponent } from './query-output.component';
-import { HighlightjsWrapperModule } from '../highlightjs-wrapper/highlightjs-wrapper.module';
 import { MockType } from '../../services/services.mock';
 
 @Component({
   template: `<keira-query-output [editorService]="editorService"></keira-query-output>`,
+  standalone: true,
+  imports: [FormsModule, TranslateTestingModule, QueryOutputComponent],
 })
 class TestHostComponent {
   @ViewChild(QueryOutputComponent) child: QueryOutputComponent<MockType>;
@@ -28,8 +29,17 @@ describe('QueryOutputComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [TestHostComponent, QueryOutputComponent, HighlightjsWrapperComponent, QueryErrorComponent],
-      imports: [BrowserModule, FormsModule, HighlightjsWrapperModule, ModalModule.forRoot(), TranslateTestingModule],
+      imports: [
+        BrowserModule,
+        FormsModule,
+        HighlightjsWrapperComponent,
+        ModalModule.forRoot(),
+        TranslateTestingModule,
+        TestHostComponent,
+        QueryOutputComponent,
+        HighlightjsWrapperComponent,
+        QueryErrorComponent,
+      ],
     }).compileComponents();
   }));
 

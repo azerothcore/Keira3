@@ -4,12 +4,18 @@ import { AC_DISCORD_URL, KEIRA3_REPO_URL, PAYPAL_DONATE_URL, VersionRow } from '
 import { ConfigService, MysqlQueryService, MysqlService, SubscriptionHandler } from '@keira/shared/core';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import packageInfo from '../../../../../../package.json';
+import { FormsModule } from '@angular/forms';
+import { ClipboardModule } from 'ngx-clipboard';
+import { NgIf } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-home',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
+  standalone: true,
+  imports: [TranslateModule, NgIf, ClipboardModule, FormsModule],
 })
 export class DashboardComponent extends SubscriptionHandler implements OnInit {
   protected coreVersions: VersionRow;

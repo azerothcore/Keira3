@@ -6,7 +6,6 @@ import { QuestSelectorModalComponent } from './quest-selector-modal.component';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { QuestSearchService } from '../../search/quest-search.service';
-import { QuestSelectorModule } from './quest-selector.module';
 import { MockedMysqlQueryService } from '../../../services/services.mock';
 
 describe('QuestSelectorModalComponent', () => {
@@ -16,7 +15,7 @@ describe('QuestSelectorModalComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [QuestSelectorModule, TranslateTestingModule],
+      imports: [QuestSelectorModalComponent, TranslateTestingModule],
       providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
     }).compileComponents();
   }));

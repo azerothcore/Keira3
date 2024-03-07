@@ -8,12 +8,41 @@ import { WIKI_BASE_URL } from '@keira/shared/constants';
 import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
 import { MultiRowEditorService } from '../../abstract/service/editors/multi-row-editor.service';
 import { compareObjFn } from '../../utils/helpers';
+import { TranslateModule } from '@ngx-translate/core';
+import { ReferenceViewerComponent } from './reference-viewer.component';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { EditorButtonsComponent } from '../editor-buttons/editor-buttons.component';
+import { FlagsSelectorBtnComponent } from '../selectors/flags-selector/flags-selector-btn.component';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ItemSelectorBtnComponent } from '../selectors/item-selector/item-selector-btn.component';
+import { IconComponent } from '../icon/icon.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { QueryOutputComponent } from '../query-output/query-output.component';
+import { NgIf, NgClass, NgFor, AsyncPipe } from '@angular/common';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-loot-editor',
   templateUrl: './loot-editor.component.html',
   styleUrls: ['./loot-editor.component.scss'],
+  standalone: true,
+  imports: [
+    NgIf,
+    QueryOutputComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    IconComponent,
+    ItemSelectorBtnComponent,
+    TooltipModule,
+    FlagsSelectorBtnComponent,
+    EditorButtonsComponent,
+    NgxDatatableModule,
+    NgClass,
+    NgFor,
+    ReferenceViewerComponent,
+    AsyncPipe,
+    TranslateModule,
+  ],
 })
 export class LootEditorComponent<T extends LootTemplate> extends SubscriptionHandler implements OnInit {
   @Input() editorService: MultiRowEditorService<T>;

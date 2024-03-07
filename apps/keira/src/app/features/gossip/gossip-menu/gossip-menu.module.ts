@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { EditorButtonsModule, NpcTextSelectorModule, QueryOutputModule, TopBarModule } from '@keira/shared/core';
+
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -10,19 +10,7 @@ import { GossipMenuComponent } from './gossip-menu.component';
 import { GossipMenuService } from './gossip-menu.service';
 
 @NgModule({
-  declarations: [GossipMenuComponent],
-  imports: [
-    BrowserModule,
-    ReactiveFormsModule,
-    TopBarModule,
-    QueryOutputModule,
-    TooltipModule,
-    ToastrModule,
-    NgxDatatableModule,
-    EditorButtonsModule,
-    NpcTextSelectorModule,
-    TranslateModule,
-  ],
+  imports: [BrowserModule, ReactiveFormsModule, TooltipModule, ToastrModule, NgxDatatableModule, TranslateModule, GossipMenuComponent],
   exports: [GossipMenuComponent],
   providers: [GossipMenuService],
 })

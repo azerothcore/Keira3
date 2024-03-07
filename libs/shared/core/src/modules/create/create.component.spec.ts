@@ -36,8 +36,7 @@ describe('CreateComponent', () => {
     spyError = spyOn(console, 'error');
 
     TestBed.configureTestingModule({
-      declarations: [CreateComponent],
-      imports: [BrowserModule, FormsModule, TranslateTestingModule],
+      imports: [BrowserModule, FormsModule, TranslateTestingModule, CreateComponent],
     }).compileComponents();
   }));
 

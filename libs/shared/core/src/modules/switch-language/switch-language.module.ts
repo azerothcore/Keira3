@@ -6,8 +6,7 @@ import { SwitchLanguageComponent } from './switch-language.component';
 import { SwitchLanguageService } from './switch-language.service';
 
 @NgModule({
-  declarations: [SwitchLanguageComponent],
-  imports: [BrowserModule, FormsModule, TranslateModule],
+  imports: [BrowserModule, FormsModule, TranslateModule, SwitchLanguageComponent],
   providers: [SwitchLanguageService],
   exports: [SwitchLanguageComponent],
 })

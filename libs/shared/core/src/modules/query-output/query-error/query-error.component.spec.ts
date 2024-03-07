@@ -7,7 +7,7 @@ describe('QueryErrorComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [QueryErrorComponent],
+      imports: [QueryErrorComponent],
     }).compileComponents();
   }));
 

@@ -7,11 +7,20 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { LogoutBtnComponent } from './logout-btn/logout-btn.component';
 import { SidebarComponent } from './sidebar.component';
 import { UnsavedIconComponent } from './unsaved-icon/unsaved-icon.component';
-import { ModalConfirmModule, SwitchLanguageModule } from '@keira/shared/core';
+import { SwitchLanguageModule } from '@keira/shared/core';
 
 @NgModule({
-  declarations: [SidebarComponent, LogoutBtnComponent, UnsavedIconComponent],
-  imports: [RouterModule, BrowserAnimationsModule, ModalModule, ModalConfirmModule, TooltipModule, TranslateModule, SwitchLanguageModule],
+  imports: [
+    RouterModule,
+    BrowserAnimationsModule,
+    ModalModule,
+    TooltipModule,
+    TranslateModule,
+    SwitchLanguageModule,
+    SidebarComponent,
+    LogoutBtnComponent,
+    UnsavedIconComponent,
+  ],
   exports: [SidebarComponent],
 })
 export class SidebarModule {}

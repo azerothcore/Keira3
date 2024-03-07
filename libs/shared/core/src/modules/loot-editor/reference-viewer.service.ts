@@ -4,7 +4,9 @@ import { ReferenceLootTemplate } from '@keira/shared/acore-world-model';
 import { Observable } from 'rxjs';
 import { MysqlQueryService } from '../../services/query/mysql-query.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class ReferenceViewerService {
   constructor(public queryService: MysqlQueryService) {}
 

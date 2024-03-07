@@ -2,21 +2,7 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {
-  CreatureSelectorModule,
-  EditorButtonsModule,
-  FactionSelectorModule,
-  FlagsSelectorModule,
-  GameobjectSelectorModule,
-  IconModule,
-  ItemSelectorModule,
-  QueryOutputModule,
-  QuestSelectorModule,
-  SingleValueSelectorModule,
-  SkillSelectorModule,
-  SpellSelectorModule,
-  TopBarModule,
-} from '@keira/shared/core';
+
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
@@ -56,31 +42,18 @@ const components = [
 ];
 
 @NgModule({
-  declarations: components,
   exports: components,
   imports: [
     SelectQuestModule,
     BrowserModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
-    TopBarModule,
-    QueryOutputModule,
     NgxDatatableModule,
     TooltipModule,
     ToastrModule,
-    EditorButtonsModule,
-    CreatureSelectorModule,
-    GameobjectSelectorModule,
-    FlagsSelectorModule,
-    SingleValueSelectorModule,
-    SpellSelectorModule,
-    FactionSelectorModule,
-    SkillSelectorModule,
-    QuestSelectorModule,
-    ItemSelectorModule,
-    IconModule,
     CollapseModule,
     TranslateModule,
+    ...components,
   ],
   providers: [
     QuestHandlerService,

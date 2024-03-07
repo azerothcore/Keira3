@@ -5,7 +5,6 @@ import { VersionDbRow, VersionRow } from '@keira/shared/constants';
 import { of, throwError } from 'rxjs';
 import { anyString, instance, when } from 'ts-mockito';
 import { DashboardComponent } from './dashboard.component';
-import { DashboardModule } from './dashboard.module';
 
 class DashboardComponentPage extends PageObject<DashboardComponent> {
   get coreVersion(): HTMLTableCellElement {
@@ -53,7 +52,7 @@ describe('DashboardComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [DashboardModule, TranslateTestingModule],
+      imports: [DashboardComponent, TranslateTestingModule],
       providers: [{ provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
     }).compileComponents();
   }));

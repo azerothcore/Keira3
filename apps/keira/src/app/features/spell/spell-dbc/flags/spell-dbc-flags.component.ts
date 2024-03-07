@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   SPELL_DBC_ATTRIBUTES_FLAGS,
   SPELL_DBC_AURA_INTERRUPT_FLAGS,
@@ -11,11 +11,17 @@ import {
   SpellDbc,
 } from '@keira/shared/acore-world-model';
 import { ModelForm } from '@keira/shared/core';
+import { NgFor } from '@angular/common';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { FlagsSelectorBtnComponent } from '@keira/shared/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-dbc-flags',
   templateUrl: './spell-dbc-flags.component.html',
+  standalone: true,
+  imports: [FormsModule, ReactiveFormsModule, TranslateModule, FlagsSelectorBtnComponent, TooltipModule, NgFor],
 })
 export class SpellDbcFlagsComponent {
   readonly SPELL_DBC_ATTRIBUTES_FLAGS = SPELL_DBC_ATTRIBUTES_FLAGS;

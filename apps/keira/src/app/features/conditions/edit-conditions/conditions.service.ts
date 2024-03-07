@@ -4,7 +4,9 @@ import { Conditions, CONDITIONS_ID_FIELDS, CONDITIONS_TABLE } from '@keira/share
 import { ToastrService } from 'ngx-toastr';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class ConditionsService extends SingleRowComplexKeyEditorService<Conditions> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

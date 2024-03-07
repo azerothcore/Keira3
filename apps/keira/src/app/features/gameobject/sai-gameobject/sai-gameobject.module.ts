@@ -1,14 +1,7 @@
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import {
-  EditorButtonsModule,
-  FlagsSelectorModule,
-  QueryOutputModule,
-  SaiEditorModule,
-  SingleValueSelectorModule,
-  TopBarModule,
-} from '@keira/shared/core';
+import { SaiEditorModule } from '@keira/shared/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -17,20 +10,15 @@ import { SaiGameobjectEditorService } from './sai-gameobject-editor.service';
 import { SaiGameobjectComponent } from './sai-gameobject.component';
 
 @NgModule({
-  declarations: [SaiGameobjectComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
-    TopBarModule,
-    QueryOutputModule,
     TooltipModule,
     ToastrModule,
     NgxDatatableModule,
-    FlagsSelectorModule,
-    SingleValueSelectorModule,
     SaiEditorModule,
-    EditorButtonsModule,
     TranslateModule,
+    SaiGameobjectComponent,
   ],
   exports: [SaiGameobjectComponent],
   providers: [SaiGameobjectEditorService],

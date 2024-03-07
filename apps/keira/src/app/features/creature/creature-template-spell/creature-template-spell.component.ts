@@ -3,11 +3,31 @@ import { MultiRowEditorComponent } from '@keira/shared/core';
 import { CREATURE_TEMPLATE_SPELL_TABLE, CreatureTemplateSpell } from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateSpellService } from './creature-template-spell.service';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { EditorButtonsComponent } from '@keira/shared/core';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { QueryOutputComponent } from '@keira/shared/core';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgIf } from '@angular/common';
+import { TopBarComponent } from '@keira/shared/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-template-spell',
   templateUrl: './creature-template-spell.component.html',
+  standalone: true,
+  imports: [
+    TopBarComponent,
+    NgIf,
+    TranslateModule,
+    QueryOutputComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    TooltipModule,
+    EditorButtonsComponent,
+    NgxDatatableModule,
+  ],
 })
 export class CreatureTemplateSpellComponent extends MultiRowEditorComponent<CreatureTemplateSpell> {
   public get docUrl(): string {

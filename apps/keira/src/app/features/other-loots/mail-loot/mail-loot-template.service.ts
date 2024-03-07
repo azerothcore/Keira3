@@ -4,7 +4,9 @@ import { LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, MAIL_LOOT_TEMPLATE_TABLE, MailLoo
 import { ToastrService } from 'ngx-toastr';
 import { MailLootHandlerService } from './mail-loot-handler.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class MailLootTemplateService extends MultiRowEditorService<MailLootTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

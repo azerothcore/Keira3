@@ -9,7 +9,6 @@ import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 import { SelectConditionsComponent } from './select-conditions.component';
-import { SelectConditionsModule } from './select-conditions.module';
 import Spy = jasmine.Spy;
 import { instance } from 'ts-mockito';
 
@@ -47,7 +46,7 @@ describe('SelectConditions integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectConditionsModule, RouterTestingModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectConditionsComponent, RouterTestingModule, TranslateTestingModule],
       providers: [ConditionsHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));

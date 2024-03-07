@@ -4,7 +4,9 @@ import { GAMEOBJECT_TEMPLATE_ADDON_ID, GAMEOBJECT_TEMPLATE_ADDON_TABLE, Gameobje
 import { ToastrService } from 'ngx-toastr';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class GameobjectTemplateAddonService extends SingleRowEditorService<GameobjectTemplateAddon> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

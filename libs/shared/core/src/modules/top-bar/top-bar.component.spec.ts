@@ -3,11 +3,12 @@ import { TestBed } from '@angular/core/testing';
 
 import { PageObject } from '@keira/shared/test-utils';
 import { TopBarComponent } from './top-bar.component';
-import { TopBarModule } from './top-bar.module';
 
 describe(TopBarComponent.name, () => {
   @Component({
     template: ` <keira-top-bar [selected]="selected" [selectedName]="selectedName" [isNew]="isNew"></keira-top-bar> `,
+    standalone: true,
+    imports: [TopBarComponent],
   })
   class TestHostComponent {
     @ViewChild(TopBarComponent) child: TopBarComponent;
@@ -28,8 +29,7 @@ describe(TopBarComponent.name, () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [TestHostComponent],
-      imports: [TopBarModule],
+      imports: [TopBarComponent, TestHostComponent],
     }).compileComponents();
   });
 

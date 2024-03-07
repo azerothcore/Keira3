@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { HolidaySelectorBtnComponent } from './holiday-selector-btn.component';
-import { HolidaySelectorModule } from './holiday-selector.module';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
 describe('HolidaySelectorBtnComponent', () => {
@@ -10,7 +9,7 @@ describe('HolidaySelectorBtnComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), HolidaySelectorModule],
+      imports: [ModalModule.forRoot(), HolidaySelectorBtnComponent],
     }).compileComponents();
   }));
 

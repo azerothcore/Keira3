@@ -30,13 +30,59 @@ import { ItemHandlerService } from '../item-handler.service';
 import { SPELL_TRIGGERS } from './item-constants';
 import { ItemPreviewService } from './item-preview.service';
 import { ItemTemplateService } from './item-template.service';
+import { Model3DViewerComponent } from '../../model-3d-viewer/model-3d-viewer.component';
+import { IconComponent } from '@keira/shared/core';
+import { ItemEnchantmentSelectorBtnComponent } from '@keira/shared/core';
+import { HolidaySelectorBtnComponent } from '@keira/shared/core';
+import { AreaSelectorBtnComponent } from '@keira/shared/core';
+import { MapSelectorBtnComponent } from '@keira/shared/core';
+import { FactionSelectorBtnComponent } from '@keira/shared/core';
+import { SpellSelectorBtnComponent } from '@keira/shared/core';
+import { SkillSelectorBtnComponent } from '@keira/shared/core';
+import { LanguageSelectorBtnComponent } from '@keira/shared/core';
+import { ItemLimitCategorySelectorBtnComponent } from '@keira/shared/core';
+import { FlagsSelectorBtnComponent } from '@keira/shared/core';
+import { QuestSelectorBtnComponent } from '@keira/shared/core';
+import { SingleValueSelectorBtnComponent } from '@keira/shared/core';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { QueryOutputComponent } from '@keira/shared/core';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgClass, NgIf, NgFor } from '@angular/common';
+import { TopBarComponent } from '@keira/shared/core';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'keira-item-template',
   templateUrl: './item-template.component.html',
   styleUrls: ['./item-template.component.scss'],
+  standalone: true,
+  imports: [
+    TopBarComponent,
+    NgClass,
+    NgIf,
+    TranslateModule,
+    QueryOutputComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    TooltipModule,
+    SingleValueSelectorBtnComponent,
+    QuestSelectorBtnComponent,
+    FlagsSelectorBtnComponent,
+    ItemLimitCategorySelectorBtnComponent,
+    LanguageSelectorBtnComponent,
+    SkillSelectorBtnComponent,
+    SpellSelectorBtnComponent,
+    FactionSelectorBtnComponent,
+    MapSelectorBtnComponent,
+    AreaSelectorBtnComponent,
+    HolidaySelectorBtnComponent,
+    NgFor,
+    ItemEnchantmentSelectorBtnComponent,
+    IconComponent,
+    Model3DViewerComponent,
+  ],
 })
 export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate> implements OnInit {
   readonly ITEM_CLASS = ITEM_CLASS;

@@ -3,7 +3,9 @@ import { Router } from '@angular/router';
 import { HandlerService } from '@keira/shared/core';
 import { MAIL_LOOT_TEMPLATE_TABLE, MailLootTemplate } from '@keira/shared/acore-world-model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class MailLootHandlerService extends HandlerService<MailLootTemplate> {
   get isUnsaved(): boolean {
     return this.statusMap[MAIL_LOOT_TEMPLATE_TABLE];

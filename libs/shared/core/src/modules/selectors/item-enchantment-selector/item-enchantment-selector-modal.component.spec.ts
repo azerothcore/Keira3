@@ -6,7 +6,6 @@ import { ItemEnchantmentSelectorModalComponent } from './item-enchantment-select
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ItemEnchantmentSearchService } from '../../search/item-enchantment-search.service';
-import { ItemEnchantmentSelectorModule } from './item-enchantment-selector.module';
 import { MockedMysqlQueryService, MockedSqliteService } from '../../../services/services.mock';
 import { SqliteService } from '../../../services/sqlite.service';
 
@@ -17,7 +16,7 @@ describe('ItemEnchantmentSelectorModalComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ItemEnchantmentSelectorModule, TranslateTestingModule],
+      imports: [ItemEnchantmentSelectorModalComponent, TranslateTestingModule],
       providers: [
         BsModalRef,
         { provide: SqliteService, useValue: instance(MockedSqliteService) },

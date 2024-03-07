@@ -9,8 +9,7 @@ import { CONTENT_WOTLK, MODEL_TYPE, VIEWER_TYPE } from './model-3d-viewer.model'
 describe('Model3DViewerComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [Model3DViewerComponent],
-      imports: [ModalModule.forRoot(), HttpClientTestingModule],
+      imports: [ModalModule.forRoot(), HttpClientTestingModule, Model3DViewerComponent],
     }).compileComponents();
   }));
 

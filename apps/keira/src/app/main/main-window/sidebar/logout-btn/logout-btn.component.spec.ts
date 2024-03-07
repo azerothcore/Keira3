@@ -1,4 +1,3 @@
-import { NgModule } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 
 import { Spied, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -8,17 +7,10 @@ import { LogoutBtnComponent } from './logout-btn.component';
 import { LocationService, ModalConfirmComponent } from '@keira/shared/core';
 import Spy = jasmine.Spy;
 
-@NgModule({
-  declarations: [ModalConfirmComponent],
-  imports: [],
-})
-class TestModule {}
-
 describe('LogoutBtnComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [LogoutBtnComponent],
-      imports: [ModalModule.forRoot(), TestModule, TranslateTestingModule],
+      imports: [ModalModule.forRoot(), LogoutBtnComponent, ModalConfirmComponent, TranslateTestingModule],
       providers: [
         {
           provide: ConnectionWindowService,

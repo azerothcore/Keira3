@@ -10,11 +10,10 @@ import { instance } from 'ts-mockito';
 import { MysqlService } from '../../../services/mysql.service';
 import { ItemSelectorBtnComponent } from '../item-selector/item-selector-btn.component';
 import { ItemSelectorModalComponent } from '../item-selector/item-selector-modal.component';
-import { HighlightjsWrapperModule } from '../../highlightjs-wrapper/highlightjs-wrapper.module';
 import { MockedMysqlService } from '../../../services/services.mock';
+import { HighlightjsWrapperComponent } from '../../highlightjs-wrapper/highlightjs-wrapper.component';
 
 @NgModule({
-  declarations: [ItemSelectorModalComponent],
   imports: [
     ModalModule.forRoot(),
     CommonModule,
@@ -22,8 +21,9 @@ import { MockedMysqlService } from '../../../services/services.mock';
     FormsModule,
     ReactiveFormsModule,
     NgxDatatableModule,
-    HighlightjsWrapperModule,
+    HighlightjsWrapperComponent,
     TranslateTestingModule,
+    ItemSelectorModalComponent,
   ],
   providers: [{ provide: MysqlService, useValue: instance(MockedMysqlService) }],
 })
@@ -34,8 +34,7 @@ describe('BaseSelectorBtnComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ItemSelectorBtnComponent],
-      imports: [ModalModule.forRoot(), TestModule],
+      imports: [ModalModule.forRoot(), TestModule, ItemSelectorBtnComponent],
     }).compileComponents();
   }));
 

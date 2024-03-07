@@ -4,12 +4,17 @@ import { HandlerService } from '../../abstract/service/handlers/handler.service'
 import { MysqlQueryService } from '../../services/query/mysql-query.service';
 import { TableRow } from '@keira/shared/constants';
 import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
+import { NgClass } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-create',
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss'],
+  standalone: true,
+  imports: [TranslateModule, FormsModule, NgClass],
 })
 export class CreateComponent<T extends TableRow> extends SubscriptionHandler implements OnInit {
   @Input() entityTable: string;

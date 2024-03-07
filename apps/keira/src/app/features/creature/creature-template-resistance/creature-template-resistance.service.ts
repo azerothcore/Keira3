@@ -9,7 +9,9 @@ import {
 import { ToastrService } from 'ngx-toastr';
 import { CreatureHandlerService } from '../creature-handler.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class CreatureTemplateResistanceService extends MultiRowEditorService<CreatureTemplateResistance> {
   FIRST_ROW_START_VALUE = 1;
 

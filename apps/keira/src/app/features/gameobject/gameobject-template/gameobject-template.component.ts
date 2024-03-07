@@ -5,12 +5,34 @@ import { FieldDefinition } from '@keira/shared/constants';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectTemplateService } from './gameobject-template.service';
 import { VIEWER_TYPE } from '../../model-3d-viewer/model-3d-viewer.model';
+import { Model3DViewerComponent } from '../../model-3d-viewer/model-3d-viewer.component';
+import { SingleValueSelectorBtnComponent } from '@keira/shared/core';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { QueryOutputComponent } from '@keira/shared/core';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgClass, NgIf, NgFor } from '@angular/common';
+import { TopBarComponent } from '@keira/shared/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-gameobject-template',
   templateUrl: './gameobject-template.component.html',
   styleUrls: ['./gameobject-template.component.scss'],
+  standalone: true,
+  imports: [
+    TopBarComponent,
+    NgClass,
+    NgIf,
+    TranslateModule,
+    QueryOutputComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    TooltipModule,
+    SingleValueSelectorBtnComponent,
+    NgFor,
+    Model3DViewerComponent,
+  ],
 })
 export class GameobjectTemplateComponent extends SingleRowEditorComponent<GameobjectTemplate> {
   readonly GAMEOBJECT_TYPE = GAMEOBJECT_TYPE;

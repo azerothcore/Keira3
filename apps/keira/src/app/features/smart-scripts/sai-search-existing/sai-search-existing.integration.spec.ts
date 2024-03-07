@@ -8,7 +8,6 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { SaiSearchExistingComponent } from './sai-search-existing.component';
-import { SaiSearchExistingModule } from './sai-search-existing.module';
 import Spy = jasmine.Spy;
 
 class SaiSearchExistingComponentPage extends PageObject<SaiSearchExistingComponent> {
@@ -35,7 +34,7 @@ describe('SaiSearchExisting integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SaiSearchExistingModule, RouterTestingModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SaiSearchExistingComponent, RouterTestingModule, TranslateTestingModule],
     }).compileComponents();
   }));
 

@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ItemLimitCategorySelectorBtnComponent } from './item-limit-category-selector-btn.component';
-import { ItemLimitCategorySelectorModule } from './item-limit-category-selector.module';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
 describe('ItemLimitCategorySelectorBtnComponent', () => {
@@ -10,7 +9,7 @@ describe('ItemLimitCategorySelectorBtnComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), ItemLimitCategorySelectorModule],
+      imports: [ModalModule.forRoot(), ItemLimitCategorySelectorBtnComponent],
     }).compileComponents();
   }));
 

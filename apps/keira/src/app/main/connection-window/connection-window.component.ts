@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ConnectionOptions, QueryError } from 'mysql2';
 // eslint-disable-next-line @nx/enforce-module-boundaries
@@ -7,12 +7,19 @@ import packageInfo from '../../../../../../package.json';
 
 import { ConnectionWindowService } from './connection-window.service';
 import { ModelForm, MysqlService, SubscriptionHandler } from '@keira/shared/core';
+import { SwitchLanguageComponent } from '@keira/shared/core';
+import { QueryErrorComponent } from '@keira/shared/core';
+import { TranslateModule } from '@ngx-translate/core';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-connection-window',
   templateUrl: './connection-window.component.html',
   styleUrls: ['./connection-window.component.scss'],
+  standalone: true,
+  imports: [NgIf, FormsModule, ReactiveFormsModule, BsDropdownModule, NgFor, TranslateModule, QueryErrorComponent, SwitchLanguageComponent],
 })
 export class ConnectionWindowComponent extends SubscriptionHandler implements OnInit {
   private readonly IMAGES_COUNT = 11;

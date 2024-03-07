@@ -8,6 +8,7 @@ import { IconService } from './icon.service';
   templateUrl: './icon.component.html',
   styleUrls: ['./icon.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
 })
 export class IconComponent extends SubscriptionHandler {
   private readonly DEFAULT_ICON = 'inv_misc_questionmark';

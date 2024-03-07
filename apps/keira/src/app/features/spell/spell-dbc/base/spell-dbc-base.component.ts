@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   DISPEL_TYPE,
   SPELL_DBC_CAST_TIME,
@@ -13,11 +13,17 @@ import {
   SpellDbc,
 } from '@keira/shared/acore-world-model';
 import { ModelForm } from '@keira/shared/core';
+import { FlagsSelectorBtnComponent } from '@keira/shared/core';
+import { SingleValueSelectorBtnComponent } from '@keira/shared/core';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-dbc-base',
   templateUrl: './spell-dbc-base.component.html',
+  standalone: true,
+  imports: [FormsModule, ReactiveFormsModule, TranslateModule, TooltipModule, SingleValueSelectorBtnComponent, FlagsSelectorBtnComponent],
 })
 export class SpellDbcBaseComponent {
   readonly SPELL_DBC_SCHOOL_OPTIONS = SPELL_SCHOOL_MASK;

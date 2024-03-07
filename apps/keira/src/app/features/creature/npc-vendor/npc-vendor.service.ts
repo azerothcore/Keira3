@@ -4,7 +4,9 @@ import { ItemExtendedCost, NPC_VENDOR_ID, NPC_VENDOR_ID_2, NPC_VENDOR_TABLE, Npc
 import { ToastrService } from 'ngx-toastr';
 import { CreatureHandlerService } from '../creature-handler.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class NpcVendorService extends MultiRowEditorService<NpcVendor> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

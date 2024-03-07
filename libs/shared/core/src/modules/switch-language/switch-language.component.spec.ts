@@ -6,8 +6,7 @@ import { SwitchLanguageComponent } from './switch-language.component';
 describe('SwitchLanguageComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [SwitchLanguageComponent],
-      imports: [ModalModule.forRoot(), TranslateTestingModule],
+      imports: [ModalModule.forRoot(), TranslateTestingModule, SwitchLanguageComponent],
     }).compileComponents();
   }));
 

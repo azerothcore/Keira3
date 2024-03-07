@@ -9,8 +9,7 @@ describe('HighlightjsWrapperComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [HighlightjsWrapperComponent],
-      imports: [BrowserModule, FormsModule],
+      imports: [BrowserModule, FormsModule, HighlightjsWrapperComponent],
     }).compileComponents();
   }));
 

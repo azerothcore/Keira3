@@ -14,12 +14,18 @@ import { QuestHandlerService } from '../../../features/quest/quest-handler.servi
 import { SpellHandlerService } from '../../../features/spell/spell-handler.service';
 import { SidebarService } from './sidebar.service';
 import { LocationService, MysqlService, SaiHandlerService } from '@keira/shared/core';
+import { UnsavedIconComponent } from './unsaved-icon/unsaved-icon.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { LogoutBtnComponent } from './logout-btn/logout-btn.component';
+import { SwitchLanguageComponent } from '@keira/shared/core';
+import { NgClass, NgIf, TitleCasePipe } from '@angular/common';
 
 const animationTime = 200;
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default, // TODO: migrate to OnPush: https://github.com/azerothcore/Keira3/issues/2602
+  changeDetection: ChangeDetectionStrategy.Default,
   // TODO: make the unsaved icons feature work with OnPush
   selector: 'keira-sidebar',
   templateUrl: './sidebar.component.html',
@@ -30,6 +36,18 @@ const animationTime = 200;
       state('down', style({ height: '*' })),
       transition('up <=> down', animate(animationTime)),
     ]),
+  ],
+  standalone: true,
+  imports: [
+    NgClass,
+    NgIf,
+    SwitchLanguageComponent,
+    LogoutBtnComponent,
+    RouterLink,
+    TranslateModule,
+    RouterLinkActive,
+    UnsavedIconComponent,
+    TitleCasePipe,
   ],
 })
 export class SidebarComponent {

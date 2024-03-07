@@ -28,12 +28,31 @@ import {
   SOURCE_GROUP_TOOLTIPS,
 } from './conditions-constants';
 import { ConditionsService } from './conditions.service';
+import { SingleValueSelectorBtnComponent } from '@keira/shared/core';
+import { FlagsSelectorBtnComponent } from '@keira/shared/core';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { QueryOutputComponent } from '@keira/shared/core';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-conditions',
   templateUrl: './conditions.component.html',
   styleUrls: ['./conditions.component.scss'],
+  standalone: true,
+  imports: [
+    NgIf,
+    TranslateModule,
+    QueryOutputComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    NgFor,
+    TooltipModule,
+    FlagsSelectorBtnComponent,
+    SingleValueSelectorBtnComponent,
+  ],
 })
 export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
   readonly CONDITION_SOURCE_TYPES = CONDITION_SOURCE_TYPES;

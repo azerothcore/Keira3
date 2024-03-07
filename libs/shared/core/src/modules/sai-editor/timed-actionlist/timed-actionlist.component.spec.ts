@@ -10,6 +10,8 @@ import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 
 @Component({
   template: `<keira-timed-actionlist [creatureId]="creatureId"></keira-timed-actionlist>`,
+  standalone: true,
+  imports: [NgxDatatableModule, TimedActionlistComponent],
 })
 class TestHostComponent {
   @ViewChild(TimedActionlistComponent) child: TimedActionlistComponent;
@@ -21,8 +23,7 @@ class TimedActionlistPage extends PageObject<TestHostComponent> {}
 describe('TimedActionlistComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [TimedActionlistComponent, TestHostComponent],
-      imports: [NgxDatatableModule],
+      imports: [NgxDatatableModule, TimedActionlistComponent, TestHostComponent],
     }).compileComponents();
   }));
 

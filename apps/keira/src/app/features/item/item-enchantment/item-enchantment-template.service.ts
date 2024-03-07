@@ -9,7 +9,9 @@ import {
 import { ToastrService } from 'ngx-toastr';
 import { ItemHandlerService } from '../item-handler.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class ItemEnchantmentTemplateService extends MultiRowEditorService<ItemEnchantmentTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

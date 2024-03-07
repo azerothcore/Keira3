@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ItemExtendedCostSelectorBtnComponent } from './item-extended-cost-selector-btn.component';
-import { ItemExtendedCostSelectorModule } from './item-extended-cost-selector.module';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
 describe('ItemExtendedCostSelectorBtnComponent', () => {
@@ -10,7 +9,7 @@ describe('ItemExtendedCostSelectorBtnComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), ItemExtendedCostSelectorModule],
+      imports: [ModalModule.forRoot(), ItemExtendedCostSelectorBtnComponent],
     }).compileComponents();
   }));
 

@@ -36,7 +36,9 @@ import { QuestTemplateAddonService } from '../quest-template-addon/quest-templat
 import { QuestTemplateService } from '../quest-template/quest-template.service';
 import { DifficultyLevel, Quest } from './quest-preview.model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class QuestPreviewService {
   showPreview = true;
 

@@ -3,7 +3,9 @@ import { MysqlQueryService, SaiCommentGeneratorService, SaiEditorService } from 
 import { ToastrService } from 'ngx-toastr';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class SaiGameobjectEditorService extends SaiEditorService {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

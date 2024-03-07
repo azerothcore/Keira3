@@ -20,6 +20,8 @@ class ReferenceViewerComponentPage extends PageObject<TestHostComponent> {
 
 @Component({
   template: '<keira-reference-viewer [referenceId]="referenceId"></keira-reference-viewer>',
+  standalone: true,
+  imports: [ReferenceViewerComponent],
 })
 class TestHostComponent {
   @ViewChild(ReferenceViewerComponent) child: ReferenceViewerComponent;
@@ -29,8 +31,7 @@ class TestHostComponent {
 describe('ReferenceViewerComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [TestHostComponent, ReferenceViewerComponent],
-      imports: [TooltipModule.forRoot(), LootEditorModule],
+      imports: [TooltipModule.forRoot(), LootEditorModule, TestHostComponent, ReferenceViewerComponent],
       providers: [{ provide: SqliteService, useValue: instance(MockedSqliteService) }],
     }).compileComponents();
   }));

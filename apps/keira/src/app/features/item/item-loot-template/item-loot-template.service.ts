@@ -4,7 +4,9 @@ import { ITEM_LOOT_TEMPLATE_TABLE, ItemLootTemplate, LOOT_TEMPLATE_ID, LOOT_TEMP
 import { ToastrService } from 'ngx-toastr';
 import { ItemHandlerService } from '../item-handler.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class ItemLootTemplateService extends MultiRowEditorService<ItemLootTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(

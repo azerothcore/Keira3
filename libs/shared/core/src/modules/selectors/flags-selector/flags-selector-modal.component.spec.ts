@@ -3,7 +3,6 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { FlagsSelectorModalComponent } from './flags-selector-modal.component';
 import { FlagsService } from './flags.service';
-import { FlagsSelectorModule } from './flags-selector.module';
 import { Flag } from '@keira/shared/constants';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 
@@ -14,7 +13,7 @@ describe('FlagsSelectorModalComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [FlagsSelectorModule, TranslateTestingModule],
+      imports: [FlagsSelectorModalComponent, TranslateTestingModule],
       providers: [BsModalRef],
     }).compileComponents();
   }));

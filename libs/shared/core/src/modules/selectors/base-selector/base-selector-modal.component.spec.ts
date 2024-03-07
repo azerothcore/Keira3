@@ -9,7 +9,6 @@ import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { SearchService } from '../../search/search.service';
 import { ItemTemplate } from '@keira/shared/acore-world-model';
 import { ItemSearchService } from '../../search/item-search.service';
-import { ItemSelectorModule } from '../item-selector/item-selector.module';
 import Spy = jasmine.Spy;
 import { MockedMysqlQueryService } from '../../../services/services.mock';
 
@@ -23,7 +22,7 @@ describe('BaseSelectorModalComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ItemSelectorModule, TranslateTestingModule],
+      imports: [ItemSelectorModalComponent, TranslateTestingModule],
       providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
     }).compileComponents();
   }));

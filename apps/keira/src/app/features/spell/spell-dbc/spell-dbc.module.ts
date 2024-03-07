@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FlagsSelectorModule, ItemSelectorModule, QueryOutputModule, SingleValueSelectorModule, TopBarModule } from '@keira/shared/core';
+
 import { TranslateModule } from '@ngx-translate/core';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -17,7 +17,14 @@ import { SpellDbcLocaleComponent } from './texts/spell-dbc-locale/spell-dbc-loca
 import { SpellDbcTextsComponent } from './texts/spell-dbc-texts.component';
 
 @NgModule({
-  declarations: [
+  imports: [
+    TooltipModule.forRoot(),
+    CommonModule,
+    ReactiveFormsModule,
+    TabsModule,
+    TooltipModule,
+    ToastrModule,
+    TranslateModule,
     SpellDbcComponent,
     SpellDbcBaseComponent,
     SpellDbcEffectsComponent,
@@ -27,20 +34,6 @@ import { SpellDbcTextsComponent } from './texts/spell-dbc-texts.component';
     SpellDbcMiscComponent,
     SpellDbcLocaleComponent,
     SpellDbcSpellEffectComponent,
-  ],
-  imports: [
-    TooltipModule.forRoot(),
-    CommonModule,
-    TopBarModule,
-    QueryOutputModule,
-    ReactiveFormsModule,
-    TabsModule,
-    TooltipModule,
-    ToastrModule,
-    FlagsSelectorModule,
-    SingleValueSelectorModule,
-    ItemSelectorModule,
-    TranslateModule,
   ],
 })
 export class SpellDbcModule {}

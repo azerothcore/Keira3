@@ -3,11 +3,19 @@ import { SingleRowEditorComponent } from '@keira/shared/core';
 import { CREATURE_TEMPLATE_MOVEMENT_TABLE, CreatureTemplateMovement } from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateMovementService } from './creature-template-movement.service';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { QueryOutputComponent } from '@keira/shared/core';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgIf } from '@angular/common';
+import { TopBarComponent } from '@keira/shared/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-template-movement',
   templateUrl: './creature-template-movement.component.html',
+  standalone: true,
+  imports: [TopBarComponent, NgIf, TranslateModule, QueryOutputComponent, FormsModule, ReactiveFormsModule, TooltipModule],
 })
 export class CreatureTemplateMovementComponent extends SingleRowEditorComponent<CreatureTemplateMovement> {
   public get docUrl(): string {

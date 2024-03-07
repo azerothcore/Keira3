@@ -18,6 +18,8 @@ describe('SpellDbcBaseComponent', () => {
 
   @Component({
     template: '<keira-spell-dbc-base [formGroup]="form"></keira-spell-dbc-base>',
+    standalone: true,
+    imports: [SpellDbcModule, RouterTestingModule, TranslateTestingModule, SpellDbcBaseComponent],
   })
   class TestHostComponent {
     @ViewChild(SpellDbcBaseComponent) child: SpellDbcBaseComponent;
@@ -77,7 +79,6 @@ describe('SpellDbcBaseComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [TestHostComponent, SpellDbcBaseComponent],
       imports: [
         ModalModule.forRoot(),
         ToastrModule.forRoot(),
@@ -85,6 +86,8 @@ describe('SpellDbcBaseComponent', () => {
         SpellDbcModule,
         RouterTestingModule,
         TranslateTestingModule,
+        TestHostComponent,
+        SpellDbcBaseComponent,
       ],
       providers: [SpellHandlerService],
     }).compileComponents();
