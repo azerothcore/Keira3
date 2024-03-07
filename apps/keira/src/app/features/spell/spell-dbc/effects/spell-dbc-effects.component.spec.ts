@@ -32,7 +32,7 @@ describe('SpellDbcEffectsComponent', () => {
   @Component({
     template: '<keira-spell-dbc-effects [formGroup]="form"></keira-spell-dbc-effects>',
     standalone: true,
-    imports: [SpellDbcModule, RouterTestingModule, TranslateTestingModule],
+    imports: [SpellDbcModule, RouterTestingModule, TranslateTestingModule, SpellDbcEffectsComponent],
   })
   class TestHostComponent {
     @ViewChild(SpellDbcEffectsComponent) child: SpellDbcEffectsComponent;

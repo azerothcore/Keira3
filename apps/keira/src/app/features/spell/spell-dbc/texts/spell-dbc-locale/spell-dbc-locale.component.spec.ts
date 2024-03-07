@@ -29,7 +29,7 @@ describe('SpellDbcLocaleComponent', () => {
   @Component({
     template: '<keira-spell-dbc-locale [formGroup]="form" [locale]="locale"></keira-spell-dbc-locale>',
     standalone: true,
-    imports: [SpellDbcModule, RouterTestingModule, TranslateTestingModule],
+    imports: [SpellDbcModule, RouterTestingModule, TranslateTestingModule, SpellDbcLocaleComponent],
   })
   class TestHostComponent {
     @ViewChild(SpellDbcLocaleComponent) child: SpellDbcLocaleComponent;

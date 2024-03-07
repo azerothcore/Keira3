@@ -21,7 +21,7 @@ describe('SpellDbcTextsComponent', () => {
   @Component({
     template: '<keira-spell-dbc-texts [formGroup]="form"></keira-spell-dbc-texts>',
     standalone: true,
-    imports: [SpellDbcModule, RouterTestingModule, TranslateTestingModule],
+    imports: [SpellDbcModule, RouterTestingModule, TranslateTestingModule, SpellDbcTextsComponent],
   })
   class TestHostComponent {
     @ViewChild(SpellDbcTextsComponent) child: SpellDbcTextsComponent;
