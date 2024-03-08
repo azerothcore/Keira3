@@ -4,8 +4,6 @@
     "target": "es2022",
     "useDefineForClassFields": false,
     "forceConsistentCasingInFileNames": true,
-    //    "strict": true,
-    //    "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
@@ -27,6 +25,7 @@
       "@keira/shared/config": ["libs/shared/config/src/index.ts"],
       "@keira/shared/constants": ["libs/shared/constants/src/index.ts"],
       "@keira/shared/core": ["libs/shared/core/src/index.ts"],
+      "@keira/shared/model-3d-viewer": ["libs/shared/model-3d-viewer/src/index.ts"],
       "@keira/shared/test-utils": ["libs/shared/test-utils/src/index.ts"]
     },
     "rootDir": "."

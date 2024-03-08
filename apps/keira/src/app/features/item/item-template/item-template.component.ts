@@ -25,12 +25,11 @@ import {
   TOTEM_CATEGORY,
 } from '@keira/shared/acore-world-model';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
-import { VIEWER_TYPE } from '../../../features/model-3d-viewer/model-3d-viewer.model';
+import { VIEWER_TYPE, Model3DViewerComponent } from '@keira/shared/model-3d-viewer';
 import { ItemHandlerService } from '../item-handler.service';
 import { SPELL_TRIGGERS } from './item-constants';
 import { ItemPreviewService } from './item-preview.service';
 import { ItemTemplateService } from './item-template.service';
-import { Model3DViewerComponent } from '../../model-3d-viewer/model-3d-viewer.component';
 import { IconComponent } from '@keira/shared/core';
 import { ItemEnchantmentSelectorBtnComponent } from '@keira/shared/core';
 import { HolidaySelectorBtnComponent } from '@keira/shared/core';
