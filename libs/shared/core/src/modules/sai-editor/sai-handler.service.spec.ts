@@ -171,7 +171,9 @@ describe('SaiHandlerService', () => {
         service.select(false, { source_type: null, entryorguid: -123 }, mockName, false);
 
         querySpy.and.returnValue(of());
-        expect(service.getName()).toBeUndefined();
+        service.getName().subscribe((actualName) => {
+          expect(actualName).toEqual(`Unknown source_type`);
+        });
 
         tick();
       }));
