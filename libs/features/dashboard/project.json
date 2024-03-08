@@ -2,7 +2,7 @@
   "name": "keira-features-dashboard",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/features/dashboard/src",
-  "prefix": "lib",
+  "prefix": "keira",
   "tags": [],
   "projectType": "library",
   "targets": {

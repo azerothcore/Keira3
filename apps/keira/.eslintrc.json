@@ -25,7 +25,7 @@
         "@angular-eslint/directive-selector": [
           "error",
           {
-            "prefix": "app",
+            "prefix": "keira",
             "style": "camelCase",
             "type": "attribute"
           }

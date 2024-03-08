@@ -2,7 +2,7 @@
   "name": "keira-shared-constants",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/shared/constants/src",
-  "prefix": "lib",
+  "prefix": "keira",
   "tags": [],
   "projectType": "library",
   "targets": {}

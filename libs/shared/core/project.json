@@ -2,7 +2,7 @@
   "name": "keira-shared-core",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/shared/core/src",
-  "prefix": "lib",
+  "prefix": "keira",
   "tags": [],
   "projectType": "library",
   "targets": {
