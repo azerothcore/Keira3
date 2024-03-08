@@ -397,6 +397,7 @@ export class QuestPreviewService {
 
       return this.mysqlQueryService.getGameObjectNameById(Math.abs(RequiredNpcOrGo));
     }
+    return undefined;
   }
 
   getObjectiveCount(field: string | number): string {

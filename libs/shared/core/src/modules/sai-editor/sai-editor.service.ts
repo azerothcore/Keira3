@@ -78,7 +78,7 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
     }
   }
 
-  protected onRowSelected() {
+  protected onRowSelected(): void {
     if (this.handlerService.parsedSelected.source_type === SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST) {
       this._form.controls.event_type.disable();
       this._form.controls.event_param3.disable();
@@ -90,7 +90,6 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
       this._form.controls.event_param4.setValue(0);
       this._form.controls.event_param5.setValue(0);
       this._form.controls.event_param6.setValue(0);
-      return true;
     }
   }
 

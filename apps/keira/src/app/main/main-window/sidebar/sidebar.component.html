@@ -56,13 +56,13 @@
             </a>
           </li>
 
-          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.creature === 'down' }">
+          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates['creature'] === 'down' }">
             <a id="creature-editor-toggle" (click)="toggleState('creature')">
               <i class="fa fa-dragon"></i>
               <span [translate]="'SIDEBAR.CREATURE.TITLE'"></span>
             </a>
 
-            <div class="sidebar-submenu" [@slide]="menuStates.creature">
+            <div class="sidebar-submenu" [@slide]="menuStates['creature']">
               <ul>
                 <li>
                   <a href="#" routerLinkActive="active" [routerLink]="'creature/select'">
@@ -173,13 +173,13 @@
             </div>
           </li>
 
-          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.quest === 'down' }">
+          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates['quest'] === 'down' }">
             <a (click)="toggleState('quest')">
               <i class="fa fa-scroll"></i>
               <span [translate]="'SIDEBAR.QUEST.TITLE'"></span>
             </a>
 
-            <div class="sidebar-submenu" [@slide]="menuStates.quest">
+            <div class="sidebar-submenu" [@slide]="menuStates['quest']">
               <ul>
                 <li>
                   <a href="#" routerLinkActive="active" [routerLink]="'quest/select'"> {{ 'SIDEBAR.QUEST.SELECT_QUEST' | translate }} </a>
@@ -245,12 +245,12 @@
             </div>
           </li>
 
-          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.gameobject === 'down' }">
+          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates['gameobject'] === 'down' }">
             <a (click)="toggleState('gameobject')">
               <i class="fa fa-dungeon"></i>
               <span [translate]="'SIDEBAR.GAME_OBJECT.TITLE'"></span>
             </a>
-            <div class="sidebar-submenu" [@slide]="menuStates.gameobject">
+            <div class="sidebar-submenu" [@slide]="menuStates['gameobject']">
               <ul>
                 <li>
                   <a href="#" routerLinkActive="active" [routerLink]="'gameobject/select'">
@@ -308,12 +308,12 @@
             </div>
           </li>
 
-          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.item === 'down' }">
+          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates['item'] === 'down' }">
             <a (click)="toggleState('item')">
               <i class="fa fa-gavel"></i>
               <span [translate]="'SIDEBAR.ITEM.TITLE'"></span>
             </a>
-            <div class="sidebar-submenu" [@slide]="menuStates.item">
+            <div class="sidebar-submenu" [@slide]="menuStates['item']">
               <ul>
                 <li>
                   <a href="#" routerLinkActive="active" [routerLink]="'item/select'">
@@ -366,12 +366,12 @@
             </div>
           </li>
 
-          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.otherLoot === 'down' }">
+          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates['otherLoot'] === 'down' }">
             <a (click)="toggleState('otherLoot')">
               <i class="fa fa-coins"></i>
               <span [translate]="'SIDEBAR.OTHER_LOOTS.TITLE'"></span>
             </a>
-            <div class="sidebar-submenu" [@slide]="menuStates.otherLoot">
+            <div class="sidebar-submenu" [@slide]="menuStates['otherLoot']">
               <ul>
                 <li>
                   <a href="#" routerLinkActive="active" [routerLink]="'other-loots/select-reference'">
@@ -424,12 +424,12 @@
             </div>
           </li>
 
-          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.gossip === 'down' }">
+          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates['gossip'] === 'down' }">
             <a (click)="toggleState('gossip')">
               <i class="fa fa-comments"></i>
               <span [translate]="'SIDEBAR.GOSSIP.TITLE'"></span>
             </a>
-            <div class="sidebar-submenu" [@slide]="menuStates.gossip">
+            <div class="sidebar-submenu" [@slide]="menuStates['gossip']">
               <ul>
                 <li>
                   <a href="#" routerLinkActive="active" [routerLink]="'gossip/select'">
@@ -457,13 +457,13 @@
             </div>
           </li>
 
-          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.conditions === 'down' }">
+          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates['conditions'] === 'down' }">
             <a (click)="toggleState('conditions')">
               <i class="fas fa-sort-amount-up"></i>
               <span [translate]="'SIDEBAR.CONDITIONS.TITLE'"></span>
             </a>
 
-            <div class="sidebar-submenu" [@slide]="menuStates.conditions">
+            <div class="sidebar-submenu" [@slide]="menuStates['conditions']">
               <ul>
                 <li>
                   <a href="#" routerLinkActive="active" [routerLink]="'conditions/select'">
@@ -482,13 +482,13 @@
             </div>
           </li>
 
-          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.smartAi === 'down' }">
+          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates['smartAi'] === 'down' }">
             <a (click)="toggleState('smartAi')">
               <i class="fa fa-lightbulb"></i>
               <span [translate]="'SIDEBAR.SMARTAI.TITLE'"></span>
             </a>
 
-            <div class="sidebar-submenu" [@slide]="menuStates.smartAi">
+            <div class="sidebar-submenu" [@slide]="menuStates['smartAi']">
               <ul>
                 <li>
                   <a href="#" routerLinkActive="active" [routerLink]="'smart-ai/search-existing'">
@@ -512,13 +512,13 @@
             </div>
           </li>
 
-          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates.spell === 'down' }">
+          <li class="sidebar-dropdown" [ngClass]="{ active: menuStates['spell'] === 'down' }">
             <a (click)="toggleState('spell')">
               <i class="fa fa-magic"></i>
               <span [translate]="'SIDEBAR.SPELL_DBC_OVERRIDES.TITLE'"></span>
             </a>
 
-            <div class="sidebar-submenu" [@slide]="menuStates.spell">
+            <div class="sidebar-submenu" [@slide]="menuStates['spell']">
               <ul>
                 <li>
                   <a href="#" routerLinkActive="active" [routerLink]="'spell/select'">

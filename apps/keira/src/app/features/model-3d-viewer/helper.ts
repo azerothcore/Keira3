@@ -90,6 +90,7 @@ async function optionsFromModel(model: WoWModel): Promise<{ models: WoWModel; ch
   // const retGender = gender === 1 ? GENDER.FEMALE : GENDER.MALE;
   // const raceToModelId = RACES[race] + retGender;
 
+  return undefined;
   // return {
   //   items: characterItems,
   //   charCustomization: {

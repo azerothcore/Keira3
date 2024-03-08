@@ -1,6 +1,14 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "target": "es2022",
+    "useDefineForClassFields": false,
+    "forceConsistentCasingInFileNames": true,
+    //    "strict": true,
+    //    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
     "module": "es2020",
     "resolveJsonModule": true,
     "outDir": "./dist/out-tsc",
@@ -9,19 +17,18 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "ES2022",
     "typeRoots": ["node_modules/@types"],
     "lib": ["es2017", "es2016", "es2015", "dom"],
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
+      "@keira/features/dashboard": ["libs/features/dashboard/src/index.ts"],
       "@keira/shared/acore-world-model": ["libs/shared/acore-world-model/src/index.ts"],
       "@keira/shared/config": ["libs/shared/config/src/index.ts"],
-      "@keira/shared/core": ["libs/shared/core/src/index.ts"],
       "@keira/shared/constants": ["libs/shared/constants/src/index.ts"],
+      "@keira/shared/core": ["libs/shared/core/src/index.ts"],
       "@keira/shared/test-utils": ["libs/shared/test-utils/src/index.ts"]
     },
-    "useDefineForClassFields": false,
     "rootDir": "."
   },
   "include": ["main.ts"],

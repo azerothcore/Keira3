@@ -115,6 +115,8 @@ export class SaiCommentGeneratorService {
         }
       }
     }
+
+    return null;
   }
 
   private async generateEventComment(smartScript: SmartScripts, name: string, smartScriptLink: SmartScripts): Promise<string> {

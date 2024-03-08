@@ -44,11 +44,10 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (
-      changes.displayId?.currentValue != changes.displayId?.previousValue &&
+      changes['displayId']?.currentValue != changes['displayId']?.previousValue &&
       !!this.displayId &&
       this.displayId > 0 &&
-      this.viewerType != null &&
-      this.viewerType != undefined
+      this.viewerType != null
     ) {
       this.resetModel3dElement();
       this.show3Dmodel();
