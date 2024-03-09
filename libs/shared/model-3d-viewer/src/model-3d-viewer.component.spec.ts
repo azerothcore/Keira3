@@ -5,11 +5,13 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { of } from 'rxjs';
 import { Model3DViewerComponent } from './model-3d-viewer.component';
 import { CONTENT_WOTLK, MODEL_TYPE, VIEWER_TYPE } from './model-3d-viewer.model';
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 
 describe('Model3DViewerComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ModalModule.forRoot(), HttpClientTestingModule, Model3DViewerComponent],
+      providers: [{ provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG }],
     }).compileComponents();
   }));
 

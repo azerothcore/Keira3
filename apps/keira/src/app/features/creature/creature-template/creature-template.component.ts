@@ -25,8 +25,7 @@ import {
 } from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateService } from './creature-template.service';
-import { VIEWER_TYPE } from '../../model-3d-viewer/model-3d-viewer.model';
-import { Model3DViewerComponent } from '../../model-3d-viewer/model-3d-viewer.component';
+import { VIEWER_TYPE, Model3DViewerComponent } from '@keira/shared/model-3d-viewer';
 import { CreatureSelectorBtnComponent } from '@keira/shared/core';
 import { SpellSelectorBtnComponent } from '@keira/shared/core';
 import { FlagsSelectorBtnComponent } from '@keira/shared/core';

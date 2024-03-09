@@ -4,8 +4,7 @@ import { GAMEOBJECT_ICON, GAMEOBJECT_TYPE, GameobjectTemplate } from '@keira/sha
 import { FieldDefinition } from '@keira/shared/constants';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectTemplateService } from './gameobject-template.service';
-import { VIEWER_TYPE } from '../../model-3d-viewer/model-3d-viewer.model';
-import { Model3DViewerComponent } from '../../model-3d-viewer/model-3d-viewer.component';
+import { VIEWER_TYPE, Model3DViewerComponent } from '@keira/shared/model-3d-viewer';
 import { SingleValueSelectorBtnComponent } from '@keira/shared/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';

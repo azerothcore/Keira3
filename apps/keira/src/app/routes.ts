@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 
-import { DashboardComponent } from './features/dashboard/dashboard.component';
+import { DashboardComponent } from '@keira/features/dashboard';
 
 import { SelectCreatureComponent } from './features/creature/select-creature/select-creature.component';
 import { CreatureTemplateComponent } from './features/creature/creature-template/creature-template.component';

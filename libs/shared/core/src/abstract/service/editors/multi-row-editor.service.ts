@@ -70,6 +70,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     }
 
     console.error(`getRowIndex() failed in finding row having ${this._entitySecondIdField} ${id}`);
+    return 0;
   }
 
   private getSelectedRowIndex(): number {
@@ -162,7 +163,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     this._loading = false;
   }
 
-  protected onRowSelected() {}
+  protected onRowSelected(): void {}
 
   isRowSelected(row: T): boolean {
     return row[this._entitySecondIdField] === this._selectedRowId;

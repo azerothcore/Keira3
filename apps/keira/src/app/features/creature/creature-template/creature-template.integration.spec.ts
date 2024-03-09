@@ -12,6 +12,7 @@ import { CreatureTemplateComponent } from './creature-template.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import Spy = jasmine.Spy;
 import { instance } from 'ts-mockito';
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 
 class CreatureTemplatePage extends EditorPageObject<CreatureTemplateComponent> {}
 
@@ -50,7 +51,12 @@ describe('CreatureTemplate integration tests', () => {
         TranslateTestingModule,
         HttpClientTestingModule,
       ],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
+      providers: [
+        { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        { provide: SqliteService, useValue: instance(MockedSqliteService) },
+      ],
     }).compileComponents();
   }));
 

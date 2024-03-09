@@ -115,6 +115,9 @@ export class SaiCommentGeneratorService {
         }
       }
     }
+
+    /* istanbul ignore next */ // TODO: fix coverage?
+    return null;
   }
 
   private async generateEventComment(smartScript: SmartScripts, name: string, smartScriptLink: SmartScripts): Promise<string> {

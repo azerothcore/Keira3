@@ -1,7 +1,7 @@
 {
-  "name": "keira-shared-core",
+  "name": "keira-shared-model-3d-viewer",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/shared/core/src",
+  "sourceRoot": "libs/shared/model-3d-viewer/src",
   "prefix": "keira",
   "tags": [],
   "projectType": "library",
@@ -9,12 +9,12 @@
     "test": {
       "executor": "@angular-devkit/build-angular:karma",
       "options": {
-        "tsConfig": "libs/shared/core/tsconfig.spec.json",
-        "karmaConfig": "libs/shared/core/karma.conf.js",
+        "tsConfig": "libs/shared/model-3d-viewer/tsconfig.spec.json",
+        "karmaConfig": "libs/shared/model-3d-viewer/karma.conf.js",
         "polyfills": ["zone.js", "zone.js/testing"],
         "sourceMap": true,
         "codeCoverage": true,
-        "scripts": ["node_modules/squel/dist/squel.min.js"]
+        "scripts": []
       }
     },
     "lint": {

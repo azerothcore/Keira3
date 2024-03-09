@@ -1,7 +1,7 @@
 {
-  "name": "keira-shared-core",
+  "name": "keira-features-dashboard",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/shared/core/src",
+  "sourceRoot": "libs/features/dashboard/src",
   "prefix": "keira",
   "tags": [],
   "projectType": "library",
@@ -9,12 +9,12 @@
     "test": {
       "executor": "@angular-devkit/build-angular:karma",
       "options": {
-        "tsConfig": "libs/shared/core/tsconfig.spec.json",
-        "karmaConfig": "libs/shared/core/karma.conf.js",
+        "tsConfig": "libs/features/dashboard/tsconfig.spec.json",
+        "karmaConfig": "libs/features/dashboard/karma.conf.js",
         "polyfills": ["zone.js", "zone.js/testing"],
         "sourceMap": true,
         "codeCoverage": true,
-        "scripts": ["node_modules/squel/dist/squel.min.js"]
+        "scripts": []
       }
     },
     "lint": {

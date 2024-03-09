@@ -84,21 +84,21 @@ describe('SidebarComponent', () => {
 
   it('toggling a section should correctly work', () => {
     const { page, component } = setup();
-    component.menuStates.creature = 'down';
+    component.menuStates['creature'] = 'down';
 
     page.clickElement(page.creatureEditorToggle);
-    expect(component.menuStates.creature).toBe('up');
+    expect(component.menuStates['creature']).toBe('up');
 
     page.clickElement(page.creatureEditorToggle);
-    expect(component.menuStates.creature).toBe('down');
+    expect(component.menuStates['creature']).toBe('down');
 
     page.removeElement();
   });
 
   it('collapse all button should correctly work ', () => {
     const { page, component } = setup();
-    component.menuStates.creature = 'down';
-    component.menuStates.quest = 'down';
+    component.menuStates['creature'] = 'down';
+    component.menuStates['quest'] = 'down';
 
     page.clickElement(page.collapseAll);
 

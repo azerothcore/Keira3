@@ -11,7 +11,7 @@ export abstract class BaseQueryService {
 
   // Input query format must be: SELECT something AS v FROM ...
   queryValue<T extends string | number>(query: string): Observable<T | null> {
-    return this.query(query).pipe(map((data) => (data && data[0] ? (data[0].v as T) : null)));
+    return this.query(query).pipe(map((data) => (data && data[0] ? (data[0]['v'] as T) : null)));
   }
 
   queryValueToPromise<T extends string | number>(query: string): Promise<T> {

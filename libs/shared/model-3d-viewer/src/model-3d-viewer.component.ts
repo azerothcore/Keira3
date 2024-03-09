@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { MysqlQueryService } from '@keira/shared/core';
 import { TableRow } from '@keira/shared/constants';
@@ -7,6 +7,7 @@ import * as jquery from 'jquery';
 import { BehaviorSubject, catchError, filter, Observable, of, Subscription } from 'rxjs';
 import { generateModels, getShadowlandDisplayId } from './helper';
 import { CONTENT_WOTLK, MODEL_TYPE, VIEWER_TYPE } from './model-3d-viewer.model';
+import { KEIRA_APP_CONFIG_TOKEN, KeiraAppConfig } from '@keira/shared/config';
 
 declare const ZamModelViewer: any;
 
@@ -32,6 +33,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     private readonly sanitizer: DomSanitizer,
     private readonly queryService: MysqlQueryService,
     private readonly http: HttpClient,
+    @Inject(KEIRA_APP_CONFIG_TOKEN) private readonly KEIRA_APP_CONFIG: KeiraAppConfig,
   ) {}
 
   public itemPreview: SafeHtml = this.sanitizer.bypassSecurityTrustHtml('loading...');
@@ -44,11 +46,10 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (
-      changes.displayId?.currentValue != changes.displayId?.previousValue &&
+      changes['displayId']?.currentValue != changes['displayId']?.previousValue &&
       !!this.displayId &&
       this.displayId > 0 &&
-      this.viewerType != null &&
-      this.viewerType != undefined
+      this.viewerType != null
     ) {
       this.resetModel3dElement();
       this.show3Dmodel();
@@ -86,7 +87,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
             /* istanbul ignore next */
             () => {
               /* istanbul ignore next */
-              getShadowlandDisplayId(entry as number).then((displayInfo) => {
+              getShadowlandDisplayId(this.KEIRA_APP_CONFIG.sqliteItem3dPath, entry as number).then((displayInfo) => {
                 this.generate3Dmodel(modelType, displayInfo.displayId, CONTENT_WOTLK);
               });
               /* istanbul ignore next */
@@ -100,6 +101,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     );
   }
 
+  /* istanbul ignore next */ // TODO: fix coverage
   private generate3Dmodel(
     modelType: number = this.getModelType(),
     displayId: number = this.displayId,

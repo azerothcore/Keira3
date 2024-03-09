@@ -12,6 +12,7 @@ import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectTemplateComponent } from './gameobject-template.component';
 import Spy = jasmine.Spy;
 import { instance } from 'ts-mockito';
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 
 class GameobjectTemplatePage extends EditorPageObject<GameobjectTemplateComponent> {}
 
@@ -53,6 +54,7 @@ describe('GameobjectTemplate integration tests', () => {
         GameobjectHandlerService,
         SaiGameobjectHandlerService,
         { provide: SqliteService, useValue: instance(MockedSqliteService) },
+        { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
       ],
     }).compileComponents();
   }));

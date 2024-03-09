@@ -10,6 +10,7 @@ import { of } from 'rxjs';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemTemplateComponent } from './item-template.component';
 import { instance } from 'ts-mockito';
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 
 class ItemTemplatePage extends EditorPageObject<ItemTemplateComponent> {
   get itemStats(): HTMLDivElement {
@@ -59,7 +60,11 @@ describe('ItemTemplate integration tests', () => {
         TranslateTestingModule,
         HttpClientTestingModule,
       ],
-      providers: [ItemHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
+      providers: [
+        { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
+        ItemHandlerService,
+        { provide: SqliteService, useValue: instance(MockedSqliteService) },
+      ],
     }).compileComponents();
   }));
 
