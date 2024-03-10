@@ -46,6 +46,8 @@ export class ConnectionWindowService {
     return configs;
   }
 
+  // TODO: extract the localStorageService methods in a new service located into a new library under shared
+  //  to avoid dependencies between main/* libraries
   saveRememberPreference(rememberMe: boolean): void {
     this.localStorageService.setItem('rememberMe', String(rememberMe));
   }
