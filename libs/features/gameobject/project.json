@@ -14,7 +14,7 @@
         "polyfills": ["zone.js", "zone.js/testing"],
         "sourceMap": true,
         "codeCoverage": true,
-        "scripts": []
+        "scripts": ["node_modules/squel/dist/squel.min.js"]
       }
     },
     "lint": {

@@ -12,10 +12,6 @@ import { instance, reset } from 'ts-mockito';
 import packageInfo from '../../../../package.json';
 
 import { AppComponent } from './app.component';
-import { ConnectionWindowComponent } from './connection-window/connection-window.component';
-import { MainWindowComponent } from './main-window/main-window.component';
-import { LogoutBtnComponent } from './main-window/sidebar/logout-btn/logout-btn.component';
-import { SidebarComponent } from './main-window/sidebar/sidebar.component';
 
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import {
@@ -27,6 +23,8 @@ import {
   QueryErrorComponent,
 } from '@keira/shared/core';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
+import { MainWindowComponent } from '@keira/main/main-window';
+import { ConnectionWindowComponent } from '@keira/main/connection-window';
 
 describe('AppComponent', () => {
   beforeEach(waitForAsync(() => {
@@ -43,9 +41,7 @@ describe('AppComponent', () => {
         TranslateTestingModule,
         MainWindowComponent,
         ConnectionWindowComponent,
-        SidebarComponent,
         QueryErrorComponent,
-        LogoutBtnComponent,
         AppComponent,
       ],
       providers: [
