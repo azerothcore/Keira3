@@ -17,7 +17,7 @@ import { SaiTopBarComponent } from '@keira/shared/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sai-gameobject',
   templateUrl: '../../../../../libs/shared/core/src/modules/sai-editor/sai-editor.component.html',
-  styleUrls: ['../../../../../../../libs/shared/core/src/modules/sai-editor/sai-editor.component.scss'],
+  styleUrls: ['../../../../../libs/shared/core/src/modules/sai-editor/sai-editor.component.scss'],
   standalone: true,
   imports: [
     SaiTopBarComponent,
