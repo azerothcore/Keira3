@@ -1,7 +1,7 @@
 import { enableProdMode, importProvidersFrom } from '@angular/core';
 
 import { KEIRA_APP_CONFIG } from './environments/environment';
-import { AppComponent } from './app/main/app.component';
+import { AppComponent } from './app/app.component';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { UiSwitchModule } from 'ngx-ui-switch';
