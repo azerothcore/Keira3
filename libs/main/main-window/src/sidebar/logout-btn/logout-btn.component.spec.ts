@@ -5,7 +5,7 @@ import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { LogoutBtnComponent } from './logout-btn.component';
 import { LocationService, ModalConfirmComponent } from '@keira/shared/core';
 import Spy = jasmine.Spy;
-import { ConnectionWindowService } from '@keira/main/connection-window';
+import { LoginConfigService } from '@keira/shared/login-config';
 
 describe('LogoutBtnComponent', () => {
   beforeEach(waitForAsync(() => {
@@ -13,8 +13,8 @@ describe('LogoutBtnComponent', () => {
       imports: [ModalModule.forRoot(), LogoutBtnComponent, ModalConfirmComponent, TranslateTestingModule],
       providers: [
         {
-          provide: ConnectionWindowService,
-          useValue: jasmine.createSpyObj('ConnectionWindowService', ['saveRememberPreference']),
+          provide: LoginConfigService,
+          useValue: jasmine.createSpyObj('LoginConfigService', ['saveRememberPreference']),
         },
       ],
     }).compileComponents();
@@ -23,10 +23,10 @@ describe('LogoutBtnComponent', () => {
   function setup() {
     const fixture = TestBed.createComponent(LogoutBtnComponent);
     const component = fixture.componentInstance;
-    const connectionWindowService = TestBed.inject(ConnectionWindowService) as unknown as Spied<ConnectionWindowService>;
+    const loginConfigService = TestBed.inject(LoginConfigService) as unknown as Spied<LoginConfigService>;
     fixture.detectChanges();
 
-    return { fixture, component, connectionWindowService };
+    return { fixture, component, loginConfigService };
   }
 
   it('openModalConfirm() should correctly work', () => {
@@ -45,13 +45,13 @@ describe('LogoutBtnComponent', () => {
   });
 
   it('logout() should correctly work', () => {
-    const { component, connectionWindowService } = setup();
+    const { component, loginConfigService } = setup();
     const locationServiceSpy: Spy = spyOn(TestBed.inject(LocationService), 'reload');
 
     component.logout();
 
     expect(locationServiceSpy).toHaveBeenCalledTimes(1);
-    expect(connectionWindowService.saveRememberPreference).toHaveBeenCalledOnceWith(false);
+    expect(loginConfigService.saveRememberPreference).toHaveBeenCalledOnceWith(false);
   });
 
   // closeModalsAfterEach();

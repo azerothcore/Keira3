@@ -20,9 +20,9 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
-      "@keira/features/dashboard": ["libs/features/dashboard/src/index.ts"],
       "@keira/features/conditions": ["libs/features/conditions/src/index.ts"],
       "@keira/features/creature": ["libs/features/creature/src/index.ts"],
+      "@keira/features/dashboard": ["libs/features/dashboard/src/index.ts"],
       "@keira/features/gameobject": ["libs/features/gameobject/src/index.ts"],
       "@keira/features/gossip": ["libs/features/gossip/src/index.ts"],
       "@keira/features/item": ["libs/features/item/src/index.ts"],
@@ -37,6 +37,7 @@
       "@keira/shared/config": ["libs/shared/config/src/index.ts"],
       "@keira/shared/constants": ["libs/shared/constants/src/index.ts"],
       "@keira/shared/core": ["libs/shared/core/src/index.ts"],
+      "@keira/shared/login-config": ["libs/shared/login-config/src/index.ts"],
       "@keira/shared/model-3d-viewer": ["libs/shared/model-3d-viewer/src/index.ts"],
       "@keira/shared/test-utils": ["libs/shared/test-utils/src/index.ts"]
     },

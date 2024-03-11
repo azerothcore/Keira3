@@ -3,7 +3,7 @@ import { LocalStorageService } from './local-storage.service';
 import Spy = jasmine.Spy;
 
 describe('LocalStorageService', () => {
-  let mockStorage;
+  let mockStorage: any;
 
   let spyClear: Spy;
   let spyGetItem: Spy;

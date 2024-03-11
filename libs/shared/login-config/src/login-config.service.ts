@@ -1,17 +1,16 @@
-import { Injectable } from '@angular/core';
-
+import { inject, Injectable } from '@angular/core';
+import { LocalStorageService } from './local-storage.service';
 import { ConnectionOptions } from 'mysql2';
-import { LocalStorageService } from '@keira/shared/core';
 
 declare type Config = Partial<ConnectionOptions>;
 
 @Injectable({
   providedIn: 'root',
 })
-export class ConnectionWindowService {
-  readonly KEY = 'strl';
+export class LoginConfigService {
+  private readonly localStorageService = inject(LocalStorageService);
 
-  constructor(private localStorageService: LocalStorageService) {}
+  readonly KEY = 'strl';
 
   removeAllConfigs(): void {
     this.localStorageService.removeItem(this.KEY);
@@ -36,7 +35,7 @@ export class ConnectionWindowService {
   }
 
   getConfigs(): Config[] {
-    const raw: string = this.localStorageService.getItem(this.KEY);
+    const raw: string = this.localStorageService.getItem(this.KEY) as string;
     const configs = JSON.parse(raw) ?? [];
 
     for (const config of configs) {
@@ -46,8 +45,6 @@ export class ConnectionWindowService {
     return configs;
   }
 
-  // TODO: extract the localStorageService methods in a new service located into a new library under shared
-  //  to avoid dependencies between main/* libraries
   saveRememberPreference(rememberMe: boolean): void {
     this.localStorageService.setItem('rememberMe', String(rememberMe));
   }
@@ -67,7 +64,7 @@ export class ConnectionWindowService {
 
   private setConfigsToStorage(configs: Config[]): void {
     for (const config of configs) {
-      config.password = btoa(config.password);
+      config.password = btoa(config.password as string);
     }
 
     this.localStorageService.setItem(this.KEY, JSON.stringify(configs));
