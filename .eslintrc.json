@@ -66,8 +66,20 @@
             "allow": [],
             "depConstraints": [
               {
-                "sourceTag": "*",
-                "onlyDependOnLibsWithTags": ["*"]
+                "sourceTag": "scope:app-keira",
+                "onlyDependOnLibsWithTags": ["scope:main-window", "scope:features", "scope:shared"]
+              },
+              {
+                "sourceTag": "scope:main-window",
+                "onlyDependOnLibsWithTags": ["scope:features", "scope:shared"]
+              },
+              {
+                "sourceTag": "scope:features",
+                "onlyDependOnLibsWithTags": ["scope:shared"]
+              },
+              {
+                "sourceTag": "scope:shared",
+                "onlyDependOnLibsWithTags": ["scope:shared"]
               }
             ]
           }
