@@ -1,13 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { Spied } from '@keira/shared/test-utils';
 import { ConnectionOptions } from 'mysql2';
-import { ConnectionWindowService } from './connection-window.service';
-import { LocalStorageService } from '@keira/shared/core';
+import { LoginConfigService } from './login-config.service';
+import { LocalStorageService } from './local-storage.service';
 
 declare type Config = Partial<ConnectionOptions>;
 
-describe('ConnectionWindowService', () => {
+describe(LoginConfigService.name, () => {
   const currentConfig: Config[] = [
     { host: '185.251.90.84', port: 3306, user: 'readonly', password: 'cmVhZG9ubHk=', database: 'world' },
     { host: '127.0.0.1', port: 3306, user: 'root', password: 'cm9vdA==', database: 'acore_world' },
@@ -15,15 +14,11 @@ describe('ConnectionWindowService', () => {
   Object.freeze(currentConfig);
 
   const setup = () => {
-    const localStorageService: Spied<LocalStorageService> = jasmine.createSpyObj('LocalStorageService', [
-      'removeItem',
-      'getItem',
-      'setItem',
-    ]);
+    const localStorageService = jasmine.createSpyObj('LocalStorageService', ['removeItem', 'getItem', 'setItem']);
     TestBed.configureTestingModule({
       providers: [{ provide: LocalStorageService, useValue: localStorageService }],
     });
-    const service = TestBed.inject(ConnectionWindowService);
+    const service = TestBed.inject(LoginConfigService);
 
     return { service, localStorageService };
   };
@@ -109,8 +104,8 @@ describe('ConnectionWindowService', () => {
       localStorageService.getItem.and.returnValue(JSON.stringify(currentConfig));
 
       const expectedNewConfig = [{ ...currentConfig[0] }, { ...currentConfig[1] }];
-      expectedNewConfig[0].password = atob(expectedNewConfig[0].password);
-      expectedNewConfig[1].password = atob(expectedNewConfig[1].password);
+      expectedNewConfig[0].password = atob(expectedNewConfig[0].password as string);
+      expectedNewConfig[1].password = atob(expectedNewConfig[1].password as string);
       expect(service.getConfigs()).toEqual(expectedNewConfig);
     });
 

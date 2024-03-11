@@ -5,13 +5,13 @@ import { ConnectionOptions, QueryError } from 'mysql2';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import packageInfo from '../../../../package.json';
 
-import { ConnectionWindowService } from './connection-window.service';
 import { ModelForm, MysqlService, SubscriptionHandler } from '@keira/shared/core';
 import { SwitchLanguageComponent } from '@keira/shared/core';
 import { QueryErrorComponent } from '@keira/shared/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { NgIf, NgFor } from '@angular/common';
+import { LoginConfigService } from '@keira/shared/login-config';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,7 +37,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
 
   constructor(
     private readonly mysqlService: MysqlService,
-    private readonly connectionWindowService: ConnectionWindowService,
+    private readonly loginConfigService: LoginConfigService,
   ) {
     super();
   }
@@ -51,7 +51,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
       database: new FormControl<string>('acore_world'),
     });
 
-    this.configs = this.connectionWindowService.getConfigs();
+    this.configs = this.loginConfigService.getConfigs();
 
     if (this.configs?.length > 0) {
       // get last saved config
@@ -61,7 +61,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
         this.savePassword = false;
       }
 
-      if (this.connectionWindowService.isRememberMeEnabled()) {
+      if (this.loginConfigService.isRememberMeEnabled()) {
         this.onConnect();
       }
     }
@@ -72,7 +72,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
   }
 
   removeAllConfigs(): void {
-    this.connectionWindowService.removeAllConfigs();
+    this.loginConfigService.removeAllConfigs();
     this.configs = [];
     this.form.reset();
   }
@@ -85,8 +85,8 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
           if (!this.savePassword) {
             newConfig.password = '';
           }
-          this.connectionWindowService.saveRememberPreference(this.rememberMe);
-          this.connectionWindowService.saveNewConfig(newConfig);
+          this.loginConfigService.saveRememberPreference(this.rememberMe);
+          this.loginConfigService.saveNewConfig(newConfig);
           this.error = null;
         },
         error: (error: QueryError) => {

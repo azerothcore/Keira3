@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { LocationService, ModalConfirmComponent, SubscriptionHandler } from '@keira/shared/core';
-import { ConnectionWindowService } from '@keira/main/connection-window';
+import { LoginConfigService } from '@keira/shared/login-config';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,7 +19,7 @@ export class LogoutBtnComponent extends SubscriptionHandler {
     private readonly modalService: BsModalService,
     private readonly locationService: LocationService,
     private readonly translateService: TranslateService,
-    private readonly connectionWindowService: ConnectionWindowService,
+    private readonly loginConfigService: LoginConfigService,
   ) {
     super();
   }
@@ -42,7 +42,7 @@ export class LogoutBtnComponent extends SubscriptionHandler {
   }
 
   logout(): void {
-    this.connectionWindowService.saveRememberPreference(false);
+    this.loginConfigService.saveRememberPreference(false);
     this.locationService.reload();
   }
 }
