@@ -3,7 +3,7 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/shared/test-utils/src",
   "prefix": "keira",
-  "tags": [],
+  "tags": ["scope:shared"],
   "projectType": "library",
   "targets": {}
 }

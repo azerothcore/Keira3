@@ -3,7 +3,7 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/features/spell/src",
   "prefix": "keira",
-  "tags": [],
+  "tags": ["scope:features"],
   "projectType": "library",
   "targets": {
     "test": {
