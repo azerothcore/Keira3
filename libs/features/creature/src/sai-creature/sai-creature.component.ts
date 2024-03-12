@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { SaiEditorComponent } from '@keira/shared/core';
+import { SaiEditorComponent } from '@keira/shared/sai-editor';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { SaiCreatureEditorService } from './sai-creature-editor.service';
-import { TimedActionlistComponent } from '@keira/shared/core';
+import { TimedActionlistComponent } from '@keira/shared/sai-editor';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { EditorButtonsComponent } from '@keira/shared/core';
 import { FlagsSelectorBtnComponent } from '@keira/shared/core';
@@ -11,13 +11,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QueryOutputComponent } from '@keira/shared/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIf, NgFor } from '@angular/common';
-import { SaiTopBarComponent } from '@keira/shared/core';
+import { SaiTopBarComponent } from '@keira/shared/sai-editor';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sai-creature',
-  templateUrl: '../../../../../libs/shared/core/src/modules/sai-editor/sai-editor.component.html',
-  styleUrls: ['../../../../../libs/shared/core/src/modules/sai-editor/sai-editor.component.scss'],
+  templateUrl: '../../../../../libs/shared/sai-editor/src/sai-editor.component.html',
+  styleUrls: ['../../../../../libs/shared/sai-editor/src/sai-editor.component.scss'],
   standalone: true,
   imports: [
     SaiTopBarComponent,

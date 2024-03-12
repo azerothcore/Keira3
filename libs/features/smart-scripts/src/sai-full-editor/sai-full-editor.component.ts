@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { SaiEditorComponent } from '@keira/shared/core';
+import { SaiEditorComponent } from '@keira/shared/sai-editor';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

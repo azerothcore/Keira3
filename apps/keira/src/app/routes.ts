@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 
 import { DashboardComponent } from '@keira/features/dashboard';
 
-import { SaiHandlerService } from '@keira/shared/core';
+import { SaiHandlerService } from '@keira/shared/sai-editor';
 import { SqlEditorComponent } from '@keira/features/sql-editor';
 import {
   CreatureEquipTemplateComponent,

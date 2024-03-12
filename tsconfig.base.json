@@ -39,7 +39,8 @@
       "@keira/shared/core": ["libs/shared/core/src/index.ts"],
       "@keira/shared/login-config": ["libs/shared/login-config/src/index.ts"],
       "@keira/shared/model-3d-viewer": ["libs/shared/model-3d-viewer/src/index.ts"],
-      "@keira/shared/test-utils": ["libs/shared/test-utils/src/index.ts"]
+      "@keira/shared/test-utils": ["libs/shared/test-utils/src/index.ts"],
+      "@keira/shared/sai-editor": ["libs/shared/sai-editor/src/index.ts"]
     },
     "rootDir": "."
   },

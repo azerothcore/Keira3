@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { getEnumKeys, ModelForm, SaiHandlerService } from '@keira/shared/core';
+import { getEnumKeys, ModelForm } from '@keira/shared/core';
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { GameobjectSelectorBtnComponent } from '@keira/shared/core';
 import { CreatureSelectorBtnComponent } from '@keira/shared/core';
 import { NgFor, NgIf } from '@angular/common';
+import { SaiHandlerService } from '@keira/shared/sai-editor';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

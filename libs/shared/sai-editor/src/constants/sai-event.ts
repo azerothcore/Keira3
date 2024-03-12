@@ -1,4 +1,4 @@
-import { getEnumKeys } from '../../../utils/helpers';
+import { getEnumKeys } from '@keira/shared/core';
 
 export enum SAI_EVENTS {
   UPDATE_IC = 0,

@@ -4,9 +4,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { SAI_TYPES } from '@keira/shared/acore-world-model';
 import { of } from 'rxjs';
-import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { SaiHandlerService } from '../sai-handler.service';
 import { SaiTopBarComponent } from './sai-top-bar.component';
+import { MysqlQueryService } from '@keira/shared/core';
 
 class SaiTopBarComponentPage extends PageObject<TestHostComponent> {
   get mainText(): HTMLSpanElement {

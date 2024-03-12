@@ -1,4 +1,4 @@
-import { getEnumKeys } from '../../../utils/helpers';
+import { getEnumKeys } from '@keira/shared/core';
 
 export enum SAI_ACTIONS {
   NONE = 0,
@@ -1158,11 +1158,11 @@ SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.PLAYER_TALK] = '(0/1)';
 
 // SMART_ACTION_VORTEX_SUMMON
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.VORTEX_SUMMON] =
-  `Allows you to summon creature in a customizable spiral(/vortex). Parameters can be confusing, example parameters for testing: 
-5000 - summon duration; 
-5 - Spiral Scaling; 
-25 - spiral appearance; 
-60 - range max; 
+  `Allows you to summon creature in a customizable spiral(/vortex). Parameters can be confusing, example parameters for testing:
+5000 - summon duration;
+5 - Spiral Scaling;
+25 - spiral appearance;
+60 - range max;
 40 - phi delta';`;
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.VORTEX_SUMMON] = 'Entry';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.VORTEX_SUMMON] = 'Duration';
@@ -1226,11 +1226,11 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.FOLLOW_GROUP] = 'Follow State';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.FOLLOW_GROUP] = 'Follow Type';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.FOLLOW_GROUP] = 'Distance';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.FOLLOW_GROUP] = 'Follow State (0: Stop Follow, 1: Start Follow)';
-SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.FOLLOW_GROUP] = `Smart Follow Type: 
-1 - FOLLOW_TYPE_CIRCLE; 
-2 - FOLLOW_TYPE_SEMI_CIRCLE_BEHIND; 
-3 - FOLLOW_TYPE_SEMI_CIRCLE_FRONT; 
-4 - FOLLOW_TYPE_LINE; 
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.FOLLOW_GROUP] = `Smart Follow Type:
+1 - FOLLOW_TYPE_CIRCLE;
+2 - FOLLOW_TYPE_SEMI_CIRCLE_BEHIND;
+3 - FOLLOW_TYPE_SEMI_CIRCLE_FRONT;
+4 - FOLLOW_TYPE_LINE;
 5 - FOLLOW_TYPE_COLUMN;
 6 - FOLLOW_TYPE_ANGULAR';`;
 SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.FOLLOW_GROUP] = 'Distance from Leader divided by 100 (300 = 3.f yards)';
@@ -1243,9 +1243,9 @@ SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.ORIENTATION_TARGET] = 'target_param1';
 SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.ORIENTATION_TARGET] = 'target_param2';
 SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.ORIENTATION_TARGET] = 'target_param3';
 SAI_ACTION_PARAM6_NAMES[SAI_ACTIONS.ORIENTATION_TARGET] = 'target_param4';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.ORIENTATION_TARGET] = `Orientation Target Type: 
-0 - Reset; 
-1 - Use target.o; 
-2 - Face this unit; 
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.ORIENTATION_TARGET] = `Orientation Target Type:
+0 - Reset;
+1 - Use target.o;
+2 - Face this unit;
 3 - Use parameters to acquire facing target;`;
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.ORIENTATION_TARGET] = 'If using type 3, use these params to get the unit your targets will face';

@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { map, Observable, of } from 'rxjs';
-import { ComplexKeyHandlerService } from '../../abstract/service/handlers/complex-key.handler.service';
-import { MysqlQueryService } from '../../services/query/mysql-query.service';
 import { SAI_ID_FIELDS, SAI_TABLE, SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
+import { ComplexKeyHandlerService, MysqlQueryService } from '@keira/shared/core';
 
 @Injectable({
   providedIn: 'root',
