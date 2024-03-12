@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { MultiRowEditorComponent } from '../../abstract/components/editors/multi-row-editor.component';
 import { EVENT_PHASE_MASK, SAI_TYPES, SMART_EVENT_FLAGS, SmartScripts } from '@keira/shared/acore-world-model';
 import {
   SAI_ACTION_PARAM1_NAMES,
@@ -60,14 +59,12 @@ import { SaiEditorService } from './sai-editor.service';
 import { SaiHandlerService } from './sai-handler.service';
 import { TimedActionlistComponent } from './timed-actionlist/timed-actionlist.component';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { EditorButtonsComponent } from '../editor-buttons/editor-buttons.component';
-import { FlagsSelectorBtnComponent } from '../selectors/flags-selector/flags-selector-btn.component';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '../query-output/query-output.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIf, NgFor } from '@angular/common';
 import { SaiTopBarComponent } from './sai-top-bar/sai-top-bar.component';
+import { EditorButtonsComponent, FlagsSelectorBtnComponent, MultiRowEditorComponent, QueryOutputComponent } from '@keira/shared/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

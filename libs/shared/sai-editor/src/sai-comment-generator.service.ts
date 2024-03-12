@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
-import { MysqlQueryService } from '../../services/query/mysql-query.service';
 import { SAI_ACTION_COMMENTS, SAI_EVENT_COMMENTS } from './constants/sai-comments';
 import {
   DYNAMIC_FLAGS,
@@ -15,9 +14,9 @@ import {
   unitStandFlags,
   unitStandStateType,
 } from './constants/sai-constants';
-import { SqliteQueryService } from '../../services/query/sqlite-query.service';
 import { SAI_TARGETS } from './constants/sai-targets';
 import { SAI_EVENTS } from './constants/sai-event';
+import { MysqlQueryService, SqliteQueryService } from '@keira/shared/core';
 
 @Injectable({
   providedIn: 'root',

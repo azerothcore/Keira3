@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
-import { MysqlQueryService } from '../../../services/query/mysql-query.service';
-import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
 import { SaiHandlerService } from '../sai-handler.service';
 import { NgIf } from '@angular/common';
+import { MysqlQueryService, SubscriptionHandler } from '@keira/shared/core';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection

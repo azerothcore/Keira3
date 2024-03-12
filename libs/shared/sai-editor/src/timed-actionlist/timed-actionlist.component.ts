@@ -3,9 +3,9 @@ import { DTCFG } from '@keira/shared/config';
 
 import { SmartScripts } from '@keira/shared/acore-world-model';
 import { Observable } from 'rxjs';
-import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { AsyncPipe } from '@angular/common';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { MysqlQueryService } from '@keira/shared/core';
 
 @Component({
   selector: 'keira-timed-actionlist',

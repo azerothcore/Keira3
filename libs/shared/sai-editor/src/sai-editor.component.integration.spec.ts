@@ -5,16 +5,14 @@ import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
-import { MysqlQueryService } from '../../services/query/mysql-query.service';
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { SaiEditorComponent } from './sai-editor.component';
 import { SaiHandlerService } from './sai-handler.service';
 import { SAI_EVENTS } from './constants/sai-event';
 import { SAI_ACTIONS } from './constants/sai-actions';
 import Spy = jasmine.Spy;
-import { MockedSqliteService } from '../../services/services.mock';
-import { SqliteService } from '../../services/sqlite.service';
 import { instance } from 'ts-mockito';
+import { MockedSqliteService, MysqlQueryService, SqliteService } from '@keira/shared/core';
 
 class SaiEditorPage extends MultiRowEditorPageObject<SaiEditorComponent> {
   get event1Name(): HTMLLabelElement {

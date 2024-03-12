@@ -2,7 +2,6 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { of } from 'rxjs';
-import { MysqlQueryService } from '../../services/query/mysql-query.service';
 import {
   DYNAMIC_FLAGS,
   EVENT_FLAGS,
@@ -17,12 +16,10 @@ import {
 } from './constants/sai-constants';
 import { SAI_TARGETS } from './constants/sai-targets';
 import { SaiCommentGeneratorService } from './sai-comment-generator.service';
-import { SqliteQueryService } from '../../services/query/sqlite-query.service';
 import { SAI_EVENTS } from './constants/sai-event';
 import { SAI_ACTIONS } from './constants/sai-actions';
-import { MockedSqliteService } from '../../services/services.mock';
-import { SqliteService } from '../../services/sqlite.service';
 import { instance } from 'ts-mockito';
+import { MockedSqliteService, MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/core';
 
 describe('SaiCommentGeneratorService', () => {
   beforeEach(waitForAsync(() =>

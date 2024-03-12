@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { MysqlQueryService, SaiHandlerService } from '@keira/shared/core';
+import { MysqlQueryService } from '@keira/shared/core';
+import { SaiHandlerService } from '@keira/shared/sai-editor';
 
 @Injectable({
   providedIn: 'root',

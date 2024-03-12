@@ -13,13 +13,14 @@ import { SpellLootHandlerService } from '@keira/features/other-loots';
 import { QuestHandlerService } from '@keira/features/quest';
 import { SpellHandlerService } from '@keira/features/spell';
 import { SidebarService } from './sidebar.service';
-import { LocationService, MysqlService, SaiHandlerService } from '@keira/shared/core';
+import { LocationService, MysqlService } from '@keira/shared/core';
 import { UnsavedIconComponent } from './unsaved-icon/unsaved-icon.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { LogoutBtnComponent } from './logout-btn/logout-btn.component';
 import { SwitchLanguageComponent } from '@keira/shared/core';
 import { NgClass, NgIf, TitleCasePipe } from '@angular/common';
+import { SaiHandlerService } from '@keira/shared/sai-editor';
 
 const animationTime = 200;
 

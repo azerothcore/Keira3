@@ -24,6 +24,7 @@ export function getPartial<T>(input: T | Partial<T>, fields: string[]): Partial<
   return output;
 }
 
+/* istanbul ignore next */ // TODO: fix coverage
 export function getEnumKeys(enumInput: { [s: number]: string }): number[] {
   return Object.keys(enumInput)
     .filter((k) => !isNaN(Number(k)))

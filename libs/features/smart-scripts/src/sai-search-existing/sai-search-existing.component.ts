@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { getEnumKeys, SaiHandlerService, SaiSearchService, SelectComplexKeyComponent } from '@keira/shared/core';
+import { getEnumKeys, SaiSearchService, SelectComplexKeyComponent } from '@keira/shared/core';
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { HighlightjsWrapperComponent } from '@keira/shared/core';
 import { NgFor, NgIf } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SaiHandlerService } from '@keira/shared/sai-editor';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 
 import { SAI_ID_2, SAI_ID_FIELDS, SAI_TABLE, SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
-import { MysqlQueryService } from '../../services/query/mysql-query.service';
-import { MultiRowComplexKeyEditorService } from '../../abstract/service/editors/multi-row-complex-key-editor.service';
 import { SaiHandlerService } from './sai-handler.service';
 import { SaiCommentGeneratorService } from './sai-comment-generator.service';
+import { MultiRowComplexKeyEditorService, MysqlQueryService } from '@keira/shared/core';
 
 @Injectable({
   providedIn: 'root',

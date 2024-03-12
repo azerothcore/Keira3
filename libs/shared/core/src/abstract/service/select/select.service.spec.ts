@@ -5,18 +5,12 @@ import { instance } from 'ts-mockito';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { MockedMysqlQueryService } from '../../../services/services.mock';
 import { MockHandlerService, SelectMockService } from '../../../core.mock';
-import { SaiHandlerService } from '../../../modules/sai-editor/sai-handler.service';
 
 describe('SelectService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      providers: [
-        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-        SelectMockService,
-        MockHandlerService,
-        SaiHandlerService,
-      ],
+      providers: [{ provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }, SelectMockService, MockHandlerService],
     }),
   );
 

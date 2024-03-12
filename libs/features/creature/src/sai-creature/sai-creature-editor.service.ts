@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { MysqlQueryService, SaiCommentGeneratorService, SaiEditorService } from '@keira/shared/core';
+import { MysqlQueryService } from '@keira/shared/core';
 import { ToastrService } from 'ngx-toastr';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
+import { SaiCommentGeneratorService, SaiEditorService } from '@keira/shared/sai-editor';
 
 @Injectable({
   providedIn: 'root',

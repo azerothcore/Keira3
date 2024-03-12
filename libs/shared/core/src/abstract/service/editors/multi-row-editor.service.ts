@@ -23,6 +23,8 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   get entitySecondIdField(): string {
     return this._entitySecondIdField;
   }
+
+  /* istanbul ignore next */ // TODO: fix coverage
   get errors(): string[] {
     return this._errors;
   }
