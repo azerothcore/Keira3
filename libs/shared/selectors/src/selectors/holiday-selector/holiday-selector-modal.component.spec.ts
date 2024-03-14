@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { instance } from 'ts-mockito';
+import { instance, mock } from 'ts-mockito';
 
 import { HolidaySelectorModalComponent } from './holiday-selector-modal.component';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { HolidaySearchService } from '../../search/holiday-search.service';
-import { MockedMysqlQueryService, MockedSqliteService } from '../../../services/services.mock';
+
 import { SqliteService } from '../../../services/sqlite.service';
 
 describe('HolidaySelectorModalComponent', () => {
@@ -19,8 +19,8 @@ describe('HolidaySelectorModalComponent', () => {
       imports: [HolidaySelectorModalComponent, TranslateTestingModule],
       providers: [
         BsModalRef,
-        { provide: SqliteService, useValue: instance(MockedSqliteService) },
-        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+        { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
       ],
     }).compileComponents();
   }));

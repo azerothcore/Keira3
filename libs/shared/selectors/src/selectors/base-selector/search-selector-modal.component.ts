@@ -3,7 +3,7 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 import { DTCFG } from '@keira/shared/config';
 import { BaseSelectorModalComponent } from './base-selector-modal.component';
 import { TableRow } from '@keira/shared/constants';
-import { SearchService } from '../../search/search.service';
+import { SearchService } from '@keira/shared/core';
 
 export abstract class SearchSelectorModalComponent<T extends TableRow> extends BaseSelectorModalComponent {
   readonly DTCFG = DTCFG;

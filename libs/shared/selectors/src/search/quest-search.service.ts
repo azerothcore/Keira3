@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 
 import { QUEST_TEMPLATE_SEARCH_FIELDS, QUEST_TEMPLATE_TABLE, QuestTemplate } from '@keira/shared/acore-world-model';
-import { SearchService } from './search.service';
-import { MysqlQueryService } from '@keira/shared/core';
+import { SearchService } from '@keira/shared/core';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 
 @Injectable({
   providedIn: 'root',

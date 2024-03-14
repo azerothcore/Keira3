@@ -6,7 +6,7 @@ import { SAI_TYPES } from '@keira/shared/acore-world-model';
 import { of } from 'rxjs';
 import { SaiHandlerService } from '../sai-handler.service';
 import { SaiTopBarComponent } from './sai-top-bar.component';
-import { MysqlQueryService } from '@keira/shared/core';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 
 class SaiTopBarComponentPage extends PageObject<TestHostComponent> {
   get mainText(): HTMLSpanElement {

@@ -11,8 +11,8 @@ import { SaiHandlerService } from './sai-handler.service';
 import { SAI_EVENTS } from './constants/sai-event';
 import { SAI_ACTIONS } from './constants/sai-actions';
 import Spy = jasmine.Spy;
-import { instance } from 'ts-mockito';
-import { MockedSqliteService, MysqlQueryService, SqliteService } from '@keira/shared/core';
+import { instance, mock } from 'ts-mockito';
+import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 
 class SaiEditorPage extends MultiRowEditorPageObject<SaiEditorComponent> {
   get event1Name(): HTMLLabelElement {
@@ -106,7 +106,7 @@ describe('SaiEditorComponent integration tests', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, TranslateTestingModule],
-      providers: [{ provide: SqliteService, useValue: instance(MockedSqliteService) }],
+      providers: [{ provide: SqliteService, useValue: instance(mock(SqliteService)) }],
     }).compileComponents();
   }));
 

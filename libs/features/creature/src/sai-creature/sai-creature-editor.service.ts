@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MysqlQueryService } from '@keira/shared/core';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 import { ToastrService } from 'ngx-toastr';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { SaiCommentGeneratorService, SaiEditorService } from '@keira/shared/sai-editor';

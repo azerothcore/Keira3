@@ -1,6 +1,5 @@
 export * from './search/creature-search.service';
 export * from './search/item-enchantment-search.service';
-export * from './search/search.service';
 export * from './search/gameobject-search.service';
 export * from './search/quest-search.service';
 export * from './search/faction-search.service';

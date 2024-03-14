@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { instance } from 'ts-mockito';
+import { instance, mock } from 'ts-mockito';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { LanguageSearchService } from '../../search/language-search.service';
 import { LanguageSelectorModalComponent } from './language-selector-modal.component';
-import { MockedMysqlQueryService, MockedSqliteService } from '../../../services/services.mock';
+
 import { SqliteService } from '../../../services/sqlite.service';
 
 describe('LanguageSelectorModalComponent', () => {
@@ -18,8 +18,8 @@ describe('LanguageSelectorModalComponent', () => {
       imports: [LanguageSelectorModalComponent, TranslateTestingModule],
       providers: [
         BsModalRef,
-        { provide: SqliteService, useValue: instance(MockedSqliteService) },
-        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+        { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
       ],
     }).compileComponents();
   }));

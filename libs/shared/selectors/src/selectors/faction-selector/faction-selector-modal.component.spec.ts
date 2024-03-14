@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { instance } from 'ts-mockito';
+import { instance, mock } from 'ts-mockito';
 
 import { FactionSelectorModalComponent } from './faction-selector-modal.component';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { FactionSearchService } from '../../search/faction-search.service';
-import { MockedMysqlQueryService, MockedSqliteService } from '../../../services/services.mock';
+
 import { SqliteService } from '../../../services/sqlite.service';
 
 describe('FactionSelectorModalComponent', () => {
@@ -19,8 +19,8 @@ describe('FactionSelectorModalComponent', () => {
       imports: [FactionSelectorModalComponent, TranslateTestingModule],
       providers: [
         BsModalRef,
-        { provide: SqliteService, useValue: instance(MockedSqliteService) },
-        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+        { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
       ],
     }).compileComponents();
   }));

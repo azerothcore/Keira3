@@ -1,12 +1,11 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { instance } from 'ts-mockito';
+import { instance, mock } from 'ts-mockito';
 
 import { GameobjectSelectorModalComponent } from './gameobject-selector-modal.component';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { GameobjectSearchService } from '../../search/gameobject-search.service';
-import { MockedMysqlQueryService } from '../../../services/services.mock';
 
 describe('GameobjectSelectorModalComponent', () => {
   let component: GameobjectSelectorModalComponent;
@@ -16,7 +15,7 @@ describe('GameobjectSelectorModalComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [GameobjectSelectorModalComponent, TranslateTestingModule],
-      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) }],
     }).compileComponents();
   }));
 

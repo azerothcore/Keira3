@@ -6,7 +6,7 @@ import { SmartScripts } from '@keira/shared/acore-world-model';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { of } from 'rxjs';
 import { TimedActionlistComponent } from './timed-actionlist.component';
-import { MysqlQueryService } from '@keira/shared/core';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 
 @Component({
   template: `<keira-timed-actionlist [creatureId]="creatureId"></keira-timed-actionlist>`,

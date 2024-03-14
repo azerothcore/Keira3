@@ -14,14 +14,7 @@ import packageInfo from '../../../../package.json';
 import { AppComponent } from './app.component';
 
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import {
-  ElectronService,
-  MockedElectronService,
-  MockedMysqlService,
-  ModalConfirmComponent,
-  MysqlService,
-  QueryErrorComponent,
-} from '@keira/shared/core';
+import { ElectronService, ModalConfirmComponent, MysqlService, QueryErrorComponent } from '@keira/shared/core';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { MainWindowComponent } from '@keira/main/main-window';
 import { ConnectionWindowComponent } from '@keira/main/connection-window';
@@ -45,8 +38,8 @@ describe('AppComponent', () => {
         AppComponent,
       ],
       providers: [
-        { provide: ElectronService, useValue: instance(MockedElectronService) },
-        { provide: MysqlService, useValue: instance(MockedMysqlService) },
+        { provide: ElectronService, useValue: instance(mock(ElectronService)) },
+        { provide: MysqlService, useValue: instance(mock(MysqlService)) },
         { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
       ],
     }).compileComponents();
@@ -122,7 +115,7 @@ describe('AppComponent', () => {
   });
 
   afterEach(() => {
-    reset(MockedElectronService);
+    reset(mock(ElectronService));
     reset(MockedMysqlService);
   });
 });

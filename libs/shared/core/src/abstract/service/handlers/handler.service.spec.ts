@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CreatureTemplate } from '@keira/shared/acore-world-model';
 import { HandlerService } from './handler.service';
-import { MockHandlerService } from '../../../core.mock';
 
 describe('HandlerService', () => {
   let service: HandlerService<CreatureTemplate>;

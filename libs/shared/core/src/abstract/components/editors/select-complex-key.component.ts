@@ -2,7 +2,7 @@ import { ComplexKeyHandlerService } from '../../service/handlers/complex-key.han
 import { TableRow, WIKI_BASE_URL } from '@keira/shared/constants';
 import { DTCFG } from '@keira/shared/config';
 import { ChangeDetectorRef, inject } from '@angular/core';
-import { SearchService } from '@keira/shared/selectors';
+import { SearchService } from '../../service/select/search.service';
 
 /* istanbul ignore next */ // TODO: fix coverage
 export abstract class SelectComplexKeyComponent<T extends TableRow> {

@@ -1,12 +1,11 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { instance } from 'ts-mockito';
+import { instance, mock } from 'ts-mockito';
 
 import { QuestSelectorModalComponent } from './quest-selector-modal.component';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { QuestSearchService } from '../../search/quest-search.service';
-import { MockedMysqlQueryService } from '../../../services/services.mock';
 
 describe('QuestSelectorModalComponent', () => {
   let component: QuestSelectorModalComponent;
@@ -16,7 +15,7 @@ describe('QuestSelectorModalComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [QuestSelectorModalComponent, TranslateTestingModule],
-      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) }],
     }).compileComponents();
   }));
 

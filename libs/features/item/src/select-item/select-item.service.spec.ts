@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MockedMysqlQueryService, MysqlQueryService } from '@keira/shared/core';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 
-import { instance } from 'ts-mockito';
+import { instance, mock } from 'ts-mockito';
 import { ItemHandlerService } from '../item-handler.service';
 import { SelectItemService } from './select-item.service';
 
@@ -10,7 +10,7 @@ describe('SelectItemService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      providers: [{ provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }, ItemHandlerService, SelectItemService],
+      providers: [{ provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) }, ItemHandlerService, SelectItemService],
     }),
   );
 

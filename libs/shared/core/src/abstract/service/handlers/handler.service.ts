@@ -1,6 +1,6 @@
 import { Router } from '@angular/router';
 import { TableRow } from '@keira/shared/constants';
-import { SubscriptionHandler } from '@keira/shared/core';
+import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
 
 export abstract class HandlerService<T extends TableRow> extends SubscriptionHandler {
   protected _selected: string;

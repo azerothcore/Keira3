@@ -4,7 +4,7 @@ import { DTCFG } from '@keira/shared/config';
 import { ReferenceLootTemplate } from '@keira/shared/acore-world-model';
 import { SubscriptionHandler } from '@keira/shared/core';
 import { ReferenceViewerService } from './reference-viewer.service';
-import { MysqlQueryService } from '@keira/shared/core';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 import { IconComponent } from '@keira/shared/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';

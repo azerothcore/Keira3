@@ -3,14 +3,14 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { QueryError } from 'mysql2';
-import { instance } from 'ts-mockito';
+import { instance, mock } from 'ts-mockito';
 import { ToastrService } from 'ngx-toastr';
 
-import { MysqlQueryService } from '../../../services/query/mysql-query.service';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SingleRowComplexKeyEditorService } from './single-row-complex-key-editor.service';
 
 import { getPartial } from '../../../utils/helpers';
-import { MockedMysqlQueryService, MockedToastrService } from '../../../services/services.mock';
+
 import { mockChangeDetectorRef } from '@keira/shared/test-utils';
 import { MOCK_NAME, MockEntity, MockHandlerService, MockSingleRowComplexKeyEditorService } from '../../../core.mock';
 
@@ -21,8 +21,8 @@ describe('SingleRowComplexKeyEditorService', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       providers: [
-        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-        { provide: ToastrService, useValue: instance(MockedToastrService) },
+        { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
+        { provide: ToastrService, useValue: instance(mock(ToastrService)) },
       ],
     }),
   );

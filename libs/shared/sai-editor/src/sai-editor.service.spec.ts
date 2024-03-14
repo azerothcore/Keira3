@@ -3,10 +3,10 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { SmartScripts } from '@keira/shared/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
-import { instance } from 'ts-mockito';
+import { instance, mock } from 'ts-mockito';
 import { SaiEditorService } from './sai-editor.service';
 import { SaiHandlerService } from './sai-handler.service';
-import { MockedMysqlQueryService, MockedSqliteService, MockedToastrService, MysqlQueryService, SqliteService } from '@keira/shared/core';
+import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 
 describe('SAI Editor Service', () => {
   let service: SaiEditorService;
@@ -19,9 +19,9 @@ describe('SAI Editor Service', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       providers: [
-        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-        { provide: ToastrService, useValue: instance(MockedToastrService) },
-        { provide: SqliteService, useValue: instance(MockedSqliteService) },
+        { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
+        { provide: ToastrService, useValue: instance(mock(ToastrService)) },
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
     }),
   );

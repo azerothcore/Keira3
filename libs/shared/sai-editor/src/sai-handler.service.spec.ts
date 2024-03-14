@@ -4,16 +4,16 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { of } from 'rxjs';
-import { instance } from 'ts-mockito';
+import { instance, mock } from 'ts-mockito';
 import { SAI_TYPES } from '@keira/shared/acore-world-model';
 import { SaiHandlerService } from './sai-handler.service';
-import { MockedMysqlQueryService, MysqlQueryService } from '@keira/shared/core';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 
 describe('SaiHandlerService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      providers: [{ provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+      providers: [{ provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) }],
     }),
   );
 

@@ -1,15 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 
-import { instance } from 'ts-mockito';
+import { instance, mock } from 'ts-mockito';
 
 import { LanguageSearchService } from './language-search.service';
-import { SqliteQueryService } from '@keira/shared/core';
-import { MockedSqliteQueryService } from '../../services/services.mock';
+import { SqliteQueryService } from '@keira/shared/db-layer';
 
 describe('LanguageSearchService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [{ provide: SqliteQueryService, useValue: instance(MockedSqliteQueryService) }],
+      providers: [{ provide: SqliteQueryService, useValue: instance(mock(SqliteQueryService)) }],
     }),
   );
 

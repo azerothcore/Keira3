@@ -2,7 +2,7 @@
 import { ChangeDetectorRef, inject } from '@angular/core';
 import { TableRow } from '@keira/shared/constants';
 import { SelectService } from '../../service/select/select.service';
-import { MysqlQueryService } from '../../../services/query/mysql-query.service';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 import { HandlerService } from '../../service/handlers/handler.service';
 import { DTCFG } from '@keira/shared/config';
 

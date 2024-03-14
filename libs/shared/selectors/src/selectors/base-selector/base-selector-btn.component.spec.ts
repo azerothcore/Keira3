@@ -6,12 +6,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
-import { instance } from 'ts-mockito';
-import { MysqlService } from '../../../services/mysql.service';
+import { instance, mock } from 'ts-mockito';
 import { ItemSelectorBtnComponent } from '../item-selector/item-selector-btn.component';
 import { ItemSelectorModalComponent } from '../item-selector/item-selector-modal.component';
-import { MockedMysqlService } from '../../../services/services.mock';
-import { HighlightjsWrapperComponent } from '@keira/shared/core';
+import { MysqlService } from '@keira/shared/db-layer';
+import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 
 @NgModule({
   imports: [
@@ -25,7 +24,7 @@ import { HighlightjsWrapperComponent } from '@keira/shared/core';
     TranslateTestingModule,
     ItemSelectorModalComponent,
   ],
-  providers: [{ provide: MysqlService, useValue: instance(MockedMysqlService) }],
+  providers: [{ provide: MysqlService, useValue: instance(mock(MysqlService)) }],
 })
 class TestModule {}
 

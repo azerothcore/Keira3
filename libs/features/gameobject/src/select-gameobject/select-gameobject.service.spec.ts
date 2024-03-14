@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MockedMysqlQueryService, MysqlQueryService } from '@keira/shared/core';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 
-import { instance } from 'ts-mockito';
+import { instance, mock } from 'ts-mockito';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { SelectGameobjectService } from './select-gameobject.service';
@@ -12,7 +12,7 @@ describe('SelectGameobjectService', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       providers: [
-        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+        { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
         GameobjectHandlerService,
         SaiGameobjectHandlerService,
         SelectGameobjectService,

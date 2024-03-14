@@ -7,9 +7,9 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { of } from 'rxjs';
 import { ReferenceViewerComponent } from './reference-viewer.component';
 import { ReferenceViewerService } from './reference-viewer.service';
-import { MockedSqliteService } from '@keira/shared/core';
+
 import { SqliteService } from '@keira/shared/core';
-import { instance } from 'ts-mockito';
+import { instance, mock } from 'ts-mockito';
 
 class ReferenceViewerComponentPage extends PageObject<TestHostComponent> {
   get referenceViewers() {
@@ -31,7 +31,7 @@ describe('ReferenceViewerComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [TooltipModule.forRoot(), TestHostComponent, ReferenceViewerComponent],
-      providers: [{ provide: SqliteService, useValue: instance(MockedSqliteService) }],
+      providers: [{ provide: SqliteService, useValue: instance(mock(SqliteService)) }],
     }).compileComponents();
   }));
 

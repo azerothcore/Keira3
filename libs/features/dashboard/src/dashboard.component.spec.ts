@@ -1,5 +1,5 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { MockedMysqlQueryService, MysqlQueryService, MysqlService } from '@keira/shared/core';
+import { MysqlQueryService, MysqlService } from '@keira/shared/core';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { VersionDbRow, VersionRow } from '@keira/shared/constants';
 import { of, throwError } from 'rxjs';
@@ -53,7 +53,7 @@ describe('DashboardComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [DashboardComponent, TranslateTestingModule],
-      providers: [{ provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+      providers: [{ provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) }],
     }).compileComponents();
   }));
 

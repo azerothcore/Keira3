@@ -2,11 +2,11 @@ import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { ToastrService } from 'ngx-toastr';
-import { instance } from 'ts-mockito';
-import { MysqlQueryService } from '../../../services/query/mysql-query.service';
+import { instance, mock } from 'ts-mockito';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SingleRowEditorService } from './single-row-editor.service';
 import Spy = jasmine.Spy;
-import { MockedMysqlQueryService, MockedToastrService } from '../../../services/services.mock';
+
 import { MockEntity, MockHandlerService, MockSingleRowEditorService } from '../../../core.mock';
 
 describe('SingleRowEditorService', () => {
@@ -16,8 +16,8 @@ describe('SingleRowEditorService', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       providers: [
-        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-        { provide: ToastrService, useValue: instance(MockedToastrService) },
+        { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
+        { provide: ToastrService, useValue: instance(mock(ToastrService)) },
       ],
     }),
   );

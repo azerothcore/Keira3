@@ -6,7 +6,7 @@ import { of, throwError } from 'rxjs';
 import { instance, reset } from 'ts-mockito';
 
 import { ConnectionWindowComponent } from './connection-window.component';
-import { MockedMysqlService, MysqlService } from '@keira/shared/core';
+import { MysqlService } from '@keira/shared/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginConfigService } from '@keira/shared/login-config';
 
@@ -87,7 +87,7 @@ describe('ConnectionWindowComponent', () => {
     TestBed.configureTestingModule({
       imports: [BrowserAnimationsModule, TooltipModule.forRoot(), ConnectionWindowComponent, TranslateTestingModule],
       providers: [
-        { provide: MysqlService, useValue: instance(MockedMysqlService) },
+        { provide: MysqlService, useValue: instance(mock(MysqlService)) },
         {
           provide: LoginConfigService,
           useValue: jasmine.createSpyObj('LoginConfigService', [

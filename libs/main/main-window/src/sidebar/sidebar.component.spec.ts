@@ -2,7 +2,7 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { instance } from 'ts-mockito';
+import { instance, mock } from 'ts-mockito';
 import { ConditionsHandlerService } from '@keira/features/conditions';
 import { CreatureHandlerService } from '@keira/features/creature';
 import { SaiCreatureHandlerService } from '@keira/features/creature';
@@ -18,8 +18,9 @@ import { QuestHandlerService } from '@keira/features/quest';
 import { SpellHandlerService } from '@keira/features/spell';
 import { SidebarComponent } from './sidebar.component';
 import { SidebarService } from './sidebar.service';
-import { ElectronService, LocationService, MockedElectronService, MockedMysqlService, MysqlService } from '@keira/shared/core';
+import { ElectronService, LocationService } from '@keira/shared/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MysqlService } from '@keira/shared/db-layer';
 
 class SidebarComponentPage extends PageObject<SidebarComponent> {
   get toggleSidebarBtn(): HTMLButtonElement {
@@ -38,8 +39,8 @@ describe('SidebarComponent', () => {
     TestBed.configureTestingModule({
       imports: [BrowserAnimationsModule, SidebarComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
-        { provide: ElectronService, useValue: instance(MockedElectronService) },
-        { provide: MysqlService, useValue: instance(MockedMysqlService) },
+        { provide: ElectronService, useValue: instance(mock(ElectronService)) },
+        { provide: MysqlService, useValue: instance(mock(MysqlService)) },
         CreatureHandlerService,
         SaiCreatureHandlerService,
         QuestHandlerService,

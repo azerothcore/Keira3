@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { NPC_TEXT_SEARCH_FIELDS, NPC_TEXT_TABLE, NpcText } from '@keira/shared/acore-world-model';
-import { MysqlQueryService } from '@keira/shared/core';
-import { SearchService } from './search.service';
+import { MysqlQueryService } from '@keira/shared/db-layer';
+import { SearchService } from '@keira/shared/core';
 
 @Injectable({
   providedIn: 'root',

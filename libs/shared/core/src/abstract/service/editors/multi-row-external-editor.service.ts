@@ -1,6 +1,6 @@
 import { Class, TableRow } from '@keira/shared/constants';
 import { ToastrService } from 'ngx-toastr';
-import { MysqlQueryService } from '../../../services/query/mysql-query.service';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 import { HandlerService } from '../handlers/handler.service';
 import { MultiRowEditorService } from './multi-row-editor.service';
 
