@@ -26,11 +26,11 @@ import {
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateService } from './creature-template.service';
 import { VIEWER_TYPE, Model3DViewerComponent } from '@keira/shared/model-3d-viewer';
-import { CreatureSelectorBtnComponent } from '@keira/shared/core';
-import { SpellSelectorBtnComponent } from '@keira/shared/core';
-import { FlagsSelectorBtnComponent } from '@keira/shared/core';
-import { FactionSelectorBtnComponent } from '@keira/shared/core';
-import { SingleValueSelectorBtnComponent } from '@keira/shared/core';
+import { CreatureSelectorBtnComponent } from '@keira/shared/selectors';
+import { SpellSelectorBtnComponent } from '@keira/shared/selectors';
+import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
+import { FactionSelectorBtnComponent } from '@keira/shared/selectors';
+import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QueryOutputComponent } from '@keira/shared/core';

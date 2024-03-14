@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ConditionsSearchService, getEnumKeys, SelectComplexKeyComponent } from '@keira/shared/core';
+import { getEnumKeys, SelectComplexKeyComponent } from '@keira/shared/core';
 import { CONDITION_SOURCE_TYPES, Conditions } from '@keira/shared/acore-world-model';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
@@ -7,6 +7,7 @@ import { HighlightjsWrapperComponent } from '@keira/shared/core';
 import { NgFor, NgIf } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ConditionsSearchService } from '@keira/shared/selectors';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -13,7 +13,7 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
   }
 
   constructor(
-    protected fixture: ComponentFixture<T>,
+    protected override fixture: ComponentFixture<T>,
     config: { clearStorage: boolean } = { clearStorage: true },
   ) {
     super(fixture, config);

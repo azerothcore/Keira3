@@ -1,7 +1,7 @@
 import { StringKeys, TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { HandlerService } from '../handlers/handler.service';
-import { SearchService } from '../../../modules/search/search.service';
+import { SearchService } from '@keira/shared/selectors';
 
 export abstract class SelectService<T extends TableRow> extends SearchService<T> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

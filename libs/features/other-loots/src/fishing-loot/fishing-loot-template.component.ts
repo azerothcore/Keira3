@@ -3,7 +3,7 @@ import { LootTemplateComponent } from '@keira/shared/core';
 import { FishingLootTemplate } from '@keira/shared/acore-world-model';
 import { FishingLootHandlerService } from './fishing-loot-handler.service';
 import { FishingLootTemplateService } from './fishing-loot-template.service';
-import { LootEditorComponent } from '@keira/shared/core';
+import { LootEditorComponent } from '@keira/shared/loot-editor';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIf } from '@angular/common';
 import { TopBarComponent } from '@keira/shared/core';

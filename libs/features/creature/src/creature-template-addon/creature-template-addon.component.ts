@@ -9,7 +9,7 @@ import {
 } from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateAddonService } from './creature-template-addon.service';
-import { SingleValueSelectorBtnComponent } from '@keira/shared/core';
+import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QueryOutputComponent } from '@keira/shared/core';

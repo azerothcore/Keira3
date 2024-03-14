@@ -5,7 +5,7 @@ import { ClipboardService } from 'ngx-clipboard';
 import { filter } from 'rxjs';
 import { EditorService } from '../../abstract/service/editors/editor.service';
 import { TableRow } from '@keira/shared/constants';
-import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
+import { SubscriptionHandler } from '@keira/shared/core';
 import { ModalConfirmComponent } from '../modal-confirm/modal-confirm.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { QueryErrorComponent } from './query-error/query-error.component';

@@ -8,7 +8,7 @@ import { QuestPreviewComponent } from '../quest-preview/quest-preview.component'
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { EditorButtonsComponent } from '@keira/shared/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { GameobjectSelectorBtnComponent } from '@keira/shared/core';
+import { GameobjectSelectorBtnComponent } from '@keira/shared/selectors';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QueryOutputComponent } from '@keira/shared/core';
 import { TranslateModule } from '@ngx-translate/core';

@@ -5,7 +5,7 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectQuestitemService } from './gameobject-questitem.service';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { EditorButtonsComponent } from '@keira/shared/core';
-import { ItemSelectorBtnComponent } from '@keira/shared/core';
+import { ItemSelectorBtnComponent } from '@keira/shared/selectors';
 import { IconComponent } from '@keira/shared/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QueryOutputComponent } from '@keira/shared/core';

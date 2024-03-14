@@ -5,7 +5,7 @@ import { SaiCreatureEditorService } from './sai-creature-editor.service';
 import { TimedActionlistComponent } from '@keira/shared/sai-editor';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { EditorButtonsComponent } from '@keira/shared/core';
-import { FlagsSelectorBtnComponent } from '@keira/shared/core';
+import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QueryOutputComponent } from '@keira/shared/core';

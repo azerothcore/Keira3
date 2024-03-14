@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { ICON_SKILLS } from '@keira/shared/constants';
-import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
+import { SubscriptionHandler } from '@keira/shared/core';
 import { IconService } from './icon.service';
 
 @Component({

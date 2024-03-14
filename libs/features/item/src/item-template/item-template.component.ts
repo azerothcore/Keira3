@@ -31,18 +31,20 @@ import { SPELL_TRIGGERS } from './item-constants';
 import { ItemPreviewService } from './item-preview.service';
 import { ItemTemplateService } from './item-template.service';
 import { IconComponent } from '@keira/shared/core';
-import { ItemEnchantmentSelectorBtnComponent } from '@keira/shared/core';
-import { HolidaySelectorBtnComponent } from '@keira/shared/core';
-import { AreaSelectorBtnComponent } from '@keira/shared/core';
-import { MapSelectorBtnComponent } from '@keira/shared/core';
-import { FactionSelectorBtnComponent } from '@keira/shared/core';
-import { SpellSelectorBtnComponent } from '@keira/shared/core';
-import { SkillSelectorBtnComponent } from '@keira/shared/core';
-import { LanguageSelectorBtnComponent } from '@keira/shared/core';
-import { ItemLimitCategorySelectorBtnComponent } from '@keira/shared/core';
-import { FlagsSelectorBtnComponent } from '@keira/shared/core';
-import { QuestSelectorBtnComponent } from '@keira/shared/core';
-import { SingleValueSelectorBtnComponent } from '@keira/shared/core';
+import {
+  AreaSelectorBtnComponent,
+  HolidaySelectorBtnComponent,
+  ItemEnchantmentSelectorBtnComponent,
+  ItemLimitCategorySelectorBtnComponent,
+  LanguageSelectorBtnComponent,
+  MapSelectorBtnComponent,
+} from '@keira/shared/selectors';
+import { FactionSelectorBtnComponent } from '@keira/shared/selectors';
+import { SpellSelectorBtnComponent } from '@keira/shared/selectors';
+import { SkillSelectorBtnComponent } from '@keira/shared/selectors';
+import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
+import { QuestSelectorBtnComponent } from '@keira/shared/selectors';
+import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QueryOutputComponent } from '@keira/shared/core';

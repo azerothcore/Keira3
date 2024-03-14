@@ -6,12 +6,12 @@ import { GossipMenuService } from './gossip-menu.service';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { EditorButtonsComponent } from '@keira/shared/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { NpcTextSelectorBtnComponent } from '@keira/shared/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QueryOutputComponent } from '@keira/shared/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIf, AsyncPipe } from '@angular/common';
 import { TopBarComponent } from '@keira/shared/core';
+import { NpcTextSelectorBtnComponent } from '@keira/shared/selectors';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

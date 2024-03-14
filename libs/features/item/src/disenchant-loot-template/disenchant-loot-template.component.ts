@@ -3,7 +3,7 @@ import { LootTemplateIdComponent } from '@keira/shared/core';
 import { DisenchantLootTemplate } from '@keira/shared/acore-world-model';
 import { ItemHandlerService } from '../item-handler.service';
 import { DisenchantLootTemplateService } from './disenchant-loot-template.service';
-import { LootEditorComponent } from '@keira/shared/core';
+import { LootEditorComponent } from '@keira/shared/loot-editor';
 import { NgIf } from '@angular/common';
 import { TopBarComponent } from '@keira/shared/core';
 

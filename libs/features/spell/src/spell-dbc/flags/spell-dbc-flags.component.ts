@@ -13,8 +13,8 @@ import {
 import { ModelForm } from '@keira/shared/core';
 import { NgFor } from '@angular/common';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { FlagsSelectorBtnComponent } from '@keira/shared/core';
 import { TranslateModule } from '@ngx-translate/core';
+import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

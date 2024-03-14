@@ -3,7 +3,7 @@ import { LootTemplateIdComponent } from '@keira/shared/core';
 import { SkinningLootTemplate } from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SkinningLootTemplateService } from './skinning-loot-template.service';
-import { LootEditorComponent } from '@keira/shared/core';
+import { LootEditorComponent } from '@keira/shared/loot-editor';
 import { NgIf } from '@angular/common';
 import { TopBarComponent } from '@keira/shared/core';
 

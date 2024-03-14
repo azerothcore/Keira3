@@ -3,7 +3,7 @@ import { LootTemplateComponent } from '@keira/shared/core';
 import { ProspectingLootTemplate } from '@keira/shared/acore-world-model';
 import { ItemHandlerService } from '../item-handler.service';
 import { ProspectingLootTemplateService } from './prospecting-loot-template.service';
-import { LootEditorComponent } from '@keira/shared/core';
+import { LootEditorComponent } from '@keira/shared/loot-editor';
 import { NgIf } from '@angular/common';
 import { TopBarComponent } from '@keira/shared/core';
 

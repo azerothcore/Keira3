@@ -6,7 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SpellDbcSpellEffectComponent } from './spell-dbc-spell-effect/spell-dbc-spell-effect.component';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { FlagsSelectorBtnComponent } from '@keira/shared/core';
+import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

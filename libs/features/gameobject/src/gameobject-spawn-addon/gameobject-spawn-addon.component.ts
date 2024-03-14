@@ -4,7 +4,7 @@ import { GameobjectSpawnAddon, INVISIBILITY_TYPE } from '@keira/shared/acore-wor
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectSpawnAddonService } from './gameobject-spawn-addon.service';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { SingleValueSelectorBtnComponent } from '@keira/shared/core';
+import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QueryOutputComponent } from '@keira/shared/core';

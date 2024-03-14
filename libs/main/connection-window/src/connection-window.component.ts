@@ -6,12 +6,12 @@ import { ConnectionOptions, QueryError } from 'mysql2';
 import packageInfo from '../../../../package.json';
 
 import { ModelForm, MysqlService, SubscriptionHandler } from '@keira/shared/core';
-import { SwitchLanguageComponent } from '@keira/shared/core';
 import { QueryErrorComponent } from '@keira/shared/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { NgIf, NgFor } from '@angular/common';
 import { LoginConfigService } from '@keira/shared/login-config';
+import { SwitchLanguageComponent } from '@keira/shared/switch-language';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

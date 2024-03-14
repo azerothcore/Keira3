@@ -13,8 +13,8 @@ import {
   SpellDbc,
 } from '@keira/shared/acore-world-model';
 import { ModelForm } from '@keira/shared/core';
-import { FlagsSelectorBtnComponent } from '@keira/shared/core';
-import { SingleValueSelectorBtnComponent } from '@keira/shared/core';
+import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
+import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 

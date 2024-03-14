@@ -5,7 +5,7 @@ import { FieldDefinition } from '@keira/shared/constants';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectTemplateService } from './gameobject-template.service';
 import { VIEWER_TYPE, Model3DViewerComponent } from '@keira/shared/model-3d-viewer';
-import { SingleValueSelectorBtnComponent } from '@keira/shared/core';
+import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QueryOutputComponent } from '@keira/shared/core';
