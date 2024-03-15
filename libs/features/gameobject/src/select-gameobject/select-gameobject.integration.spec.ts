@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MockedSqliteService, MysqlQueryService, SqliteService } from '@keira/shared/core';
+import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { GameobjectTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -12,7 +12,7 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { SelectGameobjectComponent } from './select-gameobject.component';
 import Spy = jasmine.Spy;
-import { instance } from 'ts-mockito';
+import { instance, mock } from 'ts-mockito';
 
 class SelectGameobjectComponentPage extends SelectPageObject<SelectGameobjectComponent> {
   ID_FIELD = 'entry';
@@ -41,7 +41,7 @@ describe('SelectGameobject integration tests', () => {
       providers: [
         GameobjectHandlerService,
         SaiGameobjectHandlerService,
-        { provide: SqliteService, useValue: instance(MockedSqliteService) },
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
     }).compileComponents();
   }));

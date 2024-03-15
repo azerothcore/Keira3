@@ -1,11 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MockedMysqlQueryService, MockedToastrService, MysqlQueryService, SqliteService, MockedSqliteService } from '@keira/shared/core';
+import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 
 import { GAMEOBJECT_TEMPLATE_TYPE } from '@keira/shared/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
-import { instance } from 'ts-mockito';
+import { instance, mock } from 'ts-mockito';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
@@ -17,9 +17,9 @@ describe('GameobjectLootTemplateService', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       providers: [
-        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-        { provide: ToastrService, useValue: instance(MockedToastrService) },
-        { provide: SqliteService, useValue: instance(MockedSqliteService) },
+        { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
+        { provide: ToastrService, useValue: instance(mock(ToastrService)) },
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
         GameobjectHandlerService,
         SaiGameobjectHandlerService,
         GameobjectLootTemplateService,

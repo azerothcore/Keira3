@@ -9,9 +9,8 @@ import {
 } from '@keira/shared/acore-world-model';
 import { ModelForm } from '@keira/shared/core';
 import { SpellDbcSpellEffectFieldPrefix } from './spell-dbc-spell-effect.model';
-import { FlagsSelectorBtnComponent } from '@keira/shared/core';
+import { FlagsSelectorBtnComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { SingleValueSelectorBtnComponent } from '@keira/shared/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIf } from '@angular/common';
 

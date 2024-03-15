@@ -1,0 +1,24 @@
+{
+  "name": "keira-shared-switch-language",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/switch-language/src",
+  "prefix": "keira",
+  "tags": ["scope:shared"],
+  "projectType": "library",
+  "targets": {
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "tsConfig": "libs/shared/switch-language/tsconfig.spec.json",
+        "karmaConfig": "libs/shared/switch-language/karma.conf.js",
+        "polyfills": ["zone.js", "zone.js/testing"],
+        "sourceMap": true,
+        "codeCoverage": true,
+        "scripts": []
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

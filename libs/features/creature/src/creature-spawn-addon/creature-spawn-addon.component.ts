@@ -4,13 +4,13 @@ import { CREATURE_ADDON_BYTES_1, CREATURE_ADDON_BYTES_2, CreatureSpawnAddon, EMO
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureSpawnAddonService } from './creature-spawn-addon.service';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { SingleValueSelectorBtnComponent } from '@keira/shared/core';
+import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/core';
+import { QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIf } from '@angular/common';
-import { TopBarComponent } from '@keira/shared/core';
+import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

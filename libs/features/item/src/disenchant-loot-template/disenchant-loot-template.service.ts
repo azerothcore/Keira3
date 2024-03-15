@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { LootEditorIdService, MysqlQueryService } from '@keira/shared/core';
+import { LootEditorIdService } from '@keira/shared/core';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 import {
   DISENCHANT_LOOT_TEMPLATE_TABLE,
   DISENCHANT_TEMPLATE_LOOT_ID,

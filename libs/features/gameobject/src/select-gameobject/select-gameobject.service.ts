@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { MysqlQueryService, SelectService } from '@keira/shared/core';
+import { SelectService } from '@keira/shared/core';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 import {
   GAMEOBJECT_TEMPLATE_ID,
   GAMEOBJECT_TEMPLATE_NAME,

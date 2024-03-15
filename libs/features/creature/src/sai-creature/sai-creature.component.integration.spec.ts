@@ -1,6 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MockedSqliteService, MysqlQueryService, SqliteService } from '@keira/shared/core';
+import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -10,7 +10,7 @@ import { of } from 'rxjs';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { SaiCreatureComponent } from './sai-creature.component';
-import { instance } from 'ts-mockito';
+import { instance, mock } from 'ts-mockito';
 
 class SaiCreaturePage extends MultiRowEditorPageObject<SaiCreatureComponent> {}
 
@@ -37,7 +37,7 @@ describe('SaiCreatureComponent integration tests', () => {
         RouterTestingModule,
         TranslateTestingModule,
       ],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
+      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
     }).compileComponents();
   }));
 

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MockedSqliteService, MysqlQueryService, SqliteService } from '@keira/shared/core';
+import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { GossipMenu } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -10,7 +10,7 @@ import { of } from 'rxjs';
 import { GossipHandlerService } from '../gossip-handler.service';
 import { GossipMenuComponent } from './gossip-menu.component';
 import Spy = jasmine.Spy;
-import { instance } from 'ts-mockito';
+import { instance, mock } from 'ts-mockito';
 
 class GossipMenuPage extends MultiRowEditorPageObject<GossipMenuComponent> {}
 
@@ -41,7 +41,7 @@ describe('GossipMenu integration tests', () => {
         RouterTestingModule,
         TranslateTestingModule,
       ],
-      providers: [GossipHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
+      providers: [GossipHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
     }).compileComponents();
   }));
 

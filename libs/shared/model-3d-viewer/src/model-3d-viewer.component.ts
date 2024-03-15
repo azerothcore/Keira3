@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, Inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { MysqlQueryService } from '@keira/shared/core';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 import { TableRow } from '@keira/shared/constants';
 import * as jquery from 'jquery';
 import { BehaviorSubject, catchError, filter, Observable, of, Subscription } from 'rxjs';

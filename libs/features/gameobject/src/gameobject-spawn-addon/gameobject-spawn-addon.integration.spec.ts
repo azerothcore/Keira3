@@ -1,6 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MockedSqliteService, MysqlQueryService, SqliteService } from '@keira/shared/core';
+import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { GameobjectSpawnAddon } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -11,7 +11,7 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectSpawnAddonComponent } from './gameobject-spawn-addon.component';
 import { GameobjectSpawnAddonService } from './gameobject-spawn-addon.service';
-import { instance } from 'ts-mockito';
+import { instance, mock } from 'ts-mockito';
 
 class GameobjectSpawnAddonPage extends MultiRowEditorPageObject<GameobjectSpawnAddonComponent> {}
 
@@ -38,7 +38,7 @@ describe('GameobjectSpawnAddon integration tests', () => {
       providers: [
         GameobjectHandlerService,
         SaiGameobjectHandlerService,
-        { provide: SqliteService, useValue: instance(MockedSqliteService) },
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
     }).compileComponents();
   }));

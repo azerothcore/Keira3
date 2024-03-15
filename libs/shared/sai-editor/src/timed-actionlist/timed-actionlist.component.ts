@@ -5,7 +5,7 @@ import { SmartScripts } from '@keira/shared/acore-world-model';
 import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { MysqlQueryService } from '@keira/shared/core';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 
 @Component({
   selector: 'keira-timed-actionlist',

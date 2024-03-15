@@ -11,10 +11,9 @@ import { SpellDbcEffectsComponent } from './effects/spell-dbc-effects.component'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SpellDbcBaseComponent } from './base/spell-dbc-base.component';
 import { TabsModule } from 'ngx-bootstrap/tabs';
-import { QueryOutputComponent } from '@keira/shared/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIf } from '@angular/common';
-import { TopBarComponent } from '@keira/shared/core';
+import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

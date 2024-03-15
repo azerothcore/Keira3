@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MockedSqliteService, MysqlQueryService, SqliteService } from '@keira/shared/core';
+import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { GameobjectLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -12,7 +12,7 @@ import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectLootTemplateComponent } from './gameobject-loot-template.component';
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
 import Spy = jasmine.Spy;
-import { instance } from 'ts-mockito';
+import { instance, mock } from 'ts-mockito';
 
 class GameobjectLootTemplatePage extends MultiRowEditorPageObject<GameobjectLootTemplateComponent> {}
 
@@ -47,7 +47,7 @@ describe('GameobjectLootTemplate integration tests', () => {
       providers: [
         GameobjectHandlerService,
         SaiGameobjectHandlerService,
-        { provide: SqliteService, useValue: instance(MockedSqliteService) },
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
     }).compileComponents();
   }));

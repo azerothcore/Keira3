@@ -1,0 +1,24 @@
+{
+  "name": "keira-shared-db-layer",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/db-layer/src",
+  "prefix": "keira",
+  "tags": ["scope:shared"],
+  "projectType": "library",
+  "targets": {
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "tsConfig": "libs/shared/db-layer/tsconfig.spec.json",
+        "karmaConfig": "libs/shared/db-layer/karma.conf.js",
+        "polyfills": ["zone.js", "zone.js/testing"],
+        "sourceMap": true,
+        "codeCoverage": true,
+        "scripts": ["node_modules/squel/dist/squel.min.js"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

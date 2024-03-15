@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { MultiRowEditorService, MysqlQueryService } from '@keira/shared/core';
+import { MultiRowEditorService } from '@keira/shared/core';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 import {
   ITEM_ENCHANTMENT_TEMPLATE_ID,
   ITEM_ENCHANTMENT_TEMPLATE_ID_2,

@@ -1,31 +1,24 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import {
-  IconService,
-  MockedMysqlQueryService,
-  MockedSqliteService,
-  MockedToastrService,
-  MysqlQueryService,
-  SqliteQueryService,
-  SqliteService,
-} from '@keira/shared/core';
 import { ItemExtendedCost } from '@keira/shared/acore-world-model';
 
 import { ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
-import { instance } from 'ts-mockito';
+import { instance, mock } from 'ts-mockito';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { NpcVendorService } from './npc-vendor.service';
+import { IconService } from '@keira/shared/base-editor-components';
+import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 
 describe('NpcVendorService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       providers: [
-        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-        { provide: ToastrService, useValue: instance(MockedToastrService) },
-        { provide: SqliteService, useValue: instance(MockedSqliteService) },
+        { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
+        { provide: ToastrService, useValue: instance(mock(ToastrService)) },
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
         CreatureHandlerService,
         SaiCreatureHandlerService,
         NpcVendorService,

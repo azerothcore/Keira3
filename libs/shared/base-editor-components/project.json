@@ -1,0 +1,24 @@
+{
+  "name": "keira-shared-base-editor-components",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/base-editor-components/src",
+  "prefix": "keira",
+  "tags": ["scope:shared"],
+  "projectType": "library",
+  "targets": {
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "tsConfig": "libs/shared/base-editor-components/tsconfig.spec.json",
+        "karmaConfig": "libs/shared/base-editor-components/karma.conf.js",
+        "polyfills": ["zone.js", "zone.js/testing"],
+        "sourceMap": true,
+        "codeCoverage": true,
+        "scripts": []
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

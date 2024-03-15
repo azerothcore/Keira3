@@ -28,11 +28,11 @@ import {
   SOURCE_GROUP_TOOLTIPS,
 } from './conditions-constants';
 import { ConditionsService } from './conditions.service';
-import { SingleValueSelectorBtnComponent } from '@keira/shared/core';
-import { FlagsSelectorBtnComponent } from '@keira/shared/core';
+import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
+import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/core';
+import { QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIf, NgFor } from '@angular/common';
 

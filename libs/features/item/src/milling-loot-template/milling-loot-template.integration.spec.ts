@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MockedSqliteService, MysqlQueryService, SqliteService } from '@keira/shared/core';
+import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { MillingLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -10,7 +10,7 @@ import { of } from 'rxjs';
 import { ItemHandlerService } from '../item-handler.service';
 import { MillingLootTemplateComponent } from './milling-loot-template.component';
 import Spy = jasmine.Spy;
-import { instance } from 'ts-mockito';
+import { instance, mock } from 'ts-mockito';
 
 class MillingLootTemplatePage extends MultiRowEditorPageObject<MillingLootTemplateComponent> {}
 
@@ -41,7 +41,7 @@ describe('MillingLootTemplate integration tests', () => {
         RouterTestingModule,
         TranslateTestingModule,
       ],
-      providers: [ItemHandlerService, { provide: SqliteService, useValue: instance(MockedSqliteService) }],
+      providers: [ItemHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
     }).compileComponents();
   }));
 

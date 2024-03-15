@@ -6,7 +6,7 @@ import { TableRow } from '@keira/shared/constants';
 import { HandlerService } from './abstract/service/handlers/handler.service';
 import { MultiRowComplexKeyEditorService } from './abstract/service/editors/multi-row-complex-key-editor.service';
 import { MultiRowEditorService } from './abstract/service/editors/multi-row-editor.service';
-import { MysqlQueryService } from './services/query/mysql-query.service';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SingleRowComplexKeyEditorService } from './abstract/service/editors/single-row-complex-key-editor.service';
 import { SingleRowEditorService } from './abstract/service/editors/single-row-editor.service';
 import { SelectService } from './abstract/service/select/select.service';
@@ -109,9 +109,9 @@ export class MockMultiRowExternalEditorService extends MultiRowExternalEditorSer
 })
 export class MockMultiRowComplexKeyEditorService extends MultiRowComplexKeyEditorService<MockEntity> {
   constructor(
-    protected handlerService: MockHandlerService,
-    readonly queryService: MysqlQueryService,
-    protected toastrService: ToastrService,
+    protected override handlerService: MockHandlerService,
+    override readonly queryService: MysqlQueryService,
+    protected override toastrService: ToastrService,
   ) {
     super(MockEntity, MOCK_TABLE, [MOCK_ID, MOCK_ID_2], MOCK_ID_2, handlerService, queryService, toastrService);
   }

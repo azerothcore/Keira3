@@ -7,11 +7,13 @@ import { distinctUntilChanged } from 'rxjs';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import packageInfo from '../../../../package.json';
 
-import { ElectronService, MysqlService, SqliteQueryService, SubscriptionHandler } from '@keira/shared/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIf } from '@angular/common';
 import { ConnectionWindowComponent } from '@keira/main/connection-window';
 import { MainWindowComponent } from '@keira/main/main-window';
+import { MysqlService, SqliteQueryService } from '@keira/shared/db-layer';
+import { ElectronService } from '@keira/shared/common-services';
+import { SubscriptionHandler } from '@keira/shared/core';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection

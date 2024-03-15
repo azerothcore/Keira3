@@ -2,10 +2,10 @@ import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { ToastrService } from 'ngx-toastr';
-import { instance } from 'ts-mockito';
-import { MysqlQueryService } from '../../../services/query/mysql-query.service';
+import { instance, mock } from 'ts-mockito';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 import { MultiRowExternalEditorService } from './multi-row-external-editor.service';
-import { MockedMysqlQueryService, MockedToastrService } from '../../../services/services.mock';
+
 import { MockEntity, MockHandlerService, MockMultiRowExternalEditorService } from '../../../core.mock';
 
 describe('MultiRowExternalEditorService', () => {
@@ -15,8 +15,8 @@ describe('MultiRowExternalEditorService', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       providers: [
-        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-        { provide: ToastrService, useValue: instance(MockedToastrService) },
+        { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
+        { provide: ToastrService, useValue: instance(mock(ToastrService)) },
         MockHandlerService,
         MockMultiRowExternalEditorService,
       ],

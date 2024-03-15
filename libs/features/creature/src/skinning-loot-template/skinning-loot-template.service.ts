@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { LootEditorIdService, MysqlQueryService } from '@keira/shared/core';
+import { LootEditorIdService } from '@keira/shared/core';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 import {
   CREATURE_TEMPLATE_ID,
   CREATURE_TEMPLATE_SKINNING_LOOT_ID,

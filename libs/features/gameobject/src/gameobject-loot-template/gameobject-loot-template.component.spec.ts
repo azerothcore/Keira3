@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MockedMysqlQueryService, MockedSqliteService, MysqlQueryService, SqliteService } from '@keira/shared/core';
+import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
 import { of, throwError } from 'rxjs';
-import { anything, instance, when } from 'ts-mockito';
+import { anything, instance, mock, when } from 'ts-mockito';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectLootTemplateComponent } from './gameobject-loot-template.component';
@@ -20,6 +20,7 @@ describe('GameobjectTemplateComponent', () => {
   let getLootIdSpy: Spy;
   let getTypeSpy: Spy;
   let reloadSpy: Spy;
+  const MockedMysqlQueryService = mock(MysqlQueryService);
 
   const lootId = 1230;
   const type = 3;
@@ -36,7 +37,7 @@ describe('GameobjectTemplateComponent', () => {
       ],
       providers: [
         { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
-        { provide: SqliteService, useValue: instance(MockedSqliteService) },
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
         GameobjectHandlerService,
         SaiGameobjectHandlerService,
       ],

@@ -3,9 +3,9 @@ import { LootTemplateIdComponent } from '@keira/shared/core';
 import { PickpocketingLootTemplate } from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { PickpocketingLootTemplateService } from './pickpocketing-loot-template.service';
-import { LootEditorComponent } from '@keira/shared/core';
+import { LootEditorComponent } from '@keira/shared/loot-editor';
 import { NgIf } from '@angular/common';
-import { TopBarComponent } from '@keira/shared/core';
+import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

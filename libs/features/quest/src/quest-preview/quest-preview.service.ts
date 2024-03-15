@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Injectable } from '@angular/core';
-import { EditorService, MysqlQueryService, PreviewHelperService, SqliteQueryService } from '@keira/shared/core';
+import { EditorService } from '@keira/shared/core';
 import {
   CreatureQuestender,
   CreatureQueststarter,
@@ -35,6 +35,8 @@ import { QuestRequestItemsService } from '../quest-request-items/quest-request-i
 import { QuestTemplateAddonService } from '../quest-template-addon/quest-template-addon.service';
 import { QuestTemplateService } from '../quest-template/quest-template.service';
 import { DifficultyLevel, Quest } from './quest-preview.model';
+import { PreviewHelperService } from '@keira/shared/preview';
+import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
 
 @Injectable({
   providedIn: 'root',

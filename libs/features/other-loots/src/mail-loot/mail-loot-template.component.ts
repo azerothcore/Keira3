@@ -3,10 +3,10 @@ import { LootTemplateComponent } from '@keira/shared/core';
 import { MailLootTemplate } from '@keira/shared/acore-world-model';
 import { MailLootHandlerService } from './mail-loot-handler.service';
 import { MailLootTemplateService } from './mail-loot-template.service';
-import { LootEditorComponent } from '@keira/shared/core';
+import { LootEditorComponent } from '@keira/shared/loot-editor';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIf } from '@angular/common';
-import { TopBarComponent } from '@keira/shared/core';
+import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

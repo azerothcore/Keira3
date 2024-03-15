@@ -4,14 +4,14 @@ import { GameobjectQuestitem } from '@keira/shared/acore-world-model';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectQuestitemService } from './gameobject-questitem.service';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { EditorButtonsComponent } from '@keira/shared/core';
-import { ItemSelectorBtnComponent } from '@keira/shared/core';
-import { IconComponent } from '@keira/shared/core';
+import { EditorButtonsComponent } from '@keira/shared/base-editor-components';
+import { ItemSelectorBtnComponent } from '@keira/shared/selectors';
+import { IconComponent } from '@keira/shared/base-editor-components';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/core';
+import { QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIf, AsyncPipe } from '@angular/common';
-import { TopBarComponent } from '@keira/shared/core';
+import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

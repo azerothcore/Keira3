@@ -3,10 +3,10 @@ import { LootTemplateComponent } from '@keira/shared/core';
 import { SpellLootTemplate } from '@keira/shared/acore-world-model';
 import { SpellLootHandlerService } from './spell-loot-handler.service';
 import { SpellLootTemplateService } from './spell-loot-template.service';
-import { LootEditorComponent } from '@keira/shared/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIf } from '@angular/common';
-import { TopBarComponent } from '@keira/shared/core';
+import { TopBarComponent } from '@keira/shared/base-editor-components';
+import { LootEditorComponent } from '@keira/shared/loot-editor';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

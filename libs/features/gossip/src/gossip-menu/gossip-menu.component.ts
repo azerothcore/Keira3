@@ -1,17 +1,18 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MultiRowEditorComponent, MysqlQueryService } from '@keira/shared/core';
+import { MultiRowEditorComponent } from '@keira/shared/core';
 import { GossipMenu } from '@keira/shared/acore-world-model';
 import { GossipHandlerService } from '../gossip-handler.service';
 import { GossipMenuService } from './gossip-menu.service';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { EditorButtonsComponent } from '@keira/shared/core';
+import { EditorButtonsComponent } from '@keira/shared/base-editor-components';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { NpcTextSelectorBtnComponent } from '@keira/shared/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/core';
+import { QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIf, AsyncPipe } from '@angular/common';
-import { TopBarComponent } from '@keira/shared/core';
+import { TopBarComponent } from '@keira/shared/base-editor-components';
+import { NpcTextSelectorBtnComponent } from '@keira/shared/selectors';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

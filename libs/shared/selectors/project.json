@@ -1,0 +1,24 @@
+{
+  "name": "keira-shared-selectors",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/selectors/src",
+  "prefix": "keira",
+  "tags": ["scope:shared"],
+  "projectType": "library",
+  "targets": {
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "tsConfig": "libs/shared/selectors/tsconfig.spec.json",
+        "karmaConfig": "libs/shared/selectors/karma.conf.js",
+        "polyfills": ["zone.js", "zone.js/testing"],
+        "sourceMap": true,
+        "codeCoverage": true,
+        "scripts": []
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

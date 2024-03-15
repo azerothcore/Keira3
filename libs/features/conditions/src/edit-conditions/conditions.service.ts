@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { MysqlQueryService, SingleRowComplexKeyEditorService } from '@keira/shared/core';
+import { SingleRowComplexKeyEditorService } from '@keira/shared/core';
 import { Conditions, CONDITIONS_ID_FIELDS, CONDITIONS_TABLE } from '@keira/shared/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { ConditionsHandlerService } from '../conditions-handler.service';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 
 @Injectable({
   providedIn: 'root',

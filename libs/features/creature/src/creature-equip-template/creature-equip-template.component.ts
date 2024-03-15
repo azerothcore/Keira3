@@ -3,13 +3,13 @@ import { SingleRowEditorComponent } from '@keira/shared/core';
 import { CreatureEquipTemplate } from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureEquipTemplateService } from './creature-equip-template.service';
-import { ItemSelectorBtnComponent } from '@keira/shared/core';
-import { IconComponent } from '@keira/shared/core';
+import { ItemSelectorBtnComponent } from '@keira/shared/selectors';
+import { IconComponent } from '@keira/shared/base-editor-components';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/core';
+import { QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIf } from '@angular/common';
-import { TopBarComponent } from '@keira/shared/core';
+import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

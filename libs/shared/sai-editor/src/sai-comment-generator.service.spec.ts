@@ -18,13 +18,13 @@ import { SAI_TARGETS } from './constants/sai-targets';
 import { SaiCommentGeneratorService } from './sai-comment-generator.service';
 import { SAI_EVENTS } from './constants/sai-event';
 import { SAI_ACTIONS } from './constants/sai-actions';
-import { instance } from 'ts-mockito';
-import { MockedSqliteService, MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/core';
+import { instance, mock } from 'ts-mockito';
+import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 
 describe('SaiCommentGeneratorService', () => {
   beforeEach(waitForAsync(() =>
     TestBed.configureTestingModule({
-      providers: [{ provide: SqliteService, useValue: instance(MockedSqliteService) }],
+      providers: [{ provide: SqliteService, useValue: instance(mock(SqliteService)) }],
     })));
 
   describe('Comment generation should correctly work', () => {

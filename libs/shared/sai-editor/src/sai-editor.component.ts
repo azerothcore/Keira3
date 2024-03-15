@@ -64,7 +64,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIf, NgFor } from '@angular/common';
 import { SaiTopBarComponent } from './sai-top-bar/sai-top-bar.component';
-import { EditorButtonsComponent, FlagsSelectorBtnComponent, MultiRowEditorComponent, QueryOutputComponent } from '@keira/shared/core';
+import { MultiRowEditorComponent } from '@keira/shared/core';
+import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
+import { EditorButtonsComponent, QueryOutputComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

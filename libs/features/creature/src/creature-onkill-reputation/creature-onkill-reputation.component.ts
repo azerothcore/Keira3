@@ -4,13 +4,13 @@ import { CreatureOnkillReputation, FACTION_RANK } from '@keira/shared/acore-worl
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureOnkillReputationService } from './creature-onkill-reputation.service';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { SingleValueSelectorBtnComponent } from '@keira/shared/core';
-import { FactionSelectorBtnComponent } from '@keira/shared/core';
+import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
+import { FactionSelectorBtnComponent } from '@keira/shared/selectors';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/core';
+import { QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIf } from '@angular/common';
-import { TopBarComponent } from '@keira/shared/core';
+import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

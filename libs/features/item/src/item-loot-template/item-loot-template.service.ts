@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { MultiRowEditorService, MysqlQueryService } from '@keira/shared/core';
+import { MultiRowEditorService } from '@keira/shared/core';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 import { ITEM_LOOT_TEMPLATE_TABLE, ItemLootTemplate, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2 } from '@keira/shared/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { ItemHandlerService } from '../item-handler.service';

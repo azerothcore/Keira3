@@ -1,5 +1,5 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { MysqlQueryService } from '@keira/shared/core';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { QueryError } from 'mysql2';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';

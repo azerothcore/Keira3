@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MysqlQueryService, SelectComponent } from '@keira/shared/core';
+import { SelectComponent } from '@keira/shared/core';
 import {
   SPELL_DBC_CUSTOM_STARTING_ID,
   SPELL_DBC_DESCRIPTION,
@@ -11,14 +11,12 @@ import {
 } from '@keira/shared/acore-world-model';
 import { SpellHandlerService } from '../spell-handler.service';
 import { SelectSpellService } from './select-spell.service';
-import { IconComponent } from '@keira/shared/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgIf } from '@angular/common';
-import { HighlightjsWrapperComponent } from '@keira/shared/core';
+import { CreateComponent, HighlightjsWrapperComponent, IconComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { CreateComponent } from '@keira/shared/core';
-import { TopBarComponent } from '@keira/shared/core';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

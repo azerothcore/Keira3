@@ -1,16 +1,17 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MysqlQueryService, SelectComponent } from '@keira/shared/core';
+import { SelectComponent } from '@keira/shared/core';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 import { ITEM_TEMPLATE_CUSTOM_STARTING_ID, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_TABLE, ItemTemplate } from '@keira/shared/acore-world-model';
 import { ItemHandlerService } from '../item-handler.service';
 import { SelectItemService } from './select-item.service';
-import { IconComponent } from '@keira/shared/core';
+import { IconComponent } from '@keira/shared/base-editor-components';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgIf, NgClass } from '@angular/common';
-import { HighlightjsWrapperComponent } from '@keira/shared/core';
+import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { CreateComponent } from '@keira/shared/core';
-import { TopBarComponent } from '@keira/shared/core';
+import { CreateComponent } from '@keira/shared/base-editor-components';
+import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

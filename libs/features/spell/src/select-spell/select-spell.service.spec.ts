@@ -1,16 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MockedMysqlQueryService, MysqlQueryService } from '@keira/shared/core';
 
-import { instance } from 'ts-mockito';
+import { instance, mock } from 'ts-mockito';
 import { SpellHandlerService } from '../spell-handler.service';
 import { SelectSpellService } from './select-spell.service';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 
 describe('SelectSpellService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      providers: [{ provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }, SpellHandlerService, SelectSpellService],
+      providers: [{ provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) }, SpellHandlerService, SelectSpellService],
     }),
   );
 
