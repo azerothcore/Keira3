@@ -20,7 +20,7 @@ describe('GameobjectTemplateComponent', () => {
   let getLootIdSpy: Spy;
   let getTypeSpy: Spy;
   let reloadSpy: Spy;
-  let MockedMysqlQueryService = mock(MysqlQueryService);
+  const MockedMysqlQueryService = mock(MysqlQueryService);
 
   const lootId = 1230;
   const type = 3;
