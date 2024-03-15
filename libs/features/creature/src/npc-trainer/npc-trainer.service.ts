@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MultiRowEditorService } from '@keira/shared/core';
+import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { NPC_TRAINER_ID, NPC_TRAINER_ID_2, NPC_TRAINER_TABLE, NpcTrainer } from '@keira/shared/acore-world-model';
 import { ToastrService } from 'ngx-toastr';

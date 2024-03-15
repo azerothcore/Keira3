@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { ClipboardModule } from 'ngx-clipboard';
 import { NgIf } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { SubscriptionHandler } from '@keira/shared/core';
+import { SubscriptionHandler } from '@keira/shared/utils';
 import { MysqlQueryService, MysqlService } from '@keira/shared/db-layer';
 import { ConfigService } from '@keira/shared/common-services';
 

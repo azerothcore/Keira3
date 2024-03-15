@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MultiRowEditorService } from '@keira/shared/core';
+import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { GAMEOBJECT_SPAWN_ID, GAMEOBJECT_SPAWN_ID_2, GAMEOBJECT_SPAWN_TABLE, GameobjectSpawn } from '@keira/shared/acore-world-model';
 import { ToastrService } from 'ngx-toastr';

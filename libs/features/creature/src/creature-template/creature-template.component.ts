@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { SingleRowEditorComponent } from '@keira/shared/core';
+import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import {
   CREATURE_AI_NAME,
   CREATURE_CLASS,

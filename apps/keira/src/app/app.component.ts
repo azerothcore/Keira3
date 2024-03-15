@@ -13,7 +13,7 @@ import { ConnectionWindowComponent } from '@keira/main/connection-window';
 import { MainWindowComponent } from '@keira/main/main-window';
 import { MysqlService, SqliteQueryService } from '@keira/shared/db-layer';
 import { ElectronService } from '@keira/shared/common-services';
-import { SubscriptionHandler } from '@keira/shared/core';
+import { SubscriptionHandler } from '@keira/shared/utils';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection

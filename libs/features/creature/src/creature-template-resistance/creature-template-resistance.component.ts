@@ -4,7 +4,7 @@ import {
   CREATURE_TEMPLATE_RESISTANCE_TABLE,
   CreatureTemplateResistance,
 } from '@keira/shared/acore-world-model';
-import { MultiRowEditorComponent } from '@keira/shared/core';
+import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateResistanceService } from './creature-template-resistance.service';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';

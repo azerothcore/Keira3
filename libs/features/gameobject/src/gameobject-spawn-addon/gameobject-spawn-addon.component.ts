@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MultiRowEditorComponent } from '@keira/shared/core';
+import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { GameobjectSpawnAddon, INVISIBILITY_TYPE } from '@keira/shared/acore-world-model';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectSpawnAddonService } from './gameobject-spawn-addon.service';

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { LootTemplateIdComponent } from '@keira/shared/core';
+import { LootTemplateIdComponent } from '@keira/shared/base-abstract-classes';
 import { SkinningLootTemplate } from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SkinningLootTemplateService } from './skinning-loot-template.service';
@@ -10,7 +10,7 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-skinning-loot-template',
-  templateUrl: '../../../../../libs/shared/core/src/abstract/components/editors/loot-template/loot-template-id.component.html',
+  templateUrl: '../../../../shared/base-abstract-classes/src/components/editors/loot-template/loot-template-id.component.html',
   standalone: true,
   imports: [TopBarComponent, NgIf, LootEditorComponent],
 })

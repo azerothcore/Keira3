@@ -1,4 +1,4 @@
-import { getEnumKeys } from '@keira/shared/core';
+import { getEnumKeys } from '@keira/shared/utils';
 
 export enum SAI_ACTIONS {
   NONE = 0,
@@ -826,13 +826,13 @@ SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.REMOVE_UNIT_FIELD_BYTES_1] = SAI_ACTION_P
 // SMART_ACTION_INTERRUPT_SPELL
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.INTERRUPT_SPELL] =
   'This action allows you to interrupt the current spell being cast. ' +
-  'If you do not set the spellId, the core will find the current spell depending on the withDelay and the withInstant values.';
+  'If you do not set the spellId, the base-abstract-classes will find the current spell depending on the withDelay and the withInstant values.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.INTERRUPT_SPELL] = 'WithDelay';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.INTERRUPT_SPELL] = 'SpellId';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.INTERRUPT_SPELL] = 'Instant';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.INTERRUPT_SPELL] = BOOLEAN_VALUE_TOOLTIP;
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.INTERRUPT_SPELL] =
-  'If left at 0, the core will interrupt the currently being cast spell (based on the with-delay and instant parameters)';
+  'If left at 0, the base-abstract-classes will interrupt the currently being cast spell (based on the with-delay and instant parameters)';
 SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.INTERRUPT_SPELL] = BOOLEAN_VALUE_TOOLTIP;
 
 // SMART_ACTION_SEND_GO_CUSTOM_ANIM

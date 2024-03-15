@@ -10,7 +10,8 @@ import { QueryErrorComponent } from './query-error/query-error.component';
 import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-wrapper.component';
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
-import { EditorService, SubscriptionHandler } from '@keira/shared/core';
+import { EditorService } from '@keira/shared/base-abstract-classes';
+import { SubscriptionHandler } from '@keira/shared/utils';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection

@@ -4,8 +4,9 @@ import { TableRow } from '@keira/shared/constants';
 import { NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { HandlerService, SubscriptionHandler } from '@keira/shared/core';
 import { MysqlQueryService } from '@keira/shared/db-layer';
+import { SubscriptionHandler } from '@keira/shared/utils';
+import { HandlerService } from '@keira/shared/base-abstract-classes';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

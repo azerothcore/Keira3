@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { SingleRowEditorComponent } from '@keira/shared/core';
+import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { CreatureOnkillReputation, FACTION_RANK } from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureOnkillReputationService } from './creature-onkill-reputation.service';

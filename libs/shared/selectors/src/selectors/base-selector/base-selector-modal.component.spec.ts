@@ -5,7 +5,7 @@ import { instance, mock } from 'ts-mockito';
 import { ItemSelectorModalComponent } from '../item-selector/item-selector-modal.component';
 import { BaseSelectorModalComponent } from './base-selector-modal.component';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
-import { SearchService } from '@keira/shared/core';
+import { SearchService } from '@keira/shared/base-abstract-classes';
 import { ItemTemplate } from '@keira/shared/acore-world-model';
 import { ItemSearchService } from '../../search/item-search.service';
 import Spy = jasmine.Spy;

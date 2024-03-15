@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { HandlerService } from '@keira/shared/core';
+import { HandlerService } from '@keira/shared/base-abstract-classes';
 import {
   CREATURE_EQUIP_TEMPLATE_TABLE,
   CREATURE_LOOT_TEMPLATE_TABLE,

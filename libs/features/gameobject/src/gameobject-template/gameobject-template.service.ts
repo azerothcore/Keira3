@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SingleRowEditorService } from '@keira/shared/core';
+import { SingleRowEditorService } from '@keira/shared/base-abstract-classes';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { FieldDefinition, GO_DATA_FIELDS } from '@keira/shared/constants';
 import {

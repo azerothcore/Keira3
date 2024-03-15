@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { getEnumKeys, SelectComplexKeyComponent } from '@keira/shared/core';
+import { SelectComplexKeyComponent } from '@keira/shared/base-abstract-classes';
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
@@ -8,6 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
 import { SaiSearchService } from '@keira/shared/selectors';
+import { getEnumKeys } from '@keira/shared/utils';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

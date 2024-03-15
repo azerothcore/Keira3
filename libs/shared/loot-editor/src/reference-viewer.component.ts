@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/c
 import { DTCFG } from '@keira/shared/config';
 
 import { ReferenceLootTemplate } from '@keira/shared/acore-world-model';
-import { SubscriptionHandler } from '@keira/shared/core';
+import { SubscriptionHandler } from '@keira/shared/utils';
 import { ReferenceViewerService } from './reference-viewer.service';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { IconComponent } from '@keira/shared/base-editor-components';

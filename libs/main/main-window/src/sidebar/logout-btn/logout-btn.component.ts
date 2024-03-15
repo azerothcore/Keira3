@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { SubscriptionHandler } from '@keira/shared/core';
+import { SubscriptionHandler } from '@keira/shared/utils';
 import { LoginConfigService } from '@keira/shared/login-config';
 import { LocationService } from '@keira/shared/common-services';
 import { ModalConfirmComponent } from '@keira/shared/base-editor-components';

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MultiRowEditorComponent } from '@keira/shared/core';
+import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { ItemEnchantmentTemplate } from '@keira/shared/acore-world-model';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemEnchantmentTemplateService } from './item-enchantment-template.service';

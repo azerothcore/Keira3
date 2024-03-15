@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { ITEM_LIMIT_CATEGORY_SEARCH_FIELDS, ITEM_LIMIT_CATEGORY_TABLE, ItemLimitCategory } from '@keira/shared/acore-world-model';
-import { SearchService } from '@keira/shared/core';
+import { SearchService } from '@keira/shared/base-abstract-classes';
 import { SqliteQueryService } from '@keira/shared/db-layer';
 
 @Injectable({

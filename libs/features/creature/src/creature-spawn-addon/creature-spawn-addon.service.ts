@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { CREATURE_SPAWN_ADDON_ID_2, CREATURE_SPAWN_ADDON_TABLE, CreatureSpawnAddon } from '@keira/shared/acore-world-model';
 import { ToastrService } from 'ngx-toastr';
 import { CreatureHandlerService } from '../creature-handler.service';
-import { MultiRowExternalEditorService } from '@keira/shared/core';
+import { MultiRowExternalEditorService } from '@keira/shared/base-abstract-classes';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
 @Injectable({

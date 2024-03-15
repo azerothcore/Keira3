@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { Holiday, HOLIDAY_SEARCH_FIELDS, HOLIDAY_TABLE } from '@keira/shared/acore-world-model';
-import { SearchService } from '@keira/shared/core';
+import { SearchService } from '@keira/shared/base-abstract-classes';
 import { SqliteQueryService } from '@keira/shared/db-layer';
 
 @Injectable({

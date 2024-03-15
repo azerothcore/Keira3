@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { LootTemplateComponent } from '@keira/shared/core';
+import { LootTemplateComponent } from '@keira/shared/base-abstract-classes';
 import { MailLootTemplate } from '@keira/shared/acore-world-model';
 import { MailLootHandlerService } from './mail-loot-handler.service';
 import { MailLootTemplateService } from './mail-loot-template.service';
@@ -11,7 +11,7 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-mail-loot-template',
-  templateUrl: '../../../../../libs/shared/core/src/abstract/components/editors/loot-template/loot-template.component.html',
+  templateUrl: '../../../../shared/base-abstract-classes/src/components/editors/loot-template/loot-template.component.html',
   standalone: true,
   imports: [TopBarComponent, NgIf, TranslateModule, LootEditorComponent],
 })

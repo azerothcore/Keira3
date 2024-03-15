@@ -10,7 +10,7 @@ import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-
 import { QueryErrorComponent } from './query-error/query-error.component';
 import { QueryOutputComponent } from './query-output.component';
 import { TableRow } from '@keira/shared/constants';
-import { EditorService } from '@keira/shared/core';
+import { EditorService } from '@keira/shared/base-abstract-classes';
 
 @Component({
   template: `<keira-query-output [editorService]="editorService"></keira-query-output>`,
