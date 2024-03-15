@@ -10,7 +10,7 @@ import {
   SPELL_DBC_STANCES_FLAGS,
   SpellDbc,
 } from '@keira/shared/acore-world-model';
-import { ModelForm } from '@keira/shared/core';
+import { ModelForm } from '@keira/shared/utils';
 import { NgFor } from '@angular/common';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TranslateModule } from '@ngx-translate/core';

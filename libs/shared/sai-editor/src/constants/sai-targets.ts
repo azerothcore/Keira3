@@ -1,4 +1,4 @@
-import { getEnumKeys } from '@keira/shared/core';
+import { getEnumKeys } from '@keira/shared/utils';
 
 export enum SAI_TARGETS {
   NONE = 0,

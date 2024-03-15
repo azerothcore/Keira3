@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SPELL_DBC_PROC_FLAGS, SPELL_DBC_TARGETS, SpellDbc } from '@keira/shared/acore-world-model';
-import { ModelForm } from '@keira/shared/core';
+import { ModelForm } from '@keira/shared/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { SpellDbcSpellEffectComponent } from './spell-dbc-spell-effect/spell-dbc-spell-effect.component';
 import { TabsModule } from 'ngx-bootstrap/tabs';

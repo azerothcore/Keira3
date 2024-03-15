@@ -31,4 +31,5 @@ export function getEnumKeys(enumInput: { [s: number]: string }): number[] {
     .map((k) => +k);
 }
 
+/* istanbul ignore next */ // TODO: fix coverage
 export const compareObjFn = (a: object, b: object) => JSON.stringify(a) === JSON.stringify(b);

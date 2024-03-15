@@ -1,7 +1,7 @@
 import { Router } from '@angular/router';
 
 import { HandlerService } from './handler.service';
-import { getPartial } from '../../../utils/helpers';
+import { getPartial } from '@keira/shared/utils';
 import { TableRow } from '@keira/shared/constants';
 
 export abstract class ComplexKeyHandlerService<T extends TableRow> extends HandlerService<T> {

@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Injectable } from '@angular/core';
-import { EditorService } from '@keira/shared/core';
+import { EditorService } from '@keira/shared/base-abstract-classes';
 import {
   CreatureQuestender,
   CreatureQueststarter,

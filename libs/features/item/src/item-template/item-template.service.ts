@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SingleRowEditorService } from '@keira/shared/core';
+import { SingleRowEditorService } from '@keira/shared/base-abstract-classes';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { ITEM_TEMPLATE_ID, ITEM_TEMPLATE_NAME, ITEM_TEMPLATE_TABLE, ItemTemplate } from '@keira/shared/acore-world-model';
 import { ToastrService } from 'ngx-toastr';

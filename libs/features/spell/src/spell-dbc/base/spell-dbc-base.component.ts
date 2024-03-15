@@ -12,7 +12,7 @@ import {
   SPELL_SCHOOL_MASK,
   SpellDbc,
 } from '@keira/shared/acore-world-model';
-import { ModelForm } from '@keira/shared/core';
+import { ModelForm } from '@keira/shared/utils';
 import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
 import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';

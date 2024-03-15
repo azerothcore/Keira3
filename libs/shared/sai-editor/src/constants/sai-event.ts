@@ -1,4 +1,4 @@
-import { getEnumKeys } from '@keira/shared/core';
+import { getEnumKeys } from '@keira/shared/utils';
 
 export enum SAI_EVENTS {
   UPDATE_IC = 0,
@@ -552,7 +552,7 @@ SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.GO_EVENT_INFORM] = 'EventId';
 
 // SMART_EVENT_ACTION_DONE
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.ACTION_DONE] =
-  "Called on a certain action id 'done'. Those can only be called from core scripts (SmartAI::DoAction).";
+  "Called on a certain action id 'done'. Those can only be called from base-abstract-classes scripts (SmartAI::DoAction).";
 SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.ACTION_DONE] = 'ActionId';
 
 // SMART_EVENT_ON_SPELLCLICK
@@ -588,7 +588,7 @@ SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] =
   'Entry of the creature we want to check for. Can be left on 0 if the Guid is given.';
 SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] = 'Min distance (in yards) to the creature that will trigger the event';
 SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.DISTANCE_CREATURE] =
-  "Timer to check for distance. It's not a good idea to leave this at 0, having a handful of events doing that can slow down your core";
+  "Timer to check for distance. It's not a good idea to leave this at 0, having a handful of events doing that can slow down your base-abstract-classes";
 
 // SMART_EVENT_DISTANCE_GAMEOBJECT
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'On gameobject guid OR any instance of gameobject entry is within distance.';
@@ -602,7 +602,7 @@ SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] =
   'Entry of the gameobject we want to check for. Can be left on 0 if the guid is given.';
 SAI_EVENT_PARAM3_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] = 'Min distance (in yards) to the gameobject that will trigger the event';
 SAI_EVENT_PARAM4_TOOLTIPS[SAI_EVENTS.DISTANCE_GAMEOBJECT] =
-  "Timer to check for distance. It's not a good idea to leave this at 0, having a handful of events doing that can slow down your core";
+  "Timer to check for distance. It's not a good idea to leave this at 0, having a handful of events doing that can slow down your base-abstract-classes";
 
 // SMART_EVENT_COUNTER_SET
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.COUNTER_SET] = 'If the value of specified CounterID is equal to a specified Value.';

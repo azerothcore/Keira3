@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SelectService } from '@keira/shared/core';
+import { SelectService } from '@keira/shared/base-abstract-classes';
 import {
   QUEST_TEMPLATE_ID,
   QUEST_TEMPLATE_NAME,

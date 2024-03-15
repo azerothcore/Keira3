@@ -9,7 +9,7 @@ module.exports = function (config) {
     plugins: [...baseConfig.plugins],
     coverageReporter: {
       ...baseConfig.coverageReporter,
-      dir: join(__dirname, '../../../coverage/libs/shared/core'),
+      dir: join(__dirname, '../../../coverage/libs/shared/base-abstract-classes'),
     },
   });
 };

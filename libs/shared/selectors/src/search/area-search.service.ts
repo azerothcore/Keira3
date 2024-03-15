@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { Area, AREA_SEARCH_FIELDS, AREA_TABLE } from '@keira/shared/acore-world-model';
-import { SearchService } from '@keira/shared/core';
+import { SearchService } from '@keira/shared/base-abstract-classes';
 import { SqliteQueryService } from '@keira/shared/db-layer';
 
 @Injectable({

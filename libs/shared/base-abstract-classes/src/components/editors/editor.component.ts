@@ -4,8 +4,8 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { TableRow, WIKI_BASE_URL } from '@keira/shared/constants';
 import { HandlerService } from '../../service/handlers/handler.service';
 import { EditorService } from '../../service/editors/editor.service';
-import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
-import { compareObjFn } from '../../../utils/helpers';
+import { SubscriptionHandler } from '@keira/shared/utils';
+import { compareObjFn } from '@keira/shared/utils';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -5,7 +5,6 @@ import { ConnectionOptions, QueryError } from 'mysql2';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import packageInfo from '../../../../package.json';
 
-import { ModelForm, SubscriptionHandler } from '@keira/shared/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { NgIf, NgFor } from '@angular/common';
@@ -13,6 +12,7 @@ import { LoginConfigService } from '@keira/shared/login-config';
 import { SwitchLanguageComponent } from '@keira/shared/switch-language';
 import { MysqlService } from '@keira/shared/db-layer';
 import { QueryErrorComponent } from '@keira/shared/base-editor-components';
+import { ModelForm, SubscriptionHandler } from '@keira/shared/utils';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

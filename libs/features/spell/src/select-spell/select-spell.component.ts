@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { SelectComponent } from '@keira/shared/core';
+import { SelectComponent } from '@keira/shared/base-abstract-classes';
 import {
   SPELL_DBC_CUSTOM_STARTING_ID,
   SPELL_DBC_DESCRIPTION,

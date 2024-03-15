@@ -7,7 +7,7 @@ import {
   SPELL_MECHANIC,
   SpellDbc,
 } from '@keira/shared/acore-world-model';
-import { ModelForm } from '@keira/shared/core';
+import { ModelForm } from '@keira/shared/utils';
 import { SpellDbcSpellEffectFieldPrefix } from './spell-dbc-spell-effect.model';
 import { FlagsSelectorBtnComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';

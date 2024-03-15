@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SAI_ID_FIELDS, SAI_SEARCH_FIELDS, SAI_TABLE, SmartScripts } from '@keira/shared/acore-world-model';
-import { SearchService } from '@keira/shared/core';
+import { SearchService } from '@keira/shared/base-abstract-classes';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
 @Injectable({

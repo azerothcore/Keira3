@@ -4,7 +4,7 @@ import { distinctUntilChanged } from 'rxjs';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { HandlerService } from '../handlers/handler.service';
 import { EditorService } from './editor.service';
-import { compareObjFn } from '../../../utils/helpers';
+import { compareObjFn } from '@keira/shared/utils';
 
 export abstract class MultiRowEditorService<T extends TableRow> extends EditorService<T> {
   protected FIRST_ROW_START_VALUE = 0;

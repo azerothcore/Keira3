@@ -8,7 +8,7 @@ import { CreateComponent } from './create.component';
 import Spy = jasmine.Spy;
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { TableRow } from '@keira/shared/constants';
-import { MockHandlerService } from '@keira/shared/core';
+import { MockHandlerService } from '@keira/shared/base-abstract-classes';
 
 class CreateComponentPage extends PageObject<CreateComponent<TableRow>> {
   get idInput(): HTMLInputElement {

@@ -4,7 +4,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 import { Class } from '@keira/shared/constants';
 import { BaseModalConfig } from './base-selector.model';
-import { SubscriptionHandler } from '@keira/shared/core';
+import { SubscriptionHandler } from '@keira/shared/utils';
 
 @Directive()
 // eslint-disable-next-line @angular-eslint/directive-class-suffix

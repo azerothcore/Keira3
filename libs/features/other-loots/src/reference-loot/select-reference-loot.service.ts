@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SelectService } from '@keira/shared/core';
+import { SelectService } from '@keira/shared/base-abstract-classes';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { LOOT_TEMPLATE_ID, REFERENCE_LOOT_TEMPLATE_TABLE, ReferenceLootTemplate } from '@keira/shared/acore-world-model';
 import { ReferenceLootHandlerService } from './reference-loot-handler.service';

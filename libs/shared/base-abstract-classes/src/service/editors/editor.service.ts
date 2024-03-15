@@ -5,10 +5,10 @@ import { FormControl, FormGroup } from '@angular/forms';
 
 import { Class, StringKeys, TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
-import { SubscriptionHandler } from '../../../utils/subscription-handler/subscription-handler';
+import { SubscriptionHandler } from '@keira/shared/utils';
 import { HandlerService } from '../handlers/handler.service';
 import { ChangeDetectorRef } from '@angular/core';
-import { ModelForm } from '../../../utils/helpers';
+import { ModelForm } from '@keira/shared/utils';
 
 export abstract class EditorService<T extends TableRow> extends SubscriptionHandler {
   protected _loading = false;

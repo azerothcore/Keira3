@@ -1,4 +1,4 @@
-# @keira/shared/core
+# @keira/shared/base-abstract-classes
 
 A collection of base classes, components, services and utilities that are used by most of the keira features.
 

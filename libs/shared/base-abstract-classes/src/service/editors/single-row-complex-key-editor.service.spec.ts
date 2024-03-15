@@ -9,7 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SingleRowComplexKeyEditorService } from './single-row-complex-key-editor.service';
 
-import { getPartial } from '../../../utils/helpers';
+import { getPartial } from '@keira/shared/utils';
 
 import { mockChangeDetectorRef } from '@keira/shared/test-utils';
 import { MOCK_NAME, MockEntity, MockHandlerService, MockSingleRowComplexKeyEditorService } from '../../../core.mock';

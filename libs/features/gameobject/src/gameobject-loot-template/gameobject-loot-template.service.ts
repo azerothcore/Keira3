@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LootEditorIdService } from '@keira/shared/core';
+import { LootEditorIdService } from '@keira/shared/base-abstract-classes';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import {
   GAMEOBJECT_LOOT_TEMPLATE_TABLE,
