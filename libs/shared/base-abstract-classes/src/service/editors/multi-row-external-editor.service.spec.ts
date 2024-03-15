@@ -6,7 +6,7 @@ import { instance, mock } from 'ts-mockito';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { MultiRowExternalEditorService } from './multi-row-external-editor.service';
 
-import { MockEntity, MockHandlerService, MockMultiRowExternalEditorService } from '../../../core.mock';
+import { MockEntity, MockHandlerService, MockMultiRowExternalEditorService } from '../../core.mock';
 
 describe('MultiRowExternalEditorService', () => {
   let service: MultiRowExternalEditorService<MockEntity>;

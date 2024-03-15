@@ -7,7 +7,7 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SingleRowEditorService } from './single-row-editor.service';
 import Spy = jasmine.Spy;
 
-import { MockEntity, MockHandlerService, MockSingleRowEditorService } from '../../../core.mock';
+import { MockEntity, MockHandlerService, MockSingleRowEditorService } from '../../core.mock';
 
 describe('SingleRowEditorService', () => {
   let service: SingleRowEditorService<MockEntity>;

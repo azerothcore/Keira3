@@ -4,7 +4,7 @@ import { instance, mock } from 'ts-mockito';
 
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
-import { MockHandlerService, SelectMockService } from '../../../core.mock';
+import { MockHandlerService, SelectMockService } from '../../core.mock';
 
 describe('SelectService', () => {
   beforeEach(() =>

@@ -6,7 +6,7 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
 import { MultiRowEditorService } from './multi-row-editor.service';
 import Spy = jasmine.Spy;
 
-import { MOCK_ID, MOCK_ID_2, MOCK_NAME, MockEntity, MockMultiRowEditorService } from '../../../core.mock';
+import { MOCK_ID, MOCK_ID_2, MOCK_NAME, MockEntity, MockMultiRowEditorService } from '../../core.mock';
 
 describe('MultiRowEditorService', () => {
   let service: MultiRowEditorService<MockEntity>;

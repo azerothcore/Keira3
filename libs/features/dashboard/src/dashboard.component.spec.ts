@@ -8,10 +8,10 @@ import { MysqlQueryService, MysqlService } from '@keira/shared/db-layer';
 
 class DashboardComponentPage extends PageObject<DashboardComponent> {
   get coreVersion(): HTMLTableCellElement {
-    return this.query<HTMLTableCellElement>('#base-abstract-classes-version');
+    return this.query<HTMLTableCellElement>('#core-version');
   }
   get coreRevision(): HTMLTableCellElement {
-    return this.query<HTMLTableCellElement>('#base-abstract-classes-revision');
+    return this.query<HTMLTableCellElement>('#core-revision');
   }
   get dbVersion(): HTMLTableCellElement {
     return this.query<HTMLTableCellElement>('#db-version');

@@ -10,7 +10,7 @@ import { EditorService } from './editor.service';
 import Spy = jasmine.Spy;
 
 import { mockChangeDetectorRef } from '@keira/shared/test-utils';
-import { MockEntity, MockSingleRowEditorService } from '../../../core.mock';
+import { MockEntity, MockSingleRowEditorService } from '../../core.mock';
 
 describe('EditorService', () => {
   let service: EditorService<MockEntity>;
