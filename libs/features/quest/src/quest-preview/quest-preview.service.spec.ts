@@ -8,7 +8,7 @@ import {
   QUEST_FLAG_WEEKLY,
   QUEST_PERIOD,
 } from '@keira/shared/constants';
-import { MysqlQueryService, SqliteQueryService } from '@keira/shared/core';
+import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
 import { ToastrModule } from 'ngx-toastr';
 import { CreatureQuestenderService } from '../creature-questender/creature-questender.service';
 import { CreatureQueststarterService } from '../creature-queststarter/creature-queststarter.service';

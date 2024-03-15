@@ -3,9 +3,9 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance, mock } from 'ts-mockito';
 
 import { NpcTextSelectorModalComponent } from './npc-text-selector-modal.component';
-import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { NpcTextSearchService } from '../../search/npc-text-search.service';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 
 describe('NpcTextSelectorModalComponent', () => {
   beforeEach(waitForAsync(() => {

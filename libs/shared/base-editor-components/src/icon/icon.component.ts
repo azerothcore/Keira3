@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { ICON_SKILLS } from '@keira/shared/constants';
-import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
 import { IconService } from './icon.service';
+import { SubscriptionHandler } from '@keira/shared/core';
 
 @Component({
   selector: 'keira-icon',

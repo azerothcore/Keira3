@@ -3,11 +3,9 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance, mock } from 'ts-mockito';
 
 import { AreaSelectorModalComponent } from './area-selector-modal.component';
-import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { AreaSearchService } from '../../search/area-search.service';
-
-import { SqliteService } from '../../../services/sqlite.service';
+import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 
 describe('AreaSelectorModalComponent', () => {
   let component: AreaSelectorModalComponent;

@@ -3,12 +3,11 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance, mock } from 'ts-mockito';
 
 import { TranslateTestingModule } from '@keira/shared/test-utils';
-import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { FactionSearchService } from '../../search/faction-search.service';
 import { QuestFactionSelectorModalComponent } from './quest-faction-selector-modal.component';
 
-import { SqliteService } from '../../../services/sqlite.service';
 import { FactionSelectorModalComponent } from './faction-selector-modal.component';
+import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 
 describe('QuestFactionSelectorModalComponent', () => {
   function setup() {

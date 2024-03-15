@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { MultiRowEditorService, MysqlQueryService } from '@keira/shared/core';
+import { MultiRowEditorService } from '@keira/shared/core';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 import {
   CREATURE_QUESTITEM_ID,
   CREATURE_QUESTITEM_ID_2,

@@ -6,6 +6,17 @@
   "tags": ["scope:shared"],
   "projectType": "library",
   "targets": {
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "tsConfig": "libs/shared/common-services/tsconfig.spec.json",
+        "karmaConfig": "libs/shared/common-services/karma.conf.js",
+        "polyfills": ["zone.js", "zone.js/testing"],
+        "sourceMap": true,
+        "codeCoverage": true,
+        "scripts": []
+      }
+    },
     "lint": {
       "executor": "@nx/eslint:lint"
     }

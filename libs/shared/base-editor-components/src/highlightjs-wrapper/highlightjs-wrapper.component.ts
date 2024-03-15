@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { ElectronService } from '../../services/electron.service';
 import { Highlight } from 'ngx-highlightjs';
 import { NgIf } from '@angular/common';
+import { ElectronService } from '@keira/shared/common-services';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -3,11 +3,9 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance, mock } from 'ts-mockito';
 
 import { ItemExtendedCostSelectorModalComponent } from './item-extended-cost-selector-modal.component';
-import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ItemExtendedCostSearchService } from '../../search/item-extended-cost-search.service';
-
-import { SqliteService } from '../../../services/sqlite.service';
+import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 
 describe('ItemExtendedCostSelectorModalComponent', () => {
   let component: ItemExtendedCostSelectorModalComponent;

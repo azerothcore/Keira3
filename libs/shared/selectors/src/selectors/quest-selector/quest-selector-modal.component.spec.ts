@@ -3,9 +3,9 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance, mock } from 'ts-mockito';
 
 import { QuestSelectorModalComponent } from './quest-selector-modal.component';
-import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { QuestSearchService } from '../../search/quest-search.service';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 
 describe('QuestSelectorModalComponent', () => {
   let component: QuestSelectorModalComponent;

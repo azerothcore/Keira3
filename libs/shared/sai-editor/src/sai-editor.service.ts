@@ -4,7 +4,8 @@ import { SAI_ID_2, SAI_ID_FIELDS, SAI_TABLE, SAI_TYPES, SmartScripts } from '@ke
 import { ToastrService } from 'ngx-toastr';
 import { SaiHandlerService } from './sai-handler.service';
 import { SaiCommentGeneratorService } from './sai-comment-generator.service';
-import { MultiRowComplexKeyEditorService, MysqlQueryService } from '@keira/shared/core';
+import { MultiRowComplexKeyEditorService } from '@keira/shared/core';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 
 @Injectable({
   providedIn: 'root',

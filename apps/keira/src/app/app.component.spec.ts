@@ -7,7 +7,7 @@ import { LATEST_RELEASE_API_URL } from '@keira/shared/constants';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
-import { instance, reset } from 'ts-mockito';
+import { instance, mock, reset } from 'ts-mockito';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import packageInfo from '../../../../package.json';
 
@@ -112,10 +112,5 @@ describe('AppComponent', () => {
 
       httpTestingController.verify();
     });
-  });
-
-  afterEach(() => {
-    reset(mock(ElectronService));
-    reset(MockedMysqlService);
   });
 });

@@ -10,7 +10,7 @@ import {
   PVP_RANK,
 } from '@keira/shared/acore-world-model';
 import { CLASSES_TEXT, RACES_TEXT } from '@keira/shared/constants';
-import { MysqlQueryService, SqliteQueryService } from '@keira/shared/core';
+import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
 import { ITEM_CONSTANTS } from './item-constants';
 import { gtCombatRatings, lvlIndepRating, MAX_LEVEL, resistanceFields } from './item-preview';
 import { PreviewHelperService } from '@keira/shared/preview';

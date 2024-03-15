@@ -8,8 +8,8 @@ import { IconComponent } from './icon.component';
 import { IconService } from './icon.service';
 import Spy = jasmine.Spy;
 
-import { SqliteService } from '../../services/sqlite.service';
 import { instance, mock } from 'ts-mockito';
+import { SqliteService } from '@keira/shared/db-layer';
 
 @Component({
   template: `<keira-icon

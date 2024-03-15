@@ -16,7 +16,7 @@ import {
 } from './constants/sai-constants';
 import { SAI_TARGETS } from './constants/sai-targets';
 import { SAI_EVENTS } from './constants/sai-event';
-import { MysqlQueryService, SqliteQueryService } from '@keira/shared/core';
+import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
 
 @Injectable({
   providedIn: 'root',

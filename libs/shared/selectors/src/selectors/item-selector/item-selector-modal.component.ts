@@ -6,7 +6,7 @@ import { SearchSelectorModalComponent } from '../base-selector/search-selector-m
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgIf } from '@angular/common';
-import { HighlightjsWrapperComponent, IconComponent } from '@keira/shared/core';
+import { HighlightjsWrapperComponent, IconComponent } from '@keira/shared/base-editor-components';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({

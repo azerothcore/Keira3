@@ -1,10 +1,10 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { MysqlQueryService, MysqlService } from '@keira/shared/core';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { VersionDbRow, VersionRow } from '@keira/shared/constants';
 import { of, throwError } from 'rxjs';
-import { anyString, instance, when } from 'ts-mockito';
+import { anyString, instance, mock, reset, when } from 'ts-mockito';
 import { DashboardComponent } from './dashboard.component';
+import { MysqlQueryService, MysqlService } from '@keira/shared/db-layer';
 
 class DashboardComponentPage extends PageObject<DashboardComponent> {
   get coreVersion(): HTMLTableCellElement {
@@ -50,14 +50,17 @@ describe('DashboardComponent', () => {
     [worldDbVersion]: null,
   };
 
+  let MockedMysqlQueryService = mock(MysqlQueryService);
+
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [DashboardComponent, TranslateTestingModule],
-      providers: [{ provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) }],
+      providers: [{ provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
     }).compileComponents();
   }));
 
   const setup = () => {
+    reset(MockedMysqlQueryService);
     when(MockedMysqlQueryService.query('SELECT * FROM version')).thenReturn(of([versionRow]));
     when(MockedMysqlQueryService.query('SELECT * FROM version_db_world')).thenReturn(of([versionDbRow]));
     const mysqlService = TestBed.inject(MysqlService);

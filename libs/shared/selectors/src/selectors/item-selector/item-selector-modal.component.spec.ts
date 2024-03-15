@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance, mock } from 'ts-mockito';
-import { MysqlQueryService } from '../../../services/query/mysql-query.service';
 import { ItemSearchService } from '../../search/item-search.service';
 import { ItemSelectorModalComponent } from './item-selector-modal.component';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 
 describe('ItemSelectorModalComponent', () => {
   let component: ItemSelectorModalComponent;

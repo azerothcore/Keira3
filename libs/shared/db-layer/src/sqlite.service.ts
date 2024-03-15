@@ -3,7 +3,7 @@ import { Inject, Injectable, NgZone } from '@angular/core';
 import { KEIRA_APP_CONFIG_TOKEN, KeiraAppConfig } from '@keira/shared/config';
 import { TableRow } from '@keira/shared/constants';
 import { Observable } from 'rxjs';
-import { ElectronService } from '@keira/shared/global-services';
+import { ElectronService } from '@keira/shared/common-services';
 
 /* istanbul ignore next */ // Note: will be tested in e2e
 @Injectable({

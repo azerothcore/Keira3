@@ -3,15 +3,14 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, in
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ClipboardService } from 'ngx-clipboard';
 import { filter } from 'rxjs';
-import { EditorService } from '../../abstract/service/editors/editor.service';
 import { TableRow } from '@keira/shared/constants';
-import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
 import { ModalConfirmComponent } from '../modal-confirm/modal-confirm.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { QueryErrorComponent } from './query-error/query-error.component';
 import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-wrapper.component';
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
+import { EditorService, SubscriptionHandler } from '@keira/shared/core';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection

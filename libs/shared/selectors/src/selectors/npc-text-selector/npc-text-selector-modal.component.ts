@@ -7,7 +7,7 @@ import { NPC_TEXT_ID, NpcText } from '@keira/shared/acore-world-model';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgIf } from '@angular/common';
-import { HighlightjsWrapperComponent } from '@keira/shared/core';
+import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({

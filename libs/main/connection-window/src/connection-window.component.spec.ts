@@ -3,7 +3,7 @@ import { PageObject, Spied, TranslateTestingModule } from '@keira/shared/test-ut
 import { ConnectionOptions, QueryError } from 'mysql2';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { of, throwError } from 'rxjs';
-import { instance, reset } from 'ts-mockito';
+import { instance, mock, reset } from 'ts-mockito';
 
 import { ConnectionWindowComponent } from './connection-window.component';
 import { MysqlService } from '@keira/shared/core';
@@ -370,6 +370,5 @@ describe('ConnectionWindowComponent', () => {
 
   afterEach(() => {
     localStorage.clear();
-    reset(MockedMysqlService);
   });
 });

@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, OnInit } from '@angular/core';
 import { QueryError } from 'mysql2';
-import { HandlerService } from '../../abstract/service/handlers/handler.service';
-import { MysqlQueryService } from '../../services/query/mysql-query.service';
 import { TableRow } from '@keira/shared/constants';
-import { SubscriptionHandler } from '../../utils/subscription-handler/subscription-handler';
 import { NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { HandlerService, SubscriptionHandler } from '@keira/shared/core';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

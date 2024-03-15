@@ -3,7 +3,7 @@ import * as mysql from 'mysql2';
 import { Connection, ConnectionOptions, FieldPacket as FieldInfo, QueryError } from 'mysql2';
 import { Observable, Subject } from 'rxjs';
 import { MysqlResult, QueryCallback, TableRow } from '@keira/shared/constants';
-import { ElectronService } from '@keira/shared/global-services';
+import { ElectronService } from '@keira/shared/common-services';
 
 @Injectable({
   providedIn: 'root',

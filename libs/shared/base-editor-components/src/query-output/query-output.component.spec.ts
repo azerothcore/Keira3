@@ -6,11 +6,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { QueryOutputComponentPage, TranslateTestingModule } from '@keira/shared/test-utils';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { ClipboardService } from 'ngx-clipboard';
-import { EditorService } from '../../abstract/service/editors/editor.service';
 import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-wrapper.component';
 import { QueryErrorComponent } from './query-error/query-error.component';
 import { QueryOutputComponent } from './query-output.component';
-import { TableRow } from '../../services/services.mock';
+import { TableRow } from '@keira/shared/constants';
+import { EditorService } from '@keira/shared/core';
 
 @Component({
   template: `<keira-query-output [editorService]="editorService"></keira-query-output>`,

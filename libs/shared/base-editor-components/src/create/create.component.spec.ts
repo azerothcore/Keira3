@@ -6,6 +6,9 @@ import { of, throwError } from 'rxjs';
 import { anything, instance, mock, reset, when } from 'ts-mockito';
 import { CreateComponent } from './create.component';
 import Spy = jasmine.Spy;
+import { MysqlQueryService } from '@keira/shared/db-layer';
+import { TableRow } from '@keira/shared/constants';
+import { MockHandlerService } from '../../../core/src/core.mock';
 
 class CreateComponentPage extends PageObject<CreateComponent<TableRow>> {
   get idInput(): HTMLInputElement {
@@ -24,6 +27,7 @@ describe('CreateComponent', () => {
   let fixture: ComponentFixture<CreateComponent<TableRow>>;
   let page: CreateComponentPage;
   let spyError: Spy;
+  let MockedMysqlQueryService: any;
 
   const mockTable = 'mock_table';
   const mockId = 'mockId';
@@ -39,6 +43,7 @@ describe('CreateComponent', () => {
   }));
 
   beforeEach(() => {
+    MockedMysqlQueryService = mock(MysqlQueryService);
     when(MockedMysqlQueryService.getMaxId(mockTable, mockId)).thenReturn(of([{ max: maxId }]));
     when(MockedMysqlQueryService.selectAll(mockTable, mockId, anything())).thenReturn(of([]));
     when(MockedMysqlQueryService.selectAll(mockTable, mockId, takenId)).thenReturn(of([{}]));
@@ -48,7 +53,7 @@ describe('CreateComponent', () => {
     component.entityTable = mockTable;
     component.entityIdField = mockId;
     component.handlerService = instance(mock(MockHandlerService));
-    component.queryService = instance(mock(MysqlQueryService));
+    component.queryService = instance(MockedMysqlQueryService);
     page = new CreateComponentPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
@@ -105,9 +110,5 @@ describe('CreateComponent', () => {
   it('the customStartId should be preferred when greater than the currentMax', () => {
     component.customStartingId = 10;
     expect(component['calculateNextId'](5)).toEqual(10);
-  });
-
-  afterEach(() => {
-    reset(MockedMysqlQueryService);
   });
 });
