@@ -18,9 +18,9 @@ import { QuestHandlerService } from '@keira/features/quest';
 import { SpellHandlerService } from '@keira/features/spell';
 import { SidebarComponent } from './sidebar.component';
 import { SidebarService } from './sidebar.service';
-import { ElectronService, LocationService } from '@keira/shared/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MysqlService } from '@keira/shared/db-layer';
+import { ElectronService, LocationService } from '@keira/shared/common-services';
 
 class SidebarComponentPage extends PageObject<SidebarComponent> {
   get toggleSidebarBtn(): HTMLButtonElement {

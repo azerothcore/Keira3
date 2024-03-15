@@ -4,9 +4,8 @@ import { TableRow } from '@keira/shared/constants';
 import { ReferenceLootTemplate } from '@keira/shared/acore-world-model';
 import { of } from 'rxjs';
 import { ReferenceViewerService } from './reference-viewer.service';
-import { MysqlQueryService } from '@keira/shared/db-layer';
+import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 
-import { SqliteService } from '@keira/shared/core';
 import { instance, mock } from 'ts-mockito';
 
 describe('ReferenceViewerService', () => {

@@ -16,8 +16,9 @@ import { SpellLootHandlerService } from '@keira/features/other-loots';
 import { QuestHandlerService } from '@keira/features/quest';
 import { SpellHandlerService } from '@keira/features/spell';
 import { MainWindowComponent } from './main-window.component';
-import { ElectronService, MysqlService } from '@keira/shared/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ElectronService } from '@keira/shared/common-services';
+import { MysqlService } from '@keira/shared/db-layer';
 
 describe('MainWindowComponent', () => {
   beforeEach(waitForAsync(() => {

@@ -8,8 +8,8 @@ import { of } from 'rxjs';
 import { ReferenceViewerComponent } from './reference-viewer.component';
 import { ReferenceViewerService } from './reference-viewer.service';
 
-import { SqliteService } from '@keira/shared/core';
 import { instance, mock } from 'ts-mockito';
+import { SqliteService } from '@keira/shared/db-layer';
 
 class ReferenceViewerComponentPage extends PageObject<TestHostComponent> {
   get referenceViewers() {

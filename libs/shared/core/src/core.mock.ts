@@ -109,9 +109,9 @@ export class MockMultiRowExternalEditorService extends MultiRowExternalEditorSer
 })
 export class MockMultiRowComplexKeyEditorService extends MultiRowComplexKeyEditorService<MockEntity> {
   constructor(
-    protected handlerService: MockHandlerService,
-    readonly queryService: MysqlQueryService,
-    protected toastrService: ToastrService,
+    protected override handlerService: MockHandlerService,
+    override readonly queryService: MysqlQueryService,
+    protected override toastrService: ToastrService,
   ) {
     super(MockEntity, MOCK_TABLE, [MOCK_ID, MOCK_ID_2], MOCK_ID_2, handlerService, queryService, toastrService);
   }
