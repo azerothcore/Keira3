@@ -7,17 +7,19 @@ import { LATEST_RELEASE_API_URL } from '@keira/shared/constants';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
-import { instance, mock, reset } from 'ts-mockito';
+import { instance, mock } from 'ts-mockito';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import packageInfo from '../../../../package.json';
 
 import { AppComponent } from './app.component';
 
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { ElectronService, ModalConfirmComponent, MysqlService, QueryErrorComponent } from '@keira/shared/core';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { MainWindowComponent } from '@keira/main/main-window';
 import { ConnectionWindowComponent } from '@keira/main/connection-window';
+import { ModalConfirmComponent, QueryErrorComponent } from '@keira/shared/base-editor-components';
+import { ElectronService } from '@keira/shared/common-services';
+import { MysqlService } from '@keira/shared/db-layer';
 
 describe('AppComponent', () => {
   beforeEach(waitForAsync(() => {

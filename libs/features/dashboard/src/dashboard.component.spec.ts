@@ -50,7 +50,7 @@ describe('DashboardComponent', () => {
     [worldDbVersion]: null,
   };
 
-  let MockedMysqlQueryService = mock(MysqlQueryService);
+  const MockedMysqlQueryService = mock(MysqlQueryService);
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({

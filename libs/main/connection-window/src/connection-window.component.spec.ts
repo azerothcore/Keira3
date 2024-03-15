@@ -3,12 +3,12 @@ import { PageObject, Spied, TranslateTestingModule } from '@keira/shared/test-ut
 import { ConnectionOptions, QueryError } from 'mysql2';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { of, throwError } from 'rxjs';
-import { instance, mock, reset } from 'ts-mockito';
+import { instance, mock } from 'ts-mockito';
 
 import { ConnectionWindowComponent } from './connection-window.component';
-import { MysqlService } from '@keira/shared/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginConfigService } from '@keira/shared/login-config';
+import { MysqlService } from '@keira/shared/db-layer';
 
 class ConnectionWindowComponentPage extends PageObject<ConnectionWindowComponent> {
   get hostInput(): HTMLInputElement {

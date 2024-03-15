@@ -16,5 +16,6 @@ export * from './abstract/service/select/select.service';
 export * from './abstract/service/select/search.service';
 export * from './abstract/service/handlers/complex-key.handler.service';
 export * from './abstract/service/handlers/handler.service';
+export * from './core.mock';
 export * from './utils/helpers';
 export * from './utils/subscription-handler/subscription-handler';
