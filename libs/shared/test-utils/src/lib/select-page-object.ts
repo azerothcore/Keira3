@@ -1,7 +1,7 @@
 import { PageObject } from './page-object';
 
 export abstract class SelectPageObject<T> extends PageObject<T> {
-  ID_FIELD: string;
+  ID_FIELD = '';
 
   get createInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('keira-create input#id');

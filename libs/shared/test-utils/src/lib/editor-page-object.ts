@@ -59,7 +59,7 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
   getCellOfTableExternal(tableSelector: string, rowIndex: number, colIndex: number): HTMLTableDataCellElement {
     const element = document.querySelector<HTMLTableDataCellElement>(
       `${tableSelector} tr:nth-child(${rowIndex + 1}) td:nth-child(${colIndex + 1})`,
-    );
+    ) as HTMLTableDataCellElement;
     expect(element).toBeTruthy(`Unable to find column ${colIndex} of row ${rowIndex} of ${tableSelector}`);
     return element;
   }
@@ -67,7 +67,7 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
   toggleFlagInRowExternal(rowIndex: number) {
     const cell = this.getCellOfTableExternal('#flags-table', rowIndex, 0);
     const toggleSelector = 'ui-switch';
-    const toggleElement = cell.querySelector<HTMLElement>(toggleSelector);
+    const toggleElement = cell.querySelector<HTMLElement>(toggleSelector) as HTMLElement;
     expect(toggleElement).toBeTruthy(`Unable to find ${toggleSelector}`);
     this.clickElement(toggleElement);
   }

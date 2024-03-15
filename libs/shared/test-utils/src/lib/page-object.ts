@@ -42,7 +42,7 @@ export abstract class PageObject<ComponentType> {
   }
 
   queryInsideElement<T extends HTMLElement>(element: HTMLElement, selector: string, assert = true): HTMLElement {
-    const child: T = element.querySelector<T>(selector);
+    const child: T = element.querySelector<T>(selector) as T;
 
     if (assert) {
       expect(child).toBeTruthy(`Element with selector "${selector}" inside "${element.tagName}" was not found.`);
@@ -101,7 +101,7 @@ export abstract class PageObject<ComponentType> {
   }
 
   queryOutsideComponent<T extends HTMLElement>(selector: string, assert = true): T {
-    const element: T = document.querySelector<T>(selector);
+    const element: T = document.querySelector<T>(selector) as T;
 
     if (assert) {
       expect(element).toBeTruthy(`Global element with selector "${selector}" was not found.`);
@@ -136,7 +136,7 @@ export abstract class PageObject<ComponentType> {
   private getDatatableCellSelector(datatableSelector: string, rowIndex: number, colIndex: number): string {
     return `${datatableSelector} .datatable-row-wrapper:nth-child(${rowIndex + 1}) .datatable-body-cell:nth-child(${colIndex + 1})`;
   }
-  private getDefaultSelectorIfNull(datatableSelector: string | null): string {
+  private getDefaultSelectorIfNull(datatableSelector: string | undefined): string {
     return datatableSelector ? datatableSelector : this.DT_SELECTOR;
   }
 
@@ -164,7 +164,7 @@ export abstract class PageObject<ComponentType> {
   /* external selectors (querying the document) */
   getDatatableHeaderByTitleExternal(text: string, assert = true, datatableSelector?: string): HTMLElement {
     datatableSelector = this.getDefaultSelectorIfNull(datatableSelector);
-    const element: HTMLElement = document.querySelector(this.getDatatableHeaderByTitleSelector(datatableSelector, text));
+    const element: HTMLElement = document.querySelector(this.getDatatableHeaderByTitleSelector(datatableSelector, text)) as HTMLElement;
     if (assert) {
       expect(element).toBeTruthy(`Unable to find text ${text} of ${datatableSelector}`);
     }
@@ -173,7 +173,7 @@ export abstract class PageObject<ComponentType> {
 
   getDatatableRowExternal(rowIndex: number, assert = true, datatableSelector?: string): HTMLElement {
     datatableSelector = this.getDefaultSelectorIfNull(datatableSelector);
-    const element: HTMLElement = document.querySelector(this.getDatatableRowSelector(datatableSelector, rowIndex));
+    const element: HTMLElement = document.querySelector(this.getDatatableRowSelector(datatableSelector, rowIndex)) as HTMLElement;
     if (assert) {
       expect(element).toBeTruthy(`Unable to find row ${rowIndex} of ${datatableSelector}`);
     }
@@ -182,7 +182,9 @@ export abstract class PageObject<ComponentType> {
 
   getDatatableCellExternal(rowIndex: number, colIndex: number, assert = true, datatableSelector?: string): HTMLElement {
     datatableSelector = this.getDefaultSelectorIfNull(datatableSelector);
-    const element: HTMLElement = document.querySelector(this.getDatatableCellSelector(datatableSelector, rowIndex, colIndex));
+    const element: HTMLElement = document.querySelector(
+      this.getDatatableCellSelector(datatableSelector, rowIndex, colIndex),
+    ) as HTMLElement;
     if (assert) {
       expect(element).toBeTruthy(`Unable to find column ${colIndex} of row ${rowIndex} of ${datatableSelector}`);
     }
