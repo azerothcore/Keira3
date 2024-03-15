@@ -10,7 +10,7 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-milling-loot-template',
-  templateUrl: '../../../../shared/base-abstract-classes/src/abstract/components/editors/loot-template/loot-template.component.html',
+  templateUrl: '../../../../shared/base-abstract-classes/src/components/editors/loot-template/loot-template.component.html',
   standalone: true,
   imports: [TopBarComponent, NgIf, LootEditorComponent],
 })

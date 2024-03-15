@@ -10,7 +10,7 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-disenchant-loot-template',
-  templateUrl: '../../../../shared/base-abstract-classes/src/abstract/components/editors/loot-template/loot-template-id.component.html',
+  templateUrl: '../../../../shared/base-abstract-classes/src/components/editors/loot-template/loot-template-id.component.html',
   standalone: true,
   imports: [TopBarComponent, NgIf, LootEditorComponent],
 })
