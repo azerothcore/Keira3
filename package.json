@@ -31,7 +31,7 @@
     "format": "prettier --config ./.prettierrc --ignore-path ./.prettierignore --no-editorconfig --write .",
     "format-staged": "pretty-quick --staged",
     "lint": "nx affected:lint --exclude='Keira3'",
-    "test": "nx affected:test",
+    "test": "nx affected:test --watch=false",
     "test-ci": "nx affected:test --watch=false",
     "e2e": "playwright test -c apps/keira-e2e/playwright.config.ts apps/keira-e2e/",
     "e2e:show-trace": "playwright show-trace e2e/tracing/trace.zip",
