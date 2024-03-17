@@ -42,6 +42,7 @@ apps/keira/coverage
 npm-debug.log
 testem.log
 /typings
+/src/
 
 # e2e
 /e2e/*.js
