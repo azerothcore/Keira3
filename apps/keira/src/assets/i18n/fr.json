@@ -40,6 +40,7 @@
   "UNIQUE_ID": "L'unique ID de {{ ENTITY }}",
   "DELETE_SELECTED_ROW": "Supprimer la ligne sélectionnée",
   "ADD_NEW_ROW": "Ajouter une nouvelle ligne",
+  "DUPLICATE_SELECTED_ROW": "Duplicate selected row",
   "EMPTY": "",
   "UNKNOWN": "Inconnu",
   "COPY": "Copier",

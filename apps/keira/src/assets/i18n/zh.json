@@ -40,6 +40,7 @@
   "UNIQUE_ID": "唯一ID {{ ENTITY }}",
   "DELETE_SELECTED_ROW": "删除选择的行",
   "ADD_NEW_ROW": "添加新的行",
+  "DUPLICATE_SELECTED_ROW": "Duplicate selected row",
   "EMPTY": "空",
   "UNKNOWN": "未知",
   "COPY": "复制",

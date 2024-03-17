@@ -40,6 +40,7 @@
   "UNIQUE_ID": "Det unika ID utav {{ ENTITY }}",
   "DELETE_SELECTED_ROW": "Ta bort vald rad",
   "ADD_NEW_ROW": "Lägg till ny rad",
+  "DUPLICATE_SELECTED_ROW": "Duplicate selected row",
   "EMPTY": "",
   "UNKNOWN": "Okänd",
   "COPY": "Kopiera",

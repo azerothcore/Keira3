@@ -20,6 +20,9 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   get selectedRowId(): string | number {
     return this._selectedRowId;
   }
+  hasSelectedRow(): boolean {
+    return this._selectedRowId !== undefined && this._selectedRowId !== null;
+  }
   get entitySecondIdField(): string {
     return this._entitySecondIdField;
   }
@@ -30,7 +33,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   }
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
+  protected constructor(
     protected _entityClass: Class,
     protected _entityTable: string,
     protected _entityIdField: string,
@@ -41,6 +44,25 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   ) {
     super(_entityClass, _entityTable, _entityIdField, handlerService, queryService, toastrService);
     this.initForm();
+  }
+
+  private getRowIndex(id: string | number): number {
+    for (let i = 0; i < this._newRows.length; i++) {
+      if (id === this._newRows[i][this._entitySecondIdField]) {
+        return i;
+      }
+    }
+
+    console.error(`getRowIndex() failed in finding row having ${this._entitySecondIdField} ${id}`);
+    return 0;
+  }
+
+  private getSelectedRowIndex(): number {
+    return this.getRowIndex(this._selectedRowId);
+  }
+
+  private getSelectedRow(): T {
+    return this._newRows[this.getSelectedRowIndex()];
   }
 
   protected initForm(): void {
@@ -63,21 +85,6 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   }
 
   protected checkRowsCorrectness(): void {}
-
-  private getRowIndex(id: string | number): number {
-    for (let i = 0; i < this._newRows.length; i++) {
-      if (id === this._newRows[i][this._entitySecondIdField]) {
-        return i;
-      }
-    }
-
-    console.error(`getRowIndex() failed in finding row having ${this._entitySecondIdField} ${id}`);
-    return 0;
-  }
-
-  private getSelectedRowIndex(): number {
-    return this.getRowIndex(this._selectedRowId);
-  }
 
   protected onReloadSuccessful(data: T[], id: string | number) {
     this.loadNewData(data);
@@ -144,13 +151,13 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     this._form.enable();
     this._form.reset();
 
-    const index = this.getSelectedRowIndex();
+    const selectedRow = this.getSelectedRow();
 
     for (const field of this.fields) {
       const control = this._form.controls[field];
       /* istanbul ignore else */
       if (control) {
-        control.setValue(this._newRows[index][field]);
+        control.setValue(selectedRow[field]);
       } else {
         console.error(`Control '${field}' does not exist!`);
         console.log(`----------- DEBUG CONTROL KEYS:`);
@@ -187,16 +194,16 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     this.updateFullQuery();
   }
 
-  protected addIdToNewRow(newRow): void {
-    newRow[this._entityIdField] = Number.parseInt(this.loadedEntityId, 10);
+  protected addIdToNewRow(newRow: T): void {
+    newRow[this._entityIdField as keyof T] = Number.parseInt(this.loadedEntityId, 10) as T[keyof T];
   }
 
-  addNewRow(): void {
-    const newRow = new this._entityClass();
+  addNewRow(copySelectedRow = false): void {
+    const newRow: T = copySelectedRow && this.hasSelectedRow() ? { ...this.getSelectedRow() } : new this._entityClass();
     if (this._entityIdField) {
       this.addIdToNewRow(newRow);
     }
-    newRow[this._entitySecondIdField] = this.getNextFreeRowId();
+    newRow[this._entitySecondIdField as keyof T] = this.getNextFreeRowId() as T[keyof T];
     this._newRows = [...this._newRows, { ...newRow }];
 
     this.updateDiffQuery();
