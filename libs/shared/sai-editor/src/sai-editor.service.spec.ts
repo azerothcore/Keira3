@@ -2,16 +2,18 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { SmartScripts } from '@keira/shared/acore-world-model';
+import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { ToastrService } from 'ngx-toastr';
 import { instance, mock } from 'ts-mockito';
+import { SaiCommentGeneratorService } from './sai-comment-generator.service';
 import { SaiEditorService } from './sai-editor.service';
 import { SaiHandlerService } from './sai-handler.service';
-import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 
 describe('SAI Editor Service', () => {
   let service: SaiEditorService;
   let handlerService: SaiHandlerService;
   let queryService: MysqlQueryService;
+  let saiCommentGeneratorService: SaiCommentGeneratorService;
 
   const mockQuery = '-- Mock Query result';
 
@@ -22,6 +24,7 @@ describe('SAI Editor Service', () => {
         { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
         { provide: ToastrService, useValue: instance(mock(ToastrService)) },
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+        { provide: SaiCommentGeneratorService, useValue: instance(mock(SaiCommentGeneratorService)) },
       ],
     }),
   );
@@ -30,6 +33,7 @@ describe('SAI Editor Service', () => {
     service = TestBed.inject(SaiEditorService);
     handlerService = TestBed.inject(SaiHandlerService);
     queryService = TestBed.inject(MysqlQueryService);
+    saiCommentGeneratorService = TestBed.inject(SaiCommentGeneratorService);
   });
 
   it('checks linked event', () => {
@@ -128,6 +132,7 @@ describe('SAI Editor Service', () => {
       const refreshDatatableSpy = spyOn(service, 'refreshDatatable');
       const isRowSelectedSpy = spyOn(service, 'isRowSelected').and.returnValue(true);
       const getNameSpy = spyOn<any>(handlerService, 'getName');
+      const generateCommentSpy = spyOn<any>(saiCommentGeneratorService, 'generateComment');
 
       service.generateComments();
       tick(100);
@@ -137,6 +142,7 @@ describe('SAI Editor Service', () => {
       expect(refreshDatatableSpy).toHaveBeenCalledTimes(1);
       expect(isRowSelectedSpy).toHaveBeenCalledTimes(2);
       expect(getNameSpy).toHaveBeenCalledTimes(2);
+      expect(generateCommentSpy).toHaveBeenCalledTimes(2);
     }));
   });
 });
