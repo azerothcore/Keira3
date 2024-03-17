@@ -1,16 +1,16 @@
 import { Component, ViewChild } from '@angular/core';
-import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 
+import { EditorService } from '@keira/shared/base-abstract-classes';
+import { TableRow } from '@keira/shared/constants';
 import { QueryOutputComponentPage, TranslateTestingModule } from '@keira/shared/test-utils';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { ClipboardService } from 'ngx-clipboard';
 import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-wrapper.component';
 import { QueryErrorComponent } from './query-error/query-error.component';
 import { QueryOutputComponent } from './query-output.component';
-import { TableRow } from '@keira/shared/constants';
-import { EditorService } from '@keira/shared/base-abstract-classes';
 
 @Component({
   template: `<keira-query-output [editorService]="editorService"></keira-query-output>`,
@@ -107,6 +107,35 @@ describe('QueryOutputComponent', () => {
 
     page.clickElement(page.executeBtn);
     expect(spy).toHaveBeenCalledWith(fullQuery);
+  });
+
+  describe('getQuery', () => {
+    it('get fullQuery based on editorService isNew', () => {
+      const { component } = setup();
+      (component['editorService'] as any).isNew = true;
+
+      const query = component['getQuery']();
+
+      expect(query).toBe(component['editorService'].fullQuery);
+    });
+
+    it('get fullQuery based on selectedQuery', () => {
+      const { component } = setup();
+      component.selectedQuery = 'full';
+
+      const query = component['getQuery']();
+
+      expect(query).toBe(component['editorService'].fullQuery);
+    });
+
+    it('get diffQuery  based on selectedQuery', () => {
+      const { component } = setup();
+      component.selectedQuery = 'diff';
+
+      const query = component['getQuery']();
+
+      expect(query).toBe(component['editorService'].diffQuery);
+    });
   });
 
   describe('reload', () => {

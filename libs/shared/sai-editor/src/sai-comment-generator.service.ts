@@ -1,22 +1,22 @@
 import { Injectable } from '@angular/core';
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
+import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
 import { SAI_ACTION_COMMENTS, SAI_EVENT_COMMENTS } from './constants/sai-comments';
 import {
   DYNAMIC_FLAGS,
   EVENT_FLAGS,
   GO_FLAGS,
   NPC_FLAGS,
+  UNIT_FLAGS,
   phaseMask,
   templates,
-  UNIT_FLAGS,
   unitBytes1Flags,
   unitFieldBytes1Type,
   unitStandFlags,
   unitStandStateType,
 } from './constants/sai-constants';
-import { SAI_TARGETS } from './constants/sai-targets';
 import { SAI_EVENTS } from './constants/sai-event';
-import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
+import { SAI_TARGETS } from './constants/sai-targets';
 
 @Injectable({
   providedIn: 'root',
@@ -109,9 +109,9 @@ export class SaiCommentGeneratorService {
         // if previous is LINK, return previous of previous
         if (row.event_type === SAI_EVENTS.LINK) {
           return this.getPreviousScriptLink(rows, row);
-        } else {
-          return row;
         }
+
+        return row;
       }
     }
 
