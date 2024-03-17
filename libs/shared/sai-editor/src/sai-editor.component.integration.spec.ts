@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -10,7 +10,7 @@ import { SaiEditorComponent } from './sai-editor.component';
 import { SaiHandlerService } from './sai-handler.service';
 import { SAI_EVENTS } from './constants/sai-event';
 import { SAI_ACTIONS } from './constants/sai-actions';
-import Spy = jasmine.Spy;
+
 import { instance, mock } from 'ts-mockito';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 
@@ -84,13 +84,6 @@ class SaiEditorPage extends MultiRowEditorPageObject<SaiEditorComponent> {
 }
 
 describe('SaiEditorComponent integration tests', () => {
-  let component: SaiEditorComponent;
-  let fixture: ComponentFixture<SaiEditorComponent>;
-  let handlerService: SaiHandlerService;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let page: SaiEditorPage;
-
   const sourceType = SAI_TYPES.SAI_TYPE_CREATURE;
   const id = 1234;
 
@@ -112,7 +105,7 @@ describe('SaiEditorComponent integration tests', () => {
 
   function setup(creatingNew: boolean, hasTemplateQuery = false, st = sourceType) {
     const selected = { source_type: st, entryorguid: id };
-    handlerService = TestBed.inject(SaiHandlerService);
+    const handlerService = TestBed.inject(SaiHandlerService);
     handlerService['_selected'] = JSON.stringify(selected);
     handlerService.isNew = creatingNew;
 
@@ -120,20 +113,22 @@ describe('SaiEditorComponent integration tests', () => {
       handlerService['_templateQuery'] = '-- Mock template query';
     }
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
 
     spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
-    fixture = TestBed.createComponent(SaiEditorComponent);
-    component = fixture.componentInstance;
-    page = new SaiEditorPage(fixture);
+    const fixture = TestBed.createComponent(SaiEditorComponent);
+    const component = fixture.componentInstance;
+    const page = new SaiEditorPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+
+    return { component, fixture, handlerService, queryService, querySpy, page };
   }
 
   it('should correctly work when TimedActionlists', () => {
-    setup(true, false, SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST);
+    const { page } = setup(true, false, SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST);
 
     expect(page.event1Name.innerText).toEqual('minTimer');
     expect(page.event2Name.innerText).toBe('maxTimer');
@@ -146,9 +141,8 @@ describe('SaiEditorComponent integration tests', () => {
   });
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
-
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.addNewRowBtn.disabled).toBe(false);
@@ -185,6 +179,7 @@ describe('SaiEditorComponent integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
+      const { handlerService, page } = setup(true);
       expect(handlerService.isSaiUnsaved).toBe(false);
       page.addNewRow();
       expect(handlerService.isSaiUnsaved).toBe(true);
@@ -193,6 +188,7 @@ describe('SaiEditorComponent integration tests', () => {
     });
 
     it('adding new rows and executing the query should correctly work', () => {
+      const { querySpy, page } = setup(true);
       const expectedQuery =
         'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (0, 1, 2));\n' +
         'INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, ' +
@@ -219,6 +215,7 @@ describe('SaiEditorComponent integration tests', () => {
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.expectDiffQueryToContain(
         'DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (0));\n' +
@@ -301,6 +298,7 @@ describe('SaiEditorComponent integration tests', () => {
     });
 
     xit('generating comments should correctly work', () => {
+      const { component, fixture, handlerService, page } = setup(true);
       const saiColIndex = 9;
       const name = 'Shin';
       spyOn(handlerService, 'getName').and.returnValue(of(name));
@@ -328,9 +326,8 @@ describe('SaiEditorComponent integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(
@@ -348,6 +345,7 @@ describe('SaiEditorComponent integration tests', () => {
     });
 
     it('deleting rows should correctly work', () => {
+      const { page } = setup(false);
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.expectDiffQueryToContain('DELETE FROM `smart_scripts` WHERE (`entryorguid` = 1234) AND (`source_type` = 0) AND (`id` IN (1));');
@@ -384,6 +382,7 @@ describe('SaiEditorComponent integration tests', () => {
     });
 
     it('editing existing rows should correctly work', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(1);
       page.setInputValueById('target_param1', 1);
 
@@ -414,6 +413,7 @@ describe('SaiEditorComponent integration tests', () => {
     });
 
     it('combining add, edit and delete should correctly work', () => {
+      const { page } = setup(false);
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
 
@@ -448,6 +448,7 @@ describe('SaiEditorComponent integration tests', () => {
     });
 
     xit('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
+      const { page } = setup(false);
       const field = 'event_flags';
       page.clickRowOfDatatable(0);
       await page.whenReady();
@@ -488,6 +489,7 @@ describe('SaiEditorComponent integration tests', () => {
 
     describe('errors on wrong linked event', () => {
       it('case: no errors', () => {
+        const { fixture, page } = setup(false);
         page.addNewRow();
         page.addNewRow();
         fixture.detectChanges();
@@ -496,6 +498,7 @@ describe('SaiEditorComponent integration tests', () => {
       });
 
       it('ERROR: the SAI (id:', () => {
+        const { fixture, page } = setup(false);
         page.addNewRow();
         page.addNewRow();
         page.clickRowOfDatatable(1);
@@ -508,6 +511,7 @@ describe('SaiEditorComponent integration tests', () => {
       });
 
       it('ERROR: non-existing links:', () => {
+        const { fixture, page } = setup(false);
         page.addNewRow();
         page.addNewRow();
         page.clickRowOfDatatable(1);
@@ -521,9 +525,8 @@ describe('SaiEditorComponent integration tests', () => {
   });
 
   describe('Template query', () => {
-    beforeEach(() => setup(false, true));
-
     it('should correctly initialise', () => {
+      const { page } = setup(false, true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(
@@ -543,12 +546,9 @@ describe('SaiEditorComponent integration tests', () => {
   });
 
   describe('Dynamic param names', () => {
-    beforeEach(() => {
-      setup(true);
-      page.addNewRow();
-    });
-
     it('event param names should correctly work', () => {
+      const { page } = setup(true);
+      page.addNewRow();
       page.setSelectValueById('event_type', 1);
 
       expect(page.event1Name.innerText).toContain('InitialMin');
@@ -567,6 +567,8 @@ describe('SaiEditorComponent integration tests', () => {
     });
 
     it('action param names should correctly work', () => {
+      const { page } = setup(true);
+      page.addNewRow();
       page.setSelectValueById('action_type', 1);
 
       expect(page.action1Name.innerText).toContain('GroupId');
@@ -587,6 +589,8 @@ describe('SaiEditorComponent integration tests', () => {
     });
 
     it('target param names should correctly work', () => {
+      const { page } = setup(true);
+      page.addNewRow();
       page.setSelectValueById('target_type', 1);
 
       expect(page.target1Name.innerText).toContain('param1');
