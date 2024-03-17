@@ -119,7 +119,33 @@ describe('SAI Editor Service', () => {
   });
 
   describe('generateComments', () => {
-    it('should work correctly', fakeAsync(() => {
+    it('should work correctly generating comments in all rows', fakeAsync(() => {
+      const mockRows: Partial<SmartScripts>[] = [
+        { entryorguid: 0, source_type: 0, id: 0, link: 1, event_type: 0 },
+        { entryorguid: 0, source_type: 0, id: 1, link: 0, event_type: 61 },
+      ];
+
+      service['_newRows'] = mockRows as SmartScripts[];
+
+      const updateDiffQuerySpy = spyOn<any>(service, 'updateDiffQuery');
+      const updateFullQuerySpy = spyOn<any>(service, 'updateFullQuery');
+      const refreshDatatableSpy = spyOn(service, 'refreshDatatable');
+      const isRowSelectedSpy = spyOn(service, 'isRowSelected').and.returnValue(true);
+      const getNameSpy = spyOn<any>(handlerService, 'getName');
+      const generateCommentSpy = spyOn<any>(saiCommentGeneratorService, 'generateComment');
+
+      service.generateComments(true);
+      tick(100);
+
+      expect(updateDiffQuerySpy).toHaveBeenCalledTimes(1);
+      expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
+      expect(refreshDatatableSpy).toHaveBeenCalledTimes(1);
+      expect(isRowSelectedSpy).toHaveBeenCalledTimes(2);
+      expect(getNameSpy).toHaveBeenCalledTimes(2);
+      expect(generateCommentSpy).toHaveBeenCalledTimes(2);
+    }));
+
+    it('should work correctly generating only one comment', fakeAsync(() => {
       const mockRows: Partial<SmartScripts>[] = [
         { entryorguid: 0, source_type: 0, id: 0, link: 1, event_type: 0 },
         { entryorguid: 0, source_type: 0, id: 1, link: 0, event_type: 61 },
@@ -140,9 +166,9 @@ describe('SAI Editor Service', () => {
       expect(updateDiffQuerySpy).toHaveBeenCalledTimes(1);
       expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
       expect(refreshDatatableSpy).toHaveBeenCalledTimes(1);
-      expect(isRowSelectedSpy).toHaveBeenCalledTimes(2);
-      expect(getNameSpy).toHaveBeenCalledTimes(2);
-      expect(generateCommentSpy).toHaveBeenCalledTimes(2);
+      expect(isRowSelectedSpy).toHaveBeenCalledTimes(1);
+      expect(getNameSpy).toHaveBeenCalledTimes(1);
+      expect(generateCommentSpy).toHaveBeenCalledTimes(1);
     }));
   });
 });
