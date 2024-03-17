@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 
 import { SAI_ID_2, SAI_ID_FIELDS, SAI_TABLE, SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
-import { ToastrService } from 'ngx-toastr';
-import { SaiHandlerService } from './sai-handler.service';
-import { SaiCommentGeneratorService } from './sai-comment-generator.service';
 import { MultiRowComplexKeyEditorService } from '@keira/shared/base-abstract-classes';
 import { MysqlQueryService } from '@keira/shared/db-layer';
+import { ToastrService } from 'ngx-toastr';
+import { SaiCommentGeneratorService } from './sai-comment-generator.service';
+import { SaiHandlerService } from './sai-handler.service';
 
 @Injectable({
   providedIn: 'root',
@@ -93,11 +93,11 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
     }
   }
 
-  async generateComments() {
-    for (const row of structuredClone(this._newRows)) {
+  async generateComments(): Promise<void> {
+    for (const row of this._newRows) {
       row.comment = await this.saiCommentGeneratorService.generateComment(
-        this._newRows,
-        row,
+        structuredClone(this._newRows),
+        { ...row },
         /* istanbul ignore next */
         await this.handlerService.getName()?.toPromise(),
       );

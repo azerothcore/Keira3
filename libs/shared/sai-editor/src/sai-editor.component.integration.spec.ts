@@ -1,17 +1,17 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
+import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
-import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
+import { instance, mock } from 'ts-mockito';
+import { SAI_ACTIONS } from './constants/sai-actions';
+import { SAI_EVENTS } from './constants/sai-event';
 import { SaiEditorComponent } from './sai-editor.component';
 import { SaiHandlerService } from './sai-handler.service';
-import { SAI_EVENTS } from './constants/sai-event';
-import { SAI_ACTIONS } from './constants/sai-actions';
 
-import { instance, mock } from 'ts-mockito';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 
 class SaiEditorPage extends MultiRowEditorPageObject<SaiEditorComponent> {
@@ -297,7 +297,7 @@ describe('SaiEditorComponent integration tests', () => {
       );
     });
 
-    xit('generating comments should correctly work', () => {
+    it('generating comments should correctly work', fakeAsync(() => {
       const { component, fixture, handlerService, page } = setup(true);
       const saiColIndex = 9;
       const name = 'Shin';
@@ -313,6 +313,7 @@ describe('SaiEditorComponent integration tests', () => {
       component.editorService['_newRows'][2].action_type = SAI_ACTIONS.FLEE_FOR_ASSIST;
 
       page.clickElement(page.generateCommentsBtn);
+      tick(1000);
       fixture.detectChanges();
 
       expect(page.getDatatableCell(0, saiColIndex).innerText).toEqual(`${name} - On Aggro - Kill Target`);
@@ -322,7 +323,7 @@ describe('SaiEditorComponent integration tests', () => {
       page.expectAllQueriesToContain(`${name} - On Aggro - Kill Target`);
       page.expectAllQueriesToContain(`${name} - On Just Died - Start Attacking`);
       page.expectAllQueriesToContain(`${name} - On Evade - Flee For Assist`);
-    });
+    }));
   });
 
   describe('Editing existing', () => {

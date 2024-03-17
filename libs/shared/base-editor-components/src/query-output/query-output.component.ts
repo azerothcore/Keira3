@@ -1,17 +1,17 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, inject, Input, Output } from '@angular/core';
 
+import { NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { EditorService } from '@keira/shared/base-abstract-classes';
+import { TableRow } from '@keira/shared/constants';
+import { SubscriptionHandler } from '@keira/shared/utils';
+import { TranslateModule } from '@ngx-translate/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ClipboardService } from 'ngx-clipboard';
 import { filter } from 'rxjs';
-import { TableRow } from '@keira/shared/constants';
-import { ModalConfirmComponent } from '../modal-confirm/modal-confirm.component';
-import { TranslateModule } from '@ngx-translate/core';
-import { QueryErrorComponent } from './query-error/query-error.component';
 import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-wrapper.component';
-import { FormsModule } from '@angular/forms';
-import { NgIf } from '@angular/common';
-import { EditorService } from '@keira/shared/base-abstract-classes';
-import { SubscriptionHandler } from '@keira/shared/utils';
+import { ModalConfirmComponent } from '../modal-confirm/modal-confirm.component';
+import { QueryErrorComponent } from './query-error/query-error.component';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
@@ -39,26 +39,15 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
   }
 
   showFullQuery(): boolean {
-    if (this.editorService.isNew) {
-      return true;
-    }
-    return this.selectedQuery === 'full';
+    return this.editorService.isNew || this.selectedQuery === 'full';
   }
 
   copy(): void {
-    if (this.showFullQuery()) {
-      this.clipboardService.copyFromContent(this.editorService.fullQuery);
-    } else {
-      this.clipboardService.copyFromContent(this.editorService.diffQuery);
-    }
+    this.clipboardService.copyFromContent(this.getQuery());
   }
 
   execute(): void {
-    if (this.showFullQuery()) {
-      this.executeQuery.emit(this.editorService.fullQuery);
-    } else {
-      this.executeQuery.emit(this.editorService.diffQuery);
-    }
+    this.executeQuery.emit(this.getQuery());
   }
 
   reload(): void {
@@ -83,5 +72,9 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
         this.editorService.reloadSameEntity(this.changeDetectorRef);
       }),
     );
+  }
+
+  private getQuery(): string {
+    return this.showFullQuery() ? this.editorService.fullQuery : this.editorService.diffQuery;
   }
 }
