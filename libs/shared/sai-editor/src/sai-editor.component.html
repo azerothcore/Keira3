@@ -564,8 +564,9 @@
             id="generate-comments-btn-single"
             class="btn btn-primary btn-sm float-end me-2"
             (click)="editorService.generateComments()"
+            [disabled]="editorService.selectedRowId !== 0 && !editorService.selectedRowId"
           >
-            Generate comment
+            {{ 'SMARTAI.EDITOR.GENERATE_COMMENT' | translate }}
           </button>
 
           <ngx-datatable
