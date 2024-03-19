@@ -83,7 +83,7 @@ class SaiEditorPage extends MultiRowEditorPageObject<SaiEditorComponent> {
   }
 }
 
-fdescribe('SaiEditorComponent integration tests', () => {
+describe('SaiEditorComponent integration tests', () => {
   const sourceType = SAI_TYPES.SAI_TYPE_CREATURE;
   const id = 1234;
 
@@ -178,7 +178,7 @@ fdescribe('SaiEditorComponent integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(0);
     });
 
-    fit('should correctly update the unsaved status', () => {
+    it('should correctly update the unsaved status', () => {
       const { handlerService, page } = setup(true);
       expect(handlerService.isSaiUnsaved).toBe(false);
       page.addNewRow();
