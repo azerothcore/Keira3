@@ -40,6 +40,7 @@
   "UNIQUE_ID": "Уникальный ID {{ ENTITY }}",
   "DELETE_SELECTED_ROW": "Удалить выбранную строку",
   "ADD_NEW_ROW": "Добавить новую строку",
+  "DUPLICATE_SELECTED_ROW": "Duplicate selected row",
   "EMPTY": "",
   "UNKNOWN": "Неизвестно",
   "COPY": "Копировать",

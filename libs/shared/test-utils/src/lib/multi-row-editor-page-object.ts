@@ -12,6 +12,9 @@ export abstract class MultiRowEditorPageObject<T> extends EditorPageObject<T> {
   get addNewRowBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#add-new-row-btn');
   }
+  get duplicateSelectedRowBtn(): HTMLButtonElement {
+    return this.query<HTMLButtonElement>('#duplicate-selected-row-btn');
+  }
   get formError(): HTMLDivElement {
     return this.query<HTMLDivElement>('.form-error');
   }

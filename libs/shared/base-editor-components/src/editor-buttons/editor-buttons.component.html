@@ -7,6 +7,10 @@
   <i class="fa fa-trash fa-sm"></i> {{ 'DELETE_SELECTED_ROW' | translate }}
 </button>
 
-<button id="add-new-row-btn" class="btn btn-success btn-sm" (click)="editorService.addNewRow()">
+<button id="add-new-row-btn" class="btn btn-success btn-sm me-2" (click)="editorService.addNewRow()">
   <i class="fa fa-plus fa-sm"></i> {{ 'ADD_NEW_ROW' | translate }}
+</button>
+
+<button id="duplicate-selected-row-btn" class="btn btn-secondary btn-sm" (click)="editorService.addNewRow(true)">
+  <i class="fa fa-copy fa-sm"></i> {{ 'DUPLICATE_SELECTED_ROW' | translate }}
 </button>
