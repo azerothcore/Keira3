@@ -125,7 +125,7 @@ describe('SaiEditorComponent integration tests', () => {
     const component = fixture.componentInstance;
     const page = new SaiEditorPage(fixture);
     fixture.autoDetectChanges(true);
-    fixture.detectChanges();
+    page.detectChanges();
 
     return { component, fixture, handlerService, queryService, querySpy, page };
   }
@@ -332,7 +332,7 @@ describe('SaiEditorComponent integration tests', () => {
     });
 
     it('generating all comments should correctly work', fakeAsync(() => {
-      const { component, fixture, handlerService, page } = setup(true);
+      const { component, handlerService, page } = setup(true);
       const saiColIndex = 9;
       const name = 'Shin';
       spyOn(handlerService, 'getName').and.returnValue(of(name));
@@ -348,7 +348,7 @@ describe('SaiEditorComponent integration tests', () => {
 
       page.clickElement(page.generateCommentsBtn);
       tick(1000);
-      fixture.detectChanges();
+      page.detectChanges();
 
       expect(page.getDatatableCell(0, saiColIndex).innerText).toEqual(`${name} - On Aggro - Kill Target`);
       expect(page.getDatatableCell(1, saiColIndex).innerText).toEqual(`${name} - On Just Died - Start Attacking`);
@@ -360,7 +360,7 @@ describe('SaiEditorComponent integration tests', () => {
     }));
 
     it('generating selected row comment should correctly work', fakeAsync(() => {
-      const { component, fixture, handlerService, page } = setup(true);
+      const { component, handlerService, page } = setup(true);
       const saiColIndex = 9;
       const name = 'Shin';
       spyOn(handlerService, 'getName').and.returnValue(of(name));
@@ -376,7 +376,7 @@ describe('SaiEditorComponent integration tests', () => {
 
       page.clickElement(page.generateCommentSingleBtn);
       tick(1000);
-      fixture.detectChanges();
+      page.detectChanges();
 
       expect(page.getDatatableCell(0, saiColIndex).innerText).toEqual(``);
       expect(page.getDatatableCell(1, saiColIndex).innerText).toEqual(``);
@@ -384,6 +384,17 @@ describe('SaiEditorComponent integration tests', () => {
 
       page.expectAllQueriesToContain(`${name} - On Evade - Flee For Assist`);
     }));
+
+    it('the single-row generate comment should be disabled until a row is selected', () => {
+      const { handlerService, page } = setup(true);
+      const name = 'Shin';
+      spyOn(handlerService, 'getName').and.returnValue(of(name));
+
+      expect(page.generateCommentSingleBtn.disabled).toBe(true);
+
+      page.addNewRow();
+      expect(page.generateCommentSingleBtn.disabled).toBe(false);
+    });
   });
 
   describe('Editing existing', () => {
@@ -550,35 +561,35 @@ describe('SaiEditorComponent integration tests', () => {
 
     describe('errors on wrong linked event', () => {
       it('case: no errors', () => {
-        const { fixture, page } = setup(false);
+        const { page } = setup(false);
         page.addNewRow();
         page.addNewRow();
-        fixture.detectChanges();
+        page.detectChanges();
 
         expect(page.errors.innerText).not.toContain('ERROR');
       });
 
       it('ERROR: the SAI (id:', () => {
-        const { fixture, page } = setup(false);
+        const { page } = setup(false);
         page.addNewRow();
         page.addNewRow();
         page.clickRowOfDatatable(1);
         page.setInputValueById('link', 1);
         page.clickRowOfDatatable(2);
         page.setInputValueById('event_type', 0);
-        fixture.detectChanges();
+        page.detectChanges();
 
         expect(page.errors.innerText).toContain(`ERROR: the SAI (id: `);
       });
 
       it('ERROR: non-existing links:', () => {
-        const { fixture, page } = setup(false);
+        const { page } = setup(false);
         page.addNewRow();
         page.addNewRow();
         page.clickRowOfDatatable(1);
         page.setInputValueById('event_type', 61);
         page.setInputValueById('link', 5);
-        fixture.detectChanges();
+        page.detectChanges();
 
         expect(page.errors.innerText).toContain(`ERROR: non-existing links:`);
       });
