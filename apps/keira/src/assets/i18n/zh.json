@@ -664,7 +664,9 @@
       "UNIQUE_ID": "每行的唯一标识符（主键）",
       "PHASE": "所有阶段都使用0",
       "CHANCE": "事件发生的概率，设置数值在0-100之间（%）。例如:如果您希望事件大约发生在一半的时间，则将该值设置为50。",
-      "TIMED_ACTIONLISTS": "All smart_scripts having source_type = 9 and entryorguid between CreatureID * 100 and CreatureID * 100 + 100"
+      "TIMED_ACTIONLISTS": "All smart_scripts having source_type = 9 and entryorguid between CreatureID * 100 and CreatureID * 100 + 100",
+      "GENERATE_COMMENT": "Generate comment",
+      "GENERATE_COMMENTS_ALL": "Generate comments (all)"
     }
   },
   "SPELL_DBC": {

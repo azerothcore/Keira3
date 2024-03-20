@@ -93,22 +93,35 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
     }
   }
 
-  async generateComments(): Promise<void> {
-    for (const row of this._newRows) {
-      row.comment = await this.saiCommentGeneratorService.generateComment(
-        structuredClone(this._newRows),
-        { ...row },
-        /* istanbul ignore next */
-        await this.handlerService.getName()?.toPromise(),
-      );
+  async generateComments(allRows = false): Promise<void> {
+    if (allRows) {
+      for (const row of this._newRows) {
+        row.comment = await this.generateSingleComment(row);
 
-      if (this.isRowSelected(row)) {
-        this._form.controls.comment.setValue(row.comment);
+        if (this.isRowSelected(row)) {
+          this._form.controls.comment.setValue(row.comment);
+        }
+      }
+    } else {
+      const selectedRow = this._newRows.find(this.isRowSelected.bind(this));
+
+      if (selectedRow) {
+        selectedRow.comment = await this.generateSingleComment(selectedRow);
+        this._form.controls.comment.setValue(selectedRow.comment);
       }
     }
 
     this.updateDiffQuery();
     this.updateFullQuery();
     this.refreshDatatable();
+  }
+
+  private async generateSingleComment(row: SmartScripts): Promise<string> {
+    return this.saiCommentGeneratorService.generateComment(
+      structuredClone(this._newRows),
+      { ...row },
+      /* istanbul ignore next */
+      await this.handlerService.getName()?.toPromise(),
+    );
   }
 }
