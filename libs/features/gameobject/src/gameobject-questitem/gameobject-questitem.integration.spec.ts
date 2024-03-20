@@ -147,6 +147,26 @@ describe('GameobjectQuestitem integration tests', () => {
           '(1234, 1, 123, 0);',
       );
     });
+
+    it('adding a row changing its values and duplicate it should correctly update the queries', () => {
+      page.addNewRow();
+      page.setInputValueById('Idx', '1');
+      page.setInputValueById('ItemId', '123');
+      page.duplicateSelectedRow();
+
+      page.expectDiffQueryToContain(
+        'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234) AND (`Idx` IN (1, 0));\n' +
+          'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 1, 123, 0),\n' +
+          '(1234, 0, 123, 0);',
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry` = 1234);\n' +
+          'INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 1, 123, 0),\n' +
+          '(1234, 0, 123, 0);',
+      );
+    });
   });
 
   describe('Editing existing', () => {

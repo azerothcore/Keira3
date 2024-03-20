@@ -160,6 +160,27 @@ describe('NpcVendor integration tests', () => {
           '(1234, 1, 123, 2, 0, 0, 0);',
       );
     });
+
+    it('adding a row changing its values and duplicate it should correctly update the queries', () => {
+      page.addNewRow();
+      page.setInputValueById('slot', '1');
+      page.setInputValueById('maxcount', '2');
+      page.setInputValueById('item', '123');
+      page.duplicateSelectedRow();
+
+      page.expectDiffQueryToContain(
+        'DELETE FROM `npc_vendor` WHERE (`entry` = 1234) AND (`item` IN (123, 0));\n' +
+          'INSERT INTO `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 1, 123, 2, 0, 0, 0),\n' +
+          '(1234, 1, 0, 2, 0, 0, 0);',
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `npc_vendor` WHERE (`entry` = 1234);\n' +
+          'INSERT INTO `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 1, 123, 2, 0, 0, 0),\n' +
+          '(1234, 1, 0, 2, 0, 0, 0);',
+      );
+    });
   });
 
   describe('Editing existing', () => {

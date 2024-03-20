@@ -168,6 +168,30 @@ describe('ReferenceLootTemplate integration tests', () => {
           "(1234, 123, 0, 1, 2, 1, 0, 1, 1, '');",
       );
     });
+
+    it('adding a row changing its values and duplicate it should correctly update the queries', () => {
+      const { page } = setup(true);
+      page.addNewRow();
+      page.setInputValueById('Chance', '1');
+      page.setInputValueById('QuestRequired', '2');
+      page.setInputValueById('Item', '123');
+      page.duplicateSelectedRow();
+
+      page.expectDiffQueryToContain(
+        'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (123, 0));\n' +
+          'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 123, 0, 1, 2, 1, 0, 1, 1, ''),\n" +
+          "(1234, 0, 0, 1, 2, 1, 0, 1, 1, '');",
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234);\n' +
+          'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, ' +
+          '`GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 123, 0, 1, 2, 1, 0, 1, 1, ''),\n" +
+          "(1234, 0, 0, 1, 2, 1, 0, 1, 1, '');",
+      );
+    });
   });
 
   describe('Editing existing', () => {

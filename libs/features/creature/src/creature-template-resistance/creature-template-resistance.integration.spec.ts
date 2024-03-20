@@ -133,6 +133,27 @@ describe('CreatureTemplateResistance integration tests', () => {
       );
       page.removeElement();
     });
+
+    it('adding a row changing its values and duplicate it should correctly update the queries', () => {
+      const { page } = setup(true);
+      page.addNewRow();
+      page.setInputValueById('School', '2');
+      page.duplicateSelectedRow();
+
+      page.expectDiffQueryToContain(
+        'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234) AND (`School` IN (2, 1));\n' +
+          'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 2, 0, 0),\n' +
+          '(1234, 1, 0, 0);',
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234);\n' +
+          'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 2, 0, 0),\n' +
+          '(1234, 1, 0, 0);',
+      );
+      page.removeElement();
+    });
   });
 
   describe('Editing existing', () => {

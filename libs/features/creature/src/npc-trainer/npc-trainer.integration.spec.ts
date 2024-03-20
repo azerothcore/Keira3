@@ -159,6 +159,23 @@ describe('NpcTrainer integration tests', () => {
           '(1234, 123, 1, 2, 0, 0);',
       );
     });
+
+    it('adding a row changing its values and duplicate it should correctly update the queries', () => {
+      page.addNewRow();
+      page.setInputValueById('MoneyCost', '1');
+      page.setInputValueById('ReqSkillLine', '2');
+      page.setInputValueById('SpellID', '123');
+      page.expectDiffQueryToContain(
+        'DELETE FROM `npc_trainer` WHERE (`ID` = 1234) AND (`SpellID` IN (123));\n' +
+          'INSERT INTO `npc_trainer` (`ID`, `SpellID`, `MoneyCost`, `ReqSkillLine`, `ReqSkillRank`, `ReqLevel`) VALUES\n' +
+          '(1234, 123, 1, 2, 0, 0);',
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `npc_trainer` WHERE (`ID` = 1234);\n' +
+          'INSERT INTO `npc_trainer` (`ID`, `SpellID`, `MoneyCost`, `ReqSkillLine`, `ReqSkillRank`, `ReqLevel`) VALUES\n' +
+          '(1234, 123, 1, 2, 0, 0);',
+      );
+    });
   });
 
   describe('Editing existing', () => {

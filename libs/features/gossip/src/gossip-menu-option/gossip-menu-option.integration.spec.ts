@@ -129,6 +129,25 @@ describe('GossipMenu integration tests', () => {
           "(1234, 123, 0, '', 0, 0, 0, 0, 0, 0, 0, '', 0, 0);",
       );
     });
+
+    it('adding a row changing its values and duplicate it should correctly update the queries', () => {
+      page.addNewRow();
+      page.setInputValueById('OptionID', '123');
+      page.duplicateSelectedRow();
+
+      page.expectDiffQueryToContain(
+        'DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234) AND (`OptionID` IN (123, 0));\n' +
+          'INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES\n' +
+          "(1234, 123, 0, '', 0, 0, 0, 0, 0, 0, 0, '', 0, 0),\n" +
+          "(1234, 0, 0, '', 0, 0, 0, 0, 0, 0, 0, '', 0, 0);",
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234);\n' +
+          'INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES\n' +
+          "(1234, 123, 0, '', 0, 0, 0, 0, 0, 0, 0, '', 0, 0),\n" +
+          "(1234, 0, 0, '', 0, 0, 0, 0, 0, 0, 0, '', 0, 0);",
+      );
+    });
   });
 
   describe('Editing existing', () => {

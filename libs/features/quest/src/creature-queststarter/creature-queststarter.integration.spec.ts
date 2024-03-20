@@ -145,6 +145,27 @@ describe('CreatureQueststarter integration tests', () => {
       page.removeElement();
     });
 
+    it('adding a row changing its values and duplicate it should correctly update the queries', () => {
+      const { page } = setup(true);
+      page.addNewRow();
+      page.setInputValueById('id', '1');
+      page.duplicateSelectedRow();
+
+      page.expectDiffQueryToContain(
+        'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234) AND (`id` IN (1, 0));\n' +
+          'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
+          '(1, 1234),\n' +
+          '(0, 1234);\n',
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234);\n' +
+          'INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES\n' +
+          '(1, 1234),\n' +
+          '(0, 1234);\n',
+      );
+      page.removeElement();
+    });
+
     it('changing a property should be reflected in the quest preview', () => {
       const { page } = setup(true);
       const value = 1234;

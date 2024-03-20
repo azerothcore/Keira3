@@ -143,6 +143,26 @@ describe('CreatureQuestitem integration tests', () => {
           '(1234, 123, 1, 0);',
       );
     });
+
+    it('adding a row changing its values and duplicate it should correctly update the queries', () => {
+      page.addNewRow();
+      page.setInputValueById('ItemId', '1');
+      page.setInputValueById('Idx', '123');
+      page.duplicateSelectedRow();
+
+      page.expectDiffQueryToContain(
+        'DELETE FROM `creature_questitem` WHERE (`CreatureEntry` = 1234) AND (`Idx` IN (123, 0));\n' +
+          'INSERT INTO `creature_questitem` (`CreatureEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 123, 1, 0),\n' +
+          '(1234, 0, 1, 0);',
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `creature_questitem` WHERE (`CreatureEntry` = 1234);\n' +
+          'INSERT INTO `creature_questitem` (`CreatureEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 123, 1, 0),\n' +
+          '(1234, 0, 1, 0);',
+      );
+    });
   });
 
   describe('Editing existing', () => {

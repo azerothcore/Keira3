@@ -236,6 +236,43 @@ describe('GameobjectSpawn integration tests', () => {
           ", 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0);\n",
       );
     });
+
+    it('adding a row changing its values and duplicate it should correctly update the queries', () => {
+      page.addNewRow();
+      page.setInputValueById('map', '1');
+      page.setInputValueById('zoneId', '2');
+      page.setInputValueById('guid', '123');
+      page.duplicateSelectedRow();
+
+      page.expectDiffQueryToContain(
+        'DELETE FROM `gameobject` WHERE (`id` = ' +
+          id +
+          ') AND (`guid` IN (123, 0));\n' +
+          'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
+          '`position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, ' +
+          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+          '(123, ' +
+          id +
+          ", 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0),\n" +
+          '(0, ' +
+          id +
+          ", 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0);\n",
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `gameobject` WHERE (`id` = ' +
+          id +
+          ');\n' +
+          'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
+          '`position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, ' +
+          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+          '(123, ' +
+          id +
+          ", 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0),\n" +
+          '(0, ' +
+          id +
+          ", 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0);\n",
+      );
+    });
   });
 
   describe('Editing existing', () => {

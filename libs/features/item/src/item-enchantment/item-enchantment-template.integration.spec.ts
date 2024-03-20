@@ -139,6 +139,26 @@ describe('ItemEnchantmentTemplate integration tests', () => {
           '(1234, 123, 1);',
       );
     });
+
+    it('adding a row changing its values and duplicate it should correctly update the queries', () => {
+      page.addNewRow();
+      page.setInputValueById('chance', '11');
+      page.setInputValueById('ench', '123');
+      page.duplicateSelectedRow();
+
+      page.expectDiffQueryToContain(
+        'DELETE FROM `item_enchantment_template` WHERE (`entry` = 1234) AND (`ench` IN (123, 0));\n' +
+          'INSERT INTO `item_enchantment_template` (`entry`, `ench`, `chance`) VALUES\n' +
+          '(1234, 123, 11),\n' +
+          '(1234, 0, 11);',
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `item_enchantment_template` WHERE (`entry` = 1234);\n' +
+          'INSERT INTO `item_enchantment_template` (`entry`, `ench`, `chance`) VALUES\n' +
+          '(1234, 123, 11),\n' +
+          '(1234, 0, 11);',
+      );
+    });
   });
 
   describe('Editing existing', () => {
