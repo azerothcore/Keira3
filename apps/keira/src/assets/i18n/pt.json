@@ -666,7 +666,9 @@
       "UNIQUE_ID": "Um indentificador único para cada linha",
       "PHASE": "Use 0 para todas phases",
       "CHANCE": "Essa é a probabilidade do evento ocorrer como uma porcentagem de 0-100. Exemplo: se você quer que um evento ocorra mais ou menos metado do tempo, então coloque 50.",
-      "TIMED_ACTIONLISTS": "Todos smart_scripts tendo source_type = 9 e entryorguid entre CreatureID * 100 e CreatureID * 100 + 100"
+      "TIMED_ACTIONLISTS": "Todos smart_scripts tendo source_type = 9 e entryorguid entre CreatureID * 100 e CreatureID * 100 + 100",
+      "GENERATE_COMMENT": "Generate comment",
+      "GENERATE_COMMENTS_ALL": "Generate comments (all)"
     }
   },
   "SPELL_DBC": {

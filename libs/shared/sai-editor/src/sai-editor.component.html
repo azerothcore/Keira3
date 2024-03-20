@@ -557,8 +557,16 @@
         <div class="col-12">
           <keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>
 
-          <button id="generate-comments-btn" class="btn btn-primary btn-sm float-end" (click)="editorService.generateComments()">
-            Generate comments
+          <button id="generate-comments-btn" class="btn btn-primary btn-sm float-end" (click)="editorService.generateComments(true)">
+            Generate comments (all)
+          </button>
+          <button
+            id="generate-comments-btn-single"
+            class="btn btn-primary btn-sm float-end me-2"
+            (click)="editorService.generateComments()"
+            [disabled]="editorService.selectedRowId !== 0 && !editorService.selectedRowId"
+          >
+            {{ 'SMARTAI.EDITOR.GENERATE_COMMENT' | translate }}
           </button>
 
           <ngx-datatable
