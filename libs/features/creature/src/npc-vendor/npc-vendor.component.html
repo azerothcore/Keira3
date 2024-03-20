@@ -5,106 +5,106 @@
 ></keira-top-bar>
 
 <div class="container-fluid">
-  <span *ngIf="editorService.loading" [translate]="'LOADING'"></span>
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
 
-  <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
-    <div class="content-block">
-      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
-    </div>
-
-    <div class="content-block">
-      <form [formGroup]="editorService.form" class="form-group edit-form">
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <div class="content-block">
+        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+      </div>
+      <div class="content-block">
+        <form [formGroup]="editorService.form" class="form-group edit-form">
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+              <label class="control-label" for="item">
+                <keira-icon [itemId]="editorService.form.controls.item.value"></keira-icon>
+                item
+              </label>
+              <keira-item-selector-btn
+                [control]="editorService.form.controls.item"
+                [disabled]="editorService.form.controls.item.disabled"
+                [disabled]="editorService.form.controls.item.disabled"
+                [config]="{ name: 'item' }"
+              ></keira-item-selector-btn>
+              <input [formControlName]="'item'" id="item" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+              <label class="control-label" for="slot">slot</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.NPC_VENDOR.SLOT' | translate"></i>
+              <input [formControlName]="'slot'" id="slot" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+              <label class="control-label" for="maxcount">maxcount</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.NPC_VENDOR.MAXCOUNT' | translate"></i>
+              <input [formControlName]="'maxcount'" id="maxcount" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+              <label class="control-label" for="incrtime">incrtime</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.NPC_VENDOR.INCRTIME' | translate"></i>
+              <input [formControlName]="'incrtime'" id="incrtime" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+              <label class="control-label" for="ExtendedCost">ExtendedCost</label>
+              <keira-item-extended-cost-selector-btn
+                [config]="{ name: 'ExtendedCost' }"
+                [control]="editorService.form.controls.ExtendedCost"
+                [disabled]="editorService.form.controls.ExtendedCost.disabled"
+              ></keira-item-extended-cost-selector-btn>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.NPC_VENDOR.EXTENDED_COST' | translate"></i>
+              <input [formControlName]="'ExtendedCost'" id="ExtendedCost" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
+              <i class="fas fa-exclamation-triangle"></i>
+              <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
+            </div>
+          </div>
+        </form>
         <div class="row">
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-            <label class="control-label" for="item">
-              <keira-icon [itemId]="editorService.form.controls.item.value"></keira-icon>
-              item
-            </label>
-            <keira-item-selector-btn
-              [control]="editorService.form.controls.item"
-              [disabled]="editorService.form.controls.item.disabled"
-              [disabled]="editorService.form.controls.item.disabled"
-              [config]="{ name: 'item' }"
-            ></keira-item-selector-btn>
-            <input [formControlName]="'item'" id="item" type="number" class="form-control form-control-sm" />
+          <div class="col-12">
+            <keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>
+            <ngx-datatable
+              id="editor-table"
+              class="bootstrap table table-striped text-center datatable-select datatable-icon-list"
+              [rows]="editorService.newRows"
+              [headerHeight]="DTCFG.headerHeight"
+              [footerHeight]="DTCFG.footerHeight"
+              [columnMode]="DTCFG.columnMode"
+              [rowHeight]="DTCFG.rowHeightWithIcon"
+              [selectionType]="DTCFG.selectionType"
+              (select)="editorService.onRowSelection($event)"
+              (keydown.delete)="editorService.deleteSelectedRow()"
+            >
+              <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column [minWidth]="42" [maxWidth]="42" [sortable]="false">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  <keira-icon [itemId]="row.item"></keira-icon>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="item" prop="item" [minWidth]="80"></ngx-datatable-column>
+              <ngx-datatable-column name="Name" [minWidth]="200">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  {{ editorService.queryService.getItemNameById(row.item) | async }}
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="slot" prop="slot"></ngx-datatable-column>
+              <ngx-datatable-column name="maxcount" prop="maxcount"></ngx-datatable-column>
+              <ngx-datatable-column name="incrtime" prop="incrtime"></ngx-datatable-column>
+              <ngx-datatable-column name="ExtendedCost" prop="ExtendedCost"></ngx-datatable-column>
+              <ngx-datatable-column name="ExtendedCostReadable">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  <div [innerHTML]="editorService.getItemExtendedCost(row.ExtendedCost) | async"></div>
+                </ng-template>
+              </ngx-datatable-column>
+            </ngx-datatable>
           </div>
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-            <label class="control-label" for="slot">slot</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.NPC_VENDOR.SLOT' | translate"></i>
-            <input [formControlName]="'slot'" id="slot" type="number" class="form-control form-control-sm" />
-          </div>
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-            <label class="control-label" for="maxcount">maxcount</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.NPC_VENDOR.MAXCOUNT' | translate"></i>
-            <input [formControlName]="'maxcount'" id="maxcount" type="number" class="form-control form-control-sm" />
-          </div>
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-            <label class="control-label" for="incrtime">incrtime</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.NPC_VENDOR.INCRTIME' | translate"></i>
-            <input [formControlName]="'incrtime'" id="incrtime" type="number" class="form-control form-control-sm" />
-          </div>
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-            <label class="control-label" for="ExtendedCost">ExtendedCost</label>
-            <keira-item-extended-cost-selector-btn
-              [config]="{ name: 'ExtendedCost' }"
-              [control]="editorService.form.controls.ExtendedCost"
-              [disabled]="editorService.form.controls.ExtendedCost.disabled"
-            ></keira-item-extended-cost-selector-btn>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.NPC_VENDOR.EXTENDED_COST' | translate"></i>
-            <input [formControlName]="'ExtendedCost'" id="ExtendedCost" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
-            <i class="fas fa-exclamation-triangle"></i>
-            <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
-          </div>
-        </div>
-      </form>
-
-      <div class="row">
-        <div class="col-12">
-          <keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>
-
-          <ngx-datatable
-            id="editor-table"
-            class="bootstrap table table-striped text-center datatable-select datatable-icon-list"
-            [rows]="editorService.newRows"
-            [headerHeight]="DTCFG.headerHeight"
-            [footerHeight]="DTCFG.footerHeight"
-            [columnMode]="DTCFG.columnMode"
-            [rowHeight]="DTCFG.rowHeightWithIcon"
-            [selectionType]="DTCFG.selectionType"
-            (select)="editorService.onRowSelection($event)"
-            (keydown.delete)="editorService.deleteSelectedRow()"
-          >
-            <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
-              <ng-template let-row="row" ngx-datatable-cell-template>
-                <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
-              </ng-template>
-            </ngx-datatable-column>
-            <ngx-datatable-column [minWidth]="42" [maxWidth]="42" [sortable]="false">
-              <ng-template let-row="row" ngx-datatable-cell-template>
-                <keira-icon [itemId]="row.item"></keira-icon>
-              </ng-template>
-            </ngx-datatable-column>
-            <ngx-datatable-column name="item" prop="item" [minWidth]="80"></ngx-datatable-column>
-            <ngx-datatable-column name="Name" [minWidth]="200">
-              <ng-template let-row="row" ngx-datatable-cell-template>
-                {{ editorService.queryService.getItemNameById(row.item) | async }}
-              </ng-template>
-            </ngx-datatable-column>
-            <ngx-datatable-column name="slot" prop="slot"></ngx-datatable-column>
-            <ngx-datatable-column name="maxcount" prop="maxcount"></ngx-datatable-column>
-            <ngx-datatable-column name="incrtime" prop="incrtime"></ngx-datatable-column>
-            <ngx-datatable-column name="ExtendedCost" prop="ExtendedCost"></ngx-datatable-column>
-            <ngx-datatable-column name="ExtendedCostReadable">
-              <ng-template let-row="row" ngx-datatable-cell-template>
-                <div [innerHTML]="editorService.getItemExtendedCost(row.ExtendedCost) | async"></div>
-              </ng-template>
-            </ngx-datatable-column>
-          </ngx-datatable>
         </div>
       </div>
     </div>
-  </div>
+  }
 </div>

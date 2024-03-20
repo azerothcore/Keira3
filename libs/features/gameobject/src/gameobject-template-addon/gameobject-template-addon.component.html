@@ -5,68 +5,71 @@
 ></keira-top-bar>
 
 <div class="container-fluid">
-  <span *ngIf="editorService.loading" [translate]="'LOADING'"></span>
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
 
-  <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
-    <div class="content-block">
-      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <div class="content-block">
+        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+      </div>
+      <div class="content-block">
+        <form [formGroup]="editorService.form" class="form-group edit-form">
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="entry">entry</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'UNIQUE_ID' | translate: { ENTITY: 'gameobject' }"></i>
+              <input [formControlName]="'entry'" id="entry" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="faction">faction</label>
+              <keira-faction-selector-btn
+                [config]="{ name: 'faction' }"
+                [control]="editorService.form.controls.faction"
+                [disabled]="editorService.form.controls.faction.disabled"
+              ></keira-faction-selector-btn>
+              <input [formControlName]="'faction'" id="faction" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="flags">flags</label>
+              <keira-flags-selector-btn
+                [control]="editorService.form.controls.flags"
+                [disabled]="editorService.form.controls.flags.disabled"
+                [config]="{ flags: GAMEOBJECT_FLAGS, name: 'flags' }"
+                [modalClass]="'modal-lg'"
+              ></keira-flags-selector-btn>
+              <input [formControlName]="'flags'" id="flags" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="mingold">mingold</label>
+              <input [formControlName]="'mingold'" id="mingold" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="maxgold">maxgold</label>
+              <input [formControlName]="'maxgold'" id="maxgold" type="number" class="form-control form-control-sm" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="artkit0">artkit0</label>
+              <input [formControlName]="'artkit0'" id="artkit0" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="artkit1">artkit1</label>
+              <input [formControlName]="'artkit1'" id="artkit1" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="artkit2">artkit2</label>
+              <input [formControlName]="'artkit2'" id="artkit2" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="artkit3">artkit3</label>
+              <input [formControlName]="'artkit3'" id="artkit3" type="number" class="form-control form-control-sm" />
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
-
-    <div class="content-block">
-      <form [formGroup]="editorService.form" class="form-group edit-form">
-        <div class="row">
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-            <label class="control-label" for="entry">entry</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'UNIQUE_ID' | translate: { ENTITY: 'gameobject' }"></i>
-            <input [formControlName]="'entry'" id="entry" type="number" class="form-control form-control-sm" />
-          </div>
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-            <label class="control-label" for="faction">faction</label>
-            <keira-faction-selector-btn
-              [config]="{ name: 'faction' }"
-              [control]="editorService.form.controls.faction"
-              [disabled]="editorService.form.controls.faction.disabled"
-            ></keira-faction-selector-btn>
-            <input [formControlName]="'faction'" id="faction" type="number" class="form-control form-control-sm" />
-          </div>
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-            <label class="control-label" for="flags">flags</label>
-            <keira-flags-selector-btn
-              [control]="editorService.form.controls.flags"
-              [disabled]="editorService.form.controls.flags.disabled"
-              [config]="{ flags: GAMEOBJECT_FLAGS, name: 'flags' }"
-              [modalClass]="'modal-lg'"
-            ></keira-flags-selector-btn>
-            <input [formControlName]="'flags'" id="flags" type="number" class="form-control form-control-sm" />
-          </div>
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-            <label class="control-label" for="mingold">mingold</label>
-            <input [formControlName]="'mingold'" id="mingold" type="number" class="form-control form-control-sm" />
-          </div>
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-            <label class="control-label" for="maxgold">maxgold</label>
-            <input [formControlName]="'maxgold'" id="maxgold" type="number" class="form-control form-control-sm" />
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-            <label class="control-label" for="artkit0">artkit0</label>
-            <input [formControlName]="'artkit0'" id="artkit0" type="number" class="form-control form-control-sm" />
-          </div>
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-            <label class="control-label" for="artkit1">artkit1</label>
-            <input [formControlName]="'artkit1'" id="artkit1" type="number" class="form-control form-control-sm" />
-          </div>
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-            <label class="control-label" for="artkit2">artkit2</label>
-            <input [formControlName]="'artkit2'" id="artkit2" type="number" class="form-control form-control-sm" />
-          </div>
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-            <label class="control-label" for="artkit3">artkit3</label>
-            <input [formControlName]="'artkit3'" id="artkit3" type="number" class="form-control form-control-sm" />
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
+  }
 </div>

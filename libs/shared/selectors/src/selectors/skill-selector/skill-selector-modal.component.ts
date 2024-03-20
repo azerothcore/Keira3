@@ -6,7 +6,7 @@ import { Skill, SKILL_ID } from '@keira/shared/acore-world-model';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { NgIf } from '@angular/common';
+
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 
@@ -16,7 +16,7 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
   templateUrl: './skill-selector-modal.component.html',
   styleUrls: ['./skill-selector-modal.component.scss'],
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgIf, NgxDatatableModule, TranslateModule],
+  imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateModule],
 })
 export class SkillSelectorModalComponent extends SearchSelectorModalComponent<Skill> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

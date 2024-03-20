@@ -39,29 +39,31 @@
       <keira-highlightjs-wrapper [code]="selectService.query"></keira-highlightjs-wrapper>
     </form>
 
-    <div *ngIf="selectService.rows">
-      <ngx-datatable
-        class="bootstrap table table-striped text-center datatable-select"
-        [rows]="selectService.rows"
-        [headerHeight]="DTCFG.headerHeight"
-        [footerHeight]="DTCFG.footerHeight"
-        [columnMode]="DTCFG.columnMode"
-        [rowHeight]="DTCFG.rowHeight"
-        [limit]="DTCFG.limit"
-        [selectionType]="DTCFG.selectionType"
-        (select)="selectService.onSelect($event)"
-      >
-        <ngx-datatable-column name="ID" prop="ID" [minWidth]="100">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            {{ row.ID }}
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column name="Title" prop="LogTitle" [minWidth]="60"></ngx-datatable-column>
-        <ngx-datatable-column name="Type" prop="QuestType" [minWidth]="60" [maxWidth]="60"></ngx-datatable-column>
-        <ngx-datatable-column name="Level" prop="QuestLevel" [minWidth]="60" [maxWidth]="60"></ngx-datatable-column>
-        <ngx-datatable-column name="MinLevel" prop="MinLevel" [minWidth]="100" [maxWidth]="100"></ngx-datatable-column>
-        <ngx-datatable-column name="Description" prop="QuestDescription" [minWidth]="100"></ngx-datatable-column>
-      </ngx-datatable>
-    </div>
+    @if (selectService.rows) {
+      <div>
+        <ngx-datatable
+          class="bootstrap table table-striped text-center datatable-select"
+          [rows]="selectService.rows"
+          [headerHeight]="DTCFG.headerHeight"
+          [footerHeight]="DTCFG.footerHeight"
+          [columnMode]="DTCFG.columnMode"
+          [rowHeight]="DTCFG.rowHeight"
+          [limit]="DTCFG.limit"
+          [selectionType]="DTCFG.selectionType"
+          (select)="selectService.onSelect($event)"
+        >
+          <ngx-datatable-column name="ID" prop="ID" [minWidth]="100">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{ row.ID }}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Title" prop="LogTitle" [minWidth]="60"></ngx-datatable-column>
+          <ngx-datatable-column name="Type" prop="QuestType" [minWidth]="60" [maxWidth]="60"></ngx-datatable-column>
+          <ngx-datatable-column name="Level" prop="QuestLevel" [minWidth]="60" [maxWidth]="60"></ngx-datatable-column>
+          <ngx-datatable-column name="MinLevel" prop="MinLevel" [minWidth]="100" [maxWidth]="100"></ngx-datatable-column>
+          <ngx-datatable-column name="Description" prop="QuestDescription" [minWidth]="100"></ngx-datatable-column>
+        </ngx-datatable>
+      </div>
+    }
   </div>
 </div>

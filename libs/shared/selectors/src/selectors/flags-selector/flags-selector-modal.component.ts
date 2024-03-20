@@ -6,7 +6,6 @@ import { FlagsService } from './flags.service';
 import { FlagsModalConfig } from './flags-selector.model';
 import { TranslateModule } from '@ngx-translate/core';
 import { UiSwitchModule } from 'ngx-ui-switch';
-import { NgIf, NgFor } from '@angular/common';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -14,7 +13,7 @@ import { NgIf, NgFor } from '@angular/common';
   templateUrl: './flags-selector-modal.component.html',
   styleUrls: ['./flags-selector-modal.component.scss'],
   standalone: true,
-  imports: [NgIf, NgFor, UiSwitchModule, TranslateModule],
+  imports: [UiSwitchModule, TranslateModule],
 })
 export class FlagsSelectorModalComponent extends BaseSelectorModalComponent<FlagsModalConfig> implements OnInit {
   readonly pow = Math.pow;

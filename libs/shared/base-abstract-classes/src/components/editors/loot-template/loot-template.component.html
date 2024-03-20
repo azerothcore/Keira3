@@ -5,9 +5,13 @@
 ></keira-top-bar>
 
 <div class="container-fluid">
-  <span *ngIf="editorService.loading" [translate]="'LOADING'"></span>
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
 
-  <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
-    <keira-loot-editor [editorService]="editorService"></keira-loot-editor>
-  </div>
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <keira-loot-editor [editorService]="editorService"></keira-loot-editor>
+    </div>
+  }
 </div>

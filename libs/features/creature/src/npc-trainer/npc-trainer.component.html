@@ -5,93 +5,93 @@
 ></keira-top-bar>
 
 <div class="container-fluid">
-  <span *ngIf="editorService.loading" [translate]="'LOADING'"></span>
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
 
-  <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
-    <div class="content-block">
-      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
-    </div>
-
-    <div class="content-block">
-      <form [formGroup]="editorService.form" class="form-group edit-form">
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <div class="content-block">
+        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+      </div>
+      <div class="content-block">
+        <form [formGroup]="editorService.form" class="form-group edit-form">
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+              <label class="control-label" for="SpellID">SpellID</label>
+              <keira-spell-selector-btn
+                [control]="editorService.form.controls.SpellID"
+                [disabled]="editorService.form.controls.SpellID.disabled"
+                [config]="{ name: 'SpellID' }"
+                [modalClass]="'modal-lg'"
+              ></keira-spell-selector-btn>
+              <input [formControlName]="'SpellID'" id="SpellID" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+              <label class="control-label" for="MoneyCost">MoneyCost</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.NPC_TRAINER.MONEY_COST' | translate"></i>
+              <input [formControlName]="'MoneyCost'" id="MoneyCost" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+              <label class="control-label" for="ReqSkillLine">ReqSkillLine</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.NPC_TRAINER.REQ_SKILL_LINE' | translate"></i>
+              <keira-skill-selector-btn
+                [config]="{ name: 'ReqSkillLine' }"
+                [control]="editorService.form.controls.ReqSkillLine"
+                [disabled]="editorService.form.controls.ReqSkillLine.disabled"
+              ></keira-skill-selector-btn>
+              <input [formControlName]="'ReqSkillLine'" id="ReqSkillLine" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+              <label class="control-label" for="ReqSkillRank">ReqSkillRank</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.NPC_TRAINER.REQ_SKILL_RANK' | translate"></i>
+              <input [formControlName]="'ReqSkillRank'" id="ReqSkillRank" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+              <label class="control-label" for="ReqLevel">ReqLevel</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.NPC_TRAINER.REQ_LEVEL' | translate"></i>
+              <input [formControlName]="'ReqLevel'" id="ReqLevel" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
+              <i class="fas fa-exclamation-triangle"></i>
+              <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
+            </div>
+          </div>
+        </form>
         <div class="row">
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-            <label class="control-label" for="SpellID">SpellID</label>
-            <keira-spell-selector-btn
-              [control]="editorService.form.controls.SpellID"
-              [disabled]="editorService.form.controls.SpellID.disabled"
-              [config]="{ name: 'SpellID' }"
-              [modalClass]="'modal-lg'"
-            ></keira-spell-selector-btn>
-            <input [formControlName]="'SpellID'" id="SpellID" type="number" class="form-control form-control-sm" />
+          <div class="col-12">
+            <keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>
+            <ngx-datatable
+              id="editor-table"
+              class="bootstrap table table-striped text-center datatable-select"
+              [rows]="editorService.newRows"
+              [headerHeight]="DTCFG.headerHeight"
+              [footerHeight]="DTCFG.footerHeight"
+              [columnMode]="DTCFG.columnMode"
+              [rowHeight]="DTCFG.rowHeight"
+              [selectionType]="DTCFG.selectionType"
+              (select)="editorService.onRowSelection($event)"
+              (keydown.delete)="editorService.deleteSelectedRow()"
+            >
+              <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="SpellID" prop="SpellID" [minWidth]="80"></ngx-datatable-column>
+              <ngx-datatable-column name="Name" [minWidth]="200">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  {{ sqliteQueryService.getSpellNameById(row.SpellID) | async }}
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="MoneyCost" prop="MoneyCost"></ngx-datatable-column>
+              <ngx-datatable-column name="ReqSkillLine" prop="ReqSkillLine"></ngx-datatable-column>
+              <ngx-datatable-column name="ReqSkillRank" prop="ReqSkillRank"></ngx-datatable-column>
+              <ngx-datatable-column name="ReqLevel" prop="ReqLevel"></ngx-datatable-column>
+            </ngx-datatable>
           </div>
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-            <label class="control-label" for="MoneyCost">MoneyCost</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.NPC_TRAINER.MONEY_COST' | translate"></i>
-            <input [formControlName]="'MoneyCost'" id="MoneyCost" type="number" class="form-control form-control-sm" />
-          </div>
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-            <label class="control-label" for="ReqSkillLine">ReqSkillLine</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.NPC_TRAINER.REQ_SKILL_LINE' | translate"></i>
-            <keira-skill-selector-btn
-              [config]="{ name: 'ReqSkillLine' }"
-              [control]="editorService.form.controls.ReqSkillLine"
-              [disabled]="editorService.form.controls.ReqSkillLine.disabled"
-            ></keira-skill-selector-btn>
-            <input [formControlName]="'ReqSkillLine'" id="ReqSkillLine" type="number" class="form-control form-control-sm" />
-          </div>
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-            <label class="control-label" for="ReqSkillRank">ReqSkillRank</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.NPC_TRAINER.REQ_SKILL_RANK' | translate"></i>
-            <input [formControlName]="'ReqSkillRank'" id="ReqSkillRank" type="number" class="form-control form-control-sm" />
-          </div>
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-            <label class="control-label" for="ReqLevel">ReqLevel</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.NPC_TRAINER.REQ_LEVEL' | translate"></i>
-            <input [formControlName]="'ReqLevel'" id="ReqLevel" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
-            <i class="fas fa-exclamation-triangle"></i>
-            <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
-          </div>
-        </div>
-      </form>
-
-      <div class="row">
-        <div class="col-12">
-          <keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>
-
-          <ngx-datatable
-            id="editor-table"
-            class="bootstrap table table-striped text-center datatable-select"
-            [rows]="editorService.newRows"
-            [headerHeight]="DTCFG.headerHeight"
-            [footerHeight]="DTCFG.footerHeight"
-            [columnMode]="DTCFG.columnMode"
-            [rowHeight]="DTCFG.rowHeight"
-            [selectionType]="DTCFG.selectionType"
-            (select)="editorService.onRowSelection($event)"
-            (keydown.delete)="editorService.deleteSelectedRow()"
-          >
-            <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
-              <ng-template let-row="row" ngx-datatable-cell-template>
-                <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
-              </ng-template>
-            </ngx-datatable-column>
-            <ngx-datatable-column name="SpellID" prop="SpellID" [minWidth]="80"></ngx-datatable-column>
-            <ngx-datatable-column name="Name" [minWidth]="200">
-              <ng-template let-row="row" ngx-datatable-cell-template>
-                {{ sqliteQueryService.getSpellNameById(row.SpellID) | async }}
-              </ng-template>
-            </ngx-datatable-column>
-            <ngx-datatable-column name="MoneyCost" prop="MoneyCost"></ngx-datatable-column>
-            <ngx-datatable-column name="ReqSkillLine" prop="ReqSkillLine"></ngx-datatable-column>
-            <ngx-datatable-column name="ReqSkillRank" prop="ReqSkillRank"></ngx-datatable-column>
-            <ngx-datatable-column name="ReqLevel" prop="ReqLevel"></ngx-datatable-column>
-          </ngx-datatable>
         </div>
       </div>
     </div>
-  </div>
+  }
 </div>

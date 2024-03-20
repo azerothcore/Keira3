@@ -5,7 +5,7 @@ import { GOSSIP_MENU_CUSTOM_STARTING_ID, GOSSIP_MENU_ID, GOSSIP_MENU_TABLE, Goss
 import { GossipHandlerService } from '../gossip-handler.service';
 import { SelectGossipService } from './select-gossip.service';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -25,7 +25,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
     FormsModule,
     ReactiveFormsModule,
     HighlightjsWrapperComponent,
-    NgIf,
     NgxDatatableModule,
     AsyncPipe,
   ],

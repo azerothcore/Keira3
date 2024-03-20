@@ -12,7 +12,7 @@ import { CreatureSelectorBtnComponent } from '@keira/shared/selectors';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgClass, NgIf, AsyncPipe } from '@angular/common';
+import { NgClass, AsyncPipe } from '@angular/common';
 import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
@@ -24,7 +24,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   imports: [
     TopBarComponent,
     NgClass,
-    NgIf,
     TranslateModule,
     QueryOutputComponent,
     FormsModule,

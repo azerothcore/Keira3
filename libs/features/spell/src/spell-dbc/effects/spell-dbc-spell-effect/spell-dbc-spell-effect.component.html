@@ -1,325 +1,341 @@
-<form *ngIf="formGroup && index" [formGroup]="formGroup" class="form-group edit-form">
-  <div class="content-block">
-    <span class="category-title" [translate]="'SPELL_DBC.SPELL_EFFECTS.EFFECT'"></span>
-    <div class="row">
-      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <label class="control-label" [for]="getFieldName('Effect')">{{ getFieldName('Effect') }}</label>
-        <keira-single-value-selector-btn
-          [control]="formGroup.controls[getFieldName('Effect')]"
-          [disabled]="formGroup.controls[getFieldName('Effect')].disabled"
-          [config]="{ options: SPELL_DBC_EFFECT, name: getFieldName('Effect') }"
-          [modalClass]="'modal-md'"
-        ></keira-single-value-selector-btn>
-        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT' | translate"></i>
-        <input
-          [formControlName]="getFieldName('Effect')"
-          type="number"
-          [id]="getFieldName('Effect')"
-          class="form-control form-control-sm"
-        />
+@if (formGroup && index) {
+  <form [formGroup]="formGroup" class="form-group edit-form">
+    <div class="content-block">
+      <span class="category-title" [translate]="'SPELL_DBC.SPELL_EFFECTS.EFFECT'"></span>
+      <div class="row">
+        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" [for]="getFieldName('Effect')">{{ getFieldName('Effect') }}</label>
+          <keira-single-value-selector-btn
+            [control]="formGroup.controls[getFieldName('Effect')]"
+            [disabled]="formGroup.controls[getFieldName('Effect')].disabled"
+            [config]="{ options: SPELL_DBC_EFFECT, name: getFieldName('Effect') }"
+            [modalClass]="'modal-md'"
+          ></keira-single-value-selector-btn>
+          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT' | translate"></i>
+          <input
+            [formControlName]="getFieldName('Effect')"
+            type="number"
+            [id]="getFieldName('Effect')"
+            class="form-control form-control-sm"
+          />
+        </div>
+        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" [for]="getFieldName('EffectBasePoints')">{{ getFieldName('EffectBasePoints') }}</label>
+          <i
+            class="fas fa-info-circle ms-1"
+            placement="auto"
+            [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_BASE_POINTS' | translate"
+          ></i>
+          <input
+            [formControlName]="getFieldName('EffectBasePoints')"
+            type="number"
+            [id]="getFieldName('EffectBasePoints')"
+            class="form-control form-control-sm"
+          />
+        </div>
+        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" [for]="getFieldName('EffectRealPointsPerLevel')">{{
+            getFieldName('EffectRealPointsPerLevel')
+          }}</label>
+          <i
+            class="fas fa-info-circle ms-1"
+            placement="auto"
+            [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_REAL_POINTS_PER_LEVEL' | translate"
+          ></i>
+          <input
+            [formControlName]="getFieldName('EffectRealPointsPerLevel')"
+            type="number"
+            [id]="getFieldName('EffectRealPointsPerLevel')"
+            class="form-control form-control-sm"
+          />
+        </div>
+        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" [for]="getFieldName('EffectRadiusIndex')">{{ getFieldName('EffectRadiusIndex') }}</label>
+          <i
+            class="fas fa-info-circle ms-1"
+            placement="auto"
+            [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_RADIUS_INDEX' | translate"
+          ></i>
+          <input
+            [formControlName]="getFieldName('EffectRadiusIndex')"
+            type="number"
+            [id]="getFieldName('EffectRadiusIndex')"
+            class="form-control form-control-sm"
+          />
+        </div>
+        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" [for]="getFieldName('EffectMultipleValue')">{{ getFieldName('EffectMultipleValue') }}</label>
+          <i
+            class="fas fa-info-circle ms-1"
+            placement="auto"
+            [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_MULTIPLE_VALUE' | translate"
+          ></i>
+          <input
+            [formControlName]="getFieldName('EffectMultipleValue')"
+            type="number"
+            [id]="getFieldName('EffectMultipleValue')"
+            class="form-control form-control-sm"
+          />
+        </div>
+        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" [for]="getFieldName('EffectMiscValue')">{{ getFieldName('EffectMiscValue') }}</label>
+          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_MISC_VALUE' | translate"></i>
+          <input
+            [formControlName]="getFieldName('EffectMiscValue')"
+            type="number"
+            [id]="getFieldName('EffectMiscValue')"
+            class="form-control form-control-sm"
+          />
+        </div>
+        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" [for]="getFieldName('EffectMiscValueB')">{{ getFieldName('EffectMiscValueB') }}</label>
+          <i
+            class="fas fa-info-circle ms-1"
+            placement="auto"
+            [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_MISC_VALUE_B' | translate"
+          ></i>
+          <input
+            [formControlName]="getFieldName('EffectMiscValueB')"
+            type="number"
+            [id]="getFieldName('EffectMiscValueB')"
+            class="form-control form-control-sm"
+          />
+        </div>
+        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" [for]="getFieldName('EffectTriggerSpell')">{{ getFieldName('EffectTriggerSpell') }}</label>
+          <i
+            class="fas fa-info-circle ms-1"
+            placement="auto"
+            [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_TRIGGER_SPELL' | translate"
+          ></i>
+          <input
+            [formControlName]="getFieldName('EffectTriggerSpell')"
+            type="number"
+            [id]="getFieldName('EffectTriggerSpell')"
+            class="form-control form-control-sm"
+          />
+        </div>
+        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" [for]="getFieldName('EffectItemType')">{{ getFieldName('EffectItemType') }}</label>
+          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'TODO' | translate"></i>
+          <input
+            [formControlName]="getFieldName('EffectItemType')"
+            type="number"
+            [id]="getFieldName('EffectItemType')"
+            class="form-control form-control-sm"
+          />
+        </div>
+        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" [for]="getFieldName('EffectPointsPerCombo')">{{ getFieldName('EffectPointsPerCombo') }}</label>
+          <i
+            class="fas fa-info-circle ms-1"
+            placement="auto"
+            [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_POINTS_PER_COMBO' | translate"
+          ></i>
+          <input
+            [formControlName]="getFieldName('EffectPointsPerCombo')"
+            type="number"
+            [id]="getFieldName('EffectPointsPerCombo')"
+            class="form-control form-control-sm"
+          />
+        </div>
+        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" [for]="getFieldName('EffectDieSides')">{{ getFieldName('EffectDieSides') }}</label>
+          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_DIE_SIDES' | translate"></i>
+          <input
+            [formControlName]="getFieldName('EffectDieSides')"
+            type="number"
+            [id]="getFieldName('EffectDieSides')"
+            class="form-control form-control-sm"
+          />
+        </div>
+        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" [for]="getFieldName('EffectChainAmplitude')">{{ getFieldName('EffectChainAmplitude') }}</label>
+          <i
+            class="fas fa-info-circle ms-1"
+            placement="auto"
+            [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_CHAIN_AMPLITUDE' | translate"
+          ></i>
+          <input
+            [formControlName]="getFieldName('EffectChainAmplitude')"
+            type="number"
+            [id]="getFieldName('EffectChainAmplitude')"
+            class="form-control form-control-sm"
+          />
+        </div>
+        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" [for]="getFieldName('EffectBonusMultiplier')">{{ getFieldName('EffectBonusMultiplier') }}</label>
+          <i
+            class="fas fa-info-circle ms-1"
+            placement="auto"
+            [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_BONUS_MULTIPLIER' | translate"
+          ></i>
+          <input
+            [formControlName]="getFieldName('EffectBonusMultiplier')"
+            type="number"
+            [id]="getFieldName('EffectBonusMultiplier')"
+            class="form-control form-control-sm"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="content-block">
+      <span class="category-title" [translate]="'SPELL_DBC.SPELL_EFFECTS.EFFECT_MECHANIC'"></span>
+      <div class="row">
+        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" [for]="getFieldName('EffectMechanic')">{{ getFieldName('EffectMechanic') }}</label>
+          <keira-single-value-selector-btn
+            [control]="formGroup.controls[getFieldName('EffectMechanic')]"
+            [disabled]="formGroup.controls[getFieldName('EffectMechanic')].disabled"
+            [config]="{ options: SPELL_MECHANIC, name: getFieldName('EffectMechanic') }"
+            [modalClass]="'modal-md'"
+          ></keira-single-value-selector-btn>
+          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_MECHANIC' | translate"></i>
+          <input
+            [formControlName]="getFieldName('EffectMechanic')"
+            type="number"
+            [id]="getFieldName('EffectMechanic')"
+            class="form-control form-control-sm"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="content-block">
+      <span class="category-title" [translate]="'SPELL_DBC.SPELL_EFFECTS.EFFECT_AURA'"></span>
+      <div class="row">
+        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" [for]="getFieldName('EffectAura')">{{ getFieldName('EffectAura') }}</label>
+          <keira-single-value-selector-btn
+            [control]="formGroup.controls[getFieldName('EffectAura')]"
+            [disabled]="formGroup.controls[getFieldName('EffectAura')].disabled"
+            [config]="{ options: SPELL_DBC_APPLY_AURA_NAME, name: getFieldName('EffectAura') }"
+            [modalClass]="'modal-md'"
+          ></keira-single-value-selector-btn>
+          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_AURA' | translate"></i>
+          <input
+            [formControlName]="getFieldName('EffectAura')"
+            type="number"
+            [id]="getFieldName('EffectAura')"
+            class="form-control form-control-sm"
+          />
+        </div>
       </div>
       <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <label class="control-label" [for]="getFieldName('EffectBasePoints')">{{ getFieldName('EffectBasePoints') }}</label>
-        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_BASE_POINTS' | translate"></i>
+        <label class="control-label" [for]="getFieldName('EffectAuraPeriod')">{{ getFieldName('EffectAuraPeriod') }}</label>
+        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_AURA_PERIOD' | translate"></i>
         <input
-          [formControlName]="getFieldName('EffectBasePoints')"
+          [formControlName]="getFieldName('EffectAuraPeriod')"
           type="number"
-          [id]="getFieldName('EffectBasePoints')"
-          class="form-control form-control-sm"
-        />
-      </div>
-      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <label class="control-label" [for]="getFieldName('EffectRealPointsPerLevel')">{{ getFieldName('EffectRealPointsPerLevel') }}</label>
-        <i
-          class="fas fa-info-circle ms-1"
-          placement="auto"
-          [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_REAL_POINTS_PER_LEVEL' | translate"
-        ></i>
-        <input
-          [formControlName]="getFieldName('EffectRealPointsPerLevel')"
-          type="number"
-          [id]="getFieldName('EffectRealPointsPerLevel')"
-          class="form-control form-control-sm"
-        />
-      </div>
-      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <label class="control-label" [for]="getFieldName('EffectRadiusIndex')">{{ getFieldName('EffectRadiusIndex') }}</label>
-        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_RADIUS_INDEX' | translate"></i>
-        <input
-          [formControlName]="getFieldName('EffectRadiusIndex')"
-          type="number"
-          [id]="getFieldName('EffectRadiusIndex')"
-          class="form-control form-control-sm"
-        />
-      </div>
-      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <label class="control-label" [for]="getFieldName('EffectMultipleValue')">{{ getFieldName('EffectMultipleValue') }}</label>
-        <i
-          class="fas fa-info-circle ms-1"
-          placement="auto"
-          [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_MULTIPLE_VALUE' | translate"
-        ></i>
-        <input
-          [formControlName]="getFieldName('EffectMultipleValue')"
-          type="number"
-          [id]="getFieldName('EffectMultipleValue')"
-          class="form-control form-control-sm"
-        />
-      </div>
-      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <label class="control-label" [for]="getFieldName('EffectMiscValue')">{{ getFieldName('EffectMiscValue') }}</label>
-        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_MISC_VALUE' | translate"></i>
-        <input
-          [formControlName]="getFieldName('EffectMiscValue')"
-          type="number"
-          [id]="getFieldName('EffectMiscValue')"
-          class="form-control form-control-sm"
-        />
-      </div>
-      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <label class="control-label" [for]="getFieldName('EffectMiscValueB')">{{ getFieldName('EffectMiscValueB') }}</label>
-        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_MISC_VALUE_B' | translate"></i>
-        <input
-          [formControlName]="getFieldName('EffectMiscValueB')"
-          type="number"
-          [id]="getFieldName('EffectMiscValueB')"
-          class="form-control form-control-sm"
-        />
-      </div>
-      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <label class="control-label" [for]="getFieldName('EffectTriggerSpell')">{{ getFieldName('EffectTriggerSpell') }}</label>
-        <i
-          class="fas fa-info-circle ms-1"
-          placement="auto"
-          [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_TRIGGER_SPELL' | translate"
-        ></i>
-        <input
-          [formControlName]="getFieldName('EffectTriggerSpell')"
-          type="number"
-          [id]="getFieldName('EffectTriggerSpell')"
-          class="form-control form-control-sm"
-        />
-      </div>
-      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <label class="control-label" [for]="getFieldName('EffectItemType')">{{ getFieldName('EffectItemType') }}</label>
-        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'TODO' | translate"></i>
-        <input
-          [formControlName]="getFieldName('EffectItemType')"
-          type="number"
-          [id]="getFieldName('EffectItemType')"
-          class="form-control form-control-sm"
-        />
-      </div>
-      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <label class="control-label" [for]="getFieldName('EffectPointsPerCombo')">{{ getFieldName('EffectPointsPerCombo') }}</label>
-        <i
-          class="fas fa-info-circle ms-1"
-          placement="auto"
-          [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_POINTS_PER_COMBO' | translate"
-        ></i>
-        <input
-          [formControlName]="getFieldName('EffectPointsPerCombo')"
-          type="number"
-          [id]="getFieldName('EffectPointsPerCombo')"
-          class="form-control form-control-sm"
-        />
-      </div>
-      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <label class="control-label" [for]="getFieldName('EffectDieSides')">{{ getFieldName('EffectDieSides') }}</label>
-        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_DIE_SIDES' | translate"></i>
-        <input
-          [formControlName]="getFieldName('EffectDieSides')"
-          type="number"
-          [id]="getFieldName('EffectDieSides')"
-          class="form-control form-control-sm"
-        />
-      </div>
-      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <label class="control-label" [for]="getFieldName('EffectChainAmplitude')">{{ getFieldName('EffectChainAmplitude') }}</label>
-        <i
-          class="fas fa-info-circle ms-1"
-          placement="auto"
-          [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_CHAIN_AMPLITUDE' | translate"
-        ></i>
-        <input
-          [formControlName]="getFieldName('EffectChainAmplitude')"
-          type="number"
-          [id]="getFieldName('EffectChainAmplitude')"
-          class="form-control form-control-sm"
-        />
-      </div>
-      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <label class="control-label" [for]="getFieldName('EffectBonusMultiplier')">{{ getFieldName('EffectBonusMultiplier') }}</label>
-        <i
-          class="fas fa-info-circle ms-1"
-          placement="auto"
-          [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_BONUS_MULTIPLIER' | translate"
-        ></i>
-        <input
-          [formControlName]="getFieldName('EffectBonusMultiplier')"
-          type="number"
-          [id]="getFieldName('EffectBonusMultiplier')"
+          [id]="getFieldName('EffectAuraPeriod')"
           class="form-control form-control-sm"
         />
       </div>
     </div>
-  </div>
-  <div class="content-block">
-    <span class="category-title" [translate]="'SPELL_DBC.SPELL_EFFECTS.EFFECT_MECHANIC'"></span>
-    <div class="row">
-      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <label class="control-label" [for]="getFieldName('EffectMechanic')">{{ getFieldName('EffectMechanic') }}</label>
-        <keira-single-value-selector-btn
-          [control]="formGroup.controls[getFieldName('EffectMechanic')]"
-          [disabled]="formGroup.controls[getFieldName('EffectMechanic')].disabled"
-          [config]="{ options: SPELL_MECHANIC, name: getFieldName('EffectMechanic') }"
-          [modalClass]="'modal-md'"
-        ></keira-single-value-selector-btn>
-        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_MECHANIC' | translate"></i>
-        <input
-          [formControlName]="getFieldName('EffectMechanic')"
-          type="number"
-          [id]="getFieldName('EffectMechanic')"
-          class="form-control form-control-sm"
-        />
+    <div class="content-block">
+      <span class="category-title" [translate]="'SPELL_DBC.SPELL_EFFECTS.MISC'"></span>
+      <div class="row">
+        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" [for]="getFieldName('SpellClassMask')">{{ getFieldName('SpellClassMask') }}</label>
+          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.SPELL_CLASS_MASK' | translate"></i>
+          <input
+            [formControlName]="getFieldName('SpellClassMask')"
+            type="number"
+            [id]="getFieldName('SpellClassMask')"
+            class="form-control form-control-sm"
+          />
+        </div>
+        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" [for]="getFieldName('ImplicitTargetA')">{{ getFieldName('ImplicitTargetA') }}</label>
+          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.IMPLICIT_TARGET_A' | translate"></i>
+          <input
+            [formControlName]="getFieldName('ImplicitTargetA')"
+            type="number"
+            [id]="getFieldName('ImplicitTargetA')"
+            class="form-control form-control-sm"
+          />
+        </div>
+        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" [for]="getFieldName('ImplicitTargetB')">{{ getFieldName('ImplicitTargetB') }}</label>
+          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.IMPLICIT_TARGET_B' | translate"></i>
+          <input
+            [formControlName]="getFieldName('ImplicitTargetB')"
+            type="number"
+            [id]="getFieldName('ImplicitTargetB')"
+            class="form-control form-control-sm"
+          />
+        </div>
+        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" [for]="getFieldName('EffectChainTargets')">{{ getFieldName('EffectChainTargets') }}</label>
+          <i
+            class="fas fa-info-circle ms-1"
+            placement="auto"
+            [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_CHAIN_TARGETS' | translate"
+          ></i>
+          <input
+            [formControlName]="getFieldName('EffectChainTargets')"
+            type="number"
+            [id]="getFieldName('EffectChainTargets')"
+            class="form-control form-control-sm"
+          />
+        </div>
+        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" [for]="getFieldName('EffectSpellClassMaskA')">{{ getFieldName('EffectSpellClassMaskA') }}</label>
+          <keira-flags-selector-btn
+            [control]="formGroup.controls[getFieldName('EffectSpellClassMaskA')]"
+            [disabled]="formGroup.controls[getFieldName('EffectSpellClassMaskA')].disabled"
+            [config]="{ flags: SPELL_DBC_CLASS_MASK_FLAGS, name: getFieldName('EffectSpellClassMaskA') }"
+          ></keira-flags-selector-btn>
+          <i
+            class="fas fa-info-circle ms-1"
+            placement="auto"
+            [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_SPELL_CLASS_MASK_A' | translate"
+          ></i>
+          <input
+            [formControlName]="getFieldName('EffectSpellClassMaskA')"
+            type="number"
+            [id]="getFieldName('EffectSpellClassMaskA')"
+            class="form-control form-control-sm"
+          />
+        </div>
+        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" [for]="getFieldName('EffectSpellClassMaskB')">{{ getFieldName('EffectSpellClassMaskB') }}</label>
+          <keira-flags-selector-btn
+            [control]="formGroup.controls[getFieldName('EffectSpellClassMaskB')]"
+            [disabled]="formGroup.controls[getFieldName('EffectSpellClassMaskB')].disabled"
+            [config]="{ flags: SPELL_DBC_CLASS_MASK_FLAGS, name: getFieldName('EffectSpellClassMaskB') }"
+          ></keira-flags-selector-btn>
+          <i
+            class="fas fa-info-circle ms-1"
+            placement="auto"
+            [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_SPELL_CLASS_MASK_B' | translate"
+          ></i>
+          <input
+            [formControlName]="getFieldName('EffectSpellClassMaskB')"
+            type="number"
+            [id]="getFieldName('EffectSpellClassMaskB')"
+            class="form-control form-control-sm"
+          />
+        </div>
+        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <label class="control-label" [for]="getFieldName('EffectSpellClassMaskC')">{{ getFieldName('EffectSpellClassMaskC') }}</label>
+          <keira-flags-selector-btn
+            [control]="formGroup.controls[getFieldName('EffectSpellClassMaskC')]"
+            [disabled]="formGroup.controls[getFieldName('EffectSpellClassMaskC')].disabled"
+            [config]="{ flags: SPELL_DBC_CLASS_MASK_FLAGS, name: getFieldName('EffectSpellClassMaskC') }"
+          ></keira-flags-selector-btn>
+          <i
+            class="fas fa-info-circle ms-1"
+            placement="auto"
+            [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_SPELL_CLASS_MASK_C' | translate"
+          ></i>
+          <input
+            [formControlName]="getFieldName('EffectSpellClassMaskC')"
+            type="number"
+            [id]="getFieldName('EffectSpellClassMaskC')"
+            class="form-control form-control-sm"
+          />
+        </div>
       </div>
     </div>
-  </div>
-  <div class="content-block">
-    <span class="category-title" [translate]="'SPELL_DBC.SPELL_EFFECTS.EFFECT_AURA'"></span>
-    <div class="row">
-      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <label class="control-label" [for]="getFieldName('EffectAura')">{{ getFieldName('EffectAura') }}</label>
-        <keira-single-value-selector-btn
-          [control]="formGroup.controls[getFieldName('EffectAura')]"
-          [disabled]="formGroup.controls[getFieldName('EffectAura')].disabled"
-          [config]="{ options: SPELL_DBC_APPLY_AURA_NAME, name: getFieldName('EffectAura') }"
-          [modalClass]="'modal-md'"
-        ></keira-single-value-selector-btn>
-        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_AURA' | translate"></i>
-        <input
-          [formControlName]="getFieldName('EffectAura')"
-          type="number"
-          [id]="getFieldName('EffectAura')"
-          class="form-control form-control-sm"
-        />
-      </div>
-    </div>
-    <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-      <label class="control-label" [for]="getFieldName('EffectAuraPeriod')">{{ getFieldName('EffectAuraPeriod') }}</label>
-      <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_AURA_PERIOD' | translate"></i>
-      <input
-        [formControlName]="getFieldName('EffectAuraPeriod')"
-        type="number"
-        [id]="getFieldName('EffectAuraPeriod')"
-        class="form-control form-control-sm"
-      />
-    </div>
-  </div>
-  <div class="content-block">
-    <span class="category-title" [translate]="'SPELL_DBC.SPELL_EFFECTS.MISC'"></span>
-    <div class="row">
-      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <label class="control-label" [for]="getFieldName('SpellClassMask')">{{ getFieldName('SpellClassMask') }}</label>
-        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.SPELL_CLASS_MASK' | translate"></i>
-        <input
-          [formControlName]="getFieldName('SpellClassMask')"
-          type="number"
-          [id]="getFieldName('SpellClassMask')"
-          class="form-control form-control-sm"
-        />
-      </div>
-      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <label class="control-label" [for]="getFieldName('ImplicitTargetA')">{{ getFieldName('ImplicitTargetA') }}</label>
-        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.IMPLICIT_TARGET_A' | translate"></i>
-        <input
-          [formControlName]="getFieldName('ImplicitTargetA')"
-          type="number"
-          [id]="getFieldName('ImplicitTargetA')"
-          class="form-control form-control-sm"
-        />
-      </div>
-      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <label class="control-label" [for]="getFieldName('ImplicitTargetB')">{{ getFieldName('ImplicitTargetB') }}</label>
-        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.IMPLICIT_TARGET_B' | translate"></i>
-        <input
-          [formControlName]="getFieldName('ImplicitTargetB')"
-          type="number"
-          [id]="getFieldName('ImplicitTargetB')"
-          class="form-control form-control-sm"
-        />
-      </div>
-      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <label class="control-label" [for]="getFieldName('EffectChainTargets')">{{ getFieldName('EffectChainTargets') }}</label>
-        <i
-          class="fas fa-info-circle ms-1"
-          placement="auto"
-          [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_CHAIN_TARGETS' | translate"
-        ></i>
-        <input
-          [formControlName]="getFieldName('EffectChainTargets')"
-          type="number"
-          [id]="getFieldName('EffectChainTargets')"
-          class="form-control form-control-sm"
-        />
-      </div>
-      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <label class="control-label" [for]="getFieldName('EffectSpellClassMaskA')">{{ getFieldName('EffectSpellClassMaskA') }}</label>
-        <keira-flags-selector-btn
-          [control]="formGroup.controls[getFieldName('EffectSpellClassMaskA')]"
-          [disabled]="formGroup.controls[getFieldName('EffectSpellClassMaskA')].disabled"
-          [config]="{ flags: SPELL_DBC_CLASS_MASK_FLAGS, name: getFieldName('EffectSpellClassMaskA') }"
-        ></keira-flags-selector-btn>
-        <i
-          class="fas fa-info-circle ms-1"
-          placement="auto"
-          [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_SPELL_CLASS_MASK_A' | translate"
-        ></i>
-        <input
-          [formControlName]="getFieldName('EffectSpellClassMaskA')"
-          type="number"
-          [id]="getFieldName('EffectSpellClassMaskA')"
-          class="form-control form-control-sm"
-        />
-      </div>
-      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <label class="control-label" [for]="getFieldName('EffectSpellClassMaskB')">{{ getFieldName('EffectSpellClassMaskB') }}</label>
-        <keira-flags-selector-btn
-          [control]="formGroup.controls[getFieldName('EffectSpellClassMaskB')]"
-          [disabled]="formGroup.controls[getFieldName('EffectSpellClassMaskB')].disabled"
-          [config]="{ flags: SPELL_DBC_CLASS_MASK_FLAGS, name: getFieldName('EffectSpellClassMaskB') }"
-        ></keira-flags-selector-btn>
-        <i
-          class="fas fa-info-circle ms-1"
-          placement="auto"
-          [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_SPELL_CLASS_MASK_B' | translate"
-        ></i>
-        <input
-          [formControlName]="getFieldName('EffectSpellClassMaskB')"
-          type="number"
-          [id]="getFieldName('EffectSpellClassMaskB')"
-          class="form-control form-control-sm"
-        />
-      </div>
-      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <label class="control-label" [for]="getFieldName('EffectSpellClassMaskC')">{{ getFieldName('EffectSpellClassMaskC') }}</label>
-        <keira-flags-selector-btn
-          [control]="formGroup.controls[getFieldName('EffectSpellClassMaskC')]"
-          [disabled]="formGroup.controls[getFieldName('EffectSpellClassMaskC')].disabled"
-          [config]="{ flags: SPELL_DBC_CLASS_MASK_FLAGS, name: getFieldName('EffectSpellClassMaskC') }"
-        ></keira-flags-selector-btn>
-        <i
-          class="fas fa-info-circle ms-1"
-          placement="auto"
-          [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_SPELL_CLASS_MASK_C' | translate"
-        ></i>
-        <input
-          [formControlName]="getFieldName('EffectSpellClassMaskC')"
-          type="number"
-          [id]="getFieldName('EffectSpellClassMaskC')"
-          class="form-control form-control-sm"
-        />
-      </div>
-    </div>
-  </div>
-</form>
+  </form>
+}

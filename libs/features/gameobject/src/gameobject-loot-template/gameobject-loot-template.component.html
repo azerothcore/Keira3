@@ -4,17 +4,23 @@
   [isNew]="handlerService.isNew"
 ></keira-top-bar>
 
-<div class="container-fluid" *ngIf="lootId !== null">
-  <div *ngIf="lootId === 0 || (type !== 3 && type !== 25)" class="content-block">
-    <div class="alert alert-info mt-2">
-      You have to set the field <strong>`Data1` (lootid)</strong> and <strong>`type` (3 or 25)</strong> of
-      <strong>{{ editorService.entityTemplateTable }}</strong> in order to enable this feature.
-    </div>
+@if (lootId !== null) {
+  <div class="container-fluid">
+    @if (lootId === 0 || (type !== 3 && type !== 25)) {
+      <div class="content-block">
+        <div class="alert alert-info mt-2">
+          You have to set the field <strong>`Data1` (lootid)</strong> and <strong>`type` (3 or 25)</strong> of
+          <strong>{{ editorService.entityTemplateTable }}</strong> in order to enable this feature.
+        </div>
+      </div>
+    }
+    @if (editorService.loading) {
+      <span [translate]="'LOADING'"></span>
+    }
+    @if (lootId > 0 && (type === 3 || type === 25) && editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+      <div>
+        <keira-loot-editor [editorService]="editorService"></keira-loot-editor>
+      </div>
+    }
   </div>
-
-  <span *ngIf="editorService.loading" [translate]="'LOADING'"></span>
-
-  <div *ngIf="lootId > 0 && (type === 3 || type === 25) && editorService.form && !!editorService.loadedEntityId && !editorService.loading">
-    <keira-loot-editor [editorService]="editorService"></keira-loot-editor>
-  </div>
-</div>
+}

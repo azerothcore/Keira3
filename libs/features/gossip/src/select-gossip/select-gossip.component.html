@@ -39,35 +39,37 @@
       <keira-highlightjs-wrapper [code]="selectService.query"></keira-highlightjs-wrapper>
     </form>
 
-    <div *ngIf="selectService.rows">
-      <ngx-datatable
-        class="bootstrap table table-striped text-center datatable-select"
-        [rows]="selectService.rows"
-        [headerHeight]="DTCFG.headerHeight"
-        [footerHeight]="DTCFG.footerHeight"
-        [columnMode]="DTCFG.columnMode"
-        [rowHeight]="DTCFG.rowHeight"
-        [limit]="DTCFG.limit"
-        [selectionType]="DTCFG.selectionType"
-        (select)="selectService.onSelect($event)"
-      >
-        <ngx-datatable-column name="MenuID" prop="MenuID" [minWidth]="80">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            {{ row.MenuID }}
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column name="TextID" prop="TextID" [minWidth]="80"></ngx-datatable-column>
-        <ngx-datatable-column name="Text0_0" [minWidth]="200">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            {{ queryService.getText0ById(row.TextID) | async }}
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column name="Text0_1" [minWidth]="200">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            {{ queryService.getText1ById(row.TextID) | async }}
-          </ng-template>
-        </ngx-datatable-column>
-      </ngx-datatable>
-    </div>
+    @if (selectService.rows) {
+      <div>
+        <ngx-datatable
+          class="bootstrap table table-striped text-center datatable-select"
+          [rows]="selectService.rows"
+          [headerHeight]="DTCFG.headerHeight"
+          [footerHeight]="DTCFG.footerHeight"
+          [columnMode]="DTCFG.columnMode"
+          [rowHeight]="DTCFG.rowHeight"
+          [limit]="DTCFG.limit"
+          [selectionType]="DTCFG.selectionType"
+          (select)="selectService.onSelect($event)"
+        >
+          <ngx-datatable-column name="MenuID" prop="MenuID" [minWidth]="80">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{ row.MenuID }}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="TextID" prop="TextID" [minWidth]="80"></ngx-datatable-column>
+          <ngx-datatable-column name="Text0_0" [minWidth]="200">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{ queryService.getText0ById(row.TextID) | async }}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Text0_1" [minWidth]="200">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{ queryService.getText1ById(row.TextID) | async }}
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+      </div>
+    }
   </div>
 </div>

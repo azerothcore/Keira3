@@ -39,42 +39,44 @@
       <keira-highlightjs-wrapper [code]="selectService.query"></keira-highlightjs-wrapper>
     </form>
 
-    <div *ngIf="selectService.rows">
-      <ngx-datatable
-        class="bootstrap table table-striped text-center datatable-select datatable-icon-list"
-        [rows]="selectService.rows"
-        [headerHeight]="DTCFG.headerHeight"
-        [footerHeight]="DTCFG.footerHeight"
-        [columnMode]="DTCFG.columnMode"
-        [rowHeight]="DTCFG.rowHeightWithIcon"
-        [limit]="DTCFG.limit"
-        [selectionType]="DTCFG.selectionType"
-        (select)="selectService.onSelect($event)"
-      >
-        <ngx-datatable-column [minWidth]="42" [maxWidth]="42" [sortable]="false">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <keira-icon [itemDisplayId]="row.displayid"></keira-icon>
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column name="ID">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            {{ row.entry }}
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column name="Name" prop="name" [minWidth]="60">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <div class="item-select">
-              <b [ngClass]="'q' + row.Quality">{{ row.name }}</b>
-            </div>
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column name="DisplayID" prop="displayid"></ngx-datatable-column>
-        <ngx-datatable-column name="Class" prop="class"></ngx-datatable-column>
-        <ngx-datatable-column name="Subclass" prop="subclass"></ngx-datatable-column>
-        <ngx-datatable-column name="Quality" prop="Quality"></ngx-datatable-column>
-        <ngx-datatable-column name="ItemLevel" prop="ItemLevel"></ngx-datatable-column>
-        <ngx-datatable-column name="RequiredLevel" prop="RequiredLevel"></ngx-datatable-column>
-      </ngx-datatable>
-    </div>
+    @if (selectService.rows) {
+      <div>
+        <ngx-datatable
+          class="bootstrap table table-striped text-center datatable-select datatable-icon-list"
+          [rows]="selectService.rows"
+          [headerHeight]="DTCFG.headerHeight"
+          [footerHeight]="DTCFG.footerHeight"
+          [columnMode]="DTCFG.columnMode"
+          [rowHeight]="DTCFG.rowHeightWithIcon"
+          [limit]="DTCFG.limit"
+          [selectionType]="DTCFG.selectionType"
+          (select)="selectService.onSelect($event)"
+        >
+          <ngx-datatable-column [minWidth]="42" [maxWidth]="42" [sortable]="false">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <keira-icon [itemDisplayId]="row.displayid"></keira-icon>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="ID">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{ row.entry }}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Name" prop="name" [minWidth]="60">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <div class="item-select">
+                <b [ngClass]="'q' + row.Quality">{{ row.name }}</b>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="DisplayID" prop="displayid"></ngx-datatable-column>
+          <ngx-datatable-column name="Class" prop="class"></ngx-datatable-column>
+          <ngx-datatable-column name="Subclass" prop="subclass"></ngx-datatable-column>
+          <ngx-datatable-column name="Quality" prop="Quality"></ngx-datatable-column>
+          <ngx-datatable-column name="ItemLevel" prop="ItemLevel"></ngx-datatable-column>
+          <ngx-datatable-column name="RequiredLevel" prop="RequiredLevel"></ngx-datatable-column>
+        </ngx-datatable>
+      </div>
+    }
   </div>
 </div>

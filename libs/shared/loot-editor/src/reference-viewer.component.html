@@ -1,64 +1,74 @@
-<div class="content-block text-center" *ngIf="!!referenceLootRows">
-  <span class="h6">
-    Referenced loot <strong>{{ referenceId }}</strong> (read-only)
-    <i
-      class="fas fa-info-circle ms-1"
-      [placement]="'auto'"
-      [tooltip]="
-        'Showing the content of this reference_loot_template in read-only mode. To edit edit it, open it using the Reference Loot Editor'
-      "
-    ></i>
-  </span>
-
-  <hr />
-
-  <div class="row">
-    <div class="col-12">
-      <ngx-datatable
-        class="bootstrap table table-striped text-center datatable-select datatable-icon-list mb-0"
-        [rows]="referenceLootRows"
-        [headerHeight]="DTCFG.headerHeight"
-        [footerHeight]="DTCFG.footerHeight"
-        [columnMode]="DTCFG.columnMode"
-        [rowHeight]="DTCFG.rowHeightWithIcon"
-      >
-        <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false"></ngx-datatable-column>
-        <ngx-datatable-column [minWidth]="42" [maxWidth]="42" [sortable]="false">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <keira-icon *ngIf="!isReference(row)" [itemId]="row.Item"></keira-icon>
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column name="Item" prop="Item" [minWidth]="80"></ngx-datatable-column>
-        <ngx-datatable-column name="Name" [minWidth]="200" [sortable]="false">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <span *ngIf="!isReference(row)">{{ queryService.getItemNameById(row.Item) | async }}</span>
-            <span *ngIf="isReference(row)" class="reference">REFERENCE</span>
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column name="Reference" prop="Reference">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <span [ngClass]="{ reference: isReference(row) }">{{ row.Reference }}</span>
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column name="Chance" prop="Chance"></ngx-datatable-column>
-        <ngx-datatable-column name="QuestRequired" prop="QuestRequired"></ngx-datatable-column>
-        <ngx-datatable-column name="LootMode" prop="LootMode"></ngx-datatable-column>
-        <ngx-datatable-column name="GroupId" prop="GroupId">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <span class="group-{{ row.GroupId }}">{{ row.GroupId }}</span>
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column name="MinCount" prop="MinCount">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <span *ngIf="!isReference(row)">{{ row.MinCount }}</span>
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column name="MaxCount" prop="MaxCount"></ngx-datatable-column>
-      </ngx-datatable>
+@if (!!referenceLootRows) {
+  <div class="content-block text-center">
+    <span class="h6">
+      Referenced loot <strong>{{ referenceId }}</strong> (read-only)
+      <i
+        class="fas fa-info-circle ms-1"
+        [placement]="'auto'"
+        [tooltip]="
+          'Showing the content of this reference_loot_template in read-only mode. To edit edit it, open it using the Reference Loot Editor'
+        "
+      ></i>
+    </span>
+    <hr />
+    <div class="row">
+      <div class="col-12">
+        <ngx-datatable
+          class="bootstrap table table-striped text-center datatable-select datatable-icon-list mb-0"
+          [rows]="referenceLootRows"
+          [headerHeight]="DTCFG.headerHeight"
+          [footerHeight]="DTCFG.footerHeight"
+          [columnMode]="DTCFG.columnMode"
+          [rowHeight]="DTCFG.rowHeightWithIcon"
+        >
+          <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false"></ngx-datatable-column>
+          <ngx-datatable-column [minWidth]="42" [maxWidth]="42" [sortable]="false">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              @if (!isReference(row)) {
+                <keira-icon [itemId]="row.Item"></keira-icon>
+              }
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Item" prop="Item" [minWidth]="80"></ngx-datatable-column>
+          <ngx-datatable-column name="Name" [minWidth]="200" [sortable]="false">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              @if (!isReference(row)) {
+                <span>{{ queryService.getItemNameById(row.Item) | async }}</span>
+              }
+              @if (isReference(row)) {
+                <span class="reference">REFERENCE</span>
+              }
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Reference" prop="Reference">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <span [ngClass]="{ reference: isReference(row) }">{{ row.Reference }}</span>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Chance" prop="Chance"></ngx-datatable-column>
+          <ngx-datatable-column name="QuestRequired" prop="QuestRequired"></ngx-datatable-column>
+          <ngx-datatable-column name="LootMode" prop="LootMode"></ngx-datatable-column>
+          <ngx-datatable-column name="GroupId" prop="GroupId">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <span class="group-{{ row.GroupId }}">{{ row.GroupId }}</span>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="MinCount" prop="MinCount">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              @if (!isReference(row)) {
+                <span>{{ row.MinCount }}</span>
+              }
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="MaxCount" prop="MaxCount"></ngx-datatable-column>
+        </ngx-datatable>
+      </div>
     </div>
   </div>
-</div>
+}
 
-<ng-container *ngIf="!!referenceLootRows && !!nestedReferenceIds && referenceLootRows.length > 0">
-  <keira-reference-viewer *ngFor="let id of nestedReferenceIds" [referenceId]="id"></keira-reference-viewer>
-</ng-container>
+@if (!!referenceLootRows && !!nestedReferenceIds && referenceLootRows.length > 0) {
+  @for (id of nestedReferenceIds; track id) {
+    <keira-reference-viewer [referenceId]="id"></keira-reference-viewer>
+  }
+}

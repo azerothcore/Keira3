@@ -12,7 +12,7 @@ import {
 import { SpellHandlerService } from '../spell-handler.service';
 import { SelectSpellService } from './select-spell.service';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { NgIf } from '@angular/common';
+
 import { CreateComponent, HighlightjsWrapperComponent, IconComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -30,7 +30,6 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
     FormsModule,
     ReactiveFormsModule,
     HighlightjsWrapperComponent,
-    NgIf,
     NgxDatatableModule,
     IconComponent,
   ],

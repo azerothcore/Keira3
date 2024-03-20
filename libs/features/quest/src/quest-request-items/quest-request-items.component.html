@@ -5,55 +5,54 @@
 ></keira-top-bar>
 
 <div class="container-fluid editor-with-preview" [ngClass]="{ 'show-preview': questPreviewService.showPreview }">
-  <span *ngIf="editorService.loading" [translate]="'LOADING'"></span>
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
 
-  <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
-    <div class="content-block">
-      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <div class="content-block">
+        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+      </div>
+      <div class="content-block">
+        <form [formGroup]="editorService.form" class="form-group edit-form">
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
+              <label class="control-label" for="ID">ID</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'UNIQUE_ID' | translate: { ENTITY: 'quest' }"></i>
+              <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-12 col-md-8 col-lg-9 col-xl-9">
+              <label class="control-label" for="CompletionText">CompletionText</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.REQUEST_ITEMS.COMPLETION_TEXT' | translate"></i>
+              <input [formControlName]="'CompletionText'" id="CompletionText" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
+              <label class="control-label" for="EmoteOnComplete">EmoteOnComplete</label>
+              <keira-single-value-selector-btn
+                [control]="editorService.form.controls.EmoteOnComplete"
+                [disabled]="editorService.form.controls.EmoteOnComplete.disabled"
+                [config]="{ options: EMOTE, name: 'EmoteOnComplete' }"
+                [modalClass]="'modal-md'"
+              ></keira-single-value-selector-btn>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.REQUEST_ITEMS.EMOTE_ON_COMPLETE' | translate"></i>
+              <input [formControlName]="'EmoteOnComplete'" id="EmoteOnComplete" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
+              <label class="control-label" for="EmoteOnIncomplete">EmoteOnIncomplete</label>
+              <keira-single-value-selector-btn
+                [control]="editorService.form.controls.EmoteOnIncomplete"
+                [disabled]="editorService.form.controls.EmoteOnIncomplete.disabled"
+                [config]="{ options: EMOTE, name: 'EmoteOnIncomplete' }"
+                [modalClass]="'modal-md'"
+              ></keira-single-value-selector-btn>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.REQUEST_ITEMS.EMOTE_ON_INCOMPLETE' | translate"></i>
+              <input [formControlName]="'EmoteOnIncomplete'" id="EmoteOnIncomplete" type="number" class="form-control form-control-sm" />
+            </div>
+          </div>
+        </form>
+      </div>
+      <keira-quest-preview></keira-quest-preview>
     </div>
-
-    <div class="content-block">
-      <form [formGroup]="editorService.form" class="form-group edit-form">
-        <div class="row">
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
-            <label class="control-label" for="ID">ID</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'UNIQUE_ID' | translate: { ENTITY: 'quest' }"></i>
-            <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-12 col-md-8 col-lg-9 col-xl-9">
-            <label class="control-label" for="CompletionText">CompletionText</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.REQUEST_ITEMS.COMPLETION_TEXT' | translate"></i>
-            <input [formControlName]="'CompletionText'" id="CompletionText" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
-            <label class="control-label" for="EmoteOnComplete">EmoteOnComplete</label>
-            <keira-single-value-selector-btn
-              [control]="editorService.form.controls.EmoteOnComplete"
-              [disabled]="editorService.form.controls.EmoteOnComplete.disabled"
-              [config]="{ options: EMOTE, name: 'EmoteOnComplete' }"
-              [modalClass]="'modal-md'"
-            ></keira-single-value-selector-btn>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.REQUEST_ITEMS.EMOTE_ON_COMPLETE' | translate"></i>
-            <input [formControlName]="'EmoteOnComplete'" id="EmoteOnComplete" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
-            <label class="control-label" for="EmoteOnIncomplete">EmoteOnIncomplete</label>
-            <keira-single-value-selector-btn
-              [control]="editorService.form.controls.EmoteOnIncomplete"
-              [disabled]="editorService.form.controls.EmoteOnIncomplete.disabled"
-              [config]="{ options: EMOTE, name: 'EmoteOnIncomplete' }"
-              [modalClass]="'modal-md'"
-            ></keira-single-value-selector-btn>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.REQUEST_ITEMS.EMOTE_ON_INCOMPLETE' | translate"></i>
-            <input [formControlName]="'EmoteOnIncomplete'" id="EmoteOnIncomplete" type="number" class="form-control form-control-sm" />
-          </div>
-        </div>
-      </form>
-    </div>
-
-    <keira-quest-preview></keira-quest-preview>
-  </div>
+  }
 </div>

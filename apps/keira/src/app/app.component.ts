@@ -8,7 +8,7 @@ import { distinctUntilChanged } from 'rxjs';
 import packageInfo from '../../../../package.json';
 
 import { TranslateModule } from '@ngx-translate/core';
-import { NgIf } from '@angular/common';
+
 import { ConnectionWindowComponent } from '@keira/main/connection-window';
 import { MainWindowComponent } from '@keira/main/main-window';
 import { MysqlService, SqliteQueryService } from '@keira/shared/db-layer';
@@ -23,7 +23,7 @@ import { SubscriptionHandler } from '@keira/shared/utils';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   standalone: true,
-  imports: [NgIf, ConnectionWindowComponent, MainWindowComponent, TranslateModule],
+  imports: [ConnectionWindowComponent, MainWindowComponent, TranslateModule],
 })
 export class AppComponent extends SubscriptionHandler implements OnInit {
   readonly KEIRA3_REPO_URL = KEIRA3_REPO_URL;

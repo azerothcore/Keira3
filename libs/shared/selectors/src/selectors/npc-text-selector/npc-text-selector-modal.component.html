@@ -26,23 +26,25 @@
     <keira-highlightjs-wrapper [code]="searchService.query"></keira-highlightjs-wrapper>
   </form>
 
-  <div *ngIf="searchService.rows">
-    <ngx-datatable
-      class="bootstrap table table-striped text-center datatable-select highlight-select datatable-icon-list"
-      [rows]="searchService.rows"
-      [headerHeight]="DTCFG.headerHeight"
-      [footerHeight]="DTCFG.footerHeight"
-      [columnMode]="DTCFG.columnMode"
-      [rowHeight]="DTCFG.rowHeightWithIcon"
-      [limit]="DTCFG.limit"
-      [selectionType]="DTCFG.selectionType"
-      (select)="onSelect($event)"
-    >
-      <ngx-datatable-column name="ID" prop="ID" [minWidth]="50" [maxWidth]="50"></ngx-datatable-column>
-      <ngx-datatable-column name="text0_0" prop="text0_0"></ngx-datatable-column>
-      <ngx-datatable-column name="text0_1" prop="text0_1"></ngx-datatable-column>
-    </ngx-datatable>
-  </div>
+  @if (searchService.rows) {
+    <div>
+      <ngx-datatable
+        class="bootstrap table table-striped text-center datatable-select highlight-select datatable-icon-list"
+        [rows]="searchService.rows"
+        [headerHeight]="DTCFG.headerHeight"
+        [footerHeight]="DTCFG.footerHeight"
+        [columnMode]="DTCFG.columnMode"
+        [rowHeight]="DTCFG.rowHeightWithIcon"
+        [limit]="DTCFG.limit"
+        [selectionType]="DTCFG.selectionType"
+        (select)="onSelect($event)"
+      >
+        <ngx-datatable-column name="ID" prop="ID" [minWidth]="50" [maxWidth]="50"></ngx-datatable-column>
+        <ngx-datatable-column name="text0_0" prop="text0_0"></ngx-datatable-column>
+        <ngx-datatable-column name="text0_1" prop="text0_1"></ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+  }
 </div>
 
 <div class="modal-footer">

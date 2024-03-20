@@ -59,27 +59,29 @@
       </div>
       <keira-highlightjs-wrapper [code]="selectService.query"></keira-highlightjs-wrapper>
     </form>
-    <div *ngIf="selectService.rows" class="content-block">
-      <ngx-datatable
-        class="bootstrap table table-flex text-center datatable-select"
-        [rows]="selectService.rows"
-        [headerHeight]="DTCFG.headerHeight"
-        [footerHeight]="DTCFG.footerHeight"
-        [columnMode]="DTCFG.columnMode"
-        [rowHeight]="30"
-        [limit]="DTCFG.limit"
-        [selectionType]="DTCFG.selectionType"
-        (select)="selectService.onSelect($event)"
-      >
-        <ngx-datatable-column [name]="SPELL_DBC_ID" [prop]="SPELL_DBC_ID" [minWidth]="150">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <keira-icon size="small" [spellId]="row[SPELL_DBC_ID]"></keira-icon> {{ row[SPELL_DBC_ID] }}
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column [name]="SPELL_DBC_NAME" [prop]="SPELL_DBC_NAME" [minWidth]="250"></ngx-datatable-column>
-        <ngx-datatable-column name="NameSubtext_Lang_enUS(Ranks)" [prop]="SPELL_DBC_NAMESUBTEXT" [minWidth]="250"></ngx-datatable-column>
-        <ngx-datatable-column [name]="SPELL_DBC_DESCRIPTION" [prop]="SPELL_DBC_DESCRIPTION" [minWidth]="900"></ngx-datatable-column>
-      </ngx-datatable>
-    </div>
+    @if (selectService.rows) {
+      <div class="content-block">
+        <ngx-datatable
+          class="bootstrap table table-flex text-center datatable-select"
+          [rows]="selectService.rows"
+          [headerHeight]="DTCFG.headerHeight"
+          [footerHeight]="DTCFG.footerHeight"
+          [columnMode]="DTCFG.columnMode"
+          [rowHeight]="30"
+          [limit]="DTCFG.limit"
+          [selectionType]="DTCFG.selectionType"
+          (select)="selectService.onSelect($event)"
+        >
+          <ngx-datatable-column [name]="SPELL_DBC_ID" [prop]="SPELL_DBC_ID" [minWidth]="150">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <keira-icon size="small" [spellId]="row[SPELL_DBC_ID]"></keira-icon> {{ row[SPELL_DBC_ID] }}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column [name]="SPELL_DBC_NAME" [prop]="SPELL_DBC_NAME" [minWidth]="250"></ngx-datatable-column>
+          <ngx-datatable-column name="NameSubtext_Lang_enUS(Ranks)" [prop]="SPELL_DBC_NAMESUBTEXT" [minWidth]="250"></ngx-datatable-column>
+          <ngx-datatable-column [name]="SPELL_DBC_DESCRIPTION" [prop]="SPELL_DBC_DESCRIPTION" [minWidth]="900"></ngx-datatable-column>
+        </ngx-datatable>
+      </div>
+    }
   </div>
 </div>

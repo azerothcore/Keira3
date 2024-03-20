@@ -1,20 +1,22 @@
-<div *ngIf="error" class="alert alert-danger error-box mt-2">
-  <table>
-    <tr>
-      <td>Error:</td>
-      <td>{{ error.stack }}</td>
-    </tr>
-    <tr>
-      <td>Code:</td>
-      <td>{{ error.code }}</td>
-    </tr>
-    <tr>
-      <td>Errno:</td>
-      <td>{{ error.errno }}</td>
-    </tr>
-    <tr>
-      <td>SQL State:</td>
-      <td>{{ error.sqlState }}</td>
-    </tr>
-  </table>
-</div>
+@if (error) {
+  <div class="alert alert-danger error-box mt-2">
+    <table>
+      <tr>
+        <td>Error:</td>
+        <td>{{ error.stack }}</td>
+      </tr>
+      <tr>
+        <td>Code:</td>
+        <td>{{ error.code }}</td>
+      </tr>
+      <tr>
+        <td>Errno:</td>
+        <td>{{ error.errno }}</td>
+      </tr>
+      <tr>
+        <td>SQL State:</td>
+        <td>{{ error.sqlState }}</td>
+      </tr>
+    </table>
+  </div>
+}

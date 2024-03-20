@@ -7,7 +7,7 @@ import packageInfo from '../../../../package.json';
 
 import { TranslateModule } from '@ngx-translate/core';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { NgIf, NgFor } from '@angular/common';
+
 import { LoginConfigService } from '@keira/shared/login-config';
 import { SwitchLanguageComponent } from '@keira/shared/switch-language';
 import { MysqlService } from '@keira/shared/db-layer';
@@ -20,7 +20,7 @@ import { ModelForm, SubscriptionHandler } from '@keira/shared/utils';
   templateUrl: './connection-window.component.html',
   styleUrls: ['./connection-window.component.scss'],
   standalone: true,
-  imports: [NgIf, FormsModule, ReactiveFormsModule, BsDropdownModule, NgFor, TranslateModule, QueryErrorComponent, SwitchLanguageComponent],
+  imports: [FormsModule, ReactiveFormsModule, BsDropdownModule, TranslateModule, QueryErrorComponent, SwitchLanguageComponent],
 })
 export class ConnectionWindowComponent extends SubscriptionHandler implements OnInit {
   private readonly IMAGES_COUNT = 11;

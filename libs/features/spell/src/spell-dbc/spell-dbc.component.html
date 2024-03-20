@@ -5,7 +5,9 @@
 ></keira-top-bar>
 
 <div class="container-fluid">
-  <span *ngIf="editorService.loading" [translate]="'LOADING'"></span>
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
 
   <div [hidden]="!editorService.form || !editorService.loadedEntityId || editorService.loading">
     <div class="content-block">

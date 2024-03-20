@@ -6,7 +6,7 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
 import { LootEditorComponent } from '@keira/shared/loot-editor';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgIf } from '@angular/common';
+
 import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
@@ -14,7 +14,7 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   selector: 'keira-gameobject-loot-template',
   templateUrl: './gameobject-loot-template.component.html',
   standalone: true,
-  imports: [TopBarComponent, NgIf, TranslateModule, LootEditorComponent],
+  imports: [TopBarComponent, TranslateModule, LootEditorComponent],
 })
 export class GameobjectLootTemplateComponent extends LootTemplateIdComponent<GameobjectLootTemplate> implements OnInit {
   private _type: number;

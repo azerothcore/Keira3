@@ -5,7 +5,7 @@ import { AC_DISCORD_URL, KEIRA3_REPO_URL, PAYPAL_DONATE_URL, VersionRow } from '
 import packageInfo from '../../../../package.json';
 import { FormsModule } from '@angular/forms';
 import { ClipboardModule } from 'ngx-clipboard';
-import { NgIf } from '@angular/common';
+
 import { TranslateModule } from '@ngx-translate/core';
 import { SubscriptionHandler } from '@keira/shared/utils';
 import { MysqlQueryService, MysqlService } from '@keira/shared/db-layer';
@@ -17,7 +17,7 @@ import { ConfigService } from '@keira/shared/common-services';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
   standalone: true,
-  imports: [TranslateModule, NgIf, ClipboardModule, FormsModule],
+  imports: [TranslateModule, ClipboardModule, FormsModule],
 })
 export class DashboardComponent extends SubscriptionHandler implements OnInit {
   protected coreVersions: VersionRow;

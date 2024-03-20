@@ -4,7 +4,7 @@ import { QUEST_FACTION_REWARD } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { IconComponent } from '@keira/shared/base-editor-components';
-import { NgClass, NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { NgClass, AsyncPipe } from '@angular/common';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
@@ -13,7 +13,7 @@ import { NgClass, NgIf, NgFor, AsyncPipe } from '@angular/common';
   templateUrl: './quest-preview.component.html',
   styleUrls: ['./quest-preview.component.scss'],
   standalone: true,
-  imports: [NgClass, NgIf, NgFor, IconComponent, CollapseModule, AsyncPipe],
+  imports: [NgClass, IconComponent, CollapseModule, AsyncPipe],
 })
 export class QuestPreviewComponent implements OnInit {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);

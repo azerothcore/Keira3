@@ -8,7 +8,7 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
 import { IconComponent } from '@keira/shared/base-editor-components';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { NgIf, NgClass, NgFor, AsyncPipe } from '@angular/common';
+import { NgClass, AsyncPipe } from '@angular/common';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,7 +16,7 @@ import { NgIf, NgClass, NgFor, AsyncPipe } from '@angular/common';
   templateUrl: './reference-viewer.component.html',
   styleUrls: ['./loot-editor.component.scss'],
   standalone: true,
-  imports: [NgIf, TooltipModule, NgxDatatableModule, IconComponent, NgClass, NgFor, AsyncPipe],
+  imports: [TooltipModule, NgxDatatableModule, IconComponent, NgClass, AsyncPipe],
 })
 export class ReferenceViewerComponent extends SubscriptionHandler implements OnChanges {
   @Input() referenceId: number;

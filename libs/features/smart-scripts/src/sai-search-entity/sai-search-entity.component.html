@@ -3,61 +3,72 @@
     <div class="content-block">
       <p class="lead">Select a Source Type</p>
 
-      <div class="radio-container" *ngFor="let key of SAI_SEARCH_TYPES_KEYS">
-        <label class="cursor-pointer" [id]="SAI_SEARCH_TYPES[key]">
-          <input [value]="key" [formControlName]="'source_type'" (change)="onSelectedTypeChange()" type="radio" />
-          <span class="radio-text">{{ SAI_SEARCH_TYPES[key] }}</span>
-        </label>
-      </div>
-    </div>
-
-    <div *ngIf="sourceTypeControl.valid" class="content-block">
-      <p class="lead">
-        Select
-        <ng-container *ngIf="isTypeCreatureSelected"> Creature</ng-container>
-        <ng-container *ngIf="isTypeGameobjectSelected"> Gameobject</ng-container>
-        <ng-container *ngIf="isTypeAreatriggerSelected"> Areatrigger</ng-container>
-        <ng-container *ngIf="isTypeTimedActionlistsSelected"> TimedActionlist</ng-container>
-      </p>
-
-      <div class="row">
-        <div class="form-group col-12">
-          <label class="control-label mb-2" for="entryorguid">
-            <ng-container *ngIf="isTypeCreatureSelected || isTypeGameobjectSelected">
-              Insert a negative number to select a GUID(-) or a positive number to select an Entry(+)
-            </ng-container>
-            <ng-container *ngIf="isTypeAreatriggerSelected"> Insert the Areatrigger ID </ng-container>
-            <ng-container *ngIf="isTypeTimedActionlistsSelected">
-              TimedActionlists IDs are composed by the <strong>Creature's Entry</strong> followed by a <strong>2-digits number</strong>
-            </ng-container>
+      @for (key of SAI_SEARCH_TYPES_KEYS; track key) {
+        <div class="radio-container">
+          <label class="cursor-pointer" [id]="SAI_SEARCH_TYPES[key]">
+            <input [value]="key" [formControlName]="'source_type'" (change)="onSelectedTypeChange()" type="radio" />
+            <span class="radio-text">{{ SAI_SEARCH_TYPES[key] }}</span>
           </label>
-
-          <keira-creature-selector-btn
-            *ngIf="isTypeCreatureSelected"
-            [control]="entryOrGuidControl"
-            [disabled]="entryOrGuidControl.disabled"
-            [config]="{ name: 'entryorguid' }"
-          ></keira-creature-selector-btn>
-          <keira-gameobject-selector-btn
-            *ngIf="isTypeGameobjectSelected"
-            [control]="entryOrGuidControl"
-            [disabled]="entryOrGuidControl.disabled"
-            [config]="{ name: 'entryorguid' }"
-          ></keira-gameobject-selector-btn>
-
-          <input [formControlName]="'entryorguid'" id="entryorguid" type="number" class="form-control form-control-sm" />
-
-          <div class="mt-2">If the selected entity does not have any SmartScripts yet, new ones will be created.</div>
         </div>
-      </div>
-
-      <div class="row mt-3">
-        <div class="col-12">
-          <button class="btn btn-success float-end" [disabled]="entryOrGuidControl.invalid" (click)="onEdit()" id="edit-btn">
-            Edit SmartAI
-          </button>
-        </div>
-      </div>
+      }
     </div>
+
+    @if (sourceTypeControl.valid) {
+      <div class="content-block">
+        <p class="lead">
+          Select
+          @if (isTypeCreatureSelected) {
+            Creature
+          }
+          @if (isTypeGameobjectSelected) {
+            Gameobject
+          }
+          @if (isTypeAreatriggerSelected) {
+            Areatrigger
+          }
+          @if (isTypeTimedActionlistsSelected) {
+            TimedActionlist
+          }
+        </p>
+        <div class="row">
+          <div class="form-group col-12">
+            <label class="control-label mb-2" for="entryorguid">
+              @if (isTypeCreatureSelected || isTypeGameobjectSelected) {
+                Insert a negative number to select a GUID(-) or a positive number to select an Entry(+)
+              }
+              @if (isTypeAreatriggerSelected) {
+                Insert the Areatrigger ID
+              }
+              @if (isTypeTimedActionlistsSelected) {
+                TimedActionlists IDs are composed by the <strong>Creature's Entry</strong> followed by a <strong>2-digits number</strong>
+              }
+            </label>
+            @if (isTypeCreatureSelected) {
+              <keira-creature-selector-btn
+                [control]="entryOrGuidControl"
+                [disabled]="entryOrGuidControl.disabled"
+                [config]="{ name: 'entryorguid' }"
+              ></keira-creature-selector-btn>
+            }
+            @if (isTypeGameobjectSelected) {
+              <keira-gameobject-selector-btn
+                [control]="entryOrGuidControl"
+                [disabled]="entryOrGuidControl.disabled"
+                [config]="{ name: 'entryorguid' }"
+              ></keira-gameobject-selector-btn>
+            }
+            <input [formControlName]="'entryorguid'" id="entryorguid" type="number" class="form-control form-control-sm" />
+            <div class="mt-2">If the selected entity does not have any SmartScripts yet, new ones will be created.</div>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-12">
+            <button class="btn btn-success float-end" [disabled]="entryOrGuidControl.invalid" (click)="onEdit()" id="edit-btn">
+              Edit SmartAI
+            </button>
+          </div>
+        </div>
+      </div>
+    }
   </form>
 </div>

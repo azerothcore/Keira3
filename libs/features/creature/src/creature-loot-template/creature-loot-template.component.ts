@@ -4,7 +4,7 @@ import { CreatureLootTemplate } from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureLootTemplateService } from './creature-loot-template.service';
 import { LootEditorComponent } from '@keira/shared/loot-editor';
-import { NgIf } from '@angular/common';
+
 import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
@@ -12,7 +12,7 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   selector: 'keira-creature-loot-template',
   templateUrl: '../../../../shared/base-abstract-classes/src/components/editors/loot-template/loot-template-id.component.html',
   standalone: true,
-  imports: [TopBarComponent, NgIf, LootEditorComponent],
+  imports: [TopBarComponent, LootEditorComponent],
 })
 export class CreatureLootTemplateComponent extends LootTemplateIdComponent<CreatureLootTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

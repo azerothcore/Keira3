@@ -5,185 +5,192 @@
 ></keira-top-bar>
 
 <div class="container-fluid editor-with-preview" [ngClass]="{ 'show-preview': questPreviewService.showPreview }">
-  <span *ngIf="editorService.loading" [translate]="'LOADING'"></span>
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
 
-  <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
-    <div class="content-block">
-      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <div class="content-block">
+        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+      </div>
+      <form [formGroup]="editorService.form" class="form-group edit-form">
+        <div class="content-block">
+          <span class="category-title" [translate]="'QUEST.TEMPLATE_ADDON.ADDON_BASE'"></span>
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="ID">ID</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'UNIQUE_ID' | translate: { ENTITY: 'quest' }"></i>
+              <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="PrevQuestID">PrevQuestID</label>
+              <keira-quest-selector-btn
+                [control]="editorService.form.controls.PrevQuestID"
+                [disabled]="editorService.form.controls.PrevQuestID.disabled"
+                [config]="{ name: 'PrevQuestID' }"
+                [modalClass]="'modal-lg'"
+              ></keira-quest-selector-btn>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.PREV_QUEST_ID' | translate"></i>
+              <input [formControlName]="'PrevQuestID'" id="PrevQuestID" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="NextQuestID">NextQuestID</label>
+              <keira-quest-selector-btn
+                [control]="editorService.form.controls.NextQuestID"
+                [disabled]="editorService.form.controls.NextQuestID.disabled"
+                [config]="{ name: 'NextQuestID' }"
+                [modalClass]="'modal-lg'"
+              ></keira-quest-selector-btn>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.NEXT_QUEST_ID' | translate"></i>
+              <input [formControlName]="'NextQuestID'" id="NextQuestID" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="MaxLevel">MaxLevel</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.MAX_LEVEL' | translate"></i>
+              <input [formControlName]="'MaxLevel'" id="MaxLevel" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="AllowableClasses">AllowableClasses</label>
+              <keira-flags-selector-btn
+                [control]="editorService.form.controls.AllowableClasses"
+                [disabled]="editorService.form.controls.AllowableClasses.disabled"
+                [config]="{ flags: ALLOWABLE_CLASSES, name: 'AllowableClasses' }"
+              ></keira-flags-selector-btn>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.ALLOWABLE_CLASSES' | translate"></i>
+              <input [formControlName]="'AllowableClasses'" id="AllowableClasses" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="SourceSpellID">SourceSpellID</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.SOURCE_SPELL_ID' | translate"></i>
+              <keira-spell-selector-btn
+                [control]="editorService.form.controls.SourceSpellID"
+                [disabled]="editorService.form.controls.SourceSpellID.disabled"
+                [config]="{ name: 'SourceSpellID' }"
+                [modalClass]="'modal-lg'"
+              ></keira-spell-selector-btn>
+              <input [formControlName]="'SourceSpellID'" id="SourceSpellID" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="ExclusiveGroup">ExclusiveGroup</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.EXCLUSIVE_GROUP' | translate"></i>
+              <input [formControlName]="'ExclusiveGroup'" id="ExclusiveGroup" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="ProvidedItemCount">ProvidedItemCount</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.PROVIDED_ITEM_COUNT' | translate"></i>
+              <input [formControlName]="'ProvidedItemCount'" id="ProvidedItemCount" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="SpecialFlags">SpecialFlags</label>
+              <keira-flags-selector-btn
+                [control]="editorService.form.controls.SpecialFlags"
+                [disabled]="editorService.form.controls.SpecialFlags.disabled"
+                [config]="{ flags: SPECIAL_FLAGS, name: 'SpecialFlags' }"
+              ></keira-flags-selector-btn>
+              <input [formControlName]="'SpecialFlags'" id="SpecialFlags" type="number" class="form-control form-control-sm" />
+            </div>
+          </div>
+        </div>
+        <div class="content-block">
+          <span class="category-title" [translate]="'QUEST.TEMPLATE_ADDON.ADDON_REQUIREMENTS'"></span>
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="RequiredSkillID">Req.SkillID</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.REQ_SKILL_ID' | translate"></i>
+              <keira-skill-selector-btn
+                [config]="{ name: 'RequiredSkillID' }"
+                [control]="editorService.form.controls.RequiredSkillID"
+                [disabled]="editorService.form.controls.RequiredSkillID.disabled"
+              ></keira-skill-selector-btn>
+              <input [formControlName]="'RequiredSkillID'" id="RequiredSkillID" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="RequiredSkillPoints">Req.SkillPoints</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.REQ_SKILL_POINTS' | translate"></i>
+              <input
+                [formControlName]="'RequiredSkillPoints'"
+                id="RequiredSkillPoints"
+                type="number"
+                class="form-control form-control-sm"
+              />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="RequiredMinRepFaction">Req.MinRepFaction</label>
+              <keira-faction-selector-btn
+                [config]="{ name: 'RequiredMinRepFaction' }"
+                [control]="editorService.form.controls.RequiredMinRepFaction"
+                [disabled]="editorService.form.controls.RequiredMinRepFaction.disabled"
+              ></keira-faction-selector-btn>
+              <input
+                [formControlName]="'RequiredMinRepFaction'"
+                id="RequiredMinRepFaction"
+                type="number"
+                class="form-control form-control-sm"
+              />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="RequiredMinRepValue">Req.MinRepValue</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.REQ_MIN_REP_VALUE' | translate"></i>
+              <input
+                [formControlName]="'RequiredMinRepValue'"
+                id="RequiredMinRepValue"
+                type="number"
+                class="form-control form-control-sm"
+              />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="RequiredMaxRepFaction">Req.MaxRepFaction</label>
+              <keira-faction-selector-btn
+                [config]="{ name: 'RequiredMaxRepFaction' }"
+                [control]="editorService.form.controls.RequiredMaxRepFaction"
+                [disabled]="editorService.form.controls.RequiredMaxRepFaction.disabled"
+              ></keira-faction-selector-btn>
+              <input
+                [formControlName]="'RequiredMaxRepFaction'"
+                id="RequiredMaxRepFaction"
+                type="number"
+                class="form-control form-control-sm"
+              />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="RequiredMaxRepValue">Req.MaxRepValue</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.REQ_MAX_REP_VALUE' | translate"></i>
+              <input
+                [formControlName]="'RequiredMaxRepValue'"
+                id="RequiredMaxRepValue"
+                type="number"
+                class="form-control form-control-sm"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="content-block">
+          <span class="category-title" [translate]="'QUEST.TEMPLATE_ADDON.ADDON_REWARDS'"></span>
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="RewardMailTemplateID">RewardMailTemplateID</label>
+              <i
+                class="fas fa-info-circle ms-1"
+                placement="auto"
+                [tooltip]="'QUEST.TEMPLATE_ADDON.REWARD_MAIL_TEMPLATE_ID' | translate"
+              ></i>
+              <input
+                [formControlName]="'RewardMailTemplateID'"
+                id="RewardMailTemplateID"
+                type="number"
+                class="form-control form-control-sm"
+              />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="RewardMailDelay">RewardMailDelay</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.REWARD_MAIL_DELAY' | translate"></i>
+              <input [formControlName]="'RewardMailDelay'" id="RewardMailDelay" type="number" class="form-control form-control-sm" />
+            </div>
+          </div>
+        </div>
+      </form>
+      <keira-quest-preview></keira-quest-preview>
     </div>
-
-    <form [formGroup]="editorService.form" class="form-group edit-form">
-      <div class="content-block">
-        <span class="category-title" [translate]="'QUEST.TEMPLATE_ADDON.ADDON_BASE'"></span>
-        <div class="row">
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="ID">ID</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'UNIQUE_ID' | translate: { ENTITY: 'quest' }"></i>
-            <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="PrevQuestID">PrevQuestID</label>
-            <keira-quest-selector-btn
-              [control]="editorService.form.controls.PrevQuestID"
-              [disabled]="editorService.form.controls.PrevQuestID.disabled"
-              [config]="{ name: 'PrevQuestID' }"
-              [modalClass]="'modal-lg'"
-            ></keira-quest-selector-btn>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.PREV_QUEST_ID' | translate"></i>
-            <input [formControlName]="'PrevQuestID'" id="PrevQuestID" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="NextQuestID">NextQuestID</label>
-            <keira-quest-selector-btn
-              [control]="editorService.form.controls.NextQuestID"
-              [disabled]="editorService.form.controls.NextQuestID.disabled"
-              [config]="{ name: 'NextQuestID' }"
-              [modalClass]="'modal-lg'"
-            ></keira-quest-selector-btn>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.NEXT_QUEST_ID' | translate"></i>
-            <input [formControlName]="'NextQuestID'" id="NextQuestID" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="MaxLevel">MaxLevel</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.MAX_LEVEL' | translate"></i>
-            <input [formControlName]="'MaxLevel'" id="MaxLevel" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="AllowableClasses">AllowableClasses</label>
-            <keira-flags-selector-btn
-              [control]="editorService.form.controls.AllowableClasses"
-              [disabled]="editorService.form.controls.AllowableClasses.disabled"
-              [config]="{ flags: ALLOWABLE_CLASSES, name: 'AllowableClasses' }"
-            ></keira-flags-selector-btn>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.ALLOWABLE_CLASSES' | translate"></i>
-            <input [formControlName]="'AllowableClasses'" id="AllowableClasses" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="SourceSpellID">SourceSpellID</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.SOURCE_SPELL_ID' | translate"></i>
-            <keira-spell-selector-btn
-              [control]="editorService.form.controls.SourceSpellID"
-              [disabled]="editorService.form.controls.SourceSpellID.disabled"
-              [config]="{ name: 'SourceSpellID' }"
-              [modalClass]="'modal-lg'"
-            ></keira-spell-selector-btn>
-            <input [formControlName]="'SourceSpellID'" id="SourceSpellID" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="ExclusiveGroup">ExclusiveGroup</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.EXCLUSIVE_GROUP' | translate"></i>
-            <input [formControlName]="'ExclusiveGroup'" id="ExclusiveGroup" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="ProvidedItemCount">ProvidedItemCount</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.PROVIDED_ITEM_COUNT' | translate"></i>
-            <input [formControlName]="'ProvidedItemCount'" id="ProvidedItemCount" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="SpecialFlags">SpecialFlags</label>
-            <keira-flags-selector-btn
-              [control]="editorService.form.controls.SpecialFlags"
-              [disabled]="editorService.form.controls.SpecialFlags.disabled"
-              [config]="{ flags: SPECIAL_FLAGS, name: 'SpecialFlags' }"
-            ></keira-flags-selector-btn>
-            <input [formControlName]="'SpecialFlags'" id="SpecialFlags" type="number" class="form-control form-control-sm" />
-          </div>
-        </div>
-      </div>
-      <div class="content-block">
-        <span class="category-title" [translate]="'QUEST.TEMPLATE_ADDON.ADDON_REQUIREMENTS'"></span>
-        <div class="row">
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="RequiredSkillID">Req.SkillID</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.REQ_SKILL_ID' | translate"></i>
-            <keira-skill-selector-btn
-              [config]="{ name: 'RequiredSkillID' }"
-              [control]="editorService.form.controls.RequiredSkillID"
-              [disabled]="editorService.form.controls.RequiredSkillID.disabled"
-            ></keira-skill-selector-btn>
-            <input [formControlName]="'RequiredSkillID'" id="RequiredSkillID" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="RequiredSkillPoints">Req.SkillPoints</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.REQ_SKILL_POINTS' | translate"></i>
-            <input [formControlName]="'RequiredSkillPoints'" id="RequiredSkillPoints" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="RequiredMinRepFaction">Req.MinRepFaction</label>
-            <keira-faction-selector-btn
-              [config]="{ name: 'RequiredMinRepFaction' }"
-              [control]="editorService.form.controls.RequiredMinRepFaction"
-              [disabled]="editorService.form.controls.RequiredMinRepFaction.disabled"
-            ></keira-faction-selector-btn>
-            <input
-              [formControlName]="'RequiredMinRepFaction'"
-              id="RequiredMinRepFaction"
-              type="number"
-              class="form-control form-control-sm"
-            />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="RequiredMinRepValue">Req.MinRepValue</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.REQ_MIN_REP_VALUE' | translate"></i>
-            <input [formControlName]="'RequiredMinRepValue'" id="RequiredMinRepValue" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="RequiredMaxRepFaction">Req.MaxRepFaction</label>
-            <keira-faction-selector-btn
-              [config]="{ name: 'RequiredMaxRepFaction' }"
-              [control]="editorService.form.controls.RequiredMaxRepFaction"
-              [disabled]="editorService.form.controls.RequiredMaxRepFaction.disabled"
-            ></keira-faction-selector-btn>
-            <input
-              [formControlName]="'RequiredMaxRepFaction'"
-              id="RequiredMaxRepFaction"
-              type="number"
-              class="form-control form-control-sm"
-            />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="RequiredMaxRepValue">Req.MaxRepValue</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.REQ_MAX_REP_VALUE' | translate"></i>
-            <input [formControlName]="'RequiredMaxRepValue'" id="RequiredMaxRepValue" type="number" class="form-control form-control-sm" />
-          </div>
-        </div>
-      </div>
-      <div class="content-block">
-        <span class="category-title" [translate]="'QUEST.TEMPLATE_ADDON.ADDON_REWARDS'"></span>
-        <div class="row">
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="RewardMailTemplateID">RewardMailTemplateID</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.REWARD_MAIL_TEMPLATE_ID' | translate"></i>
-            <input
-              [formControlName]="'RewardMailTemplateID'"
-              id="RewardMailTemplateID"
-              type="number"
-              class="form-control form-control-sm"
-            />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="RewardMailDelay">RewardMailDelay</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.REWARD_MAIL_DELAY' | translate"></i>
-            <input [formControlName]="'RewardMailDelay'" id="RewardMailDelay" type="number" class="form-control form-control-sm" />
-          </div>
-        </div>
-      </div>
-    </form>
-
-    <keira-quest-preview></keira-quest-preview>
-  </div>
+  }
 </div>

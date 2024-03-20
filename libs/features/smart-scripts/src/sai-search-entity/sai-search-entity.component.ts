@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } 
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { GameobjectSelectorBtnComponent } from '@keira/shared/selectors';
 import { CreatureSelectorBtnComponent } from '@keira/shared/selectors';
-import { NgFor, NgIf } from '@angular/common';
+
 import { SaiHandlerService } from '@keira/shared/sai-editor';
 import { getEnumKeys, ModelForm } from '@keira/shared/utils';
 
@@ -13,7 +13,7 @@ import { getEnumKeys, ModelForm } from '@keira/shared/utils';
   templateUrl: './sai-search-entity.component.html',
   styleUrls: ['./sai-search-entity.component.scss'],
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, NgFor, NgIf, CreatureSelectorBtnComponent, GameobjectSelectorBtnComponent],
+  imports: [FormsModule, ReactiveFormsModule, CreatureSelectorBtnComponent, GameobjectSelectorBtnComponent],
 })
 export class SaiSearchEntityComponent {
   readonly SAI_SEARCH_TYPES = SAI_TYPES;

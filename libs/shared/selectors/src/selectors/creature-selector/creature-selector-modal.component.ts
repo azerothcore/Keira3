@@ -6,7 +6,7 @@ import { CREATURE_TEMPLATE_ID, CreatureTemplate } from '@keira/shared/acore-worl
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { NgIf } from '@angular/common';
+
 import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -16,7 +16,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   templateUrl: './creature-selector-modal.component.html',
   styleUrls: ['./creature-selector-modal.component.scss'],
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgIf, NgxDatatableModule, TranslateModule],
+  imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateModule],
 })
 export class CreatureSelectorModalComponent extends SearchSelectorModalComponent<CreatureTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

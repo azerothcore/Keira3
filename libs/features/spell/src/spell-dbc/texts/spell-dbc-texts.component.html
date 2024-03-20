@@ -27,8 +27,12 @@
     </div>
   </div>
 </form>
-<tabset *ngIf="formGroup" id="locales">
-  <tab *ngFor="let locale of LOCALES" [heading]="locale" [id]="locale">
-    <keira-spell-dbc-locale [formGroup]="formGroup" [locale]="locale"></keira-spell-dbc-locale>
-  </tab>
-</tabset>
+@if (formGroup) {
+  <tabset id="locales">
+    @for (locale of LOCALES; track locale) {
+      <tab [heading]="locale" [id]="locale">
+        <keira-spell-dbc-locale [formGroup]="formGroup" [locale]="locale"></keira-spell-dbc-locale>
+      </tab>
+    }
+  </tabset>
+}

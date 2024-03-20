@@ -6,7 +6,7 @@ import { SearchSelectorModalComponent } from '../base-selector/search-selector-m
 import { NPC_TEXT_ID, NpcText } from '@keira/shared/acore-world-model';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { NgIf } from '@angular/common';
+
 import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -16,7 +16,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   templateUrl: './npc-text-selector-modal.component.html',
   styleUrls: ['./npc-text-selector-modal.component.scss'],
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgIf, NgxDatatableModule, TranslateModule],
+  imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateModule],
 })
 export class NpcTextSelectorModalComponent extends SearchSelectorModalComponent<NpcText> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
