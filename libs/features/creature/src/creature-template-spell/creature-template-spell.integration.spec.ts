@@ -133,6 +133,27 @@ describe('CreatureTemplateSpell integration tests', () => {
       );
       page.removeElement();
     });
+
+    it('adding a row and changing its values should correctly update the queries', () => {
+      const { page } = setup(true);
+      page.addNewRow();
+      page.setInputValueById('Index', '1');
+      page.duplicateSelectedRow();
+
+      page.expectDiffQueryToContain(
+        'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234) AND (`Index` IN (1, 0));\n' +
+          'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 1, 0, 0),\n' +
+          '(1234, 0, 0, 0);',
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234);\n' +
+          'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
+          '(1234, 1, 0, 0),\n' +
+          '(1234, 0, 0, 0);',
+      );
+      page.removeElement();
+    });
   });
 
   describe('Editing existing', () => {

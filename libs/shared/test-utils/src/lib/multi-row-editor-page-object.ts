@@ -27,6 +27,10 @@ export abstract class MultiRowEditorPageObject<T> extends EditorPageObject<T> {
     this.clickElement(this.addNewRowBtn);
   }
 
+  duplicateSelectedRow(): void {
+    this.clickElement(this.duplicateSelectedRowBtn);
+  }
+
   deleteRow(rowIndex: number = 0): void {
     this.clickRowOfDatatable(rowIndex);
     this.clickElement(this.deleteSelectedRowBtn);

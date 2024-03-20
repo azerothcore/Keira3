@@ -125,6 +125,25 @@ describe('GossipMenu integration tests', () => {
         'DELETE FROM `gossip_menu` WHERE (`MenuID` = 1234);\n' + 'INSERT INTO `gossip_menu` (`MenuID`, `TextID`) VALUES\n' + '(1234, 123);',
       );
     });
+
+    it('adding a row changing its values and duplicate it should correctly update the queries', () => {
+      page.addNewRow();
+      page.setInputValueById('TextID', '123');
+      page.duplicateSelectedRow();
+
+      page.expectDiffQueryToContain(
+        'DELETE FROM `gossip_menu` WHERE (`MenuID` = 1234) AND (`TextID` IN (123, 0));\n' +
+          'INSERT INTO `gossip_menu` (`MenuID`, `TextID`) VALUES\n' +
+          '(1234, 123),\n' +
+          '(1234, 0);',
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `gossip_menu` WHERE (`MenuID` = 1234);\n' +
+          'INSERT INTO `gossip_menu` (`MenuID`, `TextID`) VALUES\n' +
+          '(1234, 123),\n' +
+          '(1234, 0);',
+      );
+    });
   });
 
   describe('Editing existing', () => {
