@@ -539,5 +539,15 @@
         </div>
       </div>
     </div>
+
+    @if (showTimedActionlists) {
+      <div class="content-block">
+        <p class="lead">
+          Creature's Timed Actionlists
+          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SMARTAI.EDITOR.TIMED_ACTIONLISTS' | translate"></i>
+        </p>
+        <keira-timed-actionlist [creatureId]="entryOrGuid"></keira-timed-actionlist>
+      </div>
+    }
   }
 </div>
