@@ -81,6 +81,9 @@ class SaiEditorPage extends MultiRowEditorPageObject<SaiEditorComponent> {
   get generateCommentsBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#generate-comments-btn');
   }
+  get generateCommentSingleBtn(): HTMLButtonElement {
+    return this.query<HTMLButtonElement>('#generate-comments-btn-single');
+  }
 }
 
 describe('SaiEditorComponent integration tests', () => {
@@ -328,7 +331,7 @@ describe('SaiEditorComponent integration tests', () => {
       );
     });
 
-    it('generating comments should correctly work', fakeAsync(() => {
+    it('generating all comments should correctly work', fakeAsync(() => {
       const { component, fixture, handlerService, page } = setup(true);
       const saiColIndex = 9;
       const name = 'Shin';
@@ -353,6 +356,32 @@ describe('SaiEditorComponent integration tests', () => {
 
       page.expectAllQueriesToContain(`${name} - On Aggro - Kill Target`);
       page.expectAllQueriesToContain(`${name} - On Just Died - Start Attacking`);
+      page.expectAllQueriesToContain(`${name} - On Evade - Flee For Assist`);
+    }));
+
+    it('generating selected row comment should correctly work', fakeAsync(() => {
+      const { component, fixture, handlerService, page } = setup(true);
+      const saiColIndex = 9;
+      const name = 'Shin';
+      spyOn(handlerService, 'getName').and.returnValue(of(name));
+      page.addNewRow();
+      page.addNewRow();
+      page.addNewRow();
+      component.editorService['_newRows'][0].event_type = SAI_EVENTS.AGGRO;
+      component.editorService['_newRows'][0].action_type = SAI_ACTIONS.KILL_UNIT;
+      component.editorService['_newRows'][1].event_type = SAI_EVENTS.DEATH;
+      component.editorService['_newRows'][1].action_type = SAI_ACTIONS.ATTACK_START;
+      component.editorService['_newRows'][2].event_type = SAI_EVENTS.EVADE;
+      component.editorService['_newRows'][2].action_type = SAI_ACTIONS.FLEE_FOR_ASSIST;
+
+      page.clickElement(page.generateCommentSingleBtn);
+      tick(1000);
+      fixture.detectChanges();
+
+      expect(page.getDatatableCell(0, saiColIndex).innerText).toEqual(``);
+      expect(page.getDatatableCell(1, saiColIndex).innerText).toEqual(``);
+      expect(page.getDatatableCell(2, saiColIndex).innerText).toEqual(`${name} - On Evade - Flee For Assist`);
+
       page.expectAllQueriesToContain(`${name} - On Evade - Flee For Assist`);
     }));
   });
