@@ -136,7 +136,7 @@
     "typescript": "5.4.2",
     "wait-on": "7.2.0",
     "webdriver-manager": "13.0.2",
-    "webpack": "5.90.3",
+    "webpack": "5.91.0",
     "zone.js": "0.14.4"
   },
   "optionalDependencies": {
