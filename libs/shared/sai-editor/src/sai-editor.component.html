@@ -538,7 +538,12 @@
             <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="event" prop="event_type"></ngx-datatable-column>
             <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="action" prop="action_type"></ngx-datatable-column>
             <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="target" prop="target_type"></ngx-datatable-column>
-            <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="link" prop="link"></ngx-datatable-column>
+            @if (isTimedActionlists) {
+              <ngx-datatable-column [minWidth]="100" [maxWidth]="100" name="minTimer" prop="event_param1"></ngx-datatable-column>
+              <ngx-datatable-column [minWidth]="100" [maxWidth]="100" name="maxTimer" prop="event_param2"></ngx-datatable-column>
+            } @else {
+              <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="link" prop="link"></ngx-datatable-column>
+            }
             <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="phase" prop="event_phase_mask"></ngx-datatable-column>
             <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="chance" prop="event_chance"></ngx-datatable-column>
             <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="flags" prop="event_flags"></ngx-datatable-column>
