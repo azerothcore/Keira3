@@ -34,7 +34,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgIf, NgFor } from '@angular/common';
+
 import { getEnumKeys } from '@keira/shared/utils';
 
 @Component({
@@ -44,12 +44,10 @@ import { getEnumKeys } from '@keira/shared/utils';
   styleUrls: ['./conditions.component.scss'],
   standalone: true,
   imports: [
-    NgIf,
     TranslateModule,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
-    NgFor,
     TooltipModule,
     FlagsSelectorBtnComponent,
     SingleValueSelectorBtnComponent,

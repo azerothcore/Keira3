@@ -45,30 +45,32 @@
       <keira-highlightjs-wrapper [code]="selectService.query"></keira-highlightjs-wrapper>
     </form>
 
-    <div *ngIf="selectService.rows">
-      <ngx-datatable
-        class="bootstrap table table-striped text-center datatable-select"
-        [rows]="selectService.rows"
-        [headerHeight]="DTCFG.headerHeight"
-        [footerHeight]="DTCFG.footerHeight"
-        [columnMode]="DTCFG.columnMode"
-        [rowHeight]="DTCFG.rowHeight"
-        [limit]="DTCFG.limit"
-        [selectionType]="DTCFG.selectionType"
-        (select)="selectService.onSelect($event)"
-      >
-        <ngx-datatable-column name="entry" prop="entry" [minWidth]="100">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            {{ row.entry }}
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column name="name" prop="name"></ngx-datatable-column>
-        <ngx-datatable-column name="subname" prop="subname"></ngx-datatable-column>
-        <ngx-datatable-column name="minlevel" prop="minlevel"></ngx-datatable-column>
-        <ngx-datatable-column name="maxlevel" prop="maxlevel"></ngx-datatable-column>
-        <ngx-datatable-column name="AIName" prop="AIName"></ngx-datatable-column>
-        <ngx-datatable-column name="ScriptName" prop="ScriptName"></ngx-datatable-column>
-      </ngx-datatable>
-    </div>
+    @if (selectService.rows) {
+      <div>
+        <ngx-datatable
+          class="bootstrap table table-striped text-center datatable-select"
+          [rows]="selectService.rows"
+          [headerHeight]="DTCFG.headerHeight"
+          [footerHeight]="DTCFG.footerHeight"
+          [columnMode]="DTCFG.columnMode"
+          [rowHeight]="DTCFG.rowHeight"
+          [limit]="DTCFG.limit"
+          [selectionType]="DTCFG.selectionType"
+          (select)="selectService.onSelect($event)"
+        >
+          <ngx-datatable-column name="entry" prop="entry" [minWidth]="100">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{ row.entry }}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="name" prop="name"></ngx-datatable-column>
+          <ngx-datatable-column name="subname" prop="subname"></ngx-datatable-column>
+          <ngx-datatable-column name="minlevel" prop="minlevel"></ngx-datatable-column>
+          <ngx-datatable-column name="maxlevel" prop="maxlevel"></ngx-datatable-column>
+          <ngx-datatable-column name="AIName" prop="AIName"></ngx-datatable-column>
+          <ngx-datatable-column name="ScriptName" prop="ScriptName"></ngx-datatable-column>
+        </ngx-datatable>
+      </div>
+    }
   </div>
 </div>

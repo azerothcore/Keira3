@@ -12,7 +12,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SpellDbcBaseComponent } from './base/spell-dbc-base.component';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgIf } from '@angular/common';
+
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
@@ -22,7 +22,6 @@ import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor
   standalone: true,
   imports: [
     TopBarComponent,
-    NgIf,
     TranslateModule,
     QueryOutputComponent,
     TabsModule,

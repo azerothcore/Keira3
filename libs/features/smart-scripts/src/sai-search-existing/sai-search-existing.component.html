@@ -11,7 +11,9 @@
           <div class="col-sm-7 col-md-8 col-lg-9">
             <select formControlName="source_type" class="form-control form-control-sm" id="source_type">
               <option [ngValue]="" [label]=""></option>
-              <option *ngFor="let key of SAI_SEARCH_TYPES_KEYS" [ngValue]="key" [label]="SAI_SEARCH_TYPES[key]"></option>
+              @for (key of SAI_SEARCH_TYPES_KEYS; track key) {
+                <option [ngValue]="key" [label]="SAI_SEARCH_TYPES[key]"></option>
+              }
             </select>
           </div>
         </div>
@@ -42,21 +44,23 @@
       <keira-highlightjs-wrapper [code]="selectService.query"></keira-highlightjs-wrapper>
     </form>
 
-    <div *ngIf="selectService.rows">
-      <ngx-datatable
-        class="bootstrap table table-striped text-center datatable-select"
-        [rows]="selectService.rows"
-        [headerHeight]="DTCFG.headerHeight"
-        [footerHeight]="DTCFG.footerHeight"
-        [columnMode]="DTCFG.columnMode"
-        [rowHeight]="DTCFG.rowHeight"
-        [limit]="DTCFG.limit"
-        [selectionType]="DTCFG.selectionType"
-        (select)="onSelect($event)"
-      >
-        <ngx-datatable-column name="Entry or GUID" prop="entryorguid" [minWidth]="200"></ngx-datatable-column>
-        <ngx-datatable-column name="Source Type" prop="source_type"></ngx-datatable-column>
-      </ngx-datatable>
-    </div>
+    @if (selectService.rows) {
+      <div>
+        <ngx-datatable
+          class="bootstrap table table-striped text-center datatable-select"
+          [rows]="selectService.rows"
+          [headerHeight]="DTCFG.headerHeight"
+          [footerHeight]="DTCFG.footerHeight"
+          [columnMode]="DTCFG.columnMode"
+          [rowHeight]="DTCFG.rowHeight"
+          [limit]="DTCFG.limit"
+          [selectionType]="DTCFG.selectionType"
+          (select)="onSelect($event)"
+        >
+          <ngx-datatable-column name="Entry or GUID" prop="entryorguid" [minWidth]="200"></ngx-datatable-column>
+          <ngx-datatable-column name="Source Type" prop="source_type"></ngx-datatable-column>
+        </ngx-datatable>
+      </div>
+    }
   </div>
 </div>

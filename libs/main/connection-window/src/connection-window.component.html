@@ -4,92 +4,95 @@
       <span class="lead font-weight-bold">Keira {{ KEIRA_VERSION }}</span>
     </div>
 
-    <div class="form-wrapper" *ngIf="form">
-      <form [formGroup]="form">
-        <div class="form-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text"><i class="fas fa-server"></i>{{ 'CONNECTION_WINDOW.HOST' | translate }}</span>
+    @if (form) {
+      <div class="form-wrapper">
+        <form [formGroup]="form">
+          <div class="form-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fas fa-server"></i>{{ 'CONNECTION_WINDOW.HOST' | translate }}</span>
+            </div>
+            <input [formControlName]="'host'" class="form-control" id="host" />
           </div>
-          <input [formControlName]="'host'" class="form-control" id="host" />
-        </div>
-        <div class="form-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text"><i class="fas fa-network-wired"></i>{{ 'CONNECTION_WINDOW.PORT' | translate }}</span>
+          <div class="form-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fas fa-network-wired"></i>{{ 'CONNECTION_WINDOW.PORT' | translate }}</span>
+            </div>
+            <input [formControlName]="'port'" type="number" class="form-control" id="port" />
           </div>
-          <input [formControlName]="'port'" type="number" class="form-control" id="port" />
-        </div>
-        <div class="form-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text"><i class="fas fa-user"></i>{{ 'CONNECTION_WINDOW.USERNAME' | translate }}</span>
+          <div class="form-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fas fa-user"></i>{{ 'CONNECTION_WINDOW.USERNAME' | translate }}</span>
+            </div>
+            <input [formControlName]="'user'" class="form-control" id="user" />
           </div>
-          <input [formControlName]="'user'" class="form-control" id="user" />
-        </div>
-        <div class="form-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text"><i class="fas fa-key"></i>{{ 'CONNECTION_WINDOW.PASSWORD' | translate }}</span>
+          <div class="form-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fas fa-key"></i>{{ 'CONNECTION_WINDOW.PASSWORD' | translate }}</span>
+            </div>
+            <input [formControlName]="'password'" type="password" class="form-control" id="password" />
           </div>
-          <input [formControlName]="'password'" type="password" class="form-control" id="password" />
-        </div>
-        <div class="form-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text"><i class="fas fa-database"></i>{{ 'CONNECTION_WINDOW.DATABASE' | translate }}</span>
+          <div class="form-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fas fa-database"></i>{{ 'CONNECTION_WINDOW.DATABASE' | translate }}</span>
+            </div>
+            <input [formControlName]="'database'" class="form-control" id="database" />
           </div>
-          <input [formControlName]="'database'" class="form-control" id="database" />
-        </div>
-        <div class="recent-container">
-          <div class="row">
-            <div class="col">
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  id="save-password"
-                  [(ngModel)]="savePassword"
-                  [ngModelOptions]="{ standalone: true }"
-                />
-                <label class="form-check-label" for="save-password"> {{ 'CONNECTION_WINDOW.SAVE_PASSWORD' | translate }} </label>
+          <div class="recent-container">
+            <div class="row">
+              <div class="col">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="save-password"
+                    [(ngModel)]="savePassword"
+                    [ngModelOptions]="{ standalone: true }"
+                  />
+                  <label class="form-check-label" for="save-password"> {{ 'CONNECTION_WINDOW.SAVE_PASSWORD' | translate }} </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="remember-me"
+                    [(ngModel)]="rememberMe"
+                    [ngModelOptions]="{ standalone: true }"
+                    [disabled]="!savePassword"
+                  />
+                  <label class="form-check-label" for="remember-me"> {{ 'CONNECTION_WINDOW.REMEMBER_ME' | translate }} </label>
+                </div>
               </div>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  id="remember-me"
-                  [(ngModel)]="rememberMe"
-                  [ngModelOptions]="{ standalone: true }"
-                  [disabled]="!savePassword"
-                />
-                <label class="form-check-label" for="remember-me"> {{ 'CONNECTION_WINDOW.REMEMBER_ME' | translate }} </label>
+              <div class="col">
+                <div class="btn-group" id="load-recent" dropdown [dropup]="true" [isDisabled]="isRecentDropdownDisabled">
+                  <button dropdownToggle type="button" class="btn btn-sm btn-primary dropdown-toggle">
+                    <i class="fas fa-history"></i> {{ 'CONNECTION_WINDOW.LOAD_RECENT' | translate }} <span class="caret"></span>
+                  </button>
+                  <ul *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
+                    <li role="menuitem">
+                      <a class="dropdown-item" href="#" (click)="removeAllConfigs()" id="clear-all"
+                        ><i class="fa fa-trash-alt"></i> {{ 'CONNECTION_WINDOW.CLEAR_ALL' | translate }}</a
+                      >
+                    </li>
+                    <li class="divider dropdown-divider"></li>
+                    @for (config of configs; track config) {
+                      <li role="menuitem" class="config-item">
+                        <a class="dropdown-item" href="#" (click)="loadConfig(config)">
+                          {{ config.host }}:{{ config.port }}:{{ config.user }}
+                        </a>
+                      </li>
+                    }
+                  </ul>
+                </div>
               </div>
             </div>
-            <div class="col">
-              <div class="btn-group" id="load-recent" dropdown [dropup]="true" [isDisabled]="isRecentDropdownDisabled">
-                <button dropdownToggle type="button" class="btn btn-sm btn-primary dropdown-toggle">
-                  <i class="fas fa-history"></i> {{ 'CONNECTION_WINDOW.LOAD_RECENT' | translate }} <span class="caret"></span>
-                </button>
-                <ul *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
-                  <li role="menuitem">
-                    <a class="dropdown-item" href="#" (click)="removeAllConfigs()" id="clear-all"
-                      ><i class="fa fa-trash-alt"></i> {{ 'CONNECTION_WINDOW.CLEAR_ALL' | translate }}</a
-                    >
-                  </li>
-                  <li class="divider dropdown-divider"></li>
-                  <li role="menuitem" *ngFor="let config of configs" class="config-item">
-                    <a class="dropdown-item" href="#" (click)="loadConfig(config)">
-                      {{ config.host }}:{{ config.port }}:{{ config.user }}
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
           </div>
+          <button class="btn btn-primary connect-button" (click)="onConnect()" [translate]="'CONNECTION_WINDOW.CONNECT'"></button>
+        </form>
+        <div class="login-error-box">
+          <keira-query-error [error]="error"></keira-query-error>
         </div>
-        <button class="btn btn-primary connect-button" (click)="onConnect()" [translate]="'CONNECTION_WINDOW.CONNECT'"></button>
-      </form>
-
-      <div class="login-error-box">
-        <keira-query-error [error]="error"></keira-query-error>
       </div>
-    </div>
+    }
 
     <div class="end-text">
       <!-- We have worked hard to create Keira3 for free, please do not remove the credits -->

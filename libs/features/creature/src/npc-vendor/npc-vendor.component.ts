@@ -11,7 +11,7 @@ import { IconComponent } from '@keira/shared/base-editor-components';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
@@ -22,7 +22,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   standalone: true,
   imports: [
     TopBarComponent,
-    NgIf,
     TranslateModule,
     QueryOutputComponent,
     FormsModule,

@@ -101,39 +101,41 @@
     <keira-highlightjs-wrapper [code]="searchService.query"></keira-highlightjs-wrapper>
   </form>
 
-  <div *ngIf="searchService.rows">
-    <ngx-datatable
-      class="bootstrap table table-striped text-center datatable-select highlight-select"
-      [rows]="searchService.rows"
-      [headerHeight]="DTCFG.headerHeight"
-      [footerHeight]="DTCFG.footerHeight"
-      [columnMode]="DTCFG.columnMode"
-      [rowHeight]="DTCFG.rowHeight"
-      [limit]="DTCFG.limit"
-      [selectionType]="DTCFG.selectionType"
-      (select)="onSelect($event)"
-    >
-      <ngx-datatable-column name="ID" prop="id" [minWidth]="100">
-        <ng-template let-row="row" ngx-datatable-cell-template>
-          {{ row.id }}
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column name="HonorPoints" prop="reqHonorPoints"></ngx-datatable-column>
-      <ngx-datatable-column name="ArenaPoints" prop="reqArenaPoints"></ngx-datatable-column>
-      <ngx-datatable-column name="ArenaSlot" prop="reqArenaSlot"></ngx-datatable-column>
-      <ngx-datatable-column name="Pers.Rating" prop="reqPersonalRating"></ngx-datatable-column>
-      <ngx-datatable-column name="Item1" prop="reqItemId1"></ngx-datatable-column>
-      <ngx-datatable-column name="Count1" prop="itemCount1"></ngx-datatable-column>
-      <ngx-datatable-column name="Item2" prop="reqItemId2"></ngx-datatable-column>
-      <ngx-datatable-column name="Count2" prop="itemCount2"></ngx-datatable-column>
-      <ngx-datatable-column name="Item3" prop="reqItemId3"></ngx-datatable-column>
-      <ngx-datatable-column name="Count3" prop="itemCount3"></ngx-datatable-column>
-      <ngx-datatable-column name="Item4" prop="reqItemId4"></ngx-datatable-column>
-      <ngx-datatable-column name="Count4" prop="itemCount4"></ngx-datatable-column>
-      <ngx-datatable-column name="Item5" prop="reqItemId5"></ngx-datatable-column>
-      <ngx-datatable-column name="Count5" prop="itemCount5"></ngx-datatable-column>
-    </ngx-datatable>
-  </div>
+  @if (searchService.rows) {
+    <div>
+      <ngx-datatable
+        class="bootstrap table table-striped text-center datatable-select highlight-select"
+        [rows]="searchService.rows"
+        [headerHeight]="DTCFG.headerHeight"
+        [footerHeight]="DTCFG.footerHeight"
+        [columnMode]="DTCFG.columnMode"
+        [rowHeight]="DTCFG.rowHeight"
+        [limit]="DTCFG.limit"
+        [selectionType]="DTCFG.selectionType"
+        (select)="onSelect($event)"
+      >
+        <ngx-datatable-column name="ID" prop="id" [minWidth]="100">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.id }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="HonorPoints" prop="reqHonorPoints"></ngx-datatable-column>
+        <ngx-datatable-column name="ArenaPoints" prop="reqArenaPoints"></ngx-datatable-column>
+        <ngx-datatable-column name="ArenaSlot" prop="reqArenaSlot"></ngx-datatable-column>
+        <ngx-datatable-column name="Pers.Rating" prop="reqPersonalRating"></ngx-datatable-column>
+        <ngx-datatable-column name="Item1" prop="reqItemId1"></ngx-datatable-column>
+        <ngx-datatable-column name="Count1" prop="itemCount1"></ngx-datatable-column>
+        <ngx-datatable-column name="Item2" prop="reqItemId2"></ngx-datatable-column>
+        <ngx-datatable-column name="Count2" prop="itemCount2"></ngx-datatable-column>
+        <ngx-datatable-column name="Item3" prop="reqItemId3"></ngx-datatable-column>
+        <ngx-datatable-column name="Count3" prop="itemCount3"></ngx-datatable-column>
+        <ngx-datatable-column name="Item4" prop="reqItemId4"></ngx-datatable-column>
+        <ngx-datatable-column name="Count4" prop="itemCount4"></ngx-datatable-column>
+        <ngx-datatable-column name="Item5" prop="reqItemId5"></ngx-datatable-column>
+        <ngx-datatable-column name="Count5" prop="itemCount5"></ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+  }
 </div>
 
 <div class="modal-footer">

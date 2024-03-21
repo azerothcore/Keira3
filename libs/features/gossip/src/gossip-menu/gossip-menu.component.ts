@@ -9,7 +9,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { TopBarComponent } from '@keira/shared/base-editor-components';
 import { NpcTextSelectorBtnComponent } from '@keira/shared/selectors';
 import { MysqlQueryService } from '@keira/shared/db-layer';
@@ -22,7 +22,6 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
   standalone: true,
   imports: [
     TopBarComponent,
-    NgIf,
     TranslateModule,
     QueryOutputComponent,
     FormsModule,

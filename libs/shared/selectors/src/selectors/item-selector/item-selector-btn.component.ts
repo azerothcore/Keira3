@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BaseSelectorBtnComponent } from '../base-selector/base-selector-btn.component';
 import { ItemSelectorModalComponent } from './item-selector-modal.component';
-import { NgIf } from '@angular/common';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -10,7 +9,7 @@ import { NgIf } from '@angular/common';
   templateUrl: '../base-selector/base-selector-btn.component.html',
   styleUrls: ['../base-selector/base-selector-btn.component.scss'],
   standalone: true,
-  imports: [NgIf],
+  imports: [],
 })
 export class ItemSelectorBtnComponent extends BaseSelectorBtnComponent {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

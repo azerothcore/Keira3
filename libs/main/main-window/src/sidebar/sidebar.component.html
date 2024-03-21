@@ -9,31 +9,36 @@
         <div class="user-pic">
           <img class="img-responsive img-rounded" src="assets/img/ac.png" alt="User picture" />
         </div>
-        <div class="user-info" *ngIf="mysqlService.config">
-          <span class="db-user">
-            <strong>{{ mysqlService.config.user }}</strong>
-          </span>
-          <span class="db-host">
-            <strong
-              >{{ mysqlService.config.host }}<span class="port">:{{ mysqlService.config.port }}</span></strong
-            >
-          </span>
-          <span class="db-name">
-            <strong
-              ><i>{{ mysqlService.config.database }}</i></strong
-            >
-          </span>
-          <span class="user-status">
-            <i class="fa fa-circle connection-status" [ngClass]="mysqlService.getConnectionState() === 'CONNECTED' ? 'connected' : ''"></i>
-            <span>{{ mysqlService.getConnectionState() | translate | titlecase }}</span>
-          </span>
-          <span>
-            <keira-switch-language></keira-switch-language>
-          </span>
-          <span>
-            <keira-logout-btn></keira-logout-btn>
-          </span>
-        </div>
+        @if (mysqlService.config) {
+          <div class="user-info">
+            <span class="db-user">
+              <strong>{{ mysqlService.config.user }}</strong>
+            </span>
+            <span class="db-host">
+              <strong
+                >{{ mysqlService.config.host }}<span class="port">:{{ mysqlService.config.port }}</span></strong
+              >
+            </span>
+            <span class="db-name">
+              <strong
+                ><i>{{ mysqlService.config.database }}</i></strong
+              >
+            </span>
+            <span class="user-status">
+              <i
+                class="fa fa-circle connection-status"
+                [ngClass]="mysqlService.getConnectionState() === 'CONNECTED' ? 'connected' : ''"
+              ></i>
+              <span>{{ mysqlService.getConnectionState() | translate | titlecase }}</span>
+            </span>
+            <span>
+              <keira-switch-language></keira-switch-language>
+            </span>
+            <span>
+              <keira-logout-btn></keira-logout-btn>
+            </span>
+          </div>
+        }
       </div>
 
       <div class="sidebar-menu">
@@ -69,106 +74,138 @@
                     {{ 'SIDEBAR.CREATURE.SELECT_CREATURE' | translate }}
                   </a>
                 </li>
-                <ng-container *ngIf="creatureHandlerService.selected">
+                @if (creatureHandlerService.selected) {
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template'">
                       {{ 'SIDEBAR.CREATURE.CREATURE_TEMPLATE' | translate }}
-                      <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureTemplateUnsaved"></keira-unsaved-icon>
+                      @if (creatureHandlerService.isCreatureTemplateUnsaved) {
+                        <keira-unsaved-icon></keira-unsaved-icon>
+                      }
                     </a>
                   </li>
-                  <ng-container *ngIf="!creatureHandlerService.isNew">
+                  @if (!creatureHandlerService.isNew) {
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template-addon'">
                         {{ 'SIDEBAR.CREATURE.TEMPLATE_ADDON' | translate }}
-                        <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureTemplateAddonUnsaved"></keira-unsaved-icon>
+                        @if (creatureHandlerService.isCreatureTemplateAddonUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template-resistance'">
                         {{ 'SIDEBAR.CREATURE.TEMPLATE_RESISTANCE' | translate }}
-                        <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureTemplateResistanceUnsaved"></keira-unsaved-icon>
+                        @if (creatureHandlerService.isCreatureTemplateResistanceUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template-spell'">
                         {{ 'SIDEBAR.CREATURE.TEMPLATE_SPELL' | translate }}
-                        <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureTemplateSpellUnsaved"></keira-unsaved-icon>
+                        @if (creatureHandlerService.isCreatureTemplateSpellUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template-movement'">
                         {{ 'SIDEBAR.CREATURE.TEMPLATE_MOVEMENT' | translate }}
-                        <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureTemplateMovementUnsaved"></keira-unsaved-icon>
+                        @if (creatureHandlerService.isCreatureTemplateMovementUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-onkill-reputation'">
                         {{ 'SIDEBAR.CREATURE.ONKILL_REPUTATION' | translate }}
-                        <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureOnkillReputationUnsaved"></keira-unsaved-icon>
+                        @if (creatureHandlerService.isCreatureOnkillReputationUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-equip-template'">
                         {{ 'SIDEBAR.CREATURE.EQUIP_TEMPLATE' | translate }}
-                        <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureEquipTemplateUnsaved"></keira-unsaved-icon>
+                        @if (creatureHandlerService.isCreatureEquipTemplateUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/npc-vendor'">
                         {{ 'SIDEBAR.CREATURE.VENDOR' | translate }}
-                        <keira-unsaved-icon *ngIf="creatureHandlerService.isNpcVendorUnsaved"></keira-unsaved-icon>
+                        @if (creatureHandlerService.isNpcVendorUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/npc-trainer'">
                         {{ 'SIDEBAR.CREATURE.TRAINER' | translate }}
-                        <keira-unsaved-icon *ngIf="creatureHandlerService.isNpcTrainerUnsaved"></keira-unsaved-icon>
+                        @if (creatureHandlerService.isNpcTrainerUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-questitem'">
                         {{ 'SIDEBAR.CREATURE.QUEST_ITEM' | translate }}
-                        <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureQuestitemUnsaved"></keira-unsaved-icon>
+                        @if (creatureHandlerService.isCreatureQuestitemUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-loot-template'">
                         {{ 'SIDEBAR.CREATURE.CREATURE_LOOT' | translate }}
-                        <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureLootTemplateUnsaved"></keira-unsaved-icon>
+                        @if (creatureHandlerService.isCreatureLootTemplateUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/pickpocketing-loot-template'">
                         {{ 'SIDEBAR.CREATURE.PICKPOCKETING_LOOT' | translate }}
-                        <keira-unsaved-icon *ngIf="creatureHandlerService.isPickpocketingLootTemplateUnsaved"></keira-unsaved-icon>
+                        @if (creatureHandlerService.isPickpocketingLootTemplateUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/skinning-loot-template'">
                         {{ 'SIDEBAR.CREATURE.SKINNING_LOOT' | translate }}
-                        <keira-unsaved-icon *ngIf="creatureHandlerService.isSkinningLootTemplateUnsaved"></keira-unsaved-icon>
+                        @if (creatureHandlerService.isSkinningLootTemplateUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-spawn'">
                         {{ 'SIDEBAR.CREATURE.SPAWN' | translate }}
-                        <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureSpawnUnsaved"></keira-unsaved-icon>
+                        @if (creatureHandlerService.isCreatureSpawnUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-spawn-addon'">
                         {{ 'SIDEBAR.CREATURE.SPAWN_ADDON' | translate }}
-                        <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureSpawnAddonUnsaved"></keira-unsaved-icon>
+                        @if (creatureHandlerService.isCreatureSpawnAddonUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/sai-creature'">
                         {{ 'SIDEBAR.CREATURE.SMARTAI' | translate }}
-                        <keira-unsaved-icon *ngIf="creatureHandlerService.isCreatureSaiUnsaved"></keira-unsaved-icon>
+                        @if (creatureHandlerService.isCreatureSaiUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
-                  </ng-container>
-                </ng-container>
+                  }
+                }
               </ul>
             </div>
           </li>
@@ -184,63 +221,74 @@
                 <li>
                   <a href="#" routerLinkActive="active" [routerLink]="'quest/select'"> {{ 'SIDEBAR.QUEST.SELECT_QUEST' | translate }} </a>
                 </li>
-                <ng-container *ngIf="questHandlerService.selected">
+                @if (questHandlerService.selected) {
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-template'">
                       {{ 'SIDEBAR.QUEST.QUEST_TEMPLATE' | translate }}
-                      <keira-unsaved-icon *ngIf="questHandlerService.isQuestTemplateUnsaved"></keira-unsaved-icon>
+                      @if (questHandlerService.isQuestTemplateUnsaved) {
+                        <keira-unsaved-icon></keira-unsaved-icon>
+                      }
                     </a>
                   </li>
-                  <ng-container *ngIf="!questHandlerService.isNew">
+                  @if (!questHandlerService.isNew) {
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-template-addon'">
                         {{ 'SIDEBAR.QUEST.QUEST_TEMPLATE_ADDON' | translate }}
-
-                        <keira-unsaved-icon *ngIf="questHandlerService.isQuestTemplateAddonUnsaved"></keira-unsaved-icon>
+                        @if (questHandlerService.isQuestTemplateAddonUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-offer-reward'">
                         {{ 'SIDEBAR.QUEST.QUEST_OFFER_REWARD' | translate }}
-                        <keira-unsaved-icon *ngIf="questHandlerService.isQuestOfferRewardUnsaved"></keira-unsaved-icon>
+                        @if (questHandlerService.isQuestOfferRewardUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-request-items'">
                         {{ 'SIDEBAR.QUEST.QUEST_REQUEST_ITEMS' | translate }}
-                        <keira-unsaved-icon *ngIf="questHandlerService.isQuestRequestItemsUnsaved"></keira-unsaved-icon>
+                        @if (questHandlerService.isQuestRequestItemsUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/creature-queststarter'">
                         {{ 'SIDEBAR.QUEST.CREATURE_QUESTSTARTER' | translate }}
-
-                        <keira-unsaved-icon *ngIf="questHandlerService.isCreatureQueststarterUnsaved"></keira-unsaved-icon>
+                        @if (questHandlerService.isCreatureQueststarterUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/creature-questender'">
                         {{ 'SIDEBAR.QUEST.CREATURE_QUESTENDER' | translate }}
-
-                        <keira-unsaved-icon *ngIf="questHandlerService.isCreatureQuestenderUnsaved"></keira-unsaved-icon>
+                        @if (questHandlerService.isCreatureQuestenderUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/gameobject-queststarter'">
                         {{ 'SIDEBAR.QUEST.GAMEOBJECT_QUESTSTARTER' | translate }}
-
-                        <keira-unsaved-icon *ngIf="questHandlerService.isGameobjectQueststarterUnsaved"></keira-unsaved-icon>
+                        @if (questHandlerService.isGameobjectQueststarterUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/gameobject-questender'">
                         {{ 'SIDEBAR.QUEST.GAMEOBJECT_QUESTENDER' | translate }}
-
-                        <keira-unsaved-icon *ngIf="questHandlerService.isGameobjectQuestenderUnsaved"></keira-unsaved-icon>
+                        @if (questHandlerService.isGameobjectQuestenderUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
-                  </ng-container>
-                </ng-container>
+                  }
+                }
               </ul>
             </div>
           </li>
@@ -257,53 +305,66 @@
                     {{ 'SIDEBAR.GAME_OBJECT.SELECT_GAMEOBJECT' | translate }}
                   </a>
                 </li>
-                <ng-container *ngIf="gameobjectHandlerService.selected">
+                @if (gameobjectHandlerService.selected) {
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-template'">
                       {{ 'SIDEBAR.GAME_OBJECT.GAMEOBJECT_TEMPLATE' | translate }}
-                      <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectTemplateUnsaved"></keira-unsaved-icon>
+                      @if (gameobjectHandlerService.isGameobjectTemplateUnsaved) {
+                        <keira-unsaved-icon></keira-unsaved-icon>
+                      }
                     </a>
                   </li>
-                  <ng-container *ngIf="!gameobjectHandlerService.isNew">
+                  @if (!gameobjectHandlerService.isNew) {
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-template-addon'">
                         {{ 'SIDEBAR.GAME_OBJECT.TEMPLATE_ADDON' | translate }}
-                        <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectTemplateAddonUnsaved"></keira-unsaved-icon>
+                        @if (gameobjectHandlerService.isGameobjectTemplateAddonUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-questitem'">
                         {{ 'SIDEBAR.GAME_OBJECT.QUEST_ITEMS' | translate }}
-                        <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectQuestitemUnsaved"></keira-unsaved-icon>
+                        @if (gameobjectHandlerService.isGameobjectQuestitemUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-loot-template'">
                         {{ 'SIDEBAR.GAME_OBJECT.GAMEOBJECT_LOOT' | translate }}
-
-                        <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectLooTemplateUnsaved"></keira-unsaved-icon>
+                        @if (gameobjectHandlerService.isGameobjectLooTemplateUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-spawn'">
                         {{ 'SIDEBAR.GAME_OBJECT.SPAWN' | translate }}
-                        <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectSpawnUnsaved"></keira-unsaved-icon>
+                        @if (gameobjectHandlerService.isGameobjectSpawnUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-spawn-addon'">
                         {{ 'SIDEBAR.GAME_OBJECT.SPAWN_ADDON' | translate }}
-                        <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectSpawnAddonUnsaved"></keira-unsaved-icon>
+                        @if (gameobjectHandlerService.isGameobjectSpawnAddonUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gameobject/sai-gameobject'">
                         {{ 'SIDEBAR.GAME_OBJECT.SMART_AI' | translate }}
-                        <keira-unsaved-icon *ngIf="gameobjectHandlerService.isGameobjectSaiUnsaved"></keira-unsaved-icon>
+                        @if (gameobjectHandlerService.isGameobjectSaiUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
-                  </ng-container>
-                </ng-container>
+                  }
+                }
               </ul>
             </div>
           </li>
@@ -320,48 +381,58 @@
                     {{ 'SIDEBAR.ITEM.SELECT_ITEM' | translate }}
                   </a>
                 </li>
-                <ng-container *ngIf="itemHandlerService.selected">
+                @if (itemHandlerService.selected) {
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'item/item-template'">
                       {{ 'SIDEBAR.ITEM.ITEM_TEMPLATE' | translate }}
-                      <keira-unsaved-icon *ngIf="itemHandlerService.isItemTemplateUnsaved"></keira-unsaved-icon>
+                      @if (itemHandlerService.isItemTemplateUnsaved) {
+                        <keira-unsaved-icon></keira-unsaved-icon>
+                      }
                     </a>
                   </li>
-                  <ng-container *ngIf="!itemHandlerService.isNew">
+                  @if (!itemHandlerService.isNew) {
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'item/item-enchantment-template'">
                         {{ 'SIDEBAR.ITEM.ENCHANTMENT_TEMPLATE' | translate }}
-                        <keira-unsaved-icon *ngIf="itemHandlerService.isItemEnchantmentUnsaved"></keira-unsaved-icon>
+                        @if (itemHandlerService.isItemEnchantmentUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'item/item-loot-template'">
                         {{ 'SIDEBAR.ITEM.ITEM_LOOT' | translate }}
-                        <keira-unsaved-icon *ngIf="itemHandlerService.isItemLootTemplateUnsaved"></keira-unsaved-icon>
+                        @if (itemHandlerService.isItemLootTemplateUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'item/disenchant-loot-template'">
                         {{ 'SIDEBAR.ITEM.DISENCHANT_LOOT' | translate }}
-
-                        <keira-unsaved-icon *ngIf="itemHandlerService.isDisenchantmentLootTemplateUnsaved"></keira-unsaved-icon>
+                        @if (itemHandlerService.isDisenchantmentLootTemplateUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'item/prospecting-loot-template'">
                         {{ 'SIDEBAR.ITEM.PROSPECTING_LOOT' | translate }}
-
-                        <keira-unsaved-icon *ngIf="itemHandlerService.isProspectingLootTemplateUnsaved"></keira-unsaved-icon>
+                        @if (itemHandlerService.isProspectingLootTemplateUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'item/milling-loot-template'">
                         {{ 'SIDEBAR.ITEM.MILLING_LOOT' | translate }}
-                        <keira-unsaved-icon *ngIf="itemHandlerService.isMillingLootTemplateUnsaved"></keira-unsaved-icon>
+                        @if (itemHandlerService.isMillingLootTemplateUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
-                  </ng-container>
-                </ng-container>
+                  }
+                }
               </ul>
             </div>
           </li>
@@ -378,48 +449,64 @@
                     {{ 'SIDEBAR.OTHER_LOOTS.SELECT_REFERENCE_LOOT' | translate }}
                   </a>
                 </li>
-                <li *ngIf="referenceLootHandlerService.selected">
-                  <a href="#" routerLinkActive="active" [routerLink]="'other-loots/reference'">
-                    {{ 'SIDEBAR.OTHER_LOOTS.REFERENCE_LOOT_TEMPLATE' | translate }}
-                    <keira-unsaved-icon *ngIf="spellLootHandlerService.isUnsaved"></keira-unsaved-icon>
-                  </a>
-                </li>
+                @if (referenceLootHandlerService.selected) {
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'other-loots/reference'">
+                      {{ 'SIDEBAR.OTHER_LOOTS.REFERENCE_LOOT_TEMPLATE' | translate }}
+                      @if (spellLootHandlerService.isUnsaved) {
+                        <keira-unsaved-icon></keira-unsaved-icon>
+                      }
+                    </a>
+                  </li>
+                }
                 <hr />
                 <li>
                   <a href="#" routerLinkActive="active" [routerLink]="'other-loots/select-spell'">
                     {{ 'SIDEBAR.OTHER_LOOTS.SELECT_SPELL_LOOT' | translate }}
                   </a>
                 </li>
-                <li *ngIf="spellLootHandlerService.selected">
-                  <a href="#" routerLinkActive="active" [routerLink]="'other-loots/spell'">
-                    {{ 'SIDEBAR.OTHER_LOOTS.SPELL_LOOT_TEMPLATE' | translate }}
-                    <keira-unsaved-icon *ngIf="spellLootHandlerService.isUnsaved"></keira-unsaved-icon>
-                  </a>
-                </li>
+                @if (spellLootHandlerService.selected) {
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'other-loots/spell'">
+                      {{ 'SIDEBAR.OTHER_LOOTS.SPELL_LOOT_TEMPLATE' | translate }}
+                      @if (spellLootHandlerService.isUnsaved) {
+                        <keira-unsaved-icon></keira-unsaved-icon>
+                      }
+                    </a>
+                  </li>
+                }
                 <hr />
                 <li>
                   <a href="#" routerLinkActive="active" [routerLink]="'other-loots/select-fishing'">
                     {{ 'SIDEBAR.OTHER_LOOTS.SELECT_FISHING_LOOT' | translate }}
                   </a>
                 </li>
-                <li *ngIf="fishingLootHandlerService.selected">
-                  <a href="#" routerLinkActive="active" [routerLink]="'other-loots/fishing'">
-                    {{ 'SIDEBAR.OTHER_LOOTS.FISHING_LOOT_TEMPLATE' | translate }}
-                    <keira-unsaved-icon *ngIf="fishingLootHandlerService.isUnsaved"></keira-unsaved-icon>
-                  </a>
-                </li>
+                @if (fishingLootHandlerService.selected) {
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'other-loots/fishing'">
+                      {{ 'SIDEBAR.OTHER_LOOTS.FISHING_LOOT_TEMPLATE' | translate }}
+                      @if (fishingLootHandlerService.isUnsaved) {
+                        <keira-unsaved-icon></keira-unsaved-icon>
+                      }
+                    </a>
+                  </li>
+                }
                 <hr />
                 <li>
                   <a href="#" routerLinkActive="active" [routerLink]="'other-loots/select-mail'">
                     {{ 'SIDEBAR.OTHER_LOOTS.SELECT_MAIL_LOOT' | translate }}
                   </a>
                 </li>
-                <li *ngIf="mailLootHandlerService.selected">
-                  <a href="#" routerLinkActive="active" [routerLink]="'other-loots/mail'">
-                    {{ 'SIDEBAR.OTHER_LOOTS.MAIL_LOOT_TEMPLATE' | translate }}
-                    <keira-unsaved-icon *ngIf="mailLootHandlerService.isUnsaved"></keira-unsaved-icon>
-                  </a>
-                </li>
+                @if (mailLootHandlerService.selected) {
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'other-loots/mail'">
+                      {{ 'SIDEBAR.OTHER_LOOTS.MAIL_LOOT_TEMPLATE' | translate }}
+                      @if (mailLootHandlerService.isUnsaved) {
+                        <keira-unsaved-icon></keira-unsaved-icon>
+                      }
+                    </a>
+                  </li>
+                }
               </ul>
             </div>
           </li>
@@ -436,23 +523,26 @@
                     {{ 'SIDEBAR.GOSSIP.SELECT_GOSSIP_MENU' | translate }}
                   </a>
                 </li>
-                <ng-container *ngIf="gossipHandlerService.selected">
+                @if (gossipHandlerService.selected) {
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'gossip/gossip-menu'">
                       {{ 'SIDEBAR.GOSSIP.GOSSIP_MENU' | translate }}
-                      <keira-unsaved-icon *ngIf="gossipHandlerService.isGossipMenuTableUnsaved"></keira-unsaved-icon>
+                      @if (gossipHandlerService.isGossipMenuTableUnsaved) {
+                        <keira-unsaved-icon></keira-unsaved-icon>
+                      }
                     </a>
                   </li>
-                  <ng-container *ngIf="!gossipHandlerService.isNew">
+                  @if (!gossipHandlerService.isNew) {
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gossip/gossip-menu-option'">
                         {{ 'SIDEBAR.GOSSIP.GOSSIP_MENU_OPTION' | translate }}
-
-                        <keira-unsaved-icon *ngIf="gossipHandlerService.isGossipMenuOptionTableUnsaved"></keira-unsaved-icon>
+                        @if (gossipHandlerService.isGossipMenuOptionTableUnsaved) {
+                          <keira-unsaved-icon></keira-unsaved-icon>
+                        }
                       </a>
                     </li>
-                  </ng-container>
-                </ng-container>
+                  }
+                }
               </ul>
             </div>
           </li>
@@ -470,14 +560,16 @@
                     {{ 'SIDEBAR.CONDITIONS.SELECT_CONDITIONS' | translate }}
                   </a>
                 </li>
-                <ng-container *ngIf="conditionsHandlerService.selected">
+                @if (conditionsHandlerService.selected) {
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'conditions/conditions'">
                       {{ 'SIDEBAR.CONDITIONS.CONDITIONS' | translate }}
-                      <keira-unsaved-icon *ngIf="conditionsHandlerService.isConditionsUnsaved"></keira-unsaved-icon>
+                      @if (conditionsHandlerService.isConditionsUnsaved) {
+                        <keira-unsaved-icon></keira-unsaved-icon>
+                      }
                     </a>
                   </li>
-                </ng-container>
+                }
               </ul>
             </div>
           </li>
@@ -500,14 +592,16 @@
                     {{ 'SIDEBAR.SMARTAI.SEARCH_BY_ENTITY' | translate }}
                   </a>
                 </li>
-                <ng-container *ngIf="saiHandlerService.selected">
+                @if (saiHandlerService.selected) {
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'smart-ai/editors'">
                       {{ 'SIDEBAR.SMARTAI.EDITOR' | translate }}
-                      <keira-unsaved-icon *ngIf="saiHandlerService.isSaiUnsaved"></keira-unsaved-icon>
+                      @if (saiHandlerService.isSaiUnsaved) {
+                        <keira-unsaved-icon></keira-unsaved-icon>
+                      }
                     </a>
                   </li>
-                </ng-container>
+                }
               </ul>
             </div>
           </li>
@@ -525,14 +619,16 @@
                     {{ 'SIDEBAR.SPELL_DBC_OVERRIDES.SEARCH_SPELL' | translate }}
                   </a>
                 </li>
-                <ng-container *ngIf="spellHandlerService.selected">
+                @if (spellHandlerService.selected) {
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'spell/spell-dbc'">
                       {{ 'SIDEBAR.SPELL_DBC_OVERRIDES.SPELL_DBC_EDITOR' | translate }}
-                      <keira-unsaved-icon *ngIf="spellHandlerService.isSpellDbcUnsaved"></keira-unsaved-icon>
+                      @if (spellHandlerService.isSpellDbcUnsaved) {
+                        <keira-unsaved-icon></keira-unsaved-icon>
+                      }
                     </a>
                   </li>
-                </ng-container>
+                }
               </ul>
             </div>
           </li>

@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, inject, Input, Output } from '@angular/core';
 
-import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { EditorService } from '@keira/shared/base-abstract-classes';
 import { TableRow } from '@keira/shared/constants';
@@ -20,7 +19,7 @@ import { QueryErrorComponent } from './query-error/query-error.component';
   templateUrl: './query-output.component.html',
   styleUrls: ['./query-output.component.scss'],
   standalone: true,
-  imports: [NgIf, FormsModule, HighlightjsWrapperComponent, QueryErrorComponent, TranslateModule],
+  imports: [FormsModule, HighlightjsWrapperComponent, QueryErrorComponent, TranslateModule],
 })
 export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandler {
   @Input() docUrl: string;

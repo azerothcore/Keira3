@@ -1,5 +1,5 @@
-<pre *ngIf="electronService.isElectron(); else noHighlight"><code [highlight]="code"></code></pre>
-
-<ng-template #noHighlight>
+@if (electronService.isElectron()) {
+  <pre><code [highlight]="code"></code></pre>
+} @else {
   <pre><code id="no-highlight-query-wrapper">{{ code }}</code></pre>
-</ng-template>
+}

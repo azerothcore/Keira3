@@ -5,52 +5,73 @@
   [value]="switchLanguageService.currentLanguage"
 >
   <option value="en">
-    🇬🇧 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.ENGLISH' | translate }}</span>
+    🇬🇧
+    @if (longVersion) {
+      <span>&nbsp;{{ 'LANGUAGES.ENGLISH' | translate }}</span>
+    }
   </option>
   <optgroup label="Beta">
     <option value="es">
-      🇪🇸 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.SPANISH' | translate }}</span>
+      🇪🇸
+      @if (longVersion) {
+        <span>&nbsp;{{ 'LANGUAGES.SPANISH' | translate }}</span>
+      }
     </option>
     <option value="ru">
-      🇷🇺 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.RUSSIAN' | translate }}</span>
+      🇷🇺
+      @if (longVersion) {
+        <span>&nbsp;{{ 'LANGUAGES.RUSSIAN' | translate }}</span>
+      }
     </option>
     <option value="zh">
-      🇨🇳 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.CHINESE' | translate }}</span>
+      🇨🇳
+      @if (longVersion) {
+        <span>&nbsp;{{ 'LANGUAGES.CHINESE' | translate }}</span>
+      }
     </option>
     <!-- <option value="it">
-      🇮🇹 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.ITALIAN' | translate }}</span>
-    </option> -->
+🇮🇹 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.ITALIAN' | translate }}</span>
+</option> -->
     <option value="fr">
-      🇫🇷 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.FRENCH' | translate }}</span>
+      🇫🇷
+      @if (longVersion) {
+        <span>&nbsp;{{ 'LANGUAGES.FRENCH' | translate }}</span>
+      }
     </option>
     <!-- <option value="el">
-      🇬🇷 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.GREEK' | translate }}</span>
-    </option> -->
+🇬🇷 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.GREEK' | translate }}</span>
+</option> -->
     <option value="sv">
-      🇸🇪 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.SWEDEN' | translate }}</span>
+      🇸🇪
+      @if (longVersion) {
+        <span>&nbsp;{{ 'LANGUAGES.SWEDEN' | translate }}</span>
+      }
     </option>
     <!-- <option value="nl">
-      🇳🇱 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.DUTCH' | translate }}</span>
-    </option>
-    <option value="de">
-      🇩🇪 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.GERMAN' | translate }}</span>
-    </option>
-    <option value="pl">
-      🇵🇱 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.POLISH' | translate }}</span>
-    </option>
-    -->
+🇳🇱 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.DUTCH' | translate }}</span>
+</option>
+<option value="de">
+  🇩🇪 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.GERMAN' | translate }}</span>
+</option>
+<option value="pl">
+  🇵🇱 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.POLISH' | translate }}</span>
+</option>
+-->
     <option value="pt">
-      🇵🇹 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.PORTUGUESE' | translate }}</span>
+      🇵🇹
+      @if (longVersion) {
+        <span>&nbsp;{{ 'LANGUAGES.PORTUGUESE' | translate }}</span>
+      }
     </option>
     <!--
-    <option value="ko">
-      🇰🇷 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.KOREAN' | translate }}</span>
-    </option>
-    <option value="ro">
-      🇷🇴 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.ROMANIAN' | translate }}</span>
-    </option>
-    <option value="sk">
-      🇸🇰 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.SLOVAK' | translate }}</span>
-    </option> -->
+<option value="ko">
+  🇰🇷 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.KOREAN' | translate }}</span>
+</option>
+<option value="ro">
+  🇷🇴 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.ROMANIAN' | translate }}</span>
+</option>
+<option value="sk">
+  🇸🇰 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.SLOVAK' | translate }}</span>
+</option> -->
   </optgroup>
 </select>

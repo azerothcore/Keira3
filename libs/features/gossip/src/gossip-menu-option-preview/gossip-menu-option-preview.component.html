@@ -1,9 +1,14 @@
 <div class="preview-container" [ngClass]="show ? 'show-preview' : 'hide-preview'">
   <div class="transparent perfect-scrollbar">
     <div class="gossip-preview">
-      <p *ngFor="let row of options">
-        <img *ngIf="OPTION_IMG[row.OptionIcon]" [src]="'assets/img/gossip/' + OPTION_IMG[row.OptionIcon]" /> {{ row.OptionText }}
-      </p>
+      @for (row of options; track row) {
+        <p>
+          @if (OPTION_IMG[row.OptionIcon]) {
+            <img [src]="'assets/img/gossip/' + OPTION_IMG[row.OptionIcon]" />
+          }
+          {{ row.OptionText }}
+        </p>
+      }
     </div>
   </div>
 </div>

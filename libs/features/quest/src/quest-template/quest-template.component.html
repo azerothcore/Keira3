@@ -5,497 +5,497 @@
 ></keira-top-bar>
 
 <div class="container-fluid editor-with-preview" [ngClass]="{ 'show-preview': questPreviewService.showPreview }">
-  <span *ngIf="editorService.loading" [translate]="'LOADING'"></span>
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
 
-  <div *ngIf="editorService.form && !!editorService.loadedEntityId && !editorService.loading">
-    <div class="content-block">
-      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <div class="content-block">
+        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+      </div>
+      <form [formGroup]="editorService.form" class="form-group edit-form">
+        <div class="content-block">
+          <span class="category-title" [translate]="'QUEST.TEMPLATE.BASE'"></span>
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="ID">ID</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'UNIQUE_ID' | translate: { ENTITY: 'quest' }"></i>
+              <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
+              <label class="control-label" for="LogTitle">LogTitle</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.LOG_TITLE' | translate"></i>
+              <input [formControlName]="'LogTitle'" id="LogTitle" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="QuestType">QuestType</label>
+              <keira-single-value-selector-btn
+                [control]="editorService.form.controls.QuestType"
+                [disabled]="editorService.form.controls.QuestType.disabled"
+                [config]="{ options: QUEST_TYPE, name: 'QuestType' }"
+                [modalClass]="'modal-md'"
+              ></keira-single-value-selector-btn>
+              <input [formControlName]="'QuestType'" id="QuestType" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-6 col-lg-4 col-xl-2">
+              <label class="control-label" for="QuestLevel">QuestLevel</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.QUEST_LEVEL' | translate"></i>
+              <input [formControlName]="'QuestLevel'" id="QuestLevel" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="MinLevel">MinLevel</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.MIN_LEVEL' | translate"></i>
+              <input [formControlName]="'MinLevel'" id="MinLevel" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="QuestSortID">QuestSortID</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.QUEST_SORT_ID' | translate"></i>
+              <input [formControlName]="'QuestSortID'" id="QuestSortID" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="QuestInfoID">QuestInfoID</label>
+              <keira-single-value-selector-btn
+                [control]="editorService.form.controls.QuestInfoID"
+                [disabled]="editorService.form.controls.QuestInfoID.disabled"
+                [config]="{ options: QUEST_INFO, name: 'QuestInfoID' }"
+                [modalClass]="'modal-md'"
+              ></keira-single-value-selector-btn>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.QUEST_INFO_ID' | translate"></i>
+              <input [formControlName]="'QuestInfoID'" id="QuestInfoID" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="SuggestedGroupNum">SuggestedGroupNum</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.SUGGESTED_GROUP_NUM' | translate"></i>
+              <input [formControlName]="'SuggestedGroupNum'" id="SuggestedGroupNum" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="StartItem">
+                <keira-icon [itemId]="editorService.form.controls.StartItem.value"></keira-icon>
+                StartItem
+              </label>
+              <keira-item-selector-btn
+                [control]="editorService.form.controls.StartItem"
+                [disabled]="editorService.form.controls.StartItem.disabled"
+                [config]="{ name: 'StartItem' }"
+              ></keira-item-selector-btn>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.START_ITEM' | translate"></i>
+              <input [formControlName]="'StartItem'" id="StartItem" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="Flags">Flags</label>
+              <keira-flags-selector-btn
+                [control]="editorService.form.controls.Flags"
+                [disabled]="editorService.form.controls.Flags.disabled"
+                [config]="{ flags: QUEST_FLAGS, name: 'Flags' }"
+              ></keira-flags-selector-btn>
+              <input [formControlName]="'Flags'" id="Flags" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="TimeAllowed">TimeAllowed</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.TIME_ALLOWED' | translate"></i>
+              <input [formControlName]="'TimeAllowed'" id="TimeAllowed" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="AllowableRaces">AllowableRaces</label>
+              <keira-flags-selector-btn
+                [control]="editorService.form.controls.AllowableRaces"
+                [disabled]="editorService.form.controls.AllowableRaces.disabled"
+                [config]="{ flags: ALLOWABLE_RACES, name: 'AllowableRaces' }"
+              ></keira-flags-selector-btn>
+              <input [formControlName]="'AllowableRaces'" id="AllowableRaces" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="Unknown0">Unknown0</label>
+              <input [formControlName]="'Unknown0'" id="Unknown0" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="RequiredPlayerKills">RequiredPlayerKills</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REQUIRED_PLAYER_KILLS' | translate"></i>
+              <input
+                [formControlName]="'RequiredPlayerKills'"
+                id="RequiredPlayerKills"
+                type="number"
+                class="form-control form-control-sm"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="content-block">
+          <span class="category-title" [translate]="'QUEST.TEMPLATE.POINT_OF_INTEREST'"></span>
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="POIContinent">POIContinent</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.POI_CONTINENT' | translate"></i>
+              <input [formControlName]="'POIContinent'" id="POIContinent" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="POIx">POIx</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.POI_X' | translate"></i>
+              <input [formControlName]="'POIx'" id="POIx" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="POIy">POIy</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.POI_Y' | translate"></i>
+              <input [formControlName]="'POIy'" id="POIy" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="POIPriority">POIPriority</label>
+              <input [formControlName]="'POIPriority'" id="POIPriority" type="number" class="form-control form-control-sm" />
+            </div>
+          </div>
+        </div>
+        <div class="content-block">
+          <span class="category-title" [translate]="'QUEST.TEMPLATE.TEXTS'"></span>
+          <div class="row">
+            <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
+              <label class="control-label" for="QuestCompletionLog">QuestCompletionLog</label>
+              <textarea [formControlName]="'QuestCompletionLog'" id="QuestCompletionLog" class="form-control form-control-sm"></textarea>
+            </div>
+            <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
+              <label class="control-label" for="QuestDescription">QuestDescription</label>
+              <textarea [formControlName]="'QuestDescription'" id="QuestDescription" class="form-control form-control-sm"></textarea>
+            </div>
+            <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
+              <label class="control-label" for="AreaDescription">AreaDescription</label>
+              <textarea [formControlName]="'AreaDescription'" id="AreaDescription" class="form-control form-control-sm"></textarea>
+            </div>
+            <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
+              <label class="control-label" for="LogDescription">LogDescription</label>
+              <textarea [formControlName]="'LogDescription'" id="LogDescription" class="form-control form-control-sm"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="content-block">
+          <span class="category-title">
+            {{ 'QUEST.TEMPLATE.OBJECTIVE_TEXTS' | translate }}
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.OBJECTIVE_TEXTS_TOOLTIP' | translate"></i>
+          </span>
+          <div class="row">
+            @for (i of [1, 2, 3, 4]; track i) {
+              <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                <label class="control-label" for="ObjectiveText{{ i }}">ObjectiveText{{ i }}</label>
+                <input [formControlName]="'ObjectiveText' + i" id="ObjectiveText{{ i }}" class="form-control form-control-sm" />
+              </div>
+            }
+          </div>
+        </div>
+        <div class="content-block">
+          <span class="category-title">
+            {{ 'QUEST.TEMPLATE.REQUIRED_ITEMS' | translate }}
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REQUIRED_ITEMS_TOOLTIP' | translate"></i>
+          </span>
+          <div class="row">
+            @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+              <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+                <div class="row">
+                  <div class="col-12">
+                    <label class="control-label" for="RequiredItemId{{ i }}">
+                      <keira-icon [itemId]="editorService.form.controls['RequiredItemId' + i].value"></keira-icon>
+                      Req.ItemId{{ i }}
+                    </label>
+                    <keira-item-selector-btn
+                      [control]="editorService.form.controls['RequiredItemId' + i]"
+                      [disabled]="editorService.form.controls['RequiredItemId' + i].disabled"
+                      [config]="{ name: 'RequiredItemId' + i }"
+                    ></keira-item-selector-btn>
+                    <input
+                      [formControlName]="'RequiredItemId' + i"
+                      id="RequiredItemId{{ i }}"
+                      type="number"
+                      class="form-control form-control-sm"
+                    />
+                  </div>
+                  <div class="col-12">
+                    <label class="control-label" for="RequiredItemCount{{ i }}">Req.ItemCount{{ i }}</label>
+                    <input
+                      [formControlName]="'RequiredItemCount' + i"
+                      id="RequiredItemCount{{ i }}"
+                      type="number"
+                      class="form-control form-control-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+        <div class="content-block">
+          <span class="category-title">
+            {{ 'QUEST.TEMPLATE.REQUIRED_FACTION_OR_NPC' | translate }}
+            <i
+              class="fas fa-info-circle ms-1"
+              placement="auto"
+              [tooltip]="'QUEST.TEMPLATE.REQUIRED_FACTION_OR_NPC_TOOLTIP' | translate"
+            ></i>
+          </span>
+          <div class="row">
+            @for (i of [1, 2, 3, 4]; track i) {
+              <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+                <div class="row">
+                  <div class="col-12">
+                    <label class="control-label" for="RequiredNpcOrGo{{ i }}">Req.NpcOrGo{{ i }}</label>
+                    <input
+                      [formControlName]="'RequiredNpcOrGo' + i"
+                      id="RequiredNpcOrGo{{ i }}"
+                      type="number"
+                      class="form-control form-control-sm"
+                    />
+                  </div>
+                  <div class="col-12">
+                    <label class="control-label" for="RequiredNpcOrGoCount{{ i }}">Req.NpcOrGoCount{{ i }}</label>
+                    <input
+                      [formControlName]="'RequiredNpcOrGoCount' + i"
+                      id="RequiredNpcOrGoCount{{ i }}"
+                      type="number"
+                      class="form-control form-control-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+            }
+            @for (i of [1, 2]; track i) {
+              <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+                <label class="control-label" for="RequiredFactionId{{ i }}">Req.FactionId{{ i }}</label>
+                <keira-faction-selector-btn
+                  [config]="{ name: 'RequiredFactionId' + i }"
+                  [control]="editorService.form.controls['RequiredFactionId' + i]"
+                  [disabled]="editorService.form.controls['RequiredFactionId' + i].disabled"
+                ></keira-faction-selector-btn>
+                <input
+                  [formControlName]="'RequiredFactionId' + i"
+                  id="RequiredFactionId{{ i }}"
+                  type="number"
+                  class="form-control form-control-sm"
+                />
+                <label class="control-label" for="RequiredFactionValue{{ i }}">Req.FactionValue{{ i }}</label>
+                <input
+                  [formControlName]="'RequiredFactionValue' + i"
+                  id="RequiredFactionValue{{ i }}"
+                  type="number"
+                  class="form-control form-control-sm"
+                />
+              </div>
+            }
+          </div>
+        </div>
+        <div class="content-block">
+          <span class="category-title" [translate]="'QUEST.TEMPLATE.ITEM_DROPS'"></span>
+          <div class="row">
+            @for (i of [1, 2, 3, 4]; track i) {
+              <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+                <div class="row">
+                  <div class="col-12">
+                    <label class="control-label" for="ItemDrop{{ i }}">
+                      <keira-icon [itemId]="editorService.form.controls['ItemDrop' + i].value"></keira-icon>
+                      ItemDrop{{ i }}
+                    </label>
+                    <keira-item-selector-btn
+                      [control]="editorService.form.controls['ItemDrop' + i]"
+                      [disabled]="editorService.form.controls['ItemDrop' + i].disabled"
+                      [config]="{ name: 'ItemDrop' + i }"
+                    ></keira-item-selector-btn>
+                    <input [formControlName]="'ItemDrop' + i" id="ItemDrop{{ i }}" type="number" class="form-control form-control-sm" />
+                  </div>
+                  <div class="col-12">
+                    <label class="control-label" for="ItemDropQuantity{{ i }}">ItemDropQuantity{{ i }}</label>
+                    <input
+                      [formControlName]="'ItemDropQuantity' + i"
+                      id="ItemDropQuantity{{ i }}"
+                      type="number"
+                      class="form-control form-control-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+        <div class="content-block">
+          <span class="category-title" [translate]="'QUEST.TEMPLATE.REWARDS'"></span>
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="RewardTitle">RewardTitle</label>
+              <input [formControlName]="'RewardTitle'" id="RewardTitle" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="RewardTalents">RewardTalents</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REWARD_TALENTS' | translate"></i>
+              <input [formControlName]="'RewardTalents'" id="RewardTalents" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="RewardArenaPoints">RewardArenaPoints</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REWARD_ARENA_POINTS' | translate"></i>
+              <input [formControlName]="'RewardArenaPoints'" id="RewardArenaPoints" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="RewardNextQuest">RewardNextQuest</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REWARD_NEXT_QUEST' | translate"></i>
+              <input [formControlName]="'RewardNextQuest'" id="RewardNextQuest" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="RewardXPDifficulty">RewardXPDifficulty</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REWARD_XP_DIFFICULTY' | translate"></i>
+              <input [formControlName]="'RewardXPDifficulty'" id="RewardXPDifficulty" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="RewardMoney">RewardMoney</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REWARD_MONEY' | translate"></i>
+              <input [formControlName]="'RewardMoney'" id="RewardMoney" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="RewardMoneyDifficulty">Rew.MoneyDifficulty</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REW_MONEY_DIFFICULTY' | translate"></i>
+              <input
+                [formControlName]="'RewardMoneyDifficulty'"
+                id="RewardMoneyDifficulty"
+                type="number"
+                class="form-control form-control-sm"
+              />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="RewardDisplaySpell">RewardDisplaySpell</label>
+              <input [formControlName]="'RewardDisplaySpell'" id="RewardDisplaySpell" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="RewardSpell">RewardSpell</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REWARD_SPELL' | translate"></i>
+              <keira-spell-selector-btn
+                [control]="editorService.form.controls.RewardSpell"
+                [disabled]="editorService.form.controls.RewardSpell.disabled"
+                [config]="{ name: 'RewardSpell' }"
+                [modalClass]="'modal-lg'"
+              ></keira-spell-selector-btn>
+              <input [formControlName]="'RewardSpell'" id="RewardSpell" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="RewardHonor">RewardHonor</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REWARD_HONOR' | translate"></i>
+              <input [formControlName]="'RewardHonor'" id="RewardHonor" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+              <label class="control-label" for="RewardKillHonor">RewardKillHonor</label>
+              <input [formControlName]="'RewardKillHonor'" id="RewardKillHonor" type="number" class="form-control form-control-sm" />
+            </div>
+          </div>
+        </div>
+        <div class="content-block">
+          <span class="category-title" [translate]="'QUEST.TEMPLATE.REWARD_ITEMS'"></span>
+          <div class="row">
+            @for (i of [1, 2, 3, 4]; track i) {
+              <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+                <div class="row">
+                  <div class="col-12">
+                    <label class="control-label" for="RewardItem{{ i }}">
+                      <keira-icon [itemId]="editorService.form.controls['RewardItem' + i].value"></keira-icon>
+                      Rew.Item{{ i }}
+                    </label>
+                    <keira-item-selector-btn
+                      [control]="editorService.form.controls['RewardItem' + i]"
+                      [disabled]="editorService.form.controls['RewardItem' + i].disabled"
+                      [config]="{ name: 'RewardItem' + i }"
+                    ></keira-item-selector-btn>
+                    <input [formControlName]="'RewardItem' + i" id="RewardItem{{ i }}" type="number" class="form-control form-control-sm" />
+                  </div>
+                  <div class="col-12">
+                    <label class="control-label" for="RewardAmount{{ i }}">Rew.Amount{{ i }}</label>
+                    <input
+                      [formControlName]="'RewardAmount' + i"
+                      id="RewardAmount{{ i }}"
+                      type="number"
+                      class="form-control form-control-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+        <div class="content-block">
+          <span class="category-title" [translate]="'QUEST.TEMPLATE.REWARD_CHOICE_ITEMS'"></span>
+          <div class="row">
+            @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+              <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+                <div class="row">
+                  <div class="col-12">
+                    <label class="control-label" for="RewardChoiceItemID{{ i }}">
+                      <keira-icon [itemId]="editorService.form.controls['RewardChoiceItemID' + i].value"></keira-icon>
+                      ChoiceItem{{ i }}
+                    </label>
+                    <keira-item-selector-btn
+                      [control]="editorService.form.controls['RewardChoiceItemID' + i]"
+                      [disabled]="editorService.form.controls['RewardChoiceItemID' + i].disabled"
+                      [config]="{ name: 'RewardChoiceItemID' + i }"
+                    ></keira-item-selector-btn>
+                    <input
+                      [formControlName]="'RewardChoiceItemID' + i"
+                      id="RewardChoiceItemID{{ i }}"
+                      type="number"
+                      class="form-control form-control-sm"
+                    />
+                  </div>
+                  <div class="col-12">
+                    <label class="control-label" for="RewardChoiceItemQuantity{{ i }}">ChoiceItemQuantity{{ i }}</label>
+                    <input
+                      [formControlName]="'RewardChoiceItemQuantity' + i"
+                      id="RewardChoiceItemQuantity{{ i }}"
+                      type="number"
+                      class="form-control form-control-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+        <div class="content-block">
+          <span class="category-title">
+            {{ 'QUEST.TEMPLATE.REWARD_FACTIONS' | translate }}
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REWARD_FACTIONS_TOOLTIP' | translate"></i>
+          </span>
+          <div class="row">
+            @for (i of [1, 2, 3, 4, 5]; track i) {
+              <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
+                <div class="row">
+                  <div class="col-12">
+                    <label class="control-label" for="RewardFactionID{{ i }}">Rew.FactionID{{ i }}</label>
+                    <keira-quest-faction-selector-btn
+                      [config]="{ name: 'RewardFactionID' + i }"
+                      [control]="editorService.form.controls['RewardFactionID' + i]"
+                      [disabled]="editorService.form.controls['RewardFactionID' + i].disabled"
+                    ></keira-quest-faction-selector-btn>
+                    <input
+                      [formControlName]="'RewardFactionID' + i"
+                      id="RewardFactionID{{ i }}"
+                      type="number"
+                      class="form-control form-control-sm"
+                    />
+                  </div>
+                  <div class="col-12">
+                    <label class="control-label" for="RewardFactionValue{{ i }}">Rew.FactionValue{{ i }}</label>
+                    <input
+                      [formControlName]="'RewardFactionValue' + i"
+                      id="RewardFactionValue{{ i }}"
+                      type="number"
+                      class="form-control form-control-sm"
+                    />
+                  </div>
+                  <div class="col-12">
+                    <label class="control-label" for="RewardFactionOverride{{ i }}">Rew.FactionOverride{{ i }}</label>
+                    <input
+                      [formControlName]="'RewardFactionOverride' + i"
+                      id="RewardFactionOverride{{ i }}"
+                      type="number"
+                      class="form-control form-control-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </form>
+      <keira-quest-preview></keira-quest-preview>
     </div>
-
-    <form [formGroup]="editorService.form" class="form-group edit-form">
-      <div class="content-block">
-        <span class="category-title" [translate]="'QUEST.TEMPLATE.BASE'"></span>
-        <div class="row">
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="ID">ID</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'UNIQUE_ID' | translate: { ENTITY: 'quest' }"></i>
-            <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
-            <label class="control-label" for="LogTitle">LogTitle</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.LOG_TITLE' | translate"></i>
-            <input [formControlName]="'LogTitle'" id="LogTitle" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="QuestType">QuestType</label>
-            <keira-single-value-selector-btn
-              [control]="editorService.form.controls.QuestType"
-              [disabled]="editorService.form.controls.QuestType.disabled"
-              [config]="{ options: QUEST_TYPE, name: 'QuestType' }"
-              [modalClass]="'modal-md'"
-            ></keira-single-value-selector-btn>
-            <input [formControlName]="'QuestType'" id="QuestType" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-6 col-lg-4 col-xl-2">
-            <label class="control-label" for="QuestLevel">QuestLevel</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.QUEST_LEVEL' | translate"></i>
-            <input [formControlName]="'QuestLevel'" id="QuestLevel" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="MinLevel">MinLevel</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.MIN_LEVEL' | translate"></i>
-            <input [formControlName]="'MinLevel'" id="MinLevel" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="QuestSortID">QuestSortID</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.QUEST_SORT_ID' | translate"></i>
-            <input [formControlName]="'QuestSortID'" id="QuestSortID" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="QuestInfoID">QuestInfoID</label>
-            <keira-single-value-selector-btn
-              [control]="editorService.form.controls.QuestInfoID"
-              [disabled]="editorService.form.controls.QuestInfoID.disabled"
-              [config]="{ options: QUEST_INFO, name: 'QuestInfoID' }"
-              [modalClass]="'modal-md'"
-            ></keira-single-value-selector-btn>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.QUEST_INFO_ID' | translate"></i>
-            <input [formControlName]="'QuestInfoID'" id="QuestInfoID" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="SuggestedGroupNum">SuggestedGroupNum</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.SUGGESTED_GROUP_NUM' | translate"></i>
-            <input [formControlName]="'SuggestedGroupNum'" id="SuggestedGroupNum" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="StartItem">
-              <keira-icon [itemId]="editorService.form.controls.StartItem.value"></keira-icon>
-              StartItem
-            </label>
-
-            <keira-item-selector-btn
-              [control]="editorService.form.controls.StartItem"
-              [disabled]="editorService.form.controls.StartItem.disabled"
-              [config]="{ name: 'StartItem' }"
-            ></keira-item-selector-btn>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.START_ITEM' | translate"></i>
-            <input [formControlName]="'StartItem'" id="StartItem" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="Flags">Flags</label>
-            <keira-flags-selector-btn
-              [control]="editorService.form.controls.Flags"
-              [disabled]="editorService.form.controls.Flags.disabled"
-              [config]="{ flags: QUEST_FLAGS, name: 'Flags' }"
-            ></keira-flags-selector-btn>
-            <input [formControlName]="'Flags'" id="Flags" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="TimeAllowed">TimeAllowed</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.TIME_ALLOWED' | translate"></i>
-            <input [formControlName]="'TimeAllowed'" id="TimeAllowed" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="AllowableRaces">AllowableRaces</label>
-            <keira-flags-selector-btn
-              [control]="editorService.form.controls.AllowableRaces"
-              [disabled]="editorService.form.controls.AllowableRaces.disabled"
-              [config]="{ flags: ALLOWABLE_RACES, name: 'AllowableRaces' }"
-            ></keira-flags-selector-btn>
-            <input [formControlName]="'AllowableRaces'" id="AllowableRaces" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="Unknown0">Unknown0</label>
-            <input [formControlName]="'Unknown0'" id="Unknown0" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="RequiredPlayerKills">RequiredPlayerKills</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REQUIRED_PLAYER_KILLS' | translate"></i>
-            <input [formControlName]="'RequiredPlayerKills'" id="RequiredPlayerKills" type="number" class="form-control form-control-sm" />
-          </div>
-        </div>
-      </div>
-      <div class="content-block">
-        <span class="category-title" [translate]="'QUEST.TEMPLATE.POINT_OF_INTEREST'"></span>
-        <div class="row">
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="POIContinent">POIContinent</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.POI_CONTINENT' | translate"></i>
-            <input [formControlName]="'POIContinent'" id="POIContinent" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="POIx">POIx</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.POI_X' | translate"></i>
-            <input [formControlName]="'POIx'" id="POIx" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="POIy">POIy</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.POI_Y' | translate"></i>
-            <input [formControlName]="'POIy'" id="POIy" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="POIPriority">POIPriority</label>
-            <input [formControlName]="'POIPriority'" id="POIPriority" type="number" class="form-control form-control-sm" />
-          </div>
-        </div>
-      </div>
-      <div class="content-block">
-        <span class="category-title" [translate]="'QUEST.TEMPLATE.TEXTS'"></span>
-        <div class="row">
-          <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
-            <label class="control-label" for="QuestCompletionLog">QuestCompletionLog</label>
-            <textarea [formControlName]="'QuestCompletionLog'" id="QuestCompletionLog" class="form-control form-control-sm"></textarea>
-          </div>
-
-          <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
-            <label class="control-label" for="QuestDescription">QuestDescription</label>
-            <textarea [formControlName]="'QuestDescription'" id="QuestDescription" class="form-control form-control-sm"></textarea>
-          </div>
-
-          <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
-            <label class="control-label" for="AreaDescription">AreaDescription</label>
-            <textarea [formControlName]="'AreaDescription'" id="AreaDescription" class="form-control form-control-sm"></textarea>
-          </div>
-
-          <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
-            <label class="control-label" for="LogDescription">LogDescription</label>
-            <textarea [formControlName]="'LogDescription'" id="LogDescription" class="form-control form-control-sm"></textarea>
-          </div>
-        </div>
-      </div>
-      <div class="content-block">
-        <span class="category-title">
-          {{ 'QUEST.TEMPLATE.OBJECTIVE_TEXTS' | translate }}
-          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.OBJECTIVE_TEXTS_TOOLTIP' | translate"></i>
-        </span>
-        <div class="row">
-          <div *ngFor="let i of [1, 2, 3, 4]" class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
-            <label class="control-label" for="ObjectiveText{{ i }}">ObjectiveText{{ i }}</label>
-            <input [formControlName]="'ObjectiveText' + i" id="ObjectiveText{{ i }}" class="form-control form-control-sm" />
-          </div>
-        </div>
-      </div>
-      <div class="content-block">
-        <span class="category-title">
-          {{ 'QUEST.TEMPLATE.REQUIRED_ITEMS' | translate }}
-          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REQUIRED_ITEMS_TOOLTIP' | translate"></i>
-        </span>
-        <div class="row">
-          <div *ngFor="let i of [1, 2, 3, 4, 5, 6]" class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <div class="row">
-              <div class="col-12">
-                <label class="control-label" for="RequiredItemId{{ i }}">
-                  <keira-icon [itemId]="editorService.form.controls['RequiredItemId' + i].value"></keira-icon>
-                  Req.ItemId{{ i }}
-                </label>
-                <keira-item-selector-btn
-                  [control]="editorService.form.controls['RequiredItemId' + i]"
-                  [disabled]="editorService.form.controls['RequiredItemId' + i].disabled"
-                  [config]="{ name: 'RequiredItemId' + i }"
-                ></keira-item-selector-btn>
-                <input
-                  [formControlName]="'RequiredItemId' + i"
-                  id="RequiredItemId{{ i }}"
-                  type="number"
-                  class="form-control form-control-sm"
-                />
-              </div>
-              <div class="col-12">
-                <label class="control-label" for="RequiredItemCount{{ i }}">Req.ItemCount{{ i }}</label>
-                <input
-                  [formControlName]="'RequiredItemCount' + i"
-                  id="RequiredItemCount{{ i }}"
-                  type="number"
-                  class="form-control form-control-sm"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="content-block">
-        <span class="category-title">
-          {{ 'QUEST.TEMPLATE.REQUIRED_FACTION_OR_NPC' | translate }}
-          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REQUIRED_FACTION_OR_NPC_TOOLTIP' | translate"></i>
-        </span>
-        <div class="row">
-          <div *ngFor="let i of [1, 2, 3, 4]" class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <div class="row">
-              <div class="col-12">
-                <label class="control-label" for="RequiredNpcOrGo{{ i }}">Req.NpcOrGo{{ i }}</label>
-                <input
-                  [formControlName]="'RequiredNpcOrGo' + i"
-                  id="RequiredNpcOrGo{{ i }}"
-                  type="number"
-                  class="form-control form-control-sm"
-                />
-              </div>
-              <div class="col-12">
-                <label class="control-label" for="RequiredNpcOrGoCount{{ i }}">Req.NpcOrGoCount{{ i }}</label>
-                <input
-                  [formControlName]="'RequiredNpcOrGoCount' + i"
-                  id="RequiredNpcOrGoCount{{ i }}"
-                  type="number"
-                  class="form-control form-control-sm"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div *ngFor="let i of [1, 2]" class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="RequiredFactionId{{ i }}">Req.FactionId{{ i }}</label>
-            <keira-faction-selector-btn
-              [config]="{ name: 'RequiredFactionId' + i }"
-              [control]="editorService.form.controls['RequiredFactionId' + i]"
-              [disabled]="editorService.form.controls['RequiredFactionId' + i].disabled"
-            ></keira-faction-selector-btn>
-            <input
-              [formControlName]="'RequiredFactionId' + i"
-              id="RequiredFactionId{{ i }}"
-              type="number"
-              class="form-control form-control-sm"
-            />
-
-            <label class="control-label" for="RequiredFactionValue{{ i }}">Req.FactionValue{{ i }}</label>
-            <input
-              [formControlName]="'RequiredFactionValue' + i"
-              id="RequiredFactionValue{{ i }}"
-              type="number"
-              class="form-control form-control-sm"
-            />
-          </div>
-        </div>
-      </div>
-      <div class="content-block">
-        <span class="category-title" [translate]="'QUEST.TEMPLATE.ITEM_DROPS'"></span>
-        <div class="row">
-          <div *ngFor="let i of [1, 2, 3, 4]" class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <div class="row">
-              <div class="col-12">
-                <label class="control-label" for="ItemDrop{{ i }}">
-                  <keira-icon [itemId]="editorService.form.controls['ItemDrop' + i].value"></keira-icon>
-                  ItemDrop{{ i }}
-                </label>
-                <keira-item-selector-btn
-                  [control]="editorService.form.controls['ItemDrop' + i]"
-                  [disabled]="editorService.form.controls['ItemDrop' + i].disabled"
-                  [config]="{ name: 'ItemDrop' + i }"
-                ></keira-item-selector-btn>
-                <input [formControlName]="'ItemDrop' + i" id="ItemDrop{{ i }}" type="number" class="form-control form-control-sm" />
-              </div>
-              <div class="col-12">
-                <label class="control-label" for="ItemDropQuantity{{ i }}">ItemDropQuantity{{ i }}</label>
-                <input
-                  [formControlName]="'ItemDropQuantity' + i"
-                  id="ItemDropQuantity{{ i }}"
-                  type="number"
-                  class="form-control form-control-sm"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="content-block">
-        <span class="category-title" [translate]="'QUEST.TEMPLATE.REWARDS'"></span>
-        <div class="row">
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="RewardTitle">RewardTitle</label>
-            <input [formControlName]="'RewardTitle'" id="RewardTitle" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="RewardTalents">RewardTalents</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REWARD_TALENTS' | translate"></i>
-            <input [formControlName]="'RewardTalents'" id="RewardTalents" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="RewardArenaPoints">RewardArenaPoints</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REWARD_ARENA_POINTS' | translate"></i>
-            <input [formControlName]="'RewardArenaPoints'" id="RewardArenaPoints" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="RewardNextQuest">RewardNextQuest</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REWARD_NEXT_QUEST' | translate"></i>
-            <input [formControlName]="'RewardNextQuest'" id="RewardNextQuest" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="RewardXPDifficulty">RewardXPDifficulty</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REWARD_XP_DIFFICULTY' | translate"></i>
-            <input [formControlName]="'RewardXPDifficulty'" id="RewardXPDifficulty" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="RewardMoney">RewardMoney</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REWARD_MONEY' | translate"></i>
-            <input [formControlName]="'RewardMoney'" id="RewardMoney" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="RewardMoneyDifficulty">Rew.MoneyDifficulty</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REW_MONEY_DIFFICULTY' | translate"></i>
-            <input
-              [formControlName]="'RewardMoneyDifficulty'"
-              id="RewardMoneyDifficulty"
-              type="number"
-              class="form-control form-control-sm"
-            />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="RewardDisplaySpell">RewardDisplaySpell</label>
-            <input [formControlName]="'RewardDisplaySpell'" id="RewardDisplaySpell" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="RewardSpell">RewardSpell</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REWARD_SPELL' | translate"></i>
-            <keira-spell-selector-btn
-              [control]="editorService.form.controls.RewardSpell"
-              [disabled]="editorService.form.controls.RewardSpell.disabled"
-              [config]="{ name: 'RewardSpell' }"
-              [modalClass]="'modal-lg'"
-            ></keira-spell-selector-btn>
-            <input [formControlName]="'RewardSpell'" id="RewardSpell" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="RewardHonor">RewardHonor</label>
-            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REWARD_HONOR' | translate"></i>
-            <input [formControlName]="'RewardHonor'" id="RewardHonor" type="number" class="form-control form-control-sm" />
-          </div>
-
-          <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <label class="control-label" for="RewardKillHonor">RewardKillHonor</label>
-            <input [formControlName]="'RewardKillHonor'" id="RewardKillHonor" type="number" class="form-control form-control-sm" />
-          </div>
-        </div>
-      </div>
-      <div class="content-block">
-        <span class="category-title" [translate]="'QUEST.TEMPLATE.REWARD_ITEMS'"></span>
-        <div class="row">
-          <div *ngFor="let i of [1, 2, 3, 4]" class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <div class="row">
-              <div class="col-12">
-                <label class="control-label" for="RewardItem{{ i }}">
-                  <keira-icon [itemId]="editorService.form.controls['RewardItem' + i].value"></keira-icon>
-                  Rew.Item{{ i }}
-                </label>
-                <keira-item-selector-btn
-                  [control]="editorService.form.controls['RewardItem' + i]"
-                  [disabled]="editorService.form.controls['RewardItem' + i].disabled"
-                  [config]="{ name: 'RewardItem' + i }"
-                ></keira-item-selector-btn>
-                <input [formControlName]="'RewardItem' + i" id="RewardItem{{ i }}" type="number" class="form-control form-control-sm" />
-              </div>
-              <div class="col-12">
-                <label class="control-label" for="RewardAmount{{ i }}">Rew.Amount{{ i }}</label>
-                <input [formControlName]="'RewardAmount' + i" id="RewardAmount{{ i }}" type="number" class="form-control form-control-sm" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="content-block">
-        <span class="category-title" [translate]="'QUEST.TEMPLATE.REWARD_CHOICE_ITEMS'"></span>
-        <div class="row">
-          <div *ngFor="let i of [1, 2, 3, 4, 5, 6]" class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <div class="row">
-              <div class="col-12">
-                <label class="control-label" for="RewardChoiceItemID{{ i }}">
-                  <keira-icon [itemId]="editorService.form.controls['RewardChoiceItemID' + i].value"></keira-icon>
-                  ChoiceItem{{ i }}
-                </label>
-                <keira-item-selector-btn
-                  [control]="editorService.form.controls['RewardChoiceItemID' + i]"
-                  [disabled]="editorService.form.controls['RewardChoiceItemID' + i].disabled"
-                  [config]="{ name: 'RewardChoiceItemID' + i }"
-                ></keira-item-selector-btn>
-                <input
-                  [formControlName]="'RewardChoiceItemID' + i"
-                  id="RewardChoiceItemID{{ i }}"
-                  type="number"
-                  class="form-control form-control-sm"
-                />
-              </div>
-              <div class="col-12">
-                <label class="control-label" for="RewardChoiceItemQuantity{{ i }}">ChoiceItemQuantity{{ i }}</label>
-                <input
-                  [formControlName]="'RewardChoiceItemQuantity' + i"
-                  id="RewardChoiceItemQuantity{{ i }}"
-                  type="number"
-                  class="form-control form-control-sm"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="content-block">
-        <span class="category-title">
-          {{ 'QUEST.TEMPLATE.REWARD_FACTIONS' | translate }}
-          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REWARD_FACTIONS_TOOLTIP' | translate"></i>
-        </span>
-        <div class="row">
-          <div *ngFor="let i of [1, 2, 3, 4, 5]" class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
-            <div class="row">
-              <div class="col-12">
-                <label class="control-label" for="RewardFactionID{{ i }}">Rew.FactionID{{ i }}</label>
-                <keira-quest-faction-selector-btn
-                  [config]="{ name: 'RewardFactionID' + i }"
-                  [control]="editorService.form.controls['RewardFactionID' + i]"
-                  [disabled]="editorService.form.controls['RewardFactionID' + i].disabled"
-                ></keira-quest-faction-selector-btn>
-                <input
-                  [formControlName]="'RewardFactionID' + i"
-                  id="RewardFactionID{{ i }}"
-                  type="number"
-                  class="form-control form-control-sm"
-                />
-              </div>
-              <div class="col-12">
-                <label class="control-label" for="RewardFactionValue{{ i }}">Rew.FactionValue{{ i }}</label>
-                <input
-                  [formControlName]="'RewardFactionValue' + i"
-                  id="RewardFactionValue{{ i }}"
-                  type="number"
-                  class="form-control form-control-sm"
-                />
-              </div>
-              <div class="col-12">
-                <label class="control-label" for="RewardFactionOverride{{ i }}">Rew.FactionOverride{{ i }}</label>
-                <input
-                  [formControlName]="'RewardFactionOverride' + i"
-                  id="RewardFactionOverride{{ i }}"
-                  type="number"
-                  class="form-control form-control-sm"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </form>
-
-    <keira-quest-preview></keira-quest-preview>
-  </div>
+  }
 </div>

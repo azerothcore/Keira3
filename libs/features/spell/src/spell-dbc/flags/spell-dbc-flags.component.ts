@@ -11,7 +11,7 @@ import {
   SpellDbc,
 } from '@keira/shared/acore-world-model';
 import { ModelForm } from '@keira/shared/utils';
-import { NgFor } from '@angular/common';
+
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
@@ -21,7 +21,7 @@ import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
   selector: 'keira-spell-dbc-flags',
   templateUrl: './spell-dbc-flags.component.html',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, TranslateModule, FlagsSelectorBtnComponent, TooltipModule, NgFor],
+  imports: [FormsModule, ReactiveFormsModule, TranslateModule, FlagsSelectorBtnComponent, TooltipModule],
 })
 export class SpellDbcFlagsComponent {
   readonly SPELL_DBC_ATTRIBUTES_FLAGS = SPELL_DBC_ATTRIBUTES_FLAGS;

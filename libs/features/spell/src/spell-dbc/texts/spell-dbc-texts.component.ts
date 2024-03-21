@@ -6,7 +6,7 @@ import { LOCALES } from './spell-dbc-texts.model';
 import { TranslateModule } from '@ngx-translate/core';
 import { SpellDbcLocaleComponent } from './spell-dbc-locale/spell-dbc-locale.component';
 import { TabsModule } from 'ngx-bootstrap/tabs';
-import { NgIf, NgFor } from '@angular/common';
+
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @Component({
@@ -14,7 +14,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
   selector: 'keira-spell-dbc-texts',
   templateUrl: './spell-dbc-texts.component.html',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, TooltipModule, NgIf, TabsModule, NgFor, SpellDbcLocaleComponent, TranslateModule],
+  imports: [FormsModule, ReactiveFormsModule, TooltipModule, TabsModule, SpellDbcLocaleComponent, TranslateModule],
 })
 export class SpellDbcTextsComponent {
   readonly LOCALES = LOCALES;

@@ -6,7 +6,7 @@ import { ItemHandlerService } from '../item-handler.service';
 import { SelectItemService } from './select-item.service';
 import { IconComponent } from '@keira/shared/base-editor-components';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { NgIf, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -26,7 +26,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
     FormsModule,
     ReactiveFormsModule,
     HighlightjsWrapperComponent,
-    NgIf,
     NgxDatatableModule,
     IconComponent,
     NgClass,

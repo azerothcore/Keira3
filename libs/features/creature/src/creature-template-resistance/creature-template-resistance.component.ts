@@ -13,7 +13,7 @@ import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgIf } from '@angular/common';
+
 import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
@@ -23,7 +23,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   standalone: true,
   imports: [
     TopBarComponent,
-    NgIf,
     TranslateModule,
     QueryOutputComponent,
     FormsModule,

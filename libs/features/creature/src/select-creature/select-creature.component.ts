@@ -11,7 +11,7 @@ import {
 import { SelectCreatureService } from './select-creature.service';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { NgIf } from '@angular/common';
+
 import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -31,7 +31,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
     FormsModule,
     ReactiveFormsModule,
     HighlightjsWrapperComponent,
-    NgIf,
     NgxDatatableModule,
   ],
 })

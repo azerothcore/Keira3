@@ -1,9 +1,15 @@
-<keira-connection-window *ngIf="!mysqlService.connectionEstablished"></keira-connection-window>
-<keira-main-window *ngIf="mysqlService.connectionEstablished"></keira-main-window>
+@if (!mysqlService.connectionEstablished) {
+  <keira-connection-window></keira-connection-window>
+}
+@if (mysqlService.connectionEstablished) {
+  <keira-main-window></keira-main-window>
+}
 
 <div id="sqlite-e2e-test" [attr.e2e]="sqliteResult?.name" style="display: none"></div>
 
-<div class="newer-version-alert text-center" *ngIf="showNewerVersionAlert">
-  <span [translate]="'NEW_VERSION'"></span>
-  <a class="btn btn-secondary btn-sm ms-2" [href]="KEIRA3_REPO_URL + '/releases'" target="_blank" [translate]="'DOWNLOAD'"></a>
-</div>
+@if (showNewerVersionAlert) {
+  <div class="newer-version-alert text-center">
+    <span [translate]="'NEW_VERSION'"></span>
+    <a class="btn btn-secondary btn-sm ms-2" [href]="KEIRA3_REPO_URL + '/releases'" target="_blank" [translate]="'DOWNLOAD'"></a>
+  </div>
+}

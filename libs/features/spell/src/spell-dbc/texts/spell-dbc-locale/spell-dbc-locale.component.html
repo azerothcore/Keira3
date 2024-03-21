@@ -1,8 +1,12 @@
-<form *ngIf="formGroup && locale" [formGroup]="formGroup" class="form-group edit-form">
-  <div class="row">
-    <div *ngFor="let field of FIELDS" class="form-group col-12 col-sm-12 col-md-12 col-lg-6 col-xl-5">
-      <label class="control-label" [for]="getFieldName(field)">{{ getFieldName(field) }}</label>
-      <textarea [formControlName]="getFieldName(field)" [id]="getFieldName(field)" class="form-control form-control-sm"></textarea>
+@if (formGroup && locale) {
+  <form [formGroup]="formGroup" class="form-group edit-form">
+    <div class="row">
+      @for (field of FIELDS; track field) {
+        <div class="form-group col-12 col-sm-12 col-md-12 col-lg-6 col-xl-5">
+          <label class="control-label" [for]="getFieldName(field)">{{ getFieldName(field) }}</label>
+          <textarea [formControlName]="getFieldName(field)" [id]="getFieldName(field)" class="form-control form-control-sm"></textarea>
+        </div>
+      }
     </div>
-  </div>
-</form>
+  </form>
+}

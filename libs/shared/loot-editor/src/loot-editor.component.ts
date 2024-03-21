@@ -10,7 +10,7 @@ import { ReferenceViewerComponent } from './reference-viewer.component';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgIf, NgClass, NgFor, AsyncPipe } from '@angular/common';
+import { NgClass, AsyncPipe } from '@angular/common';
 import { FlagsSelectorBtnComponent, ItemSelectorBtnComponent } from '@keira/shared/selectors';
 import { EditorButtonsComponent, IconComponent, QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { compareObjFn, SubscriptionHandler } from '@keira/shared/utils';
@@ -23,7 +23,6 @@ import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
   styleUrls: ['./loot-editor.component.scss'],
   standalone: true,
   imports: [
-    NgIf,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
@@ -34,7 +33,6 @@ import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
     EditorButtonsComponent,
     NgxDatatableModule,
     NgClass,
-    NgFor,
     ReferenceViewerComponent,
     AsyncPipe,
     TranslateModule,

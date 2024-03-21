@@ -15,18 +15,19 @@
       </div>
       <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" for="EquippedItemSubclass">EquippedItemSubclass</label>
-        <keira-flags-selector-btn
-          *ngIf="
-            formGroup.controls.EquippedItemClass &&
-            formGroup.controls.EquippedItemClass.value !== null &&
-            formGroup.controls.EquippedItemClass.value >= 0 &&
-            formGroup.controls.EquippedItemClass.value < SPELL_DBC_ITEM_SUBCLASS.length
-          "
-          [control]="formGroup.controls.EquippedItemSubclass"
-          [disabled]="formGroup.controls.EquippedItemSubclass.disabled"
-          [config]="{ flags: SPELL_DBC_ITEM_SUBCLASS[formGroup.controls.EquippedItemClass.value], name: 'EquippedItemSubclass' }"
-          [modalClass]="'modal-md'"
-        ></keira-flags-selector-btn>
+        @if (
+          formGroup.controls.EquippedItemClass &&
+          formGroup.controls.EquippedItemClass.value !== null &&
+          formGroup.controls.EquippedItemClass.value >= 0 &&
+          formGroup.controls.EquippedItemClass.value < SPELL_DBC_ITEM_SUBCLASS.length
+        ) {
+          <keira-flags-selector-btn
+            [control]="formGroup.controls.EquippedItemSubclass"
+            [disabled]="formGroup.controls.EquippedItemSubclass.disabled"
+            [config]="{ flags: SPELL_DBC_ITEM_SUBCLASS[formGroup.controls.EquippedItemClass.value], name: 'EquippedItemSubclass' }"
+            [modalClass]="'modal-md'"
+          ></keira-flags-selector-btn>
+        }
         <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.ITEMS.EQUIPPED_ITEM_SUBCLASS' | translate"></i>
         <input [formControlName]="'EquippedItemSubclass'" id="EquippedItemSubclass" type="number" class="form-control form-control-sm" />
       </div>
@@ -106,24 +107,25 @@
   <div class="content-block">
     <span class="category-title" [translate]="'SPELL_DBC.ITEMS.CONSUMABLE_ITEMS'"></span>
     <div class="row">
-      <div class="row" *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8]">
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" [for]="'Reagent_' + i">Reagent_{{ i }}</label>
-          <keira-item-selector-btn
-            [control]="formGroup.controls['Reagent_' + i]"
-            [disabled]="formGroup.controls['Reagent_' + i].disabled"
-            [config]="{ name: 'Reagent_' + i }"
-          ></keira-item-selector-btn>
-          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.ITEMS.REAGENT' | translate"></i>
-          <input [formControlName]="'Reagent_' + i" [id]="'Reagent_' + i" type="number" class="form-control form-control-sm" />
+      @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
+        <div class="row">
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" [for]="'Reagent_' + i">Reagent_{{ i }}</label>
+            <keira-item-selector-btn
+              [control]="formGroup.controls['Reagent_' + i]"
+              [disabled]="formGroup.controls['Reagent_' + i].disabled"
+              [config]="{ name: 'Reagent_' + i }"
+            ></keira-item-selector-btn>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.ITEMS.REAGENT' | translate"></i>
+            <input [formControlName]="'Reagent_' + i" [id]="'Reagent_' + i" type="number" class="form-control form-control-sm" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label class="control-label" [for]="'ReagentCount_' + i">ReagentCount_{{ i }}</label>
+            <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.ITEMS.REAGENT_COUNT' | translate"></i>
+            <input [formControlName]="'ReagentCount_' + i" [id]="'ReagentCount_' + i" type="number" class="form-control form-control-sm" />
+          </div>
         </div>
-
-        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <label class="control-label" [for]="'ReagentCount_' + i">ReagentCount_{{ i }}</label>
-          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.ITEMS.REAGENT_COUNT' | translate"></i>
-          <input [formControlName]="'ReagentCount_' + i" [id]="'ReagentCount_' + i" type="number" class="form-control form-control-sm" />
-        </div>
-      </div>
+      }
     </div>
   </div>
 </form>

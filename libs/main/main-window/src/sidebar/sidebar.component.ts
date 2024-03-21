@@ -17,7 +17,7 @@ import { UnsavedIconComponent } from './unsaved-icon/unsaved-icon.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { LogoutBtnComponent } from './logout-btn/logout-btn.component';
-import { NgClass, NgIf, TitleCasePipe } from '@angular/common';
+import { NgClass, TitleCasePipe } from '@angular/common';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
 import { SwitchLanguageComponent } from '@keira/shared/switch-language';
 import { MysqlService } from '@keira/shared/db-layer';
@@ -42,7 +42,6 @@ const animationTime = 200;
   standalone: true,
   imports: [
     NgClass,
-    NgIf,
     SwitchLanguageComponent,
     LogoutBtnComponent,
     RouterLink,

@@ -14,7 +14,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgClass, NgIf } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
@@ -26,7 +26,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   imports: [
     TopBarComponent,
     NgClass,
-    NgIf,
     TranslateModule,
     QueryOutputComponent,
     FormsModule,

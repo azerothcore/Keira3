@@ -14,14 +14,16 @@
         <i class="fa fa-sync fa-sm"></i> {{ 'RELOAD' | translate }}
       </button>
     </p>
-    <div *ngIf="wrongEmuWarning" class="alert alert-danger error-box mt-2" id="database-warning">
-      <p [innerHTML]="'DASHBOARD.SYSTEM_WARNING' | translate: { DATABASE_NAME: databaseName }"></p>
-      <ul>
-        <li [innerHTML]="'DASHBOARD.SYSTEM_WARNING_1' | translate"></li>
-        <li [innerHTML]="'DASHBOARD.SYSTEM_WARNING_2' | translate"></li>
-        <li [innerHTML]="'DASHBOARD.SYSTEM_WARNING_3' | translate"></li>
-      </ul>
-    </div>
+    @if (wrongEmuWarning) {
+      <div class="alert alert-danger error-box mt-2" id="database-warning">
+        <p [innerHTML]="'DASHBOARD.SYSTEM_WARNING' | translate: { DATABASE_NAME: databaseName }"></p>
+        <ul>
+          <li [innerHTML]="'DASHBOARD.SYSTEM_WARNING_1' | translate"></li>
+          <li [innerHTML]="'DASHBOARD.SYSTEM_WARNING_2' | translate"></li>
+          <li [innerHTML]="'DASHBOARD.SYSTEM_WARNING_3' | translate"></li>
+        </ul>
+      </div>
+    }
 
     <table class="table table-striped table-bordered table-sm">
       <tbody>
@@ -33,7 +35,7 @@
           <td [translate]="'DASHBOARD.KEIRA_DETAILS'"></td>
           <td>{{ NAVIGATOR_APP_VERSION }}</td>
         </tr>
-        <ng-container *ngIf="coreVersions">
+        @if (coreVersions) {
           <tr>
             <td [translate]="'DASHBOARD.AC_CORE_VERSION'"></td>
             <td id="core-version">{{ coreVersions.core_version }}</td>
@@ -53,11 +55,13 @@
             <td [translate]="'DASHBOARD.AC_DB_RELEASE'"></td>
             <td id="db-version">{{ coreVersions.db_version }}</td>
           </tr>
-        </ng-container>
-        <tr *ngIf="dbWorldVersion">
-          <td [translate]="'DASHBOARD.AC_DB_VERSION'"></td>
-          <td id="db-world-version">{{ dbWorldVersion }}</td>
-        </tr>
+        }
+        @if (dbWorldVersion) {
+          <tr>
+            <td [translate]="'DASHBOARD.AC_DB_VERSION'"></td>
+            <td id="db-world-version">{{ dbWorldVersion }}</td>
+          </tr>
+        }
       </tbody>
     </table>
 

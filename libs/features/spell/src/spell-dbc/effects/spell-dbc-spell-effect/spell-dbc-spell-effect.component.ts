@@ -12,22 +12,13 @@ import { SpellDbcSpellEffectFieldPrefix } from './spell-dbc-spell-effect.model';
 import { FlagsSelectorBtnComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgIf } from '@angular/common';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-dbc-spell-effect',
   templateUrl: './spell-dbc-spell-effect.component.html',
   standalone: true,
-  imports: [
-    NgIf,
-    FormsModule,
-    ReactiveFormsModule,
-    TranslateModule,
-    SingleValueSelectorBtnComponent,
-    TooltipModule,
-    FlagsSelectorBtnComponent,
-  ],
+  imports: [FormsModule, ReactiveFormsModule, TranslateModule, SingleValueSelectorBtnComponent, TooltipModule, FlagsSelectorBtnComponent],
 })
 export class SpellDbcSpellEffectComponent {
   @Input() formGroup: FormGroup<ModelForm<SpellDbc>>;

@@ -1,8 +1,7 @@
-<ng-container *ngIf="!!editorService">
+@if (!!editorService) {
   <div class="content-block">
     <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
   </div>
-
   <div class="content-block">
     <form [formGroup]="editorService.form" class="form-group edit-form">
       <div class="row">
@@ -26,7 +25,6 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="Chance">Chance</label>
           <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'LOOT_EDITOR.CHANCE' | translate"></i>
-
           <input [formControlName]="'Chance'" id="Chance" type="number" class="form-control form-control-sm" />
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
@@ -64,18 +62,15 @@
           <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'LOOT_EDITOR.COMMENT' | translate"></i>
           <input [formControlName]="'Comment'" id="Comment" class="form-control form-control-sm" />
         </div>
-
         <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
           <i class="fas fa-exclamation-triangle"></i>
           <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
         </div>
       </div>
     </form>
-
     <div class="row">
       <div class="col-12">
         <keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>
-
         <ngx-datatable
           id="editor-table"
           class="bootstrap table table-striped text-center datatable-select datatable-icon-list mb-0"
@@ -95,14 +90,20 @@
           </ngx-datatable-column>
           <ngx-datatable-column [minWidth]="42" [maxWidth]="42" [sortable]="false">
             <ng-template let-row="row" ngx-datatable-cell-template>
-              <keira-icon *ngIf="!isReference(row)" [itemId]="row.Item"></keira-icon>
+              @if (!isReference(row)) {
+                <keira-icon [itemId]="row.Item"></keira-icon>
+              }
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column name="Item" prop="Item" [minWidth]="80"></ngx-datatable-column>
           <ngx-datatable-column name="Name" [minWidth]="200" [sortable]="false">
             <ng-template let-row="row" ngx-datatable-cell-template>
-              <span *ngIf="!isReference(row)">{{ editorService.queryService.getItemNameById(row.Item) | async }}</span>
-              <span *ngIf="isReference(row)" class="reference">REFERENCE</span>
+              @if (!isReference(row)) {
+                <span>{{ editorService.queryService.getItemNameById(row.Item) | async }}</span>
+              }
+              @if (isReference(row)) {
+                <span class="reference">REFERENCE</span>
+              }
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column name="Reference" prop="Reference">
@@ -120,7 +121,9 @@
           </ngx-datatable-column>
           <ngx-datatable-column name="MinCount" prop="MinCount">
             <ng-template let-row="row" ngx-datatable-cell-template>
-              <span *ngIf="!isReference(row)">{{ row.MinCount }}</span>
+              @if (!isReference(row)) {
+                <span>{{ row.MinCount }}</span>
+              }
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column name="MaxCount" prop="MaxCount"></ngx-datatable-column>
@@ -128,6 +131,7 @@
       </div>
     </div>
   </div>
-
-  <keira-reference-viewer *ngFor="let id of referenceIds" [referenceId]="id"></keira-reference-viewer>
-</ng-container>
+  @for (id of referenceIds; track id) {
+    <keira-reference-viewer [referenceId]="id"></keira-reference-viewer>
+  }
+}

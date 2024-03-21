@@ -7,7 +7,6 @@ import { Option } from '@keira/shared/constants';
 import { SingleValueModalConfig } from './single-value-selector.model';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { NgIf } from '@angular/common';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,7 +14,7 @@ import { NgIf } from '@angular/common';
   templateUrl: './single-value-selector-modal.component.html',
   styleUrls: ['./single-value-selector-modal.component.scss'],
   standalone: true,
-  imports: [NgIf, NgxDatatableModule, TranslateModule],
+  imports: [NgxDatatableModule, TranslateModule],
 })
 export class SingleValueSelectorModalComponent extends BaseSelectorModalComponent<SingleValueModalConfig> implements OnInit {
   readonly DTCFG = DTCFG;

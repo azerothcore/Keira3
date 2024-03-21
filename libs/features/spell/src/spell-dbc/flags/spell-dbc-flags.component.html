@@ -88,20 +88,24 @@
   <div class="content-block">
     <span class="category-title" [translate]="'SPELL_DBC.FLAGS.SPELL_ATTRIBUTES'"></span>
     <div class="row">
-      <div
-        class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
-        *ngFor="let suffix of ['', 'Ex', 'Ex2', 'Ex3', 'Ex4', 'Ex5', 'Ex6', 'Ex7']"
-      >
-        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.FLAGS.ATTRIBUTES' | translate"></i>
-        <keira-flags-selector-btn
-          [control]="formGroup.controls['Attributes' + suffix]"
-          [disabled]="formGroup.controls['Attributes' + suffix].disabled"
-          [config]="{ flags: SPELL_DBC_ATTRIBUTES_FLAGS[suffix], name: 'Attributes' + suffix }"
-          [modalClass]="'modal-md'"
-        ></keira-flags-selector-btn>
-        <label class="control-label" [for]="'Attributes' + suffix">Attributes{{ suffix }}</label>
-        <input [formControlName]="'Attributes' + suffix" [id]="'Attributes' + suffix" type="number" class="form-control form-control-sm" />
-      </div>
+      @for (suffix of ['', 'Ex', 'Ex2', 'Ex3', 'Ex4', 'Ex5', 'Ex6', 'Ex7']; track suffix) {
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.FLAGS.ATTRIBUTES' | translate"></i>
+          <keira-flags-selector-btn
+            [control]="formGroup.controls['Attributes' + suffix]"
+            [disabled]="formGroup.controls['Attributes' + suffix].disabled"
+            [config]="{ flags: SPELL_DBC_ATTRIBUTES_FLAGS[suffix], name: 'Attributes' + suffix }"
+            [modalClass]="'modal-md'"
+          ></keira-flags-selector-btn>
+          <label class="control-label" [for]="'Attributes' + suffix">Attributes{{ suffix }}</label>
+          <input
+            [formControlName]="'Attributes' + suffix"
+            [id]="'Attributes' + suffix"
+            type="number"
+            class="form-control form-control-sm"
+          />
+        </div>
+      }
     </div>
   </div>
 </form>

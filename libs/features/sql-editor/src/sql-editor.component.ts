@@ -7,7 +7,7 @@ import { ClipboardService } from 'ngx-clipboard';
 import { SqlEditorService } from './sql-editor.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { NgIf, NgFor } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { QueryErrorComponent } from '@keira/shared/base-editor-components';
@@ -19,7 +19,7 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
   templateUrl: './sql-editor.component.html',
   styleUrls: ['./sql-editor.component.scss'],
   standalone: true,
-  imports: [TooltipModule, FormsModule, QueryErrorComponent, NgIf, NgxDatatableModule, NgFor, TranslateModule],
+  imports: [TooltipModule, FormsModule, QueryErrorComponent, NgxDatatableModule, TranslateModule],
 })
 export class SqlEditorComponent extends SubscriptionHandler {
   readonly DTCFG = DTCFG;

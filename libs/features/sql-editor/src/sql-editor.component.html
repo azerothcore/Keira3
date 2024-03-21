@@ -25,12 +25,13 @@
 
     <keira-query-error [error]="error"></keira-query-error>
 
-    <p *ngIf="affectedRows > -1; else queryResults" id="affected-rows-box" class="mt-2">
-      <code class="hljs"
-        >{{ 'SQL_EDITOR.AFFECTED_ROWS' | translate }} <strong>{{ affectedRows }}</strong> {{ message }}</code
-      >
-    </p>
-    <ng-template #queryResults>
+    @if (affectedRows > -1) {
+      <p id="affected-rows-box" class="mt-2">
+        <code class="hljs"
+          >{{ 'SQL_EDITOR.AFFECTED_ROWS' | translate }} <strong>{{ affectedRows }}</strong> {{ message }}</code
+        >
+      </p>
+    } @else {
       <hr />
       <!--    Display: <select [(ngModel)]="displayLimit" class="select-limit">-->
       <!--      <option *ngFor="let option of displayLimitOptions" [value]="option">{{ option }}</option>-->
@@ -45,13 +46,10 @@
         [rowHeight]="DTCFG.rowHeight"
         [limit]="20"
       >
-        <ngx-datatable-column
-          *ngFor="let col of columns"
-          [prop]="col"
-          [minWidth]="columns.length === 1 ? 300 : 100"
-          [resizeable]="true"
-        ></ngx-datatable-column>
+        @for (col of columns; track col) {
+          <ngx-datatable-column [prop]="col" [minWidth]="columns.length === 1 ? 300 : 100" [resizeable]="true"></ngx-datatable-column>
+        }
       </ngx-datatable>
-    </ng-template>
+    }
   </div>
 </div>

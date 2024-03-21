@@ -1,33 +1,33 @@
-<div class="modal-body" *ngIf="config">
-  <div class="row">
-    <div class="col-12">
-      <p class="lead text-center">
-        <strong>{{ config.name }}</strong>
-      </p>
-
-      <ngx-datatable
-        class="bootstrap table table-striped text-center datatable-select highlight-select"
-        [rows]="config.options"
-        [headerHeight]="DTCFG.headerHeight"
-        [footerHeight]="DTCFG.footerHeight"
-        [columnMode]="DTCFG.columnMode"
-        [rowHeight]="DTCFG.rowHeight"
-        [selectionType]="DTCFG.selectionType"
-        [selected]="selected"
-        (select)="onSelect($event)"
-      >
-        <ngx-datatable-column name="value" prop="value" [minWidth]="80"></ngx-datatable-column>
-        <ngx-datatable-column [width]="30" [sortable]="false">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            {{ row.name + (!!row.comment ? ' (' + row.comment + ')' : '') }}
-          </ng-template>
-        </ngx-datatable-column>
-
-        <ngx-datatable-footer></ngx-datatable-footer>
-      </ngx-datatable>
+@if (config) {
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-12">
+        <p class="lead text-center">
+          <strong>{{ config.name }}</strong>
+        </p>
+        <ngx-datatable
+          class="bootstrap table table-striped text-center datatable-select highlight-select"
+          [rows]="config.options"
+          [headerHeight]="DTCFG.headerHeight"
+          [footerHeight]="DTCFG.footerHeight"
+          [columnMode]="DTCFG.columnMode"
+          [rowHeight]="DTCFG.rowHeight"
+          [selectionType]="DTCFG.selectionType"
+          [selected]="selected"
+          (select)="onSelect($event)"
+        >
+          <ngx-datatable-column name="value" prop="value" [minWidth]="80"></ngx-datatable-column>
+          <ngx-datatable-column [width]="30" [sortable]="false">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{ row.name + (!!row.comment ? ' (' + row.comment + ')' : '') }}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-footer></ngx-datatable-footer>
+        </ngx-datatable>
+      </div>
     </div>
   </div>
-</div>
+}
 
 <div class="modal-footer">
   <button type="button" class="btn btn-danger" id="modal-cancel-btn" (click)="onCancel()" [translate]="'CANCEL'"></button>

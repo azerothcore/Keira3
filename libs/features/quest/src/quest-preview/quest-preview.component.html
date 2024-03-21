@@ -1,117 +1,182 @@
 <div class="preview-container" [ngClass]="service.showPreview ? 'show-preview' : 'hide-preview'">
   <div class="transparent perfect-scrollbar">
     <div class="preview-content quest-preview">
-      <h5 id="title" *ngIf="!!service.title">{{ service.title }}</h5>
-      <p id="unavailable" *ngIf="service.isUnavailable()" class="text-center font-weight-bold red">Unavailable</p>
-      <p id="level" *ngIf="!!service.level">Level: {{ service.level }}</p>
-      <p id="minlevel" *ngIf="!!service.minLevel">
-        Req. level: {{ service.minLevel }} <span *ngIf="showMaxLevel">- {{ service.maxLevel }}</span>
-      </p>
-      <p id="required-money" *ngIf="service.rewardMoney < 0">
-        Req. money: <span [innerHTML]="helper.formatMoney(-service.rewardMoney)"></span>
-      </p>
-      <p id="type" *ngIf="!!type">
-        Type:
-        <span *ngIf="this.service.periodicQuest; let period">{{ period }} </span>
-        <span *ngIf="questInfo; let qInfo">{{ qInfo }}</span>
-      </p>
-      <p id="side" *ngIf="!!service.side">Side: &nbsp;<span class="side {{ service.side.toLowerCase() }}"></span> {{ service.side }}</p>
-      <p id="races" *ngIf="showRaces" class="list-req">
-        Races:
-        <span *ngFor="let r of service.races">
-          <img [src]="'assets/img/race/' + r + '-0.gif'" />
-          {{ service.RACES_TEXT[r] }} &nbsp;
-        </span>
-      </p>
-      <p id="classes" *ngIf="showClasses" class="list-req">
-        Classes:
-        <span *ngFor="let c of service.classes" [ngClass]="'c' + c">
-          <img [src]="'assets/img/class/' + c + '.gif'" />
-          {{ service.CLASSES_TEXT[c] }} &nbsp;
-        </span>
-      </p>
-      <p id="requiredSkill" *ngIf="service.requiredSkill$ | async as skill">
-        Profession:
-        <keira-icon
-          *ngIf="!!service.ICON_SKILLS[service.questTemplateAddon.RequiredSkillID]"
-          [skillId]="service.questTemplateAddon.RequiredSkillID"
-          [size]="'small'"
-        ></keira-icon>
-        {{ skill }} {{ reqSkillPoint }}
-      </p>
+      @if (!!service.title) {
+        <h5 id="title">{{ service.title }}</h5>
+      }
+      @if (service.isUnavailable()) {
+        <p id="unavailable" class="text-center font-weight-bold red">Unavailable</p>
+      }
+      @if (!!service.level) {
+        <p id="level">Level: {{ service.level }}</p>
+      }
+      @if (!!service.minLevel) {
+        <p id="minlevel">
+          Req. level: {{ service.minLevel }}
+          @if (showMaxLevel) {
+            <span>- {{ service.maxLevel }}</span>
+          }
+        </p>
+      }
+      @if (service.rewardMoney < 0) {
+        <p id="required-money">Req. money: <span [innerHTML]="helper.formatMoney(-service.rewardMoney)"></span></p>
+      }
+      @if (!!type) {
+        <p id="type">
+          Type:
+          @if (this.service.periodicQuest; as period) {
+            <span>{{ period }} </span>
+          }
+          @if (questInfo; as qInfo) {
+            <span>{{ qInfo }}</span>
+          }
+        </p>
+      }
+      @if (!!service.side) {
+        <p id="side">Side: &nbsp;<span class="side {{ service.side.toLowerCase() }}"></span> {{ service.side }}</p>
+      }
+      @if (showRaces) {
+        <p id="races" class="list-req">
+          Races:
+          @for (r of service.races; track r) {
+            <span>
+              <img [src]="'assets/img/race/' + r + '-0.gif'" />
+              {{ service.RACES_TEXT[r] }} &nbsp;
+            </span>
+          }
+        </p>
+      }
+      @if (showClasses) {
+        <p id="classes" class="list-req">
+          Classes:
+          @for (c of service.classes; track c) {
+            <span [ngClass]="'c' + c">
+              <img [src]="'assets/img/class/' + c + '.gif'" />
+              {{ service.CLASSES_TEXT[c] }} &nbsp;
+            </span>
+          }
+        </p>
+      }
+      @if (service.requiredSkill$ | async; as skill) {
+        <p id="requiredSkill">
+          Profession:
+          @if (!!service.ICON_SKILLS[service.questTemplateAddon.RequiredSkillID]) {
+            <keira-icon [skillId]="service.questTemplateAddon.RequiredSkillID" [size]="'small'"></keira-icon>
+          }
+          {{ skill }} {{ reqSkillPoint }}
+        </p>
+      }
       <!-- Quest starter -->
-      <p *ngIf="service.questGivenByItem$ | async as qitem">
-        <img [src]="'assets/img/quest/' + questStartIcon" id="itemQuestStartIcon" />
-        Start:
-        <keira-icon [size]="'small'" [itemId]="qitem"></keira-icon>
-        <strong class="colored"> {{ service.questStarterItem$ | async }}</strong> <span class="greyed"> [{{ qitem }}]</span>
-      </p>
-      <div *ngIf="service.creatureQueststarterList.length > 0" id="npc-start">
-        <p *ngFor="let q of service.creatureQueststarterList">
-          <img [src]="'assets/img/quest/' + questStartIcon" id="creatureQuestStartIcon" /> NPC Start:
-          <strong class="colored">{{ service.mysqlQueryService.getCreatureNameById(q.id) | async }}</strong>
-          <span class="greyed"> [{{ q.id }}]</span>
+      @if (service.questGivenByItem$ | async; as qitem) {
+        <p>
+          <img [src]="'assets/img/quest/' + questStartIcon" id="itemQuestStartIcon" />
+          Start:
+          <keira-icon [size]="'small'" [itemId]="qitem"></keira-icon>
+          <strong class="colored"> {{ service.questStarterItem$ | async }}</strong> <span class="greyed"> [{{ qitem }}]</span>
         </p>
-      </div>
-      <div *ngIf="service.gameobjectQueststarterList.length > 0" id="go-start">
-        <p *ngFor="let q of service.gameobjectQueststarterList">
-          <img [src]="'assets/img/quest/' + questStartIcon" id="gameobjectQuestStartIcon" /> GO Start:
-          <strong class="colored">{{ service.mysqlQueryService.getGameObjectNameById(q.id) | async }}</strong>
-          <span class="greyed"> [{{ q.id }}]</span>
-        </p>
-      </div>
+      }
+      @if (service.creatureQueststarterList.length > 0) {
+        <div id="npc-start">
+          @for (q of service.creatureQueststarterList; track q) {
+            <p>
+              <img [src]="'assets/img/quest/' + questStartIcon" id="creatureQuestStartIcon" /> NPC Start:
+              <strong class="colored">{{ service.mysqlQueryService.getCreatureNameById(q.id) | async }}</strong>
+              <span class="greyed"> [{{ q.id }}]</span>
+            </p>
+          }
+        </div>
+      }
+      @if (service.gameobjectQueststarterList.length > 0) {
+        <div id="go-start">
+          @for (q of service.gameobjectQueststarterList; track q) {
+            <p>
+              <img [src]="'assets/img/quest/' + questStartIcon" id="gameobjectQuestStartIcon" /> GO Start:
+              <strong class="colored">{{ service.mysqlQueryService.getGameObjectNameById(q.id) | async }}</strong>
+              <span class="greyed"> [{{ q.id }}]</span>
+            </p>
+          }
+        </div>
+      }
       <!-- Quest ender -->
-      <div *ngIf="service.creatureQuestenderList.length > 0" id="npc-end">
-        <p *ngFor="let q of service.creatureQuestenderList">
-          <img [src]="'assets/img/quest/' + questEndIcon" id="creatureQuestEndIcon" /> NPC End:
-          <strong class="colored">{{ service.mysqlQueryService.getCreatureNameById(q.id) | async }}</strong>
-          <span class="greyed"> [{{ q.id }}]</span>
-        </p>
-      </div>
-      <div *ngIf="service.gameobjectQuestenderList.length > 0" id="go-end">
-        <p *ngFor="let q of service.gameobjectQuestenderList">
-          <img [src]="'assets/img/quest/' + questEndIcon" id="gameobjectQuestEndIcon" /> GO End:
-          <strong class="colored">{{ service.mysqlQueryService.getGameObjectNameById(q.id) | async }}</strong>
-          <span class="greyed"> [{{ q.id }}]</span>
-        </p>
-      </div>
-      <p *ngIf="service.isRepeatable()">Repeatable</p>
+      @if (service.creatureQuestenderList.length > 0) {
+        <div id="npc-end">
+          @for (q of service.creatureQuestenderList; track q) {
+            <p>
+              <img [src]="'assets/img/quest/' + questEndIcon" id="creatureQuestEndIcon" /> NPC End:
+              <strong class="colored">{{ service.mysqlQueryService.getCreatureNameById(q.id) | async }}</strong>
+              <span class="greyed"> [{{ q.id }}]</span>
+            </p>
+          }
+        </div>
+      }
+      @if (service.gameobjectQuestenderList.length > 0) {
+        <div id="go-end">
+          @for (q of service.gameobjectQuestenderList; track q) {
+            <p>
+              <img [src]="'assets/img/quest/' + questEndIcon" id="gameobjectQuestEndIcon" /> GO End:
+              <strong class="colored">{{ service.mysqlQueryService.getGameObjectNameById(q.id) | async }}</strong>
+              <span class="greyed"> [{{ q.id }}]</span>
+            </p>
+          }
+        </div>
+      }
+      @if (service.isRepeatable()) {
+        <p>Repeatable</p>
+      }
       <p>{{ service.sharable }}</p>
 
-      <p *ngIf="service.difficultyLevels; let difficulty">
-        Difficulty:
-        <span class="r0" *ngIf="!!difficulty.red"> {{ difficulty.red }} </span>
-        <span class="r1" *ngIf="!!difficulty.orange"> {{ difficulty.orange }} </span>
-        <span class="r2" *ngIf="!!difficulty.yellow"> {{ difficulty.yellow }} </span>
-        <span class="r3" *ngIf="!!difficulty.green"> {{ difficulty.green }} </span>
-        <span class="r4" *ngIf="!!difficulty.grey"> {{ difficulty.grey }} </span>
-      </p>
+      @if (service.difficultyLevels; as difficulty) {
+        <p>
+          Difficulty:
+          @if (!!difficulty.red) {
+            <span class="r0"> {{ difficulty.red }} </span>
+          }
+          @if (!!difficulty.orange) {
+            <span class="r1"> {{ difficulty.orange }} </span>
+          }
+          @if (!!difficulty.yellow) {
+            <span class="r2"> {{ difficulty.yellow }} </span>
+          }
+          @if (!!difficulty.green) {
+            <span class="r3"> {{ difficulty.green }} </span>
+          }
+          @if (!!difficulty.grey) {
+            <span class="r4"> {{ difficulty.grey }} </span>
+          }
+        </p>
+      }
 
-      <p *ngIf="!!service.startItem" id="provided-item">
-        Provided item:<br />
-        <keira-icon [size]="'small'" [itemId]="service.startItem"></keira-icon>
-        <strong class="colored"> {{ service.startItemName$ | async }}</strong>
-        <span class="greyed"> [{{ service.startItem }}]</span>
-      </p>
+      @if (!!service.startItem) {
+        <p id="provided-item">
+          Provided item:<br />
+          <keira-icon [size]="'small'" [itemId]="service.startItem"></keira-icon>
+          <strong class="colored"> {{ service.startItemName$ | async }}</strong>
+          <span class="greyed"> [{{ service.startItem }}]</span>
+        </p>
+      }
 
-      <ng-container *ngIf="{ prev: service.prevQuestList$ | async, next: service.nextQuestList$ | async } as questLists">
-        <ng-container *ngIf="questLists?.prev?.length > 0 || questLists?.next?.length > 0">
+      @if ({ prev: service.prevQuestList$ | async, next: service.nextQuestList$ | async }; as questLists) {
+        @if (questLists?.prev?.length > 0 || questLists?.next?.length > 0) {
           <p class="title">Series</p>
           <ol>
-            <li *ngFor="let quest of questLists.prev">
-              <span class="colored">{{ quest.title }}</span> <span class="greyed"> [{{ quest.id }}]</span>
-            </li>
+            @for (quest of questLists.prev; track quest) {
+              <li>
+                <span class="colored">{{ quest.title }}</span> <span class="greyed"> [{{ quest.id }}]</span>
+              </li>
+            }
             <li>
               <strong>{{ service.title }}</strong> <span class="greyed"> [{{ service.id }}]</span>
             </li>
-            <li *ngFor="let quest of questLists.next">
-              <span class="colored">{{ quest.title }}</span> <span class="greyed"> [{{ quest.id }}]</span>
-            </li>
+            @for (quest of questLists.next; track quest) {
+              <li>
+                <span class="colored">{{ quest.title }}</span> <span class="greyed"> [{{ quest.id }}]</span>
+              </li>
+            }
           </ol>
-        </ng-container>
-      </ng-container>
+        }
+      }
 
-      <ng-container *ngIf="!!service.enabledByQuestId">
+      @if (!!service.enabledByQuestId) {
         <p class="title">Enabled by</p>
         <ul>
           <li>
@@ -119,7 +184,7 @@
             <span class="greyed"> [{{ service.enabledByQuestId }}]</span>
           </li>
         </ul>
-      </ng-container>
+      }
 
       <div id="objectives">
         <p class="title">Objectives</p>
@@ -127,37 +192,45 @@
         <div class="greyed text-sm">
           {{ service.objectiveText }}
         </div>
-        <p class="greyed text-sm mt-3" id="areaDescription" *ngIf="!!service.questTemplate.AreaDescription">
-          {{ service.questTemplate.AreaDescription }}
-        </p>
+        @if (!!service.questTemplate.AreaDescription) {
+          <p class="greyed text-sm mt-3" id="areaDescription">
+            {{ service.questTemplate.AreaDescription }}
+          </p>
+        }
 
         <div class="mt-2" id="npcOrGoObjectives">
-          <ng-container *ngFor="let i of [1, 2, 3, 4]">
-            <p *ngIf="!!service.isNpcOrGoObj(i)">
-              • <span class="colored">{{ !!service.getObjText(i) ? service.getObjText(i) : (service.getObjective$(i) | async) }}</span>
-              {{ service.getObjectiveCount(i) }}
-            </p>
-          </ng-container>
+          @for (i of [1, 2, 3, 4]; track i) {
+            @if (!!service.isNpcOrGoObj(i)) {
+              <p>
+                • <span class="colored">{{ !!service.getObjText(i) ? service.getObjText(i) : (service.getObjective$(i) | async) }}</span>
+                {{ service.getObjectiveCount(i) }}
+              </p>
+            }
+          }
         </div>
 
         <div class="mt-2" id="itemObjectives">
-          <ng-container *ngFor="let i of [1, 2, 3, 4, 5, 6]">
-            <p *ngIf="service.questTemplate['RequiredItemId' + i]; let reqItem">
-              • <keira-icon [size]="'small'" [itemId]="reqItem"></keira-icon> &nbsp;<span class="colored">{{
-                service.mysqlQueryService.getItemNameById(reqItem) | async
-              }}</span>
-              {{ service.getObjItemCount(i) }}
-            </p>
-          </ng-container>
+          @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+            @if (service.questTemplate['RequiredItemId' + i]; as reqItem) {
+              <p>
+                • <keira-icon [size]="'small'" [itemId]="reqItem"></keira-icon> &nbsp;<span class="colored">{{
+                  service.mysqlQueryService.getItemNameById(reqItem) | async
+                }}</span>
+                {{ service.getObjItemCount(i) }}
+              </p>
+            }
+          }
         </div>
 
         <div class="mt-2" id="RequiredFaction">
-          <ng-container *ngFor="let i of [1, 2]">
-            <p *ngIf="service.questTemplate['RequiredFactionId' + i]; let reqFaction">
-              • <span class="colored">{{ service.sqliteQueryService.getFactionNameById(reqFaction) | async }}</span>
-              {{ service.getFactionByValue(i) }}
-            </p>
-          </ng-container>
+          @for (i of [1, 2]; track i) {
+            @if (service.questTemplate['RequiredFactionId' + i]; as reqFaction) {
+              <p>
+                • <span class="colored">{{ service.sqliteQueryService.getFactionNameById(reqFaction) | async }}</span>
+                {{ service.getFactionByValue(i) }}
+              </p>
+            }
+          }
         </div>
       </div>
 
@@ -182,66 +255,92 @@
         {{ service.questOfferReward.RewardText }}
       </div>
 
-      <div id="rewards" *ngIf="service.isReward()">
-        <p class="title mt-3 mb-2">Rewards</p>
-
-        <!-- Reward Money -->
-        <div *ngIf="service.isRewardMoney()" class="mt-1" id="reward-money">
-          You will receive: <span [innerHTML]="helper.formatMoney(service.rewardMoney)"></span>
-        </div>
-
-        <!-- Reward Spell -->
-        <div id="rewardSpell" *ngIf="service.rewardSpell(); let spell" class="mt-3">
-          <p>You will learn:</p>
-          <keira-icon [size]="'small'" [spellId]="spell"></keira-icon>
-          <span class="colored"> {{ service.sqliteQueryService.getSpellNameById(spell) | async }}</span>
-          <span class="greyed"> [{{ spell }}]</span>
-        </div>
-
-        <!-- Reward Item -->
-        <div id="reward-items" *ngIf="service.isRewardItems()" class="mt-3">
-          <p>You will receive:</p>
-          <div *ngFor="let i of [1, 2, 3, 4]">
-            <p *ngIf="service.isFieldAvailable('RewardItem', 'RewardAmount', i)">
-              <keira-icon [size]="'small'" [itemId]="service.questTemplate['RewardItem' + i]"></keira-icon>
-              <span class="colored"> {{ service.mysqlQueryService.getItemNameById(service.questTemplate['RewardItem' + i]) | async }}</span>
-              <span class="greyed"> [{{ service.questTemplate['RewardItem' + i] }}]</span>
-            </p>
-          </div>
-        </div>
-
-        <!-- Reward Choice Item -->
-        <div id="reward-choice-items" *ngIf="service.isRewardChoiceItems()" class="mt-3">
-          <p>You will be able to choose one of these rewards:</p>
-
-          <div *ngFor="let i of [1, 2, 3, 4]">
-            <p *ngIf="service.isFieldAvailable('RewardChoiceItemID', 'RewardChoiceItemQuantity', i)">
-              <keira-icon [size]="'small'" [itemId]="service.questTemplate['RewardChoiceItemID' + i]"></keira-icon>
-              <span class="colored">
-                {{ service.mysqlQueryService.getItemNameById(service.questTemplate['RewardChoiceItemID' + i]) | async }}</span
-              >
-              <span class="greyed"> [{{ service.questTemplate['RewardChoiceItemID' + i] }}]</span>
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div id="gains" *ngIf="service.isGains()">
-        <p class="title mt-3">Gains</p>
-        <p id="rewardXP" *ngIf="service.rewardXP$ | async as xp">• {{ xp }} experience</p>
-        <p id="rewardTalents" *ngIf="service.questTemplate.RewardTalents">• {{ service.questTemplate.RewardTalents }} talent points</p>
-
-        <div *ngIf="service.isRewardReputation()">
-          <div id="rewardReputations" *ngFor="let i of [1, 2, 3, 4, 5]">
-            <div *ngIf="service.isFieldAvailable('RewardFactionID', 'RewardFactionValue', i)">
-              <p *ngIf="service.getRewardReputation(i, service.getRepReward$(i) | async); let repReward">
-                • {{ QUEST_FACTION_REWARD[repReward] }} reputation with
-                {{ service.sqliteQueryService.getFactionNameByNameId(service.questTemplate['RewardFactionID' + i]) | async }}
-              </p>
+      @if (service.isReward()) {
+        <div id="rewards">
+          <p class="title mt-3 mb-2">Rewards</p>
+          <!-- Reward Money -->
+          @if (service.isRewardMoney()) {
+            <div class="mt-1" id="reward-money">You will receive: <span [innerHTML]="helper.formatMoney(service.rewardMoney)"></span></div>
+          }
+          <!-- Reward Spell -->
+          @if (service.rewardSpell(); as spell) {
+            <div id="rewardSpell" class="mt-3">
+              <p>You will learn:</p>
+              <keira-icon [size]="'small'" [spellId]="spell"></keira-icon>
+              <span class="colored"> {{ service.sqliteQueryService.getSpellNameById(spell) | async }}</span>
+              <span class="greyed"> [{{ spell }}]</span>
             </div>
-          </div>
+          }
+          <!-- Reward Item -->
+          @if (service.isRewardItems()) {
+            <div id="reward-items" class="mt-3">
+              <p>You will receive:</p>
+              @for (i of [1, 2, 3, 4]; track i) {
+                <div>
+                  @if (service.isFieldAvailable('RewardItem', 'RewardAmount', i)) {
+                    <p>
+                      <keira-icon [size]="'small'" [itemId]="service.questTemplate['RewardItem' + i]"></keira-icon>
+                      <span class="colored">
+                        {{ service.mysqlQueryService.getItemNameById(service.questTemplate['RewardItem' + i]) | async }}</span
+                      >
+                      <span class="greyed"> [{{ service.questTemplate['RewardItem' + i] }}]</span>
+                    </p>
+                  }
+                </div>
+              }
+            </div>
+          }
+          <!-- Reward Choice Item -->
+          @if (service.isRewardChoiceItems()) {
+            <div id="reward-choice-items" class="mt-3">
+              <p>You will be able to choose one of these rewards:</p>
+              @for (i of [1, 2, 3, 4]; track i) {
+                <div>
+                  @if (service.isFieldAvailable('RewardChoiceItemID', 'RewardChoiceItemQuantity', i)) {
+                    <p>
+                      <keira-icon [size]="'small'" [itemId]="service.questTemplate['RewardChoiceItemID' + i]"></keira-icon>
+                      <span class="colored">
+                        {{ service.mysqlQueryService.getItemNameById(service.questTemplate['RewardChoiceItemID' + i]) | async }}</span
+                      >
+                      <span class="greyed"> [{{ service.questTemplate['RewardChoiceItemID' + i] }}]</span>
+                    </p>
+                  }
+                </div>
+              }
+            </div>
+          }
         </div>
-      </div>
+      }
+
+      @if (service.isGains()) {
+        <div id="gains">
+          <p class="title mt-3">Gains</p>
+          @if (service.rewardXP$ | async; as xp) {
+            <p id="rewardXP">• {{ xp }} experience</p>
+          }
+          @if (service.questTemplate.RewardTalents) {
+            <p id="rewardTalents">• {{ service.questTemplate.RewardTalents }} talent points</p>
+          }
+          @if (service.isRewardReputation()) {
+            <div>
+              @for (i of [1, 2, 3, 4, 5]; track i) {
+                <div id="rewardReputations">
+                  @if (service.isFieldAvailable('RewardFactionID', 'RewardFactionValue', i)) {
+                    <div>
+                      @if (service.getRewardReputation(i, service.getRepReward$(i) | async); as repReward) {
+                        <p>
+                          • {{ QUEST_FACTION_REWARD[repReward] }} reputation with
+                          {{ service.sqliteQueryService.getFactionNameByNameId(service.questTemplate['RewardFactionID' + i]) | async }}
+                        </p>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
     </div>
   </div>
 </div>

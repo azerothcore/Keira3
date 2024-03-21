@@ -7,7 +7,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgIf } from '@angular/common';
+
 import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
@@ -15,7 +15,7 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   selector: 'keira-creature-template-movement',
   templateUrl: './creature-template-movement.component.html',
   standalone: true,
-  imports: [TopBarComponent, NgIf, TranslateModule, QueryOutputComponent, FormsModule, ReactiveFormsModule, TooltipModule],
+  imports: [TopBarComponent, TranslateModule, QueryOutputComponent, FormsModule, ReactiveFormsModule, TooltipModule],
 })
 export class CreatureTemplateMovementComponent extends SingleRowEditorComponent<CreatureTemplateMovement> {
   public get docUrl(): string {

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { SaiHandlerService } from '../sai-handler.service';
-import { NgIf } from '@angular/common';
+
 import { SubscriptionHandler } from '@keira/shared/utils';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
@@ -11,7 +11,7 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
   selector: 'keira-sai-top-bar',
   templateUrl: './sai-top-bar.component.html',
   standalone: true,
-  imports: [NgIf],
+  imports: [],
 })
 export class SaiTopBarComponent extends SubscriptionHandler implements OnInit {
   @Input() public handler: SaiHandlerService;
