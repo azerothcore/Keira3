@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { NpcVendor } from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
@@ -36,11 +36,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   ],
 })
 export class NpcVendorComponent extends MultiRowEditorComponent<NpcVendor> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: NpcVendorService,
-    public handlerService: CreatureHandlerService,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly editorService = inject(NpcVendorService);
+  readonly handlerService = inject(CreatureHandlerService);
 }

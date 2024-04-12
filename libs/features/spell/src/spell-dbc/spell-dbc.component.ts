@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { SpellDbc } from '@keira/shared/acore-world-model';
 import { SpellHandlerService } from '../spell-handler.service';
@@ -36,11 +36,6 @@ import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor
   ],
 })
 export class SpellDbcComponent extends SingleRowEditorComponent<SpellDbc> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: SpellDbcService,
-    public handlerService: SpellHandlerService,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly editorService = inject(SpellDbcService);
+  readonly handlerService = inject(SpellHandlerService);
 }

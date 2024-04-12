@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import {
@@ -82,6 +82,11 @@ import { NgClass } from '@angular/common';
   ],
 })
 export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate> implements OnInit {
+  readonly editorService = inject(ItemTemplateService);
+  readonly handlerService = inject(ItemHandlerService);
+  private readonly itemPreviewService = inject(ItemPreviewService);
+  private readonly sanitizer = inject(DomSanitizer);
+
   readonly ITEM_CLASS = ITEM_CLASS;
   readonly ITEM_SUBCLASS = ITEM_SUBCLASS;
   readonly ITEM_QUALITY = ITEM_QUALITY;
@@ -106,16 +111,6 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   readonly SPELL_TRIGGERS = SPELL_TRIGGERS;
 
   showItemPreview = true;
-
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: ItemTemplateService,
-    public handlerService: ItemHandlerService,
-    private readonly itemPreviewService: ItemPreviewService,
-    private readonly sanitizer: DomSanitizer,
-  ) {
-    super(editorService, handlerService);
-  }
 
   public itemPreview: SafeHtml = this.sanitizer.bypassSecurityTrustHtml('loading...');
 

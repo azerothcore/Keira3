@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { GameobjectQueststarter } from '@keira/shared/acore-world-model';
 import { QuestHandlerService } from '../quest-handler.service';
@@ -35,12 +35,7 @@ import { AsyncPipe, NgClass } from '@angular/common';
   ],
 })
 export class GameobjectQueststarterComponent extends MultiRowEditorComponent<GameobjectQueststarter> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: GameobjectQueststarterService,
-    public handlerService: QuestHandlerService,
-    readonly questPreviewService: QuestPreviewService,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly editorService = inject(GameobjectQueststarterService);
+  readonly handlerService = inject(QuestHandlerService);
+  readonly questPreviewService = inject(QuestPreviewService);
 }

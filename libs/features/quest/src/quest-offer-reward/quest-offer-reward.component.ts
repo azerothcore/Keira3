@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { EMOTE, QuestOfferReward } from '@keira/shared/acore-world-model';
 import { QuestHandlerService } from '../quest-handler.service';
@@ -11,6 +11,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgClass } from '@angular/common';
+import { QuestRequestItemsService } from '../quest-request-items/quest-request-items.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -33,12 +34,7 @@ import { NgClass } from '@angular/common';
 export class QuestOfferRewardComponent extends SingleRowEditorComponent<QuestOfferReward> {
   readonly EMOTE = EMOTE;
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: QuestOfferRewardService,
-    public handlerService: QuestHandlerService,
-    readonly questPreviewService: QuestPreviewService,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly editorService = inject(QuestOfferRewardService);
+  readonly handlerService = inject(QuestHandlerService);
+  readonly questPreviewService = inject(QuestPreviewService);
 }

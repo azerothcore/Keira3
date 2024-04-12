@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { EMOTE, QuestRequestItems } from '@keira/shared/acore-world-model';
 import { QuestHandlerService } from '../quest-handler.service';
@@ -31,14 +31,9 @@ import { NgClass } from '@angular/common';
   ],
 })
 export class QuestRequestItemsComponent extends SingleRowEditorComponent<QuestRequestItems> {
-  readonly EMOTE = EMOTE;
+  readonly editorService = inject(QuestRequestItemsService);
+  readonly handlerService = inject(QuestHandlerService);
+  readonly questPreviewService = inject(QuestPreviewService);
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: QuestRequestItemsService,
-    public handlerService: QuestHandlerService,
-    readonly questPreviewService: QuestPreviewService,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly EMOTE = EMOTE;
 }

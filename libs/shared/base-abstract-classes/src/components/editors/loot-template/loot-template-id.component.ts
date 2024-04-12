@@ -13,6 +13,9 @@ import { LootTemplateComponent } from './loot-template.component';
   template: '',
 })
 export abstract class LootTemplateIdComponent<T extends LootTemplate> extends LootTemplateComponent<T> implements OnInit {
+  public abstract editorService: LootEditorIdService<T>;
+  protected abstract handlerService: HandlerService<T>;
+
   protected _lootId: number;
   get lootId(): number {
     return this._lootId;
@@ -40,14 +43,6 @@ export abstract class LootTemplateIdComponent<T extends LootTemplate> extends Lo
         },
       }),
     );
-  }
-
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: LootEditorIdService<T>,
-    protected handlerService: HandlerService<T>,
-  ) {
-    super(editorService, handlerService);
   }
 
   ngOnInit() {

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { CreatureQuestitem } from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
@@ -33,11 +33,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   ],
 })
 export class CreatureQuestitemComponent extends MultiRowEditorComponent<CreatureQuestitem> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: CreatureQuestitemService,
-    public handlerService: CreatureHandlerService,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly editorService = inject(CreatureQuestitemService);
+  readonly handlerService = inject(CreatureHandlerService);
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { GameobjectSpawn, PHASE_MASK, SPAWN_MASK } from '@keira/shared/acore-world-model';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
@@ -37,11 +37,6 @@ export class GameobjectSpawnComponent extends MultiRowEditorComponent<Gameobject
   readonly SPAWN_MASK = SPAWN_MASK;
   readonly PHASE_MASK = PHASE_MASK;
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: GameobjectSpawnService,
-    public handlerService: GameobjectHandlerService,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly editorService = inject(GameobjectSpawnService);
+  readonly handlerService = inject(GameobjectHandlerService);
 }

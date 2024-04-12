@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { NpcTrainer } from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
@@ -36,12 +36,7 @@ import { SqliteQueryService } from '@keira/shared/db-layer';
   ],
 })
 export class NpcTrainerComponent extends MultiRowEditorComponent<NpcTrainer> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: NpcTrainerService,
-    public handlerService: CreatureHandlerService,
-    readonly sqliteQueryService: SqliteQueryService,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly editorService = inject(NpcTrainerService);
+  readonly handlerService = inject(CreatureHandlerService);
+  readonly sqliteQueryService = inject(SqliteQueryService);
 }

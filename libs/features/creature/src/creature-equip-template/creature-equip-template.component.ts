@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { CreatureEquipTemplate } from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
@@ -28,11 +28,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   ],
 })
 export class CreatureEquipTemplateComponent extends SingleRowEditorComponent<CreatureEquipTemplate> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: CreatureEquipTemplateService,
-    public handlerService: CreatureHandlerService,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly editorService = inject(CreatureEquipTemplateService);
+  readonly handlerService = inject(CreatureHandlerService);
 }

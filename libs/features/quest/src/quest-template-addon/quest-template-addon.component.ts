@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { ALLOWABLE_CLASSES, QuestTemplateAddon, SPECIAL_FLAGS } from '@keira/shared/acore-world-model';
 import { QuestHandlerService } from '../quest-handler.service';
@@ -41,15 +41,10 @@ import { NgClass } from '@angular/common';
   ],
 })
 export class QuestTemplateAddonComponent extends SingleRowEditorComponent<QuestTemplateAddon> {
+  readonly editorService = inject(QuestTemplateAddonService);
+  readonly handlerService = inject(QuestHandlerService);
+  readonly questPreviewService = inject(QuestPreviewService);
+
   readonly ALLOWABLE_CLASSES = ALLOWABLE_CLASSES;
   readonly SPECIAL_FLAGS = SPECIAL_FLAGS;
-
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: QuestTemplateAddonService,
-    public handlerService: QuestHandlerService,
-    readonly questPreviewService: QuestPreviewService,
-  ) {
-    super(editorService, handlerService);
-  }
 }

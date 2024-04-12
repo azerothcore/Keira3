@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { LootTemplateIdComponent } from '@keira/shared/base-abstract-classes';
 import { SkinningLootTemplate } from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
@@ -15,11 +15,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   imports: [TopBarComponent, NgIf, LootEditorComponent],
 })
 export class SkinningLootTemplateComponent extends LootTemplateIdComponent<SkinningLootTemplate> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: SkinningLootTemplateService,
-    public handlerService: CreatureHandlerService,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly editorService = inject(SkinningLootTemplateService);
+  readonly handlerService = inject(CreatureHandlerService);
 }

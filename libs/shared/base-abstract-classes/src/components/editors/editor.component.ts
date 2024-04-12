@@ -11,19 +11,15 @@ import { compareObjFn, SubscriptionHandler } from '@keira/shared/utils';
   template: '',
 })
 export abstract class EditorComponent<T extends TableRow> extends SubscriptionHandler implements OnInit {
+  public abstract readonly editorService: EditorService<T>;
+  protected abstract readonly handlerService: HandlerService<T>;
+
   readonly WIKI_BASE_URL = WIKI_BASE_URL;
 
   protected readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   public get docUrl(): string {
     return this.WIKI_BASE_URL + this.editorService.entityTable;
-  }
-
-  constructor(
-    public editorService: EditorService<T>,
-    protected handlerService: HandlerService<T>,
-  ) {
-    super();
   }
 
   ngOnInit() {

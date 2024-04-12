@@ -9,11 +9,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   template: '',
 })
 export abstract class SingleRowEditorComponent<T extends TableRow> extends EditorComponent<T> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: SingleRowEditorService<T>,
-    protected handlerService: HandlerService<T>,
-  ) {
-    super(editorService, handlerService);
-  }
+  public abstract readonly editorService: SingleRowEditorService<T>;
+  protected abstract readonly handlerService: HandlerService<T>;
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import {
   CREATURE_AI_NAME,
@@ -85,11 +85,6 @@ export class CreatureTemplateComponent extends SingleRowEditorComponent<Creature
 
   showItemPreview = true;
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: CreatureTemplateService,
-    public handlerService: CreatureHandlerService,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly editorService = inject(CreatureTemplateService);
+  readonly handlerService = inject(CreatureHandlerService);
 }
