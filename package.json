@@ -45,7 +45,7 @@
     "acorn": "8.11.3",
     "body-parser": "1.20.2",
     "cors": "2.8.5",
-    "electron-settings": "4.0.2",
+    "electron-settings": "4.0.3",
     "express": "4.19.2",
     "jquery": "3.7.1",
     "morgan": "1.10.0",
