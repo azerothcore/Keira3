@@ -11,7 +11,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgClass } from '@angular/common';
-import { QuestRequestItemsService } from '../quest-request-items/quest-request-items.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
