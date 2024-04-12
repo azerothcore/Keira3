@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { HandlerService } from '@keira/shared/base-abstract-classes';
 import {
   DISENCHANT_LOOT_TEMPLATE_TABLE,
@@ -15,6 +14,8 @@ import {
   providedIn: 'root',
 })
 export class ItemHandlerService extends HandlerService<ItemTemplate> {
+  protected readonly mainEditorRoutePath = 'item/item-template';
+
   get isItemTemplateUnsaved(): boolean {
     return this.statusMap[ITEM_TEMPLATE_TABLE];
   }
@@ -42,9 +43,4 @@ export class ItemHandlerService extends HandlerService<ItemTemplate> {
     [PROSPECTING_LOOT_TEMPLATE_TABLE]: false,
     [MILLING_LOOT_TEMPLATE_TABLE]: false,
   };
-
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected router: Router) {
-    super('item/item-template', router);
-  }
 }

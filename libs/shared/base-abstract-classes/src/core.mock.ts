@@ -1,6 +1,5 @@
 /* istanbul ignore file */
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { TableRow } from '@keira/shared/constants';
 import { HandlerService } from './service/handlers/handler.service';
@@ -27,13 +26,11 @@ export class MockEntity extends TableRow {
   providedIn: 'root',
 })
 export class MockHandlerService extends HandlerService<MockEntity> {
+  protected readonly mainEditorRoutePath = 'mock/route';
+
   protected _statusMap: {
     [MOCK_TABLE]: false;
   };
-
-  constructor(protected router: Router) {
-    super('mock/route', router);
-  }
 }
 
 @Injectable({
