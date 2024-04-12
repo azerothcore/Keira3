@@ -5,10 +5,10 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
 
 import { ITEM_TEMPLATE_SEARCH_FIELDS, ITEM_TEMPLATE_TABLE, ItemTemplate } from '@keira/shared/acore-world-model';
 import { SearchService } from './search.service';
-import Spy = jasmine.Spy;
 
 import { mockChangeDetectorRef } from '@keira/shared/test-utils';
 import { Injectable } from '@angular/core';
+import Spy = jasmine.Spy;
 
 describe('SearchService', () => {
   let service: SearchService<ItemTemplate>;

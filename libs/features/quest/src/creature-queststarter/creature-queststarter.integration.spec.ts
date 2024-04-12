@@ -10,8 +10,8 @@ import { of } from 'rxjs';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { CreatureQueststarterComponent } from './creature-queststarter.component';
-import Spy = jasmine.Spy;
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
+import Spy = jasmine.Spy;
 
 class CreatureQueststarterPage extends MultiRowEditorPageObject<CreatureQueststarterComponent> {
   get questPreviewNpcStart() {

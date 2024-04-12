@@ -1,7 +1,5 @@
 import { Class, TableRow } from '@keira/shared/constants';
-import { ToastrService } from 'ngx-toastr';
 import { distinctUntilChanged } from 'rxjs';
-import { MysqlQueryService } from '@keira/shared/db-layer';
 import { HandlerService } from '../handlers/handler.service';
 import { EditorService } from './editor.service';
 import { compareObjFn } from '@keira/shared/utils';
@@ -39,10 +37,8 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     protected _entityIdField: string,
     protected _entitySecondIdField: string,
     protected handlerService: HandlerService<T>,
-    readonly queryService: MysqlQueryService,
-    protected toastrService: ToastrService,
   ) {
-    super(_entityClass, _entityTable, _entityIdField, handlerService, queryService, toastrService);
+    super(_entityClass, _entityTable, _entityIdField, handlerService);
     this.initForm();
   }
 

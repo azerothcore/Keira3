@@ -6,10 +6,10 @@ import { PageObject } from '@keira/shared/test-utils';
 import { of } from 'rxjs';
 import { IconComponent } from './icon.component';
 import { IconService } from './icon.service';
-import Spy = jasmine.Spy;
 
 import { instance, mock } from 'ts-mockito';
 import { SqliteService } from '@keira/shared/db-layer';
+import Spy = jasmine.Spy;
 
 @Component({
   template: `<keira-icon

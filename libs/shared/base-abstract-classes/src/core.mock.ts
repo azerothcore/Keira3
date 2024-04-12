@@ -52,12 +52,8 @@ export class SelectMockService extends SelectService<MockEntity> {
   providedIn: 'root',
 })
 export class MockSingleRowEditorService extends SingleRowEditorService<MockEntity> {
-  constructor(
-    protected handlerService: MockHandlerService,
-    readonly queryService: MysqlQueryService,
-    protected toastrService: ToastrService,
-  ) {
-    super(MockEntity, MOCK_TABLE, MOCK_ID, MOCK_NAME, true, handlerService, queryService, toastrService);
+  constructor(protected handlerService: MockHandlerService) {
+    super(MockEntity, MOCK_TABLE, MOCK_ID, MOCK_NAME, true, handlerService);
   }
 }
 
@@ -65,12 +61,8 @@ export class MockSingleRowEditorService extends SingleRowEditorService<MockEntit
   providedIn: 'root',
 })
 export class MockSingleRowComplexKeyEditorService extends SingleRowComplexKeyEditorService<MockEntity> {
-  constructor(
-    protected handlerService: MockHandlerService,
-    readonly queryService: MysqlQueryService,
-    protected toastrService: ToastrService,
-  ) {
-    super(MockEntity, MOCK_TABLE, [MOCK_ID, MOCK_ID_2], MOCK_NAME, true, handlerService, queryService, toastrService);
+  constructor(protected handlerService: MockHandlerService) {
+    super(MockEntity, MOCK_TABLE, [MOCK_ID, MOCK_ID_2], MOCK_NAME, true, handlerService);
   }
 }
 
@@ -78,12 +70,8 @@ export class MockSingleRowComplexKeyEditorService extends SingleRowComplexKeyEdi
   providedIn: 'root',
 })
 export class MockMultiRowEditorService extends MultiRowEditorService<MockEntity> {
-  constructor(
-    protected handlerService: MockHandlerService,
-    readonly queryService: MysqlQueryService,
-    protected toastrService: ToastrService,
-  ) {
-    super(MockEntity, MOCK_TABLE, MOCK_ID, MOCK_ID_2, handlerService, queryService, toastrService);
+  constructor(protected handlerService: MockHandlerService) {
+    super(MockEntity, MOCK_TABLE, MOCK_ID, MOCK_ID_2, handlerService);
   }
 }
 
@@ -91,12 +79,8 @@ export class MockMultiRowEditorService extends MultiRowEditorService<MockEntity>
   providedIn: 'root',
 })
 export class MockMultiRowExternalEditorService extends MultiRowExternalEditorService<MockEntity> {
-  constructor(
-    protected handlerService: MockHandlerService,
-    readonly queryService: MysqlQueryService,
-    protected toastrService: ToastrService,
-  ) {
-    super(MockEntity, MOCK_TABLE, MOCK_ID_2, handlerService, queryService, toastrService);
+  constructor(protected handlerService: MockHandlerService) {
+    super(MockEntity, MOCK_TABLE, MOCK_ID_2, handlerService);
   }
 
   selectQuery(id: string | number) {
@@ -113,7 +97,7 @@ export class MockMultiRowComplexKeyEditorService extends MultiRowComplexKeyEdito
     override readonly queryService: MysqlQueryService,
     protected override toastrService: ToastrService,
   ) {
-    super(MockEntity, MOCK_TABLE, [MOCK_ID, MOCK_ID_2], MOCK_ID_2, handlerService, queryService, toastrService);
+    super(MockEntity, MOCK_TABLE, [MOCK_ID, MOCK_ID_2], MOCK_ID_2, handlerService);
   }
 
   protected updateFullQuery(): void {}

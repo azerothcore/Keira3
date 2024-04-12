@@ -25,32 +25,30 @@ import {
   TOTEM_CATEGORY,
 } from '@keira/shared/acore-world-model';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
-import { VIEWER_TYPE, Model3DViewerComponent } from '@keira/shared/model-3d-viewer';
+import { Model3DViewerComponent, VIEWER_TYPE } from '@keira/shared/model-3d-viewer';
 import { ItemHandlerService } from '../item-handler.service';
 import { SPELL_TRIGGERS } from './item-constants';
 import { ItemPreviewService } from './item-preview.service';
 import { ItemTemplateService } from './item-template.service';
-import { IconComponent } from '@keira/shared/base-editor-components';
+import { IconComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import {
   AreaSelectorBtnComponent,
+  FactionSelectorBtnComponent,
+  FlagsSelectorBtnComponent,
   HolidaySelectorBtnComponent,
   ItemEnchantmentSelectorBtnComponent,
   ItemLimitCategorySelectorBtnComponent,
   LanguageSelectorBtnComponent,
   MapSelectorBtnComponent,
+  QuestSelectorBtnComponent,
+  SingleValueSelectorBtnComponent,
+  SkillSelectorBtnComponent,
+  SpellSelectorBtnComponent,
 } from '@keira/shared/selectors';
-import { FactionSelectorBtnComponent } from '@keira/shared/selectors';
-import { SpellSelectorBtnComponent } from '@keira/shared/selectors';
-import { SkillSelectorBtnComponent } from '@keira/shared/selectors';
-import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
-import { QuestSelectorBtnComponent } from '@keira/shared/selectors';
-import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgClass } from '@angular/common';
-import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection

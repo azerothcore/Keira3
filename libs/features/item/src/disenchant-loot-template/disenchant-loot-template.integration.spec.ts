@@ -10,8 +10,8 @@ import { of } from 'rxjs';
 import { ItemHandlerService } from '../item-handler.service';
 import { DisenchantLootTemplateComponent } from './disenchant-loot-template.component';
 import { DisenchantLootTemplateService } from './disenchant-loot-template.service';
-import Spy = jasmine.Spy;
 import { instance, mock } from 'ts-mockito';
+import Spy = jasmine.Spy;
 
 class DisenchantLootTemplatePage extends MultiRowEditorPageObject<DisenchantLootTemplateComponent> {}
 

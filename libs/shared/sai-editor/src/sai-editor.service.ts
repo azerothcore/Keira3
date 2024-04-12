@@ -1,9 +1,7 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 
 import { SAI_ID_2, SAI_ID_FIELDS, SAI_TABLE, SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { MultiRowComplexKeyEditorService } from '@keira/shared/base-abstract-classes';
-import { MysqlQueryService } from '@keira/shared/db-layer';
-import { ToastrService } from 'ngx-toastr';
 import { SaiCommentGeneratorService } from './sai-comment-generator.service';
 import { SaiHandlerService } from './sai-handler.service';
 
@@ -11,19 +9,16 @@ import { SaiHandlerService } from './sai-handler.service';
   providedIn: 'root',
 })
 export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScripts> {
+  protected saiCommentGeneratorService = inject(SaiCommentGeneratorService);
+
   protected _errorLinkedEvent = false;
   get errorLinkedEvent() {
     return this._errorLinkedEvent;
   }
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected handlerService: SaiHandlerService,
-    readonly queryService: MysqlQueryService,
-    protected toastrService: ToastrService,
-    protected saiCommentGeneratorService: SaiCommentGeneratorService,
-  ) {
-    super(SmartScripts, SAI_TABLE, SAI_ID_FIELDS, SAI_ID_2, handlerService, queryService, toastrService);
+  constructor(protected handlerService: SaiHandlerService) {
+    super(SmartScripts, SAI_TABLE, SAI_ID_FIELDS, SAI_ID_2, handlerService);
   }
 
   protected updateFullQuery(): void {

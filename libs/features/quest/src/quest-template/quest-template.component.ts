@@ -5,19 +5,19 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestTemplateService } from './quest-template.service';
 import { QuestPreviewComponent } from '../quest-preview/quest-preview.component';
-import { QuestFactionSelectorBtnComponent } from '@keira/shared/selectors';
-import { SpellSelectorBtnComponent } from '@keira/shared/selectors';
-import { FactionSelectorBtnComponent } from '@keira/shared/selectors';
-import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
-import { ItemSelectorBtnComponent } from '@keira/shared/selectors';
-import { IconComponent } from '@keira/shared/base-editor-components';
-import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
+import {
+  FactionSelectorBtnComponent,
+  FlagsSelectorBtnComponent,
+  ItemSelectorBtnComponent,
+  QuestFactionSelectorBtnComponent,
+  SingleValueSelectorBtnComponent,
+  SpellSelectorBtnComponent,
+} from '@keira/shared/selectors';
+import { IconComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgClass } from '@angular/common';
-import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

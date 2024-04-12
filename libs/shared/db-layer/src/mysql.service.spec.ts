@@ -4,8 +4,8 @@ import { Subscriber } from 'rxjs';
 import { instance, mock, reset } from 'ts-mockito';
 import { ElectronService } from '@keira/shared/common-services';
 import { MysqlService } from './mysql.service';
-import Spy = jasmine.Spy;
 import { ChangeDetectorRef } from '@angular/core';
+import Spy = jasmine.Spy;
 
 export const mockChangeDetectorRef = { markForCheck: jasmine.createSpy() } as unknown as ChangeDetectorRef;
 

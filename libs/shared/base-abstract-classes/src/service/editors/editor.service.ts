@@ -5,12 +5,14 @@ import { FormControl, FormGroup } from '@angular/forms';
 
 import { Class, StringKeys, TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
-import { SubscriptionHandler } from '@keira/shared/utils';
+import { ModelForm, SubscriptionHandler } from '@keira/shared/utils';
 import { HandlerService } from '../handlers/handler.service';
-import { ChangeDetectorRef } from '@angular/core';
-import { ModelForm } from '@keira/shared/utils';
+import { ChangeDetectorRef, inject } from '@angular/core';
 
 export abstract class EditorService<T extends TableRow> extends SubscriptionHandler {
+  readonly queryService = inject(MysqlQueryService);
+  protected readonly toastrService = inject(ToastrService);
+
   protected _loading = false;
   protected _loadedEntityId: string | number | Partial<T>;
   protected readonly fields: StringKeys<T>[];
@@ -51,8 +53,6 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     protected _entityTable: string,
     protected _entityIdField: string,
     protected handlerService: HandlerService<T>,
-    readonly queryService: MysqlQueryService,
-    protected toastrService: ToastrService,
   ) {
     super();
     this.fields = this.getClassAttributes(this._entityClass);

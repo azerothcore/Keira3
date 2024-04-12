@@ -6,14 +6,12 @@ import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { GameobjectQueststarterService } from './gameobject-queststarter.service';
 import { QuestPreviewComponent } from '../quest-preview/quest-preview.component';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { EditorButtonsComponent } from '@keira/shared/base-editor-components';
+import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { GameobjectSelectorBtnComponent } from '@keira/shared/selectors';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgClass, AsyncPipe } from '@angular/common';
-import { TopBarComponent } from '@keira/shared/base-editor-components';
+import { AsyncPipe, NgClass } from '@angular/common';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

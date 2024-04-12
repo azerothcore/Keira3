@@ -8,7 +8,7 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
 import { IconComponent } from '@keira/shared/base-editor-components';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

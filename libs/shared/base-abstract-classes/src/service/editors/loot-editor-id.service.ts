@@ -2,9 +2,7 @@
 
 import { Class } from '@keira/shared/constants';
 import { LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, LootTemplate } from '@keira/shared/acore-world-model';
-import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
-import { MysqlQueryService } from '@keira/shared/db-layer';
 import { HandlerService } from '../handlers/handler.service';
 import { MultiRowEditorService } from './multi-row-editor.service';
 
@@ -25,10 +23,8 @@ export abstract class LootEditorIdService<T extends LootTemplate> extends MultiR
     protected _entityTemplateIdField: string, // e.g. entry
     protected _entityTemplateLootField: string, // e.g. lootid
     protected handlerService: HandlerService<T>,
-    readonly queryService: MysqlQueryService,
-    protected toastrService: ToastrService,
   ) {
-    super(_entityClass, _entityTable, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, handlerService, queryService, toastrService);
+    super(_entityClass, _entityTable, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, handlerService);
   }
 
   getLootId(): Observable<{ lootId: number }[]> {

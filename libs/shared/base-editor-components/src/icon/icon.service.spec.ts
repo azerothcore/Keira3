@@ -3,9 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { IconService, TRADE_ENGINEERING_ICON_ID } from './icon.service';
 import { instance, mock } from 'ts-mockito';
-import { SqliteService } from '@keira/shared/db-layer';
-import { SqliteQueryService } from '@keira/shared/db-layer';
-import { MysqlQueryService } from '@keira/shared/db-layer';
+import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 
 describe('IconService', () => {
   const mockArgument = '123';

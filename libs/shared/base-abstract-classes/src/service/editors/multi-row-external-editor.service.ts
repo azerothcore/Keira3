@@ -1,6 +1,4 @@
 import { Class, TableRow } from '@keira/shared/constants';
-import { ToastrService } from 'ngx-toastr';
-import { MysqlQueryService } from '@keira/shared/db-layer';
 import { HandlerService } from '../handlers/handler.service';
 import { MultiRowEditorService } from './multi-row-editor.service';
 
@@ -13,8 +11,6 @@ export abstract class MultiRowExternalEditorService<T extends TableRow> extends 
     protected _entityTable: string,
     protected _entitySecondIdField: string,
     protected handlerService: HandlerService<T>,
-    readonly queryService: MysqlQueryService,
-    protected toastrService: ToastrService,
   ) {
     super(
       _entityClass,
@@ -22,8 +18,6 @@ export abstract class MultiRowExternalEditorService<T extends TableRow> extends 
       null, // none of the editors table's fields matches with the main entity ID
       _entitySecondIdField,
       handlerService,
-      queryService,
-      toastrService,
     );
   }
 
