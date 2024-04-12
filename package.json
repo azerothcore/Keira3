@@ -77,7 +77,7 @@
     "@angular/platform-browser": "17.3.4",
     "@angular/platform-browser-dynamic": "17.3.4",
     "@angular/router": "17.3.4",
-    "@fortawesome/fontawesome-free": "6.5.1",
+    "@fortawesome/fontawesome-free": "6.5.2",
     "@nx/angular": "18.2.4",
     "@nx/eslint": "18.2.4",
     "@nx/eslint-plugin": "18.2.4",
