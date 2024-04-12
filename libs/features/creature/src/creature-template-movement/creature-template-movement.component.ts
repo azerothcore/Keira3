@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { CREATURE_TEMPLATE_MOVEMENT_TABLE, CreatureTemplateMovement } from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
@@ -22,11 +22,6 @@ export class CreatureTemplateMovementComponent extends SingleRowEditorComponent<
     return this.WIKI_BASE_URL + CREATURE_TEMPLATE_MOVEMENT_TABLE;
   }
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: CreatureTemplateMovementService,
-    public handlerService: CreatureHandlerService,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly editorService = inject(CreatureTemplateMovementService);
+  readonly handlerService = inject(CreatureHandlerService);
 }

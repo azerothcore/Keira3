@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SaiEditorComponent } from '@keira/shared/sai-editor';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { SaiGameobjectEditorService } from './sai-gameobject-editor.service';
@@ -35,11 +35,6 @@ import { SaiTopBarComponent } from '@keira/shared/sai-editor';
   ],
 })
 export class SaiGameobjectComponent extends SaiEditorComponent {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: SaiGameobjectEditorService,
-    protected handlerService: SaiGameobjectHandlerService,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly editorService = inject(SaiGameobjectEditorService);
+  protected readonly handlerService = inject(SaiGameobjectHandlerService);
 }

@@ -15,5 +15,5 @@ import { NgClass } from '@angular/common';
 export class SwitchLanguageComponent {
   @Input() longVersion = true;
 
-  constructor(public readonly switchLanguageService: SwitchLanguageService) {}
+  constructor(readonly switchLanguageService: SwitchLanguageService) {}
 }

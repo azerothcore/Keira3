@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { ItemEnchantmentTemplate } from '@keira/shared/acore-world-model';
 import { ItemHandlerService } from '../item-handler.service';
@@ -25,11 +25,6 @@ import { TranslateModule } from '@ngx-translate/core';
   ],
 })
 export class ItemEnchantmentTemplateComponent extends MultiRowEditorComponent<ItemEnchantmentTemplate> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: ItemEnchantmentTemplateService,
-    public handlerService: ItemHandlerService,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly editorService = inject(ItemEnchantmentTemplateService);
+  readonly handlerService = inject(ItemHandlerService);
 }

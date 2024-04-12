@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SaiEditorComponent } from '@keira/shared/sai-editor';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { SaiCreatureEditorService } from './sai-creature-editor.service';
@@ -33,11 +33,6 @@ import { SaiTopBarComponent } from '@keira/shared/sai-editor';
   ],
 })
 export class SaiCreatureComponent extends SaiEditorComponent {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: SaiCreatureEditorService,
-    protected handlerService: SaiCreatureHandlerService,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly editorService = inject(SaiCreatureEditorService);
+  protected readonly handlerService = inject(SaiCreatureHandlerService);
 }

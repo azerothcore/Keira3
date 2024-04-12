@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import {
   CONDITION_DISTANCE_TO_CV3,
@@ -145,11 +145,6 @@ export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
     return this.conditionType === CONDITION_TYPES.CONDITION_STAND_STATE;
   }
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: ConditionsService,
-    public handlerService: ConditionsHandlerService,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly editorService = inject(ConditionsService);
+  readonly handlerService = inject(ConditionsHandlerService);
 }

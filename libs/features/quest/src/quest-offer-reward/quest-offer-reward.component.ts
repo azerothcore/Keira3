@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { EMOTE, QuestOfferReward } from '@keira/shared/acore-world-model';
 import { QuestHandlerService } from '../quest-handler.service';
@@ -33,12 +33,7 @@ import { NgClass } from '@angular/common';
 export class QuestOfferRewardComponent extends SingleRowEditorComponent<QuestOfferReward> {
   readonly EMOTE = EMOTE;
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: QuestOfferRewardService,
-    public handlerService: QuestHandlerService,
-    readonly questPreviewService: QuestPreviewService,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly editorService = inject(QuestOfferRewardService);
+  readonly handlerService = inject(QuestHandlerService);
+  readonly questPreviewService = inject(QuestPreviewService);
 }

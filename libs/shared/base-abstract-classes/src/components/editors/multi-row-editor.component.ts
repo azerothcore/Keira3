@@ -10,13 +10,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   template: '',
 })
 export abstract class MultiRowEditorComponent<T extends TableRow> extends EditorComponent<T> {
-  readonly DTCFG = DTCFG;
+  public abstract readonly editorService: MultiRowEditorService<T>;
+  protected abstract readonly handlerService: HandlerService<T>;
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: MultiRowEditorService<T>,
-    protected handlerService: HandlerService<T>,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly DTCFG = DTCFG;
 }
