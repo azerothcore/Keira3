@@ -1,0 +1,25 @@
+{
+  "name": "keira-features-texts",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/features/texts/src",
+  "prefix": "keira",
+  "projectType": "library",
+  "tags": ["scope:features"],
+  "targets": {
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "tsConfig": "libs/features/texts/tsconfig.spec.json",
+        "karmaConfig": "libs/features/texts/karma.conf.js",
+        "polyfills": ["zone.js", "zone.js/testing"],
+        "sourceMap": true,
+        "codeCoverage": true,
+        "styles": ["apps/keira/src/app/scss/main.scss"],
+        "scripts": ["node_modules/squel/dist/squel.min.js"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

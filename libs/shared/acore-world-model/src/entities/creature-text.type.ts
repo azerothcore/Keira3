@@ -1,5 +1,7 @@
 import { TableRow } from '@keira/shared/constants';
 
+export const CREATURE_TEXT_TABLE = 'creature_text';
+
 export class CreatureText extends TableRow {
   CreatureID: number = 0;
   GroupID: number = 0;

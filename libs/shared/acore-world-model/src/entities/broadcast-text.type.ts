@@ -1,5 +1,7 @@
 import { TableRow } from '@keira/shared/constants';
 
+export const BROADCAST_TEXT_TABLE = 'broadcast_text';
+
 export class BroadcastText extends TableRow {
   ID: number = 0;
   LanguageID: number = 0;
