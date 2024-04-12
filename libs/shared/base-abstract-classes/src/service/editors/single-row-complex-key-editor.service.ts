@@ -1,10 +1,8 @@
 import { Observable } from 'rxjs';
-import { ToastrService } from 'ngx-toastr';
 
 import { Class, TableRow } from '@keira/shared/constants';
 import { SingleRowEditorService } from './single-row-editor.service';
 import { HandlerService } from '../handlers/handler.service';
-import { MysqlQueryService } from '@keira/shared/db-layer';
 import { getPartial } from '@keira/shared/utils';
 import { QueryError } from 'mysql2';
 import { ChangeDetectorRef } from '@angular/core';
@@ -22,19 +20,8 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
     protected _entityNameField: string,
     protected isMainEntity: boolean,
     protected handlerService: HandlerService<T>,
-    readonly queryService: MysqlQueryService,
-    protected toastrService: ToastrService,
   ) {
-    super(
-      _entityClass,
-      _entityTable,
-      JSON.stringify(_entityIdField),
-      _entityNameField,
-      isMainEntity,
-      handlerService,
-      queryService,
-      toastrService,
-    );
+    super(_entityClass, _entityTable, JSON.stringify(_entityIdField), _entityNameField, isMainEntity, handlerService);
   }
 
   protected disableEntityIdField() {}

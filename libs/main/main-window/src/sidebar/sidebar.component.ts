@@ -6,10 +6,12 @@ import { CreatureHandlerService } from '@keira/features/creature';
 import { GameobjectHandlerService } from '@keira/features/gameobject';
 import { GossipHandlerService } from '@keira/features/gossip';
 import { ItemHandlerService } from '@keira/features/item';
-import { FishingLootHandlerService } from '@keira/features/other-loots';
-import { MailLootHandlerService } from '@keira/features/other-loots';
-import { ReferenceLootHandlerService } from '@keira/features/other-loots';
-import { SpellLootHandlerService } from '@keira/features/other-loots';
+import {
+  FishingLootHandlerService,
+  MailLootHandlerService,
+  ReferenceLootHandlerService,
+  SpellLootHandlerService,
+} from '@keira/features/other-loots';
 import { QuestHandlerService } from '@keira/features/quest';
 import { SpellHandlerService } from '@keira/features/spell';
 import { SidebarService } from './sidebar.service';

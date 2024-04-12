@@ -7,10 +7,10 @@ import { of, throwError } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { EditorService } from './editor.service';
-import Spy = jasmine.Spy;
 
 import { mockChangeDetectorRef } from '@keira/shared/test-utils';
 import { MockEntity, MockSingleRowEditorService } from '../../core.mock';
+import Spy = jasmine.Spy;
 
 describe('EditorService', () => {
   let service: EditorService<MockEntity>;

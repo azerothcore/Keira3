@@ -3,10 +3,10 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { Spied, TranslateTestingModule } from '@keira/shared/test-utils';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { LogoutBtnComponent } from './logout-btn.component';
-import Spy = jasmine.Spy;
 import { LoginConfigService } from '@keira/shared/login-config';
 import { ModalConfirmComponent } from '@keira/shared/base-editor-components';
 import { LocationService } from '@keira/shared/common-services';
+import Spy = jasmine.Spy;
 
 describe('LogoutBtnComponent', () => {
   beforeEach(waitForAsync(() => {

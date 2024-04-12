@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { LootEditorIdService } from '@keira/shared/base-abstract-classes';
-import { MysqlQueryService } from '@keira/shared/db-layer';
 import {
   CREATURE_TEMPLATE_ID,
   CREATURE_TEMPLATE_PICKPOCKETING_LOOT_ID,
@@ -9,7 +8,6 @@ import {
   PICKPOCKETING_LOOT_TEMPLATE_TABLE,
   PickpocketingLootTemplate,
 } from '@keira/shared/acore-world-model';
-import { ToastrService } from 'ngx-toastr';
 import { CreatureHandlerService } from '../creature-handler.service';
 
 @Injectable({
@@ -17,11 +15,7 @@ import { CreatureHandlerService } from '../creature-handler.service';
 })
 export class PickpocketingLootTemplateService extends LootEditorIdService<PickpocketingLootTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected handlerService: CreatureHandlerService,
-    readonly queryService: MysqlQueryService,
-    protected toastrService: ToastrService,
-  ) {
+  constructor(protected handlerService: CreatureHandlerService) {
     super(
       CreatureLootTemplate,
       PICKPOCKETING_LOOT_TEMPLATE_TABLE,
@@ -29,8 +23,6 @@ export class PickpocketingLootTemplateService extends LootEditorIdService<Pickpo
       CREATURE_TEMPLATE_ID,
       CREATURE_TEMPLATE_PICKPOCKETING_LOOT_ID,
       handlerService,
-      queryService,
-      toastrService,
     );
   }
 }

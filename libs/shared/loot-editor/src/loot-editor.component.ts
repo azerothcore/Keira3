@@ -10,7 +10,7 @@ import { ReferenceViewerComponent } from './reference-viewer.component';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { FlagsSelectorBtnComponent, ItemSelectorBtnComponent } from '@keira/shared/selectors';
 import { EditorButtonsComponent, IconComponent, QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { compareObjFn, SubscriptionHandler } from '@keira/shared/utils';

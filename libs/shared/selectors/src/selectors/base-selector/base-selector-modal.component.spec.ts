@@ -8,8 +8,8 @@ import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { SearchService } from '@keira/shared/base-abstract-classes';
 import { ItemTemplate } from '@keira/shared/acore-world-model';
 import { ItemSearchService } from '../../search/item-search.service';
-import Spy = jasmine.Spy;
 import { MysqlQueryService } from '@keira/shared/db-layer';
+import Spy = jasmine.Spy;
 
 describe('BaseSelectorModalComponent', () => {
   let component: BaseSelectorModalComponent;

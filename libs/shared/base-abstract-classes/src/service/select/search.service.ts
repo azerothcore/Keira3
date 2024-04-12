@@ -2,8 +2,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { QueryForm, StringKeys, TableRow } from '@keira/shared/constants';
 import { ChangeDetectorRef } from '@angular/core';
 import { BaseQueryService } from '@keira/shared/db-layer';
-import { ModelForm, ModelNestedForm } from '@keira/shared/utils';
-import { SubscriptionHandler } from '@keira/shared/utils';
+import { ModelForm, ModelNestedForm, SubscriptionHandler } from '@keira/shared/utils';
 
 export abstract class SearchService<T extends TableRow> extends SubscriptionHandler {
   query: string;

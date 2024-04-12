@@ -21,9 +21,9 @@ import { QuestTemplateAddonService } from '../quest-template-addon/quest-templat
 import { QuestTemplateService } from '../quest-template/quest-template.service';
 import { DifficultyLevel } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
-import Spy = jasmine.Spy;
 import { mockChangeDetectorRef } from '@keira/shared/test-utils';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
+import Spy = jasmine.Spy;
 
 describe('QuestPreviewService', () => {
   beforeEach(waitForAsync(() => {

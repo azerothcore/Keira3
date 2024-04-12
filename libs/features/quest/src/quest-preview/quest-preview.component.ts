@@ -4,7 +4,7 @@ import { QUEST_FACTION_REWARD } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { IconComponent } from '@keira/shared/base-editor-components';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection

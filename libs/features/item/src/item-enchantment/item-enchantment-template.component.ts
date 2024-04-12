@@ -4,12 +4,9 @@ import { ItemEnchantmentTemplate } from '@keira/shared/acore-world-model';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemEnchantmentTemplateService } from './item-enchantment-template.service';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { EditorButtonsComponent } from '@keira/shared/base-editor-components';
+import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { TranslateModule } from '@ngx-translate/core';
-
-import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
