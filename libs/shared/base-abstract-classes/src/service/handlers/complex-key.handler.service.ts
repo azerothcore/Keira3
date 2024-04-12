@@ -1,18 +1,9 @@
-import { Router } from '@angular/router';
-
 import { HandlerService } from './handler.service';
 import { getPartial } from '@keira/shared/utils';
 import { TableRow } from '@keira/shared/constants';
 
 export abstract class ComplexKeyHandlerService<T extends TableRow> extends HandlerService<T> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected mainEditorRoutePath: string,
-    protected router: Router,
-    protected idFields: string[],
-  ) {
-    super(mainEditorRoutePath, router);
-  }
+  protected abstract readonly idFields: string[];
 
   /* istanbul ignore next */ // TODO: fix coverage
   select(isNew: boolean, id: Partial<T>, name = null, navigate = true) {
