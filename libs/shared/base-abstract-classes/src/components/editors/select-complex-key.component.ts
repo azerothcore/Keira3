@@ -13,7 +13,7 @@ export abstract class SelectComplexKeyComponent<T extends TableRow> {
 
   constructor(
     public readonly selectService: SearchService<T>,
-    protected handlerService: ComplexKeyHandlerService<T>,
+    protected readonly handlerService: ComplexKeyHandlerService<T>,
   ) {}
 
   onSelect(event) {

@@ -24,7 +24,7 @@ export class SelectConditionsComponent extends SelectComplexKeyComponent<Conditi
 
   constructor(
     public readonly selectService: ConditionsSearchService,
-    protected handlerService: ConditionsHandlerService,
+    protected readonly handlerService: ConditionsHandlerService,
   ) {
     super(selectService, handlerService);
   }
