@@ -17,7 +17,7 @@ describe('SpellDbcItemsComponent', () => {
   class SpellDbcItemsComponentPage extends PageObject<TestHostComponent> {}
 
   @Component({
-    template: '<keira-spell-dbc-items [formGroup]="form"></keira-spell-dbc-items>',
+    template: '<keira-spell-dbc-items [formGroup]="form" />',
     standalone: true,
     imports: [RouterTestingModule, TranslateTestingModule, SpellDbcItemsComponent],
   })

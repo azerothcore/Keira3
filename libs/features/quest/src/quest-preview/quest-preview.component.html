@@ -61,7 +61,7 @@
         <p id="requiredSkill">
           Profession:
           @if (!!service.ICON_SKILLS[service.questTemplateAddon.RequiredSkillID]) {
-            <keira-icon [skillId]="service.questTemplateAddon.RequiredSkillID" [size]="'small'"></keira-icon>
+            <keira-icon [skillId]="service.questTemplateAddon.RequiredSkillID" [size]="'small'" />
           }
           {{ skill }} {{ reqSkillPoint }}
         </p>
@@ -71,7 +71,7 @@
         <p>
           <img [src]="'assets/img/quest/' + questStartIcon" id="itemQuestStartIcon" />
           Start:
-          <keira-icon [size]="'small'" [itemId]="qitem"></keira-icon>
+          <keira-icon [size]="'small'" [itemId]="qitem" />
           <strong class="colored"> {{ service.questStarterItem$ | async }}</strong> <span class="greyed"> [{{ qitem }}]</span>
         </p>
       }
@@ -149,7 +149,7 @@
       @if (!!service.startItem) {
         <p id="provided-item">
           Provided item:<br />
-          <keira-icon [size]="'small'" [itemId]="service.startItem"></keira-icon>
+          <keira-icon [size]="'small'" [itemId]="service.startItem" />
           <strong class="colored"> {{ service.startItemName$ | async }}</strong>
           <span class="greyed"> [{{ service.startItem }}]</span>
         </p>
@@ -213,7 +213,7 @@
           @for (i of [1, 2, 3, 4, 5, 6]; track i) {
             @if (service.questTemplate['RequiredItemId' + i]; as reqItem) {
               <p>
-                • <keira-icon [size]="'small'" [itemId]="reqItem"></keira-icon> &nbsp;<span class="colored">{{
+                • <keira-icon [size]="'small'" [itemId]="reqItem" /> &nbsp;<span class="colored">{{
                   service.mysqlQueryService.getItemNameById(reqItem) | async
                 }}</span>
                 {{ service.getObjItemCount(i) }}
@@ -266,7 +266,7 @@
           @if (service.rewardSpell(); as spell) {
             <div id="rewardSpell" class="mt-3">
               <p>You will learn:</p>
-              <keira-icon [size]="'small'" [spellId]="spell"></keira-icon>
+              <keira-icon [size]="'small'" [spellId]="spell" />
               <span class="colored"> {{ service.sqliteQueryService.getSpellNameById(spell) | async }}</span>
               <span class="greyed"> [{{ spell }}]</span>
             </div>
@@ -279,7 +279,7 @@
                 <div>
                   @if (service.isFieldAvailable('RewardItem', 'RewardAmount', i)) {
                     <p>
-                      <keira-icon [size]="'small'" [itemId]="service.questTemplate['RewardItem' + i]"></keira-icon>
+                      <keira-icon [size]="'small'" [itemId]="service.questTemplate['RewardItem' + i]" />
                       <span class="colored">
                         {{ service.mysqlQueryService.getItemNameById(service.questTemplate['RewardItem' + i]) | async }}</span
                       >
@@ -298,7 +298,7 @@
                 <div>
                   @if (service.isFieldAvailable('RewardChoiceItemID', 'RewardChoiceItemQuantity', i)) {
                     <p>
-                      <keira-icon [size]="'small'" [itemId]="service.questTemplate['RewardChoiceItemID' + i]"></keira-icon>
+                      <keira-icon [size]="'small'" [itemId]="service.questTemplate['RewardChoiceItemID' + i]" />
                       <span class="colored">
                         {{ service.mysqlQueryService.getItemNameById(service.questTemplate['RewardChoiceItemID' + i]) | async }}</span
                       >

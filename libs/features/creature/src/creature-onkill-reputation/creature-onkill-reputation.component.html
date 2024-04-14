@@ -1,8 +1,4 @@
-<keira-top-bar
-  [selected]="handlerService.selected"
-  [selectedName]="handlerService.selectedName"
-  [isNew]="handlerService.isNew"
-></keira-top-bar>
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
 
 <div class="container-fluid">
   @if (editorService.loading) {
@@ -12,7 +8,7 @@
   @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
     <div>
       <div class="content-block">
-        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
       </div>
       <form [formGroup]="editorService.form" class="form-group edit-form">
         <div class="content-block">
@@ -27,7 +23,7 @@
                 [config]="{ name: 'RewOnKillRepFaction1' }"
                 [control]="editorService.form.controls.RewOnKillRepFaction1"
                 [disabled]="editorService.form.controls.RewOnKillRepFaction1.disabled"
-              ></keira-faction-selector-btn>
+              />
               <input
                 [formControlName]="'RewOnKillRepFaction1'"
                 id="RewOnKillRepFaction1"
@@ -41,7 +37,7 @@
                 [config]="{ name: 'RewOnKillRepFaction2' }"
                 [control]="editorService.form.controls.RewOnKillRepFaction2"
                 [disabled]="editorService.form.controls.RewOnKillRepFaction2.disabled"
-              ></keira-faction-selector-btn>
+              />
               <input
                 [formControlName]="'RewOnKillRepFaction2'"
                 id="RewOnKillRepFaction2"
@@ -56,7 +52,7 @@
                 [disabled]="editorService.form.controls.MaxStanding1.disabled"
                 [config]="{ options: FACTION_RANK, name: 'MaxStanding1' }"
                 [modalClass]="'modal-md'"
-              ></keira-single-value-selector-btn>
+              />
               <input [formControlName]="'MaxStanding1'" id="MaxStanding1" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -80,7 +76,7 @@
                 [disabled]="editorService.form.controls.MaxStanding2.disabled"
                 [config]="{ options: FACTION_RANK, name: 'MaxStanding2' }"
                 [modalClass]="'modal-md'"
-              ></keira-single-value-selector-btn>
+              />
               <input [formControlName]="'MaxStanding2'" id="MaxStanding2" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">

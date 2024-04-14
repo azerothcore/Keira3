@@ -9,7 +9,7 @@
           [disabled]="formGroup.controls.EquippedItemClass.disabled"
           [config]="{ options: ITEM_CLASS, name: 'EquippedItemClass' }"
           [modalClass]="'modal-md'"
-        ></keira-single-value-selector-btn>
+        />
         <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.ITEMS.EQUIPPED_ITEM_CLASS' | translate"></i>
         <input [formControlName]="'EquippedItemClass'" id="EquippedItemClass" type="number" class="form-control form-control-sm" />
       </div>
@@ -26,7 +26,7 @@
             [disabled]="formGroup.controls.EquippedItemSubclass.disabled"
             [config]="{ flags: SPELL_DBC_ITEM_SUBCLASS[formGroup.controls.EquippedItemClass.value], name: 'EquippedItemSubclass' }"
             [modalClass]="'modal-md'"
-          ></keira-flags-selector-btn>
+          />
         }
         <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.ITEMS.EQUIPPED_ITEM_SUBCLASS' | translate"></i>
         <input [formControlName]="'EquippedItemSubclass'" id="EquippedItemSubclass" type="number" class="form-control form-control-sm" />
@@ -38,7 +38,7 @@
           [disabled]="formGroup.controls.EquippedItemInvTypes.disabled"
           [config]="{ flags: SPELL_DBC_INVENTORY_TYPE, name: 'EquippedItemInvTypes' }"
           [modalClass]="'modal-md'"
-        ></keira-flags-selector-btn>
+        />
         <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.ITEMS.EQUIPPED_ITEM_INV_TYPES' | translate"></i>
         <input [formControlName]="'EquippedItemInvTypes'" id="EquippedItemInvTypes" type="number" class="form-control form-control-sm" />
       </div>
@@ -53,7 +53,7 @@
           [control]="formGroup.controls.Totem_1"
           [disabled]="formGroup.controls.Totem_1.disabled"
           [config]="{ name: 'Totem_1' }"
-        ></keira-item-selector-btn>
+        />
         <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.ITEMS.TOTEM_1' | translate"></i>
         <input [formControlName]="'Totem_1'" id="Totem_1" type="number" class="form-control form-control-sm" />
       </div>
@@ -64,7 +64,7 @@
           [control]="formGroup.controls.Totem_2"
           [disabled]="formGroup.controls.Totem_2.disabled"
           [config]="{ name: 'Totem_2' }"
-        ></keira-item-selector-btn>
+        />
         <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.ITEMS.TOTEM_2' | translate"></i>
         <input [formControlName]="'Totem_2'" id="Totem_2" type="number" class="form-control form-control-sm" />
       </div>
@@ -77,7 +77,7 @@
           [disabled]="formGroup.controls.RequiredTotemCategoryID_1.disabled"
           [config]="{ options: TOTEM_CATEGORY, name: 'RequiredTotemCategoryID_1' }"
           [modalClass]="'modal-md'"
-        ></keira-single-value-selector-btn>
+        />
         <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.ITEMS.REQUIRED_TOTEM_CATEGORY_ID_1' | translate"></i>
         <input
           [formControlName]="'RequiredTotemCategoryID_1'"
@@ -93,7 +93,7 @@
           [disabled]="formGroup.controls.RequiredTotemCategoryID_2.disabled"
           [config]="{ options: TOTEM_CATEGORY, name: 'RequiredTotemCategoryID_2' }"
           [modalClass]="'modal-md'"
-        ></keira-single-value-selector-btn>
+        />
         <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.ITEMS.REQUIRED_TOTEM_CATEGORY_ID_2' | translate"></i>
         <input
           [formControlName]="'RequiredTotemCategoryID_2'"
@@ -115,7 +115,7 @@
               [control]="formGroup.controls['Reagent_' + i]"
               [disabled]="formGroup.controls['Reagent_' + i].disabled"
               [config]="{ name: 'Reagent_' + i }"
-            ></keira-item-selector-btn>
+            />
             <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.ITEMS.REAGENT' | translate"></i>
             <input [formControlName]="'Reagent_' + i" [id]="'Reagent_' + i" type="number" class="form-control form-control-sm" />
           </div>

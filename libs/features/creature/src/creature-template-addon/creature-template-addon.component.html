@@ -1,8 +1,4 @@
-<keira-top-bar
-  [selected]="handlerService.selected"
-  [selectedName]="handlerService.selectedName"
-  [isNew]="handlerService.isNew"
-></keira-top-bar>
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
 
 <div class="container-fluid">
   @if (editorService.loading) {
@@ -12,7 +8,7 @@
   @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
     <div>
       <div class="content-block">
-        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
       </div>
       <form [formGroup]="editorService.form" class="form-group edit-form">
         <div class="content-block">
@@ -39,7 +35,7 @@
                 [disabled]="editorService.form.controls.bytes1.disabled"
                 [config]="{ options: CREATURE_ADDON_BYTES_1, name: 'bytes1' }"
                 [modalClass]="'modal-xl'"
-              ></keira-single-value-selector-btn>
+              />
               <input [formControlName]="'bytes1'" id="bytes1" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -49,7 +45,7 @@
                 [disabled]="editorService.form.controls.bytes2.disabled"
                 [config]="{ options: CREATURE_ADDON_BYTES_2, name: 'bytes2' }"
                 [modalClass]="'modal-lg'"
-              ></keira-single-value-selector-btn>
+              />
               <input [formControlName]="'bytes2'" id="bytes2" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -59,7 +55,7 @@
                 [disabled]="editorService.form.controls.emote.disabled"
                 [config]="{ options: EMOTE, name: 'emote' }"
                 [modalClass]="'modal-md'"
-              ></keira-single-value-selector-btn>
+              />
               <input [formControlName]="'emote'" id="emote" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">

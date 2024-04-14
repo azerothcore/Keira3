@@ -31,7 +31,7 @@
   <tabset id="locales">
     @for (locale of LOCALES; track locale) {
       <tab [heading]="locale" [id]="locale">
-        <keira-spell-dbc-locale [formGroup]="formGroup" [locale]="locale"></keira-spell-dbc-locale>
+        <keira-spell-dbc-locale [formGroup]="formGroup" [locale]="locale" />
       </tab>
     }
   </tabset>

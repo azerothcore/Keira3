@@ -1,8 +1,4 @@
-<keira-top-bar
-  [selected]="handlerService.selected"
-  [selectedName]="handlerService.selectedName"
-  [isNew]="handlerService.isNew"
-></keira-top-bar>
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
 
 <div class="container-fluid editor-with-preview" [ngClass]="{ 'show-preview': showGossipPreview }">
   @if (editorService.loading) {
@@ -12,7 +8,7 @@
   @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
     <div>
       <div class="content-block">
-        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
       </div>
       <div class="content-block">
         <form [formGroup]="editorService.form" class="form-group edit-form">
@@ -29,7 +25,7 @@
                 [disabled]="editorService.form.controls.OptionIcon.disabled"
                 [config]="{ options: OPTION_ICON, name: 'OptionIcon' }"
                 [modalClass]="'modal-md'"
-              ></keira-single-value-selector-btn>
+              />
               <input [formControlName]="'OptionIcon'" id="OptionIcon" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
@@ -58,7 +54,7 @@
                 [disabled]="editorService.form.controls.OptionType.disabled"
                 [config]="{ options: OPTION_TYPE, name: 'OptionType' }"
                 [modalClass]="'modal-xl'"
-              ></keira-single-value-selector-btn>
+              />
               <input [formControlName]="'OptionType'" id="OptionType" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
@@ -116,7 +112,7 @@
         </form>
         <div class="row">
           <div class="col-12">
-            <keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>
+            <keira-editor-buttons [editorService]="editorService" />
             <ngx-datatable
               id="editor-table"
               class="bootstrap table table-striped text-center datatable-select"
@@ -150,7 +146,7 @@
           </div>
         </div>
       </div>
-      <keira-gossip-menu-option-preview [options]="editorService.newRows" [show]="showGossipPreview"></keira-gossip-menu-option-preview>
+      <keira-gossip-menu-option-preview [options]="editorService.newRows" [show]="showGossipPreview" />
       <button class="btn btn-secondary btn-sm toggle-preview-button" (click)="showGossipPreview = !showGossipPreview">
         <i class="fas {{ showGossipPreview ? 'fa-angle-double-right' : 'fa-angle-double-left' }}"></i>
       </button>

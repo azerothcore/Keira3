@@ -1,4 +1,4 @@
-<keira-sai-top-bar [handler]="getHandler()"></keira-sai-top-bar>
+<keira-sai-top-bar [handler]="getHandler()" />
 
 <div class="container-fluid">
   @if (editorService.loading) {
@@ -7,7 +7,7 @@
 
   @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
     <div class="content-block">
-      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
     </div>
     <div class="content-block">
       <form [formGroup]="editorService.form" class="edit-form mb-2">
@@ -82,7 +82,7 @@
                   [disabled]="editorService.form.controls.event_phase_mask.disabled"
                   [config]="{ flags: EVENT_PHASE_MASK, name: 'event_phase_mask' }"
                   [modalClass]="'modal-lg'"
-                ></keira-flags-selector-btn>
+                />
                 <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SMARTAI.EDITOR.PHASE' | translate"></i>
               </div>
               <div class="form-group col">
@@ -106,7 +106,7 @@
                   [disabled]="editorService.form.controls.event_flags.disabled"
                   [config]="{ flags: SMART_EVENT_FLAGS, name: 'event_flags' }"
                   [modalClass]="'modal-lg'"
-                ></keira-flags-selector-btn>
+                />
               </div>
               <div class="form-group col">
                 <input [formControlName]="'event_flags'" id="event_flags" type="number" class="form-control form-control-sm" />
@@ -505,7 +505,7 @@
       </div>
       <div class="row">
         <div class="col-12">
-          <keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>
+          <keira-editor-buttons [editorService]="editorService" />
           <button id="generate-comments-btn" class="btn btn-primary btn-sm float-end" (click)="editorService.generateComments(true)">
             Generate comments (all)
           </button>
@@ -559,7 +559,7 @@
           Creature's Timed Actionlists
           <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SMARTAI.EDITOR.TIMED_ACTIONLISTS' | translate"></i>
         </p>
-        <keira-timed-actionlist [creatureId]="entryOrGuid"></keira-timed-actionlist>
+        <keira-timed-actionlist [creatureId]="entryOrGuid" />
       </div>
     }
   }

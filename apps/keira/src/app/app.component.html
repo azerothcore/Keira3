@@ -1,8 +1,8 @@
 @if (!mysqlService.connectionEstablished) {
-  <keira-connection-window></keira-connection-window>
+  <keira-connection-window />
 }
 @if (mysqlService.connectionEstablished) {
-  <keira-main-window></keira-main-window>
+  <keira-main-window />
 }
 
 <div id="sqlite-e2e-test" [attr.e2e]="sqliteResult?.name" style="display: none"></div>

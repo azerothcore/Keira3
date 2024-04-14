@@ -1,8 +1,4 @@
-<keira-top-bar
-  [selected]="handlerService.selected"
-  [selectedName]="handlerService.selectedName"
-  [isNew]="handlerService.isNew"
-></keira-top-bar>
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
 
 <div class="container-fluid">
   <div class="content-block">
@@ -12,7 +8,7 @@
       [customStartingId]="customStartingId"
       [handlerService]="handlerService"
       [queryService]="queryService"
-    ></keira-create>
+    />
   </div>
 
   <div class="content-block">
@@ -42,7 +38,7 @@
           </button>
         </div>
       </div>
-      <keira-highlightjs-wrapper [code]="selectService.query"></keira-highlightjs-wrapper>
+      <keira-highlightjs-wrapper [code]="selectService.query" />
     </form>
 
     @if (selectService.rows) {
