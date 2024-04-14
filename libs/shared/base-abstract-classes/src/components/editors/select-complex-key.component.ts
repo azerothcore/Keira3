@@ -12,7 +12,7 @@ export abstract class SelectComplexKeyComponent<T extends TableRow> {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   constructor(
-    public selectService: SearchService<T>,
+    public readonly selectService: SearchService<T>,
     protected handlerService: ComplexKeyHandlerService<T>,
   ) {}
 

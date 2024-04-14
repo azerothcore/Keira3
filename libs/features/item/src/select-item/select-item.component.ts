@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
-import { MysqlQueryService } from '@keira/shared/db-layer';
 import { ITEM_TEMPLATE_CUSTOM_STARTING_ID, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_TABLE, ItemTemplate } from '@keira/shared/acore-world-model';
 import { ItemHandlerService } from '../item-handler.service';
 import { SelectItemService } from './select-item.service';
@@ -31,10 +30,9 @@ import { TranslateModule } from '@ngx-translate/core';
 export class SelectItemComponent extends SelectComponent<ItemTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    public selectService: SelectItemService,
-    public handlerService: ItemHandlerService,
-    public queryService: MysqlQueryService,
+    public readonly selectService: SelectItemService,
+    public readonly handlerService: ItemHandlerService,
   ) {
-    super(ITEM_TEMPLATE_TABLE, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_CUSTOM_STARTING_ID, selectService, handlerService, queryService);
+    super(ITEM_TEMPLATE_TABLE, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_CUSTOM_STARTING_ID, selectService, handlerService);
   }
 }

@@ -23,7 +23,7 @@ export class SelectConditionsComponent extends SelectComplexKeyComponent<Conditi
   readonly CONDITION_SOURCE_TYPES_KEYS = getEnumKeys(CONDITION_SOURCE_TYPES);
 
   constructor(
-    public selectService: ConditionsSearchService,
+    public readonly selectService: ConditionsSearchService,
     protected handlerService: ConditionsHandlerService,
   ) {
     super(selectService, handlerService);
