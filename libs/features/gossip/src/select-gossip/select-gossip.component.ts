@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
-import { MysqlQueryService } from '@keira/shared/db-layer';
 import { GOSSIP_MENU_CUSTOM_STARTING_ID, GOSSIP_MENU_ID, GOSSIP_MENU_TABLE, GossipMenu } from '@keira/shared/acore-world-model';
 import { GossipHandlerService } from '../gossip-handler.service';
 import { SelectGossipService } from './select-gossip.service';
@@ -31,10 +30,9 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
 export class SelectGossipComponent extends SelectComponent<GossipMenu> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    public selectService: SelectGossipService,
-    public handlerService: GossipHandlerService,
-    public queryService: MysqlQueryService,
+    public readonly selectService: SelectGossipService,
+    public readonly handlerService: GossipHandlerService,
   ) {
-    super(GOSSIP_MENU_TABLE, GOSSIP_MENU_ID, GOSSIP_MENU_CUSTOM_STARTING_ID, selectService, handlerService, queryService);
+    super(GOSSIP_MENU_TABLE, GOSSIP_MENU_ID, GOSSIP_MENU_CUSTOM_STARTING_ID, selectService, handlerService);
   }
 }

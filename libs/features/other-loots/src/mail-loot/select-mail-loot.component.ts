@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
-import { MysqlQueryService } from '@keira/shared/db-layer';
 import {
   LOOT_TEMPLATE_ID,
   MAIL_LOOT_TEMPLATE_CUSTOM_STARTING_ID,
@@ -35,10 +34,9 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
 export class SelectMailLootComponent extends SelectComponent<MailLootTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    public selectService: SelectMailLootService,
-    public handlerService: MailLootHandlerService,
-    public queryService: MysqlQueryService,
+    public readonly selectService: SelectMailLootService,
+    public readonly handlerService: MailLootHandlerService,
   ) {
-    super(MAIL_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID, MAIL_LOOT_TEMPLATE_CUSTOM_STARTING_ID, selectService, handlerService, queryService);
+    super(MAIL_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID, MAIL_LOOT_TEMPLATE_CUSTOM_STARTING_ID, selectService, handlerService);
   }
 }

@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
-import { MysqlQueryService } from '@keira/shared/db-layer';
 import {
   GAMEOBJECT_TEMPLATE_CUSTOM_STARTING_ID,
   GAMEOBJECT_TEMPLATE_ID,
@@ -35,17 +34,9 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
 export class SelectGameobjectComponent extends SelectComponent<GameobjectTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    public selectService: SelectGameobjectService,
-    public handlerService: GameobjectHandlerService,
-    public queryService: MysqlQueryService,
+    public readonly selectService: SelectGameobjectService,
+    public readonly handlerService: GameobjectHandlerService,
   ) {
-    super(
-      GAMEOBJECT_TEMPLATE_TABLE,
-      GAMEOBJECT_TEMPLATE_ID,
-      GAMEOBJECT_TEMPLATE_CUSTOM_STARTING_ID,
-      selectService,
-      handlerService,
-      queryService,
-    );
+    super(GAMEOBJECT_TEMPLATE_TABLE, GAMEOBJECT_TEMPLATE_ID, GAMEOBJECT_TEMPLATE_CUSTOM_STARTING_ID, selectService, handlerService);
   }
 }

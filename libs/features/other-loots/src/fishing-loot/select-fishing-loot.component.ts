@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
-import { MysqlQueryService } from '@keira/shared/db-layer';
 import {
   FISHING_LOOT_TEMPLATE_CUSTOM_STARTING_ID,
   FISHING_LOOT_TEMPLATE_TABLE,
@@ -34,17 +33,9 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
 export class SelectFishingLootComponent extends SelectComponent<FishingLootTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    public selectService: SelectFishingLootService,
-    public handlerService: FishingLootHandlerService,
-    public queryService: MysqlQueryService,
+    public readonly selectService: SelectFishingLootService,
+    public readonly handlerService: FishingLootHandlerService,
   ) {
-    super(
-      FISHING_LOOT_TEMPLATE_TABLE,
-      LOOT_TEMPLATE_ID,
-      FISHING_LOOT_TEMPLATE_CUSTOM_STARTING_ID,
-      selectService,
-      handlerService,
-      queryService,
-    );
+    super(FISHING_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID, FISHING_LOOT_TEMPLATE_CUSTOM_STARTING_ID, selectService, handlerService);
   }
 }

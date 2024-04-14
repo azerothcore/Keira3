@@ -8,7 +8,6 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { MysqlQueryService } from '@keira/shared/db-layer';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,10 +27,9 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
 export class SelectQuestComponent extends SelectComponent<QuestTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    public selectService: SelectQuestService,
-    public handlerService: QuestHandlerService,
-    public queryService: MysqlQueryService,
+    public readonly selectService: SelectQuestService,
+    public readonly handlerService: QuestHandlerService,
   ) {
-    super(QUEST_TEMPLATE_TABLE, QUEST_TEMPLATE_ID, QUEST_TEMPLATE_CUSTOM_STARTING_ID, selectService, handlerService, queryService);
+    super(QUEST_TEMPLATE_TABLE, QUEST_TEMPLATE_ID, QUEST_TEMPLATE_CUSTOM_STARTING_ID, selectService, handlerService);
   }
 }
