@@ -18,7 +18,7 @@ describe('SpellDbcTextsComponent', () => {
   }
 
   @Component({
-    template: '<keira-spell-dbc-texts [formGroup]="form"></keira-spell-dbc-texts>',
+    template: '<keira-spell-dbc-texts [formGroup]="form" />',
     standalone: true,
     imports: [RouterTestingModule, TranslateTestingModule, SpellDbcTextsComponent],
   })

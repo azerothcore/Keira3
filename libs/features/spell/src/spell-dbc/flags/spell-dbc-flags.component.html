@@ -9,7 +9,7 @@
           [disabled]="formGroup.controls.TargetCreatureType.disabled"
           [config]="{ flags: SPELL_DBC_CREATURE_TYPE_FLAGS, name: 'TargetCreatureType' }"
           [modalClass]="'modal-md'"
-        ></keira-flags-selector-btn>
+        />
         <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.FLAGS.TARGET_CREATURE_TYPE' | translate"></i>
         <input [formControlName]="'TargetCreatureType'" id="TargetCreatureType" type="number" class="form-control form-control-sm" />
       </div>
@@ -20,7 +20,7 @@
           [disabled]="formGroup.controls.ShapeshiftMask.disabled"
           [config]="{ flags: SPELL_DBC_STANCES_FLAGS, name: 'ShapeshiftMask' }"
           [modalClass]="'modal-md'"
-        ></keira-flags-selector-btn>
+        />
         <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.FLAGS.SHAPESHIFT_MASK' | translate"></i>
         <input [formControlName]="'ShapeshiftMask'" id="ShapeshiftMask" type="number" class="form-control form-control-sm" />
       </div>
@@ -31,7 +31,7 @@
           [disabled]="formGroup.controls.ShapeshiftMask.disabled"
           [config]="{ flags: SPELL_DBC_STANCES_FLAGS, name: 'ShapeshiftMask' }"
           [modalClass]="'modal-md'"
-        ></keira-flags-selector-btn>
+        />
         <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.FLAGS.SHAPESHIFT_EXCLUDE' | translate"></i>
         <input [formControlName]="'ShapeshiftExclude'" id="ShapeshiftExclude" type="number" class="form-control form-control-sm" />
       </div>
@@ -42,7 +42,7 @@
           [control]="formGroup.controls.FacingCasterFlags"
           [disabled]="formGroup.controls.FacingCasterFlags.disabled"
           [config]="{ flags: SPELL_DBC_FACING_FRONT_FLAG, name: 'FacingCasterFlags' }"
-        ></keira-flags-selector-btn>
+        />
         <input [formControlName]="'FacingCasterFlags'" id="FacingCasterFlags" type="number" class="form-control form-control-sm" />
       </div>
     </div>
@@ -57,7 +57,7 @@
           [disabled]="formGroup.controls.InterruptFlags.disabled"
           [config]="{ flags: SPELL_DBC_INTERRUPT_FLAGS, name: 'InterruptFlags' }"
           [modalClass]="'modal-md'"
-        ></keira-flags-selector-btn>
+        />
         <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.FLAGS.INTERRUPT_FLAGS_TOOLTIP' | translate"></i>
         <input [formControlName]="'InterruptFlags'" id="InterruptFlags" type="number" class="form-control form-control-sm" />
       </div>
@@ -68,7 +68,7 @@
           [disabled]="formGroup.controls.AuraInterruptFlags.disabled"
           [config]="{ flags: SPELL_DBC_AURA_INTERRUPT_FLAGS, name: 'AuraInterruptFlags' }"
           [modalClass]="'modal-md'"
-        ></keira-flags-selector-btn>
+        />
         <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.FLAGS.AURA_INTERRUPT_FLAGS' | translate"></i>
         <input [formControlName]="'AuraInterruptFlags'" id="AuraInterruptFlags" type="number" class="form-control form-control-sm" />
       </div>
@@ -79,7 +79,7 @@
           [disabled]="formGroup.controls.ChannelInterruptFlags.disabled"
           [config]="{ flags: SPELL_DBC_CHANNEL_INTERRUPT_FLAGS, name: 'ChannelInterruptFlags' }"
           [modalClass]="'modal-md'"
-        ></keira-flags-selector-btn>
+        />
         <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.FLAGS.CHANNEL_INTERRUPT_FLAGS' | translate"></i>
         <input [formControlName]="'ChannelInterruptFlags'" id="ChannelInterruptFlags" type="number" class="form-control form-control-sm" />
       </div>
@@ -96,7 +96,7 @@
             [disabled]="formGroup.controls['Attributes' + suffix].disabled"
             [config]="{ flags: SPELL_DBC_ATTRIBUTES_FLAGS[suffix], name: 'Attributes' + suffix }"
             [modalClass]="'modal-md'"
-          ></keira-flags-selector-btn>
+          />
           <label class="control-label" [for]="'Attributes' + suffix">Attributes{{ suffix }}</label>
           <input
             [formControlName]="'Attributes' + suffix"

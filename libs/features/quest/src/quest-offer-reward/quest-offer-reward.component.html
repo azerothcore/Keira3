@@ -1,8 +1,4 @@
-<keira-top-bar
-  [selected]="handlerService.selected"
-  [selectedName]="handlerService.selectedName"
-  [isNew]="handlerService.isNew"
-></keira-top-bar>
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
 
 <div class="container-fluid editor-with-preview" [ngClass]="{ 'show-preview': questPreviewService.showPreview }">
   @if (editorService.loading) {
@@ -12,7 +8,7 @@
   @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
     <div>
       <div class="content-block">
-        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
       </div>
       <div class="content-block">
         <form [formGroup]="editorService.form" class="form-group edit-form">
@@ -39,7 +35,7 @@
                       [disabled]="editorService.form.controls['Emote' + i].disabled"
                       [config]="{ options: EMOTE, name: 'Emote' + i }"
                       [modalClass]="'modal-md'"
-                    ></keira-single-value-selector-btn>
+                    />
                     <input [formControlName]="'Emote' + i" id="Emote{{ i }}" type="number" class="form-control form-control-sm" />
                   </div>
                   <div class="col-12">
@@ -53,7 +49,7 @@
           </div>
         </form>
       </div>
-      <keira-quest-preview></keira-quest-preview>
+      <keira-quest-preview />
     </div>
   }
 </div>

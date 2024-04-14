@@ -10,7 +10,7 @@
             [disabled]="formGroup.controls[getFieldName('Effect')].disabled"
             [config]="{ options: SPELL_DBC_EFFECT, name: getFieldName('Effect') }"
             [modalClass]="'modal-md'"
-          ></keira-single-value-selector-btn>
+          />
           <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT' | translate"></i>
           <input
             [formControlName]="getFieldName('Effect')"
@@ -189,7 +189,7 @@
             [disabled]="formGroup.controls[getFieldName('EffectMechanic')].disabled"
             [config]="{ options: SPELL_MECHANIC, name: getFieldName('EffectMechanic') }"
             [modalClass]="'modal-md'"
-          ></keira-single-value-selector-btn>
+          />
           <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_MECHANIC' | translate"></i>
           <input
             [formControlName]="getFieldName('EffectMechanic')"
@@ -210,7 +210,7 @@
             [disabled]="formGroup.controls[getFieldName('EffectAura')].disabled"
             [config]="{ options: SPELL_DBC_APPLY_AURA_NAME, name: getFieldName('EffectAura') }"
             [modalClass]="'modal-md'"
-          ></keira-single-value-selector-btn>
+          />
           <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_AURA' | translate"></i>
           <input
             [formControlName]="getFieldName('EffectAura')"
@@ -284,7 +284,7 @@
             [control]="formGroup.controls[getFieldName('EffectSpellClassMaskA')]"
             [disabled]="formGroup.controls[getFieldName('EffectSpellClassMaskA')].disabled"
             [config]="{ flags: SPELL_DBC_CLASS_MASK_FLAGS, name: getFieldName('EffectSpellClassMaskA') }"
-          ></keira-flags-selector-btn>
+          />
           <i
             class="fas fa-info-circle ms-1"
             placement="auto"
@@ -303,7 +303,7 @@
             [control]="formGroup.controls[getFieldName('EffectSpellClassMaskB')]"
             [disabled]="formGroup.controls[getFieldName('EffectSpellClassMaskB')].disabled"
             [config]="{ flags: SPELL_DBC_CLASS_MASK_FLAGS, name: getFieldName('EffectSpellClassMaskB') }"
-          ></keira-flags-selector-btn>
+          />
           <i
             class="fas fa-info-circle ms-1"
             placement="auto"
@@ -322,7 +322,7 @@
             [control]="formGroup.controls[getFieldName('EffectSpellClassMaskC')]"
             [disabled]="formGroup.controls[getFieldName('EffectSpellClassMaskC')].disabled"
             [config]="{ flags: SPELL_DBC_CLASS_MASK_FLAGS, name: getFieldName('EffectSpellClassMaskC') }"
-          ></keira-flags-selector-btn>
+          />
           <i
             class="fas fa-info-circle ms-1"
             placement="auto"

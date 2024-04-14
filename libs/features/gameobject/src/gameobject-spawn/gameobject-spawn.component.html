@@ -1,8 +1,4 @@
-<keira-top-bar
-  [selected]="handlerService.selected"
-  [selectedName]="handlerService.selectedName"
-  [isNew]="handlerService.isNew"
-></keira-top-bar>
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
 
 <div class="container-fluid">
   @if (editorService.loading) {
@@ -12,7 +8,7 @@
   @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
     <div>
       <div class="content-block">
-        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
       </div>
       <div class="content-block">
         <form [formGroup]="editorService.form" class="form-group edit-form">
@@ -27,7 +23,7 @@
                 [config]="{ name: 'map' }"
                 [control]="editorService.form.controls.map"
                 [disabled]="editorService.form.controls.map.disabled"
-              ></keira-map-selector-btn>
+              />
               <input [formControlName]="'map'" id="map" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
@@ -40,7 +36,7 @@
                 [config]="{ name: 'areaId' }"
                 [control]="editorService.form.controls.areaId"
                 [disabled]="editorService.form.controls.areaId.disabled"
-              ></keira-area-selector-btn>
+              />
               <input [formControlName]="'areaId'" id="areaId" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
@@ -50,7 +46,7 @@
                 [disabled]="editorService.form.controls.spawnMask.disabled"
                 [config]="{ flags: SPAWN_MASK, name: 'spawnMask' }"
                 [modalClass]="'modal-lg'"
-              ></keira-flags-selector-btn>
+              />
               <input [formControlName]="'spawnMask'" id="spawnMask" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
@@ -60,7 +56,7 @@
                 [disabled]="editorService.form.controls.phaseMask.disabled"
                 [config]="{ flags: PHASE_MASK, name: 'phaseMask' }"
                 [modalClass]="'modal-lg'"
-              ></keira-flags-selector-btn>
+              />
               <input [formControlName]="'phaseMask'" id="phaseMask" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
@@ -123,7 +119,7 @@
         </form>
         <div class="row">
           <div class="col-12">
-            <keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>
+            <keira-editor-buttons [editorService]="editorService" />
             <ngx-datatable
               id="editor-table"
               class="bootstrap table table-striped text-center datatable-select"

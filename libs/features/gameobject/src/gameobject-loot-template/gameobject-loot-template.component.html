@@ -1,8 +1,4 @@
-<keira-top-bar
-  [selected]="handlerService.selected"
-  [selectedName]="handlerService.selectedName"
-  [isNew]="handlerService.isNew"
-></keira-top-bar>
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
 
 @if (lootId !== null) {
   <div class="container-fluid">
@@ -19,7 +15,7 @@
     }
     @if (lootId > 0 && (type === 3 || type === 25) && editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
       <div>
-        <keira-loot-editor [editorService]="editorService"></keira-loot-editor>
+        <keira-loot-editor [editorService]="editorService" />
       </div>
     }
   </div>

@@ -1,8 +1,4 @@
-<keira-top-bar
-  [selected]="handlerService.selected"
-  [selectedName]="handlerService.selectedName"
-  [isNew]="handlerService.isNew"
-></keira-top-bar>
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
 
 <div class="container-fluid">
   @if (editorService.loading) {
@@ -12,21 +8,21 @@
   @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
     <div>
       <div class="content-block">
-        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
       </div>
       <div class="content-block">
         <form [formGroup]="editorService.form" class="form-group edit-form">
           <div class="row">
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
               <label class="control-label" for="ItemId">
-                <keira-icon [itemId]="editorService.form.controls.ItemId.value"></keira-icon>
+                <keira-icon [itemId]="editorService.form.controls.ItemId.value" />
                 ItemId
               </label>
               <keira-item-selector-btn
                 [control]="editorService.form.controls.ItemId"
                 [disabled]="editorService.form.controls.ItemId.disabled"
                 [config]="{ name: 'ItemId' }"
-              ></keira-item-selector-btn>
+              />
               <input [formControlName]="'ItemId'" id="ItemId" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
@@ -41,7 +37,7 @@
         </form>
         <div class="row">
           <div class="col-12">
-            <keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>
+            <keira-editor-buttons [editorService]="editorService" />
             <ngx-datatable
               id="editor-table"
               class="bootstrap table table-striped text-center datatable-select datatable-icon-list"
@@ -61,7 +57,7 @@
               </ngx-datatable-column>
               <ngx-datatable-column [minWidth]="42" [maxWidth]="42" [sortable]="false">
                 <ng-template let-row="row" ngx-datatable-cell-template>
-                  <keira-icon [itemId]="row.Item"></keira-icon>
+                  <keira-icon [itemId]="row.Item" />
                 </ng-template>
               </ngx-datatable-column>
               <ngx-datatable-column name="Idx" prop="Idx" [minWidth]="80" [maxWidth]="120"></ngx-datatable-column>

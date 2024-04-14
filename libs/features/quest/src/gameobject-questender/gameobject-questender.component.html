@@ -1,8 +1,4 @@
-<keira-top-bar
-  [selected]="handlerService.selected"
-  [selectedName]="handlerService.selectedName"
-  [isNew]="handlerService.isNew"
-></keira-top-bar>
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
 
 <div class="container-fluid editor-with-preview" [ngClass]="{ 'show-preview': questPreviewService.showPreview }">
   @if (editorService.loading) {
@@ -12,7 +8,7 @@
   @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
     <div>
       <div class="content-block">
-        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
       </div>
       <div class="content-block">
         <form [formGroup]="editorService.form" class="form-group edit-form">
@@ -24,7 +20,7 @@
                 [control]="editorService.form.controls.id"
                 [disabled]="editorService.form.controls.id.disabled"
                 [config]="{ name: 'id' }"
-              ></keira-gameobject-selector-btn>
+              />
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'gameobject_template.entry'"></i>
               <input [formControlName]="'id'" id="id" type="number" class="form-control form-control-sm" />
             </div>
@@ -36,7 +32,7 @@
         </form>
         <div class="row">
           <div class="col-12">
-            <keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>
+            <keira-editor-buttons [editorService]="editorService" />
             <ngx-datatable
               id="editor-table"
               class="bootstrap table table-striped text-center datatable-select"
@@ -64,7 +60,7 @@
           </div>
         </div>
       </div>
-      <keira-quest-preview></keira-quest-preview>
+      <keira-quest-preview />
     </div>
   }
 </div>

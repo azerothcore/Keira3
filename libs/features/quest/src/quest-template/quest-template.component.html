@@ -1,8 +1,4 @@
-<keira-top-bar
-  [selected]="handlerService.selected"
-  [selectedName]="handlerService.selectedName"
-  [isNew]="handlerService.isNew"
-></keira-top-bar>
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
 
 <div class="container-fluid editor-with-preview" [ngClass]="{ 'show-preview': questPreviewService.showPreview }">
   @if (editorService.loading) {
@@ -12,7 +8,7 @@
   @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
     <div>
       <div class="content-block">
-        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
       </div>
       <form [formGroup]="editorService.form" class="form-group edit-form">
         <div class="content-block">
@@ -35,7 +31,7 @@
                 [disabled]="editorService.form.controls.QuestType.disabled"
                 [config]="{ options: QUEST_TYPE, name: 'QuestType' }"
                 [modalClass]="'modal-md'"
-              ></keira-single-value-selector-btn>
+              />
               <input [formControlName]="'QuestType'" id="QuestType" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-6 col-lg-4 col-xl-2">
@@ -60,7 +56,7 @@
                 [disabled]="editorService.form.controls.QuestInfoID.disabled"
                 [config]="{ options: QUEST_INFO, name: 'QuestInfoID' }"
                 [modalClass]="'modal-md'"
-              ></keira-single-value-selector-btn>
+              />
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.QUEST_INFO_ID' | translate"></i>
               <input [formControlName]="'QuestInfoID'" id="QuestInfoID" type="number" class="form-control form-control-sm" />
             </div>
@@ -71,14 +67,14 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
               <label class="control-label" for="StartItem">
-                <keira-icon [itemId]="editorService.form.controls.StartItem.value"></keira-icon>
+                <keira-icon [itemId]="editorService.form.controls.StartItem.value" />
                 StartItem
               </label>
               <keira-item-selector-btn
                 [control]="editorService.form.controls.StartItem"
                 [disabled]="editorService.form.controls.StartItem.disabled"
                 [config]="{ name: 'StartItem' }"
-              ></keira-item-selector-btn>
+              />
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.START_ITEM' | translate"></i>
               <input [formControlName]="'StartItem'" id="StartItem" type="number" class="form-control form-control-sm" />
             </div>
@@ -88,7 +84,7 @@
                 [control]="editorService.form.controls.Flags"
                 [disabled]="editorService.form.controls.Flags.disabled"
                 [config]="{ flags: QUEST_FLAGS, name: 'Flags' }"
-              ></keira-flags-selector-btn>
+              />
               <input [formControlName]="'Flags'" id="Flags" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
@@ -102,7 +98,7 @@
                 [control]="editorService.form.controls.AllowableRaces"
                 [disabled]="editorService.form.controls.AllowableRaces.disabled"
                 [config]="{ flags: ALLOWABLE_RACES, name: 'AllowableRaces' }"
-              ></keira-flags-selector-btn>
+              />
               <input [formControlName]="'AllowableRaces'" id="AllowableRaces" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
@@ -191,14 +187,14 @@
                 <div class="row">
                   <div class="col-12">
                     <label class="control-label" for="RequiredItemId{{ i }}">
-                      <keira-icon [itemId]="editorService.form.controls['RequiredItemId' + i].value"></keira-icon>
+                      <keira-icon [itemId]="editorService.form.controls['RequiredItemId' + i].value" />
                       Req.ItemId{{ i }}
                     </label>
                     <keira-item-selector-btn
                       [control]="editorService.form.controls['RequiredItemId' + i]"
                       [disabled]="editorService.form.controls['RequiredItemId' + i].disabled"
                       [config]="{ name: 'RequiredItemId' + i }"
-                    ></keira-item-selector-btn>
+                    />
                     <input
                       [formControlName]="'RequiredItemId' + i"
                       id="RequiredItemId{{ i }}"
@@ -261,7 +257,7 @@
                   [config]="{ name: 'RequiredFactionId' + i }"
                   [control]="editorService.form.controls['RequiredFactionId' + i]"
                   [disabled]="editorService.form.controls['RequiredFactionId' + i].disabled"
-                ></keira-faction-selector-btn>
+                />
                 <input
                   [formControlName]="'RequiredFactionId' + i"
                   id="RequiredFactionId{{ i }}"
@@ -287,14 +283,14 @@
                 <div class="row">
                   <div class="col-12">
                     <label class="control-label" for="ItemDrop{{ i }}">
-                      <keira-icon [itemId]="editorService.form.controls['ItemDrop' + i].value"></keira-icon>
+                      <keira-icon [itemId]="editorService.form.controls['ItemDrop' + i].value" />
                       ItemDrop{{ i }}
                     </label>
                     <keira-item-selector-btn
                       [control]="editorService.form.controls['ItemDrop' + i]"
                       [disabled]="editorService.form.controls['ItemDrop' + i].disabled"
                       [config]="{ name: 'ItemDrop' + i }"
-                    ></keira-item-selector-btn>
+                    />
                     <input [formControlName]="'ItemDrop' + i" id="ItemDrop{{ i }}" type="number" class="form-control form-control-sm" />
                   </div>
                   <div class="col-12">
@@ -365,7 +361,7 @@
                 [disabled]="editorService.form.controls.RewardSpell.disabled"
                 [config]="{ name: 'RewardSpell' }"
                 [modalClass]="'modal-lg'"
-              ></keira-spell-selector-btn>
+              />
               <input [formControlName]="'RewardSpell'" id="RewardSpell" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
@@ -387,14 +383,14 @@
                 <div class="row">
                   <div class="col-12">
                     <label class="control-label" for="RewardItem{{ i }}">
-                      <keira-icon [itemId]="editorService.form.controls['RewardItem' + i].value"></keira-icon>
+                      <keira-icon [itemId]="editorService.form.controls['RewardItem' + i].value" />
                       Rew.Item{{ i }}
                     </label>
                     <keira-item-selector-btn
                       [control]="editorService.form.controls['RewardItem' + i]"
                       [disabled]="editorService.form.controls['RewardItem' + i].disabled"
                       [config]="{ name: 'RewardItem' + i }"
-                    ></keira-item-selector-btn>
+                    />
                     <input [formControlName]="'RewardItem' + i" id="RewardItem{{ i }}" type="number" class="form-control form-control-sm" />
                   </div>
                   <div class="col-12">
@@ -419,14 +415,14 @@
                 <div class="row">
                   <div class="col-12">
                     <label class="control-label" for="RewardChoiceItemID{{ i }}">
-                      <keira-icon [itemId]="editorService.form.controls['RewardChoiceItemID' + i].value"></keira-icon>
+                      <keira-icon [itemId]="editorService.form.controls['RewardChoiceItemID' + i].value" />
                       ChoiceItem{{ i }}
                     </label>
                     <keira-item-selector-btn
                       [control]="editorService.form.controls['RewardChoiceItemID' + i]"
                       [disabled]="editorService.form.controls['RewardChoiceItemID' + i].disabled"
                       [config]="{ name: 'RewardChoiceItemID' + i }"
-                    ></keira-item-selector-btn>
+                    />
                     <input
                       [formControlName]="'RewardChoiceItemID' + i"
                       id="RewardChoiceItemID{{ i }}"
@@ -463,7 +459,7 @@
                       [config]="{ name: 'RewardFactionID' + i }"
                       [control]="editorService.form.controls['RewardFactionID' + i]"
                       [disabled]="editorService.form.controls['RewardFactionID' + i].disabled"
-                    ></keira-quest-faction-selector-btn>
+                    />
                     <input
                       [formControlName]="'RewardFactionID' + i"
                       id="RewardFactionID{{ i }}"
@@ -495,7 +491,7 @@
           </div>
         </div>
       </form>
-      <keira-quest-preview></keira-quest-preview>
+      <keira-quest-preview />
     </div>
   }
 </div>

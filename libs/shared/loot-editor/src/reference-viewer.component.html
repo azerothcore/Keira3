@@ -25,7 +25,7 @@
           <ngx-datatable-column [minWidth]="42" [maxWidth]="42" [sortable]="false">
             <ng-template let-row="row" ngx-datatable-cell-template>
               @if (!isReference(row)) {
-                <keira-icon [itemId]="row.Item"></keira-icon>
+                <keira-icon [itemId]="row.Item" />
               }
             </ng-template>
           </ngx-datatable-column>
@@ -69,6 +69,6 @@
 
 @if (!!referenceLootRows && !!nestedReferenceIds && referenceLootRows.length > 0) {
   @for (id of nestedReferenceIds; track id) {
-    <keira-reference-viewer [referenceId]="id"></keira-reference-viewer>
+    <keira-reference-viewer [referenceId]="id" />
   }
 }

@@ -9,7 +9,7 @@ import { TimedActionlistComponent } from './timed-actionlist.component';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
 @Component({
-  template: `<keira-timed-actionlist [creatureId]="creatureId"></keira-timed-actionlist>`,
+  template: `<keira-timed-actionlist [creatureId]="creatureId" />`,
   standalone: true,
   imports: [NgxDatatableModule, TimedActionlistComponent],
 })

@@ -1,8 +1,4 @@
-<keira-top-bar
-  [selected]="handlerService.selected"
-  [selectedName]="handlerService.selectedName"
-  [isNew]="handlerService.isNew"
-></keira-top-bar>
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
 
 <div class="container-fluid editor-with-preview" [ngClass]="{ 'show-preview': showItemPreview }">
   @if (editorService.loading) {
@@ -12,7 +8,7 @@
   @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
     <div>
       <div class="content-block">
-        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
       </div>
       <form [formGroup]="editorService.form" class="form-group edit-form">
         <div class="content-block">
@@ -34,7 +30,7 @@
                 [disabled]="editorService.form.controls.type.disabled"
                 [config]="{ options: GAMEOBJECT_TYPE, name: 'type' }"
                 [modalClass]="'modal-md'"
-              ></keira-single-value-selector-btn>
+              />
               <input [formControlName]="'type'" id="type" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -49,7 +45,7 @@
                 [disabled]="editorService.form.controls.IconName.disabled"
                 [config]="{ options: GAMEOBJECT_ICON, name: 'IconName' }"
                 [modalClass]="'modal-md'"
-              ></keira-single-value-selector-btn>
+              />
               <input [formControlName]="'IconName'" id="IconName" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">

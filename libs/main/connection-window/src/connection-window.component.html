@@ -89,7 +89,7 @@
           <button class="btn btn-primary connect-button" (click)="onConnect()" [translate]="'CONNECTION_WINDOW.CONNECT'"></button>
         </form>
         <div class="login-error-box">
-          <keira-query-error [error]="error"></keira-query-error>
+          <keira-query-error [error]="error" />
         </div>
       </div>
     }
@@ -100,6 +100,6 @@
       <a href="https://github.com/Helias" target="_blank">Helias</a>
     </div>
 
-    <keira-switch-language [longVersion]="false" style="float: right"></keira-switch-language>
+    <keira-switch-language [longVersion]="false" style="float: right" />
   </div>
 </div>

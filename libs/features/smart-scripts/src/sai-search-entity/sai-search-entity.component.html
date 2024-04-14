@@ -48,14 +48,14 @@
                 [control]="entryOrGuidControl"
                 [disabled]="entryOrGuidControl.disabled"
                 [config]="{ name: 'entryorguid' }"
-              ></keira-creature-selector-btn>
+              />
             }
             @if (isTypeGameobjectSelected) {
               <keira-gameobject-selector-btn
                 [control]="entryOrGuidControl"
                 [disabled]="entryOrGuidControl.disabled"
                 [config]="{ name: 'entryorguid' }"
-              ></keira-gameobject-selector-btn>
+              />
             }
             <input [formControlName]="'entryorguid'" id="entryorguid" type="number" class="form-control form-control-sm" />
             <div class="mt-2">If the selected entity does not have any SmartScripts yet, new ones will be created.</div>
