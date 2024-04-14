@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { PageTextHandlerService } from './page-text-handler.service';
 import { PAGE_TEXT_TABLE } from '@keira/shared/acore-world-model';
 
-describe('SpellLootHandlerService', () => {
+describe(PageTextHandlerService.name, () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       providers: [PageTextHandlerService],
