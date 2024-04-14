@@ -5,11 +5,9 @@ import { GossipHandlerService } from '../gossip-handler.service';
 import { SelectGossipService } from './select-gossip.service';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { AsyncPipe } from '@angular/common';
-import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { CreateComponent } from '@keira/shared/base-editor-components';
-import { TopBarComponent } from '@keira/shared/base-editor-components';
+import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
