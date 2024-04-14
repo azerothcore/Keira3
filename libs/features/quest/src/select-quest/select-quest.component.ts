@@ -12,7 +12,6 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'keira-select-quest',
   templateUrl: './select-quest.component.html',
   styleUrls: ['./select-quest.component.scss'],
   standalone: true,
