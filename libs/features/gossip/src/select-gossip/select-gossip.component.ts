@@ -14,7 +14,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'keira-select-gossip',
   templateUrl: './select-gossip.component.html',
   styleUrls: ['./select-gossip.component.scss'],
   standalone: true,

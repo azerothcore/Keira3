@@ -12,7 +12,6 @@ import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'keira-select-item',
   templateUrl: './select-item.component.html',
   styleUrls: ['./select-item.component.scss'],
   standalone: true,

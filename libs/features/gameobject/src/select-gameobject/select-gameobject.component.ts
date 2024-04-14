@@ -19,7 +19,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'keira-select-gameobject',
   templateUrl: './select-gameobject.component.html',
   styleUrls: ['./select-gameobject.component.scss'],
   standalone: true,

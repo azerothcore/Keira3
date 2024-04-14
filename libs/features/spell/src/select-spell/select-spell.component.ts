@@ -20,7 +20,6 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'keira-select-spell',
   templateUrl: './select-spell.component.html',
   standalone: true,
   imports: [

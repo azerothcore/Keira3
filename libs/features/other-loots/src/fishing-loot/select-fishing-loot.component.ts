@@ -19,7 +19,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'keira-select-creature',
   templateUrl: '../select-loot.component.html',
   standalone: true,
   imports: [

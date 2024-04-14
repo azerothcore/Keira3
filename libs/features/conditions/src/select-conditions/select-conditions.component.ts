@@ -12,7 +12,6 @@ import { getEnumKeys } from '@keira/shared/utils';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'keira-select-creature',
   templateUrl: './select-conditions.component.html',
   styleUrls: ['./select-conditions.component.scss'],
   standalone: true,
