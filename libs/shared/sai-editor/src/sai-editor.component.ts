@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { EVENT_PHASE_MASK, SAI_TYPES, SMART_EVENT_FLAGS, SmartScripts } from '@keira/shared/acore-world-model';
 import {
   SAI_ACTION_PARAM1_NAMES,
@@ -62,7 +62,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgIf, NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { SaiTopBarComponent } from './sai-top-bar/sai-top-bar.component';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
@@ -90,6 +90,9 @@ import { EditorButtonsComponent, QueryOutputComponent } from '@keira/shared/base
   ],
 })
 export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> implements OnInit {
+  readonly editorService = inject(SaiEditorService);
+  protected readonly handlerService = inject(SaiHandlerService);
+
   readonly EVENT_PHASE_MASK = EVENT_PHASE_MASK;
   readonly SMART_EVENT_FLAGS = SMART_EVENT_FLAGS;
   readonly SAI_EVENTS = SAI_EVENTS;
@@ -166,14 +169,6 @@ export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> im
 
   get entryOrGuid(): number {
     return this.handlerService.parsedSelected.entryorguid;
-  }
-
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: SaiEditorService,
-    protected handlerService: SaiHandlerService,
-  ) {
-    super(editorService, handlerService);
   }
 
   getName(defaultParamName: string, value: string | undefined): string {

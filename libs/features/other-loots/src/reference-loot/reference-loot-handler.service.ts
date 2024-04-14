@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { HandlerService } from '@keira/shared/base-abstract-classes';
 import { REFERENCE_LOOT_TEMPLATE_TABLE, ReferenceLootTemplate } from '@keira/shared/acore-world-model';
 
@@ -7,6 +6,8 @@ import { REFERENCE_LOOT_TEMPLATE_TABLE, ReferenceLootTemplate } from '@keira/sha
   providedIn: 'root',
 })
 export class ReferenceLootHandlerService extends HandlerService<ReferenceLootTemplate> {
+  protected readonly mainEditorRoutePath = 'other-loots/reference';
+
   get isUnsaved(): boolean {
     return this.statusMap[REFERENCE_LOOT_TEMPLATE_TABLE];
   }
@@ -14,9 +15,4 @@ export class ReferenceLootHandlerService extends HandlerService<ReferenceLootTem
   protected _statusMap = {
     [REFERENCE_LOOT_TEMPLATE_TABLE]: false,
   };
-
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected router: Router) {
-    super('other-loots/reference', router);
-  }
 }

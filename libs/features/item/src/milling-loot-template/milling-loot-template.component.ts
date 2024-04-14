@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { LootTemplateComponent } from '@keira/shared/base-abstract-classes';
 import { MillingLootTemplate } from '@keira/shared/acore-world-model';
 import { ItemHandlerService } from '../item-handler.service';
@@ -15,11 +15,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   imports: [TopBarComponent, NgIf, LootEditorComponent],
 })
 export class MillingLootTemplateComponent extends LootTemplateComponent<MillingLootTemplate> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: MillingLootTemplateService,
-    public handlerService: ItemHandlerService,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly editorService = inject(MillingLootTemplateService);
+  readonly handlerService = inject(ItemHandlerService);
 }

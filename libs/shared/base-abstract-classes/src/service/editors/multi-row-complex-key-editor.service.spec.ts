@@ -8,10 +8,10 @@ import { of, throwError } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { MultiRowComplexKeyEditorService } from './multi-row-complex-key-editor.service';
-import Spy = jasmine.Spy;
 
 import { mockChangeDetectorRef } from '@keira/shared/test-utils';
 import { MockEntity, MockHandlerService, MockMultiRowComplexKeyEditorService } from '../../core.mock';
+import Spy = jasmine.Spy;
 
 describe('MultiRowComplexKeyEditorService', () => {
   let service: MultiRowComplexKeyEditorService<MockEntity>;

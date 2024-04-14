@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { inject, Injectable } from '@angular/core';
 import { map, Observable, of } from 'rxjs';
 import { SAI_ID_FIELDS, SAI_TABLE, SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { ComplexKeyHandlerService } from '@keira/shared/base-abstract-classes';
@@ -9,6 +8,10 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
   providedIn: 'root',
 })
 export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
+  protected readonly queryService = inject(MysqlQueryService);
+  protected readonly mainEditorRoutePath = 'smart-ai/editors';
+  protected readonly idFields = SAI_ID_FIELDS;
+
   get isSaiUnsaved(): boolean {
     return this.statusMap[SAI_TABLE];
   }
@@ -20,14 +23,6 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
   protected _templateQuery: string;
   get templateQuery(): string {
     return this._templateQuery;
-  }
-
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected router: Router,
-    readonly queryService: MysqlQueryService,
-  ) {
-    super('smart-ai/editors', router, SAI_ID_FIELDS);
   }
 
   selectFromEntity(sourceType: number, entryOrGuid: number) {

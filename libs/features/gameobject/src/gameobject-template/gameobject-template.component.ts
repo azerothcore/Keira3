@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { GAMEOBJECT_ICON, GAMEOBJECT_TYPE, GameobjectTemplate } from '@keira/shared/acore-world-model';
 import { FieldDefinition } from '@keira/shared/constants';
@@ -38,13 +38,8 @@ export class GameobjectTemplateComponent extends SingleRowEditorComponent<Gameob
 
   showItemPreview = true;
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: GameobjectTemplateService,
-    public handlerService: GameobjectHandlerService,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly editorService = inject(GameobjectTemplateService);
+  readonly handlerService = inject(GameobjectHandlerService);
 
   dataFieldDefinition(dataIndex: number): FieldDefinition {
     return this.editorService.getFieldDefinition(this.editorService.form.controls.type.value, dataIndex);

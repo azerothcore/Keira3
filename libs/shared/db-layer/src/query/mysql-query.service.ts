@@ -45,10 +45,7 @@ export class MysqlQueryService extends BaseQueryService {
     const query = squel.select(squelConfig).from(table);
 
     for (const key in row) {
-      /* istanbul ignore else */
-      if (row.hasOwnProperty(key)) {
-        query.where(`${key} = ${row[key]}`);
-      }
+      query.where(`${key} = ${row[key]}`);
     }
 
     return this.query<T>(query.toString());
@@ -68,12 +65,9 @@ export class MysqlQueryService extends BaseQueryService {
     const query = squel.update(squelConfig).table(tableName);
 
     for (const key in currentRow) {
-      /* istanbul ignore else */
-      if (currentRow.hasOwnProperty(key)) {
-        if (currentRow[key] !== newRow[key]) {
-          diff = true;
-          query.set(key, newRow[key]);
-        }
+      if (currentRow[key] !== newRow[key]) {
+        diff = true;
+        query.set(key, newRow[key]);
       }
     }
 

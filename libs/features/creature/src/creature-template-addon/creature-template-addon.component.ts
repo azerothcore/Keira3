@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import {
   CREATURE_ADDON_BYTES_1,
@@ -42,11 +42,6 @@ export class CreatureTemplateAddonComponent extends SingleRowEditorComponent<Cre
   readonly CREATURE_ADDON_BYTES_1 = CREATURE_ADDON_BYTES_1;
   readonly CREATURE_ADDON_BYTES_2 = CREATURE_ADDON_BYTES_2;
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: CreatureTemplateAddonService,
-    public handlerService: CreatureHandlerService,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly editorService = inject(CreatureTemplateAddonService);
+  readonly handlerService = inject(CreatureHandlerService);
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { GameobjectQuestitem } from '@keira/shared/acore-world-model';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
@@ -33,11 +33,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   ],
 })
 export class GameobjectQuestitemComponent extends MultiRowEditorComponent<GameobjectQuestitem> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: GameobjectQuestitemService,
-    public handlerService: GameobjectHandlerService,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly editorService = inject(GameobjectQuestitemService);
+  readonly handlerService = inject(GameobjectHandlerService);
 }

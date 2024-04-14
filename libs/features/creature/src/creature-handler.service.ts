@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { inject, Injectable } from '@angular/core';
 import { HandlerService } from '@keira/shared/base-abstract-classes';
 import {
   CREATURE_EQUIP_TEMPLATE_TABLE,
@@ -26,6 +25,9 @@ import { SaiCreatureHandlerService } from './sai-creature-handler.service';
   providedIn: 'root',
 })
 export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
+  protected saiCreatureHandler = inject(SaiCreatureHandlerService);
+  protected readonly mainEditorRoutePath = 'creature/creature-template';
+
   get isCreatureTemplateUnsaved(): boolean {
     return this.statusMap[CREATURE_TEMPLATE_TABLE];
   }
@@ -92,14 +94,6 @@ export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
     [CREATURE_SPAWN_TABLE]: false,
     [CREATURE_SPAWN_ADDON_TABLE]: false,
   };
-
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected router: Router,
-    protected saiCreatureHandler: SaiCreatureHandlerService,
-  ) {
-    super('creature/creature-template', router);
-  }
 
   select(isNew: boolean, id: string | number | Partial<CreatureTemplate>, name?: string) {
     this.saiCreatureHandler.select(isNew, { entryorguid: +id, source_type: 0 }, null, false);

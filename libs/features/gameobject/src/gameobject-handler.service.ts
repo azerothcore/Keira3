@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { inject, Injectable } from '@angular/core';
 import { HandlerService } from '@keira/shared/base-abstract-classes';
 import {
   GAMEOBJECT_LOOT_TEMPLATE_TABLE,
@@ -17,6 +16,9 @@ import { SaiGameobjectHandlerService } from './sai-gameobject-handler.service';
   providedIn: 'root',
 })
 export class GameobjectHandlerService extends HandlerService<GameobjectTemplate> {
+  protected saiGameobjectHandler = inject(SaiGameobjectHandlerService);
+  protected readonly mainEditorRoutePath = 'gameobject/gameobject-template';
+
   get isGameobjectTemplateUnsaved(): boolean {
     return this.statusMap[GAMEOBJECT_TEMPLATE_TABLE];
   }
@@ -47,14 +49,6 @@ export class GameobjectHandlerService extends HandlerService<GameobjectTemplate>
     [GAMEOBJECT_SPAWN_TABLE]: false,
     [GAMEOBJECT_SPAWN_ADDON_TABLE]: false,
   };
-
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected router: Router,
-    protected saiGameobjectHandler: SaiGameobjectHandlerService,
-  ) {
-    super('gameobject/gameobject-template', router);
-  }
 
   select(isNew: boolean, id: string | number | Partial<GameobjectTemplate>, name?: string) {
     this.saiGameobjectHandler.select(isNew, { entryorguid: +id, source_type: 1 }, null, false);

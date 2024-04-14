@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { GameobjectSpawnAddon, INVISIBILITY_TYPE } from '@keira/shared/acore-world-model';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
@@ -31,11 +31,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
 export class GameobjectSpawnAddonComponent extends MultiRowEditorComponent<GameobjectSpawnAddon> {
   readonly INVISIBILITY_TYPE = INVISIBILITY_TYPE;
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: GameobjectSpawnAddonService,
-    public handlerService: GameobjectHandlerService,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly editorService = inject(GameobjectSpawnAddonService);
+  readonly handlerService = inject(GameobjectHandlerService);
 }

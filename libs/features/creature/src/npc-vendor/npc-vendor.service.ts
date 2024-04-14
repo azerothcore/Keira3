@@ -18,7 +18,7 @@ export class NpcVendorService extends MultiRowEditorService<NpcVendor> {
     protected toastrService: ToastrService,
     private iconService: IconService,
   ) {
-    super(NpcVendor, NPC_VENDOR_TABLE, NPC_VENDOR_ID, NPC_VENDOR_ID_2, handlerService, queryService, toastrService);
+    super(NpcVendor, NPC_VENDOR_TABLE, NPC_VENDOR_ID, NPC_VENDOR_ID_2, handlerService);
   }
 
   private cache: Promise<string>[] = [];

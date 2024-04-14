@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { GossipMenu } from '@keira/shared/acore-world-model';
 import { GossipHandlerService } from '../gossip-handler.service';
@@ -34,12 +34,7 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
   ],
 })
 export class GossipMenuComponent extends MultiRowEditorComponent<GossipMenu> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: GossipMenuService,
-    public handlerService: GossipHandlerService,
-    readonly queryService: MysqlQueryService,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly editorService = inject(GossipMenuService);
+  readonly handlerService = inject(GossipHandlerService);
+  readonly queryService = inject(MysqlQueryService);
 }

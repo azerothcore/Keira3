@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { LootTemplateIdComponent } from '@keira/shared/base-abstract-classes';
 import { GameobjectLootTemplate } from '@keira/shared/acore-world-model';
 import { QueryError } from 'mysql2';
@@ -36,13 +36,8 @@ export class GameobjectLootTemplateComponent extends LootTemplateIdComponent<Gam
     );
   }
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: GameobjectLootTemplateService,
-    public handlerService: GameobjectHandlerService,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly editorService = inject(GameobjectLootTemplateService);
+  readonly handlerService = inject(GameobjectHandlerService);
 
   ngOnInit() {
     this.editorService.clearCache();

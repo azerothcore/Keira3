@@ -1,21 +1,22 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { ALLOWABLE_CLASSES, QuestTemplateAddon, SPECIAL_FLAGS } from '@keira/shared/acore-world-model';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestTemplateAddonService } from './quest-template-addon.service';
 import { QuestPreviewComponent } from '../quest-preview/quest-preview.component';
-import { FactionSelectorBtnComponent } from '@keira/shared/selectors';
-import { SkillSelectorBtnComponent } from '@keira/shared/selectors';
-import { SpellSelectorBtnComponent } from '@keira/shared/selectors';
-import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
-import { QuestSelectorBtnComponent } from '@keira/shared/selectors';
+import {
+  FactionSelectorBtnComponent,
+  FlagsSelectorBtnComponent,
+  QuestSelectorBtnComponent,
+  SkillSelectorBtnComponent,
+  SpellSelectorBtnComponent,
+} from '@keira/shared/selectors';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/base-editor-components';
+import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgClass } from '@angular/common';
-import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,15 +41,10 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   ],
 })
 export class QuestTemplateAddonComponent extends SingleRowEditorComponent<QuestTemplateAddon> {
+  readonly editorService = inject(QuestTemplateAddonService);
+  readonly handlerService = inject(QuestHandlerService);
+  readonly questPreviewService = inject(QuestPreviewService);
+
   readonly ALLOWABLE_CLASSES = ALLOWABLE_CLASSES;
   readonly SPECIAL_FLAGS = SPECIAL_FLAGS;
-
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: QuestTemplateAddonService,
-    public handlerService: QuestHandlerService,
-    readonly questPreviewService: QuestPreviewService,
-  ) {
-    super(editorService, handlerService);
-  }
 }

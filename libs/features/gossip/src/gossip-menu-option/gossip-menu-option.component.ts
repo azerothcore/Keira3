@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { GossipMenuOption, OPTION_ICON, OPTION_TYPE } from '@keira/shared/acore-world-model';
 import { GossipHandlerService } from '../gossip-handler.service';
@@ -38,13 +38,8 @@ export class GossipMenuOptionComponent extends MultiRowEditorComponent<GossipMen
   readonly OPTION_ICON = OPTION_ICON;
   readonly OPTION_TYPE = OPTION_TYPE;
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: GossipMenuOptionService,
-    public handlerService: GossipHandlerService,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly editorService = inject(GossipMenuOptionService);
+  readonly handlerService = inject(GossipHandlerService);
 
   showGossipPreview = true;
 }

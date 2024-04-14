@@ -1,13 +1,17 @@
 import { Router } from '@angular/router';
 import { TableRow } from '@keira/shared/constants';
 import { SubscriptionHandler } from '@keira/shared/utils';
+import { inject } from '@angular/core';
 
 export abstract class HandlerService<T extends TableRow> extends SubscriptionHandler {
+  protected readonly router = inject(Router);
+
   protected _selected: string;
   selectedName: string;
   isNew = false;
 
   protected abstract _statusMap: { [key: string]: boolean };
+  protected abstract readonly mainEditorRoutePath: string;
 
   /* istanbul ignore next */ // TODO: fix coverage
   get statusMap(): { [key: string]: boolean } {
@@ -21,13 +25,6 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
   /* istanbul ignore next */ // TODO: fix coverage
   get parsedSelected(): Partial<T> {
     return JSON.parse(this.selected);
-  }
-
-  constructor(
-    protected mainEditorRoutePath: string,
-    protected router: Router,
-  ) {
-    super();
   }
 
   private resetStatus(): void {

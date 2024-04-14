@@ -31,8 +31,8 @@ export class AppComponent extends SubscriptionHandler implements OnInit {
   sqliteResult: { id: number; name: string };
 
   constructor(
-    public readonly mysqlService: MysqlService,
-    public readonly toastrService: ToastrService,
+    readonly mysqlService: MysqlService,
+    readonly toastrService: ToastrService,
     private readonly sqliteQueryService: SqliteQueryService,
     private readonly electronService: ElectronService,
     private readonly http: HttpClient,

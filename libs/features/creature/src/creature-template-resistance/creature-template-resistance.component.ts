@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import {
   CREATURE_TEMPLATE_RESISTANCE_SCHOOL,
   CREATURE_TEMPLATE_RESISTANCE_TABLE,
@@ -39,11 +39,6 @@ export class CreatureTemplateResistanceComponent extends MultiRowEditorComponent
 
   readonly CREATURE_TEMPLATE_RESISTANCE_SCHOOL = CREATURE_TEMPLATE_RESISTANCE_SCHOOL;
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public editorService: CreatureTemplateResistanceService,
-    public handlerService: CreatureHandlerService,
-  ) {
-    super(editorService, handlerService);
-  }
+  readonly editorService = inject(CreatureTemplateResistanceService);
+  readonly handlerService = inject(CreatureHandlerService);
 }

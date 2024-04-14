@@ -1,6 +1,5 @@
 /* istanbul ignore file */
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { TableRow } from '@keira/shared/constants';
 import { HandlerService } from './service/handlers/handler.service';
@@ -27,13 +26,11 @@ export class MockEntity extends TableRow {
   providedIn: 'root',
 })
 export class MockHandlerService extends HandlerService<MockEntity> {
+  protected readonly mainEditorRoutePath = 'mock/route';
+
   protected _statusMap: {
     [MOCK_TABLE]: false;
   };
-
-  constructor(protected router: Router) {
-    super('mock/route', router);
-  }
 }
 
 @Injectable({
@@ -52,12 +49,8 @@ export class SelectMockService extends SelectService<MockEntity> {
   providedIn: 'root',
 })
 export class MockSingleRowEditorService extends SingleRowEditorService<MockEntity> {
-  constructor(
-    protected handlerService: MockHandlerService,
-    readonly queryService: MysqlQueryService,
-    protected toastrService: ToastrService,
-  ) {
-    super(MockEntity, MOCK_TABLE, MOCK_ID, MOCK_NAME, true, handlerService, queryService, toastrService);
+  constructor(protected handlerService: MockHandlerService) {
+    super(MockEntity, MOCK_TABLE, MOCK_ID, MOCK_NAME, true, handlerService);
   }
 }
 
@@ -65,12 +58,8 @@ export class MockSingleRowEditorService extends SingleRowEditorService<MockEntit
   providedIn: 'root',
 })
 export class MockSingleRowComplexKeyEditorService extends SingleRowComplexKeyEditorService<MockEntity> {
-  constructor(
-    protected handlerService: MockHandlerService,
-    readonly queryService: MysqlQueryService,
-    protected toastrService: ToastrService,
-  ) {
-    super(MockEntity, MOCK_TABLE, [MOCK_ID, MOCK_ID_2], MOCK_NAME, true, handlerService, queryService, toastrService);
+  constructor(protected handlerService: MockHandlerService) {
+    super(MockEntity, MOCK_TABLE, [MOCK_ID, MOCK_ID_2], MOCK_NAME, true, handlerService);
   }
 }
 
@@ -78,12 +67,8 @@ export class MockSingleRowComplexKeyEditorService extends SingleRowComplexKeyEdi
   providedIn: 'root',
 })
 export class MockMultiRowEditorService extends MultiRowEditorService<MockEntity> {
-  constructor(
-    protected handlerService: MockHandlerService,
-    readonly queryService: MysqlQueryService,
-    protected toastrService: ToastrService,
-  ) {
-    super(MockEntity, MOCK_TABLE, MOCK_ID, MOCK_ID_2, handlerService, queryService, toastrService);
+  constructor(protected handlerService: MockHandlerService) {
+    super(MockEntity, MOCK_TABLE, MOCK_ID, MOCK_ID_2, handlerService);
   }
 }
 
@@ -91,12 +76,8 @@ export class MockMultiRowEditorService extends MultiRowEditorService<MockEntity>
   providedIn: 'root',
 })
 export class MockMultiRowExternalEditorService extends MultiRowExternalEditorService<MockEntity> {
-  constructor(
-    protected handlerService: MockHandlerService,
-    readonly queryService: MysqlQueryService,
-    protected toastrService: ToastrService,
-  ) {
-    super(MockEntity, MOCK_TABLE, MOCK_ID_2, handlerService, queryService, toastrService);
+  constructor(protected handlerService: MockHandlerService) {
+    super(MockEntity, MOCK_TABLE, MOCK_ID_2, handlerService);
   }
 
   selectQuery(id: string | number) {
@@ -113,7 +94,7 @@ export class MockMultiRowComplexKeyEditorService extends MultiRowComplexKeyEdito
     override readonly queryService: MysqlQueryService,
     protected override toastrService: ToastrService,
   ) {
-    super(MockEntity, MOCK_TABLE, [MOCK_ID, MOCK_ID_2], MOCK_ID_2, handlerService, queryService, toastrService);
+    super(MockEntity, MOCK_TABLE, [MOCK_ID, MOCK_ID_2], MOCK_ID_2, handlerService);
   }
 
   protected updateFullQuery(): void {}

@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { HandlerService } from '@keira/shared/base-abstract-classes';
 import {
   CREATURE_QUESTENDER_TABLE,
@@ -17,6 +16,8 @@ import {
   providedIn: 'root',
 })
 export class QuestHandlerService extends HandlerService<QuestTemplate> {
+  protected readonly mainEditorRoutePath = 'quest/quest-template';
+
   get isQuestTemplateUnsaved(): boolean {
     return this.statusMap[QUEST_TEMPLATE_TABLE];
   }
@@ -52,9 +53,4 @@ export class QuestHandlerService extends HandlerService<QuestTemplate> {
     [GAMEOBJECT_QUESTSTARTER_TABLE]: false,
     [GAMEOBJECT_QUESTENDER_TABLE]: false,
   };
-
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected router: Router) {
-    super('quest/quest-template', router);
-  }
 }
