@@ -10,11 +10,9 @@ import { FishingLootHandlerService } from './fishing-loot-handler.service';
 import { SelectFishingLootService } from './select-fishing-loot.service';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
-import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { CreateComponent } from '@keira/shared/base-editor-components';
-import { TopBarComponent } from '@keira/shared/base-editor-components';
+import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

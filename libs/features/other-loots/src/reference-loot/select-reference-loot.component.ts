@@ -10,11 +10,9 @@ import { ReferenceLootHandlerService } from './reference-loot-handler.service';
 import { SelectReferenceLootService } from './select-reference-loot.service';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgIf } from '@angular/common';
-import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { CreateComponent } from '@keira/shared/base-editor-components';
-import { TopBarComponent } from '@keira/shared/base-editor-components';
+import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
