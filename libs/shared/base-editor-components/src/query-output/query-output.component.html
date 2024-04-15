@@ -21,8 +21,8 @@
       }
     </div>
   </div>
-  <keira-highlightjs-wrapper id="diff-query" [code]="editorService.diffQuery" [hidden]="showFullQuery()"></keira-highlightjs-wrapper>
-  <keira-highlightjs-wrapper id="full-query" [code]="editorService.fullQuery" [hidden]="!showFullQuery()"></keira-highlightjs-wrapper>
+  <keira-highlightjs-wrapper id="diff-query" [code]="editorService.diffQuery" [hidden]="showFullQuery()" />
+  <keira-highlightjs-wrapper id="full-query" [code]="editorService.fullQuery" [hidden]="!showFullQuery()" />
   <div>
     <button type="button" class="btn btn-secondary btn-sm" (click)="copy()" id="copy-btn">
       <i class="fa fa-copy fa-sm"></i> {{ 'COPY' | translate }}
@@ -34,5 +34,5 @@
       <i class="fa fa-sync fa-sm"></i> {{ 'RELOAD' | translate }}
     </button>
   </div>
-  <keira-query-error [error]="editorService.error"></keira-query-error>
+  <keira-query-error [error]="editorService.error" />
 }

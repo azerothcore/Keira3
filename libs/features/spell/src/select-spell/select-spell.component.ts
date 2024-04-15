@@ -16,11 +16,9 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { CreateComponent, HighlightjsWrapperComponent, IconComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { MysqlQueryService } from '@keira/shared/db-layer';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'keira-select-spell',
   templateUrl: './select-spell.component.html',
   standalone: true,
   imports: [
@@ -42,10 +40,9 @@ export class SelectSpellComponent extends SelectComponent<SpellDbc> {
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    public selectService: SelectSpellService,
-    public handlerService: SpellHandlerService,
-    public queryService: MysqlQueryService,
+    public readonly selectService: SelectSpellService,
+    public readonly handlerService: SpellHandlerService,
   ) {
-    super(SPELL_DBC_TABLE, SPELL_DBC_ID, SPELL_DBC_CUSTOM_STARTING_ID, selectService, handlerService, queryService);
+    super(SPELL_DBC_TABLE, SPELL_DBC_ID, SPELL_DBC_CUSTOM_STARTING_ID, selectService, handlerService);
   }
 }

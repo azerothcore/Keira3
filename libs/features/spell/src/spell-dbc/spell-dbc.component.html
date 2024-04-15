@@ -1,8 +1,4 @@
-<keira-top-bar
-  [selected]="handlerService.selected"
-  [selectedName]="handlerService.selectedName"
-  [isNew]="handlerService.isNew"
-></keira-top-bar>
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
 
 <div class="container-fluid">
   @if (editorService.loading) {
@@ -11,28 +7,28 @@
 
   <div [hidden]="!editorService.form || !editorService.loadedEntityId || editorService.loading">
     <div class="content-block">
-      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
     </div>
 
     <div class="content-block">
       <tabset id="spell-dbc-tabset">
         <tab heading="Base" id="Base">
-          <keira-spell-dbc-base [formGroup]="editorService.form"></keira-spell-dbc-base>
+          <keira-spell-dbc-base [formGroup]="editorService.form" />
         </tab>
         <tab heading="Effects" id="Effects">
-          <keira-spell-dbc-effects [formGroup]="editorService.form"></keira-spell-dbc-effects>
+          <keira-spell-dbc-effects [formGroup]="editorService.form" />
         </tab>
         <tab heading="Items" id="Items">
-          <keira-spell-dbc-items [formGroup]="editorService.form"></keira-spell-dbc-items>
+          <keira-spell-dbc-items [formGroup]="editorService.form" />
         </tab>
         <tab heading="Flags" id="Flags">
-          <keira-spell-dbc-flags [formGroup]="editorService.form"></keira-spell-dbc-flags>
+          <keira-spell-dbc-flags [formGroup]="editorService.form" />
         </tab>
         <tab heading="Texts" id="Texts">
-          <keira-spell-dbc-texts [formGroup]="editorService.form"></keira-spell-dbc-texts>
+          <keira-spell-dbc-texts [formGroup]="editorService.form" />
         </tab>
         <tab heading="Misc" id="Misc">
-          <keira-spell-dbc-misc [formGroup]="editorService.form"></keira-spell-dbc-misc>
+          <keira-spell-dbc-misc [formGroup]="editorService.form" />
         </tab>
       </tabset>
     </div>

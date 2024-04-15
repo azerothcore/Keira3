@@ -6,7 +6,7 @@
   @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
     <div>
       <div class="content-block">
-        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
       </div>
       <form [formGroup]="editorService.form" class="form-group edit-form">
         <div class="content-block">
@@ -85,7 +85,7 @@
                   [disabled]="editorService.form.controls.ConditionValue1.disabled"
                   [config]="{ flags: TYPEMASK, name: 'ConditionValue1' }"
                   [modalClass]="'modal-lg'"
-                ></keira-flags-selector-btn>
+                />
               }
               @if (showObjectEntryGuid) {
                 <keira-single-value-selector-btn
@@ -93,7 +93,7 @@
                   [disabled]="editorService.form.controls.ConditionValue1.disabled"
                   [config]="{ options: CONDITION_OBJECT_ENTRY_GUID_CV1, name: 'ConditionValue1' }"
                   [modalClass]="'modal-md'"
-                ></keira-single-value-selector-btn>
+                />
               }
               @if (showStandState) {
                 <keira-single-value-selector-btn
@@ -101,7 +101,7 @@
                   [disabled]="editorService.form.controls.ConditionValue1.disabled"
                   [config]="{ options: CONDITION_STAND_STATE_CV1, name: 'ConditionValue1' }"
                   [modalClass]="'modal-md'"
-                ></keira-single-value-selector-btn>
+                />
               }
               <input [formControlName]="'ConditionValue1'" id="ConditionValue1" type="number" class="form-control form-control-sm" />
             </div>
@@ -115,7 +115,7 @@
                   [disabled]="editorService.form.controls.ConditionValue2.disabled"
                   [config]="{ flags: QUEST_STATE, name: 'ConditionValue2' }"
                   [modalClass]="'modal-lg'"
-                ></keira-flags-selector-btn>
+                />
               }
               @if (showReactionTo) {
                 <keira-flags-selector-btn
@@ -124,7 +124,7 @@
                   [disabled]="editorService.form.controls.ConditionValue2.disabled"
                   [config]="{ flags: RANKMASK, name: 'ConditionValue2' }"
                   [modalClass]="'modal-lg'"
-                ></keira-flags-selector-btn>
+                />
               }
               @if (showLevel) {
                 <keira-single-value-selector-btn
@@ -132,7 +132,7 @@
                   [disabled]="editorService.form.controls.ConditionValue2.disabled"
                   [config]="{ options: CONDITION_LEVEL_CV2, name: 'ConditionValue2' }"
                   [modalClass]="'modal-md'"
-                ></keira-single-value-selector-btn>
+                />
               }
               @if (showRelationTo) {
                 <keira-single-value-selector-btn
@@ -140,7 +140,7 @@
                   [disabled]="editorService.form.controls.ConditionValue2.disabled"
                   [config]="{ options: CONDITION_RELATION_TO_CV2, name: 'ConditionValue2' }"
                   [modalClass]="'modal-md'"
-                ></keira-single-value-selector-btn>
+                />
               }
               @if (showHPVal) {
                 <keira-single-value-selector-btn
@@ -148,7 +148,7 @@
                   [disabled]="editorService.form.controls.ConditionValue2.disabled"
                   [config]="{ options: CONDITION_HP_VAL_CV2, name: 'ConditionValue2' }"
                   [modalClass]="'modal-md'"
-                ></keira-single-value-selector-btn>
+                />
               }
               @if (showHPPct) {
                 <keira-single-value-selector-btn
@@ -156,7 +156,7 @@
                   [disabled]="editorService.form.controls.ConditionValue2.disabled"
                   [config]="{ options: CONDITION_HP_PCT_CV2, name: 'ConditionValue2' }"
                   [modalClass]="'modal-md'"
-                ></keira-single-value-selector-btn>
+                />
               }
               @if (showStandState) {
                 <keira-single-value-selector-btn
@@ -164,7 +164,7 @@
                   [disabled]="editorService.form.controls.ConditionValue2.disabled"
                   [config]="{ options: CONDITION_STAND_STATE_CV2, name: 'ConditionValue2' }"
                   [modalClass]="'modal-md'"
-                ></keira-single-value-selector-btn>
+                />
               }
               <input [formControlName]="'ConditionValue2'" id="ConditionValue2" type="number" class="form-control form-control-sm" />
             </div>
@@ -177,7 +177,7 @@
                   [disabled]="editorService.form.controls.ConditionValue3.disabled"
                   [config]="{ options: CONDITION_INSTANCE_INFO_CV3, name: 'ConditionValue3' }"
                   [modalClass]="'modal-md'"
-                ></keira-single-value-selector-btn>
+                />
               }
               @if (showNearCreature) {
                 <keira-single-value-selector-btn
@@ -185,7 +185,7 @@
                   [disabled]="editorService.form.controls.ConditionValue3.disabled"
                   [config]="{ options: CONDITION_NEAR_CREATURE_CV3, name: 'ConditionValue3' }"
                   [modalClass]="'modal-md'"
-                ></keira-single-value-selector-btn>
+                />
               }
               @if (showDistanceTo) {
                 <keira-single-value-selector-btn
@@ -193,7 +193,7 @@
                   [disabled]="editorService.form.controls.ConditionValue3.disabled"
                   [config]="{ options: CONDITION_DISTANCE_TO_CV3, name: 'ConditionValue3' }"
                   [modalClass]="'modal-md'"
-                ></keira-single-value-selector-btn>
+                />
               }
               <input [formControlName]="'ConditionValue3'" id="ConditionValue3" type="number" class="form-control form-control-sm" />
             </div>

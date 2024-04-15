@@ -1,20 +1,20 @@
 @if (!!editorService) {
   <div class="content-block">
-    <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+    <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
   </div>
   <div class="content-block">
     <form [formGroup]="editorService.form" class="form-group edit-form">
       <div class="row">
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="Item">
-            <keira-icon [itemId]="editorService.form.controls.Item.value"></keira-icon>
+            <keira-icon [itemId]="editorService.form.controls.Item.value" />
             Item
           </label>
           <keira-item-selector-btn
             [control]="editorService.form.controls.Item"
             [disabled]="editorService.form.controls.Item.disabled"
             [config]="{ name: 'Item' }"
-          ></keira-item-selector-btn>
+          />
           <input [formControlName]="'Item'" id="Item" type="number" class="form-control form-control-sm" />
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
@@ -39,7 +39,7 @@
             [disabled]="editorService.form.controls.LootMode.disabled"
             [config]="{ flags: LOOT_MODE, name: 'LootMode' }"
             [modalClass]="'modal-lg'"
-          ></keira-flags-selector-btn>
+          />
           <input [formControlName]="'LootMode'" id="LootMode" type="number" class="form-control form-control-sm" />
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
@@ -70,7 +70,7 @@
     </form>
     <div class="row">
       <div class="col-12">
-        <keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>
+        <keira-editor-buttons [editorService]="editorService" />
         <ngx-datatable
           id="editor-table"
           class="bootstrap table table-striped text-center datatable-select datatable-icon-list mb-0"
@@ -91,7 +91,7 @@
           <ngx-datatable-column [minWidth]="42" [maxWidth]="42" [sortable]="false">
             <ng-template let-row="row" ngx-datatable-cell-template>
               @if (!isReference(row)) {
-                <keira-icon [itemId]="row.Item"></keira-icon>
+                <keira-icon [itemId]="row.Item" />
               }
             </ng-template>
           </ngx-datatable-column>
@@ -132,6 +132,6 @@
     </div>
   </div>
   @for (id of referenceIds; track id) {
-    <keira-reference-viewer [referenceId]="id"></keira-reference-viewer>
+    <keira-reference-viewer [referenceId]="id" />
   }
 }

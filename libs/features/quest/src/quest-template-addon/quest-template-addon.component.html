@@ -1,8 +1,4 @@
-<keira-top-bar
-  [selected]="handlerService.selected"
-  [selectedName]="handlerService.selectedName"
-  [isNew]="handlerService.isNew"
-></keira-top-bar>
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
 
 <div class="container-fluid editor-with-preview" [ngClass]="{ 'show-preview': questPreviewService.showPreview }">
   @if (editorService.loading) {
@@ -12,7 +8,7 @@
   @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
     <div>
       <div class="content-block">
-        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
       </div>
       <form [formGroup]="editorService.form" class="form-group edit-form">
         <div class="content-block">
@@ -30,7 +26,7 @@
                 [disabled]="editorService.form.controls.PrevQuestID.disabled"
                 [config]="{ name: 'PrevQuestID' }"
                 [modalClass]="'modal-lg'"
-              ></keira-quest-selector-btn>
+              />
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.PREV_QUEST_ID' | translate"></i>
               <input [formControlName]="'PrevQuestID'" id="PrevQuestID" type="number" class="form-control form-control-sm" />
             </div>
@@ -41,7 +37,7 @@
                 [disabled]="editorService.form.controls.NextQuestID.disabled"
                 [config]="{ name: 'NextQuestID' }"
                 [modalClass]="'modal-lg'"
-              ></keira-quest-selector-btn>
+              />
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.NEXT_QUEST_ID' | translate"></i>
               <input [formControlName]="'NextQuestID'" id="NextQuestID" type="number" class="form-control form-control-sm" />
             </div>
@@ -56,7 +52,7 @@
                 [control]="editorService.form.controls.AllowableClasses"
                 [disabled]="editorService.form.controls.AllowableClasses.disabled"
                 [config]="{ flags: ALLOWABLE_CLASSES, name: 'AllowableClasses' }"
-              ></keira-flags-selector-btn>
+              />
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE_ADDON.ALLOWABLE_CLASSES' | translate"></i>
               <input [formControlName]="'AllowableClasses'" id="AllowableClasses" type="number" class="form-control form-control-sm" />
             </div>
@@ -68,7 +64,7 @@
                 [disabled]="editorService.form.controls.SourceSpellID.disabled"
                 [config]="{ name: 'SourceSpellID' }"
                 [modalClass]="'modal-lg'"
-              ></keira-spell-selector-btn>
+              />
               <input [formControlName]="'SourceSpellID'" id="SourceSpellID" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
@@ -87,7 +83,7 @@
                 [control]="editorService.form.controls.SpecialFlags"
                 [disabled]="editorService.form.controls.SpecialFlags.disabled"
                 [config]="{ flags: SPECIAL_FLAGS, name: 'SpecialFlags' }"
-              ></keira-flags-selector-btn>
+              />
               <input [formControlName]="'SpecialFlags'" id="SpecialFlags" type="number" class="form-control form-control-sm" />
             </div>
           </div>
@@ -102,7 +98,7 @@
                 [config]="{ name: 'RequiredSkillID' }"
                 [control]="editorService.form.controls.RequiredSkillID"
                 [disabled]="editorService.form.controls.RequiredSkillID.disabled"
-              ></keira-skill-selector-btn>
+              />
               <input [formControlName]="'RequiredSkillID'" id="RequiredSkillID" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
@@ -121,7 +117,7 @@
                 [config]="{ name: 'RequiredMinRepFaction' }"
                 [control]="editorService.form.controls.RequiredMinRepFaction"
                 [disabled]="editorService.form.controls.RequiredMinRepFaction.disabled"
-              ></keira-faction-selector-btn>
+              />
               <input
                 [formControlName]="'RequiredMinRepFaction'"
                 id="RequiredMinRepFaction"
@@ -145,7 +141,7 @@
                 [config]="{ name: 'RequiredMaxRepFaction' }"
                 [control]="editorService.form.controls.RequiredMaxRepFaction"
                 [disabled]="editorService.form.controls.RequiredMaxRepFaction.disabled"
-              ></keira-faction-selector-btn>
+              />
               <input
                 [formControlName]="'RequiredMaxRepFaction'"
                 id="RequiredMaxRepFaction"
@@ -190,7 +186,7 @@
           </div>
         </div>
       </form>
-      <keira-quest-preview></keira-quest-preview>
+      <keira-quest-preview />
     </div>
   }
 </div>

@@ -4,7 +4,7 @@ import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { EditorButtonsComponent } from './editor-buttons.component';
 
 @Component({
-  template: `<keira-editor-buttons [editorService]="editorService"></keira-editor-buttons>`,
+  template: `<keira-editor-buttons [editorService]="editorService" />`,
   standalone: true,
   imports: [TranslateTestingModule, EditorButtonsComponent],
 })

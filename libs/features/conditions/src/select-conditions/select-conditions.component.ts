@@ -12,7 +12,6 @@ import { getEnumKeys } from '@keira/shared/utils';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'keira-select-creature',
   templateUrl: './select-conditions.component.html',
   styleUrls: ['./select-conditions.component.scss'],
   standalone: true,
@@ -23,8 +22,8 @@ export class SelectConditionsComponent extends SelectComplexKeyComponent<Conditi
   readonly CONDITION_SOURCE_TYPES_KEYS = getEnumKeys(CONDITION_SOURCE_TYPES);
 
   constructor(
-    public selectService: ConditionsSearchService,
-    protected handlerService: ConditionsHandlerService,
+    public readonly selectService: ConditionsSearchService,
+    protected readonly handlerService: ConditionsHandlerService,
   ) {
     super(selectService, handlerService);
   }

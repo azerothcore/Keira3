@@ -6,7 +6,7 @@ import { TopBarComponent } from './top-bar.component';
 
 describe(TopBarComponent.name, () => {
   @Component({
-    template: ` <keira-top-bar [selected]="selected" [selectedName]="selectedName" [isNew]="isNew"></keira-top-bar> `,
+    template: ` <keira-top-bar [selected]="selected" [selectedName]="selectedName" [isNew]="isNew" /> `,
     standalone: true,
     imports: [TopBarComponent],
   })

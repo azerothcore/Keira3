@@ -13,7 +13,7 @@ import { QueryErrorComponent } from './query-error/query-error.component';
 import { QueryOutputComponent } from './query-output.component';
 
 @Component({
-  template: `<keira-query-output [editorService]="editorService"></keira-query-output>`,
+  template: `<keira-query-output [editorService]="editorService" />`,
   standalone: true,
   imports: [FormsModule, TranslateTestingModule, QueryOutputComponent],
 })

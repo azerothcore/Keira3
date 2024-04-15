@@ -1,8 +1,4 @@
-<keira-top-bar
-  [selected]="handlerService.selected"
-  [selectedName]="handlerService.selectedName"
-  [isNew]="handlerService.isNew"
-></keira-top-bar>
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
 
 <div class="container-fluid editor-with-preview" [ngClass]="{ 'show-preview': showItemPreview }">
   @if (editorService.loading) {
@@ -12,7 +8,7 @@
   @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
     <div>
       <div class="content-block">
-        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)"></keira-query-output>
+        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
       </div>
       <form [formGroup]="editorService.form" class="form-group edit-form">
         <div class="content-block">
@@ -39,7 +35,7 @@
                 [disabled]="editorService.form.controls.IconName.disabled"
                 [config]="{ options: CREATURE_ICON, name: 'IconName' }"
                 [modalClass]="'modal-xl'"
-              ></keira-single-value-selector-btn>
+              />
               <input [formControlName]="'IconName'" id="IconName" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -59,7 +55,7 @@
                 [disabled]="editorService.form.controls.exp.disabled"
                 [config]="{ options: EXPANSION, name: 'exp' }"
                 [modalClass]="'modal-md'"
-              ></keira-single-value-selector-btn>
+              />
               <input [formControlName]="'exp'" id="exp" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -68,7 +64,7 @@
                 [config]="{ name: 'faction' }"
                 [control]="editorService.form.controls.faction"
                 [disabled]="editorService.form.controls.faction.disabled"
-              ></keira-faction-selector-btn>
+              />
               <input [formControlName]="'faction'" id="faction" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -77,7 +73,7 @@
                 [control]="editorService.form.controls.npcflag"
                 [disabled]="editorService.form.controls.npcflag.disabled"
                 [config]="{ flags: NPC_FLAGS, name: 'npcflag' }"
-              ></keira-flags-selector-btn>
+              />
               <input [formControlName]="'npcflag'" id="npcflag" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -87,7 +83,7 @@
                 [disabled]="editorService.form.controls.rank.disabled"
                 [config]="{ options: RANK, name: 'rank' }"
                 [modalClass]="'modal-md'"
-              ></keira-single-value-selector-btn>
+              />
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.RANK' | translate"></i>
               <input [formControlName]="'rank'" id="rank" type="number" class="form-control form-control-sm" />
             </div>
@@ -98,7 +94,7 @@
                 [disabled]="editorService.form.controls.family.disabled"
                 [config]="{ options: CREATURE_FAMILY, name: 'family' }"
                 [modalClass]="'modal-md'"
-              ></keira-single-value-selector-btn>
+              />
               <input [formControlName]="'family'" id="family" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -108,7 +104,7 @@
                 [disabled]="editorService.form.controls.type.disabled"
                 [config]="{ options: CREATURE_TYPE, name: 'type' }"
                 [modalClass]="'modal-md'"
-              ></keira-single-value-selector-btn>
+              />
               <input [formControlName]="'type'" id="type" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -117,7 +113,7 @@
                 [control]="editorService.form.controls.type_flags"
                 [disabled]="editorService.form.controls.type_flags.disabled"
                 [config]="{ flags: CREATURE_TYPE_FLAGS, name: 'type_flags' }"
-              ></keira-flags-selector-btn>
+              />
               <input [formControlName]="'type_flags'" id="type_flags" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -127,7 +123,7 @@
                 [disabled]="editorService.form.controls.unit_class.disabled"
                 [config]="{ options: UNIT_CLASS, name: 'unit_class' }"
                 [modalClass]="'modal-lg'"
-              ></keira-single-value-selector-btn>
+              />
               <input [formControlName]="'unit_class'" id="unit_class" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -136,7 +132,7 @@
                 [control]="editorService.form.controls.unit_flags"
                 [disabled]="editorService.form.controls.unit_flags.disabled"
                 [config]="{ flags: UNIT_FLAGS, name: 'unit_flags' }"
-              ></keira-flags-selector-btn>
+              />
               <input [formControlName]="'unit_flags'" id="unit_flags" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -145,7 +141,7 @@
                 [control]="editorService.form.controls.unit_flags2"
                 [disabled]="editorService.form.controls.unit_flags2.disabled"
                 [config]="{ flags: UNIT_FLAGS_2, name: 'unit_flags2' }"
-              ></keira-flags-selector-btn>
+              />
               <input [formControlName]="'unit_flags2'" id="unit_flags2" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -154,7 +150,7 @@
                 [control]="editorService.form.controls.dynamicflags"
                 [disabled]="editorService.form.controls.dynamicflags.disabled"
                 [config]="{ flags: DYNAMIC_FLAGS, name: 'dynamicflags' }"
-              ></keira-flags-selector-btn>
+              />
               <input [formControlName]="'dynamicflags'" id="dynamicflags" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -168,7 +164,7 @@
                 [control]="editorService.form.controls.mechanic_immune_mask"
                 [disabled]="editorService.form.controls.mechanic_immune_mask.disabled"
                 [config]="{ flags: MECHANIC_IMMUNE_MASK, name: 'mechanic_immune_mask' }"
-              ></keira-flags-selector-btn>
+              />
               <input
                 [formControlName]="'mechanic_immune_mask'"
                 id="mechanic_immune_mask"
@@ -182,7 +178,7 @@
                 [control]="editorService.form.controls.spell_school_immune_mask"
                 [disabled]="editorService.form.controls.spell_school_immune_mask.disabled"
                 [config]="{ flags: SPELL_SCHOOL_IMMUNE_MASK, name: 'spell_school_immune_mask' }"
-              ></keira-flags-selector-btn>
+              />
               <input
                 [formControlName]="'spell_school_immune_mask'"
                 id="spell_school_immune_mask"
@@ -196,7 +192,7 @@
                 [control]="editorService.form.controls.flags_extra"
                 [disabled]="editorService.form.controls.flags_extra.disabled"
                 [config]="{ flags: FLAGS_EXTRA, name: 'flags_extra' }"
-              ></keira-flags-selector-btn>
+              />
               <input [formControlName]="'flags_extra'" id="flags_extra" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -283,7 +279,7 @@
                     [disabled]="editorService.form.controls.trainer_type.disabled"
                     [config]="{ options: TRAINER_TYPE, name: 'trainer_type' }"
                     [modalClass]="'modal-md'"
-                  ></keira-single-value-selector-btn>
+                  />
                   <input [formControlName]="'trainer_type'" id="trainer_type" type="number" class="form-control form-control-sm" />
                 </div>
                 <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
@@ -294,7 +290,7 @@
                     [disabled]="editorService.form.controls.trainer_spell.disabled"
                     [config]="{ name: 'trainer_spell' }"
                     [modalClass]="'modal-lg'"
-                  ></keira-spell-selector-btn>
+                  />
                   <input [formControlName]="'trainer_spell'" id="trainer_spell" type="number" class="form-control form-control-sm" />
                 </div>
                 <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
@@ -304,7 +300,7 @@
                     [disabled]="editorService.form.controls.trainer_class.disabled"
                     [config]="{ options: CREATURE_CLASS, name: 'trainer_class' }"
                     [modalClass]="'modal-md'"
-                  ></keira-single-value-selector-btn>
+                  />
                   <input [formControlName]="'trainer_class'" id="trainer_class" type="number" class="form-control form-control-sm" />
                 </div>
                 <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
@@ -314,7 +310,7 @@
                     [disabled]="editorService.form.controls.trainer_race.disabled"
                     [config]="{ options: CREATURE_RACE, name: 'trainer_race' }"
                     [modalClass]="'modal-md'"
-                  ></keira-single-value-selector-btn>
+                  />
                   <input [formControlName]="'trainer_race'" id="trainer_race" type="number" class="form-control form-control-sm" />
                 </div>
               </div>
@@ -352,7 +348,7 @@
                     [control]="editorService.form.controls.difficulty_entry_1"
                     [disabled]="editorService.form.controls.difficulty_entry_1.disabled"
                     [config]="{ name: 'difficulty_entry_1' }"
-                  ></keira-creature-selector-btn>
+                  />
                   <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.DIFFICULTY_ENTRY_1' | translate"></i>
                   <input
                     [formControlName]="'difficulty_entry_1'"
@@ -367,7 +363,7 @@
                     [control]="editorService.form.controls.difficulty_entry_2"
                     [disabled]="editorService.form.controls.difficulty_entry_2.disabled"
                     [config]="{ name: 'difficulty_entry_2' }"
-                  ></keira-creature-selector-btn>
+                  />
                   <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.DIFFICULTY_ENTRY_2' | translate"></i>
                   <input
                     [formControlName]="'difficulty_entry_2'"
@@ -382,7 +378,7 @@
                     [control]="editorService.form.controls.difficulty_entry_3"
                     [disabled]="editorService.form.controls.difficulty_entry_3.disabled"
                     [config]="{ name: 'difficulty_entry_3' }"
-                  ></keira-creature-selector-btn>
+                  />
                   <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.difficulty_entry_3' | translate"></i>
                   <input
                     [formControlName]="'difficulty_entry_3'"
@@ -415,7 +411,7 @@
                 [disabled]="editorService.form.controls.dmgschool.disabled"
                 [config]="{ options: DAMAGE_TYPE, name: 'dmgschool' }"
                 [modalClass]="'modal-md'"
-              ></keira-single-value-selector-btn>
+              />
               <input [formControlName]="'dmgschool'" id="dmgschool" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
@@ -440,7 +436,7 @@
                 [disabled]="editorService.form.controls.AIName.disabled"
                 [config]="{ options: CREATURE_AI_NAME, name: 'AIName' }"
                 [modalClass]="'modal-lg'"
-              ></keira-single-value-selector-btn>
+              />
               <input [formControlName]="'AIName'" id="AIName" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -460,7 +456,7 @@
                 [disabled]="editorService.form.controls.MovementType.disabled"
                 [config]="{ options: MOVEMENT_TYPE, name: 'MovementType' }"
                 [modalClass]="'modal-md'"
-              ></keira-single-value-selector-btn>
+              />
               <input [formControlName]="'MovementType'" id="MovementType" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -546,7 +542,7 @@
               [control]="editorService.form.controls['spell' + i]"
               [config]="{ name: 'spell' + i }"
               [modalClass]="'modal-lg'"
-            ></keira-spell-selector-btn>
+             />
             <input [formControlName]="'spell' + i" id="spell{{ i }}" type="number" class="form-control form-control-sm">
           </div>
         </div>

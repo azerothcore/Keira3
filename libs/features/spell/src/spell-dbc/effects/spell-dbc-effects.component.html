@@ -6,7 +6,7 @@
         [control]="formGroup.controls.Targets"
         [disabled]="formGroup.controls.Targets.disabled"
         [config]="{ flags: SPELL_DBC_TARGETS, name: 'Targets' }"
-      ></keira-flags-selector-btn>
+      />
       <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.EFFECTS.TARGETS' | translate"></i>
       <input [formControlName]="'Targets'" id="Targets" type="number" class="form-control form-control-sm" />
     </div>
@@ -17,7 +17,7 @@
         [control]="formGroup.controls.ProcTypeMask"
         [disabled]="formGroup.controls.ProcTypeMask.disabled"
         [config]="{ flags: SPELL_DBC_PROC_FLAGS, name: 'ProcTypeMask' }"
-      ></keira-flags-selector-btn>
+      />
       <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.EFFECTS.PROC_TYPE_MASK' | translate"></i>
       <input [formControlName]="'ProcTypeMask'" id="ProcTypeMask" type="number" class="form-control form-control-sm" />
     </div>
@@ -38,12 +38,12 @@
 
 <tabset>
   <tab heading="Spell Effects 1" id="spell-effects-1">
-    <keira-spell-dbc-spell-effect [formGroup]="formGroup" [index]="1"></keira-spell-dbc-spell-effect>
+    <keira-spell-dbc-spell-effect [formGroup]="formGroup" [index]="1" />
   </tab>
   <tab heading="Spell Effects 2" id="spell-effects-2">
-    <keira-spell-dbc-spell-effect [formGroup]="formGroup" [index]="2"></keira-spell-dbc-spell-effect>
+    <keira-spell-dbc-spell-effect [formGroup]="formGroup" [index]="2" />
   </tab>
   <tab heading="Spell Effects 3" id="spell-effects-3">
-    <keira-spell-dbc-spell-effect [formGroup]="formGroup" [index]="3"></keira-spell-dbc-spell-effect>
+    <keira-spell-dbc-spell-effect [formGroup]="formGroup" [index]="3" />
   </tab>
 </tabset>
