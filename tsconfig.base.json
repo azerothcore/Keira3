@@ -31,6 +31,7 @@
       "@keira/features/smart-scripts": ["libs/features/smart-scripts/src/index.ts"],
       "@keira/features/spell": ["libs/features/spell/src/index.ts"],
       "@keira/features/sql-editor": ["libs/features/sql-editor/src/index.ts"],
+      "@keira/features/texts": ["libs/features/texts/src/index.ts"],
       "@keira/main/connection-window": ["libs/main/connection-window/src/index.ts"],
       "@keira/main/main-window": ["libs/main/main-window/src/index.ts"],
       "@keira/shared/acore-world-model": ["libs/shared/acore-world-model/src/index.ts"],

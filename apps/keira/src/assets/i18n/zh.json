@@ -131,6 +131,17 @@
       "SELECT_MAIL_LOOT": "选择邮件掉落",
       "MAIL_LOOT_TEMPLATE": "邮件掉落模板"
     },
+    "TEXTS": {
+      "TITLE": "Texts",
+      "SELECT_BROADCAST_TEXT": "Select Broadcast Text",
+      "BROADCAST_TEXT": "Broadcast Text",
+      "SELECT_CREATURE_TEXT": "Select Creature Text",
+      "CREATURE_TEXT": "Creature Text",
+      "SELECT_NPC_TEXT": "Select NPC Text",
+      "NPC_TEXT": "NPC Text",
+      "SELECT_PAGE_TEXT": "Select Page Text",
+      "PAGE_TEXT": "Page Text"
+    },
     "GOSSIP": {
       "TITLE": "闲聊对话",
       "SELECT_GOSSIP_MENU": "选择闲聊对话菜单",
