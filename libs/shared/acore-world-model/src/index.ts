@@ -13,6 +13,7 @@ export * from './entities/creature-template-addon.type';
 export * from './entities/creature-template-movement.type';
 export * from './entities/creature-template-resistance.type';
 export * from './entities/creature-template-spell.type';
+export * from './entities/creature-text.type';
 export * from './entities/disenchant-loot-template.type';
 export * from './entities/faction.type';
 export * from './entities/fishing-loot-template.type';
