@@ -27,6 +27,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   ],
 })
 export class CreatureTextComponent extends MultiRowEditorComponent<CreatureText> {
-  readonly editorService = inject(CreatureTextService);
-  readonly handlerService = inject(CreatureHandlerService);
+  public readonly editorService = inject(CreatureTextService);
+  protected readonly handlerService = inject(CreatureHandlerService);
 }
