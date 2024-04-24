@@ -14,7 +14,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-text',
   templateUrl: './creature-text.component.html',
-  styleUrls: ['./creature-text.component.scss'],
   standalone: true,
   imports: [
     TopBarComponent,
