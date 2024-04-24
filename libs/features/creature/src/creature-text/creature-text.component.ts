@@ -9,6 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { TranslateModule } from '@ngx-translate/core';
 import { TopBarComponent } from '@keira/shared/base-editor-components';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,6 +19,7 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   imports: [
     TopBarComponent,
     TranslateModule,
+    TooltipModule,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
