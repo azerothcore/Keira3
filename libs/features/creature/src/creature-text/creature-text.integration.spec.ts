@@ -15,21 +15,7 @@ import { instance, mock } from 'ts-mockito';
 class CreatureTextPage extends MultiRowEditorPageObject<CreatureTextComponent> {}
 
 describe('CreatureText integration tests', () => {
-  let fixture: ComponentFixture<CreatureTextComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: CreatureHandlerService;
-  let page: CreatureTextPage;
-
   const id = 1234;
-
-  const originalRow0 = new CreatureText();
-  const originalRow1 = new CreatureText();
-  const originalRow2 = new CreatureText();
-  originalRow0.CreatureID = originalRow1.CreatureID = originalRow2.CreatureID = id;
-  originalRow0.ID = 0;
-  originalRow1.ID = 1;
-  originalRow2.ID = 2;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -46,26 +32,36 @@ describe('CreatureText integration tests', () => {
   }));
 
   function setup(creatingNew: boolean) {
-    handlerService = TestBed.inject(CreatureHandlerService);
+    const originalRow0 = new CreatureText();
+    const originalRow1 = new CreatureText();
+    const originalRow2 = new CreatureText();
+    originalRow0.CreatureID = originalRow1.CreatureID = originalRow2.CreatureID = id;
+    originalRow0.ID = 0;
+    originalRow1.ID = 1;
+    originalRow2.ID = 2;
+
+    const handlerService: CreatureHandlerService = TestBed.inject(CreatureHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
     spyOn(queryService, 'queryValue').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
-    fixture = TestBed.createComponent(CreatureTextComponent);
-    page = new CreatureTextPage(fixture);
+    const fixture = TestBed.createComponent(CreatureTextComponent);
+    const component = fixture.componentInstance;
+    const page = new CreatureTextPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+
+    return { handlerService, queryService, querySpy, fixture, component, page };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
-
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.addNewRowBtn.disabled).toBe(false);
@@ -86,6 +82,7 @@ describe('CreatureText integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
+      const { handlerService, page } = setup(true);
       expect(handlerService.isCreatureTextUnsaved).toBe(false);
       page.addNewRow();
       expect(handlerService.isCreatureTextUnsaved).toBe(true);
@@ -94,6 +91,7 @@ describe('CreatureText integration tests', () => {
     });
 
     it('adding new rows and executing the query should correctly work', () => {
+      const { querySpy, page } = setup(true);
       const expectedQuery =
         'DELETE FROM `creature_text` WHERE (`CreatureID` = 1234) AND (`ID` IN (0, 1, 2));\n' +
         'INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES\n' +
@@ -116,6 +114,7 @@ describe('CreatureText integration tests', () => {
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_text` WHERE (`CreatureID` = 1234) AND (`ID` IN (0));\n' +
@@ -166,6 +165,7 @@ describe('CreatureText integration tests', () => {
     });
 
     it('adding a row, changing its values and duplicating it should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.setInputValueById('Probability', '1');
       page.setInputValueById('Text', 'newText');
@@ -188,9 +188,8 @@ describe('CreatureText integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(
@@ -204,6 +203,7 @@ describe('CreatureText integration tests', () => {
     });
 
     it('deleting rows should correctly work', () => {
+      const { page } = setup(false);
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.expectDiffQueryToContain('DELETE FROM `creature_text` WHERE (`CreatureID` = 1234) AND (`ID` IN (1));');
@@ -230,6 +230,7 @@ describe('CreatureText integration tests', () => {
     });
 
     it('editing existing rows should correctly work', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(1);
       page.setInputValueById('Text', 'newText');
 
@@ -252,6 +253,7 @@ describe('CreatureText integration tests', () => {
     });
 
     it('combining add, edit and delete should correctly work', () => {
+      const { page } = setup(false);
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
 
