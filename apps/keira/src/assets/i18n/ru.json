@@ -85,7 +85,8 @@
       "SKINNING_LOOT": "Skinning Loot",
       "SPAWN": "Spawn",
       "SPAWN_ADDON": "Spawn Addon",
-      "SMARTAI": "SmartAI"
+      "SMARTAI": "SmartAI",
+      "TEXT": "Text"
     },
     "QUEST": {
       "TITLE": "Задания",

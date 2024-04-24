@@ -85,7 +85,8 @@
       "SKINNING_LOOT": "剥皮掉落",
       "SPAWN": "生物刷新",
       "SPAWN_ADDON": "生物刷新插件",
-      "SMARTAI": "SmartAI"
+      "SMARTAI": "SmartAI",
+      "TEXT": "Text"
     },
     "QUEST": {
       "TITLE": "任务",

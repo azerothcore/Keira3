@@ -85,7 +85,8 @@
       "SKINNING_LOOT": "Loot de dépouillement",
       "SPAWN": "Spawn",
       "SPAWN_ADDON": "Spawn d'addon",
-      "SMARTAI": "SmartAI"
+      "SMARTAI": "SmartAI",
+      "TEXT": "Text"
     },
     "QUEST": {
       "TITLE": "Quêtes",

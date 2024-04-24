@@ -85,7 +85,8 @@
       "SKINNING_LOOT": "Botín de Desollar",
       "SPAWN": "Spawn (Aparición de Criatura)",
       "SPAWN_ADDON": "Addon de Spawn",
-      "SMARTAI": "SmartAI"
+      "SMARTAI": "SmartAI",
+      "TEXT": "Text"
     },
     "QUEST": {
       "TITLE": "Misión",
