@@ -453,7 +453,7 @@
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'other-loots/reference'">
                       {{ 'SIDEBAR.OTHER_LOOTS.REFERENCE_LOOT_TEMPLATE' | translate }}
-                      @if (spellLootHandlerService.isUnsaved) {
+                      @if (referenceLootHandlerService.isUnsaved) {
                         <keira-unsaved-icon />
                       }
                     </a>
