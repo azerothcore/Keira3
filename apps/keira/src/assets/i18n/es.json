@@ -85,7 +85,8 @@
       "SKINNING_LOOT": "Botín de Desollar",
       "SPAWN": "Spawn (Aparición de Criatura)",
       "SPAWN_ADDON": "Addon de Spawn",
-      "SMARTAI": "SmartAI"
+      "SMARTAI": "SmartAI",
+      "TEXT": "Text"
     },
     "QUEST": {
       "TITLE": "Misión",
@@ -275,6 +276,16 @@
       "MAXCOUNT": "El número máximo de aquellos mismos Items cargados por el vendedor en cualquier momento. 0 para que el Item sea infinito.",
       "INCRTIME": "En combinación con 'maxcount', la frecuencia (en segundos) con la que se actualiza la lista de proveedores.",
       "EXTENDED_COST": "El valor que aquí se encuentre almacenado proviene del mismo archivo 'DBC' del cual se presta justamente el nombre de la casilla; un selector para esto se implementará en un futuro dentro de Keira3"
+    },
+    "TEXT": {
+      "GROUP_ID": "If there is more than one of the same entry (more than one text the creature says), this column is used to choose if it is a random say or an ordered list. If a creature has got more than one say text to be shown in a given order, it must be incremented for each new matching entry (ex. 0, 1, 2, 3...). If there is only one entry or only one group, this value should be 0. If there are multiple groups of texts, this value stays the same within the group while the id increments within the same group.",
+      "ID": "Entry for each group of texts. This is the unique identifier when entry (creature) is the same and groupid is unchanged, it must be incremented (ex. 0, 1, 2, 3...). A creature say will be randomly selected from this list based on the groupid it belongs to.",
+      "LANGUAGE": "Value from Languages.dbc (+ the wiki table from the dbc file). When set to 0, the current default language will be used.",
+      "PROBABILITY": "A value from 1-100 that represents the percentage chance that this text will be executed.\n\nValue must be >=0. If the value does not meet the condition the SQL will fail on creature_text_chk_1.",
+      "EMOTE": "The emote that the creature plays when the text is executed. Value to use in this field can be obtained from the emote.dbc",
+      "DURATION": "Time in ms to see text. 0 is default and calculated by core.",
+      "SOUND": "The sound entry this creature will play at the same time the text is executed. Sounds are found in SoundEntries.dbc.",
+      "BROADCAST_TEXT_ID": "Id of the equivalent text found in broadcast_text"
     }
   },
   "QUEST": {

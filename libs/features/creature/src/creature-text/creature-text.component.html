@@ -1,0 +1,127 @@
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+
+<div class="container-fluid">
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
+
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <div class="content-block">
+        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
+      </div>
+      <div class="content-block">
+        <form [formGroup]="editorService.form" class="form-group edit-form">
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+              <label class="control-label" for="GroupID">GroupID</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEXT.GROUP_ID' | translate"></i>
+              <input [formControlName]="'GroupID'" id="GroupID" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+              <label class="control-label" for="ID">ID</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEXT.ID' | translate"></i>
+              <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+              <label class="control-label" for="Type">Type</label>
+              <keira-single-value-selector-btn
+                [control]="editorService.form.controls.Type"
+                [disabled]="editorService.form.controls.Type.disabled"
+                [config]="{ options: TEXT_TYPE, name: 'Type' }"
+                [modalClass]="'modal-md'"
+              />
+              <input [formControlName]="'Type'" id="Type" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+              <label class="control-label" for="Language">Language</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEXT.LANGUAGE' | translate"></i>
+              <input [formControlName]="'Language'" id="Language" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+              <label class="control-label" for="Probability">Probability</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEXT.PROBABILITY' | translate"></i>
+              <input [formControlName]="'Probability'" id="Probability" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+              <label class="control-label" for="Emote">Emote</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEXT.EMOTE' | translate"></i>
+              <input [formControlName]="'Emote'" id="Emote" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+              <label class="control-label" for="Duration">Duration</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEXT.DURATION' | translate"></i>
+              <input [formControlName]="'Duration'" id="Duration" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+              <label class="control-label" for="Sound">Sound</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEXT.SOUND' | translate"></i>
+              <input [formControlName]="'Sound'" id="Sound" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+              <label class="control-label" for="BroadcastTextId">BroadcastTextId</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEXT.BROADCAST_TEXT_ID' | translate"></i>
+              <input [formControlName]="'BroadcastTextId'" id="BroadcastTextId" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+              <label class="control-label" for="Type">TextRange</label>
+              <keira-single-value-selector-btn
+                [control]="editorService.form.controls.TextRange"
+                [disabled]="editorService.form.controls.TextRange.disabled"
+                [config]="{ options: TEXT_RANGE, name: 'TextRange' }"
+                [modalClass]="'modal-md'"
+              />
+              <input [formControlName]="'TextRange'" id="TextRange" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-md-8 col-lg-4 col-xl-4">
+              <label class="control-label" for="comment">comment</label>
+              <input [formControlName]="'comment'" id="comment" type="text" class="form-control form-control-sm" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-12">
+              <label class="control-label" for="Text">Text</label>
+              <input [formControlName]="'Text'" id="Text" type="text" class="form-control form-control-sm" />
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div class="col-12">
+            <keira-editor-buttons [editorService]="editorService" />
+            <ngx-datatable
+              id="editor-table"
+              class="bootstrap table table-striped text-center datatable-select"
+              [rows]="editorService.newRows"
+              [headerHeight]="DTCFG.headerHeight"
+              [footerHeight]="DTCFG.footerHeight"
+              [columnMode]="DTCFG.columnMode"
+              [rowHeight]="DTCFG.rowHeight"
+              [selectionType]="DTCFG.selectionType"
+              (select)="editorService.onRowSelection($event)"
+              (keydown.delete)="editorService.deleteSelectedRow()"
+            >
+              <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="CreatureID" prop="CreatureID" [minWidth]="42"></ngx-datatable-column>
+              <ngx-datatable-column name="GroupID" prop="GroupID" [minWidth]="42"></ngx-datatable-column>
+              <ngx-datatable-column name="ID" prop="ID" [minWidth]="42"></ngx-datatable-column>
+              <ngx-datatable-column name="Text" prop="Text" [minWidth]="42"></ngx-datatable-column>
+              <ngx-datatable-column name="Type" prop="Type" [minWidth]="42"></ngx-datatable-column>
+              <ngx-datatable-column name="Language" prop="Language" [minWidth]="42"></ngx-datatable-column>
+              <ngx-datatable-column name="Probability" prop="Probability" [minWidth]="42"></ngx-datatable-column>
+              <ngx-datatable-column name="Emote" prop="Emote" [minWidth]="42"></ngx-datatable-column>
+              <ngx-datatable-column name="Duration" prop="Duration" [minWidth]="42"></ngx-datatable-column>
+              <ngx-datatable-column name="Sound" prop="Sound" [minWidth]="42"></ngx-datatable-column>
+              <ngx-datatable-column name="BroadcastTextId" prop="BroadcastTextId" [minWidth]="42"></ngx-datatable-column>
+              <ngx-datatable-column name="TextRange" prop="TextRange" [minWidth]="42"></ngx-datatable-column>
+              <ngx-datatable-column name="comment" prop="comment" [minWidth]="42"></ngx-datatable-column>
+            </ngx-datatable>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>
