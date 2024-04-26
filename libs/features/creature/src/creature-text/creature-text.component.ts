@@ -1,16 +1,14 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CreatureText, EMOTE, TEXT_RANGE, TEXT_TYPE } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
-import { CreatureText, TEXT_TYPE, TEXT_RANGE } from '@keira/shared/acore-world-model';
+import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
+import { LanguageSelectorBtnComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTextService } from './creature-text.service';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { EditorButtonsComponent } from '@keira/shared/base-editor-components';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/base-editor-components';
-import { TranslateModule } from '@ngx-translate/core';
-import { TopBarComponent } from '@keira/shared/base-editor-components';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,11 +25,13 @@ import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
     EditorButtonsComponent,
     NgxDatatableModule,
     SingleValueSelectorBtnComponent,
+    LanguageSelectorBtnComponent,
   ],
 })
 export class CreatureTextComponent extends MultiRowEditorComponent<CreatureText> {
   protected readonly TEXT_TYPE = TEXT_TYPE;
   protected readonly TEXT_RANGE = TEXT_RANGE;
+  protected readonly EMOTE = EMOTE;
 
   public readonly editorService = inject(CreatureTextService);
   protected readonly handlerService = inject(CreatureHandlerService);

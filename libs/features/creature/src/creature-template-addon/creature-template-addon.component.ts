@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   CREATURE_ADDON_BYTES_1,
   CREATURE_ADDON_BYTES_2,
@@ -7,13 +7,13 @@ import {
   CreatureTemplateAddon,
   EMOTE,
 } from '@keira/shared/acore-world-model';
+import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { QueryOutputComponent } from '@keira/shared/base-editor-components';
+import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
+import { TranslateModule } from '@ngx-translate/core';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateAddonService } from './creature-template-addon.service';
-import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/base-editor-components';
-import { TranslateModule } from '@ngx-translate/core';
 
 import { TopBarComponent } from '@keira/shared/base-editor-components';
 
@@ -38,9 +38,9 @@ export class CreatureTemplateAddonComponent extends SingleRowEditorComponent<Cre
     return this.WIKI_BASE_URL + CREATURE_SPAWN_ADDON_TABLE; // they share the same doc page
   }
 
-  readonly EMOTE = EMOTE;
-  readonly CREATURE_ADDON_BYTES_1 = CREATURE_ADDON_BYTES_1;
-  readonly CREATURE_ADDON_BYTES_2 = CREATURE_ADDON_BYTES_2;
+  protected readonly EMOTE = EMOTE;
+  protected readonly CREATURE_ADDON_BYTES_1 = CREATURE_ADDON_BYTES_1;
+  protected readonly CREATURE_ADDON_BYTES_2 = CREATURE_ADDON_BYTES_2;
 
   readonly editorService = inject(CreatureTemplateAddonService);
   readonly handlerService = inject(CreatureHandlerService);
