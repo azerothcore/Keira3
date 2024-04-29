@@ -141,7 +141,12 @@
       "SELECT_NPC_TEXT": "Select NPC Text",
       "NPC_TEXT": "NPC Text",
       "SELECT_PAGE_TEXT": "Select Page Text",
-      "PAGE_TEXT": "Page Text"
+      "PAGE_TEXT": "Page Text",
+      "PAGE_TEXTS": {
+        "ID": "The ID of the text in the page. This number is unique to every text ID.",
+        "NEXT_PAGE_ID": "The ID of the next page's text ID.",
+        "TEXT": "The actual text. The message in this field will be shown as the text on a page."
+      }
     },
     "GOSSIP": {
       "TITLE": "Ventana de Texto de Criatura",

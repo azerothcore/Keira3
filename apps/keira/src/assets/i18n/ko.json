@@ -510,6 +510,13 @@
     "MAX_COUNT": "The maximum number of copies of the item that can drop in a single loot. For references, this is the EXACT count value.",
     "COMMENT": "A comment that is ignored by the core"
   },
+  "OTHER_TEXTS": {
+    "PAGE_TEXT": {
+      "ID": "The ID of the text in the page. This number is unique to every text ID.",
+      "NEXT_PAGE_ID": "The ID of the next page's text ID.",
+      "TEXT": "The actual text. The message in this field will be shown as the text on a page."
+    }
+  },
   "SOURCE_TYPE": "Source Type:",
   "LIMIT": "Limit:",
   "GOSSIP": {

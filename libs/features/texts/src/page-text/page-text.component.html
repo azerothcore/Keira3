@@ -14,9 +14,25 @@
         <div class="content-block">
           <div class="row">
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-              <label class="control-label" for="entry">entry</label>
-              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE_ADDON.ENTRY' | translate"></i>
-              <input [formControlName]="'entry'" id="entry" type="number" class="form-control form-control-sm" />
+              <label class="control-label" for="ID">ID</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'OTHER_TEXTS.PAGE_TEXT.ID' | translate"></i>
+              <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="NextPageID">NextPageID</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'OTHER_TEXTS.PAGE_TEXT.NEXT_PAGE_ID' | translate"></i>
+              <input [formControlName]="'NextPageID'" id="NextPageID" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="VerifiedBuild">VerifiedBuild</label>
+              <input [formControlName]="'VerifiedBuild'" id="VerifiedBuild" type="number" class="form-control form-control-sm" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-12">
+              <label class="control-label" for="Text">Text</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'OTHER_TEXTS.PAGE_TEXT.TEXT' | translate"></i>
+              <textarea [formControlName]="'Text'" id="Text" class="form-control form-control-sm" rows="10"></textarea>
             </div>
           </div>
         </div>
