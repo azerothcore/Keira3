@@ -114,6 +114,8 @@ export * from './options/item-class';
 export * from './options/item-honorrank';
 export * from './options/item-material';
 export * from './options/item-quality';
+export * from './options/text-type';
+export * from './options/text-range';
 export * from './options/item-sheath';
 export * from './options/movement-type';
 export * from './options/quest-info';

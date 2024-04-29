@@ -17,6 +17,7 @@ import {
   CreatureTemplateMovementComponent,
   CreatureTemplateResistanceComponent,
   CreatureTemplateSpellComponent,
+  CreatureTextComponent,
   NpcTrainerComponent,
   NpcVendorComponent,
   PickpocketingLootTemplateComponent,
@@ -171,6 +172,11 @@ export const KEIRA_ROUTES: Routes = [
       {
         path: 'sai-creature',
         component: SaiCreatureComponent,
+        canActivate: [CreatureHandlerService],
+      },
+      {
+        path: 'creature-text',
+        component: CreatureTextComponent,
         canActivate: [CreatureHandlerService],
       },
     ],

@@ -12,6 +12,7 @@ import {
   CREATURE_TEMPLATE_RESISTANCE_TABLE,
   CREATURE_TEMPLATE_SPELL_TABLE,
   CREATURE_TEMPLATE_TABLE,
+  CREATURE_TEXT_TABLE,
   CreatureTemplate,
   NPC_TRAINER_TABLE,
   NPC_VENDOR_TABLE,
@@ -76,6 +77,9 @@ export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
   get isCreatureSaiUnsaved(): boolean {
     return this.saiCreatureHandler.statusMap[SAI_TABLE];
   }
+  get isCreatureTextUnsaved(): boolean {
+    return this.statusMap[CREATURE_TEXT_TABLE];
+  }
 
   protected _statusMap = {
     [CREATURE_TEMPLATE_TABLE]: false,
@@ -93,6 +97,7 @@ export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
     [SKINNING_LOOT_TEMPLATE_TABLE]: false,
     [CREATURE_SPAWN_TABLE]: false,
     [CREATURE_SPAWN_ADDON_TABLE]: false,
+    [CREATURE_TEXT_TABLE]: false,
   };
 
   select(isNew: boolean, id: string | number | Partial<CreatureTemplate>, name?: string) {
