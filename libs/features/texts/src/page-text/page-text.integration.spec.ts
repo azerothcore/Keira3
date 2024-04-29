@@ -8,7 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { PageTextComponent } from './page-text.component';
-import { PageTextHandlerService } from 'texts';
+import { PageTextHandlerService } from './page-text-handler.service';
 
 describe('PageText integration tests', () => {
   class Page extends EditorPageObject<PageTextComponent> {}

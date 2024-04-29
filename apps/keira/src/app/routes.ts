@@ -76,9 +76,7 @@ import { GossipHandlerService, GossipMenuComponent, GossipMenuOptionComponent, S
 import { ConditionsComponent, ConditionsHandlerService, SelectConditionsComponent } from '@keira/features/conditions';
 import { SaiFullEditorComponent, SaiSearchEntityComponent, SaiSearchExistingComponent } from '@keira/features/smart-scripts';
 import { SelectSpellComponent, SpellDbcComponent } from '@keira/features/spell';
-import { SelectPageTextComponent } from '../../../../libs/features/texts/src/page-text/select-page-text.component';
-import { PageTextComponent } from '../../../../libs/features/texts/src/page-text/page-text.component';
-import { PageTextHandlerService } from 'texts';
+import { PageTextHandlerService, PageTextComponent, SelectPageTextComponent } from 'texts';
 
 export const KEIRA_ROUTES: Routes = [
   {

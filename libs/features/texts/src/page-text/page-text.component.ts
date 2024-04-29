@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgIf } from '@angular/common';
 import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { PageTextService } from './page-text.service';
-import { PageTextHandlerService } from 'texts';
+import { PageTextHandlerService } from './page-text-handler.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -16,7 +15,6 @@ import { PageText } from '@keira/shared/acore-world-model';
   standalone: true,
   imports: [
     TopBarComponent,
-    NgIf,
     TranslateModule,
     QueryOutputComponent,
     ReactiveFormsModule,
