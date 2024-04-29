@@ -5,7 +5,6 @@ import { MailLootHandlerService } from './mail-loot-handler.service';
 import { MailLootTemplateService } from './mail-loot-template.service';
 import { LootEditorComponent } from '@keira/shared/loot-editor';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgIf } from '@angular/common';
 import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
@@ -13,7 +12,7 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   selector: 'keira-mail-loot-template',
   templateUrl: '../../../../shared/base-abstract-classes/src/components/editors/loot-template/loot-template.component.html',
   standalone: true,
-  imports: [TopBarComponent, NgIf, TranslateModule, LootEditorComponent],
+  imports: [TopBarComponent, TranslateModule, LootEditorComponent],
 })
 export class MailLootTemplateComponent extends LootTemplateComponent<MailLootTemplate> {
   readonly editorService = inject(MailLootTemplateService);

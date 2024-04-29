@@ -4,7 +4,6 @@ import { DisenchantLootTemplate } from '@keira/shared/acore-world-model';
 import { ItemHandlerService } from '../item-handler.service';
 import { DisenchantLootTemplateService } from './disenchant-loot-template.service';
 import { LootEditorComponent } from '@keira/shared/loot-editor';
-import { NgIf } from '@angular/common';
 import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
@@ -12,7 +11,7 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   selector: 'keira-disenchant-loot-template',
   templateUrl: '../../../../shared/base-abstract-classes/src/components/editors/loot-template/loot-template-id.component.html',
   standalone: true,
-  imports: [TopBarComponent, NgIf, LootEditorComponent],
+  imports: [TopBarComponent, LootEditorComponent],
 })
 export class DisenchantLootTemplateComponent extends LootTemplateIdComponent<DisenchantLootTemplate> {
   readonly editorService = inject(DisenchantLootTemplateService);
