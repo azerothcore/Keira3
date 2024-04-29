@@ -27,5 +27,5 @@ import { PageText } from '@keira/shared/acore-world-model';
 })
 export class PageTextComponent extends SingleRowEditorComponent<PageText> {
   readonly editorService = inject(PageTextService);
-  readonly handlerService = inject(PageTextHandlerService);
+  protected readonly handlerService = inject(PageTextHandlerService);
 }
