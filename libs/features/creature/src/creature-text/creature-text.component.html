@@ -35,9 +35,15 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
               <label class="control-label" for="Language">Language</label>
+              <keira-language-selector-btn
+                [config]="{ name: 'Language' }"
+                [control]="editorService.form.controls.Language"
+                [disabled]="editorService.form.controls.Language.disabled"
+              />
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEXT.LANGUAGE' | translate"></i>
               <input [formControlName]="'Language'" id="Language" type="number" class="form-control form-control-sm" />
             </div>
+
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
               <label class="control-label" for="Probability">Probability</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEXT.PROBABILITY' | translate"></i>
@@ -45,6 +51,13 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
               <label class="control-label" for="Emote">Emote</label>
+              <keira-single-value-selector-btn
+                [control]="editorService.form.controls.Emote"
+                [disabled]="editorService.form.controls.Emote.disabled"
+                [config]="{ options: EMOTE, name: 'emote' }"
+                [modalClass]="'modal-md'"
+              />
+
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEXT.EMOTE' | translate"></i>
               <input [formControlName]="'Emote'" id="Emote" type="number" class="form-control form-control-sm" />
             </div>
