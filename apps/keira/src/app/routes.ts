@@ -77,6 +77,8 @@ import { ConditionsComponent, ConditionsHandlerService, SelectConditionsComponen
 import { SaiFullEditorComponent, SaiSearchEntityComponent, SaiSearchExistingComponent } from '@keira/features/smart-scripts';
 import { SelectSpellComponent, SpellDbcComponent } from '@keira/features/spell';
 import { SelectPageTextComponent } from '../../../../libs/features/texts/src/page-text/select-page-text.component';
+import { PageTextComponent } from '../../../../libs/features/texts/src/page-text/page-text.component';
+import { PageTextHandlerService } from 'texts';
 
 export const KEIRA_ROUTES: Routes = [
   {
@@ -361,11 +363,11 @@ export const KEIRA_ROUTES: Routes = [
         path: 'select-page-text',
         component: SelectPageTextComponent,
       },
-      // {
-      //   path: 'page-text',
-      //   component: ReferenceLootTemplateComponent,
-      //   canActivate: [ReferenceLootHandlerService],
-      // },
+      {
+        path: 'page-text',
+        component: PageTextComponent,
+        canActivate: [PageTextHandlerService],
+      },
     ],
   },
   {

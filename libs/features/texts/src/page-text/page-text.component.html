@@ -1,0 +1,26 @@
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+
+<div class="container-fluid">
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
+
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <div class="content-block">
+        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
+      </div>
+      <form [formGroup]="editorService.form" class="form-group edit-form">
+        <div class="content-block">
+          <div class="row">
+            <!--            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">-->
+            <!--              <label class="control-label" for="entry">entry</label>-->
+            <!--              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE_ADDON.ENTRY' | translate"></i>-->
+            <!--              <input [formControlName]="'entry'" id="entry" type="number" class="form-control form-control-sm" />-->
+            <!--            </div>-->
+          </div>
+        </div>
+      </form>
+    </div>
+  }
+</div>
