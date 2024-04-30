@@ -1,6 +1,6 @@
 <select
   class="btn btn-sm my-1"
-  [ngClass]="longVersion ? 'btn-secondary' : ''"
+  [class.btn-secondary]="longVersion"
   (change)="switchLanguageService.setLanguage($event)"
   [value]="switchLanguageService.currentLanguage"
 >

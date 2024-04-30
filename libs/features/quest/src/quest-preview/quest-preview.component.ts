@@ -1,10 +1,10 @@
+import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { IconComponent } from '@keira/shared/base-editor-components';
 import { PreviewHelperService } from '@keira/shared/preview';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { QUEST_FACTION_REWARD } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
-import { CollapseModule } from 'ngx-bootstrap/collapse';
-import { IconComponent } from '@keira/shared/base-editor-components';
-import { AsyncPipe, NgClass } from '@angular/common';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
@@ -13,7 +13,7 @@ import { AsyncPipe, NgClass } from '@angular/common';
   templateUrl: './quest-preview.component.html',
   styleUrls: ['./quest-preview.component.scss'],
   standalone: true,
-  imports: [NgClass, IconComponent, CollapseModule, AsyncPipe],
+  imports: [IconComponent, CollapseModule, AsyncPipe],
 })
 export class QuestPreviewComponent implements OnInit {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
@@ -58,9 +58,5 @@ export class QuestPreviewComponent implements OnInit {
 
   ngOnInit(): void {
     this.service.initializeServices(this.changeDetectorRef);
-  }
-
-  getCollapseClass(isCollapsed: boolean): string {
-    return isCollapsed ? 'fa-caret-right' : 'fa-caret-down';
   }
 }

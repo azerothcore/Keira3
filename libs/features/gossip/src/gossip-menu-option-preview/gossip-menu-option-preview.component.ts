@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { GossipMenuOption, OPTION_IMG } from '@keira/shared/acore-world-model';
-import { NgClass } from '@angular/common';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -8,7 +7,6 @@ import { NgClass } from '@angular/common';
   templateUrl: './gossip-menu-option-preview.component.html',
   styleUrls: ['./gossip-menu-option-preview.component.scss'],
   standalone: true,
-  imports: [NgClass],
 })
 export class GossipMenuOptionPreviewComponent {
   @Input() options: GossipMenuOption[];

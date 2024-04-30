@@ -1,18 +1,15 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
-import { GossipMenuOption, OPTION_ICON, OPTION_TYPE } from '@keira/shared/acore-world-model';
-import { GossipHandlerService } from '../gossip-handler.service';
-import { GossipMenuOptionService } from './gossip-menu-option.service';
-import { GossipMenuOptionPreviewComponent } from '../gossip-menu-option-preview/gossip-menu-option-preview.component';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { EditorButtonsComponent } from '@keira/shared/base-editor-components';
-import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/base-editor-components';
+import { GossipMenuOption, OPTION_ICON, OPTION_TYPE } from '@keira/shared/acore-world-model';
+import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
+import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgClass } from '@angular/common';
-import { TopBarComponent } from '@keira/shared/base-editor-components';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { GossipHandlerService } from '../gossip-handler.service';
+import { GossipMenuOptionPreviewComponent } from '../gossip-menu-option-preview/gossip-menu-option-preview.component';
+import { GossipMenuOptionService } from './gossip-menu-option.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,7 +19,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   standalone: true,
   imports: [
     TopBarComponent,
-    NgClass,
     TranslateModule,
     QueryOutputComponent,
     FormsModule,

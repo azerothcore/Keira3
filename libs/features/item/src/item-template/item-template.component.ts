@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import {
   ALLOWABLE_CLASSES,
   ALLOWABLE_RACES,
@@ -24,13 +24,9 @@ import {
   STAT_TYPE,
   TOTEM_CATEGORY,
 } from '@keira/shared/acore-world-model';
-import { debounceTime, distinctUntilChanged } from 'rxjs';
-import { Model3DViewerComponent, VIEWER_TYPE } from '@keira/shared/model-3d-viewer';
-import { ItemHandlerService } from '../item-handler.service';
-import { SPELL_TRIGGERS } from './item-constants';
-import { ItemPreviewService } from './item-preview.service';
-import { ItemTemplateService } from './item-template.service';
+import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { IconComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
+import { Model3DViewerComponent, VIEWER_TYPE } from '@keira/shared/model-3d-viewer';
 import {
   AreaSelectorBtnComponent,
   FactionSelectorBtnComponent,
@@ -45,10 +41,13 @@ import {
   SkillSelectorBtnComponent,
   SpellSelectorBtnComponent,
 } from '@keira/shared/selectors';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgClass } from '@angular/common';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { ItemHandlerService } from '../item-handler.service';
+import { SPELL_TRIGGERS } from './item-constants';
+import { ItemPreviewService } from './item-preview.service';
+import { ItemTemplateService } from './item-template.service';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
@@ -59,7 +58,6 @@ import { NgClass } from '@angular/common';
   standalone: true,
   imports: [
     TopBarComponent,
-    NgClass,
     TranslateModule,
     QueryOutputComponent,
     FormsModule,

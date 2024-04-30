@@ -1,4 +1,4 @@
-<div class="preview-container" [ngClass]="service.showPreview ? 'show-preview' : 'hide-preview'">
+<div class="preview-container" [class.show-preview]="service.showPreview" [class.hide-preview]="!service.showPreview">
   <div class="transparent perfect-scrollbar">
     <div class="preview-content quest-preview">
       @if (!!service.title) {
@@ -50,7 +50,7 @@
         <p id="classes" class="list-req">
           Classes:
           @for (c of service.classes; track c) {
-            <span [ngClass]="'c' + c">
+            <span [class]="'c' + c">
               <img [src]="'assets/img/class/' + c + '.gif'" />
               {{ service.CLASSES_TEXT[c] }} &nbsp;
             </span>
@@ -235,21 +235,21 @@
       </div>
 
       <p class="title text-left cursor-pointer mt-3" (click)="descriptionToggle = !descriptionToggle" id="description-toggle">
-        <i class="fa" [ngClass]="getCollapseClass(descriptionToggle)"></i> Description
+        <i class="fa" [class.fa-caret-right]="descriptionToggle" [class.fa-caret-down]="!descriptionToggle"></i> Description
       </p>
       <div [collapse]="descriptionToggle" class="greyed text-sm" id="description-text">
         {{ service.questTemplate.QuestDescription }}
       </div>
 
       <p class="title text-left cursor-pointer" (click)="progressToggle = !progressToggle" id="progress-toggle">
-        <i class="fa" [ngClass]="getCollapseClass(progressToggle)"></i> Progress (CompletionText)
+        <i class="fa" [class.fa-caret-right]="progressToggle" [class.fa-caret-down]="!progressToggle"></i> Progress (CompletionText)
       </p>
       <div [collapse]="progressToggle" class="greyed text-sm" id="progress-text">
         {{ service.questRequestItems.CompletionText }}
       </div>
 
       <p class="title text-left cursor-pointer" (click)="completionToggle = !completionToggle" id="completion-toggle">
-        <i class="fa" [ngClass]="getCollapseClass(completionToggle)"></i> Completion (RewardText)
+        <i class="fa" [class.fa-caret-right]="completionToggle" [class.fa-caret-down]="!completionToggle"></i> Completion (RewardText)
       </p>
       <div [collapse]="completionToggle" class="greyed text-sm" id="completion-text">
         {{ service.questOfferReward.RewardText }}

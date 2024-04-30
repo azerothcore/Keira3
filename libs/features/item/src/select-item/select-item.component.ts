@@ -1,13 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { SelectComponent } from '@keira/shared/base-abstract-classes';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ITEM_TEMPLATE_CUSTOM_STARTING_ID, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_TABLE, ItemTemplate } from '@keira/shared/acore-world-model';
+import { SelectComponent } from '@keira/shared/base-abstract-classes';
+import { CreateComponent, HighlightjsWrapperComponent, IconComponent, TopBarComponent } from '@keira/shared/base-editor-components';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ItemHandlerService } from '../item-handler.service';
 import { SelectItemService } from './select-item.service';
-import { CreateComponent, HighlightjsWrapperComponent, IconComponent, TopBarComponent } from '@keira/shared/base-editor-components';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { NgClass } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,7 +22,6 @@ import { TranslateModule } from '@ngx-translate/core';
     HighlightjsWrapperComponent,
     NgxDatatableModule,
     IconComponent,
-    NgClass,
   ],
 })
 export class SelectItemComponent extends SelectComponent<ItemTemplate> {

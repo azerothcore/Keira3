@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, OnInit } from '@angular/core';
-import { QueryError } from 'mysql2';
-import { TableRow } from '@keira/shared/constants';
-import { NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { HandlerService } from '@keira/shared/base-abstract-classes';
+import { TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SubscriptionHandler } from '@keira/shared/utils';
-import { HandlerService } from '@keira/shared/base-abstract-classes';
+import { TranslateModule } from '@ngx-translate/core';
+import { QueryError } from 'mysql2';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -14,7 +13,7 @@ import { HandlerService } from '@keira/shared/base-abstract-classes';
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss'],
   standalone: true,
-  imports: [TranslateModule, FormsModule, NgClass],
+  imports: [TranslateModule, FormsModule],
 })
 export class CreateComponent<T extends TableRow> extends SubscriptionHandler implements OnInit {
   @Input() entityTable: string;

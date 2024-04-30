@@ -21,7 +21,7 @@
   </div>
   <div class="col-12 mt-1" [hidden]="!idModel" id="id-free-status">
     <small>
-      <i class="fas" [ngClass]="{ 'fa-check-circle': isIdFree, 'fa-times-circle': !isIdFree }"></i>
+      <i class="fas" [class.fa-check-circle]="isIdFree" [class.fa-times-circle]="!isIdFree"></i>
       {{ 'CREATE.FREE_ENTRY' | translate: { ENTITY_ID_FIELD: entityIdField } }}
       {{ isIdFree ? ('CREATE.FREE' | translate) : ('CREATE.ALREADY_USE' | translate) }}
     </small>

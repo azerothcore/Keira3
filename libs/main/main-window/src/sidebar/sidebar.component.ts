@@ -1,6 +1,8 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
+import { TitleCasePipe } from '@angular/common';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ConditionsHandlerService } from '@keira/features/conditions';
 import { CreatureHandlerService } from '@keira/features/creature';
 import { GameobjectHandlerService } from '@keira/features/gameobject';
@@ -14,16 +16,14 @@ import {
 } from '@keira/features/other-loots';
 import { QuestHandlerService } from '@keira/features/quest';
 import { SpellHandlerService } from '@keira/features/spell';
-import { SidebarService } from './sidebar.service';
-import { UnsavedIconComponent } from './unsaved-icon/unsaved-icon.component';
-import { TranslateModule } from '@ngx-translate/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-import { LogoutBtnComponent } from './logout-btn/logout-btn.component';
-import { NgClass, TitleCasePipe } from '@angular/common';
+import { LocationService } from '@keira/shared/common-services';
+import { MysqlService } from '@keira/shared/db-layer';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
 import { SwitchLanguageComponent } from '@keira/shared/switch-language';
-import { MysqlService } from '@keira/shared/db-layer';
-import { LocationService } from '@keira/shared/common-services';
+import { TranslateModule } from '@ngx-translate/core';
+import { LogoutBtnComponent } from './logout-btn/logout-btn.component';
+import { SidebarService } from './sidebar.service';
+import { UnsavedIconComponent } from './unsaved-icon/unsaved-icon.component';
 
 const animationTime = 200;
 
@@ -43,7 +43,6 @@ const animationTime = 200;
   ],
   standalone: true,
   imports: [
-    NgClass,
     SwitchLanguageComponent,
     LogoutBtnComponent,
     RouterLink,
