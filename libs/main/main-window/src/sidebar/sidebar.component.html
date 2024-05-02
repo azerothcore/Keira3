@@ -516,6 +516,32 @@
             </div>
           </li>
 
+          <li class="sidebar-dropdown" [class.active]="menuStates['texts'] === 'down'">
+            <a (click)="toggleState('texts')">
+              <i class="fa fa-font"></i>
+              <span [translate]="'SIDEBAR.TEXTS.TITLE'"></span>
+            </a>
+            <div class="sidebar-submenu" [@slide]="menuStates['texts']">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'texts/select-page-text'">
+                    {{ 'SIDEBAR.TEXTS.SELECT_PAGE_TEXT' | translate }}
+                  </a>
+                </li>
+                @if (pageTextHandlerService.selected) {
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'texts/page-text'">
+                      {{ 'SIDEBAR.TEXTS.PAGE_TEXT' | translate }}
+                      @if (pageTextHandlerService.isUnsaved) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                }
+              </ul>
+            </div>
+          </li>
+
           <li class="sidebar-dropdown" [class.active]="menuStates['gossip'] === 'down'">
             <a (click)="toggleState('gossip')">
               <i class="fa fa-comments"></i>

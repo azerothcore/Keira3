@@ -1,5 +1,5 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { TitleCasePipe } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
@@ -16,6 +16,7 @@ import {
 } from '@keira/features/other-loots';
 import { QuestHandlerService } from '@keira/features/quest';
 import { SpellHandlerService } from '@keira/features/spell';
+import { PageTextHandlerService } from '@keira/features/texts';
 import { LocationService } from '@keira/shared/common-services';
 import { MysqlService } from '@keira/shared/db-layer';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
@@ -26,6 +27,20 @@ import { SidebarService } from './sidebar.service';
 import { UnsavedIconComponent } from './unsaved-icon/unsaved-icon.component';
 
 const animationTime = 200;
+
+type ToggleType = 'up' | 'down';
+interface MenuStats {
+  creature: ToggleType;
+  quest: ToggleType;
+  gameobject: ToggleType;
+  item: ToggleType;
+  otherLoot: ToggleType;
+  smartAi: ToggleType;
+  conditions: ToggleType;
+  texts: ToggleType;
+  gossip: ToggleType;
+  spell: ToggleType;
+}
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
@@ -53,7 +68,7 @@ const animationTime = 200;
   ],
 })
 export class SidebarComponent {
-  menuStates: { [key: string]: 'down' | 'up' } = {
+  menuStates: MenuStats = {
     creature: 'up',
     quest: 'up',
     gameobject: 'up',
@@ -61,6 +76,7 @@ export class SidebarComponent {
     otherLoot: 'up',
     smartAi: 'up',
     conditions: 'up',
+    texts: 'up',
     gossip: 'up',
     spell: 'up',
   };
@@ -68,23 +84,22 @@ export class SidebarComponent {
   private readonly RANDOM_IMAGE = Math.floor(Math.random() * this.IMAGES_COUNT) + 1;
   readonly style = `background-image: url(assets/img/sidebar-backgrounds/bg${this.RANDOM_IMAGE}.jpg);`;
 
-  constructor(
-    public sidebarService: SidebarService,
-    public mysqlService: MysqlService,
-    public creatureHandlerService: CreatureHandlerService,
-    public questHandlerService: QuestHandlerService,
-    public gameobjectHandlerService: GameobjectHandlerService,
-    public itemHandlerService: ItemHandlerService,
-    public gossipHandlerService: GossipHandlerService,
-    public conditionsHandlerService: ConditionsHandlerService,
-    public saiHandlerService: SaiHandlerService,
-    public referenceLootHandlerService: ReferenceLootHandlerService,
-    public spellLootHandlerService: SpellLootHandlerService,
-    public fishingLootHandlerService: FishingLootHandlerService,
-    public mailLootHandlerService: MailLootHandlerService,
-    public spellHandlerService: SpellHandlerService,
-    private locationService: LocationService,
-  ) {}
+  protected readonly sidebarService = inject(SidebarService);
+  protected readonly mysqlService = inject(MysqlService);
+  protected readonly creatureHandlerService = inject(CreatureHandlerService);
+  protected readonly questHandlerService = inject(QuestHandlerService);
+  protected readonly gameobjectHandlerService = inject(GameobjectHandlerService);
+  protected readonly itemHandlerService = inject(ItemHandlerService);
+  protected readonly gossipHandlerService = inject(GossipHandlerService);
+  protected readonly conditionsHandlerService = inject(ConditionsHandlerService);
+  protected readonly saiHandlerService = inject(SaiHandlerService);
+  protected readonly referenceLootHandlerService = inject(ReferenceLootHandlerService);
+  protected readonly spellLootHandlerService = inject(SpellLootHandlerService);
+  protected readonly fishingLootHandlerService = inject(FishingLootHandlerService);
+  protected readonly mailLootHandlerService = inject(MailLootHandlerService);
+  protected readonly spellHandlerService = inject(SpellHandlerService);
+  protected readonly pageTextHandlerService = inject(PageTextHandlerService);
+  private readonly locationService = inject(LocationService);
 
   getSideBarState(): boolean {
     return this.sidebarService.getSidebarState();
@@ -104,7 +119,7 @@ export class SidebarComponent {
     return this.sidebarService.hasBackgroundImage;
   }
 
-  toggleState(key: string): void {
+  toggleState(key: keyof MenuStats): void {
     this.menuStates[key] = this.menuStates[key] === 'up' ? 'down' : 'up';
   }
 
