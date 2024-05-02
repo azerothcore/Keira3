@@ -4,7 +4,6 @@ import { PickpocketingLootTemplate } from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { PickpocketingLootTemplateService } from './pickpocketing-loot-template.service';
 import { LootEditorComponent } from '@keira/shared/loot-editor';
-import { NgIf } from '@angular/common';
 import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
@@ -12,7 +11,7 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   selector: 'keira-pickpocketing-loot-template',
   templateUrl: '../../../../shared/base-abstract-classes/src/components/editors/loot-template/loot-template-id.component.html',
   standalone: true,
-  imports: [TopBarComponent, NgIf, LootEditorComponent],
+  imports: [TopBarComponent, LootEditorComponent],
 })
 export class PickpocketingLootTemplateComponent extends LootTemplateIdComponent<PickpocketingLootTemplate> {
   readonly editorService = inject(PickpocketingLootTemplateService);

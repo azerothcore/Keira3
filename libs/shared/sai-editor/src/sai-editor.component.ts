@@ -62,7 +62,6 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgFor, NgIf } from '@angular/common';
 import { SaiTopBarComponent } from './sai-top-bar/sai-top-bar.component';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
@@ -76,12 +75,10 @@ import { EditorButtonsComponent, QueryOutputComponent } from '@keira/shared/base
   standalone: true,
   imports: [
     SaiTopBarComponent,
-    NgIf,
     TranslateModule,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
-    NgFor,
     TooltipModule,
     FlagsSelectorBtnComponent,
     EditorButtonsComponent,
