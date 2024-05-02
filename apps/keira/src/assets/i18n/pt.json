@@ -132,6 +132,17 @@
       "SELECT_MAIL_LOOT": "Selecionar Mail Loot",
       "MAIL_LOOT_TEMPLATE": "Mail Loot Template"
     },
+    "TEXTS": {
+      "TITLE": "Other Texts",
+      "SELECT_BROADCAST_TEXT": "Select Broadcast Text",
+      "BROADCAST_TEXT": "Broadcast Text",
+      "SELECT_CREATURE_TEXT": "Select Creature Text",
+      "CREATURE_TEXT": "Creature Text",
+      "SELECT_NPC_TEXT": "Select NPC Text",
+      "NPC_TEXT": "NPC Text",
+      "SELECT_PAGE_TEXT": "Select Page Text",
+      "PAGE_TEXT": "Page Text"
+    },
     "GOSSIP": {
       "TITLE": "Gossip",
       "SELECT_GOSSIP_MENU": "Selecionar Gossip Menu",
@@ -498,6 +509,13 @@
     "MIN_COUNT": "O número mínimo de cópias do item que podem dropar em um único loot. Para referências, isso é ignorado.",
     "MAX_COUNT": "O número máximo de cópias do item que podem dropar em um único loot. Para referências, isso é o número EXATO de drops.",
     "COMMENT": "Um comentário que é ignorado pelo core"
+  },
+  "OTHER_TEXTS": {
+    "PAGE_TEXT": {
+      "ID": "The ID of the text in the page. This number is unique to every text ID.",
+      "NEXT_PAGE_ID": "The ID of the next page's text ID.",
+      "TEXT": "The actual text. The message in this field will be shown as the text on a page."
+    }
   },
   "SOURCE_TYPE": "Source Type:",
   "LIMIT": "Limit:",

@@ -1,4 +1,5 @@
 export * from './entities/area.type';
+export * from './entities/broadcast-text.type';
 export * from './entities/conditions.type';
 export * from './entities/creature-equip-template.type';
 export * from './entities/creature-loot-template.type';
@@ -43,6 +44,7 @@ export * from './entities/milling-loot-template.type';
 export * from './entities/npc-text.type';
 export * from './entities/npc-trainer.type';
 export * from './entities/npc-vendor.type';
+export * from './entities/page-text.type';
 export * from './entities/pickpocketing-loot-template.type';
 export * from './entities/prospecting-loot-template.type';
 export * from './entities/quest-offer-reward.type';

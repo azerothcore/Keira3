@@ -132,6 +132,22 @@
       "SELECT_MAIL_LOOT": "Seleccionar Botín de Correo",
       "MAIL_LOOT_TEMPLATE": "Plantilla de Botín de Correo"
     },
+    "TEXTS": {
+      "TITLE": "Other Texts",
+      "SELECT_BROADCAST_TEXT": "Select Broadcast Text",
+      "BROADCAST_TEXT": "Broadcast Text",
+      "SELECT_CREATURE_TEXT": "Select Creature Text",
+      "CREATURE_TEXT": "Creature Text",
+      "SELECT_NPC_TEXT": "Select NPC Text",
+      "NPC_TEXT": "NPC Text",
+      "SELECT_PAGE_TEXT": "Select Page Text",
+      "PAGE_TEXT": "Page Text",
+      "PAGE_TEXTS": {
+        "ID": "The ID of the text in the page. This number is unique to every text ID.",
+        "NEXT_PAGE_ID": "The ID of the next page's text ID.",
+        "TEXT": "The actual text. The message in this field will be shown as the text on a page."
+      }
+    },
     "GOSSIP": {
       "TITLE": "Ventana de Texto de Criatura",
       "SELECT_GOSSIP_MENU": "Seleccionar Ventana de Texto de Criatura",

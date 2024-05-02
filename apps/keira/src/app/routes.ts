@@ -76,6 +76,7 @@ import { GossipHandlerService, GossipMenuComponent, GossipMenuOptionComponent, S
 import { ConditionsComponent, ConditionsHandlerService, SelectConditionsComponent } from '@keira/features/conditions';
 import { SaiFullEditorComponent, SaiSearchEntityComponent, SaiSearchExistingComponent } from '@keira/features/smart-scripts';
 import { SelectSpellComponent, SpellDbcComponent } from '@keira/features/spell';
+import { PageTextHandlerService, PageTextComponent, SelectPageTextComponent } from 'texts';
 
 export const KEIRA_ROUTES: Routes = [
   {
@@ -350,6 +351,20 @@ export const KEIRA_ROUTES: Routes = [
         path: 'mail',
         component: MailLootTemplateComponent,
         canActivate: [MailLootHandlerService],
+      },
+    ],
+  },
+  {
+    path: 'texts',
+    children: [
+      {
+        path: 'select-page-text',
+        component: SelectPageTextComponent,
+      },
+      {
+        path: 'page-text',
+        component: PageTextComponent,
+        canActivate: [PageTextHandlerService],
       },
     ],
   },
