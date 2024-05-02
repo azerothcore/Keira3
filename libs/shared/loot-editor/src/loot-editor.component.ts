@@ -7,7 +7,7 @@ import { LOOT_MODE, LootTemplate } from '@keira/shared/acore-world-model';
 import { WIKI_BASE_URL } from '@keira/shared/constants';
 import { TranslateModule } from '@ngx-translate/core';
 import { ReferenceViewerComponent } from './reference-viewer.component';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AsyncPipe, NgClass } from '@angular/common';

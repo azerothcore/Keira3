@@ -3,7 +3,7 @@ import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { GameobjectSpawnAddon, INVISIBILITY_TYPE } from '@keira/shared/acore-world-model';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectSpawnAddonService } from './gameobject-spawn-addon.service';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';

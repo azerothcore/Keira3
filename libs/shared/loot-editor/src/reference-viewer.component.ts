@@ -6,7 +6,7 @@ import { SubscriptionHandler } from '@keira/shared/utils';
 import { ReferenceViewerService } from './reference-viewer.service';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { IconComponent } from '@keira/shared/base-editor-components';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { AsyncPipe, NgClass } from '@angular/common';
 

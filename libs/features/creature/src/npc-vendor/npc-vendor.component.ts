@@ -3,7 +3,7 @@ import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { NpcVendor } from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { NpcVendorService } from './npc-vendor.service';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { EditorButtonsComponent } from '@keira/shared/base-editor-components';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ItemExtendedCostSelectorBtnComponent, ItemSelectorBtnComponent } from '@keira/shared/selectors';

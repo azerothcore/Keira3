@@ -3,7 +3,7 @@ import { SaiEditorComponent } from '@keira/shared/sai-editor';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { SaiCreatureEditorService } from './sai-creature-editor.service';
 import { TimedActionlistComponent } from '@keira/shared/sai-editor';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { EditorButtonsComponent } from '@keira/shared/base-editor-components';
 import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';

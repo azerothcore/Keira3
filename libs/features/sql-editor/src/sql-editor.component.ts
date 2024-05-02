@@ -6,7 +6,7 @@ import { QueryError } from 'mysql2';
 import { ClipboardService } from 'ngx-clipboard';
 import { SqlEditorService } from './sql-editor.service';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
 
 import { FormsModule } from '@angular/forms';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';

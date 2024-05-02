@@ -6,7 +6,7 @@ import { DTCFG } from '@keira/shared/config';
 import { Option } from '@keira/shared/constants';
 import { SingleValueModalConfig } from './single-value-selector.model';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

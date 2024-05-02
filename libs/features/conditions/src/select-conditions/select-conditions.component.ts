@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SelectComplexKeyComponent } from '@keira/shared/base-abstract-classes';
 import { CONDITION_SOURCE_TYPES, Conditions } from '@keira/shared/acore-world-model';
 import { ConditionsHandlerService } from '../conditions-handler.service';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 
 import { TranslateModule } from '@ngx-translate/core';

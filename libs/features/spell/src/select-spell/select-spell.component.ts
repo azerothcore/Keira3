@@ -11,7 +11,7 @@ import {
 } from '@keira/shared/acore-world-model';
 import { SpellHandlerService } from '../spell-handler.service';
 import { SelectSpellService } from './select-spell.service';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
 
 import { CreateComponent, HighlightjsWrapperComponent, IconComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';

@@ -5,7 +5,7 @@ import { SpellSearchService } from '../../search/spell-search.service';
 import { Spell, SPELL_ID } from '@keira/shared/acore-world-model';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';

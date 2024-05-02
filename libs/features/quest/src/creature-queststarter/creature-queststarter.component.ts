@@ -5,7 +5,7 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { CreatureQueststarterService } from './creature-queststarter.service';
 import { QuestPreviewComponent } from '../quest-preview/quest-preview.component';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CreatureSelectorBtnComponent } from '@keira/shared/selectors';

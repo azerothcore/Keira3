@@ -3,7 +3,7 @@ import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { GameobjectQuestitem } from '@keira/shared/acore-world-model';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectQuestitemService } from './gameobject-questitem.service';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { EditorButtonsComponent } from '@keira/shared/base-editor-components';
 import { ItemSelectorBtnComponent } from '@keira/shared/selectors';
 import { IconComponent } from '@keira/shared/base-editor-components';

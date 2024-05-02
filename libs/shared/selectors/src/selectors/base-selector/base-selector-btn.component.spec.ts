@@ -4,7 +4,7 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { instance, mock } from 'ts-mockito';
 import { ItemSelectorBtnComponent } from '../item-selector/item-selector-btn.component';
