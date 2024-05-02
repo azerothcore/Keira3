@@ -4,7 +4,6 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { SingleValueSelectorModalComponent } from './single-value-selector-modal.component';
 import { BaseSelectorBtnComponent } from '../base-selector/base-selector-btn.component';
 import { SingleValueModalConfig } from './single-value-selector.model';
-import { NgIf } from '@angular/common';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -12,7 +11,6 @@ import { NgIf } from '@angular/common';
   templateUrl: '../base-selector/base-selector-btn.component.html',
   styleUrls: ['../base-selector/base-selector-btn.component.scss'],
   standalone: true,
-  imports: [NgIf],
 })
 export class SingleValueSelectorBtnComponent extends BaseSelectorBtnComponent<SingleValueModalConfig> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690

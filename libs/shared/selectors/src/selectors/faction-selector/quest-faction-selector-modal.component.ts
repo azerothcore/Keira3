@@ -6,7 +6,6 @@ import { FactionSearchService } from '../../search/faction-search.service';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { NgIf } from '@angular/common';
 import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -15,7 +14,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   selector: 'keira-quest-faction-selector-modal',
   templateUrl: './faction-selector-modal.component.html',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgIf, NgxDatatableModule, TranslateModule],
+  imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateModule],
 })
 export class QuestFactionSelectorModalComponent extends SearchSelectorModalComponent<Faction> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
