@@ -10,7 +10,6 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgIf, NgFor } from '@angular/common';
 import { SaiTopBarComponent } from '@keira/shared/sai-editor';
 
 @Component({
@@ -21,12 +20,10 @@ import { SaiTopBarComponent } from '@keira/shared/sai-editor';
   standalone: true,
   imports: [
     SaiTopBarComponent,
-    NgIf,
     TranslateModule,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
-    NgFor,
     TooltipModule,
     FlagsSelectorBtnComponent,
     EditorButtonsComponent,

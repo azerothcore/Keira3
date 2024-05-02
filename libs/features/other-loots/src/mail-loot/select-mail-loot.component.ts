@@ -9,7 +9,6 @@ import {
 import { MailLootHandlerService } from './mail-loot-handler.service';
 import { SelectMailLootService } from './select-mail-loot.service';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { NgIf } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@keira/shared/base-editor-components';
@@ -25,7 +24,6 @@ import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@
     FormsModule,
     ReactiveFormsModule,
     HighlightjsWrapperComponent,
-    NgIf,
     NgxDatatableModule,
   ],
 })
