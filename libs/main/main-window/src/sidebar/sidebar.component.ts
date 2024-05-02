@@ -24,7 +24,7 @@ import { SaiHandlerService } from '@keira/shared/sai-editor';
 import { SwitchLanguageComponent } from '@keira/shared/switch-language';
 import { MysqlService } from '@keira/shared/db-layer';
 import { LocationService } from '@keira/shared/common-services';
-import { PageTextHandlerService } from '@keira/features/texts';
+import { BroadcastTextHandlerService, PageTextHandlerService } from '@keira/features/texts';
 
 const animationTime = 200;
 
@@ -100,6 +100,7 @@ export class SidebarComponent {
   protected readonly mailLootHandlerService = inject(MailLootHandlerService);
   protected readonly spellHandlerService = inject(SpellHandlerService);
   protected readonly pageTextHandlerService = inject(PageTextHandlerService);
+  protected readonly broadcastTextHandlerService = inject(BroadcastTextHandlerService);
   private readonly locationService = inject(LocationService);
 
   getSideBarState(): boolean {
