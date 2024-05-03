@@ -83,6 +83,9 @@ import {
   PageTextHandlerService,
   PageTextComponent,
   SelectPageTextComponent,
+  SelectNpcTextComponent,
+  NpcTextComponent,
+  NpcTextHandlerService,
 } from 'texts';
 
 export const KEIRA_ROUTES: Routes = [
@@ -381,6 +384,15 @@ export const KEIRA_ROUTES: Routes = [
         path: 'broadcast-text',
         component: BroadcastTextComponent,
         canActivate: [BroadcastTextHandlerService],
+      },
+      {
+        path: 'select-npc-text',
+        component: SelectNpcTextComponent,
+      },
+      {
+        path: 'npc-text',
+        component: NpcTextComponent,
+        canActivate: [NpcTextHandlerService],
       },
     ],
   },
