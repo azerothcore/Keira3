@@ -6,7 +6,7 @@ import { ReferenceLootTemplate } from '@keira/shared/acore-world-model';
 import { IconComponent } from '@keira/shared/base-editor-components';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SubscriptionHandler } from '@keira/shared/utils';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ReferenceViewerService } from './reference-viewer.service';
 

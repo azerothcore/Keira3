@@ -12,7 +12,7 @@ import { WIKI_BASE_URL } from '@keira/shared/constants';
 import { FlagsSelectorBtnComponent, ItemSelectorBtnComponent } from '@keira/shared/selectors';
 import { compareObjFn, SubscriptionHandler } from '@keira/shared/utils';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ReferenceViewerComponent } from './reference-viewer.component';
 
