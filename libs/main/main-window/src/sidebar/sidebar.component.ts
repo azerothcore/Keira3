@@ -16,7 +16,7 @@ import {
 } from '@keira/features/other-loots';
 import { QuestHandlerService } from '@keira/features/quest';
 import { SpellHandlerService } from '@keira/features/spell';
-import { PageTextHandlerService } from '@keira/features/texts';
+import { BroadcastTextHandlerService, PageTextHandlerService } from '@keira/features/texts';
 import { LocationService } from '@keira/shared/common-services';
 import { MysqlService } from '@keira/shared/db-layer';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
@@ -99,6 +99,7 @@ export class SidebarComponent {
   protected readonly mailLootHandlerService = inject(MailLootHandlerService);
   protected readonly spellHandlerService = inject(SpellHandlerService);
   protected readonly pageTextHandlerService = inject(PageTextHandlerService);
+  protected readonly broadcastTextHandlerService = inject(BroadcastTextHandlerService);
   private readonly locationService = inject(LocationService);
 
   getSideBarState(): boolean {

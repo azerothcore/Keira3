@@ -1,16 +1,16 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
-import { PageText, PAGE_TEXT_CUSTOM_STARTING_ID, PAGE_TEXT_TABLE, PAGE_TEXT_ID } from '@keira/shared/acore-world-model';
-import { NgxDatatableModule } from '@siemens/ngx-datatable';
+import { BroadcastText, BROADCAST_TEXT_CUSTOM_STARTING_ID, BROADCAST_TEXT_TABLE, BROADCAST_TEXT_ID } from '@keira/shared/acore-world-model';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@keira/shared/base-editor-components';
-import { SelectPageTextService } from './select-page-text.service';
-import { PageTextHandlerService } from './page-text-handler.service';
+import { SelectBroadcastTextService } from './select-broadcast-text.service';
+import { BroadcastTextHandlerService } from './broadcast-text-handler.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './select-page-text.component.html',
+  templateUrl: './select-broadcast-text.component.html',
   standalone: true,
   imports: [
     TopBarComponent,
@@ -22,12 +22,12 @@ import { PageTextHandlerService } from './page-text-handler.service';
     NgxDatatableModule,
   ],
 })
-export class SelectPageTextComponent extends SelectComponent<PageText> {
+export class SelectBroadcastTextComponent extends SelectComponent<BroadcastText> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    public readonly selectService: SelectPageTextService,
-    public readonly handlerService: PageTextHandlerService,
+    public readonly selectService: SelectBroadcastTextService,
+    public readonly handlerService: BroadcastTextHandlerService,
   ) {
-    super(PAGE_TEXT_TABLE, PAGE_TEXT_ID, PAGE_TEXT_CUSTOM_STARTING_ID, selectService, handlerService);
+    super(BROADCAST_TEXT_TABLE, BROADCAST_TEXT_ID, BROADCAST_TEXT_CUSTOM_STARTING_ID, selectService, handlerService);
   }
 }

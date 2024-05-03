@@ -8,7 +8,7 @@ import {
 } from '@keira/shared/acore-world-model';
 import { SelectSpellLootService } from './select-spell-loot.service';
 import { SpellLootHandlerService } from './spell-loot-handler.service';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@keira/shared/base-editor-components';

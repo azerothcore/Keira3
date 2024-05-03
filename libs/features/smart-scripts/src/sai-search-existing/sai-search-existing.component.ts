@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SelectComplexKeyComponent } from '@keira/shared/base-abstract-classes';
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 
 import { TranslateModule } from '@ngx-translate/core';

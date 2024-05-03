@@ -7,7 +7,7 @@ import {
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateResistanceService } from './creature-template-resistance.service';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { EditorButtonsComponent } from '@keira/shared/base-editor-components';
 import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
