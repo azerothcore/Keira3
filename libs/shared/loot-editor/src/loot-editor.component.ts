@@ -2,19 +2,19 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, OnInit } from '@angular/core';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
-import { DTCFG } from '@keira/shared/config';
+import { AsyncPipe } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LOOT_MODE, LootTemplate } from '@keira/shared/acore-world-model';
+import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
+import { EditorButtonsComponent, IconComponent, QueryOutputComponent } from '@keira/shared/base-editor-components';
+import { DTCFG } from '@keira/shared/config';
 import { WIKI_BASE_URL } from '@keira/shared/constants';
+import { FlagsSelectorBtnComponent, ItemSelectorBtnComponent } from '@keira/shared/selectors';
+import { compareObjFn, SubscriptionHandler } from '@keira/shared/utils';
 import { TranslateModule } from '@ngx-translate/core';
-import { ReferenceViewerComponent } from './reference-viewer.component';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AsyncPipe, NgClass } from '@angular/common';
-import { FlagsSelectorBtnComponent, ItemSelectorBtnComponent } from '@keira/shared/selectors';
-import { EditorButtonsComponent, IconComponent, QueryOutputComponent } from '@keira/shared/base-editor-components';
-import { compareObjFn, SubscriptionHandler } from '@keira/shared/utils';
-import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
+import { ReferenceViewerComponent } from './reference-viewer.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,7 +32,6 @@ import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
     FlagsSelectorBtnComponent,
     EditorButtonsComponent,
     NgxDatatableModule,
-    NgClass,
     ReferenceViewerComponent,
     AsyncPipe,
     TranslateModule,

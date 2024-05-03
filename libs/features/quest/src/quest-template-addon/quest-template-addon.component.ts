@@ -1,10 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ALLOWABLE_CLASSES, QuestTemplateAddon, SPECIAL_FLAGS } from '@keira/shared/acore-world-model';
-import { QuestHandlerService } from '../quest-handler.service';
-import { QuestPreviewService } from '../quest-preview/quest-preview.service';
-import { QuestTemplateAddonService } from './quest-template-addon.service';
-import { QuestPreviewComponent } from '../quest-preview/quest-preview.component';
+import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import {
   FactionSelectorBtnComponent,
   FlagsSelectorBtnComponent,
@@ -12,11 +10,12 @@ import {
   SkillSelectorBtnComponent,
   SpellSelectorBtnComponent,
 } from '@keira/shared/selectors';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgClass } from '@angular/common';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { QuestHandlerService } from '../quest-handler.service';
+import { QuestPreviewComponent } from '../quest-preview/quest-preview.component';
+import { QuestPreviewService } from '../quest-preview/quest-preview.service';
+import { QuestTemplateAddonService } from './quest-template-addon.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,7 +25,6 @@ import { NgClass } from '@angular/common';
   standalone: true,
   imports: [
     TopBarComponent,
-    NgClass,
     TranslateModule,
     QueryOutputComponent,
     FormsModule,

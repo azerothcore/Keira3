@@ -1,4 +1,4 @@
-<div class="preview-container" [ngClass]="show ? 'show-preview' : 'hide-preview'">
+<div class="preview-container" [class.show-preview]="show" [class.hide-preview]="!show">
   <div class="transparent perfect-scrollbar">
     <div class="gossip-preview">
       @for (row of options; track row) {

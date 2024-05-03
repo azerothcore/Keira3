@@ -1,6 +1,6 @@
 <keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
 
-<div class="container-fluid editor-with-preview" [ngClass]="{ 'show-preview': showGossipPreview }">
+<div class="container-fluid editor-with-preview" [class.show-preview]="showGossipPreview">
   @if (editorService.loading) {
     <span [translate]="'LOADING' | translate"></span>
   }

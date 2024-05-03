@@ -1,17 +1,15 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GAMEOBJECT_ICON, GAMEOBJECT_TYPE, GameobjectTemplate } from '@keira/shared/acore-world-model';
+import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { FieldDefinition } from '@keira/shared/constants';
+import { Model3DViewerComponent, VIEWER_TYPE } from '@keira/shared/model-3d-viewer';
+import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
+import { TranslateModule } from '@ngx-translate/core';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectTemplateService } from './gameobject-template.service';
-import { VIEWER_TYPE, Model3DViewerComponent } from '@keira/shared/model-3d-viewer';
-import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/base-editor-components';
-import { TranslateModule } from '@ngx-translate/core';
-import { NgClass } from '@angular/common';
-import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,7 +19,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   standalone: true,
   imports: [
     TopBarComponent,
-    NgClass,
     TranslateModule,
     QueryOutputComponent,
     FormsModule,

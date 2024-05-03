@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   CREATURE_AI_NAME,
   CREATURE_CLASS,
@@ -23,20 +23,20 @@ import {
   UNIT_FLAGS,
   UNIT_FLAGS_2,
 } from '@keira/shared/acore-world-model';
+import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
+import { Model3DViewerComponent, VIEWER_TYPE } from '@keira/shared/model-3d-viewer';
+import {
+  CreatureSelectorBtnComponent,
+  FactionSelectorBtnComponent,
+  FlagsSelectorBtnComponent,
+  SingleValueSelectorBtnComponent,
+  SpellSelectorBtnComponent,
+} from '@keira/shared/selectors';
+import { TranslateModule } from '@ngx-translate/core';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateService } from './creature-template.service';
-import { VIEWER_TYPE, Model3DViewerComponent } from '@keira/shared/model-3d-viewer';
-import { CreatureSelectorBtnComponent } from '@keira/shared/selectors';
-import { SpellSelectorBtnComponent } from '@keira/shared/selectors';
-import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
-import { FactionSelectorBtnComponent } from '@keira/shared/selectors';
-import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/base-editor-components';
-import { TranslateModule } from '@ngx-translate/core';
-import { NgClass } from '@angular/common';
-import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -46,7 +46,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   standalone: true,
   imports: [
     TopBarComponent,
-    NgClass,
     TranslateModule,
     QueryOutputComponent,
     FormsModule,

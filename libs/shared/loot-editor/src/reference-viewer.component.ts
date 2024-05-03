@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
 import { DTCFG } from '@keira/shared/config';
 
+import { AsyncPipe } from '@angular/common';
 import { ReferenceLootTemplate } from '@keira/shared/acore-world-model';
-import { SubscriptionHandler } from '@keira/shared/utils';
-import { ReferenceViewerService } from './reference-viewer.service';
-import { MysqlQueryService } from '@keira/shared/db-layer';
 import { IconComponent } from '@keira/shared/base-editor-components';
+import { MysqlQueryService } from '@keira/shared/db-layer';
+import { SubscriptionHandler } from '@keira/shared/utils';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { AsyncPipe, NgClass } from '@angular/common';
+import { ReferenceViewerService } from './reference-viewer.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,7 +16,7 @@ import { AsyncPipe, NgClass } from '@angular/common';
   templateUrl: './reference-viewer.component.html',
   styleUrls: ['./loot-editor.component.scss'],
   standalone: true,
-  imports: [TooltipModule, NgxDatatableModule, IconComponent, NgClass, AsyncPipe],
+  imports: [TooltipModule, NgxDatatableModule, IconComponent, AsyncPipe],
 })
 export class ReferenceViewerComponent extends SubscriptionHandler implements OnChanges {
   @Input() referenceId: number;

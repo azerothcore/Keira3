@@ -1,6 +1,6 @@
 <keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
 
-<div class="container-fluid editor-with-preview" [ngClass]="{ 'show-preview': showItemPreview }">
+<div class="container-fluid editor-with-preview" [class.show-preview]="showItemPreview">
   @if (editorService.loading) {
     <span [translate]="'LOADING'"></span>
   }
@@ -548,7 +548,7 @@
         </div>
       </div> -->
       </form>
-      <div class="preview-container" [ngClass]="showItemPreview ? 'show-preview' : 'hide-preview'">
+      <div class="preview-container" [class.show-preview]="showItemPreview" [class.hide-preview]="!showItemPreview">
         <div class="transparent perfect-scrollbar">
           <div class="creature-preview">
             @if (editorService.form.controls.modelid1.value) {
