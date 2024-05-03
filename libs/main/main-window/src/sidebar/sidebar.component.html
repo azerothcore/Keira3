@@ -541,6 +541,22 @@
                     </a>
                   </li>
                 }
+                <hr />
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'texts/select-broadcast-text'">
+                    {{ 'SIDEBAR.TEXTS.SELECT_BROADCAST_TEXT' | translate }}
+                  </a>
+                </li>
+                @if (broadcastTextHandlerService.selected) {
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'texts/broadcast-text'">
+                      {{ 'SIDEBAR.TEXTS.BROADCAST_TEXT' | translate }}
+                      @if (broadcastTextHandlerService.isUnsaved) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                }
               </ul>
             </div>
           </li>
