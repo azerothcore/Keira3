@@ -2,9 +2,11 @@ import { TableRow } from '@keira/shared/constants';
 
 export const NPC_TEXT_TABLE = 'npc_text';
 export const NPC_TEXT_ID = 'ID';
-export const NPC_TEXT_0 = 'text0_0';
+export const NPC_TEXT_NAME = 'text0_0';
 export const NPC_TEXT_1 = 'text0_1';
-export const NPC_TEXT_SEARCH_FIELDS = [NPC_TEXT_ID, NPC_TEXT_0, NPC_TEXT_1];
+export const NPC_TEXT_SEARCH_FIELDS = [NPC_TEXT_ID, NPC_TEXT_NAME, NPC_TEXT_1];
+
+export const NPC_TEXT_CUSTOM_STARTING_ID = 90_000_000;
 
 export class NpcText extends TableRow {
   ID: number = 0;
