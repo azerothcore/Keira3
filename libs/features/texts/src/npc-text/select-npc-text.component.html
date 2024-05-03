@@ -1,0 +1,61 @@
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+
+<div class="container-fluid">
+  <div class="content-block">
+    <keira-create
+      [entityTable]="entityTable"
+      [entityIdField]="entityIdField"
+      [customStartingId]="customStartingId"
+      [handlerService]="handlerService"
+      [queryService]="queryService"
+    />
+  </div>
+
+  <div class="content-block">
+    <p class="lead" [translate]="'SELECT_EXISTING'"></p>
+    <form [formGroup]="selectService.queryForm" class="mb-2">
+      <div class="row">
+        <ng-container [formGroup]="selectService.fields">
+          <div class="form-group col-2">
+            <input [formControlName]="'ID'" type="number" class="form-control form-control-sm" id="search-id" placeholder="ID" />
+          </div>
+          <div class="form-group col-3">
+            <input [formControlName]="'text0_0'" class="form-control form-control-sm" id="search-text0_0" placeholder="text0_0" />
+          </div>
+          <div class="form-group col-3">
+            <input [formControlName]="'text0_1'" class="form-control form-control-sm" id="search-text0_1" placeholder="text0_1" />
+          </div>
+        </ng-container>
+        <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Limit" />
+        </div>
+        <div class="mb-2 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <button id="search-btn" class="btn btn-primary btn-sm" [disabled]="selectService.queryForm.invalid" (click)="onSearch()">
+            <i class="fa fa-search"></i> {{ 'SEARCH' | translate }}
+          </button>
+        </div>
+      </div>
+      <keira-highlightjs-wrapper [code]="selectService.query" />
+    </form>
+
+    @if (selectService.rows) {
+      <div>
+        <ngx-datatable
+          class="bootstrap table table-striped text-center datatable-select"
+          [rows]="selectService.rows"
+          [headerHeight]="DTCFG.headerHeight"
+          [footerHeight]="DTCFG.footerHeight"
+          [columnMode]="DTCFG.columnMode"
+          [rowHeight]="DTCFG.rowHeight"
+          [limit]="DTCFG.limit"
+          [selectionType]="DTCFG.selectionType"
+          (select)="selectService.onSelect($event)"
+        >
+          <ngx-datatable-column name="ID" prop="ID" [minWidth]="50" [maxWidth]="50"></ngx-datatable-column>
+          <ngx-datatable-column name="text0_0" prop="text0_0"></ngx-datatable-column>
+          <ngx-datatable-column name="text0_1" prop="text0_1"></ngx-datatable-column>
+        </ngx-datatable>
+      </div>
+    }
+  </div>
+</div>

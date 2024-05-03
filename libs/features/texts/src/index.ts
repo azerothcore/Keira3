@@ -5,3 +5,7 @@ export { PageTextComponent } from './page-text/page-text.component';
 export { BroadcastTextHandlerService } from './broadcast-text/broadcast-text-handler.service';
 export { SelectBroadcastTextComponent } from './broadcast-text/select-broadcast-text.component';
 export { BroadcastTextComponent } from './broadcast-text/broadcast-text.component';
+
+export { NpcTextHandlerService } from './npc-text/npc-text-handler.service';
+export { SelectNpcTextComponent } from './npc-text/select-npc-text.component';
+export { NpcTextComponent } from './npc-text/npc-text.component';

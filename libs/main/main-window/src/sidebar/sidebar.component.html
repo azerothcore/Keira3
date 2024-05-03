@@ -554,6 +554,22 @@
                     </a>
                   </li>
                 }
+                <hr />
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'texts/select-npc-text'">
+                    {{ 'SIDEBAR.TEXTS.SELECT_NPC_TEXT' | translate }}
+                  </a>
+                </li>
+                @if (npcTextHandlerService.selected) {
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'texts/npc-text'">
+                      {{ 'SIDEBAR.TEXTS.NPC_TEXT' | translate }}
+                      @if (npcTextHandlerService.isUnsaved) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                }
               </ul>
             </div>
           </li>
