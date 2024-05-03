@@ -4,7 +4,7 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ItemSearchService } from '../../search/item-search.service';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
 
 import { HighlightjsWrapperComponent, IconComponent } from '@keira/shared/base-editor-components';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';

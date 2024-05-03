@@ -58,7 +58,7 @@ import {
 import { SaiEditorService } from './sai-editor.service';
 import { SaiHandlerService } from './sai-handler.service';
 import { TimedActionlistComponent } from './timed-actionlist/timed-actionlist.component';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';

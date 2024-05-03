@@ -4,7 +4,7 @@ import { GossipMenuOption, OPTION_ICON, OPTION_TYPE } from '@keira/shared/acore-
 import { GossipHandlerService } from '../gossip-handler.service';
 import { GossipMenuOptionService } from './gossip-menu-option.service';
 import { GossipMenuOptionPreviewComponent } from '../gossip-menu-option-preview/gossip-menu-option-preview.component';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { EditorButtonsComponent } from '@keira/shared/base-editor-components';
 import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';

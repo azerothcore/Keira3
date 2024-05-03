@@ -3,7 +3,7 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 
 import { PageObject } from '@keira/shared/test-utils';
 import { SmartScripts } from '@keira/shared/acore-world-model';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { of } from 'rxjs';
 import { TimedActionlistComponent } from './timed-actionlist.component';
 import { MysqlQueryService } from '@keira/shared/db-layer';

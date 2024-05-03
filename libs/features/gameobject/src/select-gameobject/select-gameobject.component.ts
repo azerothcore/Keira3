@@ -8,7 +8,7 @@ import {
 } from '@keira/shared/acore-world-model';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SelectGameobjectService } from './select-gameobject.service';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';

@@ -9,7 +9,7 @@ import {
 } from '@keira/shared/acore-world-model';
 import { SelectCreatureService } from './select-creature.service';
 import { CreatureHandlerService } from '../creature-handler.service';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';

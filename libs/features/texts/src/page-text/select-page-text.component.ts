@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
 import { PageText, PAGE_TEXT_CUSTOM_STARTING_ID, PAGE_TEXT_TABLE, PAGE_TEXT_ID } from '@keira/shared/acore-world-model';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@keira/shared/base-editor-components';

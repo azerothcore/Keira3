@@ -1,4 +1,4 @@
-import { ColumnMode, SelectionType } from '@swimlane/ngx-datatable';
+import { ColumnMode, SelectionType } from '@siemens/ngx-datatable';
 
 export const DTCFG = {
   columnMode: ColumnMode.force,

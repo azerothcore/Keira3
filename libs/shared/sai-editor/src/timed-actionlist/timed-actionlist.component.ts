@@ -4,7 +4,7 @@ import { DTCFG } from '@keira/shared/config';
 import { SmartScripts } from '@keira/shared/acore-world-model';
 import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
 @Component({
