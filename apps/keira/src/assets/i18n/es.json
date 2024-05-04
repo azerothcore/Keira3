@@ -515,6 +515,23 @@
     "MAX_COUNT": "El Número Máximo de copias del Item que pueden aparecer en un sólo Botín individual. En el caso de las Referencias de Botín, este campo es el valor del recuento EXACTO.",
     "COMMENT": "Un comentario el cual ignora el emulador (usado para dejar anotaciones al respecto)"
   },
+  "OTHER_TEXTS": {
+    "BROADCAST_TEXT": {
+      "ID": "The unique ID for the text.",
+      "LANGUAGE_ID": "The language ID (from Languages.dbc) in which the text will be broadcast.",
+      "SOUND_ENTRIES_ID": "The sound IDs (from SoundEntries.dbc) played when the texts are broadcast.",
+      "EMOTES_ID": "An emote.",
+      "EMOTE_ID_N": "The emote ID (from Emotes.dbc) played when the texts are broadcast.",
+      "EMOTE_DELAY_N": "The delays of the broadcast emotes.",
+      "MALE_TEXT": "The text that the male creature will broadcast, or male characters can read from gossip menu.",
+      "FEMALE_TEXT": "The text that the female creature will broadcast, or female characters can read from gossip menu."
+    },
+    "PAGE_TEXT": {
+      "ID": "The ID of the text in the page. This number is unique to every text ID.",
+      "NEXT_PAGE_ID": "The ID of the next page's text ID.",
+      "TEXT": "The actual text. The message in this field will be shown as the text on a page."
+    }
+  },
   "SOURCE_TYPE": "Tipo de Fuente:",
   "LIMIT": "Límite:",
   "GOSSIP": {
