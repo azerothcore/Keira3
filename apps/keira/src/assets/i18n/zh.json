@@ -511,7 +511,7 @@
   "OTHER_TEXTS": {
     "BROADCAST_TEXT": {
       "ID": "The unique ID for the text.",
-      "LANGUAGE_ID": "The language ID (from Languages.dbc) in WHICH THE TEXT WILL Be BROADCAST.",
+      "LANGUAGE_ID": "The language ID (from Languages.dbc) in which the text will be broadcast.",
       "SOUND_ENTRIES_ID": "The sound IDs (from SoundEntries.Dbc) played when the texts are broadcast.",
       "EMOTES_ID": "An emote.",
       "EMOTE_ID_N": "The emote ID (from Emotes.dbc) played when the texts are broadcast.",
