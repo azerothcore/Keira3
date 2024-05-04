@@ -1,0 +1,57 @@
+<div class="content-block">
+  <div class="row">
+    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+      <label class="control-label" for="BroadcastTextID{{ groupID }}">BroadcastTextID{{ groupID }}</label>
+      <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'OTHER_TEXTS.NPC_TEXT.ID' | translate"></i>
+      <input
+        [formControlName]="'BroadcastTextID' + groupID"
+        id="BroadcastTextID{{ groupID }}"
+        type="number"
+        class="form-control form-control-sm"
+      />
+    </div>
+    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+      <label class="control-label" for="lang{{ groupID }}">lang{{ groupID }}</label>
+      <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'OTHER_TEXTS.NPC_TEXT.ID' | translate"></i>
+      <input [formControlName]="'lang' + groupID" id="lang{{ groupID }}" type="number" class="form-control form-control-sm" />
+    </div>
+    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+      <label class="control-label" for="Probability{{ groupID }}">Probability{{ groupID }}</label>
+      <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'OTHER_TEXTS.NPC_TEXT.ID' | translate"></i>
+      <input [formControlName]="'Probability' + groupID" id="Probability{{ groupID }}" type="number" class="form-control form-control-sm" />
+    </div>
+  </div>
+
+  <div class="row">
+    @for (emIndex of EM_FIELDS; track $index) {
+      <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label" for="em{{ groupID }}_{{ emIndex }}">em{{ groupID }}_{{ emIndex }}</label>
+        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'OTHER_TEXTS.NPC_TEXT.EM_N' | translate"></i>
+        <input
+          [formControlName]="'em' + groupID + '_' + emIndex"
+          id="em{{ groupID }}_{{ emIndex }}"
+          type="number"
+          class="form-control form-control-sm"
+        />
+      </div>
+    }
+  </div>
+
+  <div class="row">
+    <div class="form-group col-12 col-sm-6">
+      <label class="control-label" for="text{{ groupID }}_0">text{{ groupID }}_0</label>
+      <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'OTHER_TEXTS.NPC_TEXT.TEXT_0' | translate"></i>
+      <textarea [formControlName]="'text0_0'" id="text{{ groupID }}_0" class="form-control form-control-sm" rows="2"></textarea>
+    </div>
+    <div class="form-group col-12 col-sm-6">
+      <label class="control-label" for="text{{ groupID }}_1">text{{ groupID }}_1</label>
+      <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'OTHER_TEXTS.NPC_TEXT.TEXT_1' | translate"></i>
+      <textarea
+        [formControlName]="'text' + groupID + '_1'"
+        id="text{{ groupID }}_1"
+        class="form-control form-control-sm"
+        rows="2"
+      ></textarea>
+    </div>
+  </div>
+</div>
