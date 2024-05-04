@@ -524,22 +524,6 @@
             <div class="sidebar-submenu" [@slide]="menuStates['texts']">
               <ul>
                 <li>
-                  <a href="#" routerLinkActive="active" [routerLink]="'texts/select-page-text'">
-                    {{ 'SIDEBAR.TEXTS.SELECT_PAGE_TEXT' | translate }}
-                  </a>
-                </li>
-                @if (pageTextHandlerService.selected) {
-                  <li>
-                    <a href="#" routerLinkActive="active" [routerLink]="'texts/page-text'">
-                      {{ 'SIDEBAR.TEXTS.PAGE_TEXT' | translate }}
-                      @if (pageTextHandlerService.isUnsaved) {
-                        <keira-unsaved-icon />
-                      }
-                    </a>
-                  </li>
-                }
-                <hr />
-                <li>
                   <a href="#" routerLinkActive="active" [routerLink]="'texts/select-broadcast-text'">
                     {{ 'SIDEBAR.TEXTS.SELECT_BROADCAST_TEXT' | translate }}
                   </a>
@@ -565,6 +549,22 @@
                     <a href="#" routerLinkActive="active" [routerLink]="'texts/npc-text'">
                       {{ 'SIDEBAR.TEXTS.NPC_TEXT' | translate }}
                       @if (npcTextHandlerService.isUnsaved) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                }
+                <hr />
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'texts/select-page-text'">
+                    {{ 'SIDEBAR.TEXTS.SELECT_PAGE_TEXT' | translate }}
+                  </a>
+                </li>
+                @if (pageTextHandlerService.selected) {
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'texts/page-text'">
+                      {{ 'SIDEBAR.TEXTS.PAGE_TEXT' | translate }}
+                      @if (pageTextHandlerService.isUnsaved) {
                         <keira-unsaved-icon />
                       }
                     </a>
