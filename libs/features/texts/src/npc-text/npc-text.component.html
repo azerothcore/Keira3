@@ -10,31 +10,16 @@
       <div class="content-block">
         <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
       </div>
-      <form [formGroup]="editorService.form" class="form-group edit-form">
-        <div class="content-block">
-          <div class="row">
-            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-              <label class="control-label" for="ID">ID</label>
-              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'OTHER_TEXTS.NPC_TEXT.ID' | translate"></i>
-              <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm" />
-            </div>
-          </div>
-          <div class="row">
-            <div class="form-group col-12">
-              <label class="control-label" for="text0_0">text0_0</label>
-              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'OTHER_TEXTS.NPC_TEXT.TEXT_0_0' | translate"></i>
-              <textarea [formControlName]="'text0_0'" id="text0_0" class="form-control form-control-sm" rows="5"></textarea>
-            </div>
-          </div>
-          <div class="row">
-            <div class="form-group col-12">
-              <label class="control-label" for="text0_1">text0_1</label>
-              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'OTHER_TEXTS.NPC_TEXT.TEXT_0_1' | translate"></i>
-              <textarea [formControlName]="'text0_1'" id="text0_1" class="form-control form-control-sm" rows="5"></textarea>
-            </div>
-          </div>
-        </div>
-      </form>
+      <div class="form-group edit-form">
+        <keira-npc-text-fields-group [formGroup]="editorService.form" [groupId]="0"></keira-npc-text-fields-group>
+        <keira-npc-text-fields-group [formGroup]="editorService.form" [groupId]="1"></keira-npc-text-fields-group>
+        <keira-npc-text-fields-group [formGroup]="editorService.form" [groupId]="2"></keira-npc-text-fields-group>
+        <keira-npc-text-fields-group [formGroup]="editorService.form" [groupId]="3"></keira-npc-text-fields-group>
+        <keira-npc-text-fields-group [formGroup]="editorService.form" [groupId]="4"></keira-npc-text-fields-group>
+        <keira-npc-text-fields-group [formGroup]="editorService.form" [groupId]="5"></keira-npc-text-fields-group>
+        <keira-npc-text-fields-group [formGroup]="editorService.form" [groupId]="6"></keira-npc-text-fields-group>
+        <keira-npc-text-fields-group [formGroup]="editorService.form" [groupId]="7"></keira-npc-text-fields-group>
+      </div>
     </div>
   }
 </div>

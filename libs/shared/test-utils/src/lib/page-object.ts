@@ -89,6 +89,14 @@ export abstract class PageObject<ComponentType> {
     this.fixture.detectChanges();
   }
 
+  getInputById(inputId: string): HTMLInputElement {
+    return this.query<HTMLInputElement>(`#${inputId}`);
+  }
+
+  setInputValueById(inputId: string, value: string | number): void {
+    this.setInputValue(this.getInputById(inputId), value);
+  }
+
   clickElements(elements: HTMLElement[]): void {
     for (const element of elements) {
       element.click();

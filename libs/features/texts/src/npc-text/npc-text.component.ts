@@ -8,6 +8,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { NpcText } from '@keira/shared/acore-world-model';
+import { NpcTextFieldsGroupComponent } from './npc-text-fields-group.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,6 +22,7 @@ import { NpcText } from '@keira/shared/acore-world-model';
     EditorButtonsComponent,
     SingleValueSelectorBtnComponent,
     TooltipModule,
+    NpcTextFieldsGroupComponent,
   ],
 })
 export class NpcTextComponent extends SingleRowEditorComponent<NpcText> {
