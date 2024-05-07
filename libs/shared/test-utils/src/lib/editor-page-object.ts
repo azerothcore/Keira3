@@ -40,14 +40,6 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
     this.clickElement(this.queryPo.copyBtn);
   }
 
-  getInputById(inputId: string) {
-    return this.query<HTMLInputElement>(`#${inputId}`);
-  }
-
-  setInputValueById(inputId: string, value: string | number) {
-    this.setInputValue(this.getInputById(inputId), value);
-  }
-
   setSelectValueById(inputId: string, value: number) {
     this.setInputValueById(inputId, `${value}: ${value}`);
   }
