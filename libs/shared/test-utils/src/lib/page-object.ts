@@ -89,11 +89,11 @@ export abstract class PageObject<ComponentType> {
     this.fixture.detectChanges();
   }
 
-  getInputById(inputId: string) {
+  getInputById(inputId: string): HTMLInputElement {
     return this.query<HTMLInputElement>(`#${inputId}`);
   }
 
-  setInputValueById(inputId: string, value: string | number) {
+  setInputValueById(inputId: string, value: string | number): void {
     this.setInputValue(this.getInputById(inputId), value);
   }
 
