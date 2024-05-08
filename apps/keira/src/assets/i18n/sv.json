@@ -521,6 +521,14 @@
       "MALE_TEXT": "The text that the male creature will broadcast, or male characters can read from gossip menu.",
       "FEMALE_TEXT": "The text that the female creature will broadcast, or female characters can read from gossip menu."
     },
+    "NPC_TEXT": {
+      "BROADCAST_TEXT_ID": "The ID field value for the MaleText in the broadcast_text table.",
+      "LANG": "The language ID (from Languages.dbc) of the text. If set to 0, then it doesn't require to know any specific language.",
+      "PROBABILITY": "The chance that the NPC will say either text0_0 or text0_1 (depending on the NPCs gender).",
+      "EM_N": "The ID of the emote (from Emotes.dbc) that the NPC should do when displaying the text. The emotes are played after each order in order.",
+      "TEXT_0": "This is the locale text that is displayed if the NPC is a male.",
+      "TEXT_1": "This is the locale text that is displayed if the NPC is a female."
+    },
     "PAGE_TEXT": {
       "ID": "The ID of the text in the page. This number is unique to every text ID.",
       "NEXT_PAGE_ID": "The ID of the next page's text ID.",
