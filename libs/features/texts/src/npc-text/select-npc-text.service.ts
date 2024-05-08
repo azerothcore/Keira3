@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SelectService } from '@keira/shared/base-abstract-classes';
 import { MysqlQueryService } from '@keira/shared/db-layer';
-import { NPC_TEXT_ID, NPC_TEXT_NAME, NPC_TEXT_SEARCH_FIELDS, NPC_TEXT_TABLE, NpcText } from '@keira/shared/acore-world-model';
+import { NPC_TEXT_ID, NPC_TEXT_SEARCH_FIELDS, NPC_TEXT_TABLE, NpcText } from '@keira/shared/acore-world-model';
 import { NpcTextHandlerService } from './npc-text-handler.service';
 
 @Injectable({
@@ -13,6 +13,6 @@ export class SelectNpcTextService extends SelectService<NpcText> {
     readonly queryService: MysqlQueryService,
     public handlerService: NpcTextHandlerService,
   ) {
-    super(queryService, handlerService, NPC_TEXT_TABLE, NPC_TEXT_ID, NPC_TEXT_NAME, NPC_TEXT_SEARCH_FIELDS);
+    super(queryService, handlerService, NPC_TEXT_TABLE, NPC_TEXT_ID, null, NPC_TEXT_SEARCH_FIELDS);
   }
 }

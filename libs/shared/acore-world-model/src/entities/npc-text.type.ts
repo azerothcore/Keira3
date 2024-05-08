@@ -2,9 +2,25 @@ import { TableRow } from '@keira/shared/constants';
 
 export const NPC_TEXT_TABLE = 'npc_text';
 export const NPC_TEXT_ID = 'ID';
-export const NPC_TEXT_NAME = 'text0_0';
-export const NPC_TEXT_1 = 'text0_1';
-export const NPC_TEXT_SEARCH_FIELDS = [NPC_TEXT_ID, NPC_TEXT_NAME, NPC_TEXT_1];
+export const NPC_TEXT_SEARCH_FIELDS = [
+  NPC_TEXT_ID,
+  'text0_0',
+  'text0_1',
+  'text1_0',
+  'text1_1',
+  'text2_0',
+  'text2_1',
+  'text3_0',
+  'text3_1',
+  'text4_0',
+  'text4_1',
+  'text5_0',
+  'text5_1',
+  'text6_0',
+  'text6_1',
+  'text7_0',
+  'text7_1',
+];
 
 export const NPC_TEXT_CUSTOM_STARTING_ID = 90_000_000;
 
