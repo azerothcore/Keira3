@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
-import { TranslateModule } from '@ngx-translate/core';
-import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
-import { BroadcastTextService } from './broadcast-text.service';
-import { BroadcastTextHandlerService } from './broadcast-text-handler.service';
 import { ReactiveFormsModule } from '@angular/forms';
-import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
+import { BroadcastText, EMOTE } from '@keira/shared/acore-world-model';
+import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
+import { LanguageSelectorBtnComponent, SingleValueSelectorBtnComponent, SoundEntriesSelectorBtnComponent } from '@keira/shared/selectors';
+import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { BroadcastText } from '@keira/shared/acore-world-model';
+import { BroadcastTextHandlerService } from './broadcast-text-handler.service';
+import { BroadcastTextService } from './broadcast-text.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,9 +21,13 @@ import { BroadcastText } from '@keira/shared/acore-world-model';
     EditorButtonsComponent,
     SingleValueSelectorBtnComponent,
     TooltipModule,
+    LanguageSelectorBtnComponent,
+    SoundEntriesSelectorBtnComponent,
   ],
 })
 export class BroadcastTextComponent extends SingleRowEditorComponent<BroadcastText> {
   readonly editorService = inject(BroadcastTextService);
   protected readonly handlerService = inject(BroadcastTextHandlerService);
+
+  protected readonly EMOTE = EMOTE;
 }

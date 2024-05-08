@@ -20,11 +20,21 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="LanguageID">LanguageID</label>
+              <keira-language-selector-btn
+                [config]="{ name: 'LanguageID' }"
+                [control]="editorService.form.controls.LanguageID"
+                [disabled]="editorService.form.controls.LanguageID.disabled"
+              />
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'OTHER_TEXTS.BROADCAST_TEXT.LANGUAGE_ID' | translate"></i>
               <input [formControlName]="'LanguageID'" id="LanguageID" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="SoundEntriesId">SoundEntriesId</label>
+              <keira-sound-entries-selector-btn
+                [config]="{ name: 'SoundEntriesId' }"
+                [control]="editorService.form.controls.SoundEntriesId"
+                [disabled]="editorService.form.controls.SoundEntriesId.disabled"
+              />
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'OTHER_TEXTS.BROADCAST_TEXT.SOUND_ENTRIES_ID' | translate"></i>
               <input [formControlName]="'SoundEntriesId'" id="SoundEntriesId" type="number" class="form-control form-control-sm" />
             </div>
@@ -34,6 +44,12 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="EmotesID">EmotesID</label>
+              <keira-single-value-selector-btn
+                [control]="editorService.form.controls.EmotesID"
+                [disabled]="editorService.form.controls.EmotesID.disabled"
+                [config]="{ options: EMOTE, name: 'emote' }"
+                [modalClass]="'modal-md'"
+              />
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'OTHER_TEXTS.BROADCAST_TEXT.EMOTES_ID' | translate"></i>
               <input [formControlName]="'EmotesID'" id="EmotesID" type="number" class="form-control form-control-sm" />
             </div>
@@ -41,6 +57,12 @@
           <div class="row">
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="EmoteID1">EmoteID1</label>
+              <keira-single-value-selector-btn
+                [control]="editorService.form.controls.EmoteID1"
+                [disabled]="editorService.form.controls.EmoteID1.disabled"
+                [config]="{ options: EMOTE, name: 'emote' }"
+                [modalClass]="'modal-md'"
+              />
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'OTHER_TEXTS.BROADCAST_TEXT.EMOTE_ID_N' | translate"></i>
               <input [formControlName]="'EmoteID1'" id="EmoteID1" type="number" class="form-control form-control-sm" />
             </div>
@@ -51,6 +73,12 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="EmoteID2">EmoteID2</label>
+              <keira-single-value-selector-btn
+                [control]="editorService.form.controls.EmoteID2"
+                [disabled]="editorService.form.controls.EmoteID2.disabled"
+                [config]="{ options: EMOTE, name: 'emote' }"
+                [modalClass]="'modal-md'"
+              />
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'OTHER_TEXTS.BROADCAST_TEXT.EMOTE_ID_N' | translate"></i>
               <input [formControlName]="'EmoteID2'" id="EmoteID2" type="number" class="form-control form-control-sm" />
             </div>
@@ -61,6 +89,13 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="EmoteID3">EmoteID3</label>
+              <keira-single-value-selector-btn
+                [control]="editorService.form.controls.EmoteID3"
+                [disabled]="editorService.form.controls.EmoteID3.disabled"
+                [config]="{ options: EMOTE, name: 'emote' }"
+                [modalClass]="'modal-md'"
+              />
+
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'OTHER_TEXTS.BROADCAST_TEXT.EMOTE_ID_N' | translate"></i>
               <input [formControlName]="'EmoteID3'" id="EmoteID3" type="number" class="form-control form-control-sm" />
             </div>

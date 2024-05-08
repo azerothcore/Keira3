@@ -74,3 +74,6 @@ export * from './selectors/faction-selector/quest-faction-selector-btn.component
 
 export * from './selectors/faction-selector/faction-selector-btn.component';
 export * from './selectors/faction-selector/quest-faction-selector-modal.component';
+
+export * from './selectors/sound-entries-selector/sound-entries-selector-btn.component';
+export * from './selectors/sound-entries-selector/sound-entries-selector-modal.component';

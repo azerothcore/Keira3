@@ -1,18 +1,25 @@
 import { ChangeDetectionStrategy, Component, computed, input, Signal } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
-import { QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { EMOTE, NpcText } from '@keira/shared/acore-world-model';
+import { QueryOutputComponent } from '@keira/shared/base-editor-components';
+import { LanguageSelectorBtnComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { ModelForm } from '@keira/shared/utils';
-import { NpcText } from '@keira/shared/acore-world-model';
+import { TranslateModule } from '@ngx-translate/core';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './npc-text-fields-group.component.html',
   selector: 'keira-npc-text-fields-group',
   standalone: true,
-  imports: [TranslateModule, QueryOutputComponent, ReactiveFormsModule, SingleValueSelectorBtnComponent, TooltipModule],
+  imports: [
+    TranslateModule,
+    QueryOutputComponent,
+    ReactiveFormsModule,
+    SingleValueSelectorBtnComponent,
+    TooltipModule,
+    LanguageSelectorBtnComponent,
+  ],
 })
 export class NpcTextFieldsGroupComponent {
   formGroup = input.required<FormGroup<ModelForm<NpcText>>>();
@@ -41,6 +48,8 @@ export class NpcTextFieldsGroupComponent {
   protected readonly em3Control = this.getControl(this.em3);
   protected readonly em4Control = this.getControl(this.em4);
   protected readonly em5Control = this.getControl(this.em5);
+
+  protected readonly EMOTE = EMOTE;
 
   private getControl(controlName: Signal<string>): Signal<FormControl> {
     return computed(() => this.formGroup().get(controlName()) as FormControl);
