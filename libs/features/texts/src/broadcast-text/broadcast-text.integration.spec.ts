@@ -10,7 +10,7 @@ import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config'
 import { BroadcastTextComponent } from './broadcast-text.component';
 import { BroadcastTextHandlerService } from './broadcast-text-handler.service';
 
-fdescribe('BroadcastText integration tests', () => {
+describe('BroadcastText integration tests', () => {
   class Page extends EditorPageObject<BroadcastTextComponent> {}
 
   const id = 1234;
