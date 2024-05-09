@@ -1,10 +1,10 @@
-import { Directive, Input } from '@angular/core';
+import { Directive, inject, Input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 import { Class } from '@keira/shared/constants';
-import { BaseModalConfig } from './base-selector.model';
 import { SubscriptionHandler } from '@keira/shared/utils';
+import { BaseModalConfig } from './base-selector.model';
 
 @Directive()
 // eslint-disable-next-line @angular-eslint/directive-class-suffix
@@ -14,16 +14,13 @@ export abstract class BaseSelectorBtnComponent<ModalConfigType extends BaseModal
   @Input() modalClass = 'modal-xl';
   @Input({ required: true }) disabled: boolean;
 
+  protected abstract readonly modalComponentClass: Class; // should be a class (not an object) that extends BaseSelectorModalComponent
+
+  protected modalService = inject(BsModalService);
+
   private modalRef: BsModalRef;
 
-  constructor(
-    private modalComponentClass: Class, // should be a class (not an object) that extends BaseSelectorModalComponent
-    protected modalService: BsModalService,
-  ) {
-    super();
-  }
-
-  onClick() {
+  onClick(): void {
     this.modalRef = this.modalService.show(this.modalComponentClass, {
       class: this.modalClass,
       initialState: {
