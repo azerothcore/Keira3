@@ -1,10 +1,12 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
-import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { NpcText } from '@keira/shared/acore-world-model';
-import { NpcTextFieldsGroupComponent } from './npc-text-fields-group.component';
 import { Component, ViewChild } from '@angular/core';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
+import { NpcText } from '@keira/shared/acore-world-model';
+import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModelForm } from '@keira/shared/utils';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { instance, mock } from 'ts-mockito';
+import { NpcTextFieldsGroupComponent } from './npc-text-fields-group.component';
 
 describe(NpcTextFieldsGroupComponent.name, () => {
   type GroupIdType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
@@ -59,6 +61,7 @@ describe(NpcTextFieldsGroupComponent.name, () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [TestHostNpcTextFieldsGroupComponent, NpcTextFieldsGroupComponent, TranslateTestingModule],
+      providers: [{ provide: BsModalService, useValue: instance(mock(BsModalService)) }],
     }).compileComponents();
   }));
   function setup(config: { groupId: GroupIdType }) {
