@@ -1,20 +1,20 @@
 import { TableRow } from '@keira/shared/constants';
 
 export class Lock extends TableRow {
-  id: number;
-  type1: number;
-  type2: number;
-  type3: number;
-  type4: number;
-  type5: number;
-  properties1: number;
-  properties2: number;
-  properties3: number;
-  properties4: number;
-  properties5: number;
-  reqSkill1: number;
-  reqSkill2: number;
-  reqSkill3: number;
-  reqSkill4: number;
-  reqSkill5: number;
+  id: number = 0;
+  type1: number = 0;
+  type2: number = 0;
+  type3: number = 0;
+  type4: number = 0;
+  type5: number = 0;
+  properties1: number = 0;
+  properties2: number = 0;
+  properties3: number = 0;
+  properties4: number = 0;
+  properties5: number = 0;
+  reqSkill1: number = 0;
+  reqSkill2: number = 0;
+  reqSkill3: number = 0;
+  reqSkill4: number = 0;
+  reqSkill5: number = 0;
 }

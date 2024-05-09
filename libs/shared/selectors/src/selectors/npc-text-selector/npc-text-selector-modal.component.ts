@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { NPC_TEXT_ID, NpcText } from '@keira/shared/acore-world-model';
 import { TranslateModule } from '@ngx-translate/core';
@@ -18,11 +17,6 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
   imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateModule],
 })
 export class NpcTextSelectorModalComponent extends SearchSelectorModalComponent<NpcText> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected bsModalRef: BsModalRef,
-    public searchService: NpcTextSearchService,
-  ) {
-    super(NPC_TEXT_ID, bsModalRef, searchService);
-  }
+  protected entityIdField = NPC_TEXT_ID;
+  protected searchService = NpcTextSearchService;
 }

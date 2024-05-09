@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { ITEM_ENCHANTMENT_ID, ItemEnchantment } from '@keira/shared/acore-world-model';
 import { TranslateModule } from '@ngx-translate/core';
@@ -18,11 +17,6 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
   imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateModule],
 })
 export class ItemEnchantmentSelectorModalComponent extends SearchSelectorModalComponent<ItemEnchantment> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected bsModalRef: BsModalRef,
-    public searchService: ItemEnchantmentSearchService,
-  ) {
-    super(ITEM_ENCHANTMENT_ID, bsModalRef, searchService);
-  }
+  protected entityIdField = ITEM_ENCHANTMENT_ID;
+  protected searchService = ItemEnchantmentSearchService;
 }

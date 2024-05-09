@@ -1,6 +1,5 @@
 import { ChangeDetectorRef, inject } from '@angular/core';
 import { Subject } from 'rxjs';
-import { BsModalRef } from 'ngx-bootstrap/modal';
 import { BaseModalConfig } from './base-selector.model';
 
 export abstract class BaseSelectorModalComponent<ModalConfigType extends BaseModalConfig = BaseModalConfig> {
@@ -11,8 +10,7 @@ export abstract class BaseSelectorModalComponent<ModalConfigType extends BaseMod
   public onValueSelected = new Subject<string | number>();
 
   protected readonly changeDetectorRef = inject(ChangeDetectorRef);
-
-  constructor(protected bsModalRef: BsModalRef) {}
+  protected readonly bsModalRef = inject(BsModalRef);
 
   onCancel() {
     this.bsModalRef.hide();

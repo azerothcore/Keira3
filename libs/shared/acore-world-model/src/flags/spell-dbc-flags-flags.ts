@@ -100,7 +100,7 @@ export const SPELL_DBC_CHANNEL_INTERRUPT_FLAGS: Flag[] = [
   { bit: 17, name: 'On 18' },
 ];
 
-export const SPELL_DBC_ATTRIBUTES_FLAGS: Flag[][] = [];
+export const SPELL_DBC_ATTRIBUTES_FLAGS: { [key: string]: Flag[] } = {};
 
 SPELL_DBC_ATTRIBUTES_FLAGS[''] = [
   { bit: 0, name: 'Proc failure burns charges' },
