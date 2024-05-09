@@ -9,7 +9,7 @@ export abstract class SearchSelectorModalComponent<T extends TableRow> extends B
   protected abstract entityIdField: string;
   protected abstract searchService: SearchService<T>;
 
-  onSelect({ selected }: { selected: { value: string | number }[] }) {
+  onSelect({ selected }: { selected: { [key: string]: string | number }[] }) {
     this.value = selected[0][this.entityIdField];
   }
 
