@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { BsModalService } from 'ngx-bootstrap/modal';
 import { BaseSelectorBtnComponent } from '../base-selector/base-selector-btn.component';
 import { AreaSelectorModalComponent } from './area-selector-modal.component';
 
@@ -11,8 +10,5 @@ import { AreaSelectorModalComponent } from './area-selector-modal.component';
   standalone: true,
 })
 export class AreaSelectorBtnComponent extends BaseSelectorBtnComponent {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(modalService: BsModalService) {
-    super(AreaSelectorModalComponent, modalService);
-  }
+  protected readonly modalComponentClass = AreaSelectorModalComponent;
 }

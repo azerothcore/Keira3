@@ -1,4 +1,4 @@
-import { Directive, Input } from '@angular/core';
+import { Directive, inject, Input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
@@ -14,14 +14,11 @@ export abstract class BaseSelectorBtnComponent<ModalConfigType extends BaseModal
   @Input() modalClass = 'modal-xl';
   @Input({ required: true }) disabled: boolean;
 
-  private modalRef: BsModalRef;
+  protected abstract readonly modalComponentClass: Class; // should be a class (not an object) that extends BaseSelectorModalComponent
 
-  constructor(
-    private modalComponentClass: Class, // should be a class (not an object) that extends BaseSelectorModalComponent
-    protected modalService: BsModalService,
-  ) {
-    super();
-  }
+  protected modalService = inject(BsModalService);
+
+  private modalRef: BsModalRef;
 
   onClick() {
     this.modalRef = this.modalService.show(this.modalComponentClass, {

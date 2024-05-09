@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { BsModalService } from 'ngx-bootstrap/modal';
 import { BaseSelectorBtnComponent } from '../base-selector/base-selector-btn.component';
 import { ItemSelectorModalComponent } from './item-selector-modal.component';
 
@@ -12,8 +11,5 @@ import { ItemSelectorModalComponent } from './item-selector-modal.component';
   imports: [],
 })
 export class ItemSelectorBtnComponent extends BaseSelectorBtnComponent {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(modalService: BsModalService) {
-    super(ItemSelectorModalComponent, modalService);
-  }
+  protected readonly modalComponentClass = ItemSelectorModalComponent;
 }
