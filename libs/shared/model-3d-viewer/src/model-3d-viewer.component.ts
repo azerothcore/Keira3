@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { TableRow } from '@keira/shared/constants';
 import * as jquery from 'jquery';
@@ -18,7 +17,6 @@ declare const ZamModelViewer: any;
   standalone: true,
 })
 export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
-  private readonly sanitizer = inject(DomSanitizer);
   private readonly queryService = inject(MysqlQueryService);
   private readonly http = inject(HttpClient);
   private readonly KEIRA_APP_CONFIG = inject(KEIRA_APP_CONFIG_TOKEN);
