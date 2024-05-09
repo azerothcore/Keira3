@@ -55,6 +55,7 @@ export * from './entities/reference-loot-template.type';
 export * from './entities/skill.type';
 export * from './entities/skinning-loot-template.type';
 export * from './entities/smart-scripts.type';
+export * from './entities/sound-entries.type';
 export * from './entities/spell.type';
 export * from './entities/spell-dbc.type';
 export * from './entities/spell-loot-template.type';

@@ -1,0 +1,53 @@
+<div class="modal-body">
+  <p class="lead text-center mb-1">Sound Entries selector</p>
+
+  <form [formGroup]="searchService.queryForm">
+    <div class="row">
+      <ng-container [formGroup]="searchService.fields">
+        <div class="form-group col-3">
+          <input [formControlName]="'id'" type="number" class="form-control form-control-sm" id="id" placeholder="ID" />
+        </div>
+        <div class="form-group col-5">
+          <input [formControlName]="'name'" class="form-control form-control-sm" id="name" placeholder="SoundEntries Name" />
+        </div>
+      </ng-container>
+      <div class="form-group col-2">
+        <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Unlimited" />
+      </div>
+      <div class="col-2">
+        <button id="search-btn" class="btn btn-primary btn-sm" [disabled]="searchService.queryForm.invalid" (click)="onSearch()">
+          <i class="fa fa-search"></i> {{ 'SEARCH' | translate }}
+        </button>
+      </div>
+    </div>
+    <keira-highlightjs-wrapper [code]="searchService.query" />
+  </form>
+
+  @if (searchService.rows) {
+    <div>
+      <ngx-datatable
+        class="bootstrap table table-striped text-center datatable-select highlight-select"
+        [rows]="searchService.rows"
+        [headerHeight]="DTCFG.headerHeight"
+        [footerHeight]="DTCFG.footerHeight"
+        [columnMode]="DTCFG.columnMode"
+        [rowHeight]="DTCFG.rowHeight"
+        [limit]="DTCFG.limit"
+        [selectionType]="DTCFG.selectionType"
+        (select)="onSelect($event)"
+      >
+        <ngx-datatable-column name="ID" prop="id" [minWidth]="100">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.id }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="SoundEntries Name" prop="name"></ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+  }
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-danger" id="modal-cancel-btn" (click)="onCancel()" [translate]="'CANCEL'"></button>
+  <button type="button" class="btn btn-success" id="modal-select-btn" (click)="onSave()" [translate]="'SELECT'"></button>
+</div>

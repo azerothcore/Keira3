@@ -7,6 +7,7 @@
     </div>
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" [for]="lang()">{{ lang() }}</label>
+      <keira-language-selector-btn [config]="{ name: 'LanguageID' }" [control]="langControl()" [disabled]="langControl().disabled" />
       <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'OTHER_TEXTS.NPC_TEXT.LANG' | translate"></i>
       <input [formControl]="langControl()" [id]="lang()" type="number" class="form-control form-control-sm" />
     </div>
@@ -20,31 +21,67 @@
   <div class="row">
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" [for]="em0()">{{ em0() }}</label>
+      <keira-single-value-selector-btn
+        [control]="em0Control()"
+        [disabled]="em0Control().disabled"
+        [config]="{ options: EMOTE, name: 'emote' }"
+        [modalClass]="'modal-md'"
+      />
       <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'OTHER_TEXTS.NPC_TEXT.EM_N' | translate"></i>
       <input [formControl]="em0Control()" [id]="em0()" type="number" class="form-control form-control-sm" />
     </div>
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" [for]="em1()">{{ em1() }}</label>
+      <keira-single-value-selector-btn
+        [control]="em1Control()"
+        [disabled]="em1Control().disabled"
+        [config]="{ options: EMOTE, name: 'emote' }"
+        [modalClass]="'modal-md'"
+      />
       <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'OTHER_TEXTS.NPC_TEXT.EM_N' | translate"></i>
       <input [formControl]="em1Control()" [id]="em1()" type="number" class="form-control form-control-sm" />
     </div>
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" [for]="em2()">{{ em2() }}</label>
+      <keira-single-value-selector-btn
+        [control]="em2Control()"
+        [disabled]="em2Control().disabled"
+        [config]="{ options: EMOTE, name: 'emote' }"
+        [modalClass]="'modal-md'"
+      />
       <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'OTHER_TEXTS.NPC_TEXT.EM_N' | translate"></i>
       <input [formControl]="em2Control()" [id]="em2()" type="number" class="form-control form-control-sm" />
     </div>
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" [for]="em3()">{{ em3() }}</label>
+      <keira-single-value-selector-btn
+        [control]="em3Control()"
+        [disabled]="em3Control().disabled"
+        [config]="{ options: EMOTE, name: 'emote' }"
+        [modalClass]="'modal-md'"
+      />
       <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'OTHER_TEXTS.NPC_TEXT.EM_N' | translate"></i>
       <input [formControl]="em3Control()" [id]="em3()" type="number" class="form-control form-control-sm" />
     </div>
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" [for]="em4()">{{ em4() }}</label>
+      <keira-single-value-selector-btn
+        [control]="em4Control()"
+        [disabled]="em4Control().disabled"
+        [config]="{ options: EMOTE, name: 'emote' }"
+        [modalClass]="'modal-md'"
+      />
       <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'OTHER_TEXTS.NPC_TEXT.EM_N' | translate"></i>
       <input [formControl]="em4Control()" [id]="em4()" type="number" class="form-control form-control-sm" />
     </div>
     <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
       <label class="control-label" [for]="em5()">{{ em5() }}</label>
+      <keira-single-value-selector-btn
+        [control]="em5Control()"
+        [disabled]="em5Control().disabled"
+        [config]="{ options: EMOTE, name: 'emote' }"
+        [modalClass]="'modal-md'"
+      />
       <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'OTHER_TEXTS.NPC_TEXT.EM_N' | translate"></i>
       <input [formControl]="em5Control()" [id]="em5()" type="number" class="form-control form-control-sm" />
     </div>
