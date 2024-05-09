@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { KEIRA3_REPO_URL, LATEST_RELEASE_API_URL } from '@keira/shared/constants';
 
 import { ToastrService } from 'ngx-toastr';
@@ -30,16 +30,12 @@ export class AppComponent extends SubscriptionHandler implements OnInit {
   showNewerVersionAlert = false;
   sqliteResult: { id: number; name: string };
 
-  constructor(
-    readonly mysqlService: MysqlService,
-    readonly toastrService: ToastrService,
-    private readonly sqliteQueryService: SqliteQueryService,
-    private readonly electronService: ElectronService,
-    private readonly http: HttpClient,
-    private readonly changeDetectorRef: ChangeDetectorRef,
-  ) {
-    super();
-  }
+  readonly mysqlService = inject(MysqlService);
+  readonly toastrService = inject(ToastrService);
+  private readonly sqliteQueryService = inject(SqliteQueryService);
+  private readonly electronService = inject(ElectronService);
+  private readonly http = inject(HttpClient);
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
     this.handleConnectionLostAlerts();

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input, OnInit } from '@angular/core';
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { SaiHandlerService } from '../sai-handler.service';
 
@@ -14,16 +14,14 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
   imports: [],
 })
 export class SaiTopBarComponent extends SubscriptionHandler implements OnInit {
+  readonly queryService = inject(MysqlQueryService);
+
   @Input() public handler: SaiHandlerService;
 
   private _selectedText: string;
 
   get selectedText() {
     return this._selectedText;
-  }
-
-  constructor(public queryService: MysqlQueryService) {
-    super();
   }
 
   async ngOnInit() {

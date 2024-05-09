@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input } from '@angular/core';
 import { ICON_SKILLS } from '@keira/shared/constants';
 import { IconService } from './icon.service';
 import { SubscriptionHandler } from '@keira/shared/utils';
@@ -11,6 +11,9 @@ import { SubscriptionHandler } from '@keira/shared/utils';
   standalone: true,
 })
 export class IconComponent extends SubscriptionHandler {
+  private readonly service = inject(IconService);
+  private readonly cd = inject(ChangeDetectorRef);
+
   private readonly DEFAULT_ICON = 'inv_misc_questionmark';
   private _iconId: string = this.DEFAULT_ICON;
 
@@ -38,13 +41,6 @@ export class IconComponent extends SubscriptionHandler {
 
   get iconLink(): string {
     return `https://wow.zamimg.com/images/wow/icons/${this.size}/${this._iconId}.jpg`;
-  }
-
-  constructor(
-    private readonly service: IconService,
-    private readonly cd: ChangeDetectorRef,
-  ) {
-    super();
   }
 
   private setIcon(icon: string) {

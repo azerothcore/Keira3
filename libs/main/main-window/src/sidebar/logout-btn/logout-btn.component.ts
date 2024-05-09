@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
@@ -17,14 +17,11 @@ import { ModalConfirmComponent } from '@keira/shared/base-editor-components';
 })
 export class LogoutBtnComponent extends SubscriptionHandler {
   public modalRef: BsModalRef;
-  constructor(
-    private readonly modalService: BsModalService,
-    private readonly locationService: LocationService,
-    private readonly translateService: TranslateService,
-    private readonly loginConfigService: LoginConfigService,
-  ) {
-    super();
-  }
+
+  private readonly modalService = inject(BsModalService);
+  private readonly locationService = inject(LocationService);
+  private readonly translateService = inject(TranslateService);
+  private readonly loginConfigService = inject(LoginConfigService);
 
   openModalConfirm(): void {
     const initialState = {

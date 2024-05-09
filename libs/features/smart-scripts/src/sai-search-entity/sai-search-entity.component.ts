@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { GameobjectSelectorBtnComponent } from '@keira/shared/selectors';
@@ -16,6 +16,8 @@ import { getEnumKeys, ModelForm } from '@keira/shared/utils';
   imports: [FormsModule, ReactiveFormsModule, CreatureSelectorBtnComponent, GameobjectSelectorBtnComponent],
 })
 export class SaiSearchEntityComponent {
+  private readonly handlerService = inject(SaiHandlerService);
+
   readonly SAI_SEARCH_TYPES = SAI_TYPES;
   readonly SAI_SEARCH_TYPES_KEYS = getEnumKeys(SAI_TYPES);
 
@@ -47,8 +49,6 @@ export class SaiSearchEntityComponent {
   get entryOrGuidControl(): FormControl<number> {
     return this.form.controls.entryorguid;
   }
-
-  constructor(private handlerService: SaiHandlerService) {}
 
   onSelectedTypeChange() {
     this.entryOrGuidControl.setValue(null);

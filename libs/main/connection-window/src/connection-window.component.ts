@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ConnectionOptions, QueryError } from 'mysql2';
@@ -23,6 +23,9 @@ import { ModelForm, SubscriptionHandler } from '@keira/shared/utils';
   imports: [FormsModule, ReactiveFormsModule, BsDropdownModule, TranslateModule, QueryErrorComponent, SwitchLanguageComponent],
 })
 export class ConnectionWindowComponent extends SubscriptionHandler implements OnInit {
+  private readonly mysqlService = inject(MysqlService);
+  private readonly loginConfigService = inject(LoginConfigService);
+
   private readonly IMAGES_COUNT = 11;
   readonly RANDOM_IMAGE = Math.floor(Math.random() * this.IMAGES_COUNT) + 1;
   readonly KEIRA_VERSION = packageInfo.version;
@@ -34,13 +37,6 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
 
   get isRecentDropdownDisabled(): boolean {
     return !this.configs || this.configs.length === 0;
-  }
-
-  constructor(
-    private readonly mysqlService: MysqlService,
-    private readonly loginConfigService: LoginConfigService,
-  ) {
-    super();
   }
 
   ngOnInit(): void {
