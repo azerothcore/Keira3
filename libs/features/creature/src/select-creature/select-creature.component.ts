@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
 import {
@@ -31,11 +31,9 @@ import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@
   ],
 })
 export class SelectCreatureComponent extends SelectComponent<CreatureTemplate> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public readonly selectService: SelectCreatureService,
-    public readonly handlerService: CreatureHandlerService,
-  ) {
-    super(CREATURE_TEMPLATE_TABLE, CREATURE_TEMPLATE_ID, CREATURE_TEMPLATE_CUSTOM_STARTING_ID, selectService, handlerService);
-  }
+  readonly entityTable = CREATURE_TEMPLATE_TABLE;
+  readonly entityIdField = CREATURE_TEMPLATE_ID;
+  readonly customStartingId = CREATURE_TEMPLATE_CUSTOM_STARTING_ID;
+  readonly selectService = inject(SelectCreatureService);
+  readonly handlerService = inject(CreatureHandlerService);
 }

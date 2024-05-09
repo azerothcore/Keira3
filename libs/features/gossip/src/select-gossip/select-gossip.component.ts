@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
 import { GOSSIP_MENU_CUSTOM_STARTING_ID, GOSSIP_MENU_ID, GOSSIP_MENU_TABLE, GossipMenu } from '@keira/shared/acore-world-model';
 import { GossipHandlerService } from '../gossip-handler.service';
@@ -26,11 +26,9 @@ import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@
   ],
 })
 export class SelectGossipComponent extends SelectComponent<GossipMenu> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public readonly selectService: SelectGossipService,
-    public readonly handlerService: GossipHandlerService,
-  ) {
-    super(GOSSIP_MENU_TABLE, GOSSIP_MENU_ID, GOSSIP_MENU_CUSTOM_STARTING_ID, selectService, handlerService);
-  }
+  readonly entityTable = GOSSIP_MENU_TABLE;
+  readonly entityIdField = GOSSIP_MENU_ID;
+  readonly customStartingId = GOSSIP_MENU_CUSTOM_STARTING_ID;
+  readonly selectService = inject(SelectGossipService);
+  readonly handlerService = inject(GossipHandlerService);
 }

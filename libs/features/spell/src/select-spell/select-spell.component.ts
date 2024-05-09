@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
 import {
   SPELL_DBC_CUSTOM_STARTING_ID,
@@ -38,11 +38,9 @@ export class SelectSpellComponent extends SelectComponent<SpellDbc> {
   readonly SPELL_DBC_NAMESUBTEXT = SPELL_DBC_NAMESUBTEXT;
   readonly SPELL_DBC_DESCRIPTION = SPELL_DBC_DESCRIPTION;
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public readonly selectService: SelectSpellService,
-    public readonly handlerService: SpellHandlerService,
-  ) {
-    super(SPELL_DBC_TABLE, SPELL_DBC_ID, SPELL_DBC_CUSTOM_STARTING_ID, selectService, handlerService);
-  }
+  readonly entityTable = SPELL_DBC_TABLE;
+  readonly entityIdField = SPELL_DBC_ID;
+  readonly customStartingId = SPELL_DBC_CUSTOM_STARTING_ID;
+  readonly selectService = inject(SelectSpellService);
+  readonly handlerService = inject(SpellHandlerService);
 }

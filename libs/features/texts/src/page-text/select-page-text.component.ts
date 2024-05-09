@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
 import { PageText, PAGE_TEXT_CUSTOM_STARTING_ID, PAGE_TEXT_TABLE, PAGE_TEXT_ID } from '@keira/shared/acore-world-model';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
@@ -23,11 +23,9 @@ import { PageTextHandlerService } from './page-text-handler.service';
   ],
 })
 export class SelectPageTextComponent extends SelectComponent<PageText> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public readonly selectService: SelectPageTextService,
-    public readonly handlerService: PageTextHandlerService,
-  ) {
-    super(PAGE_TEXT_TABLE, PAGE_TEXT_ID, PAGE_TEXT_CUSTOM_STARTING_ID, selectService, handlerService);
-  }
+  readonly entityTable = PAGE_TEXT_TABLE;
+  readonly entityIdField = PAGE_TEXT_ID;
+  readonly customStartingId = PAGE_TEXT_CUSTOM_STARTING_ID;
+  readonly selectService = inject(SelectPageTextService);
+  readonly handlerService = inject(PageTextHandlerService);
 }

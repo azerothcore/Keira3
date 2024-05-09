@@ -7,19 +7,16 @@ import { HandlerService } from '../../service/handlers/handler.service';
 import { DTCFG } from '@keira/shared/config';
 
 export abstract class SelectComponent<T extends TableRow> {
+  abstract readonly entityTable: string;
+  abstract readonly entityIdField: string;
+  abstract readonly customStartingId: number;
+  abstract readonly selectService: SelectService<T>;
+  abstract readonly handlerService: HandlerService<T>;
+
   readonly queryService = inject(MysqlQueryService);
-
-  readonly DTCFG = DTCFG;
-
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
-  constructor(
-    public entityTable: string,
-    public entityIdField: string,
-    public customStartingId: number,
-    public readonly selectService: SelectService<T>,
-    public readonly handlerService: HandlerService<T>,
-  ) {}
+  readonly DTCFG = DTCFG;
 
   onSearch(): void {
     this.selectService.onSearch(this.changeDetectorRef);

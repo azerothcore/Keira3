@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
 import {
   LOOT_TEMPLATE_ID,
@@ -28,11 +28,9 @@ import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@
   ],
 })
 export class SelectReferenceLootComponent extends SelectComponent<ReferenceLootTemplate> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public readonly selectService: SelectReferenceLootService,
-    public readonly handlerService: ReferenceLootHandlerService,
-  ) {
-    super(REFERENCE_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID, REFERENCE_LOOT_TEMPLATE_CUSTOM_STARTING_ID, selectService, handlerService);
-  }
+  readonly entityTable = REFERENCE_LOOT_TEMPLATE_TABLE;
+  readonly entityIdField = LOOT_TEMPLATE_ID;
+  readonly customStartingId = REFERENCE_LOOT_TEMPLATE_CUSTOM_STARTING_ID;
+  readonly selectService = inject(SelectReferenceLootService);
+  readonly handlerService = inject(ReferenceLootHandlerService);
 }

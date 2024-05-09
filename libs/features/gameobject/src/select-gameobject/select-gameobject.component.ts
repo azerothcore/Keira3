@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
 import {
   GAMEOBJECT_TEMPLATE_CUSTOM_STARTING_ID,
@@ -30,11 +30,9 @@ import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@
   ],
 })
 export class SelectGameobjectComponent extends SelectComponent<GameobjectTemplate> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public readonly selectService: SelectGameobjectService,
-    public readonly handlerService: GameobjectHandlerService,
-  ) {
-    super(GAMEOBJECT_TEMPLATE_TABLE, GAMEOBJECT_TEMPLATE_ID, GAMEOBJECT_TEMPLATE_CUSTOM_STARTING_ID, selectService, handlerService);
-  }
+  readonly entityTable = GAMEOBJECT_TEMPLATE_TABLE;
+  readonly entityIdField = GAMEOBJECT_TEMPLATE_ID;
+  readonly customStartingId = GAMEOBJECT_TEMPLATE_CUSTOM_STARTING_ID;
+  readonly selectService = inject(SelectGameobjectService);
+  readonly handlerService = inject(GameobjectHandlerService);
 }

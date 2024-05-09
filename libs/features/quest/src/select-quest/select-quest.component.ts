@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
 import { QUEST_TEMPLATE_CUSTOM_STARTING_ID, QUEST_TEMPLATE_ID, QUEST_TEMPLATE_TABLE, QuestTemplate } from '@keira/shared/acore-world-model';
 import { QuestHandlerService } from '../quest-handler.service';
@@ -25,11 +25,9 @@ import { TranslateModule } from '@ngx-translate/core';
   ],
 })
 export class SelectQuestComponent extends SelectComponent<QuestTemplate> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public readonly selectService: SelectQuestService,
-    public readonly handlerService: QuestHandlerService,
-  ) {
-    super(QUEST_TEMPLATE_TABLE, QUEST_TEMPLATE_ID, QUEST_TEMPLATE_CUSTOM_STARTING_ID, selectService, handlerService);
-  }
+  readonly entityTable = QUEST_TEMPLATE_TABLE;
+  readonly entityIdField = QUEST_TEMPLATE_ID;
+  readonly customStartingId = QUEST_TEMPLATE_CUSTOM_STARTING_ID;
+  readonly selectService = inject(SelectQuestService);
+  readonly handlerService = inject(QuestHandlerService);
 }
