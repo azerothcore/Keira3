@@ -179,19 +179,19 @@ export enum SAI_ACTIONS {
   MOVEMENT_RESUME = 236,
 }
 export const SAI_ACTIONS_KEYS = getEnumKeys(SAI_ACTIONS);
-export const SAI_ACTION_TOOLTIPS = [];
-export const SAI_ACTION_PARAM1_NAMES = [];
-export const SAI_ACTION_PARAM2_NAMES = [];
-export const SAI_ACTION_PARAM3_NAMES = [];
-export const SAI_ACTION_PARAM4_NAMES = [];
-export const SAI_ACTION_PARAM5_NAMES = [];
-export const SAI_ACTION_PARAM6_NAMES = [];
-export const SAI_ACTION_PARAM1_TOOLTIPS = [];
-export const SAI_ACTION_PARAM2_TOOLTIPS = [];
-export const SAI_ACTION_PARAM3_TOOLTIPS = [];
-export const SAI_ACTION_PARAM4_TOOLTIPS = [];
-export const SAI_ACTION_PARAM5_TOOLTIPS = [];
-export const SAI_ACTION_PARAM6_TOOLTIPS = [];
+export const SAI_ACTION_TOOLTIPS: Record<string, string> = {};
+export const SAI_ACTION_PARAM1_NAMES: Record<string, string> = {};
+export const SAI_ACTION_PARAM2_NAMES: Record<string, string> = {};
+export const SAI_ACTION_PARAM3_NAMES: Record<string, string> = {};
+export const SAI_ACTION_PARAM4_NAMES: Record<string, string> = {};
+export const SAI_ACTION_PARAM5_NAMES: Record<string, string> = {};
+export const SAI_ACTION_PARAM6_NAMES: Record<string, string> = {};
+export const SAI_ACTION_PARAM1_TOOLTIPS: Record<string, string> = {};
+export const SAI_ACTION_PARAM2_TOOLTIPS: Record<string, string> = {};
+export const SAI_ACTION_PARAM3_TOOLTIPS: Record<string, string> = {};
+export const SAI_ACTION_PARAM4_TOOLTIPS: Record<string, string> = {};
+export const SAI_ACTION_PARAM5_TOOLTIPS: Record<string, string> = {};
+export const SAI_ACTION_PARAM6_TOOLTIPS: Record<string, string> = {};
 
 // Common tooltips
 const BOOLEAN_VALUE_TOOLTIP = '0 or 1';
@@ -1263,7 +1263,8 @@ SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.WAYPOINT_DATA_START] = 'Found in `waypoin
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.WAYPOINT_DATA_START] = '0: no, 1: yes';
 
 // SMART_ACTION_WAYPOINT_DATA_RANDOM
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.WAYPOINT_DATA_RANDOM] = 'Creature starts Waypoint Movement using a random path id in the range of pathId1 and pathId2. Uses `waypoint_data` table to create movement.';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.WAYPOINT_DATA_RANDOM] =
+  'Creature starts Waypoint Movement using a random path id in the range of pathId1 and pathId2. Uses `waypoint_data` table to create movement.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.WAYPOINT_DATA_RANDOM] = 'PathId 1';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.WAYPOINT_DATA_RANDOM] = 'PathId 2';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.WAYPOINT_DATA_RANDOM] = 'Repeat';
@@ -1275,7 +1276,8 @@ SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.WAYPOINT_DATA_RANDOM] = '0: no, 1: yes';
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.MOVEMENT_STOP] = 'Calls MovementGenerator to stop movement';
 
 // SMART_ACTION_MOVEMENT_PAUSE
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.MOVEMENT_PAUSE] = 'Calls MovementGenerator to pause movement, similar to when a player interacts with a patrolling creature. Timer not fully implemented';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.MOVEMENT_PAUSE] =
+  'Calls MovementGenerator to pause movement, similar to when a player interacts with a patrolling creature. Timer not fully implemented';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.MOVEMENT_PAUSE] = 'Timer';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.MOVEMENT_PAUSE] = 'ms';
 

@@ -1,7 +1,7 @@
 import { SAI_ACTIONS } from './sai-actions';
 import { SAI_EVENTS } from './sai-event';
 
-export const SAI_EVENT_COMMENTS = [];
+export const SAI_EVENT_COMMENTS: Record<string, string> = {};
 SAI_EVENT_COMMENTS[SAI_EVENTS.UPDATE_IC] = `In Combat`;
 SAI_EVENT_COMMENTS[SAI_EVENTS.UPDATE_OOC] = `Out of Combat`;
 SAI_EVENT_COMMENTS[SAI_EVENTS.HEALTH_PCT] = `Between _eventParamOne_-_eventParamTwo_% Health`;
@@ -83,7 +83,7 @@ SAI_EVENT_COMMENTS[SAI_EVENTS.SUMMONED_UNIT_EVADE] = `On Summoned Unit Evade`;
 SAI_EVENT_COMMENTS[SAI_EVENTS.WAYPOINT_DATA_REACHED] = `On Point _waypointParamOne_ of Path _waypointParamTwo_ Reached`;
 SAI_EVENT_COMMENTS[SAI_EVENTS.WAYPOINT_DATA_ENDED] = `On Path _eventParamTwo_ Finished`;
 
-export const SAI_ACTION_COMMENTS = [];
+export const SAI_ACTION_COMMENTS: Record<string, string> = {};
 SAI_ACTION_COMMENTS[SAI_ACTIONS.NONE] = `No Action Type`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.TALK] = `Say Line _actionParamOne_`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_FACTION] = `Set Faction _actionParamOne_`;
