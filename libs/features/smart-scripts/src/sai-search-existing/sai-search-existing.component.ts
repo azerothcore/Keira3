@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SelectComplexKeyComponent } from '@keira/shared/base-abstract-classes';
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
@@ -22,10 +22,6 @@ export class SaiSearchExistingComponent extends SelectComplexKeyComponent<SmartS
   readonly SAI_SEARCH_TYPES = SAI_TYPES;
   readonly SAI_SEARCH_TYPES_KEYS = getEnumKeys(SAI_TYPES);
 
-  constructor(
-    public selectService: SaiSearchService,
-    protected handlerService: SaiHandlerService,
-  ) {
-    super(selectService, handlerService);
-  }
+  public readonly selectService = inject(SaiSearchService);
+  protected readonly handlerService = inject(SaiHandlerService);
 }

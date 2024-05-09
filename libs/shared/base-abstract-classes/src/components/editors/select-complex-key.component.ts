@@ -9,12 +9,10 @@ export abstract class SelectComplexKeyComponent<T extends TableRow> {
   readonly DTCFG = DTCFG;
   readonly WIKI_BASE_URL = WIKI_BASE_URL;
 
-  private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  public abstract readonly selectService: SearchService<T>;
+  protected abstract readonly handlerService: ComplexKeyHandlerService<T>;
 
-  constructor(
-    public readonly selectService: SearchService<T>,
-    protected readonly handlerService: ComplexKeyHandlerService<T>,
-  ) {}
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   onSelect(event) {
     this.handlerService.select(false, event.selected[0]);

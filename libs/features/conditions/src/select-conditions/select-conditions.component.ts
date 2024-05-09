@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SelectComplexKeyComponent } from '@keira/shared/base-abstract-classes';
 import { CONDITION_SOURCE_TYPES, Conditions } from '@keira/shared/acore-world-model';
 import { ConditionsHandlerService } from '../conditions-handler.service';
@@ -21,10 +21,6 @@ export class SelectConditionsComponent extends SelectComplexKeyComponent<Conditi
   readonly CONDITION_SOURCE_TYPES = CONDITION_SOURCE_TYPES;
   readonly CONDITION_SOURCE_TYPES_KEYS = getEnumKeys(CONDITION_SOURCE_TYPES);
 
-  constructor(
-    public readonly selectService: ConditionsSearchService,
-    protected readonly handlerService: ConditionsHandlerService,
-  ) {
-    super(selectService, handlerService);
-  }
+  public readonly selectService = inject(ConditionsSearchService);
+  protected readonly handlerService = inject(ConditionsHandlerService);
 }
