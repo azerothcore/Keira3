@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
 import {
   FISHING_LOOT_TEMPLATE_CUSTOM_STARTING_ID,
@@ -29,11 +29,9 @@ import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@
   ],
 })
 export class SelectFishingLootComponent extends SelectComponent<FishingLootTemplate> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public readonly selectService: SelectFishingLootService,
-    public readonly handlerService: FishingLootHandlerService,
-  ) {
-    super(FISHING_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID, FISHING_LOOT_TEMPLATE_CUSTOM_STARTING_ID, selectService, handlerService);
-  }
+  readonly entityTable = FISHING_LOOT_TEMPLATE_TABLE;
+  readonly entityIdField = LOOT_TEMPLATE_ID;
+  readonly customStartingId = FISHING_LOOT_TEMPLATE_CUSTOM_STARTING_ID;
+  readonly selectService = inject(SelectFishingLootService);
+  readonly handlerService = inject(FishingLootHandlerService);
 }

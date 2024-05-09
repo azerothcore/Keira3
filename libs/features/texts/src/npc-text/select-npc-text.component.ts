@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
 import { NpcText, NPC_TEXT_CUSTOM_STARTING_ID, NPC_TEXT_TABLE, NPC_TEXT_ID } from '@keira/shared/acore-world-model';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
@@ -24,11 +24,9 @@ import { NpcTextHandlerService } from './npc-text-handler.service';
   ],
 })
 export class SelectNpcTextComponent extends SelectComponent<NpcText> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public readonly selectService: SelectNpcTextService,
-    public readonly handlerService: NpcTextHandlerService,
-  ) {
-    super(NPC_TEXT_TABLE, NPC_TEXT_ID, NPC_TEXT_CUSTOM_STARTING_ID, selectService, handlerService);
-  }
+  readonly entityTable = NPC_TEXT_TABLE;
+  readonly entityIdField = NPC_TEXT_ID;
+  readonly customStartingId = NPC_TEXT_CUSTOM_STARTING_ID;
+  readonly selectService = inject(SelectNpcTextService);
+  readonly handlerService = inject(NpcTextHandlerService);
 }

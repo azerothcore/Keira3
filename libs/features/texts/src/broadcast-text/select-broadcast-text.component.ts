@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
 import { BroadcastText, BROADCAST_TEXT_CUSTOM_STARTING_ID, BROADCAST_TEXT_TABLE, BROADCAST_TEXT_ID } from '@keira/shared/acore-world-model';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
@@ -23,11 +23,9 @@ import { BroadcastTextHandlerService } from './broadcast-text-handler.service';
   ],
 })
 export class SelectBroadcastTextComponent extends SelectComponent<BroadcastText> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    public readonly selectService: SelectBroadcastTextService,
-    public readonly handlerService: BroadcastTextHandlerService,
-  ) {
-    super(BROADCAST_TEXT_TABLE, BROADCAST_TEXT_ID, BROADCAST_TEXT_CUSTOM_STARTING_ID, selectService, handlerService);
-  }
+  readonly entityTable = BROADCAST_TEXT_TABLE;
+  readonly entityIdField = BROADCAST_TEXT_ID;
+  readonly customStartingId = BROADCAST_TEXT_CUSTOM_STARTING_ID;
+  readonly selectService = inject(SelectBroadcastTextService);
+  readonly handlerService = inject(BroadcastTextHandlerService);
 }
