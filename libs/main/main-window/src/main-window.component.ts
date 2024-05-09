@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { SidebarService } from './sidebar/sidebar.service';
@@ -12,5 +12,5 @@ import { SidebarService } from './sidebar/sidebar.service';
   imports: [SidebarComponent, RouterOutlet],
 })
 export class MainWindowComponent {
-  constructor(public sidebarService: SidebarService) {}
+  readonly sidebarService = inject(SidebarService);
 }

@@ -22,6 +22,9 @@ import { QueryErrorComponent } from './query-error/query-error.component';
   imports: [FormsModule, HighlightjsWrapperComponent, QueryErrorComponent, TranslateModule],
 })
 export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandler {
+  private readonly clipboardService = inject(ClipboardService);
+  private readonly modalService = inject(BsModalService);
+
   @Input() docUrl: string;
   @Input() editorService: EditorService<T>;
   @Output() executeQuery = new EventEmitter<string>();
@@ -29,13 +32,6 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
   private modalRef: BsModalRef;
 
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
-
-  constructor(
-    private clipboardService: ClipboardService,
-    private modalService: BsModalService,
-  ) {
-    super();
-  }
 
   showFullQuery(): boolean {
     return this.editorService.isNew || this.selectedQuery === 'full';

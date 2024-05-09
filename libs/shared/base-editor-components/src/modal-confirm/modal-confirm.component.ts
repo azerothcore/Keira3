@@ -1,5 +1,5 @@
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -12,11 +12,11 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [TranslateModule],
 })
 export class ModalConfirmComponent implements OnInit {
+  private readonly _bsModalRef = inject(BsModalRef);
+
   public onClose: Subject<boolean>;
   title: string;
   content: string;
-
-  constructor(private _bsModalRef: BsModalRef) {}
 
   public ngOnInit(): void {
     this.onClose = new Subject();

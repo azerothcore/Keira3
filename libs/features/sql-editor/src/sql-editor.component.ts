@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
 import { DTCFG } from '@keira/shared/config';
 import { SubscriptionHandler } from '@keira/shared/utils';
 import { TableRow } from '@keira/shared/constants';
@@ -22,6 +22,11 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
   imports: [TooltipModule, FormsModule, QueryErrorComponent, NgxDatatableModule, TranslateModule],
 })
 export class SqlEditorComponent extends SubscriptionHandler {
+  private readonly mysqlQueryService = inject(MysqlQueryService);
+  private readonly clipboardService = inject(ClipboardService);
+  readonly service = inject(SqlEditorService);
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
+
   readonly DTCFG = DTCFG;
   readonly docUrl = 'https://www.w3schools.com/sql/sql_intro.asp';
   private readonly MAX_COL_SHOWN = 20;
@@ -54,15 +59,6 @@ export class SqlEditorComponent extends SubscriptionHandler {
   private _message: string;
   get message(): string {
     return this._message;
-  }
-
-  constructor(
-    private mysqlQueryService: MysqlQueryService,
-    private clipboardService: ClipboardService,
-    readonly service: SqlEditorService,
-    private changeDetectorRef: ChangeDetectorRef,
-  ) {
-    super();
   }
 
   copy(): void {

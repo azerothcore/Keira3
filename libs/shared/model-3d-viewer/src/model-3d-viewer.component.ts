@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, Inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { TableRow } from '@keira/shared/constants';
@@ -7,7 +7,7 @@ import * as jquery from 'jquery';
 import { BehaviorSubject, catchError, filter, Observable, of, Subscription } from 'rxjs';
 import { generateModels, getShadowlandDisplayId } from './helper';
 import { CONTENT_WOTLK, MODEL_TYPE, VIEWER_TYPE } from './model-3d-viewer.model';
-import { KEIRA_APP_CONFIG_TOKEN, KeiraAppConfig } from '@keira/shared/config';
+import { KEIRA_APP_CONFIG_TOKEN } from '@keira/shared/config';
 
 declare const ZamModelViewer: any;
 
@@ -18,6 +18,11 @@ declare const ZamModelViewer: any;
   standalone: true,
 })
 export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
+  private readonly sanitizer = inject(DomSanitizer);
+  private readonly queryService = inject(MysqlQueryService);
+  private readonly http = inject(HttpClient);
+  private readonly KEIRA_APP_CONFIG = inject(KEIRA_APP_CONFIG_TOKEN);
+
   @Input() viewerType: VIEWER_TYPE;
   @Input() displayId: number;
   @Input() itemClass?: number;
@@ -27,16 +32,6 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private readonly loadedViewer$ = new BehaviorSubject<boolean>(false);
   private readonly subscriptions = new Subscription();
   private readonly models3D = [];
-
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    private readonly sanitizer: DomSanitizer,
-    private readonly queryService: MysqlQueryService,
-    private readonly http: HttpClient,
-    @Inject(KEIRA_APP_CONFIG_TOKEN) private readonly KEIRA_APP_CONFIG: KeiraAppConfig,
-  ) {}
-
-  public itemPreview: SafeHtml = this.sanitizer.bypassSecurityTrustHtml('loading...');
 
   ngOnInit(): void {
     this.setupViewer3D();
