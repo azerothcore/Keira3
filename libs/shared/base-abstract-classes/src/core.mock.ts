@@ -1,5 +1,5 @@
 /* istanbul ignore file */
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { TableRow } from '@keira/shared/constants';
 import { HandlerService } from './service/handlers/handler.service';
@@ -37,12 +37,11 @@ export class MockHandlerService extends HandlerService<MockEntity> {
   providedIn: 'root',
 })
 export class SelectMockService extends SelectService<MockEntity> {
-  constructor(
-    readonly queryService: MysqlQueryService,
-    public handlerService: MockHandlerService,
-  ) {
-    super(queryService, handlerService, MOCK_TABLE, MOCK_ID, MOCK_NAME, []);
-  }
+  public readonly handlerService = inject(MockHandlerService);
+  entityIdField = MOCK_ID;
+  entityNameField = MOCK_NAME;
+  entityTable = MOCK_TABLE;
+  fieldList = [];
 }
 
 @Injectable({

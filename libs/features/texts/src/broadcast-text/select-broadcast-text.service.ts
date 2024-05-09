@@ -1,6 +1,5 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { SelectService } from '@keira/shared/base-abstract-classes';
-import { MysqlQueryService } from '@keira/shared/db-layer';
 import {
   BROADCAST_TEXT_ID,
   BROADCAST_TEXT_NAME,
@@ -14,11 +13,9 @@ import { BroadcastTextHandlerService } from './broadcast-text-handler.service';
   providedIn: 'root',
 })
 export class SelectBroadcastTextService extends SelectService<BroadcastText> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    readonly queryService: MysqlQueryService,
-    public handlerService: BroadcastTextHandlerService,
-  ) {
-    super(queryService, handlerService, BROADCAST_TEXT_TABLE, BROADCAST_TEXT_ID, BROADCAST_TEXT_NAME, BROADCAST_TEXT_SEARCH_FIELDS);
-  }
+  public readonly handlerService = inject(BroadcastTextHandlerService);
+  protected readonly entityTable = BROADCAST_TEXT_TABLE;
+  protected readonly entityIdField = BROADCAST_TEXT_ID;
+  protected readonly entityNameField = BROADCAST_TEXT_NAME;
+  protected readonly fieldList = BROADCAST_TEXT_SEARCH_FIELDS;
 }

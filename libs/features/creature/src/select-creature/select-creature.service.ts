@@ -1,6 +1,5 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { SelectService } from '@keira/shared/base-abstract-classes';
-import { MysqlQueryService } from '@keira/shared/db-layer';
 import {
   CREATURE_TEMPLATE_ID,
   CREATURE_TEMPLATE_NAME,
@@ -14,18 +13,9 @@ import { CreatureHandlerService } from '../creature-handler.service';
   providedIn: 'root',
 })
 export class SelectCreatureService extends SelectService<CreatureTemplate> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    readonly queryService: MysqlQueryService,
-    public handlerService: CreatureHandlerService,
-  ) {
-    super(
-      queryService,
-      handlerService,
-      CREATURE_TEMPLATE_TABLE,
-      CREATURE_TEMPLATE_ID,
-      CREATURE_TEMPLATE_NAME,
-      CREATURE_TEMPLATE_SEARCH_FIELDS,
-    );
-  }
+  public readonly handlerService = inject(CreatureHandlerService);
+  protected readonly entityTable = CREATURE_TEMPLATE_TABLE;
+  protected readonly entityIdField = CREATURE_TEMPLATE_ID;
+  protected readonly entityNameField = CREATURE_TEMPLATE_NAME;
+  protected readonly fieldList = CREATURE_TEMPLATE_SEARCH_FIELDS;
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { SelectService } from '@keira/shared/base-abstract-classes';
 import {
   QUEST_TEMPLATE_ID,
@@ -14,11 +14,9 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
   providedIn: 'root',
 })
 export class SelectQuestService extends SelectService<QuestTemplate> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    readonly queryService: MysqlQueryService,
-    public handlerService: QuestHandlerService,
-  ) {
-    super(queryService, handlerService, QUEST_TEMPLATE_TABLE, QUEST_TEMPLATE_ID, QUEST_TEMPLATE_NAME, QUEST_TEMPLATE_SEARCH_FIELDS);
-  }
+  public readonly handlerService = inject(QuestHandlerService);
+  protected readonly entityTable = QUEST_TEMPLATE_TABLE;
+  protected readonly entityIdField = QUEST_TEMPLATE_ID;
+  protected readonly entityNameField = QUEST_TEMPLATE_NAME;
+  protected readonly fieldList = QUEST_TEMPLATE_SEARCH_FIELDS;
 }

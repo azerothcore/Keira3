@@ -1,10 +1,17 @@
 import { FormControl, FormGroup } from '@angular/forms';
 import { QueryForm, StringKeys, TableRow } from '@keira/shared/constants';
-import { ChangeDetectorRef } from '@angular/core';
-import { BaseQueryService } from '@keira/shared/db-layer';
+import { ChangeDetectorRef, inject } from '@angular/core';
+import { BaseQueryService, MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
 import { ModelForm, ModelNestedForm, SubscriptionHandler } from '@keira/shared/utils';
 
 export abstract class SearchService<T extends TableRow> extends SubscriptionHandler {
+  protected abstract readonly queryService: BaseQueryService;
+  protected abstract readonly entityTable: string;
+  protected abstract readonly fieldList: StringKeys<T>[];
+
+  protected readonly selectFields: string[] = null;
+  protected readonly groupFields: string[] = null;
+
   query: string;
   rows: T[];
   fields: FormGroup<ModelForm<T>> = new FormGroup({} as any);
@@ -13,15 +20,12 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
     fields: this.fields,
   });
 
-  constructor(
-    protected queryService: BaseQueryService,
-    protected entityTable: string,
-    protected fieldList: StringKeys<T>[],
-    protected selectFields: string[] = null,
-    protected groupFields: string[] = null,
-  ) {
+  constructor() {
     super();
+    this.init();
+  }
 
+  private init(): void {
     for (const field of this.fieldList) {
       this.fields.addControl(field, new FormControl());
     }
@@ -50,4 +54,12 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
       }),
     );
   }
+}
+
+export abstract class SqliteSearchService<T extends TableRow> extends SearchService<T> {
+  protected readonly queryService = inject(SqliteQueryService);
+}
+
+export abstract class MysqlSearchService<T extends TableRow> extends SearchService<T> {
+  protected readonly queryService = inject(MysqlQueryService);
 }

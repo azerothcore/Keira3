@@ -1,6 +1,5 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { SelectService } from '@keira/shared/base-abstract-classes';
-import { MysqlQueryService } from '@keira/shared/db-layer';
 import { NPC_TEXT_ID, NPC_TEXT_SEARCH_FIELDS, NPC_TEXT_TABLE, NpcText } from '@keira/shared/acore-world-model';
 import { NpcTextHandlerService } from './npc-text-handler.service';
 
@@ -8,11 +7,9 @@ import { NpcTextHandlerService } from './npc-text-handler.service';
   providedIn: 'root',
 })
 export class SelectNpcTextService extends SelectService<NpcText> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    readonly queryService: MysqlQueryService,
-    public handlerService: NpcTextHandlerService,
-  ) {
-    super(queryService, handlerService, NPC_TEXT_TABLE, NPC_TEXT_ID, null, NPC_TEXT_SEARCH_FIELDS);
-  }
+  public readonly handlerService = inject(NpcTextHandlerService);
+  protected readonly entityTable = NPC_TEXT_TABLE;
+  protected readonly entityIdField = NPC_TEXT_ID;
+  protected readonly entityNameField = null;
+  protected readonly fieldList = NPC_TEXT_SEARCH_FIELDS;
 }

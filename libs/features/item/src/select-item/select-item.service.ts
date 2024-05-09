@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { SelectService } from '@keira/shared/base-abstract-classes';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import {
@@ -14,11 +14,9 @@ import { ItemHandlerService } from '../item-handler.service';
   providedIn: 'root',
 })
 export class SelectItemService extends SelectService<ItemTemplate> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    readonly queryService: MysqlQueryService,
-    public handlerService: ItemHandlerService,
-  ) {
-    super(queryService, handlerService, ITEM_TEMPLATE_TABLE, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_NAME, ITEM_TEMPLATE_SEARCH_FIELDS);
-  }
+  public readonly handlerService = inject(ItemHandlerService);
+  protected readonly entityTable = ITEM_TEMPLATE_TABLE;
+  protected readonly entityIdField = ITEM_TEMPLATE_ID;
+  protected readonly entityNameField = ITEM_TEMPLATE_NAME;
+  protected readonly fieldList = ITEM_TEMPLATE_SEARCH_FIELDS;
 }

@@ -1,22 +1,14 @@
-import { StringKeys, TableRow } from '@keira/shared/constants';
+import { TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { HandlerService } from '../handlers/handler.service';
 import { SearchService } from './search.service';
+import { inject } from '@angular/core';
 
 export abstract class SelectService<T extends TableRow> extends SearchService<T> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    readonly queryService: MysqlQueryService,
-    public handlerService: HandlerService<T>,
-    protected entityTable: string,
-    protected entityIdField: string,
-    protected entityNameField: string,
-    protected fieldList: StringKeys<T>[],
-    protected selectFields: string[] = null,
-    protected groupFields: string[] = null,
-  ) {
-    super(queryService, entityTable, fieldList, selectFields, groupFields);
-  }
+  protected readonly queryService = inject(MysqlQueryService);
+  protected abstract readonly entityIdField: string;
+  protected abstract readonly entityNameField: string;
+  public abstract readonly handlerService: HandlerService<T>;
 
   onSelect({ selected }) {
     this.handlerService.select(
