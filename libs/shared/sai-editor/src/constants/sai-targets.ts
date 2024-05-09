@@ -39,23 +39,23 @@ export enum SAI_TARGETS {
 }
 
 export const SAI_TARGETS_KEYS = getEnumKeys(SAI_TARGETS);
-export const SAI_TARGET_TOOLTIPS = [];
-export const SAI_TARGET_PARAM1_NAMES = [];
-export const SAI_TARGET_PARAM2_NAMES = [];
-export const SAI_TARGET_PARAM3_NAMES = [];
-export const SAI_TARGET_PARAM4_NAMES = [];
-export const SAI_TARGET_X_NAMES = [];
-export const SAI_TARGET_Y_NAMES = [];
-export const SAI_TARGET_Z_NAMES = [];
-export const SAI_TARGET_O_NAMES = [];
-export const SAI_TARGET_PARAM1_TOOLTIPS = [];
-export const SAI_TARGET_PARAM2_TOOLTIPS = [];
-export const SAI_TARGET_PARAM3_TOOLTIPS = [];
-export const SAI_TARGET_PARAM4_TOOLTIPS = [];
-export const SAI_TARGET_X_TOOLTIPS = [];
-export const SAI_TARGET_Y_TOOLTIPS = [];
-export const SAI_TARGET_Z_TOOLTIPS = [];
-export const SAI_TARGET_O_TOOLTIPS = [];
+export const SAI_TARGET_TOOLTIPS: Record<string, string> = {};
+export const SAI_TARGET_PARAM1_NAMES: Record<string, string> = {};
+export const SAI_TARGET_PARAM2_NAMES: Record<string, string> = {};
+export const SAI_TARGET_PARAM3_NAMES: Record<string, string> = {};
+export const SAI_TARGET_PARAM4_NAMES: Record<string, string> = {};
+export const SAI_TARGET_X_NAMES: Record<string, string> = {};
+export const SAI_TARGET_Y_NAMES: Record<string, string> = {};
+export const SAI_TARGET_Z_NAMES: Record<string, string> = {};
+export const SAI_TARGET_O_NAMES: Record<string, string> = {};
+export const SAI_TARGET_PARAM1_TOOLTIPS: Record<string, string> = {};
+export const SAI_TARGET_PARAM2_TOOLTIPS: Record<string, string> = {};
+export const SAI_TARGET_PARAM3_TOOLTIPS: Record<string, string> = {};
+export const SAI_TARGET_PARAM4_TOOLTIPS: Record<string, string> = {};
+export const SAI_TARGET_X_TOOLTIPS: Record<string, string> = {};
+export const SAI_TARGET_Y_TOOLTIPS: Record<string, string> = {};
+export const SAI_TARGET_Z_TOOLTIPS: Record<string, string> = {};
+export const SAI_TARGET_O_TOOLTIPS: Record<string, string> = {};
 
 // SMART_TARGET_NONE
 SAI_TARGET_TOOLTIPS[SAI_TARGETS.NONE] =
