@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ITEM_TEMPLATE_ID, ItemTemplate } from '@keira/shared/acore-world-model';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ItemSearchService } from '../../search/item-search.service';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 
@@ -17,11 +16,6 @@ import { HighlightjsWrapperComponent, IconComponent } from '@keira/shared/base-e
   imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, IconComponent, TranslateModule],
 })
 export class ItemSelectorModalComponent extends SearchSelectorModalComponent<ItemTemplate> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected bsModalRef: BsModalRef,
-    public searchService: ItemSearchService,
-  ) {
-    super(ITEM_TEMPLATE_ID, bsModalRef, searchService);
-  }
+  protected entityIdField = ITEM_TEMPLATE_ID;
+  protected searchService = inject(ItemSearchService);
 }

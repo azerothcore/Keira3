@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap/modal';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { Spell, SPELL_ID } from '@keira/shared/acore-world-model';
 import { TranslateModule } from '@ngx-translate/core';
@@ -18,11 +17,6 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
   imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateModule],
 })
 export class SpellSelectorModalComponent extends SearchSelectorModalComponent<Spell> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected bsModalRef: BsModalRef,
-    public searchService: SpellSearchService,
-  ) {
-    super(SPELL_ID, bsModalRef, searchService);
-  }
+  protected entityIdField = SPELL_ID;
+  protected searchService = inject(SpellSearchService);
 }

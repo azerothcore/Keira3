@@ -1,7 +1,7 @@
 import { Option } from '@keira/shared/constants';
 
 export const GAMEOBJECT_ICON: Option[] = [
-  { value: null, name: 'None' },
+  { value: '', name: 'None' },
   { value: 'Taxi', name: 'Taxi' },
   { value: 'Talk', name: 'Talk' },
   { value: 'Attack', name: 'Attack' },

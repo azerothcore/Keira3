@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { BaseSelectorModalComponent } from '../base-selector/base-selector-modal.component';
 import { DTCFG } from '@keira/shared/config';
@@ -20,11 +19,6 @@ export class SingleValueSelectorModalComponent extends BaseSelectorModalComponen
   readonly DTCFG = DTCFG;
   selected: Option[] = [];
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected bsModalRef: BsModalRef) {
-    super(bsModalRef);
-  }
-
   ngOnInit() {
     if (this.config) {
       for (const option of this.config.options) {
@@ -36,7 +30,7 @@ export class SingleValueSelectorModalComponent extends BaseSelectorModalComponen
     }
   }
 
-  onSelect({ selected }) {
+  onSelect({ selected }: { selected: { value: string | number }[] }) {
     this.value = selected[0].value;
   }
 }

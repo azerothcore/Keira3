@@ -18,7 +18,7 @@ export abstract class SelectService<T extends TableRow> extends SearchService<T>
     super(queryService, entityTable, fieldList, selectFields, groupFields);
   }
 
-  onSelect({ selected }) {
+  onSelect({ selected }: { selected: { [key: string]: string | number }[] }) {
     this.handlerService.select(
       false,
       `${selected[0][this.entityIdField]}`,

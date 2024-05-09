@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap/modal';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { Faction, FACTION_SEARCH_FIELDS } from '@keira/shared/acore-world-model';
 import { FactionSearchService } from '../../search/faction-search.service';
@@ -17,11 +16,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateModule],
 })
 export class QuestFactionSelectorModalComponent extends SearchSelectorModalComponent<Faction> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected bsModalRef: BsModalRef,
-    public searchService: FactionSearchService,
-  ) {
-    super(FACTION_SEARCH_FIELDS[1], bsModalRef, searchService);
-  }
+  protected entityIdField = FACTION_SEARCH_FIELDS[1];
+  protected searchService = inject(FactionSearchService);
 }

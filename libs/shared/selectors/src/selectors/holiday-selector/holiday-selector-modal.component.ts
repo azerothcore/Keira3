@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap/modal';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { Holiday, HOLIDAY_ID } from '@keira/shared/acore-world-model';
 import { TranslateModule } from '@ngx-translate/core';
@@ -18,11 +17,6 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
   imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateModule],
 })
 export class HolidaySelectorModalComponent extends SearchSelectorModalComponent<Holiday> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected bsModalRef: BsModalRef,
-    public searchService: HolidaySearchService,
-  ) {
-    super(HOLIDAY_ID, bsModalRef, searchService);
-  }
+  protected entityIdField = HOLIDAY_ID;
+  protected searchService = inject(HolidaySearchService);
 }

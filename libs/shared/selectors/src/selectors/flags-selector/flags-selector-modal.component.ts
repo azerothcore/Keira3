@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap/modal';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 
 import { BaseSelectorModalComponent } from '../base-selector/base-selector-modal.component';
 import { FlagsService } from './flags.service';
@@ -18,15 +17,8 @@ import { UiSwitchModule } from 'ngx-ui-switch';
 export class FlagsSelectorModalComponent extends BaseSelectorModalComponent<FlagsModalConfig> implements OnInit {
   readonly pow = Math.pow;
 
-  flagValues: boolean[];
-
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    private flagsService: FlagsService,
-    protected bsModalRef: BsModalRef,
-  ) {
-    super(bsModalRef);
-  }
+  private readonly flagsService = inject(FlagsService);
+  flagValues: boolean[] = [];
 
   ngOnInit() {
     if (this.config) {
