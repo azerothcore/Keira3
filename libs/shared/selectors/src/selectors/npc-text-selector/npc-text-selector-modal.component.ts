@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { NPC_TEXT_ID, NpcText } from '@keira/shared/acore-world-model';
 import { TranslateModule } from '@ngx-translate/core';
@@ -18,5 +18,5 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
 })
 export class NpcTextSelectorModalComponent extends SearchSelectorModalComponent<NpcText> {
   protected entityIdField = NPC_TEXT_ID;
-  protected searchService = NpcTextSearchService;
+  protected searchService = inject(NpcTextSearchService);
 }

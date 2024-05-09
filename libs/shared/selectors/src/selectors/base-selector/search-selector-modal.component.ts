@@ -1,6 +1,7 @@
 import { DTCFG } from '@keira/shared/config';
 import { BaseSelectorModalComponent } from './base-selector-modal.component';
 import { TableRow } from '@keira/shared/constants';
+import { SearchService } from '@keira/shared/base-abstract-classes';
 
 export abstract class SearchSelectorModalComponent<T extends TableRow> extends BaseSelectorModalComponent {
   readonly DTCFG = DTCFG;

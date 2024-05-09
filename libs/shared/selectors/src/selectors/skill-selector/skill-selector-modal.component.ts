@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { Skill, SKILL_ID } from '@keira/shared/acore-world-model';
 import { TranslateModule } from '@ngx-translate/core';
@@ -18,5 +18,5 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
 })
 export class SkillSelectorModalComponent extends SearchSelectorModalComponent<Skill> {
   protected entityIdField = SKILL_ID;
-  protected searchService = SkillSearchService;
+  protected searchService = inject(SkillSearchService);
 }

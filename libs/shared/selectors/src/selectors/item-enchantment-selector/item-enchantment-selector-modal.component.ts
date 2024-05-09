@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { ITEM_ENCHANTMENT_ID, ItemEnchantment } from '@keira/shared/acore-world-model';
 import { TranslateModule } from '@ngx-translate/core';
@@ -18,5 +18,5 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
 })
 export class ItemEnchantmentSelectorModalComponent extends SearchSelectorModalComponent<ItemEnchantment> {
   protected entityIdField = ITEM_ENCHANTMENT_ID;
-  protected searchService = ItemEnchantmentSearchService;
+  protected searchService = inject(ItemEnchantmentSearchService);
 }

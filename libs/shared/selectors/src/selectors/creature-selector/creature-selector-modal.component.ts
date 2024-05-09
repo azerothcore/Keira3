@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { CREATURE_TEMPLATE_ID, CreatureTemplate } from '@keira/shared/acore-world-model';
 import { TranslateModule } from '@ngx-translate/core';
@@ -18,5 +18,5 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
 })
 export class CreatureSelectorModalComponent extends SearchSelectorModalComponent<CreatureTemplate> {
   protected entityIdField = CREATURE_TEMPLATE_ID;
-  protected searchService = CreatureSearchService;
+  protected searchService = inject(CreatureSearchService);
 }

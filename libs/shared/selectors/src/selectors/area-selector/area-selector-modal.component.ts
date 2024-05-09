@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AREA_ID, Area } from '@keira/shared/acore-world-model';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
@@ -17,5 +17,5 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
 })
 export class AreaSelectorModalComponent extends SearchSelectorModalComponent<Area> {
   protected entityIdField = AREA_ID;
-  protected searchService = AreaSearchService;
+  protected searchService = inject(AreaSearchService);
 }

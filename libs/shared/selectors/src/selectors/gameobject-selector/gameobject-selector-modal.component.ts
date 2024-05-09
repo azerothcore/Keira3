@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { GAMEOBJECT_TEMPLATE_ID, GameobjectTemplate } from '@keira/shared/acore-world-model';
 import { TranslateModule } from '@ngx-translate/core';
@@ -18,5 +18,5 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
 })
 export class GameobjectSelectorModalComponent extends SearchSelectorModalComponent<GameobjectTemplate> {
   protected entityIdField = GAMEOBJECT_TEMPLATE_ID;
-  protected searchService = GameobjectSearchService;
+  protected searchService = inject(GameobjectSearchService);
 }

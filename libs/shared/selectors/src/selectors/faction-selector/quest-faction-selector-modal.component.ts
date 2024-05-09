@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { Faction, FACTION_SEARCH_FIELDS } from '@keira/shared/acore-world-model';
 import { FactionSearchService } from '../../search/faction-search.service';
@@ -17,5 +17,5 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 })
 export class QuestFactionSelectorModalComponent extends SearchSelectorModalComponent<Faction> {
   protected entityIdField = FACTION_SEARCH_FIELDS[1];
-  protected searchService = FactionSearchService;
+  protected searchService = inject(FactionSearchService);
 }

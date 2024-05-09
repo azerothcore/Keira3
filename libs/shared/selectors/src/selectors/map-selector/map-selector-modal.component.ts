@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { Map, MAP_ID } from '@keira/shared/acore-world-model';
 import { TranslateModule } from '@ngx-translate/core';
@@ -18,5 +18,5 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
 })
 export class MapSelectorModalComponent extends SearchSelectorModalComponent<Map> {
   protected entityIdField = MAP_ID;
-  protected searchService = MapSearchService;
+  protected searchService = inject(MapSearchService);
 }

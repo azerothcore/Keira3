@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { Spell, SPELL_ID } from '@keira/shared/acore-world-model';
 import { TranslateModule } from '@ngx-translate/core';
@@ -18,5 +18,5 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
 })
 export class SpellSelectorModalComponent extends SearchSelectorModalComponent<Spell> {
   protected entityIdField = SPELL_ID;
-  protected searchService = SpellSearchService;
+  protected searchService = inject(SpellSearchService);
 }

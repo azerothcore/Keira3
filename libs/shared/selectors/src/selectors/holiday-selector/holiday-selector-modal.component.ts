@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { Holiday, HOLIDAY_ID } from '@keira/shared/acore-world-model';
 import { TranslateModule } from '@ngx-translate/core';
@@ -18,5 +18,5 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
 })
 export class HolidaySelectorModalComponent extends SearchSelectorModalComponent<Holiday> {
   protected entityIdField = HOLIDAY_ID;
-  protected searchService = HolidaySearchService;
+  protected searchService = inject(HolidaySearchService);
 }

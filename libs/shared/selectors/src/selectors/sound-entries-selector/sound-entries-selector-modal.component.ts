@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SOUND_ENTRIES_ID, SoundEntries } from '@keira/shared/acore-world-model';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
@@ -17,5 +17,5 @@ import { SoundEntriesSearchService } from '../../search/sound-entries-search.ser
 })
 export class SoundEntriesSelectorModalComponent extends SearchSelectorModalComponent<SoundEntries> {
   protected entityIdField = SOUND_ENTRIES_ID;
-  protected searchService = SoundEntriesSearchService;
+  protected searchService = inject(SoundEntriesSearchService);
 }

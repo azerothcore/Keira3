@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ITEM_TEMPLATE_ID, ItemTemplate } from '@keira/shared/acore-world-model';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
@@ -17,5 +17,5 @@ import { HighlightjsWrapperComponent, IconComponent } from '@keira/shared/base-e
 })
 export class ItemSelectorModalComponent extends SearchSelectorModalComponent<ItemTemplate> {
   protected entityIdField = ITEM_TEMPLATE_ID;
-  protected searchService = ItemSearchService;
+  protected searchService = inject(ItemSearchService);
 }

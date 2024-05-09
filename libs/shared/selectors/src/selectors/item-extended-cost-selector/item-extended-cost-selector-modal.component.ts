@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { ITEM_EXTENDED_COST_ID, ItemExtendedCost } from '@keira/shared/acore-world-model';
 import { TranslateModule } from '@ngx-translate/core';
@@ -18,5 +18,5 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
 })
 export class ItemExtendedCostSelectorModalComponent extends SearchSelectorModalComponent<ItemExtendedCost> {
   protected entityIdField = ITEM_EXTENDED_COST_ID;
-  protected searchService = ItemExtendedCostSearchService;
+  protected searchService = inject(ItemExtendedCostSearchService);
 }

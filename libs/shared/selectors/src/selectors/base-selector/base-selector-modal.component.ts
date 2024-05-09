@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, inject } from '@angular/core';
 import { Subject } from 'rxjs';
 import { BaseModalConfig } from './base-selector.model';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 
 export abstract class BaseSelectorModalComponent<ModalConfigType extends BaseModalConfig = BaseModalConfig> {
   // will be injected by the component that creates the modal

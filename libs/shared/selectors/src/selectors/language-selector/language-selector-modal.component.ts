@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { LANGUAGE_ID, Language } from '@keira/shared/acore-world-model';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
@@ -17,5 +17,5 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
 })
 export class LanguageSelectorModalComponent extends SearchSelectorModalComponent<Language> {
   protected entityIdField = LANGUAGE_ID;
-  protected searchService = LanguageSearchService;
+  protected searchService = inject(LanguageSearchService);
 }
