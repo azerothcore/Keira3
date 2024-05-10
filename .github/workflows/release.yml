@@ -28,7 +28,7 @@ jobs:
   build-on-linux:
     needs: get-package-version
     name: Build and upload the Linux release assets
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -73,7 +73,7 @@ jobs:
   build-on-mac:
     needs: get-package-version
     name: Build and upload the Mac release assets
-    runs-on: macos-latest
+    runs-on: macos-13
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -107,7 +107,7 @@ jobs:
   build-on-windows:
     needs: get-package-version
     name: Build and upload the Windows release assets
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
