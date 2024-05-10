@@ -3,7 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CreatureText, EMOTE, TEXT_RANGE, TEXT_TYPE } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
-import { LanguageSelectorBtnComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
+import { LanguageSelectorBtnComponent, SingleValueSelectorBtnComponent, SoundEntriesSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -26,6 +26,7 @@ import { CreatureTextService } from './creature-text.service';
     NgxDatatableModule,
     SingleValueSelectorBtnComponent,
     LanguageSelectorBtnComponent,
+    SoundEntriesSelectorBtnComponent,
   ],
 })
 export class CreatureTextComponent extends MultiRowEditorComponent<CreatureText> {

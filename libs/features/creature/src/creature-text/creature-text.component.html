@@ -57,7 +57,6 @@
                 [config]="{ options: EMOTE, name: 'emote' }"
                 [modalClass]="'modal-md'"
               />
-
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEXT.EMOTE' | translate"></i>
               <input [formControlName]="'Emote'" id="Emote" type="number" class="form-control form-control-sm" />
             </div>
@@ -68,6 +67,11 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
               <label class="control-label" for="Sound">Sound</label>
+              <keira-sound-entries-selector-btn
+                [config]="{ name: 'SoundEntriesId' }"
+                [control]="editorService.form.controls.Sound"
+                [disabled]="editorService.form.controls.Sound.disabled"
+              />
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEXT.SOUND' | translate"></i>
               <input [formControlName]="'Sound'" id="Sound" type="number" class="form-control form-control-sm" />
             </div>
