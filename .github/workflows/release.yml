@@ -15,17 +15,14 @@ jobs:
         uses: actions/checkout@v4
       - id: version
         run: |
-          npm i -g json
-          echo "PACKAGE_VERSION=$(json version -a < package.json)" >> $GITHUB_OUTPUT
+          echo "PACKAGE_VERSION=$(npx json version -a < package.json)" >> $GITHUB_OUTPUT
       - id: app_name
         run: |
-          npm i -g json
-          echo "APP_NAME=$(json name -a < package.json)" >> $GITHUB_OUTPUT
+          echo "APP_NAME=$(npx json name -a < package.json)" >> $GITHUB_OUTPUT
       - id: fix_app_name
         # remove 3 from "Keira3"
         run: |
-          npm i -g json
-          FIX_APP_NAME=$(echo "$(json name -a < package.json)" | sed s/3//g)
+          FIX_APP_NAME=$(echo "$(npx json name -a < package.json)" | sed s/3//g)
           echo "FIX_APP_NAME=$FIX_APP_NAME" >> $GITHUB_OUTPUT
 
   build-on-linux:
