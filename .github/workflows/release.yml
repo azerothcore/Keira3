@@ -73,7 +73,7 @@ jobs:
   build-on-mac:
     needs: get-package-version
     name: Build and upload the Mac release assets
-    runs-on: macos-13
+    runs-on: macos-14
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
