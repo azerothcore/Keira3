@@ -20,17 +20,14 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
     this.queryPo = new QueryOutputComponentPage(fixture as ComponentFixture<any>);
   }
 
-  changeAllFields<E extends TableRow>(entity: E, excludedFields: string[] = []): void {
+  changeAllFields<E extends TableRow>(entity: E, excludedFields: string[] = [], values: number[] = []): void {
     let i = 0;
     for (const field of Object.getOwnPropertyNames(entity)) {
       if (!excludedFields.includes(field)) {
-        // console.log('field: ', field);
-        // console.log('value: ', i);
-        // console.log('instance of ', this.getInputById(field) instanceof HTMLSelectElement);
         if (!this.getInputById(field).disabled) {
           if (this.getInputById(field) instanceof HTMLSelectElement) {
-            console.log('field select', field);
-            this.setSelectValueById(field, i);
+            const value = values.length ? values[i] : i;
+            this.setSelectValueById(field, value);
           } else {
             this.setInputValueById(field, i);
           }

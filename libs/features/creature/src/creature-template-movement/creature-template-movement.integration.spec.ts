@@ -32,8 +32,8 @@ describe('CreatureTemplateMovement integration tests', () => {
   originalEntity.CreatureId = id;
   originalEntity.Ground = 0;
   originalEntity.Swim = 1;
-  originalEntity.Flight = 3;
-  originalEntity.Rooted = 2;
+  originalEntity.Flight = 2;
+  originalEntity.Rooted = 1;
   originalEntity.Chase = 0;
   originalEntity.Random = 2;
   originalEntity.InteractionPauseTimer = 0;
@@ -112,16 +112,16 @@ describe('CreatureTemplateMovement integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_movement` WHERE (`CreatureId` = 1234);\n' +
           'INSERT INTO `creature_template_movement` (`CreatureId`, `Ground`, `Swim`, `Flight`, `Rooted`, `Chase`, `Random`, `InteractionPauseTimer`) VALUES\n' +
-          '(1234, 0, 1, 3, 2, 0, 2, 0);',
+          '(1234, 0, 1, 2, 1, 0, 2, 0);',
       );
     });
 
     it('changing all properties and executing the query should correctly work', () => {
       const expectedQuery =
-        'UPDATE `creature_template_movement` SET `Flight` = 2, `Rooted` = 3, `Chase` = 4, `Random` = 5, `InteractionPauseTimer` = 6 WHERE (`CreatureId` = 1234);';
+        'UPDATE `creature_template_movement` SET `Ground` = 1, `Swim` = 0, `Flight` = 1, `Rooted` = 0, `Chase` = 1, `Random` = 1, `InteractionPauseTimer` = 6 WHERE (`CreatureId` = 1234);';
       querySpy.calls.reset();
 
-      page.changeAllFields(originalEntity, ['CreatureId']);
+      page.changeAllFields(originalEntity, ['CreatureId'], [1, 0, 1, 0, 1, 1, 1]);
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
@@ -135,7 +135,7 @@ describe('CreatureTemplateMovement integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_movement` WHERE (`CreatureId` = 1234);\n' +
           'INSERT INTO `creature_template_movement` (`CreatureId`, `Ground`, `Swim`, `Flight`, `Rooted`, `Chase`, `Random`, `InteractionPauseTimer`) VALUES\n' +
-          '(1234, 1, 1, 3, 2, 0, 2, 0);',
+          '(1234, 1, 1, 2, 1, 0, 2, 0);',
       );
 
       page.setInputValueById('InteractionPauseTimer', '2');
@@ -145,7 +145,7 @@ describe('CreatureTemplateMovement integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_movement` WHERE (`CreatureId` = 1234);\n' +
           'INSERT INTO `creature_template_movement` (`CreatureId`, `Ground`, `Swim`, `Flight`, `Rooted`, `Chase`, `Random`, `InteractionPauseTimer`) VALUES\n' +
-          '(1234, 1, 1, 3, 2, 0, 2, 2);\n',
+          '(1234, 1, 1, 2, 1, 0, 2, 2);\n',
       );
     });
   });
