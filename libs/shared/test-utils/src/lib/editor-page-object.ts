@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { QueryOutputComponentPage } from './query-output-page-object';
 import { TableRow } from '@keira/shared/constants';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { PageObject } from './page-object';
+import { QueryOutputComponentPage } from './query-output-page-object';
 
 export abstract class EditorPageObject<T> extends PageObject<T> {
   readonly PREVIEW_CONTAINER_SELECTOR = '.preview-container';
@@ -24,8 +24,17 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
     let i = 0;
     for (const field of Object.getOwnPropertyNames(entity)) {
       if (!excludedFields.includes(field)) {
+        // console.log('field: ', field);
+        // console.log('value: ', i);
+        // console.log('instance of ', this.getInputById(field) instanceof HTMLSelectElement);
         if (!this.getInputById(field).disabled) {
-          this.setInputValueById(field, i);
+          if (this.getInputById(field) instanceof HTMLSelectElement) {
+            console.log('field select', field);
+            this.setSelectValueById(field, i);
+          } else {
+            this.setInputValueById(field, i);
+          }
+
           i++;
         }
       }

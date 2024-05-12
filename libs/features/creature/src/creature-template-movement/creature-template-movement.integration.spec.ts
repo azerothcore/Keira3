@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CreatureTemplateMovement } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { CreatureTemplateMovement } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
+import { instance, mock } from 'ts-mockito';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureTemplateMovementComponent } from './creature-template-movement.component';
 import Spy = jasmine.Spy;
-import { instance, mock } from 'ts-mockito';
 
 class CreatureTemplateMovementPage extends EditorPageObject<CreatureTemplateMovementComponent> {}
 
@@ -80,9 +80,9 @@ describe('CreatureTemplateMovement integration tests', () => {
     it('should correctly update the unsaved status', () => {
       const field = 'Ground';
       expect(handlerService.isCreatureTemplateMovementUnsaved).toBe(false);
-      page.setInputValueById(field, 3);
+      page.setSelectValueById(field, 3);
       expect(handlerService.isCreatureTemplateMovementUnsaved).toBe(true);
-      page.setInputValueById(field, 0);
+      page.setSelectValueById(field, 0);
       expect(handlerService.isCreatureTemplateMovementUnsaved).toBe(false);
     });
 
@@ -93,7 +93,7 @@ describe('CreatureTemplateMovement integration tests', () => {
         '(1234, 1, 0, 0, 0, 0, 0, 0);';
       querySpy.calls.reset();
 
-      page.setInputValueById('Ground', 1);
+      page.setSelectValueById('Ground', 1);
       page.expectFullQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
@@ -130,7 +130,7 @@ describe('CreatureTemplateMovement integration tests', () => {
     });
 
     it('changing values should correctly update the queries', () => {
-      page.setInputValueById('Ground', '1');
+      page.setSelectValueById('Ground', 1);
       page.expectDiffQueryToContain('UPDATE `creature_template_movement` SET `Ground` = 1 WHERE (`CreatureId` = 1234);');
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_movement` WHERE (`CreatureId` = 1234);\n' +
