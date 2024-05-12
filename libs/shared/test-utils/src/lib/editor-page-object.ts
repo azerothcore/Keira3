@@ -20,7 +20,7 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
     this.queryPo = new QueryOutputComponentPage(fixture as ComponentFixture<any>);
   }
 
-  changeAllFields<E extends TableRow>(entity: E, excludedFields: string[] = []) {
+  changeAllFields<E extends TableRow>(entity: E, excludedFields: string[] = []): void {
     let i = 0;
     for (const field of Object.getOwnPropertyNames(entity)) {
       if (!excludedFields.includes(field)) {
@@ -41,31 +41,31 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
     }
   }
 
-  clickExecuteQuery() {
+  clickExecuteQuery(): void {
     this.clickElement(this.queryPo.executeBtn);
   }
 
-  clickCopyQuery() {
+  clickCopyQuery(): void {
     this.clickElement(this.queryPo.copyBtn);
   }
 
-  setSelectValueById(inputId: string, value: number) {
+  setSelectValueById(inputId: string, value: number): void {
     this.setInputValueById(inputId, `${value}: ${value}`);
   }
 
-  getSelectorBtn(name: string, assert = true) {
+  getSelectorBtn(name: string, assert = true): HTMLButtonElement {
     return this.query<HTMLButtonElement>(`#${name}-selector-btn`, assert);
   }
 
-  getCellOfTableExternal(tableSelector: string, rowIndex: number, colIndex: number): HTMLTableDataCellElement {
-    const element = document.querySelector<HTMLTableDataCellElement>(
+  getCellOfTableExternal(tableSelector: string, rowIndex: number, colIndex: number): HTMLTableCellElement {
+    const element = document.querySelector<HTMLTableCellElement>(
       `${tableSelector} tr:nth-child(${rowIndex + 1}) td:nth-child(${colIndex + 1})`,
-    ) as HTMLTableDataCellElement;
+    ) as HTMLTableCellElement;
     expect(element).toBeTruthy(`Unable to find column ${colIndex} of row ${rowIndex} of ${tableSelector}`);
     return element;
   }
 
-  toggleFlagInRowExternal(rowIndex: number) {
+  toggleFlagInRowExternal(rowIndex: number): void {
     const cell = this.getCellOfTableExternal('#flags-table', rowIndex, 0);
     const toggleSelector = 'ui-switch';
     const toggleElement = cell.querySelector<HTMLElement>(toggleSelector) as HTMLElement;
@@ -73,7 +73,7 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
     this.clickElement(toggleElement);
   }
 
-  clickModalSelect() {
+  clickModalSelect(): void {
     this.clickElement(this.queryOutsideComponent('#modal-select-btn'));
 
     // TODO: this shouldn't be necessary, but for some reasons the modal does not close so we manually close it
@@ -82,56 +82,56 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
     modalService.hide();
   }
 
-  clickModalCancel() {
+  clickModalCancel(): void {
     this.clickElement(this.queryOutsideComponent('#modal-cancel-btn'));
   }
 
-  expectModalDisplayed() {
+  expectModalDisplayed(): void {
     this.queryOutsideComponent('.modal-content', true);
   }
 
-  expectModalHidden() {
+  expectModalHidden(): void {
     expect(this.queryOutsideComponent('.modal-content', false)).toBeFalsy('Expected modal to be hidden');
   }
 
-  clickSearchBtn() {
+  clickSearchBtn(): void {
     this.clickElement(this.queryOutsideComponent('#search-btn'));
   }
 
-  expectQuerySwitchToBeHidden() {
+  expectQuerySwitchToBeHidden(): void {
     expect(this.queryTypeSwitchWrapper.hidden).toBe(true, 'Expected query switch to be hidden');
   }
 
-  expectFullQueryToBeShown() {
+  expectFullQueryToBeShown(): void {
     this.queryPo.expectFullQueryToBeShown();
   }
 
-  expectDiffQueryToBeShown() {
+  expectDiffQueryToBeShown(): void {
     this.queryPo.expectDiffQueryToBeShown();
   }
 
-  expectFullQueryToContain(expectedQuery: string) {
+  expectFullQueryToContain(expectedQuery: string): void {
     // can be useful when finding the correct query after an intended change:
     // console.log(this.queryPo.fullQueryWrapper.innerText);
     expect(this.queryPo.fullQueryWrapper.innerText).toContain(expectedQuery);
   }
 
-  expectDiffQueryToContain(expectedQuery: string) {
+  expectDiffQueryToContain(expectedQuery: string): void {
     // can be useful when finding the correct query after an intended change:
     // console.log(this.queryPo.diffQueryWrapper.innerText);
     expect(this.queryPo.diffQueryWrapper.innerText).toContain(expectedQuery);
   }
 
-  expectAllQueriesToContain(expectedQuery: string) {
+  expectAllQueriesToContain(expectedQuery: string): void {
     this.expectDiffQueryToContain(expectedQuery);
     this.expectFullQueryToContain(expectedQuery);
   }
 
-  expectFullQueryToBeEmpty() {
+  expectFullQueryToBeEmpty(): void {
     expect(this.queryPo.fullQueryWrapper.innerText).toEqual('');
   }
 
-  expectDiffQueryToBeEmpty() {
+  expectDiffQueryToBeEmpty(): void {
     expect(this.queryPo.diffQueryWrapper.innerText).toEqual('');
   }
 }
