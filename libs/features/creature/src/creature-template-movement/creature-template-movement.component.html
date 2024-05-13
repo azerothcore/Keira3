@@ -16,32 +16,54 @@
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="Ground">Ground</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE_MOVEMENT.GROUND' | translate"></i>
-              <input [formControlName]="'Ground'" id="Ground" type="number" class="form-control form-control-sm" />
+              <select [formControlName]="'Ground'" id="Ground" class="form-control form-control-sm">
+                <option [ngValue]="0">0 - None</option>
+                <option [ngValue]="1">1 - Run</option>
+                <option [ngValue]="2">2 - Hover</option>
+              </select>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="Swim">Swim</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE_MOVEMENT.SWIM' | translate"></i>
-              <input [formControlName]="'Swim'" id="Swim" type="number" class="form-control form-control-sm" />
+              <select [formControlName]="'Swim'" id="Swim" class="form-control form-control-sm">
+                <option [ngValue]="0">0 - None</option>
+                <option [ngValue]="1">1 - Swim</option>
+              </select>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="Flight">Flight</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE_MOVEMENT.FLIGHT' | translate"></i>
-              <input [formControlName]="'Flight'" id="Flight" type="number" class="form-control form-control-sm" />
+              <select [formControlName]="'Flight'" id="Flight" class="form-control form-control-sm">
+                <option [ngValue]="0">0 - None</option>
+                <option [ngValue]="1">1 - Disable Gravity</option>
+                <option [ngValue]="2">2 - Can Fly</option>
+              </select>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="Rooted">Rooted</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE_MOVEMENT.ROOTED' | translate"></i>
-              <input [formControlName]="'Rooted'" id="Rooted" type="number" class="form-control form-control-sm" />
+              <select [formControlName]="'Rooted'" id="Rooted" class="form-control form-control-sm">
+                <option [ngValue]="0">0 - None</option>
+                <option [ngValue]="1">1 - Rooted</option>
+              </select>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="Chase">Chase</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE_MOVEMENT.CHASE' | translate"></i>
-              <input [formControlName]="'Chase'" id="Chase" type="number" class="form-control form-control-sm" />
+              <select [formControlName]="'Chase'" id="Chase" class="form-control form-control-sm">
+                <option [ngValue]="0">0 - None</option>
+                <option [ngValue]="1">1 - Can Walk</option>
+                <option [ngValue]="2">2 - Always Walk</option>
+              </select>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="Random">Random</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE_MOVEMENT.RANDOM' | translate"></i>
-              <input [formControlName]="'Random'" id="Random" type="number" class="form-control form-control-sm" />
+              <select [formControlName]="'Random'" id="Random" class="form-control form-control-sm">
+                <option [ngValue]="0">0 - Walk</option>
+                <option [ngValue]="1">1 - Can Run</option>
+                <option [ngValue]="2">2 - Always Run</option>
+              </select>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="InteractionPauseTimer">InteractionPauseTimer</label>

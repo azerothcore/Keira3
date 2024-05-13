@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CreatureTemplateMovement } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { CreatureTemplateMovement } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
+import { instance, mock } from 'ts-mockito';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureTemplateMovementComponent } from './creature-template-movement.component';
 import Spy = jasmine.Spy;
-import { instance, mock } from 'ts-mockito';
 
 class CreatureTemplateMovementPage extends EditorPageObject<CreatureTemplateMovementComponent> {}
 
@@ -32,8 +32,8 @@ describe('CreatureTemplateMovement integration tests', () => {
   originalEntity.CreatureId = id;
   originalEntity.Ground = 0;
   originalEntity.Swim = 1;
-  originalEntity.Flight = 3;
-  originalEntity.Rooted = 2;
+  originalEntity.Flight = 2;
+  originalEntity.Rooted = 1;
   originalEntity.Chase = 0;
   originalEntity.Random = 2;
   originalEntity.InteractionPauseTimer = 0;
@@ -80,9 +80,9 @@ describe('CreatureTemplateMovement integration tests', () => {
     it('should correctly update the unsaved status', () => {
       const field = 'Ground';
       expect(handlerService.isCreatureTemplateMovementUnsaved).toBe(false);
-      page.setInputValueById(field, 3);
+      page.setSelectValueById(field, 3);
       expect(handlerService.isCreatureTemplateMovementUnsaved).toBe(true);
-      page.setInputValueById(field, 0);
+      page.setSelectValueById(field, 0);
       expect(handlerService.isCreatureTemplateMovementUnsaved).toBe(false);
     });
 
@@ -93,7 +93,7 @@ describe('CreatureTemplateMovement integration tests', () => {
         '(1234, 1, 0, 0, 0, 0, 0, 0);';
       querySpy.calls.reset();
 
-      page.setInputValueById('Ground', 1);
+      page.setSelectValueById('Ground', 1);
       page.expectFullQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
@@ -112,16 +112,16 @@ describe('CreatureTemplateMovement integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_movement` WHERE (`CreatureId` = 1234);\n' +
           'INSERT INTO `creature_template_movement` (`CreatureId`, `Ground`, `Swim`, `Flight`, `Rooted`, `Chase`, `Random`, `InteractionPauseTimer`) VALUES\n' +
-          '(1234, 0, 1, 3, 2, 0, 2, 0);',
+          '(1234, 0, 1, 2, 1, 0, 2, 0);',
       );
     });
 
     it('changing all properties and executing the query should correctly work', () => {
       const expectedQuery =
-        'UPDATE `creature_template_movement` SET `Flight` = 2, `Rooted` = 3, `Chase` = 4, `Random` = 5, `InteractionPauseTimer` = 6 WHERE (`CreatureId` = 1234);';
+        'UPDATE `creature_template_movement` SET `Ground` = 1, `Swim` = 0, `Flight` = 1, `Rooted` = 0, `Chase` = 1, `Random` = 1, `InteractionPauseTimer` = 6 WHERE (`CreatureId` = 1234);';
       querySpy.calls.reset();
 
-      page.changeAllFields(originalEntity, ['CreatureId']);
+      page.changeAllFields(originalEntity, ['CreatureId'], [1, 0, 1, 0, 1, 1, 1]);
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
@@ -130,12 +130,12 @@ describe('CreatureTemplateMovement integration tests', () => {
     });
 
     it('changing values should correctly update the queries', () => {
-      page.setInputValueById('Ground', '1');
+      page.setSelectValueById('Ground', 1);
       page.expectDiffQueryToContain('UPDATE `creature_template_movement` SET `Ground` = 1 WHERE (`CreatureId` = 1234);');
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_movement` WHERE (`CreatureId` = 1234);\n' +
           'INSERT INTO `creature_template_movement` (`CreatureId`, `Ground`, `Swim`, `Flight`, `Rooted`, `Chase`, `Random`, `InteractionPauseTimer`) VALUES\n' +
-          '(1234, 1, 1, 3, 2, 0, 2, 0);',
+          '(1234, 1, 1, 2, 1, 0, 2, 0);',
       );
 
       page.setInputValueById('InteractionPauseTimer', '2');
@@ -145,7 +145,7 @@ describe('CreatureTemplateMovement integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_movement` WHERE (`CreatureId` = 1234);\n' +
           'INSERT INTO `creature_template_movement` (`CreatureId`, `Ground`, `Swim`, `Flight`, `Rooted`, `Chase`, `Random`, `InteractionPauseTimer`) VALUES\n' +
-          '(1234, 1, 1, 3, 2, 0, 2, 2);\n',
+          '(1234, 1, 1, 2, 1, 0, 2, 2);\n',
       );
     });
   });
