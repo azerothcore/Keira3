@@ -1,7 +1,7 @@
 import { Option } from '@keira/shared/constants';
 
 export const CREATURE_ICON: Option[] = [
-  { value: '', name: 'None' },
+  { value: null, name: 'None' },
   { value: 'Directions', name: 'Used for guards and teleporter NPC’s.' },
   { value: 'Gunner', name: 'Indicator of a turret NPC/Player Controlled.' },
   { value: 'vehichleCursor', name: 'Indicator that this is a PCV (Player Controlled Vehicle)' },

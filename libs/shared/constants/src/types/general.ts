@@ -39,7 +39,7 @@ export interface Flag {
 }
 
 export interface Option {
-  value: number | string;
+  value: number | string | null;
   name: string;
   comment?: string;
 }
