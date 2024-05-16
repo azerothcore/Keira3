@@ -63,9 +63,9 @@
     "@angular-devkit/build-angular": "17.3.7",
     "@angular-devkit/core": "17.3.7",
     "@angular-devkit/schematics": "17.3.7",
-    "@angular-eslint/eslint-plugin": "17.4.0",
-    "@angular-eslint/eslint-plugin-template": "17.4.0",
-    "@angular-eslint/template-parser": "17.4.0",
+    "@angular-eslint/eslint-plugin": "17.4.1",
+    "@angular-eslint/eslint-plugin-template": "17.4.1",
+    "@angular-eslint/template-parser": "17.4.1",
     "@angular/animations": "17.3.8",
     "@angular/cli": "17.3.7",
     "@angular/common": "17.3.8",
@@ -78,11 +78,11 @@
     "@angular/platform-browser-dynamic": "17.3.8",
     "@angular/router": "17.3.8",
     "@fortawesome/fontawesome-free": "6.5.2",
-    "@nx/angular": "19.0.3",
-    "@nx/eslint": "19.0.3",
-    "@nx/eslint-plugin": "19.0.3",
-    "@nx/js": "19.0.3",
-    "@nx/workspace": "19.0.3",
+    "@nx/angular": "19.0.4",
+    "@nx/eslint": "19.0.4",
+    "@nx/eslint-plugin": "19.0.4",
+    "@nx/js": "19.0.4",
+    "@nx/workspace": "19.0.4",
     "@playwright/test": "1.44.0",
     "@schematics/angular": "17.3.7",
     "@siemens/ngx-datatable": "22.2.1",
@@ -124,7 +124,7 @@
     "ngx-clipboard": "16.0.0",
     "ngx-highlightjs": "10.0.0",
     "npm-run-all2": "6.1.2",
-    "nx": "19.0.3",
+    "nx": "19.0.4",
     "playwright": "1.44.0",
     "prettier": "3.2.5",
     "pretty-quick": "4.0.0",
@@ -140,10 +140,10 @@
     "zone.js": "0.14.5"
   },
   "optionalDependencies": {
-    "@nx/nx-darwin-arm64": "19.0.3",
-    "@nx/nx-darwin-x64": "19.0.3",
-    "@nx/nx-linux-x64-gnu": "19.0.3",
-    "@nx/nx-win32-x64-msvc": "19.0.3"
+    "@nx/nx-darwin-arm64": "19.0.4",
+    "@nx/nx-darwin-x64": "19.0.4",
+    "@nx/nx-linux-x64-gnu": "19.0.4",
+    "@nx/nx-win32-x64-msvc": "19.0.4"
   },
   "husky": {
     "hooks": {
