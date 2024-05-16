@@ -20,7 +20,7 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
     this.queryPo = new QueryOutputComponentPage(fixture as ComponentFixture<any>);
   }
 
-  changeAllFields<E extends TableRow>(entity: E, excludedFields: string[] = [], values: number[] = []): void {
+  changeAllFields<E extends TableRow>(entity: E, excludedFields: string[] = [], values: (string | number)[] = []): void {
     let i = 0;
     for (const field of Object.getOwnPropertyNames(entity)) {
       if (!excludedFields.includes(field)) {
@@ -46,8 +46,12 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
     this.clickElement(this.queryPo.copyBtn);
   }
 
-  setSelectValueById(inputId: string, value: number): void {
-    this.setInputValueById(inputId, `${value}: ${value}`);
+  setSelectValueById(inputId: string, value: string | number): void {
+    if (typeof value === 'string') {
+      this.setInputValueById(inputId, `${value}`);
+    } else {
+      this.setInputValueById(inputId, `${value}: ${value}`);
+    }
   }
 
   getSelectorBtn(name: string, assert = true): HTMLButtonElement {

@@ -1,18 +1,18 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CreatureTemplate } from '@keira/shared/acore-world-model';
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { CreatureTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
+import { instance, mock } from 'ts-mockito';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureTemplateComponent } from './creature-template.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import Spy = jasmine.Spy;
-import { instance, mock } from 'ts-mockito';
-import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 
 class CreatureTemplatePage extends EditorPageObject<CreatureTemplateComponent> {}
 
@@ -131,23 +131,42 @@ describe('CreatureTemplate integration tests', () => {
     });
 
     it('changing all properties and executing the query should correctly work', () => {
+      const values: (string | number)[] = [];
+      for (let i = 0; i < Object.keys(originalEntity).length; i++) {
+        values[i] = i;
+      }
+      // selectors
+      values[11] = '1: Directions'; // IconName
+      values[15] = 1; // exp
+      values[24] = 1; // rank
+      values[25] = 1; // dmgschool
+      values[31] = '0: 1'; // unit_class
+      values[35] = 1; // family
+      values[36] = 1; // trainer_type
+      values[38] = 1; // trainer_class
+      values[39] = 1; // trainer_race
+      values[40] = 1; // type
+      values[50] = 2; // MovementType
+      values[56] = 1; // RacialLeader
+      values[58] = 0; // RegenHealth
+
       const expectedQuery =
         'UPDATE `creature_template` SET `difficulty_entry_2` = 1, `difficulty_entry_3` = 2, ' +
         '`KillCredit1` = 3, `KillCredit2` = 4, `modelid1` = 5, `modelid2` = 6, `modelid3` = 7, `modelid4` = 8, ' +
-        "`name` = '9', `subname` = '10', `IconName` = '11', `gossip_menu_id` = 12, `minlevel` = 13, `maxlevel` = 14, " +
-        '`exp` = 15, `faction` = 16, `npcflag` = 17, `speed_walk` = 18, `speed_run` = 19, `speed_swim` = 20, `speed_flight` = 21, ' +
-        '`detection_range` = 22, `scale` = 23, `rank` = 24, ' +
-        '`dmgschool` = 25, `DamageModifier` = 26, `BaseAttackTime` = 27, `RangeAttackTime` = 28, `BaseVariance` = 29, ' +
-        '`RangeVariance` = 30, `unit_class` = 31, `unit_flags` = 32, `unit_flags2` = 33, `dynamicflags` = 34, `family` = 35, ' +
-        '`trainer_type` = 36, `trainer_spell` = 37, `trainer_class` = 38, `trainer_race` = 39, `type` = 40, `type_flags` = 41, ' +
+        "`name` = '9', `subname` = '10', `IconName` = 'Directions', `gossip_menu_id` = 12, `minlevel` = 13, `maxlevel` = 14, " +
+        '`exp` = 1, `faction` = 16, `npcflag` = 17, `speed_walk` = 18, `speed_run` = 19, `speed_swim` = 20, `speed_flight` = 21, ' +
+        '`detection_range` = 22, `scale` = 23, `rank` = 1, ' +
+        '`dmgschool` = 1, `DamageModifier` = 26, `BaseAttackTime` = 27, `RangeAttackTime` = 28, `BaseVariance` = 29, ' +
+        '`RangeVariance` = 30, `unit_class` = 1, `unit_flags` = 32, `unit_flags2` = 33, `dynamicflags` = 34, `family` = 1, ' +
+        '`trainer_type` = 1, `trainer_spell` = 37, `trainer_class` = 1, `trainer_race` = 1, `type` = 1, `type_flags` = 41, ' +
         '`lootid` = 42, `pickpocketloot` = 43, `skinloot` = 44, `PetSpellDataId` = 45, `VehicleId` = 46, ' +
-        "`mingold` = 47, `maxgold` = 48, `AIName` = '49', `MovementType` = 50, `HoverHeight` = 51, " +
-        '`HealthModifier` = 52, `ManaModifier` = 53, `ArmorModifier` = 54, `ExperienceModifier` = 55, `RacialLeader` = 56, `movementId` = 57, `RegenHealth` = 58, ' +
+        "`mingold` = 47, `maxgold` = 48, `AIName` = '49', `MovementType` = 2, `HoverHeight` = 51, " +
+        '`HealthModifier` = 52, `ManaModifier` = 53, `ArmorModifier` = 54, `ExperienceModifier` = 55, `RacialLeader` = 1, `movementId` = 57, `RegenHealth` = 0, ' +
         "`mechanic_immune_mask` = 59, `spell_school_immune_mask` = 60, `flags_extra` = 61, `ScriptName` = '62' WHERE (`entry` = 1234);";
 
       querySpy.calls.reset();
 
-      page.changeAllFields(originalEntity, ['VerifiedBuild']);
+      page.changeAllFields(originalEntity, ['VerifiedBuild'], values);
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
