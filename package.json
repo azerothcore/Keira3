@@ -123,7 +123,7 @@
     "ngx-bootstrap": "12.0.0",
     "ngx-clipboard": "16.0.0",
     "ngx-highlightjs": "10.0.0",
-    "npm-run-all2": "6.1.2",
+    "npm-run-all2": "6.2.0",
     "nx": "19.0.4",
     "playwright": "1.44.0",
     "prettier": "3.2.5",
