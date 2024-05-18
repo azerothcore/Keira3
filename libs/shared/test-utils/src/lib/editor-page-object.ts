@@ -47,10 +47,19 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
   }
 
   setSelectValueById(inputId: string, value: string | number): void {
+    /*
+     * the <select> value is always "index: value"
+     * index is the position index of the <option> tag
+     * value is the option value (ngValue)
+     *
+     * usually, the index matches the ngValue if the value is an auto-increment number
+     * otherwise, it could not match and in the tests, we specify the full select value as "index: value" and not only "x"
+     */
+
     if (typeof value === 'string') {
-      this.setInputValueById(inputId, `${value}`);
+      this.setInputValueById(inputId, `${value}`); // value = "index: value"
     } else {
-      this.setInputValueById(inputId, `${value}: ${value}`);
+      this.setInputValueById(inputId, `${value}: ${value}`); // the value is a number that matches the index
     }
   }
 
