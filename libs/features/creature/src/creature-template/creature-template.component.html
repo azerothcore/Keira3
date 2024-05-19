@@ -29,19 +29,17 @@
               <input [formControlName]="'subname'" id="subname" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-              <label class="control-label" for="IconName"
-                ><img
+              <label class="control-label" for="IconName">
+                <keira-icon-selector
                   [src]="'assets/img/creature-icons/' + editorService.form.controls.IconName.value + '.png'"
-                  width="16"
-                  onerror="this.src='https://wow.zamimg.com/images/wow/icons/small/inv_misc_questionmark.jpg'"
-                />
+                ></keira-icon-selector>
                 IconName</label
               >
-              <select [formControlName]="'IconName'" id="IconName" class="form-control form-control-sm">
-                @for (option of CREATURE_ICON; track option) {
-                  <option [ngValue]="option.value" [label]="option.value + ' - ' + option.name"></option>
-                }
-              </select>
+              <keira-generic-option-selector
+                [control]="editorService.form.controls.IconName"
+                controlName="IconName"
+                [optionList]="CREATURE_ICON"
+              ></keira-generic-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="minlevel">minlevel</label>
@@ -55,11 +53,11 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="exp">expansion</label>
-              <select [formControlName]="'exp'" id="exp" class="form-control form-control-sm">
-                @for (option of EXPANSION; track option) {
-                  <option [ngValue]="option.value" [label]="option.value + ' - ' + option.name"></option>
-                }
-              </select>
+              <keira-generic-option-selector
+                [control]="editorService.form.controls.exp"
+                controlName="exp"
+                [optionList]="EXPANSION"
+              ></keira-generic-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="faction">faction</label>
@@ -82,27 +80,27 @@
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="rank">rank</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.RANK' | translate"></i>
-              <select [formControlName]="'rank'" id="rank" class="form-control form-control-sm">
-                @for (option of RANK; track option) {
-                  <option [ngValue]="option.value" [label]="option.value + ' - ' + option.name"></option>
-                }
-              </select>
+              <keira-generic-option-selector
+                [control]="editorService.form.controls.rank"
+                controlName="rank"
+                [optionList]="RANK"
+              ></keira-generic-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="family">family</label>
-              <select [formControlName]="'family'" id="family" class="form-control form-control-sm">
-                @for (option of CREATURE_FAMILY; track option) {
-                  <option [ngValue]="option.value" [label]="option.value + ' - ' + option.name"></option>
-                }
-              </select>
+              <keira-generic-option-selector
+                [control]="editorService.form.controls.family"
+                controlName="family"
+                [optionList]="CREATURE_FAMILY"
+              ></keira-generic-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="type">type</label>
-              <select [formControlName]="'type'" id="type" class="form-control form-control-sm">
-                @for (option of CREATURE_TYPE; track option) {
-                  <option [ngValue]="option.value" [label]="option.value + ' - ' + option.name"></option>
-                }
-              </select>
+              <keira-generic-option-selector
+                [control]="editorService.form.controls.type"
+                controlName="type"
+                [optionList]="CREATURE_TYPE"
+              ></keira-generic-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="type_flags">type_flags</label>
@@ -115,11 +113,11 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="unit_class">unit_class</label>
-              <select [formControlName]="'unit_class'" id="unit_class" class="form-control form-control-sm">
-                @for (option of UNIT_CLASS; track option) {
-                  <option [ngValue]="option.value" [label]="option.value + ' - ' + option.name"></option>
-                }
-              </select>
+              <keira-generic-option-selector
+                [control]="editorService.form.controls.unit_class"
+                controlName="unit_class"
+                [optionList]="UNIT_CLASS"
+              ></keira-generic-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="unit_flags">unit_flags</label>
@@ -151,10 +149,10 @@
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="RegenHealth">RegenHealth</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.REGEN_HEALTH' | translate"></i>
-              <select [formControlName]="'RegenHealth'" id="RegenHealth" class="form-control form-control-sm">
-                <option [ngValue]="0">Disabled</option>
-                <option [ngValue]="1">Enabled</option>
-              </select>
+              <keira-boolean-option-selector
+                [control]="editorService.form.controls.RegenHealth"
+                controlName="RegenHealth"
+              ></keira-boolean-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="mechanic_immune_mask">mechanic_I_M</label>
@@ -201,10 +199,10 @@
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="RacialLeader">RacialLeader</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.RACIAL_LEADER' | translate"></i>
-              <select [formControlName]="'RacialLeader'" id="RacialLeader" class="form-control form-control-sm">
-                <option [ngValue]="0">Disabled</option>
-                <option [ngValue]="1">Enabled</option>
-              </select>
+              <keira-boolean-option-selector
+                [control]="editorService.form.controls.RacialLeader"
+                controlName="RacialLeader"
+              ></keira-boolean-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="PetSpellDataId">PetSpellDataId</label>
@@ -275,11 +273,11 @@
               <div class="row">
                 <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
                   <label class="control-label" for="trainer_type">trainer_type</label>
-                  <select [formControlName]="'trainer_type'" id="trainer_type" class="form-control form-control-sm">
-                    @for (option of TRAINER_TYPE; track option) {
-                      <option [ngValue]="option.value" [label]="option.value + ' - ' + option.name"></option>
-                    }
-                  </select>
+                  <keira-generic-option-selector
+                    [control]="editorService.form.controls.trainer_type"
+                    controlName="trainer_type"
+                    [optionList]="TRAINER_TYPE"
+                  ></keira-generic-option-selector>
                 </div>
                 <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
                   <label class="control-label" for="trainer_spell">trainer_spell</label>
@@ -294,28 +292,24 @@
                 </div>
                 <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
                   <label class="control-label" for="trainer_class">
-                    <img
+                    <keira-icon-selector
                       [src]="'assets/img/class/' + editorService.form.controls.trainer_class.value + '.gif'"
-                      width="16"
-                      onerror="this.src='https://wow.zamimg.com/images/wow/icons/small/inv_misc_questionmark.jpg'"
-                    />
+                    ></keira-icon-selector>
                     trainer_class</label
                   >
-                  <select [formControlName]="'trainer_class'" id="trainer_class" class="form-control form-control-sm">
-                    @for (option of CREATURE_CLASS; track option) {
-                      <option [ngValue]="option.value" [label]="option.value + ' - ' + option.name"></option>
-                    }
-                  </select>
+                  <keira-generic-option-selector
+                    [control]="editorService.form.controls.trainer_class"
+                    controlName="trainer_class"
+                    [optionList]="CREATURE_CLASS"
+                  ></keira-generic-option-selector>
                 </div>
                 <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
                   <label class="control-label" for="trainer_race">
-                    <img
+                    <keira-icon-selector
                       [src]="
                         'assets/img/race/' + editorService.form.controls.trainer_race.value + '-' + (RACE_ICON_GENDER ? 1 : 0) + '.gif'
                       "
-                      width="16"
-                      onerror="this.src='https://wow.zamimg.com/images/wow/icons/small/inv_misc_questionmark.jpg'"
-                    />
+                    ></keira-icon-selector>
                     trainer_race</label
                   >
                   <select
@@ -422,11 +416,11 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
               <label class="control-label" for="dmgschool">dmgschool</label>
-              <select [formControlName]="'dmgschool'" id="dmgschool" class="form-control form-control-sm">
-                @for (option of DAMAGE_TYPE; track option) {
-                  <option [ngValue]="option.value" [label]="option.value + ' - ' + option.name"></option>
-                }
-              </select>
+              <keira-generic-option-selector
+                [control]="editorService.form.controls.dmgschool"
+                controlName="dmgschool"
+                [optionList]="DAMAGE_TYPE"
+              ></keira-generic-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
               <label class="control-label" for="BaseAttackTime">BaseAttackTime</label>
@@ -465,11 +459,11 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="MovementType">MovementType</label>
-              <select [formControlName]="'MovementType'" id="MovementType" class="form-control form-control-sm">
-                @for (option of MOVEMENT_TYPE; track option) {
-                  <option [ngValue]="option.value" [label]="option.value + ' - ' + option.name"></option>
-                }
-              </select>
+              <keira-generic-option-selector
+                [control]="editorService.form.controls.MovementType"
+                controlName="MovementType"
+                [optionList]="MOVEMENT_TYPE"
+              ></keira-generic-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="movementId">movementId</label>

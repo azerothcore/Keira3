@@ -27,9 +27,12 @@ import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { Model3DViewerComponent, VIEWER_TYPE } from '@keira/shared/model-3d-viewer';
 import {
+  BooleanOptionSelectorComponent,
   CreatureSelectorBtnComponent,
   FactionSelectorBtnComponent,
   FlagsSelectorBtnComponent,
+  GenericOptionSelectorComponent,
+  IconSelectorComponent,
   SingleValueSelectorBtnComponent,
   SpellSelectorBtnComponent,
 } from '@keira/shared/selectors';
@@ -57,6 +60,9 @@ import { CreatureTemplateService } from './creature-template.service';
     SpellSelectorBtnComponent,
     CreatureSelectorBtnComponent,
     Model3DViewerComponent,
+    GenericOptionSelectorComponent,
+    BooleanOptionSelectorComponent,
+    IconSelectorComponent,
   ],
 })
 export class CreatureTemplateComponent extends SingleRowEditorComponent<CreatureTemplate> {
