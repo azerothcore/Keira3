@@ -22,7 +22,7 @@ export class MysqlQueryService extends BaseQueryService {
   }
 
   clearCache(): void {
-    this.cache = {};
+    this.cache.clear();
   }
 
   query<T extends TableRow>(queryString: string, values?: string[]): Observable<T[]> {
@@ -33,8 +33,8 @@ export class MysqlQueryService extends BaseQueryService {
           console.log(val);
         }
       }),
-      map((val) => val?.results),
-    );
+      map((val) => val?.result),
+    ) as Observable<T[]>;
   }
 
   selectAll<T extends TableRow>(table: string, idField: string, idValue: string | number): Observable<T[]> {
@@ -60,7 +60,7 @@ export class MysqlQueryService extends BaseQueryService {
     tableName: string, // the name of the table (example: 'creature_template')
     currentRow: T, // object of the original row
     newRow: T, // object of the new row
-  ): Update {
+  ): Update | undefined {
     let diff = false;
     const query = squel.update(squelConfig).table(tableName);
 
@@ -71,7 +71,7 @@ export class MysqlQueryService extends BaseQueryService {
       }
     }
 
-    return diff ? query : null;
+    return diff ? query : undefined;
   }
 
   // Tracks difference between two row objects and generate UPDATE query
@@ -91,13 +91,14 @@ export class MysqlQueryService extends BaseQueryService {
     return `${query.toString()};`;
   }
 
-  private getRow<T extends TableRow>(key: string, object: T, array: T[]): T {
+  private getRow<T extends TableRow>(key: string, object: T, array: T[]): T | undefined {
     for (let i = 0; i < array.length; i++) {
       if (array[i][key] === object[key]) {
         return array[i];
       }
     }
-    return null;
+
+    return undefined;
   }
 
   private findEditedAndDeletedRows<T extends TableRow>(
@@ -154,10 +155,10 @@ export class MysqlQueryService extends BaseQueryService {
   // Tracks difference between two groups of rows (with TWO keys) and generate DELETE/INSERT query
   getDiffDeleteInsertTwoKeysQuery<T extends TableRow>(
     tableName: string, // the name of the table (example: 'creature_loot_template')
-    primaryKey1: string | string[], // first  primary key (example: 'Entry' or ['source_type', 'entryorguid'])
+    primaryKey1: string | string[] | undefined, // first  primary key (example: 'Entry' or ['source_type', 'entryorguid'])
     primaryKey2: string, // second primary key (example: 'Item')
-    currentRows: T[], // object of the original rows
-    newRows: T[], // array of the new rows
+    currentRows: T[] | undefined, // object of the original rows
+    newRows: T[] | undefined, // array of the new rows
   ): string {
     if (!newRows || !currentRows) {
       return '';
@@ -207,8 +208,8 @@ export class MysqlQueryService extends BaseQueryService {
   getDiffDeleteInsertOneKeyQuery<T extends TableRow>(
     tableName: string, // the name of the table (example: 'creature_addon')
     primaryKey: string, // name of the primary key (example: 'guid')
-    currentRows: T[], // object of the original rows
-    newRows: T[], // array of the new rows
+    currentRows: T[] | undefined, // object of the original rows
+    newRows: T[] | undefined, // array of the new rows
   ): string {
     if (!newRows || !currentRows) {
       return '';
@@ -236,9 +237,9 @@ export class MysqlQueryService extends BaseQueryService {
   // Generates the full DELETE/INSERT query of a group of rows using one or two keys
   getFullDeleteInsertQuery<T extends TableRow>(
     tableName: string, // the name of the table (example: 'creature_loot_template')
-    rows: T[], // array of the new rows
-    primaryKey: string = null, // first primary key (example: 'Entry'), it will be used to generate the DELETE statement for ALL rows
-    primaryKey2: string = null, // the second primary key, it will be used to generate the DELETE statement for SPECIFIC rows
+    rows: T[] | undefined, // array of the new rows
+    primaryKey: string | null = null, // first primary key (example: 'Entry'), it will be used to generate the DELETE statement for ALL rows
+    primaryKey2: string | null = null, // the second primary key, it will be used to generate the DELETE statement for SPECIFIC rows
     grouped: boolean = false, // whether the primaryKey2 is different for each row (e.g. primaryKey2='Item' in `creature_loot_template`)
     // or is the same for all rows (e.g. primaryKey='entryorguid', primaryKey2='source_type' in `smart_scripts`)
   ) {
@@ -288,7 +289,7 @@ export class MysqlQueryService extends BaseQueryService {
     newRow: T, // the original row, it MUST contain ALL the primaryKeys
     primaryKeys: string[], // array of the primary keys
   ) {
-    const updateQuery: Update = this.getUpdateQueryBase(tableName, currentRow, newRow);
+    const updateQuery = this.getUpdateQueryBase(tableName, currentRow, newRow);
     if (!updateQuery) {
       return '';
     }
@@ -393,7 +394,7 @@ export class MysqlQueryService extends BaseQueryService {
     return this.queryValueToPromiseCached('getItemNameById', String(id), `SELECT name AS v FROM item_template WHERE entry = ${id}`);
   }
 
-  getDisplayIdByItemId(id: string | number): Observable<string | number> {
+  getDisplayIdByItemId(id: string | number | undefined): Observable<string | number | undefined> {
     return !!id
       ? from(
           this.queryValueToPromiseCached(
@@ -402,7 +403,7 @@ export class MysqlQueryService extends BaseQueryService {
             `SELECT displayid AS v FROM item_template WHERE entry = ${id}`,
           ),
         )
-      : of(null);
+      : of(undefined);
   }
 
   // Note: at least one param should be defined
@@ -431,7 +432,7 @@ export class MysqlQueryService extends BaseQueryService {
       query.where(`RequiredSpellCast1 = ${requiredSpellCast1}`);
     }
 
-    return this.queryValueToPromise(query.toString());
+    return this.queryValueToPromise(query.toString()) as Promise<string>;
   }
 
   getReputationRewardByFaction(id: string | number): Promise<QuestReputationReward[]> {

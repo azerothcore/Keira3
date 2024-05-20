@@ -10,8 +10,8 @@ import { ConfigService } from '@keira/shared/common-services';
   providedIn: 'root',
 })
 export class SqliteQueryService extends BaseQueryService {
-  private itemDisplayIdCache: Observable<string>[] = [];
-  private spellDisplayIdCache: Observable<string>[] = [];
+  private itemDisplayIdCache: Observable<string | null>[] = [];
+  private spellDisplayIdCache: Observable<string | null>[] = [];
 
   constructor(
     private readonly sqliteService: SqliteService,
@@ -32,7 +32,7 @@ export class SqliteQueryService extends BaseQueryService {
     );
   }
 
-  getIconByItemDisplayId(displayId: string | number): Observable<string> {
+  getIconByItemDisplayId(displayId: string | number): Observable<string | null> {
     displayId = Number(displayId);
 
     if (!this.itemDisplayIdCache[displayId]) {
@@ -48,7 +48,7 @@ export class SqliteQueryService extends BaseQueryService {
     return this.queryValueToPromiseCached('getSpellNameById', String(spellId), `SELECT spellName AS v FROM spells WHERE id = ${spellId}`);
   }
 
-  getIconBySpellDisplayId(displayId: string | number): Observable<string> {
+  getIconBySpellDisplayId(displayId: string | number): Observable<string | null> {
     displayId = Number(displayId);
 
     if (!this.spellDisplayIdCache[displayId]) {
@@ -60,10 +60,10 @@ export class SqliteQueryService extends BaseQueryService {
     return this.spellDisplayIdCache[displayId];
   }
 
-  getDisplayIdBySpellId(id: string | number): Observable<string | number> {
+  getDisplayIdBySpellId(id: string | number | undefined): Observable<string | number | undefined> {
     return !!id
       ? from(this.queryValueToPromiseCached('getDisplayIdBySpellId', String(id), `SELECT spellIconID AS v FROM spells WHERE ID = ${id}`))
-      : of(null);
+      : of(undefined);
   }
 
   getSkillNameById(skillId: string | number): Promise<string> {
