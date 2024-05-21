@@ -23,8 +23,8 @@ class ReferenceViewerComponentPage extends PageObject<TestHostComponent> {
   imports: [ReferenceViewerComponent],
 })
 class TestHostComponent {
-  @ViewChild(ReferenceViewerComponent) child: ReferenceViewerComponent;
-  referenceId: number;
+  @ViewChild(ReferenceViewerComponent) child!: ReferenceViewerComponent;
+  referenceId!: number;
 }
 
 describe('ReferenceViewerComponent', () => {
