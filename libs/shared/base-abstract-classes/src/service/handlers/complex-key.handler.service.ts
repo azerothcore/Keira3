@@ -6,7 +6,7 @@ export abstract class ComplexKeyHandlerService<T extends TableRow> extends Handl
   protected abstract readonly idFields: string[];
 
   /* istanbul ignore next */ // TODO: fix coverage
-  select(isNew: boolean, id: Partial<T>, name = null, navigate = true) {
+  override select(isNew: boolean, id: Partial<T>, name = undefined, navigate = true) {
     super.select(isNew, this.getIdObject(id), name, navigate);
   }
 

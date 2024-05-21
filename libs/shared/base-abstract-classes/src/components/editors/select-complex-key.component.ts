@@ -14,7 +14,7 @@ export abstract class SelectComplexKeyComponent<T extends TableRow> {
 
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
-  onSelect(event) {
+  onSelect(event: { selected: Array<Partial<T>> }) {
     this.handlerService.select(false, event.selected[0]);
   }
 

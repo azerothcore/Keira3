@@ -31,7 +31,7 @@ describe('MultiRowComplexKeyEditorService', () => {
   });
 
   it('get entityIdFields() should correcty work', () => {
-    expect(service.entityIdFields).toEqual(JSON.parse(service['_entityIdField']));
+    expect(service.entityIdFields).toEqual(JSON.parse(service['_entityIdField'] as string));
   });
 
   it('updateDiffQuery should correctly work', () => {
@@ -52,8 +52,8 @@ describe('MultiRowComplexKeyEditorService', () => {
 
     service['addIdToNewRow'](newRow);
 
-    expect(newRow.id).toEqual(mockKeyObj.id);
-    expect(newRow.guid).toEqual(mockKeyObj.guid);
+    expect(newRow.id).toEqual(mockKeyObj.id as number);
+    expect(newRow.guid).toEqual(mockKeyObj.guid as number);
   });
 
   it('reload should correctly work', () => {
@@ -87,7 +87,7 @@ describe('MultiRowComplexKeyEditorService', () => {
     service['reloadEntity'](mockChangeDetectorRef);
 
     expect(selectQuerySpy).toHaveBeenCalled();
-    expect(service.error).toBe(null);
+    expect(service.error).toBe(undefined as any);
     expect(service.loading).toBe(false);
 
     selectQuerySpy.and.returnValue(throwError(error));
@@ -117,7 +117,7 @@ describe('MultiRowComplexKeyEditorService', () => {
 
     expect(service.newRows).toEqual(res);
     expect(service['_newRows']).toEqual([...res]);
-    expect(service['_selectedRowId']).toBe(null);
+    expect(service['_selectedRowId']).toBe(undefined);
     expect(disableFormSpy).toHaveBeenCalledTimes(1);
     expect(service['_loadedEntityId']).toEqual(handlerService.selected);
     expect(service['_nextRowId']).toBe(0);

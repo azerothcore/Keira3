@@ -5,22 +5,22 @@ import { HandlerService } from '../handlers/handler.service';
 import { EditorService } from './editor.service';
 
 export abstract class SingleRowEditorService<T extends TableRow> extends EditorService<T> {
-  protected _originalValue: T;
+  protected _originalValue!: T;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected _entityClass: Class,
-    protected _entityTable: string,
-    protected _entityIdField: string,
+  protected constructor(
+    protected override _entityClass: Class,
+    protected override _entityTable: string,
+    protected override _entityIdField: string,
     protected _entityNameField: string,
     protected isMainEntity: boolean,
-    protected handlerService: HandlerService<T>,
+    protected override handlerService: HandlerService<T>,
   ) {
     super(_entityClass, _entityTable, _entityIdField, handlerService);
     this.initForm();
   }
 
-  protected initForm() {
+  protected override initForm() {
     super.initForm();
 
     this.subscriptions.push(
