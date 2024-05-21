@@ -8,14 +8,14 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   protected FIRST_ROW_START_VALUE = 0;
   protected _originalRows: T[] = [];
   protected _newRows: T[] = [];
-  protected _selectedRowId: string | number;
+  protected _selectedRowId: string | number | undefined;
   protected _nextRowId = this.FIRST_ROW_START_VALUE;
   protected _errors: string[] = [];
 
   get newRows(): T[] {
     return this._newRows;
   }
-  get selectedRowId(): string | number {
+  get selectedRowId(): string | number | undefined {
     return this._selectedRowId;
   }
   hasSelectedRow(): boolean {
@@ -32,11 +32,11 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   protected constructor(
-    protected _entityClass: Class,
-    protected _entityTable: string,
-    protected _entityIdField: string,
-    protected _entitySecondIdField: string,
-    protected handlerService: HandlerService<T>,
+    protected override readonly _entityClass: Class,
+    protected override readonly _entityTable: string,
+    protected override readonly _entityIdField: string | undefined,
+    protected readonly _entitySecondIdField: string,
+    protected override readonly handlerService: HandlerService<T>,
   ) {
     super(_entityClass, _entityTable, _entityIdField, handlerService);
     this.initForm();
@@ -54,14 +54,14 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   }
 
   private getSelectedRowIndex(): number {
-    return this.getRowIndex(this._selectedRowId);
+    return this.getRowIndex(this._selectedRowId as number);
   }
 
   private getSelectedRow(): T {
     return this._newRows[this.getSelectedRowIndex()];
   }
 
-  protected initForm(): void {
+  protected override initForm(): void {
     super.initForm();
 
     this.subscriptions.push(
@@ -97,7 +97,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
       this._newRows.push({ ...row });
     }
     this._newRows = [...this._newRows];
-    this._selectedRowId = null;
+    this._selectedRowId = undefined;
     this._form.disable();
     this._nextRowId = this.FIRST_ROW_START_VALUE;
   }
@@ -175,14 +175,14 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   }
 
   deleteSelectedRow(): void {
-    if (this._selectedRowId === null) {
+    if (this._selectedRowId === null || this._selectedRowId === undefined) {
       return;
     }
 
     this._newRows.splice(this.getSelectedRowIndex(), 1);
     this._newRows = [...this._newRows];
 
-    this._selectedRowId = null;
+    this._selectedRowId = undefined;
     this._form.reset();
     this._form.disable();
 

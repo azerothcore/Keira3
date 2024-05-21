@@ -6,8 +6,8 @@ import { inject } from '@angular/core';
 export abstract class HandlerService<T extends TableRow> extends SubscriptionHandler {
   protected readonly router = inject(Router);
 
-  protected _selected: string;
-  selectedName: string;
+  protected _selected!: string;
+  selectedName!: string;
   isNew = false;
 
   protected abstract _statusMap: { [key: string]: boolean };
@@ -49,7 +49,7 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
       this._selected = `${id}`;
     }
 
-    this.selectedName = name;
+    this.selectedName = name as string;
 
     if (navigate) {
       this.router.navigate([this.mainEditorRoutePath]);

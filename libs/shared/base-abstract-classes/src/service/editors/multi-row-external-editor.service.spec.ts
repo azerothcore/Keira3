@@ -37,7 +37,7 @@ describe('MultiRowExternalEditorService', () => {
     expect(getQuerySpy).toHaveBeenCalledTimes(1);
     expect(getQuerySpy).toHaveBeenCalledWith(
       service.entityTable,
-      null,
+      undefined,
       service.entitySecondIdField,
       service['_originalRows'],
       service.newRows,

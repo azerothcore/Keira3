@@ -28,7 +28,7 @@ describe('SelectService', () => {
     const service = TestBed.inject(SelectMockService);
     const spy = spyOn(TestBed.inject(MockHandlerService), 'select');
     const selected = [{ [service['entityIdField']]: 'myId', [service['entityNameField']]: 'myName' }];
-    service['entityNameField'] = null;
+    service['entityNameField'] = undefined as any;
 
     service.onSelect({ selected });
 
