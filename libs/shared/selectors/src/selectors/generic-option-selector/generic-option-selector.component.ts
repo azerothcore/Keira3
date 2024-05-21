@@ -1,16 +1,16 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Option } from '@keira/shared/constants';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-generic-option-selector',
   templateUrl: './generic-option-selector.component.html',
-  imports: [FormsModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   standalone: true,
 })
 export class GenericOptionSelectorComponent {
-  control = input.required<FormControl>();
-  controlName = input.required<string>();
-  optionList = input.required<Option[]>();
+  @Input({ required: true }) control: FormControl;
+  @Input({ required: true }) controlName: string;
+  @Input({ required: true }) optionList: Option[];
 }
