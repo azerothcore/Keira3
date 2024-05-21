@@ -9,7 +9,7 @@ import { SqliteQueryService } from '@keira/shared/db-layer';
 })
 export class AreaSearchService extends SearchService<Area> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected queryService: SqliteQueryService) {
+  constructor(protected override queryService: SqliteQueryService) {
     super(queryService, AREA_TABLE, AREA_SEARCH_FIELDS);
   }
 }

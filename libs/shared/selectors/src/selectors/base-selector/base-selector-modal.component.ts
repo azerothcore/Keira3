@@ -5,8 +5,8 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 
 export abstract class BaseSelectorModalComponent<ModalConfigType extends BaseModalConfig = BaseModalConfig> {
   // will be injected by the component that creates the modal
-  public value: string | number;
-  public config: ModalConfigType;
+  public value!: string | number;
+  public config!: ModalConfigType;
 
   public onValueSelected = new Subject<string | number>();
 
