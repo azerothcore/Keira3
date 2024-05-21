@@ -4,10 +4,7 @@ import { Subscriber } from 'rxjs';
 import { instance, mock, reset } from 'ts-mockito';
 import { ElectronService } from '@keira/shared/common-services';
 import { MysqlService } from './mysql.service';
-import { ChangeDetectorRef } from '@angular/core';
 import Spy = jasmine.Spy;
-
-export const mockChangeDetectorRef = { markForCheck: jasmine.createSpy() } as unknown as ChangeDetectorRef;
 
 class MockMySql {
   createConnection() {}
@@ -42,8 +39,7 @@ describe('MysqlService', () => {
     (service as any)._connection = null;
     expect(service.getConnectionState()).toBe('EMPTY');
 
-    const connection: Partial<Connection> = {};
-    (service as any)._connection = connection;
+    (service as any)._connection = {};
     expect(service.getConnectionState()).toBe('CONNECTED');
   });
 
@@ -69,7 +65,7 @@ describe('MysqlService', () => {
     it('should properly work', waitForAsync(() => {
       (service as any).mysql = new MockMySql();
       const mockConnection = new MockConnection();
-      service['_connection'] = mockConnection as undefined as Connection;
+      service['_connection'] = mockConnection as unknown as Connection;
       const querySpy = spyOn(mockConnection, 'query');
       const queryStr = '--some mock query';
 
@@ -84,7 +80,7 @@ describe('MysqlService', () => {
 
     it('should give error if _connection is not defined', waitForAsync(() => {
       (service as any).mysql = new MockMySql();
-      service['_connection'] = undefined;
+      service['_connection'] = undefined as any;
       spyOn(console, 'error');
       const queryStr = '--some mock query';
 
@@ -116,7 +112,7 @@ describe('MysqlService', () => {
     let errorSpy: Spy;
     let nextSpy: Spy;
     let completeSpy: Spy;
-    let callback: (err?: QueryError, results?: any, fields?: any) => void;
+    let callback: (err?: QueryError, result?: any, fields?: any) => void;
 
     const error = { code: 'some error', errno: 1234 } as QueryError;
 
@@ -129,7 +125,7 @@ describe('MysqlService', () => {
 
     describe('connect', () => {
       beforeEach(() => {
-        callback = service['getConnectCallback'](subscriber);
+        callback = service['getConnectCallback'](subscriber) as any;
       });
 
       it('should correctly work', () => {
@@ -159,24 +155,24 @@ describe('MysqlService', () => {
     });
 
     describe('query', () => {
-      const results = 'some mock result';
+      const result = 'some mock result';
       const fields = 'some mock fields';
 
       beforeEach(() => {
-        callback = service['getQueryCallback'](subscriber);
+        callback = service['getQueryCallback'](subscriber) as any;
       });
 
       it('should correctly work', () => {
-        callback(null, results, fields);
+        callback(undefined, result, fields);
 
         expect(errorSpy).toHaveBeenCalledTimes(0);
         expect(nextSpy).toHaveBeenCalledTimes(1);
-        expect(nextSpy).toHaveBeenCalledWith({ results, fields });
+        expect(nextSpy).toHaveBeenCalledWith({ result, fields });
         expect(completeSpy).toHaveBeenCalledTimes(1);
       });
 
       it('should correctly handle errors', () => {
-        callback(error, results, fields);
+        callback(error, result, fields);
 
         expect(errorSpy).toHaveBeenCalledTimes(1);
         expect(errorSpy).toHaveBeenCalledWith(error);
