@@ -16,15 +16,15 @@ import { QueryError } from 'mysql2';
   imports: [TranslateModule, FormsModule],
 })
 export class CreateComponent<T extends TableRow> extends SubscriptionHandler implements OnInit {
-  @Input() entityTable: string;
-  @Input() entityIdField: string;
-  @Input() customStartingId: number;
-  @Input() handlerService: HandlerService<T>;
-  @Input() queryService: MysqlQueryService;
+  @Input({ required: true }) entityTable!: string;
+  @Input({ required: true }) entityIdField!: string;
+  @Input({ required: true }) customStartingId!: number;
+  @Input({ required: true }) handlerService!: HandlerService<T>;
+  @Input({ required: true }) queryService!: MysqlQueryService;
 
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
-  public idModel: number;
+  public idModel!: number;
   private _loading = false;
   isIdFree = false;
 
@@ -74,7 +74,7 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
     );
   }
 
-  private calculateNextId(currentMax) {
+  private calculateNextId(currentMax: number): number {
     return currentMax < this.customStartingId ? this.customStartingId : currentMax + 1;
   }
 }

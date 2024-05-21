@@ -17,12 +17,12 @@ import Spy = jasmine.Spy;
   imports: [IconComponent],
 })
 class TestHostComponent {
-  @ViewChild(IconComponent) child: IconComponent;
-  size: string;
-  itemId: string;
-  itemDisplayId: string;
-  skillId: string;
-  spellId: string;
+  @ViewChild(IconComponent) child!: IconComponent;
+  size!: 'small' | 'medium' | 'large';
+  itemId!: string;
+  itemDisplayId!: string;
+  skillId!: string;
+  spellId!: string;
 }
 
 class IconComponentPage extends PageObject<TestHostComponent> {

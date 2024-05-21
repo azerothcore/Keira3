@@ -29,8 +29,9 @@ export class IconComponent extends SubscriptionHandler {
     }
   }
   @Input() set skillId(skillId: string | number) {
-    if (!!skillId && !!ICON_SKILLS[skillId]) {
-      this.setIcon(ICON_SKILLS[skillId]);
+    const index = skillId as keyof typeof ICON_SKILLS;
+    if (!!skillId && !!ICON_SKILLS[index]) {
+      this.setIcon(ICON_SKILLS[index]);
     }
   }
   @Input() set spellId(spellId: string | number) {
