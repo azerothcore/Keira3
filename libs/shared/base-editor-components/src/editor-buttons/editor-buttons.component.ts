@@ -13,5 +13,5 @@ import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
   imports: [TranslateModule],
 })
 export class EditorButtonsComponent<T extends TableRow> {
-  @Input() editorService: MultiRowEditorService<T>;
+  @Input({ required: true }) editorService!: MultiRowEditorService<T>;
 }

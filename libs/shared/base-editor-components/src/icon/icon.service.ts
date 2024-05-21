@@ -15,18 +15,20 @@ export class IconService {
   ) {}
 
   getIconByItemDisplayId(displayId: string | number): Observable<string> {
-    return this.sqliteQueryService.getIconByItemDisplayId(displayId).pipe(map((icon) => icon?.replace('.tga', '')));
+    return this.sqliteQueryService.getIconByItemDisplayId(displayId).pipe(map((icon) => icon?.replace('.tga', ''))) as Observable<string>;
   }
 
   getIconByItemId(itemId: string | number): Observable<string> {
     return this.mysqlQueryService
       .getDisplayIdByItemId(itemId)
-      .pipe(mergeMap((displayId) => (!!displayId ? this.getIconByItemDisplayId(displayId) : of(null))));
+      .pipe(mergeMap((displayId) => (!!displayId ? this.getIconByItemDisplayId(displayId) : of(null)))) as Observable<string>;
   }
 
   getIconBySpellId(spellId: string | number): Observable<string> {
     return this.sqliteQueryService
       .getDisplayIdBySpellId(spellId)
-      .pipe(mergeMap((displayId) => this.sqliteQueryService.getIconBySpellDisplayId(!!displayId ? displayId : TRADE_ENGINEERING_ICON_ID)));
+      .pipe(
+        mergeMap((displayId) => this.sqliteQueryService.getIconBySpellDisplayId(!!displayId ? displayId : TRADE_ENGINEERING_ICON_ID)),
+      ) as Observable<string>;
   }
 }

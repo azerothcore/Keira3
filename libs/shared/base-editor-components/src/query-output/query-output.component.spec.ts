@@ -18,9 +18,9 @@ import { QueryOutputComponent } from './query-output.component';
   imports: [FormsModule, TranslateTestingModule, QueryOutputComponent],
 })
 class TestHostComponent {
-  @ViewChild(QueryOutputComponent) child: QueryOutputComponent<TableRow>;
-  docUrl: string;
-  editorService: EditorService<any>;
+  @ViewChild(QueryOutputComponent) child!: QueryOutputComponent<TableRow>;
+  docUrl!: string;
+  editorService!: EditorService<any>;
 }
 
 describe('QueryOutputComponent', () => {
@@ -54,8 +54,8 @@ describe('QueryOutputComponent', () => {
       fullQuery,
       error: null,
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      reloadSameEntity(_changeDetectorRef) {},
-    } as EditorService<TableRow>;
+      reloadSameEntity(_changeDetectorRef: any) {},
+    } as unknown as EditorService<TableRow>;
 
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
