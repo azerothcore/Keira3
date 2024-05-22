@@ -23,7 +23,7 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
   }
 
   /* istanbul ignore next */ // TODO: fix coverage
-  get parsedSelected(): Partial<T> {
+  get parsedSelected(): { entryorguid: number; source_type: number } {
     return JSON.parse(this.selected);
   }
 

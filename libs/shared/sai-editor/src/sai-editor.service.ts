@@ -4,6 +4,7 @@ import { SAI_ID_2, SAI_ID_FIELDS, SAI_TABLE, SAI_TYPES, SmartScripts } from '@ke
 import { MultiRowComplexKeyEditorService } from '@keira/shared/base-abstract-classes';
 import { SaiCommentGeneratorService } from './sai-comment-generator.service';
 import { SaiHandlerService } from './sai-handler.service';
+import { lastValueFrom, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,7 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
   }
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected handlerService: SaiHandlerService) {
+  constructor(protected override readonly handlerService: SaiHandlerService) {
     super(SmartScripts, SAI_TABLE, SAI_ID_FIELDS, SAI_ID_2, handlerService);
   }
 
@@ -35,7 +36,7 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
     }
   }
 
-  protected updateDiffQuery(): void {
+  protected override updateDiffQuery(): void {
     super.updateDiffQuery();
 
     if (this.handlerService.templateQuery && this._diffQuery) {
@@ -45,7 +46,7 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
     this.updateEditorStatus();
   }
 
-  protected checkRowsCorrectness(): void {
+  protected override checkRowsCorrectness(): void {
     this._errors = [];
 
     const links = new Set();
@@ -73,7 +74,7 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
     }
   }
 
-  protected onRowSelected(): void {
+  protected override onRowSelected(): void {
     if (this.handlerService.parsedSelected.source_type === SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST) {
       this._form.controls.event_type.disable();
       this._form.controls.event_param3.disable();
@@ -116,7 +117,7 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
       structuredClone(this._newRows),
       { ...row },
       /* istanbul ignore next */
-      await this.handlerService.getName()?.toPromise(),
+      this.handlerService.getName() ? await lastValueFrom(this.handlerService.getName() as Observable<string>) : '',
     );
   }
 }

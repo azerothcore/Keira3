@@ -69,7 +69,7 @@ describe('SAI Editor Service', () => {
 
   describe('when templateQuery is null', () => {
     beforeEach(() => {
-      handlerService['_templateQuery'] = null;
+      handlerService['_templateQuery'] = null as any;
     });
 
     it('updateFullQuery should correctly work', () => {
