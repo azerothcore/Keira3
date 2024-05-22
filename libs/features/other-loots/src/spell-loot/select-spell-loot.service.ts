@@ -10,8 +10,8 @@ import { SpellLootHandlerService } from './spell-loot-handler.service';
 export class SelectSpellLootService extends SelectService<SpellLootTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    readonly queryService: MysqlQueryService,
-    public handlerService: SpellLootHandlerService,
+    override readonly queryService: MysqlQueryService,
+    public override readonly handlerService: SpellLootHandlerService,
   ) {
     super(
       queryService,

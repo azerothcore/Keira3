@@ -12,7 +12,7 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     protected override _entityClass: Class,
     protected override _entityTable: string,
     protected override _entityIdField: string,
-    protected _entityNameField: string,
+    protected _entityNameField: string | undefined | null,
     protected isMainEntity: boolean,
     protected override handlerService: HandlerService<T>,
   ) {

@@ -16,8 +16,8 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 export class SelectGameobjectService extends SelectService<GameobjectTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    readonly queryService: MysqlQueryService,
-    public handlerService: GameobjectHandlerService,
+    override readonly queryService: MysqlQueryService,
+    public override readonly handlerService: GameobjectHandlerService,
   ) {
     super(
       queryService,

@@ -10,8 +10,8 @@ import { SpellHandlerService } from '../spell-handler.service';
 export class SelectSpellService extends SelectService<SpellDbc> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    readonly queryService: MysqlQueryService,
-    public handlerService: SpellHandlerService,
+    override readonly queryService: MysqlQueryService,
+    public override readonly handlerService: SpellHandlerService,
   ) {
     super(queryService, handlerService, SPELL_DBC_TABLE, SPELL_DBC_ID, SPELL_DBC_NAME, SPELL_DBC_SEARCH_FIELDS);
   }

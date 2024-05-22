@@ -35,7 +35,7 @@ describe('SpellDbcEffectsComponent', () => {
     imports: [RouterTestingModule, TranslateTestingModule, SpellDbcEffectsComponent],
   })
   class TestHostComponent {
-    @ViewChild(SpellDbcEffectsComponent) child: SpellDbcEffectsComponent;
+    @ViewChild(SpellDbcEffectsComponent) child!: SpellDbcEffectsComponent;
     form: FormGroup<ModelForm<SpellDbc>>;
   }
 

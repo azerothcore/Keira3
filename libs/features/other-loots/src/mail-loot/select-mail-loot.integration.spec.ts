@@ -13,7 +13,7 @@ import { SelectMailLootComponent } from './select-mail-loot.component';
 import { SelectMailLootService } from './select-mail-loot.service';
 
 class SelectMailLootComponentPage extends SelectPageObject<SelectMailLootComponent> {
-  ID_FIELD = 'Entry';
+  override ID_FIELD = 'Entry';
 }
 
 describe('SelectMailLoot integration tests', () => {

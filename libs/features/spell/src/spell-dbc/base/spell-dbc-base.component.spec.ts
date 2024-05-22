@@ -22,7 +22,7 @@ describe('SpellDbcBaseComponent', () => {
     imports: [RouterTestingModule, TranslateTestingModule, SpellDbcBaseComponent],
   })
   class TestHostComponent {
-    @ViewChild(SpellDbcBaseComponent) child: SpellDbcBaseComponent;
+    @ViewChild(SpellDbcBaseComponent) child!: SpellDbcBaseComponent;
     form: FormGroup<ModelForm<SpellDbc>>;
   }
 

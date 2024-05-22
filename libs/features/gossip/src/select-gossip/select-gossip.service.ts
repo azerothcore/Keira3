@@ -10,8 +10,8 @@ import { GossipHandlerService } from '../gossip-handler.service';
 export class SelectGossipService extends SelectService<GossipMenu> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    readonly queryService: MysqlQueryService,
-    public handlerService: GossipHandlerService,
+    override readonly queryService: MysqlQueryService,
+    public override readonly handlerService: GossipHandlerService,
   ) {
     super(queryService, handlerService, GOSSIP_MENU_TABLE, GOSSIP_MENU_ID, null, GOSSIP_MENU_SEARCH_FIELDS);
   }

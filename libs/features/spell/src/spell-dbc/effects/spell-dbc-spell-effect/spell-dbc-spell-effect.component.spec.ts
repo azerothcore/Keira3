@@ -33,7 +33,7 @@ describe('SpellDbcSpellEffectComponent', () => {
     imports: [RouterTestingModule, TranslateTestingModule, SpellDbcSpellEffectComponent],
   })
   class TestHostComponent {
-    @ViewChild(SpellDbcSpellEffectComponent) child: SpellDbcSpellEffectComponent;
+    @ViewChild(SpellDbcSpellEffectComponent) child!: SpellDbcSpellEffectComponent;
     form: FormGroup<ModelForm<SpellDbc>>;
     index: number;
   }

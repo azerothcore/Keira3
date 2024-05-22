@@ -13,7 +13,7 @@ import { SelectNpcTextService } from './select-npc-text.service';
 
 describe(`${SelectNpcTextComponent.name} integration tests`, () => {
   class Page extends SelectPageObject<SelectNpcTextComponent> {
-    ID_FIELD = NPC_TEXT_ID;
+    override ID_FIELD = NPC_TEXT_ID;
   }
 
   const value = 1200;
@@ -115,7 +115,7 @@ describe(`${SelectNpcTextComponent.name} integration tests`, () => {
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
     const { navigateSpy, npc, querySpy } = setup();
 
-    const results: Partial<NpcText>[] = [{ ID: 1 }, { ID: 2 }, { ID: 3 }];
+    const results = [{ ID: 1 }, { ID: 2 }, { ID: 3 }];
     querySpy.calls.reset();
     querySpy.and.returnValue(of(results));
 

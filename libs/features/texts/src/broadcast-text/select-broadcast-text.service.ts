@@ -16,8 +16,8 @@ import { BroadcastTextHandlerService } from './broadcast-text-handler.service';
 export class SelectBroadcastTextService extends SelectService<BroadcastText> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    readonly queryService: MysqlQueryService,
-    public handlerService: BroadcastTextHandlerService,
+    override readonly queryService: MysqlQueryService,
+    public override readonly handlerService: BroadcastTextHandlerService,
   ) {
     super(queryService, handlerService, BROADCAST_TEXT_TABLE, BROADCAST_TEXT_ID, BROADCAST_TEXT_NAME, BROADCAST_TEXT_SEARCH_FIELDS);
   }

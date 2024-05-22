@@ -13,7 +13,7 @@ import { SelectGossipComponent } from './select-gossip.component';
 import { SelectGossipService } from './select-gossip.service';
 
 class SelectGossipComponentPage extends SelectPageObject<SelectGossipComponent> {
-  ID_FIELD = 'MenuID';
+  override ID_FIELD = 'MenuID';
 }
 
 describe('SelectGossip integration tests', () => {

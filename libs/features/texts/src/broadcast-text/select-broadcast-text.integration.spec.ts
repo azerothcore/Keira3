@@ -13,7 +13,7 @@ import { SelectBroadcastTextService } from './select-broadcast-text.service';
 
 describe(`${SelectBroadcastTextComponent.name} integration tests`, () => {
   class Page extends SelectPageObject<SelectBroadcastTextComponent> {
-    ID_FIELD = BROADCAST_TEXT_ID;
+    override ID_FIELD = BROADCAST_TEXT_ID;
   }
 
   const value = 1200;
@@ -121,7 +121,7 @@ describe(`${SelectBroadcastTextComponent.name} integration tests`, () => {
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
     const { navigateSpy, broadcast, querySpy } = setup();
 
-    const results: Partial<BroadcastText>[] = [{ ID: 1 }, { ID: 2 }, { ID: 3 }];
+    const results = [{ ID: 1 }, { ID: 2 }, { ID: 3 }];
     querySpy.calls.reset();
     querySpy.and.returnValue(of(results));
 

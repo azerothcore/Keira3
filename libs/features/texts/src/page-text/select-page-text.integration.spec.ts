@@ -13,7 +13,7 @@ import { SelectPageTextService } from './select-page-text.service';
 
 describe(`${SelectPageTextComponent.name} integration tests`, () => {
   class Page extends SelectPageObject<SelectPageTextComponent> {
-    ID_FIELD = PAGE_TEXT_ID;
+    override ID_FIELD = PAGE_TEXT_ID;
   }
 
   const value = 1200;
@@ -115,7 +115,7 @@ describe(`${SelectPageTextComponent.name} integration tests`, () => {
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
     const { navigateSpy, page, querySpy } = setup();
 
-    const results: Partial<PageText>[] = [{ ID: 1 }, { ID: 2 }, { ID: 3 }];
+    const results = [{ ID: 1 }, { ID: 2 }, { ID: 3 }];
     querySpy.calls.reset();
     querySpy.and.returnValue(of(results));
 

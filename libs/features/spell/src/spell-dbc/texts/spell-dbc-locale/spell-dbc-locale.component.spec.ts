@@ -31,7 +31,7 @@ describe('SpellDbcLocaleComponent', () => {
     imports: [RouterTestingModule, TranslateTestingModule, SpellDbcLocaleComponent],
   })
   class TestHostComponent {
-    @ViewChild(SpellDbcLocaleComponent) child: SpellDbcLocaleComponent;
+    @ViewChild(SpellDbcLocaleComponent) child!: SpellDbcLocaleComponent;
     form: FormGroup<ModelForm<SpellDbc>>;
     locale: Locale;
   }

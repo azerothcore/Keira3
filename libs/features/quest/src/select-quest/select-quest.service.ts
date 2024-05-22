@@ -16,8 +16,8 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
 export class SelectQuestService extends SelectService<QuestTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    readonly queryService: MysqlQueryService,
-    public handlerService: QuestHandlerService,
+    override readonly queryService: MysqlQueryService,
+    public override readonly handlerService: QuestHandlerService,
   ) {
     super(queryService, handlerService, QUEST_TEMPLATE_TABLE, QUEST_TEMPLATE_ID, QUEST_TEMPLATE_NAME, QUEST_TEMPLATE_SEARCH_FIELDS);
   }

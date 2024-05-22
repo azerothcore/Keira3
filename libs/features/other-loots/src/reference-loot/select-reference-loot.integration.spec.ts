@@ -13,7 +13,7 @@ import { SelectReferenceLootComponent } from './select-reference-loot.component'
 import { SelectReferenceLootService } from './select-reference-loot.service';
 
 class SelectReferenceLootComponentPage extends SelectPageObject<SelectReferenceLootComponent> {
-  ID_FIELD = 'Entry';
+  override ID_FIELD = 'Entry';
 }
 
 describe('SelectReferenceLoot integration tests', () => {

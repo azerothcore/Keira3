@@ -10,8 +10,8 @@ import { FishingLootHandlerService } from './fishing-loot-handler.service';
 export class SelectFishingLootService extends SelectService<FishingLootTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    readonly queryService: MysqlQueryService,
-    public handlerService: FishingLootHandlerService,
+    override readonly queryService: MysqlQueryService,
+    public override readonly handlerService: FishingLootHandlerService,
   ) {
     super(
       queryService,
