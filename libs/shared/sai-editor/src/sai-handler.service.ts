@@ -20,7 +20,7 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
     [SAI_TABLE]: false,
   };
 
-  protected _templateQuery: string;
+  protected _templateQuery!: string;
   get templateQuery(): string {
     return this._templateQuery;
   }
@@ -36,13 +36,13 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
     );
   }
 
-  select(isNew: boolean, id: Partial<SmartScripts>, name: any = null, navigate: boolean = true) {
+  override select(isNew: boolean, id: Partial<SmartScripts>, name: any = null, navigate: boolean = true) {
     super.select(isNew, id, name, navigate);
-    this._templateQuery = this.getTemplateQuery();
+    this._templateQuery = this.getTemplateQuery() as string;
   }
 
-  protected getTemplateQuery(): string {
-    const selected: Partial<SmartScripts> = JSON.parse(this.selected);
+  protected getTemplateQuery(): string | null {
+    const selected: { entryorguid: number; source_type: number } = JSON.parse(this.selected);
 
     if (selected.entryorguid < 0) {
       // TODO: add support for GUIDs, if needed
@@ -67,8 +67,8 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
     }
   }
 
-  getName(): Observable<string> {
-    const sai = this.parsedSelected;
+  getName(): Observable<string | null> {
+    const sai = this.parsedSelected as { entryorguid: number; source_type: number };
     let query: string;
 
     if (sai.source_type === SAI_TYPES.SAI_TYPE_CREATURE || sai.source_type === SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST) {

@@ -20,7 +20,7 @@ class SaiTopBarComponentPage extends PageObject<TestHostComponent> {
   imports: [SaiTopBarComponent, RouterTestingModule, TranslateTestingModule],
 })
 class TestHostComponent {
-  @ViewChild(SaiTopBarComponent, { static: true }) child: SaiTopBarComponent;
+  @ViewChild(SaiTopBarComponent, { static: true }) child!: SaiTopBarComponent;
   constructor(public handlerService: SaiHandlerService) {}
 }
 

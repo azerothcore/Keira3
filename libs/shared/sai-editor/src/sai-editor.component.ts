@@ -165,7 +165,7 @@ export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> im
   }
 
   get entryOrGuid(): number {
-    return this.handlerService.parsedSelected.entryorguid;
+    return this.handlerService.parsedSelected.entryorguid as number;
   }
 
   getName(defaultParamName: string, value: string | undefined): string {

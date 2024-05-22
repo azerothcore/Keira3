@@ -1,7 +1,7 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
-import { of } from 'rxjs';
+import { lastValueFrom, of } from 'rxjs';
 import {
   DYNAMIC_FLAGS,
   EVENT_FLAGS,
@@ -41,16 +41,16 @@ describe('SaiCommentGeneratorService', () => {
 
     beforeEach(() => {
       const queryService = TestBed.inject(MysqlQueryService);
-      spyOn(queryService, 'getCreatureNameById').and.callFake((i) => of(mockCreatureNameById + i).toPromise());
-      spyOn(queryService, 'getCreatureNameByGuid').and.callFake((i) => of(mockCreatureNameByGuid + i).toPromise());
-      spyOn(queryService, 'getGameObjectNameById').and.callFake((i) => of(mockGameobjectNameById + i).toPromise());
-      spyOn(queryService, 'getGameObjectNameByGuid').and.callFake((i) => of(mockGameobjectNameByGuid + i).toPromise());
-      spyOn(queryService, 'getQuestTitleById').and.callFake((i) => of(mockQuestTitleById + i).toPromise());
-      spyOn(queryService, 'getItemNameById').and.callFake((i) => of(mockItemNameById + i).toPromise());
-      spyOn(queryService, 'getQuestTitleByCriteria').and.callFake((i) => of(mockQuestTitleByCriteria + i).toPromise());
+      spyOn(queryService, 'getCreatureNameById').and.callFake((i) => lastValueFrom(of(mockCreatureNameById + i)));
+      spyOn(queryService, 'getCreatureNameByGuid').and.callFake((i) => lastValueFrom(of(mockCreatureNameByGuid + i)));
+      spyOn(queryService, 'getGameObjectNameById').and.callFake((i) => lastValueFrom(of(mockGameobjectNameById + i)));
+      spyOn(queryService, 'getGameObjectNameByGuid').and.callFake((i) => lastValueFrom(of(mockGameobjectNameByGuid + i)));
+      spyOn(queryService, 'getQuestTitleById').and.callFake((i) => lastValueFrom(of(mockQuestTitleById + i)));
+      spyOn(queryService, 'getItemNameById').and.callFake((i) => lastValueFrom(of(mockItemNameById + i)));
+      spyOn(queryService, 'getQuestTitleByCriteria').and.callFake((i) => lastValueFrom(of(mockQuestTitleByCriteria + i)));
 
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
-      spyOn(sqliteQueryService, 'getSpellNameById').and.callFake((i) => of(mockGetSpellNameById + i).toPromise());
+      spyOn(sqliteQueryService, 'getSpellNameById').and.callFake((i) => lastValueFrom(of(mockGetSpellNameById + i)));
     });
 
     it('should correctly handle linked events', waitForAsync(async () => {

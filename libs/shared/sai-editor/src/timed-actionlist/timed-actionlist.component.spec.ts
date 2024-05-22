@@ -14,8 +14,8 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
   imports: [NgxDatatableModule, TimedActionlistComponent],
 })
 class TestHostComponent {
-  @ViewChild(TimedActionlistComponent) child: TimedActionlistComponent;
-  creatureId: string;
+  @ViewChild(TimedActionlistComponent) child!: TimedActionlistComponent;
+  creatureId!: string;
 }
 
 class TimedActionlistPage extends PageObject<TestHostComponent> {}
