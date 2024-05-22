@@ -145,10 +145,10 @@ describe('Model3DViewerComponent', () => {
       expect(component['getModelType']()).toBe(MODEL_TYPE.NPC);
     });
 
-    it('returns null', () => {
+    it('returns -1', () => {
       const { component } = setup();
       component.viewerType = VIEWER_TYPE.ITEM;
-      expect(component['getModelType'](4, 2)).toBeNull();
+      expect(component['getModelType'](4, 2)).toBe(-1);
     });
   });
 

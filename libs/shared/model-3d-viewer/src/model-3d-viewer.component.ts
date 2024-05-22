@@ -18,18 +18,24 @@ declare const ZamModelViewer: any;
 })
 export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private readonly queryService = inject(MysqlQueryService);
+  private readonly windowRef = window as typeof window & {
+    jQuery: any;
+    $: any;
+    WH: any;
+    models: any;
+  };
   private readonly http = inject(HttpClient);
   private readonly KEIRA_APP_CONFIG = inject(KEIRA_APP_CONFIG_TOKEN);
 
-  @Input() viewerType: VIEWER_TYPE;
-  @Input() displayId: number;
+  @Input() viewerType!: VIEWER_TYPE;
+  @Input() displayId!: number;
   @Input() itemClass?: number;
   @Input() itemInventoryType?: number;
   @Input() id? = 'model_3d';
 
   private readonly loadedViewer$ = new BehaviorSubject<boolean>(false);
   private readonly subscriptions = new Subscription();
-  private readonly models3D = [];
+  private readonly models3D: any[] = [];
 
   ngOnInit(): void {
     this.setupViewer3D();
@@ -148,18 +154,18 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
       return MODEL_TYPE.NPC;
     }
 
-    return null;
+    return -1;
   }
 
   /* istanbul ignore next */
   private setupViewer3D(): void {
-    window['jQuery'] = jquery;
-    window['$'] = jquery;
+    this.windowRef.jQuery = jquery;
+    this.windowRef.$ = jquery;
 
-    if (!window['WH']) {
-      window['WH'] = {};
-      window['WH'].debug = () => {};
-      window['WH'].defaultAnimation = `Stand`;
+    if (!this.windowRef.WH) {
+      this.windowRef.WH = {};
+      this.windowRef.WH.debug = () => {};
+      this.windowRef.WH.defaultAnimation = `Stand`;
     }
 
     const loadedViewer$ = this.loadedViewer$;
@@ -195,7 +201,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     for (const model3D of this.models3D) {
       model3D?.destroy();
     }
-    delete window['models'];
+    delete this.windowRef.models;
   }
 
   ngOnDestroy(): void {
