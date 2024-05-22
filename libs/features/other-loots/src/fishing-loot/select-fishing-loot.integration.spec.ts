@@ -13,7 +13,7 @@ import { SelectFishingLootComponent } from './select-fishing-loot.component';
 import { SelectFishingLootService } from './select-fishing-loot.service';
 
 class SelectFishingLootComponentPage extends SelectPageObject<SelectFishingLootComponent> {
-  ID_FIELD = 'Entry';
+  override ID_FIELD = 'Entry';
 }
 
 describe('SelectFishingLoot integration tests', () => {

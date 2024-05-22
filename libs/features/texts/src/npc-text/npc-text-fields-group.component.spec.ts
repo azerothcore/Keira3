@@ -17,9 +17,9 @@ describe(NpcTextFieldsGroupComponent.name, () => {
     imports: [NpcTextFieldsGroupComponent],
   })
   class TestHostNpcTextFieldsGroupComponent {
-    @ViewChild(NpcTextFieldsGroupComponent) child: NpcTextFieldsGroupComponent;
-    formGroup: FormGroup<ModelForm<NpcText>>;
-    groupId: GroupIdType;
+    @ViewChild(NpcTextFieldsGroupComponent) child!: NpcTextFieldsGroupComponent;
+    formGroup!: FormGroup<ModelForm<NpcText>>;
+    groupId!: GroupIdType;
   }
 
   class Page extends PageObject<TestHostNpcTextFieldsGroupComponent> {

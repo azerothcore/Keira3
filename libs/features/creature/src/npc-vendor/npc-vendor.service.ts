@@ -13,7 +13,7 @@ export class NpcVendorService extends MultiRowEditorService<NpcVendor> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     protected handlerService: CreatureHandlerService,
-    readonly queryService: MysqlQueryService,
+    override readonly queryService: MysqlQueryService,
     readonly sqliteQueryService: SqliteQueryService,
     protected toastrService: ToastrService,
     private iconService: IconService,

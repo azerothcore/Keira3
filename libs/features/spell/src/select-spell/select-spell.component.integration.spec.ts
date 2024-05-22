@@ -15,7 +15,7 @@ import Spy = jasmine.Spy;
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 
 class SelectSpellComponentPage extends SelectPageObject<SelectSpellComponent> {
-  ID_FIELD = SPELL_DBC_ID;
+  override ID_FIELD = SPELL_DBC_ID;
   get searchSubnameInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('#subname');
   }

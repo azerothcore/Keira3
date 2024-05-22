@@ -14,7 +14,7 @@ import { instance, mock } from 'ts-mockito';
 import Spy = jasmine.Spy;
 
 class SelectItemComponentPage extends SelectPageObject<SelectItemComponent> {
-  ID_FIELD = 'entry';
+  override ID_FIELD = 'entry';
 }
 
 describe('SelectItem integration tests', () => {

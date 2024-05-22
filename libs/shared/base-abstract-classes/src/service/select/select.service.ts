@@ -10,7 +10,7 @@ export abstract class SelectService<T extends TableRow> extends SearchService<T>
     public readonly handlerService: HandlerService<T>,
     protected override readonly entityTable: string,
     protected readonly entityIdField: string,
-    protected entityNameField: string,
+    protected entityNameField: string | undefined | null,
     protected override readonly fieldList: StringKeys<T>[],
     protected override readonly selectFields: string[] | undefined = undefined,
     protected override readonly groupFields: string[] | undefined = undefined,

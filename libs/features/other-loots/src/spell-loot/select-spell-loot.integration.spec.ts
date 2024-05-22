@@ -13,7 +13,7 @@ import { SelectSpellLootService } from './select-spell-loot.service';
 import { SpellLootHandlerService } from './spell-loot-handler.service';
 
 class SelectSpellLootComponentPage extends SelectPageObject<SelectSpellLootComponent> {
-  ID_FIELD = 'Entry';
+  override ID_FIELD = 'Entry';
 }
 
 describe('SelectSpellLoot integration tests', () => {

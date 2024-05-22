@@ -17,7 +17,7 @@ import Spy = jasmine.Spy;
 import { instance, mock } from 'ts-mockito';
 
 class SelectCreatureComponentPage extends SelectPageObject<SelectCreatureComponent> {
-  ID_FIELD = 'entry';
+  override ID_FIELD = 'entry';
   get searchSubnameInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('#subname');
   }

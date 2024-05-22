@@ -10,8 +10,8 @@ import { MailLootHandlerService } from './mail-loot-handler.service';
 export class SelectMailLootService extends SelectService<MailLootTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    readonly queryService: MysqlQueryService,
-    public handlerService: MailLootHandlerService,
+    override readonly queryService: MysqlQueryService,
+    public override readonly handlerService: MailLootHandlerService,
   ) {
     super(
       queryService,

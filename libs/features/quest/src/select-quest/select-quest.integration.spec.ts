@@ -13,7 +13,7 @@ import { SelectQuestComponent } from './select-quest.component';
 import Spy = jasmine.Spy;
 
 class SelectQuestComponentPage extends SelectPageObject<SelectQuestComponent> {
-  ID_FIELD = 'ID';
+  override ID_FIELD = 'ID';
 }
 
 describe('SelectQuest integration tests', () => {

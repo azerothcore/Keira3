@@ -16,8 +16,8 @@ import { ItemHandlerService } from '../item-handler.service';
 export class SelectItemService extends SelectService<ItemTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    readonly queryService: MysqlQueryService,
-    public handlerService: ItemHandlerService,
+    override readonly queryService: MysqlQueryService,
+    public override readonly handlerService: ItemHandlerService,
   ) {
     super(queryService, handlerService, ITEM_TEMPLATE_TABLE, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_NAME, ITEM_TEMPLATE_SEARCH_FIELDS);
   }

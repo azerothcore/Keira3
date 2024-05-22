@@ -10,8 +10,8 @@ import { ReferenceLootHandlerService } from './reference-loot-handler.service';
 export class SelectReferenceLootService extends SelectService<ReferenceLootTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    readonly queryService: MysqlQueryService,
-    public handlerService: ReferenceLootHandlerService,
+    override readonly queryService: MysqlQueryService,
+    public override readonly handlerService: ReferenceLootHandlerService,
   ) {
     super(
       queryService,

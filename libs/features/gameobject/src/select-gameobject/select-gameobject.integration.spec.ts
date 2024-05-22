@@ -15,7 +15,7 @@ import Spy = jasmine.Spy;
 import { instance, mock } from 'ts-mockito';
 
 class SelectGameobjectComponentPage extends SelectPageObject<SelectGameobjectComponent> {
-  ID_FIELD = 'entry';
+  override ID_FIELD = 'entry';
 }
 
 describe('SelectGameobject integration tests', () => {
