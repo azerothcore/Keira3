@@ -124,7 +124,7 @@ describe('SingleRowEditorService', () => {
       expect(service.isNew).toBe(false);
 
       expect(handlerService.isNew).toBe(false);
-      expect(handlerService.selectedName).toBe(`${service['_originalValue'][service['_entityNameField']]}`);
+      expect(handlerService.selectedName).toBe(`${service['_originalValue'][service['_entityNameField'] as string]}`);
 
       expect(service.form.getRawValue()).toEqual(entity);
       expect(service.loadedEntityId).toEqual(`${entity.id}`);
