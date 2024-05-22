@@ -12,10 +12,10 @@ import { CreatureHandlerService } from '../creature-handler.service';
   providedIn: 'root',
 })
 export class CreatureTemplateResistanceService extends MultiRowEditorService<CreatureTemplateResistance> {
-  FIRST_ROW_START_VALUE = 1;
+  override FIRST_ROW_START_VALUE = 1;
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected handlerService: CreatureHandlerService) {
+  constructor(protected override readonly handlerService: CreatureHandlerService) {
     super(
       CreatureTemplateResistance,
       CREATURE_TEMPLATE_RESISTANCE_TABLE,

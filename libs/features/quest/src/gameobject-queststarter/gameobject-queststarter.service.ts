@@ -13,7 +13,7 @@ import { QuestHandlerService } from '../quest-handler.service';
 })
 export class GameobjectQueststarterService extends MultiRowEditorService<GameobjectQueststarter> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected handlerService: QuestHandlerService) {
+  constructor(protected override readonly handlerService: QuestHandlerService) {
     super(GameobjectQueststarter, GAMEOBJECT_QUESTSTARTER_TABLE, GAMEOBJECT_QUESTSTARTER_ID, GAMEOBJECT_QUESTSTARTER_ID_2, handlerService);
   }
 }

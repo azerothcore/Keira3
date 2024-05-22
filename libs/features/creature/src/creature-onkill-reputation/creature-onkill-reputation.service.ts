@@ -8,7 +8,7 @@ import { CreatureHandlerService } from '../creature-handler.service';
 })
 export class CreatureOnkillReputationService extends SingleRowEditorService<CreatureOnkillReputation> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected handlerService: CreatureHandlerService) {
+  constructor(protected override readonly handlerService: CreatureHandlerService) {
     super(CreatureOnkillReputation, CREATURE_ONKLL_REPUTATION_TABLE, CREATURE_ONKLL_REPUTATION_ID, null, false, handlerService);
   }
 }

@@ -7,7 +7,7 @@ import { SaiEditorService } from '@keira/shared/sai-editor';
 })
 export class SaiGameobjectEditorService extends SaiEditorService {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected handlerService: SaiGameobjectHandlerService) {
+  constructor(protected override readonly handlerService: SaiGameobjectHandlerService) {
     super(handlerService);
   }
 }

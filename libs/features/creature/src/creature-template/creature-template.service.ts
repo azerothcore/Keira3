@@ -8,7 +8,7 @@ import { CreatureHandlerService } from '../creature-handler.service';
 })
 export class CreatureTemplateService extends SingleRowEditorService<CreatureTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected handlerService: CreatureHandlerService) {
+  constructor(protected override readonly handlerService: CreatureHandlerService) {
     super(CreatureTemplate, CREATURE_TEMPLATE_TABLE, CREATURE_TEMPLATE_ID, CREATURE_TEMPLATE_NAME, true, handlerService);
   }
 }

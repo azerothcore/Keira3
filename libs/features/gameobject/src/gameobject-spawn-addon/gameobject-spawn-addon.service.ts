@@ -8,7 +8,7 @@ import { MultiRowExternalEditorService } from '@keira/shared/base-abstract-class
 })
 export class GameobjectSpawnAddonService extends MultiRowExternalEditorService<GameobjectSpawnAddon> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected handlerService: GameobjectHandlerService) {
+  constructor(protected override readonly handlerService: GameobjectHandlerService) {
     super(GameobjectSpawnAddon, GAMEOBJECT_SPAWN_ADDON_TABLE, GAMEOBJECT_SPAWN_ADDON_ID_2, handlerService);
   }
 

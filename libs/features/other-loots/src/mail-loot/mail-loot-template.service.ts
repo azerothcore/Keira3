@@ -8,7 +8,7 @@ import { MailLootHandlerService } from './mail-loot-handler.service';
 })
 export class MailLootTemplateService extends MultiRowEditorService<MailLootTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected handlerService: MailLootHandlerService) {
+  constructor(protected override readonly handlerService: MailLootHandlerService) {
     super(MailLootTemplate, MAIL_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, handlerService);
   }
 }

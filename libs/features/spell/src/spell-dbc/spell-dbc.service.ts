@@ -8,7 +8,7 @@ import { SpellHandlerService } from '../spell-handler.service';
 })
 export class SpellDbcService extends SingleRowEditorService<SpellDbc> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected handlerService: SpellHandlerService) {
+  constructor(protected override readonly handlerService: SpellHandlerService) {
     super(SpellDbc, SPELL_DBC_TABLE, SPELL_DBC_ID, SPELL_DBC_NAME, true, handlerService);
   }
 }

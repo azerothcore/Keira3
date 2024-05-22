@@ -25,6 +25,6 @@ import { TranslateModule } from '@ngx-translate/core';
   ],
 })
 export class ItemEnchantmentTemplateComponent extends MultiRowEditorComponent<ItemEnchantmentTemplate> {
-  readonly editorService = inject(ItemEnchantmentTemplateService);
+  override readonly editorService = inject(ItemEnchantmentTemplateService);
   readonly handlerService = inject(ItemHandlerService);
 }

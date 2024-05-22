@@ -14,7 +14,7 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 })
 export class GameobjectTemplateService extends SingleRowEditorService<GameobjectTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected handlerService: GameobjectHandlerService) {
+  constructor(protected override readonly handlerService: GameobjectHandlerService) {
     super(GameobjectTemplate, GAMEOBJECT_TEMPLATE_TABLE, GAMEOBJECT_TEMPLATE_ID, GAMEOBJECT_TEMPLATE_NAME, true, handlerService);
   }
 

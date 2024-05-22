@@ -35,7 +35,7 @@ export class GameobjectTemplateComponent extends SingleRowEditorComponent<Gameob
 
   showItemPreview = true;
 
-  readonly editorService = inject(GameobjectTemplateService);
+  override readonly editorService = inject(GameobjectTemplateService);
   readonly handlerService = inject(GameobjectHandlerService);
 
   dataFieldDefinition(dataIndex: number): FieldDefinition {

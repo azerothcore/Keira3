@@ -38,7 +38,7 @@ import { ReferenceViewerComponent } from './reference-viewer.component';
   ],
 })
 export class LootEditorComponent<T extends LootTemplate> extends SubscriptionHandler implements OnInit {
-  @Input() editorService: MultiRowEditorService<T>;
+  @Input() editorService!: MultiRowEditorService<T>;
 
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 

@@ -100,7 +100,7 @@ export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
     [CREATURE_TEXT_TABLE]: false,
   };
 
-  select(isNew: boolean, id: string | number | Partial<CreatureTemplate>, name?: string) {
+  override select(isNew: boolean, id: string | number | Partial<CreatureTemplate>, name?: string) {
     this.saiCreatureHandler.select(isNew, { entryorguid: +id, source_type: 0 }, null, false);
     super.select(isNew, id, name);
   }

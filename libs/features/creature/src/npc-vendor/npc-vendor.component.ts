@@ -36,6 +36,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   ],
 })
 export class NpcVendorComponent extends MultiRowEditorComponent<NpcVendor> {
-  readonly editorService = inject(NpcVendorService);
+  override readonly editorService = inject(NpcVendorService);
   readonly handlerService = inject(CreatureHandlerService);
 }

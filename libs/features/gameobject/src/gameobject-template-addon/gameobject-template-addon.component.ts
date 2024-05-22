@@ -32,6 +32,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
 export class GameobjectTemplateAddonComponent extends SingleRowEditorComponent<GameobjectTemplateAddon> {
   readonly GAMEOBJECT_FLAGS = GAMEOBJECT_FLAGS;
 
-  readonly editorService = inject(GameobjectTemplateAddonService);
+  override readonly editorService = inject(GameobjectTemplateAddonService);
   readonly handlerService = inject(GameobjectHandlerService);
 }

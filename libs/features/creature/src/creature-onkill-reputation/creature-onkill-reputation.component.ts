@@ -32,6 +32,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
 export class CreatureOnkillReputationComponent extends SingleRowEditorComponent<CreatureOnkillReputation> {
   readonly FACTION_RANK = FACTION_RANK;
 
-  readonly editorService = inject(CreatureOnkillReputationService);
+  override readonly editorService = inject(CreatureOnkillReputationService);
   readonly handlerService = inject(CreatureHandlerService);
 }

@@ -34,7 +34,7 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   ],
 })
 export class CreatureTemplateAddonComponent extends SingleRowEditorComponent<CreatureTemplateAddon> {
-  public get docUrl(): string {
+  protected override get docUrl(): string {
     return this.WIKI_BASE_URL + CREATURE_SPAWN_ADDON_TABLE; // they share the same doc page
   }
 
@@ -42,6 +42,6 @@ export class CreatureTemplateAddonComponent extends SingleRowEditorComponent<Cre
   protected readonly CREATURE_ADDON_BYTES_1 = CREATURE_ADDON_BYTES_1;
   protected readonly CREATURE_ADDON_BYTES_2 = CREATURE_ADDON_BYTES_2;
 
-  readonly editorService = inject(CreatureTemplateAddonService);
+  override readonly editorService = inject(CreatureTemplateAddonService);
   readonly handlerService = inject(CreatureHandlerService);
 }

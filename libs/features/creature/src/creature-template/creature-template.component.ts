@@ -84,6 +84,6 @@ export class CreatureTemplateComponent extends SingleRowEditorComponent<Creature
 
   showItemPreview = true;
 
-  readonly editorService = inject(CreatureTemplateService);
+  override readonly editorService = inject(CreatureTemplateService);
   readonly handlerService = inject(CreatureHandlerService);
 }

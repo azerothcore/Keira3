@@ -29,10 +29,10 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   ],
 })
 export class CreatureTemplateSpellComponent extends MultiRowEditorComponent<CreatureTemplateSpell> {
-  public get docUrl(): string {
+  protected override get docUrl(): string {
     return this.WIKI_BASE_URL + CREATURE_TEMPLATE_SPELL_TABLE;
   }
 
-  readonly editorService = inject(CreatureTemplateSpellService);
+  override readonly editorService = inject(CreatureTemplateSpellService);
   readonly handlerService = inject(CreatureHandlerService);
 }

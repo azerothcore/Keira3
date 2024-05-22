@@ -33,6 +33,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   ],
 })
 export class GameobjectQuestitemComponent extends MultiRowEditorComponent<GameobjectQuestitem> {
-  readonly editorService = inject(GameobjectQuestitemService);
+  override readonly editorService = inject(GameobjectQuestitemService);
   readonly handlerService = inject(GameobjectHandlerService);
 }

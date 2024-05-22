@@ -8,7 +8,7 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 })
 export class GameobjectTemplateAddonService extends SingleRowEditorService<GameobjectTemplateAddon> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected handlerService: GameobjectHandlerService) {
+  constructor(protected override readonly handlerService: GameobjectHandlerService) {
     super(GameobjectTemplateAddon, GAMEOBJECT_TEMPLATE_ADDON_TABLE, GAMEOBJECT_TEMPLATE_ADDON_ID, null, true, handlerService);
   }
 }

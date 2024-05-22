@@ -34,7 +34,7 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
   ],
 })
 export class GossipMenuComponent extends MultiRowEditorComponent<GossipMenu> {
-  readonly editorService = inject(GossipMenuService);
+  override readonly editorService = inject(GossipMenuService);
   readonly handlerService = inject(GossipHandlerService);
   readonly queryService = inject(MysqlQueryService);
 }

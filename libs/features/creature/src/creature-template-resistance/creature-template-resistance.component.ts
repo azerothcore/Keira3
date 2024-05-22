@@ -33,12 +33,12 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   ],
 })
 export class CreatureTemplateResistanceComponent extends MultiRowEditorComponent<CreatureTemplateResistance> {
-  public get docUrl(): string {
+  protected override get docUrl(): string {
     return this.WIKI_BASE_URL + CREATURE_TEMPLATE_RESISTANCE_TABLE;
   }
 
   readonly CREATURE_TEMPLATE_RESISTANCE_SCHOOL = CREATURE_TEMPLATE_RESISTANCE_SCHOOL;
 
-  readonly editorService = inject(CreatureTemplateResistanceService);
+  override readonly editorService = inject(CreatureTemplateResistanceService);
   readonly handlerService = inject(CreatureHandlerService);
 }

@@ -13,7 +13,7 @@ import { ReferenceLootHandlerService } from './reference-loot-handler.service';
 })
 export class ReferenceLootTemplateService extends MultiRowEditorService<ReferenceLootTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected handlerService: ReferenceLootHandlerService) {
+  constructor(protected override readonly handlerService: ReferenceLootHandlerService) {
     super(ReferenceLootTemplate, REFERENCE_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, handlerService);
   }
 }

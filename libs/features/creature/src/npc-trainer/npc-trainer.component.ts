@@ -36,7 +36,7 @@ import { SqliteQueryService } from '@keira/shared/db-layer';
   ],
 })
 export class NpcTrainerComponent extends MultiRowEditorComponent<NpcTrainer> {
-  readonly editorService = inject(NpcTrainerService);
+  override readonly editorService = inject(NpcTrainerService);
   readonly handlerService = inject(CreatureHandlerService);
   readonly sqliteQueryService = inject(SqliteQueryService);
 }
