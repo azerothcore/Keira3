@@ -89,7 +89,7 @@ async function optionsFromModel(model: WoWModel): Promise<{ models: WoWModel; ch
   // const retGender = gender === 1 ? GENDER.FEMALE : GENDER.MALE;
   // const raceToModelId = RACES[race] + retGender;
 
-  return undefined;
+  return undefined as any;
   // return {
   //   items: characterItems,
   //   charCustomization: {
@@ -150,7 +150,7 @@ export async function generateModels(
     hd: false,
     ...modelOptions,
   };
-  window['models'] = models;
+  (window as any)['models'] = models;
 
   if (typeof ZamModelViewer !== 'undefined') {
     return new ZamModelViewer(models);
@@ -163,7 +163,7 @@ export function getShadowlandDisplayId(
 ): Promise<{ displayId: number; displayType: number }> {
   return new Promise(function (resolve, reject) {
     const sqlite = window.require('sqlite3');
-    const db = new sqlite.Database(sqliteItem3dPath, sqlite.OPEN_READONLY, (error) => {
+    const db = new sqlite.Database(sqliteItem3dPath, sqlite.OPEN_READONLY, (error: unknown) => {
       if (error) {
         console.log(`Error when opening sqlite database at DISPLAY ID`);
         console.error(error);
@@ -173,7 +173,7 @@ export function getShadowlandDisplayId(
     if (db) {
       return db.all(
         `SELECT ItemDisplayInfoID, DisplayType FROM item_appearance WHERE ID = (SELECT ItemAppearanceID FROM item_modified_appearance WHERE ItemID = ${wotlkDisplayId})`,
-        function (err, data) {
+        function (err: unknown, data: { ItemDisplayInfoID: number; DisplayType: number }[]) {
           if (err) {
             reject(err);
           } else {
@@ -186,8 +186,9 @@ export function getShadowlandDisplayId(
         },
       );
       /* istanbul ignore else */
-    } /* istanbul ignore next */ else if (this.electronService.isElectron()) {
-      console.error(`sqite db was not defined when trying to get the shadow lands display id`);
     }
+    // /* istanbul ignore next */ else if (this.electronService.isElectron()) {
+    //   console.error(`sqite db was not defined when trying to get the shadow lands display id`);
+    // }
   });
 }
