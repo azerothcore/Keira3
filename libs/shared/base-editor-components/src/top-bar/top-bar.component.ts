@@ -7,7 +7,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   standalone: true,
 })
 export class TopBarComponent {
-  @Input({ required: true }) selected: string;
-  @Input({ required: true }) selectedName: string;
-  @Input({ required: true }) isNew: boolean;
+  @Input({ required: true }) selected: string | undefined;
+  @Input({ required: true }) selectedName: string | undefined;
+  @Input({ required: true }) isNew = false;
 }

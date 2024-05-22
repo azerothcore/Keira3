@@ -40,35 +40,35 @@ describe('SearchService', () => {
 
     beforeEach(() => {
       spy = spyOn(TestBed.inject(MysqlQueryService), 'getSearchQuery').and.returnValue(newQuery);
-      service.query = null;
+      service.query = undefined as any;
     });
 
     it('should update the query if the form is valid', () => {
-      service.queryForm.controls.limit.setValue(123);
+      service.queryForm.controls.limit?.setValue(123);
 
-      expect(spy).toHaveBeenCalledWith(service['entityTable'], service.queryForm.getRawValue(), null, null);
+      expect(spy).toHaveBeenCalledWith(service['entityTable'], service.queryForm.getRawValue(), undefined, undefined);
       expect(service.query).toEqual(newQuery);
     });
 
     it('should not update the query if the form is invalid', () => {
-      service.queryForm.controls.fields.setErrors({ error: 'some error' });
+      service.queryForm.controls.fields?.setErrors({ error: 'some error' });
 
-      service.queryForm.controls.limit.setValue(123);
+      service.queryForm.controls.limit?.setValue(123);
 
       expect(spy).toHaveBeenCalledTimes(0);
-      expect(service.query).toBeNull();
+      expect(service.query).toBeUndefined();
     });
   });
 
   it('onSearch() should execute the query and update the rows with the result', () => {
     const newRows = [{ entry: 1 }, { entry: 2 }] as ItemTemplate[];
     const spy = spyOn(TestBed.inject(MysqlQueryService), 'query').and.returnValue(of(newRows));
-    service.rows = null;
+    service.rows = undefined;
     service.query = newQuery;
 
     service.onSearch(mockChangeDetectorRef);
 
     expect(spy).toHaveBeenCalledWith(newQuery);
-    expect(service.rows).toEqual(newRows);
+    expect(service.rows).toEqual(newRows as any);
   });
 });

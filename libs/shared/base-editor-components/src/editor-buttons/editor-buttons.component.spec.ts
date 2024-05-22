@@ -2,6 +2,8 @@ import { Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { EditorButtonsComponent } from './editor-buttons.component';
+import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
+import { TableRow } from '@keira/shared/constants';
 
 @Component({
   template: `<keira-editor-buttons [editorService]="editorService" />`,
@@ -9,8 +11,8 @@ import { EditorButtonsComponent } from './editor-buttons.component';
   imports: [TranslateTestingModule, EditorButtonsComponent],
 })
 class TestHostComponent {
-  @ViewChild(EditorButtonsComponent) child: EditorButtonsComponent<null>;
-  editorService;
+  @ViewChild(EditorButtonsComponent) child!: EditorButtonsComponent<TableRow>;
+  editorService!: MultiRowEditorService<TableRow>;
 }
 
 class EditorButtonsPage extends PageObject<TestHostComponent> {
@@ -38,7 +40,7 @@ describe('EditorButtonsComponent', () => {
     const fixture = TestBed.createComponent(TestHostComponent);
     const page = new EditorButtonsPage(fixture);
     const host = fixture.componentInstance;
-    host.editorService = editorService;
+    host.editorService = editorService as unknown as MultiRowEditorService<TableRow>;
     fixture.detectChanges();
     const component = host.child;
     return { fixture, host, component, editorService, page };
@@ -47,7 +49,7 @@ describe('EditorButtonsComponent', () => {
   describe('the delete button', () => {
     it('should be enabled only when there is a selected row', () => {
       const { editorService, page, fixture } = setup();
-      editorService.selectedRowId = null;
+      editorService.selectedRowId = undefined as any;
       fixture.detectChanges();
       expect(page.deleteBtn.disabled).toBe(true);
 
@@ -55,7 +57,7 @@ describe('EditorButtonsComponent', () => {
       fixture.detectChanges();
       expect(page.deleteBtn.disabled).toBe(false);
 
-      editorService.selectedRowId = null;
+      editorService.selectedRowId = undefined as any;
       fixture.detectChanges();
       expect(page.deleteBtn.disabled).toBe(true);
     });

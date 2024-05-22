@@ -2,7 +2,7 @@ import { Inject, Injectable, NgZone } from '@angular/core';
 
 import { KEIRA_APP_CONFIG_TOKEN, KeiraAppConfig } from '@keira/shared/config';
 import { TableRow } from '@keira/shared/constants';
-import { Observable } from 'rxjs';
+import { Observable, Subscriber } from 'rxjs';
 import { ElectronService } from '@keira/shared/common-services';
 
 /* istanbul ignore next */ // Note: will be tested in e2e
@@ -10,17 +10,17 @@ import { ElectronService } from '@keira/shared/common-services';
   providedIn: 'root',
 })
 export class SqliteService {
-  private db;
+  private readonly db;
 
   constructor(
     private electronService: ElectronService,
     private ngZone: NgZone,
-    @Inject(KEIRA_APP_CONFIG_TOKEN) private KEIRA_APP_CONFIG: KeiraAppConfig,
+    @Inject(KEIRA_APP_CONFIG_TOKEN) KEIRA_APP_CONFIG: KeiraAppConfig,
   ) {
     /* istanbul ignore next */
     if (this.electronService.isElectron()) {
       const sqlite = window.require('sqlite3');
-      this.db = new sqlite.Database(KEIRA_APP_CONFIG.sqlitePath, sqlite.OPEN_READONLY, (error) => {
+      this.db = new sqlite.Database(KEIRA_APP_CONFIG.sqlitePath, sqlite.OPEN_READONLY, (error: unknown) => {
         if (error) {
           console.log(`Error when opening sqlite database at ${KEIRA_APP_CONFIG.sqlitePath}`);
           console.error(error);
@@ -40,8 +40,8 @@ export class SqliteService {
     });
   }
 
-  private getQueryCallback<T extends TableRow>(subscriber) {
-    return (err: Error | null, results: T) => {
+  private getQueryCallback<T extends TableRow>(subscriber: Subscriber<T[]>) {
+    return (err: Error | null, results: T[]) => {
       this.ngZone.run(() => {
         if (err) {
           console.log(`Error when executing sqlite query: \n\n`);

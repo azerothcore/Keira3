@@ -11,6 +11,6 @@ import { ElectronService } from '@keira/shared/common-services';
   imports: [Highlight],
 })
 export class HighlightjsWrapperComponent {
-  @Input() code: string;
+  @Input({ required: true }) code!: string;
   readonly electronService = inject(ElectronService);
 }

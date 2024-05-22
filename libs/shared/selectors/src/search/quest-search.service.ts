@@ -9,7 +9,7 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
 })
 export class QuestSearchService extends SearchService<QuestTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected queryService: MysqlQueryService) {
+  constructor(protected override queryService: MysqlQueryService) {
     super(queryService, QUEST_TEMPLATE_TABLE, QUEST_TEMPLATE_SEARCH_FIELDS);
   }
 }

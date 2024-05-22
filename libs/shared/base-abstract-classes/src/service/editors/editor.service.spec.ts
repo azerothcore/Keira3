@@ -59,7 +59,7 @@ describe('EditorService', () => {
       service.reload(mockChangeDetectorRef, id);
 
       expect(service.loading).toBe(false);
-      expect(service.error).toBe(null);
+      expect(service.error).toBe(undefined as any);
       expect(service.fullQuery).toBe('');
       expect(service.diffQuery).toBe('');
       expect(selectAllSpy).toHaveBeenCalledWith(service.entityTable, service['_entityIdField'], id);
@@ -103,8 +103,8 @@ describe('EditorService', () => {
       reloadSpy = spyOn(service, 'reload');
     });
 
-    it('should do nothing if the query is null', () => {
-      service.save(mockChangeDetectorRef, null);
+    it('should do nothing if the query is undefined', () => {
+      service.save(mockChangeDetectorRef, undefined);
 
       expect(querySpy).toHaveBeenCalledTimes(0);
       expect(reloadSpy).toHaveBeenCalledTimes(0);
@@ -124,7 +124,7 @@ describe('EditorService', () => {
       expect(toastrSucessSpy).toHaveBeenCalledTimes(1);
       expect(toastrErrorSpy).toHaveBeenCalledTimes(0);
       expect(service.loading).toBe(false);
-      expect(service.error).toBe(null);
+      expect(service.error).toBe(undefined as any);
     });
 
     it('should correctly work when the query errors', () => {

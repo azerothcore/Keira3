@@ -14,13 +14,13 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   protected readonly toastrService = inject(ToastrService);
 
   protected _loading = false;
-  protected _loadedEntityId: string | number | Partial<T>;
+  protected _loadedEntityId: string | number | Partial<T> | undefined;
   protected readonly fields: StringKeys<T>[];
-  protected _diffQuery: string;
-  protected _fullQuery: string;
+  protected _diffQuery: string | undefined;
+  protected _fullQuery: string | undefined;
   protected _isNew = false;
-  protected _form: FormGroup<ModelForm<T>>;
-  protected _error: QueryError;
+  protected _form!: FormGroup<ModelForm<T>>;
+  protected _error: QueryError | undefined;
 
   /* istanbul ignore next */ // TODO: fix coverage
   get loadedEntityId(): string {
@@ -30,10 +30,10 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     return this._loading;
   }
   get diffQuery(): string {
-    return this._diffQuery;
+    return this._diffQuery as string;
   }
   get fullQuery(): string {
-    return this._fullQuery;
+    return this._fullQuery as string;
   }
   get entityTable(): string {
     return this._entityTable;
@@ -42,16 +42,16 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     return this._isNew;
   }
   get form(): FormGroup<ModelForm<T>> {
-    return this._form;
+    return this._form as FormGroup<ModelForm<T>>;
   }
   get error(): QueryError {
-    return this._error;
+    return this._error as QueryError;
   }
 
-  constructor(
+  protected constructor(
     protected _entityClass: Class,
     protected _entityTable: string,
-    protected _entityIdField: string,
+    protected _entityIdField: string | undefined,
     protected handlerService: HandlerService<T>,
   ) {
     super();
@@ -63,9 +63,9 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     this.queryService.clearCache();
   }
 
-  protected abstract updateDiffQuery();
-  protected abstract updateFullQuery();
-  protected abstract onReloadSuccessful(data: T[], id: string | number);
+  protected abstract updateDiffQuery(): void;
+  protected abstract updateFullQuery(): void;
+  protected abstract onReloadSuccessful(data: T[], id: string | number): void;
 
   /* istanbul ignore next */ // TODO: fix coverage
   protected updateEditorStatus(): void {
@@ -78,7 +78,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   }
 
   protected disableEntityIdField(): void {
-    this._form.controls[this._entityIdField].disable();
+    this._form.controls[this._entityIdField as string].disable();
   }
 
   protected initForm(): void {
@@ -92,15 +92,16 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   }
 
   protected selectQuery(id: string | number): Observable<T[]> {
-    return this.queryService.selectAll<T>(this._entityTable, this._entityIdField, id);
+    return this.queryService.selectAll<T>(this._entityTable, this._entityIdField as string, id);
   }
 
   protected reloadEntity(changeDetectorRef: ChangeDetectorRef, id?: string | number) {
     this.subscriptions.push(
-      this.selectQuery(id).subscribe({
+      this.selectQuery(id as string | number).subscribe({
+        // TODO: fix typing, remove 'as' cast
         next: (data) => {
-          this._error = null;
-          this.onReloadSuccessful(data, id);
+          this._error = undefined;
+          this.onReloadSuccessful(data, id as string | number); // TODO: fix typing, remove 'as' cast
           this._loading = false;
           changeDetectorRef.markForCheck();
         },
@@ -130,7 +131,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     this.reload(changeDetectorRef, this.loadedEntityId);
   }
 
-  save(changeDetectorRef: ChangeDetectorRef, query: string): void {
+  save(changeDetectorRef: ChangeDetectorRef, query: string | undefined): void {
     if (!query) {
       return;
     }
@@ -140,7 +141,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     this.subscriptions.push(
       this.queryService.query<T>(query).subscribe({
         next: () => {
-          this._error = null;
+          this._error = undefined;
           this.reloadSameEntity(changeDetectorRef);
           this.toastrService.success('Query executed successfully', 'Success');
           this._loading = false;

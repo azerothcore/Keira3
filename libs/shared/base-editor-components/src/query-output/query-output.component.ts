@@ -25,11 +25,11 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
   private readonly clipboardService = inject(ClipboardService);
   private readonly modalService = inject(BsModalService);
 
-  @Input() docUrl: string;
-  @Input() editorService: EditorService<T>;
+  @Input() docUrl!: string;
+  @Input() editorService!: EditorService<T>;
   @Output() executeQuery = new EventEmitter<string>();
   selectedQuery: 'diff' | 'full' = 'diff';
-  private modalRef: BsModalRef;
+  private modalRef!: BsModalRef;
 
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 

@@ -44,7 +44,7 @@
               id="delete-selected-row-btn"
               class="btn btn-danger btn-sm me-2"
               (click)="editorService.deleteSelectedRow()"
-              [disabled]="editorService.selectedRowId === null"
+              [disabled]="editorService.selectedRowId === null || editorService.selectedRowId === undefined"
               [translate]="'DELETE_SELECTED_ROW'"
             ></button>
             <button

@@ -171,7 +171,7 @@ describe('MultiRowEditorService', () => {
 
     expect(service['_originalRows']).toEqual(rows);
     expect(service['_newRows']).toEqual(rows);
-    expect(service.selectedRowId).toBeNull();
+    expect(service.selectedRowId).toBeUndefined();
     expect(service.form.disabled).toBe(true);
     expect(service['_loadedEntityId']).toBe(id);
     expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
@@ -216,7 +216,7 @@ describe('MultiRowEditorService', () => {
   describe('deleteSelectedRow()', () => {
     it('should not do anything if there is no selected row', () => {
       const { service, formDisableSpy, formResetSpy, updateDiffQuerySpy, updateFullQuerySpy } = setup();
-      service['_selectedRowId'] = null;
+      service['_selectedRowId'] = undefined;
 
       service.deleteSelectedRow();
 
@@ -229,6 +229,7 @@ describe('MultiRowEditorService', () => {
     it('should correctly remove the selected row', () => {
       const { service, formDisableSpy, formResetSpy, updateDiffQuerySpy, updateFullQuerySpy } = setup();
       service['_newRows'] = [{ [MOCK_ID]: 1, [MOCK_ID_2]: 11111, [MOCK_NAME]: '' }];
+      service['_selectedRowId'] = 0;
       spyOn<any>(service, 'getSelectedRowIndex').and.returnValue(0);
 
       service.deleteSelectedRow();
@@ -290,7 +291,7 @@ describe('MultiRowEditorService', () => {
       const onRowSelectionSpy = spyOn(service, 'onRowSelection');
       const newRow = new MockEntity();
       newRow[MOCK_ID_2] = nextRowId;
-      service['_entityIdField'] = null;
+      (service['_entityIdField'] as any) = undefined;
 
       service.addNewRow();
 

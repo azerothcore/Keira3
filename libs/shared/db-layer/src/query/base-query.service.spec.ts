@@ -25,7 +25,7 @@ describe('BaseQueryService', () => {
     it('should correctly work', waitForAsync(async () => {
       const { service } = setup();
       const value = 'mock result value';
-      spyOn(service, 'query').and.returnValue(of([{ v: value }]));
+      spyOn(service, 'query').and.returnValue(of([{ v: value }]) as any);
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
 
       expect(await service.queryValueToPromise(query)).toEqual(value);

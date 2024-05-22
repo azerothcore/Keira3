@@ -9,7 +9,7 @@ import { SqliteQueryService } from '@keira/shared/db-layer';
 })
 export class SoundEntriesSearchService extends SearchService<SoundEntries> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected queryService: SqliteQueryService) {
+  constructor(protected override queryService: SqliteQueryService) {
     super(queryService, SOUND_ENTRIES_TABLE, SOUND_ENTRIES_SEARCH_FIELDS);
   }
 }

@@ -19,17 +19,17 @@ import { ReferenceViewerService } from './reference-viewer.service';
   imports: [TooltipModule, NgxDatatableModule, IconComponent, AsyncPipe],
 })
 export class ReferenceViewerComponent extends SubscriptionHandler implements OnChanges {
-  @Input() referenceId: number;
+  @Input({ required: true }) referenceId!: number;
 
   readonly service = inject(ReferenceViewerService);
   readonly queryService = inject(MysqlQueryService);
 
   readonly DTCFG = DTCFG;
-  referenceLootRows: ReferenceLootTemplate[];
+  referenceLootRows: ReferenceLootTemplate[] | undefined;
   nestedReferenceIds: number[] = [];
 
   ngOnChanges(): void {
-    this.referenceLootRows = null;
+    this.referenceLootRows = undefined;
     this.nestedReferenceIds = [];
 
     this.subscriptions.push(

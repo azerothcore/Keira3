@@ -13,24 +13,24 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
   }
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected _entityClass: Class,
-    protected _entityTable: string,
+  protected constructor(
+    protected override _entityClass: Class,
+    protected override _entityTable: string,
     _entityIdField: string[],
-    protected _entityNameField: string,
-    protected isMainEntity: boolean,
-    protected handlerService: HandlerService<T>,
+    protected override _entityNameField: string,
+    protected override isMainEntity: boolean,
+    protected override handlerService: HandlerService<T>,
   ) {
     super(_entityClass, _entityTable, JSON.stringify(_entityIdField), _entityNameField, isMainEntity, handlerService);
   }
 
-  protected disableEntityIdField() {}
+  protected override disableEntityIdField() {}
 
-  protected selectQuery(): Observable<T[]> {
+  protected override selectQuery(): Observable<T[]> {
     return this.queryService.selectAllMultipleKeys<T>(this._entityTable, JSON.parse(this.handlerService.selected));
   }
 
-  protected updateDiffQuery(): void {
+  protected override updateDiffQuery(): void {
     this._diffQuery = this.queryService.getUpdateMultipleKeysQuery<T>(
       this._entityTable,
       this._originalValue,
@@ -41,7 +41,7 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
     this.updateEditorStatus();
   }
 
-  protected updateFullQuery(): void {
+  protected override updateFullQuery(): void {
     const originalValue = this.isNew ? this._form.getRawValue() : this._originalValue;
     this._fullQuery = this.queryService.getFullDeleteInsertMultipleKeysQuery<T>(
       this._entityTable,
@@ -51,11 +51,11 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
     );
   }
 
-  protected reloadEntity(changeDetectorRef: ChangeDetectorRef) {
+  protected override reloadEntity(changeDetectorRef: ChangeDetectorRef) {
     this.subscriptions.push(
       this.selectQuery().subscribe({
         next: (data) => {
-          this._error = null;
+          this._error = undefined;
           this.onReloadSuccessful(data);
           this._loading = false;
           changeDetectorRef.markForCheck();
@@ -69,13 +69,13 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
     );
   }
 
-  reload(changeDetectorRef: ChangeDetectorRef): void {
+  override reload(changeDetectorRef: ChangeDetectorRef): void {
     this._loading = true;
     this.reset();
     this.reloadEntity(changeDetectorRef);
   }
 
-  reloadSameEntity(changeDetectorRef: ChangeDetectorRef): void {
+  override reloadSameEntity(changeDetectorRef: ChangeDetectorRef): void {
     this._isNew = false;
     this.handlerService.select(false, getPartial<T>(this._form.getRawValue() as T, this.entityIdFields));
     this.reload(changeDetectorRef);
@@ -84,7 +84,7 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
   /*
    *  ****** OVERRIDES of onReloadSuccessful() and some of its helpers ******
    */
-  protected onCreatingNewEntity(): void {
+  protected override onCreatingNewEntity(): void {
     this._originalValue = new this._entityClass();
     const selected: Partial<T> = JSON.parse(this.handlerService.selected);
 
@@ -98,13 +98,13 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
     this._isNew = true;
   }
 
-  protected setLoadedEntity(): void {
+  protected override setLoadedEntity(): void {
     const loadedEntity = getPartial<T>(this._originalValue, this.entityIdFields);
     this._loadedEntityId = JSON.stringify(loadedEntity);
     this.handlerService.select(this.handlerService.isNew, getPartial<T>(this._originalValue, this.entityIdFields));
   }
 
-  protected onReloadSuccessful(data: T[]): void {
+  protected override onReloadSuccessful(data: T[]): void {
     if (!this.handlerService.isNew) {
       // we are loading an existing entity
       this.onLoadedExistingEntity(data[0]);

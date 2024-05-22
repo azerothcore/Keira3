@@ -6,19 +6,19 @@ import { ModelForm, ModelNestedForm, SubscriptionHandler } from '@keira/shared/u
 
 export abstract class SearchService<T extends TableRow> extends SubscriptionHandler {
   query: string;
-  rows: T[];
+  rows: T[] | undefined;
   fields: FormGroup<ModelForm<T>> = new FormGroup({} as any);
   queryForm = new FormGroup<ModelNestedForm<QueryForm<T>>>({
-    limit: new FormControl<number>(50),
-    fields: this.fields,
+    limit: new FormControl<number>(50) as any, // TODO: fix typing
+    fields: this.fields as any, // TODO: fix typing
   });
 
-  constructor(
-    protected queryService: BaseQueryService,
-    protected entityTable: string,
-    protected fieldList: StringKeys<T>[],
-    protected selectFields: string[] = null,
-    protected groupFields: string[] = null,
+  protected constructor(
+    protected readonly queryService: BaseQueryService,
+    protected readonly entityTable: string,
+    protected readonly fieldList: StringKeys<T>[],
+    protected readonly selectFields: string[] | undefined = undefined,
+    protected readonly groupFields: string[] | undefined = undefined,
   ) {
     super();
 
@@ -45,7 +45,7 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
   onSearch(changeDetectorRef: ChangeDetectorRef): void {
     this.subscriptions.push(
       this.queryService.query<T>(this.query).subscribe((data) => {
-        this.rows = data;
+        this.rows = data as T[];
         changeDetectorRef.markForCheck();
       }),
     );

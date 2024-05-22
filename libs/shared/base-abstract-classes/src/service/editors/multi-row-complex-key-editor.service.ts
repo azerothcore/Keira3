@@ -7,23 +7,23 @@ import { ChangeDetectorRef } from '@angular/core';
 
 export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extends MultiRowEditorService<T> {
   get entityIdFields(): string[] {
-    return JSON.parse(this._entityIdField);
+    return JSON.parse(this._entityIdField as string);
   }
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected _entityClass: Class,
-    protected _entityTable: string,
+  protected constructor(
+    protected override _entityClass: Class,
+    protected override _entityTable: string,
     _entityIdField: string[],
-    protected _entitySecondIdField: string,
-    protected handlerService: HandlerService<T>,
+    protected override _entitySecondIdField: string,
+    protected override handlerService: HandlerService<T>,
   ) {
     super(_entityClass, _entityTable, JSON.stringify(_entityIdField), _entitySecondIdField, handlerService);
   }
 
-  protected disableEntityIdField() {}
+  protected override disableEntityIdField() {}
 
-  protected updateDiffQuery(): void {
+  protected override updateDiffQuery(): void {
     this._diffQuery = this.queryService.getDiffDeleteInsertTwoKeysQuery<T>(
       this._entityTable,
       this.entityIdFields,
@@ -35,9 +35,9 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
     this.updateEditorStatus();
   }
 
-  protected abstract updateFullQuery(): void;
+  protected abstract override updateFullQuery(): void;
 
-  protected addIdToNewRow(newRow): void {
+  protected override addIdToNewRow(newRow: any): void {
     const obj = this._loadedEntityId as Partial<T>;
 
     for (const key of Object.keys(obj)) {
@@ -45,21 +45,21 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
     }
   }
 
-  reload(changeDetectorRef: ChangeDetectorRef) {
+  override reload(changeDetectorRef: ChangeDetectorRef) {
     this._loading = true;
     this.reset();
     this.reloadEntity(changeDetectorRef);
   }
 
-  protected selectQuery(): Observable<T[]> {
+  protected override selectQuery(): Observable<T[]> {
     return this.queryService.selectAllMultipleKeys<T>(this._entityTable, JSON.parse(this.handlerService.selected));
   }
 
-  protected reloadEntity(changeDetectorRef: ChangeDetectorRef) {
+  protected override reloadEntity(changeDetectorRef: ChangeDetectorRef) {
     this.subscriptions.push(
       this.selectQuery().subscribe({
         next: (data) => {
-          this._error = null;
+          this._error = undefined;
           this.onReloadSuccessful(data);
           this._loading = false;
           changeDetectorRef.markForCheck();
@@ -73,7 +73,7 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
     );
   }
 
-  protected onReloadSuccessful(data: T[]) {
+  protected override onReloadSuccessful(data: T[]) {
     this.loadNewData(data);
     this._loadedEntityId = JSON.parse(this.handlerService.selected);
     this.updateFullQuery();

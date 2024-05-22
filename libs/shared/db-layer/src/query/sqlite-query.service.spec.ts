@@ -28,7 +28,7 @@ describe('SqliteQueryService', () => {
     }));
 
     it('should be safe in case of no results', waitForAsync(async () => {
-      spyOn(service, 'query').and.returnValue(of(null));
+      spyOn(service, 'query').and.returnValue(of(null as any));
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
 
       service.queryValue(query).subscribe((result) => {
@@ -74,18 +74,17 @@ describe('SqliteQueryService', () => {
         expect(res).toEqual(mockResult);
       });
       expect(service.queryValue).toHaveBeenCalledWith(`SELECT spellIconID AS v FROM spells WHERE ID = ${id}`);
-      expect(Object.keys(service['cache']).length).toBe(1);
-      expect(Object.keys(service['cache'])[0]).toBe('getDisplayIdBySpellId');
+      expect(service['cache'].size).toBe(1);
     });
 
     it('getDisplayIdBySpellId (case null)', () => {
-      service.getDisplayIdBySpellId(null).subscribe((res) => {
-        expect(res).toEqual(null);
+      service.getDisplayIdBySpellId(undefined).subscribe((res) => {
+        expect(res).toEqual(undefined);
       });
       expect(service.queryValue).toHaveBeenCalledTimes(0);
     });
 
-    for (const test of [
+    const cases: { name: keyof SqliteQueryService; query: string }[] = [
       { name: 'getSpellNameById', query: `SELECT spellName AS v FROM spells WHERE id = ${id}` },
       { name: 'getSkillNameById', query: `SELECT name AS v FROM skills WHERE id = ${id}` },
       { name: 'getFactionNameById', query: `SELECT m_name_lang_1 AS v FROM factions WHERE m_ID = ${id}` },
@@ -95,16 +94,16 @@ describe('SqliteQueryService', () => {
       { name: 'getEventNameByHolidayId', query: `SELECT name AS v FROM holiday WHERE id = ${id}` },
       { name: 'getSocketBonusById', query: `SELECT name AS v FROM item_enchantment WHERE id = ${id}` },
       { name: 'getSpellDescriptionById', query: `SELECT Description AS v FROM spells WHERE id = ${id}` },
-    ]) {
+    ];
+    for (const test of cases) {
       it(
         test.name,
         waitForAsync(async () => {
-          expect(await service[test.name](id)).toEqual(mockResult);
-          expect(await service[test.name](id)).toEqual(mockResult); // check cache
+          expect(await (service[test.name] as (arg: any) => Promise<string>)(id)).toEqual(mockResult);
+          expect(await (service[test.name] as (arg: any) => Promise<string>)(id)).toEqual(mockResult); // check cache
           expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
           expect(service.queryValue).toHaveBeenCalledWith(test.query);
-          expect(Object.keys(service['cache']).length).toBe(1);
-          expect(Object.keys(service['cache'])[0]).toBe(test.name);
+          expect(service['cache'].size).toBe(1);
         }),
       );
     }
@@ -122,8 +121,7 @@ describe('SqliteQueryService', () => {
       expect(await service.getRewardXP(id, 2)).toEqual(mockResult); // check cache
       expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
       expect(service.queryValue).toHaveBeenCalledWith(`SELECT field${Number(id) + 1} AS v FROM questxp WHERE id = 2`);
-      expect(Object.keys(service['cache']).length).toBe(1);
-      expect(Object.keys(service['cache'])[0]).toBe('getRewardXP');
+      expect(service['cache'].size).toBe(1);
     }));
 
     it('getItemExtendedCost', waitForAsync(async () => {

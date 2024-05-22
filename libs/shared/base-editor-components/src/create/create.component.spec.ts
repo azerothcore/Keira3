@@ -89,7 +89,7 @@ describe('CreateComponent', () => {
 
   it('if queryService param is not passed, should not call getNextId', () => {
     const spyGetNextId = spyOn<any>(component, 'getNextId');
-    component.queryService = null;
+    component.queryService = undefined as any;
 
     component.ngOnInit();
 

@@ -1,20 +1,20 @@
 import { Injectable, NgZone } from '@angular/core';
 import * as mysql from 'mysql2';
 import { Connection, ConnectionOptions, FieldPacket as FieldInfo, QueryError } from 'mysql2';
-import { Observable, Subject } from 'rxjs';
-import { MysqlResult, QueryCallback, TableRow } from '@keira/shared/constants';
+import { Observable, Subject, Subscriber } from 'rxjs';
+import { MysqlResult, TableRow } from '@keira/shared/constants';
 import { ElectronService } from '@keira/shared/common-services';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MysqlService {
-  private mysql: typeof mysql;
-  private _connection: Connection;
+  private mysql!: typeof mysql;
+  private _connection!: Connection;
 
-  private _config: ConnectionOptions;
+  private _config!: ConnectionOptions;
   get config(): ConnectionOptions {
-    return this._config;
+    return this._config as ConnectionOptions;
   }
 
   private _connectionEstablished = false;
@@ -55,8 +55,8 @@ export class MysqlService {
     });
   }
 
-  private getConnectCallback(subscriber) {
-    return (err: QueryError) => {
+  private getConnectCallback(subscriber: Subscriber<unknown>) {
+    return (err: QueryError | null) => {
       this.ngZone.run(() => {
         if (err) {
           this._connectionEstablished = false;
@@ -71,7 +71,7 @@ export class MysqlService {
     };
   }
 
-  private handleConnectionError(error) {
+  private handleConnectionError(error: { code: string }) {
     if (error.code === 'PROTOCOL_CONNECTION_LOST') {
       this.reconnect();
     }
@@ -89,7 +89,7 @@ export class MysqlService {
     }, RECONNECTION_TIME_MS);
   }
 
-  private reconnectCallback(err: QueryError) {
+  private reconnectCallback(err: QueryError | null) {
     this.ngZone.run(() => {
       if (err) {
         // reconnection failed
@@ -112,7 +112,8 @@ export class MysqlService {
 
       /* istanbul ignore next */
       if (this._connection) {
-        this._connection.query(queryString, values, this.getQueryCallback<T>(subscriber));
+        // TODO: fix any, see https://github.com/sidorares/node-mysql2/issues/1654
+        this._connection.query<any>(queryString, values, this.getQueryCallback<T>(subscriber));
         /* istanbul ignore else */
       } else if (
         /* istanbul ignore next */
@@ -124,14 +125,14 @@ export class MysqlService {
     });
   }
 
-  private getQueryCallback<T extends TableRow>(subscriber): QueryCallback {
-    return (err: QueryError, results?: T[], fields?: FieldInfo[]) => {
+  private getQueryCallback<T extends TableRow>(subscriber: Subscriber<unknown>) {
+    return (err: QueryError | null, result?: T[], fields?: FieldInfo[]) => {
       this.ngZone.run(() => {
         if (err) {
           console.log(`Error when executing query: \n\n${err.stack}`);
           subscriber.error(err);
         } else {
-          subscriber.next({ results, fields });
+          subscriber.next({ result, fields });
         }
         subscriber.complete();
       });
