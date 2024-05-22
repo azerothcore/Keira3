@@ -29,9 +29,9 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
   private readonly IMAGES_COUNT = 11;
   readonly RANDOM_IMAGE = Math.floor(Math.random() * this.IMAGES_COUNT) + 1;
   readonly KEIRA_VERSION = packageInfo.version;
-  configs: Partial<ConnectionOptions>[];
-  form: FormGroup<ModelForm<Partial<ConnectionOptions>>>;
-  error: QueryError;
+  configs: Partial<ConnectionOptions>[] | undefined;
+  form!: FormGroup<ModelForm<Partial<ConnectionOptions>>>;
+  error: QueryError | undefined;
   savePassword = true;
   rememberMe = true;
 
@@ -41,11 +41,11 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
 
   ngOnInit(): void {
     this.form = new FormGroup<ModelForm<Partial<ConnectionOptions>>>({
-      host: new FormControl<string>('127.0.0.1'),
-      port: new FormControl<number>(3306),
-      user: new FormControl<string>('root'),
-      password: new FormControl<string>('root'),
-      database: new FormControl<string>('acore_world'),
+      host: new FormControl<string>('127.0.0.1') as FormControl<string>,
+      port: new FormControl<number>(3306) as FormControl<number>,
+      user: new FormControl<string>('root') as FormControl<string>,
+      password: new FormControl<string>('root') as FormControl<string>,
+      database: new FormControl<string>('acore_world') as FormControl<string>,
     });
 
     this.configs = this.loginConfigService.getConfigs();
@@ -84,7 +84,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
           }
           this.loginConfigService.saveRememberPreference(this.rememberMe);
           this.loginConfigService.saveNewConfig(newConfig);
-          this.error = null;
+          this.error = undefined;
         },
         error: (error: QueryError) => {
           this.error = error;

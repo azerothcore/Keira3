@@ -132,7 +132,7 @@ describe('ConnectionWindowComponent', () => {
       password: 'root',
       database: 'acore_world',
     });
-    expect(component.error).toBeNull();
+    expect(component.error).toBeUndefined();
     expect(page.errorElement.innerHTML).not.toContain('error-box');
   });
 
@@ -153,7 +153,7 @@ describe('ConnectionWindowComponent', () => {
       database: 'helias_world',
     });
 
-    expect(component.error).toBeNull();
+    expect(component.error).toBeUndefined();
     expect(page.errorElement.innerHTML).not.toContain('error-box');
   });
 
@@ -175,7 +175,7 @@ describe('ConnectionWindowComponent', () => {
 
     expect(connectSpy).toHaveBeenCalledTimes(1);
     expect(connectSpy).toHaveBeenCalledWith({ host, port, user, password, database });
-    expect(component.error).toBeNull();
+    expect(component.error).toBeUndefined();
     expect(page.errorElement.innerHTML).not.toContain('error-box');
   });
 
@@ -195,8 +195,8 @@ describe('ConnectionWindowComponent', () => {
     expect(component.error).toEqual(error);
     expect(page.errorElement.innerHTML).toContain('error-box');
     expect(page.errorElement.innerHTML).toContain(error.code);
-    expect(page.errorElement.innerHTML).toContain(error.stack);
-    expect(page.errorElement.innerHTML).toContain(error.sqlState);
+    expect(page.errorElement.innerHTML).toContain(error.stack as string);
+    expect(page.errorElement.innerHTML).toContain(error.sqlState as string);
     expect(page.errorElement.innerHTML).toContain(`${error.errno}`);
   });
 
@@ -360,11 +360,11 @@ describe('ConnectionWindowComponent', () => {
       //  but we can't because of: https://github.com/valor-software/ngx-bootstrap/issues/4282
       component.loadConfig(mockConfigsWithPass[0]);
 
-      expect(page.hostInput.value).toBe(mockConfigsWithPass[0].host);
+      expect(page.hostInput.value).toBe(mockConfigsWithPass[0].host as string);
       expect(page.portInput.value).toBe(String(mockConfigsWithPass[0].port));
-      expect(page.userInput.value).toBe(mockConfigsWithPass[0].user);
-      expect(page.passwordInput.value).toBe(mockConfigsWithPass[0].password);
-      expect(page.databaseInput.value).toBe(mockConfigsWithPass[0].database);
+      expect(page.userInput.value).toBe(mockConfigsWithPass[0].user as string);
+      expect(page.passwordInput.value).toBe(mockConfigsWithPass[0].password as string);
+      expect(page.databaseInput.value).toBe(mockConfigsWithPass[0].database as string);
     }));
   });
 
