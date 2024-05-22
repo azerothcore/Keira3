@@ -8,7 +8,7 @@ import { SearchService } from '@keira/shared/base-abstract-classes';
 })
 export class GameobjectSearchService extends SearchService<GameobjectTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(readonly queryService: MysqlQueryService) {
+  constructor(override readonly queryService: MysqlQueryService) {
     super(queryService, GAMEOBJECT_TEMPLATE_TABLE, GAMEOBJECT_TEMPLATE_SEARCH_FIELDS);
   }
 }
