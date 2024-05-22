@@ -29,14 +29,17 @@
               <input [formControlName]="'subname'" id="subname" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-              <label class="control-label" for="IconName">IconName</label>
-              <keira-single-value-selector-btn
+              <label class="control-label" for="IconName">
+                <keira-icon-selector
+                  [src]="'assets/img/creature-icons/' + editorService.form.controls.IconName.value + '.png'"
+                ></keira-icon-selector>
+                IconName</label
+              >
+              <keira-generic-option-selector
                 [control]="editorService.form.controls.IconName"
-                [disabled]="editorService.form.controls.IconName.disabled"
-                [config]="{ options: CREATURE_ICON, name: 'IconName' }"
-                [modalClass]="'modal-xl'"
-              />
-              <input [formControlName]="'IconName'" id="IconName" class="form-control form-control-sm" />
+                controlName="IconName"
+                [optionList]="CREATURE_ICON"
+              ></keira-generic-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="minlevel">minlevel</label>
@@ -49,14 +52,12 @@
               <input [formControlName]="'maxlevel'" id="maxlevel" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-              <label class="control-label" for="exp">exp</label>
-              <keira-single-value-selector-btn
+              <label class="control-label" for="exp">expansion</label>
+              <keira-generic-option-selector
                 [control]="editorService.form.controls.exp"
-                [disabled]="editorService.form.controls.exp.disabled"
-                [config]="{ options: EXPANSION, name: 'exp' }"
-                [modalClass]="'modal-md'"
-              />
-              <input [formControlName]="'exp'" id="exp" type="number" class="form-control form-control-sm" />
+                controlName="exp"
+                [optionList]="EXPANSION"
+              ></keira-generic-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="faction">faction</label>
@@ -78,34 +79,28 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="rank">rank</label>
-              <keira-single-value-selector-btn
-                [control]="editorService.form.controls.rank"
-                [disabled]="editorService.form.controls.rank.disabled"
-                [config]="{ options: RANK, name: 'rank' }"
-                [modalClass]="'modal-md'"
-              />
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.RANK' | translate"></i>
-              <input [formControlName]="'rank'" id="rank" type="number" class="form-control form-control-sm" />
+              <keira-generic-option-selector
+                [control]="editorService.form.controls.rank"
+                controlName="rank"
+                [optionList]="RANK"
+              ></keira-generic-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="family">family</label>
-              <keira-single-value-selector-btn
+              <keira-generic-option-selector
                 [control]="editorService.form.controls.family"
-                [disabled]="editorService.form.controls.family.disabled"
-                [config]="{ options: CREATURE_FAMILY, name: 'family' }"
-                [modalClass]="'modal-md'"
-              />
-              <input [formControlName]="'family'" id="family" type="number" class="form-control form-control-sm" />
+                controlName="family"
+                [optionList]="CREATURE_FAMILY"
+              ></keira-generic-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="type">type</label>
-              <keira-single-value-selector-btn
+              <keira-generic-option-selector
                 [control]="editorService.form.controls.type"
-                [disabled]="editorService.form.controls.type.disabled"
-                [config]="{ options: CREATURE_TYPE, name: 'type' }"
-                [modalClass]="'modal-md'"
-              />
-              <input [formControlName]="'type'" id="type" type="number" class="form-control form-control-sm" />
+                controlName="type"
+                [optionList]="CREATURE_TYPE"
+              ></keira-generic-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="type_flags">type_flags</label>
@@ -118,13 +113,11 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="unit_class">unit_class</label>
-              <keira-single-value-selector-btn
+              <keira-generic-option-selector
                 [control]="editorService.form.controls.unit_class"
-                [disabled]="editorService.form.controls.unit_class.disabled"
-                [config]="{ options: UNIT_CLASS, name: 'unit_class' }"
-                [modalClass]="'modal-lg'"
-              />
-              <input [formControlName]="'unit_class'" id="unit_class" type="number" class="form-control form-control-sm" />
+                controlName="unit_class"
+                [optionList]="UNIT_CLASS"
+              ></keira-generic-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="unit_flags">unit_flags</label>
@@ -156,7 +149,10 @@
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="RegenHealth">RegenHealth</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.REGEN_HEALTH' | translate"></i>
-              <input [formControlName]="'RegenHealth'" id="RegenHealth" type="number" class="form-control form-control-sm" />
+              <keira-boolean-option-selector
+                [control]="editorService.form.controls.RegenHealth"
+                controlName="RegenHealth"
+              ></keira-boolean-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="mechanic_immune_mask">mechanic_I_M</label>
@@ -203,7 +199,10 @@
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="RacialLeader">RacialLeader</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.RACIAL_LEADER' | translate"></i>
-              <input [formControlName]="'RacialLeader'" id="RacialLeader" type="number" class="form-control form-control-sm" />
+              <keira-boolean-option-selector
+                [control]="editorService.form.controls.RacialLeader"
+                controlName="RacialLeader"
+              ></keira-boolean-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="PetSpellDataId">PetSpellDataId</label>
@@ -274,13 +273,11 @@
               <div class="row">
                 <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
                   <label class="control-label" for="trainer_type">trainer_type</label>
-                  <keira-single-value-selector-btn
+                  <keira-generic-option-selector
                     [control]="editorService.form.controls.trainer_type"
-                    [disabled]="editorService.form.controls.trainer_type.disabled"
-                    [config]="{ options: TRAINER_TYPE, name: 'trainer_type' }"
-                    [modalClass]="'modal-md'"
-                  />
-                  <input [formControlName]="'trainer_type'" id="trainer_type" type="number" class="form-control form-control-sm" />
+                    controlName="trainer_type"
+                    [optionList]="TRAINER_TYPE"
+                  ></keira-generic-option-selector>
                 </div>
                 <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
                   <label class="control-label" for="trainer_spell">trainer_spell</label>
@@ -294,24 +291,37 @@
                   <input [formControlName]="'trainer_spell'" id="trainer_spell" type="number" class="form-control form-control-sm" />
                 </div>
                 <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
-                  <label class="control-label" for="trainer_class">trainer_class</label>
-                  <keira-single-value-selector-btn
+                  <label class="control-label" for="trainer_class">
+                    <keira-icon-selector
+                      [src]="'assets/img/class/' + editorService.form.controls.trainer_class.value + '.gif'"
+                    ></keira-icon-selector>
+                    trainer_class</label
+                  >
+                  <keira-generic-option-selector
                     [control]="editorService.form.controls.trainer_class"
-                    [disabled]="editorService.form.controls.trainer_class.disabled"
-                    [config]="{ options: CREATURE_CLASS, name: 'trainer_class' }"
-                    [modalClass]="'modal-md'"
-                  />
-                  <input [formControlName]="'trainer_class'" id="trainer_class" type="number" class="form-control form-control-sm" />
+                    controlName="trainer_class"
+                    [optionList]="CREATURE_CLASS"
+                  ></keira-generic-option-selector>
                 </div>
                 <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
-                  <label class="control-label" for="trainer_race">trainer_race</label>
-                  <keira-single-value-selector-btn
-                    [control]="editorService.form.controls.trainer_race"
-                    [disabled]="editorService.form.controls.trainer_race.disabled"
-                    [config]="{ options: CREATURE_RACE, name: 'trainer_race' }"
-                    [modalClass]="'modal-md'"
-                  />
-                  <input [formControlName]="'trainer_race'" id="trainer_race" type="number" class="form-control form-control-sm" />
+                  <label class="control-label" for="trainer_race">
+                    <keira-icon-selector
+                      [src]="
+                        'assets/img/race/' + editorService.form.controls.trainer_race.value + '-' + (RACE_ICON_GENDER ? 1 : 0) + '.gif'
+                      "
+                    ></keira-icon-selector>
+                    trainer_race</label
+                  >
+                  <select
+                    [formControlName]="'trainer_race'"
+                    id="trainer_race"
+                    class="form-control form-control-sm"
+                    (change)="RACE_ICON_GENDER = !RACE_ICON_GENDER"
+                  >
+                    @for (option of CREATURE_RACE; track option) {
+                      <option [ngValue]="option.value" [label]="option.value + ' - ' + option.name"></option>
+                    }
+                  </select>
                 </div>
               </div>
             </div>
@@ -406,13 +416,11 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
               <label class="control-label" for="dmgschool">dmgschool</label>
-              <keira-single-value-selector-btn
+              <keira-generic-option-selector
                 [control]="editorService.form.controls.dmgschool"
-                [disabled]="editorService.form.controls.dmgschool.disabled"
-                [config]="{ options: DAMAGE_TYPE, name: 'dmgschool' }"
-                [modalClass]="'modal-md'"
-              />
-              <input [formControlName]="'dmgschool'" id="dmgschool" type="number" class="form-control form-control-sm" />
+                controlName="dmgschool"
+                [optionList]="DAMAGE_TYPE"
+              ></keira-generic-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
               <label class="control-label" for="BaseAttackTime">BaseAttackTime</label>
@@ -451,13 +459,11 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="MovementType">MovementType</label>
-              <keira-single-value-selector-btn
+              <keira-generic-option-selector
                 [control]="editorService.form.controls.MovementType"
-                [disabled]="editorService.form.controls.MovementType.disabled"
-                [config]="{ options: MOVEMENT_TYPE, name: 'MovementType' }"
-                [modalClass]="'modal-md'"
-              />
-              <input [formControlName]="'MovementType'" id="MovementType" type="number" class="form-control form-control-sm" />
+                controlName="MovementType"
+                [optionList]="MOVEMENT_TYPE"
+              ></keira-generic-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="movementId">movementId</label>

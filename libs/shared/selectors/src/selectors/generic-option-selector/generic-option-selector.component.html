@@ -1,0 +1,5 @@
+<select [formControl]="control" [id]="controlName" class="form-control form-control-sm">
+  @for (option of optionList; track option) {
+    <option [ngValue]="option.value" [label]="option.value + ' - ' + option.name"></option>
+  }
+</select>

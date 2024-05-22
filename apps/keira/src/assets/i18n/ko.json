@@ -47,6 +47,10 @@
   "EXECUTE": "Execute",
   "RELOAD": "Reload",
   "CANCEL": "Cancel",
+  "SELECTORS": {
+    "ENABLED": "Enabled",
+    "DISABLED": "Disabled"
+  },
   "CONNECTION_WINDOW": {
     "HOST": "Host",
     "PORT": "Port",

@@ -1,6 +1,7 @@
 import { Option } from '@keira/shared/constants';
 
 export const CREATURE_CLASS: Option[] = [
+  { value: 0, name: 'NONE' },
   { value: 1, name: 'WARRIOR' },
   { value: 2, name: 'PALADIN' },
   { value: 3, name: 'HUNTER' },

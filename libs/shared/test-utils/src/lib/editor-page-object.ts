@@ -20,7 +20,7 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
     this.queryPo = new QueryOutputComponentPage(fixture as ComponentFixture<any>);
   }
 
-  changeAllFields<E extends TableRow>(entity: E, excludedFields: string[] = [], values: number[] = []): void {
+  changeAllFields<E extends TableRow>(entity: E, excludedFields: string[] = [], values: (string | number)[] = []): void {
     let i = 0;
     for (const field of Object.getOwnPropertyNames(entity)) {
       if (!excludedFields.includes(field)) {
@@ -46,8 +46,21 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
     this.clickElement(this.queryPo.copyBtn);
   }
 
-  setSelectValueById(inputId: string, value: number): void {
-    this.setInputValueById(inputId, `${value}: ${value}`);
+  setSelectValueById(inputId: string, value: string | number): void {
+    /*
+     * the <select> value is always "index: value"
+     * index is the position index of the <option> tag
+     * value is the option value (ngValue)
+     *
+     * usually, the index matches the ngValue if the value is an auto-increment number
+     * otherwise, it could not match and in the tests, we specify the full select value as "index: value" and not only "x"
+     */
+
+    if (typeof value === 'string') {
+      this.setInputValueById(inputId, `${value}`); // value = "index: value"
+    } else {
+      this.setInputValueById(inputId, `${value}: ${value}`); // the value is a number that matches the index
+    }
   }
 
   getSelectorBtn(name: string, assert = true): HTMLButtonElement {

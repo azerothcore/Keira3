@@ -1,6 +1,7 @@
 import { Option } from '@keira/shared/constants';
 
 export const CREATURE_RACE: Option[] = [
+  { value: 0, name: 'NONE' },
   { value: 1, name: 'HUMAN' },
   { value: 2, name: 'ORC' },
   { value: 3, name: 'DWARF' },

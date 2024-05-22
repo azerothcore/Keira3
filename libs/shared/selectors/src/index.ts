@@ -77,3 +77,7 @@ export * from './selectors/faction-selector/quest-faction-selector-modal.compone
 
 export * from './selectors/sound-entries-selector/sound-entries-selector-btn.component';
 export * from './selectors/sound-entries-selector/sound-entries-selector-modal.component';
+
+export * from './selectors/generic-option-selector/generic-option-selector.component';
+export * from './selectors/boolean-option-selector/boolean-option-selector.component';
+export * from './selectors/icon-selector/icon-selector.component';
