@@ -31,6 +31,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
 export class GameobjectSpawnAddonComponent extends MultiRowEditorComponent<GameobjectSpawnAddon> {
   readonly INVISIBILITY_TYPE = INVISIBILITY_TYPE;
 
-  readonly editorService = inject(GameobjectSpawnAddonService);
+  override readonly editorService = inject(GameobjectSpawnAddonService);
   readonly handlerService = inject(GameobjectHandlerService);
 }

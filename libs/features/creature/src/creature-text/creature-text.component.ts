@@ -34,6 +34,6 @@ export class CreatureTextComponent extends MultiRowEditorComponent<CreatureText>
   protected readonly TEXT_RANGE = TEXT_RANGE;
   protected readonly EMOTE = EMOTE;
 
-  public readonly editorService = inject(CreatureTextService);
-  protected readonly handlerService = inject(CreatureHandlerService);
+  public override readonly editorService = inject(CreatureTextService);
+  protected override readonly handlerService = inject(CreatureHandlerService);
 }

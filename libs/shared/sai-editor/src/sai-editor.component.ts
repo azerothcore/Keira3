@@ -87,8 +87,8 @@ import { EditorButtonsComponent, QueryOutputComponent } from '@keira/shared/base
   ],
 })
 export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> implements OnInit {
-  readonly editorService = inject(SaiEditorService);
-  protected readonly handlerService = inject(SaiHandlerService);
+  override readonly editorService = inject(SaiEditorService);
+  protected override readonly handlerService = inject(SaiHandlerService);
 
   readonly EVENT_PHASE_MASK = EVENT_PHASE_MASK;
   readonly SMART_EVENT_FLAGS = SMART_EVENT_FLAGS;

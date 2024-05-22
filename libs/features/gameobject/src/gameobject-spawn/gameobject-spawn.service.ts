@@ -8,7 +8,7 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 })
 export class GameobjectSpawnService extends MultiRowEditorService<GameobjectSpawn> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected handlerService: GameobjectHandlerService) {
+  constructor(protected override readonly handlerService: GameobjectHandlerService) {
     super(GameobjectSpawn, GAMEOBJECT_SPAWN_TABLE, GAMEOBJECT_SPAWN_ID, GAMEOBJECT_SPAWN_ID_2, handlerService);
   }
 }

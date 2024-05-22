@@ -8,7 +8,7 @@ import { QuestHandlerService } from '../quest-handler.service';
 })
 export class QuestOfferRewardService extends SingleRowEditorService<QuestOfferReward> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected handlerService: QuestHandlerService) {
+  constructor(protected override readonly handlerService: QuestHandlerService) {
     super(QuestOfferReward, QUEST_OFFER_REWARD_TABLE, QUEST_OFFER_REWARD_ID, null, false, handlerService);
   }
 }

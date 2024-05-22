@@ -15,6 +15,6 @@ import { LootEditorComponent } from '@keira/shared/loot-editor';
   imports: [TopBarComponent, TranslateModule, LootEditorComponent],
 })
 export class SpellLootTemplateComponent extends LootTemplateComponent<SpellLootTemplate> {
-  readonly editorService = inject(SpellLootTemplateService);
+  override readonly editorService = inject(SpellLootTemplateService);
   readonly handlerService = inject(SpellLootHandlerService);
 }

@@ -36,7 +36,7 @@ export class GameobjectLootTemplateComponent extends LootTemplateIdComponent<Gam
     );
   }
 
-  readonly editorService = inject(GameobjectLootTemplateService);
+  override readonly editorService = inject(GameobjectLootTemplateService);
   readonly handlerService = inject(GameobjectHandlerService);
 
   ngOnInit() {

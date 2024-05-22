@@ -37,6 +37,6 @@ export class GameobjectSpawnComponent extends MultiRowEditorComponent<Gameobject
   readonly SPAWN_MASK = SPAWN_MASK;
   readonly PHASE_MASK = PHASE_MASK;
 
-  readonly editorService = inject(GameobjectSpawnService);
+  override readonly editorService = inject(GameobjectSpawnService);
   readonly handlerService = inject(GameobjectHandlerService);
 }

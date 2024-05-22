@@ -22,5 +22,5 @@ export class SelectConditionsComponent extends SelectComplexKeyComponent<Conditi
   readonly CONDITION_SOURCE_TYPES_KEYS = getEnumKeys(CONDITION_SOURCE_TYPES);
 
   public readonly selectService = inject(ConditionsSearchService);
-  protected readonly handlerService = inject(ConditionsHandlerService);
+  protected override readonly handlerService = inject(ConditionsHandlerService);
 }

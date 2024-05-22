@@ -18,10 +18,10 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   imports: [TopBarComponent, TranslateModule, QueryOutputComponent, FormsModule, ReactiveFormsModule, TooltipModule],
 })
 export class CreatureTemplateMovementComponent extends SingleRowEditorComponent<CreatureTemplateMovement> {
-  public get docUrl(): string {
+  protected override get docUrl(): string {
     return this.WIKI_BASE_URL + CREATURE_TEMPLATE_MOVEMENT_TABLE;
   }
 
-  readonly editorService = inject(CreatureTemplateMovementService);
+  override readonly editorService = inject(CreatureTemplateMovementService);
   readonly handlerService = inject(CreatureHandlerService);
 }

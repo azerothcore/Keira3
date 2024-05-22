@@ -80,7 +80,7 @@ import { ItemTemplateService } from './item-template.service';
   ],
 })
 export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate> implements OnInit {
-  readonly editorService = inject(ItemTemplateService);
+  override readonly editorService = inject(ItemTemplateService);
   readonly handlerService = inject(ItemHandlerService);
   private readonly itemPreviewService = inject(ItemPreviewService);
   private readonly sanitizer = inject(DomSanitizer);

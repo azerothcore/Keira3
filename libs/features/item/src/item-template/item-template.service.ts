@@ -8,7 +8,7 @@ import { ItemHandlerService } from '../item-handler.service';
 })
 export class ItemTemplateService extends SingleRowEditorService<ItemTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected handlerService: ItemHandlerService) {
+  constructor(protected override readonly handlerService: ItemHandlerService) {
     super(ItemTemplate, ITEM_TEMPLATE_TABLE, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_NAME, true, handlerService);
   }
 }

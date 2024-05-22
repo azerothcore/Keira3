@@ -8,7 +8,7 @@ import { MultiRowExternalEditorService } from '@keira/shared/base-abstract-class
 })
 export class CreatureSpawnAddonService extends MultiRowExternalEditorService<CreatureSpawnAddon> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected handlerService: CreatureHandlerService) {
+  constructor(protected override readonly handlerService: CreatureHandlerService) {
     super(CreatureSpawnAddon, CREATURE_SPAWN_ADDON_TABLE, CREATURE_SPAWN_ADDON_ID_2, handlerService);
   }
 

@@ -13,7 +13,7 @@ import { ItemHandlerService } from '../item-handler.service';
 })
 export class ItemEnchantmentTemplateService extends MultiRowEditorService<ItemEnchantmentTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected handlerService: ItemHandlerService) {
+  constructor(protected override readonly handlerService: ItemHandlerService) {
     super(
       ItemEnchantmentTemplate,
       ITEM_ENCHANTMENT_TEMPLATE_TABLE,

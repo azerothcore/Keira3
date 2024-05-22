@@ -8,7 +8,7 @@ import { GossipHandlerService } from '../gossip-handler.service';
 })
 export class GossipMenuService extends MultiRowEditorService<GossipMenu> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected handlerService: GossipHandlerService) {
+  constructor(protected override readonly handlerService: GossipHandlerService) {
     super(GossipMenu, GOSSIP_MENU_TABLE, GOSSIP_MENU_ID, GOSSIP_MENU_ID_2, handlerService);
   }
 }

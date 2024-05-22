@@ -28,6 +28,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   ],
 })
 export class CreatureEquipTemplateComponent extends SingleRowEditorComponent<CreatureEquipTemplate> {
-  readonly editorService = inject(CreatureEquipTemplateService);
+  override readonly editorService = inject(CreatureEquipTemplateService);
   readonly handlerService = inject(CreatureHandlerService);
 }

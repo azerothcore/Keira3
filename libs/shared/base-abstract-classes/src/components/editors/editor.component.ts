@@ -18,7 +18,7 @@ export abstract class EditorComponent<T extends TableRow> extends SubscriptionHa
 
   protected readonly changeDetectorRef = inject(ChangeDetectorRef);
 
-  public get docUrl(): string {
+  protected get docUrl(): string {
     return this.WIKI_BASE_URL + this.editorService.entityTable;
   }
 

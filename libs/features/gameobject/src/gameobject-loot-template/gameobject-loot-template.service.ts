@@ -16,7 +16,7 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 })
 export class GameobjectLootTemplateService extends LootEditorIdService<GameobjectLootTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected handlerService: GameobjectHandlerService) {
+  constructor(protected override readonly handlerService: GameobjectHandlerService) {
     super(
       GameobjectLootTemplate,
       GAMEOBJECT_LOOT_TEMPLATE_TABLE,

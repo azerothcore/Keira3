@@ -26,6 +26,6 @@ import { NpcTextFieldsGroupComponent } from './npc-text-fields-group.component';
   ],
 })
 export class NpcTextComponent extends SingleRowEditorComponent<NpcText> {
-  readonly editorService = inject(NpcTextService);
-  protected readonly handlerService = inject(NpcTextHandlerService);
+  override readonly editorService = inject(NpcTextService);
+  protected override readonly handlerService = inject(NpcTextHandlerService);
 }

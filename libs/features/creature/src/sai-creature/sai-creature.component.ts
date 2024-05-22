@@ -33,6 +33,6 @@ import { SaiTopBarComponent } from '@keira/shared/sai-editor';
   ],
 })
 export class SaiCreatureComponent extends SaiEditorComponent {
-  readonly editorService = inject(SaiCreatureEditorService);
-  protected readonly handlerService = inject(SaiCreatureHandlerService);
+  override readonly editorService = inject(SaiCreatureEditorService);
+  protected override readonly handlerService = inject(SaiCreatureHandlerService);
 }

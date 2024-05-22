@@ -51,6 +51,6 @@ export class CreatureSpawnComponent extends MultiRowEditorComponent<CreatureSpaw
   readonly SPAWN_MASK = SPAWN_MASK;
   readonly PHASE_MASK = PHASE_MASK;
 
-  readonly editorService = inject(CreatureSpawnService);
+  override readonly editorService = inject(CreatureSpawnService);
   readonly handlerService = inject(CreatureHandlerService);
 }

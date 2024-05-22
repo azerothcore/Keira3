@@ -145,6 +145,6 @@ export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
     return this.conditionType === CONDITION_TYPES.CONDITION_STAND_STATE;
   }
 
-  readonly editorService = inject(ConditionsService);
+  override readonly editorService = inject(ConditionsService);
   readonly handlerService = inject(ConditionsHandlerService);
 }

@@ -33,6 +33,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   ],
 })
 export class CreatureQuestitemComponent extends MultiRowEditorComponent<CreatureQuestitem> {
-  readonly editorService = inject(CreatureQuestitemService);
+  override readonly editorService = inject(CreatureQuestitemService);
   readonly handlerService = inject(CreatureHandlerService);
 }

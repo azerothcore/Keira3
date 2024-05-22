@@ -23,5 +23,5 @@ export class SaiSearchExistingComponent extends SelectComplexKeyComponent<SmartS
   readonly SAI_SEARCH_TYPES_KEYS = getEnumKeys(SAI_TYPES);
 
   readonly selectService = inject(SaiSearchService);
-  protected readonly handlerService = inject(SaiHandlerService);
+  protected override readonly handlerService = inject(SaiHandlerService);
 }

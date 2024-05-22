@@ -34,7 +34,7 @@ import { GameobjectQueststarterService } from './gameobject-queststarter.service
   ],
 })
 export class GameobjectQueststarterComponent extends MultiRowEditorComponent<GameobjectQueststarter> {
-  readonly editorService = inject(GameobjectQueststarterService);
+  override readonly editorService = inject(GameobjectQueststarterService);
   readonly handlerService = inject(QuestHandlerService);
   readonly questPreviewService = inject(QuestPreviewService);
 }
