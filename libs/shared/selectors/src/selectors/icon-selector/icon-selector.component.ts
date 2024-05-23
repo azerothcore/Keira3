@@ -7,5 +7,5 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   standalone: true,
 })
 export class IconSelectorComponent {
-  @Input({ required: true }) src: string;
+  @Input({ required: true }) src!: string;
 }

@@ -153,16 +153,15 @@ describe('CreatureTemplate integration tests', () => {
       const expectedQuery =
         'UPDATE `creature_template` SET `difficulty_entry_2` = 1, `difficulty_entry_3` = 2, ' +
         '`KillCredit1` = 3, `KillCredit2` = 4, `modelid1` = 5, `modelid2` = 6, `modelid3` = 7, `modelid4` = 8, ' +
-        "`name` = '9', `subname` = '10', `IconName` = 'Directions', `gossip_menu_id` = 12, `minlevel` = 13, `maxlevel` = 14, " +
-        '`exp` = 1, `faction` = 16, `npcflag` = 17, `speed_walk` = 18, `speed_run` = 19, `speed_swim` = 20, `speed_flight` = 21, ' +
-        '`detection_range` = 22, `scale` = 23, `rank` = 1, ' +
-        '`dmgschool` = 1, `DamageModifier` = 26, `BaseAttackTime` = 27, `RangeAttackTime` = 28, `BaseVariance` = 29, ' +
-        '`RangeVariance` = 30, `unit_class` = 1, `unit_flags` = 32, `unit_flags2` = 33, `dynamicflags` = 34, `family` = 1, ' +
-        '`trainer_type` = 1, `trainer_spell` = 37, `trainer_class` = 1, `trainer_race` = 1, `type` = 1, `type_flags` = 41, ' +
-        '`lootid` = 42, `pickpocketloot` = 43, `skinloot` = 44, `PetSpellDataId` = 45, `VehicleId` = 46, ' +
-        "`mingold` = 47, `maxgold` = 48, `AIName` = '49', `MovementType` = 2, `HoverHeight` = 51, " +
-        '`HealthModifier` = 52, `ManaModifier` = 53, `ArmorModifier` = 54, `ExperienceModifier` = 55, `RacialLeader` = 1, `movementId` = 57, `RegenHealth` = 0, ' +
-        "`mechanic_immune_mask` = 59, `spell_school_immune_mask` = 60, `flags_extra` = 61, `ScriptName` = '62' WHERE (`entry` = 1234);";
+        "`name` = '9', `subname` = '10', `gossip_menu_id` = 12, `minlevel` = 13, `maxlevel` = 14, " +
+        '`faction` = 16, `npcflag` = 17, `speed_walk` = 18, `speed_run` = 19, `speed_swim` = 20, `speed_flight` = 21, ' +
+        '`detection_range` = 22, `scale` = 23, `DamageModifier` = 26, `BaseAttackTime` = 27, `RangeAttackTime` = 28, ' +
+        '`BaseVariance` = 29, `RangeVariance` = 30, `unit_flags` = 32, `unit_flags2` = 33, `dynamicflags` = 34, ' +
+        '`trainer_spell` = 37, `trainer_race` = 1, `type_flags` = 41, `lootid` = 42, `pickpocketloot` = 43, `skinloot` = 44, ' +
+        "`PetSpellDataId` = 45, `VehicleId` = 46, `mingold` = 47, `maxgold` = 48, `AIName` = '49', " +
+        '`HoverHeight` = 51, `HealthModifier` = 52, `ManaModifier` = 53, `ArmorModifier` = 54, ' +
+        '`ExperienceModifier` = 55, `movementId` = 57, `mechanic_immune_mask` = 59, `spell_school_immune_mask` = 60, ' +
+        "`flags_extra` = 61, `ScriptName` = '62' WHERE (`entry` = 1234);";
 
       querySpy.calls.reset();
 
