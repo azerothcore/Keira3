@@ -9,7 +9,7 @@ import { GossipMenuOption, OPTION_IMG } from '@keira/shared/acore-world-model';
   standalone: true,
 })
 export class GossipMenuOptionPreviewComponent {
-  @Input() options: GossipMenuOption[];
+  @Input({ required: true }) options!: GossipMenuOption[];
   @Input() show = true;
 
   readonly OPTION_IMG = OPTION_IMG;
