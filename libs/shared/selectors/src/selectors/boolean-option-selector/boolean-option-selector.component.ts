@@ -10,6 +10,5 @@ import { TranslateModule } from '@ngx-translate/core';
   standalone: true,
 })
 export class BooleanOptionSelectorComponent {
-  @Input({ required: true }) control: FormControl;
-  @Input({ required: true }) controlName: string;
+  @Input({ required: true }) control!: FormControl;
 }

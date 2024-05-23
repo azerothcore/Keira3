@@ -10,7 +10,6 @@ import { Option } from '@keira/shared/constants';
   standalone: true,
 })
 export class GenericOptionSelectorComponent {
-  @Input({ required: true }) control: FormControl;
-  @Input({ required: true }) controlName: string;
-  @Input({ required: true }) optionList: Option[];
+  @Input({ required: true }) control!: FormControl;
+  @Input({ required: true }) optionList!: Option[];
 }
