@@ -20,9 +20,9 @@ import { ConfigService } from '@keira/shared/common-services';
   imports: [TranslateModule, ClipboardModule, FormsModule],
 })
 export class DashboardComponent extends SubscriptionHandler implements OnInit {
-  protected coreVersions: VersionRow;
-  protected commitUrl: string;
-  protected dbWorldVersion: string;
+  protected coreVersions!: VersionRow;
+  protected commitUrl!: string;
+  protected dbWorldVersion!: string;
   protected wrongEmuWarning = false;
   protected readonly KEIRA_VERSION = packageInfo.version;
   protected readonly PAYPAL_DONATE_URL = PAYPAL_DONATE_URL;
@@ -36,7 +36,7 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   get databaseName(): string {
-    return this.mysqlService.config.database;
+    return this.mysqlService.config.database as string;
   }
 
   ngOnInit(): void {
