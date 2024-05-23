@@ -28,5 +28,5 @@ export class SpellDbcItemsComponent {
   readonly SPELL_DBC_INVENTORY_TYPE = SPELL_DBC_INVENTORY_TYPE;
   readonly TOTEM_CATEGORY = TOTEM_CATEGORY;
 
-  @Input() formGroup: FormGroup<ModelForm<SpellDbc>>;
+  @Input({ required: true }) formGroup!: FormGroup<ModelForm<SpellDbc>>;
 }

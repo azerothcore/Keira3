@@ -32,5 +32,5 @@ export class SpellDbcFlagsComponent {
   readonly SPELL_DBC_STANCES_FLAGS = SPELL_DBC_STANCES_FLAGS;
   readonly SPELL_DBC_FACING_FRONT_FLAG = SPELL_DBC_FACING_FRONT_FLAG;
 
-  @Input() formGroup: FormGroup<ModelForm<SpellDbc>>;
+  @Input({ required: true }) formGroup!: FormGroup<ModelForm<SpellDbc>>;
 }

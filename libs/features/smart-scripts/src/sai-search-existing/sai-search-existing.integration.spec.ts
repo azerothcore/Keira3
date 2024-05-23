@@ -139,9 +139,9 @@ describe('SaiSearchExisting integration tests', () => {
     const row1 = page.getDatatableRowExternal(1);
     const row2 = page.getDatatableRowExternal(2);
 
-    expect(row0.innerText).toContain(results[0].entryorguid.toString());
-    expect(row1.innerText).toContain(results[1].entryorguid.toString());
-    expect(row2.innerText).toContain(results[2].entryorguid.toString());
+    expect(row0.innerText).toContain(results[0].entryorguid?.toString() as string);
+    expect(row1.innerText).toContain(results[1].entryorguid?.toString() as string);
+    expect(row2.innerText).toContain(results[2].entryorguid?.toString() as string);
 
     page.clickElement(page.getDatatableCellExternal(1, 1));
 

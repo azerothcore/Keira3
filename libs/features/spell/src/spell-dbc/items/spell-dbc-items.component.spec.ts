@@ -23,7 +23,7 @@ describe('SpellDbcItemsComponent', () => {
   })
   class TestHostComponent {
     @ViewChild(SpellDbcItemsComponent) child!: SpellDbcItemsComponent;
-    form: FormGroup<ModelForm<SpellDbc>>;
+    form!: FormGroup<ModelForm<SpellDbc>>;
   }
 
   const fields: string[] = [
@@ -91,7 +91,7 @@ describe('SpellDbcItemsComponent', () => {
     const { page, form } = setup();
 
     for (const field of fields) {
-      form.get(field).setValue(createMockVal(field));
+      form.get(field)?.setValue(createMockVal(field));
     }
     page.detectChanges();
 
@@ -110,7 +110,7 @@ describe('SpellDbcItemsComponent', () => {
     page.detectChanges();
 
     for (const field of fields) {
-      expect(form.get(field).value).toEqual(createMockVal(field));
+      expect(form.get(field)?.value).toEqual(createMockVal(field));
     }
   });
 });
