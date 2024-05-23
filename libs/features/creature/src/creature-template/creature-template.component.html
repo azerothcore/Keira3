@@ -37,7 +37,7 @@
               >
               <keira-generic-option-selector
                 [control]="editorService.form.controls.IconName"
-                controlName="IconName"
+                id="IconName"
                 [optionList]="CREATURE_ICON"
               ></keira-generic-option-selector>
             </div>
@@ -55,7 +55,7 @@
               <label class="control-label" for="exp">expansion</label>
               <keira-generic-option-selector
                 [control]="editorService.form.controls.exp"
-                controlName="exp"
+                id="exp"
                 [optionList]="EXPANSION"
               ></keira-generic-option-selector>
             </div>
@@ -82,7 +82,7 @@
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.RANK' | translate"></i>
               <keira-generic-option-selector
                 [control]="editorService.form.controls.rank"
-                controlName="rank"
+                id="rank"
                 [optionList]="RANK"
               ></keira-generic-option-selector>
             </div>
@@ -90,7 +90,7 @@
               <label class="control-label" for="family">family</label>
               <keira-generic-option-selector
                 [control]="editorService.form.controls.family"
-                controlName="family"
+                id="family"
                 [optionList]="CREATURE_FAMILY"
               ></keira-generic-option-selector>
             </div>
@@ -98,7 +98,7 @@
               <label class="control-label" for="type">type</label>
               <keira-generic-option-selector
                 [control]="editorService.form.controls.type"
-                controlName="type"
+                id="type"
                 [optionList]="CREATURE_TYPE"
               ></keira-generic-option-selector>
             </div>
@@ -115,7 +115,7 @@
               <label class="control-label" for="unit_class">unit_class</label>
               <keira-generic-option-selector
                 [control]="editorService.form.controls.unit_class"
-                controlName="unit_class"
+                id="unit_class"
                 [optionList]="UNIT_CLASS"
               ></keira-generic-option-selector>
             </div>
@@ -151,7 +151,7 @@
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.REGEN_HEALTH' | translate"></i>
               <keira-boolean-option-selector
                 [control]="editorService.form.controls.RegenHealth"
-                controlName="RegenHealth"
+                id="RegenHealth"
               ></keira-boolean-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -201,7 +201,7 @@
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.RACIAL_LEADER' | translate"></i>
               <keira-boolean-option-selector
                 [control]="editorService.form.controls.RacialLeader"
-                controlName="RacialLeader"
+                id="RacialLeader"
               ></keira-boolean-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -275,7 +275,7 @@
                   <label class="control-label" for="trainer_type">trainer_type</label>
                   <keira-generic-option-selector
                     [control]="editorService.form.controls.trainer_type"
-                    controlName="trainer_type"
+                    id="trainer_type"
                     [optionList]="TRAINER_TYPE"
                   ></keira-generic-option-selector>
                 </div>
@@ -299,7 +299,7 @@
                   >
                   <keira-generic-option-selector
                     [control]="editorService.form.controls.trainer_class"
-                    controlName="trainer_class"
+                    id="trainer_class"
                     [optionList]="CREATURE_CLASS"
                   ></keira-generic-option-selector>
                 </div>
@@ -418,7 +418,7 @@
               <label class="control-label" for="dmgschool">dmgschool</label>
               <keira-generic-option-selector
                 [control]="editorService.form.controls.dmgschool"
-                controlName="dmgschool"
+                id="dmgschool"
                 [optionList]="DAMAGE_TYPE"
               ></keira-generic-option-selector>
             </div>
@@ -461,7 +461,7 @@
               <label class="control-label" for="MovementType">MovementType</label>
               <keira-generic-option-selector
                 [control]="editorService.form.controls.MovementType"
-                controlName="MovementType"
+                id="MovementType"
                 [optionList]="MOVEMENT_TYPE"
               ></keira-generic-option-selector>
             </div>
