@@ -17,7 +17,7 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
     protected override _entityClass: Class,
     protected override _entityTable: string,
     _entityIdField: string[],
-    protected override _entityNameField: string,
+    protected override _entityNameField: string | undefined | null,
     protected override isMainEntity: boolean,
     protected override handlerService: HandlerService<T>,
   ) {

@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { SpellLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -122,7 +121,7 @@ describe('SelectSpellLoot integration tests', () => {
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
     const { navigateSpy, page, querySpy } = setup();
 
-    const results: Partial<SpellLootTemplate>[] = [{ Entry: 1 }, { Entry: 2 }, { Entry: 3 }];
+    const results = [{ Entry: 1 }, { Entry: 2 }, { Entry: 3 }];
     querySpy.calls.reset();
     querySpy.and.returnValue(of(results));
 
