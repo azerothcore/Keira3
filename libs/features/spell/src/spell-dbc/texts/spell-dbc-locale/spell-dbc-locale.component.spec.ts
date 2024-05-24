@@ -32,8 +32,8 @@ describe('SpellDbcLocaleComponent', () => {
   })
   class TestHostComponent {
     @ViewChild(SpellDbcLocaleComponent) child!: SpellDbcLocaleComponent;
-    form: FormGroup<ModelForm<SpellDbc>>;
-    locale: Locale;
+    form!: FormGroup<ModelForm<SpellDbc>>;
+    locale!: Locale;
   }
 
   beforeEach(async () => {
@@ -82,7 +82,7 @@ describe('SpellDbcLocaleComponent', () => {
     host.locale = testLocale;
 
     for (const field of SPELL_DBC_TEXT_FIELDS) {
-      form.get(`${field}_${testLocale}`).setValue(createMockVal(field));
+      form.get(`${field}_${testLocale}`)?.setValue(createMockVal(field));
     }
     page.detectChanges();
 
@@ -102,7 +102,7 @@ describe('SpellDbcLocaleComponent', () => {
     page.detectChanges();
 
     for (const field of SPELL_DBC_TEXT_FIELDS) {
-      expect(form.get(`${field}_${testLocale}`).value).toEqual(createMockVal(field));
+      expect(form.get(`${field}_${testLocale}`)?.value).toEqual(createMockVal(field));
     }
   });
 });

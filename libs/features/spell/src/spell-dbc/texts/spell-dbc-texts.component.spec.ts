@@ -24,7 +24,7 @@ describe('SpellDbcTextsComponent', () => {
   })
   class TestHostComponent {
     @ViewChild(SpellDbcTextsComponent) child!: SpellDbcTextsComponent;
-    form: FormGroup<ModelForm<SpellDbc>>;
+    form!: FormGroup<ModelForm<SpellDbc>>;
   }
 
   beforeEach(async () => {

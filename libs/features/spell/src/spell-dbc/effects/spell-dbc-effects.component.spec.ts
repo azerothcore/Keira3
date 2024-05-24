@@ -36,7 +36,7 @@ describe('SpellDbcEffectsComponent', () => {
   })
   class TestHostComponent {
     @ViewChild(SpellDbcEffectsComponent) child!: SpellDbcEffectsComponent;
-    form: FormGroup<ModelForm<SpellDbc>>;
+    form!: FormGroup<ModelForm<SpellDbc>>;
   }
 
   beforeEach(async () => {

@@ -36,5 +36,5 @@ export class SpellDbcBaseComponent {
   readonly SPELL_DBC_DAMAGE_CLASS = SPELL_DBC_DAMAGE_CLASS;
   readonly SPELL_DBC_PREVENTION_TYPE = SPELL_DBC_PREVENTION_TYPE;
 
-  @Input() formGroup: FormGroup<ModelForm<SpellDbc>>;
+  @Input({ required: true }) formGroup!: FormGroup<ModelForm<SpellDbc>>;
 }

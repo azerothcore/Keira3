@@ -146,14 +146,14 @@ describe('SelectSpell integration tests', () => {
     const row1 = page.getDatatableRowExternal(1);
     const row2 = page.getDatatableRowExternal(2);
 
-    expect(row0.innerText).toContain(results[0][SPELL_DBC_NAME]);
-    expect(row1.innerText).toContain(results[1][SPELL_DBC_NAME]);
-    expect(row2.innerText).toContain(results[2][SPELL_DBC_NAME]);
+    expect(row0.innerText).toContain(results[0][SPELL_DBC_NAME] as string);
+    expect(row1.innerText).toContain(results[1][SPELL_DBC_NAME] as string);
+    expect(row2.innerText).toContain(results[2][SPELL_DBC_NAME] as string);
 
     page.clickElement(page.getDatatableCellExternal(1, 1));
 
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith(['spell/spell-dbc']);
-    page.expectTopBarEditing(results[1][SPELL_DBC_ID], results[1][SPELL_DBC_NAME]);
+    page.expectTopBarEditing(results[1][SPELL_DBC_ID] as number, results[1][SPELL_DBC_NAME] as string);
   });
 });
