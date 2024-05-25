@@ -6,7 +6,7 @@ import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/sha
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { lastValueFrom, of } from 'rxjs';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemTemplateComponent } from './item-template.component';
 import { instance, mock } from 'ts-mockito';
@@ -113,19 +113,19 @@ describe('ItemTemplate integration tests', () => {
     fixture.detectChanges();
 
     const mysqlQueryService = TestBed.inject(MysqlQueryService);
-    spyOn(mysqlQueryService, 'getItemNameById').and.callFake(() => of(mockItemNameById).toPromise());
+    spyOn(mysqlQueryService, 'getItemNameById').and.callFake(() => lastValueFrom(of(mockItemNameById)));
     spyOn(mysqlQueryService, 'queryValue').and.callFake(() => of([234] as any));
 
     const sqliteQueryService = TestBed.inject(SqliteQueryService);
-    spyOn(sqliteQueryService, 'getSpellNameById').and.callFake((i) => of(mockGetSpellNameById + i).toPromise());
-    spyOn(sqliteQueryService, 'getSpellDescriptionById').and.callFake((i) => of(mockGetSpellDescriptionById + i).toPromise());
-    spyOn(sqliteQueryService, 'getFactionNameById').and.callFake((i) => of(mockGetFactionNameById + i).toPromise());
-    spyOn(sqliteQueryService, 'getMapNameById').and.callFake((i) => of(mockGetMapNameById + i).toPromise());
-    spyOn(sqliteQueryService, 'getAreaNameById').and.callFake((i) => of(mockGetAreaNameById + i).toPromise());
-    spyOn(sqliteQueryService, 'getEventNameByHolidayId').and.callFake((i) => of(mockGetEventNameByHolidayId + i).toPromise());
-    spyOn(sqliteQueryService, 'getSocketBonusById').and.callFake((i) => of(mockGetSocketBonusById + i).toPromise());
-    spyOn(sqliteQueryService, 'getLockById').and.callFake(() => of([lockData]).toPromise());
-    spyOn(sqliteQueryService, 'getSkillNameById').and.callFake(() => of('profession').toPromise());
+    spyOn(sqliteQueryService, 'getSpellNameById').and.callFake((i) => lastValueFrom(of(mockGetSpellNameById + i)));
+    spyOn(sqliteQueryService, 'getSpellDescriptionById').and.callFake((i) => lastValueFrom(of(mockGetSpellDescriptionById + i)));
+    spyOn(sqliteQueryService, 'getFactionNameById').and.callFake((i) => lastValueFrom(of(mockGetFactionNameById + i)));
+    spyOn(sqliteQueryService, 'getMapNameById').and.callFake((i) => lastValueFrom(of(mockGetMapNameById + i)));
+    spyOn(sqliteQueryService, 'getAreaNameById').and.callFake((i) => lastValueFrom(of(mockGetAreaNameById + i)));
+    spyOn(sqliteQueryService, 'getEventNameByHolidayId').and.callFake((i) => lastValueFrom(of(mockGetEventNameByHolidayId + i)));
+    spyOn(sqliteQueryService, 'getSocketBonusById').and.callFake((i) => lastValueFrom(of(mockGetSocketBonusById + i)));
+    spyOn(sqliteQueryService, 'getLockById').and.callFake(() => lastValueFrom(of([lockData])));
+    spyOn(sqliteQueryService, 'getSkillNameById').and.callFake(() => lastValueFrom(of('profession')));
     spyOn(sqliteQueryService, 'getIconByItemDisplayId').and.callFake(() => of('inv_axe_60'));
     spyOn(sqliteQueryService, 'queryValue').and.callFake(() => of('inv_axe_60' as any));
     spyOn(sqliteQueryService, 'query').and.callFake(() => of([{ name: 'test' }] as any));
@@ -216,9 +216,11 @@ describe('ItemTemplate integration tests', () => {
 
       page.changeAllFields(originalEntity, [...Object.keys(spelltriggers), 'VerifiedBuild']);
 
-      for (const key of Object.keys(spelltriggers)) {
-        page.setSelectValueById(key, spelltriggers[key]);
-      }
+      page.setSelectValueById('spelltrigger_1', spelltriggers.spelltrigger_1);
+      page.setSelectValueById('spelltrigger_2', spelltriggers.spelltrigger_2);
+      page.setSelectValueById('spelltrigger_3', spelltriggers.spelltrigger_3);
+      page.setSelectValueById('spelltrigger_4', spelltriggers.spelltrigger_4);
+      page.setSelectValueById('spelltrigger_5', spelltriggers.spelltrigger_5);
 
       page.expectDiffQueryToContain(expectedQuery);
 
@@ -366,7 +368,7 @@ describe('ItemTemplate integration tests', () => {
         page.setInputValueById('class', 10);
         expect(page.getSelectorBtn('subclass', false)).toBeTruthy();
 
-        page.setInputValueById('class', null);
+        page.setInputValueById('class', null as any);
         expect(page.getSelectorBtn('subclass', false)).toBeFalsy();
       });
 

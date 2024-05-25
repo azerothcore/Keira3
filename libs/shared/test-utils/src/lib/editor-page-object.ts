@@ -128,7 +128,7 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
 
   expectDiffQueryToContain(expectedQuery: string): void {
     // can be useful when finding the correct query after an intended change:
-    console.log(this.queryPo.diffQueryWrapper.innerText);
+    // console.log(this.queryPo.diffQueryWrapper.innerText);
     expect(this.queryPo.diffQueryWrapper.innerText).toContain(expectedQuery);
   }
 

@@ -134,7 +134,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     );
   }
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
     super.ngOnInit();
 
     this.loadItemPreview();
