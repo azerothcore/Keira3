@@ -3,13 +3,32 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ITEM_FLAG, ITEM_TYPE, ITEMS_QUALITY, ItemTemplate } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 import { ToastrService } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { lastValueFrom, Observable, of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { ItemHandlerService } from '../item-handler.service';
-import { Lock } from './item-preview';
 import { ItemPreviewService } from './item-preview.service';
+import { TableRow } from '@keira/shared/constants';
 
 describe('ItemPreviewService', () => {
+  interface Lock extends TableRow {
+    id: number;
+    type1: number;
+    type2: number;
+    type3: number;
+    type4: number;
+    type5: number;
+    properties1: number;
+    properties2: number;
+    properties3: number;
+    properties4: number;
+    properties5: number;
+    reqSkill1: number;
+    reqSkill2: number;
+    reqSkill3: number;
+    reqSkill4: number;
+    reqSkill5: number;
+  }
+
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
@@ -30,7 +49,7 @@ describe('ItemPreviewService', () => {
   const mockGetSpellNameById = 'mockGetSpellNameById';
   const mockGetSpellDescriptionById = 'mockGetSpellDescriptionById';
   const mockGetFactionNameById = 'mockGetFactionNameById';
-  const mockGetLockById: Lock[] = [null];
+  const mockGetLockById: Lock[] | null[] = [null];
   const mockGetMapNameById = 'mockGetMapNameById';
   const mockGetAreaNameById = 'mockGetAreaNameById';
   const mockGetEventNameByHolidayId = 'mockGetEventNameByHolidayId';
@@ -155,7 +174,7 @@ describe('ItemPreviewService', () => {
 
   beforeEach(() => {
     mysqlQueryService = TestBed.inject(MysqlQueryService);
-    spyOn(mysqlQueryService, 'getItemNameById').and.callFake((i) => of(i === 1 ? mockItemNameById + i : null).toPromise());
+    spyOn(mysqlQueryService, 'getItemNameById').and.callFake((i) => lastValueFrom(of(i === 1 ? mockItemNameById + i : '')));
     spyOn(mysqlQueryService, 'query').and.callFake((i) => {
       if (i.indexOf('npc_vendor') > -1) {
         if (i.indexOf('600') > -1) {
@@ -188,22 +207,22 @@ describe('ItemPreviewService', () => {
     });
 
     sqliteQueryService = TestBed.inject(SqliteQueryService);
-    spyOn(sqliteQueryService, 'getSpellNameById').and.callFake((i) => of(mockGetSpellNameById + i).toPromise());
+    spyOn(sqliteQueryService, 'getSpellNameById').and.callFake((i) => lastValueFrom(of(mockGetSpellNameById + i)));
     spyOn(sqliteQueryService, 'getSpellDescriptionById').and.callFake((i) =>
-      of(String(i).indexOf('555') > -1 ? null : mockGetSpellDescriptionById + i).toPromise(),
+      lastValueFrom(of(String(i).indexOf('555') > -1 ? '' : mockGetSpellDescriptionById + i)),
     );
-    spyOn(sqliteQueryService, 'getFactionNameById').and.callFake((i) => of(mockGetFactionNameById + i).toPromise());
+    spyOn(sqliteQueryService, 'getFactionNameById').and.callFake((i) => lastValueFrom(of(mockGetFactionNameById + i)));
     spyOn(sqliteQueryService, 'getMapNameById').and.callFake((i) =>
-      of(String(i).indexOf('123') > -1 ? '' : mockGetMapNameById + i).toPromise(),
+      lastValueFrom(of(String(i).indexOf('123') > -1 ? '' : mockGetMapNameById + i)),
     );
     spyOn(sqliteQueryService, 'getAreaNameById').and.callFake((i) =>
-      of(String(i).indexOf('123') > -1 ? '' : mockGetAreaNameById + i).toPromise(),
+      lastValueFrom(of(String(i).indexOf('123') > -1 ? '' : mockGetAreaNameById + i)),
     );
-    spyOn(sqliteQueryService, 'getEventNameByHolidayId').and.callFake((i) => of(mockGetEventNameByHolidayId + i).toPromise());
-    spyOn(sqliteQueryService, 'getSocketBonusById').and.callFake((i) => of(mockGetSocketBonusById + i).toPromise());
-    spyOn(sqliteQueryService, 'getLockById').and.callFake((i) => of(locksData[i]).toPromise());
-    spyOn(sqliteQueryService, 'getSkillNameById').and.callFake((i) => of(i === 1 ? 'profession' : null).toPromise());
-    spyOn(sqliteQueryService, 'query').and.callFake((i) => {
+    spyOn(sqliteQueryService, 'getEventNameByHolidayId').and.callFake((i) => lastValueFrom(of(mockGetEventNameByHolidayId + i)));
+    spyOn(sqliteQueryService, 'getSocketBonusById').and.callFake((i) => lastValueFrom(of(mockGetSocketBonusById + i)));
+    spyOn(sqliteQueryService, 'getLockById').and.callFake((i) => lastValueFrom(of(locksData[i as number])) as Promise<Lock[]>);
+    spyOn(sqliteQueryService, 'getSkillNameById').and.callFake((i) => lastValueFrom(of(i === 1 ? 'profession' : '')));
+    spyOn(sqliteQueryService, 'query').and.callFake(((i) => {
       if (i.indexOf('item_extended_cost') > -1) {
         if (i.indexOf('600') > -1) {
           return of(mockItemEtendedCost1);
@@ -306,7 +325,7 @@ describe('ItemPreviewService', () => {
       }
 
       return of(null);
-    });
+    }) as <T extends TableRow>(queryString: string, silent?: boolean) => Observable<T[]>);
     spyOn(sqliteQueryService, 'queryValue').and.callFake((i) => {
       if (i.indexOf('SELECT gemEnchantmentId AS v') > -1) {
         if (i.indexOf('id = 100') > -1) {
@@ -827,7 +846,7 @@ describe('ItemPreviewService', () => {
 
   for (const { name, template, output } of cases) {
     it(`Case ${name}`, async () => {
-      expect(await service.calculatePreview(template as ItemTemplate)).toEqual(output);
+      expect(await service.calculatePreview(template as unknown as ItemTemplate)).toEqual(output);
     });
   }
 });
