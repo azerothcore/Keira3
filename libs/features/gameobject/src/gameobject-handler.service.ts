@@ -50,7 +50,7 @@ export class GameobjectHandlerService extends HandlerService<GameobjectTemplate>
     [GAMEOBJECT_SPAWN_ADDON_TABLE]: false,
   };
 
-  select(isNew: boolean, id: string | number | Partial<GameobjectTemplate>, name?: string) {
+  override select(isNew: boolean, id: string | number | Partial<GameobjectTemplate>, name?: string) {
     this.saiGameobjectHandler.select(isNew, { entryorguid: +id, source_type: 1 }, null, false);
     super.select(isNew, id, name);
   }
