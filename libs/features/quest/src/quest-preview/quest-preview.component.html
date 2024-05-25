@@ -41,7 +41,7 @@
           @for (r of service.races; track r) {
             <span>
               <img [src]="'assets/img/race/' + r + '-0.gif'" />
-              {{ service.RACES_TEXT[r] }} &nbsp;
+              {{ getRaceText(r) }} &nbsp;
             </span>
           }
         </p>
@@ -60,7 +60,7 @@
       @if (service.requiredSkill$ | async; as skill) {
         <p id="requiredSkill">
           Profession:
-          @if (!!service.ICON_SKILLS[service.questTemplateAddon.RequiredSkillID]) {
+          @if (hasIconSkills) {
             <keira-icon [skillId]="service.questTemplateAddon.RequiredSkillID" [size]="'small'" />
           }
           {{ skill }} {{ reqSkillPoint }}
@@ -156,7 +156,7 @@
       }
 
       @if ({ prev: service.prevQuestList$ | async, next: service.nextQuestList$ | async }; as questLists) {
-        @if (questLists?.prev?.length > 0 || questLists?.next?.length > 0) {
+        @if (hasPrevOrNext(questLists)) {
           <p class="title">Series</p>
           <ol>
             @for (quest of questLists.prev; track quest) {
@@ -200,7 +200,7 @@
 
         <div class="mt-2" id="npcOrGoObjectives">
           @for (i of [1, 2, 3, 4]; track i) {
-            @if (!!service.isNpcOrGoObj(i)) {
+            @if (service.isNpcOrGoObj(i)) {
               <p>
                 • <span class="colored">{{ !!service.getObjText(i) ? service.getObjText(i) : (service.getObjective$(i) | async) }}</span>
                 {{ service.getObjectiveCount(i) }}
@@ -329,7 +329,7 @@
                     <div>
                       @if (service.getRewardReputation(i, service.getRepReward$(i) | async); as repReward) {
                         <p>
-                          • {{ QUEST_FACTION_REWARD[repReward] }} reputation with
+                          • {{ getQuestFactionReward(repReward) }} reputation with
                           {{ service.sqliteQueryService.getFactionNameByNameId(service.questTemplate['RewardFactionID' + i]) | async }}
                         </p>
                       }

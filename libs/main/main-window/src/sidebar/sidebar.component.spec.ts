@@ -104,6 +104,7 @@ describe('SidebarComponent', () => {
     page.clickElement(page.collapseAll);
 
     for (const key of Object.keys(component.menuStates)) {
+      // @ts-ignore
       expect(component.menuStates[key]).toEqual('up');
     }
 

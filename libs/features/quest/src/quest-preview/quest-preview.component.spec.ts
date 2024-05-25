@@ -421,14 +421,14 @@ describe('QuestPreviewComponent', () => {
       spy.and.returnValue(0);
       fixture.detectChanges();
 
-      expect(page.requiredMoney).toBe(null);
-      expect(page.rewardMoney).toBe(null);
+      expect(page.requiredMoney).toBe(null as any);
+      expect(page.rewardMoney).toBe(null as any);
 
       spy.and.returnValue(-123456);
       fixture.detectChanges();
 
       expect(page.requiredMoney).toBeDefined();
-      expect(page.rewardMoney).toBe(null);
+      expect(page.rewardMoney).toBe(null as any);
       expect(page.requiredMoney.innerHTML).toContain('<span class="moneygold">12</span>');
       expect(page.requiredMoney.innerHTML).toContain('<span class="moneysilver">34</span>');
       expect(page.requiredMoney.innerHTML).toContain('<span class="moneycopper">56</span>');
@@ -442,14 +442,14 @@ describe('QuestPreviewComponent', () => {
       spy.and.returnValue(0);
       fixture.detectChanges();
 
-      expect(page.rewardMoney).toBe(null);
-      expect(page.requiredMoney).toBe(null);
+      expect(page.rewardMoney).toBe(null as any);
+      expect(page.requiredMoney).toBe(null as any);
 
       spy.and.returnValue(123456);
       fixture.detectChanges();
 
       expect(page.rewardMoney).toBeDefined();
-      expect(page.requiredMoney).toBe(null);
+      expect(page.requiredMoney).toBe(null as any);
       expect(page.rewardMoney.innerHTML).toContain('<span class="moneygold">12</span>');
       expect(page.rewardMoney.innerHTML).toContain('<span class="moneysilver">34</span>');
       expect(page.rewardMoney.innerHTML).toContain('<span class="moneycopper">56</span>');
@@ -492,7 +492,7 @@ describe('QuestPreviewComponent', () => {
       isRewardItemsSpy.and.returnValue(false);
       fixture.detectChanges();
 
-      expect(page.rewardItems).toBe(null);
+      expect(page.rewardItems).toBe(null as any);
 
       isRewardItemsSpy.and.returnValue(true);
 
@@ -517,7 +517,7 @@ describe('QuestPreviewComponent', () => {
       isRewardChoiceItemsSpy.and.returnValue(false);
       fixture.detectChanges();
 
-      expect(page.rewardChoiceItems).toBe(null);
+      expect(page.rewardChoiceItems).toBe(null as any);
 
       isRewardChoiceItemsSpy.and.returnValue(true);
 

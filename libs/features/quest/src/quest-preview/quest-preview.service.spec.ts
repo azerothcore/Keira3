@@ -104,7 +104,7 @@ describe('QuestPreviewService', () => {
     expect(service.side).toBeNull();
     expect(service.races).toEqual([1, 2, 4, 5, 6, 7]);
 
-    questTemplateService.form.controls.AllowableRaces.setValue(null);
+    questTemplateService.form.controls.AllowableRaces.setValue(null as any);
     expect(service.races).toBeNull();
 
     // check if quest is sharable
@@ -169,7 +169,7 @@ describe('QuestPreviewService', () => {
     expect(mysqlQueryService.getItemNameByStartQuest).toHaveBeenCalledTimes(1);
     expect(mysqlQueryService.getItemNameByStartQuest).toHaveBeenCalledWith(mockID);
     expect(mysqlQueryService.getReputationRewardByFaction).toHaveBeenCalledTimes(1);
-    expect(mysqlQueryService.getReputationRewardByFaction).toHaveBeenCalledWith(null);
+    expect(mysqlQueryService.getReputationRewardByFaction).toHaveBeenCalledWith(null as any);
   });
 
   it('sqliteQuery', async () => {

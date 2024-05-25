@@ -16,7 +16,7 @@ import { ModalConfirmComponent } from '@keira/shared/base-editor-components';
   imports: [TranslateModule],
 })
 export class LogoutBtnComponent extends SubscriptionHandler {
-  public modalRef: BsModalRef;
+  public modalRef!: BsModalRef;
 
   private readonly modalService = inject(BsModalService);
   private readonly locationService = inject(LocationService);
@@ -32,7 +32,7 @@ export class LogoutBtnComponent extends SubscriptionHandler {
     this.modalRef = this.modalService.show(ModalConfirmComponent, { initialState });
 
     this.subscriptions.push(
-      this.modalRef.content.onClose.subscribe((result) => {
+      this.modalRef.content.onClose.subscribe((result: boolean) => {
         if (result) {
           this.logout();
         }

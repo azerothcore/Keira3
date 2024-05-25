@@ -126,9 +126,16 @@ export class SidebarComponent {
   }
 
   collapseAll(): void {
-    for (const key of Object.keys(this.menuStates)) {
-      this.menuStates[key] = 'up';
-    }
+    this.menuStates.creature = 'up';
+    this.menuStates.quest = 'up';
+    this.menuStates.gameobject = 'up';
+    this.menuStates.item = 'up';
+    this.menuStates.otherLoot = 'up';
+    this.menuStates.smartAi = 'up';
+    this.menuStates.conditions = 'up';
+    this.menuStates.texts = 'up';
+    this.menuStates.gossip = 'up';
+    this.menuStates.spell = 'up';
   }
 
   logout(): void {

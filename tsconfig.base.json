@@ -4,6 +4,8 @@
     "target": "es2022",
     "useDefineForClassFields": false,
     "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
