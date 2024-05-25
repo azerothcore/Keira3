@@ -17,7 +17,7 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   imports: [TopBarComponent, TranslateModule, LootEditorComponent],
 })
 export class GameobjectLootTemplateComponent extends LootTemplateIdComponent<GameobjectLootTemplate> implements OnInit {
-  private _type: number;
+  private _type!: number;
   get type(): number {
     return this._type;
   }
@@ -39,7 +39,7 @@ export class GameobjectLootTemplateComponent extends LootTemplateIdComponent<Gam
   override readonly editorService = inject(GameobjectLootTemplateService);
   readonly handlerService = inject(GameobjectHandlerService);
 
-  ngOnInit() {
+  override ngOnInit() {
     this.editorService.clearCache();
     this.checkTemplateType();
     this.checkTemplateLootId();
