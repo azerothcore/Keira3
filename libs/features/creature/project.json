@@ -14,7 +14,7 @@
         "polyfills": ["zone.js", "zone.js/testing"],
         "sourceMap": true,
         "codeCoverage": true,
-        "styles": ["apps/keira/src/app/scss/main.scss"],
+        "styles": ["apps/keira/src/app/scss/main-test.scss"],
         "scripts": ["node_modules/squel/dist/squel.min.js"]
       }
     },

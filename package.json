@@ -55,11 +55,10 @@
     "node-fetch": "2.7.0",
     "serialize-javascript": "6.0.2",
     "sqlite3": "5.1.6",
-    "tslib": "2.6.2",
-    "webpack-sources": "3.2.3"
+    "tslib": "2.6.2"
   },
   "devDependencies": {
-    "@angular-builders/custom-webpack": "17.0.2",
+    "@angular-builders/custom-esbuild": "17.1.2",
     "@angular-devkit/build-angular": "17.3.8",
     "@angular-devkit/core": "17.3.8",
     "@angular-devkit/schematics": "17.3.8",
@@ -79,8 +78,8 @@
     "@angular/router": "17.3.10",
     "@fortawesome/fontawesome-free": "6.5.2",
     "@nx/angular": "19.0.7",
-    "@nx/eslint": "19.0.7",
-    "@nx/eslint-plugin": "19.0.7",
+    "@nx/eslint": "19.1.0",
+    "@nx/eslint-plugin": "19.1.0",
     "@nx/js": "19.0.7",
     "@nx/workspace": "19.0.7",
     "@playwright/test": "1.44.0",
@@ -136,14 +135,13 @@
     "typescript": "5.4.5",
     "wait-on": "7.2.0",
     "webdriver-manager": "13.0.2",
-    "webpack": "5.91.0",
     "zone.js": "0.14.6"
   },
   "optionalDependencies": {
-    "@nx/nx-darwin-arm64": "19.0.7",
-    "@nx/nx-darwin-x64": "19.0.7",
-    "@nx/nx-linux-x64-gnu": "19.0.7",
-    "@nx/nx-win32-x64-msvc": "19.0.7"
+    "@nx/nx-darwin-arm64": "19.1.0",
+    "@nx/nx-darwin-x64": "19.1.0",
+    "@nx/nx-linux-x64-gnu": "19.1.0",
+    "@nx/nx-win32-x64-msvc": "19.1.0"
   },
   "husky": {
     "hooks": {
