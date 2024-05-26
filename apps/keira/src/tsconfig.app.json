@@ -12,6 +12,6 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true
   },
-  "files": ["main.ts", "polyfills.ts"],
+  "files": ["main.ts"],
   "include": ["apps/keira/src/**/*.ts", "apps/keira/src/**/*.d.ts"]
 }

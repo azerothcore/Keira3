@@ -59,7 +59,7 @@
     "webpack-sources": "3.2.3"
   },
   "devDependencies": {
-    "@angular-builders/custom-webpack": "17.0.2",
+    "@angular-builders/custom-esbuild": "17.1.2",
     "@angular-devkit/build-angular": "17.3.8",
     "@angular-devkit/core": "17.3.8",
     "@angular-devkit/schematics": "17.3.8",

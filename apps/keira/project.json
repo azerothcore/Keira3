@@ -6,19 +6,15 @@
   "tags": ["scope:app-keira"],
   "targets": {
     "build": {
-      "executor": "@angular-builders/custom-webpack:browser",
+      "executor": "@angular-builders/custom-esbuild:application",
       "options": {
-        "customWebpackConfig": {
-          "allowedCommonJsDependencies": ["highlight.js", "squel", "sqlstring"],
-          "extractCss": true,
-          "path": "./angular.webpack.js"
-        },
+        "plugins": ["./esbuild/plugin.js"],
         "aot": true,
         "outputPath": "dist",
         "index": "apps/keira/src/index.html",
-        "main": "apps/keira/src/main.ts",
+        "browser": "apps/keira/src/main.ts",
         "tsConfig": "apps/keira/src/tsconfig.app.json",
-        "polyfills": "apps/keira/src/polyfills.ts",
+        "polyfills": ["zone.js"],
         "assets": [
           "apps/keira/src/assets",
           "apps/keira/src/favicon.ico",
@@ -94,19 +90,19 @@
       }
     },
     "serve": {
-      "executor": "@angular-builders/custom-webpack:dev-server",
+      "executor": "@angular-builders/custom-esbuild:dev-server",
       "options": {
-        "browserTarget": "keira:build"
+        "buildTarget": "keira:build"
       },
       "configurations": {
         "dev": {
-          "browserTarget": "keira:build:dev"
+          "buildTarget": "keira:build:dev"
         },
         "dev-web": {
-          "browserTarget": "angular-electron:build:dev-web"
+          "buildTarget": "angular-electron:build:dev-web"
         },
         "production": {
-          "browserTarget": "keira:build:production"
+          "buildTarget": "keira:build:production"
         }
       }
     },
@@ -117,7 +113,7 @@
       }
     },
     "test": {
-      "executor": "@angular-builders/custom-webpack:karma",
+      "executor": "@angular-builders/custom-esbuild:karma",
       "options": {
         "polyfills": ["zone.js", "zone.js/testing"],
         "tsConfig": "apps/keira/src/tsconfig.spec.json",
@@ -140,11 +136,7 @@
           "apps/keira/src/favicon.icns",
           "apps/keira/src/favicon.256x256.png",
           "apps/keira/src/favicon.512x512.png"
-        ],
-        "customWebpackConfig": {
-          "path": "./angular.webpack.js",
-          "target": "web"
-        }
+        ]
       }
     },
     "lint": {
