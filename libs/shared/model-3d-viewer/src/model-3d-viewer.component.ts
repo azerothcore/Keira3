@@ -159,8 +159,12 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
 
   /* istanbul ignore next */
   private setupViewer3D(): void {
-    this.windowRef.jQuery = jquery;
-    this.windowRef.$ = jquery;
+    if (!this.windowRef.jQuery) {
+      this.windowRef.jQuery = jquery.default;
+    }
+    if (!this.windowRef.$) {
+      this.windowRef.$ = jquery.default;
+    }
 
     if (!this.windowRef.WH) {
       this.windowRef.WH = {};
