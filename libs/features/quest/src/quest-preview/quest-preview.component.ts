@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit }
 import { IconComponent } from '@keira/shared/base-editor-components';
 import { PreviewHelperService } from '@keira/shared/preview';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
-import { QUEST_FACTION_REWARD } from './quest-preview.model';
+import { Quest, QUEST_FACTION_REWARD } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
 
 @Component({
@@ -38,7 +38,7 @@ export class QuestPreviewComponent implements OnInit {
   get type(): boolean {
     return !!this.questInfo || !!this.service.periodicQuest;
   }
-  get questInfo(): string {
+  get questInfo(): string | boolean | undefined {
     const qInfo = this.service.QUEST_INFO.find((q) => q.value === this.service.questTemplate.QuestInfoID);
     return this.service.questTemplate.QuestInfoID > 0 && qInfo?.name;
   }
@@ -56,7 +56,26 @@ export class QuestPreviewComponent implements OnInit {
       : '';
   }
 
+  get hasIconSkills(): boolean {
+    // @ts-ignore // TODO: fix typing and remove @ts-ignore
+    return this.service.ICON_SKILLS[this.service.questTemplateAddon.RequiredSkillID];
+  }
+
   ngOnInit(): void {
     this.service.initializeServices(this.changeDetectorRef);
+  }
+
+  getRaceText(r: number): string | null {
+    const index = r as '-2' | '-1' | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
+    return this.service.RACES_TEXT[index];
+  }
+
+  getQuestFactionReward(repReward: number) {
+    // @ts-ignore // TODO: fix typing and remove @ts-ignore
+    return this.QUEST_FACTION_REWARD[repReward];
+  }
+
+  hasPrevOrNext(questLists: { prev?: Quest[] | null; next?: Quest[] | null }): boolean {
+    return !!(questLists.prev && questLists.prev.length > 0) || !!(questLists.next && questLists.next.length > 0);
   }
 }

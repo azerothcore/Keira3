@@ -37,6 +37,7 @@ import { QuestTemplateService } from '../quest-template/quest-template.service';
 import { DifficultyLevel, Quest } from './quest-preview.model';
 import { PreviewHelperService } from '@keira/shared/preview';
 import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
+import { lastValueFrom, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -108,10 +109,10 @@ export class QuestPreviewService {
     return String(this.questTemplate.MinLevel);
   }
   get side(): string {
-    return this.helperService.getFactionFromRace(this.questTemplate.AllowableRaces);
+    return this.helperService.getFactionFromRace(this.questTemplate.AllowableRaces) as string;
   }
   get races(): number[] {
-    return this.helperService.getRaceString(this.questTemplate.AllowableRaces);
+    return this.helperService.getRaceString(this.questTemplate.AllowableRaces) as number[];
   }
   get sharable(): string {
     return this.questTemplate.Flags & QUEST_FLAG_SHARABLE ? 'Sharable' : 'Not sharable';
@@ -134,7 +135,7 @@ export class QuestPreviewService {
     return String(this.questTemplateAddon.MaxLevel);
   }
   get classes(): number[] {
-    return this.helperService.getRequiredClass(this.questTemplateAddon.AllowableClasses);
+    return this.helperService.getRequiredClass(this.questTemplateAddon.AllowableClasses) as number[];
   }
 
   // Item Quest Starter
@@ -160,7 +161,7 @@ export class QuestPreviewService {
   }
 
   get difficultyLevels(): DifficultyLevel {
-    return this.getDifficultyLevels();
+    return this.getDifficultyLevels() as DifficultyLevel;
   }
 
   initializeServices(changeDetectorRef: ChangeDetectorRef) {
@@ -180,7 +181,7 @@ export class QuestPreviewService {
     }
   }
 
-  private getDifficultyLevels(): DifficultyLevel {
+  private getDifficultyLevels(): DifficultyLevel | null {
     if (this.questTemplate.QuestLevel > 0) {
       const levels: DifficultyLevel = {};
 
@@ -216,10 +217,10 @@ export class QuestPreviewService {
   }
 
   get periodicQuest(): string {
-    return this.getPeriodicQuest();
+    return this.getPeriodicQuest() as string;
   }
 
-  private getPeriodicQuest(): QUEST_PERIOD {
+  private getPeriodicQuest(): QUEST_PERIOD | null {
     const flags = this.questTemplate.Flags;
     const specialFlags = this.questTemplateAddon.SpecialFlags;
 
@@ -349,7 +350,7 @@ export class QuestPreviewService {
     return this.mysqlQueryService.getReputationRewardByFaction(this.questTemplate[`RewardFactionID${field}`]);
   }
 
-  getRewardReputation(field: string | number, reputationReward: QuestReputationReward[]): number {
+  getRewardReputation(field: string | number, reputationReward: QuestReputationReward[] | null): number | null {
     const faction = this.questTemplate[`RewardFactionID${field}`];
     const value = this.questTemplate[`RewardFactionValue${field}`];
 
@@ -390,7 +391,7 @@ export class QuestPreviewService {
     return this.questTemplate[`ObjectiveText${field}`];
   }
 
-  getObjective$(field: string | number): Promise<string> {
+  getObjective$(field: string | number): Promise<string | undefined> {
     const RequiredNpcOrGo = Number(this.questTemplate[`RequiredNpcOrGo${field}`]);
     if (!!RequiredNpcOrGo) {
       if (RequiredNpcOrGo > 0) {
@@ -399,7 +400,7 @@ export class QuestPreviewService {
 
       return this.mysqlQueryService.getGameObjectNameById(Math.abs(RequiredNpcOrGo));
     }
-    return undefined;
+    return lastValueFrom(of(undefined));
   }
 
   getObjectiveCount(field: string | number): string {
@@ -479,7 +480,7 @@ export class QuestPreviewService {
     return this.isRewardItems() || this.isRewardChoiceItems() || !!this.rewardSpell() || this.isRewardMoney();
   }
 
-  rewardSpell(): number {
+  rewardSpell(): number | null {
     if (!!this.questTemplate.RewardDisplaySpell) {
       return this.questTemplate.RewardDisplaySpell;
     }

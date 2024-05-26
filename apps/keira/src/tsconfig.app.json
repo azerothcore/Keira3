@@ -2,7 +2,15 @@
   "extends": "../../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "../out-tsc/app",
-    "types": []
+    "types": [],
+    "target": "es2022",
+    "useDefineForClassFields": false,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
   },
   "files": ["main.ts", "polyfills.ts"],
   "include": ["apps/keira/src/**/*.ts", "apps/keira/src/**/*.d.ts"]
