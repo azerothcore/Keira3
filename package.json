@@ -138,10 +138,10 @@
     "zone.js": "0.14.6"
   },
   "optionalDependencies": {
-    "@nx/nx-darwin-arm64": "19.0.7",
-    "@nx/nx-darwin-x64": "19.0.7",
-    "@nx/nx-linux-x64-gnu": "19.0.7",
-    "@nx/nx-win32-x64-msvc": "19.0.7"
+    "@nx/nx-darwin-arm64": "19.1.0",
+    "@nx/nx-darwin-x64": "19.1.0",
+    "@nx/nx-linux-x64-gnu": "19.1.0",
+    "@nx/nx-win32-x64-msvc": "19.1.0"
   },
   "husky": {
     "hooks": {
