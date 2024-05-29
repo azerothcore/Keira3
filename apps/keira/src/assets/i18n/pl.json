@@ -259,7 +259,7 @@
     },
     "SPAWN": {
       "ORIENTATION": "The orientation of the creatures spawn point. (North = 0.0; South = pi (3.14159))",
-      "EQUIPMENT_ID_TOOLTIP": "1 = uses the info set in equipment template 0 = no weapons equipped",
+      "EQUIPMENT_ID_TOOLTIP": "1 = uses the info set in equipment template 0 = no weapons equipped, -1 A random equip from the set of equips in creature_equip_template will be chosen.",
       "SPAWN_DIST_TOOLTIP": "The maximum distance that the creature may spawn from its spawn point. Also controls how far away the creature can walk from its spawn point if its MovementType = 1.",
       "SCRIPT_NAME": "The name of the C++ script that this creature uses, if any.",
       "GUID": "Link to creature.guid",
