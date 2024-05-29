@@ -16,9 +16,9 @@ class TestHostComponent {
   EXPANSION = EXPANSION;
 }
 
-class GenericOptionSelectorComponentPage extends PageObject<TestHostComponent> {}
-
 describe('GenericOptionSelectorComponent', () => {
+  class GenericOptionSelectorComponentPage extends PageObject<TestHostComponent> {}
+
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [GenericOptionSelectorComponent, TestHostComponent, TranslateTestingModule],
@@ -38,19 +38,37 @@ describe('GenericOptionSelectorComponent', () => {
 
   it('changing the form value via input will be reflected in the template', () => {
     const { page, host } = setup();
-    const select = page.getDebugElementByCss('select');
+    const select = page.getDebugElementByCss('select').nativeElement;
 
     host.mockFormControl.setValue(1);
     page.detectChanges();
 
-    expect(select.nativeElement.value).toEqual('1: 1');
-    console.log('select.nativeElement.selectedOptions', select.nativeElement.selectedOptions);
-    expect(select.nativeElement.selectedOptions[0].label).toEqual('1 - The Burning Crusade');
+    expect(select.value).toEqual('1: 1');
+    expect(select.selectedOptions[0].label).toEqual('1 - The Burning Crusade');
 
     host.mockFormControl.setValue(0);
     page.detectChanges();
 
-    expect(select.nativeElement.value).toEqual('0: 0');
-    expect(select.nativeElement.selectedOptions[0].label).toEqual('0 - Classic');
+    expect(select.value).toEqual('0: 0');
+    expect(select.selectedOptions[0].label).toEqual('0 - Classic');
+  });
+
+  it('changing the input valuewill be reflected in the form control', () => {
+    const { page, host } = setup();
+    const select = page.getDebugElementByCss('select').nativeElement;
+
+    select.value = '1: 1';
+    select.dispatchEvent(new Event('change'));
+    page.detectChanges();
+
+    expect(host.mockFormControl.value).toEqual(1);
+    expect(select.selectedOptions[0].label).toEqual('1 - The Burning Crusade');
+
+    select.value = '0: 0';
+    select.dispatchEvent(new Event('change'));
+    page.detectChanges();
+
+    expect(host.mockFormControl.value).toEqual(0);
+    expect(select.selectedOptions[0].label).toEqual('0 - Classic');
   });
 });

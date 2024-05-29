@@ -14,9 +14,9 @@ class TestHostComponent {
   mockFormControl = new FormControl();
 }
 
-class BooleanOptionSelectorComponentPage extends PageObject<TestHostComponent> {}
-
 describe('BooleanOptionSelectorComponent', () => {
+  class BooleanOptionSelectorComponentPage extends PageObject<TestHostComponent> {}
+
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [BooleanOptionSelectorComponent, TestHostComponent, TranslateTestingModule],
@@ -36,18 +36,37 @@ describe('BooleanOptionSelectorComponent', () => {
 
   it('changing the form value via input will be reflected in the template', () => {
     const { page, host } = setup();
-    const select = page.getDebugElementByCss('select');
+    const select = page.getDebugElementByCss('select').nativeElement;
 
     host.mockFormControl.setValue(1);
     page.detectChanges();
 
-    expect(select.nativeElement.value).toEqual('1: 1');
-    expect(select.nativeElement.selectedOptions[0].innerText).toEqual('1 - SELECTORS.ENABLED');
+    expect(select.value).toEqual('1: 1');
+    expect(select.selectedOptions[0].innerText).toEqual('1 - SELECTORS.ENABLED');
 
     host.mockFormControl.setValue(0);
     page.detectChanges();
 
-    expect(select.nativeElement.value).toEqual('0: 0');
-    expect(select.nativeElement.selectedOptions[0].innerText).toEqual('0 - SELECTORS.DISABLED');
+    expect(select.value).toEqual('0: 0');
+    expect(select.selectedOptions[0].innerText).toEqual('0 - SELECTORS.DISABLED');
+  });
+
+  it('changing the input valuewill be reflected in the form control', () => {
+    const { page, host } = setup();
+    const select = page.getDebugElementByCss('select').nativeElement;
+
+    select.value = '1: 1';
+    select.dispatchEvent(new Event('change'));
+    page.detectChanges();
+
+    expect(host.mockFormControl.value).toEqual(1);
+    expect(select.selectedOptions[0].innerText).toEqual('1 - SELECTORS.ENABLED');
+
+    select.value = '0: 0';
+    select.dispatchEvent(new Event('change'));
+    page.detectChanges();
+
+    expect(host.mockFormControl.value).toEqual(0);
+    expect(select.selectedOptions[0].innerText).toEqual('0 - SELECTORS.DISABLED');
   });
 });
