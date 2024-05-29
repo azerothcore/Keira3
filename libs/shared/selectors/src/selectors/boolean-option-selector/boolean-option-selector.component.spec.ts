@@ -34,7 +34,7 @@ describe('BooleanOptionSelectorComponent', () => {
     return { fixture, host, component, page };
   };
 
-  it('change select values', () => {
+  it('changing the form value via input will be reflected in the template', () => {
     const { page, host } = setup();
     const select = page.getDebugElementByCss('select');
 
