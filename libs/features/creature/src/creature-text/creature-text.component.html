@@ -25,13 +25,11 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
               <label class="control-label" for="Type">Type</label>
-              <keira-single-value-selector-btn
+              <keira-generic-option-selector
                 [control]="editorService.form.controls.Type"
-                [disabled]="editorService.form.controls.Type.disabled"
-                [config]="{ options: TEXT_TYPE, name: 'Type' }"
-                [modalClass]="'modal-md'"
-              />
-              <input [formControlName]="'Type'" id="Type" type="number" class="form-control form-control-sm" />
+                id="type"
+                [optionList]="TEXT_TYPE"
+              ></keira-generic-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
               <label class="control-label" for="Language">Language</label>
@@ -51,14 +49,12 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
               <label class="control-label" for="Emote">Emote</label>
-              <keira-single-value-selector-btn
-                [control]="editorService.form.controls.Emote"
-                [disabled]="editorService.form.controls.Emote.disabled"
-                [config]="{ options: EMOTE, name: 'emote' }"
-                [modalClass]="'modal-md'"
-              />
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEXT.EMOTE' | translate"></i>
-              <input [formControlName]="'Emote'" id="Emote" type="number" class="form-control form-control-sm" />
+              <keira-generic-option-selector
+                [control]="editorService.form.controls.Emote"
+                id="Emote"
+                [optionList]="EMOTE"
+              ></keira-generic-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
               <label class="control-label" for="Duration">Duration</label>
@@ -82,13 +78,11 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
               <label class="control-label" for="Type">TextRange</label>
-              <keira-single-value-selector-btn
+              <keira-generic-option-selector
                 [control]="editorService.form.controls.TextRange"
-                [disabled]="editorService.form.controls.TextRange.disabled"
-                [config]="{ options: TEXT_RANGE, name: 'TextRange' }"
-                [modalClass]="'modal-md'"
-              />
-              <input [formControlName]="'TextRange'" id="TextRange" type="number" class="form-control form-control-sm" />
+                id="TextRange"
+                [optionList]="TEXT_RANGE"
+              ></keira-generic-option-selector>
             </div>
             <div class="form-group col-12 col-md-8 col-lg-4 col-xl-4">
               <label class="control-label" for="comment">comment</label>

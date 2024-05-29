@@ -16,10 +16,20 @@
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="Index">Index</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE_SPELL.INDEX' | translate"></i>
-              <input [formControlName]="'Index'" id="Index" type="number" class="form-control form-control-sm" />
+              <select [formControlName]="'Index'" id="Index" type="number" class="form-control form-control-sm">
+                @for (index of SPELL_INDEXES; track index) {
+                  <option [ngValue]="index" [label]="index"></option>
+                }
+              </select>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
               <label class="control-label" for="Spell">Spell</label>
+              <keira-spell-selector-btn
+                [control]="editorService.form.controls.Spell"
+                [disabled]="editorService.form.controls.Spell.disabled"
+                [config]="{ name: 'Spell' }"
+                [modalClass]="'modal-lg'"
+              />
               <input [formControlName]="'Spell'" id="Spell" type="number" class="form-control form-control-sm" />
             </div>
             <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
@@ -49,7 +59,12 @@
                 </ng-template>
               </ngx-datatable-column>
               <ngx-datatable-column name="Index" prop="Index" [minWidth]="80" [maxWidth]="150"></ngx-datatable-column>
-              <ngx-datatable-column name="Spell" prop="Spell" [minWidth]="80" [maxWidth]="150"></ngx-datatable-column>
+              <ngx-datatable-column name="Spell" prop="Spell" [minWidth]="80" [maxWidth]="150">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  <keira-icon size="small" [spellId]="row.Spell" /> {{ row.Spell }} -
+                  {{ sqliteQueryService.getSpellNameById(row.Spell) | async }}
+                </ng-template>
+              </ngx-datatable-column>
             </ngx-datatable>
           </div>
         </div>

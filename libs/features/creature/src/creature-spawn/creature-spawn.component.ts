@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   CreatureSpawn,
   DYNAMIC_FLAGS,
@@ -9,16 +9,20 @@ import {
   SPAWN_MASK,
   UNIT_FLAGS,
 } from '@keira/shared/acore-world-model';
+import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { EditorButtonsComponent, QueryOutputComponent } from '@keira/shared/base-editor-components';
+import {
+  AreaSelectorBtnComponent,
+  FlagsSelectorBtnComponent,
+  GenericOptionSelectorComponent,
+  MapSelectorBtnComponent,
+  SingleValueSelectorBtnComponent,
+} from '@keira/shared/selectors';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureSpawnService } from './creature-spawn.service';
-import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { EditorButtonsComponent } from '@keira/shared/base-editor-components';
-import { AreaSelectorBtnComponent, MapSelectorBtnComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/base-editor-components';
-import { TranslateModule } from '@ngx-translate/core';
 
 import { TopBarComponent } from '@keira/shared/base-editor-components';
 
@@ -41,6 +45,7 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
     SingleValueSelectorBtnComponent,
     EditorButtonsComponent,
     NgxDatatableModule,
+    GenericOptionSelectorComponent,
   ],
 })
 export class CreatureSpawnComponent extends MultiRowEditorComponent<CreatureSpawn> {

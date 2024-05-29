@@ -1,16 +1,18 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CreatureOnkillReputation, FACTION_RANK } from '@keira/shared/acore-world-model';
+import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
+import {
+  BooleanOptionSelectorComponent,
+  FactionSelectorBtnComponent,
+  GenericOptionSelectorComponent,
+  SingleValueSelectorBtnComponent,
+} from '@keira/shared/selectors';
+import { TranslateModule } from '@ngx-translate/core';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureOnkillReputationService } from './creature-onkill-reputation.service';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
-import { FactionSelectorBtnComponent } from '@keira/shared/selectors';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/base-editor-components';
-import { TranslateModule } from '@ngx-translate/core';
-
-import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,6 +29,8 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
     FactionSelectorBtnComponent,
     SingleValueSelectorBtnComponent,
     TooltipModule,
+    BooleanOptionSelectorComponent,
+    GenericOptionSelectorComponent,
   ],
 })
 export class CreatureOnkillReputationComponent extends SingleRowEditorComponent<CreatureOnkillReputation> {
