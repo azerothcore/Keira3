@@ -121,7 +121,7 @@
     "lint-staged": "15.2.5",
     "ngx-bootstrap": "12.0.0",
     "ngx-clipboard": "16.0.0",
-    "ngx-highlightjs": "10.0.0",
+    "ngx-highlightjs": "11.0.1",
     "npm-run-all2": "6.2.0",
     "nx": "19.1.1",
     "playwright": "1.44.0",
