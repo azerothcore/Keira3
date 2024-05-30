@@ -255,7 +255,7 @@
     },
     "SPAWN": {
       "ORIENTATION": "Bestämmer den NPC Spawn Punkt. (North = 0.0; South = pi (3.14159))",
-      "EQUIPMENT_ID_TOOLTIP": "1 = uses the info set in equipment template 0 = no weapons equipped",
+      "EQUIPMENT_ID_TOOLTIP": "1 = uses the info set in equipment template 0 = no weapons equipped, -1 A random equip from the set of equips in creature_equip_template will be chosen.",
       "SPAWN_DIST_TOOLTIP": "Det maximala avståndet som den NPC kan spawna från dens Spawn Punkt. Kontrollerar också den hur långt ifrån NPC kan röra sig från din Spawn Punkt om dens MovementType = 1.",
       "SCRIPT_NAME": "Namnet på det C++ script som denna NPC använder, om det finns.",
       "GUID": "Länk till creature.guid",
