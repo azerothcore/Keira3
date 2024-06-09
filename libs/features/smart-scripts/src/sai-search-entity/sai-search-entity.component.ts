@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
-import { GameobjectSelectorBtnComponent } from '@keira/shared/selectors';
-import { CreatureSelectorBtnComponent } from '@keira/shared/selectors';
+import { CreatureSelectorBtnComponent, GameobjectSelectorBtnComponent } from '@keira/shared/selectors';
 
 import { SaiHandlerService } from '@keira/shared/sai-editor';
 import { getEnumKeys, ModelForm } from '@keira/shared/utils';

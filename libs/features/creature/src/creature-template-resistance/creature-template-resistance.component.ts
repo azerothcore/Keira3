@@ -6,14 +6,12 @@ import {
   CreatureTemplateResistance,
 } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
-import { EditorButtonsComponent, QueryOutputComponent } from '@keira/shared/base-editor-components';
+import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { GenericOptionSelectorComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateResistanceService } from './creature-template-resistance.service';
-
-import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

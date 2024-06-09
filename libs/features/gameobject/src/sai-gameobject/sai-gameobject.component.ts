@@ -1,16 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { SaiEditorComponent } from '@keira/shared/sai-editor';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { EditorButtonsComponent, QueryOutputComponent } from '@keira/shared/base-editor-components';
+import { SaiEditorComponent, SaiTopBarComponent, TimedActionlistComponent } from '@keira/shared/sai-editor';
+import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { SaiGameobjectEditorService } from './sai-gameobject-editor.service';
-import { TimedActionlistComponent } from '@keira/shared/sai-editor';
-import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { EditorButtonsComponent } from '@keira/shared/base-editor-components';
-import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/base-editor-components';
-import { TranslateModule } from '@ngx-translate/core';
-import { SaiTopBarComponent } from '@keira/shared/sai-editor';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

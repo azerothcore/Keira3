@@ -1,18 +1,16 @@
+import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CREATURE_TEMPLATE_SPELL_TABLE, CreatureTemplateSpell } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
-import { EditorButtonsComponent, IconComponent, QueryOutputComponent } from '@keira/shared/base-editor-components';
+import { EditorButtonsComponent, IconComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
+import { SqliteQueryService } from '@keira/shared/db-layer';
+import { SpellSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateSpellService } from './creature-template-spell.service';
-
-import { AsyncPipe } from '@angular/common';
-import { TopBarComponent } from '@keira/shared/base-editor-components';
-import { SqliteQueryService } from '@keira/shared/db-layer';
-import { SpellSelectorBtnComponent } from '@keira/shared/selectors';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

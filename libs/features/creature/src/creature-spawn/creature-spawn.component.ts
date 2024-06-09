@@ -10,7 +10,7 @@ import {
   UNIT_FLAGS,
 } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
-import { EditorButtonsComponent, QueryOutputComponent } from '@keira/shared/base-editor-components';
+import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import {
   AreaSelectorBtnComponent,
   FlagsSelectorBtnComponent,
@@ -23,8 +23,6 @@ import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureSpawnService } from './creature-spawn.service';
-
-import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

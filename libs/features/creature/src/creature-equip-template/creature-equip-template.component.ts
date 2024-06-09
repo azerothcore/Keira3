@@ -1,15 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CreatureEquipTemplate } from '@keira/shared/acore-world-model';
+import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { IconComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
+import { ItemSelectorBtnComponent } from '@keira/shared/selectors';
+import { TranslateModule } from '@ngx-translate/core';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureEquipTemplateService } from './creature-equip-template.service';
-import { ItemSelectorBtnComponent } from '@keira/shared/selectors';
-import { IconComponent } from '@keira/shared/base-editor-components';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/base-editor-components';
-import { TranslateModule } from '@ngx-translate/core';
-
-import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
