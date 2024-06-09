@@ -55,7 +55,7 @@
     "node-fetch": "2.7.0",
     "serialize-javascript": "6.0.2",
     "sqlite3": "5.1.6",
-    "tslib": "2.6.2"
+    "tslib": "2.6.3"
   },
   "devDependencies": {
     "@angular-builders/custom-esbuild": "17.1.2",
