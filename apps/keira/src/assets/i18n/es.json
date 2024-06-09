@@ -260,7 +260,7 @@
     },
     "SPAWN": {
       "ORIENTATION": "La Orientación en el punto de aparición de la criatura. (Norte = 0.0; Sur = π (3.14159))",
-      "EQUIPMENT_ID_TOOLTIP": "1 = uses the info set in equipment template 0 = no weapons equipped",
+      "EQUIPMENT_ID_TOOLTIP": "1 = uses the info set in equipment template 0 = no weapons equipped, -1 A random equip from the set of equips in creature_equip_template will be chosen.",
       "SPAWN_DIST_TOOLTIP": "Distancia máxima a la que puede aparecer la criatura desde su punto inicial. También controla qué tan lejos la criatura puede caminar desde su punto inicial de aparición si su 'MovementType' es igual a 1.",
       "SCRIPT_NAME": "El nombre en clave del script escrito en C++ que utilizará esta criatura, si existe claro está.",
       "GUID": "Enlazado con creature.guid (Identificador Único Global de la Criatura)",
