@@ -121,9 +121,7 @@ describe('CreatureTemplateResistance integration tests', () => {
       );
 
       const select = page.getDebugElementByCss('#School select').nativeElement;
-      select.value = '1: 2';
-      select.dispatchEvent(new Event('change'));
-      page.detectChanges();
+      page.setInputValue(select, '1: 2');
 
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234) AND (`School` IN (2));\n' +
@@ -143,10 +141,8 @@ describe('CreatureTemplateResistance integration tests', () => {
       page.addNewRow();
 
       const select = page.getDebugElementByCss('#School select').nativeElement;
-      select.value = '1: 2';
-      select.dispatchEvent(new Event('change'));
+      page.setInputValue(select, '1: 2');
 
-      page.detectChanges();
       page.duplicateSelectedRow();
 
       page.expectDiffQueryToContain(
@@ -214,21 +210,18 @@ describe('CreatureTemplateResistance integration tests', () => {
       const { page } = setup(false);
       page.clickRowOfDatatable(1);
 
-      const select = page.getDebugElementByCss('#School select').nativeElement;
-      select.value = '1: 2';
-      select.dispatchEvent(new Event('change'));
-      page.detectChanges();
+      page.setInputValueById('Resistance', '1');
 
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234) AND (`School` IN (2, 111));\n' +
+        'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234) AND (`School` IN (2));\n' +
           'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
-          '(1234, 2, 0, 0);',
+          '(1234, 2, 1, 0);',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234);\n' +
           'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
           '(1234, 1, 0, 0),\n' +
-          '(1234, 2, 0, 0),\n' +
+          '(1234, 2, 1, 0),\n' +
           '(1234, 3, 0, 0);',
       );
       page.removeElement();
@@ -241,9 +234,8 @@ describe('CreatureTemplateResistance integration tests', () => {
 
       page.clickRowOfDatatable(1);
       const select = page.getDebugElementByCss('#School select').nativeElement;
-      select.value = '5: 5';
-      select.dispatchEvent(new Event('change'));
-      page.detectChanges();
+      page.setInputValue(select, '4: 5');
+
       expect(page.getEditorTableRowsCount()).toBe(4);
 
       page.deleteRow(2);
@@ -269,9 +261,7 @@ describe('CreatureTemplateResistance integration tests', () => {
       const { page } = setup(false);
       page.clickRowOfDatatable(2);
       const select = page.getDebugElementByCss('#School select').nativeElement;
-      select.value = '1: 1';
-      select.dispatchEvent(new Event('change'));
-      page.detectChanges();
+      page.setInputValue(select, '1: 2');
 
       page.expectUniqueError();
       page.removeElement();

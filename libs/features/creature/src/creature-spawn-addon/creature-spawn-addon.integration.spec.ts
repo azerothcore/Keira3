@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CreatureSpawnAddon } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { CreatureSpawnAddon } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
+import { instance, mock } from 'ts-mockito';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureSpawnAddonComponent } from './creature-spawn-addon.component';
 import { CreatureSpawnAddonService } from './creature-spawn-addon.service';
-import { instance, mock } from 'ts-mockito';
 
 class CreatureSpawnAddonPage extends MultiRowEditorPageObject<CreatureSpawnAddonComponent> {}
 
@@ -75,9 +75,9 @@ describe('CreatureSpawnAddon integration tests', () => {
       expect(page.getInputById('guid').disabled).toBe(true);
       expect(page.getInputById('path_id').disabled).toBe(true);
       expect(page.getInputById('mount').disabled).toBe(true);
-      expect(page.getInputById('bytes1').disabled).toBe(true);
-      expect(page.getInputById('bytes2').disabled).toBe(true);
-      expect(page.getInputById('emote').disabled).toBe(true);
+      expect(page.getDebugElementByCss('#bytes1 select').nativeElement.disabled).toBe(true);
+      expect(page.getDebugElementByCss('#bytes2 select').nativeElement.disabled).toBe(true);
+      expect(page.getDebugElementByCss('#emote select').nativeElement.disabled).toBe(true);
       expect(page.getInputById('visibilityDistanceType').disabled).toBe(true);
       expect(page.getInputById('auras').disabled).toBe(true);
       expect(page.getEditorTableRowsCount()).toBe(0);

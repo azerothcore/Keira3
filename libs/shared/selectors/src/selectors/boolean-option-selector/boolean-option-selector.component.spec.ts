@@ -55,16 +55,12 @@ describe('BooleanOptionSelectorComponent', () => {
     const { page, host } = setup();
     const select = page.getDebugElementByCss('select').nativeElement;
 
-    select.value = '1: 1';
-    select.dispatchEvent(new Event('change'));
-    page.detectChanges();
+    page.setInputValue(select, '1: 1');
 
     expect(host.mockFormControl.value).toEqual(1);
     expect(select.selectedOptions[0].innerText).toEqual('1 - SELECTORS.ENABLED');
 
-    select.value = '0: 0';
-    select.dispatchEvent(new Event('change'));
-    page.detectChanges();
+    page.setInputValue(select, '0: 0');
 
     expect(host.mockFormControl.value).toEqual(0);
     expect(select.selectedOptions[0].innerText).toEqual('0 - SELECTORS.DISABLED');
