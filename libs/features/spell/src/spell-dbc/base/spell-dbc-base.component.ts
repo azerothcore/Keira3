@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   DISPEL_TYPE,
-  SPELL_DBC_CAST_TIME,
   SPELL_DBC_CASTER_AURA_STATE,
+  SPELL_DBC_CAST_TIME,
   SPELL_DBC_DAMAGE_CLASS,
   SPELL_DBC_POWER_TYPE,
   SPELL_DBC_PREVENTION_TYPE,
@@ -12,11 +12,10 @@ import {
   SPELL_SCHOOL_MASK,
   SpellDbc,
 } from '@keira/shared/acore-world-model';
+import { FlagsSelectorBtnComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { ModelForm } from '@keira/shared/utils';
-import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
-import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

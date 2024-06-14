@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CreatureOnkillReputation } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { CreatureOnkillReputation } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
+import { instance, mock } from 'ts-mockito';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureOnkillReputationComponent } from './creature-onkill-reputation.component';
 import Spy = jasmine.Spy;
-import { instance, mock } from 'ts-mockito';
 
 class CreatureOnkillReputationPage extends EditorPageObject<CreatureOnkillReputationComponent> {}
 
@@ -112,9 +112,20 @@ describe('CreatureOnkillReputation integration tests', () => {
     it('changing all properties and executing the query should correctly work', () => {
       const expectedQuery =
         'UPDATE `creature_onkill_reputation` SET ' +
-        '`RewOnKillRepFaction2` = 1, `MaxStanding1` = 2, `IsTeamAward1` = 3, `RewOnKillRepValue1` = 4, ' +
-        '`MaxStanding2` = 5, `IsTeamAward2` = 6, `RewOnKillRepValue2` = 7, `TeamDependent` = 8 WHERE (`creature_id` = 1234);';
+        '`RewOnKillRepFaction2` = 1, `MaxStanding1` = 1, `IsTeamAward1` = 1, `RewOnKillRepValue1` = 4, ' +
+        '`MaxStanding2` = 1, `IsTeamAward2` = 1, `RewOnKillRepValue2` = 7, `TeamDependent` = 1 WHERE (`creature_id` = 1234);';
       querySpy.calls.reset();
+
+      const MaxStanding1 = page.getDebugElementByCss('#MaxStanding1 select').nativeElement;
+      const MaxStanding2 = page.getDebugElementByCss('#MaxStanding2 select').nativeElement;
+      const IsTeamAward1 = page.getDebugElementByCss('#IsTeamAward1 select').nativeElement;
+      const IsTeamAward2 = page.getDebugElementByCss('#IsTeamAward2 select').nativeElement;
+      const TeamDependent = page.getDebugElementByCss('#TeamDependent select').nativeElement;
+      page.setInputValue(MaxStanding1, '1: 1');
+      page.setInputValue(MaxStanding2, '1: 1');
+      page.setInputValue(IsTeamAward1, '1: 1');
+      page.setInputValue(IsTeamAward2, '1: 1');
+      page.setInputValue(TeamDependent, '1: 1');
 
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.expectDiffQueryToContain(expectedQuery);
@@ -135,16 +146,17 @@ describe('CreatureOnkillReputation integration tests', () => {
           '(1234, 0, 1, 0, 0, 0, 0, 0, 0, 0);',
       );
 
-      page.setInputValueById('IsTeamAward1', '3');
+      const IsTeamAward1 = page.getDebugElementByCss('#IsTeamAward1 select').nativeElement;
+      page.setInputValue(IsTeamAward1, '1: 1');
       page.expectDiffQueryToContain(
-        'UPDATE `creature_onkill_reputation` SET `RewOnKillRepFaction2` = 1, `IsTeamAward1` = 3 WHERE (`creature_id` = 1234);',
+        'UPDATE `creature_onkill_reputation` SET `RewOnKillRepFaction2` = 1, `IsTeamAward1` = 1 WHERE (`creature_id` = 1234);',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
           'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +
           ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, ' +
           '`MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n' +
-          '(1234, 0, 1, 0, 3, 0, 0, 0, 0, 0);',
+          '(1234, 0, 1, 0, 1, 0, 0, 0, 0, 0);',
       );
     });
 

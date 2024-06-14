@@ -1,16 +1,16 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CreatureText } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { CreatureText } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
+import { instance, mock } from 'ts-mockito';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureTextComponent } from './creature-text.component';
-import { instance, mock } from 'ts-mockito';
 class CreatureTextPage extends MultiRowEditorPageObject<CreatureTextComponent> {}
 
 describe('CreatureText integration tests', () => {
@@ -68,14 +68,14 @@ describe('CreatureText integration tests', () => {
       expect(page.getInputById('GroupID').disabled).toBe(true);
       expect(page.getInputById('ID').disabled).toBe(true);
       expect(page.getInputById('Text').disabled).toBe(true);
-      expect(page.getInputById('Type').disabled).toBe(true);
+      expect(page.getDebugElementByCss('#Type select').nativeElement.disabled).toBe(true);
       expect(page.getInputById('Language').disabled).toBe(true);
       expect(page.getInputById('Probability').disabled).toBe(true);
-      expect(page.getInputById('Emote').disabled).toBe(true);
+      expect(page.getDebugElementByCss('#Emote select').nativeElement.disabled).toBe(true);
       expect(page.getInputById('Duration').disabled).toBe(true);
       expect(page.getInputById('Sound').disabled).toBe(true);
       expect(page.getInputById('BroadcastTextId').disabled).toBe(true);
-      expect(page.getInputById('TextRange').disabled).toBe(true);
+      expect(page.getDebugElementByCss('#TextRange select').nativeElement.disabled).toBe(true);
       expect(page.getInputById('comment').disabled).toBe(true);
       expect(page.getEditorTableRowsCount()).toBe(0);
     });

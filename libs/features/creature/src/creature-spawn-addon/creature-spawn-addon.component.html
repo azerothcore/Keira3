@@ -30,33 +30,27 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="bytes1">bytes1</label>
-              <keira-single-value-selector-btn
+              <keira-generic-option-selector
                 [control]="editorService.form.controls.bytes1"
-                [disabled]="editorService.form.controls.bytes1.disabled"
-                [config]="{ options: CREATURE_ADDON_BYTES_1, name: 'bytes1' }"
-                [modalClass]="'modal-xl'"
-              />
-              <input [formControlName]="'bytes1'" id="bytes1" type="number" class="form-control form-control-sm" />
+                id="bytes1"
+                [optionList]="CREATURE_ADDON_BYTES_1"
+              ></keira-generic-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="bytes2">bytes2</label>
-              <keira-single-value-selector-btn
+              <keira-generic-option-selector
                 [control]="editorService.form.controls.bytes2"
-                [disabled]="editorService.form.controls.bytes2.disabled"
-                [config]="{ options: CREATURE_ADDON_BYTES_2, name: 'bytes2' }"
-                [modalClass]="'modal-lg'"
-              />
-              <input [formControlName]="'bytes2'" id="bytes2" type="number" class="form-control form-control-sm" />
+                id="bytes2"
+                [optionList]="CREATURE_ADDON_BYTES_2"
+              ></keira-generic-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="emote">emote</label>
-              <keira-single-value-selector-btn
+              <keira-generic-option-selector
                 [control]="editorService.form.controls.emote"
-                [disabled]="editorService.form.controls.emote.disabled"
-                [config]="{ options: EMOTE, name: 'emote' }"
-                [modalClass]="'modal-md'"
-              />
-              <input [formControlName]="'emote'" id="emote" type="number" class="form-control form-control-sm" />
+                id="emote"
+                [optionList]="EMOTE"
+              ></keira-generic-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="visibilityDistanceType">visibilityDistanceType</label>

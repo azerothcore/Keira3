@@ -1,13 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
-import { LootTemplateIdComponent } from '@keira/shared/base-abstract-classes';
 import { GameobjectLootTemplate } from '@keira/shared/acore-world-model';
+import { LootTemplateIdComponent } from '@keira/shared/base-abstract-classes';
+import { TopBarComponent } from '@keira/shared/base-editor-components';
+import { LootEditorComponent } from '@keira/shared/loot-editor';
+import { TranslateModule } from '@ngx-translate/core';
 import { QueryError } from 'mysql2';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
-import { LootEditorComponent } from '@keira/shared/loot-editor';
-import { TranslateModule } from '@ngx-translate/core';
-
-import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
