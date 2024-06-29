@@ -666,10 +666,14 @@ SAI_ACTION_TOOLTIPS[SAI_ACTIONS.MOVE_TO_POS] =
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.MOVE_TO_POS] = 'PointId';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.MOVE_TO_POS] = 'isTransport';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.MOVE_TO_POS] = 'isControlled';
-SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.MOVE_TO_POS] = 'ContactDistance';
+SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.MOVE_TO_POS] = 'Contact Distance';
+SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.MOVE_TO_POS] = 'Combat Reach';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.MOVE_TO_POS] = 'Can be used to call the MovementInform event';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.MOVE_TO_POS] = BOOLEAN_VALUE_TOOLTIP;
 SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.MOVE_TO_POS] =
   '0 = aggro/threat will make it focus on player instead, 1 = Fixated to run to the xyzo position no matter what';
+SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.MOVE_TO_POS] = 'Absolute distance between the target and the source';
+SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.MOVE_TO_POS] = '0/1 Uses CombatReach as the minimum distance between target and source. If ContactDistance > 0, then it will be added on top of CombatReach distance';
 
 // SMART_ACTION_RESPAWN_TARGET
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.RESPAWN_TARGET] =
