@@ -77,11 +77,11 @@
     "@angular/platform-browser-dynamic": "17.3.11",
     "@angular/router": "17.3.11",
     "@fortawesome/fontawesome-free": "6.5.2",
-    "@nx/angular": "19.1.1",
-    "@nx/eslint": "19.1.1",
-    "@nx/eslint-plugin": "19.1.1",
-    "@nx/js": "19.1.1",
-    "@nx/workspace": "19.1.1",
+    "@nx/angular": "19.3.2",
+    "@nx/eslint": "19.3.2",
+    "@nx/eslint-plugin": "19.3.2",
+    "@nx/js": "19.3.2",
+    "@nx/workspace": "19.3.2",
     "@playwright/test": "1.44.0",
     "@schematics/angular": "17.3.8",
     "@siemens/ngx-datatable": "22.2.2",
@@ -123,7 +123,7 @@
     "ngx-clipboard": "16.0.0",
     "ngx-highlightjs": "10.0.0",
     "npm-run-all2": "6.2.0",
-    "nx": "19.1.1",
+    "nx": "19.3.2",
     "playwright": "1.44.0",
     "prettier": "3.3.1",
     "pretty-quick": "4.0.0",
@@ -138,10 +138,10 @@
     "zone.js": "0.14.7"
   },
   "optionalDependencies": {
-    "@nx/nx-darwin-arm64": "19.1.1",
-    "@nx/nx-darwin-x64": "19.1.1",
-    "@nx/nx-linux-x64-gnu": "19.1.1",
-    "@nx/nx-win32-x64-msvc": "19.1.1"
+    "@nx/nx-darwin-arm64": "19.3.2",
+    "@nx/nx-darwin-x64": "19.3.2",
+    "@nx/nx-linux-x64-gnu": "19.3.2",
+    "@nx/nx-win32-x64-msvc": "19.3.2"
   },
   "husky": {
     "hooks": {
