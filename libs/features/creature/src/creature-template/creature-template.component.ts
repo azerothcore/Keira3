@@ -89,7 +89,7 @@ export class CreatureTemplateComponent extends SingleRowEditorComponent<Creature
   protected readonly NPC_VIEWER_TYPE = VIEWER_TYPE.NPC;
 
   protected RACE_ICON_GENDER = true;
-  protected showItemPreview = true;
+  protected showItemPreview = false;
 
   override readonly editorService = inject(CreatureTemplateService);
   readonly handlerService = inject(CreatureHandlerService);
