@@ -166,7 +166,7 @@ export enum SAI_ACTIONS {
   DO_ACTION = 223,
   ATTACK_STOP = 224,
   SET_GUID = 225,
-  DISABLE = 226,
+  SCRIPTED_SPAWN = 226,
   SET_SCALE = 227,
   SUMMON_RADIAL = 228,
   PLAY_SPELL_VISUAL = 229,
@@ -1198,10 +1198,20 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_GUID] = 'Method';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_GUID] = 'Index';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_GUID] = '0/1 (0 = Self Guid, 1 = Invoker Guid)';
 
-// SMART_ACTION_DISABLE
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.DISABLE] = 'Disable the target creatures, setting them Invisible and Immune to All';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.DISABLE] = 'State';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.DISABLE] = '0/1 (0 = Disable, 1 = Enable)';
+// SMART_ACTION_SCRIPTED_SPAWN
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Sets up and allows the usage of a SmartAI Scripted Spawn system, allowing us to keep unique GUIDs despawned until a script ativates them';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SCRIPTED_SPAWN] = 'State';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Minimum Spawn Timer';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Maximum Spawn Timer';
+SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Respawn Delay';
+SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Corpse Delay';
+SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Dont Despawn';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] = '0: Disable Respawn and await script; 1: Respawn Once; 2: Respawn and Enable Respawning';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Delay in seconds until first spawn, if 0 respawn immediately';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Delay in seconds until first spawn, if 0 respawn immediately';
+SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Delay in seconds to respawn after corpse is removed, if 0 use DB values';
+SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Delay in seconds until the corpse despawns, if 0 use default';
+SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] = 'if 1, will not despawn when state = 0';
 
 // SMART_ACTION_SET_SCALE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_SCALE] = 'Sets the scale for the targeted creatures';
