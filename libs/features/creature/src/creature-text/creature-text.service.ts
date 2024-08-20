@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
+import { CREATURE_ID, CREATURE_TEXT_TABLE, CreatureText, EXTRA_ID, TEXT_ID } from '@keira/shared/acore-world-model';
 import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
-import { CREATURE_ID, CREATURE_TEXT_TABLE, CreatureText, TEXT_ID } from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 
 @Injectable({
@@ -8,6 +8,6 @@ import { CreatureHandlerService } from '../creature-handler.service';
 })
 export class CreatureTextService extends MultiRowEditorService<CreatureText> {
   constructor(protected override readonly handlerService: CreatureHandlerService) {
-    super(CreatureText, CREATURE_TEXT_TABLE, CREATURE_ID, TEXT_ID, handlerService);
+    super(CreatureText, CREATURE_TEXT_TABLE, CREATURE_ID, TEXT_ID, handlerService, EXTRA_ID);
   }
 }
