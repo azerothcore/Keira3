@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
@@ -7,10 +7,10 @@ import { TranslateService } from '@ngx-translate/core';
 export class SwitchLanguageService {
   currentLanguage = 'en';
 
-  constructor(private readonly translateService: TranslateService) {}
+  private readonly translateService: TranslateService = inject(TranslateService);
 
-  setLanguage(event: any): void {
-    this.currentLanguage = event.target.value;
-    this.translateService.setDefaultLang(event.target.value);
+  setLanguage(event: Event): void {
+    this.currentLanguage = (event.target as HTMLSelectElement).value;
+    this.translateService.setDefaultLang((event.target as HTMLSelectElement).value);
   }
 }

@@ -1,8 +1,9 @@
+import { FormGroup } from '@angular/forms';
 import { Class, TableRow } from '@keira/shared/constants';
+import { compareObjFn, ModelForm } from '@keira/shared/utils';
 import { distinctUntilChanged } from 'rxjs';
 import { HandlerService } from '../handlers/handler.service';
 import { EditorService } from './editor.service';
-import { compareObjFn } from '@keira/shared/utils';
 
 export abstract class MultiRowEditorService<T extends TableRow> extends EditorService<T> {
   protected FIRST_ROW_START_VALUE = 0;
@@ -37,6 +38,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     protected override readonly _entityIdField: string | undefined,
     protected readonly _entitySecondIdField: string,
     protected override readonly handlerService: HandlerService<T>,
+    protected readonly _entityExtraIdField: string | undefined = undefined,
   ) {
     super(_entityClass, _entityTable, _entityIdField, handlerService);
     this.initForm();
@@ -44,12 +46,18 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
 
   private getRowIndex(id: string | number): number {
     for (let i = 0; i < this._newRows.length; i++) {
-      if (id === this._newRows[i][this._entitySecondIdField]) {
+      if (id === this.getNewRowId(this._newRows[i])) {
         return i;
       }
     }
 
-    console.error(`getRowIndex() failed in finding row having ${this._entitySecondIdField} ${id}`);
+    if (this._entityExtraIdField) {
+      const [entitySecondIdField, extraIdField] = `${id}`.split('_');
+      console.error(`getRowIndex() failed in finding row having ${this._entitySecondIdField} ${entitySecondIdField} and ${extraIdField}`);
+    } else {
+      console.error(`getRowIndex() failed in finding row having ${this._entitySecondIdField} ${id}`);
+    }
+
     return 0;
   }
 
@@ -70,7 +78,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
           if (this._form.dirty && this.isFormIdUnique()) {
             this._newRows[this.getSelectedRowIndex()] = this._form.getRawValue() as T;
             this._newRows = [...this._newRows];
-            this._selectedRowId = this.form.controls[this._entitySecondIdField].value;
+            this._selectedRowId = this.getNewRowIdForm(this._form.controls);
             this.checkRowsCorrectness();
             this.updateDiffQuery();
             this.updateFullQuery();
@@ -136,7 +144,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   }
 
   onRowSelection({ selected }: { selected: T[] }): void {
-    const newId = selected[0][this._entitySecondIdField];
+    const newId = this.getNewRowId(selected[0]);
 
     if (newId === this._selectedRowId) {
       return;
@@ -171,7 +179,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   protected onRowSelected(): void {}
 
   isRowSelected(row: T): boolean {
-    return row[this._entitySecondIdField] === this._selectedRowId;
+    return this.getNewRowId(row) === this._selectedRowId;
   }
 
   deleteSelectedRow(): void {
@@ -194,6 +202,22 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     newRow[this._entityIdField as keyof T] = Number.parseInt(this.loadedEntityId, 10) as T[keyof T];
   }
 
+  private getNewRowId(row: T): string | number {
+    if (this._entityExtraIdField) {
+      return `${row[this._entitySecondIdField]}_${row[this._entityExtraIdField]}`;
+    }
+
+    return row[this._entitySecondIdField];
+  }
+
+  private getNewRowIdForm(rowControls: FormGroup<ModelForm<T>>['controls']): string | number {
+    if (this._entityExtraIdField) {
+      return `${rowControls[this._entitySecondIdField].value}_${rowControls[this._entityExtraIdField].value}`;
+    }
+
+    return rowControls[this._entitySecondIdField].value;
+  }
+
   addNewRow(copySelectedRow = false): void {
     const newRow: T = copySelectedRow && this.hasSelectedRow() ? { ...this.getSelectedRow() } : new this._entityClass();
     if (this._entityIdField) {
@@ -210,10 +234,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
 
   isFormIdUnique(): boolean {
     for (const row of this._newRows) {
-      if (
-        row[this._entitySecondIdField] !== this._selectedRowId &&
-        row[this._entitySecondIdField] === this._form.controls[this._entitySecondIdField].value
-      ) {
+      if (this.getNewRowId(row) !== this._selectedRowId && this.getNewRowId(row) === this.getNewRowIdForm(this._form.controls)) {
         return false;
       }
     }

@@ -1,14 +1,24 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 import { ToastrService } from 'ngx-toastr';
 import { instance, mock } from 'ts-mockito';
-import { MysqlQueryService } from '@keira/shared/db-layer';
 
-import { MOCK_ID, MOCK_ID_2, MOCK_NAME, MockEntity, MockMultiRowEditorService } from '../../core.mock';
+import {
+  MOCK_EXTRA_ID,
+  MOCK_ID,
+  MOCK_ID_2,
+  MOCK_NAME,
+  MockEntity,
+  MockEntityExtra,
+  MockMultiRowEditorExtraService,
+  MockMultiRowEditorService,
+} from '../../core.mock';
 
 describe('MultiRowEditorService', () => {
   const queryResult = '-- Mock query result';
   const rowId = 12345;
+  const extraRowId = 999;
 
   beforeEach(() =>
     TestBed.configureTestingModule({
@@ -20,8 +30,10 @@ describe('MultiRowEditorService', () => {
     }),
   );
 
-  function setup(config: { loadedEntityId?: number; nextRowId?: number; newRows?: MockEntity[] } = {}) {
-    const service = TestBed.inject(MockMultiRowEditorService);
+  function setup(
+    config: { loadedEntityId?: number; nextRowId?: number; newRows?: (MockEntity | MockEntityExtra)[]; extra?: boolean } = {},
+  ) {
+    const service = config.extra ? TestBed.inject(MockMultiRowEditorExtraService) : TestBed.inject(MockMultiRowEditorService);
 
     const updateDiffQuerySpy = spyOn<any>(service, 'updateDiffQuery');
     const updateFullQuerySpy = spyOn<any>(service, 'updateFullQuery');
@@ -29,7 +41,9 @@ describe('MultiRowEditorService', () => {
     const formEnableSpy = spyOn(service.form, 'enable').and.callThrough();
     const formDisableSpy = spyOn(service.form, 'disable').and.callThrough();
 
-    const selected = [{ [service['_entitySecondIdField']]: rowId } as MockEntity];
+    const selected = [
+      { [service['_entitySecondIdField']]: rowId, [service['_entityExtraIdField'] as any]: extraRowId } as unknown as MockEntity,
+    ];
 
     if (config.loadedEntityId) {
       service['_loadedEntityId'] = config.loadedEntityId;
@@ -354,5 +368,54 @@ describe('MultiRowEditorService', () => {
     const oldRows = service['_newRows'];
     service.refreshDatatable();
     expect(oldRows).not.toBe(service['_newRows']);
+  });
+
+  describe('extra row id', () => {
+    it('isRowSelected() should correctly work', () => {
+      const { service } = setup({ extra: true });
+      service['_selectedRowId'] = `${rowId}_${extraRowId}`;
+
+      expect(service.isRowSelected({ [MOCK_ID]: 1, [MOCK_ID_2]: rowId, [MOCK_NAME]: '', [MOCK_EXTRA_ID]: extraRowId })).toBe(true);
+      expect(service.isRowSelected({ [MOCK_ID]: 1, [MOCK_ID_2]: rowId, [MOCK_NAME]: '', [MOCK_EXTRA_ID]: 11111 })).toBe(false);
+    });
+
+    it('onRowSelection() should do nothing if the same row is already selected', () => {
+      const { service, formEnableSpy, formResetSpy, selected } = setup({ extra: true });
+      service['_selectedRowId'] = `${rowId}_${extraRowId}`;
+
+      service.onRowSelection({ selected });
+
+      expect(formResetSpy).toHaveBeenCalledTimes(0);
+      expect(formEnableSpy).toHaveBeenCalledTimes(0);
+    });
+
+    it('isFormIdUnique should return true when the form has a unique id', () => {
+      const newRows = [
+        { [MOCK_ID]: 123, [MOCK_ID_2]: 1, [MOCK_NAME]: '', [MOCK_EXTRA_ID]: 1 },
+        { [MOCK_ID]: 123, [MOCK_ID_2]: 2, [MOCK_NAME]: '', [MOCK_EXTRA_ID]: 2 },
+        { [MOCK_ID]: 123, [MOCK_ID_2]: 3, [MOCK_NAME]: '', [MOCK_EXTRA_ID]: 3 },
+      ];
+      const { service } = setup({ newRows, extra: true });
+
+      service.form.controls[MOCK_ID_2].setValue(4);
+      service.form?.controls[MOCK_EXTRA_ID]?.setValue(4);
+
+      expect(service.isFormIdUnique()).toBe(true);
+    });
+
+    it('getRowIndex(id) should correctly return the index', () => {
+      const newRows = [
+        { [MOCK_ID]: 123, [MOCK_ID_2]: 3, [MOCK_NAME]: 'test', [MOCK_EXTRA_ID]: 1 },
+        { [MOCK_ID]: 123, [MOCK_ID_2]: 5, [MOCK_NAME]: 'test', [MOCK_EXTRA_ID]: 2 },
+        { [MOCK_ID]: 123, [MOCK_ID_2]: 9, [MOCK_NAME]: 'test', [MOCK_EXTRA_ID]: 3 },
+      ];
+      const { service } = setup({ newRows, extra: true });
+
+      expect(service['getRowIndex']('3_1')).toEqual(0);
+      expect(service['getRowIndex']('5_2')).toEqual(1);
+      expect(service['getRowIndex']('9_3')).toEqual(2);
+
+      expect(service['getRowIndex']('3_9')).toEqual(0);
+    });
   });
 });
