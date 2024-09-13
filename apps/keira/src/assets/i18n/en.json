@@ -337,7 +337,7 @@
       "REWARD_XP_DIFFICULTY": "According to the Level, the basic experience with index RewardXPDifficulty is taken from QuestXP.dbc. Check the docs for more info.",
       "REWARD_MONEY": "If value > 0: money earned by completing the quest; if value < 0: money required to complete the quest",
       "REW_MONEY_DIFFICULTY": "TODO: RewardMoneyDifficulty tooltip",
-      "REWARD_SPELL": "Spell that is shown to be casted on quest completion in the quest log. Note that this spell will NOT be casted if RewardSpellCast is non-zero.",
+      "REWARD_SPELL": "Spell that is shown to be casted on quest completion in the quest log. Note that this spell will NOT be casted if RewardSpell is non-zero.",
       "REWARD_HONOR": "Number of honorable kill honor rewarded for completing this quest",
       "REWARD_FACTIONS_TOOLTIP": "Faction ID for which the quest adds (or subtracts) reputation points."
     },
