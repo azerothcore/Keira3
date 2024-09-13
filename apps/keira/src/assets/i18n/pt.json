@@ -333,7 +333,7 @@
       "REWARD_XP_DIFFICULTY": "A experiência básica com índice RewardXPDifficulty é tomada de QuestXP.dbc, conforme o level da quest. Consulte a documentação para mais informações.",
       "REWARD_MONEY": "Se o valor > 0: dinheiro recebido ao completar a quest; se o valor < 0: dinheiro necessário para completar a quest",
       "REW_MONEY_DIFFICULTY": "ID refere a um dos money factor em quest_money_reward ordenados pelo level.",
-      "REWARD_SPELL": "Spell que é mostrado na quest log e que será aplicado quando a quest for completada. Note que este spell não será aplicado se RewardSpellCast é não-zero.",
+      "REWARD_SPELL": "Spell que é mostrado na quest log e que será aplicado quando a quest for completada. Note que este spell não será aplicado se RewardSpell é não-zero.",
       "REWARD_HONOR": "Quantidade de honra, equivalente a honorable kills, recebidos ao completar a quest. 1 HK no level 80 é equivalente a 124 honor. Um valor de 15 resulta em 1860 honor no level 80.",
       "REWARD_FACTIONS_TOOLTIP": "Faction ID ao qual pontos de reputação são somados (ou subtraídos) ao completar a quest."
     },

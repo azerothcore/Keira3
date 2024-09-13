@@ -333,7 +333,7 @@
       "REWARD_XP_DIFFICULTY": "Enligt Level, den bas XP med index RewardXPDifficulty är taget från QuestXP.dbc. Kolla Docs för mer information.",
       "REWARD_MONEY": "If value > 0: Pengar du får utav Quest; if value < 0: Pengar du måste ha för Quest",
       "REW_MONEY_DIFFICULTY": "TODO: RewardMoneyDifficulty tooltip",
-      "REWARD_SPELL": "Spell som används när spelaren lämnat in Quest. Notera att denna Spell kastas INTE om RewardSpellCast är non-zero.",
+      "REWARD_SPELL": "Spell som används när spelaren lämnat in Quest. Notera att denna Spell kastas INTE om RewardSpell är non-zero.",
       "REWARD_HONOR": "Antal honorable kill honor du får för att göra klart Quest",
       "REWARD_FACTIONS_TOOLTIP": "Faction ID for which the quest adds (or subtracts) reputation points."
     },
