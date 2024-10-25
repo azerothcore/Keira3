@@ -92,7 +92,7 @@
     "@types/jasminewd2": "2.0.13",
     "@types/jquery": "3.5.30",
     "@types/mysql": "2.15.26",
-    "@types/node": "20.14.15",
+    "@types/node": "20.17.1",
     "@types/sqlite3": "3.1.11",
     "@types/sqlstring": "2.3.2",
     "@typescript-eslint/eslint-plugin": "7.11.0",
