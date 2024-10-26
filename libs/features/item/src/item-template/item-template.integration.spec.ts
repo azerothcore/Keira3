@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ITEM_SUBCLASS, ItemTemplate, Lock } from '@keira/shared/acore-world-model';
@@ -11,6 +11,7 @@ import { ItemHandlerService } from '../item-handler.service';
 import { ItemTemplateComponent } from './item-template.component';
 import { instance, mock } from 'ts-mockito';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 class ItemTemplatePage extends EditorPageObject<ItemTemplateComponent> {
   get itemStats(): HTMLDivElement {
@@ -52,18 +53,13 @@ describe('ItemTemplate integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        ItemTemplateComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
-        HttpClientTestingModule,
-      ],
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ItemTemplateComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
         { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
         ItemHandlerService,
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     }).compileComponents();
   }));
