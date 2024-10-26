@@ -1,5 +1,4 @@
 import { ChangeDetectorRef, Injectable } from '@angular/core';
-import { EditorService } from '@keira/shared/base-abstract-classes';
 import {
   CreatureQuestender,
   CreatureQueststarter,
@@ -12,6 +11,7 @@ import {
   QuestTemplate,
   QuestTemplateAddon,
 } from '@keira/shared/acore-world-model';
+import { EditorService } from '@keira/shared/base-abstract-classes';
 import {
   CLASSES_TEXT,
   ICON_SKILLS,
@@ -23,8 +23,12 @@ import {
   QUEST_PERIOD,
   QuestReputationReward,
   RACES_TEXT,
+  RacesTextKey,
   TableRow,
 } from '@keira/shared/constants';
+import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
+import { PreviewHelperService } from '@keira/shared/preview';
+import { lastValueFrom, of } from 'rxjs';
 import { CreatureQuestenderService } from '../creature-questender/creature-questender.service';
 import { CreatureQueststarterService } from '../creature-queststarter/creature-queststarter.service';
 import { GameobjectQuestenderService } from '../gameobject-questender/gameobject-questender.service';
@@ -34,10 +38,7 @@ import { QuestOfferRewardService } from '../quest-offer-reward/quest-offer-rewar
 import { QuestRequestItemsService } from '../quest-request-items/quest-request-items.service';
 import { QuestTemplateAddonService } from '../quest-template-addon/quest-template-addon.service';
 import { QuestTemplateService } from '../quest-template/quest-template.service';
-import { DifficultyLevel, Quest } from './quest-preview.model';
-import { PreviewHelperService } from '@keira/shared/preview';
-import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
-import { lastValueFrom, of } from 'rxjs';
+import { DifficultyLevel, Quest, QuestFactionRewardKey } from './quest-preview.model';
 
 @Injectable({
   providedIn: 'root',
@@ -111,8 +112,8 @@ export class QuestPreviewService {
   get side(): string {
     return this.helperService.getFactionFromRace(this.questTemplate.AllowableRaces) as string;
   }
-  get races(): number[] {
-    return this.helperService.getRaceString(this.questTemplate.AllowableRaces) as number[];
+  get races(): RacesTextKey[] {
+    return this.helperService.getRaceString(this.questTemplate.AllowableRaces) as RacesTextKey[];
   }
   get sharable(): string {
     return this.questTemplate.Flags & QUEST_FLAG_SHARABLE ? 'Sharable' : 'Not sharable';
@@ -350,7 +351,7 @@ export class QuestPreviewService {
     return this.mysqlQueryService.getReputationRewardByFaction(this.questTemplate[`RewardFactionID${field}`]);
   }
 
-  getRewardReputation(field: string | number, reputationReward: QuestReputationReward[] | null): number | null {
+  getRewardReputation(field: string | number, reputationReward: QuestReputationReward[] | null): QuestFactionRewardKey | null {
     const faction = this.questTemplate[`RewardFactionID${field}`];
     const value = this.questTemplate[`RewardFactionValue${field}`];
 
@@ -363,28 +364,28 @@ export class QuestPreviewService {
 
       if (!!dailyType) {
         if (dailyType === QUEST_PERIOD.DAILY && reputationReward[0].quest_daily_rate !== 1) {
-          return Number(value) * (reputationReward[0].quest_daily_rate - 1);
+          return (Number(value) * (reputationReward[0].quest_daily_rate - 1)) as QuestFactionRewardKey;
         }
 
         if (dailyType === QUEST_PERIOD.WEEKLY && reputationReward[0].quest_weekly_rate !== 1) {
-          return Number(value) * (reputationReward[0].quest_weekly_rate - 1);
+          return (Number(value) * (reputationReward[0].quest_weekly_rate - 1)) as QuestFactionRewardKey;
         }
 
         if (dailyType === QUEST_PERIOD.MONTHLY && reputationReward[0].quest_monthly_rate !== 1) {
-          return Number(value) * (reputationReward[0].quest_monthly_rate - 1);
+          return (Number(value) * (reputationReward[0].quest_monthly_rate - 1)) as QuestFactionRewardKey;
         }
       }
 
       if (this.isRepeatable() && reputationReward[0].quest_repeatable_rate !== 1) {
-        return Number(value) * (reputationReward[0].quest_repeatable_rate - 1);
+        return (Number(value) * (reputationReward[0].quest_repeatable_rate - 1)) as QuestFactionRewardKey;
       }
 
       if (reputationReward[0].quest_rate !== 1) {
-        return Number(value) * (reputationReward[0].quest_rate - 1);
+        return (Number(value) * (reputationReward[0].quest_rate - 1)) as QuestFactionRewardKey;
       }
     }
 
-    return Number(value);
+    return Number(value) as QuestFactionRewardKey;
   }
 
   getObjText(field: string | number) {
