@@ -37,23 +37,16 @@
               <label class="control-label" for="VerifiedBuild">VerifiedBuild</label>
               <input [formControlName]="'VerifiedBuild'" id="VerifiedBuild" type="number" class="form-control form-control-sm" />
             </div>
+
+            <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
+              <i class="fas fa-exclamation-triangle"></i>
+              <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
+            </div>
           </div>
         </form>
         <div class="row">
           <div class="col-12">
-            <button
-              id="delete-selected-row-btn"
-              class="btn btn-danger btn-sm me-2"
-              (click)="editorService.deleteSelectedRow()"
-              [disabled]="editorService.selectedRowId === null || editorService.selectedRowId === undefined"
-              [translate]="'DELETE_SELECTED_ROW'"
-            ></button>
-            <button
-              id="add-new-row-btn"
-              class="btn btn-success btn-sm"
-              (click)="editorService.addNewRow()"
-              [translate]="'ADD_NEW_ROW'"
-            ></button>
+            <keira-editor-buttons [editorService]="editorService" />
             <ngx-datatable
               id="editor-table"
               class="bootstrap table table-striped text-center datatable-select"

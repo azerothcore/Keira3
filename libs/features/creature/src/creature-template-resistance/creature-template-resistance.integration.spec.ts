@@ -1,6 +1,5 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
 import { CreatureTemplateResistance } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -11,9 +10,9 @@ import { instance, mock } from 'ts-mockito';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateResistanceComponent } from './creature-template-resistance.component';
 
-class CreatureTemplateResistancePage extends MultiRowEditorPageObject<CreatureTemplateResistanceComponent> {}
-
 describe('CreatureTemplateResistance integration tests', () => {
+  class CreatureTemplateResistancePage extends MultiRowEditorPageObject<CreatureTemplateResistanceComponent> {}
+
   const id = 1234;
 
   beforeEach(waitForAsync(() => {
@@ -22,7 +21,6 @@ describe('CreatureTemplateResistance integration tests', () => {
         BrowserAnimationsModule,
         ToastrModule.forRoot(),
         ModalModule.forRoot(),
-        RouterTestingModule,
         CreatureTemplateResistanceComponent,
         TranslateTestingModule,
       ],

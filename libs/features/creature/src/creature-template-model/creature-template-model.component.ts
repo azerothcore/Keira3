@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CreatureTemplateModel } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
-import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
+import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { GenericOptionSelectorComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
@@ -25,6 +25,7 @@ import { CreatureTemplateModelService } from './creature-template-model.service'
     SingleValueSelectorBtnComponent,
     NgxDatatableModule,
     GenericOptionSelectorComponent,
+    EditorButtonsComponent,
   ],
 })
 export class CreatureTemplateModelComponent extends MultiRowEditorComponent<CreatureTemplateModel> {
