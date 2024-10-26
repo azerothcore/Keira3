@@ -74,6 +74,7 @@
       "TITLE": "Creature",
       "SELECT_CREATURE": "Select Creature",
       "CREATURE_TEMPLATE": "Creature Template",
+      "TEMPLATE_MODEL": "Template Model",
       "TEMPLATE_ADDON": "Template Addon",
       "TEMPLATE_RESISTANCE": "Template Resistance",
       "TEMPLATE_SPELL": "Template Spell",

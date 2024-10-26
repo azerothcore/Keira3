@@ -71,6 +71,7 @@
       "TITLE": "Criatura",
       "SELECT_CREATURE": "Seleccionar Criatura",
       "CREATURE_TEMPLATE": "Plantilla de Criatura",
+      "TEMPLATE_MODEL": "Template Model",
       "TEMPLATE_ADDON": "Addon de Plantilla",
       "TEMPLATE_RESISTANCE": "Plantilla de Resistencia",
       "TEMPLATE_SPELL": "Plantilla de Hechizo",

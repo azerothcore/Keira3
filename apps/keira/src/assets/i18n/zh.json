@@ -71,6 +71,7 @@
       "TITLE": "生物",
       "SELECT_CREATURE": "选择生物",
       "CREATURE_TEMPLATE": "生物模板",
+      "TEMPLATE_MODEL": "Template Model",
       "TEMPLATE_ADDON": "模板插件",
       "TEMPLATE_RESISTANCE": "抗性模板",
       "TEMPLATE_SPELL": "技能模板",

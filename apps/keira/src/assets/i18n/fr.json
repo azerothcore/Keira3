@@ -71,6 +71,7 @@
       "TITLE": "Creatures",
       "SELECT_CREATURE": "Sélectionner une créature",
       "CREATURE_TEMPLATE": "Modèle de créature",
+      "TEMPLATE_MODEL": "Template Model",
       "TEMPLATE_ADDON": "Modèle d'addon",
       "TEMPLATE_RESISTANCE": "Modèle de résistance",
       "TEMPLATE_SPELL": "Modèle de sort",
