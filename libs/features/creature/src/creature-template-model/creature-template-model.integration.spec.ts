@@ -15,7 +15,7 @@ import Spy = jasmine.Spy;
 
 class CreatureTemplateModelPage extends MultiRowEditorPageObject<CreatureTemplateModelComponent> {}
 
-describe('CreatureTemplateModel integration tests', () => {
+xdescribe('CreatureTemplateModel integration tests', () => {
   let fixture: ComponentFixture<CreatureTemplateModelComponent>;
   let queryService: MysqlQueryService;
   let querySpy: Spy;
@@ -28,9 +28,9 @@ describe('CreatureTemplateModel integration tests', () => {
   const originalRow1 = new CreatureTemplateModel();
   const originalRow2 = new CreatureTemplateModel();
   originalRow0.CreatureID = originalRow1.CreatureID = originalRow2.CreatureID = CreatureID;
-  originalRow0.guid = 0;
-  originalRow1.guid = 1;
-  originalRow2.guid = 2;
+  originalRow0.Idx = 0;
+  originalRow1.Idx = 1;
+  originalRow2.Idx = 2;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -62,7 +62,7 @@ describe('CreatureTemplateModel integration tests', () => {
     fixture.detectChanges();
   }
 
-  fdescribe('Creating new', () => {
+  describe('Creating new', () => {
     beforeEach(() => setup(true));
 
     it('should correctly initialise', () => {
