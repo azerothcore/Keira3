@@ -4,7 +4,7 @@ import { IconComponent } from '@keira/shared/base-editor-components';
 import { RacesTextKey, RacesTextValue } from '@keira/shared/constants';
 import { PreviewHelperService } from '@keira/shared/preview';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
-import { Quest, QUEST_FACTION_REWARD, QuestFactionRewardKey, QuestFactionRewardValue } from './quest-preview.model';
+import { Quest, QUEST_FACTION_REWARD } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
 
 @Component({
@@ -68,10 +68,6 @@ export class QuestPreviewComponent implements OnInit {
 
   getRaceText(raceIndex: RacesTextKey): RacesTextValue | null {
     return this.service.RACES_TEXT[raceIndex];
-  }
-
-  getQuestFactionReward(repReward: QuestFactionRewardKey): QuestFactionRewardValue {
-    return this.QUEST_FACTION_REWARD[repReward];
   }
 
   hasPrevOrNext(questLists: { prev?: Quest[] | null; next?: Quest[] | null }): boolean {

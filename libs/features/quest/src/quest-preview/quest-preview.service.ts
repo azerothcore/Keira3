@@ -38,7 +38,7 @@ import { QuestOfferRewardService } from '../quest-offer-reward/quest-offer-rewar
 import { QuestRequestItemsService } from '../quest-request-items/quest-request-items.service';
 import { QuestTemplateAddonService } from '../quest-template-addon/quest-template-addon.service';
 import { QuestTemplateService } from '../quest-template/quest-template.service';
-import { DifficultyLevel, Quest, QuestFactionRewardKey } from './quest-preview.model';
+import { DifficultyLevel, Quest, QUEST_FACTION_REWARD, QuestFactionRewardKey } from './quest-preview.model';
 
 @Injectable({
   providedIn: 'root',
@@ -351,7 +351,12 @@ export class QuestPreviewService {
     return this.mysqlQueryService.getReputationRewardByFaction(this.questTemplate[`RewardFactionID${field}`]);
   }
 
-  getRewardReputation(field: string | number, reputationReward: QuestReputationReward[] | null): QuestFactionRewardKey | null {
+  getRewardReputation(field: string | number, reputationReward: QuestReputationReward[] | null): number | null {
+    const rewardFactionOverride = this.questTemplate[`RewardFactionOverride${field}`];
+    if (!!rewardFactionOverride) {
+      return Number(rewardFactionOverride) / 100;
+    }
+
     const faction = this.questTemplate[`RewardFactionID${field}`];
     const value = this.questTemplate[`RewardFactionValue${field}`];
 
@@ -359,33 +364,40 @@ export class QuestPreviewService {
       return null;
     }
 
+    let rep = Number(value);
+
     if (!!reputationReward && !!reputationReward[0]) {
       const dailyType = this.getPeriodicQuest();
 
       if (!!dailyType) {
         if (dailyType === QUEST_PERIOD.DAILY && reputationReward[0].quest_daily_rate !== 1) {
-          return (Number(value) * (reputationReward[0].quest_daily_rate - 1)) as QuestFactionRewardKey;
+          rep *= reputationReward[0].quest_daily_rate - 1;
+          return QUEST_FACTION_REWARD[rep as QuestFactionRewardKey];
         }
 
         if (dailyType === QUEST_PERIOD.WEEKLY && reputationReward[0].quest_weekly_rate !== 1) {
-          return (Number(value) * (reputationReward[0].quest_weekly_rate - 1)) as QuestFactionRewardKey;
+          rep *= reputationReward[0].quest_weekly_rate - 1;
+          return QUEST_FACTION_REWARD[rep as QuestFactionRewardKey];
         }
 
         if (dailyType === QUEST_PERIOD.MONTHLY && reputationReward[0].quest_monthly_rate !== 1) {
-          return (Number(value) * (reputationReward[0].quest_monthly_rate - 1)) as QuestFactionRewardKey;
+          rep *= reputationReward[0].quest_monthly_rate - 1;
+          return QUEST_FACTION_REWARD[rep as QuestFactionRewardKey];
         }
       }
 
       if (this.isRepeatable() && reputationReward[0].quest_repeatable_rate !== 1) {
-        return (Number(value) * (reputationReward[0].quest_repeatable_rate - 1)) as QuestFactionRewardKey;
+        rep *= reputationReward[0].quest_repeatable_rate - 1;
+        return QUEST_FACTION_REWARD[rep as QuestFactionRewardKey];
       }
 
       if (reputationReward[0].quest_rate !== 1) {
-        return (Number(value) * (reputationReward[0].quest_rate - 1)) as QuestFactionRewardKey;
+        rep *= reputationReward[0].quest_rate - 1;
+        return QUEST_FACTION_REWARD[rep as QuestFactionRewardKey];
       }
     }
 
-    return Number(value) as QuestFactionRewardKey;
+    return QUEST_FACTION_REWARD[rep as QuestFactionRewardKey];
   }
 
   getObjText(field: string | number) {
