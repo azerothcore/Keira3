@@ -73,6 +73,18 @@
           </div>
         </div>
       </div>
+
+      <div class="content-block">
+        <div class="creature-preview">
+          <keira-model-3d-viewer
+            [viewerType]="NPC_VIEWER_TYPE"
+            [displayId]="editorService.form.controls.CreatureDisplayID.value"
+            [htmlElementId]="'model3d_' + editorService.form.controls.Idx.value"
+          >
+            <div [id]="'model3d_' + editorService.form.controls.Idx.value"></div>
+          </keira-model-3d-viewer>
+        </div>
+      </div>
     </div>
   }
 </div>

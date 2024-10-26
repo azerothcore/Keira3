@@ -1,6 +1,6 @@
 <keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
 
-<div class="container-fluid editor-with-preview" [class.show-preview]="showItemPreview">
+<div class="container-fluid editor-with-preview" [class.show-preview]="showGameobjectPreview">
   @if (editorService.loading) {
     <span [translate]="'LOADING'"></span>
   }
@@ -88,7 +88,7 @@
           </div>
         </div>
       </form>
-      <div class="preview-container" [class.show-preview]="showItemPreview" [class.hide-preview]="!showItemPreview">
+      <div class="preview-container" [class.show-preview]="showGameobjectPreview" [class.hide-preview]="!showGameobjectPreview">
         <div class="transparent perfect-scrollbar">
           <div class="gameobject-preview">
             <keira-model-3d-viewer [viewerType]="OBJECT_VIEWER_TYPE" [displayId]="editorService.form.controls.displayId.value">
@@ -97,8 +97,8 @@
           </div>
         </div>
       </div>
-      <button class="btn btn-secondary btn-sm toggle-preview-button" (click)="showItemPreview = !showItemPreview">
-        <i class="fas {{ showItemPreview ? 'fa-angle-double-right' : 'fa-angle-double-left' }}"></i>
+      <button class="btn btn-secondary btn-sm toggle-preview-button" (click)="showGameobjectPreview = !showGameobjectPreview">
+        <i class="fas {{ showGameobjectPreview ? 'fa-angle-double-right' : 'fa-angle-double-left' }}"></i>
       </button>
     </div>
   }

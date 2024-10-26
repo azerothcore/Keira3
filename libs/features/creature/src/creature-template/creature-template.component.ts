@@ -25,7 +25,7 @@ import {
 } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
-import { Model3DViewerComponent, VIEWER_TYPE } from '@keira/shared/model-3d-viewer';
+import { Model3DViewerComponent } from '@keira/shared/model-3d-viewer';
 import {
   BooleanOptionSelectorComponent,
   CreatureSelectorBtnComponent,
@@ -45,7 +45,6 @@ import { CreatureTemplateService } from './creature-template.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-template',
   templateUrl: './creature-template.component.html',
-  styleUrls: ['./creature-template.component.scss'],
   standalone: true,
   imports: [
     TopBarComponent,
@@ -86,10 +85,9 @@ export class CreatureTemplateComponent extends SingleRowEditorComponent<Creature
   protected readonly UNIT_CLASS = UNIT_CLASS;
   protected readonly DAMAGE_TYPE = DAMAGE_TYPE;
   protected readonly CREATURE_AI_NAME = CREATURE_AI_NAME;
-  protected readonly NPC_VIEWER_TYPE = VIEWER_TYPE.NPC;
 
   protected RACE_ICON_GENDER = true;
-  protected showItemPreview = false;
+  protected showCreaturePreview = false;
 
   override readonly editorService = inject(CreatureTemplateService);
   readonly handlerService = inject(CreatureHandlerService);
