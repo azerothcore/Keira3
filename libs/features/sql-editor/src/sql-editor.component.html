@@ -45,6 +45,7 @@
         [columnMode]="DTCFG.columnMode"
         [rowHeight]="DTCFG.rowHeight"
         [limit]="20"
+        [scrollbarH]="true"
       >
         @for (col of columns; track col) {
           <ngx-datatable-column [prop]="col" [minWidth]="columns.length === 1 ? 300 : 100" [resizeable]="true"></ngx-datatable-column>
