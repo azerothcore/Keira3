@@ -1,6 +1,9 @@
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CreatureTemplateModel } from '@keira/shared/acore-world-model';
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -24,7 +27,12 @@ describe('CreatureTemplateModel integration tests', () => {
         CreatureTemplateModelComponent,
         TranslateTestingModule,
       ],
-      providers: [{ provide: SqliteService, useValue: instance(mock(SqliteService)) }],
+      providers: [
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+        { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
   }));
 
@@ -41,6 +49,7 @@ describe('CreatureTemplateModel integration tests', () => {
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
+    const httpTestingController = TestBed.inject(HttpTestingController);
     const queryService = TestBed.inject(MysqlQueryService);
     const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
     spyOn(queryService, 'queryValue').and.returnValue(of());
@@ -53,7 +62,7 @@ describe('CreatureTemplateModel integration tests', () => {
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
 
-    return { handlerService, queryService, querySpy, fixture, component, page };
+    return { handlerService, queryService, querySpy, fixture, component, page, httpTestingController };
   }
 
   describe('Creating new', () => {

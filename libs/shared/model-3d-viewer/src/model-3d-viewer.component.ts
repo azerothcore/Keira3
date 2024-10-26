@@ -27,11 +27,13 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private readonly http = inject(HttpClient);
   private readonly KEIRA_APP_CONFIG = inject(KEIRA_APP_CONFIG_TOKEN);
 
+  private static uniqueId = 0;
+  protected readonly uniqueId = Model3DViewerComponent.uniqueId++;
+
   @Input() viewerType!: VIEWER_TYPE;
   @Input() displayId!: number;
   @Input() itemClass?: number;
   @Input() itemInventoryType?: number;
-  @Input() htmlElementId? = 'model_3d';
 
   private readonly loadedViewer$ = new BehaviorSubject<boolean>(false);
   private readonly subscriptions = new Subscription();
@@ -110,7 +112,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
 
     generateModels(
       1,
-      `#${this.htmlElementId}`,
+      `#model_3d_${this.uniqueId}`,
       {
         type: modelType,
         id: displayId,
@@ -194,7 +196,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
 
   /* istanbul ignore next */
   private resetModel3dElement(): void {
-    const modelElement = document.querySelector(`#${this.htmlElementId}`);
+    const modelElement = document.querySelector(`#model_3d_${this.uniqueId}`);
     this.clean3DModels();
     if (modelElement) {
       modelElement.innerHTML = '';

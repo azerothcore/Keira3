@@ -1,6 +1,5 @@
 import { TestBed } from '@angular/core/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
-
 import { ToastrService } from 'ngx-toastr';
 import { instance, mock } from 'ts-mockito';
 import { CreatureHandlerService } from '../creature-handler.service';
