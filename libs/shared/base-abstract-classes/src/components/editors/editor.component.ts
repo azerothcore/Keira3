@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit }
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { TableRow, WIKI_BASE_URL } from '@keira/shared/constants';
-import { HandlerService } from '../../service/handlers/handler.service';
-import { EditorService } from '../../service/editors/editor.service';
 import { compareObjFn, SubscriptionHandler } from '@keira/shared/utils';
+import { EditorService } from '../../service/editors/editor.service';
+import { HandlerService } from '../../service/handlers/handler.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,7 +25,8 @@ export abstract class EditorComponent<T extends TableRow> extends SubscriptionHa
   ngOnInit() {
     this.editorService.clearCache();
 
-    if (this.editorService.loadedEntityId !== this.handlerService.selected) {
+    if (this.editorService.loadedEntityId !== this.handlerService.selected || this.handlerService.forceReload) {
+      this.handlerService.forceReload = false;
       this.editorService.reload(this.changeDetectorRef, this.handlerService.selected);
     }
 

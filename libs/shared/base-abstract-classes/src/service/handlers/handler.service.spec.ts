@@ -2,8 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CreatureTemplate } from '@keira/shared/acore-world-model';
-import { HandlerService } from './handler.service';
 import { MockHandlerService } from '../../core.mock';
+import { HandlerService } from './handler.service';
 
 describe('HandlerService', () => {
   let service: HandlerService<CreatureTemplate>;
@@ -39,5 +39,18 @@ describe('HandlerService', () => {
     expect(service.isNew).toEqual(isNew);
     expect(service.canActivate()).toBe(true);
     expect(navigateSpy).toHaveBeenCalledWith(['mock/route']);
+  });
+
+  it('selects the same entity and force the reload', () => {
+    const id = 'myId';
+    const name = 'myName';
+    const isNew = true;
+
+    service['_selected'] = id;
+    expect(service.forceReload).toBeFalse();
+
+    service.select(isNew, id, name);
+
+    expect(service.forceReload).toBeTrue();
   });
 });
