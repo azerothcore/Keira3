@@ -47,5 +47,6 @@
       "standalone": true,
       "changeDetection": "OnPush"
     }
-  }
+  },
+  "useLegacyCache": true
 }
