@@ -2,8 +2,8 @@ import { TableRow } from '@keira/shared/constants';
 
 export const CREATURE_TEXT_TABLE = 'creature_text';
 export const CREATURE_ID = 'CreatureID';
-export const TEXT_ID = 'ID';
-export const EXTRA_ID = 'GroupID';
+export const TEXT_ID = 'GroupID';
+export const EXTRA_ID = 'ID';
 
 export class CreatureText extends TableRow {
   CreatureID: number = 0;
