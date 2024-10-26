@@ -1,4 +1,4 @@
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -20,6 +20,7 @@ import { ConnectionWindowComponent } from '@keira/main/connection-window';
 import { ModalConfirmComponent, QueryErrorComponent } from '@keira/shared/base-editor-components';
 import { ElectronService } from '@keira/shared/common-services';
 import { MysqlService } from '@keira/shared/db-layer';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('AppComponent', () => {
   beforeEach(waitForAsync(() => {
@@ -30,7 +31,6 @@ describe('AppComponent', () => {
         ReactiveFormsModule,
         RouterTestingModule,
         BrowserAnimationsModule,
-        HttpClientTestingModule,
         ModalConfirmComponent,
         ToastrModule.forRoot(),
         TranslateTestingModule,
@@ -43,6 +43,8 @@ describe('AppComponent', () => {
         { provide: ElectronService, useValue: instance(mock(ElectronService)) },
         { provide: MysqlService, useValue: instance(mock(MysqlService)) },
         { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     }).compileComponents();
   }));
