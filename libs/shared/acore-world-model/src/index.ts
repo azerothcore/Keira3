@@ -11,6 +11,7 @@ export * from './entities/creature-spawn.type';
 export * from './entities/creature-spawn-addon.type';
 export * from './entities/creature-template.type';
 export * from './entities/creature-template-addon.type';
+export * from './entities/creature-template-model.type';
 export * from './entities/creature-template-movement.type';
 export * from './entities/creature-template-resistance.type';
 export * from './entities/creature-template-spell.type';

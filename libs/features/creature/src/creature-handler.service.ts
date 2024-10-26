@@ -1,5 +1,4 @@
 import { inject, Injectable } from '@angular/core';
-import { HandlerService } from '@keira/shared/base-abstract-classes';
 import {
   CREATURE_EQUIP_TEMPLATE_TABLE,
   CREATURE_LOOT_TEMPLATE_TABLE,
@@ -8,6 +7,7 @@ import {
   CREATURE_SPAWN_ADDON_TABLE,
   CREATURE_SPAWN_TABLE,
   CREATURE_TEMPLATE_ADDON_TABLE,
+  CREATURE_TEMPLATE_MODEL_TABLE,
   CREATURE_TEMPLATE_MOVEMENT_TABLE,
   CREATURE_TEMPLATE_RESISTANCE_TABLE,
   CREATURE_TEMPLATE_SPELL_TABLE,
@@ -20,6 +20,7 @@ import {
   SAI_TABLE,
   SKINNING_LOOT_TEMPLATE_TABLE,
 } from '@keira/shared/acore-world-model';
+import { HandlerService } from '@keira/shared/base-abstract-classes';
 import { SaiCreatureHandlerService } from './sai-creature-handler.service';
 
 @Injectable({
@@ -31,6 +32,9 @@ export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
 
   get isCreatureTemplateUnsaved(): boolean {
     return this.statusMap[CREATURE_TEMPLATE_TABLE];
+  }
+  get isCreatureTemplateModelUnsaved(): boolean {
+    return this.statusMap[CREATURE_TEMPLATE_MODEL_TABLE];
   }
   get isCreatureTemplateAddonUnsaved(): boolean {
     return this.statusMap[CREATURE_TEMPLATE_ADDON_TABLE];
