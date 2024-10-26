@@ -1,0 +1,78 @@
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+
+<div class="container-fluid">
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
+
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <div class="content-block">
+        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
+      </div>
+      <div class="content-block">
+        <form [formGroup]="editorService.form" class="form-group edit-form">
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="Idx">Idx</label>
+              <input [formControlName]="'Idx'" id="Idx" type="number" class="form-control form-control-sm" />
+            </div>
+
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="CreatureDisplayID">CreatureDisplayID</label>
+              <input [formControlName]="'CreatureDisplayID'" id="CreatureDisplayID" type="number" class="form-control form-control-sm" />
+            </div>
+
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="DisplayScale">DisplayScale</label>
+              <input [formControlName]="'DisplayScale'" id="DisplayScale" type="number" class="form-control form-control-sm" />
+            </div>
+
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="Probability">Probability</label>
+              <input [formControlName]="'Probability'" id="Probability" type="number" class="form-control form-control-sm" />
+            </div>
+
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="VerifiedBuild">VerifiedBuild</label>
+              <input [formControlName]="'VerifiedBuild'" id="VerifiedBuild" type="number" class="form-control form-control-sm" />
+            </div>
+
+            <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
+              <i class="fas fa-exclamation-triangle"></i>
+              <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div class="col-12">
+            <keira-editor-buttons [editorService]="editorService" />
+            <ngx-datatable
+              id="editor-table"
+              class="bootstrap table table-striped text-center datatable-select"
+              [rows]="editorService.newRows"
+              [headerHeight]="DTCFG.headerHeight"
+              [footerHeight]="DTCFG.footerHeight"
+              [columnMode]="DTCFG.columnMode"
+              [rowHeight]="DTCFG.rowHeight"
+              [selectionType]="DTCFG.selectionType"
+              (select)="editorService.onRowSelection($event)"
+              (keydown.delete)="editorService.deleteSelectedRow()"
+            >
+              <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Idx" prop="Idx" [minWidth]="80"></ngx-datatable-column>
+              <ngx-datatable-column name="CreatureDisplayID" prop="CreatureDisplayID"></ngx-datatable-column>
+              <ngx-datatable-column name="DisplayScale" prop="DisplayScale"></ngx-datatable-column>
+              <ngx-datatable-column name="Probability" prop="Probability"></ngx-datatable-column>
+              <ngx-datatable-column name="VerifiedBuild" prop="VerifiedBuild"></ngx-datatable-column>
+            </ngx-datatable>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>
