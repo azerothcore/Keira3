@@ -20,4 +20,9 @@ describe('CreatureTemplateModelService', () => {
       ],
     }),
   );
+
+  it('should be defined', () => {
+    const service: CreatureTemplateModelService = TestBed.inject(CreatureTemplateModelService);
+    expect(service).toBeDefined();
+  });
 });
