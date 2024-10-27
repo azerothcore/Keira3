@@ -115,8 +115,8 @@ describe('QueryOutputComponent', () => {
     const executeSpy = spyOn(component.executeQuery, 'emit');
 
     page.clickElement(page.executeAndCopyBtn);
-    expect(copySpy).toHaveBeenCalledWith(diffQuery);
-    expect(executeSpy).toHaveBeenCalledWith(diffQuery);
+    expect(copySpy).toHaveBeenCalledOnceWith(diffQuery);
+    expect(executeSpy).toHaveBeenCalledOnceWith(diffQuery);
 
     page.clickElement(page.fullQueryInput);
 
