@@ -121,8 +121,8 @@ describe('QueryOutputComponent', () => {
     page.clickElement(page.fullQueryInput);
 
     page.clickElement(page.executeAndCopyBtn);
-    expect(copySpy).toHaveBeenCalledWith(fullQuery);
-    expect(executeSpy).toHaveBeenCalledWith(fullQuery);
+    expect(copySpy).toHaveBeenCalledOnceWith(fullQuery);
+    expect(executeSpy).toHaveBeenCalledOnceWith(fullQuery);
   });
 
   describe('getQuery', () => {
