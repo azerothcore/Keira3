@@ -12,4 +12,6 @@ import { Option } from '@keira/shared/constants';
 export class GenericOptionSelectorComponent {
   @Input({ required: true }) control!: FormControl;
   @Input({ required: true }) optionList!: Option[];
+  @Input() placeholder = '';
+  @Input() placeholderValue?: string | number;
 }
