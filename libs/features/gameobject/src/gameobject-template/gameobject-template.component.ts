@@ -33,7 +33,7 @@ export class GameobjectTemplateComponent extends SingleRowEditorComponent<Gameob
   readonly GAMEOBJECT_ICON = GAMEOBJECT_ICON;
   readonly OBJECT_VIEWER_TYPE = VIEWER_TYPE.OBJECT;
 
-  showItemPreview = true;
+  showGameobjectPreview = true;
 
   override readonly editorService = inject(GameobjectTemplateService);
   readonly handlerService = inject(GameobjectHandlerService);

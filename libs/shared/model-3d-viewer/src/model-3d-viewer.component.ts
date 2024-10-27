@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { MysqlQueryService } from '@keira/shared/db-layer';
+import { KEIRA_APP_CONFIG_TOKEN } from '@keira/shared/config';
 import { TableRow } from '@keira/shared/constants';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 import * as jquery from 'jquery';
 import { BehaviorSubject, catchError, filter, Observable, of, Subscription } from 'rxjs';
 import { generateModels, getShadowlandDisplayId } from './helper';
 import { CONTENT_WOTLK, MODEL_TYPE, VIEWER_TYPE } from './model-3d-viewer.model';
-import { KEIRA_APP_CONFIG_TOKEN } from '@keira/shared/config';
 
 declare const ZamModelViewer: any;
 
@@ -27,11 +27,13 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private readonly http = inject(HttpClient);
   private readonly KEIRA_APP_CONFIG = inject(KEIRA_APP_CONFIG_TOKEN);
 
+  private static uniqueId = 0;
+  protected readonly uniqueId = Model3DViewerComponent.uniqueId++;
+
   @Input() viewerType!: VIEWER_TYPE;
   @Input() displayId!: number;
   @Input() itemClass?: number;
   @Input() itemInventoryType?: number;
-  @Input() id? = 'model_3d';
 
   private readonly loadedViewer$ = new BehaviorSubject<boolean>(false);
   private readonly subscriptions = new Subscription();
@@ -110,7 +112,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
 
     generateModels(
       1,
-      `#${this.id}`,
+      `#model_3d_${this.uniqueId}`,
       {
         type: modelType,
         id: displayId,
@@ -194,7 +196,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
 
   /* istanbul ignore next */
   private resetModel3dElement(): void {
-    const modelElement = document.querySelector(`#${this.id}`);
+    const modelElement = document.querySelector(`#model_3d_${this.uniqueId}`);
     this.clean3DModels();
     if (modelElement) {
       modelElement.innerHTML = '';

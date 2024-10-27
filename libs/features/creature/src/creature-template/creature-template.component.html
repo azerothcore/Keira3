@@ -1,6 +1,6 @@
 <keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
 
-<div class="container-fluid editor-with-preview" [class.show-preview]="showItemPreview">
+<div class="container-fluid editor-with-preview" [class.show-preview]="showCreaturePreview">
   @if (editorService.loading) {
     <span [translate]="'LOADING'"></span>
   }
@@ -537,66 +537,17 @@
         </div>
       </div> -->
       </form>
-      <div class="preview-container" [class.show-preview]="showItemPreview" [class.hide-preview]="!showItemPreview">
+      <div class="preview-container" [class.show-preview]="showCreaturePreview" [class.hide-preview]="!showCreaturePreview">
         <div class="transparent perfect-scrollbar">
-          <!-- TODO: fix and  enable these in the scope of https://github.com/azerothcore/Keira3/issues/3015-->
+          <!-- TODO: implement creature preview like item/quest preview -->
           <div style="color: white; margin: 10px">
             <p>Preview currently unavailable.</p>
-            <p>This feature will be fixed in a new Keira3 version.</p>
+            <p>Check the new Creature Template Model editor!</p>
           </div>
-
-          <!--          <div class="creature-preview">&ndash;&gt;-->
-          <!--            <keira-model-3d-viewer-->
-          <!--              [viewerType]="NPC_VIEWER_TYPE"-->
-          <!--              [displayId]="10913"-->
-          <!--              [id]="'model3d_1'"-->
-          <!--            >-->
-          <!--              <div id="model3d_1"></div>-->
-          <!--            </keira-model-3d-viewer>-->
-          <!--          </div>-->
-
-          <!--          <div class="creature-preview">-->
-          <!--            @if (editorService.form.controls.modelid1.value) {-->
-          <!--              <keira-model-3d-viewer-->
-          <!--                [viewerType]="NPC_VIEWER_TYPE"-->
-          <!--                [displayId]="editorService.form.controls.modelid1.value"-->
-          <!--                [id]="'model3d_1'"-->
-          <!--              >-->
-          <!--                <div id="model3d_1"></div>-->
-          <!--              </keira-model-3d-viewer>-->
-          <!--            }-->
-          <!--            @if (editorService.form.controls.modelid2.value) {-->
-          <!--              <keira-model-3d-viewer-->
-          <!--                [viewerType]="NPC_VIEWER_TYPE"-->
-          <!--                [displayId]="editorService.form.controls.modelid2.value"-->
-          <!--                [id]="'model3d_2'"-->
-          <!--              >-->
-          <!--                <div id="model3d_2"></div-->
-          <!--              ></keira-model-3d-viewer>-->
-          <!--            }-->
-          <!--            @if (editorService.form.controls.modelid3.value) {-->
-          <!--              <keira-model-3d-viewer-->
-          <!--                [viewerType]="NPC_VIEWER_TYPE"-->
-          <!--                [displayId]="editorService.form.controls.modelid3.value"-->
-          <!--                [id]="'model3d_3'"-->
-          <!--              >-->
-          <!--                <div id="model3d_3"></div-->
-          <!--              ></keira-model-3d-viewer>-->
-          <!--            }-->
-          <!--            @if (editorService.form.controls.modelid4.value) {-->
-          <!--              <keira-model-3d-viewer-->
-          <!--                [viewerType]="NPC_VIEWER_TYPE"-->
-          <!--                [displayId]="editorService.form.controls.modelid4.value"-->
-          <!--                [id]="'model3d_4'"-->
-          <!--              >-->
-          <!--                <div id="model3d_4"></div-->
-          <!--              ></keira-model-3d-viewer>-->
-          <!--            }-->
-          <!--          </div>-->
         </div>
       </div>
-      <button class="btn btn-secondary btn-sm toggle-preview-button" (click)="showItemPreview = !showItemPreview">
-        <i class="fas {{ showItemPreview ? 'fa-angle-double-right' : 'fa-angle-double-left' }}"></i>
+      <button class="btn btn-secondary btn-sm toggle-preview-button" (click)="showCreaturePreview = !showCreaturePreview">
+        <i class="fas {{ showCreaturePreview ? 'fa-angle-double-right' : 'fa-angle-double-left' }}"></i>
       </button>
     </div>
   }
