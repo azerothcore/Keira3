@@ -1,17 +1,17 @@
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ITEM_SUBCLASS, ItemTemplate, Lock } from '@keira/shared/acore-world-model';
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { lastValueFrom, of } from 'rxjs';
+import { instance, mock } from 'ts-mockito';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemTemplateComponent } from './item-template.component';
-import { instance, mock } from 'ts-mockito';
-import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 class ItemTemplatePage extends EditorPageObject<ItemTemplateComponent> {
   get itemStats(): HTMLDivElement {
@@ -178,7 +178,7 @@ describe('ItemTemplate integration tests', () => {
         '`BuyCount` = 8, `BuyPrice` = 9, `SellPrice` = 10, `InventoryType` = 11, `AllowableClass` = 12, `AllowableRace` = 13, ' +
         '`ItemLevel` = 14, `RequiredLevel` = 15, `RequiredSkill` = 16, `RequiredSkillRank` = 17, `requiredspell` = 18, ' +
         '`requiredhonorrank` = 19, `RequiredCityRank` = 20, `RequiredReputationFaction` = 21, `RequiredReputationRank` = 22, ' +
-        '`maxcount` = 23, `stackable` = 24, `ContainerSlots` = 25, `StatsCount` = 26, `stat_type1` = 27, `stat_value1` = 28, ' +
+        '`maxcount` = 23, `stackable` = 24, `ContainerSlots` = 25, `StatsCount` = 10, `stat_type1` = 27, `stat_value1` = 28, ' +
         '`stat_type2` = 29, `stat_value2` = 30, `stat_type3` = 31, `stat_value3` = 32, `stat_type4` = 33, `stat_value4` = 34, ' +
         '`stat_type5` = 35, `stat_value5` = 36, `stat_type6` = 37, `stat_value6` = 38, `stat_type7` = 39, `stat_value7` = 40, ' +
         '`stat_type8` = 41, `stat_value8` = 42, `stat_type9` = 43, `stat_value9` = 44, `stat_type10` = 45, `stat_value10` = 46, ' +
@@ -375,6 +375,30 @@ describe('ItemTemplate integration tests', () => {
 
         expect(page.getCellOfDatatableInModal(2, 1).innerText).toContain(ITEM_SUBCLASS[3][2].name);
         page.clickModalSelect();
+      });
+    });
+
+    describe('item stats count', () => {
+      it('calculate item stats count automatically editing stats value fields', () => {
+        const { page } = setup(false);
+
+        expect(page.getInputById('StatsCount').value).toEqual('0');
+
+        page.setInputValueById('stat_value1', 1);
+        page.setInputValueById('stat_value2', 2);
+        page.detectChanges();
+
+        expect(page.getInputById('StatsCount').value).toEqual('2');
+
+        page.setInputValueById('stat_value3', -1);
+        page.detectChanges();
+
+        expect(page.getInputById('StatsCount').value).toEqual('3');
+
+        page.setInputValueById('stat_value2', 0);
+        page.detectChanges();
+
+        expect(page.getInputById('StatsCount').value).toEqual('2');
       });
     });
 
