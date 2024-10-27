@@ -109,6 +109,22 @@ describe('QueryOutputComponent', () => {
     expect(spy).toHaveBeenCalledWith(fullQuery);
   });
 
+  it('clicking the execute & copy button should copy and emit the correct query', () => {
+    const { page, component } = setup();
+    const copySpy = spyOn(TestBed.inject(ClipboardService), 'copyFromContent');
+    const executeSpy = spyOn(component.executeQuery, 'emit');
+
+    page.clickElement(page.executeAndCopyBtn);
+    expect(copySpy).toHaveBeenCalledOnceWith(diffQuery);
+    expect(executeSpy).toHaveBeenCalledOnceWith(diffQuery);
+
+    page.clickElement(page.fullQueryInput);
+
+    page.clickElement(page.executeAndCopyBtn);
+    expect(copySpy).toHaveBeenCalledWith(fullQuery);
+    expect(executeSpy).toHaveBeenCalledWith(fullQuery);
+  });
+
   describe('getQuery', () => {
     it('get fullQuery based on editorService isNew', () => {
       const { component } = setup();

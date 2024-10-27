@@ -21,6 +21,9 @@ export class QueryOutputComponentPage<ComponentType> extends PageObject<Componen
   get executeBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#execute-btn');
   }
+  get executeAndCopyBtn(): HTMLButtonElement {
+    return this.query<HTMLButtonElement>('#execute-and-copy-btn');
+  }
   get reloadBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#reload-btn');
   }
