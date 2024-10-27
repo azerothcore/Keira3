@@ -7,11 +7,12 @@ import { SubscriptionHandler } from '@keira/shared/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { QueryError } from 'mysql2';
 
+const MAX_INT_UNSIGNED_VALUE = 4294967295;
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-create',
   templateUrl: './create.component.html',
-  styleUrls: ['./create.component.scss'],
   standalone: true,
   imports: [TranslateModule, FormsModule],
 })
@@ -21,6 +22,7 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
   @Input({ required: true }) customStartingId!: number;
   @Input({ required: true }) handlerService!: HandlerService<T>;
   @Input({ required: true }) queryService!: MysqlQueryService;
+  @Input() maxEntryValue = MAX_INT_UNSIGNED_VALUE;
 
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
@@ -72,6 +74,14 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
         },
       }),
     );
+  }
+
+  protected checkMaxValue(): void {
+    console.log('this.idModel', this.idModel);
+    if (this.idModel > MAX_INT_UNSIGNED_VALUE) {
+      this.idModel = MAX_INT_UNSIGNED_VALUE;
+      console.log('this.idModel # 2', this.idModel);
+    }
   }
 
   private calculateNextId(currentMax: number): number {
