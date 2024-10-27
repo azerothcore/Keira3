@@ -513,7 +513,13 @@
                   <div class="col-12">
                     <label class="control-label" for="stat_value{{ i }}">value{{ i }}</label>
                     <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.STAT_VALUE' | translate"></i>
-                    <input [formControlName]="'stat_value' + i" id="stat_value{{ i }}" type="number" class="form-control form-control-sm" />
+                    <input
+                      [formControlName]="'stat_value' + i"
+                      id="stat_value{{ i }}"
+                      type="number"
+                      class="form-control form-control-sm"
+                      (change)="calculateCount()"
+                    />
                   </div>
                 </div>
               </div>
