@@ -11,6 +11,9 @@ export interface DifficultyLevel {
   grey?: number;
 }
 
+export type QuestFactionRewardType = typeof QUEST_FACTION_REWARD;
+export type QuestFactionRewardKey = keyof QuestFactionRewardType;
+export type QuestFactionRewardValue = QuestFactionRewardType[QuestFactionRewardKey];
 export const QUEST_FACTION_REWARD = {
   0: 0,
   1: 10,

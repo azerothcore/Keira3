@@ -24,6 +24,9 @@ export const CLASSES_TEXT = [
 ];
 
 // ChrRaces.dbc
+export type RaceTextType = typeof RACES_TEXT;
+export type RacesTextKey = keyof RaceTextType;
+export type RacesTextValue = RaceTextType[RacesTextKey];
 export const RACES_TEXT = {
   '-2': 'Horde',
   '-1': 'Alliance',
