@@ -50,7 +50,7 @@
     "jquery": "3.7.1",
     "morgan": "1.10.0",
     "mysql2": "3.11.3",
-    "ngx-toastr": "18.0.0",
+    "ngx-toastr": "19.0.0",
     "ngx-ui-switch": "15.0.0",
     "node-fetch": "2.7.0",
     "serialize-javascript": "6.0.2",
