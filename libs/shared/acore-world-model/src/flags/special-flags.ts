@@ -12,4 +12,8 @@ export const SPECIAL_FLAGS: Flag[] = [
     bit: 7,
     name: 'Allows quest to fail in Player::FailQuest() independant of its current state, e.g. relevant for timed quests that are completed right from the beginning.',
   },
+  {
+    bit: 8,
+    name: "This quest shouldn't count towards the Loremaster Achivement.",
+  },
 ];
