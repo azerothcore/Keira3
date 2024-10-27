@@ -44,6 +44,7 @@
   "UNKNOWN": "Unknown",
   "COPY": "Copy",
   "EXECUTE": "Execute",
+  "EXECUTE_AND_COPY": "Execute & copy",
   "RELOAD": "Reload",
   "CANCEL": "Cancel",
   "SELECTORS": {

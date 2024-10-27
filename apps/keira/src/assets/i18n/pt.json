@@ -45,6 +45,7 @@
   "UNKNOWN": "Desconhecido",
   "COPY": "Copiar",
   "EXECUTE": "Executar",
+  "EXECUTE_AND_COPY": "Execute & copy",
   "RELOAD": "Recarregar",
   "CANCEL": "Cancelar",
   "CONNECTION_WINDOW": {

@@ -45,6 +45,7 @@
   "UNKNOWN": "Неизвестно",
   "COPY": "Копировать",
   "EXECUTE": "Выполнить",
+  "EXECUTE_AND_COPY": "Execute & copy",
   "RELOAD": "Перезагрузить",
   "CANCEL": "Отменить",
   "CONNECTION_WINDOW": {

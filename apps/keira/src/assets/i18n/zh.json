@@ -45,6 +45,7 @@
   "UNKNOWN": "未知",
   "COPY": "复制",
   "EXECUTE": "执行",
+  "EXECUTE_AND_COPY": "Execute & copy",
   "RELOAD": "重新加载",
   "CANCEL": "取消",
   "CONNECTION_WINDOW": {

@@ -45,6 +45,7 @@
   "UNKNOWN": "Okänd",
   "COPY": "Kopiera",
   "EXECUTE": "Verkställ",
+  "EXECUTE_AND_COPY": "Execute & copy",
   "RELOAD": "Ladda om",
   "CANCEL": "Avbryt",
   "CONNECTION_WINDOW": {
