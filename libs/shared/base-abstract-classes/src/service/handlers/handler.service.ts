@@ -52,6 +52,7 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
       this._selected = `${id}`;
     }
 
+    // To prevent side effects or outdated data, it's essential to reload the entity when the user selects it again
     if (currentSelected === this._selected) {
       this.forceReload = true;
     }
