@@ -77,10 +77,8 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
   }
 
   protected checkMaxValue(): void {
-    console.log('this.idModel', this.idModel);
     if (this.idModel > MAX_INT_UNSIGNED_VALUE) {
       this.idModel = MAX_INT_UNSIGNED_VALUE;
-      console.log('this.idModel # 2', this.idModel);
     }
   }
 
