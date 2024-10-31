@@ -12,6 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateResistanceService } from './creature-template-resistance.service';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,6 +29,7 @@ import { CreatureTemplateResistanceService } from './creature-template-resistanc
     EditorButtonsComponent,
     NgxDatatableModule,
     GenericOptionSelectorComponent,
+    TooltipModule,
   ],
 })
 export class CreatureTemplateResistanceComponent extends MultiRowEditorComponent<CreatureTemplateResistance> {
