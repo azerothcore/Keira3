@@ -7,6 +7,7 @@ import { ItemSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateModule } from '@ngx-translate/core';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureEquipTemplateService } from './creature-equip-template.service';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,6 +23,7 @@ import { CreatureEquipTemplateService } from './creature-equip-template.service'
     ReactiveFormsModule,
     IconComponent,
     ItemSelectorBtnComponent,
+    TooltipModule,
   ],
 })
 export class CreatureEquipTemplateComponent extends SingleRowEditorComponent<CreatureEquipTemplate> {
