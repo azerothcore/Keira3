@@ -241,7 +241,10 @@
       "SPEED_WALK": "Controls how fast the creature can run. For vehicles it increases ground movement speed.",
       "SPEED_SWIM": "Controls how fast the creature can swim.",
       "SPEED_FLIGHT": "Controls how fast the creature can fly.",
-      "DETECTION_RANGE": "Controls the range at which creatures detect and see players."
+      "DETECTION_RANGE": "Controls the range at which creatures detect and see players.",
+      "ItemID1": "This is the item number of the equipment used in the right hand from Item.dbc.",
+      "ItemID2": "This is the item number of the equipment used in the left hand from Item.dbc.",
+      "ItemID3": "This is the item number of the equipment used in the ranged slot from Item.dbc."
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "Link to creature_template.entry",
