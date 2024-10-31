@@ -223,7 +223,7 @@
       "SKINLOOT": "skinning_loot_template表中的entry字段",
       "DIFFICULTY_ENTRY_1": "在25人英雄副本和普通副本中使用相同的生物",
       "DIFFICULTY_ENTRY_2": "在10人英雄副本中使用相同的生物",
-      "difficulty_entry_3": "在25人英雄副本中使用相同的生物",
+      "DIFFICULTY_ENTRY_3": "在25人英雄副本中使用相同的生物",
       "BASE_ATTACK_TIME": "近战攻击间隔时间(单位：毫秒)。",
       "RANGE_ATTACK_TIME": "远程攻击间隔时间(单位：毫秒)。",
       "SCRIPT_NAME": "覆盖AIName。此生物使用独立的C++脚本在这里输入脚本名称。",

@@ -228,7 +228,7 @@
       "SKINLOOT": "Enlazado con skinning_loot_template.entry (Botín de Desuello)",
       "DIFFICULTY_ENTRY_1": "Entrada (ID) de la criatura equivalente a Mazmorra Heroica o Raid Normal de 25 jugadores",
       "DIFFICULTY_ENTRY_2": "Entrada (ID) de la criatura equivalente a Raid Heróica de 10 jugadores",
-      "difficulty_entry_3": "Entrada (ID) de la criatura equivalente a Raid Heróica de 25 jugadores",
+      "DIFFICULTY_ENTRY_3": "Entrada (ID) de la criatura equivalente a Raid Heróica de 25 jugadores",
       "BASE_ATTACK_TIME": "Tiempo base (en millisegundos) que determina cuánto tiempo debe esperar una criatura entre ataques cuerpo a cuerpo.",
       "RANGE_ATTACK_TIME": "Tiempo base (en millisegundos) que determina cuánto tiempo debe esperar una criatura entre ataques a distancia.",
       "SCRIPT_NAME": "Anula AIName. El nombre del script escrito en C++ que utiliza esta criatura en particular, si existe, claro está.",

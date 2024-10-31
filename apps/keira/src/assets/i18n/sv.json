@@ -223,7 +223,7 @@
       "SKINLOOT": "Länk till skinning_loot_template.entry",
       "DIFFICULTY_ENTRY_1": "Entry of the equivalent creature in Heroic Dungeon or 25man Normal Raid",
       "DIFFICULTY_ENTRY_2": "Entry of the equivalent creature in 10man Heroic Raid",
-      "difficulty_entry_3": "Entry of the equivalent creature in 25man Heroic Raid",
+      "DIFFICULTY_ENTRY_3": "Entry of the equivalent creature in 25man Heroic Raid",
       "BASE_ATTACK_TIME": "Bastid (millisekunder) som avgör hur länge en NPC måste vänta mellan sina Melee Attacker.",
       "RANGE_ATTACK_TIME": "Bastid (millisekunder) som avgör hur länge en NPC måste vänta mellan sina Range Attacker.",
       "SCRIPT_NAME": "Åsidosätter AIName. Namnet utav C++ script som denna NPC använder, om det finns något.",

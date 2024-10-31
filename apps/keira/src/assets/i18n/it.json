@@ -226,7 +226,7 @@
       "SKINLOOT": "Link to skinning_loot_template.entry",
       "DIFFICULTY_ENTRY_1": "Entry of the equivalent creature in Heroic Dungeon or 25man Normal Raid",
       "DIFFICULTY_ENTRY_2": "Entry of the equivalent creature in 10man Heroic Raid",
-      "difficulty_entry_3": "Entry of the equivalent creature in 25man Heroic Raid",
+      "DIFFICULTY_ENTRY_3": "Entry of the equivalent creature in 25man Heroic Raid",
       "BASE_ATTACK_TIME": "Base time (milliseconds) that determines how long a creature must wait between melee attacks.",
       "RANGE_ATTACK_TIME": "Base time (milliseconds) that determines how long a creature must wait between ranged attacks.",
       "SCRIPT_NAME": "Overrides AIName. The name of the C++ script that this creature uses, if any.",
