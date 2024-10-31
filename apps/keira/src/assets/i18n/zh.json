@@ -237,9 +237,9 @@
       "SPEED_SWIM": "控制生物游泳的速度。",
       "SPEED_FLIGHT": "控制生物的飞行速度。",
       "DETECTION_RANGE": "控制生物感知到玩家靠近的范围。",
-      "ItemID1": "This is the item number of the equipment used in the right hand from Item.dbc.",
-      "ItemID2": "This is the item number of the equipment used in the left hand from Item.dbc.",
-      "ItemID3": "This is the item number of the equipment used in the ranged slot from Item.dbc."
+      "ITEMID1": "This is the item number of the equipment used in the right hand from Item.dbc.",
+      "ITEMID2": "This is the item number of the equipment used in the left hand from Item.dbc.",
+      "ITEMID3": "This is the item number of the equipment used in the ranged slot from Item.dbc."
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "链接至creature_template表的entry字段",
