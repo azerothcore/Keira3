@@ -242,7 +242,10 @@
       "SPEED_WALK": "Controla la velocidad promedio a la que puede caminar la criatura. En el caso de los vehículos, aumenta la velocidad de movimiento por tierra.",
       "SPEED_SWIM": "Controla la velocidad promedio a la que puede nadar la criatura.",
       "SPEED_FLIGHT": "Controla la velocidad promedio a la que puede volar la criatura.",
-      "DETECTION_RANGE": "Controla el rango en el que las criaturas detectan y ven a los jugadores."
+      "DETECTION_RANGE": "Controla el rango en el que las criaturas detectan y ven a los jugadores.",
+      "ItemID1": "This is the item number of the equipment used in the right hand from Item.dbc.",
+      "ItemID2": "This is the item number of the equipment used in the left hand from Item.dbc.",
+      "ItemID3": "This is the item number of the equipment used in the ranged slot from Item.dbc."
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "Enlazado con creature_template.entry (ID de la Criatura)",

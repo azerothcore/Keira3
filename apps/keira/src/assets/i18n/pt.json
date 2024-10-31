@@ -237,7 +237,10 @@
       "SPEED_WALK": "Controla quão rápido a creature pode correr. Para veículos, aumenta a velocidade terrestre.",
       "SPEED_SWIM": "Controla quão rápido a creature pode nadar.",
       "SPEED_FLIGHT": "Controla quão rápido a creature pode voar.",
-      "DETECTION_RANGE": "Controla o alcance do qual a creature pode detectar e ver jogadores."
+      "DETECTION_RANGE": "Controla o alcance do qual a creature pode detectar e ver jogadores.",
+      "ItemID1": "This is the item number of the equipment used in the right hand from Item.dbc.",
+      "ItemID2": "This is the item number of the equipment used in the left hand from Item.dbc.",
+      "ItemID3": "This is the item number of the equipment used in the ranged slot from Item.dbc."
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "Link para creature_template.entry",

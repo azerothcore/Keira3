@@ -237,7 +237,10 @@
       "SPEED_WALK": "Kontrollerar hur snabbt en NPC kan springa. För fordon blir det snabbare på marken.",
       "SPEED_SWIM": "Kontrollerar hur snabbt en NPC kan simma.",
       "SPEED_FLIGHT": "Kontrollerar hur snabbt en NPC kan flyga.",
-      "DETECTION_RANGE": "Kontrollerar hur nära eller långt ifrån en NPC kan upptäcka spelare."
+      "DETECTION_RANGE": "Kontrollerar hur nära eller långt ifrån en NPC kan upptäcka spelare.",
+      "ItemID1": "This is the item number of the equipment used in the right hand from Item.dbc.",
+      "ItemID2": "This is the item number of the equipment used in the left hand from Item.dbc.",
+      "ItemID3": "This is the item number of the equipment used in the ranged slot from Item.dbc."
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "Länk till creature_template.entry",
