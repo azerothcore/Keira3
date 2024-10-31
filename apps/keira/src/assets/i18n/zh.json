@@ -277,6 +277,9 @@
     "TEMPLATE_SPELL": {
       "INDEX": "范围值：0-7"
     },
+    "TEMPLATE_RESISTANCE": {
+      "SCHOOL": "1 - SPELL_SCHOOL_HOLY; 2 - SPELL_SCHOOL_FIRE; 3 - SPELL_SCHOOL_NATURE; 4 - SPELL_SCHOOL_FROST; 5 - SPELL_SCHOOL_SHADOW; 6 - SPELL_SCHOOL_ARCANE"
+    },
     "NPC_TRAINER": {
       "MONEY_COST": "学习该法术的金钱，用铜币表示(1金=100银=10000铜)",
       "REQ_SKILL_LINE": "玩家学习技能所需的前置技能",

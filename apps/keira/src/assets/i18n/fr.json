@@ -279,6 +279,9 @@
     "TEMPLATE_SPELL": {
       "INDEX": "Allowed values: 0-7"
     },
+    "TEMPLATE_RESISTANCE": {
+      "SCHOOL": "1 - SPELL_SCHOOL_HOLY; 2 - SPELL_SCHOOL_FIRE; 3 - SPELL_SCHOOL_NATURE; 4 - SPELL_SCHOOL_FROST; 5 - SPELL_SCHOOL_SHADOW; 6 - SPELL_SCHOOL_ARCANE"
+    },
     "NPC_TRAINER": {
       "MONEY_COST": "The cost to pay to learn the spell represented in copper (1 gold = 100 silver = 10000 cooper)",
       "REQ_SKILL_LINE": "The required skill the player needs to have in order to be able to learn the spell",
