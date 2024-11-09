@@ -1,1 +1,1 @@
-nx format:write
+npx nx format:write
