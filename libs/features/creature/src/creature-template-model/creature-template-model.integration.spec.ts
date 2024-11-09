@@ -71,7 +71,7 @@ describe('CreatureTemplateModel integration tests', () => {
 
   describe('Creating new', () => {
     it('should correctly initialise', () => {
-      const { page, component } = setup(true);
+      const { page } = setup(true);
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.formError.hidden).toBe(true);
@@ -83,7 +83,6 @@ describe('CreatureTemplateModel integration tests', () => {
       expect(page.getInputById('Probability').disabled).toBe(true);
       expect(page.getInputById('VerifiedBuild').disabled).toBe(true);
       expect(page.getEditorTableRowsCount()).toBe(0);
-      page.detectChanges();
       page.removeElement();
     });
 
