@@ -1,1 +1,1 @@
-npx pretty-quick --staged
+nx format:write
