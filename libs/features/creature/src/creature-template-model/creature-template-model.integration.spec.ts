@@ -15,7 +15,7 @@ import { CreatureTemplateModelComponent } from './creature-template-model.compon
 
 describe('CreatureTemplateModel integration tests', () => {
   class CreatureTemplateModelPage extends MultiRowEditorPageObject<CreatureTemplateModelComponent> {
-    getAllModelViewers() {
+    getAllModelViewers(): HTMLElement[] {
       return this.queryAll('keira-model-3d-viewer');
     }
   }
