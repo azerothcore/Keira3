@@ -22,6 +22,9 @@ class EditorButtonsPage extends PageObject<TestHostComponent> {
   get deleteBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#delete-selected-row-btn');
   }
+  get duplicateBtn(): HTMLButtonElement {
+    return this.query<HTMLButtonElement>('#duplicate-selected-row-btn');
+  }
 }
 
 describe('EditorButtonsComponent', () => {
@@ -74,7 +77,31 @@ describe('EditorButtonsComponent', () => {
     it('when clicked, should call editorService.addNewRow()', () => {
       const { editorService, page } = setup();
       page.clickElement(page.addBtn);
-      expect(editorService.addNewRow).toHaveBeenCalledTimes(1);
+      expect(editorService.addNewRow).toHaveBeenCalledOnceWith();
+      expect(editorService.deleteSelectedRow).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe('the duplicate button', () => {
+    it('should be enabled only when there is a selected row', () => {
+      const { editorService, page, fixture } = setup();
+      editorService.selectedRowId = undefined as any;
+      fixture.detectChanges();
+      expect(page.duplicateBtn.disabled).toBe(true);
+
+      editorService.selectedRowId = 123;
+      fixture.detectChanges();
+      expect(page.duplicateBtn.disabled).toBe(false);
+
+      editorService.selectedRowId = undefined as any;
+      fixture.detectChanges();
+      expect(page.duplicateBtn.disabled).toBe(true);
+    });
+
+    it('when clicked, should call editorService.addNewRow(true)', () => {
+      const { editorService, page } = setup();
+      page.clickElement(page.duplicateBtn);
+      expect(editorService.addNewRow).toHaveBeenCalledOnceWith(true);
       expect(editorService.deleteSelectedRow).toHaveBeenCalledTimes(0);
     });
   });
