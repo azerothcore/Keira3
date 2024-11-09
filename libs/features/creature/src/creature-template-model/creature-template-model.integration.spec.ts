@@ -14,7 +14,11 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateModelComponent } from './creature-template-model.component';
 
 describe('CreatureTemplateModel integration tests', () => {
-  class CreatureTemplateModelPage extends MultiRowEditorPageObject<CreatureTemplateModelComponent> {}
+  class CreatureTemplateModelPage extends MultiRowEditorPageObject<CreatureTemplateModelComponent> {
+    getAllModelViewers() {
+      return this.queryAll('keira-model-3d-viewer');
+    }
+  }
 
   const id = 1234;
 
@@ -67,7 +71,7 @@ describe('CreatureTemplateModel integration tests', () => {
 
   describe('Creating new', () => {
     it('should correctly initialise', () => {
-      const { page } = setup(true);
+      const { page, component } = setup(true);
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.formError.hidden).toBe(true);
@@ -79,6 +83,7 @@ describe('CreatureTemplateModel integration tests', () => {
       expect(page.getInputById('Probability').disabled).toBe(true);
       expect(page.getInputById('VerifiedBuild').disabled).toBe(true);
       expect(page.getEditorTableRowsCount()).toBe(0);
+      page.detectChanges();
       page.removeElement();
     });
 
@@ -109,6 +114,7 @@ describe('CreatureTemplateModel integration tests', () => {
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(3);
       page.expectDiffQueryToContain(expectedQuery);
+      expect(page.getAllModelViewers().length).toBe(3); // check one model viewer per row
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
@@ -183,6 +189,7 @@ describe('CreatureTemplateModel integration tests', () => {
           '(1234, 2, 0, 1, 0, 0);',
       );
       expect(page.getEditorTableRowsCount()).toBe(3);
+      expect(page.getAllModelViewers().length).toBe(3); // check one model viewer per row
       page.removeElement();
     });
 
