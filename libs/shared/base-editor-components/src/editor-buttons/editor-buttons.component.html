@@ -11,6 +11,11 @@
   <i class="fa fa-plus fa-sm"></i> {{ 'ADD_NEW_ROW' | translate }}
 </button>
 
-<button id="duplicate-selected-row-btn" class="btn btn-secondary btn-sm" (click)="editorService.addNewRow(true)">
+<button
+  id="duplicate-selected-row-btn"
+  class="btn btn-secondary btn-sm"
+  (click)="editorService.addNewRow(true)"
+  [disabled]="editorService.selectedRowId === null || editorService.selectedRowId === undefined"
+>
   <i class="fa fa-copy fa-sm"></i> {{ 'DUPLICATE_SELECTED_ROW' | translate }}
 </button>
