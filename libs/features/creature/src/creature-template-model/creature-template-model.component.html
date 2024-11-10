@@ -75,8 +75,14 @@
       </div>
 
       <div class="content-block">
-        <div class="creature-preview">
-          <keira-model-3d-viewer [viewerType]="NPC_VIEWER_TYPE" [displayId]="editorService.form.controls.CreatureDisplayID.value" />
+        <div class="row">
+          @for (row of editorService.newRows; track row.Idx) {
+            <div class="col">
+              <div class="creature-preview">
+                <keira-model-3d-viewer [viewerType]="NPC_VIEWER_TYPE" [displayId]="row.CreatureDisplayID" />
+              </div>
+            </div>
+          }
         </div>
       </div>
     </div>

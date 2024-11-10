@@ -14,7 +14,11 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateModelComponent } from './creature-template-model.component';
 
 describe('CreatureTemplateModel integration tests', () => {
-  class CreatureTemplateModelPage extends MultiRowEditorPageObject<CreatureTemplateModelComponent> {}
+  class CreatureTemplateModelPage extends MultiRowEditorPageObject<CreatureTemplateModelComponent> {
+    getAllModelViewers(): HTMLElement[] {
+      return this.queryAll('keira-model-3d-viewer');
+    }
+  }
 
   const id = 1234;
 
@@ -109,6 +113,7 @@ describe('CreatureTemplateModel integration tests', () => {
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(3);
       page.expectDiffQueryToContain(expectedQuery);
+      expect(page.getAllModelViewers().length).toBe(3); // check one model viewer per row
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
@@ -183,6 +188,7 @@ describe('CreatureTemplateModel integration tests', () => {
           '(1234, 2, 0, 1, 0, 0);',
       );
       expect(page.getEditorTableRowsCount()).toBe(3);
+      expect(page.getAllModelViewers().length).toBe(3); // check one model viewer per row
       page.removeElement();
     });
 
