@@ -48,6 +48,7 @@ import { ItemHandlerService } from '../item-handler.service';
 import { SPELL_TRIGGERS } from './item-constants';
 import { ItemPreviewService } from './item-preview.service';
 import { ItemTemplateService } from './item-template.service';
+import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
@@ -77,6 +78,7 @@ import { ItemTemplateService } from './item-template.service';
     ItemEnchantmentSelectorBtnComponent,
     IconComponent,
     Model3DViewerComponent,
+    GenericOptionSelectorComponent,
   ],
 })
 export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate> implements OnInit {

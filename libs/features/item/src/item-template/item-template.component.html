@@ -550,18 +550,11 @@
                 <div class="row">
                   <div class="col-12">
                     <label class="control-label" for="socketColor_{{ i }}">Color_{{ i }}</label>
-                    <keira-flags-selector-btn
+                    <keira-generic-option-selector
                       [control]="editorService.form.controls['socketColor_' + i]"
-                      [disabled]="editorService.form.controls['socketColor_' + i].disabled"
-                      [config]="{ flags: SOCKET_COLOR, name: 'socketColor_' + i }"
-                      [modalClass]="'modal-md'"
-                    />
-                    <input
-                      [formControlName]="'socketColor_' + i"
                       id="socketColor_{{ i }}"
-                      type="number"
-                      class="form-control form-control-sm"
-                    />
+                      [optionList]="SOCKET_COLOR"
+                    ></keira-generic-option-selector>
                   </div>
                   <div class="col-12">
                     <label class="control-label" for="socketContent_{{ i }}">Content_{{ i }}</label>
