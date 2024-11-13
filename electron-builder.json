@@ -11,7 +11,12 @@
   },
   "mac": {
     "icon": "dist/browser",
-    "target": ["dmg"]
+    "target": [
+      {
+        "target": "default",
+        "arch": ["x64", "arm64"]
+      }
+    ]
   },
   "linux": {
     "icon": "dist/browser",
