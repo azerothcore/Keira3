@@ -77,20 +77,23 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Build project
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm install
           npm run electron:mac
-          mv "release/${{needs.get-package-version.outputs.app_name}}-${{needs.get-package-version.outputs.version}}.dmg" "${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}-x64.MAC.dmg"
-          zip "${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}-x64.MAC.dmg.zip" "${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}-x64.MAC.dmg"
-          mv "release/${{needs.get-package-version.outputs.app_name}}-${{needs.get-package-version.outputs.version}}-arm64.dmg" "${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}-arm64.MAC.dmg"
-          zip "${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}-arm64.MAC.dmg.zip" "${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}-arm64.MAC.dmg"
+          mv "release/${{needs.get-package-version.outputs.app_name}}-${{needs.get-package-version.outputs.version}}.dmg" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}-x64.MAC.dmg
+          zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.MAC-x64.dmg.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}-x64.MAC.dmg
+          mv "release/${{needs.get-package-version.outputs.app_name}}-${{needs.get-package-version.outputs.version}}-arm64.dmg" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}-arm64.MAC.dmg
+          zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}-arm64.MAC.dmg.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}-arm64.MAC.dmg
           rm -rf release
-          rm -f *.yml *.blockmap *.dmg
-
+          rm -rf *.yml
+          rm -rf *.blockmap
+          rm -rf *.dmg
+          rm -rf release/*.yml
+          rm -rf release/*.blockmap
+          rm -rf release/*.dmg
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v2
@@ -102,9 +105,8 @@ jobs:
           draft: true
           prerelease: false
           files: |
-            ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}-x64.MAC.dmg.zip
-            ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}-arm64.MAC.dmg.zip
-
+            ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.MAC-x64.dmg.zip
+            ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.MAC-arm64.dmg.zip
 
   build-on-windows:
     needs: get-package-version
