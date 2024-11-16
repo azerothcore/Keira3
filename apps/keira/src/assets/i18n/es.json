@@ -230,7 +230,7 @@
       "SKINLOOT": "Enlazado con skinning_loot_template.entry (Botín de Desuello)",
       "DIFFICULTY_ENTRY_1": "Entrada (ID) de la criatura equivalente a Mazmorra Heroica o Raid Normal de 25 jugadores",
       "DIFFICULTY_ENTRY_2": "Entrada (ID) de la criatura equivalente a Raid Heróica de 10 jugadores",
-      "difficulty_entry_3": "Entrada (ID) de la criatura equivalente a Raid Heróica de 25 jugadores",
+      "DIFFICULTY_ENTRY_3": "Entrada (ID) de la criatura equivalente a Raid Heróica de 25 jugadores",
       "BASE_ATTACK_TIME": "Tiempo base (en millisegundos) que determina cuánto tiempo debe esperar una criatura entre ataques cuerpo a cuerpo.",
       "RANGE_ATTACK_TIME": "Tiempo base (en millisegundos) que determina cuánto tiempo debe esperar una criatura entre ataques a distancia.",
       "SCRIPT_NAME": "Anula AIName. El nombre del script escrito en C++ que utiliza esta criatura en particular, si existe, claro está.",
@@ -244,7 +244,10 @@
       "SPEED_WALK": "Controla la velocidad promedio a la que puede caminar la criatura. En el caso de los vehículos, aumenta la velocidad de movimiento por tierra.",
       "SPEED_SWIM": "Controla la velocidad promedio a la que puede nadar la criatura.",
       "SPEED_FLIGHT": "Controla la velocidad promedio a la que puede volar la criatura.",
-      "DETECTION_RANGE": "Controla el rango en el que las criaturas detectan y ven a los jugadores."
+      "DETECTION_RANGE": "Controla el rango en el que las criaturas detectan y ven a los jugadores.",
+      "ITEMID1": "This is the item number of the equipment used in the right hand from Item.dbc.",
+      "ITEMID2": "This is the item number of the equipment used in the left hand from Item.dbc.",
+      "ITEMID3": "This is the item number of the equipment used in the ranged slot from Item.dbc."
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "Enlazado con creature_template.entry (ID de la Criatura)",

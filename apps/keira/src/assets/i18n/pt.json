@@ -225,7 +225,7 @@
       "SKINLOOT": "Link para skinning_loot_template.entry",
       "DIFFICULTY_ENTRY_1": "Entry da creature equivalente em uma Heroic Dungeon ou uma Raid Normal 25man",
       "DIFFICULTY_ENTRY_2": "Entry da creature equivalente em uma Raid Heroic 10man",
-      "difficulty_entry_3": "Entry da creature equivalente em uma Raid Heroic 25man",
+      "DIFFICULTY_ENTRY_3": "Entry da creature equivalente em uma Raid Heroic 25man",
       "BASE_ATTACK_TIME": "Tempo base (milisegundos) que determina quanto tempo que a creature deve esperar entre ataques corpo à corpo.",
       "RANGE_ATTACK_TIME": "Tempo base (milisegundos) que determina quanto tempo que a creature deve esperar entre ataques à distância.",
       "SCRIPT_NAME": "Sobrepõe AIName. É o nome do script C++ que essa creature usa, caso exista.",
@@ -239,7 +239,10 @@
       "SPEED_WALK": "Controla quão rápido a creature pode correr. Para veículos, aumenta a velocidade terrestre.",
       "SPEED_SWIM": "Controla quão rápido a creature pode nadar.",
       "SPEED_FLIGHT": "Controla quão rápido a creature pode voar.",
-      "DETECTION_RANGE": "Controla o alcance do qual a creature pode detectar e ver jogadores."
+      "DETECTION_RANGE": "Controla o alcance do qual a creature pode detectar e ver jogadores.",
+      "ITEMID1": "This is the item number of the equipment used in the right hand from Item.dbc.",
+      "ITEMID2": "This is the item number of the equipment used in the left hand from Item.dbc.",
+      "ITEMID3": "This is the item number of the equipment used in the ranged slot from Item.dbc."
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "Link para creature_template.entry",

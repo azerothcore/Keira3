@@ -225,7 +225,7 @@
       "SKINLOOT": "skinning_loot_template表中的entry字段",
       "DIFFICULTY_ENTRY_1": "在25人英雄副本和普通副本中使用相同的生物",
       "DIFFICULTY_ENTRY_2": "在10人英雄副本中使用相同的生物",
-      "difficulty_entry_3": "在25人英雄副本中使用相同的生物",
+      "DIFFICULTY_ENTRY_3": "在25人英雄副本中使用相同的生物",
       "BASE_ATTACK_TIME": "近战攻击间隔时间(单位：毫秒)。",
       "RANGE_ATTACK_TIME": "远程攻击间隔时间(单位：毫秒)。",
       "SCRIPT_NAME": "覆盖AIName。此生物使用独立的C++脚本在这里输入脚本名称。",
@@ -238,7 +238,10 @@
       "SPEED_WALK": "控制生物的奔跑速度。对于陆地载具来说，提高地面移动速度。",
       "SPEED_SWIM": "控制生物游泳的速度。",
       "SPEED_FLIGHT": "控制生物的飞行速度。",
-      "DETECTION_RANGE": "控制生物感知到玩家靠近的范围。"
+      "DETECTION_RANGE": "控制生物感知到玩家靠近的范围。",
+      "ITEMID1": "This is the item number of the equipment used in the right hand from Item.dbc.",
+      "ITEMID2": "This is the item number of the equipment used in the left hand from Item.dbc.",
+      "ITEMID3": "This is the item number of the equipment used in the ranged slot from Item.dbc."
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "链接至creature_template表的entry字段",
