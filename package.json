@@ -135,7 +135,7 @@
     "typescript": "5.5.4",
     "wait-on": "8.0.1",
     "webdriver-manager": "13.0.2",
-    "zone.js": "0.14.10"
+    "zone.js": "0.15.0"
   },
   "optionalDependencies": {
     "@nx/nx-darwin-arm64": "20.1.2",
