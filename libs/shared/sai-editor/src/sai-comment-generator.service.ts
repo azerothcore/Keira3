@@ -99,7 +99,7 @@ export class SaiCommentGeneratorService {
   }
 
   /* Get previous script of links chain */
-  private getPreviousScriptLink(rows: SmartScripts[], smartScript: SmartScripts): SmartScripts {
+  private getPreviousScriptLink(rows: SmartScripts[], smartScript: SmartScripts): SmartScripts | null {
     if (smartScript.id === 0) {
       return null;
     }
@@ -256,7 +256,7 @@ export class SaiCommentGeneratorService {
     }
 
     if (actionLine.indexOf('_followGroupParamTwo_') > -1) {
-      let _followGroupParamTwo_ = '[Unknown Follow Type]';
+      let _followGroupParamTwo_: string;
       switch (Number(smartScript.action_param2)) {
         case 1:
           _followGroupParamTwo_ = 'Circle';
@@ -1027,9 +1027,9 @@ export class SaiCommentGeneratorService {
     name: string, // the name of the creature or gameobject
   ): Promise<string> {
     const smartScriptLink = this.getPreviousScriptLink(rows, smartScript);
-    return `${await this.generateEventComment(smartScript, name, smartScriptLink)} - ${await this.generateActionComment(
+    return `${await this.generateEventComment(smartScript, name, smartScriptLink as SmartScripts)} - ${await this.generateActionComment(
       smartScript,
-      smartScriptLink,
+      smartScriptLink as SmartScripts,
     )}`;
   }
 }

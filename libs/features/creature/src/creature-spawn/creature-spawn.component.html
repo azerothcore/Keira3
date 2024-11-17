@@ -104,13 +104,11 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
               <label class="control-label" for="MovementType">MovementType</label>
-              <keira-single-value-selector-btn
+              <keira-generic-option-selector
                 [control]="editorService.form.controls.MovementType"
-                [disabled]="editorService.form.controls.MovementType.disabled"
-                [config]="{ options: MOVEMENT_TYPE, name: 'MovementType' }"
-                [modalClass]="'modal-md'"
-              />
-              <input [formControlName]="'MovementType'" id="MovementType" type="number" class="form-control form-control-sm" />
+                id="MovementType"
+                [optionList]="MOVEMENT_TYPE"
+              ></keira-generic-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
               <label class="control-label" for="npcflag">npcflag</label>

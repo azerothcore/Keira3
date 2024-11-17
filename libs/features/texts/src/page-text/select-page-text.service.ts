@@ -10,8 +10,8 @@ import { PageTextHandlerService } from './page-text-handler.service';
 export class SelectPageTextService extends SelectService<PageText> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    readonly queryService: MysqlQueryService,
-    public handlerService: PageTextHandlerService,
+    override readonly queryService: MysqlQueryService,
+    public override readonly handlerService: PageTextHandlerService,
   ) {
     super(queryService, handlerService, PAGE_TEXT_TABLE, PAGE_TEXT_ID, PAGE_TEXT_NAME, PAGE_TEXT_SEARCH_FIELDS);
   }

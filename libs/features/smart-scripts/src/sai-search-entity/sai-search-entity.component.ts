@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
-import { GameobjectSelectorBtnComponent } from '@keira/shared/selectors';
-import { CreatureSelectorBtnComponent } from '@keira/shared/selectors';
+import { CreatureSelectorBtnComponent, GameobjectSelectorBtnComponent } from '@keira/shared/selectors';
 
 import { SaiHandlerService } from '@keira/shared/sai-editor';
 import { getEnumKeys, ModelForm } from '@keira/shared/utils';
@@ -22,8 +21,8 @@ export class SaiSearchEntityComponent {
   readonly SAI_SEARCH_TYPES_KEYS = getEnumKeys(SAI_TYPES);
 
   readonly form = new FormGroup<ModelForm<Partial<SmartScripts>>>({
-    source_type: new FormControl<number>(null, [Validators.required]),
-    entryorguid: new FormControl<number>(null, [Validators.required]),
+    source_type: new FormControl<number>(null as any, [Validators.required]) as FormControl<number>,
+    entryorguid: new FormControl<number>(null as any, [Validators.required]) as FormControl<number>,
   });
 
   get isTypeCreatureSelected(): boolean {
@@ -43,15 +42,15 @@ export class SaiSearchEntityComponent {
   }
 
   get sourceTypeControl(): FormControl<number> {
-    return this.form.controls.source_type;
+    return this.form.controls.source_type as FormControl<number>;
   }
 
   get entryOrGuidControl(): FormControl<number> {
-    return this.form.controls.entryorguid;
+    return this.form.controls.entryorguid as FormControl<number>;
   }
 
   onSelectedTypeChange() {
-    this.entryOrGuidControl.setValue(null);
+    this.entryOrGuidControl.setValue(null as any);
   }
 
   onEdit() {

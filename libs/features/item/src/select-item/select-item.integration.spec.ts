@@ -14,7 +14,7 @@ import { instance, mock } from 'ts-mockito';
 import Spy = jasmine.Spy;
 
 class SelectItemComponentPage extends SelectPageObject<SelectItemComponent> {
-  ID_FIELD = 'entry';
+  override ID_FIELD = 'entry';
 }
 
 describe('SelectItem integration tests', () => {
@@ -155,14 +155,14 @@ describe('SelectItem integration tests', () => {
     const row1 = page.getDatatableRowExternal(1);
     const row2 = page.getDatatableRowExternal(2);
 
-    expect(row0.innerText).toContain(results[0].name);
-    expect(row1.innerText).toContain(results[1].name);
-    expect(row2.innerText).toContain(results[2].name);
+    expect(row0.innerText).toContain(results[0].name as string);
+    expect(row1.innerText).toContain(results[1].name as string);
+    expect(row2.innerText).toContain(results[2].name as string);
 
     page.clickElement(page.getDatatableCellExternal(1, 1));
 
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith(['item/item-template']);
-    page.expectTopBarEditing(results[1].entry, results[1].name);
+    page.expectTopBarEditing(results[1].entry as number, results[1].name as string);
   });
 });

@@ -1,5 +1,4 @@
 import { ChangeDetectorRef, Injectable } from '@angular/core';
-import { EditorService } from '@keira/shared/base-abstract-classes';
 import {
   CreatureQuestender,
   CreatureQueststarter,
@@ -12,6 +11,7 @@ import {
   QuestTemplate,
   QuestTemplateAddon,
 } from '@keira/shared/acore-world-model';
+import { EditorService } from '@keira/shared/base-abstract-classes';
 import {
   CLASSES_TEXT,
   ICON_SKILLS,
@@ -23,8 +23,12 @@ import {
   QUEST_PERIOD,
   QuestReputationReward,
   RACES_TEXT,
+  RacesTextKey,
   TableRow,
 } from '@keira/shared/constants';
+import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
+import { PreviewHelperService } from '@keira/shared/preview';
+import { lastValueFrom, of } from 'rxjs';
 import { CreatureQuestenderService } from '../creature-questender/creature-questender.service';
 import { CreatureQueststarterService } from '../creature-queststarter/creature-queststarter.service';
 import { GameobjectQuestenderService } from '../gameobject-questender/gameobject-questender.service';
@@ -34,9 +38,7 @@ import { QuestOfferRewardService } from '../quest-offer-reward/quest-offer-rewar
 import { QuestRequestItemsService } from '../quest-request-items/quest-request-items.service';
 import { QuestTemplateAddonService } from '../quest-template-addon/quest-template-addon.service';
 import { QuestTemplateService } from '../quest-template/quest-template.service';
-import { DifficultyLevel, Quest } from './quest-preview.model';
-import { PreviewHelperService } from '@keira/shared/preview';
-import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
+import { DifficultyLevel, Quest, QUEST_FACTION_REWARD, QuestFactionRewardKey } from './quest-preview.model';
 
 @Injectable({
   providedIn: 'root',
@@ -108,10 +110,10 @@ export class QuestPreviewService {
     return String(this.questTemplate.MinLevel);
   }
   get side(): string {
-    return this.helperService.getFactionFromRace(this.questTemplate.AllowableRaces);
+    return this.helperService.getFactionFromRace(this.questTemplate.AllowableRaces) as string;
   }
-  get races(): number[] {
-    return this.helperService.getRaceString(this.questTemplate.AllowableRaces);
+  get races(): RacesTextKey[] {
+    return this.helperService.getRaceString(this.questTemplate.AllowableRaces) as RacesTextKey[];
   }
   get sharable(): string {
     return this.questTemplate.Flags & QUEST_FLAG_SHARABLE ? 'Sharable' : 'Not sharable';
@@ -134,7 +136,7 @@ export class QuestPreviewService {
     return String(this.questTemplateAddon.MaxLevel);
   }
   get classes(): number[] {
-    return this.helperService.getRequiredClass(this.questTemplateAddon.AllowableClasses);
+    return this.helperService.getRequiredClass(this.questTemplateAddon.AllowableClasses) as number[];
   }
 
   // Item Quest Starter
@@ -160,7 +162,7 @@ export class QuestPreviewService {
   }
 
   get difficultyLevels(): DifficultyLevel {
-    return this.getDifficultyLevels();
+    return this.getDifficultyLevels() as DifficultyLevel;
   }
 
   initializeServices(changeDetectorRef: ChangeDetectorRef) {
@@ -180,7 +182,7 @@ export class QuestPreviewService {
     }
   }
 
-  private getDifficultyLevels(): DifficultyLevel {
+  private getDifficultyLevels(): DifficultyLevel | null {
     if (this.questTemplate.QuestLevel > 0) {
       const levels: DifficultyLevel = {};
 
@@ -216,10 +218,10 @@ export class QuestPreviewService {
   }
 
   get periodicQuest(): string {
-    return this.getPeriodicQuest();
+    return this.getPeriodicQuest() as string;
   }
 
-  private getPeriodicQuest(): QUEST_PERIOD {
+  private getPeriodicQuest(): QUEST_PERIOD | null {
     const flags = this.questTemplate.Flags;
     const specialFlags = this.questTemplateAddon.SpecialFlags;
 
@@ -349,7 +351,12 @@ export class QuestPreviewService {
     return this.mysqlQueryService.getReputationRewardByFaction(this.questTemplate[`RewardFactionID${field}`]);
   }
 
-  getRewardReputation(field: string | number, reputationReward: QuestReputationReward[]): number {
+  getRewardReputation(field: string | number, reputationReward: QuestReputationReward[] | null): number | null {
+    const rewardFactionOverride = this.questTemplate[`RewardFactionOverride${field}`];
+    if (!!rewardFactionOverride) {
+      return Number(rewardFactionOverride) / 100;
+    }
+
     const faction = this.questTemplate[`RewardFactionID${field}`];
     const value = this.questTemplate[`RewardFactionValue${field}`];
 
@@ -357,40 +364,47 @@ export class QuestPreviewService {
       return null;
     }
 
+    let rep = Number(value);
+
     if (!!reputationReward && !!reputationReward[0]) {
       const dailyType = this.getPeriodicQuest();
 
       if (!!dailyType) {
         if (dailyType === QUEST_PERIOD.DAILY && reputationReward[0].quest_daily_rate !== 1) {
-          return Number(value) * (reputationReward[0].quest_daily_rate - 1);
+          rep *= reputationReward[0].quest_daily_rate - 1;
+          return QUEST_FACTION_REWARD[rep as QuestFactionRewardKey];
         }
 
         if (dailyType === QUEST_PERIOD.WEEKLY && reputationReward[0].quest_weekly_rate !== 1) {
-          return Number(value) * (reputationReward[0].quest_weekly_rate - 1);
+          rep *= reputationReward[0].quest_weekly_rate - 1;
+          return QUEST_FACTION_REWARD[rep as QuestFactionRewardKey];
         }
 
         if (dailyType === QUEST_PERIOD.MONTHLY && reputationReward[0].quest_monthly_rate !== 1) {
-          return Number(value) * (reputationReward[0].quest_monthly_rate - 1);
+          rep *= reputationReward[0].quest_monthly_rate - 1;
+          return QUEST_FACTION_REWARD[rep as QuestFactionRewardKey];
         }
       }
 
       if (this.isRepeatable() && reputationReward[0].quest_repeatable_rate !== 1) {
-        return Number(value) * (reputationReward[0].quest_repeatable_rate - 1);
+        rep *= reputationReward[0].quest_repeatable_rate - 1;
+        return QUEST_FACTION_REWARD[rep as QuestFactionRewardKey];
       }
 
       if (reputationReward[0].quest_rate !== 1) {
-        return Number(value) * (reputationReward[0].quest_rate - 1);
+        rep *= reputationReward[0].quest_rate - 1;
+        return QUEST_FACTION_REWARD[rep as QuestFactionRewardKey];
       }
     }
 
-    return Number(value);
+    return QUEST_FACTION_REWARD[rep as QuestFactionRewardKey];
   }
 
   getObjText(field: string | number) {
     return this.questTemplate[`ObjectiveText${field}`];
   }
 
-  getObjective$(field: string | number): Promise<string> {
+  getObjective$(field: string | number): Promise<string | undefined> {
     const RequiredNpcOrGo = Number(this.questTemplate[`RequiredNpcOrGo${field}`]);
     if (!!RequiredNpcOrGo) {
       if (RequiredNpcOrGo > 0) {
@@ -399,7 +413,7 @@ export class QuestPreviewService {
 
       return this.mysqlQueryService.getGameObjectNameById(Math.abs(RequiredNpcOrGo));
     }
-    return undefined;
+    return lastValueFrom(of(undefined));
   }
 
   getObjectiveCount(field: string | number): string {
@@ -479,7 +493,7 @@ export class QuestPreviewService {
     return this.isRewardItems() || this.isRewardChoiceItems() || !!this.rewardSpell() || this.isRewardMoney();
   }
 
-  rewardSpell(): number {
+  rewardSpell(): number | null {
     if (!!this.questTemplate.RewardDisplaySpell) {
       return this.questTemplate.RewardDisplaySpell;
     }

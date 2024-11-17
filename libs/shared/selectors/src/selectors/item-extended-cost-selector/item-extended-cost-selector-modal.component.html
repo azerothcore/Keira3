@@ -123,15 +123,50 @@
         <ngx-datatable-column name="ArenaPoints" prop="reqArenaPoints"></ngx-datatable-column>
         <ngx-datatable-column name="ArenaSlot" prop="reqArenaSlot"></ngx-datatable-column>
         <ngx-datatable-column name="Pers.Rating" prop="reqPersonalRating"></ngx-datatable-column>
-        <ngx-datatable-column name="Item1" prop="reqItemId1"></ngx-datatable-column>
+        <ngx-datatable-column name="Item1" prop="reqItemId1">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            @if (row.reqItemId1 !== 0) {
+              <keira-icon size="small" [itemId]="row.reqItemId1" />
+            }
+            {{ row.reqItemId1 }}
+          </ng-template>
+        </ngx-datatable-column>
         <ngx-datatable-column name="Count1" prop="itemCount1"></ngx-datatable-column>
-        <ngx-datatable-column name="Item2" prop="reqItemId2"></ngx-datatable-column>
+        <ngx-datatable-column name="Item2" prop="reqItemId2">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            @if (row.reqItemId2 !== 0) {
+              <keira-icon size="small" [itemId]="row.reqItemId2" />
+            }
+            {{ row.reqItemId2 }}
+          </ng-template>
+        </ngx-datatable-column>
         <ngx-datatable-column name="Count2" prop="itemCount2"></ngx-datatable-column>
-        <ngx-datatable-column name="Item3" prop="reqItemId3"></ngx-datatable-column>
+        <ngx-datatable-column name="Item3" prop="reqItemId3">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            @if (row.reqItemId3 !== 0) {
+              <keira-icon size="small" [itemId]="row.reqItemId3" />
+            }
+            {{ row.reqItemId3 }}
+          </ng-template>
+        </ngx-datatable-column>
         <ngx-datatable-column name="Count3" prop="itemCount3"></ngx-datatable-column>
-        <ngx-datatable-column name="Item4" prop="reqItemId4"></ngx-datatable-column>
+        <ngx-datatable-column name="Item4" prop="reqItemId4">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            @if (row.reqItemId4 !== 0) {
+              <keira-icon size="small" [itemId]="row.reqItemId4" />
+            }
+            {{ row.reqItemId4 }}
+          </ng-template>
+        </ngx-datatable-column>
         <ngx-datatable-column name="Count4" prop="itemCount4"></ngx-datatable-column>
-        <ngx-datatable-column name="Item5" prop="reqItemId5"></ngx-datatable-column>
+        <ngx-datatable-column name="Item5" prop="reqItemId5">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            @if (row.reqItemId5 !== 0) {
+              <keira-icon size="small" [itemId]="row.reqItemId5" />
+            }
+            {{ row.reqItemId5 }}
+          </ng-template>
+        </ngx-datatable-column>
         <ngx-datatable-column name="Count5" prop="itemCount5"></ngx-datatable-column>
       </ngx-datatable>
     </div>

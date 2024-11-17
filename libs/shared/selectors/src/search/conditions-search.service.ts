@@ -8,7 +8,7 @@ import { SearchService } from '@keira/shared/base-abstract-classes';
 })
 export class ConditionsSearchService extends SearchService<Conditions> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(readonly queryService: MysqlQueryService) {
+  constructor(override readonly queryService: MysqlQueryService) {
     super(queryService, CONDITIONS_TABLE, CONDITIONS_SEARCH_FIELDS);
   }
 }

@@ -15,7 +15,7 @@ import Spy = jasmine.Spy;
 import { instance, mock } from 'ts-mockito';
 
 class SelectGameobjectComponentPage extends SelectPageObject<SelectGameobjectComponent> {
-  ID_FIELD = 'entry';
+  override ID_FIELD = 'entry';
 }
 
 describe('SelectGameobject integration tests', () => {
@@ -175,14 +175,14 @@ describe('SelectGameobject integration tests', () => {
     const row1 = page.getDatatableRowExternal(1);
     const row2 = page.getDatatableRowExternal(2);
 
-    expect(row0.innerText).toContain(results[0].name);
-    expect(row1.innerText).toContain(results[1].name);
-    expect(row2.innerText).toContain(results[2].name);
+    expect(row0.innerText).toContain(results[0].name as string);
+    expect(row1.innerText).toContain(results[1].name as string);
+    expect(row2.innerText).toContain(results[2].name as string);
 
     page.clickElement(page.getDatatableCellExternal(1, 1));
 
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith(['gameobject/gameobject-template']);
-    page.expectTopBarEditing(results[1].entry, results[1].name);
+    page.expectTopBarEditing(results[1].entry as number, results[1].name as string);
   });
 });

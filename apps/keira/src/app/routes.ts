@@ -2,8 +2,7 @@ import { Routes } from '@angular/router';
 
 import { DashboardComponent } from '@keira/features/dashboard';
 
-import { SaiHandlerService } from '@keira/shared/sai-editor';
-import { SqlEditorComponent } from '@keira/features/sql-editor';
+import { ConditionsComponent, ConditionsHandlerService, SelectConditionsComponent } from '@keira/features/conditions';
 import {
   CreatureEquipTemplateComponent,
   CreatureHandlerService,
@@ -14,6 +13,7 @@ import {
   CreatureSpawnComponent,
   CreatureTemplateAddonComponent,
   CreatureTemplateComponent,
+  CreatureTemplateModelComponent,
   CreatureTemplateMovementComponent,
   CreatureTemplateResistanceComponent,
   CreatureTemplateSpellComponent,
@@ -26,18 +26,6 @@ import {
   SkinningLootTemplateComponent,
 } from '@keira/features/creature';
 import {
-  CreatureQuestenderComponent,
-  CreatureQueststarterComponent,
-  GameobjectQuestenderComponent,
-  GameobjectQueststarterComponent,
-  QuestHandlerService,
-  QuestOfferRewardComponent,
-  QuestRequestItemsComponent,
-  QuestTemplateAddonComponent,
-  QuestTemplateComponent,
-  SelectQuestComponent,
-} from '@keira/features/quest';
-import {
   GameobjectHandlerService,
   GameobjectLootTemplateComponent,
   GameobjectQuestitemComponent,
@@ -48,6 +36,7 @@ import {
   SaiGameobjectComponent,
   SelectGameobjectComponent,
 } from '@keira/features/gameobject';
+import { GossipHandlerService, GossipMenuComponent, GossipMenuOptionComponent, SelectGossipComponent } from '@keira/features/gossip';
 import {
   DisenchantLootTemplateComponent,
   ItemEnchantmentTemplateComponent,
@@ -72,20 +61,32 @@ import {
   SpellLootHandlerService,
   SpellLootTemplateComponent,
 } from '@keira/features/other-loots';
-import { GossipHandlerService, GossipMenuComponent, GossipMenuOptionComponent, SelectGossipComponent } from '@keira/features/gossip';
-import { ConditionsComponent, ConditionsHandlerService, SelectConditionsComponent } from '@keira/features/conditions';
+import {
+  CreatureQuestenderComponent,
+  CreatureQueststarterComponent,
+  GameobjectQuestenderComponent,
+  GameobjectQueststarterComponent,
+  QuestHandlerService,
+  QuestOfferRewardComponent,
+  QuestRequestItemsComponent,
+  QuestTemplateAddonComponent,
+  QuestTemplateComponent,
+  SelectQuestComponent,
+} from '@keira/features/quest';
 import { SaiFullEditorComponent, SaiSearchEntityComponent, SaiSearchExistingComponent } from '@keira/features/smart-scripts';
 import { SelectSpellComponent, SpellDbcComponent } from '@keira/features/spell';
+import { SqlEditorComponent } from '@keira/features/sql-editor';
+import { SaiHandlerService } from '@keira/shared/sai-editor';
 import {
-  SelectBroadcastTextComponent,
   BroadcastTextComponent,
   BroadcastTextHandlerService,
-  PageTextHandlerService,
-  PageTextComponent,
-  SelectPageTextComponent,
-  SelectNpcTextComponent,
   NpcTextComponent,
   NpcTextHandlerService,
+  PageTextComponent,
+  PageTextHandlerService,
+  SelectBroadcastTextComponent,
+  SelectNpcTextComponent,
+  SelectPageTextComponent,
 } from 'texts';
 
 export const KEIRA_ROUTES: Routes = [
@@ -112,6 +113,11 @@ export const KEIRA_ROUTES: Routes = [
       {
         path: 'creature-template-addon',
         component: CreatureTemplateAddonComponent,
+        canActivate: [CreatureHandlerService],
+      },
+      {
+        path: 'creature-template-model',
+        component: CreatureTemplateModelComponent,
         canActivate: [CreatureHandlerService],
       },
       {

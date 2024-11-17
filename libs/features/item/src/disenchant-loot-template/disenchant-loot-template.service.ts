@@ -14,7 +14,7 @@ import { ItemHandlerService } from '../item-handler.service';
 })
 export class DisenchantLootTemplateService extends LootEditorIdService<DisenchantLootTemplate> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected handlerService: ItemHandlerService) {
+  constructor(protected override readonly handlerService: ItemHandlerService) {
     super(
       DisenchantLootTemplate,
       DISENCHANT_LOOT_TEMPLATE_TABLE,

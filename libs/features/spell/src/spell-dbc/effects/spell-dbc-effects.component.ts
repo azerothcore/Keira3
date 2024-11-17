@@ -27,5 +27,5 @@ export class SpellDbcEffectsComponent {
   readonly SPELL_DBC_TARGETS = SPELL_DBC_TARGETS;
   readonly SPELL_DBC_PROC_FLAGS = SPELL_DBC_PROC_FLAGS;
 
-  @Input() formGroup: FormGroup<ModelForm<SpellDbc>>;
+  @Input({ required: true }) formGroup!: FormGroup<ModelForm<SpellDbc>>;
 }

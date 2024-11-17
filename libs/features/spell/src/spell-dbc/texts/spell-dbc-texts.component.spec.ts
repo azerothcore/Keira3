@@ -23,8 +23,8 @@ describe('SpellDbcTextsComponent', () => {
     imports: [RouterTestingModule, TranslateTestingModule, SpellDbcTextsComponent],
   })
   class TestHostComponent {
-    @ViewChild(SpellDbcTextsComponent) child: SpellDbcTextsComponent;
-    form: FormGroup<ModelForm<SpellDbc>>;
+    @ViewChild(SpellDbcTextsComponent) child!: SpellDbcTextsComponent;
+    form!: FormGroup<ModelForm<SpellDbc>>;
   }
 
   beforeEach(async () => {

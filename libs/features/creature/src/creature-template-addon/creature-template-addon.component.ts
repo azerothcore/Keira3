@@ -8,14 +8,12 @@ import {
   EMOTE,
 } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
-import { QueryOutputComponent } from '@keira/shared/base-editor-components';
+import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateAddonService } from './creature-template-addon.service';
-
-import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,7 +32,7 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   ],
 })
 export class CreatureTemplateAddonComponent extends SingleRowEditorComponent<CreatureTemplateAddon> {
-  public get docUrl(): string {
+  protected override get docUrl(): string {
     return this.WIKI_BASE_URL + CREATURE_SPAWN_ADDON_TABLE; // they share the same doc page
   }
 
@@ -42,6 +40,6 @@ export class CreatureTemplateAddonComponent extends SingleRowEditorComponent<Cre
   protected readonly CREATURE_ADDON_BYTES_1 = CREATURE_ADDON_BYTES_1;
   protected readonly CREATURE_ADDON_BYTES_2 = CREATURE_ADDON_BYTES_2;
 
-  readonly editorService = inject(CreatureTemplateAddonService);
+  override readonly editorService = inject(CreatureTemplateAddonService);
   readonly handlerService = inject(CreatureHandlerService);
 }

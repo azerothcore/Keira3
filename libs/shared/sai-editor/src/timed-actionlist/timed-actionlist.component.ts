@@ -16,13 +16,13 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
   imports: [NgxDatatableModule, AsyncPipe],
 })
 export class TimedActionlistComponent implements OnChanges {
-  @Input() creatureId: string | number;
+  @Input({ required: true }) creatureId!: string | number;
 
   private readonly queryService = inject(MysqlQueryService);
 
   readonly DTCFG = DTCFG;
 
-  private _timedActionLists$: Observable<SmartScripts[]>;
+  private _timedActionLists$!: Observable<SmartScripts[]>;
   get timedActionlists$(): Observable<SmartScripts[]> {
     return this._timedActionLists$;
   }

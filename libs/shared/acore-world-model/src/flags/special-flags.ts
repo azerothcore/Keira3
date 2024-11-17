@@ -7,4 +7,13 @@ export const SPECIAL_FLAGS: Flag[] = [
   { bit: 3, name: 'Only used for Dungeon Finder quests' },
   { bit: 4, name: 'Makes the quest monthly' },
   { bit: 5, name: 'The quest requires RequiredOrNpcGo killcredit (a spell cast), but NOT an actual NPC kill' },
+  { bit: 6, name: 'Makes quest not share rewarded reputation with other allied factions' },
+  {
+    bit: 7,
+    name: 'Allows quest to fail in Player::FailQuest() independant of its current state, e.g. relevant for timed quests that are completed right from the beginning.',
+  },
+  {
+    bit: 8,
+    name: "This quest shouldn't count towards the Loremaster Achivement.",
+  },
 ];

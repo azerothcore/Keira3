@@ -1,15 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CreatureEquipTemplate } from '@keira/shared/acore-world-model';
+import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { IconComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
+import { ItemSelectorBtnComponent } from '@keira/shared/selectors';
+import { TranslateModule } from '@ngx-translate/core';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureEquipTemplateService } from './creature-equip-template.service';
-import { ItemSelectorBtnComponent } from '@keira/shared/selectors';
-import { IconComponent } from '@keira/shared/base-editor-components';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/base-editor-components';
-import { TranslateModule } from '@ngx-translate/core';
-
-import { TopBarComponent } from '@keira/shared/base-editor-components';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,9 +23,10 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
     ReactiveFormsModule,
     IconComponent,
     ItemSelectorBtnComponent,
+    TooltipModule,
   ],
 })
 export class CreatureEquipTemplateComponent extends SingleRowEditorComponent<CreatureEquipTemplate> {
-  readonly editorService = inject(CreatureEquipTemplateService);
+  override readonly editorService = inject(CreatureEquipTemplateService);
   readonly handlerService = inject(CreatureHandlerService);
 }

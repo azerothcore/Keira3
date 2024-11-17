@@ -1,24 +1,2 @@
-$fa-font-path: '~@fortawesome/fontawesome-free/webfonts';
-@import '../../../../../node_modules/bootstrap/scss/bootstrap';
-@import '../../../../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome';
-@import '../../../../../node_modules/@fortawesome/fontawesome-free/scss/solid';
-@import '../../../../../node_modules/@fortawesome/fontawesome-free/scss/regular';
-@import '../../../../../node_modules/@fortawesome/fontawesome-free/scss/brands';
-@import '../../../../../node_modules/highlight.js/styles/github.css';
-@import '../../../../../node_modules/@siemens/ngx-datatable/index.css';
-@import '../../../../../node_modules/@siemens/ngx-datatable/assets/icons.css';
-@import '../../../../../node_modules/ngx-ui-switch/ui-switch.component';
-@import '../../../../../node_modules/ngx-toastr/toastr.css';
-
-@import 'bootstrap5-overrides';
-@import 'ngx-datatable';
-@import 'content';
-@import 'sidebar';
-@import 'preview';
-@import 'utils';
-@import 'editor';
-@import 'quest-preview';
-@import 'item-preview';
-@import 'item-select';
-@import 'login';
-@import 'ngx-bootstrap';
+$fa-font-path: '@fortawesome/fontawesome-free/webfonts';
+@import './imports';

@@ -7,24 +7,26 @@ import { SubscriptionHandler } from '@keira/shared/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { QueryError } from 'mysql2';
 
+const MAX_INT_UNSIGNED_VALUE = 4294967295;
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-create',
   templateUrl: './create.component.html',
-  styleUrls: ['./create.component.scss'],
   standalone: true,
   imports: [TranslateModule, FormsModule],
 })
 export class CreateComponent<T extends TableRow> extends SubscriptionHandler implements OnInit {
-  @Input() entityTable: string;
-  @Input() entityIdField: string;
-  @Input() customStartingId: number;
-  @Input() handlerService: HandlerService<T>;
-  @Input() queryService: MysqlQueryService;
+  @Input({ required: true }) entityTable!: string;
+  @Input({ required: true }) entityIdField!: string;
+  @Input({ required: true }) customStartingId!: number;
+  @Input({ required: true }) handlerService!: HandlerService<T>;
+  @Input({ required: true }) queryService!: MysqlQueryService;
+  @Input() maxEntryValue = MAX_INT_UNSIGNED_VALUE;
 
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
-  public idModel: number;
+  public idModel!: number;
   private _loading = false;
   isIdFree = false;
 
@@ -74,7 +76,13 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
     );
   }
 
-  private calculateNextId(currentMax) {
+  protected checkMaxValue(): void {
+    if (this.idModel > MAX_INT_UNSIGNED_VALUE) {
+      this.idModel = MAX_INT_UNSIGNED_VALUE;
+    }
+  }
+
+  private calculateNextId(currentMax: number): number {
     return currentMax < this.customStartingId ? this.customStartingId : currentMax + 1;
   }
 }

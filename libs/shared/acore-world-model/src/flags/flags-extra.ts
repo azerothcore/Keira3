@@ -12,7 +12,7 @@ export const FLAGS_EXTRA: Flag[] = [
   { bit: 8, name: `NO_TAUNT - creature is immune to taunt auras and effect attack me` },
   { bit: 9, name: `NO_MOVE_FLAGS_UPDATE - Creature won't update movement flags` },
   { bit: 10, name: `GHOST_VISIBILITY - creature will be only visible for dead players` },
-  { bit: 11, name: `UNKNOWN` },
+  { bit: 11, name: `USE_OFFHAND_ATTACK` },
   { bit: 12, name: `NO_SELL_VENDOR - players can't sell items to this vendor` },
   { bit: 13, name: `CREATURE_FLAG_EXTRA_IGNORE_COMBAT` },
   { bit: 14, name: `WORLDEVENT - custom flag for world event creatures (left room for merging)` },

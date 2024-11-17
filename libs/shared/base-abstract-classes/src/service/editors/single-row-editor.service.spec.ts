@@ -85,7 +85,7 @@ describe('SingleRowEditorService', () => {
     expect(getQuerySpy).toHaveBeenCalledWith(
       service.entityTable,
       service['_entityIdField'],
-      service['originalValue'],
+      service['_originalValue'],
       service.form.getRawValue(),
     );
     expect(service.diffQuery).toEqual(queryResult);
@@ -124,7 +124,7 @@ describe('SingleRowEditorService', () => {
       expect(service.isNew).toBe(false);
 
       expect(handlerService.isNew).toBe(false);
-      expect(handlerService.selectedName).toBe(`${service['_originalValue'][service['_entityNameField']]}`);
+      expect(handlerService.selectedName).toBe(`${service['_originalValue'][service['_entityNameField'] as string]}`);
 
       expect(service.form.getRawValue()).toEqual(entity);
       expect(service.loadedEntityId).toEqual(`${entity.id}`);
@@ -144,7 +144,7 @@ describe('SingleRowEditorService', () => {
       expect(service.isNew).toBe(false);
 
       expect(handlerService.isNew).toBe(true);
-      expect(handlerService.selectedName).toBe(undefined);
+      expect(handlerService.selectedName).toBe(undefined as any);
 
       expect(service.form.getRawValue()).toEqual(entity);
       expect(service.loadedEntityId).toEqual(`${entity.id}`);
@@ -152,7 +152,7 @@ describe('SingleRowEditorService', () => {
     });
 
     it('should correctly work when creating a new entity', () => {
-      const data = [];
+      const data: MockEntity[] = [];
 
       service['onReloadSuccessful'](data, id);
 

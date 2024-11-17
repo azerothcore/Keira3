@@ -1,18 +1,15 @@
+import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NpcVendor } from '@keira/shared/acore-world-model';
+import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { EditorButtonsComponent, IconComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
+import { ItemExtendedCostSelectorBtnComponent, ItemSelectorBtnComponent } from '@keira/shared/selectors';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { NpcVendorService } from './npc-vendor.service';
-import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { EditorButtonsComponent } from '@keira/shared/base-editor-components';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { ItemExtendedCostSelectorBtnComponent, ItemSelectorBtnComponent } from '@keira/shared/selectors';
-import { IconComponent } from '@keira/shared/base-editor-components';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/base-editor-components';
-import { TranslateModule } from '@ngx-translate/core';
-import { AsyncPipe } from '@angular/common';
-import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,6 +33,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   ],
 })
 export class NpcVendorComponent extends MultiRowEditorComponent<NpcVendor> {
-  readonly editorService = inject(NpcVendorService);
+  override readonly editorService = inject(NpcVendorService);
   readonly handlerService = inject(CreatureHandlerService);
 }

@@ -1,3 +1,8 @@
+// TODO: this file is poorly implemented and needs heavy refactoring to clean the code
+//  - functions should be broken down into smaller ones, with self-describing names
+//  - comments should be added to document what the code is actually doing
+//  - type errors should be fixed and any usage of "@ts-ignore" or "any" should be removed
+
 import { Injectable } from '@angular/core';
 import {
   FACTION_RANK,
@@ -14,6 +19,7 @@ import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
 import { ITEM_CONSTANTS } from './item-constants';
 import { gtCombatRatings, lvlIndepRating, MAX_LEVEL, resistanceFields } from './item-preview';
 import { PreviewHelperService } from '@keira/shared/preview';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -33,40 +39,46 @@ export class ItemPreviewService {
    */
 
   private getItemsetSlotBak(itemset: number | string): Promise<any[]> {
-    return this.sqliteQueryService.query(`SELECT * FROM items WHERE itemset = ${itemset} ORDER BY slotBak, id`).toPromise();
+    return lastValueFrom(this.sqliteQueryService.query(`SELECT * FROM items WHERE itemset = ${itemset} ORDER BY slotBak, id`));
   }
 
   private getItemNameByIDsASC(IDs: number[]): Promise<any[]> {
-    return this.mysqlQueryService.query(`SELECT name FROM item_template WHERE entry IN (${IDs.join(',')}) ORDER BY entry ASC`).toPromise();
+    return lastValueFrom(
+      this.mysqlQueryService.query(`SELECT name FROM item_template WHERE entry IN (${IDs.join(',')}) ORDER BY entry ASC`),
+    );
   }
 
   private getItemsetById(ID: number | string): Promise<any> {
-    return this.sqliteQueryService.query(`SELECT * FROM itemset WHERE id = ${ID}`).toPromise();
+    return lastValueFrom(this.sqliteQueryService.query(`SELECT * FROM itemset WHERE id = ${ID}`));
   }
 
   private getItemLimitCategoryById(id: number | string): Promise<any[]> {
-    return this.sqliteQueryService.query(`SELECT * FROM item_limit_category WHERE id = ${id}`).toPromise();
+    return lastValueFrom(this.sqliteQueryService.query(`SELECT * FROM item_limit_category WHERE id = ${id}`));
   }
 
   private getGemEnchantmentIdById(id: number | string): Promise<string | number> {
-    return this.sqliteQueryService.queryValue(`SELECT gemEnchantmentId AS v FROM items WHERE id = ${id};`).toPromise();
+    return lastValueFrom(this.sqliteQueryService.queryValue(`SELECT gemEnchantmentId AS v FROM items WHERE id = ${id};`)) as Promise<
+      string | number
+    >;
   }
 
   private getItemEnchantmentById(id: number | string): Promise<any[]> {
-    return this.sqliteQueryService.query(`SELECT * FROM item_enchantment WHERE id = ${id}`).toPromise();
+    return lastValueFrom(this.sqliteQueryService.query(`SELECT * FROM item_enchantment WHERE id = ${id}`));
   }
 
   private getItemExtendedCost(IDs: number[]): Promise<ItemExtendedCost[]> {
-    return this.sqliteQueryService.query<ItemExtendedCost>(`SELECT * FROM item_extended_cost WHERE id IN (${IDs.join(',')})`).toPromise();
+    return lastValueFrom(
+      this.sqliteQueryService.query<ItemExtendedCost>(`SELECT * FROM item_extended_cost WHERE id IN (${IDs.join(',')})`),
+    );
   }
 
   private getItemEnchantmentConditionById(id: number | string): Promise<any[]> {
-    return this.sqliteQueryService.query(`SELECT * FROM item_enchantment_condition WHERE id = ${id}`).toPromise();
+    return lastValueFrom(this.sqliteQueryService.query(`SELECT * FROM item_enchantment_condition WHERE id = ${id}`));
   }
 
   private getItemExtendedCostFromVendor(itemId: number | string): Promise<any[]> {
-    return this.mysqlQueryService
-      .query(
+    return lastValueFrom(
+      this.mysqlQueryService.query(
         `SELECT
       nv.item,
       nv.entry,
@@ -91,8 +103,8 @@ export class ItemPreviewService {
       creature c ON c.guid = genv.guid
     WHERE
       genv.item = ${itemId};`,
-      )
-      .toPromise();
+      ),
+    );
   }
 
   /**
@@ -113,7 +125,10 @@ export class ItemPreviewService {
       level = 34;
     }
 
-    if (gtCombatRatings[type]) {
+    // @ts-ignore // TODO: fix typing and remove @ts-ignore
+    const gtCombatRating = gtCombatRatings[type];
+
+    if (gtCombatRating) {
       let c: number;
       if (level > 70) {
         c = (82 / 52) * Math.pow(131 / 63, (level - 70) / 10);
@@ -125,7 +140,7 @@ export class ItemPreviewService {
         c = 2 / 52;
       }
       // do not use localized number format here!
-      result = (val / gtCombatRatings[type] / c).toFixed(2);
+      result = (val / gtCombatRating / c).toFixed(2);
     }
 
     if (![ITEM_MOD.DEFENSE_SKILL_RATING, ITEM_MOD.EXPERTISE_RATING].includes(type)) {
@@ -145,13 +160,13 @@ export class ItemPreviewService {
     }
 
     if (lvlIndepRating.includes(type)) {
-      // level independant Bonus
-      return ITEM_CONSTANTS.trigger[1] + ITEM_CONSTANTS.statType[type].replace('%d', `<!--rtg${type}-->${value}`);
+      // level independent Bonus
+      return ITEM_CONSTANTS.trigger[1] + ITEM_CONSTANTS.statType[type]?.replace('%d', `<!--rtg${type}-->${value}`);
     }
 
     // rating-Bonuses
     const js = `&nbsp;<small>(${this.setRatingLevel(level, type, value)})</small>`;
-    return ITEM_CONSTANTS.trigger[1] + ITEM_CONSTANTS.statType[type].replace('%d', `<!--rtg${type}-->${value}${js}`);
+    return ITEM_CONSTANTS.trigger[1] + ITEM_CONSTANTS.statType[type]?.replace('%d', `<!--rtg${type}-->${value}${js}`);
   }
 
   private parseTime(sec: number) {
@@ -244,7 +259,7 @@ export class ItemPreviewService {
     return Math.round((dps - 54.8) * 14);
   }
 
-  private canTeachSpell(spellId1: number, spellId2: number = null): boolean {
+  private canTeachSpell(spellId1: number, spellId2: number | null = null): boolean {
     // 483:   learn recipe;
     // 55884: learn mount/pet
     if (![483, 55884].includes(spellId1)) {
@@ -286,12 +301,15 @@ export class ItemPreviewService {
       } else if (lockType === 2) {
         // opened by skill
 
+        // @ts-ignore // TODO: fix typing and remove @ts-ignore
+        const lockType = ITEM_CONSTANTS.lockType[prop];
+
         // exclude unusual stuff
-        if (!ITEM_CONSTANTS.lockType[prop] || ![1, 2, 3, 4, 9, 16, 20].includes(Number(prop))) {
+        if (!lockType || ![1, 2, 3, 4, 9, 16, 20].includes(Number(prop))) {
           continue;
         }
 
-        name = ITEM_CONSTANTS.lockType[prop];
+        name = lockType;
 
         if (+rank > 0) {
           name += ` (${rank})`;
@@ -329,11 +347,16 @@ export class ItemPreviewService {
       }
 
       /* istanbul ignore next */
+      // @ts-ignore // TODO: fix typing and remove @ts-ignore
       if (itemz[costEntry.item] && itemz[costEntry.item][costEntry.entry]) {
+        // @ts-ignore // TODO: fix typing and remove @ts-ignore
         itemz[costEntry.item][costEntry.entry] = [costEntry];
       } else {
+        // @ts-ignore // TODO: fix typing and remove @ts-ignore
         itemz[costEntry.item] = {};
+        // @ts-ignore // TODO: fix typing and remove @ts-ignore
         itemz[costEntry.item][costEntry.entry] = [];
+        // @ts-ignore // TODO: fix typing and remove @ts-ignore
         itemz[costEntry.item][costEntry.entry].push(costEntry);
       }
     }
@@ -350,6 +373,7 @@ export class ItemPreviewService {
       if (!!xCostData && xCostData.length > 0) {
         // converting xCostData to ARRAY_KEY structure
         for (const xCost of xCostData) {
+          // @ts-ignore // TODO: fix typing and remove @ts-ignore
           xCostDataArr[xCost.id] = xCost;
         }
       } else {
@@ -361,19 +385,25 @@ export class ItemPreviewService {
     const cItems = [];
 
     for (const [k, vendors] of Object.entries(itemz)) {
+      // @ts-ignore // TODO: fix typing and remove @ts-ignore
       for (const [l, vendor] of Object.entries(vendors)) {
+        // @ts-ignore // TODO: fix typing and remove @ts-ignore
         for (const [m, vInfo] of Object.entries(vendor)) {
           let costs = [];
           /* istanbul ignore else */
+          // @ts-ignore // TODO: fix typing and remove @ts-ignore
           if (xCostDataArr[vInfo['extendedCost']] && Object.keys(xCostDataArr[vInfo['extendedCost']]).length > 0) {
+            // @ts-ignore // TODO: fix typing and remove @ts-ignore
             costs = xCostDataArr[vInfo['extendedCost']];
           }
 
           const data = {
             stock:
+              // @ts-ignore // TODO: fix typing and remove @ts-ignore
               vInfo['maxcount'] ??
               /* istanbul ignore next */
               -1,
+            // @ts-ignore // TODO: fix typing and remove @ts-ignore
             event: vInfo['eventId'],
             reqRating: costs ? costs['reqPersonalRating'] : /* istanbul ignore next */ 0,
             /* istanbul ignore next */
@@ -382,15 +412,18 @@ export class ItemPreviewService {
 
           // hardcode arena(103) & honor(104)
           if (costs['reqArenaPoints'] > 0) {
+            // @ts-ignore // TODO: fix typing and remove @ts-ignore
             data[-103] = costs['reqArenaPoints'];
           }
 
           if (costs['reqHonorPoints'] > 0) {
+            // @ts-ignore // TODO: fix typing and remove @ts-ignore
             data[-104] = costs['reqHonorPoints'];
           }
 
           for (let i = 1; i < 6; i++) {
             if (costs['reqItemId' + i] /* && costs['reqItemId' + i].length > 0 */ && costs['itemCount' + i] && costs['itemCount' + i] > 0) {
+              // @ts-ignore // TODO: fix typing and remove @ts-ignore
               data[costs['reqItemId' + i]] = costs['itemCount' + i];
               cItems.push(costs['reqItemId' + i]);
             }
@@ -399,15 +432,19 @@ export class ItemPreviewService {
           // no extended cost or additional gold required
           if (!costs || flagsExtra & 0x04) {
             if (!!buyPrice) {
+              // @ts-ignore // TODO: fix typing and remove @ts-ignore
               data[0] = buyPrice;
             }
           }
 
+          // @ts-ignore // TODO: fix typing and remove @ts-ignore
           vendor[m] = data;
         }
+        // @ts-ignore // TODO: fix typing and remove @ts-ignore
         vendors[l] = vendor;
       }
 
+      // @ts-ignore // TODO: fix typing and remove @ts-ignore
       itemz[k] = vendors;
     }
 
@@ -415,13 +452,18 @@ export class ItemPreviewService {
     /* istanbul ignore else */
     if (!!cItems) {
       for (const [itemId, vendors] of Object.entries(itemz)) {
+        // @ts-ignore // TODO: fix typing and remove @ts-ignore
         for (const [npcId, costData] of Object.entries(vendors)) {
+          // @ts-ignore // TODO: fix typing and remove @ts-ignore
           for (const [itr, cost] of Object.entries(costData)) {
+            // @ts-ignore // TODO: fix typing and remove @ts-ignore
             for (const [k, v] of Object.entries(cost)) {
               if (cItems.includes(Number(k))) {
                 for (const item of cItems) {
                   if (item === Number(k)) {
+                    // @ts-ignore // TODO: fix typing and remove @ts-ignore
                     delete cost[Number(k)];
+                    // @ts-ignore // TODO: fix typing and remove @ts-ignore
                     cost[-item.id] = v;
 
                     break;
@@ -429,27 +471,35 @@ export class ItemPreviewService {
                 }
               }
             }
+            // @ts-ignore // TODO: fix typing and remove @ts-ignore
             costData[itr] = cost;
           }
+          // @ts-ignore // TODO: fix typing and remove @ts-ignore
           vendors[npcId] = costData;
         }
+        // @ts-ignore // TODO: fix typing and remove @ts-ignore
         itemz[itemId] = vendors;
       }
     }
 
     const result = itemz;
 
+    // @ts-ignore // TODO: fix typing and remove @ts-ignore
     let reqRating = [];
     for (const [itemId, data] of Object.entries(result)) {
       reqRating = [];
+      // @ts-ignore // TODO: fix typing and remove @ts-ignore
       for (const [npcId, entries] of Object.entries(data)) {
+        // @ts-ignore // TODO: fix typing and remove @ts-ignore
         for (const costs of entries) {
           // reqRating isn't really a cost .. so pass it by ref instead of return
           // use highest total value
           if (
+            // @ts-ignore // TODO: fix typing and remove @ts-ignore
             data[npcId] &&
             costs['reqRating'] &&
             /* istanbul ignore next */
+            // @ts-ignore // TODO: fix typing and remove @ts-ignore
             (reqRating.length === 0 || (reqRating && reqRating[0] < costs['reqRating']))
           ) {
             reqRating = [costs['reqRating'], costs['reqBracket']];
@@ -459,10 +509,12 @@ export class ItemPreviewService {
 
       /* istanbul ignore next */
       if (!data) {
+        // @ts-ignore // TODO: fix typing and remove @ts-ignore
         delete result[itemId];
       }
     }
 
+    // @ts-ignore // TODO: fix typing and remove @ts-ignore
     return [result, reqRating];
   }
 
@@ -594,7 +646,8 @@ export class ItemPreviewService {
     if (itemsetPieces && itemsetPieces.length > 10) {
       multipleItemset = true;
     } else {
-      const slotBak = [];
+      // TODO: fix typing
+      const slotBak: any[] = [];
       for (const p of itemsetPieces) {
         if (slotBak.includes(p.slotBak)) {
           multipleItemset = true;
@@ -703,7 +756,9 @@ export class ItemPreviewService {
       for (const s of spellsIDs) {
         setSpells.push({
           tooltip: await this.sqliteQueryService.getSpellDescriptionById(s),
+          // @ts-ignore // TODO: fix typing and remove @ts-ignore
           entry: itemsetAttr['spell' + setSpellsAndIdx[s]],
+          // @ts-ignore // TODO: fix typing and remove @ts-ignore
           bonus: itemsetAttr['bonus' + setSpellsAndIdx[s]],
         });
       }
@@ -717,7 +772,8 @@ export class ItemPreviewService {
           continue;
         }
 
-        const tmp = setSpells[i];
+        // TODO: fix typing
+        const tmp: any = setSpells[i];
         setSpells[i] = setSpells[j];
         setSpells[j] = tmp;
       }
@@ -770,7 +826,7 @@ export class ItemPreviewService {
         limit = limit[0];
 
         const index = limit && limit.isGem ? 'uniqueEquipped' : 'unique';
-        bondingText += `<br><!-- unique isGem -->${ITEM_CONSTANTS[index][2].replace('%s', limit.name).replace('%d', limit.count)}`;
+        bondingText += `<br><!-- unique isGem -->${ITEM_CONSTANTS[index][2]?.replace('%s', limit.name).replace('%d', limit.count)}`;
       }
     }
 
@@ -854,6 +910,7 @@ export class ItemPreviewService {
     let races = this.helperService.getRaceString(itemTemplate.AllowableRace);
     if (races) {
       if (!isNaN(Number(races[0]))) {
+        // @ts-ignore // TODO: fix typing and remove @ts-ignore
         races = races.map((el) => RACES_TEXT[el]);
       }
       requiredText += `<br>Races: ${races.join(', ')}`;
@@ -1027,12 +1084,16 @@ export class ItemPreviewService {
 
       gemEnch = gemEnch[0];
 
+      // @ts-ignore // TODO: fix typing and remove @ts-ignore
       if (!!gemEnch['name'] && gemEnch['name'] !== '') {
+        // @ts-ignore // TODO: fix typing and remove @ts-ignore
         gemEnchantmentText += `<br><span class="q1">${gemEnch['name']}</span>`;
       }
 
       // activation conditions for meta gems
+      // @ts-ignore // TODO: fix typing and remove @ts-ignore
       if (!!gemEnch['conditionId']) {
+        // @ts-ignore // TODO: fix typing and remove @ts-ignore
         let gemCnd = await this.getItemEnchantmentConditionById(gemEnch['conditionId']);
         if (!gemCnd || (gemCnd && gemCnd.length === 0)) {
           return '';
@@ -1042,14 +1103,18 @@ export class ItemPreviewService {
 
         if (!!gemCnd) {
           for (let i = 1; i < 6; i++) {
+            // @ts-ignore // TODO: fix typing and remove @ts-ignore
             const gemCndColor = Number(gemCnd[`color${i}`]);
 
             if (!gemCndColor) {
               continue;
             }
 
+            // @ts-ignore // TODO: fix typing and remove @ts-ignore
             const gemCndCmpColor = Number(gemCnd[`cmpColor${i}`]);
+            // @ts-ignore // TODO: fix typing and remove @ts-ignore
             const gemCndComparator = Number(gemCnd[`comparator${i}`]);
+            // @ts-ignore // TODO: fix typing and remove @ts-ignore
             const gemCndValue = Number(gemCnd[`value${i}`]);
 
             let vspfArgs: any = ['', ''];
@@ -1070,6 +1135,7 @@ export class ItemPreviewService {
               continue;
             }
 
+            // @ts-ignore // TODO: fix typing and remove @ts-ignore
             let gemEnchText = ITEM_CONSTANTS['gemConditions'][gemCndComparator];
 
             /* istanbul ignore next */
@@ -1122,6 +1188,7 @@ export class ItemPreviewService {
     const spellId2 = itemTemplate.spellid_2;
 
     if (!this.canTeachSpell(spellId1, spellId2)) {
+      // @ts-ignore // TODO: fix typing and remove @ts-ignore
       const itemSpellsAndTrigger = [];
       for (let j = 1; j <= 5; j++) {
         const spellid = itemTemplate['spellid_' + j];
@@ -1136,13 +1203,17 @@ export class ItemPreviewService {
 
           cooldown = +cooldown < 5000 ? '' : ` ( ${this.formatTime(Number(cooldown))} cooldown)`;
 
+          // @ts-ignore // TODO: fix typing and remove @ts-ignore
           itemSpellsAndTrigger[spellid] = [itemTemplate['spelltrigger_' + j], cooldown];
         }
       }
 
+      // @ts-ignore // TODO: fix typing and remove @ts-ignore
       if (itemSpellsAndTrigger && itemSpellsAndTrigger.length > 0) {
+        // @ts-ignore // TODO: fix typing and remove @ts-ignore
         const spellIDs = Object.keys(itemSpellsAndTrigger);
         for (const spellID of spellIDs) {
+          // @ts-ignore // TODO: fix typing and remove @ts-ignore
           const spellTrigger = itemSpellsAndTrigger[spellID];
           const parsed = await this.sqliteQueryService.getSpellDescriptionById(spellID); // TODO: parseText correctly
 

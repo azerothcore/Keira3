@@ -44,8 +44,13 @@
   "UNKNOWN": "Unknown",
   "COPY": "Copy",
   "EXECUTE": "Execute",
+  "EXECUTE_AND_COPY": "Execute & copy",
   "RELOAD": "Reload",
   "CANCEL": "Cancel",
+  "SELECTORS": {
+    "ENABLED": "Enabled",
+    "DISABLED": "Disabled"
+  },
   "CONNECTION_WINDOW": {
     "HOST": "Host",
     "PORT": "Port",
@@ -70,6 +75,7 @@
       "TITLE": "Creature",
       "SELECT_CREATURE": "Select Creature",
       "CREATURE_TEMPLATE": "Creature Template",
+      "TEMPLATE_MODEL": "Template Model",
       "TEMPLATE_ADDON": "Template Addon",
       "TEMPLATE_RESISTANCE": "Template Resistance",
       "TEMPLATE_SPELL": "Template Spell",
@@ -222,7 +228,7 @@
       "SKINLOOT": "Link to skinning_loot_template.entry",
       "DIFFICULTY_ENTRY_1": "Entry of the equivalent creature in Heroic Dungeon or 25man Normal Raid",
       "DIFFICULTY_ENTRY_2": "Entry of the equivalent creature in 10man Heroic Raid",
-      "difficulty_entry_3": "Entry of the equivalent creature in 25man Heroic Raid",
+      "DIFFICULTY_ENTRY_3": "Entry of the equivalent creature in 25man Heroic Raid",
       "BASE_ATTACK_TIME": "Base time (milliseconds) that determines how long a creature must wait between melee attacks.",
       "RANGE_ATTACK_TIME": "Base time (milliseconds) that determines how long a creature must wait between ranged attacks.",
       "SCRIPT_NAME": "Overrides AIName. The name of the C++ script that this creature uses, if any.",
@@ -236,7 +242,10 @@
       "SPEED_WALK": "Controls how fast the creature can run. For vehicles it increases ground movement speed.",
       "SPEED_SWIM": "Controls how fast the creature can swim.",
       "SPEED_FLIGHT": "Controls how fast the creature can fly.",
-      "DETECTION_RANGE": "Controls the range at which creatures detect and see players."
+      "DETECTION_RANGE": "Controls the range at which creatures detect and see players.",
+      "ITEMID1": "This is the item number of the equipment used in the right hand from Item.dbc.",
+      "ITEMID2": "This is the item number of the equipment used in the left hand from Item.dbc.",
+      "ITEMID3": "This is the item number of the equipment used in the ranged slot from Item.dbc."
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "Link to creature_template.entry",
@@ -254,7 +263,7 @@
     },
     "SPAWN": {
       "ORIENTATION": "The orientation of the creatures spawn point. (North = 0.0; South = pi (3.14159))",
-      "EQUIPMENT_ID_TOOLTIP": "1 = uses the info set in equipment template 0 = no weapons equipped",
+      "EQUIPMENT_ID_TOOLTIP": "1 = uses the info set in equipment template 0 = no weapons equipped, -1 A random equip from the set of equips in creature_equip_template will be chosen.",
       "SPAWN_DIST_TOOLTIP": "The maximum distance that the creature may spawn from its spawn point. Also controls how far away the creature can walk from its spawn point if its MovementType = 1.",
       "SCRIPT_NAME": "The name of the C++ script that this creature uses, if any.",
       "GUID": "Link to creature.guid",
@@ -332,7 +341,7 @@
       "REWARD_XP_DIFFICULTY": "According to the Level, the basic experience with index RewardXPDifficulty is taken from QuestXP.dbc. Check the docs for more info.",
       "REWARD_MONEY": "If value > 0: money earned by completing the quest; if value < 0: money required to complete the quest",
       "REW_MONEY_DIFFICULTY": "TODO: RewardMoneyDifficulty tooltip",
-      "REWARD_SPELL": "Spell that is shown to be casted on quest completion in the quest log. Note that this spell will NOT be casted if RewardSpellCast is non-zero.",
+      "REWARD_SPELL": "Spell that is shown to be casted on quest completion in the quest log. Note that this spell will NOT be casted if RewardSpell is non-zero.",
       "REWARD_HONOR": "Number of honorable kill honor rewarded for completing this quest",
       "REWARD_FACTIONS_TOOLTIP": "Faction ID for which the quest adds (or subtracts) reputation points."
     },

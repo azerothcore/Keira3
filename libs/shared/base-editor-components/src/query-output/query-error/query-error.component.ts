@@ -10,5 +10,5 @@ import { QueryError } from 'mysql2';
   imports: [],
 })
 export class QueryErrorComponent {
-  @Input() error: QueryError;
+  @Input() error: QueryError | undefined;
 }

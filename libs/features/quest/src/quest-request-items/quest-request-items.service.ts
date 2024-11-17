@@ -8,7 +8,7 @@ import { QuestHandlerService } from '../quest-handler.service';
 })
 export class QuestRequestItemsService extends SingleRowEditorService<QuestRequestItems> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected handlerService: QuestHandlerService) {
+  constructor(protected override readonly handlerService: QuestHandlerService) {
     super(QuestRequestItems, QUEST_REQUEST_ITEMS_TABLE, QUEST_REQUEST_ITEMS_ID, null, false, handlerService);
   }
 }

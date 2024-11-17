@@ -34,7 +34,7 @@ import { CreatureQueststarterService } from './creature-queststarter.service';
   ],
 })
 export class CreatureQueststarterComponent extends MultiRowEditorComponent<CreatureQueststarter> {
-  readonly editorService = inject(CreatureQueststarterService);
+  override readonly editorService = inject(CreatureQueststarterService);
   readonly handlerService = inject(QuestHandlerService);
   readonly questPreviewService = inject(QuestPreviewService);
 }

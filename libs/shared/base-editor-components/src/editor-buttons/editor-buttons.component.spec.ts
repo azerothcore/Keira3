@@ -2,6 +2,8 @@ import { Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { EditorButtonsComponent } from './editor-buttons.component';
+import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
+import { TableRow } from '@keira/shared/constants';
 
 @Component({
   template: `<keira-editor-buttons [editorService]="editorService" />`,
@@ -9,8 +11,8 @@ import { EditorButtonsComponent } from './editor-buttons.component';
   imports: [TranslateTestingModule, EditorButtonsComponent],
 })
 class TestHostComponent {
-  @ViewChild(EditorButtonsComponent) child: EditorButtonsComponent<null>;
-  editorService;
+  @ViewChild(EditorButtonsComponent) child!: EditorButtonsComponent<TableRow>;
+  editorService!: MultiRowEditorService<TableRow>;
 }
 
 class EditorButtonsPage extends PageObject<TestHostComponent> {
@@ -19,6 +21,9 @@ class EditorButtonsPage extends PageObject<TestHostComponent> {
   }
   get deleteBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#delete-selected-row-btn');
+  }
+  get duplicateBtn(): HTMLButtonElement {
+    return this.query<HTMLButtonElement>('#duplicate-selected-row-btn');
   }
 }
 
@@ -38,7 +43,7 @@ describe('EditorButtonsComponent', () => {
     const fixture = TestBed.createComponent(TestHostComponent);
     const page = new EditorButtonsPage(fixture);
     const host = fixture.componentInstance;
-    host.editorService = editorService;
+    host.editorService = editorService as unknown as MultiRowEditorService<TableRow>;
     fixture.detectChanges();
     const component = host.child;
     return { fixture, host, component, editorService, page };
@@ -47,7 +52,7 @@ describe('EditorButtonsComponent', () => {
   describe('the delete button', () => {
     it('should be enabled only when there is a selected row', () => {
       const { editorService, page, fixture } = setup();
-      editorService.selectedRowId = null;
+      editorService.selectedRowId = undefined as any;
       fixture.detectChanges();
       expect(page.deleteBtn.disabled).toBe(true);
 
@@ -55,7 +60,7 @@ describe('EditorButtonsComponent', () => {
       fixture.detectChanges();
       expect(page.deleteBtn.disabled).toBe(false);
 
-      editorService.selectedRowId = null;
+      editorService.selectedRowId = undefined as any;
       fixture.detectChanges();
       expect(page.deleteBtn.disabled).toBe(true);
     });
@@ -72,7 +77,31 @@ describe('EditorButtonsComponent', () => {
     it('when clicked, should call editorService.addNewRow()', () => {
       const { editorService, page } = setup();
       page.clickElement(page.addBtn);
-      expect(editorService.addNewRow).toHaveBeenCalledTimes(1);
+      expect(editorService.addNewRow).toHaveBeenCalledOnceWith();
+      expect(editorService.deleteSelectedRow).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe('the duplicate button', () => {
+    it('should be enabled only when there is a selected row', () => {
+      const { editorService, page, fixture } = setup();
+      editorService.selectedRowId = undefined as any;
+      fixture.detectChanges();
+      expect(page.duplicateBtn.disabled).toBe(true);
+
+      editorService.selectedRowId = 123;
+      fixture.detectChanges();
+      expect(page.duplicateBtn.disabled).toBe(false);
+
+      editorService.selectedRowId = undefined as any;
+      fixture.detectChanges();
+      expect(page.duplicateBtn.disabled).toBe(true);
+    });
+
+    it('when clicked, should call editorService.addNewRow(true)', () => {
+      const { editorService, page } = setup();
+      page.clickElement(page.duplicateBtn);
+      expect(editorService.addNewRow).toHaveBeenCalledOnceWith(true);
       expect(editorService.deleteSelectedRow).toHaveBeenCalledTimes(0);
     });
   });

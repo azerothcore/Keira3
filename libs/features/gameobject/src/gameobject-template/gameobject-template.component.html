@@ -1,6 +1,6 @@
 <keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
 
-<div class="container-fluid editor-with-preview" [class.show-preview]="showItemPreview">
+<div class="container-fluid editor-with-preview" [class.show-preview]="showGameobjectPreview">
   @if (editorService.loading) {
     <span [translate]="'LOADING'"></span>
   }
@@ -25,13 +25,7 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="type">type</label>
-              <keira-single-value-selector-btn
-                [control]="editorService.form.controls.type"
-                [disabled]="editorService.form.controls.type.disabled"
-                [config]="{ options: GAMEOBJECT_TYPE, name: 'type' }"
-                [modalClass]="'modal-md'"
-              />
-              <input [formControlName]="'type'" id="type" type="number" class="form-control form-control-sm" />
+              <keira-generic-option-selector [control]="editorService.form.controls.type" id="type" [optionList]="GAMEOBJECT_TYPE" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="displayId">displayId</label>
@@ -88,17 +82,15 @@
           </div>
         </div>
       </form>
-      <div class="preview-container" [class.show-preview]="showItemPreview" [class.hide-preview]="!showItemPreview">
+      <div class="preview-container" [class.show-preview]="showGameobjectPreview" [class.hide-preview]="!showGameobjectPreview">
         <div class="transparent perfect-scrollbar">
           <div class="gameobject-preview">
-            <keira-model-3d-viewer [viewerType]="OBJECT_VIEWER_TYPE" [displayId]="editorService.form.controls.displayId.value">
-              <div id="model_3d"></div>
-            </keira-model-3d-viewer>
+            <keira-model-3d-viewer [viewerType]="OBJECT_VIEWER_TYPE" [displayId]="editorService.form.controls.displayId.value" />
           </div>
         </div>
       </div>
-      <button class="btn btn-secondary btn-sm toggle-preview-button" (click)="showItemPreview = !showItemPreview">
-        <i class="fas {{ showItemPreview ? 'fa-angle-double-right' : 'fa-angle-double-left' }}"></i>
+      <button class="btn btn-secondary btn-sm toggle-preview-button" (click)="showGameobjectPreview = !showGameobjectPreview">
+        <i class="fas {{ showGameobjectPreview ? 'fa-angle-double-right' : 'fa-angle-double-left' }}"></i>
       </button>
     </div>
   }

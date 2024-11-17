@@ -1,19 +1,16 @@
+import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NpcTrainer } from '@keira/shared/acore-world-model';
+import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { EditorButtonsComponent, IconComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
+import { SqliteQueryService } from '@keira/shared/db-layer';
+import { SkillSelectorBtnComponent, SpellSelectorBtnComponent } from '@keira/shared/selectors';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { NpcTrainerService } from './npc-trainer.service';
-import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { EditorButtonsComponent } from '@keira/shared/base-editor-components';
-import { SkillSelectorBtnComponent } from '@keira/shared/selectors';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { SpellSelectorBtnComponent } from '@keira/shared/selectors';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/base-editor-components';
-import { TranslateModule } from '@ngx-translate/core';
-import { AsyncPipe } from '@angular/common';
-import { TopBarComponent } from '@keira/shared/base-editor-components';
-import { SqliteQueryService } from '@keira/shared/db-layer';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -33,10 +30,11 @@ import { SqliteQueryService } from '@keira/shared/db-layer';
     EditorButtonsComponent,
     NgxDatatableModule,
     AsyncPipe,
+    IconComponent,
   ],
 })
 export class NpcTrainerComponent extends MultiRowEditorComponent<NpcTrainer> {
-  readonly editorService = inject(NpcTrainerService);
+  override readonly editorService = inject(NpcTrainerService);
   readonly handlerService = inject(CreatureHandlerService);
   readonly sqliteQueryService = inject(SqliteQueryService);
 }

@@ -16,7 +16,7 @@
             <div class="col-sm-8 col-md-9 col-lg-10">
               <select [formControlName]="'SourceTypeOrReferenceId'" class="form-control form-control-sm" id="SourceTypeOrReferenceId">
                 @for (key of CONDITION_SOURCE_TYPES_KEYS; track key) {
-                  <option [ngValue]="key" [label]="CONDITION_SOURCE_TYPES[key]"></option>
+                  <option [ngValue]="key" [label]="key + ' - ' + CONDITION_SOURCE_TYPES[key]"></option>
                 }
               </select>
             </div>
@@ -70,7 +70,7 @@
             <div class="col-sm-8 col-md-9 col-lg-10">
               <select [formControlName]="'ConditionTypeOrReference'" class="form-control form-control-sm" id="ConditionTypeOrReference">
                 @for (key of CONDITION_TYPES_KEYS; track key) {
-                  <option [ngValue]="key" [label]="CONDITION_TYPES[key]"></option>
+                  <option [ngValue]="key" [label]="key + ' - ' + CONDITION_TYPES[key]"></option>
                 }
               </select>
             </div>

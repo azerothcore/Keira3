@@ -58,7 +58,7 @@ describe('CreatureLootTemplate integration tests', () => {
     querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
     spyOn(queryService, 'queryValue').and.returnValue(of());
     const itemNamePromise = of(`MockItemName`).toPromise();
-    spyOn(queryService, 'getItemNameById').and.returnValue(itemNamePromise);
+    spyOn(queryService, 'getItemNameById').and.returnValue(itemNamePromise as Promise<string>);
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 

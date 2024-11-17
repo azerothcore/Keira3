@@ -8,7 +8,7 @@ import { ConditionsHandlerService } from '../conditions-handler.service';
 })
 export class ConditionsService extends SingleRowComplexKeyEditorService<Conditions> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected handlerService: ConditionsHandlerService) {
+  constructor(protected override readonly handlerService: ConditionsHandlerService) {
     super(Conditions, CONDITIONS_TABLE, CONDITIONS_ID_FIELDS, null, true, handlerService);
   }
 }

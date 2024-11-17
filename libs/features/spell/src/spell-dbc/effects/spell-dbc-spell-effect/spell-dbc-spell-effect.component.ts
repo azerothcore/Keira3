@@ -21,8 +21,8 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [FormsModule, ReactiveFormsModule, TranslateModule, SingleValueSelectorBtnComponent, TooltipModule, FlagsSelectorBtnComponent],
 })
 export class SpellDbcSpellEffectComponent {
-  @Input() formGroup: FormGroup<ModelForm<SpellDbc>>;
-  @Input() index: number;
+  @Input({ required: true }) formGroup!: FormGroup<ModelForm<SpellDbc>>;
+  @Input({ required: true }) index!: number;
 
   readonly SPELL_MECHANIC = SPELL_MECHANIC;
   readonly SPELL_DBC_EFFECT = SPELL_DBC_EFFECT;

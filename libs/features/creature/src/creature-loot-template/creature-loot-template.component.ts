@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { LootTemplateIdComponent } from '@keira/shared/base-abstract-classes';
 import { CreatureLootTemplate } from '@keira/shared/acore-world-model';
+import { LootTemplateIdComponent } from '@keira/shared/base-abstract-classes';
+import { TopBarComponent } from '@keira/shared/base-editor-components';
+import { LootEditorComponent } from '@keira/shared/loot-editor';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureLootTemplateService } from './creature-loot-template.service';
-import { LootEditorComponent } from '@keira/shared/loot-editor';
-
-import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,6 +14,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   imports: [TopBarComponent, LootEditorComponent],
 })
 export class CreatureLootTemplateComponent extends LootTemplateIdComponent<CreatureLootTemplate> {
-  readonly editorService = inject(CreatureLootTemplateService);
+  override readonly editorService = inject(CreatureLootTemplateService);
   readonly handlerService = inject(CreatureHandlerService);
 }

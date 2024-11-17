@@ -77,7 +77,7 @@ describe('SaiHandlerService', () => {
 
       service.select(false, { source_type: sourceType, entryorguid: id });
 
-      expect(service.templateQuery).toEqual(expectedQuery);
+      expect(service.templateQuery).toEqual(expectedQuery as string);
     });
   }
 
@@ -126,7 +126,7 @@ describe('SaiHandlerService', () => {
         entryorguid: 123,
         name: mockName,
         returnValue: [],
-        expectedName: null,
+        expectedName: null as any,
         expectedQuery: 'SELECT name FROM creature_template WHERE entry = 123',
       },
       {
@@ -167,7 +167,7 @@ describe('SaiHandlerService', () => {
           expect(querySpy).toHaveBeenCalledWith(expectedQuery);
         });
 
-        service.select(false, { source_type: null, entryorguid: -123 }, mockName, false);
+        service.select(false, { source_type: undefined, entryorguid: -123 }, mockName, false);
 
         querySpy.and.returnValue(of());
         service.getName().subscribe((actualName) => {

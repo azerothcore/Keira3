@@ -1,4 +1,4 @@
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -6,12 +6,17 @@ import { of } from 'rxjs';
 import { Model3DViewerComponent } from './model-3d-viewer.component';
 import { CONTENT_WOTLK, MODEL_TYPE, VIEWER_TYPE } from './model-3d-viewer.model';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('Model3DViewerComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), HttpClientTestingModule, Model3DViewerComponent],
-      providers: [{ provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG }],
+      imports: [ModalModule.forRoot(), Model3DViewerComponent],
+      providers: [
+        { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
   }));
 
@@ -145,10 +150,10 @@ describe('Model3DViewerComponent', () => {
       expect(component['getModelType']()).toBe(MODEL_TYPE.NPC);
     });
 
-    it('returns null', () => {
+    it('returns -1', () => {
       const { component } = setup();
       component.viewerType = VIEWER_TYPE.ITEM;
-      expect(component['getModelType'](4, 2)).toBeNull();
+      expect(component['getModelType'](4, 2)).toBe(-1);
     });
   });
 

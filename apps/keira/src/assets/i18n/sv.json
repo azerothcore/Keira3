@@ -45,6 +45,7 @@
   "UNKNOWN": "Okänd",
   "COPY": "Kopiera",
   "EXECUTE": "Verkställ",
+  "EXECUTE_AND_COPY": "Execute & copy",
   "RELOAD": "Ladda om",
   "CANCEL": "Avbryt",
   "CONNECTION_WINDOW": {
@@ -71,6 +72,7 @@
       "TITLE": "Creature",
       "SELECT_CREATURE": "Välj Creature",
       "CREATURE_TEMPLATE": "Creature Template",
+      "TEMPLATE_MODEL": "Template Model",
       "TEMPLATE_ADDON": "Template Addon",
       "TEMPLATE_RESISTANCE": "Template Resistance",
       "TEMPLATE_SPELL": "Template Spell",
@@ -223,7 +225,7 @@
       "SKINLOOT": "Länk till skinning_loot_template.entry",
       "DIFFICULTY_ENTRY_1": "Entry of the equivalent creature in Heroic Dungeon or 25man Normal Raid",
       "DIFFICULTY_ENTRY_2": "Entry of the equivalent creature in 10man Heroic Raid",
-      "difficulty_entry_3": "Entry of the equivalent creature in 25man Heroic Raid",
+      "DIFFICULTY_ENTRY_3": "Entry of the equivalent creature in 25man Heroic Raid",
       "BASE_ATTACK_TIME": "Bastid (millisekunder) som avgör hur länge en NPC måste vänta mellan sina Melee Attacker.",
       "RANGE_ATTACK_TIME": "Bastid (millisekunder) som avgör hur länge en NPC måste vänta mellan sina Range Attacker.",
       "SCRIPT_NAME": "Åsidosätter AIName. Namnet utav C++ script som denna NPC använder, om det finns något.",
@@ -237,7 +239,10 @@
       "SPEED_WALK": "Kontrollerar hur snabbt en NPC kan springa. För fordon blir det snabbare på marken.",
       "SPEED_SWIM": "Kontrollerar hur snabbt en NPC kan simma.",
       "SPEED_FLIGHT": "Kontrollerar hur snabbt en NPC kan flyga.",
-      "DETECTION_RANGE": "Kontrollerar hur nära eller långt ifrån en NPC kan upptäcka spelare."
+      "DETECTION_RANGE": "Kontrollerar hur nära eller långt ifrån en NPC kan upptäcka spelare.",
+      "ITEMID1": "This is the item number of the equipment used in the right hand from Item.dbc.",
+      "ITEMID2": "This is the item number of the equipment used in the left hand from Item.dbc.",
+      "ITEMID3": "This is the item number of the equipment used in the ranged slot from Item.dbc."
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "Länk till creature_template.entry",
@@ -255,7 +260,7 @@
     },
     "SPAWN": {
       "ORIENTATION": "Bestämmer den NPC Spawn Punkt. (North = 0.0; South = pi (3.14159))",
-      "EQUIPMENT_ID_TOOLTIP": "1 = uses the info set in equipment template 0 = no weapons equipped",
+      "EQUIPMENT_ID_TOOLTIP": "1 = uses the info set in equipment template 0 = no weapons equipped, -1 A random equip from the set of equips in creature_equip_template will be chosen.",
       "SPAWN_DIST_TOOLTIP": "Det maximala avståndet som den NPC kan spawna från dens Spawn Punkt. Kontrollerar också den hur långt ifrån NPC kan röra sig från din Spawn Punkt om dens MovementType = 1.",
       "SCRIPT_NAME": "Namnet på det C++ script som denna NPC använder, om det finns.",
       "GUID": "Länk till creature.guid",
@@ -333,7 +338,7 @@
       "REWARD_XP_DIFFICULTY": "Enligt Level, den bas XP med index RewardXPDifficulty är taget från QuestXP.dbc. Kolla Docs för mer information.",
       "REWARD_MONEY": "If value > 0: Pengar du får utav Quest; if value < 0: Pengar du måste ha för Quest",
       "REW_MONEY_DIFFICULTY": "TODO: RewardMoneyDifficulty tooltip",
-      "REWARD_SPELL": "Spell som används när spelaren lämnat in Quest. Notera att denna Spell kastas INTE om RewardSpellCast är non-zero.",
+      "REWARD_SPELL": "Spell som används när spelaren lämnat in Quest. Notera att denna Spell kastas INTE om RewardSpell är non-zero.",
       "REWARD_HONOR": "Antal honorable kill honor du får för att göra klart Quest",
       "REWARD_FACTIONS_TOOLTIP": "Faction ID for which the quest adds (or subtracts) reputation points."
     },

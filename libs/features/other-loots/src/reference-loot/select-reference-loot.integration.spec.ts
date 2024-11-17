@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { ReferenceLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -13,7 +12,7 @@ import { SelectReferenceLootComponent } from './select-reference-loot.component'
 import { SelectReferenceLootService } from './select-reference-loot.service';
 
 class SelectReferenceLootComponentPage extends SelectPageObject<SelectReferenceLootComponent> {
-  ID_FIELD = 'Entry';
+  override ID_FIELD = 'Entry';
 }
 
 describe('SelectReferenceLoot integration tests', () => {
@@ -122,7 +121,7 @@ describe('SelectReferenceLoot integration tests', () => {
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
     const { navigateSpy, page, querySpy } = setup();
 
-    const results: Partial<ReferenceLootTemplate>[] = [{ Entry: 1 }, { Entry: 2 }, { Entry: 3 }];
+    const results = [{ Entry: 1 }, { Entry: 2 }, { Entry: 3 }];
     querySpy.calls.reset();
     querySpy.and.returnValue(of(results));
 

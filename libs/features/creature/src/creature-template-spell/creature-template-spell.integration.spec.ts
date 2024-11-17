@@ -1,15 +1,15 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
-import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { CreatureTemplateSpell } from '@keira/shared/acore-world-model';
+import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
+import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
+import { instance, mock } from 'ts-mockito';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateSpellComponent } from './creature-template-spell.component';
-import { instance, mock } from 'ts-mockito';
 
 class CreatureTemplateSpellPage extends MultiRowEditorPageObject<CreatureTemplateSpellComponent> {}
 
@@ -26,7 +26,10 @@ describe('CreatureTemplateSpell integration tests', () => {
         CreatureTemplateSpellComponent,
         TranslateTestingModule,
       ],
-      providers: [{ provide: SqliteService, useValue: instance(mock(SqliteService)) }],
+      providers: [
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+        { provide: SqliteQueryService, useValue: instance(mock(SqliteQueryService)) },
+      ],
     }).compileComponents();
   }));
 
@@ -54,6 +57,10 @@ describe('CreatureTemplateSpell integration tests', () => {
     const page = new CreatureTemplateSpellPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+
+    const sqliteQueryService = TestBed.inject(SqliteQueryService);
+    const mockIntermediateResult = 'some result';
+    spyOn(sqliteQueryService, 'getDisplayIdBySpellId').and.returnValue(of(mockIntermediateResult));
 
     return { handlerService, queryService, querySpy, fixture, component, page };
   }
@@ -120,7 +127,7 @@ describe('CreatureTemplateSpell integration tests', () => {
           '(1234, 0, 0, 0);',
       );
 
-      page.setInputValueById('Index', '1');
+      page.setInputValueById('Index', '1: 1');
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234) AND (`Index` IN (1));\n' +
           'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
@@ -137,7 +144,7 @@ describe('CreatureTemplateSpell integration tests', () => {
     it('adding a row and changing its values should correctly update the queries', () => {
       const { page } = setup(true);
       page.addNewRow();
-      page.setInputValueById('Index', '1');
+      page.setInputValueById('Index', '1: 1');
       page.duplicateSelectedRow();
 
       page.expectDiffQueryToContain(
@@ -204,18 +211,18 @@ describe('CreatureTemplateSpell integration tests', () => {
     it('editing existing rows should correctly work', () => {
       const { page } = setup(false);
       page.clickRowOfDatatable(1);
-      page.setInputValueById('Index', 111);
+      page.setInputValueById('Spell', '3');
 
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234) AND (`Index` IN (1, 111));\n' +
+        'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234) AND (`Index` IN (1));\n' +
           'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
-          '(1234, 111, 0, 0);',
+          '(1234, 1, 3, 0);',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234);\n' +
           'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
           '(1234, 0, 0, 0),\n' +
-          '(1234, 111, 0, 0),\n' +
+          '(1234, 1, 3, 0),\n' +
           '(1234, 2, 0, 0);',
       );
       page.removeElement();
@@ -227,23 +234,23 @@ describe('CreatureTemplateSpell integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(4);
 
       page.clickRowOfDatatable(1);
-      page.setInputValueById('Index', 10);
+      page.setInputValueById('Index', '7: 7');
       expect(page.getEditorTableRowsCount()).toBe(4);
 
       page.deleteRow(2);
       expect(page.getEditorTableRowsCount()).toBe(3);
 
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234) AND (`Index` IN (1, 2, 10, 3));\n' +
+        'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234) AND (`Index` IN (1, 2, 7, 3));\n' +
           'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
-          '(1234, 10, 0, 0),\n' +
+          '(1234, 7, 0, 0),\n' +
           '(1234, 3, 0, 0);',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_spell` WHERE (`CreatureID` = 1234);\n' +
           'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
           '(1234, 0, 0, 0),\n' +
-          '(1234, 10, 0, 0),\n' +
+          '(1234, 7, 0, 0),\n' +
           '(1234, 3, 0, 0);',
       );
       page.removeElement();
@@ -252,7 +259,7 @@ describe('CreatureTemplateSpell integration tests', () => {
     it('using the same row id for multiple rows should correctly show an error', () => {
       const { page } = setup(false);
       page.clickRowOfDatatable(2);
-      page.setInputValueById('Index', 0);
+      page.setInputValueById('Index', '0: 0');
 
       page.expectUniqueError();
       page.removeElement();

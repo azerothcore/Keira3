@@ -7,14 +7,14 @@ import { ItemExtendedCostSearchService } from '../../search/item-extended-cost-s
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
+import { HighlightjsWrapperComponent, IconComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-item-extended-cost-selector-modal',
   templateUrl: './item-extended-cost-selector-modal.component.html',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateModule],
+  imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateModule, IconComponent],
 })
 export class ItemExtendedCostSelectorModalComponent extends SearchSelectorModalComponent<ItemExtendedCost> {
   protected entityIdField = ITEM_EXTENDED_COST_ID;

@@ -10,8 +10,8 @@ import { NpcTextHandlerService } from './npc-text-handler.service';
 export class SelectNpcTextService extends SelectService<NpcText> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
-    readonly queryService: MysqlQueryService,
-    public handlerService: NpcTextHandlerService,
+    override readonly queryService: MysqlQueryService,
+    public override readonly handlerService: NpcTextHandlerService,
   ) {
     super(queryService, handlerService, NPC_TEXT_TABLE, NPC_TEXT_ID, null, NPC_TEXT_SEARCH_FIELDS);
   }

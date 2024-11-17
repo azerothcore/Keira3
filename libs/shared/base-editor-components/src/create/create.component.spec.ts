@@ -1,13 +1,13 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
+import { MockHandlerService } from '@keira/shared/base-abstract-classes';
+import { TableRow } from '@keira/shared/constants';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { of, throwError } from 'rxjs';
 import { anything, instance, mock, reset, when } from 'ts-mockito';
 import { CreateComponent } from './create.component';
-import { MysqlQueryService } from '@keira/shared/db-layer';
-import { TableRow } from '@keira/shared/constants';
-import { MockHandlerService } from '@keira/shared/base-abstract-classes';
 import Spy = jasmine.Spy;
 
 class CreateComponentPage extends PageObject<CreateComponent<TableRow>> {
@@ -33,6 +33,7 @@ describe('CreateComponent', () => {
   const mockId = 'mockId';
   const takenId = 100;
   const maxId = 12;
+  const MAX_INT_UNSIGNED_VALUE = 4294967295;
 
   beforeEach(waitForAsync(() => {
     spyError = spyOn(console, 'error');
@@ -54,6 +55,7 @@ describe('CreateComponent', () => {
     component.entityIdField = mockId;
     component.handlerService = instance(mock(MockHandlerService));
     component.queryService = instance(MockedMysqlQueryService);
+    component.maxEntryValue = MAX_INT_UNSIGNED_VALUE;
     page = new CreateComponentPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
@@ -89,7 +91,7 @@ describe('CreateComponent', () => {
 
   it('if queryService param is not passed, should not call getNextId', () => {
     const spyGetNextId = spyOn<any>(component, 'getNextId');
-    component.queryService = null;
+    component.queryService = undefined as any;
 
     component.ngOnInit();
 
@@ -105,6 +107,15 @@ describe('CreateComponent', () => {
 
     expect(selectSpy).toHaveBeenCalledTimes(1);
     expect(selectSpy).toHaveBeenCalledWith(true, id);
+  });
+
+  it('does not allow a higher value than max value', () => {
+    const unallowedIdValue = MAX_INT_UNSIGNED_VALUE + 1;
+    component.idModel = unallowedIdValue;
+
+    component['checkMaxValue']();
+
+    expect(component.idModel).toEqual(MAX_INT_UNSIGNED_VALUE);
   });
 
   it('the customStartId should be preferred when greater than the currentMax', () => {

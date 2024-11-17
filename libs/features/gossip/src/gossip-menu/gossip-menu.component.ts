@@ -1,18 +1,16 @@
+import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GossipMenu } from '@keira/shared/acore-world-model';
+import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
+import { MysqlQueryService } from '@keira/shared/db-layer';
+import { NpcTextSelectorBtnComponent } from '@keira/shared/selectors';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { GossipHandlerService } from '../gossip-handler.service';
 import { GossipMenuService } from './gossip-menu.service';
-import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { EditorButtonsComponent } from '@keira/shared/base-editor-components';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/base-editor-components';
-import { TranslateModule } from '@ngx-translate/core';
-import { AsyncPipe } from '@angular/common';
-import { TopBarComponent } from '@keira/shared/base-editor-components';
-import { NpcTextSelectorBtnComponent } from '@keira/shared/selectors';
-import { MysqlQueryService } from '@keira/shared/db-layer';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,7 +32,7 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
   ],
 })
 export class GossipMenuComponent extends MultiRowEditorComponent<GossipMenu> {
-  readonly editorService = inject(GossipMenuService);
+  override readonly editorService = inject(GossipMenuService);
   readonly handlerService = inject(GossipHandlerService);
   readonly queryService = inject(MysqlQueryService);
 }

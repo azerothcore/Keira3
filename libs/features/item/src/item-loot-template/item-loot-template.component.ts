@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { LootTemplateComponent } from '@keira/shared/base-abstract-classes';
 import { ItemLootTemplate } from '@keira/shared/acore-world-model';
+import { LootTemplateComponent } from '@keira/shared/base-abstract-classes';
+import { TopBarComponent } from '@keira/shared/base-editor-components';
+import { LootEditorComponent } from '@keira/shared/loot-editor';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemLootTemplateService } from './item-loot-template.service';
-import { LootEditorComponent } from '@keira/shared/loot-editor';
-
-import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,6 +14,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   imports: [TopBarComponent, LootEditorComponent],
 })
 export class ItemLootTemplateComponent extends LootTemplateComponent<ItemLootTemplate> {
-  readonly editorService = inject(ItemLootTemplateService);
+  override readonly editorService = inject(ItemLootTemplateService);
   readonly handlerService = inject(ItemHandlerService);
 }

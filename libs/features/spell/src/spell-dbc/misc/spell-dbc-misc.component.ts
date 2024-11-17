@@ -13,5 +13,5 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
   imports: [FormsModule, ReactiveFormsModule, TooltipModule, TranslateModule],
 })
 export class SpellDbcMiscComponent {
-  @Input() formGroup: FormGroup<ModelForm<SpellDbc>>;
+  @Input({ required: true }) formGroup!: FormGroup<ModelForm<SpellDbc>>;
 }

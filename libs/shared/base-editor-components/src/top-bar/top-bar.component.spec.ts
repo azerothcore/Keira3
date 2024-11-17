@@ -11,10 +11,10 @@ describe(TopBarComponent.name, () => {
     imports: [TopBarComponent],
   })
   class TestHostComponent {
-    @ViewChild(TopBarComponent) child: TopBarComponent;
-    selected: string;
-    selectedName: string;
-    isNew: boolean;
+    @ViewChild(TopBarComponent) child!: TopBarComponent;
+    selected: string | undefined;
+    selectedName: string | undefined;
+    isNew: boolean = false;
   }
 
   class Page extends PageObject<TestHostComponent> {

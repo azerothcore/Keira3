@@ -1,16 +1,17 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ITEM_SUBCLASS, ItemTemplate, Lock } from '@keira/shared/acore-world-model';
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { lastValueFrom, of } from 'rxjs';
+import { instance, mock } from 'ts-mockito';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemTemplateComponent } from './item-template.component';
-import { instance, mock } from 'ts-mockito';
-import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 
 class ItemTemplatePage extends EditorPageObject<ItemTemplateComponent> {
   get itemStats(): HTMLDivElement {
@@ -52,18 +53,13 @@ describe('ItemTemplate integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        ItemTemplateComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
-        HttpClientTestingModule,
-      ],
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ItemTemplateComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
         { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
         ItemHandlerService,
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     }).compileComponents();
   }));
@@ -113,19 +109,19 @@ describe('ItemTemplate integration tests', () => {
     fixture.detectChanges();
 
     const mysqlQueryService = TestBed.inject(MysqlQueryService);
-    spyOn(mysqlQueryService, 'getItemNameById').and.callFake(() => of(mockItemNameById).toPromise());
+    spyOn(mysqlQueryService, 'getItemNameById').and.callFake(() => lastValueFrom(of(mockItemNameById)));
     spyOn(mysqlQueryService, 'queryValue').and.callFake(() => of([234] as any));
 
     const sqliteQueryService = TestBed.inject(SqliteQueryService);
-    spyOn(sqliteQueryService, 'getSpellNameById').and.callFake((i) => of(mockGetSpellNameById + i).toPromise());
-    spyOn(sqliteQueryService, 'getSpellDescriptionById').and.callFake((i) => of(mockGetSpellDescriptionById + i).toPromise());
-    spyOn(sqliteQueryService, 'getFactionNameById').and.callFake((i) => of(mockGetFactionNameById + i).toPromise());
-    spyOn(sqliteQueryService, 'getMapNameById').and.callFake((i) => of(mockGetMapNameById + i).toPromise());
-    spyOn(sqliteQueryService, 'getAreaNameById').and.callFake((i) => of(mockGetAreaNameById + i).toPromise());
-    spyOn(sqliteQueryService, 'getEventNameByHolidayId').and.callFake((i) => of(mockGetEventNameByHolidayId + i).toPromise());
-    spyOn(sqliteQueryService, 'getSocketBonusById').and.callFake((i) => of(mockGetSocketBonusById + i).toPromise());
-    spyOn(sqliteQueryService, 'getLockById').and.callFake(() => of([lockData]).toPromise());
-    spyOn(sqliteQueryService, 'getSkillNameById').and.callFake(() => of('profession').toPromise());
+    spyOn(sqliteQueryService, 'getSpellNameById').and.callFake((i) => lastValueFrom(of(mockGetSpellNameById + i)));
+    spyOn(sqliteQueryService, 'getSpellDescriptionById').and.callFake((i) => lastValueFrom(of(mockGetSpellDescriptionById + i)));
+    spyOn(sqliteQueryService, 'getFactionNameById').and.callFake((i) => lastValueFrom(of(mockGetFactionNameById + i)));
+    spyOn(sqliteQueryService, 'getMapNameById').and.callFake((i) => lastValueFrom(of(mockGetMapNameById + i)));
+    spyOn(sqliteQueryService, 'getAreaNameById').and.callFake((i) => lastValueFrom(of(mockGetAreaNameById + i)));
+    spyOn(sqliteQueryService, 'getEventNameByHolidayId').and.callFake((i) => lastValueFrom(of(mockGetEventNameByHolidayId + i)));
+    spyOn(sqliteQueryService, 'getSocketBonusById').and.callFake((i) => lastValueFrom(of(mockGetSocketBonusById + i)));
+    spyOn(sqliteQueryService, 'getLockById').and.callFake(() => lastValueFrom(of([lockData])));
+    spyOn(sqliteQueryService, 'getSkillNameById').and.callFake(() => lastValueFrom(of('profession')));
     spyOn(sqliteQueryService, 'getIconByItemDisplayId').and.callFake(() => of('inv_axe_60'));
     spyOn(sqliteQueryService, 'queryValue').and.callFake(() => of('inv_axe_60' as any));
     spyOn(sqliteQueryService, 'query').and.callFake(() => of([{ name: 'test' }] as any));
@@ -182,7 +178,7 @@ describe('ItemTemplate integration tests', () => {
         '`BuyCount` = 8, `BuyPrice` = 9, `SellPrice` = 10, `InventoryType` = 11, `AllowableClass` = 12, `AllowableRace` = 13, ' +
         '`ItemLevel` = 14, `RequiredLevel` = 15, `RequiredSkill` = 16, `RequiredSkillRank` = 17, `requiredspell` = 18, ' +
         '`requiredhonorrank` = 19, `RequiredCityRank` = 20, `RequiredReputationFaction` = 21, `RequiredReputationRank` = 22, ' +
-        '`maxcount` = 23, `stackable` = 24, `ContainerSlots` = 25, `StatsCount` = 26, `stat_type1` = 27, `stat_value1` = 28, ' +
+        '`maxcount` = 23, `stackable` = 24, `ContainerSlots` = 25, `StatsCount` = 10, `stat_type1` = 27, `stat_value1` = 28, ' +
         '`stat_type2` = 29, `stat_value2` = 30, `stat_type3` = 31, `stat_value3` = 32, `stat_type4` = 33, `stat_value4` = 34, ' +
         '`stat_type5` = 35, `stat_value5` = 36, `stat_type6` = 37, `stat_value6` = 38, `stat_type7` = 39, `stat_value7` = 40, ' +
         '`stat_type8` = 41, `stat_value8` = 42, `stat_type9` = 43, `stat_value9` = 44, `stat_type10` = 45, `stat_value10` = 46, ' +
@@ -216,9 +212,11 @@ describe('ItemTemplate integration tests', () => {
 
       page.changeAllFields(originalEntity, [...Object.keys(spelltriggers), 'VerifiedBuild']);
 
-      for (const key of Object.keys(spelltriggers)) {
-        page.setSelectValueById(key, spelltriggers[key]);
-      }
+      page.setSelectValueById('spelltrigger_1', spelltriggers.spelltrigger_1);
+      page.setSelectValueById('spelltrigger_2', spelltriggers.spelltrigger_2);
+      page.setSelectValueById('spelltrigger_3', spelltriggers.spelltrigger_3);
+      page.setSelectValueById('spelltrigger_4', spelltriggers.spelltrigger_4);
+      page.setSelectValueById('spelltrigger_5', spelltriggers.spelltrigger_5);
 
       page.expectDiffQueryToContain(expectedQuery);
 
@@ -366,7 +364,7 @@ describe('ItemTemplate integration tests', () => {
         page.setInputValueById('class', 10);
         expect(page.getSelectorBtn('subclass', false)).toBeTruthy();
 
-        page.setInputValueById('class', null);
+        page.setInputValueById('class', null as any);
         expect(page.getSelectorBtn('subclass', false)).toBeFalsy();
       });
 
@@ -377,6 +375,30 @@ describe('ItemTemplate integration tests', () => {
 
         expect(page.getCellOfDatatableInModal(2, 1).innerText).toContain(ITEM_SUBCLASS[3][2].name);
         page.clickModalSelect();
+      });
+    });
+
+    describe('item stats count', () => {
+      it('calculate item stats count automatically editing stats value fields', () => {
+        const { page } = setup(false);
+
+        expect(page.getInputById('StatsCount').value).toEqual('0');
+
+        page.setInputValueById('stat_value1', 1);
+        page.setInputValueById('stat_value2', 2);
+        page.detectChanges();
+
+        expect(page.getInputById('StatsCount').value).toEqual('2');
+
+        page.setInputValueById('stat_value3', -1);
+        page.detectChanges();
+
+        expect(page.getInputById('StatsCount').value).toEqual('3');
+
+        page.setInputValueById('stat_value2', 0);
+        page.detectChanges();
+
+        expect(page.getInputById('StatsCount').value).toEqual('2');
       });
     });
 

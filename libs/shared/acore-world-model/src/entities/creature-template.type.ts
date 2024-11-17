@@ -17,10 +17,6 @@ export class CreatureTemplate extends TableRow {
   difficulty_entry_3: number = 0;
   KillCredit1: number = 0;
   KillCredit2: number = 0;
-  modelid1: number = 0;
-  modelid2: number = 0;
-  modelid3: number = 0;
-  modelid4: number = 0;
   name: string = '';
   subname: string = '';
   IconName: string = '';

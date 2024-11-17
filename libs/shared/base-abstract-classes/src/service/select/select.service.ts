@@ -5,20 +5,20 @@ import { SearchService } from './search.service';
 
 export abstract class SelectService<T extends TableRow> extends SearchService<T> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    readonly queryService: MysqlQueryService,
-    public handlerService: HandlerService<T>,
-    protected entityTable: string,
-    protected entityIdField: string,
-    protected entityNameField: string,
-    protected fieldList: StringKeys<T>[],
-    protected selectFields: string[] = null,
-    protected groupFields: string[] = null,
+  protected constructor(
+    override readonly queryService: MysqlQueryService,
+    public readonly handlerService: HandlerService<T>,
+    protected override readonly entityTable: string,
+    protected readonly entityIdField: string,
+    protected entityNameField: string | undefined | null,
+    protected override readonly fieldList: StringKeys<T>[],
+    protected override readonly selectFields: string[] | undefined = undefined,
+    protected override readonly groupFields: string[] | undefined = undefined,
   ) {
     super(queryService, entityTable, fieldList, selectFields, groupFields);
   }
 
-  onSelect({ selected }: { selected: { [key: string]: string | number }[] }) {
+  onSelect({ selected }: { selected: { [_key: string]: string | number }[] }) {
     this.handlerService.select(
       false,
       `${selected[0][this.entityIdField]}`,

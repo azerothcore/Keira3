@@ -1,16 +1,14 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CREATURE_ADDON_BYTES_1, CREATURE_ADDON_BYTES_2, CreatureSpawnAddon, EMOTE } from '@keira/shared/acore-world-model';
+import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
+import { GenericOptionSelectorComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureSpawnAddonService } from './creature-spawn-addon.service';
-import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/base-editor-components';
-import { TranslateModule } from '@ngx-translate/core';
-
-import { TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,6 +25,7 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
     TooltipModule,
     SingleValueSelectorBtnComponent,
     NgxDatatableModule,
+    GenericOptionSelectorComponent,
   ],
 })
 export class CreatureSpawnAddonComponent extends MultiRowEditorComponent<CreatureSpawnAddon> {
@@ -34,6 +33,6 @@ export class CreatureSpawnAddonComponent extends MultiRowEditorComponent<Creatur
   readonly CREATURE_ADDON_BYTES_1 = CREATURE_ADDON_BYTES_1;
   readonly CREATURE_ADDON_BYTES_2 = CREATURE_ADDON_BYTES_2;
 
-  readonly editorService = inject(CreatureSpawnAddonService);
+  override readonly editorService = inject(CreatureSpawnAddonService);
   readonly handlerService = inject(CreatureHandlerService);
 }

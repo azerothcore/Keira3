@@ -45,6 +45,7 @@
   "UNKNOWN": "Desconocido",
   "COPY": "Copiar",
   "EXECUTE": "Ejecutar",
+  "EXECUTE_AND_COPY": "Execute & copy",
   "RELOAD": "Recargar",
   "CANCEL": "Cancelar",
   "CONNECTION_WINDOW": {
@@ -71,6 +72,7 @@
       "TITLE": "Criatura",
       "SELECT_CREATURE": "Seleccionar Criatura",
       "CREATURE_TEMPLATE": "Plantilla de Criatura",
+      "TEMPLATE_MODEL": "Template Model",
       "TEMPLATE_ADDON": "Addon de Plantilla",
       "TEMPLATE_RESISTANCE": "Plantilla de Resistencia",
       "TEMPLATE_SPELL": "Plantilla de Hechizo",
@@ -228,7 +230,7 @@
       "SKINLOOT": "Enlazado con skinning_loot_template.entry (Botín de Desuello)",
       "DIFFICULTY_ENTRY_1": "Entrada (ID) de la criatura equivalente a Mazmorra Heroica o Raid Normal de 25 jugadores",
       "DIFFICULTY_ENTRY_2": "Entrada (ID) de la criatura equivalente a Raid Heróica de 10 jugadores",
-      "difficulty_entry_3": "Entrada (ID) de la criatura equivalente a Raid Heróica de 25 jugadores",
+      "DIFFICULTY_ENTRY_3": "Entrada (ID) de la criatura equivalente a Raid Heróica de 25 jugadores",
       "BASE_ATTACK_TIME": "Tiempo base (en millisegundos) que determina cuánto tiempo debe esperar una criatura entre ataques cuerpo a cuerpo.",
       "RANGE_ATTACK_TIME": "Tiempo base (en millisegundos) que determina cuánto tiempo debe esperar una criatura entre ataques a distancia.",
       "SCRIPT_NAME": "Anula AIName. El nombre del script escrito en C++ que utiliza esta criatura en particular, si existe, claro está.",
@@ -242,7 +244,10 @@
       "SPEED_WALK": "Controla la velocidad promedio a la que puede caminar la criatura. En el caso de los vehículos, aumenta la velocidad de movimiento por tierra.",
       "SPEED_SWIM": "Controla la velocidad promedio a la que puede nadar la criatura.",
       "SPEED_FLIGHT": "Controla la velocidad promedio a la que puede volar la criatura.",
-      "DETECTION_RANGE": "Controla el rango en el que las criaturas detectan y ven a los jugadores."
+      "DETECTION_RANGE": "Controla el rango en el que las criaturas detectan y ven a los jugadores.",
+      "ITEMID1": "This is the item number of the equipment used in the right hand from Item.dbc.",
+      "ITEMID2": "This is the item number of the equipment used in the left hand from Item.dbc.",
+      "ITEMID3": "This is the item number of the equipment used in the ranged slot from Item.dbc."
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "Enlazado con creature_template.entry (ID de la Criatura)",
@@ -260,7 +265,7 @@
     },
     "SPAWN": {
       "ORIENTATION": "La Orientación en el punto de aparición de la criatura. (Norte = 0.0; Sur = π (3.14159))",
-      "EQUIPMENT_ID_TOOLTIP": "1 = uses the info set in equipment template 0 = no weapons equipped",
+      "EQUIPMENT_ID_TOOLTIP": "1 = uses the info set in equipment template 0 = no weapons equipped, -1 A random equip from the set of equips in creature_equip_template will be chosen.",
       "SPAWN_DIST_TOOLTIP": "Distancia máxima a la que puede aparecer la criatura desde su punto inicial. También controla qué tan lejos la criatura puede caminar desde su punto inicial de aparición si su 'MovementType' es igual a 1.",
       "SCRIPT_NAME": "El nombre en clave del script escrito en C++ que utilizará esta criatura, si existe claro está.",
       "GUID": "Enlazado con creature.guid (Identificador Único Global de la Criatura)",
@@ -338,7 +343,7 @@
       "REWARD_XP_DIFFICULTY": "Según el Nivel, la experiencia básica ligada con el índice de RewardXPDifficulty (Recompensa de Experiencia por Dificultad) que es tomado directamente del archivo QuestXP.dbc. Puede hallar más información al respecto en la documentación.",
       "REWARD_MONEY": "Si el valor es > (mayor que) 0, será el dinero obtenido al completar la Misión; En otro caso, si el valor es < (menor que), será el dinero requerido para completar la Misión",
       "REW_MONEY_DIFFICULTY": "Si lo requiere, RewardMoneyDifficulty (Recompensa de Dinero por Dificultad)",
-      "REWARD_SPELL": "Hechizo que será aprendido como recompensa al completar la Misión dentro del Registro de Misiones. Tenga en cuenta que este hechizo NO se enseñará si el campo RewardSpellCast no es igual a cero.",
+      "REWARD_SPELL": "Hechizo que será aprendido como recompensa al completar la Misión dentro del Registro de Misiones. Tenga en cuenta que este hechizo NO se enseñará si el campo RewardSpell no es igual a cero.",
       "REWARD_HONOR": "Número de Honor recompensado por completar esta Misión",
       "REWARD_FACTIONS_TOOLTIP": "Identificador (ID) de la facción respectiva, para que al momento de completar la Misión sume (o reste) puntos de reputación."
     },

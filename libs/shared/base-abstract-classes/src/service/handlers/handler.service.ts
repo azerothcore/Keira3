@@ -1,14 +1,15 @@
+import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { TableRow } from '@keira/shared/constants';
 import { SubscriptionHandler } from '@keira/shared/utils';
-import { inject } from '@angular/core';
 
 export abstract class HandlerService<T extends TableRow> extends SubscriptionHandler {
   protected readonly router = inject(Router);
 
-  protected _selected: string;
-  selectedName: string;
+  protected _selected!: string;
+  selectedName!: string;
   isNew = false;
+  forceReload = false;
 
   protected abstract _statusMap: { [key: string]: boolean };
   protected abstract readonly mainEditorRoutePath: string;
@@ -23,7 +24,7 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
   }
 
   /* istanbul ignore next */ // TODO: fix coverage
-  get parsedSelected(): Partial<T> {
+  get parsedSelected(): { entryorguid: number; source_type: number } {
     return JSON.parse(this.selected);
   }
 
@@ -43,13 +44,20 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
     this.resetStatus();
     this.isNew = isNew;
 
+    const currentSelected = this._selected;
+
     if (typeof id === 'object') {
       this._selected = JSON.stringify(id);
     } else {
       this._selected = `${id}`;
     }
 
-    this.selectedName = name;
+    // To prevent side effects or outdated data, it's essential to reload the entity when the user selects it again
+    if (currentSelected === this._selected) {
+      this.forceReload = true;
+    }
+
+    this.selectedName = name as string;
 
     if (navigate) {
       this.router.navigate([this.mainEditorRoutePath]);

@@ -14,9 +14,9 @@ import { TranslateModule } from '@ngx-translate/core';
 export class ModalConfirmComponent implements OnInit {
   private readonly _bsModalRef = inject(BsModalRef);
 
-  public onClose: Subject<boolean>;
-  title: string;
-  content: string;
+  public onClose!: Subject<boolean>;
+  title!: string;
+  content!: string;
 
   public ngOnInit(): void {
     this.onClose = new Subject();

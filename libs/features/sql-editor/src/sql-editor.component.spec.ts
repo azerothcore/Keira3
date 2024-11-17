@@ -90,9 +90,9 @@ describe('SqlEditorComponent', () => {
 
     page.clickElement(page.executeBtn);
 
-    expect(page.errorElement.innerHTML).toContain(error.code);
-    expect(page.errorElement.innerHTML).toContain(error.stack);
-    expect(page.errorElement.innerHTML).toContain(error.sqlState);
+    expect(page.errorElement.innerHTML).toContain(error?.code);
+    expect(page.errorElement.innerHTML).toContain(error?.stack as string);
+    expect(page.errorElement.innerHTML).toContain(error?.sqlState as string);
     expect(page.errorElement.innerHTML).toContain(`${error.errno}`);
   });
 

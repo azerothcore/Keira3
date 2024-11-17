@@ -5,7 +5,7 @@ import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { FieldDefinition } from '@keira/shared/constants';
 import { Model3DViewerComponent, VIEWER_TYPE } from '@keira/shared/model-3d-viewer';
-import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
+import { GenericOptionSelectorComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
@@ -26,6 +26,7 @@ import { GameobjectTemplateService } from './gameobject-template.service';
     TooltipModule,
     SingleValueSelectorBtnComponent,
     Model3DViewerComponent,
+    GenericOptionSelectorComponent,
   ],
 })
 export class GameobjectTemplateComponent extends SingleRowEditorComponent<GameobjectTemplate> {
@@ -33,9 +34,9 @@ export class GameobjectTemplateComponent extends SingleRowEditorComponent<Gameob
   readonly GAMEOBJECT_ICON = GAMEOBJECT_ICON;
   readonly OBJECT_VIEWER_TYPE = VIEWER_TYPE.OBJECT;
 
-  showItemPreview = true;
+  showGameobjectPreview = true;
 
-  readonly editorService = inject(GameobjectTemplateService);
+  override readonly editorService = inject(GameobjectTemplateService);
   readonly handlerService = inject(GameobjectHandlerService);
 
   dataFieldDefinition(dataIndex: number): FieldDefinition {

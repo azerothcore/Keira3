@@ -29,7 +29,7 @@ import { QuestRequestItemsService } from './quest-request-items.service';
   ],
 })
 export class QuestRequestItemsComponent extends SingleRowEditorComponent<QuestRequestItems> {
-  readonly editorService = inject(QuestRequestItemsService);
+  override readonly editorService = inject(QuestRequestItemsService);
   readonly handlerService = inject(QuestHandlerService);
   readonly questPreviewService = inject(QuestPreviewService);
 

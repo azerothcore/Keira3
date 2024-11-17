@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-import { ItemExtendedCostSelectorModalComponent } from './item-extended-cost-selector-modal.component';
 import { BaseSelectorBtnComponent } from '../base-selector/base-selector-btn.component';
+import { ItemExtendedCostSelectorModalComponent } from './item-extended-cost-selector-modal.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

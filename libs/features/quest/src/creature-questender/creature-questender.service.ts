@@ -13,7 +13,7 @@ import { QuestHandlerService } from '../quest-handler.service';
 })
 export class CreatureQuestenderService extends MultiRowEditorService<CreatureQuestender> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected handlerService: QuestHandlerService) {
+  constructor(protected override readonly handlerService: QuestHandlerService) {
     super(CreatureQuestender, CREATURE_QUESTENDER_TABLE, CREATURE_QUESTENDER_ID, CREATURE_QUESTENDER_ID_2, handlerService);
   }
 }

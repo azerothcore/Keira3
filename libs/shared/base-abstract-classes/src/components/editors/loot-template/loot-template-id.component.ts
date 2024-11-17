@@ -13,10 +13,10 @@ import { LootTemplateComponent } from './loot-template.component';
   template: '',
 })
 export abstract class LootTemplateIdComponent<T extends LootTemplate> extends LootTemplateComponent<T> implements OnInit {
-  public abstract editorService: LootEditorIdService<T>;
-  protected abstract handlerService: HandlerService<T>;
+  public abstract override editorService: LootEditorIdService<T>;
+  protected abstract override handlerService: HandlerService<T>;
 
-  protected _lootId: number;
+  protected _lootId!: number;
   get lootId(): number {
     return this._lootId;
   }
@@ -45,7 +45,7 @@ export abstract class LootTemplateIdComponent<T extends LootTemplate> extends Lo
     );
   }
 
-  ngOnInit() {
+  override ngOnInit() {
     this.editorService.clearCache();
     this.checkTemplateLootId();
     this.watchFormForChanges();

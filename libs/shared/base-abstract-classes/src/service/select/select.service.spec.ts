@@ -17,18 +17,22 @@ describe('SelectService', () => {
   it('onSelect() should correctly work', () => {
     const service = TestBed.inject(SelectMockService);
     const spy = spyOn(TestBed.inject(MockHandlerService), 'select');
-    const selected = [{ [service['entityIdField']]: 'myId', [service['entityNameField']]: 'myName' }];
+    const selected = [{ [service['entityIdField']]: 'myId', [service['entityNameField'] as string]: 'myName' }];
 
     service.onSelect({ selected });
 
-    expect(spy).toHaveBeenCalledWith(false, `${selected[0][service['entityIdField']]}`, `${selected[0][service['entityNameField']]}`);
+    expect(spy).toHaveBeenCalledWith(
+      false,
+      `${selected[0][service['entityIdField']]}`,
+      `${selected[0][service['entityNameField'] as string]}`,
+    );
   });
 
   it('onSelect() should use the table name when the entityNameField is not defined', () => {
     const service = TestBed.inject(SelectMockService);
     const spy = spyOn(TestBed.inject(MockHandlerService), 'select');
-    const selected = [{ [service['entityIdField']]: 'myId', [service['entityNameField']]: 'myName' }];
-    service['entityNameField'] = null;
+    const selected = [{ [service['entityIdField']]: 'myId', [service['entityNameField'] as string]: 'myName' }];
+    service['entityNameField'] = undefined as any;
 
     service.onSelect({ selected });
 

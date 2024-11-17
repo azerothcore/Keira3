@@ -18,5 +18,5 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 })
 export class SpellDbcTextsComponent {
   readonly LOCALES = LOCALES;
-  @Input() formGroup: FormGroup<ModelForm<SpellDbc>>;
+  @Input({ required: true }) formGroup!: FormGroup<ModelForm<SpellDbc>>;
 }

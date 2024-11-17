@@ -13,7 +13,7 @@ import { SelectQuestComponent } from './select-quest.component';
 import Spy = jasmine.Spy;
 
 class SelectQuestComponentPage extends SelectPageObject<SelectQuestComponent> {
-  ID_FIELD = 'ID';
+  override ID_FIELD = 'ID';
 }
 
 describe('SelectQuest integration tests', () => {
@@ -140,14 +140,14 @@ describe('SelectQuest integration tests', () => {
     const row1 = page.getDatatableRowExternal(1);
     const row2 = page.getDatatableRowExternal(2);
 
-    expect(row0.innerText).toContain(results[0].LogTitle);
-    expect(row1.innerText).toContain(results[1].LogTitle);
-    expect(row2.innerText).toContain(results[2].LogTitle);
+    expect(row0.innerText).toContain(results[0].LogTitle as string);
+    expect(row1.innerText).toContain(results[1].LogTitle as string);
+    expect(row2.innerText).toContain(results[2].LogTitle as string);
 
     page.clickElement(page.getDatatableCellExternal(1, 1));
 
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith(['quest/quest-template']);
-    page.expectTopBarEditing(results[1].ID, results[1].LogTitle);
+    page.expectTopBarEditing(results[1].ID as number, results[1].LogTitle as string);
   });
 });

@@ -18,9 +18,9 @@ import { QueryOutputComponent } from './query-output.component';
   imports: [FormsModule, TranslateTestingModule, QueryOutputComponent],
 })
 class TestHostComponent {
-  @ViewChild(QueryOutputComponent) child: QueryOutputComponent<TableRow>;
-  docUrl: string;
-  editorService: EditorService<any>;
+  @ViewChild(QueryOutputComponent) child!: QueryOutputComponent<TableRow>;
+  docUrl!: string;
+  editorService!: EditorService<any>;
 }
 
 describe('QueryOutputComponent', () => {
@@ -54,8 +54,8 @@ describe('QueryOutputComponent', () => {
       fullQuery,
       error: null,
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      reloadSameEntity(_changeDetectorRef) {},
-    } as EditorService<TableRow>;
+      reloadSameEntity(_changeDetectorRef: any) {},
+    } as unknown as EditorService<TableRow>;
 
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
@@ -107,6 +107,22 @@ describe('QueryOutputComponent', () => {
 
     page.clickElement(page.executeBtn);
     expect(spy).toHaveBeenCalledWith(fullQuery);
+  });
+
+  it('clicking the execute & copy button should copy and emit the correct query', () => {
+    const { page, component } = setup();
+    const copySpy = spyOn(TestBed.inject(ClipboardService), 'copyFromContent');
+    const executeSpy = spyOn(component.executeQuery, 'emit');
+
+    page.clickElement(page.executeAndCopyBtn);
+    expect(copySpy).toHaveBeenCalledOnceWith(diffQuery);
+    expect(executeSpy).toHaveBeenCalledOnceWith(diffQuery);
+
+    page.clickElement(page.fullQueryInput);
+
+    page.clickElement(page.executeAndCopyBtn);
+    expect(copySpy).toHaveBeenCalledWith(fullQuery);
+    expect(executeSpy).toHaveBeenCalledWith(fullQuery);
   });
 
   describe('getQuery', () => {

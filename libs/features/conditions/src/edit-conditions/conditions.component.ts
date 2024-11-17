@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   CONDITION_DISTANCE_TO_CV3,
   CONDITION_HP_PCT_CV2,
@@ -18,6 +18,12 @@ import {
   RANKMASK,
   TYPEMASK,
 } from '@keira/shared/acore-world-model';
+import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
+import { QueryOutputComponent } from '@keira/shared/base-editor-components';
+import { FlagsSelectorBtnComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
+import { getEnumKeys } from '@keira/shared/utils';
+import { TranslateModule } from '@ngx-translate/core';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 import {
   CONDITION_TARGET_TOOLTIPS,
@@ -28,14 +34,6 @@ import {
   SOURCE_GROUP_TOOLTIPS,
 } from './conditions-constants';
 import { ConditionsService } from './conditions.service';
-import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
-import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/base-editor-components';
-import { TranslateModule } from '@ngx-translate/core';
-
-import { getEnumKeys } from '@keira/shared/utils';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -145,6 +143,6 @@ export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
     return this.conditionType === CONDITION_TYPES.CONDITION_STAND_STATE;
   }
 
-  readonly editorService = inject(ConditionsService);
+  override readonly editorService = inject(ConditionsService);
   readonly handlerService = inject(ConditionsHandlerService);
 }

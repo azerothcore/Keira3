@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, Input, OnInit } from '@angular/core';
-import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
+import { SAI_TYPES } from '@keira/shared/acore-world-model';
 import { SaiHandlerService } from '../sai-handler.service';
 
 import { SubscriptionHandler } from '@keira/shared/utils';
@@ -16,16 +16,16 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
 export class SaiTopBarComponent extends SubscriptionHandler implements OnInit {
   readonly queryService = inject(MysqlQueryService);
 
-  @Input() public handler: SaiHandlerService;
+  @Input({ required: true }) public handler!: SaiHandlerService;
 
-  private _selectedText: string;
+  private _selectedText!: string;
 
   get selectedText() {
     return this._selectedText;
   }
 
   async ngOnInit() {
-    const selected: Partial<SmartScripts> = JSON.parse(this.handler.selected);
+    const selected: { entryorguid: number; source_type: number } = JSON.parse(this.handler.selected);
 
     switch (selected.source_type) {
       case SAI_TYPES.SAI_TYPE_CREATURE:

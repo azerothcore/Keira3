@@ -46,8 +46,8 @@ describe('DashboardComponent', () => {
   const worldDbVersion = '2019_02_17_02';
   const versionDbRow: VersionDbRow = {
     sql_rev: 123,
-    required_rev: null,
-    [worldDbVersion]: null,
+    required_rev: null as any,
+    [worldDbVersion]: null as any,
   };
 
   const MockedMysqlQueryService = mock(MysqlQueryService);

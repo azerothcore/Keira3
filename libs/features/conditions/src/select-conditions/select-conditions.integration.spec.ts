@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { Conditions } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -157,7 +156,7 @@ describe('SelectConditions integration tests', () => {
   }
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
-    const results: Partial<Conditions>[] = [
+    const results = [
       {
         SourceTypeOrReferenceId: 1,
         SourceGroup: 4,

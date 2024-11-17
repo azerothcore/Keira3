@@ -1,21 +1,22 @@
+import { FormGroup } from '@angular/forms';
 import { Class, TableRow } from '@keira/shared/constants';
+import { compareObjFn, ModelForm } from '@keira/shared/utils';
 import { distinctUntilChanged } from 'rxjs';
 import { HandlerService } from '../handlers/handler.service';
 import { EditorService } from './editor.service';
-import { compareObjFn } from '@keira/shared/utils';
 
 export abstract class MultiRowEditorService<T extends TableRow> extends EditorService<T> {
   protected FIRST_ROW_START_VALUE = 0;
   protected _originalRows: T[] = [];
   protected _newRows: T[] = [];
-  protected _selectedRowId: string | number;
+  protected _selectedRowId: string | number | undefined;
   protected _nextRowId = this.FIRST_ROW_START_VALUE;
   protected _errors: string[] = [];
 
   get newRows(): T[] {
     return this._newRows;
   }
-  get selectedRowId(): string | number {
+  get selectedRowId(): string | number | undefined {
     return this._selectedRowId;
   }
   hasSelectedRow(): boolean {
@@ -32,11 +33,12 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
 
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   protected constructor(
-    protected _entityClass: Class,
-    protected _entityTable: string,
-    protected _entityIdField: string,
-    protected _entitySecondIdField: string,
-    protected handlerService: HandlerService<T>,
+    protected override readonly _entityClass: Class,
+    protected override readonly _entityTable: string,
+    protected override readonly _entityIdField: string | undefined,
+    protected readonly _entitySecondIdField: string,
+    protected override readonly handlerService: HandlerService<T>,
+    protected readonly _entityExtraIdField: string | undefined = undefined,
   ) {
     super(_entityClass, _entityTable, _entityIdField, handlerService);
     this.initForm();
@@ -44,24 +46,30 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
 
   private getRowIndex(id: string | number): number {
     for (let i = 0; i < this._newRows.length; i++) {
-      if (id === this._newRows[i][this._entitySecondIdField]) {
+      if (id === this.getNewRowId(this._newRows[i])) {
         return i;
       }
     }
 
-    console.error(`getRowIndex() failed in finding row having ${this._entitySecondIdField} ${id}`);
+    if (this._entityExtraIdField) {
+      const [entitySecondIdField, extraIdField] = `${id}`.split('_');
+      console.error(`getRowIndex() failed in finding row having ${this._entitySecondIdField} ${entitySecondIdField} and ${extraIdField}`);
+    } else {
+      console.error(`getRowIndex() failed in finding row having ${this._entitySecondIdField} ${id}`);
+    }
+
     return 0;
   }
 
   private getSelectedRowIndex(): number {
-    return this.getRowIndex(this._selectedRowId);
+    return this.getRowIndex(this._selectedRowId as number);
   }
 
   private getSelectedRow(): T {
     return this._newRows[this.getSelectedRowIndex()];
   }
 
-  protected initForm(): void {
+  protected override initForm(): void {
     super.initForm();
 
     this.subscriptions.push(
@@ -70,7 +78,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
           if (this._form.dirty && this.isFormIdUnique()) {
             this._newRows[this.getSelectedRowIndex()] = this._form.getRawValue() as T;
             this._newRows = [...this._newRows];
-            this._selectedRowId = this.form.controls[this._entitySecondIdField].value;
+            this._selectedRowId = this.getNewRowIdForm(this._form.controls);
             this.checkRowsCorrectness();
             this.updateDiffQuery();
             this.updateFullQuery();
@@ -97,7 +105,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
       this._newRows.push({ ...row });
     }
     this._newRows = [...this._newRows];
-    this._selectedRowId = null;
+    this._selectedRowId = undefined;
     this._form.disable();
     this._nextRowId = this.FIRST_ROW_START_VALUE;
   }
@@ -136,7 +144,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   }
 
   onRowSelection({ selected }: { selected: T[] }): void {
-    const newId = selected[0][this._entitySecondIdField];
+    const newId = this.getNewRowId(selected[0]);
 
     if (newId === this._selectedRowId) {
       return;
@@ -171,18 +179,18 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   protected onRowSelected(): void {}
 
   isRowSelected(row: T): boolean {
-    return row[this._entitySecondIdField] === this._selectedRowId;
+    return this.getNewRowId(row) === this._selectedRowId;
   }
 
   deleteSelectedRow(): void {
-    if (this._selectedRowId === null) {
+    if (this._selectedRowId === null || this._selectedRowId === undefined) {
       return;
     }
 
     this._newRows.splice(this.getSelectedRowIndex(), 1);
     this._newRows = [...this._newRows];
 
-    this._selectedRowId = null;
+    this._selectedRowId = undefined;
     this._form.reset();
     this._form.disable();
 
@@ -192,6 +200,22 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
 
   protected addIdToNewRow(newRow: T): void {
     newRow[this._entityIdField as keyof T] = Number.parseInt(this.loadedEntityId, 10) as T[keyof T];
+  }
+
+  private getNewRowId(row: T): string | number {
+    if (this._entityExtraIdField) {
+      return `${row[this._entitySecondIdField]}_${row[this._entityExtraIdField]}`;
+    }
+
+    return row[this._entitySecondIdField];
+  }
+
+  private getNewRowIdForm(rowControls: FormGroup<ModelForm<T>>['controls']): string | number {
+    if (this._entityExtraIdField) {
+      return `${rowControls[this._entitySecondIdField].value}_${rowControls[this._entityExtraIdField].value}`;
+    }
+
+    return rowControls[this._entitySecondIdField].value;
   }
 
   addNewRow(copySelectedRow = false): void {
@@ -210,10 +234,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
 
   isFormIdUnique(): boolean {
     for (const row of this._newRows) {
-      if (
-        row[this._entitySecondIdField] !== this._selectedRowId &&
-        row[this._entitySecondIdField] === this._form.controls[this._entitySecondIdField].value
-      ) {
+      if (this.getNewRowId(row) !== this._selectedRowId && this.getNewRowId(row) === this.getNewRowIdForm(this._form.controls)) {
         return false;
       }
     }

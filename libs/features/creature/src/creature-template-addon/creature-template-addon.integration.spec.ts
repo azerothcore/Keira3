@@ -30,7 +30,7 @@ describe('CreatureTemplateAddon integration tests', () => {
 
   const originalEntity = new CreatureTemplateAddon();
   originalEntity.entry = id;
-  originalEntity.auras = null;
+  originalEntity.auras = null as any;
   originalEntity.bytes1 = 1;
   originalEntity.bytes2 = 2;
   originalEntity.emote = 3;

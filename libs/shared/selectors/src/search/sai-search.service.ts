@@ -8,7 +8,7 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
 })
 export class SaiSearchService extends SearchService<SmartScripts> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(readonly queryService: MysqlQueryService) {
+  constructor(override readonly queryService: MysqlQueryService) {
     super(queryService, SAI_TABLE, SAI_SEARCH_FIELDS, SAI_ID_FIELDS, SAI_ID_FIELDS);
   }
 }

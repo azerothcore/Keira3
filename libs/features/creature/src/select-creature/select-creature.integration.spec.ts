@@ -1,6 +1,5 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -17,11 +16,11 @@ import Spy = jasmine.Spy;
 import { instance, mock } from 'ts-mockito';
 
 class SelectCreatureComponentPage extends SelectPageObject<SelectCreatureComponent> {
-  ID_FIELD = 'entry';
+  override ID_FIELD = 'entry';
   get searchSubnameInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('#subname');
   }
-  get searchScriptNameInput(): HTMLInputElement {
+  override get searchScriptNameInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('#ScriptName');
   }
 }
@@ -31,14 +30,7 @@ describe('SelectCreature integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        SelectCreatureComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
-      ],
+      imports: [BrowserAnimationsModule, ToastrModule.forRoot(), ModalModule.forRoot(), SelectCreatureComponent, TranslateTestingModule],
       providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
     }).compileComponents();
   }));
@@ -207,14 +199,14 @@ describe('SelectCreature integration tests', () => {
     const row1 = page.getDatatableRowExternal(1);
     const row2 = page.getDatatableRowExternal(2);
 
-    expect(row0.innerText).toContain(results[0].name);
-    expect(row1.innerText).toContain(results[1].name);
-    expect(row2.innerText).toContain(results[2].name);
+    expect(row0.innerText).toContain(results[0].name as string);
+    expect(row1.innerText).toContain(results[1].name as string);
+    expect(row2.innerText).toContain(results[2].name as string);
 
     page.clickElement(page.getDatatableCellExternal(1, 1));
 
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith(['creature/creature-template']);
-    page.expectTopBarEditing(results[1].entry, results[1].name);
+    page.expectTopBarEditing(results[1].entry as number, results[1].name as string);
   });
 });

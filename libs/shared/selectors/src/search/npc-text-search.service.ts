@@ -8,7 +8,7 @@ import { SearchService } from '@keira/shared/base-abstract-classes';
 })
 export class NpcTextSearchService extends SearchService<NpcText> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(readonly queryService: MysqlQueryService) {
+  constructor(override readonly queryService: MysqlQueryService) {
     super(queryService, NPC_TEXT_TABLE, NPC_TEXT_SEARCH_FIELDS);
   }
 }

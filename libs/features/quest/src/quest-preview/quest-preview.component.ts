@@ -1,9 +1,10 @@
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { IconComponent } from '@keira/shared/base-editor-components';
+import { RacesTextKey, RacesTextValue } from '@keira/shared/constants';
 import { PreviewHelperService } from '@keira/shared/preview';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
-import { QUEST_FACTION_REWARD } from './quest-preview.model';
+import { Quest, QUEST_FACTION_REWARD } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
 
 @Component({
@@ -18,13 +19,13 @@ import { QuestPreviewService } from './quest-preview.service';
 export class QuestPreviewComponent implements OnInit {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   readonly service: QuestPreviewService = inject(QuestPreviewService);
-  readonly helper: PreviewHelperService = inject(PreviewHelperService);
+  protected readonly helper: PreviewHelperService = inject(PreviewHelperService);
 
   descriptionToggle = true;
   progressToggle = true;
   completionToggle = true;
 
-  readonly QUEST_FACTION_REWARD = QUEST_FACTION_REWARD;
+  protected readonly QUEST_FACTION_REWARD = QUEST_FACTION_REWARD;
 
   get showMaxLevel(): boolean {
     return !!this.service.maxLevel && this.service.maxLevel !== '0';
@@ -38,7 +39,7 @@ export class QuestPreviewComponent implements OnInit {
   get type(): boolean {
     return !!this.questInfo || !!this.service.periodicQuest;
   }
-  get questInfo(): string {
+  get questInfo(): string | boolean | undefined {
     const qInfo = this.service.QUEST_INFO.find((q) => q.value === this.service.questTemplate.QuestInfoID);
     return this.service.questTemplate.QuestInfoID > 0 && qInfo?.name;
   }
@@ -56,7 +57,20 @@ export class QuestPreviewComponent implements OnInit {
       : '';
   }
 
+  get hasIconSkills(): boolean {
+    // @ts-ignore // TODO: fix typing and remove @ts-ignore
+    return this.service.ICON_SKILLS[this.service.questTemplateAddon.RequiredSkillID];
+  }
+
   ngOnInit(): void {
     this.service.initializeServices(this.changeDetectorRef);
+  }
+
+  getRaceText(raceIndex: RacesTextKey): RacesTextValue | null {
+    return this.service.RACES_TEXT[raceIndex];
+  }
+
+  hasPrevOrNext(questLists: { prev?: Quest[] | null; next?: Quest[] | null }): boolean {
+    return !!(questLists.prev && questLists.prev.length > 0) || !!(questLists.next && questLists.next.length > 0);
   }
 }

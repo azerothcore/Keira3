@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CreatureSpawn } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { CreatureSpawn } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
+import { instance, mock } from 'ts-mockito';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureSpawnComponent } from './creature-spawn.component';
 import Spy = jasmine.Spy;
-import { instance, mock } from 'ts-mockito';
 
 class CreatureSpawnPage extends MultiRowEditorPageObject<CreatureSpawnComponent> {}
 
@@ -87,7 +87,7 @@ describe('CreatureSpawn integration tests', () => {
       expect(page.getInputById('currentwaypoint').disabled).toBe(true);
       expect(page.getInputById('curhealth').disabled).toBe(true);
       expect(page.getInputById('curmana').disabled).toBe(true);
-      expect(page.getInputById('MovementType').disabled).toBe(true);
+      expect(page.getDebugElementByCss('#MovementType select').nativeElement.disabled).toBe(true);
       expect(page.getInputById('npcflag').disabled).toBe(true);
       expect(page.getInputById('unit_flags').disabled).toBe(true);
       expect(page.getInputById('dynamicflags').disabled).toBe(true);

@@ -1,17 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { SaiEditorComponent } from '@keira/shared/sai-editor';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { EditorButtonsComponent, QueryOutputComponent } from '@keira/shared/base-editor-components';
+import { SaiEditorComponent, SaiTopBarComponent, TimedActionlistComponent } from '@keira/shared/sai-editor';
+import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgxDatatableModule } from '@siemens/ngx-datatable';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { SaiCreatureEditorService } from './sai-creature-editor.service';
-import { TimedActionlistComponent } from '@keira/shared/sai-editor';
-import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { EditorButtonsComponent } from '@keira/shared/base-editor-components';
-import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QueryOutputComponent } from '@keira/shared/base-editor-components';
-import { TranslateModule } from '@ngx-translate/core';
-
-import { SaiTopBarComponent } from '@keira/shared/sai-editor';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -33,6 +29,6 @@ import { SaiTopBarComponent } from '@keira/shared/sai-editor';
   ],
 })
 export class SaiCreatureComponent extends SaiEditorComponent {
-  readonly editorService = inject(SaiCreatureEditorService);
-  protected readonly handlerService = inject(SaiCreatureHandlerService);
+  override readonly editorService = inject(SaiCreatureEditorService);
+  protected override readonly handlerService = inject(SaiCreatureHandlerService);
 }

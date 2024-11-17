@@ -1,4 +1,4 @@
-import { FieldPacket as FieldInfo, QueryError } from 'mysql2';
+import { FieldPacket as FieldInfo } from 'mysql2';
 
 export type StringKeys<T> = Extract<keyof T, string>;
 
@@ -10,7 +10,7 @@ export interface QueryForm<T> {
 export type Class = new (...args: any[]) => any;
 
 export interface MysqlResult<T extends TableRow> {
-  results?: T[];
+  result?: T[];
   fields?: FieldInfo[];
 }
 
@@ -39,7 +39,7 @@ export interface Flag {
 }
 
 export interface Option {
-  value: number | string;
+  value: number | string | null;
   name: string;
   comment?: string;
 }
@@ -48,5 +48,3 @@ export interface FieldDefinition {
   name: string;
   tooltip: string;
 }
-
-export type QueryCallback = (err: QueryError, results?: [], fields?: FieldInfo[]) => void;

@@ -14,8 +14,8 @@ import { Locale, SPELL_DBC_TEXT_FIELDS, SpellDbcTextFieldPrefix } from '../spell
 export class SpellDbcLocaleComponent {
   readonly FIELDS = SPELL_DBC_TEXT_FIELDS;
 
-  @Input() formGroup: FormGroup<ModelForm<SpellDbc>>;
-  @Input() locale: Locale;
+  @Input({ required: true }) formGroup!: FormGroup<ModelForm<SpellDbc>>;
+  @Input({ required: true }) locale!: Locale;
 
   getFieldName(field: SpellDbcTextFieldPrefix): string {
     return `${field}_${this.locale}`; // example: NameSubtext_Lang_esES

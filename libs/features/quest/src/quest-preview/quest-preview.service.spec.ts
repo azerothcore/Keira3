@@ -1,5 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import {
   QUEST_FLAG_DAILY,
   QUEST_FLAG_REPEATABLE,
@@ -9,6 +10,7 @@ import {
   QUEST_PERIOD,
 } from '@keira/shared/constants';
 import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
+import { mockChangeDetectorRef } from '@keira/shared/test-utils';
 import { ToastrModule } from 'ngx-toastr';
 import { CreatureQuestenderService } from '../creature-questender/creature-questender.service';
 import { CreatureQueststarterService } from '../creature-queststarter/creature-queststarter.service';
@@ -19,10 +21,8 @@ import { QuestOfferRewardService } from '../quest-offer-reward/quest-offer-rewar
 import { QuestRequestItemsService } from '../quest-request-items/quest-request-items.service';
 import { QuestTemplateAddonService } from '../quest-template-addon/quest-template-addon.service';
 import { QuestTemplateService } from '../quest-template/quest-template.service';
-import { DifficultyLevel } from './quest-preview.model';
+import { DifficultyLevel, QUEST_FACTION_REWARD, QuestFactionRewardKey } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
-import { mockChangeDetectorRef } from '@keira/shared/test-utils';
-import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import Spy = jasmine.Spy;
 
 describe('QuestPreviewService', () => {
@@ -104,7 +104,7 @@ describe('QuestPreviewService', () => {
     expect(service.side).toBeNull();
     expect(service.races).toEqual([1, 2, 4, 5, 6, 7]);
 
-    questTemplateService.form.controls.AllowableRaces.setValue(null);
+    questTemplateService.form.controls.AllowableRaces.setValue(null as any);
     expect(service.races).toBeNull();
 
     // check if quest is sharable
@@ -169,7 +169,7 @@ describe('QuestPreviewService', () => {
     expect(mysqlQueryService.getItemNameByStartQuest).toHaveBeenCalledTimes(1);
     expect(mysqlQueryService.getItemNameByStartQuest).toHaveBeenCalledWith(mockID);
     expect(mysqlQueryService.getReputationRewardByFaction).toHaveBeenCalledTimes(1);
-    expect(mysqlQueryService.getReputationRewardByFaction).toHaveBeenCalledWith(null);
+    expect(mysqlQueryService.getReputationRewardByFaction).toHaveBeenCalledWith(null as any);
   });
 
   it('sqliteQuery', async () => {
@@ -427,7 +427,7 @@ describe('QuestPreviewService', () => {
   });
 
   describe('getRewardReputation', () => {
-    const mockRepValue = 123;
+    const mockRepValue = 1;
     const mockRepFaction = 1;
     const dailyRate = 3;
     const weeklyRate = 4;
@@ -460,13 +460,22 @@ describe('QuestPreviewService', () => {
       expect(service.getRewardReputation(1, [])).toBe(null);
     });
 
-    it('QuestReputation values 1', () => {
+    it('QuestReputation values', () => {
       const { service, questTemplateService } = setup();
-      questTemplateService.form.controls.RewardFactionID1.setValue(mockRepFaction);
-      questTemplateService.form.controls.RewardFactionValue1.setValue(mockRepValue);
+      questTemplateService.form.controls.RewardFactionID1.setValue(1);
+      questTemplateService.form.controls.RewardFactionValue1.setValue(1);
 
-      expect(service.getRewardReputation(1, [])).toBe(mockRepValue);
-      expect(service.getRewardReputation(1, [mockQuestReputationReward1])).toBe(mockRepValue);
+      expect(service.getRewardReputation(1, [])).toBe(10);
+      expect(service.getRewardReputation(1, [mockQuestReputationReward1])).toBe(
+        QUEST_FACTION_REWARD[mockRepValue as QuestFactionRewardKey],
+      );
+    });
+
+    it('QuestReputation values with RewardFactionOverride', () => {
+      const { service, questTemplateService } = setup();
+      questTemplateService.form.controls.RewardFactionOverride1.setValue(10000);
+
+      expect(service.getRewardReputation(1, [])).toBe(100);
     });
 
     it('all dailyType and normal quest_rate', () => {
@@ -475,17 +484,21 @@ describe('QuestPreviewService', () => {
       questTemplateService.form.controls.RewardFactionID1.setValue(mockRepFaction);
       questTemplateService.form.controls.RewardFactionValue1.setValue(mockRepValue);
 
+      let mockOutput = QUEST_FACTION_REWARD[(mockRepValue * (dailyRate - 1)) as QuestFactionRewardKey];
       getPeriodicQuestSpy.and.returnValue(QUEST_PERIOD.DAILY);
-      expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockRepValue * (dailyRate - 1));
+      expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockOutput);
 
+      mockOutput = QUEST_FACTION_REWARD[(mockRepValue * (weeklyRate - 1)) as QuestFactionRewardKey];
       getPeriodicQuestSpy.and.returnValue(QUEST_PERIOD.WEEKLY);
-      expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockRepValue * (weeklyRate - 1));
+      expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockOutput);
 
+      mockOutput = QUEST_FACTION_REWARD[(mockRepValue * (monthlyRate - 1)) as QuestFactionRewardKey];
       getPeriodicQuestSpy.and.returnValue(QUEST_PERIOD.MONTHLY);
-      expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockRepValue * (monthlyRate - 1));
+      expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockOutput);
 
+      mockOutput = QUEST_FACTION_REWARD[(mockRepValue * (questRate - 1)) as QuestFactionRewardKey];
       getPeriodicQuestSpy.and.returnValue('mockPeriod');
-      expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockRepValue * (questRate - 1));
+      expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockOutput);
     });
 
     it('in case of repeatable quest', () => {
@@ -493,8 +506,9 @@ describe('QuestPreviewService', () => {
       spyOn(service, 'isRepeatable').and.returnValue(true);
       questTemplateService.form.controls.RewardFactionID1.setValue(mockRepFaction);
       questTemplateService.form.controls.RewardFactionValue1.setValue(mockRepValue);
+      const mockOutput = QUEST_FACTION_REWARD[(mockRepValue * (repeatableRate - 1)) as QuestFactionRewardKey];
 
-      expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockRepValue * (repeatableRate - 1));
+      expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockOutput);
     });
 
     it('getObjective$', async () => {

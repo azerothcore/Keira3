@@ -45,6 +45,7 @@
   "UNKNOWN": "未知",
   "COPY": "复制",
   "EXECUTE": "执行",
+  "EXECUTE_AND_COPY": "Execute & copy",
   "RELOAD": "重新加载",
   "CANCEL": "取消",
   "CONNECTION_WINDOW": {
@@ -71,6 +72,7 @@
       "TITLE": "生物",
       "SELECT_CREATURE": "选择生物",
       "CREATURE_TEMPLATE": "生物模板",
+      "TEMPLATE_MODEL": "Template Model",
       "TEMPLATE_ADDON": "模板插件",
       "TEMPLATE_RESISTANCE": "抗性模板",
       "TEMPLATE_SPELL": "技能模板",
@@ -223,7 +225,7 @@
       "SKINLOOT": "skinning_loot_template表中的entry字段",
       "DIFFICULTY_ENTRY_1": "在25人英雄副本和普通副本中使用相同的生物",
       "DIFFICULTY_ENTRY_2": "在10人英雄副本中使用相同的生物",
-      "difficulty_entry_3": "在25人英雄副本中使用相同的生物",
+      "DIFFICULTY_ENTRY_3": "在25人英雄副本中使用相同的生物",
       "BASE_ATTACK_TIME": "近战攻击间隔时间(单位：毫秒)。",
       "RANGE_ATTACK_TIME": "远程攻击间隔时间(单位：毫秒)。",
       "SCRIPT_NAME": "覆盖AIName。此生物使用独立的C++脚本在这里输入脚本名称。",
@@ -236,7 +238,10 @@
       "SPEED_WALK": "控制生物的奔跑速度。对于陆地载具来说，提高地面移动速度。",
       "SPEED_SWIM": "控制生物游泳的速度。",
       "SPEED_FLIGHT": "控制生物的飞行速度。",
-      "DETECTION_RANGE": "控制生物感知到玩家靠近的范围。"
+      "DETECTION_RANGE": "控制生物感知到玩家靠近的范围。",
+      "ITEMID1": "This is the item number of the equipment used in the right hand from Item.dbc.",
+      "ITEMID2": "This is the item number of the equipment used in the left hand from Item.dbc.",
+      "ITEMID3": "This is the item number of the equipment used in the ranged slot from Item.dbc."
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "链接至creature_template表的entry字段",
@@ -331,7 +336,7 @@
       "REWARD_XP_DIFFICULTY": "奖励经验值指数的基本指数根据玩家等级实现，来自QuestXP.dbc文件，查看DBC文档了解更多信息。",
       "REWARD_MONEY": "如果值 > 0: 完成任务可以得到的金钱; 如果值 < 0: 完成任务需要支付的金钱",
       "REW_MONEY_DIFFICULTY": "进行中: RewardMoneyDifficulty提示",
-      "REWARD_SPELL": "任务日志中任务完成时显示的法术。请注意，如果RewardSpellCast为非零，则不会施放此法术。",
+      "REWARD_SPELL": "任务日志中任务完成时显示的法术。请注意，如果RewardSpell为非零，则不会施放此法术。",
       "REWARD_HONOR": "完成任务获得荣誉击杀（荣誉值）",
       "REWARD_FACTIONS_TOOLTIP": "任务增加（或减少）声望的势力ID。"
     },

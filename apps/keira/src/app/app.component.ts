@@ -28,7 +28,7 @@ import { SubscriptionHandler } from '@keira/shared/utils';
 export class AppComponent extends SubscriptionHandler implements OnInit {
   readonly KEIRA3_REPO_URL = KEIRA3_REPO_URL;
   showNewerVersionAlert = false;
-  sqliteResult: { id: number; name: string };
+  sqliteResult: { id: number; name: string } | undefined;
 
   readonly mysqlService = inject(MysqlService);
   readonly toastrService = inject(ToastrService);
@@ -50,7 +50,7 @@ export class AppComponent extends SubscriptionHandler implements OnInit {
         this.sqliteQueryService
           .query<{ id: number; name: string }>('SELECT * FROM achievements WHERE id = 970', true)
           .subscribe((result) => {
-            this.sqliteResult = result ? result[0] : null;
+            this.sqliteResult = result ? result[0] : undefined;
             this.changeDetectorRef.markForCheck();
           }),
       );
