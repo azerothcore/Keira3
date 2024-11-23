@@ -82,6 +82,7 @@ SAI_EVENT_COMMENTS[SAI_EVENTS.AREA_RANGE] = `On Hostile in Range`;
 SAI_EVENT_COMMENTS[SAI_EVENTS.SUMMONED_UNIT_EVADE] = `On Summoned Unit Evade`;
 SAI_EVENT_COMMENTS[SAI_EVENTS.WAYPOINT_DATA_REACHED] = `On Point _waypointParamOne_ of Path _waypointParamTwo_ Reached`;
 SAI_EVENT_COMMENTS[SAI_EVENTS.WAYPOINT_DATA_ENDED] = `On Path _eventParamTwo_ Finished`;
+SAI_EVENT_COMMENTS[SAI_EVENTS.IS_IN_MELEE_RANGE] = 'On Melee Range Target';
 
 export const SAI_ACTION_COMMENTS: Record<string, string> = {};
 SAI_ACTION_COMMENTS[SAI_ACTIONS.NONE] = `No Action Type`;
