@@ -107,7 +107,7 @@
     "eslint-plugin-playwright": "1.6.0",
     "eslint-plugin-prettier": "5.2.1",
     "highlight.js": "11.10.0",
-    "husky": "9.1.6",
+    "husky": "9.1.7",
     "jasmine-core": "5.4.0",
     "jasmine-spec-reporter": "7.0.0",
     "jsonc-eslint-parser": "^2.1.0",
