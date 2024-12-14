@@ -272,7 +272,8 @@
       "PATH_ID": "En tal caso de que la criatura posea un movimiento guiado por waypoints por ejemplo, este campo calmacena el waypoint_data.id del camino que debe recorrer.",
       "MOUNT": "Identificador (ID) del modelo de la montura que será utilizada para que aparezca sobre la misma al spawnear. El valor que aquí se preste sustituye al valor del Campo de Unidad de Criatura, o sea UNIT_FIELD_MOUNTDISPLAYID.",
       "VISIBILITY_DISTANCE_TYPE": "Normal = 0, 100.0f (default visible distance, 100 yards on continents); Tiny = 1, 25.0f; Small = 2, 50.0f; Large = 3, 200.0f; Gigantic = 4, 400.0f; Infinite = 5 (SIZE_OF_GRIDS max distance for visible objects)",
-      "AURAS": "Una lista de auras separadas por comas que se aplicarán sobre ésta criatura en particular"
+      "AURAS": "Una lista de auras separadas por comas que se aplicarán sobre ésta criatura en particular",
+      "COMMENT": "Comment"
     },
     "TEMPLATE_MOVEMENT": {
       "GROUND": "0 = Ninguno; 1 = Correr; 2 = Flotar",
